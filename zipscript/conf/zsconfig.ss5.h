@@ -403,6 +403,7 @@
  */
 #define enable_mp3_script	TRUE
 #define mp3_script		"/bin/mp3-genres.sh"
+#define mp3_script_cookies	"\"%w\" \"%W\" \"%x\" \"%X\" \"%y\" \"%Y\" \"%z\" \"%h\" \"%q\" \"%Q\" \"%j\" \"%i\" \"%I\""
 
 /* Enable/disable unduper script (runs if sfv is uploaded after files, and files
  *                                are marked as bad and deleted)

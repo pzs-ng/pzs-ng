@@ -626,7 +626,7 @@ int main( int argc, char **argv ) {
 
 					if (( enable_mp3_script == TRUE ) && ( userI[raceI.user.pos]->files == 1 )) {
 					        d_log("Executing mp3 script\n");
-					        sprintf(target, mp3_script " %s", raceI.file.name);
+					        sprintf(target, mp3_script " \"%s\" %s", raceI.file.name, convert(&raceI,userI,groupI,mp3_script_cookies));
 					        execute(target);
 					}
 
