@@ -12,13 +12,13 @@ ZSTYPE=@ZSTYPE@ mp3info.o
 RM=rm -f
 
 RD-OBJECTS=racedebug.o
-ZS-OBJECTS=zipscript-c.o dizreader.o stats.o complete.o convert.o multimedia.o $(ZSTYPE)
+ZS-OBJECTS=zipscript-c.o dizreader.o stats.o complete.o convert.o multimedia.o zsfunctions.o $(ZSTYPE)
 PD-OBJECTS=postdel.o dizreader.o stats.o convert.o multimedia.o $(ZSTYPE)
 RS-OBJECTS=racestats.o dizreader.o stats.o convert.o $(ZSTYPE)
 CU-OBJECTS=cleanup.o
 DC-OBJECTS=datacleaner.o
 SC-OBJECTS=rescan.o dizreader.o stats.o convert.o complete.o crc.o multimedia.o $(ZSTYPE)
-ZS-DEPEND=cleanup.o complete.o convert.o datacleaner.o postdel.o racestats.o rescan.o stats.o zipscript-c.o multimedia.o $(ZSTYPE)
+ZS-DEPEND=cleanup.o complete.o convert.o datacleaner.o postdel.o racestats.o rescan.o stats.o zipscript-c.o multimedia.o zsfunctions.o $(ZSTYPE)
 
 all: zipscript-c postdel racestats cleanup datacleaner rescan racedebug
 	@(ls -lA $(binpath))
