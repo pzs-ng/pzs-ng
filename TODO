@@ -35,7 +35,10 @@ status  who       what
  [ ]               group and albumname sort in mp3
  [ ]               add support to change the gid of the releasedir based on genre. need a script to initiate the
                    glftpd groupfile too (create groups based on genre names), if we are to include it.
-
+ [ ]               add support for hiding affill uploads (in both output to channel and the .message. Should also
+                   consider the 'anonymity' setting above.)
+ [ ]               add support for showing when racers joined the, eh, race in the .message.
+ [ ]               make it possible to change the name of the .message file.
 
 status   description
  [ ]     not done 
