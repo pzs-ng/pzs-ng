@@ -219,8 +219,10 @@ proc readlog {} {
 		if {$lastread($logid) < $logsize && ($logsize - $lastread($logid) - $max_log_change) < 0} {
 			if {![catch {set handle [open $logpath r]} error]} {
 				seek $handle $lastread($logid)
-				while {![eof $handle]} {
-					if {[gets $handle line] < 1} {continue}
+				set data [read -nonewline $handle]
+				close $handle
+
+				foreach line [split $data "\n"] {
 					## Remove the date and time from the log line.
 					if {[regexp $regex $line result event line]} {
 						lappend lines $logtype $event $line
@@ -228,12 +230,11 @@ proc readlog {} {
 						putlog "dZSbot warning: Invalid log line: $line"
 					}
 				}
-				close $handle
 			} else {
 				putlog "dZSbot error: Unable to open log file \"$logpath\" ($error)."
 			}
 		}
-		set lastread($logid) [file size $logpath]
+		set lastread($logid) $logsize
 	}
 
 	foreach {type event line} $lines {
@@ -270,7 +271,8 @@ proc readlog {} {
 		} elseif {[lsearch -exact $msgtypes(DEFAULT) $event] != -1} {
 			set section $defaultsection
 		} else {
-			putlog "dZSbot error: Undefined message type \"$event\", check \"msgtypes(SECTION)\" and \"msgtypes(DEFAULT)\" in the config."; continue
+			putlog "dZSbot error: Undefined message type \"$event\", check \"msgtypes(SECTION)\" and \"msgtypes(DEFAULT)\" in the config."
+			continue
 		}
 
 		## If a pre-event script returns false, skip the announce.
@@ -693,7 +695,7 @@ proc flagcheck {currentflags needflags} {
 	return 0
 }
 
-proc rightscheck {user group flags rights} {
+proc rightscheck {rights user group flags} {
 	set retval 0
 	foreach right $rights {
 		set prefix [string index $right 0]
@@ -735,7 +737,7 @@ proc ng_inviteuser {nick user group flags} {
 		putquick "INVITE $nick $chan"
 	}
 	foreach {chan rights} [array get privchannel] {
-		if {[rightscheck $user $group $flags $rights]} {
+		if {[rightscheck $rights $user $group $flags]} {
 			putquick "INVITE $nick $chan"
 		}
 	}
@@ -967,17 +969,15 @@ proc ng_help {nick uhost hand chan arg} {
 	global scriptpath sections
 	checkchan $nick $chan
 
-	set file "$scriptpath/dZSbot.help"
-	if {![file readable $file]} {
-		putlog "dZSbot error: The \"dZSbot.help\" file is missing, please check your install."
-		puthelp "PRIVMSG $nick :Unable to find help file, please contact a siteop."
-		return 0
+	if {[catch {set handle [open "$scriptpath/dZSbot.help" r]} error]} {
+		putlog "dZSbot error: Unable to read the help file ($error)."
+		puthelp "PRIVMSG $nick :Unable to read the help file, please contact a siteop."
+		return
 	}
+	set data [read -nonewline $handle]
+	close $handle
 
-	set helpfile [open $file r]
-	set helpdb [read $helpfile]
-	close $helpfile
-	foreach line [split $helpdb "\n"] {
+	foreach line [split $data "\n"] {
 		set line [themereplace [replacebasic $line "HELP"] "none"]
 		puthelp "PRIVMSG $nick :$line"
 	}
@@ -1608,7 +1608,7 @@ proc ng_uploaders {nick uhost hand chan argv} {
 proc ng_who {nick uhost hand chan argv} {
 	global binary
 	checkchan $nick $chan
-	foreach line [split [exec $binary(WHO)] \n] {
+	foreach line [split [exec $binary(WHO)] "\n"] {
 		if {![info exists newline($line)]} {
 			set newline($line) 0
 		} else { set newline($line) [expr $newline($line) + 1] }
@@ -1629,17 +1629,17 @@ proc loadtheme {file} {
 	if {[string index $file 0] != "/"} {
 		set file "$scriptpath/$file"
 	}
-	if {![file readable $file]} {
-		putlog "dZSbot: Theme file is not readable or does not exist ($file)."
-		return 0
-	}
+
 	putlog "dZSbot: Loading theme \"$file\"."
 
-	set fh [open $file]
-	set content [split [read -nonewline $fh] "\n"]
-	close $fh
+	if {[catch {set handle [open $file r]} error]} {
+		putlog "dZSbot error: Unable to read the theme file ($error)."
+		return 0
+	}
+	set data [read -nonewline $handle]
+	close $handle
 
-	foreach line $content {
+	foreach line [split $data "\n"] {
 		if {![regexp -nocase -- "^#" $line]} {
 			if {[regexp -nocase -- {fakesection\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
 				set theme_fakes($setting) $value

@@ -130,3 +130,10 @@ set disable(REQFILLED)               0
 set disable(REQUEST)                 0
 set disable(WIPE)                    0
 set disable(WIPE-r)                  0
+
+## Third party announcements
+set disable(IMDB)                    0
+set disable(IMDBFIND)                0
+set disable(IMDBVAR)                 0
+set disable(PRE)                     0
+set disable(TURGEN)                  0

@@ -391,10 +391,13 @@ Quickreference of cookies:
 %msg
 
 # TAGLINE:
-%u_group, %u_name, %u_tagline
+%g_name, %u_name, %u_tagline
 
 # TIMEOUT:
 %dummy1, %dummy2, %dummy3, %dummy4, %dummy5, %dummy6, %u_hostmask, %u_idletime, %u_name
+
+# TURGEN:
+%msg
 
 # UPDATE_CBR:
 %album, %artist, %audio, %bitrate, %codec, %filename, %g_name, %genre, %layer, %mode

@@ -26,7 +26,9 @@
 # 3. Add the following to your eggdrop.conf:
 #    source pzs-ng/plugins/NickDb.tcl
 #
-# 4. Rehash or restart your eggdrop for the changes to take effect.
+# 4. Make sure the bot has read/write access to the pzs-ng/plugins/ directory.
+#
+# 5. Rehash or restart your eggdrop for the changes to take effect.
 #
 #################################################################################
 
@@ -40,6 +42,9 @@ namespace eval ::ngBot::NickDb {
     ##
     ## Host mask format, cookies: %(user) and %(group).
     variable hostFormat "%(user).Users.PZS-NG.com"
+    ##
+    ## Exempt users from the host change (uses glFTPd-style permissions).
+    variable hostExempt "=STAFF =SiTEOPS 1"
     ##
     ## Path to the Tcl binding for SQLite v3.1.
     variable libSQLite "/usr/local/lib/tcl8.4/sqlite3/libtclsqlite3.so"
@@ -132,10 +137,11 @@ proc ::ngBot::NickDb::StripName {name} {
 #
 proc ::ngBot::NickDb::InviteEvent {event ircUser ftpUser ftpGroup ftpFlags} {
     variable hostChange
+    variable hostExempt
     variable hostFormat
     if {![string equal "INVITEUSER" $event]} {return 1}
 
-    if {[IsTrue $hostChange]} {
+    if {[IsTrue $hostChange] && ![rightscheck $hostExempt $ftpUser $ftpGroup $ftpFlags]} {
         ## glFTPD allows characters in user names which are not allowed on IRC.
         set stripUser [StripName $ftpUser]
         set stripGroup [StripName $ftpGroup]
