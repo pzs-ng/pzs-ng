@@ -842,7 +842,7 @@ proc help {nick uhost hand chan arg} {
 	set helpdb [read $helpfile]
 	close $helpfile
 	foreach line [split $helpdb "\n"] {
-		regsub -all "%cmdpre" "$line" "$cmdpre"
+		regsub -all "%cmdpre" "$line" "$cmdpre" line
 		puthelp "PRIVMSG $nick :$line"
 	}
 	puthelp "PRIVMSG $nick : Valid sections are: $sections"
