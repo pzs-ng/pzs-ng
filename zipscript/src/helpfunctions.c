@@ -1,4 +1,9 @@
 #include <string.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <errno.h>
+
+#include "zsfunctions.h"
 #include "helpfunctions.h"
 
 /* find the first occurance of any of delim in name */
@@ -45,5 +50,28 @@ strip_whitespaces(char *s)
 			   s[strlen(s)-1] == '\n' ||
 	           s[strlen(s)-1] == '\r')
 			s[strlen(s)-1] = '\0';
+}
+
+/* exclusive write lock */
+void
+xlock(struct flock *fl, int fd)
+{
+	fl->l_start = fl->l_len = fl->l_pid = 0;
+	fl->l_type = F_WRLCK;
+	fl->l_whence = SEEK_SET;
+	
+	if (fcntl(fd, F_SETLKW, fl) == -1) {
+		d_log("fcntl: %s", strerror(errno));
+	}
+}	
+
+/* unlock exclusive lock */
+void
+xunlock(struct flock *fl, int fd)
+{
+	fl->l_type = F_UNLCK;
+	if (fcntl(fd, F_SETLK, fl) == -1) {
+		d_log("fcntl: %s", strerror(errno));
+	}
 }
 
