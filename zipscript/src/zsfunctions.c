@@ -1185,7 +1185,7 @@ buffer_paths(GLOBAL *g, char **path, int *k, int len)
 		if (g->l.path[cnt] == '/') {
 			(*k)--;
 			path[*k] = malloc(n + 1);
-			strncpy(path[*k], g->l.path + cnt + 1, n);
+			strlcpy(path[*k], g->l.path + cnt + 1, n);
 			path[*k][n] = 0;
 			n = 0;
 		} else {

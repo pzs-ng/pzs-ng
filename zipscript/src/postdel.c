@@ -101,12 +101,12 @@ main(int argc, char **argv)
 
 	/* YARR; THE PAIN OF MAGIC NUMBERS! */
 	d_log("Copying env/predefined username to g.v. (%s)\n", env_user);
-	strncpy(g.v.user.name, env_user, 24);
-	/*strncpy(g.v.user.name, env_user, 24);
+	strlcpy(g.v.user.name, env_user, 24);
+	/*strlcpy(g.v.user.name, env_user, 24);
 	g.v.user.name[23] = 0;*/
 	
 	d_log("Copying env/predefined groupname to g.v. (%s)\n", env_group);
-	strncpy(g.v.user.group, env_group, 24);
+	strlcpy(g.v.user.group, env_group, 24);
 	g.v.user.group[23] = 0;
 
 	d_log("File to remove is: %s\n", fname);
