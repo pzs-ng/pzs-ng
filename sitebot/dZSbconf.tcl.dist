@@ -249,7 +249,7 @@ set variables(STAT_USERS_HEAD)	"%pf %dummy"
 set variables(STAT_USERS)	"%pf %pos %user %group %mbytes %files %pct %spd %dayup %wkup %monthup %allup"
 set variables(STAT_GROUPS_HEAD)	"%pf %dummy"
 set variables(STAT_GROUPS)	"%pf %pos %group %mbytes %files %pct %spd"
-set variables(STAT_POST)	"%pf %dummy"
+set variables(STAT_POST)	"%pf %usrs %grps %files %mbytes %len %spd"
 
 # Variables pasted from 3rd party apps
 set variables(PRE)		"%pf %rel %pregroup %section %files %mbytes %cds %who %user %group %tagline"
