@@ -18,6 +18,9 @@
 # Changes
 ###############################################################
 
+r1389: The %system cookie was removed from uptime.
+- Remove the %system cookie from "announce.UPTIME" in your theme file (.zst).
+
 r1374: Added an !uptime command
 - Add "announce.UPTIME" to your theme file (.zst).
 
