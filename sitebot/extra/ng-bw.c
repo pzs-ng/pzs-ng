@@ -50,7 +50,7 @@ int main() {
 	
 	if ((shmid = shmget(KEY, 0,0)) == -1) {
 		printf("0 0.0 0 0.0 0 0.0 0 0 0\n");
-		exit(2);
+		exit(0);
 	}
 	users = (struct USER *)shmat(shmid, 0, SHM_RDONLY);
 	if (users == (struct USER *)(-1)) {
