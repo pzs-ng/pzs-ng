@@ -158,7 +158,7 @@ int main () {
 		raceI.file.name = dirlist[n]->d_name;
 		raceI.file.speed = 2004 * 1024;
 		raceI.file.size = fileinfo.st_size;
-		raceI.total.start_time=0;
+		raceI.total.start_time = 0;
 
 		sprintf(exec, "%s-missing", raceI.file.name);
 		strtolower(exec);

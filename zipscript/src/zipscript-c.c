@@ -209,6 +209,7 @@ int main( int argc, char **argv ) {
     char		*halfway_msg = 0;
     char		*complete_bar = 0;
     char		*error_msg;
+    char		*sections;
     unsigned int	crc, s_crc;
     unsigned char	exit_value = EXIT_SUCCESS;
     unsigned char	no_check = FALSE;
@@ -254,7 +255,7 @@ int main( int argc, char **argv ) {
 
     d_log("Reading data from environment variables\n");
     if (!(getenv("USER") && getenv("GROUP") && getenv("TAGLINE") && getenv("SPEED"))) {
-	d_log("We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE and $SPEED\n");
+	d_log("We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE, $SECTION and $SPEED\n");
 	/*	strcpy(raceI.user.name, "Unknown");
 		strcpy(raceI.user.group, "NoGroup");*/
 
@@ -265,6 +266,7 @@ int main( int argc, char **argv ) {
 
 	memcpy(raceI.user.tagline, "No Tagline Set", 15);
 	raceI.file.speed=2004;
+	raceI.section=0;
     } else {
 	sprintf(raceI.user.name, getenv("USER"));
 	sprintf(raceI.user.group, getenv("GROUP"));
@@ -273,6 +275,22 @@ int main( int argc, char **argv ) {
 	if (strlen(raceI.user.tagline)==0) memcpy(raceI.user.tagline, "No Tagline Set", 15);
 	raceI.file.speed=(unsigned int)strtol(getenv("SPEED"),NULL,0);
 	if (!raceI.file.speed) raceI.file.speed=1;
+
+	d_log("Reading section from env\n");
+	if ((sections=strdup(gl_sections)) == NULL) {
+	    d_log("Can't allocate memory for sections\n");
+	} else {
+	    n=0;
+	    while (sections) {
+		if (strcmp(strsep(&sections," "), getenv("SECTION")) == 0) {
+		    raceI.section=(unsigned char)n;
+		    break;
+		} else {
+		    n++;
+		}
+	    }
+	}
+
     }
     raceI.file.speed*=1024;
 

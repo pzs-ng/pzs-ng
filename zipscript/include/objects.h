@@ -102,6 +102,7 @@ struct VARS {
     struct misc				misc;
     struct audio			audio;
     struct video			video;
+    unsigned char			section;
 };
 
 struct LOCATIONS {
