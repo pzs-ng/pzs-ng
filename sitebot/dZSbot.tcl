@@ -1086,7 +1086,7 @@ proc ng_bandwidth {nick uhost hand chan args} {
 	    set up [expr $up * 8]
 	    set dn [expr $dn * 8]
 	    set totalspeed [expr $totalspeed * 8]
-	    set type "Kbit"
+	    set type "Kbit/s"
 	    append up $type
 	    append dn $type
 	    append totalspeed $type
@@ -1094,23 +1094,23 @@ proc ng_bandwidth {nick uhost hand chan args} {
 	    set up [string range [expr $up * 8 / 1024] 0 [expr [string first [expr $up * 8 / 1000] "."] + 3]]
 	    set dn [string range [expr $dn * 8 / 1024] 0 [expr [string first [expr $dn * 8 / 1000] "."] + 3]]
 	    set totalspeed [string range [expr $totalspeed * 8 / 1000] 0 [expr [string first [expr $totalspeed * 8 / 1000] "."] + 3]]
-	    set type "Mbit"
+	    set type "Mbit/s"
 	    append up $type
 	    append dn $type
 	    append totalspeed $type
 	} elseif {[string match -nocase $speedmeasure "autobit"] == 1} {
 	    if {$totalspeed > $speedthreshold} {
-		set totalspeed [string range [expr $totalspeed / 1000] 0 [expr [string first [expr $totalspeed / 1000] "."] + 3]]
-		append totalspeed "MB/s"
-	    } else { append totalspeed "KB/s" }
+		set totalspeed [string range [expr $totalspeed * 8 / 1000] 0 [expr [string first [expr $totalspeed * 8 / 1000] "."] + 3]]
+		append totalspeed "Mbit/s"
+	    } else { append totalspeed "Kbit/s" }
 	    if {$up > $speedthreshold} {
-		set up [string range [expr $up / 1000] 0 [expr [string first [expr $up / 1000] "."] + 3]]
-		append up "MB/s" 
-	    } else { append up "KB/s" }
+		set up [string range [expr $up * 8 / 1000] 0 [expr [string first [expr $up * 8 / 1000] "."] + 3]]
+		append up "Mbit/s" 
+	    } else { append up "Kbit/s" }
 	    if {$dn > $speedthreshold} {
-		set dn [string range [expr $dn / 1000] 0 [expr [string first [expr $dn / 1000] "."] + 3]]
-		append dn "MB/s"
-	    } else { append dn "KB/s" }
+		set dn [string range [expr $dn * 8 / 1000] 0 [expr [string first [expr $dn * 8 / 1000] "."] + 3]]
+		append dn "Mbit/s"
+	    } else { append dn "Kbit/s" }
 	} elseif {[string match -nocase $speedmeasure "autobyte"] == 1} {
 	    if {$totalspeed > $speedthreshold} {
 		set totalspeed [string range [expr $totalspeed / 1024] 0 [expr [string first [expr $totalspeed / 1024] "."] + 3]]
