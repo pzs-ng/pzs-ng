@@ -445,6 +445,7 @@ main(int argc, char **argv)
 			}
 		}
 		d_log("Creating incomplete indicator\n");
+		d_log("   name: '%s', incomplete: '%s', path: '%s'\n", raceI.misc.release_name, locations.incomplete, locations.path);
 		create_incomplete();
 		d_log("Moving progress bar\n");
 		move_progress_bar(0, &raceI);

@@ -256,7 +256,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 				bar[m] = 'x';
 			speed = user[x].bytes_xfer / 1024. /
 				((tstop.tv_sec - user[x].tstart.tv_sec) * 1. +
-			(tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.);
+				(tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.);
 
 			if ((!noshow && !mask && !(maskchar == '*')) || chidden) {
 				total_dn_speed += speed;

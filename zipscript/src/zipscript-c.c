@@ -1057,7 +1057,8 @@ d_log("DEBUG: raceI.total.users=%d - files=%d, race_msg=%s\n", raceI.total.users
 			d_log("Caching progress bar\n");
 			buffer_progress_bar(&raceI);
 
-			d_log("Creating incomplete indicator %s\n", locations.incomplete);
+			d_log("Creating incomplete indicator:\n", locations.incomplete);
+			d_log("   name: '%s', incomplete: '%s', path: '%s'\n", raceI.misc.release_name, locations.incomplete, locations.path);
 			create_incomplete();
 
 			d_log("Creating/moving progress bar\n");
