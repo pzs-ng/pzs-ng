@@ -357,7 +357,7 @@ main(void)
 				g.v.total.start_time = 0;
 
 				if (!fileexists("file_id.diz")) {
-					sprintf(exec, "%s -qqjnCLL %s file_id.diz", unzip_bin, g.v.file.name);
+					sprintf(exec, "%s -qqjnCLL \"%s\" file_id.diz", unzip_bin, g.v.file.name);
 					if (execute(exec) != 0) {
 						d_log("rescan: No file_id.diz found (#%d): %s\n", errno, strerror(errno));
 					} else {
@@ -369,7 +369,7 @@ main(void)
 						chmod("file_id.diz", 0666);
 					}
 				}
-				sprintf(exec, "%s -qqt %s &> /dev/null", unzip_bin, g.v.file.name);
+				sprintf(exec, "%s -qqt \"%s\" &> /dev/null", unzip_bin, g.v.file.name);
 				if (system(exec) == 0) {
 					writerace(g.l.race, &g.v, crc, F_CHECKED);
 				} else {
