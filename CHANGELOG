@@ -28,6 +28,10 @@ v0.7.4 (aka beta4 of pzs-ng (r???))
  - fix - nested tags (%b{}, %cX{}, %u{}) in themes not working right.
  - new - added cookie for sitename in progress-bars.
  - new - remade the whole config loading - zsconfig.h now overrides the defaults.
+ - new - added custom announce support for things like sample/subs/cdX/discX/... (msgreplace)
+ - new - added support for section-specific colour-schemes
+ - new - sitebot can now manage invites to private/staff/tech channels
+ - new - simple padding/justifying now possible to set in the theme (%rXX / %lXX)
 
 v0.7.3 (aka beta3 of pzs-ng (r738))
  Too many changes have been made to list all , but here are some highlights:

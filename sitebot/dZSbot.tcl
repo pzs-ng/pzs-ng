@@ -642,9 +642,9 @@ proc justifyandpad {output} {
 				}
 				set paddedstring ""
 				set padmissing [expr $padlength-[string length $padstring]]
-				if { $side == 0 } { append paddedstring $padstring }
-				for {set x 0} {$x<$padmissing} {incr x} { append paddedstring " " }
 				if { $side == 1 } { append paddedstring $padstring }
+				for {set x 0} {$x<$padmissing} {incr x} { append paddedstring " " }
+				if { $side == 0 } { append paddedstring $padstring }
 				set endindex [expr $k+1]
 				set newstring [string range $output 0 [expr $i-1]]
 				append newstring $paddedstring

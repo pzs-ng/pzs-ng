@@ -149,6 +149,31 @@ with the corresponding _LOOP# variable.
  NOTE: dZSbot does only support 9 colours max per theme.
 
 
+ Starting with beta4 of pzs-ng you can now also have a custom color scheme for
+ each section. To enable this you only need to define colors in the theme for
+ the specific section. You must use the same exact section name as you do in
+ dZSbconf.tcl, and you must define the same number of colors as in your default
+ scheme in each of the custom schemes.
+
+ If you have 3 default colors (COLOR1, COLOR2 and COLOR3), then if you want a
+ custom color scheme for your GAMES section you need to add the following to
+ your theme file:
+ COLOR_GAMES_1 = "xx"
+ COLOR_GAMES_2 = "yy"
+ COLOR_GAMES_3 = "zz"
+
+
+ Another new addition to pzs-ng beta4 is the ability to add padding/jystifying
+ control codes to the theme. You can select left or right justification, and the
+ number of spaces to pad the string to. %r = right-justified text, %l = left-
+ justified text. Example:
+ 
+ In theme                         Output
+ --------                         ------
+ XtestX                           XtestX
+ X%l9{test}X                      Xtest     X
+ X%r9{test}X                      X     testX
+
 --------------------------------------------------------------------------------
  2-5 Submit your theme?
 -------------------------------------------------------------------------------- 
