@@ -436,7 +436,7 @@ int main( int argc, char **argv ) {
 			exit_value = 2;
 			raceI.misc.write_log = write_log;
 			break;
-		    } else {
+		    } else if ( findfileextcount(".sfv") > 1 ) {
 			d_log("Reading remainders of old sfv\n");
 			readsfv_file(&locations, &raceI, 1);
 			cnt = raceI.total.files - raceI.total.files_missing;
@@ -456,6 +456,8 @@ int main( int argc, char **argv ) {
 			    break;
 			}
 			raceI.total.files = raceI.total.files_missing = 0;
+		    } else {
+			d_log("Hmm.. Seems the old .sfv was deleted. Allowing new one.\n");
 		    }
 		}
 		d_log("Parsing sfv and creating sfv data\n");
