@@ -1,20 +1,16 @@
- PZS-NG (Project-ZS - Next Generation)
+PZS-NG (Project-ZS - Next Generation)
 --------------------------------------
-
-
 
 
 Introduction:
 -------------
-PZS-NG is based off of Project-ZS by Dark0n3. It is what is commonly
-known as a zipscript, or a post check script for file uploads. It's task is,
-among others, to check the integrety of the files uploaded, and make sure
-a "release" is complete, ie, not missing any files.
+PZS-NG is based on Project-ZS by Dark0n3. It is what is commonly known as 
+a zipscript, or a post check script for file uploads. Its task is, among
+others, to check the integrity of the files uploaded, and make sure a 
+"release" is complete and not corrupted.
 
-Of course, this is not the only thing done by this zipscript. ;) Read on to
+Of course, this is not the only thing done by this zipscript ;). Read on to
 find out why this zipscript is considered the best of the bunch by most.
-
-
 
 
 History:
@@ -25,21 +21,15 @@ now various coders/scripters have made patches to fix bugs or make some
 enhancements, but the patches have at times been overlapping, or complete
 replacements of source-files, making it hard for the siteops to implement
 them all.
+
 In April, 2004, daxxar and psxc collected the various patches into packages,
 but soon found out it was better to pool resources and make a unified
 version. The result - PZS-NG.
 
 
-
-
 The Team:
 ---------
-
-<INSERT SOMETHING HERE>
-
-
-
-
+Head developers: daxxar and psxc
 
 
 Supported Platforms:
@@ -60,9 +50,6 @@ Only the i386 platform is tested, but feel free to let us know if you
 try it on anything else. :)
 
 
-
-
-
 Supported FTP Daemons:
 ----------------------
 
@@ -70,44 +57,39 @@ Supported FTP Daemons:
 - glftpd 2.xx
 
 
-
-
-
 Basic description of How Things Work (tm):
 ------------------------------------------
-As mentioned in Introduction earlier, a zipscript checks the integrity of
-the files, and keep tabs on when a release is complete. How it does this
-depends on the filetype. 'ZIP'-files have an integrity code build within
+As mentioned in the Introduction earlier, a zipscript checks the integrity 
+of the files, and keep tabs on when a release is complete. How it does this
+depends on the filetype. 'ZIP' files have an integrity code build within
 the file itself, which makes it easy to verify the file. To keep track of
 whether or not a release based on zip-files is complete, a file named
 file-id.diz is scanned.
+
 The most common method of checking files, however, is by 'SFV'. Unlike zip,
-the sfv-file is a text file which stores the filenames and a CRC (cyclic
-redundancy checking) code. The files belonging to/listed in the sfv-file
-can be of any type, of which the most common are rar and mp3. The crc-code
-listed in the file is compared to a crc-code calculated on the fly by either
-the ftp-daemon, or the program itself (more on this later). It is also quite
-easy to find out if a release is complete by counting files in the sfv-file.
-
-
-
+the SFV file is a text file which stores the filenames and a CRC (cyclic
+redundancy check) code. The files belonging to/listed in the sfv file can be
+of any type, of which the most common are rar and mp3. The CRC code listed
+in the file is compared to a CRC code calculated on the fly by either
+the FTP daemon, or the program itself (more on this later). It is also quite
+easy to find out if a release is complete by counting files in the SFV file.
 
 
 Features of PZS-NG:
 -------------------
 PZS-NG would not be considered the best zipscript by most unless it had
-features beyond simple filechecking. Here's a list of a few things it can do:
+features beyond simple file checking. Here's a list of a few things it can do:
 
 - Log information about sfv files (how many files expected etc)
-- Log information about mp3 files (genre, year, bps etc)
+- Log information about mp3 files (genre, year, quality etc)
 - Log information about the first uploaded file (who did it, speed etc)
 - Log information about halfway (when a release is halfway, who is leading,
   speed etc)
 - Log information about complete (who won, speed, percent, who raced etc)
 - Log information about a race (who takes the lead, who is racing, what
   speed, percent etc)
-- include information about the release in the releasedir (who raced, won,
-  any information on the mediafiles, speed etc)
+- include information about the release in the release dir (who raced, won,
+  any information on the media files, speed etc)
 - creation of -missing files (to easily spot what files are missing in a
   release)
 - create (in)complete dirs/files (to show what releases are incomplete,
@@ -117,75 +99,73 @@ features beyond simple filechecking. Here's a list of a few things it can do:
 - MORE!
 
 Along with the included sitebot (more on this later) we can pass this
-information on to a sitechannel on irc, which in turn will make the site
+information on to an IRC channle, which in turn will make the site
 seem alive, and help traders/couriers in their work. Using a bot also has
 a high fun-factor :)
 
 
-
-
-
 Setting it up:
 --------------
-PZS-NG is made in C. This means that it compiles sourcecode into binaries you
-use. In other words, it's not a script where you can edit the config and test
-immediatly after - you have to compile the zipscript and copy the binaries
-every time you change the config. I'll say again - edit config --> recompile
-and copy bins. How we compile and copy I'll get back to.
+PZS-NG is made in C and open source. This means that what you downloaded is
+sourcecode which is compiled into binaries ("programs") you execute. In other 
+words, it's not a script where you can edit the config and test immediately 
+after - you have to compile the zipscript and copy the binaries every time
+you change the config. I'll say again - edit config, recompile, and copy bins.
+
+How we compile and copy will be described later on.
 
 First off - COOKIES. Read it. Print it out. Keep it close by when you edit
 your config.
-PZS-NG is based on a cookie system. This means that certain character-
-combinations is replaced by text dynamically as the zipscript runs. So learn
-the cookie-system.
+
+PZS-NG is based on a cookie system. This means that certain character
+combinations are replaced by text dynamically as the zipscript runs. So learn
+the cookie system.
 
 zsconfig.h is the heart of the script. You should take the time to read the
 comments inside it, look at the examples, get a feel for how it works. I
-cannot stress this enough - If you do something bad here, chances are the
+cannot stress this enough - if you do something bad here, chances are the
 entire script stops working as it should, or misbehaves. So step carefully,
-edit with care, don't miss any quotation marks.
+edit with care and don't miss any quotation marks.
 
-For windows users - don't edit the file in windows. Install an editor on
-you linux/unix/bsd box - aee, ee, pico, nano are good choices.
+For Windows users - don't edit the file in windows. Install an editor on
+you linux/unix/bsd box - vim, aee, ee, pico, nano are good choices.
 
 Make sure long lines stay on one line - some editors break lines in two (
 or more) when they become a certain length.
 
 The hash character (#) does not signify comments! Do not remove the hashes
 you find - they're supposed to be there. Comments in C are signified by
-/* ... until ... */ and // .... to the end of line.
+/* ... until ... */.
 
 Got all that? Well, then, you'll find the config file at
-./zipscript/conf/zsconfig.h - go edit. When you're done, come back here.
-
-
-
+zipscript/conf/zsconfig.h. Go edit, and when you're done, come back here.
 
 
 Installation:
 -------------
 Back? Good. You now should have edited zsconfig.h and made the output reflect
-how you wish it to be. Don't worry, we'll get to the bot-output soon enough.
+how you wish it to be. Don't worry, we'll get to the bot output soon enough.
 First, you need to compile the script. People with more than 2 weeks
-experience with linux/unix/bsd (aka '*nix' - get used to the expression) will
-not see this as particularly challenging. Compiling stuff is quite common
-under *nix. Anyway, I'll walk you thru it. First off, type:
+experience with Linux/UNIX/*BSD (a.k.a. '*NIX' - get used to the expression)
+will not see this as particularly challenging. Compiling stuff is quite common
+under *NIX. Anyway, I'll walk you through it. First, type:
 
-> ./configure
+./configure
 
 This will start a process which will create the makefiles we'll use later.
 It's beyond the scope of this document to explain what a makefile is, but
-in short it will adjust some settings to accommodate the compile-process
-for your system.
+in short it will adjust some settings to accommodate the compile process
+for your system. 
+
 The configure process takes a couple of seconds. When it's done, type:
 
-> make
+make
 
 This will compile the sources into binaries. This process can take a few
 seconds longer. When it's done, there should be no errors. To install the
 binaries and some other stuff, you need to be root. As root, type:
 
-> make install
+make install
 
 This will make the necessary additions/changes to your system.
 
@@ -201,14 +181,12 @@ here's what to do:
 If you need to recompile the script because you made a booboo in the config,
 you should always do a 'make clean' first. The quick-quick version of it is:
 
-> make clean; ./configure && make && make install
-
-
+make clean && ./configure && make && make install
 
 
 Changes in glftpd.conf:
 -----------------------
-Almost done now. To actually make glftpd use your new zipscript, we need
+You're almost done now. To actually make glftpd use your new zipscript, we need
 to change/add some settings in your glftpd.conf:
 
 Choose one of the following lines:
@@ -229,7 +207,7 @@ post_check	/bin/zipscript-c *
 
 This will invoke the zipscript after a file is uploaded. For more info
 on the post_check line, refer to glftpd.docs. Forget to add this, and
-the zipscript is not run, and no files are checked.
+the zipscript will not run, and no files are checked.
 
 You should also add the following line:
 
@@ -250,71 +228,61 @@ from before you added the zipscript, and a lot of other occations.
 Forget to add this and you will hit yourself hard quite a few times. ;)
 
 
-
 Crontab:
 --------
-All that's left now is to tie up some loose ends. And installing the bot,
-ofcourse. As for loose ends:
+All that's left now is to tie up some loose ends, and installing the bot,
+of course. As for loose ends:
+
 You might have noticed that we added a dir in ftp-data called zipscript.
 This is the place we keep all racedata - a sort of mirror of the site if
 you like, without the actual files in them. Over time this can grow and
-becomes huge, taking up a great deal of space, even making your system
+become huge, taking up a great deal of space, even making your system
 refuse to add more files. Thus, the included 'datacleaner' bin. This will
 remove all the racedata from dirs that no longer exists on your site.
 We also have a bin named 'cleanup' which helps clean out dead symlinks -
 you might have nuked an incomplete release, in which case the incomplete-
-link will still exist. To the rescue comes crontab :)
+link will still exist. To the rescue comes crontab :).
+
 Add the following lines in a users crontab if the bins are owned by root
 and have the setuid bit, or run it in root's crontab if not.
 
-59	23	*	*	*	chroot /glftpd /bin/cleanup >/dev/null 2>&1
-29	4	*	*	*	chroot /glftpd /bin/datacleaner >/dev/null 2>&1
+59 23 * * *	chroot /glftpd /bin/cleanup >/dev/null 2>&1
+29 4  * * *	chroot /glftpd /bin/datacleaner >/dev/null 2>&1
 
 This should help keep your site nice and tidy, not burden the hardware too
-much, and stop crontab from sending you annoying emails. ;)
+much, and stop crontab from sending you annoying emails ;).
 
 
-
-
-
-Compiled Bins:
+Compiled Binaries:
 --------------
-There are a few other bins compiled, but they are mostly used by 3rd party
-scripts, or by scripters. Here's a short description of each bin compiled:
+There are a few other binaries compiled, but they are mostly used by 3rd party
+scripts. Here's a short description of each compiled binary:
+
   - cleanup - This little bin will clean out dead symlinks. Where it search
-      you can specify in zsconfig.h in the define of "cleanupdirs".
+    you can specify in zsconfig.h in the define of "cleanupdirs".
+
   - datacleaner - This one will remove the racedata of dirs no longer found
-      on your site.
+    on your site.
+
   - postdel - Should be run after you delete something (as a cscript). Will
-      re-check the release and update the racedata accordingly.
+    re-check the release and update the racedata accordingly.
+ 
   - pzsng-undupe - Removes entry in dupelog after a file fails sfv check.
+  
   - racedebug - Debugger for racedata. (duh!) Not needed for 'ordinary' sites.
+  
   - racestats - Mostly used by 3rd party scripts. Will give raceinfo of a
-      release.
+    release.
+  
   - zipscript-c - The zipscript.
-
-
-
-
-
 
 
 The bot:
 --------
 If everything is working smoothly on your site, it's time to add a bot to
 your channel. It is expected that you already have installed an eggdrop,
-that's it working and have found it's way into your channel.
+that it's working and have found its way into your channel.
 
 <SOMEONE PLEASE FILL IN STUFF HERE>
 
 ....
-
-
-
-
-
-
-
-
-
-
