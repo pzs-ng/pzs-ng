@@ -200,7 +200,7 @@
 #define audio_sfv		DISABLED
 #endif
 #if ( disable_audio_update == FALSE )
-#define audio_update		"{%U} {%G} {%f} {%.0S} %j {%n} {%r} {%K}"
+#define audio_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r} {%K} %j"
 #else
 #define audio_update		DISABLED
 #endif
