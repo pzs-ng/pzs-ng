@@ -2,7 +2,12 @@
 file="sitewho.c"
 
 echo -n "Compiling $file : "
-gcc -O2 -static -Wall -o ${file%.c} $file 2> /dev/null
+case `uname -s` in
+ *[Bb][Ss][Dd]*)
+  STATIC="-static"
+  ;;
+esac
+gcc -O2 $STATIC -Wall -o ${file%.c} $file 2> /dev/null
 if [ $? -gt 0 ]; then
  echo "[FAIL]"
  exit 2
