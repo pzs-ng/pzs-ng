@@ -335,14 +335,18 @@ proc readlog {} {
 
 		# If we cannot detect a msgtype - default to DEBUG: and insert that into the list ($line).
 		if {[string first ":" [lindex $line 5]] < 0} {
+		    if {[string first "@" [lindex $line 5]] < 0} {
 			set msgtype "DEBUG"
 			if {[llength $line] < 5} {
-				set line [lappend $line "dummy debug"]
+			    set line [lappend $line "dummy debug"]
 			} else {
-				set line [linsert $line 5 "DEBUG:"]
+			    set line [linsert $line 5 "DEBUG:"]
 			}
-		} else {		
-			set msgtype [string trim [lindex $line 5] ":"]
+		    } else {
+			set msgtype [string trim [lindex $line 5] "@"]
+ 		    }
+		} else {
+		    set msgtype [string trim [lindex $line 5] ":"]
 		}
 
 		# Catch regular as generated DEBUG lines.
