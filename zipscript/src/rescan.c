@@ -200,6 +200,11 @@ int main () {
 		    create_indexfile_file(&locations, &raceI, exec);
 #endif
 		    break;
+	        case 4:
+		  complete_type = video_complete_type;
+		  complete_bar  = video_completebar;
+		  break;
+
 	    }
 	    complete( &locations, &raceI, userI, groupI, complete_type );
 	    createstatusbar( convert(&raceI, userI, groupI, complete_bar) );
