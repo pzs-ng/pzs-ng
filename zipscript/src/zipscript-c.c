@@ -161,12 +161,14 @@ int main( int argc, char **argv ) {
  char		*newleader_msg = 0;
  char		*halfway_msg = 0;
  char		*complete_bar = 0;
+ char		*error_msg;
  unsigned long	crc, s_crc;
  unsigned char	exit_value = 0;
  unsigned char	no_check = FALSE;
  unsigned char	complete_type = 0;
  int		cnt;
  int		n;
+ int		write_log;
  struct	stat	fileinfo;
 
 #if ( benchmark_mode == TRUE )
@@ -341,12 +343,11 @@ int main( int argc, char **argv ) {
 		d_log("File type is: SFV\n");
 		if ( fileexists(locations.sfv) ) {
 			if (deny_double_sfv == TRUE && findfileextcount(".sfv") > 1 ) {
-				char * error_msg;
-				int write_log = raceI.misc.write_log;
+				write_log = raceI.misc.write_log;
 				raceI.misc.write_log = 1;
 				d_log("No double sfv allowed\n");
 				error_msg = convert(&raceI,userI,groupI,deny_double_msg);
-				writelog(error_msg,"DOUBLESFV");
+				writelog(error_msg, "DOUBLESFV");
 				sprintf(raceI.misc.error_msg, DOUBLE_SFV);
 				exit_value = 2;
 				raceI.misc.write_log = write_log;
@@ -358,13 +359,12 @@ int main( int argc, char **argv ) {
 				raceI.total.files_missing = raceI.total.files = 0;
 				readsfv_ffile(raceI.file.name, raceI.file.size);
 				if ( (raceI.total.files - raceI.total.files_missing) &&  ! cnt ) {
-					char * error_msg;
-					int write_log = raceI.misc.write_log;
+					write_log = raceI.misc.write_log;
 					raceI.misc.write_log = 1;
 					d_log("Old sfv seems to match with more files than current one\n");
 					strcpy(raceI.misc.error_msg, "SFV does not match with files!");
 					error_msg = convert(&raceI,userI,groupI,deny_double_msg);
-					writelog(error_msg,"DOUBLESFV");
+					writelog(error_msg, "DOUBLESFV");
 					sprintf(raceI.misc.error_msg, DOUBLE_SFV);
  					exit_value = 2;
 					raceI.misc.write_log = write_log;
@@ -460,7 +460,7 @@ int main( int argc, char **argv ) {
 		d_log("File type is: ANY\n");
 
 		d_log("Converting crc from string to integer\n");
-		crc = hexstrtodec(argv[3]);
+		crc = hexstrtodec((unsigned char*)argv[3]);
 		if (fileexists(locations.sfv)) {
 			if ( crc == 0 ) {
 				d_log("We did not get crc from ftp daemon\n");
@@ -546,11 +546,10 @@ int main( int argc, char **argv ) {
 						if ( audio_genre_warn == TRUE ) {
 							if ( userI[raceI.user.pos]->files == 1 ) {
 								d_log("warn on - logging to logfile\n");
-								char * error_msg;
-								int write_log = raceI.misc.write_log;
+								write_log = raceI.misc.write_log;
 								raceI.misc.write_log = 1;
 								error_msg = convert(&raceI,userI,groupI,audio_genre_warn_msg);
-								writelog(error_msg,"BADGENRE");
+								writelog(error_msg, "BADGENRE");
 								raceI.misc.write_log = write_log;
 								} else {
 								d_log("warn on - have already logged to logfile\n");
@@ -568,11 +567,10 @@ int main( int argc, char **argv ) {
 						if ( audio_genre_warn == TRUE ) {
 							if ( userI[raceI.user.pos]->files == 1 ) {
 								d_log("warn on - logging to logfile\n");
-								char * error_msg;
-								int write_log = raceI.misc.write_log;
+								write_log = raceI.misc.write_log;
 								raceI.misc.write_log = 1;
 								error_msg = convert(&raceI,userI,groupI,audio_genre_warn_msg);
-								writelog(error_msg,"BADGENRE");
+								writelog(error_msg, "BADGENRE");
 								raceI.misc.write_log = write_log;
 								} else {
 								d_log("warn on - have already logged to logfile\n");
@@ -591,11 +589,10 @@ int main( int argc, char **argv ) {
 						if ( audio_year_warn == TRUE ) {
 							if ( userI[raceI.user.pos]->files == 1 ) {
 								d_log("warn on - logging to logfile\n");
-								char * error_msg;
-								int write_log = raceI.misc.write_log;
+								write_log = raceI.misc.write_log;
 								raceI.misc.write_log = 1;
 								error_msg = convert(&raceI,userI,groupI,audio_year_warn_msg);
-								writelog(error_msg,"BADYEAR");
+								writelog(error_msg, "BADYEAR");
 								raceI.misc.write_log = write_log;
 								} else {
 								d_log("warn on - have already logged to logfile\n");
@@ -613,11 +610,10 @@ int main( int argc, char **argv ) {
 						if ( audio_bitrate_warn == TRUE ) {
 							if ( userI[raceI.user.pos]->files == 1 ) {
 								d_log("warn on - logging to logfile\n");
-								char * error_msg;
-								int write_log = raceI.misc.write_log;
+								write_log = raceI.misc.write_log;
 								raceI.misc.write_log = 1;
 								error_msg = convert(&raceI,userI,groupI,audio_bitrate_warn_msg);
-								writelog(error_msg,"BADBITRATE");
+								writelog(error_msg, "BADBITRATE");
 								raceI.misc.write_log = write_log;
 								} else {
 								d_log("warn on - have already logged to logfile\n");

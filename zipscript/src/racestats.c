@@ -28,7 +28,7 @@ struct LOCATIONS locations;
 char      error_msg  [80],
           output     [2048],   
           output2    [1024];
-short     varelease  = 2,       // Various Artists release
+short     varelease  = 2,       /* Various Artists release */
           ERROR_CODE = 0;
 
 void getrelname(char *directory) {

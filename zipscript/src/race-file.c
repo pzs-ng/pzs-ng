@@ -108,8 +108,8 @@ void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERI
 	fread(buf, 1, sizeof(buf), file);
 
 	p_buf = buf + 1 + sizeof(long);
-	uname = p_buf;				p_buf += 24;
-	ugroup = p_buf;				p_buf += 24;
+	uname = (char*)p_buf;				p_buf += 24;
+	ugroup = (char*)p_buf;				p_buf += 24;
 	memcpy(&fsize, p_buf, sizeof(long));	p_buf += sizeof(long);
 	memcpy(&uspeed, p_buf, sizeof(long));	p_buf += sizeof(long);
 	memcpy(&startsec, p_buf, sizeof(long));	p_buf += sizeof(long);
@@ -307,7 +307,7 @@ void copysfv_file(char *source, char *target, long buf_bytes) {
 			for ( fext = crc ; *fext != '.' && fext > line ; fext-- );
 			if ( *fext == '.' ) fext++;
 			*crc++ = 0;
-			if ( ! strcomp(ignored_types, fext) && (t_crc = hexstrtodec(crc)) > 0 ) {
+			if ( ! strcomp(ignored_types, fext) && (t_crc = hexstrtodec((unsigned char*)crc)) > 0 ) {
 				len = crc - line;
 #if ( sfv_dupecheck == TRUE )
 				exists = 0;

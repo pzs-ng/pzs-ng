@@ -131,7 +131,7 @@ void mpeg_video(char *f, struct video *video) {
   
   video->height = height;
   video->width = width;
-  video->fps = fps_s[fps > 8 ? 0 : fps];
+  video->fps = (unsigned char*)fps_s[fps > 8 ? 0 : fps];
   
   close(fd);
 }
@@ -161,15 +161,15 @@ void avi_video(char *f, struct video *video) {
       memcpy(&video->width, buf + 32, 4);
       memcpy(&video->height, buf + 36, 4);
       sprintf(fps_t, "%i", 1000000 / fps);
-      video->fps = fps_t;
+      video->fps = (unsigned char*)fps_t;
     } else {
       video->height = 0;
       video->width = 0;
-      video->fps = fps_s[0];
+      video->fps = (unsigned char*)fps_s[0];
     }
   }
   close(fd);
-};
+}
 
 
 char* get_preset(char vbr_header[4]) {
@@ -181,14 +181,14 @@ char* get_preset(char vbr_header[4]) {
 
   strcpy(returnval,"NA");
   switch (preset) {
-  case 1000 : strcpy(returnval,"APR"); break; // r3mix
-  case 1001 : strcpy(returnval,"APS"); break; // standard
-  case 1002 : strcpy(returnval,"APE"); break; // extreme
-  case 1003 : strcpy(returnval,"API"); break; // insane
-  case 1004 : strcpy(returnval,"FAPS"); break; // fast standard
-  case 1005 : strcpy(returnval,"FAPE"); break; // fast extreme
-  case 1006 : strcpy(returnval,"APM"); break; // medium
-  case 1007 : strcpy(returnval,"FAPM"); break; // fast medium
+  case 1000 : strcpy(returnval,"APR");  break;  /* r3mix         */
+  case 1001 : strcpy(returnval,"APS");  break;  /* standard      */
+  case 1002 : strcpy(returnval,"APE");  break;  /* extreme       */
+  case 1003 : strcpy(returnval,"API");  break;  /* insane        */
+  case 1004 : strcpy(returnval,"FAPS"); break;  /* fast standard */
+  case 1005 : strcpy(returnval,"FAPE"); break;  /* fast extreme  */
+  case 1006 : strcpy(returnval,"APM");  break;  /* medium        */
+  case 1007 : strcpy(returnval,"FAPM"); break;  /* fast medium   */
   }
   return returnval;
 }
@@ -268,10 +268,10 @@ void get_mpeg_audio_info(char *f, struct audio *audio) {
     read(fd, header + 2, 2);
     
     version = (*(header + 1)) >> 3;
-	layer = (*(header + 1) >> 1) & ((1 << 2) - 1); // Nasty code, keeps CC in 'layer'. (layer = (*(header + 1) - (version << 3)) >> 1)
+	layer = (*(header + 1) >> 1) & ((1 << 2) - 1); /* Nasty code, keeps CC in 'layer'. (layer = (*(header + 1) - (version << 3)) >> 1) */
 	protected = (*(header + 1)) & 1;
     t_bitrate = (*(header + 2)) >> 4;
-	t_samplingrate = (*(header + 2) >> 2) & ((1 << 2) - 1); // Nasty code, keeps FF in 't_samplingrate'. (t_samplingrate = *(header + 2) - (t_bitrate << 4) >> 2)
+	t_samplingrate = (*(header + 2) >> 2) & ((1 << 2) - 1); /* Nasty code, keeps FF in 't_samplingrate'. (t_samplingrate = *(header + 2) - (t_bitrate << 4) >> 2) */
 	
 	switch (version) {
 		case 0:
@@ -354,7 +354,7 @@ void get_mpeg_audio_info(char *f, struct audio *audio) {
       if ( memcmp(audio->vbr_version_string, "LAME", 4) == 0) {
         lseek(fd, 182+vbr_offset, SEEK_SET);
         read(fd, vbr_header, 2);
-        sprintf(audio->vbr_preset, "%s", get_preset(vbr_header));
+        sprintf(audio->vbr_preset, "%s", get_preset((char*)vbr_header));
  
         if (audio->vbr_version_string[4] == 32) audio->vbr_version_string[4] = 0;
 
