@@ -1,6 +1,6 @@
 #!/usr/bin/tclsh
 #
-# - ParseCookies
+# - ParseCookies (by neoxed)
 #
 # Description:
 #  Based on dark0n3's project-zs convert() function, this TCL procedure will
@@ -49,27 +49,25 @@ proc ParseCookies {InputStr ValueList CookieList} {
 				}
 			} else {
 				## TCL's [format ...] function doesn't accept -1 for the minimum field
-				## like printf() does - so a reasonably large number will suffice.
+				## like printf() does, so a reasonably large number will suffice.
 				set LeftPos 999999
 			}
 
 			## Find cookie name
 			if {[string index $InputStr $InputIdx] == "("} {
 				set BeforeIdx [incr InputIdx]
-				while {[string index $InputStr $InputIdx] != ")" && [string index $InputStr $InputIdx] != ""} {incr InputIdx}
+				while {[string index $InputStr $InputIdx] != ")" && $InputIdx <= $InputLen} {incr InputIdx}
 				set CookieName [string range $InputStr $BeforeIdx [expr {$InputIdx - 1}]]
 			} else {
-				## Invalid cookie format, an open parenthesis is expected at this point.
+				## Invalid cookie format, an open parenthesis is expected.
 				append OutputStr [string range $InputStr $StartIdx $InputIdx]
 				continue
 			}
 
 			if {[set CookiePos [lsearch -exact $CookieList $CookieName]] != -1} {
 				set Value [lindex $ValueList $CookiePos]
-				## Type of cookie replacement to perform.
+				## Type of cookie substitution to perform.
 				if {[string is integer -strict $Value]} {
-					## Avoid OCTAL interpretation by trimming the leading zero's
-					set Value [string trimleft $Value "0"]
 					append OutputStr [format "%${RightPos}i" $Value]
 				} elseif {[regexp {^-?[0-9]+\.[0-9]+$} $Value]} {
 					append OutputStr [format "%${RightPos}.${LeftPos}f" $Value]

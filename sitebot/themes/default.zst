@@ -232,8 +232,8 @@ announce.SPEEDDN                = "[%b{bwinfo}] %b{%u_name} of %g_name is downlo
 announce.SPEEDID                = "[%b{bwinfo}] %b{%u_name} of %g_name has been idle for %idletime."
 announce.SPEEDERROR             = "[%b{bwinfo}] Nope, try again. Found noone by that name on site."
 announce.WELCOME                = "Welcome to %b{%sitename}'s sitechan. Type %cmdprehelp for help."
-announce.FREE                   = "[%b{space }] %devices[Totals: %b{%free} of %b{%total} (used %percentage%)]."
-announce.FREE-DEV               = "%section: %b{%free} of %b{%total} (used %percentage%) :: "
+announce.FREE                   = "[%b{space }] %devices[Totals: %b{%free} of %b{%total}]."
+announce.FREE-DEV               = "%section: %b{%free} (%perc_free%) free, %b{%used} (%perc_used%) used, out of %b{%total}. :: "
 announce.UPTIME                 = "[%b{uptime}] System: %time, %b{%users} user(s), load: %load Eggdrop: %eggdrop"
 
 ## IRC Command: !new

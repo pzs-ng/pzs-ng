@@ -175,9 +175,8 @@ proc ng_preview {handle idx text} {
 	set data [read -nonewline $handle]
 	close $handle
 
-	putdcc $idx "\002Previewing:\002 $announce(THEMEFILE)\n"
+	putdcc $idx "\002Previewing:\002 $announce(THEMEFILE)"
 	putdcc $idx ""
-
 	foreach line [split $data "\n"] {
 		if {![string equal "" $line] && [string index $line 0] != "#"} {
 			if {[regexp -nocase -- {announce\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
@@ -295,7 +294,7 @@ proc readlog {} {
 		}
 		## Check that the log line is a valid Tcl list.
 		if {[catch {llength $line} error]} {
-			putlog "dZSbot error: Invalid log line (not a valid list): $line"
+			putlog "dZSbot error: Invalid log line (not a tcl list): $line"
 			continue
 		}
 		## Invite users to public and private channels.
@@ -577,6 +576,15 @@ proc format_duration {secs} {
 	if {[llength $duration]} {return [join $duration]} else {return "\0020\002s"}
 }
 
+proc format_kb {amount} {
+	set units [list KB MB GB TB PB]
+	for {set index 0} {$amount >= 1024 && $index < 4} {incr index} {
+		set amount [expr {double($amount) / 1024.0}]
+	}
+	set amount [format "%.1f" $amount]
+	return [append amount [lindex $units $index]]
+}
+
 proc format_speed {value section} {
 	global speedmeasure speedthreshold theme
 	switch -exact -- [string tolower $speedmeasure] {
@@ -617,37 +625,6 @@ proc format_speed {value section} {
 		}
 	}
 	return [themereplace [replacevar $type "%value" $value] $section]
-}
-
-proc to_mb {str} {
-	set type [string index $str end]
-	if {($type == "b" || $type == "B") && [string is alpha [string index $str end-1]]} {
-		set type [string index $str end-1]
-		set size [string range $str 0 end-2]
-	} else { set size [string range $str 0 end-1] }
-
-	switch -exact -- [string index $str end] {
-		"m" - "M" {set factor 1}
-		"g" - "G" {set factor 1000}
-		"t" - "T" {set factor 1000000}
-		default {return -1}
-	}
-	return [expr round($size*$factor)]
-}
-
-proc from_mb {str} {
-	set units(1) "MB"
-	set units(2) "GB"
-	set units(3) "TB"
-	set units(4) "PB"
-
-	set unit 1
-	while {$str >= 1000} {
-		set str [expr {$str / 1000.00}]
-		incr unit
-	}
-
-	return "[format %.1f $str]$units($unit)"
 }
 
 #################################################################################
@@ -1066,60 +1043,68 @@ proc ng_free {nick uhost hand chan arg} {
 	global binary announce device theme dev_max_length
 	checkchan $nick $chan
 
-	set devices(0) ""; set free 0.0; set used 0.0
-	set total 0.0; set num 0; set perc 0.0
 	array set tmpdev [array get device]
+	set devices(0) ""
+	set devCount 0; set lineCount 0
+	set totalFree 0; set totalUsed 0; set totalSize 0
 
-	set i 0
-	foreach line [split [exec $binary(DF) "-Ph"] "\n"] {
-		set line [string map {, .} $line]
-		foreach dev [array names tmpdev] {
-			if {[string match [lindex $line 0] [lindex $tmpdev($dev) 0]]} {
-				set dev_total [to_mb [lindex $line 1]]
-				set dev_used [to_mb [lindex $line 2]]
-				set dev_free [to_mb [lindex $line 3]]
-				set dev_percent [format "%.1f" [expr (double($dev_used)/double($dev_total)) * 100]]
-				set tmp [replacevar $announce(FREE-DEV) "%total" [from_mb $dev_total]]
-				set tmp [replacevar $tmp "%used" [from_mb $dev_used]]
-				set tmp [replacevar $tmp "%free" [from_mb $dev_free]]
-				set tmp [replacevar $tmp "%percentage" $dev_percent]
-				set tmp [replacevar $tmp "%section" [lrange $device($dev) 1 end]]
+	foreach line [split [exec $binary(DF) "-k"] "\n"] {
+		foreach {name value} [array get tmpdev] {
+			if {[string match [lindex $line 0] [lindex $value 0]]} {
+				foreach {devName devSize devUsed devFree} $line {break}
+				set devPercFree [format "%.1f" [expr (double($devFree) / double($devSize)) * 100]]
+				set devPercUsed [format "%.1f" [expr (double($devUsed) / double($devSize)) * 100]]
 
-				if {[info exists dev_max_length] && $dev_max_length &&
-					[expr [string length $devices($i)] + [string length $tmp]] > $dev_max_length} {
-					incr i
-					set devices($i) ""
+				set output $announce(FREE-DEV)
+				set output [replacevar $output "%free" [format_kb $devFree]]
+				set output [replacevar $output "%used" [format_kb $devUsed]]
+				set output [replacevar $output "%total" [format_kb $devSize]]
+				set output [replacevar $output "%perc_free" $devPercFree]
+				set output [replacevar $output "%perc_used" $devPercUsed]
+				set output [replacevar $output "%section" [lrange $value 1 end]]
+
+				if {$dev_max_length > 0 && ([string length $devices($lineCount)] + [string length $output]) > $dev_max_length} {
+					incr lineCount
+					set devices($lineCount) ""
 				}
-				append devices($i) $tmp
+				append devices($lineCount) $output
 
-				set total [expr {$total + double($dev_total)}]
-				set used [expr {$used + double($dev_used)}]
-				set free [expr {$free + double($dev_free)}]
-				set perc [expr {$perc + double($dev_percent)}]
-				incr num
-				unset tmpdev($dev)
+				set totalFree [expr {double($totalFree) + double($devFree)}]
+				set totalUsed [expr {double($totalUsed) + double($devUsed)}]
+				set totalSize [expr {double($totalSize) + double($devSize)}]
+
+				incr devCount
+				unset tmpdev($name)
 			}
 		}
 	}
 	if {[llength [array names tmpdev]]} {
-		foreach {id dev} [array get tmpdev] { append tmpstr "$dev " }
-		putlog "dZSbot warning: The following devices had no matching \"df -Ph\" entry: $tmpstr"
+		set devList ""
+		foreach {name value} [array get tmpdev] {lappend devList $value}
+		putlog "dZSbot warning: The following devices had no matching \"df -k\" entry: [join $devList {, }]"
 	}
 
-	set totalgb [from_mb $total]
-	set usedgb [from_mb $used]
-	set freegb [from_mb $free]
+	if {$totalSize} {
+    	set percFree [format "%.1f" [expr (double($totalFree) / double($totalSize)) * 100]]
+    	set percUsed [format "%.1f" [expr (double($totalUsed) / double($totalSize)) * 100]]
+    } else {
+        set percFree 0.0; set percUsed 0.0
+    }
+	set totalFree [format_kb $totalFree]
+	set totalUsed [format_kb $totalUsed]
+	set totalSize [format_kb $totalSize]
 
-	set o 0
-	while {$o < $i + 1} {
+	set index 0
+	while {$index < $lineCount + 1} {
 		set output "$theme(PREFIX)$announce(FREE)"
-		set output [replacevar $output "%total" $totalgb]
-		set output [replacevar $output "%used" $usedgb]
-		set output [replacevar $output "%free" $freegb]
-		set output [replacevar $output "%percentage" [expr {$num > 0 ? round($perc/$num) : 0}]]
-		set output [replacevar $output "%devices" $devices($o)]
+		set output [replacevar $output "%free" $totalFree]
+		set output [replacevar $output "%used" $totalUsed]
+		set output [replacevar $output "%total" $totalSize]
+		set output [replacevar $output "%perc_free" $percFree]
+		set output [replacevar $output "%perc_used" $percUsed]
+		set output [replacevar $output "%devices" $devices($index)]
 		sndone $chan [replacebasic $output "FREE"]
-		incr o
+		incr index
 	}
 	return
 }
