@@ -81,10 +81,10 @@ calc_crc32(char *f)
 	size_t		i, j;
 	int		k;
 
-	if (!(in = fopen(f, "r"))) {
-		fprintf(stderr, "Error opening %s: %s\n", f, strerror(errno));
+	if (!(in = fopen(f, "r")))
 		return 0;
-	}
+		//fprintf(stderr, "Error opening %s: %s\n", f, strerror(errno));
+
 	crc = 0xFFFFFFFF;
 	while ((i = fread(buf, 1, sizeof(buf), in)) > 0) {
 		for (j = 0; j < i; j++) {

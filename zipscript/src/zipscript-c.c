@@ -625,6 +625,12 @@ main(int argc, char **argv)
 			}
 			if (fileexists(g.l.sfv)) {
 				s_crc = readsfv(g.l.sfv, &g.v, 0);
+#if (sfv_calc_single_fname == TRUE)
+				if (s_crc == 0) {
+					d_log("CRC in SFV is 0 - trying to calculate it from the file\n");
+					s_crc = calc_crc32(g.v.file.name);
+				}
+#endif
 				d_log("DEBUG: crc: %X - s_crc: %X\n", crc, s_crc);
 				if (s_crc != crc) {
 					if (s_crc == 0) {
