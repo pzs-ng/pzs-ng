@@ -20,7 +20,7 @@ status  who       what
  [ ]               make a good-looking default theme for the zs. ask some 'fan/supporter' to do it?
  [ ]     daxxar    make a config-file format that is parsed to .h, instead of people editing .h :-)
  [ ]               hybrid_types, are allowed if no sfv, will be checked against sfv if there is one.
- [ ]               fix a coredump when the user is killed/kicked on upload.
+ [x]     iwdisb    fix a coredump when the user is killed/kicked on upload.
  [ ]               use mp3info as much as possible to get mp3 info.
  [ ]               add anonymity support - chown files/dirs as they are uploaded to a "special" user (will only
                    work if zs-c is +s)

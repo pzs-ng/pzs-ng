@@ -521,6 +521,10 @@ void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned lo
  sz = len + 49 + 5 * sizeof(long) + sizeof(int);
  p_buf = buf = m_alloc(sz);
 
+/* do not coredump when user disconnects or is killed
+ */
+ if (!raceI->user.name) exit(1);
+
  memcpy(p_buf, &len, sizeof(int));				p_buf += sizeof(int);
  memcpy(p_buf, raceI->file.name, len);				p_buf += len;
  *p_buf++ = status;
