@@ -351,8 +351,8 @@ int main( int argc, char **argv ) {
 	}
 
 	/* Hide users in group_dirs */
-if ( matchpath(group_dirs, locations.path )) {
-	d_log("Hiding user\n");
+if ( matchpath(group_dirs, locations.path ) && ( hide_group_uploaders == TRUE )) {
+	d_log("Hiding user in group-dir\n");
 	sprintf(raceI.user.name, raceI.user.group);
 	}
 

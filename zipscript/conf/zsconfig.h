@@ -32,6 +32,11 @@
  */
 #define cleanupdirs	"/site/incoming/games/ /site/incoming/apps/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 
+/* Hide name of uploaders in the .message-file in group-dirs? Setting this
+   to TRUE will convert the username to the groupname of the user.
+ */
+#define hide_group_uploaders	TRUE
+
 /* Creates a zero-byte file for every non-existing file defined in sfv?
  */
 #define create_missing_files	TRUE
