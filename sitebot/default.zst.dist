@@ -52,7 +52,7 @@ announce.RACE		        = "[%b{racer }][%section] %b{%releasename} :: %b{%u_name}
 announce.REQFILLED	        = "[%b{filled}] %b{%u_name} of %g_name just filled %b{%releasename} for %b{%u_name_requester}"
 announce.REQUEST	        = "[%b{req   }] %b{%u_name} of %g_name requests %b{%releasename}"
 
-announce.SFV		        = "[%b{sfv   }][%section] %b{%releasename} by %b{%u_name} of %g_name :: now expecting %b{%t_files} file(s)"
+announce.SFV		        = "[%b{sfv   }][%section] %b{%releasename} by %b{%u_name} of %g_name :: now expecting %b{%t_filecount} file(s)"
 
 announce.STAT_GROUPS_HEAD	= "[%b{stats }][%section] Groups hall of fame"
 announce.STAT_GROUPS		= "[%b{stats }][%section] %pos %b{%g_name} :: %b{%g_files}f :: %b{%g_mbytes}mb :: %b{%g_percent}% :: %b{%g_avgspeed}kb/s"
@@ -60,13 +60,13 @@ announce.STAT_USERS_HEAD	= "[%b{stats }][%section] Users hall of fame"
 announce.STAT_USERS	        = "[%b{stats }][%section] %pos %b{%u_name} of %g_name :: %b{%u_files}f :: %b{%u_mbytes}mb :: %b{%u_percent}% :: %b{%u_avgspeed}kb/s :: wkup %b{%wkup}"
 announce.STAT_POST		= "[%b{stats }][%section] Race for %b{%releasename} is over, lasted %t_duration seconds. (%u_count racer(s), %g_count group(s))"
 
-announce.UPDATE	        	= "[%b{update}][%section] %b{%releasename} got first file from %b{%u_name} of %g_name at %b{%u_speed}kbs. Now expecting %b{%u_mbytes}mb in %b{%u_files} file(s)"
+announce.UPDATE	        	= "[%b{update}][%section] %b{%releasename} got first file from %b{%u_name} of %g_name at %b{%u_speed}kbs. Now expecting %b{%t_mbytes}mb in %b{%t_files} file(s)"
 announce.UPDATE_CBR	        = "[%b{update}][%section] %b{%releasename} got first file from %b{%u_name} of %g_name at %b{%u_speed}kbs. Get ready for some %b{%genre} from %b{%year} at %b{%sampling}Hz in %mode %b{%bitrate}kbps (%audio)"
-announce.UPDATE_OTHER	        = "[%b{update}][%section] %b{%releasename} got first file from %b{%u_name} of %g_name at %b{%u_speed}kbs. Now expecting %b{%u_mbytes}mb"
-announce.UPDATE_RAR	        = "[%b{update}][%section] %b{%releasename} got first file from %b{%u_name} of %g_name at %b{%u_speed}kbs. Now expecting %b{%u_mbytes}mb"
+announce.UPDATE_OTHER	        = "[%b{update}][%section] %b{%releasename} got first file from %b{%u_name} of %g_name at %b{%u_speed}kbs. Now expecting %b{%t_mbytes}mb"
+announce.UPDATE_RAR	        = "[%b{update}][%section] %b{%releasename} got first file from %b{%u_name} of %g_name at %b{%u_speed}kbs. Now expecting %b{%t_mbytes}mb"
 announce.UPDATE_VBR	        = "[%b{update}][%section] %b{%releasename} got first file from %b{%u_name} of %g_name at %b{%u_speed}kbs. Get ready for some %b{%genre} from %b{%year} at %b{%sampling}Hz in %mode %b{%bitrate}kbps (%audio %a_stream)"
-announce.UPDATE_VIDEO	        = "[%b{update}][%section] %b{%releasename} got first file from %b{%u_name} of %g_name at %b{%u_speed}kbs. Now expecting %b{%u_mbytes}mb"
-unce.UPDATE_ZIP	        = "[%b{update}][%section] %b{%releasename} got first file from %b{%u_name} of %g_name at %b{%u_speed}kbs. Now expecting %b{%u_mbytes}mb"
+announce.UPDATE_VIDEO	        = "[%b{update}][%section] %b{%releasename} got first file from %b{%u_name} of %g_name at %b{%u_speed}kbs. Now expecting %b{%t_mbytes}mb"
+unce.UPDATE_ZIP	        = "[%b{update}][%section] %b{%releasename} got first file from %b{%u_name} of %g_name at %b{%u_speed}kbs. Now expecting %b{%t_mbytes}mb"
 
 announce.WIPE		        = "[%b{wipe  }][%section] %bold%release%bold by %b{%u_name} of %g_name"
 announce.WIPE-r		        = "[%b{wipe-r}][%section] %bold%release%bold and all subdirectories by %b{%u_name} of %g_name"
