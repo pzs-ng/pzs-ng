@@ -54,10 +54,10 @@ strip_whitespaces(char *s)
 
 /* exclusive write lock */
 void
-xlock(struct flock *fl, int fd)
+xlock(struct flock *fl, int fd, short type)
 {
 	fl->l_start = fl->l_len = fl->l_pid = 0;
-	fl->l_type = F_WRLCK;
+	fl->l_type = type;
 	fl->l_whence = SEEK_SET;
 	
 	if (fcntl(fd, F_SETLKW, fl) == -1) {

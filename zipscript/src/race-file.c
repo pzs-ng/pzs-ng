@@ -134,7 +134,7 @@ update_sfvdata(const char *path, const unsigned int crc)
 		return;
 	}
 
-	xlock(&fl, fd);
+	xlock(&fl, fd, F_WRLCK | F_RDLCK);
 	
 	sd.crc32 = crc;
 	
@@ -175,7 +175,8 @@ sfvdata_to_sfv(const char *source, const char *dest)
 		return;
 	}
 
-	xlock(&fl, outfd);
+	xlock(&fl, infd, F_RDLCK);
+	xlock(&fl, outfd, F_WRLCK);
 	
 	lseek(infd, sizeof(short int), SEEK_CUR);
 
@@ -193,6 +194,7 @@ sfvdata_to_sfv(const char *source, const char *dest)
 
 	}
 	
+	xunlock(&fl, infd);
 	xunlock(&fl, outfd);
 
 	close(infd);
@@ -250,7 +252,7 @@ read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
 		return;
 	}
 	
-	xlock(&fl, fd);
+	xlock(&fl, fd, F_WRLCK | F_RDLCK);
 	fstat(fd, &sb);
 
 	if (sb.st_size == 0) {
@@ -291,7 +293,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 		}
 	}
 	
-	xlock(&fl, fd);
+	xlock(&fl, fd, F_WRLCK | F_RDLCK);
 
 	realfile = raceI->file.name;
 
@@ -355,7 +357,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 			if (rd.status == F_BAD) {
 				xunlock(&fl, fd);
 				remove_from_race(locations->race, rd.fname);
-				xlock(&fl, fd);
+				xlock(&fl, fd, F_WRLCK | F_RDLCK);
 			} else {
 				if ((lret = lseek(fd, sizeof(RACEDATA) * count, SEEK_SET)) == -1) {
 					d_log("testfiles: lseek: %s\n", strerror(errno));
@@ -409,7 +411,7 @@ copysfv(const char *source, const char *target)
 	if ((tmpfd = open(".tmpsfv", O_CREAT | O_RDWR, 0644)) == -1)
 		d_log("copysfv: open(.tmpsfv): %s\n", strerror(errno));
 	else
-		xlock(&fl, tmpfd);
+		xlock(&fl, tmpfd, F_WRLCK | F_RDLCK);
 #endif
 
 	if ((infd = open(source, O_RDONLY)) == -1) {
@@ -422,8 +424,8 @@ copysfv(const char *source, const char *target)
 		exit(EXIT_FAILURE);
 	}
 	
-	xlock(&fl, infd);
-	xlock(&fl, outfd);
+	xlock(&fl, infd, F_RDLCK);
+	xlock(&fl, outfd, F_WRLCK | F_RDLCK);
 
 	video = music = rars = others = type = 0;
 
@@ -751,7 +753,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 		}
 	}
 
-	xlock(&fl, fd);
+	xlock(&fl, fd, F_WRLCK | F_RDLCK);
 	
 	/* find an existing entry that we will overwrite */
 	while (read(fd, &rd, sizeof(RACEDATA))) {
@@ -803,14 +805,14 @@ remove_from_race(const char *path, const char *f)
 
 	close(fd);
 	
-	if ((fd = open(path, O_WRONLY | O_TRUNC)) == -1) {
+	if ((fd = open(path, O_TRUNC | O_WRONLY)) == -1) {
 		d_log("remove_from_race: open(%s): %s\n", path, strerror(errno));
 		if (tmprd)
 			free(tmprd);
 		return;
 	}
 	
-	xlock(&fl, fd);
+	xlock(&fl, fd, F_WRLCK);
 	
 	max = i;
 	for (i = 0; i < max; i++)
@@ -850,14 +852,14 @@ verify_racedata(const char *path)
 	
 	close(fd);
 	
-	if ((fd = open(path, O_WRONLY | O_TRUNC)) == -1) {
+	if ((fd = open(path, O_TRUNC | O_WRONLY)) == -1) {
 		d_log("verify_racedata: open(%s): %s\n", path, strerror(errno));
 		if (tmprd)
 			free(tmprd);
 		return 0;
 	}
 	
-	xlock(&fl, fd);
+	xlock(&fl, fd, F_WRLCK);
 	
 	max = i;
 	for (i = 0; i < max; i++)
