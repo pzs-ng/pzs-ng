@@ -966,7 +966,9 @@ proc ng_bnc_check {nick uhost hand chan arg} {global bnc binary
 		set loc [lindex $i 0]
 		set ip [lindex $i 1]
 		set port [lindex $i 2]
-		set dur [expr [lindex [time {set exitlevel [catch {exec $binary(NCFTPLS) -P $port -u $bnc(USER) -p $bnc(PASS) -t $bnc(TIMEOUT) -r 0 ftp://$ip 2>@ stdout} raw]}] 0]/1000]
+		set dur [clock clicks -milliseconds]
+		set exitlevel [catch {exec $binary(NCFTPLS) -P $port -u $bnc(USER) -p $bnc(PASS) -t $bnc(TIMEOUT) -r 0 ftp://$ip 2>@ stdout} raw]
+		set dur [expr [clock clicks -milliseconds] - $dur]
 		if { $bnc(PING) == "TRUE" } {set ping ", ping: [format %.1f [lindex [split [lindex [lindex [split [ exec $binary(PING) -c1 $ip ] \"\n\"] 1] 6] \"=\"] 1]]ms"} else {set ping ""}
 		
 		if { $exitlevel == 0 } {

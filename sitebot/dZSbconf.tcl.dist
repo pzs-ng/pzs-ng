@@ -12,7 +12,7 @@ set location(PASSWD)		"/glftpd/etc/passwd"
 set location(USERS)		"/glftpd/ftp-data/users/"
 
 # Should the bot die if a binary is missing - or just output that something is wrong?
-set die_on_error	YES
+set die_on_error		NO
 
 # Are you using glftpd2? Default setting ("AUTO") should be safe,
 # enables autodetection (if binary(GLFTPD) is set correctly)
@@ -40,10 +40,12 @@ set bnc(USER)			"bncuser"
 set bnc(PASS)			"bncpass"
 # Number of seconds to wait before giving up on connecting to the BNCs
 set bnc(TIMEOUT)		"10"
+# Should we make a ping test too? TRUE/FALSE
+set bnc(PING)			"TRUE"
 
-# Your sites bandwidth - used for % of bandwidth used calculations in !bw
-set speed(INCOMING)		"12500"
-set speed(OUTGOING)		"12500"
+# Your sites bandwidth - used for % of bandwidth used calculations in !bw (in mbit)
+set speed(INCOMING)		"100"
+set speed(OUTGOING)		"100"
 
 # During !idlers what is the minimum amount of seconds for a user to be shown as "idle"
 # set to 0 to show all users who are not currently upload/downloading (may be a lot)
@@ -68,6 +70,8 @@ set binary(STATS)		"/glftpd/bin/stats"
 set binary(PASSCHK)		"/glftpd/bin/passchk"
 set binary(INCOMPLETE)		"/glftpd/bin/incomplete-list.sh"
 set binary(PING)		"/bin/ping"
+# ping in freebsd is in sbin
+#set binary(PING)		"/sbin/ping"
 set binary(NCFTPLS)		"/usr/local/bin/ncftpls"
 set binary(DF)			"/bin/df"
 # This is needed for autodetection of glversion. If you unset this, use_glftpd2
