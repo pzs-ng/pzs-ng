@@ -9,7 +9,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <paths.h>
+/*#include <paths.h>*/
 #include <openssl/evp.h>
 #include <openssl/sha.h>
 #include <openssl/hmac.h>
