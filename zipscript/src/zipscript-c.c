@@ -4,6 +4,7 @@
 #include <time.h>
 #include <fcntl.h>
 #include <dirent.h>
+#include <fnmatch.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -26,11 +27,25 @@
 #include "../conf/zsconfig.h"
 #include "../../config.h"
 
+/* Remove the portion of PARAM matched by PATTERN according to OP, where OP
+   can have one of 4 values:
+        RP_LONG_LEFT    remove longest matching portion at start of PARAM
+        RP_SHORT_LEFT   remove shortest matching portion at start of PARAM
+        RP_LONG_RIGHT   remove longest matching portion at end of PARAM
+        RP_SHORT_RIGHT  remove shortest matching portion at end of PARAM
+*/
+
+#define RP_LONG_LEFT    1
+#define RP_SHORT_LEFT   2
+#define RP_LONG_RIGHT   3
+#define RP_SHORT_RIGHT  4
+
 /*static struct ONLINE	*online;
 static struct USERINFO  **userI;
 static struct GROUPINFO **groupI;
 static struct VARS      raceI;
 static struct LOCATIONS locations;*/
+
 struct ONLINE	*online;
 struct USERINFO  **userI;
 struct GROUPINFO **groupI;
@@ -148,7 +163,80 @@ unsigned char get_filetype(char *ext) {
 	return 255;
 }
 
+static char *
+remove_pattern (param, pattern, op)
+     char *param, *pattern;
+     int op;
+{
+  register int len;
+  register char *end;
+  register char *p, *ret, c;
 
+  if (param == NULL || *param == '\0')
+    return (param);
+  if (pattern == NULL || *pattern == '\0')      /* minor optimization */
+    return (param);
+
+  len = strlen (param);
+  end = param + len;
+
+  switch (op)
+    {
+      case RP_LONG_LEFT:        /* remove longest match at start */
+        for (p = end; p >= param; p--)
+          {
+            c = *p; *p = '\0';
+            if ((fnmatch (pattern, param, 0)) != FNM_NOMATCH)
+              {
+                *p = c;
+                return (p);
+              }
+            *p = c;
+          }
+        break;
+
+      case RP_SHORT_LEFT:       /* remove shortest match at start */
+        for (p = param; p <= end; p++)
+          {
+            c = *p; *p = '\0';
+            if (fnmatch (pattern, param, 0) != FNM_NOMATCH)
+              {
+                *p = c;
+                return (p);
+              }
+            *p = c;
+          }
+        break;
+
+
+      case RP_LONG_RIGHT:       /* remove longest match at end */
+        for (p = param; p <= end; p++)
+          {
+            if (fnmatch (pattern, param, 0) != FNM_NOMATCH)
+              {
+                c = *p; *p = '\0';
+                ret = param;
+                *p = c;
+                return (ret);
+              }
+          }
+        break;
+
+      case RP_SHORT_RIGHT:      /* remove shortest match at end */
+        for (p = end; p >= param; p--)
+          {
+            if (fnmatch (pattern, param, 0) != FNM_NOMATCH)
+              {
+                c = *p; *p = '\0';
+                ret = param;
+                *p = c;
+                return (ret);
+              }
+          }
+        break;
+    }
+  return (param);  /* no match, return original string */
+}
 
 
 
@@ -799,8 +887,18 @@ int main( int argc, char **argv ) {
 						createlink(audio_year_path, raceI.audio.id3_year, locations.link_source, locations.link_target);
 						}
 #endif
+#if ( audio_group_sort == TRUE )
+					d_log("Sorting mp3 by group\n");
+					temp_p=remove_pattern(locations.link_target,"*-",RP_LONG_LEFT);
+					temp_p=remove_pattern(temp_p,"_",RP_SHORT_LEFT);
+					n=strlen(temp_p);
+					if ( n > 0 && n < 15 ) {
+						d_log("Valid groupname found: %s (%i)\n", temp_p, n);
+						createlink(audio_group_path, temp_p, locations.link_source, locations.link_target);
+						}
+#endif
 					}
-#if ( create_m3u == TRUE ) 
+#if ( create_m3u == TRUE )
 				d_log("Creating m3u\n");
 				cnt = sprintf(target, findfileext(".sfv"));
 				strcpy(target + cnt - 3, "m3u");

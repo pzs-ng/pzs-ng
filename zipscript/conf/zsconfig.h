@@ -126,6 +126,7 @@
 #define audio_genre_path		"/site/incoming/music.by.genre/"
 #define audio_artist_path		"/site/incoming/music.by.artist/"
 #define audio_year_path			"/site/incoming/music.by.year/"
+#define audio_group_path		"/site/incoming/music.by.group/"
 
 /* It is a good idea to prevent crap from filling your hds.
  * Ignore these settings if you do not plan to restrict your uploads.
@@ -144,6 +145,7 @@
 #define audio_genre_sort		TRUE
 #define audio_year_sort			TRUE
 #define audio_artist_sort		TRUE
+#define audio_group_sort		TRUE
 
 /* Audio related checks for quality/type - here you enable/disable the restriction you defined earlier.
  * If warn is true, any banned files will not be deleted, but instead a warning message will be logged
