@@ -1,23 +1,26 @@
-%cmdprehelp                this msg or help with specific command
-%cmdprefree                displays free space on site
-%cmdprewho                 displays who is online and what they are doing
-%cmdprespeed <user>        displays up or dn speed of <user>
-%cmdprebw                  shows site bandwidth
-%cmdprebnc                 shows active bnc's
-%cmdpreinc                 shows incomplete releases
-%cmdprenew [section]       Displays latest releases
-%cmdpresearch <pattern>    Search for a release
-%cmdprenukes [section]     Displays latest nukes
-%cmdpreunnukes [section]   Displays latest unnukes
-%cmdpredayup <section>     shows top day uploaders
-%cmdprewkup <section>      shows top week uploaders
-%cmdpremonthup <section>   shows top month uploaders
-%cmdpreallup <section>     shows top alltime uploaders
-%cmdpredaydn <section>     shows top day downloaders
-%cmdprewkdn <section>      shows top week downloaders
-%cmdpremonthdn <section>   shows top month downloaders
-%cmdprealldn <section>     shows top alltime downloaders
-%cmdpregpwk <section>      shows top uploading groups of the week
-%cmdpregpal <section>      shows top uploading groups of alltime
-%cmdpregpad <section>      shows top downloading groups of alltime
-%cmdpregwpd <section>      shows top downloading groups of the week
+%b{%sitename Command Help:}
+%cmdprehelp              - This help message
+%cmdprebnc               - Shows active bouncers
+%cmdprefree              - Displays free space on site
+%cmdpreinc               - Shows incomplete releases
+%cmdprebw                - Shows site bandwidth
+%cmdpreleechers          - Displays current downloaders
+%cmdpreuploaders         - Displays current uploaders
+%cmdprespeed <user>      - Displays the status of <user>
+%cmdprewho               - Displays who is online
+%cmdprenew [section]     - Displays latest releases
+%cmdprenukes [section]   - Displays latest nukes
+%cmdpreunnukes [section] - Displays latest unnukes
+%cmdpresearch <pattern>  - Search for a release
+%cmdprealldn <section>   - Shows top alltime downloaders
+%cmdpreallup <section>   - Shows top alltime uploaders
+%cmdpredaydn <section>   - Shows top day downloaders
+%cmdpredayup <section>   - Shows top day uploaders
+%cmdpremonthdn <section> - Shows top month downloaders
+%cmdpremonthup <section> - Shows top month uploaders
+%cmdprewkdn <section>    - Shows top week downloaders
+%cmdprewkup <section>    - Shows top week uploaders
+%cmdpregpad <section>    - Shows top downloading groups of alltime
+%cmdpregpal <section>    - Shows top uploading groups of alltime
+%cmdpregpwk <section>    - Shows top uploading groups of the week
+%cmdpregwpd <section>    - Shows top downloading groups of the week

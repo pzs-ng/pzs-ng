@@ -10,11 +10,10 @@
 interp alias {} istrue {} string is true -strict
 interp alias {} isfalse {} string is false -strict
 
-set dver "0.0.4"
 set dzerror 0; set pid 0
 set scriptpath [file dirname [info script]]
 
-putlog "Launching dZSBot (v$dver) for zipscript-c..."
+putlog "Launching dZSBot for project-zs-ng..."
 
 if {[catch {source $scriptpath/dZSbconf.defaults.tcl} tmperror]} {
 	putlog "dZSbot: dZSbconf.defaults.tcl not found or has errors. Cannot continue."
@@ -127,11 +126,11 @@ set mpath ""
 bind join -|- * welcome_msg
 bind dcc n errorinfo errorinfo
 proc errorinfo {args} {
-    global errorInfo tcl_patchLevel tcl_platform
-    putlog "--\[\002Error Info\002\]------------------------------------------"
-    putlog "Tcl: v$tcl_patchLevel"
-    putlog "Box: $tcl_platform(os) $tcl_platform(osVersion) ($tcl_platform(platform))"
-    putlog "Message:"
+	global errorInfo tcl_patchLevel tcl_platform
+	putlog "--\[\002Error Info\002\]------------------------------------------"
+	putlog "Tcl: v$tcl_patchLevel"
+	putlog "Box: $tcl_platform(os) $tcl_platform(osVersion) ($tcl_platform(platform))"
+	putlog "Message:"
 	foreach line [split $errorInfo \n] {putlog $line}
 	putlog "--------------------------------------------------------"
 }
@@ -521,12 +520,9 @@ proc trimtail {strsrc strrm} {
 # CONVERT BASIC COOKIES TO DATA                                                 #
 #################################################################################
 proc basicreplace {string section} {
-	global sitename
-	set string [replacevar $string "%sitename" $sitename]
-	set string [replacevar $string "%bold" \002]
-	set string [replacevar $string "%uline" \037]
-	set string [replacevar $string "%section" $section]
-	return $string
+	global cmdpre sitename
+	return [string map [list "%cmdpre" $cmdpre "%section" $section\
+		"%sitename" $sitename "%bold" \002 "%uline" \037 "%color" \003] $string]
 }
 
 #################################################################################
@@ -833,7 +829,7 @@ proc ng_new {nick uhost hand chan argv} {
 		set lines [exec $binary(SHOWLOG) -l -m $results -r $location(GLCONF)]
 	} else {
 		if {[set sectiondata [getsectionpath $section]] == ""} {
-			puthelp "PRIVMSG $nick :Invalid section, sections: \002[join [lsort -ascii $sections] {, }]\002"
+			puthelp "PRIVMSG $nick :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
 			return
 		}
 		foreach {section sectionpath} $sectiondata {break}
@@ -955,7 +951,7 @@ proc ng_nukes {nick uhost hand chan argv} {
 		set lines [exec $binary(SHOWLOG) -n -m $results -r $location(GLCONF)]
 	} else {
 		if {[set sectiondata [getsectionpath $section]] == ""} {
-			puthelp "PRIVMSG $nick :Invalid section, sections: \002[join [lsort -ascii $sections] {, }]\002"
+			puthelp "PRIVMSG $nick :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
 			return
 		}
 		foreach {section sectionpath} $sectiondata {break}
@@ -1009,7 +1005,7 @@ proc ng_unnukes {nick uhost hand chan argv} {
 		set lines [exec $binary(SHOWLOG) -u -m $results -r $location(GLCONF)]
 	} else {
 		if {[set sectiondata [getsectionpath $section]] == ""} {
-			puthelp "PRIVMSG $nick :Invalid section, sections: \002[join [lsort -ascii $sections] {, }]\002"
+			puthelp "PRIVMSG $nick :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
 			return
 		}
 		foreach {section sectionpath} $sectiondata {break}
@@ -1403,7 +1399,7 @@ proc showstats {type time nick uhost hand chan argv} {
 			lappend sections $statsection($sectnumb)
 		}
 		if {$error} {
-			puthelp "PRIVMSG $nick :Invalid section, sections: \002[join [lsort -ascii $sections] {, }]\002"
+			puthelp "PRIVMSG $nick :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
 			return
 		}
 	}
@@ -1726,7 +1722,7 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 # Help Section                                                                  #
 #################################################################################
 proc help {nick uhost hand chan arg} {
-	global sections cmdpre dver scriptpath
+	global scriptpath sections
 	checkchan $nick $chan
 
 	set file "$scriptpath/dZSbot.help"
@@ -1736,18 +1732,14 @@ proc help {nick uhost hand chan arg} {
 		return 0
 	}
 
-	puthelp "PRIVMSG $nick : -project-zipscript-ng-help-"
-	puthelp "PRIVMSG $nick : ---------v$dver------------"
-	puthelp "PRIVMSG $nick : "
-
 	set helpfile [open $file r]
 	set helpdb [read $helpfile]
 	close $helpfile
 	foreach line [split $helpdb "\n"] {
-		set line [string map [list "%cmdpre" $cmdpre] $line]
+		set line [themereplace [basicreplace $line "HELP"] "none"]
 		puthelp "PRIVMSG $nick :$line"
 	}
-	puthelp "PRIVMSG $nick : Valid sections are: $sections"
+	puthelp "PRIVMSG $nick :Valid sections are:  [join [lsort -ascii $sections] {, }]"
 }
 
 #################################################################################
