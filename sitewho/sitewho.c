@@ -109,9 +109,9 @@ matchpath(char *instr, char *path)
 	k = strlen(instr) + 1;
 	for (cnt = pos = 0; cnt < k; cnt++) {
 		if (instr[cnt] == ' ' || instr[cnt] == 0) {
-			if (ncase == 0 && !strncmp(instr + cnt - pos, path, pos))
+			if (ncase == 0 && !strncmp(instr + cnt - pos, path, pos) && pos > 1)
 				return 1;
-			else if (ncase == 1 && !strncasecmp(instr + cnt - pos, path, pos))
+			else if (ncase == 1 && !strncasecmp(instr + cnt - pos, path, pos) && pos > 1)
 				return 1;
 			pos = 0;
 		} else
