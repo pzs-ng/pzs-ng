@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -37,7 +38,7 @@ unsigned int readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int g
     unsigned int	len;
 
     if (!(sfvfile = fopen(locations->sfv, "r"))) {
-      d_log("Failed to open sfv.\n");
+      d_log("Failed to open sfv (%s): %s\n", locations->sfv, strerror(errno));
       return 0;
     }
     fread( &raceI->misc.release_type, sizeof(short int), 1, sfvfile);
@@ -70,7 +71,7 @@ void delete_sfv_file(struct LOCATIONS *locations) {
     unsigned int	len;
 
     if (!(sfvfile = fopen(locations->sfv, "r"))) {
-		d_log("Couldn't fopen %s.\n", locations->sfv);
+		d_log("Couldn't fopen %s: %s\n", locations->sfv, strerror(errno));
 		exit(EXIT_FAILURE);
     }
 
@@ -136,7 +137,7 @@ void read_write_leader_file(struct LOCATIONS *locations, struct VARS *raceI, str
     } else {
 		*raceI->misc.old_leader = 0;
 		if (!(file = fopen( locations->leader, "w+" ))) { 
-			d_log("Couldn't write to %s.\n", locations->leader);
+			d_log("Couldn't write to %s: %s\n", locations->leader, strerror(errno));
 			exit(EXIT_FAILURE);
 		}
 		fwrite(userI->name, 1, 24, file);
@@ -243,7 +244,7 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
 #if ( sfv_cleanup == TRUE && sfv_error == FALSE )
     int		fd_new	= open(".tmpsfv", O_CREAT|O_TRUNC|O_WRONLY, 0644);
     if ( fd_new < 0 ) {
-        d_log("Failed to create temporary sfv file (%d) - setting cleanup of sfv to false and tries to continue.\n", fd_new);
+        d_log("Failed to create temporary sfv file (%d) - setting cleanup of sfv to false and tries to continue. (error: %s)\n", fd_new, strerror(errno));
 		sfv_error = TRUE;
     }
 
@@ -259,7 +260,7 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
 
     fd = open(source, O_RDONLY);
     if (!fd) {
-        d_log("Failed to open %s.\n", source);
+        d_log("Failed to open %s: %s\n", source, strerror(errno));
 		exit(EXIT_FAILURE);
     }
     buf = m_alloc(buf_bytes);
@@ -269,7 +270,7 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
 
     fd = open(target, O_CREAT|O_TRUNC|O_WRONLY, 0666);
     if (!fd) {
-        d_log("Failed to create %s.\n", target);
+        d_log("Failed to create %s: %s\n", target, strerror(errno));
 		exit(EXIT_FAILURE);
     }
     write(fd, &n, sizeof(short int));
@@ -383,7 +384,7 @@ void create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char
     t_pos = m_alloc(sizeof(int) * raceI->total.files);
     fname = m_alloc(sizeof(char*) * raceI->total.files);
     if (!(r = fopen( locations->race, "r" ))) {
-		d_log("Couldn't fopen %s.\n", locations->race);
+		d_log("Couldn't fopen %s: %s\n", locations->race, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
     c = 0;
@@ -534,7 +535,7 @@ void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned in
     clear_file_file(locations, raceI->file.name);
 
     if (!(file = fopen(locations->race, "a+"))) {
-		d_log("Racefile cannot be written. Aborting.\n");
+		d_log("Couldn't fopen racefile (%s): %s\n", locations->race, strerror(errno));
 		exit(EXIT_FAILURE);
     }
 

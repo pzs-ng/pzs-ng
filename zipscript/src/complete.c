@@ -1,4 +1,6 @@
 #include <unistd.h>
+#include <errno.h>
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -33,7 +35,7 @@ void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
 		d_log("Writing %s file\n", message_file_name);
 	
 		if (!(msgfile = fopen(message_file_name, "w"))) {
-		    d_log("Couldn't fopen %s\n", message_file_name);
+		    d_log("Couldn't fopen %s: %s\n", message_file_name, strerror(errno));
 			exit(EXIT_FAILURE);
 		}
 
