@@ -89,7 +89,11 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 	raceI->total.files = 0;
 	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
 		raceI->total.files++;
+#if (sfv_cleanup && sfv_cleanup_lowercase)
 		if (!strcasecmp(raceI->file.name, sd.fname)) {
+#else
+		if (!strcmp(raceI->file.name, sd.fname)) {
+#endif
 			d_log("DEBUG: crc read from sfv-file %s : %X\n", sd.fname, sd.crc32);
 			crc = sd.crc32;
 		}
@@ -307,8 +311,9 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 			}
 			fseek(file, -sizeof(RACEDATA), SEEK_CUR);
 			fwrite(&rd, sizeof(RACEDATA), 1, file);
+			if (rd.status != F_BAD)
+				unlink_missing(rd.fname);
 		}
-
 		strlcpy(raceI->file.name, realfile, strlen(realfile));
 		raceI->total.files = raceI->total.files_missing = 0;
 		fclose(file);

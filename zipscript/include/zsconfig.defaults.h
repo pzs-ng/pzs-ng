@@ -385,10 +385,11 @@
 #endif
 
 /*
- * Also changes the case of the text in the sfv to all lowercase
+ * Also changes the case of the text in the sfv to all lowercase - this in
+ * in effect turn winblows mode on. ;)
  */
 #ifndef sfv_cleanup_lowercase
-#define sfv_cleanup_lowercase	FALSE
+#define sfv_cleanup_lowercase	TRUE
 #endif
 
 /*

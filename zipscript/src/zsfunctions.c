@@ -311,11 +311,19 @@ unlink_missing(char *s)
 
 	snprintf(t, PATH_MAX, "%s-missing", s);
 	unlink(t);
+#if (sfv_cleanup && sfv_cleanup_lowercase)
+	strtolower(t);
+	unlink(t);
+#endif
 	if ((n = findfile(t)))
 		unlink(dirlist[n]->d_name);
 
 	snprintf(t, PATH_MAX, "%s.bad", s);
 	unlink(t);
+#if (sfv_cleanup && sfv_cleanup_lowercase)
+	strtolower(t);
+	unlink(t);
+#endif
 	if ((n = findfile(t)))
 		unlink(dirlist[n]->d_name);
 
@@ -461,8 +469,8 @@ findfile(char *filename)
 	int		n = direntries;
 
 	while (n--) {
-#if (sfv_cleanup == TRUE)
-#if (sfv_cleanup_lowercase == TRUE)
+#if (sfv_cleanup)
+#if (sfv_cleanup_lowercase)
 		if (!strcasecmp(dirlist[n]->d_name, filename)) {
 #else
 		if (!strcmp(dirlist[n]->d_name, filename)) {

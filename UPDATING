@@ -54,7 +54,11 @@ zsconfig.h:	The option 'del_progressmeter' has changed. Make sure you have
 		split in two, 'cleanupdirs' and 'cleanupdirs_dated'.
 		Changed in: r1273
 
-dZSbot.conf		A dZSbot.conf.defaults first appeared in r1120 - if your bot
+		Default mode of sfv_cleanup_lowercase changed from FALSE to
+		TRUE, and in effect will not differentiate on case.
+		Changed in: r1348
+
+dZSbot.conf	A dZSbot.conf.defaults first appeared in r1120 - if your bot
 		is older than this, it is recommended to update all, including
 		dZSbot.conf
 

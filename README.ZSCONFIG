@@ -379,8 +379,9 @@ sfv_cleanup <TRUE|FALSE>
 
 sfv_cleanup_lowercase <TRUE|FALSE>
 	If sfv_cleanup is set to TRUE, this setting will also convert all
-	entries in the sfv to lowercase.
-	Default: FALSE
+	entries in the sfv to lowercase. This is effect turn winblows mode on,
+	and will not separate case on filenames.
+	Default: TRUE
 
 sfv_cleanup_crlf <TRUE|FALSE>
 	If sfv_cleanup is set to TRUE, this option defines if you use windows
