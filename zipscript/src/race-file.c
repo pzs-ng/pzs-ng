@@ -272,6 +272,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	char		*realfile, target[256], *ext;
 	unsigned int	Tcrc;
 	struct stat	filestat;
+	time_t		timenow;
 
 	RACEDATA	rd;
 
@@ -306,6 +307,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 			strlcpy(raceI->file.name, rd.fname, NAME_MAX);
 			Tcrc = readsfv(locations->sfv, raceI, 0);
 			stat(rd.fname, &filestat);
+			timenow = time(NULL);
 			if (S_ISDIR(filestat.st_mode))
 				rd.status = F_IGNORED;
 			else if (rd.crc32 != 0 && Tcrc == rd.crc32)
@@ -318,7 +320,11 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 					   (strcomp(allowed_types, ext) &&
 				   !matchpath(allowed_types_exemption_dirs, locations->path)))
 				rd.status = F_IGNORED;
-			else {
+			else if	((timenow == filestat.st_ctime) && (filestat.st_mode & 077111)) {
+				d_log("testfiles: Looks like this file (%s) is in the process of being uploaded. Ignoring.\n", rd.fname);
+				rd.status = F_IGNORED;
+				create_missing(rd.fname);
+			} else {
 				d_log("testfiles: Marking file (%s) as bad and removing it.\n", rd.fname);
 				mark_as_bad(rd.fname);
 				if (rd.fname)
@@ -355,7 +361,8 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 					exit(EXIT_FAILURE);
 				}
 				write(fd, &rd, sizeof(RACEDATA));
-				unlink_missing(rd.fname);
+				if (rd.status != F_IGNORED)
+					unlink_missing(rd.fname);
 			}
 		}
 		count++;
