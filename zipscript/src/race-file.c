@@ -23,13 +23,21 @@
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#ifndef HAVE_STRLCPY
+# include "strl/strl.h"
+#endif
+
 /*
  * Modified	: 01.16.2002 Author	: Dark0n3
  * 
  * Description	: Reads crc for current file from preparsed sfv file.
  */
 unsigned int 
-readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount)
+readsfv(struct LOCATIONS *locations, struct VARS *raceI, int getfcount)
 {
 	char           *fname;
 	unsigned int	crc = 0;
@@ -68,7 +76,7 @@ readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount)
  * Description	: Deletes all -missing files with preparsed sfv.
  */
 void 
-delete_sfv_file(struct LOCATIONS *locations)
+delete_sfv(struct LOCATIONS *locations)
 {
 	char           *fname, *fnname;
 	FILE           *sfvfile;
@@ -130,7 +138,7 @@ maketempdir(char *path)
  * Todo		: Make this unneccessary (write info to another file)
  */
 void 
-read_write_leader_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *userI)
+read_write_leader(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *userI)
 {
 	FILE           *file;
 
@@ -157,7 +165,7 @@ read_write_leader_file(struct LOCATIONS *locations, struct VARS *raceI, struct U
  * 
  */
 void 
-testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
+testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 {
 	FILE		*file;
 	char		*realfile, target[256], *ext;
@@ -186,7 +194,7 @@ testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 
 			if (rd.status == F_NOTCHECKED) {
 				strlcpy(raceI->file.name, rd.fname, PATH_MAX);
-				Tcrc = readsfv_file(locations, raceI, 0);
+				Tcrc = readsfv(locations, raceI, 0);
 				stat(rd.fname, &filestat);
 				if (S_ISDIR(filestat.st_mode)) {
 					rd.status = F_IGNORED;
@@ -248,7 +256,7 @@ testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
  * Todo		: Add dupefile remover.
  */
 int
-copysfv_file(char *source, char *target, off_t buf_bytes)
+copysfv(char *source, char *target, off_t buf_bytes)
 {
 	int		fd;
 	char           *buf;
@@ -435,7 +443,7 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
  * alphabetical order.
  */
 void 
-create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char *f)
+create_indexfile(struct LOCATIONS *locations, struct VARS *raceI, char *f)
 {
 	FILE		*r;
 	int		l, n, m, c;
@@ -490,7 +498,7 @@ create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char *f)
  * Description	: Marks file as deleted.
  */
 short int 
-clear_file_file(struct LOCATIONS *locations, char *f)
+clear_file(struct LOCATIONS *locations, char *f)
 {
 	int		n = 0;
 	FILE           *file;
@@ -518,7 +526,7 @@ clear_file_file(struct LOCATIONS *locations, char *f)
  * Description	: Reads current race statistics from fixed format file.
  */
 void 
-readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI)
+readrace(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI)
 {
 	FILE           *file;
 
@@ -551,14 +559,14 @@ readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
  * Description	: Writes stuff into race file.
  */
 void 
-writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned int crc, unsigned char status)
+writerace(struct LOCATIONS *locations, struct VARS *raceI, unsigned int crc, unsigned char status)
 {
 	int		id;
 	FILE		*file;
 
 	RACEDATA	rd;
 
-	clear_file_file(locations, raceI->file.name);
+	clear_file(locations, raceI->file.name);
 
 	/* create file if it doesn't exist */
 	id = open(locations->race, O_CREAT);

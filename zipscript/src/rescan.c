@@ -22,6 +22,15 @@
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#ifndef HAVE_STRLCPY
+# include "strl/strl.h"
+#endif
+
+
 int 
 main()
 {
@@ -100,7 +109,7 @@ main()
 	if ((strlcpy(g.v.file.name, findfileext(".sfv"), PATH_MAX)) > 0) {
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
-		if (copysfv_file(g.v.file.name, g.l.sfv, fileinfo.st_size)) {
+		if (copysfv(g.v.file.name, g.l.sfv, fileinfo.st_size)) {
 			printf("Found invalid entries in SFV - Exiting.\n");
 
 			rescandir(2);
@@ -190,17 +199,17 @@ main()
 				}
 				if(fflush(stdout))
 					d_log("ERROR: %s\n", strerror(errno));
-				writerace_file(&g.l, &g.v, crc, F_NOTCHECKED);
+				writerace(&g.l, &g.v, crc, F_NOTCHECKED);
 			}
 		}
 		printf("\n");
-		testfiles_file(&g.l, &g.v, 1);
+		testfiles(&g.l, &g.v, 1);
 		printf("\n");
 //
 //		temprescandir(0);	/* We need to rescan again */
 //
-		readsfv_file(&g.l, &g.v, 0);
-		readrace_file(&g.l, &g.v, g.ui, g.gi);
+		readsfv(&g.l, &g.v, 0);
+		readrace(&g.l, &g.v, g.ui, g.gi);
 		sortstats(&g.v, g.ui, g.gi);
 		buffer_progress_bar(&g.v);
 
@@ -241,7 +250,7 @@ main()
 #if ( enabled_create_m3u )
 				n = sprintf(exec, findfileext(".sfv"));
 				strcpy(exec + n - 3, "m3u");
-				create_indexfile_file(&g.l, &g.v, exec);
+				create_indexfile(&g.l, &g.v, exec);
 #endif
 				break;
 			case RTYPE_VIDEO:
@@ -301,9 +310,9 @@ main()
 				}
 				sprintf(exec, "%s -qqt %s &> /dev/null", unzip_bin, g.v.file.name);
 				if (system(exec) == 0) {
-					writerace_file(&g.l, &g.v, crc, F_CHECKED);
+					writerace(&g.l, &g.v, crc, F_CHECKED);
 				} else {
-					writerace_file(&g.l, &g.v, crc, F_BAD);
+					writerace(&g.l, &g.v, crc, F_BAD);
 					if (g.v.file.name)
 						unlink(g.v.file.name);
 				}
@@ -315,7 +324,7 @@ main()
 			unlink("file_id.diz");
 		}
 		g.v.total.files_missing = g.v.total.files;
-		readrace_file(&g.l, &g.v, g.ui, g.gi);
+		readrace(&g.l, &g.v, g.ui, g.gi);
 		sortstats(&g.v, g.ui, g.gi);
 		if (g.v.total.files_missing < 0) {
 			g.v.total.files -= g.v.total.files_missing;

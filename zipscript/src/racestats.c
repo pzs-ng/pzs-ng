@@ -64,7 +64,7 @@ main(int argc, char **argv)
 	if (!fileexists(g.l.race))
 		goto END;
 
-	readrace_file(&g.l, &g.v, g.ui, g.gi);
+	readrace(&g.l, &g.v, g.ui, g.gi);
 	sprintf(g.l.sfv, storage "/%s/sfvdata", argv[1]);
 
 	if (!fileexists(g.l.sfv)) {
@@ -76,7 +76,7 @@ main(int argc, char **argv)
 			g.v.total.files_missing = 0;
 		}
 	} else {
-		readsfv_file(&g.l, &g.v, 0);
+		readsfv(&g.l, &g.v, 0);
 	}
 
 	sortstats(&g.v, g.ui, g.gi);
