@@ -4,7 +4,7 @@
 #
 # Created & maintained by: dakrer (dakrer@hotmail.com, #pzs-ng @ EFnet)
 #
-# Tested with: pzs-ng beta4
+# Tested with: pzs-ng, revision 1206 (post beta4)
 #
 # The theme is designed to limit the amount of output while keeping readability
 # high. The use of colors is limited to important events such as pre, newdir,
@@ -72,6 +72,9 @@ announce.TAGLINE				= "[%b{TAGLINE}] %b{%u_name} has changed tagline to %b{%u_ta
 announce.WIPE					= "[%b{%section}] [%b{WIPE}] %b{%relname} was wiped by %b{%u_name}"
 announce.WIPE-r					= "[%b{%section}] [%b{WIPE-r}] %b{%relname} and all subdirectories was wiped by %b{%u_name}"
 announce.FAILLOGIN				= "[%b{BAD LOGIN}] %b{%failed_nick} failed login: %b{%word1 %word2}"
+announce.IPNOTADDED				= "[%b{BAD IP}] Denied unknown connection from %b{%u_hostmask}"
+announce.BADUSERHOST				= "[%b{BAD HOSTMASK}] Failed login for %b{%u_name}, hostmask %b{%u_hostmask} not added"
+announce.BADPASSWD				= "[%b{BAD PASSWORD}] Failed login for %b{%u_name}, wrong password"
 
 # special announces done by glftpd
 announce.NUKE					= "[%b{%section}] [%c2{%b{NUKED}}] %b{%relname} was nuked %b{%multiplier}x by %bold%nuker%bold. Reason: %b{%reason}. Nukees: %nukees"
@@ -83,7 +86,17 @@ announce.DOUBLESFV				= "[%b{DOUBLE SFV}] %b{%u_name} tried to upload a dupe sfv
 announce.BADBITRATE				= "[%b{BAD BITRATE}] %b{%u_name} is violating rules by uploading shit with bitrate %b{%bitrate}kbps"
 announce.BADGENRE				= "[%b{BAD GENRE}] %b{%u_name} is violating rules by uploading %b{%genre}"
 announce.BADYEAR				= "[%b{BAD YEAR}] %b{%u_name} is violating rules by uploading shit from %b{%year}"
-announce.BAD					= "[%b{BAD FILE}] %b{%u_name} uploaded a bad file in %b{%releasename}"
+
+announce.BAD_FILE_CRC				= "[%b{BAD CRC}] %b{%u_name} uploaded a bad file (%b{CRC mismatch}) in %b{%releasename}"
+announce.BAD_FILE_0SIZE				= "[%b{ZERO SIZE}] %b{%u_name} uploaded a bad file (%b{0-sized file}) in %b{%releasename}"
+announce.BAD_FILE_ZIP				= "[%b{BAD ZIP}] %b{%u_name} uploaded a bad file (%b{ZIP integrity failed}) in %b{%releasename}"
+announce.BAD_FILE_WRONGDIR			= "[%b{WRONG DIR}] %b{%u_name} uploaded a bad file (%b{wrong dir}) in %b{%releasename}"
+announce.BAD_FILE_SFV				= "[%b{CORRUPT SFV}] %b{%u_name} uploaded a bad file (%b{SFV with errors}) in %b{%releasename}"
+announce.BAD_FILE_NOSFV				= "[%b{MISSING SFV}] %b{%u_name} uploaded a bad file (%b{no SFV uploaded yet}) in %b{%releasename}"
+announce.BAD_FILE_GENRE				= "[%b{BAD GENRE}] %b{%u_name} uploaded a bad file (%b{banned genre}) in %b{%releasename}"
+announce.BAD_FILE_YEAR				= "[%b{BAD YEAR}] %b{%u_name} uploaded a bad file (%b{banned year}) in %b{%releasename}"
+announce.BAD_FILE_BITRATE			= "[%b{BAD BITRATE}] %b{%u_name} uploaded a bad file (%b{banned bitrate}) in %b{%releasename}"
+announce.BAD_FILE_DISALLOWED			= "[%b{BAD FILETYPE}] %b{%u_name} uploaded a bad file (%b{filetype not allowed}) in %b{%releasename}"
 
 # some special loop variables - these format the racers and stats for each racer in the corresponding output.
 announce.RACE_ZIP_LOOP1				= "%b{%a_name}%splitter"
@@ -213,4 +226,18 @@ announce.NEWCD					= "[%b{%section}] [%c1{NEW CD}] %path/%b{%reldir} (created by
 announce.NEWDISC				= "[%b{%section}] [%c1{NEW DISC}] %path/%b{%reldir} (created by %b{%u_name})"
 announce.SUBTITLES				= "[%b{%section}] [%c1{SUBTITLES}] %path/%b{%reldir} (created by %b{%u_name})"
 announce.COVERS					= "[%b{%section}] [%c1{COVERS}] %path/%b{%reldir} (created by %b{%u_name})"
+
+# Entries for commands done by neoxed (!new/!search/!nukes/!unnukes)
+announce.NEW					= "[%b{NEW}] Latest releases in %b{%section} section:"
+announce.NEW_BODY				= "%b{-} %num. %path/%b{%reldir} (%b{%files}F/%b{%mbytes}MB/%age)"
+announce.NEW_NONE				= "%b{-} No releases found"
+announce.SEARCH					= "[%b{SEARCH}] Searching for: %pattern"
+announce.SEARCH_BODY				= "%b{-} %num. %path/%b{%reldir} (%b{%files}F/%b{%mbytes}MB/%age)"
+announce.SEARCH_NONE				= "%b{-} No matching results found"
+announce.NUKES					= "[%b{NUKES}] Latest nukes in %b{%section} section:"
+announce.NUKES_BODY				= "%b{-} %num. %date %b{%reldir} was nuked %b{%multiplier}x by %b{%nuker}. Reason: %b{%reason}"
+announce.NUKES_NONE				= "%b{-} No nukes found"
+announce.UNNUKES				= "[%b{UNNUKES}] Latest unnukes in %b{%section} section:"
+announce.UNNUKES_BODY				= "%b{-} %num. %date %b{%reldir} was unnuked %b{%multiplier}x by %b{%unnuker}. Reason: %b{%reason}"
+announce.UNNUKES_NONE				= "%b{-} No unnukes found"
 
