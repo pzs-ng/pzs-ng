@@ -47,9 +47,22 @@ strip_whitespaces(char *s)
 	if (s)
 		while (s[strlen(s)-1] == ' '  ||
 	           s[strlen(s)-1] == '\t' ||
-			   s[strlen(s)-1] == '\n' ||
+		   s[strlen(s)-1] == '\n' ||
 	           s[strlen(s)-1] == '\r')
 			s[strlen(s)-1] = '\0';
+}
+
+/* remove preceding whitespaces and newline stuff */
+char *
+prestrip_whitespaces(char *s)
+{
+	if (s)
+		while (*s == ' '  ||
+	           *s == '\t' ||
+		   *s == '\n' ||
+	           *s == '\r')
+			s++;
+	return s;
 }
 
 /* exclusive write lock */

@@ -68,6 +68,10 @@ main(int argc, char **argv)
 
 	d_log("postdel: Project-ZS Next Generation (pzs-ng) v%s debug log for postdel.\n", ng_version());
 
+#ifdef _ALT_MAX
+	d_log("postdel: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
+#endif
+
 	fname = argv[1] + 5;	/* This way we simply skip the required
 				 * 'DELE'-part of the argument (so we get
 				 * filename) */

@@ -57,6 +57,11 @@ main(void)
 	umask(0666 & 000);
 
 	d_log("rescan: PZS-NG (rescan) v%s debug log.\n", ng_version());
+
+#ifdef _ALT_MAX
+	d_log("rescan: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
+#endif
+
 	d_log("rescan: Allocating memory for variables\n");
 	g.ui = malloc(sizeof(struct USERINFO *) * 30);
 	memset(g.ui, 0, sizeof(struct USERINFO *) * 30);

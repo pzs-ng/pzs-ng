@@ -23,6 +23,13 @@
  #endif
 #endif
 
+#ifndef PATH_MAX
+ #define PATH_MAX 1024
+ #define NAME_MAX 256
+ #define _ALT_MAX
+#endif
+
+
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
 

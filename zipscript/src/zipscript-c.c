@@ -107,6 +107,10 @@ main(int argc, char **argv)
 	 */
 	d_log("zipscript-c: Project-ZS Next Generation (pzs-ng) v%s debug log.\n", ng_version());
 
+#ifdef _ALT_MAX
+	d_log("zipscript-c: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
+#endif
+
 	umask(0666 & 000);
 
 #if ( program_uid > 0 )

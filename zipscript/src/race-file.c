@@ -451,15 +451,16 @@ copysfv(const char *source, const char *target)
 		/* remove comment */
 		if ((ptr = find_first_of(fbuf, ";")))
 			*ptr = '\0';
-			
-		strip_whitespaces(fbuf);
 
-		if (strlen(fbuf) == 0)
+		strip_whitespaces(fbuf);
+		ptr = prestrip_whitespaces(fbuf);
+
+		if (strlen(ptr) == 0)
 			continue;
 	
 #if (sfv_cleanup == TRUE)
 #if (sfv_cleanup_lowercase == TRUE)
-		for (ptr = fbuf; *ptr; ptr++)
+		for (; *ptr; ptr++)
 			*ptr = tolower(*ptr);
 #endif
 #endif
@@ -505,13 +506,9 @@ copysfv(const char *source, const char *target)
 		}
 
 		/* we assume what's left is a filename */
-		if (*fbuf == ' ' || *fbuf == '\t') {
-			d_log("entry in sfv is starting with a SPACE of TAB char. Logging file file as bad.\n");
-			retval = 1;
-			break;
-			}
-		if (strlen(fbuf) > 0 && strlen(fbuf) < NAME_MAX-9 ) {
-			strlcpy(sd.fname, fbuf, NAME_MAX-9);
+		ptr = prestrip_whitespaces(fbuf);
+		if (strlen(ptr) > 0 && strlen(ptr) < NAME_MAX-9 ) {
+			strlcpy(sd.fname, ptr, NAME_MAX-9);
 
 			if (sd.fname != find_last_of(sd.fname, "\t/") || *sd.fname == '/') {
 				d_log("copysfv: found '/' or TAB in sfv - logging file as bad.\n");
