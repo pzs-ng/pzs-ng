@@ -1,6 +1,24 @@
+v0.7.3 (aka beta3 of pzs-ng (r738))
+ Too many changes have been made, but here are a few:
+ - added section support
+ - BIG CHANGE: bot has changed dramatically - now uses skins for output
+ - BIG CHANGE: all output is now formatted in the bot (not in zipscript)
+ - cleanup now removes broken links and lists incomplete releases
+ - cleanup should be used instead of incomplete-list.sh (not reflected in bot yet)
+ - applied some of binarys patches (from http://www.glftpd.at/index.php?name=PNphpBB2&file=viewforum&f=15)
+ - added sv3n's winner/loser patch
+ - Hujer's version of bnccheck.tcl included in the bot, along with a few more.
+ - missing-nfo indicator added.
+ - zipscript is compiled even if you haven't got openssl, just that passchk is left out.
+ - fixed - sfv_clean rapes sfv files too hard?
+ - fixed - hiding of users in affill dirs is undone on rescan
+ - fixed - ng-undupe has to escape shell chars
+ - fixed - sitewho may spit out an error or segfault if some settings in sitewho.conf is set to nothing.
+ - fixed - Video type is not taken care of in rescan
+ - fixed - --raw option for easier parsing
+
 v0.7.2 (aka beta2 of pzs-ng (r511))
  - added (and removed) support for video_info (buggy code)
-v0.7.2 (aka beta2 of pzs-ng (r511))
  - The default storage path changed.
  - Compile now works under nbsd/obsd.
  - The double-sfv is fixed.
