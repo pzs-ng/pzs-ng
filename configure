@@ -308,7 +308,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT GREP STRINGS CUT RM INSTALL MAKE CPP EGREP GLPATH GLVERSION STATIC LCRYPT LCRYPTO PASSCHK PASSCHK2 M32 LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT GREP STRINGS CUT RM INSTALL MAKE CPP EGREP NOFORMAT ALTWHO GLPATH GLVERSION STATIC LCRYPT LCRYPTO PASSCHK PASSCHK2 M32 LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -843,9 +843,9 @@ Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-ss5            compiles the zipscript for use with SiteStat 5
-  --enable-noformat       compiles the zipscript to not format the output
-  --enable-altwho         compiles the sitewho to use alternative output on
-                          single user who lookups
+  --enable-format         compiles the zipscript to format the output
+  --disable-altwho        compiles the sitewho to not use an alternative
+                          output on single user who lookups
   --enable-static         enable static linking of zs-c
   --enable-gl1            disable autodetect of glversion, and compile bot
                           binaries for glftpd1
@@ -4069,16 +4069,18 @@ if test "${enable_ss5+set}" = set; then
   CFLAGS="$CFLAGS -D_WITH_SS5"
 fi;
 
-# Check whether --enable-noformat or --disable-noformat was given.
-if test "${enable_noformat+set}" = set; then
-  enableval="$enable_noformat"
-  CFLAGS="$CFLAGS -D_WITH_NOFORMAT"
+NOFORMAT="-D_WITH_NOFORMAT"
+# Check whether --enable-format or --disable-format was given.
+if test "${enable_format+set}" = set; then
+  enableval="$enable_format"
+  NOFORMAT=""
 fi;
 
+ALTWHO="-D_WITH_ALTWHO"
 # Check whether --enable-altwho or --disable-altwho was given.
 if test "${enable_altwho+set}" = set; then
   enableval="$enable_altwho"
-  CFLAGS="$CFLAGS -D_WITH_ALTWHO"
+  ALTWHO=""
 fi;
 
 # Check whether --enable-static or --disable-static was given.
@@ -4143,6 +4145,9 @@ echo "$as_me: error: Couldn't detect glversion, please run ./configure --enable-
    { (exit 1); exit 1; }; }
   fi; fi
 fi
+
+
+
 
 
 
@@ -4796,6 +4801,8 @@ s,@INSTALL@,$INSTALL,;t t
 s,@MAKE@,$MAKE,;t t
 s,@CPP@,$CPP,;t t
 s,@EGREP@,$EGREP,;t t
+s,@NOFORMAT@,$NOFORMAT,;t t
+s,@ALTWHO@,$ALTWHO,;t t
 s,@GLPATH@,$GLPATH,;t t
 s,@GLVERSION@,$GLVERSION,;t t
 s,@STATIC@,$STATIC,;t t
