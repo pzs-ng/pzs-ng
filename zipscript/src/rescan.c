@@ -35,7 +35,7 @@ int
 main(void)
 {
 	int		n, m, l, complete_type = 0, gnum = 0, unum = 0;
-	char           *ext, exec[4096], *complete_bar = 0;
+	char           *ext, exec[4096], *complete_bar = 0, *inc_point[2];
 	unsigned int	crc;
 	struct stat	fileinfo;
 
@@ -234,7 +234,17 @@ main(void)
 						remove_nfo_indicator(&g);
 					} else {
 						d_log("rescan: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
+
+						/* This is not pretty, but should be functional. */
+						if ((inc_point[0] = find_last_of(g.l.path, "/")) != g.l.path)
+							*inc_point[0] = '\0';
+						if ((inc_point[1] = find_last_of(g.v.misc.release_name, "/")) != g.v.misc.release_name)
+							*inc_point[1] = '\0';
 						create_incomplete_nfo();
+						if (*inc_point[0] == '\0')
+							*inc_point[0] = '/';
+						if (*inc_point[1] == '\0')
+							*inc_point[1] = '/';
 					}
 				}
 			}
