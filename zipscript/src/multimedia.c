@@ -6,9 +6,7 @@
 #include "objects.h"
 #include "multimedia.h"
 
-#define WHITESPACE_STR  " \f\n\r\t\v"
-
-char           *genre_s[] = {
+char *genre_s[] = {
 	"Blues", "Classic Rock", "Country", "Dance",
 	"Disco", "Funk", "Grunge", "Hip-Hop",
 	"Jazz", "Metal", "New Age", "Oldies",
@@ -49,10 +47,10 @@ char           *genre_s[] = {
 	"Unknown"
 };
 
-char           *fps_s[] = {"Unknown", "23.976", "24", "25", "29.97", "30", "50", "59.94", "60"};
-char           *layer_s[] = {"Unknown", "Layer III", "Layer II", "Layer I"};
-char           *codec_s[] = {"Mpeg 2.5", "Unknown", "Mpeg 2", "Mpeg 1"};
-char           *chanmode_s[] = {"Stereo", "Joint Stereo", "Dual Channel", "Single Channel", "Unknown"};
+char *fps_s[] = {"Unknown", "23.976", "24", "25", "29.97", "30", "50", "59.94", "60"};
+char *layer_s[] = {"Unknown", "Layer III", "Layer II", "Layer I"};
+char *codec_s[] = {"Mpeg 2.5", "Unknown", "Mpeg 2", "Mpeg 1"};
+char *chanmode_s[] = {"Stereo", "Joint Stereo", "Dual Channel", "Single Channel", "Unknown"};
 
 /*
  * Remove whitespace characters from both ends of a copy of '\0' terminated

@@ -4,7 +4,7 @@ RM=@RM@ -f
 MAKE=@MAKE@
 INSTALL=@INSTALL@
 
-CFLAGS=@CFLAGS@ -W -Wall @M32@ @GLVERSION@ @ALTWHO@ -I../../ -I../zipscript/include/
+CFLAGS=@CFLAGS@ -W -Wall -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline -Wdisabled-optimization @M32@ @GLVERSION@ @ALTWHO@ -I../../ -I../zipscript/include/
 
 all: sitewho
 

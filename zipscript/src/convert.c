@@ -7,8 +7,9 @@
 #include "../conf/zsconfig.h"
 #include "zsconfig.defaults.h"
 
+#include "convert.h"
 
-char	output2[1024], output[2048];
+char output[2048], output2[1024];
 
 /*
  * char *hms(char *ttime, int secs)
@@ -252,62 +253,6 @@ convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short int gr
 				break;
 			case '%':
 				*out_p++ = *instr;
-			}
-		} else
-			*out_p++ = *instr;
-	*out_p = 0;
-	return output2;
-}
-
-char           *
-convert_obsolete(struct VARS *raceI, char *instr)
-{
-	int		val1      , val2;
-	char           *out_p;
-	char           *m;
-	char		ctrl      [10];
-
-	out_p = output2;
-
-	for (; *instr; instr++)
-		if (*instr == '%') {
-			instr++;
-			m = instr;
-			if (*instr == '-' && isdigit(*(instr + 1)))
-				instr += 2;
-			while (isdigit(*instr))
-				instr++;
-			if (m != instr) {
-				sprintf(ctrl, "%.*s", (int)(instr - m), m);
-				val1 = atoi(ctrl);
-			} else {
-				val1 = 0;
-			}
-
-			if (*instr == '.') {
-				instr++;
-				m = instr;
-				if (*instr == '-' && isdigit(*(instr + 1)))
-					instr += 2;
-				while (isdigit(*instr))
-					instr++;
-				if (m != instr) {
-					sprintf(ctrl, "%.*s", (int)(instr - m), m);
-					val2 = atoi(ctrl);
-				} else {
-					val2 = 0;
-				}
-			} else {
-				val2 = -1;
-			}
-
-			switch (*instr) {
-			case 'i':
-				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.vbr_version_string);
-				break;
-			case 'I':
-				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.vbr_preset);
-				break;
 			}
 		} else
 			*out_p++ = *instr;

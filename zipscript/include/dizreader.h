@@ -1,6 +1,7 @@
 #ifndef _DIZREADER_H_
 #define _DIZREADER_H_
 
-int		read_diz   (char *);
+void removespaces(char *, int);
+int read_diz(char *);
 
 #endif

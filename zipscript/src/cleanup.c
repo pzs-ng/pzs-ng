@@ -28,8 +28,56 @@
 #include "scandir.h"
 #endif
 
+#include "cleanup.h"
+
 struct tm      *timenow;
 time_t		tnow;
+
+int 
+main(int argc, char **argv)
+{
+
+	int		setfree = 1;
+	char		startdir[PATH_MAX] = "/";
+
+	if (argc > 1) {
+		if (!strncmp(argv[1], "/", 1)) {
+			setfree = 0;
+			printf("PZS-NG Cleanup: Running script in view mode only.\n");
+			sprintf(startdir, argv[1]);
+		} else {
+			if (getcwd(startdir, PATH_MAX) == NULL) {
+				printf("PZS-NG Cleanup: ERROR - Failed to getcwd.\n");
+				exit (0);
+			}
+			printf("PZS-NG Cleanup: Running.\n");
+		}
+	}
+
+	cleanup(cleanupdirs, cleanupdirs_dated, setfree, startdir);
+
+	if (argc < 2 || always_scan_audio_syms == TRUE) {
+
+#if ( audio_genre_sort == TRUE )
+		scandirectory((char *)audio_genre_path, setfree);
+#endif
+
+#if ( audio_year_sort == TRUE )
+		scandirectory((char *)audio_year_path, setfree);
+#endif
+
+#if ( audio_artist_sort == TRUE )
+		scandirectory((char *)audio_artist_path, setfree);
+#endif
+
+#if ( audio_group_sort == TRUE )
+		scandirectory((char *)audio_group_path, setfree);
+#endif
+
+		printf("Finished successfully.\n");
+	}
+	exit(EXIT_SUCCESS);
+}
 
 /* new try without expensive scandir() */
 void
@@ -256,51 +304,5 @@ cleanup(char *pathlist, char *pathlist_dated, int setfree, char *startpath)
 	}
 
 	free(time_day);
-}
-
-int 
-main(int argc, char **argv)
-{
-
-	int		setfree = 1;
-	char		startdir[PATH_MAX] = "/";
-
-	if (argc > 1) {
-		if (!strncmp(argv[1], "/", 1)) {
-			setfree = 0;
-			printf("PZS-NG Cleanup: Running script in view mode only.\n");
-			sprintf(startdir, argv[1]);
-		} else {
-			if (getcwd(startdir, PATH_MAX) == NULL) {
-				printf("PZS-NG Cleanup: ERROR - Failed to getcwd.\n");
-				exit (0);
-			}
-			printf("PZS-NG Cleanup: Running.\n");
-		}
-	}
-
-	cleanup(cleanupdirs, cleanupdirs_dated, setfree, startdir);
-
-	if (argc < 2 || always_scan_audio_syms == TRUE) {
-
-#if ( audio_genre_sort == TRUE )
-		scandirectory((char *)audio_genre_path, setfree);
-#endif
-
-#if ( audio_year_sort == TRUE )
-		scandirectory((char *)audio_year_path, setfree);
-#endif
-
-#if ( audio_artist_sort == TRUE )
-		scandirectory((char *)audio_artist_path, setfree);
-#endif
-
-#if ( audio_group_sort == TRUE )
-		scandirectory((char *)audio_group_path, setfree);
-#endif
-
-		printf("Finished successfully.\n");
-	}
-	exit(EXIT_SUCCESS);
 }
 

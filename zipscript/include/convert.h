@@ -1,7 +1,7 @@
 #ifndef _CONVERT_H_
 #define _CONVERT_H_
 
-/* char* convert_obsolete(struct VARS *, char *); -- obsolete? :) */
+char *hms(char *, int);
 char *convert(struct VARS *, struct USERINFO **, struct GROUPINFO **, char *);
 char *convert2(struct VARS *, struct USERINFO *, struct GROUPINFO **, char *, short);
 char *convert3(struct VARS *, struct GROUPINFO *, char *, short);

@@ -1,7 +1,7 @@
 CC=@CC@
 MAKE=@MAKE@
 
-CFLAGS=@CFLAGS@ -W -Wall -I../include/
+CFLAGS=@CFLAGS@ -W -Wall -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline -Wdisabled-optimization -I../include/
 
 all: racedatatest sfvdatatest
 

@@ -810,12 +810,12 @@ execute(char *s)
 
 }
 
-int 
+/*int 
 execute_old(char *s)
 {
 	int		n;
 	int		args = 0;
-	char           *argv[128];	/* Noone uses this many args anyways */
+	char           *argv[128];	// Noone uses this many args anyways
 
 	argv[0] = s;
 	while (1) {
@@ -844,7 +844,7 @@ execute_old(char *s)
 	}
 
 	return n >> 8;
-}
+}*/
 
 char           *
 get_g_name(int gid)

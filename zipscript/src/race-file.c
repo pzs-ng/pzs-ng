@@ -517,7 +517,7 @@ copysfv(const char *source, const char *target)
 END:
 #endif
 	fclose(insfv);
-#if ( sfv_cleanup == TRUE && sfv_error == FALSE )
+#if ( sfv_cleanup == TRUE )
 	unlink(source);
 	fclose(tmpsfv);
 	rename(".tmpsfv", source);

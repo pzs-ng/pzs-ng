@@ -5,6 +5,14 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include "dizreader.h"
+
+/*
+ * ? = any char & = character is not (&/ = character is not /) # = total disk
+ * count ! = chars 0-9, o & x
+ * 
+ * !!! USE LOWERCASE !!!
+ */
 char	*search[] = {
 		"[?!/##]",
 		"(?!/##)",
@@ -24,14 +32,6 @@ char	*search[] = {
 		"<!!/##>"};
 
 int		strings = 16;
-/*
- * ? = any char & = character is not (&/ = character is not /) # = total disk
- * count ! = chars 0-9, o & x
- * 
- * !!! USE LOWERCASE !!!
- */
-
-/* DO NOT EDIT BEYOND THIS POINT */
 
 /* REMOVE SPACES FROM STRING */
 void 

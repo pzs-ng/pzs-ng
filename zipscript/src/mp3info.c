@@ -296,7 +296,7 @@ get_mp3_info(char *f, struct audio *audio)
 	float		seconds = 0, total_rate = 0;
 	int		frames = 0, frame_types = 0, frames_so_far = 0;
 	int		l         , vbr_median = -1;
-	int		bitrate   , lastrate;
+	int		_bitrate   , lastrate;
 	int		counter = 0;
 	mp3header	header;
 	struct stat	filestat;
@@ -321,18 +321,18 @@ get_mp3_info(char *f, struct audio *audio)
 			while ((counter < NUM_SAMPLES) && lastrate) {
 				sample_pos = (counter * (mp3.datasize / NUM_SAMPLES + 1)) + data_start;
 				if (get_first_header(&mp3, sample_pos)) {
-					bitrate = 15 - mp3.header.bitrate;
+					_bitrate = 15 - mp3.header.bitrate;
 				} else {
-					bitrate = -1;
+					_bitrate = -1;
 				}
-				if (bitrate != lastrate) {
+				if (_bitrate != lastrate) {
 					mp3.vbr = 1;
 					if (fullscan == 0) {
 						counter = NUM_SAMPLES;
 						fullscan = 1;
 					}
 				}
-				lastrate = bitrate;
+				lastrate = _bitrate;
 				counter++;
 			}
 			if (!(fullscan == 1)) {
@@ -346,8 +346,8 @@ get_mp3_info(char *f, struct audio *audio)
 	if (fullscan == 1) {
 		if (get_first_header(&mp3, 0L)) {
 			data_start = ftell(mp3.file);
-			while ((bitrate = get_next_header(&mp3))) {
-				frame_type[15 - bitrate]++;
+			while ((_bitrate = get_next_header(&mp3))) {
+				frame_type[15 - _bitrate]++;
 				frames++;
 			}
 			memcpy(&header, &(mp3.header), sizeof(mp3header));
