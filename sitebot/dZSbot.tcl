@@ -41,7 +41,12 @@ foreach log [array names glftpdlog] {
 	set lastoct($log) [file size $glftpdlog($log)]
     }
 }
-putlog "dZSbot: Number of gl logfiles found: $countlog"
+if { $countlog == 0 } {
+	putlog "dZSbot: WARNING! No gl logfiles found!"
+	set dzerror "1"
+} else {
+	putlog "dZSbot: Number of gl logfiles found: $countlog"
+}
 
 set countlog 0
 foreach login [array names loginlog] {
@@ -54,8 +59,11 @@ foreach login [array names loginlog] {
 	set loglastoct($login) [file size $loginlog($login)]
     }
 }
-putlog "dZSbot: Number of login logfiles found: $countlog"
-
+if { $countlog == 0 } {
+	putlog "dZSbot: WARNING! No login logfiles found!"
+} else {
+	putlog "dZSbot: Number of login logfiles found: $countlog"
+}
 
 
 if {![info exists use_glftpd2] || ($use_glftpd2 == "AUTO" && ![info exists binary(GLFTPD)])} {
