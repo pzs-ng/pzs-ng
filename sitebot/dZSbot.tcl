@@ -1485,15 +1485,14 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 		}
 	}
 	putquick "NOTICE $nick :Checking bouncer(s) status..."
-	set count 1
+	set count 0
 	foreach i $bnc(LIST) {
+		incr count
 		set i [split $i ":"]
 		set loc [lindex $i 0]
 		set ip [lindex $i 1]
 		set port [lindex $i 2]
-		set dur [clock clicks -milliseconds]
-		set exitlevel [catch {exec $binary(NCFTPLS) -P $port -u $bnc(USER) -p $bnc(PASS) -t $bnc(TIMEOUT) -r 0 ftp://$ip 2>@ stdout} raw]
-		set dur [expr [clock clicks -milliseconds] - $dur]
+	
 		if { $bnc(PING) == "TRUE" } {
 		    if {[catch { set data [exec $binary(PING) -c1 $ip]} error]} { 
 				putquick "NOTICE $nick :$count. .$loc - $ip:$port - DOWN (Can't ping host)"
@@ -1501,6 +1500,10 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 		    }
 		    set ping ", ping: [format %.1f [lindex [split [lindex [lindex [split $data \"\n\"] 1] 6] \"=\"] 1]]ms"
 		} else { set ping "" }
+
+		set dur [clock clicks -milliseconds]
+		set exitlevel [catch {exec $binary(NCFTPLS) -P $port -u $bnc(USER) -p $bnc(PASS) -t $bnc(TIMEOUT) -r 0 ftp://$ip 2>@ stdout} raw]
+		set dur [expr [clock clicks -milliseconds] - $dur]
 
 		if { $exitlevel == 0 } {
 			putquick "NOTICE $nick :$count. .$loc - $ip:$port - UP (login: [format %.0f $dur]ms$ping)"
@@ -1513,13 +1516,12 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 				"*timed out while waiting for server response.*" {set error "No response"}
 				"*Remote host has closed the connection.*" {set error "Connection Lost"}
 				"*unknown host.*" {set error "Unknown Host?"}
-				default { set error "Unhandled Error Type?" ; putlog "DEBUG: dZSbot.tcl bnc check unhandled error type \"$raw\" please report to project-zs-ng developers" }
+				default { set error "Unhandled Error Type?" ; putlog "DEBUG: dZSbot.tcl bnc check unhandled error type \"$raw\", please report to project-zs-ng developers." }
 			}
 			putquick "NOTICE $nick :$count. .$loc - $ip:$port - DOWN ($error)"
 		}
 		set error ""
 		set raw ""
-		incr count
 	}
 }
 #################################################################################
