@@ -21,6 +21,26 @@
 # define O_SYNC O_FSYNC
 #endif
 
+#define video_announce_norace_complete_type	"COMPLETE_VIDEO"
+#define zip_announce_norace_complete_type	"COMPLETE_ZIP"
+#define rar_announce_norace_complete_type	"COMPLETE_RAR"
+#define other_announce_norace_complete_type	"COMPLETE_OTHER"
+#define audio_announce_norace_complete_type	"COMPLETE_AUDIO"
+#define general_announce_norace_complete_type	"COMPLETE"
+#define video_announce_race_complete_type	"RACE_COMPLETE_VIDEO"
+#define zip_announce_race_complete_type		"RACE_COMPLETE_ZIP"
+#define rar_announce_race_complete_type		"RACE_COMPLETE_RAR"
+#define other_announce_race_complete_type	"RACE_COMPLETE_OTHER"
+#define audio_announce_race_complete_type	"RACE_COMPLETE_AUDIO"
+#define general_announce_race_complete_type	"RACE_COMPLETE"
+#define audio_announce_vbr_update_type		"UPDATE_VBR"
+#define audio_announce_cbr_update_type		"UPDATE_CBR"
+#define general_announce_update_type		"UPDATE"
+#define rar_announce_update_type		"RAR_UPDATE"
+#define zip_announce_update_type		"ZIP_UPDATE"
+#define other_announce_update_type		"OTHER_UPDATE"
+#define video_announce_update_type		"VIDEO_UPDATE"
+
 #define deny_double_msg		"{%U} {%G} {%r} {%n}"
 #define audio_cbr_warn_msg	"{%U} {%G} {%X}"
 #define audio_year_warn_msg	"{%U} {%G} {%Y}"

@@ -219,6 +219,7 @@ int main( int argc, char **argv ) {
     unsigned char	exit_value = EXIT_SUCCESS;
     unsigned char	no_check = FALSE;
     unsigned char	complete_type = 0;
+    char		*complete_announce = 0;
     int			cnt, cnt2, n;
     int			write_log;
     struct stat		fileinfo;
@@ -802,12 +803,13 @@ int main( int argc, char **argv ) {
 
 		if ( userI[raceI.user.pos]->files == 1 && raceI.total.files >= min_update_files && update_msg != NULL ) {
 			d_log("Writing UPDATE to %s\n", log);
-			update_type = "UPDATE";
+			update_type = general_announce_update_type;
 			switch( raceI.misc.release_type ) {
-				case RTYPE_RAR: update_type = "UPDATE_RAR";   break; /* rar */
-				case RTYPE_OTHER: update_type = "UPDATE_OTHER"; break; /* other */
-				case RTYPE_AUDIO: update_type = "UPDATE_AUDIO"; break; /* audio */
-				case RTYPE_VIDEO: update_type = "UPDATE_VIDEO"; break; /* video */
+				case RTYPE_RAR: update_type = rar_announce_update_type;   break; /* rar */
+				case RTYPE_OTHER: update_type = other_announce_update_type; break; /* other */
+				case RTYPE_AUDIO: update_type = CHOOSE(raceI.audio.is_vbr, audio_announce_vbr_update_type, audio_announce_cbr_update_type); break; /* audio */
+				case RTYPE_VIDEO: update_type = video_announce_update_type; break; /* video */
+				case RTYPE_NULL: update_type = zip_announce_update_type; break; /* zip */
 			}
 			writelog(convert(&raceI, userI, groupI, update_msg), update_type );
 		}
@@ -850,21 +852,25 @@ int main( int argc, char **argv ) {
 		    complete_bar = zip_completebar;
 		    complete_msg = CHOOSE(raceI.total.users, zip_complete, zip_norace_complete);
 		    complete_type = CHOOSE(raceI.total.users, zip_complete_type, zip_norace_complete_type);
+		    complete_announce = CHOOSE(raceI.total.users, zip_announce_race_complete_type, zip_announce_norace_complete_type);
 		    break;
 		case RTYPE_RAR:
 		    complete_bar = rar_completebar;
 		    complete_msg = CHOOSE(raceI.total.users, rar_complete, rar_norace_complete);
 		    complete_type = CHOOSE(raceI.total.users, rar_complete_type, rar_norace_complete_type);
+		    complete_announce = CHOOSE(raceI.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
 		    break;
 		case RTYPE_OTHER:
 		    complete_bar = other_completebar;
 		    complete_msg = CHOOSE(raceI.total.users, other_complete, other_norace_complete);
 		    complete_type = CHOOSE(raceI.total.users, other_complete_type, other_norace_complete_type);
+		    complete_announce = CHOOSE(raceI.total.users, other_announce_race_complete_type, other_announce_norace_complete_type);
 		    break;
 		case RTYPE_AUDIO:
 		    complete_bar = audio_completebar;
 		    complete_msg = CHOOSE(raceI.total.users, audio_complete, audio_norace_complete);
 		    complete_type = CHOOSE(raceI.total.users, audio_complete_type, audio_norace_complete_type);
+		    complete_announce = CHOOSE(raceI.total.users, audio_announce_race_complete_type, audio_announce_norace_complete_type);
 
 
 		    d_log("Symlinking audio\n");
@@ -919,6 +925,7 @@ int main( int argc, char **argv ) {
 		    complete_bar = video_completebar;
 		    complete_msg = CHOOSE(raceI.total.users, video_complete, video_norace_complete);
 		    complete_type = CHOOSE(raceI.total.users, video_complete_type, video_norace_complete_type);
+		    complete_announce = CHOOSE(raceI.total.users, video_announce_race_complete_type, video_announce_norace_complete_type);
 		    break;
 	    }
 
@@ -929,7 +936,7 @@ int main( int argc, char **argv ) {
 
 	    if ( complete_msg != NULL ) {
 		d_log("Writing COMPLETE and STATS to %s\n", log);
-		writelog(convert(&raceI, userI, groupI, complete_msg), "COMPLETE");
+		writelog(convert(&raceI, userI, groupI, complete_msg), complete_announce);
 		writetop(&raceI, userI, groupI, complete_type);
 	    }
 
