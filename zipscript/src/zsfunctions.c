@@ -303,7 +303,7 @@ move_progress_bar(unsigned char delete, struct VARS *raceI)
 
 //	delbar = malloc(PATH_MAX);
 	delbar = convert5(del_progressmeter);
-	d_log("del_progressmeter: %s", delbar);
+	d_log("del_progressmeter: %s\n", delbar);
 	regcomp(&preg, delbar, REG_NEWLINE | REG_EXTENDED);
 	/* workaround if progressbar was changed while zs-c is running */
 	rescandir();
@@ -372,7 +372,7 @@ removecomplete()
 
 	unlink(message_file_name);
 	mydelbar = convert5(del_completebar);
-	d_log("del_completebar: %s", mydelbar);
+	d_log("del_completebar: %s\n", mydelbar);
 	regcomp(&preg, mydelbar, REG_NEWLINE | REG_EXTENDED);
 	n = direntries;
 	while (n--) {
