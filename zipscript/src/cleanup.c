@@ -245,7 +245,7 @@ void incomplete_cleanup(char *path, int setfree) {
     regfree(&preg[1]);
 }
 
-void cleanup(char *pathlist, int setfree) {
+void cleanup(char *pathlist, int setfree, char *startpath) {
     char *data_today, *data_yesterday, *path, *newentry, *entry;
 
     struct tm *time_today, *time_yesterday;
@@ -270,7 +270,7 @@ void cleanup(char *pathlist, int setfree) {
     while ( 1 ) {
 		for (entry = newentry; *newentry != ' ' && *newentry != 0; newentry++);
 
-		sprintf(path, "%.*s", (int)(newentry - entry), entry);
+		sprintf(path, "%s%.*s", startpath, (int)(newentry - entry), entry);
 		strftime(data_today, PATH_MAX, path, time_today);
 		strftime(data_yesterday, PATH_MAX, path, time_yesterday);
 
@@ -296,20 +296,27 @@ void cleanup(char *pathlist, int setfree) {
 
 int main (int argc, char **argv) {
 
-    int setfree = 1;
+    int		setfree		= 1;
+    char 	*startdir	= 0;
+
+    startdir=malloc(PATH_MAX);
+    sprintf(startdir, "/");
 
     if (argc > 1) {
-	if (chroot(argv[1]) == -1) {
+/*	if (chroot(argv[1]) == -1) {
 		printf("%s: Failed to chroot to %s.\n", argv[0], argv[1]);
 		return 1;
 	}
     }
-    if (getuid()) {
+    if (getuid()) { */
 	setfree = 0;
 	printf("%s: Running script in view mode only.\n", argv[0]);
+	sprintf(startdir, "%s", argv[1]);
     }
-    if (cleanupdirs[0])
-		cleanup(cleanupdirs, setfree);
+//    if (cleanupdirs[0])
+		cleanup(cleanupdirs, setfree, startdir);
+
+    if (argc < 2) {
 
 #if ( audio_genre_sort == TRUE )
     scandirectory((char *)audio_genre_path, setfree);
@@ -327,5 +334,8 @@ int main (int argc, char **argv) {
     scandirectory((char *)audio_group_path, setfree);
 #endif
 
+	printf("Finished successfully.\n");
+    }
+    free(startdir);
     exit(EXIT_SUCCESS);
 }

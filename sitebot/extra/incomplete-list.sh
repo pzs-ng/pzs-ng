@@ -35,7 +35,7 @@ for section in $sections; do
   secname="`echo $section | cut -d ':' -f 1`"
   secpath="`echo $section | cut -d ':' -f 2`"
 
-  results="`$cleanup /glftpd 2>/dev/null | grep -e "^Incomplete" | tr '\"' '\n' | grep -e "$secpath"`"
+  results="`$cleanup $glroot 2>/dev/null | grep -e "^Incomplete" | tr '\"' '\n' | grep -e "$secpath"`"
   if [ -z "$results" ]; then
     if [ $verbose -eq 1 ]; then
       echo "$secname: No incomplete releases found."
