@@ -15,7 +15,7 @@ Okay, now that that is clear, here's the general process:
 2.  copy your old zsconfig.h into zipscript/conf/
 3.  make distclean; ./configure && make && make install
 3a. chmod +s /glftpd/bin/ng-chown (optional, only if you use it)
-4.  cp sitebot dZSb* /path/to/sitebot/scripts/pzs-ng/
+4.  cp sitebot/dZSb* /path/to/sitebot/scripts/pzs-ng/
 5.  .rehash or .restart your bot.
 
 6.  If you're upgrading from -1277 to +1277, you need to
