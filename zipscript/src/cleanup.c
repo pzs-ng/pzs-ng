@@ -269,7 +269,7 @@ void cleanup(char *pathlist) {
 
 
 
-int main(int argc, char **argv) {
+int main(void) {
  tnow = time( NULL );
  timenow = localtime( &tnow ); 
 

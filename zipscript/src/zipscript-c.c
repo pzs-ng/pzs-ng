@@ -911,7 +911,9 @@ if ( matchpath(group_dirs, locations.path ) && ( hide_group_uploaders == TRUE ))
 		if ( complete_msg != NULL ) {
 			d_log("Writing COMPLETE and STATS to %s\n", log);
 			writelog(convert(&raceI, userI, groupI, complete_msg), "COMPLETE");
-			writetop(&locations, &raceI, userI, groupI, complete_type);
+/* writetop does not use &locations */
+/*			writetop(&locations, &raceI, userI, groupI, complete_type);*/
+			writetop(&raceI, userI, groupI, complete_type);
 			}
 
 		d_log("Creating complete bar\n");

@@ -78,7 +78,7 @@ void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
  * Description  : Writes toplists to glftpd.log
  *
  */
-void writetop(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, int completetype ) {
+void writetop(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, int completetype ) {
 /* char   *output, *out_p; */
  int    cnt;
    
