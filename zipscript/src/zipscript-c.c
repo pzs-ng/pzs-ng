@@ -265,6 +265,7 @@ int main( int argc, char **argv ) {
 
  d_log("Reading data from environment variables\n");
  if (!(getenv("USER") && getenv("GROUP") && getenv("TAGLINE") && getenv("SPEED"))) {
+        d_log("We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE and $SPEED\n");
 	memcpy(raceI.user.name, "glftpd", 7);
 	memcpy(raceI.user.group, "NoGroup", 8);
 	memcpy(raceI.user.tagline, "No Tagline Set", 15);
