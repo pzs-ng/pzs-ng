@@ -15,95 +15,94 @@ set scriptpath [file dirname [info script]]
 
 putlog "Launching dZSBot for project-zs-ng..."
 
-if {[catch {source $scriptpath/dZSbconf.defaults.tcl} tmperror]} {
-	putlog "dZSbot: dZSbconf.defaults.tcl not found or has errors. Cannot continue."
-	putlog "dZSbot: See FAQ for possible solutions/debugging options."
+if {[catch {source $scriptpath/dZSbconf.defaults.tcl} error]} {
+	putlog "dZSbot error: Unable to load dZSbconf.defaults.tcl ($error), cannot continue."
+	putlog "dZSbot error: See FAQ for possible solutions/debugging options."
 	die
 }
-if {[catch {source $scriptpath/dZSbconf.tcl} tmperror]} {
-	putlog "dZSbot: dZSbconf.tcl not found or has errors. Continuing with defaults only!"
-	putlog "dZSbot: See FAQ/README for possible solutions/debugging options."
-	putlog "dZSbot: If this is your first install - do; cp dZSbconf.dist.tcl dZSbconf.tcl."
+if {[catch {source $scriptpath/dZSbconf.tcl} error]} {
+	putlog "dZSbot warning: Unable to load dZSbconf.tcl ($error), using defaults."
+	putlog "dZSbot warning: If this is your first install, do: cp dZSbconf.dist.tcl dZSbconf.tcl"
 }
-if {[catch {source $scriptpath/dZSbvars.tcl} tmperror]} {
-	putlog "dZSbot: dZSbvars.tcl not found or has errors. Cannot continue."
-	putlog "dZSbot: See FAQ for possible solutions/debugging options."
+if {[catch {source $scriptpath/dZSbvars.tcl} error]} {
+	putlog "dZSbot error: Unable to load dZSbvars.tcl ($error), cannot continue."
+	putlog "dZSbot error: See FAQ for possible solutions/debugging options."
 	die
 }
 
-foreach bin [array names binary] {
-	if {$bin == "NCFTPLS" && ![istrue $bnc(ENABLED)]} {continue}
-	if {$bin == "PING" && (![istrue $bnc(ENABLED)] || ![istrue $bnc(PING)])} {continue}
+foreach entry [array names binary] {
+	if {$entry == "NCFTPLS" && ![istrue $bnc(ENABLED)]} {continue}
+	if {$entry == "PING" && (![istrue $bnc(ENABLED)] || ![istrue $bnc(PING)])} {continue}
 
-	if {![file executable $binary($bin)]} {
-		putlog "dZSbot: Wrong path/missing bin for $bin - Please fix."
+	if {![file executable $binary($entry)]} {
+		putlog "dZSbot error: Invalid path/missing bin for $entry - please fix."
 		set dzerror 1
 	}
 }
 
-foreach fname [array names location] {
-	if {![file exists $location($fname)]} {
-		putlog "dZSbot: Wrong path/missing bin for $fname - Please fix."
+foreach entry [array names location] {
+	if {![file exists $location($entry)]} {
+		putlog "dZSbot error: Invalid path for $entry - please fix."
 		set dzerror 1
 	}
 }
 
-set countlog 0
-foreach log [array names glftpdlog] {
-	if {![file exists $glftpdlog($log)]} {
-		putlog "dZSbot: Could not find log file $glftpdlog($log)."
+set logcount 0
+foreach entry [array names glftpdlog] {
+	if {![file exists $glftpdlog($entry)]} {
+		putlog "dZSbot error: Could not find log file $glftpdlog($entry)."
 		set dzerror 1
-		unset glftpdlog($log)
+		unset glftpdlog($entry)
 	} else {
-		incr countlog
-		set lastoct($log) [file size $glftpdlog($log)]
+		incr logcount
+		set lastoct($entry) [file size $glftpdlog($entry)]
 	}
 }
-if {$countlog == 0} {
-	putlog "dZSbot: WARNING! No gl logfiles found!"
+if {!$logcount} {
+	putlog "dZSbot error: No gl logfiles found!"
 	set dzerror 1
 } else {
-	putlog "dZSbot: Number of gl logfiles found: $countlog"
+	putlog "dZSbot: Number of gl logfiles found: $logcount"
 }
 
-set countlog 0
-foreach login [array names loginlog] {
-	if {![file exists $loginlog($login)]} {
-		putlog "dZSbot: Could not find log file $loginlog($login)."
+set logcount 0
+foreach entry [array names loginlog] {
+	if {![file exists $loginlog($entry)]} {
+		putlog "dZSbot: Could not find log file $loginlog($entry)."
 		set dzerror 1
-		unset loginlog($login)
+		unset loginlog($entry)
 	} else {
-		incr countlog
-		set loglastoct($login) [file size $loginlog($login)]
+		incr logcount
+		set loglastoct($entry) [file size $loginlog($entry)]
 	}
 }
-if {!$countlog} {
-	putlog "dZSbot: WARNING! No login logfiles found!"
+if {!$logcount} {
+	putlog "dZSbot warning: No login logfiles found!"
 } else {
-	putlog "dZSbot: Number of login logfiles found: $countlog"
+	putlog "dZSbot: Number of login logfiles found: $logcount"
 }
 
 if {[string equal -nocase "AUTO" $use_glftpd2]} {
 	if {![info exists binary(GLFTPD)]} {
-		die "dZSbot: you did not thouroughly edit your $scriptpath/dZSbconf.tcl file. Try again."
+		die "dZSbot: you did not thoroughly edit the $scriptpath/dZSbconf.tcl file (hint: binary(GLFTPD))."
 	}
 	set glversion [exec strings $binary(GLFTPD) | grep -i "^glftpd " | cut -f1 -d. | tr A-Z a-z]
 
 	if {[string equal "glftpd 1" $glversion]} {
-		putlog "dZSbot: detected $glversion, running in legacy mode."
+		putlog "dZSbot: Detected $glversion, running in legacy mode."
 		set glversion 1
 	} elseif {[string equal "glftpd 2" $glversion]} {
-		putlog "dZSbot: detected $glversion, running in standard mode."
+		putlog "dZSbot: Detected $glversion, running in standard mode."
 		set glversion 2
 	} else {
-		die "dZSbot: autodetecting glftpd-version failed. Set \"use_glftpd2\" in $scriptpath/dZSbconf.tcl manually."
+		die "dZSbot: Autodetecting glftpd-version failed. Set \"use_glftpd2\" in $scriptpath/dZSbconf.tcl manually."
 	}
 } else {
 	set glversion [expr [istrue $use_glftpd2] ? 2 : 1]
 }
 
 if {![info exists invite_channels] && [info exists chanlist(INVITE)]} {
-	putlog "dZSbot: no invite_channels variable found in config, setting to \"$chanlist(INVITE)\" (chanlist(INVITE))"
+	putlog "dZSbot warning: No \"invite_channels\" defined in the config, setting to \"$chanlist(INVITE)\" (chanlist(INVITE))"
 	set invite_channels $chanlist(INVITE)
 }
 
@@ -230,7 +229,7 @@ proc denycheck {release} {
 	global denypost
 	foreach deny $denypost {
 		if {[string match $deny $release]} {
-			putlog "dZSbot: post denied - $release"
+			putlog "dZSbot: Post denied - $release"
 			return 1
 		}
 	}
@@ -259,7 +258,7 @@ proc readlog {} {
 
 	foreach log [array names glftpdlog] {
 		if {$lastoct($log) < [file size $glftpdlog($log)] && [expr [file size $glftpdlog($log)] - $lastoct($log) - $max_log_change] < 0} {
-			if {![catch {set of [open $glftpdlog($log) r]} ]} {
+			if {![catch {set of [open $glftpdlog($log) r]} error]} {
 				seek $of $lastoct($log)
 				while {![eof $of]} {
 					if {[set line [gets $of]] != ""} {
@@ -268,7 +267,7 @@ proc readlog {} {
 				}
 				close $of
 			} else {
-				putlog "dZSbot error: Could not open GLLOG: $glftpdlog($log)"
+				putlog "dZSbot error: Unable to open log file \"$glftpdlog($log)\" ($error)."
 				return 0
 			}
 		}
@@ -277,7 +276,7 @@ proc readlog {} {
 
 	foreach login [array names loginlog] {
 		if {$loglastoct($login) < [file size $loginlog($login)] && [expr [file size $loginlog($login)] - $loglastoct($login) - $max_log_change] < 0} {
-			if {![catch {set of [open $loginlog($login) r]} ]} {
+			if {![catch {set of [open $loginlog($login) r]} error]} {
 				seek $of $loglastoct($login)
 				while {![eof $of]} {
 					if {[set line [gets $of]] != ""} {
@@ -286,7 +285,7 @@ proc readlog {} {
 				}
 				close $of
 			} else {
-				putlog "dZSbot error: Could not open LOGINLOG: $loginlog($login)"
+				putlog "dZSbot error: Unable to open log file \"$loginlog($login)\" ($error)."
 				return 0
 			}
 		}
@@ -388,7 +387,7 @@ proc readlog {} {
 		} elseif {[lsearch -exact $msgtypes(DEFAULT) $msgtype] != -1} {
 			set section $defaultsection
 		} else {
-			putlog "dZSbot error: undefined message type \"$msgtype\", check \"msgtypes(SECTION)\" and msgtypes(DEFAULT)\" in the config."; continue
+			putlog "dZSbot error: Undefined message type \"$msgtype\", check \"msgtypes(SECTION)\" and \"msgtypes(DEFAULT)\" in the config."; continue
 		}
 		if {![info exists variables($msgtype)]} {
 			putlog "dZSbot error: \"variables($msgtype)\" not defined in the config, type becomes \"DEFAULT\"."
@@ -415,15 +414,14 @@ proc postcmd {msgtype section path} {
 
 	if {[info exists postcommand($msgtype)]} {
 		foreach cmd $postcommand($msgtype) {
-			if {[lindex $cmd 0] == "exec"} { set cmd [lindex $cmd 1] ; set isexec 1}
-			if {[info exists isexec]} {
-				if {[catch {exec $cmd $msgtype $section $path} result] != 0} {
-					putlog "dZSbot error: exec \"$cmd\" caused an error - \"$result\""
-					unset isexec
+			if {[string equal "exec" [lindex $cmd 0]]} {
+				set cmd [lindex $cmd 1]
+				if {[catch {exec $cmd $msgtype $section $path} error]} {
+					putlog "dZSbot error: Unable to execute post command \"$cmd\" ($error)."
 				}
 			} else {
-				if {[catch {$cmd $msgtype $section $path} result] != 0} {
-					putlog "dZSbot error: \"$cmd\" caused an error - \"$result\""
+				if {[catch {$cmd $msgtype $section $path} error]} {
+					putlog "dZSbot error: Unable to evaluate post command \"$cmd\" ($error)."
 				}
 			}
 		}
@@ -478,13 +476,12 @@ proc to_mb {str} {
 		set size [string range $str 0 end-2]
 	} else { set size [string range $str 0 end-1] }
 
-	set factor 0
-	switch -regexp [string index $str end] {
-		[mM] { set factor 1 }
-		[gG] { set factor 1000 }
-		[tT] { set factor 1000000 }
+	switch -exact -- [string index $str end] {
+		"m" - "M" {set factor 1}
+		"g" - "G" {set factor 1000}
+		"t" - "T" {set factor 1000000}
+		default {return -1}
 	}
-	if {$factor == 0} { return -1 }
 	return [expr round($size*$factor)]
 }
 
@@ -546,7 +543,7 @@ proc parse {msgtype msgline section} {
 			putlog "dZSbot error: \"variables($type)\" not set in theme, type becomes \"DEFAULT\""
 			set type "DEFAULT"
 		} else {
-			if { $disable(FAILLOGIN) == 1 } {
+			if {$disable(FAILLOGIN) == 1} {
 				return ""
 			} else {
 				set f_user $type
@@ -559,7 +556,7 @@ proc parse {msgtype msgline section} {
 			putlog "dZSbot error: \"announce($type)\" not set in theme, type becomes \"DEFAULT\""
 			set type "DEFAULT"
 		} else {
-			if { $disable(FAILLOGIN) == 1 } {
+			if {$disable(FAILLOGIN) == 1} {
 				return ""
 			} else {
 				set f_user $type
@@ -657,7 +654,7 @@ proc parse {msgtype msgline section} {
 #################################################################################
 proc checkchan {nick chan} {
 	global disable lastbind mainchan
-	if {$disable(TRIGINALLCHAN) != 0 && ![string equal -nocase $chan $mainchan]} {
+	if {$disable(TRIGINALLCHAN) == 1 && ![string equal -nocase $chan $mainchan]} {
 		putlog "dZSbot: \002$nick\002 tried to use \002$lastbind\002 from an invalid channel ($chan)."
 		return -code return
 	}
@@ -1100,7 +1097,7 @@ proc speed {nick uhost hand chan argv} {
 	checkchan $nick $chan
 
 	set line ""
-	if { $disable(ALTWHO) == 0 } {
+	if {$disable(ALTWHO) != 1} {
 		set output "$theme(PREFIX)$announce(SPEEDERROR)"
 		foreach line [split [exec $binary(WHO) --raw [lindex $argv 0]] "\n"] {
 			set action [lindex $line 4]
@@ -1648,17 +1645,14 @@ proc show_incompletes {nick uhost hand chan arg } {
 #################################################################################
 proc welcome_msg {nick uhost hand chan } {
 	global announce disable chanlist sitename cmdpre
+	if {$disable(WELCOME) == 1} {return}
 
-	if {$disable(WELCOME) == 0} {
-		foreach c_chan $chanlist(WELCOME) {
-			if {[string match -nocase $c_chan $chan]} {
-				set output $announce(WELCOME)
-				set output [replacevar $output "%bold" "\002"]
-				set output [replacevar $output "%ircnick" $nick]
-				set output [replacevar $output "%sitename" $sitename]
-				set output [themereplace [replacevar $output "%cmdpre" $cmdpre] "none"]
-				puthelp "NOTICE $nick : $output"
-			}
+	foreach c_chan $chanlist(WELCOME) {
+		if {[string match -nocase $c_chan $chan]} {
+			set output [basicreplace $announce(WELCOME) "WELCOME"]
+			set output [replacevar $output "%ircnick" $nick]
+			set output [themereplace $output "none"]
+			puthelp "NOTICE $nick :$output"
 		}
 	}
 }
@@ -1667,7 +1661,7 @@ proc welcome_msg {nick uhost hand chan } {
 # CHECK BOUNCER STATUSES                                                        #
 #################################################################################
 proc ng_bnc_check {nick uhost hand chan arg} {
-	global bnc
+	global binary bnc
 	checkchan $nick $chan
 
 	# We should probably just not bind at all, but this is easier.
@@ -1683,7 +1677,7 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 		set ip [lindex $i 1]
 		set port [lindex $i 2]
 
-		if { $bnc(PING) == "TRUE" } {
+		if {[istrue $bnc(PING)]} {
 			if {[catch { set data [exec $binary(PING) -c1 $ip]} error]} {
 				putquick "NOTICE $nick :$count. .$loc - $ip:$port - DOWN (Can't ping host)"
 				continue
@@ -1695,10 +1689,10 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 		set exitlevel [catch {exec $binary(NCFTPLS) -P $port -u $bnc(USER) -p $bnc(PASS) -t $bnc(TIMEOUT) -r 0 ftp://$ip 2>@ stdout} raw]
 		set dur [expr [clock clicks -milliseconds] - $dur]
 
-		if { $exitlevel == 0 } {
+		if {$exitlevel == 0} {
 			putquick "NOTICE $nick :$count. .$loc - $ip:$port - UP (login: [format %.0f $dur]ms$ping)"
 		} else {
-			switch -glob $raw {
+			switch -glob -- $raw {
 				"*username was not accepted for login.*" {set error "Bad Username"}
 				"*username and/or password was not accepted for login.*" {set error "Couldn't login"}
 				"*Connection refused.*" {set error "Connection Refused"}
@@ -1739,7 +1733,7 @@ proc help {nick uhost hand chan arg} {
 		set line [themereplace [basicreplace $line "HELP"] "none"]
 		puthelp "PRIVMSG $nick :$line"
 	}
-	puthelp "PRIVMSG $nick :Valid sections are:  [join [lsort -ascii $sections] {, }]"
+	puthelp "PRIVMSG $nick :Valid sections are: [join [lsort -ascii $sections] {, }]"
 }
 
 #################################################################################
@@ -1754,10 +1748,10 @@ proc loadtheme {file} {
 		set file "$scriptpath/$file"
 	}
 	if {![file readable $file]} {
-		putlog "dZSbot: themefile is not readable or does not exist. ($file)"
+		putlog "dZSbot: Theme file is not readable or does not exist ($file)."
 		return 0
 	}
-	putlog "Loading theme: $file"
+	putlog "dZSbot: Loading theme \"$file\"."
 
 	set fh [open $file]
 	set content [split [read -nonewline $fh] "\n"]
@@ -1775,19 +1769,17 @@ proc loadtheme {file} {
 		}
 	}
 
-	foreach name [array names theme] { set theme($name) [themereplace_startup $theme($name)] }
-	foreach name [array names theme_fakes] { set theme_fakes($name) [themereplace_startup $theme_fakes($name)] }
-	foreach name [array names announcetmp] { set announce($name) [themereplace_startup $announcetmp($name)] }
+	foreach name [array names theme] {set theme($name) [themereplace_startup $theme($name)]}
+	foreach name [array names theme_fakes] {set theme_fakes($name) [themereplace_startup $theme_fakes($name)]}
+	foreach name [array names announcetmp] {set announce($name) [themereplace_startup $announcetmp($name)]}
 
-	set ret 1
-	set required "PREFIX COLOR1 COLOR2 COLOR3"
-	foreach req [split $required " "] {
+	foreach req {COLOR1 COLOR2 COLOR3 PREFIX KB KBIT MB MBIT} {
 		if {[lsearch -exact [array names theme] $req] == -1} {
-			putlog "dZSbot: missing required themefile setting (in $file): '$req', failing."
-			set ret 0
+			putlog "dZSbot error: Missing required themefile setting \"$req\", failing."
+			return 0
 		}
 	}
-	return $ret
+	return 1
 }
 
 #################################################################################
@@ -1861,41 +1853,37 @@ if {[istrue $enable_irc_invite]} {
 }
 
 if {[info exists dZStimer]} {
-	if {[catch {killutimer $dZStimer} err]} {
-		putlog "dZSbot error: WARNING!"
-		putlog "dZSbot error: killutimer failed ($err)"
-		putlog "dZSbot error: You should .restart the bot to be safe."
+	if {[catch {killutimer $dZStimer} error]} {
+		putlog "dZSbot warning: Unable to kill log timer ($error)."
+		putlog "dZSbot warning: You should .restart the bot to be safe."
 	}
 }
 set dZStimer [utimer 1 "readlog"]
 
 if {![loadtheme $announce(THEMEFILE)]} {
-	if {[loadtheme "default.zst.dist"]} {
-		putlog "dZSbot error: Couldn't load theme '$announce(THEMEFILE)', loaded 'default.zst.dist' instead!"
+	if {[loadtheme "default.zst"]} {
+		putlog "dZSbot warning: Unable to load theme $announce(THEMEFILE), loaded default.zst instead."
 	} else {
-		putlog "dZSbot error: Couldn't load theme '$announce(THEMEFILE)' and not 'default.zst.dist' either. Cannot continue!"
+		putlog "dZSbot error: Unable to load the themes $announce(THEMEFILE) and default.zst."
 		set dzerror 1
 	}
 }
 
-if {![array exists chanlist] || [llength [array names chanlist DEFAULT]] == 0} {
-	putlog "dZSbot error: no entry in chanlist set, or chanlist(DEFAULT) not set."
+if {![array exists chanlist] || ![info exists chanlist(DEFAULT)]} {
+	putlog "dZSbot error: No entry in chanlist set, or \"chanlist(DEFAULT)\" not set."
 	set dzerror 1
 }
-if {![array exists announce] || [llength [array names announce DEFAULT]] == 0} {
-	putlog "dZSbot error: no entry in announce set, or announce(DEFAULT) not set."
-	putlog "dZSbot error: setting announce(DEFAULT) to '\[DEFAULT\] %msg'."
+if {![array exists announce] || ![info exists announce(DEFAULT)]} {
+	putlog "dZSbot warning: No \"announce\" entries defined, or \"announce(DEFAULT)\" is not set."
 	set announce(DEFAULT) "\[DEFAULT\] %msg"
 }
-if {![array exists variables] || [llength [array names variables DEFAULT]] == 0} {
-	putlog "dZSbot error: no entry in variables set, or variables(DEFAULT) not set."
-	putlog "dZSbot error: setting variables(DEFAULT) to '%pf %msg'."
+if {![array exists variables] || ![info exists variables(DEFAULT)]} {
+	putlog "dZSbot warning: No \"variables\" entries defined, or \"variables(DEFAULT)\" is not set."
 	set variables(DEFAULT) "%pf %msg"
 }
-if {![array exists disable] || [llength [array names disable DEFAULT]] == 0} {
-	putlog "dZSbot error: no entry in disable set, or disable(DEFAULT) not set."
-	putlog "dZSbot error: setting disable(DEFAULT) to '0."
-	set disable(DEFAULT) "0"
+if {![array exists disable] || ![info exists disable(DEFAULT)]} {
+	putlog "dZSbot warning: No \"disable\" entries defined, or \"disable(DEFAULT)\" is not set."
+	set disable(DEFAULT) 0
 }
 
 # Hook up variables and announce definitions for the message replacing code
@@ -1913,8 +1901,8 @@ foreach rep [array names msgreplace] {
 }
 
 if {!$dzerror} {
-	putlog "dZSbot loaded ok!"
+	putlog "dZSbot: Loaded successfully!"
 } else {
-	putlog "dZSbot had errors. Please check log and fix."
+	putlog "dZSbot: Errors were encountered while loading, please check the log and correct them."
 	if {[istrue $die_on_error]} {die}
 }

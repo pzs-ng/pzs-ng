@@ -156,7 +156,7 @@ set statsection(0)      "DEFAULT"
 
 # Which channels we announce the different things to.
 # Space separated lists, you can have more than one channel.
-set mainchan            "#pzs-ng"
+set mainchan            ""
 #set chanlist(0DAY)     $mainchan
 #set chanlist(APPS)     $mainchan
 #set chanlist(GAMES)    $mainchan
