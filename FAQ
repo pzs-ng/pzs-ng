@@ -10,3 +10,10 @@ A: Several possible reasons. The most probable is missing libs. Make sure you
    them all, in the location listed.
 A: Check perms on the binary - it needs +x.
 
+Q: The speed seems all wrong!
+-----------------------------
+A: This is actually a glftpd bug. You'll see the same speed in the client's
+   ftp output. pzs-ng rely on glftpd to give correct speed. If you want it
+   fixed, nag on the glftpd devs, or wait for glftpd 2.1, which may have this
+   fixed.
+

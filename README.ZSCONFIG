@@ -633,7 +633,7 @@ other_completebar <STRING>
 del_completebar <STRING>
 	This setting is what the zipscript will search for (and delete) when
 	it updates the complete bar.
-	Default: "\\[%Z] - \\( .*F - COMPLETE.*) - \\[%Z]"
+	Default: "\\[.*] - \\( .*F - COMPLETE.*) - \\[.*]"
 
 zipscript_header <STRING>
 	When files are uploaded, some output is shown to the racer uploading.
@@ -770,7 +770,7 @@ del_progressmeter <STRING>
 	On upload a complete-bar is created after each file, to show how
 	complete the release is. Put here what to search for when updating
 	that bar - the file(s) matching this will be deleted.
-	Default: "\\[.*] - ...%% Complete - \\[%Z]"
+	Default: "\\[.*] - .*%% Complete - \\[.*]"
 
 charbar_missing <CHAR>
 	The progressbar consist of two chars, which together marks the progress
