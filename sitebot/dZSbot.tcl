@@ -97,7 +97,7 @@ bind msg	-|-	!invite				invite
 if {$bindnopre == "YES"} { 
 	bind pub    -|- !who		who
 	bind pub    -|- !speed		speed
-	bind pub    -|- !bw		ng_bandwidth
+	bind pub    -|- !bw			ng_bandwidth
 	bind pub    -|- !bwdn		ng_bwdn
 	bind pub	-|- !uploaders	ng_uploaders
 	bind pub    -|- !bwup		ng_bwup
@@ -391,9 +391,9 @@ proc who {nick uhost hand chan args} {
 # POST SPEED                                                                    #
 #################################################################################
 proc speed {nick uhost hand chan args} {
-	global binary announce
+	global binary announce theme
 
-	set output $announce(DEFAULT)
+	set output "$theme(PREFIX) $announce(DEFAULT)"
 	set output [replacevar $output "%msg" [exec $binary(WHO) [lindex $args 0]]]
 	set output [basicreplace $output "SPEED"]
 	putserv "PRIVMSG $chan :$output "
@@ -405,9 +405,9 @@ proc speed {nick uhost hand chan args} {
 # POST BANDWIDTH                                                                #
 #################################################################################
 proc bandwidth {nick uhost hand chan args} {
-	global binary announce
+	global binary announce theme
 
-	set output $announce(BW)
+	set output "$theme(PREFIX) $announce(BW)"
 	set data [exec $binary(BW)]
 	set output [replacevar $output "%uploads" [lindex $data 0]]
 	set output [replacevar $output "%downloads" [lindex $data 2]]
@@ -455,8 +455,10 @@ proc ng_bwup { nick uhost hand chan args} { global binary announce speed
 #################################################################################
 # ng_uploaders - Origional by Celerex - Mod/Merge by themolester                #
 #################################################################################
-proc ng_uploaders { nick uhost hand chan args} { global binary announce speed
-	set output $announce(UPLOAD)
+proc ng_uploaders {nick uhost hand chan args} {
+	global binary announce speed theme
+	
+	set output "$theme(PREFIX) $announce(UPLOAD)"
 	set output [basicreplace "$output" "UPLOAD"]
 	putserv "PRIVMSG $chan :$output "
 
@@ -540,8 +542,10 @@ proc ng_bwdn { nick uhost hand chan args} { global binary announce speed
 #################################################################################
 # ng_leechers - Origional by Celerex - Mod/Merge by themolester                 #
 #################################################################################
-proc ng_leechers { nick uhost hand chan args} { global binary announce speed
-	set output $announce(LEECH)
+proc ng_leechers {nick uhost hand chan args} {
+	global binary announce speed theme
+
+	set output "$theme(PREFIX) $announce(LEECH)"
 	set output [basicreplace "$output" "LEECH"]
 	putserv "PRIVMSG $chan :$output "
 	
@@ -633,9 +637,10 @@ proc ng_idlers { nick uhost hand chan args} { global binary announce speed minid
 #################################################################################
 # UPDATED BANDWIDTH                                                             #
 #################################################################################
-proc ng_bandwidth {nick uhost hand chan args} { global binary announce speed
+proc ng_bandwidth {nick uhost hand chan args} {
+	global binary announce speed theme
 
-	set output $announce(BW)
+	set output "$theme(PREFIX) $announce(BW)"
 	set raw [exec $binary(BW)]
 	set upper [format "%.0f" [expr [lindex $raw 1] / $speed(INCOMING)]]
 	set dnper [format "%.0f" [expr [lindex $raw 3] / $speed(OUTGOING)]]
@@ -703,7 +708,7 @@ proc showstats {nick type time section} {
 # INVITE CHECK                                                                  #
 #################################################################################
 proc invite {nick host hand arg} {
-	global location binary chanlist announce
+	global location binary chanlist announce theme
 
 	if {[llength $arg] == 2} {
 		set username [lindex $arg 0]
@@ -715,18 +720,16 @@ proc invite {nick host hand arg} {
 
 
 		if {![string compare $result "MATCH"]} {
-			set output $announce(MSGINVITE)
+			set output "$theme(PREFIX) $announce(MSGINVITE)"
 			foreach channel $chanlist(INVITE) { puthelp "INVITE $nick $channel" }
 			foreach line [split [exec $binary(CAT) $userfile] "\n"] {
 				if {![string compare [lindex $line 0] "GROUP"]} {
-				set group [lrange $line 1 end]
-				break
+					set group [lrange $line 1 end]
+					break
 				}
 			}
 		} else {
-			if {![string compare $result "NOMATCH"]} {
-				set output $announce(BADMSGINVITE)
-			} else { set output $announce(BADMSGINVITE)  }
+			set output "$theme(PREFIX) $announce(BADMSGINVITE)" 
 		}
 
 		set output [replacevar $output "%ircnick" $nick]
@@ -744,9 +747,9 @@ proc invite {nick host hand arg} {
 # SHOW FREE SPACE                                                               #
 #################################################################################
 proc show_free {nick uhost hand chan arg} {
-	global binary announce device
+	global binary announce device theme
 
-	set output $announce(FREE)
+	set output "$theme(PREFIX) $announce(FREE)"
 	set devices ""; set free 0; set used 0
 	set total 0; set num 0; set perc 0
 	foreach line [split [exec $binary(DF) "-Ph"] "\n"] {
@@ -779,7 +782,9 @@ proc show_free {nick uhost hand chan arg} {
 #################################################################################
 # LAUNCH A NUKE (GL2.0)                                                         #
 #################################################################################
-proc launchnuke2 {type path section sargs dargs} { global nuke hidenuke announce sitename
+proc launchnuke2 {type path section sargs dargs} {
+	global nuke hidenuke announce sitename theme
+	
 	set nuke(TYPE) $type
 	set nuke(PATH) $path
 	set nuke(SECTION) $section
@@ -797,7 +802,7 @@ proc launchnuke2 {type path section sargs dargs} { global nuke hidenuke announce
 	set split [split $nuke(PATH) "/"]
 	set ll [llength $split]
 
-	set output $announce($nuke(TYPE))
+	set output "$theme(PREFIX) $announce($nuke(TYPE))" 
 	set output [replacevar $output "%nuker" $nuke(NUKER)]
 	set output [replacevar $output "%nukees" $nuke(NUKEE)]
 	set output [replacevar $output "%type" $nuke(TYPE)]
@@ -1004,7 +1009,7 @@ proc help {nick uhost hand chan arg} {
 # LOAD A THEME FILE                                                             #
 #################################################################################
 proc loadtheme {file} {
-	global theme announce
+	global theme announce theme_fakes
 
 	if {[string index $file 0] != "/"} { set file "[file dirname [info script]]/$file" }
 	if {![file readable $file]} {
