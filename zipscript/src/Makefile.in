@@ -20,9 +20,10 @@ CU-OBJECTS=cleanup.o
 DC-OBJECTS=datacleaner.o
 UD-OBJECTS=pzsng-undupe.o
 SC-OBJECTS=rescan.o dizreader.o stats.o convert.o complete.o crc.o multimedia.o $(UNIVERSAL)
+CH-OBJECTS=ng-chmod.o
 ZS-DEPEND=cleanup.o complete.o convert.o datacleaner.o postdel.o racestats.o rescan.o stats.o zipscript-c.o multimedia.o $(UNIVERSAL)
 
-all: pzsng-undupe racedebug zipscript-c postdel racestats cleanup datacleaner rescan
+all: pzsng-undupe racedebug zipscript-c postdel racestats cleanup datacleaner rescan ng-chmod
 	@(ls -lA $(binpath))
 
 $(ZS-DEPEND): ../conf/zsconfig.h
@@ -48,6 +49,9 @@ datacleaner: $(DC-OBJECTS)
 pzsng-undupe: $(UD-OBJECTS)
 	      $(CC) $(LDFLAGS) $(UD-OBJECTS) -o $(binpath)/$@
 
+ng-chmod: $(CH-OBJECTS)
+	      $(CC) $(LDFLAGS) $(CH-OBJECTS) -o $(binpath)/$@
+
 rescan: $(SC-OBJECTS)
 	$(CC) $(LDFLAGS) $(SC-OBJECTS) -o $(binpath)/$@
 
@@ -64,12 +68,13 @@ install:
 	cp -f $(binpath)/rescan $(bindir)/
 	cp -f $(binpath)/racedebug $(bindir)/
 	cp -f $(binpath)/pzsng-undupe $(bindir)/
+	cp -f $(binpath)/ng-chmod $(bindir)/ && chmod +s $(bindir)/ng-chmod
 
 distclean: clean
 	@$(RM) Makefile
 
 clean:
-	@$(RM) *.o $(binpath)/zipscript-c $(binpath)/postdel $(binpath)/racestats $(binpath)/cleanup $(binpath)/datacleaner $(binpath)/rescan $(binpath)/racedebug $(binpath)/pzsng-undupe
+	@$(RM) *.o $(binpath)/zipscript-c $(binpath)/postdel $(binpath)/racestats $(binpath)/cleanup $(binpath)/datacleaner $(binpath)/rescan $(binpath)/racedebug $(binpath)/pzsng-undupe $(binpath)/ng-chmod
 
 strip:
 	strip $(binpath)/*

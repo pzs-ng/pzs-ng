@@ -3,35 +3,59 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 #ifndef PATH_MAX
  #define _LIMITS_H_
  #include <sys/syslimits.h>
 #endif
+#include "../conf/zsconfig.h"
 
 struct dirent   **dirlist;
 unsigned int direntries,n = 0;
 
+
 #if defined(__linux__)
-int selector (const struct dirent *d) {
+int selector3 (const struct dirent *d) {
 #elif defined(__NetBSD__)
-int selector (const struct dirent *d) {
+int selector3 (const struct dirent *d) {
 #else
-int selector (struct dirent *d) {
+int selector3 (struct dirent *d) {
 #endif
         struct stat st;
         if ((stat(d->d_name, &st) < 0) || S_ISDIR(st.st_mode)) return 0;
         return 1;
 }
 
+short int matchpath2(char *instr, char *path) {
+  int pos = 0;
+ 
+  do {
+    switch ( *instr ) {
+      case 0:
+      case ' ':
+        if (strncmp(instr - pos, path, pos - 1) == 0) {
+            return 1;
+        }
+        pos = 0;
+        break;
+      default:
+        pos++;
+        break;
+    }
+  } while (*instr++);
+  return 0;
+}
+
 int myscandir(char *my_path) {
-  if ( chdir(my_path) != -1 ) {
+  if ( ( chdir(my_path) != -1 ) && ( ( matchpath2(group_dirs, my_path) ) || ( matchpath2(zip_dirs, my_path ) ) || ( matchpath2(sfv_dirs, my_path) ) ) ) {
     if ( direntries > 0 ) {
       while ( direntries-- ) {
         free(dirlist[direntries]);
       }
       free(dirlist);
     }
-    direntries = scandir(".", &dirlist, selector, alphasort);
+    direntries = scandir(".", &dirlist, selector3, alphasort);
     return 0;
   } else {
     printf("Error: Unable to chdir to %s\n",my_path);
