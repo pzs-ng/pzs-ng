@@ -4,7 +4,7 @@ CFLAGS=-Wall -g
 CC=@CC@
 LIBS=@LIBS@
 
-all: zs
+all: zs bot
 	@(echo -e "\n\tProject-ZS-NG is now compiled!\n\tType 'make install' to install it into $(prefix).\n")
 
 install: zs
@@ -24,7 +24,9 @@ uninstall:
 	cd zipscript/src ; $(MAKE) uninstall
 
 zs:
+	@(echo -e "\n\033[1;37mCompiling the zipscript\033[0m")
 	cd zipscript/src ; $(MAKE) all
 
 bot:
+	@(echo -e "\n\033[1;37mCompiling the bot binaries\033[0m")
 	cd sitebot/src ; $(MAKE) all
