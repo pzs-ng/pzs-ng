@@ -778,8 +778,7 @@ proc ng_invite {nick host hand argv} {
 			set output [replacevar $output "%u_name" $user]
 			set output [replacevar $output "%u_host" $host]
 			set output [replacevar $output "%g_name" $group]
-			set output [themereplace [replacebasic $output "INVITE"] "none"]
-			sndall "MSGINVITE" "DEFAULT" $output
+			sndall "MSGINVITE" "DEFAULT" [replacebasic $output "INVITE"]
 		}
 	}
 	return
@@ -1674,6 +1673,9 @@ proc loadtheme {file} {
 proc themereplace {targetString section} {
 	global theme
 
+	## Escape any "$" characters so they aren't interpreted as variables in the final "subst".
+	set targetString [string map {$ \\$} $targetString]
+
 	# We replace %cX{string}, %b{string} and %u{string} with their coloured, bolded and underlined equivilants ;)
 	# We also do the justification and padding that is required for %r / %l / %m to work.
 	# bold and underline replacement should not be needed here...
@@ -1720,7 +1722,7 @@ proc themereplace_startup {rstring} {
 		regsub -all {%b\{([^\{\}]+)\}} $rstring {\\002\1\\002} rstring
 		regsub -all {%u\{([^\{\}]+)\}} $rstring {\\037\1\\037} rstring
 	}
-	return [subst -nocommands $rstring]
+	return [subst -nocommands -novariables $rstring]
 }
 
 #################################################################################
