@@ -224,36 +224,40 @@ void buffer_progress_bar(struct VARS *raceI) {
  * Modified: 01.16.2002
  */
 void move_progress_bar(short int delete, struct VARS *raceI) {
- char 		*bar;
- int		n;
- regex_t        preg;
- regmatch_t     pmatch[ 1 ];
+	char		*bar;
+	int			n;
+	regex_t		preg;
+	regmatch_t	pmatch[ 1 ];
 
- regcomp( &preg, del_progressmeter, REG_NEWLINE|REG_EXTENDED );
- n = direntries;
+	regcomp(&preg, del_progressmeter, REG_NEWLINE|REG_EXTENDED);
+	n = direntries;
 
- if ( delete ) {
-	while(n--) {
-		if ( regexec( &preg, dirlist[n]->d_name, 1, pmatch, 0) == 0 ) {
-			if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[n]) ) {
-				remove(dirlist[n]->d_name);
-				*dirlist[n]->d_name = 0;
-				return;
+	if (delete) {
+		d_log("Removing progress bar.");
+		while (n--) {
+			if ( regexec( &preg, dirlist[n]->d_name, 1, pmatch, 0) == 0 ) {
+				if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[n]) ) {
+					d_log("Found progress bar (%s), removing.", dirlist[n]->d_name);
+					remove(dirlist[n]->d_name);
+					*dirlist[n]->d_name = 0;
+					return;
 				}
 			}
 		}
 	} else {
-	if ( ! raceI->total.files ) return;
-	bar = convert(raceI, userI, groupI, progressmeter);
-	while(n--) {
-		if ( regexec( &preg, dirlist[n]->d_name, 1, pmatch, 0) == 0 ) {
-			if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[n]) ) {
-				 rename(dirlist[n]->d_name, bar);
-				return;
+		d_log("Moving (updating) progress bar.");
+		if (!raceI->total.files) return;
+		bar = convert(raceI, userI, groupI, progressmeter);
+		while (n--) {
+			if (regexec( &preg, dirlist[n]->d_name, 1, pmatch, 0) == 0) {
+				if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[n])) {
+					d_log("Found progress bar (%s), renaming (to %s).", dirlist[n]->d_name, bar);
+					rename(dirlist[n]->d_name, bar);
+					return;
 				}
 			}
 		}
-	createstatusbar(bar);
+		createstatusbar(bar);
 	}
 }
 
