@@ -7,10 +7,13 @@
 #################################################################################
 # Read The Config                                                               #
 #################################################################################
+interp alias {} istrue {} string is true -strict
+interp alias {} isfalse {} string is false -strict
+
 set dver "0.0.4"
-set dzerror "0"
-set pid 0
+set dzerror 0; set pid 0
 set scriptpath [file dirname [info script]]
+
 putlog "Launching dZSBot (v$dver) for zipscript-c..."
 
 if {[catch {source $scriptpath/dZSbconf.defaults.tcl} tmperror]} {
@@ -30,12 +33,19 @@ if {[catch {source $scriptpath/dZSbvars.tcl} tmperror]} {
 }
 
 foreach bin [array names binary] {
-	if {$bin == "NCFTPLS" && $bnc(ENABLED) != "YES"} { continue; }
-	if {$bin == "PING" && ($bnc(ENABLED) != "YES" || $bnc(PING) != "YES")} { continue; }
+	if {$bin == "NCFTPLS" && ![istrue $bnc(ENABLED)]} {continue}
+	if {$bin == "PING" && (![istrue $bnc(ENABLED)] || ![istrue $bnc(PING)])} {continue}
 
 	if {![file executable $binary($bin)]} {
 		putlog "dZSbot: Wrong path/missing bin for $bin - Please fix."
-		set dzerror "1"
+		set dzerror 1
+	}
+}
+
+foreach fname [array names location] {
+	if {![file exists $location($fname)]} {
+		putlog "dZSbot: Wrong path/missing bin for $fname - Please fix."
+		set dzerror 1
 	}
 }
 
@@ -43,16 +53,16 @@ set countlog 0
 foreach log [array names glftpdlog] {
 	if {![file exists $glftpdlog($log)]} {
 		putlog "dZSbot: Could not find log file $glftpdlog($log)."
-		set dzerror "1"
+		set dzerror 1
 		unset glftpdlog($log)
 	} else {
-		set countlog [expr $countlog + 1]
+		incr countlog
 		set lastoct($log) [file size $glftpdlog($log)]
 	}
 }
-if { $countlog == 0 } {
+if {$countlog == 0} {
 	putlog "dZSbot: WARNING! No gl logfiles found!"
-	set dzerror "1"
+	set dzerror 1
 } else {
 	putlog "dZSbot: Number of gl logfiles found: $countlog"
 }
@@ -61,35 +71,36 @@ set countlog 0
 foreach login [array names loginlog] {
 	if {![file exists $loginlog($login)]} {
 		putlog "dZSbot: Could not find log file $loginlog($login)."
-		set dzerror "1"
+		set dzerror 1
 		unset loginlog($login)
 	} else {
-		set countlog [expr $countlog + 1]
+		incr countlog
 		set loglastoct($login) [file size $loginlog($login)]
 	}
 }
-if { $countlog == 0 } {
+if {!$countlog} {
 	putlog "dZSbot: WARNING! No login logfiles found!"
 } else {
 	putlog "dZSbot: Number of login logfiles found: $countlog"
 }
 
-if {![info exists use_glftpd2] || ($use_glftpd2 == "AUTO" && ![info exists binary(GLFTPD)])} {
-	putlog "dZSbot: you did not thouroughly edit your $scriptpath/dZSbconf.tcl file. Try again."
-	die
-}
-
-if {$use_glftpd2 == "AUTO"} {
-	set glversion [exec strings $binary(GLFTPD) | grep -i "^glftpd " | cut -f1 -d. | tr A-Z a-z]
-	if {$glversion == "glftpd 1"} {
-		putlog "dZSbot: detected $glversion, running in legacy mode."
-		set use_glftpd2 "NO"
-	} elseif {$glversion == "glftpd 2"} {
-		putlog "dZSbot: detected $glversion, running in standard mode."
-		set use_glftpd2 "YES"
-	} else {
-		putlog "dZSbot: autodetecting glftpd-version failed. Set use_glftpd in $scriptpath/dZSbconf.tcl manually."
+if {[string equal -nocase "AUTO" $use_glftpd2]} {
+	if {![info exists binary(GLFTPD)]} {
+		die "dZSbot: you did not thouroughly edit your $scriptpath/dZSbconf.tcl file. Try again."
 	}
+	set glversion [exec strings $binary(GLFTPD) | grep -i "^glftpd " | cut -f1 -d. | tr A-Z a-z]
+
+	if {[string equal "glftpd 1" $glversion]} {
+		putlog "dZSbot: detected $glversion, running in legacy mode."
+		set glversion 1
+	} elseif {[string equal "glftpd 2" $glversion]} {
+		putlog "dZSbot: detected $glversion, running in standard mode."
+		set glversion 2
+	} else {
+		die "dZSbot: autodetecting glftpd-version failed. Set \"use_glftpd2\" in $scriptpath/dZSbconf.tcl manually."
+	}
+} else {
+	set glversion [expr [istrue $use_glftpd2] ? 2 : 1]
 }
 
 if {![info exists invite_channels] && [info exists chanlist(INVITE)]} {
@@ -161,7 +172,7 @@ proc bindcommands {cmdpre} {
 	bind pub -|- [set cmdpre]wkup    [list showstats "-u" "-w"]
 }
 
-if {[string equal -nocase "YES" $bindnopre]} {
+if {[istrue $bindnopre]} {
 	bindcommands "!"
 } elseif {![string equal "!" $cmdpre]} {
 	catch {unbind pub -|- !bnc         ng_bnc_check}
@@ -207,31 +218,6 @@ if {[string equal -nocase "YES" $bindnopre]} {
 ## Bind the user defined command prefix.
 bindcommands $cmdpre
 
-## Some 'constants'
-proc DEFAULT_LEVEL {{string 0}} {
-	if {$string} { return [DEBUG_INFO 1];
-	} else { return [DEBUG_INFO]; }
-}
-
-proc DEBUG_INFO {{string 0}} {
-	if {$string} { return "D/iNFO";
-	} else { return 2; }
-}
-proc DEBUG_WARN {{string 0}} {
-	if {$string} { return "D/WARNiNG";
-	} else { return 1; }
-}
-proc DEBUG_ERROR {{string 0}} {
-	if {$string} { return "D/ERROR";
-	} else { return 0; }
-}
-proc DEBUG_FATAL {{string 0}} {
-	if {$string} { return "D/FATAL";
-	} else { return 0; }
-}
-
-set debuglevel [DEBUG_INFO]
-
 #################################################################################
 # Check if the release should not be announced                                  #
 #################################################################################
@@ -260,7 +246,7 @@ proc typecheck {section msgtype} {
 # Main loop - Parses data from logs.                                            #
 #################################################################################
 proc readlog {} {
-	global dZStimer defaultsection glftpdlog invite_channels lastoct loginlog loglastoct max_log_change pid use_glftpd2
+	global dZStimer defaultsection glftpdlog glversion invite_channels lastoct loginlog loglastoct max_log_change pid
 	global chanlist disable variables msgreplace msgtypes privchannel privgroups privusers
 
 	set dZStimer [utimer 1 "readlog"]
@@ -448,7 +434,7 @@ proc readlog {} {
 #		}
 	}
 
-	if {[string equal -nocase "YES" $use_glftpd2]} {
+	if {$glversion == 2} {
 		launchnuke
 	}
 
@@ -482,7 +468,7 @@ proc postcmd {msgtype section path} {
 # Get Section Name                                                              #
 #################################################################################
 proc getsectionname {checkpath} {
-	global defaultsection mpath msgtypes paths sections
+	global defaultsection mpath paths sections
 	set bestmatch 0
 	set returnval $defaultsection
 
@@ -561,44 +547,42 @@ proc speed_convert {value section} {
 	global speedmeasure speedthreshold theme
 
 	switch -exact -- [string tolower $speedmeasure] {
-		"mb"		{
-					set value [format "%.2f" [expr $value / 1024.0]]
-					set type $theme(MB)
-				}
-		"kbit"		{
-					set value [expr $value * 8]
-					set type $theme(KBIT)
-				}
-		"mbit"		{
-					set value [format "%.1f" [expr $value * 8 / 1000.0]]
-					set type $theme(MBIT)
-				}
-		"autobit"	{
-					if {$value > $speedthreshold} {
-						set value [format "%.1f" [expr $value * 8 / 1000.0]]
-						set type $theme(MBIT)
-					} else {
-						set value [expr $value * 8]
-						set type $theme(KBIT)
-					}
-				}
-		"autobyte"	{
-					if {$value > $speedthreshold} {
-						set value [format "%.2f" [expr $value / 1024.0]]
-						set type $theme(MB)
-					} else {
-						set type $theme(KB)
-					}
-				}
-		"disabled"	{
-					set type ""
-				}
-		"default"	{
-					set type $theme(KB)
-				}
-
+		"mb" {
+			set value [format "%.2f" [expr $value / 1024.0]]
+			set type $theme(MB)
+		}
+		"kbit" {
+			set value [expr $value * 8]
+			set type $theme(KBIT)
+		}
+		"mbit" {
+			set value [format "%.1f" [expr $value * 8 / 1000.0]]
+			set type $theme(MBIT)
+		}
+		"autobit" {
+			if {$value > $speedthreshold} {
+				set value [format "%.1f" [expr $value * 8 / 1000.0]]
+				set type $theme(MBIT)
+			} else {
+				set value [expr $value * 8]
+				set type $theme(KBIT)
+			}
+		}
+		"autobyte" {
+			if {$value > $speedthreshold} {
+				set value [format "%.2f" [expr $value / 1024.0]]
+				set type $theme(MB)
+			} else {
+				set type $theme(KB)
+			}
+		}
+		"disabled" {
+			set type ""
+		}
+		"default" {
+			set type $theme(KB)
+		}
 	}
-
 	return [themereplace "$value$type" $section]
 
 }
@@ -629,11 +613,11 @@ proc basicreplace {string section} {
 # CONVERT COOKIES TO DATA                                                       #
 #################################################################################
 proc parse {msgtype msgline section} {
-	global variables announce random mpath use_glftpd2 theme theme_fakes defaultsection pid disable sitename
+	global announce defaultsection disable mpath pid random sitename theme theme_fakes glversion variables
 	set type $msgtype
 
 	if {[string equal $type "NUKE"] || [string equal $type "UNNUKE"]} {
-		if { $use_glftpd2 != "YES" } {
+		if {$glversion == 1} {
 			fuelnuke $type [lindex $msgline 0] $section $msgline
 		} else {
 			launchnuke2 $type [lindex $msgline 0] $section [lrange $msgline 1 3] [lrange $msgline 4 end]
@@ -719,15 +703,17 @@ proc parse {msgtype msgline section} {
 			set values [lindex $msgline $cnt]
 			set output2 ""
 			foreach value $values {
-				if { $cnt2 == 0 } { append output2 "$announce(${type}_LOOP${loop})" }
-				if { [string match "*speed" [lindex $vari $cnt2]] } {
+				if {$cnt2 == 0} {
+					append output2 "$announce(${type}_LOOP${loop})"
+				}
+				if {[string match "*speed" [lindex $vari $cnt2]]} {
 					set output2 [replacevar $output2 "[lindex $vari $cnt2]" [speed_convert $value $section]]
 				} else {
 					set output2 [replacevar $output2 "[lindex $vari $cnt2]" $value]
 				}
-				set cnt2 [expr $cnt2 + 1]
-				if { [lindex $vari $cnt2] ==  "" } {
-					set cnt3 [expr $cnt3 + 1]
+				incr cnt2
+				if {[lindex $vari $cnt2] == ""} {
+					incr cnt3
 					set cnt2 0
 				}
 			}
@@ -736,7 +722,7 @@ proc parse {msgtype msgline section} {
 			set output2 [replacevar $output2 "%splitter" $theme(SPLITTER)]
 			set output2 [trimtail $output2 $theme(SPLITTER)]
 			set output [replacevar $output "%loop$loop" $output2]
-			set loop [expr $loop + 1]
+			incr loop
 		} else {
 			if {[string match "*speed" $vari]} {
 				set output [replacevar $output $vari [speed_convert [lindex $msgline $cnt] $section]]
@@ -744,7 +730,7 @@ proc parse {msgtype msgline section} {
 				set output [replacevar $output $vari [lindex $msgline $cnt]]
 			}
 		}
-		set cnt [expr $cnt + 1]
+		incr cnt
 	}
 
 	return [themereplace $output $section]
@@ -1730,7 +1716,7 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 
 	# We should probably just not bind at all, but this is easier.
 	# (It's easier since we won't have to deal with unbinding etc)
-	if {$bnc(ENABLED) != "YES" || ![checkchan $nick $chan]} {return}
+	if {![istrue $bnc(ENABLED)] || ![checkchan $nick $chan]} {return}
 
 	putquick "NOTICE $nick :Checking bouncer(s) status..."
 	set count 0
@@ -1915,62 +1901,12 @@ proc themereplace {targetString section} {
 }
 
 #################################################################################
-# OUTPUTS STUFF TO IRC / DCC CHAT IF DEBUG MODE ON :)                           #
-#################################################################################
-proc dprint {arg1 {arg2 0}} {
-	global disable announce chanlist debuglevel
-
-	if {$arg2 != 0} {
-		set level $arg1
-		set string $arg2
-	} else {
-		set level "DEFAULT_LEVEL"
-		set string $arg1
-	}
-
-	set level_str [$level "1"]
-	set level     [$level]
-
-	if {[llength [array names disable DEBUG]] == 0} {
-		putlog "dZSbot error: disable(DEBUG) not set, defaulting to 0."
-		set disable(DEBUG) 0
-	}
-	if {[llength [array names disable DEBUG_DCC]] == 0} {
-		putlog "dZSbot error: disable(DEBUG_DCC) not set, defaulting to 0."
-		set disable(DEBUG_DCC) 0
-	}
-
-	if {$disable(DEBUG) && $disable(DEBUG_DCC)} { return; }
-	if {$debuglevel < $level} { return; }
-
-	if {!$disable(DEBUG_DCC)} {
-		if {[llength [array names announce DEBUG_DCC]] > 0} {
-			set outp [themereplace [basicreplace $announce(DEBUG_DCC) $level_str] "none"]
-			putlog "dZSbot debug: $outp"
-		} else {
-			putlog "dZSbot debug: \[$section\] $txt"
-		}
-	}
-
-	if {!$disable(DEBUG)} {
-		set chans $chanlist(DEFAULT)
-		set outp $announce(DEFAULT)
-		if {[llength [array names chanlist DEBUG]] > 0} { set chans $chanlist(DEBUG) }
-		if {[llength [array names announce DEBUG]] > 0} { set outp $announce(DEBUG) }
-		set outp [themereplace [basicreplace $outp $level_str] "none"
-		foreach chan $chans { putquick "PRIVMSG $chan :$outp" }
-	}
-}
-
-#################################################################################
 # START UP STUFF                                                                #
 #################################################################################
 
-if {[info exists enable_irc_invite]} {
-	if {[string equal -nocase $enable_irc_invite "YES"]} {
-		bind msg -|- !invite invite
-	}
-} else { dprint DEBUG_WARN "Could not find variable 'enable_irc_invite', pretending it's set to \"NO\"." }
+if {[istrue $enable_irc_invite]} {
+	bind msg -|- !invite invite
+}
 
 if {[info exists dZStimer]} {
 	if {[catch {killutimer $dZStimer} err]} {
@@ -2024,11 +1960,9 @@ foreach rep [array names msgreplace] {
 	}
 }
 
-if { $dzerror == "0" } {
+if {!$dzerror} {
 	putlog "dZSbot loaded ok!"
 } else {
 	putlog "dZSbot had errors. Please check log and fix."
-	if { $die_on_error == "YES" } {
-		die
-	}
+	if {[istrue $die_on_error]} {die}
 }

@@ -44,9 +44,9 @@ set binary(PING)            "/bin/ping"
 
 # important settings #
 ######################
-set bindnopre               "YES"
+set bindnopre               "TRUE"
 set disable(TRIGINALLCHAN)  0
-set bnc(ENABLED)            "NO"
+set bnc(ENABLED)            "FALSE"
 set bnc(LIST)               "uk:msn.test1.com:123 de:msn.test2.com:345 se:msn.test3.com:567"
 set bnc(USER)               "bncuser"
 set bnc(PASS)               "bncpass"
@@ -63,21 +63,21 @@ set paths(APPS)             "/site/incoming/apps/*"
 set paths(GAMES)            "/site/incoming/games/*"
 set paths(MP3)              "/site/incoming/mp3/*"
 set paths(MV)               "/site/incoming/musicvideos/*"
-set chanlist(0DAY)          "$mainchan"
-set chanlist(APPS)          "$mainchan"
-set chanlist(GAMES)         "$mainchan"
-set chanlist(MP3)           "$mainchan"
-set chanlist(MV)            "$mainchan"
-set chanlist(DEFAULT)       "$mainchan"
-set chanlist(WELCOME)       "$mainchan"
+set chanlist(0DAY)          $mainchan
+set chanlist(APPS)          $mainchan
+set chanlist(GAMES)         $mainchan
+set chanlist(MP3)           $mainchan
+set chanlist(MV)            $mainchan
+set chanlist(DEFAULT)       $mainchan
+set chanlist(WELCOME)       $mainchan
 set statsection(0)          "MP3"
 set statsection(1)          "0DAY"
 set statsection(2)          "ISO"
 
 # Invite #
 ##########
-set enable_irc_invite       "NO"
-set chanlist(INVITE)        "$mainchan"
+set enable_irc_invite       "FALSE"
+set chanlist(INVITE)        $mainchan
 set invite_channels         $chanlist(INVITE)
 
 # Stuff you may need to change #

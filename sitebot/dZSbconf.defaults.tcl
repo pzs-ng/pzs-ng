@@ -26,64 +26,6 @@ set loginlog(LOGINLOG01)    "/glftpd/ftp-data/logs/login.log"
 #set loginlog(LOGINLOG02)   "/glftpd/ftp-data/logs.ext/login.log"
 set max_log_change          3000
 
-# Should the bot die if a binary is missing - or just output that something is wrong?
-set die_on_error            "NO"
-
-# Allow people to invite themselves to the channel through IRC. WARNING! This is
-# considered a security threat because if someone steals the nickname of the bot
-# they will be able to easily harvest usernames/passwords. CONSIDER WITH CAUTION!
-# You can set it to "YES" or "NO".
-set enable_irc_invite       "NO"
-
-# Are you using glftpd2? Default setting ("AUTO") should be safe,
-# enables autodetection (if binary(GLFTPD) is set correctly)
-# To override autodetection (or if it just doesn't work), you can set
-# it to "YES" or "NO".
-set use_glftpd2         "AUTO"
-
-# Sitename is for the %sitename-cookie in announces.
-set sitename            "pzs-ng"
-# Prefix on commands (f. x. !pnfree if cmdpre is !pn, !free if cmdpre is !, etc)
-# bindnopre does not replace the cmd pre command, it meirly adds a second
-# trigger option. example: you can set cmdpre to !pn but if bindnopre is set to # "YES" then the sitebot will respond to !pnbnc and also !bnc useful for rings.
-set cmdpre          "!pn"
-set bindnopre           "YES"
-
-# Allow people to check bnc-status using !bnc/!PREFIXbnc. In some / many cases,
-# this is not needed. It will also disable check of binary(NCFTPLS).
-# You can set it to "YES" or "NO".
-set bnc(ENABLED)        "YES"
-# List of bnc's (used for BNC-testing with the <prefix>bnc command in channel)
-# Format: countrycode:hostname:port (space seperated)
-set bnc(LIST)           "uk:msn.test1.com:123 de:msn.test2.com:345 se:msn.test3.com:567"
-# Username and password to use for testing bncs (must exist with this box's ip added)
-set bnc(USER)           "bncuser"
-set bnc(PASS)           "bncpass"
-# Number of seconds to wait before giving up on connecting to the BNCs (Note that SSL takes extra time)
-set bnc(TIMEOUT)        "20"
-# Should we make a ping test too? TRUE/FALSE
-set bnc(PING)           "TRUE"
-
-# Your sites bandwidth - used for % of bandwidth used calculations in !bw (in kilobytes)
-# 100 mbit full duplex
-set speed(INCOMING)     "12500"
-set speed(OUTGOING)     "12500"
-# 4096 / 1024 kbit asymmetric dsl
-#set speed(INCOMING)    "512"
-#set speed(OUTGOING)    "128"
-# etc.
-
-# speed announces
-# speed should be quoted in 'kb' (kilobytes), 'mb' (megabytes), 'kbit' (kilobits),
-# 'mbit' (megabits), 'autobyte', 'autobit' or 'disabled'.
-set speedmeasure        "autobyte"
-# threshold used on auto-setting, to move from on to the other. (normally is 1000 or 1024)
-set speedthreshold      1024
-
-# During !idlers what is the minimum amount of seconds for a user to be shown as "idle"
-# set to 0 to show all users who are not currently upload/downloading (may be a lot)
-set minidletime         "30"
-
 # These are the binaries the script will use. They are usually best left
 # as their default values (btw, check that they all are where they should
 # and chmodded to eXecutable (chmod 755 <file>).
@@ -100,8 +42,53 @@ set binary(NCFTPLS)     "/usr/local/bin/ncftpls"
 set binary(DF)          "/bin/df"
 
 # This is needed for autodetection of glversion. If you unset this, use_glftpd2
-# MUST be set to YES or NO.
+# MUST be set to TRUE or FALSE.
 set binary(GLFTPD)      "/glftpd/bin/glftpd"
+
+# Should the bot die if a binary is missing - or just output that something is wrong?
+set die_on_error        "FALSE"
+
+# Allow people to invite themselves to the channel through IRC. WARNING! This is
+# considered a security threat because if someone steals the nickname of the bot
+# they will be able to easily harvest usernames/passwords. CONSIDER WITH CAUTION!
+set enable_irc_invite   "TRUE"
+
+# Are you using glftpd2? Default setting ("AUTO") should be safe,
+# enables autodetection (if binary(GLFTPD) is set correctly)
+# To override autodetection (or if it just doesn't work), you can set
+# it to "TRUE" or "FALSE".
+set use_glftpd2         "AUTO"
+
+# Sitename is for the %sitename-cookie in announces.
+set sitename            "pzs-ng"
+
+# Prefix on commands (f. x. !pnfree if cmdpre is !pn, !free if cmdpre is !, etc)
+# bindnopre does not replace the cmd pre command, it meirly adds a second
+# trigger option. example: you can set cmdpre to !pn but if bindnopre is set to
+# "TRUE" then the sitebot will respond to !pnbnc and also !bnc useful for rings.
+set cmdpre              "!pn"
+set bindnopre           "TRUE"
+
+# Your sites bandwidth - used for % of bandwidth used calculations in !bw (in kilobytes)
+# 100 mbit full duplex
+set speed(INCOMING)     12500
+set speed(OUTGOING)     12500
+# 4096 / 1024 kbit asymmetric dsl
+#set speed(INCOMING)    512
+#set speed(OUTGOING)    128
+# etc.
+
+# speed announces
+# speed should be quoted in 'kb' (kilobytes), 'mb' (megabytes), 'kbit' (kilobits),
+# 'mbit' (megabits), 'autobyte', 'autobit' or 'disabled'.
+set speedmeasure        "autobyte"
+
+# threshold used on auto-setting, to move from on to the other. (normally is 1000 or 1024)
+set speedthreshold      1024
+
+# During !idlers what is the minimum amount of seconds for a user to be shown as "idle"
+# set to 0 to show all users who are not currently upload/downloading (may be a lot)
+set minidletime         30
 
 # Default number of results to return for !new, !search, !nukes and !unnukes.
 set default_results     10
@@ -119,6 +106,29 @@ set device(0)           "/dev/ad0s1f MP3"
 # the rest of the announce(FREE) into account yourself) Also, it'll output
 # total on all lines, if you have multiple. Set it to 0 to disable.
 set dev_max_length      300
+
+#############################################################
+# BOUNCERS                                                  #
+#############################################################
+
+# Allow people to check bnc-status using !bnc/!PREFIXbnc. In some / many cases,
+# this is not needed. It will also disable check of binary(NCFTPLS).
+# You can set it to "TRUE" or "FALSE".
+set bnc(ENABLED)        "TRUE"
+
+# List of bnc's (used for BNC-testing with the <prefix>bnc command in channel)
+# Format: countrycode:hostname:port (space seperated)
+set bnc(LIST)           "uk:msn.test1.com:123 de:msn.test2.com:345 se:msn.test3.com:567"
+
+# Username and password to use for testing bncs (must exist with this box's ip added)
+set bnc(USER)           "bncuser"
+set bnc(PASS)           "bncpass"
+
+# Number of seconds to wait before giving up on connecting to the BNCs (Note that SSL takes extra time)
+set bnc(TIMEOUT)        "20"
+
+# Should we make a ping test too? TRUE/FALSE
+set bnc(PING)           "TRUE"
 
 #############################################################
 # SECTIONS                                                  #
@@ -347,10 +357,10 @@ set hidenuke                        "UNKNOWN"
 # Variables pasted from the zipscript       <- moved to dZSbvars.tcl
 # Variables pasted from 3rd party apps      <- moved to dZSbvars.tcl
 
-set variables(PRE)      "%pf %releasename %pregroup %section %files %mbytes %cds %who %user %g_name %tagline"
-set variables(INVITE)       "%u_ircnick %u_name %g_name"
-set variables(REQUEST)      "%releasename %u_name %g_name %u_tagline"
-set variables(REQFILLED)    "%releasename %u_name %g_name %u_tagline %u_requester"
+set variables(PRE)       "%pf %releasename %pregroup %section %files %mbytes %cds %who %user %g_name %tagline"
+set variables(INVITE)    "%u_ircnick %u_name %g_name"
+set variables(REQUEST)   "%releasename %u_name %g_name %u_tagline"
+set variables(REQFILLED) "%releasename %u_name %g_name %u_tagline %u_requester"
 
 # Using psxc-imdb, setting TRIGGER to "IMDBVAR" and LOGFORMAT to "SPECIAL" will allow you use format the output in the bot.
 set variables(IMDBVAR)  "%pf %imdbdirname %imdburl %imdbtitle %imdbgenre %imdbrating %imdbcountry %imdblanguage %imdbcertification %imdbruntime %imdbdirector %imdbbusinessdata %imdbpremiereinfo %imdblimitedinfo %imdbvotes %imdbscore %imdbname %imdbyear %imdbnumscreens %imdbislimited %imdbcastleadname %imdbcastleadchar %imdbtagline %imdbplot %imdbbar %imdbcasting %imdbcommentshort %imdbdestination"
@@ -371,9 +381,9 @@ set variables(IMDBFIND)     "%pf %msg"
 
 # IMDB variables
 set zeroconvert(%imdbdirname)       "N/A"
-set zeroconvert(%imdburl)       "N/A"
-set zeroconvert(%imdbtitle)     "N/A"
-set zeroconvert(%imdbgenre)     "N/A"
+set zeroconvert(%imdburl)           "N/A"
+set zeroconvert(%imdbtitle)         "N/A"
+set zeroconvert(%imdbgenre)         "N/A"
 set zeroconvert(%imdbrating)        "N/A"
 set zeroconvert(%imdbcountry)       "N/A"
 set zeroconvert(%imdblanguage)      "N/A"
@@ -383,17 +393,17 @@ set zeroconvert(%imdbdirector)      "N/A"
 set zeroconvert(%imdbbusinessdata)  "N/A"
 set zeroconvert(%imdbpremiereinfo)  "N/A"
 set zeroconvert(%imdblimitedinfo)   "N/A"
-set zeroconvert(%imdbvotes)     "Less than 5"
-set zeroconvert(%imdbscore)     "0"
-set zeroconvert(%imdbname)      "N/A"
-set zeroconvert(%imdbyear)      "N/A"
+set zeroconvert(%imdbvotes)         "Less than 5"
+set zeroconvert(%imdbscore)         "0"
+set zeroconvert(%imdbname)          "N/A"
+set zeroconvert(%imdbyear)          "N/A"
 set zeroconvert(%imdbnumscreens)    "N/A"
 set zeroconvert(%imdbislimited)     "No idea."
 set zeroconvert(%imdbcastleadname)  "Uknown"
 set zeroconvert(%imdbcastleadchar)  "Uknown"
 set zeroconvert(%imdbtagline)       "No info found."
-set zeroconvert(%imdbplot)      "No info found."
-set zeroconvert(%imdbbar)       ".........."
+set zeroconvert(%imdbplot)          "No info found."
+set zeroconvert(%imdbbar)           ".........."
 set zeroconvert(%imdbcasting)       "N/A"
 set zeroconvert(%imdbcommentshort)  "N/A"
 
