@@ -571,7 +571,7 @@ proc speed_convert {value} {
 						set type $theme(KB)
 					}
 				}
-		"disable"	{
+		"disabled"	{
 					set type ""
 				}
 		"default"	{
@@ -694,7 +694,11 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 			set output2 ""
 			foreach value $values {
 				if { $cnt2 == 0 } { append output2 "$announce(${type}_LOOP${loop})" }
-				set output2 [replacevar $output2 "[lindex $vari $cnt2]" $value]
+				if { [string match "*speed" [lindex $vari $cnt2]] } {
+					set output2 [replacevar $output2 "[lindex $vari $cnt2]" [speed_convert $value]]
+				} else {
+					set output2 [replacevar $output2 "[lindex $vari $cnt2]" $value]
+				}
 				set cnt2 [expr $cnt2 + 1]
 				if { [lindex $vari $cnt2] ==  "" } {
 					set cnt3 [expr $cnt3 + 1]
@@ -707,8 +711,13 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 			set output2 [string trim $output2 "$theme(SPLITTER)"]
 			set output [replacevar $output "%loop$loop" $output2]
 			set loop [expr $loop + 1]
+		} else {
+			if { [string match "*speed" $vari] } {
+				set output [replacevar $output $vari [speed_convert [lindex $msgline $cnt]]]
+			} else {
+				set output [replacevar $output $vari [lindex $msgline $cnt]]
+			}
 		}
-		set output [replacevar $output $vari [lindex $msgline $cnt]]
 		set cnt [expr $cnt + 1]
 	}
 
