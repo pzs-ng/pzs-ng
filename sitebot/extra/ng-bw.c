@@ -5,7 +5,7 @@
   "UploadThreads IncomingTraffic DownloadThreads OutgoingTraffic TotalThreads TotalTraffic TotalBrowsing TotalIdle TotalLoggedIn"
 
   To Compile:
-  gcc ng-bw.c -o bin-file-to-output
+  gcc -O2 -Wall -pedantic -static -o ng-bw ng-bw.c
 
 */
 
@@ -17,10 +17,11 @@
 #include <sys/types.h> 
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include "../../zipscript/conf/zsconfig.h"
 
-/* Change this if you are using a custom ipc-key */
-static key_t key = 0x0000DEAD; 
-
+/* Change this if you are using a custom ipc-key
+static key_t KEY = 0x0000DEAD; 
+*/
 
 /* You shouldn't need to modify below here */
 
@@ -47,7 +48,7 @@ int main() {
 	int retv;
 	int shmid;
 	
-	if ((shmid = shmget(key, 0,0)) == -1) {
+	if ((shmid = shmget(KEY, 0,0)) == -1) {
 		printf("0 0.0 0 0.0 0 0.0 0 0 0\n");
 		exit(2);
 	}
@@ -131,7 +132,8 @@ int OutputData() {
 			
 		}
 	}
-	// UploadThreads IncomingTraffic DownloadThreads OutgoingTraffic TotalThreads TotalTraffic TotalBrowsing TotalIdle TotalLoggedIn
+	/* UploadThreads IncomingTraffic DownloadThreads OutgoingTraffic TotalThreads TotalTraffic TotalBrowsing TotalIdle TotalLoggedIn
+*/
 	printf("%d %.1f %d %.1f %d %.1f %d %d %d\n",
 							u_xfers, u_speed,
 							d_xfers, d_speed,
