@@ -1,0 +1,208 @@
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT()
+AC_CONFIG_HEADER(config.h)
+#AC_PREFIX_DEFAULT(/glftpd/)
+
+AC_CANONICAL_BUILD 
+AC_CANONICAL_HOST 
+
+dnl Checks for programs.
+AC_PROG_CC
+
+if [[ "$CC" = "gcc" ]]; then
+	CFLAGS="$CFLAGS -W -Wall -Wundef -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline"
+fi
+
+AC_CHECK_PROG(GREP, grep, grep)
+if [[ -z "$GREP" ]]; then AC_MSG_ERROR([Couldn't find grep, quitting!]); fi
+AC_CHECK_PROG(STRINGS, strings, strings)
+if [[ -z "$STRINGS" ]]; then AC_MSG_ERROR([Couldn't find strings, quitting!]); fi
+AC_CHECK_PROG(CUT, cut, cut)
+if [[ -z "$CUT" ]]; then AC_MSG_ERROR([Couldn't find cut, quitting!]); fi
+AC_CHECK_PROG(RM, rm, rm)
+if [[ -z "$RM" ]]; then AC_MSG_ERROR([Couldn't find rm, quitting!]); fi
+AC_CHECK_PROG(INSTALL, install, install)
+if [[ -z "$INSTALL" ]]; then AC_MSG_ERROR([Couldn't find install, quitting!]); fi
+AC_CHECK_PROG(MAKE, make, make)
+if [[ -z "$MAKE" ]]; then AC_MSG_ERROR([Couldn't find make, quitting!]); fi
+
+dnl Checks for libraries.
+LCRYPT=""; PASSCHK=""
+if [[ $(uname -s) != "OpenBSD" ]]; then
+	#AC_CHECK_LIB(crypt, crypt, LCRYPT="-lcrypt", AC_MSG_ERROR([[Couldn't find libcrypt, quitting!]]))
+	AC_CHECK_LIB(crypt, crypt, LCRYPT="-lcrypt")
+fi
+
+AH_TEMPLATE([PZSNG_SSL_EXT], [Define to 1 to if you have the required SSL-libs in place])
+PZSNG_SSL
+if [[ -n "$SSL_LIBS" ]]; then
+	PASSCHK="passchk"
+	PASSCHK2="passchk-install"
+fi
+
+dnl Checks for header files.
+AC_HEADER_TIME
+AC_HEADER_DIRENT
+AC_HEADER_STDC
+AC_CHECK_HEADERS(pwd.h regex.h fnmatch.h fcntl.h errno.h, , AC_MSG_ERROR([[Couldn't find required header, quitting!]]))
+AC_CHECK_HEADERS(sys/ipc.h sys/param.h sys/shm.h sys/time.h sys/uio.h sys/wait.h, , AC_MSG_ERROR([[Couldn't find required header, quitting!]]))
+AC_CHECK_HEADERS(hsregex.h, CFLAGS="$CFLAGS -DUSE_HSREGEX")
+
+dnl Checks for library functions.
+AC_CHECK_FUNC(strlcpy, [AC_DEFINE(HAVE_STRLCPY, 1, [Define to 1 if you have the strlcpy() function available])])
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+dnl This one isn't used yet.
+
+dnl Features
+
+dnl OS :)
+
+#os=unknown
+#static=no
+#case $(uname -s) in
+#    [[Ll][Ii][Nn][Uu][Xx]])
+#		os=linux
+#		static=no
+#        ;;
+#	[oO][pP][eE][nN][bB][sS][dD])
+#		LCRYPT=""
+#		;;
+#    [*[bB][sS][dD]*])
+#		os=bsd
+#		AC_MSG_RESULT([NOTICE: BSD flavour detected, linking statically.])
+#		static=yes
+#        ;;
+#    [Ss][Uu][Nn][Oo][Ss])
+#		os=sunos
+#		static=no
+#        ;;
+#
+#esac
+
+#if test "$os" = "unknown" ; then
+# AC_MSG_ERROR([Couldn't identify OS, quitting!])
+#fi
+
+
+case $build in
+	x86_64-*) M32="-m32";;
+esac
+
+#if [[ $(uname -s) = "SunOS" ]]; then
+case $host in
+	*-solaris*)
+		CFLAGS="$CFLAGS -D_SunOS_"
+		SUNOBJS="strsep.o scandir.o"
+		;;
+	*bsd*|*darwin*)	
+		CFLAGS="$CFLAGS -D_BSD_"
+		;;
+esac
+#fi
+
+dnl sitestat5
+AC_ARG_ENABLE(ss5, AS_HELP_STRING([--enable-ss5], [compiles the zipscript for use with SiteStat 5]), [
+	CFLAGS="$CFLAGS -D_WITH_SS5"
+	! [[ -f zipscript/conf/zsconfig.h ]] && cp -i zipscript/conf/zsconfig.h.ss5.dist zipscript/conf/zsconfig.h
+	]
+)
+
+dnl noformat
+NOFORMAT="-D_WITH_NOFORMAT"
+AC_ARG_ENABLE(format, AS_HELP_STRING([--enable-format], [compiles the zipscript to format the output]), NOFORMAT="")
+
+dnl expert
+AC_ARG_ENABLE(expert, AS_HELP_STRING([--enable-expert], [expert mode - uses full config]), [
+	! [[ -f zipscript/conf/zsconfig.h ]] && cp -i zipscript/conf/zsconfig.h.complete zipscript/conf/zsconfig.h
+	]
+)
+
+dnl altwho
+ALTWHO="-D_WITH_ALTWHO"
+AC_ARG_ENABLE(altwho, AS_HELP_STRING([--disable-altwho], [compiles the sitewho to not use an alternative output on single user who lookups]), ALTWHO="")
+
+dnl Static linking :)
+AC_ARG_ENABLE(static, AS_HELP_STRING([--enable-static], [enable static linking of zs-c]), CFLAGS="$CFLAGS -static"; static="yes")
+if test "$static" = "yes"; then
+  AC_MSG_RESULT([NOTICE: linking statically (--enable-static).])
+else
+  AC_MSG_RESULT([NOTICE: linking dynamically.])
+fi
+
+#dnl GL version =)
+#AC_ARG_ENABLE(gl132, AS_HELP_STRING([--enable-gl132], [disable autodetect of glversion, and compile bot binaries for glftpd 1.32]),
+#              GLVERSION="-DGLVERSION=132"
+#              AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd 1.32. (--enable-gl132).]),
+#              GLVERSION="detect")
+
+#if [[ "$GLVERSION" = "detect" ]]; then
+#  AC_ARG_ENABLE(gl200, AS_HELP_STRING([--enable-gl200], [disable autodetect of glversion, and compile bot binaries for glftpd 2.00]),
+#                GLVERSION="-DGLVERSION=200"
+#                AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd 2.00. (--enable-gl200).]),
+#                GLVERSION="detect")
+#  AC_ARG_ENABLE(gl201, AS_HELP_STRING([--enable-gl201], [disable autodetect of glversion, and compile bot binaries for glftpd 2.01]),
+#                GLVERSION="-DGLVERSION=201"
+#                AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd 2.01. (--enable-gl201).]),
+#                GLVERSION="detect")
+#fi
+
+AC_ARG_WITH(glpath, 
+            AS_HELP_STRING([--with-glpath=PATH],
+                           [specify nondefault path to root glftpd dir (/glftpd per default)]),
+            GLPATH="$withval", GLPATH="/glftpd")
+
+#if [[ "$GLVERSION" = "detect" ]]; then
+#  if [[ ! -d "$GLPATH" ] || [ ! -x "${GLPATH}/bin/glftpd" ]]; then
+#    AC_MSG_ERROR([Invalid glpath "$GLPATH". Use ./configure --with-glpath=PATH with a valid path! (or --enable-gl(132|200) to disable autodetect). Quitting!])
+#  fi
+#  glversion="`strings $GLPATH/bin/glftpd | grep -i '^glftpd ' | cut -c8-11 | tr -d '.'`"
+#  #echo "$v" | grep -E "^(132)|(200)|(201)$"
+#  if [[ "$glversion" = "132" ] || [ "$glversion" = "200" ] || [ "$glversion" = "201" ]]; then
+#    GLVERSION="-DGLVERSION=$glversion"
+#    glversion="`echo "$glversion" | sed 's/^\(.\)/\1\./'`"
+#    AC_MSG_RESULT([NOTICE: detected glversion, compiling bot binaries for glftpd $glversion.])
+#  else
+#    AC_MSG_ERROR([Couldn't detect glversion, please run ./configure --enable-gl132 or ./configure --enable-gl200 or ./configure --enable-gl201. Quitting!])
+#  fi
+#fi
+
+AC_SUBST(SUNOBJS)
+AC_SUBST(NOFORMAT)
+AC_SUBST(ALTWHO)
+AC_SUBST(GLPATH)
+AC_SUBST(GLVERSION)
+AC_SUBST(STATIC)
+AC_SUBST(LCRYPT)
+AC_SUBST(LCRYPTO)
+AC_SUBST(PASSCHK)
+AC_SUBST(PASSCHK2)
+AC_SUBST(MAKE)
+AC_SUBST(M32)
+
+#if [[ "`ls zipscript/conf/zsconfig.h`" = "" ]]; then
+#	cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h  /dev/null 2>&1
+#else
+#	echo "ERROR: You need zsconfig.h in the 'zipscript/conf' directory."
+#	exit 1
+#fi
+
+AC_OUTPUT(Makefile zipscript/src/Makefile zipscript/utils/Makefile sitebot/src/Makefile sitewho/Makefile sitewho/sitewho.conf lib/Makefile lib/strl/Makefile)
+
+! [[ -f zipscript/conf/zsconfig.h ]] && cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h
+
+if [[ "$PASSCHK" = "" ]]; then
+AC_MSG_RESULT(
+$( echo )
+libcrypt/OpenSSL not found. Not building passchk)
+fi
+
+AC_MSG_RESULT(
+$( echo )
+The makefiles are now configured. Next up you need to edit
+zipscript/conf/zsconfig.h to fit your needs. Please see
+README.ZSCONFIG for a complete list of options.
+
+Then type 'make' to compile it.
+)

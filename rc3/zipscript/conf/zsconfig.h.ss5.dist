@@ -1,0 +1,72 @@
+/* zsconfig.h - ZipScript-C config file
+ *
+ * This file only contains overrides of the defaults.
+ * Please see README.ZSCONFIG for a complete list
+ * of all settings.
+ *
+ * Please do not change settings you do not understand!
+ *
+ */
+
+
+
+/* DO NOT USE WILDCARDS HERE - only cleanupdirs use wildcards! */
+#define sitepath_dir			"/site/"
+#define group_dirs			"/site/groups/"
+#define zip_dirs			"/site/incoming/0day/"
+#define sfv_dirs			"/site/test/ /site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/requests/"
+#define nocheck_dirs			"/site/private/"
+#define noforce_sfv_first_dirs		"/site/incoming/requests/"
+#define audio_nocheck_dirs		"/site/groups/ /site/incoming/requests/"
+#define allowed_types_exemption_dirs	"/site/incoming/musicvideos/"
+#define check_for_missing_nfo_dirs	"/site/incoming/games/ /site/incoming/apps/"
+
+#define cleanupdirs			"/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
+
+#define short_sitename			"NG"
+
+#define status_bar_type			1
+
+#define incompleteislink		1
+
+#define allowed_types			"jpg,cue,m3u,mpg,mpeg,avi,txt,mov,vob"
+
+#define ignored_types			",diz,debug,message,imdb"
+
+#define debug_mode			TRUE
+#define remove_dot_files_on_delete	FALSE
+#define remove_dot_debug_on_delete	TRUE
+
+#define deny_double_sfv			FALSE
+#define force_sfv_first			FALSE
+
+#define audio_genre_path		"/site/incoming/music.by.genre/"
+#define audio_artist_path		"/site/incoming/music.by.artist/"
+#define audio_year_path			"/site/incoming/music.by.year/"
+#define audio_group_path		"/site/incoming/music.by.group/"
+#define allowed_constant_bitrates	"160,192"
+#define allowed_years			"2003,2004,2005"
+#define banned_genres			"Christian Rap"
+#define allowed_genres			"Rock"
+#define audio_genre_sort		FALSE
+#define audio_year_sort			FALSE
+#define audio_artist_sort		FALSE
+#define audio_group_sort		FALSE
+#define audio_cbr_check			TRUE
+#define audio_cbr_warn			TRUE
+#define audio_year_check		TRUE
+#define audio_year_warn			TRUE
+#define audio_banned_genre_check	TRUE
+#define audio_allowed_genre_check	FALSE
+#define audio_genre_warn		TRUE
+
+#define announce_norace			TRUE
+
+#define enable_nfo_script		TRUE
+#define nfo_script			"/bin/tclsh /bin/movie3.tcl"
+#define enable_complete_script		FALSE
+#define complete_script			"/bin/nfo_copy.sh"
+
+#define max_users_in_top		12
+#define max_groups_in_top		6
+

@@ -1,0 +1,37 @@
+prefix=@GLPATH@
+CC=@CC@
+RM=@RM@ -f
+
+CFLAGS=@CFLAGS@ -I../../ -I../../zipscript/include/
+LDFLAGS=@LDFLAGS@
+INSTALL=@INSTALL@
+
+targets=@PASSCHK@ showlog
+install_targets=@PASSCHK2@ showlog-install
+
+all: $(targets)
+
+passchk: passchk.c
+	$(CC) $(LDFLAGS) $(CFLAGS) -o passchk passchk.c @SSL_INCLUDE@ @SSL_LIBS@ @LCRYPT@
+
+ng-bw: ng-bw.c
+	$(CC) $(LDFLAGS) @M32@ $(CFLAGS) -o ng-bw ng-bw.c
+
+showlog: showlog.c
+	$(CC) $(LDFLAGS) @M32@ $(CFLAGS) -o showlog showlog.c
+
+install: $(install_targets)
+
+ng-bw-install: ng-bw
+	$(INSTALL) -m755 ng-bw $(prefix)/bin
+
+passchk-install: passchk
+	$(INSTALL) -m755 passchk $(prefix)/bin
+
+showlog-install: showlog
+	$(INSTALL) -m755 showlog $(prefix)/bin
+
+distclean: clean
+
+clean:
+	$(RM) ng-bw passchk showlog
