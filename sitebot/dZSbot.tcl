@@ -412,7 +412,7 @@ proc readlog {} {
 			}
 		}
 
-		if {[denycheck "$path"] == 0} {
+		if {[denycheck "$path"] == 0 && $msgtype != "DISABLED"} {
 			if {[string compare "$section" "$defaultsection"]} {
 				if {[info exists variables($msgtype)] && $disable($msgtype) == 0} {
 					set echoline [parse $msgtype [lrange $line 6 end] $section]

@@ -521,6 +521,11 @@ main(int argc, char **argv)
 	/* No check directories */
 	if (matchpath(nocheck_dirs, locations.path) || (!matchpath(zip_dirs, locations.path) && !matchpath(sfv_dirs, locations.path) && !matchpath(group_dirs, locations.path))) {
 		d_log("Directory matched with nocheck_dirs, or is not among sfv/zip/group dirs\n");
+		d_log("  - nocheck_dirs: '%s'\n", nocheck_dirs);
+		d_log("  - zip_dirs    : '%s'\n", zip_dirs);
+		d_log("  - sfv_dirs    : '%s'\n", sfv_dirs);
+		d_log("  - group_dirs  : '%s'\n", group_dirs);
+		d_log("  - current path: '%s'\n", locations.path);
 		no_check = TRUE;
 	} else {
 		/* Process file */
