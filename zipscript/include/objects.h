@@ -27,7 +27,7 @@
 #include "../include/zsconfig.defaults.h"
 
 struct USERINFO {
-	char		name      [24];	/* Username */
+	char		name[24];	/* Username */
 	off_t		bytes;	/* Bytes uploaded */
 	double		speed;	/* Time spent uploading (secs) */
 	unsigned char	files;	/* Files uploaded */
@@ -41,7 +41,7 @@ struct USERINFO {
 };
 
 struct GROUPINFO {
-	char		name      [24];	/* Groupname */
+	char		name[24];	/* Groupname */
 	off_t		bytes;	/* Bytes uploaded */
 	double		speed;	/* Time spent uploading (secs) */
 	unsigned char	files;	/* Files uploaded */
@@ -162,7 +162,7 @@ typedef struct {
 
 /* this is what we write to racedata files */
 typedef struct {
-	uint32_t	crc32,
+	unsigned int	crc32,
 			speed;
 	off_t		size;
 	time_t		start_time;
