@@ -237,6 +237,12 @@ proc readlog {} {
 	set loglastoct [file size $location(LOGINLOG)]
 
 	foreach line $lines {
+		# Slightly hackish /daxxar
+		# (We remove the element if it's [*], since it's PID)
+		# (I store it in $pid so we can add a cookie for that later (or?))
+		set pid 0
+		if {[regexp {\[([0-9 ]+)\] .*?:} "$line" dud pid]} { regsub "\\\[$pid\\\] " "$line" "" line }
+
 		set msgtype [string trim [lindex $line 5] ":"]
 		set path [lindex $line 6]
 
