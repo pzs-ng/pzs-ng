@@ -79,7 +79,6 @@ extern void createlink(char *, char *, char *, char *);
 extern void readsfv_ffile(char *, off_t buf_bytes);
 extern void get_rar_info(char *);
 extern int execute(char *);
-extern void symlink_rel(char *, char *);
 extern char *abs2rel(const char *, const char *, char *, const size_t);
 
 #endif
