@@ -50,7 +50,8 @@ d_log(char *fmt,...)
 
 #if ( debug_altlog == TRUE )
 	getcwd(debugpath, PATH_MAX);
-	sprintf(debugname, "%s/%s/.debug", storage, debugpath);
+	snprintf(debugname, PATH_MAX, "%s/%s/.debug",
+	         storage, debugpath);
 #endif
 
 	if ((file = fopen(debugname, "a+"))) {
