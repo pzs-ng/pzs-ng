@@ -6,7 +6,7 @@
 #  Created by: Phen0menon & juanker                        #
 #  Maintained by: juanker (juanker@EFnet #pzs-ng)          #
 #  Notes: Best experienced on dark -black- backgrounds     #
-#  Tested with: pzs-ng r1001                               #
+#  Tested with: pzs-ng r1037                               #
 #                                                          #
 ############################################################
 #                                                          #
@@ -53,11 +53,11 @@ announce.BADGENRE				= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c
 announce.BADYEAR				= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is violating rules by uploading shit from} %c3{%b{%year}}%c1{.}"
 
 # standard announces done by the zipscript
-announce.RACE_ZIP				= "%b{RACE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{-} %c3{%b{%u_name}} %c1{is racing} %loop1 %c1{at} %c3{%b{%u_speed}}%c1{.}"
-announce.RACE_RAR				= "%b{RACE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{-} %c3{%b{%u_name}} %c1{is racing} %loop1 %c1{at} %c3{%b{%u_speed}}%c1{.}"
-announce.RACE_OTHER				= "%b{RACE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{-} %c3{%b{%u_name}} %c1{is racing} %loop1 %c1{at} %c3{%b{%u_speed}}%c1{.}"
-announce.RACE_VIDEO				= "%b{RACE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{-} %c3{%b{%u_name}} %c1{is racing} %loop1 %c1{at} %c3{%b{%u_speed}}%c1{.}"
-announce.RACE_AUDIO				= "%b{RACE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{-} %c3{%b{%u_name}} %c1{is racing} %loop1 %c1{at} %c3{%b{%u_speed}}%c1{.}"
+announce.RACE_ZIP				= "%b{RACE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{-} %c3{%b{%u_name}} %c1{is racing}%c1{ }%loop1 %c1{at} %c3{%b{%u_speed}}%c1{.}"
+announce.RACE_RAR				= "%b{RACE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{-} %c3{%b{%u_name}} %c1{is racing}%c1{ }%loop1 %c1{at} %c3{%b{%u_speed}}%c1{.}"
+announce.RACE_OTHER				= "%b{RACE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{-} %c3{%b{%u_name}} %c1{is racing}%c1{ }%loop1 %c1{at} %c3{%b{%u_speed}}%c1{.}"
+announce.RACE_VIDEO				= "%b{RACE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{-} %c3{%b{%u_name}} %c1{is racing}%c1{ }%loop1 %c1{at} %c3{%b{%u_speed}}%c1{.}"
+announce.RACE_AUDIO				= "%b{RACE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{-} %c3{%b{%u_name}} %c1{is racing}%c1{ }%loop1 %c1{at} %c3{%b{%u_speed}}%c1{.}"
 announce.SFV_RAR				= "%b{SFV%c1{:}} %c1{-}%c2{%section}%c1{- Got SFV for} %c3{%b{%relname}} %c1{uploaded by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{. Now expecting} %c3{%b{%t_filecount}} %c1{rar file(s).}"
 announce.SFV_OTHER				= "%b{SFV%c1{:}} %c1{-}%c2{%section}%c1{- Got SFV for} %c3{%b{%relname}} %c1{uploaded by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{. Now expecting} %c3{%b{%t_filecount}} %c1{file(s).}"
 announce.SFV_VIDEO				= "%b{SFV%c1{:}} %c1{-}%c2{%section}%c1{- Got SFV for} %c3{%b{%relname}} %c1{uploaded by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{. Now expecting} %c3{%b{%t_filecount}} %c1{file(s).}"

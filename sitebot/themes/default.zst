@@ -1,6 +1,23 @@
 #######
 # This is the default theme for pzs-ng's dZSbot.
 # For a list of variables you can use, please see sitebot/COOKIES
+#
+# The following header *MUST* be included in every theme submitted by users
+# BEGIN --->
+
+##############################################################################
+#                                                                            #
+#  yourtheme.zst  -  pzs-ng theme                                            #
+#                                                                            #
+#  Some short description about the theme, how it was inspired or something  #
+#  Created by: Your nickname                                                 #
+#  Maintained by: Nickname and contact (IRC chan) of the maintainer          #
+#  Notes: If you need to point out something, that goes here                 #
+#  Tested with: Latest revision it was tested with (i.e: pzs-ng r2005)       #
+#                                                                            #
+##############################################################################
+
+# <--- END
 
 # Default colors, used for all sections except those defined below
 COLOR1		= "04"
