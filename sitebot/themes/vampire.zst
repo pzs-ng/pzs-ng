@@ -4,8 +4,10 @@
 #                                                          #
 #  Theme inspired by F|owman's sitebot default theme       #
 #  Created by: Phen0menon & juanker                        #
-#  Maintained by: juanker (juanker@EFnet #pzs-ng)          #
-#  Notes: Best experienced on dark -black- backgrounds     #
+#  Maintained by: juanker (juanker @ EFnet #pzs-ng)        #
+#  Notes: Best experienced on dark -black- backgrounds.    #
+#         Please contact me if you have any suggestions,   #
+#         fixes or additions for this theme.               #
 #  Tested with: pzs-ng r1439                               #
 #                                                          #
 ############################################################
@@ -19,13 +21,13 @@ COLOR3 = "04"  # highlight color: red blood
 ############################################################
 #
 
-PREFIX		= "%c1{[}%c2{%b{%sitename}}%c1{]} "
-SPLITTER	= "%c1{,} "
-KB		= "%b{%value}%c1{KB/s}"
-MB		= "%b{%value}%c1{MB/s}"
-KBIT		= "%b{%value}%c1{Kbit/s}"
-MBIT		= "%b{%value}%c1{Mbit/s}"
-fakesection.INVITE = "iNViTE"
+PREFIX			= "%c1{[}%c2{%b{%sitename}}%c1{]} "
+SPLITTER		= "%c1{,} "
+KB			= "%b{%value}%c1{KB/s}"
+MB			= "%b{%value}%c1{MB/s}"
+KBIT			= "%b{%value}%c1{Kbit/s}"
+MBIT			= "%b{%value}%c1{Mbit/s}"
+fakesection.INVITE	= "iNViTE"
 
 ## Default announce
 announce.DEFAULT				= "%b{iNFO%c1{:}} %c1{%msg}"
@@ -38,6 +40,7 @@ announce.BADPASSWORD				= "%b{LOGiN%c1{:}} %c3{%b{%u_name}} %c1{tried to log in 
 announce.BANNEDHOST				= "%b{LOGiN%c1{:}} %c3{%b{%u_name}} %c1{could not log, hostmask} %c3{%u_hostmask} %c1{is banned.}"
 announce.DELETED				= "%b{LOGiN%c1{:}} %c3{%b{%u_name}} %c1{could not log in, user deleted.}"
 announce.IPNOTADDED				= "%b{LOGiN%c1{:}} %c1{denied unknown connection from} %c3{%b{%u_hostmask}}%c1{.}"
+announce.KILLGHOST				= "%b{GHOST%c1{:}} %c3{%b{%u_name}} %c1{killed a ghost with PID} %c3{%b{%pid}}%c1{.}"
 announce.TAGLINE				= "%b{TAGLiNE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{has changed his tagline to} %c3{%b{%u_tagline}}%c1{.}"
 announce.TIMEOUT				= "%b{LOGOUT%c1{:}} %c3{%b{%u_name}} %c1{has timed out after} %c3{%b{%u_idletime}}%c1{s.}"
 
