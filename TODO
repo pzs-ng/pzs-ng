@@ -1,3 +1,9 @@
+TODO list for tng ;)
+
+change "VBR" to real bps number (average)
+add a cleaner script/bin for the zipscript dir in ftp-data - to run in crontab
+fix NUKE/UNNUKE in dZSbot.tcl for glftpd2 output
+
 TODO list for 0.6.x
 
 * MySQL
