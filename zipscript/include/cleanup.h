@@ -5,6 +5,7 @@ void scandirectory(char *, int);
 char *replace_cookies(char *);
 void incomplete_cleanup(char *, int);
 void cleanup(char *, char *, int, char *);
+void checklink(char *, char *, int);
 
 #endif
 
