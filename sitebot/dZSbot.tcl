@@ -1057,7 +1057,7 @@ proc ng_idlers { nick uhost hand chan args} {
 # UPDATED BANDWIDTH                                                             #
 #################################################################################
 proc ng_bandwidth {nick uhost hand chan args} {
-	global binary announce speed theme disable mainchan
+	global binary announce speed theme disable mainchan speedmeasure speedthreshold
 
 	if { $disable(TRIGINALLCHAN) == 1 } {
 		if {[string match -nocase $chan $mainchan] == 0} {
@@ -1069,13 +1069,69 @@ proc ng_bandwidth {nick uhost hand chan args} {
 	set upper [format "%.0f" [expr [lindex $raw 1] * 100 / $speed(INCOMING)]]
 	set dnper [format "%.0f" [expr [lindex $raw 3] *100 / $speed(OUTGOING)]]
 	set totalper [format "%.0f" [expr [lindex $raw 5] * 100 / ( $speed(INCOMING) + $speed(OUTGOING) )]]
-
+	
+	set up [lindex $raw 1]
+	set dn [lindex $raw 3]
+	set totalspeed [lindex $raw 5]
+	set type "KB/s"
+	if {[string match -nocase $speedmeasure "mb"] == 1} {
+	    set up [string range [expr $up / 1024] 0 [expr [string first [expr $up / 1024] "."] + 3]]
+	    set dn [string range [expr $dn / 1024] 0 [expr [string first [expr $dn / 1024] "."] + 3]]
+	    set totalspeed [string range [expr $totalspeed / 1024] 0 [expr [string first [expr $totalspeed / 1024] "."] + 3]]
+	    set type "MB/s"
+	    append up $type
+	    append dn $type
+	    append totalspeed $type
+	} elseif {[string match -nocase $speedmeasure "kbit"] == 1} {
+	    set up [expr $up * 8]
+	    set dn [expr $dn * 8]
+	    set totalspeed [expr $totalspeed * 8]
+	    set type "Kbit"
+	    append up $type
+	    append dn $type
+	    append totalspeed $type
+	} elseif {[string match -nocase $speedmeasure "mbit"] == 1} {
+	    set up [string range [expr $up * 8 / 1024] 0 [expr [string first [expr $up * 8 / 1000] "."] + 3]]
+	    set dn [string range [expr $dn * 8 / 1024] 0 [expr [string first [expr $dn * 8 / 1000] "."] + 3]]
+	    set totalspeed [string range [expr $totalspeed * 8 / 1000] 0 [expr [string first [expr $totalspeed * 8 / 1000] "."] + 3]]
+	    set type "Mbit"
+	    append up $type
+	    append dn $type
+	    append totalspeed $type
+	} elseif {[string match -nocase $speedmeasure "autobit"] == 1} {
+	    if {$totalspeed > $speedthreshold} {
+		set totalspeed [string range [expr $totalspeed / 1000] 0 [expr [string first [expr $totalspeed / 1000] "."] + 3]]
+		append totalspeed "MB/s"
+	    } else { append totalspeed "KB/s" }
+	    if {$up > $speedthreshold} {
+		set up [string range [expr $up / 1000] 0 [expr [string first [expr $up / 1000] "."] + 3]]
+		append up "MB/s" 
+	    } else { append up "KB/s" }
+	    if {$dn > $speedthreshold} {
+		set dn [string range [expr $dn / 1000] 0 [expr [string first [expr $dn / 1000] "."] + 3]]
+		append dn "MB/s"
+	    } else { append dn "KB/s" }
+	} elseif {[string match -nocase $speedmeasure "autobyte"] == 1} {
+	    if {$totalspeed > $speedthreshold} {
+		set totalspeed [string range [expr $totalspeed / 1024] 0 [expr [string first [expr $totalspeed / 1024] "."] + 3]]
+		append totalspeed "MB/s"
+	    } else { append totalspeed "KB/s" }
+	    if {$up > $speedthreshold} {
+		set up [string range [expr $up / 1024] 0 [expr [string first [expr $up / 1024] "."] + 3]]
+		append up "MB/s" 
+	    } else { append up "KB/s" }
+	    if {$dn > $speedthreshold} {
+		set dn [string range [expr $dn / 1024] 0 [expr [string first [expr $dn / 1024] "."] + 3]]
+		append dn "MB/s"
+	    } else { append dn "KB/s" }
+	}
+	
 	set output [replacevar $output "%uploads" [lindex $raw 0]]
-	set output [replacevar $output "%upspeed" [lindex $raw 1]]
+	set output [replacevar $output "%upspeed" $up]
 	set output [replacevar $output "%downloads" [lindex $raw 2]]
-	set output [replacevar $output "%dnspeed" [lindex $raw 3]]
+	set output [replacevar $output "%dnspeed" $dn]
 	set output [replacevar $output "%transfers" [lindex $raw 4]]
-	set output [replacevar $output "%totalspeed" [lindex $raw 5]]
+	set output [replacevar $output "%totalspeed" $totalspeed]
 	set output [replacevar $output "%idlers" [lindex $raw 6]]
 	set output [replacevar $output "%active" [lindex $raw 7]]
 	set output [replacevar $output "%totallogins" [lindex $raw 8]]
@@ -1086,7 +1142,7 @@ proc ng_bandwidth {nick uhost hand chan args} {
 
 	set output [basicreplace "$output" "BW"]
 
-	sndone $chan $output
+	putserv "PRIVMSG $chan :$output"
 
 }
 ################################################################################
