@@ -140,36 +140,41 @@ main(int argc, char **argv)
 	maketempdir(g.l.path);
 
 	d_log("postdel: Locking release\n");
-	if ((m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 3, 0))) {
-		d_log("postdel: Failed to lock release.\n");
-		if (m == 1) {
-			d_log("postdel: version mismatch. Exiting.\n");
-			exit(EXIT_FAILURE);
-		}
-		if (m == PROGTYPE_RESCAN) {
-			d_log("postdel: Detected rescan running - will try to make it quit.\n");
-			update_lock(&g.v, 0, 0);
-		}
-		for ( n = 0; n <= max_seconds_wait_for_lock * 10; n++) {
-			d_log("postdel: sleeping for .1 second before trying to get a lock.\n");
-			usleep(100000);
-			if (!(m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0, g.v.data_queue)))
-				break;
-		}
-		if (n >= max_seconds_wait_for_lock * 10) {
-			if (m == PROGTYPE_RESCAN) {
-				d_log("postdel: Failed to get lock. Forcing unlock.\n");
-				if (create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 2, g.v.data_queue)) {
-					d_log("postdel: Failed to force a lock. No choice but to exit.\n");
-					exit(EXIT_FAILURE);
-				}
-			} else {
-				d_log("postdel: Failed to get a lock. No choice but to exit.\n");
+	while(1) {
+		if ((m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 3, 0))) {
+			d_log("postdel: Failed to lock release.\n");
+			if (m == 1) {
+				d_log("postdel: version mismatch. Exiting.\n");
 				exit(EXIT_FAILURE);
 			}
+			if (m == PROGTYPE_RESCAN) {
+				d_log("postdel: Detected rescan running - will try to make it quit.\n");
+				update_lock(&g.v, 0, 0);
+			}
+			for ( n = 0; n <= max_seconds_wait_for_lock * 10; n++) {
+				d_log("postdel: sleeping for .1 second before trying to get a lock.\n");
+				usleep(100000);
+				if (!(m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0, g.v.data_queue)))
+					break;
+			}
+			if (n >= max_seconds_wait_for_lock * 10) {
+				if (m == PROGTYPE_RESCAN) {
+					d_log("postdel: Failed to get lock. Forcing unlock.\n");
+					if (create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 2, g.v.data_queue)) {
+						d_log("postdel: Failed to force a lock. No choice but to exit.\n");
+						exit(EXIT_FAILURE);
+					}
+				} else {
+					d_log("postdel: Failed to get a lock. No choice but to exit.\n");
+					exit(EXIT_FAILURE);
+				}
+			}
+			rewinddir(dir);
+			rewinddir(parent);
 		}
-		rewinddir(dir);
-		rewinddir(parent);
+		usleep(10000);
+		if (update_lock(&g.v, 1, 0) != -1)
+			break;
 	}
 
 	if (matchpath(nocheck_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {

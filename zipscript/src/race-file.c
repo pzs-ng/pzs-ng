@@ -910,6 +910,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 		raceI->data_incrementor = hd.data_incrementor = 1;
 		raceI->data_queue = hd.data_queue = 1;
 		hd.data_qcurrent = 0;
+		hd.data_pid = getpid();
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
 		d_log("create_lock: lock set. (no previous lockfile found)\n");
@@ -926,6 +927,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 			raceI->data_incrementor = hd.data_incrementor = 1;
 			raceI->data_queue = hd.data_queue = 1;
 			hd.data_qcurrent = 0;
+			hd.data_pid = getpid();
 			lseek(fd, 0L, SEEK_SET);
 			write(fd, &hd, sizeof(HEADDATA));
 			close(fd);
@@ -981,6 +983,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 			hd.data_in_use = progtype;
 		}
 		raceI->data_incrementor = hd.data_incrementor;
+		hd.data_pid = getpid();
 		lseek(fd, 0L, SEEK_SET);
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
@@ -1007,6 +1010,7 @@ remove_lock(struct VARS *raceI)
 
 	read(fd, &hd, sizeof(HEADDATA));
 	hd.data_in_use = 0;
+	hd.data_pid = 0;
 	hd.data_incrementor = 0;
 	if (hd.data_queue)							/* if queue, increase the number in current so the next */
 		hd.data_qcurrent++;						/* process can start. */
@@ -1016,7 +1020,6 @@ remove_lock(struct VARS *raceI)
 	}
 	lseek(fd, 0L, SEEK_SET);
 	write(fd, &hd, sizeof(HEADDATA));
-	close(fd);
 	close(fd);
 	d_log("remove_lock: queue %d/%d\n", hd.data_qcurrent, hd.data_queue);
 }
@@ -1049,6 +1052,14 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 		d_log("update_lock: Lock not active or progtype mismatch - no choice but to exit.\n");
 		close(fd);
 		exit(EXIT_FAILURE);
+	}
+	if (hd.data_pid != getpid()) {
+		d_log("update_lock: Oops! Race condition - another process has the lock.\n");
+		hd.data_queue--;
+		lseek(fd, 0L, SEEK_SET);
+		write(fd, &hd, sizeof(HEADDATA));
+		close(fd);
+		return -1;
 	}
 	if (((counter) && (hd.data_incrementor < raceI->data_incrementor)) || !hd.data_incrementor) {
 		d_log("update_lock: Lock suggested removed by a different process.\n");

@@ -27,6 +27,7 @@ int main(int argc, char **argv)
 	printf("locked      : %d\n", sd.data_in_use);
 	printf("data inc.   : %d\n", sd.data_incrementor);
 	printf("queue       : %d/%d\n", sd.data_qcurrent, sd.data_queue);
+	printf("process pid : %d\n", sd.data_pid);
 
 	fclose(f);
 

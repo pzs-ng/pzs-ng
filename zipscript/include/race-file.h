@@ -29,7 +29,8 @@ typedef struct {
 	short int	data_in_use;		// which program currently holds the lock.
 	short int	data_incrementor;	// a check to see if nothing else wants the lock.
 	short int	data_queue;		// positions in queue.
-	short int	data_qcurrent;		// current position in queue;
+	short int	data_qcurrent;		// current position in queue.
+	short int	data_pid;		// the pid of the process holding the lock.
 } HEADDATA;
 
 extern unsigned int readsfv(const char *, struct VARS *, int);

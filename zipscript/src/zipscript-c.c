@@ -281,38 +281,43 @@ main(int argc, char **argv)
 	maketempdir(g.l.path);
 
 	d_log("zipscript-c: Locking release\n");
-	if ((m = create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 3, 0))) {
-		d_log("zipscript-c: Failed to lock release.\n");
-		if (m == 1) {
-			d_log("zipscript-c: version mismatch. Exiting.\n");
-			printf("Error. You need to rm -fR ftp-data/pzs-ng/* before zipscript-c will work.\n");
-			exit(EXIT_FAILURE);
-		}
-		if (m == PROGTYPE_RESCAN) {
-			d_log("zipscript-c: Detected rescan running - will try to make it quit.\n");
-			update_lock(&g.v, 0, 0);
-		}
-		for ( n = 0; n <= max_seconds_wait_for_lock * 10; n++) {
-			d_log("zipscript-c: sleeping for .1 second before trying to get a lock.\n");
-			usleep(100000);
-			if (!(m = create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0, g.v.data_queue)))
-				break;
-			
-		}
-		if (n >= max_seconds_wait_for_lock * 10) {
-			if (m == PROGTYPE_RESCAN) {
-				d_log("zipscript-c: Failed to get lock. Forcing unlock.\n");
-				if (create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 2, g.v.data_queue)) {
-					d_log("zipscript-c: Failed to force a lock. No choice but to exit.\n");
-					exit(EXIT_FAILURE);
-				}
-			} else {
-				d_log("zipscript-c: Failed to get a lock. No choice but to exit.\n");
+	while(1) {
+		if ((m = create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 3, 0))) {
+			d_log("zipscript-c: Failed to lock release.\n");
+			if (m == 1) {
+				d_log("zipscript-c: version mismatch. Exiting.\n");
+				printf("Error. You need to rm -fR ftp-data/pzs-ng/* before zipscript-c will work.\n");
 				exit(EXIT_FAILURE);
 			}
+			if (m == PROGTYPE_RESCAN) {
+				d_log("zipscript-c: Detected rescan running - will try to make it quit.\n");
+				update_lock(&g.v, 0, 0);
+			}
+			for ( n = 0; n <= max_seconds_wait_for_lock * 10; n++) {
+				d_log("zipscript-c: sleeping for .1 second before trying to get a lock.\n");
+				usleep(100000);
+				if (!(m = create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0, g.v.data_queue)))
+					break;
+				
+			}
+			if (n >= max_seconds_wait_for_lock * 10) {
+				if (m == PROGTYPE_RESCAN) {
+					d_log("zipscript-c: Failed to get lock. Forcing unlock.\n");
+					if (create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 2, g.v.data_queue)) {
+						d_log("zipscript-c: Failed to force a lock. No choice but to exit.\n");
+						exit(EXIT_FAILURE);
+					}
+				} else {
+					d_log("zipscript-c: Failed to get a lock. No choice but to exit.\n");
+					exit(EXIT_FAILURE);
+				}
+			}
+			rewinddir(dir);
+			rewinddir(parent);
 		}
-		rewinddir(dir);
-		rewinddir(parent);
+		usleep(10000);
+		if (update_lock(&g.v, 1, 0) != -1)
+			break;
 	}
 
 	printf(zipscript_header);

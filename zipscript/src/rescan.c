@@ -107,23 +107,28 @@ main(void)
  	maketempdir(g.l.path);
 
 	d_log("rescan: Locking release\n");
-	if ((k = create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 3, 0))) {
-		d_log("rescan: Failed to lock release.\n");
-		if (k == 1) {
-			d_log("rescan: version mismatch. Exiting.\n");
-			printf("Error. You need to rm -fR ftp-data/pzs-ng/* before rescan will work.\n");
-			exit(EXIT_FAILURE);
+	while (1) {
+		if ((k = create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 3, 0))) {
+			d_log("rescan: Failed to lock release.\n");
+			if (k == 1) {
+				d_log("rescan: version mismatch. Exiting.\n");
+				printf("Error. You need to rm -fR ftp-data/pzs-ng/* before rescan will work.\n");
+				exit(EXIT_FAILURE);
+			}
+			for ( k = 0; k <= max_seconds_wait_for_lock * 10; k++) {
+				d_log("rescan: sleeping for .1 second before trying to get a lock (queue: %d).\n", g.v.data_queue);
+				usleep(100000);
+				if (!create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0, g.v.data_queue))
+					break;
+			}
+			if (k >= max_seconds_wait_for_lock * 10) {
+				d_log("rescan: Failed to get lock. Will not force unlock.\n");
+				exit(EXIT_FAILURE);
+			}
 		}
-		for ( k = 0; k <= max_seconds_wait_for_lock * 10; k++) {
-			d_log("rescan: sleeping for .1 second before trying to get a lock (queue: %d).\n", g.v.data_queue);
-			usleep(100000);
-			if (!create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0, g.v.data_queue))
-				break;
-		}
-		if (k >= max_seconds_wait_for_lock * 10) {
-			d_log("rescan: Failed to get lock. Will not force unlock.\n");
-			exit(EXIT_FAILURE);
-		}
+		usleep(10000);
+		if (update_lock(&g.v, 1, 0) != -1)
+			break;
 	}
 
 	move_progress_bar(1, &g.v, g.ui, g.gi);
