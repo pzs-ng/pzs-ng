@@ -54,6 +54,7 @@ if {![info exists invite_channels] && [info exists chanlist(INVITE)]} {
 #################################################################################
 
 set lastoct [file size $location(GLLOG)]
+set loglastoct [file size $location(LOGINLOG)]
 set defaultsection "DEFAULT"
 set nuke(LASTTYPE) ""
 set nuke(LASTDIR) ""
@@ -189,20 +190,46 @@ if {$bindnopre != "YES"} {
 # MAIN LOOP - PARSES DATA FROM GLFTPD.LOG                                       #
 #################################################################################
 proc readlog {} {
-	global location lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2 invite_channels
+	global location lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2 invite_channels loglastoct
 
 	set dZStimer [utimer 1 "readlog"]
 
 	set glftpdlogsize [file size $location(GLLOG)]
+	set loginlogsize [file size $location(LOGINLOG)]
 
-	if {$glftpdlogsize == $lastoct} { return 0 }
+	if {$glftpdlogsize == $lastoct && $loginlogsize == $loglastoct} { return 0 }
 	if {$glftpdlogsize  < $lastoct} { set lastoct 0 }
-	if {[catch {set of [open $location(GLLOG) r]} ]} { return 0 }
+	
+	set lines ""
+	
+	if {$glftpdlogsize != $lastoct && ![catch {set of [open $location(GLLOG) r]} ]} {
+		seek $of $lastoct
+		while {![eof $of]} {
+			set line [gets $of]
+			if {$line == ""} { continue; }
+			lappend lines $line
+		}
+		close $of
+	} else {
+		putlog "dZSbot error: Could not open GLLOG. ($location(GLLOG))"
+	}
+	
+	if {$loginlogsize != $loglastoct && ![catch {set of [open $location(LOGINLOG) r]} ]} {
+		seek $of $loglastoct
+		while {![eof $of]} {
+			set line [gets $of]
+			if {$line == ""} { continue; }
+			lappend lines $line
+		}
+		close $of
+	} else {
+		putlog "dZSbot error: Could not open LOGINLOG. ($location(LOGINLOG))"
+	}
 
-	seek $of $lastoct
-	while {![eof $of]} {
-		set line [gets $of]
-		if {$line == ""} {continue}
+	set lastoct [file size $location(GLLOG)]
+	set loglastoct [file size $location(LOGINLOG)]
+
+	foreach line $lines {
 		set msgtype [string trim [lindex $line 5] ":"]
 		set path [lindex $line 6]
 
@@ -250,8 +277,6 @@ proc readlog {} {
 		}
 	}
 
-	close $of
-	set lastoct [file size $location(GLLOG)]
 	if {$use_glftpd2 != "YES"} {
 		launchnuke
 	}

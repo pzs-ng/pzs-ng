@@ -8,6 +8,7 @@
 # Locations of all the usual files, change is usually only required
 # if you have another glroot than /glftpd/ =)
 set location(GLLOG)		"/glftpd/ftp-data/logs/glftpd.log"
+set location(LOGINLOG)		"/glftpd/ftp-data/logs/login.log"
 set location(PASSWD)		"/glftpd/etc/passwd"
 set location(USERS)		"/glftpd/ftp-data/users/"
 
