@@ -4,7 +4,7 @@ storage=/tmp/zipscript
 bindir=$(prefix)/bin
 
 CC=@CC@
-CFLAGS=@CFLAGS@ -W -Wall -O2 @STATIC@ -g -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I../include/ -I../../
+CFLAGS=@CFLAGS@ -W -Wall @STATIC@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I../include/ -I../../
 LDFLAGS=@LDFLAGS@
 UNIVERSAL=race-file.o zsfunctions.o mp3info.o
 RM=rm -f

@@ -301,19 +301,19 @@
 */
 #define message_header		"\n                          __          __\n                  _______/  |______ _/  |_  ______\n                 /  ___/\\   __\\__  \\\\   __\\/  ___/ \n                 \\___ \\  |  |  / __ \\|  |  \\___ \\ \n                /____  > |__| (____  /__| /____  >\n                     \\/            \\/          \\/ \n"
 #define message_user_header	"\n.....................................................................\n"  \
-  ".                                                                   .\n"  \
+    ".                                                                   .\n"  \
 ".  [+]   Racers   [+]                        size   #    Speed      .\n"  \
 ".                                                                   .\n"
 #define message_user_body	". %3n %-34U %7.1mM %3fF %5.0sKBs     .\n"
 #define message_user_footer	".....................................................................\n"  \
-  ".                                                                   .\n"
+    ".                                                                   .\n"
 #define message_group_header	".  [+]   Groups   [+]                                               .\n"  \
-  ".                                                                   .\n"
+    ".                                                                   .\n"
 #define message_group_body	". %3n %-34g %7.1mM %3fF %5.0sKBs     .\n"
 #define message_group_footer	".....................................................................\n"
 
 #define message_mp3 		".                                                                   .\n"  \
-  ".  [+]   I D 3 - T A G   [+]                                        .\n"  \
+    ".  [+]   I D 3 - T A G   [+]                                        .\n"  \
 ".                                                                   .\n"  \
 ".  Artist: %-34x                       .\n"  \
 ".  Album : %-34W                       .\n"  \
@@ -322,7 +322,7 @@
 ".                                                                   .\n"  \
 ".....................................................................\n"
 #define message_footer		".                                                                   .\n"  \
-  ".  [+]   Infos   [+]                                                .\n"  \
+    ".  [+]   Infos   [+]                                                .\n"  \
 ".                                                                   .\n"  \
 ".  Release size:       %5.0m MB                                     .\n"  \
 ".  Global race speed: %6.0A kB/s                                   .\n"  \
@@ -338,26 +338,26 @@
 
 
 #define zipscript_header	 "....................................................\n"  \
-  ".                                                  .\n"  \
+    ".                                                  .\n"  \
 ".                [+]    PZS    [+]                 .\n"  \
 "....................................................\n"
 #define zipscript_sfv_ok	 ".                                                  .\n"  \
-  ". [+]  SFV-file: oK!  [+]                          .\n"  \
+    ". [+]  SFV-file: oK!  [+]                          .\n"  \
 ".                                                  .\n"
 #define zipscript_any_ok	 ".                                                  .\n"  \
-  ". [+]  File: ok!      [+]                          .\n"  \
+    ". [+]  File: ok!      [+]                          .\n"  \
 ".                                                  .\n"
 #define zipscript_SFV_ok	 ".                                                  .\n"  \
-  ". [+]  CRC-Check: oK! [+]                          .\n"  \
+    ". [+]  CRC-Check: oK! [+]                          .\n"  \
 ".                                                  .\n"
 #define zipscript_SFV_skip	 ".                                                  .\n"  \
-  ". [+]  CRC-Check: SKIPPED!  [+]                    .\n"  \
+    ". [+]  CRC-Check: SKIPPED!  [+]                    .\n"  \
 ".                                                  .\n"
 #define zipscript_zip_ok	 ".                                                  .\n"  \
-  ". [+]  ZiP integrity: oK!  [+]                     .\n"  \
+    ". [+]  ZiP integrity: oK!  [+]                     .\n"  \
 ".                                                  .\n"
 #define realtime_mp3_info	 "....................................................\n" \
-  ".                                                  .\n" \
+    ".                                                  .\n" \
 ". [+]  ID3-TAG  [+]                                .\n" \
 ".                                                  .\n" \
 ". Title    : %-37y .\n" \
@@ -367,25 +367,25 @@
 ". Year     : %-37Y .\n" \
 ". Encoding : %-37j .\n"
 #define realtime_user_header	 "....................................................\n" \
-  ".                                                  .\n" \
+    ".                                                  .\n" \
 ". [+] Top Racers [+]                               .\n" \
 ".                                                  .\n"
 #define realtime_user_body	 ". %2n. %-17u %8.1mmB %2fF %7.0skB/s .\n"
 #define realtime_user_footer	 ""
 #define realtime_group_header	 "....................................................\n" \
-  ".                                                  .\n" \
+    ".                                                  .\n" \
 ". [+] Top Groups [+]                               .\n" \
 ".                                                  .\n"
 #define realtime_group_body	 ". %2n. %-17g %8.1mmB %2fF %7.0skB/s .\n"
 #define realtime_group_footer	 ""
 #define zipscript_footer_unknown "..[ - NO - SFV - ]........................[%2F/??]...\n"
 #define zipscript_footer_ok	 "....................................................\n" \
-  ".                                                  .\n" \
+    ".                                                  .\n" \
 ". [+] Progression : [%V]      [%2F/%-2f]  .\n"  \
 ".                                                  .\n"  \
 "....................................................\n"
 #define zipscript_footer_error	 ". - %-46v .\n" \
-  "....................................................\n"
+    "....................................................\n"
 #define zipscript_footer_skip	 "....................................................\n"
 
 #define sfv_comment		 ""

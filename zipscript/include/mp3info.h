@@ -35,53 +35,52 @@
 #include <string.h>
 
 /* MIN_CONSEC_GOOD_FRAMES defines how many consecutive valid MP3 frames
-   we need to see before we decide we are looking at a real MP3 file */
+ * we need to see before we decide we are looking at a real MP3 file */
 #define MIN_CONSEC_GOOD_FRAMES 4
 #define FRAME_HEADER_SIZE 4
 #define MIN_FRAME_SIZE 21
 #define NUM_SAMPLES 4
 
 typedef struct {
-  unsigned int	sync;
-  unsigned int	version;
-  unsigned int	layer;
-  unsigned int	crc;
-  unsigned int	bitrate;
-  unsigned int	freq;
-  unsigned int	padding;
-  unsigned int	extension;
-  unsigned int	mode;
-  unsigned int	mode_extension;
-  unsigned int	copyright;
-  unsigned int	original;
-  unsigned int	emphasis;
+    unsigned int	sync;
+    unsigned int	version;
+    unsigned int	layer;
+    unsigned int	crc;
+    unsigned int	bitrate;
+    unsigned int	freq;
+    unsigned int	padding;
+    unsigned int	extension;
+    unsigned int	mode;
+    unsigned int	mode_extension;
+    unsigned int	copyright;
+    unsigned int	original;
+    unsigned int	emphasis;
 } mp3header;
 
 typedef struct {
-  char title[31];
-  char artist[31];
-  char album[31];
-  char year[5];
-  char comment[31];
-  unsigned char track[1];
-  unsigned char genre[1];
+    char title[31];
+    char artist[31];
+    char album[31];
+    char year[5];
+    char comment[31];
+    unsigned char track[1];
+    unsigned char genre[1];
 } id3tag;
 
 typedef struct {
-  char *filename;
-  FILE *file;
-  off_t datasize;
-  int header_isvalid;
-  mp3header header;
-  int id3_isvalid;
-  id3tag id3;
-  int vbr;
-  float vbr_average;
-  int seconds;
-  int frames;
-  int badframes;
+    char *filename;
+    FILE *file;
+    off_t datasize;
+    int header_isvalid;
+    mp3header header;
+    int id3_isvalid;
+    id3tag id3;
+    int vbr;
+    float vbr_average;
+    int seconds;
+    int frames;
+    int badframes;
 } mp3info;
-
 
 int get_header(FILE *file, mp3header *header);
 int frame_length(mp3header *header);

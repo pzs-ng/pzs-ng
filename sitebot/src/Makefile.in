@@ -2,7 +2,7 @@ CC=@CC@
 RM=rm -f
 MAKE=make
 
-CFLAGS=@CFLAGS@ -W -Wall @LCRYPT@ @LCRYPTO@ @GLVERSION@ -O2 -I../../
+CFLAGS=@CFLAGS@ -W -Wall @LCRYPT@ @LCRYPTO@ @GLVERSION@ -I../../
 
 all: passchk.c ng-bw.c
 	$(CC) $(CFLAGS) -o passchk passchk.c

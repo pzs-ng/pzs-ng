@@ -314,19 +314,19 @@
 */
 #define message_header		""
 #define message_user_header	"\n                           U S E R T O P\n" \
-  "+--------------------------------------------------------------------+\n"
+    "+--------------------------------------------------------------------+\n"
 #define message_user_body	"%3n %-34U %7.1mM %3fF %5.1p%% %5.0sKBs\n"
 #define message_user_footer	"+--------------------------------------------------------------------+\n" \
-  "%3u Total %36.1mM %3fF 100.0%% %5.0aKBs\n"
+    "%3u Total %36.1mM %3fF 100.0%% %5.0aKBs\n"
 
 #define message_group_header	"\n\n                          G R O U P T O P\n" \
-  "+--------------------------------------------------------------------+\n"
+    "+--------------------------------------------------------------------+\n"
 #define message_group_body	"%3n %-34g %7.1mM %3fF %5.1p%% %5.0sKBs\n"
 #define message_group_footer	"+--------------------------------------------------------------------+\n" \
-  "%3g Total %36.1mM %3fF 100.0%% %5.0aKBs\n"
+    "%3g Total %36.1mM %3fF 100.0%% %5.0aKBs\n"
 
 #define message_mp3 		"\n\n                            I D 3 - T A G\n" \
-  "+--------------------------------------------------------------------+\n" \
+    "+--------------------------------------------------------------------+\n" \
 "  Artist : %x\n" \
 "  Album  : %W\n" \
 "  Genre  : %-34w Rate  : %Xkbit/sec\n" \
@@ -350,7 +350,7 @@
 #define zipscript_SFV_skip	 "| + CRC-Check: SKIPPED!                            |\n"
 #define zipscript_zip_ok	 "| + ZiP integrity: oK!                             |\n"
 #define realtime_mp3_info	 "+-=[ID3tag]=------------------------===------------+\n" \
-  "| Title  : %-39y |\n" \
+    "| Title  : %-39y |\n" \
 "| Artist : %-39x |\n" \
 "| Album  : %-39W |\n" \
 "| Genre  : %-39w |\n" \
@@ -364,11 +364,11 @@
 #define zipscript_footer_unknown "`-[ - NO - SFV - ]------------------------[%2F/??]--'\n"
 #define zipscript_footer_ok	 "`-[%V]------------------------[%2F/%-2f]--'\n"
 #define zipscript_footer_error	 "| - %-46v |\n" \
-  "`-----------------------------------========-------'\n"
+    "`-----------------------------------========-------'\n"
 #define zipscript_footer_skip	 "`--------------------------------=====-------------'\n"
 
 #define sfv_comment		 "; sfv raped by zipscript-c on the mighty ,dS'\r\n" \
-  "; \r\n"
+    "; \r\n"
 
 /* How Indicators look
 */
