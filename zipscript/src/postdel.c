@@ -140,35 +140,37 @@ int main( int argc, char **argv ) {
 		return 0;
 	}
 
-    d_log("Reading user name from env\n");
+	fname = argv[1] + 5; /* This way we simply skip the required 'DELE'-part of the argument (so we get filename) */
+
+	d_log("Reading user name from env\n");
 	env_user = getenv("USER");
 	if (env_user == NULL) {
 		d_log("Could not find environment variable 'USER', setting value to 'Nobody'\n");
 		env_user = "Nobody";
 	}
-    d_log("Reading group name from env\n");
+	d_log("Reading group name from env\n");
 	env_group = getenv("GROUP");
 	if (env_group == NULL) {
 		d_log("Could not find environment variable 'GROUP', setting value to 'NoGroup'\n");
 		env_group = "NoGroup";
 	}
 		
-
-	fname = argv[1] + 5; /* This way we simply skip the required 'DELE'-part of the argument (so we get filename) */
-
 #if ( program_uid > 0 )
-    d_log("Trying to change effective gid\n");
+	d_log("Trying to change effective gid\n");
     setegid(program_gid);
-    d_log("Trying to change effective uid\n");
+	d_log("Trying to change effective uid\n");
     seteuid(program_uid);
 #endif
 
-    d_log("Reading directory structure\n");
+    if (!strcmp(fname,"debug"))
+	d_log("Reading directory structure\n");
     rescandir();
 
     if (fileexists(fname)) {
-		d_log("File still exists\n");
-		return 0;
+	d_log("File (%s) still exists\n",fname);
+	if ((strcmp(fname,"debug")) && (remove_dot_debug_on_delete == TRUE))
+		unlink(fname);
+	return 0;
     }
 
     umask(0666 & 000);
@@ -389,10 +391,10 @@ int main( int argc, char **argv ) {
     free(userI);
     free(groupI);
 
+    d_log("Exit\n");
+
     if ((empty_dir == 1) && (fileexists(".debug")) && (remove_dot_debug_on_delete == TRUE)) 
 		unlink(".debug");
-
-    d_log("Exit\n");
 	
     return 0;
 }

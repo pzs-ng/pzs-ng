@@ -51,8 +51,6 @@ unsigned int readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int g
 		    crc = t_crc;
 		if (getfcount && findfile(fname))
 		    raceI->total.files_missing--;
-
-		d_log("Storing data on %s - CRC: %u - T_CRC: %u.\n", fname, crc, t_crc);
 		m_free(fname);
     }
     fclose(sfvfile);
