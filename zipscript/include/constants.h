@@ -68,7 +68,7 @@
 #define winner			"dummy_winner"
 #define loser			"dummy_loser"
 
-#ifdef WITH_NOFORMAT
+#ifdef _WITH_NOFORMAT
  #define user_top		"{%n} {%u} {%g} {%.1m} {%f} {%.1p} {%.0s} {%D} {%W} {%M} {%A}"
  #define user_info		"{%u} {%g} {%.1m} {%f} {%.1p} {%.0s}"
  #define group_top		"{%n} {%g} {%.1m} {%f} {%.1p} {%.0s}"
