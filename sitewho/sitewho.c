@@ -39,9 +39,13 @@ unsigned long filesize(char *filename) {
 	sprintf(file, "%s/%s", glpath, filename);
 
 	if (stat(file, &filestat) != 0) {
-		fprintf(stderr, "Could not stat file '%s', is glrootpath set correctly in sitewho.conf? (error: %s)\n", file, strerror(errno));
-		free(file);
-		exit(1);
+		if (!strcmp(filename, "")) {
+			filestat.st_size = 1;
+		} else {
+			fprintf(stderr, "Could not stat file '%s', is glrootpath set correctly in sitewho.conf? (error: %s)\n", file, strerror(errno));
+			free(file);
+			exit(1);
+		}
 	}
 
 	free(file);
