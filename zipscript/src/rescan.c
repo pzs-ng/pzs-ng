@@ -138,6 +138,7 @@ int main () {
 
     uid_t	f_uid;
     gid_t	f_gid;
+    double	temp_time = 0;
 
 #if ( program_uid > 0 )
     setegid(program_gid);
@@ -200,6 +201,7 @@ int main () {
 	stat(raceI.file.name, &fileinfo);
 	copysfv_file( raceI.file.name, locations.sfv, fileinfo.st_size );
 	n = direntries;
+	raceI.total.start_time = 0;
 	while ( n-- ) {
 	    m = l = strlen(dirlist[n]->d_name);
 	    ext   = dirlist[n]->d_name;
@@ -217,7 +219,13 @@ int main () {
 		raceI.file.name = dirlist[n]->d_name;
 		raceI.file.speed = 2004 * 1024;
 		raceI.file.size = fileinfo.st_size;
-		raceI.total.start_time = 0;
+
+		temp_time=fileinfo.st_mtime;
+		if (raceI.total.start_time == 0)
+			raceI.total.start_time = temp_time;
+		else
+			raceI.total.start_time = ( raceI.total.start_time < temp_time ? raceI.total.start_time : temp_time );
+		raceI.total.stop_time = ( temp_time > raceI.total.stop_time ? temp_time : raceI.total.stop_time );
 
 		/* Hide users in group_dirs */
 		if ( matchpath(group_dirs, locations.path ) && ( hide_group_uploaders == TRUE )) {
