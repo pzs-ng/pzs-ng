@@ -190,7 +190,7 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 					*bar = *filename = hours = minutes = 0;
 					seconds = tstop.tv_sec - user[x].tstart.tv_sec;
 					while (seconds >= 3600) { hours++; seconds -= 3600; }
-					while (seconds >= 60) { minutes++; seconds -= 60; } 
+					while (seconds >= 60) { minutes++; seconds -= 60; }
 					if (!raw)
 						sprintf(status, "Idle: %02d:%02d:%02d", hours, minutes, seconds);
 					else
@@ -420,6 +420,8 @@ void buffer_groups(char *groupfile) {
 
 /* CORE CODE */
 int main (int argc, char **argv) {
+	int user_idx = 1;
+	char raw_output = 0;
 	readconfig(argv[0]);
 	if (!ipckey)
 		ipckey = def_ipckey;
@@ -428,8 +430,6 @@ int main (int argc, char **argv) {
 
 	buffer_groups(glgroup);
 
-	int user_idx = 1;
-	char raw_output = 0;
 	if (argc > 1 && strlen(argv[1]) == strlen("--raw")) {
 		if (!strcasecmp(argv[1], "--raw")) {
 			user_idx = 2;
