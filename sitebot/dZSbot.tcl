@@ -1,7 +1,8 @@
 #################################################################################
-# Code part only, main config is moved to dZSbot.conf                           #
-# THIS MEANS THAT YOU ARENT SUPPOSED TO EDIT THIS FILE                          #
-# FOR CONFIGURATION PURPOSES!                                                   #
+# dZSbot - ProjectZS-NG Sitebot                                                 #
+#################################################################################
+# - Displays information real-time events and stats for your glFTPd site.       #
+# - Based on the original dZSbot written by dark0n3.                            #
 #################################################################################
 
 #################################################################################
@@ -173,14 +174,15 @@ proc eventcheck {section msgtype} {
 	return 0
 }
 
-proc eventhandler {type event section line} {
+proc eventhandler {type event argv} {
 	global $type
 	set varname "$type\($event)"
 	if {![info exists $varname]} {return 1}
 	foreach script [set $varname] {
-		if {[catch {set retval [$script $event $section $line]} error]} {
+		if {[catch {set retval [eval $script $event $argv]} error]} {
 			putlog "dZSbot error: Error evaluating the script \"$script\" for $varname ($error)."
 		} elseif {[isfalse $retval]} {
+		    putlog "dZSbot: The script \"$script\" for $varname returned false."
 			return 0
 		} elseif {![istrue $retval]} {
 			putlog "dZSbot warning: The script \"$script\" for $varname must return a boolean value (0/FALSE or 1/TRUE)."
@@ -239,7 +241,7 @@ proc readlog {} {
 
 		## Invite users to public and private channels.
 		if {[string equal $event "INVITE"]} {
-			eval ng_invitechans [lrange $line 0 2]
+			eval ng_inviteuser [lrange $line 0 2]
 		}
 
 		if {[lsearch -exact $msgtypes(SECTION) $event] != -1} {
@@ -261,18 +263,15 @@ proc readlog {} {
 		} else {
 			putlog "dZSbot error: Undefined message type \"$event\", check \"msgtypes(SECTION)\" and \"msgtypes(DEFAULT)\" in the config."; continue
 		}
-		## If a script event returns false, skip the announce.
-		if {![eventhandler precommand $event $section $line]} {
-			putlog "dZSbot: A script for precommand($event) returned false, skipping announce."
-			continue
-		}
+		## If a pre-event script returns false, skip the announce.
+		if {![eventhandler precommand $event [list $section $line]]} {continue}
 		if {![info exists variables($event)]} {
 			putlog "dZSbot error: \"variables($event)\" not defined in the config, type becomes \"DEFAULT\"."
 			set event "DEFAULT"
 		}
 		if {([info exists disable($event)] && $disable($event) != 1) && ![eventcheck $section $event]} {
 			sndall $event $section [ng_format $event $section $line]
-			eventhandler postcommand $event $section $line
+			eventhandler postcommand $event [list $section $line]
 		}
 	}
 	if {$glversion == 1} {
@@ -677,8 +676,10 @@ proc sndone {chan text {section "none"}} {
 # Invite User                                                                   #
 #################################################################################
 
-proc ng_invitechans {nick user group} {
+proc ng_inviteuser {nick user group} {
 	global invite_channels privchannel privgroups privusers
+    if {![eventhandler precommand INVITEUSER [list $nick $user $group]]} {return}
+
 	foreach chan $invite_channels {puthelp "INVITE $nick $chan"}
 	foreach {type chanlist} [array get privchannel] {
 		if {[info exists privusers($type)]} {
@@ -696,6 +697,7 @@ proc ng_invitechans {nick user group} {
 			}
 		}
 	}
+	eventhandler postcommand INVITEUSER [list $nick $user $group]
 	return
 }
 
@@ -722,7 +724,7 @@ proc ng_invite {nick host hand argv} {
 			} else {
 				putlog "dZSbot error: Unable to open user file for \"$user\" ($error)."
 			}
-			ng_invitechans $nick $user $group
+			ng_inviteuser $nick $user $group
 		} else {
 			set output "$theme(PREFIX)$announce(BADMSGINVITE)"
 		}
