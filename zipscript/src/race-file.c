@@ -265,7 +265,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 int
 copysfv(const char *source, const char *target)
 {
-	int		i;
+	int		i, retval = 0;
 	short int	music, rars, video, others, type;
 	
 	char		*ptr, fbuf[2048];
@@ -284,9 +284,6 @@ copysfv(const char *source, const char *target)
 	
 	if ((tmpsfv = fopen(".tmpsfv", "w+")) == NULL)
 		d_log("Failed to open '.tmpsfv': %s\n", strerror(errno));
-
-#else
-	int		retval = 0;
 #endif
 
 	if ((insfv = fopen(source, "r")) == NULL) {
@@ -456,7 +453,7 @@ END:
 	fwrite(&type, sizeof(short int), 1, outsfv);
 	fclose(outsfv);
 	
-	return 0;
+	return retval;
 }
 
 /*
