@@ -326,6 +326,7 @@ main(int argc, char **argv)
 
 	raceI.file.name = argv[1];
 	locations.path = argv[2];
+	raceI.misc.current_path = locations.path;
 	d_log("Changing directory to %s\n", locations.path);
 	chdir(locations.path);
 

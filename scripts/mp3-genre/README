@@ -3,11 +3,9 @@ By default this binary is disabled in all aspects.
 You may use it to change the groupname in a dirlisting to match the genre of a
 mp3-release, by adding the following in your zsconfig.h:
 
-#define enable_complete_script          TRUE
-#define complete_script                 "/bin/nfoextract.sh"
 #define enable_mp3_script               TRUE
 #define mp3_script                      "/bin/ng-chown"
-#define mp3_script_cookies              "0 0 0 1 1 1 - \"%w\" ."
+#define mp3_script_cookies              "0 0 0 1 1 1 - \"%w\" \"%?\""
 #define allow_gid_change_in_ng_chown    TRUE
 #define allow_dir_chown_in_ng_chown     TRUE
 
@@ -20,4 +18,16 @@ You must also chmod +s ng-chown:
 Last, you'll have to add the genres into glftpd's groupfile. This is what the
 script named mp3-genre-create.sh does. Just run it and it will modify the group
 file (after creating a backup).
+
+For those wanting an explanation of the cookies/variables passed:
+  0      - uid set to 0 - this disable the uid setting.
+  0      - gid set to 0 - this disable the gid setting.
+  0      - do not change uid of files/dirs. We only wants to change group.
+  1      - change gid of the file/dirs.
+  1      - change ownership of files.
+  1      - change ownership of dir.
+  -      - disable user name lookup.
+  \"%w\" - genre name used as group-name. This will be used since gid = 0
+           earlier. We use quotes since the name may have space chars.
+  \"%?\" - current path - this is the dir we wish to chown.
 

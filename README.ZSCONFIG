@@ -1054,5 +1054,27 @@ racersplit_prior <STRING>
 	Splitting of the racers are usually done by the bot.
 	Default: ""
 
+allow_uid_change_in_ng_chown <TRUE|FALSE>
+	ng-chown is a binary that changes the uid/gid of files dirs. In
+	order for it to work you have to enable a few things. This variable
+	will let ng-chown change the uid of files/dirs. ng-chown need to be
+	chmod'ed +s for it to work too.
+	Default: FALSE
+
+allow_gid_change_in_ng_chown <TRUE|FALSE>
+	Same as with allow_uid_change_in_ng_chown, only with gid.
+	DEFAULT: FALSE
+
+allow_dir_chown_in_ng_chown <TRUE|FALSE>
+	In ng-chown you have to specify a dir or a file to chmod. This setting
+	allows/denies to change the ownership of that file/dir.
+	DEFAULT: FALSE
+
+allow_files_chown_in_ng_chown <TRUE|FALSE>
+	In ng-chown you have to specify a dir or a file to chmod. If you specify
+	a dir, this setting will chown the files in that dir, but not the dir
+	itself.
+	DEFAULT: FALSE
+
 --END
 

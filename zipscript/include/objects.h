@@ -102,6 +102,7 @@ struct race_total {
 struct misc {
 	char		old_leader[24];
 	char           *release_name;
+	char	       *current_path;
 	char		racer_list[1024];
 	char		total_racer_list[1024];
 	char		top_messages[2][1024];

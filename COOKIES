@@ -2,7 +2,8 @@
 #
 #### Race Totals
 #
- %r  = release name (bolded by default)
+ %r  = release name
+ %?  = current path
 
  %u  = # of users in race 
  %g  = # of groups in race
