@@ -68,6 +68,9 @@
 #ifndef nocheck_dirs
 	#define nocheck_dirs                    "/site/private/"
 #endif
+#ifndef rescan_nocheck_dirs_allowed
+	#define rescan_nocheck_dirs_allowed	TRUE
+#endif
 #ifndef audio_nocheck_dirs
 	#define audio_nocheck_dirs              "/site/groups/ /site/incoming/requests/"
 #endif

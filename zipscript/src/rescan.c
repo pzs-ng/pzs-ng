@@ -157,8 +157,7 @@ int main () {
     locations.path = malloc( PATH_MAX );
     getcwd( locations.path, PATH_MAX );
 
-    if ( matchpath(nocheck_dirs, locations.path) || (!matchpath(zip_dirs, locations.path) && !matchpath(sfv_dirs, locations.path) & 
-!matchpath(group_dirs, locations.path)) ) {
+    if ( (matchpath(nocheck_dirs, locations.path) || (!matchpath(zip_dirs, locations.path) && !matchpath(sfv_dirs, locations.path) && !matchpath(group_dirs, locations.path))) && rescan_nocheck_dirs_allowed == FALSE ) {
 	d_log("Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
 	d_log("Freeing memory, and exiting\n");
 	free(userI);
