@@ -127,7 +127,13 @@ set mpath ""
 bind join -|- * welcome_msg
 bind dcc n errorinfo errorinfo
 proc errorinfo {args} {
-	foreach line [split $::errorInfo \n] {putlog $line}
+    global errorInfo tcl_patchLevel tcl_platform
+    putlog "--\[\002Error Info\002\]------------------------------------------"
+    putlog "Tcl: v$tcl_patchLevel"
+    putlog "Box: $tcl_platform(os) $tcl_platform(osVersion) ($tcl_platform(platform))"
+    putlog "Message:"
+	foreach line [split $errorInfo \n] {putlog $line}
+	putlog "--------------------------------------------------------"
 }
 
 proc bindcommands {cmdpre} {
@@ -768,7 +774,7 @@ proc format_duration {secs} {
 #################################################################################
 proc format_speed {value section} {
 	global speedmeasure speedthreshold theme
-	switch -exact -- [string tolower $valuemeasure] {
+	switch -exact -- [string tolower $speedmeasure] {
 		"mb" {
 			set value [format "%.2f" [expr {$value / 1024.0}]]
 			set type $theme(MB)
@@ -782,7 +788,7 @@ proc format_speed {value section} {
 			set type $theme(MBIT)
 		}
 		"autobit" {
-			if {$value > $valuethreshold} {
+			if {$value > $speedthreshold} {
 				set value [format "%.1f" [expr {$value * 8 / 1000.0}]]
 				set type $theme(MBIT)
 			} else {
@@ -791,7 +797,7 @@ proc format_speed {value section} {
 			}
 		}
 		"autobyte" {
-			if {$value > $valuethreshold} {
+			if {$value > $speedthreshold} {
 				set value [format "%.2f" [expr {$value / 1024.0}]]
 				set type $theme(MB)
 			} else {
@@ -1666,10 +1672,11 @@ proc welcome_msg {nick uhost hand chan } {
 #################################################################################
 proc ng_bnc_check {nick uhost hand chan arg} {
 	global bnc
+	checkchan $nick $chan
 
 	# We should probably just not bind at all, but this is easier.
 	# (It's easier since we won't have to deal with unbinding etc)
-	if {![istrue $bnc(ENABLED)] || ![checkchan $nick $chan]} {return}
+	if {![istrue $bnc(ENABLED)]} {return}
 
 	putquick "NOTICE $nick :Checking bouncer(s) status..."
 	set count 0
