@@ -23,8 +23,8 @@ MV:/site/incoming/musicvideos/
 "
 
 # alternative, set the following variable to point to your dZSbot.conf and
-# comment out the ''sections='' directive above.
-botconf=/path/to/sitebot/pzs-ng/dZSbot.conf
+# uncomment the ''botconf='' directive below.
+#botconf=/path/to/sitebot/pzs-ng/dZSbot.conf
 
 # set this to 1 if you wish to announce sections where no incompletes are found.
 verbose=0
@@ -39,24 +39,29 @@ bold=""
 #############################
 
 # grab sections from the sitebot's conf instead
-if [ -z "$sections" ]; then
- sections=`grep "^set paths(" $botconf | sed 's/^set paths(\(.*\)) \"\(.*\)\*\"/\1:\2/'`
+if [ ! -z "$botconf" ] && [ -e "$botconf" ]; then
+ sections="`grep "^set paths(" $botconf | sed 's/^set paths(\(.*\))[[:space:]]\{1,\}\"\(.*\)\*\"/\1:\2/'`"
 fi;
 
+IFSORIG="$IFS"
+IFS="
+"
 for section in $sections; do
-  secname="`echo $section | cut -d ':' -f 1`"
-  secpath="`echo $section | cut -d ':' -f 2`"
+  secname="`echo "$section" | cut -d ':' -f 1`"
+  secpaths="`echo "$section" | cut -d ':' -f 2- | tr ' ' '\n'`"
 
-  results="`$cleanup $glroot 2>/dev/null | grep -e "^Incomplete" | tr '\"' '\n' | grep -e "$secpath" | tr -s '/'`"
-  if [ -z "$results" ]; then
-    if [ $verbose -eq 1 ]; then
-      echo "$secname: No incomplete releases found."
-    fi
-  else
-    for result in $results; do
-      secrel="`echo $result | sed "s|$glroot$secpath||" | tr -s '/'`"
-      echo "$secname: ${bold}${secrel}${bold} is incomplete."
-    done
-  fi
+  for secpath in $secpaths; do
+   results="`$cleanup $glroot 2>/dev/null | grep -e "^Incomplete" | tr '\"' '\n' | grep -e "$secpath" | tr -s '/'`"
+   if [ -z "$results" ]; then
+     if [ $verbose -eq 1 ]; then
+       echo "$secname: No incomplete releases found."
+     fi
+   else
+     for result in $results; do
+       secrel="`echo $result | sed "s|$glroot$secpath||" | tr -s '/'`"
+       echo "$secname: ${bold}${secrel}${bold} is incomplete."
+     done
+   fi
+ done
 done
-
+IFS="$IFSORIG"

@@ -103,3 +103,9 @@ Q: (BOT) !bnc does not work. (I use curl 7.13.1)
 A: There is a bug in this version of curl when connection to a SSL site. Please
    downgrade to 7.12.3.
 
+Q: (BOT) !allup doesn't work! And neither does any other stat command.
+----------------------------------------------------------------------
+A: glftpd's stats binary probably reports an error. Try to run in from shell:
+      /glftpd/bin/stats -r /etc/glftpd.conf -u -a -s <your section here>
+   This should give some indication of where the problem is.
+
