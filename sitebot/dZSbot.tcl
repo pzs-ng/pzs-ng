@@ -803,7 +803,7 @@ proc showstats {nick type time section} {
 # INVITE CHECK                                                                  #
 #################################################################################
 proc invite {nick host hand arg} {
-	global location binary chanlist announce theme invite_channels
+	global location binary chanlist announce theme invite_channels disable
 
 	if {[llength $arg] == 2} {
 		set username [lindex $arg 0]
@@ -827,12 +827,14 @@ proc invite {nick host hand arg} {
 			set output "$theme(PREFIX)$announce(BADMSGINVITE)"
 		}
 
-		set output [replacevar $output "%ircnick" $nick]
-		set output [replacevar $output "%user" $username]
-		set output [replacevar $output "%host" $host]
-		set output [replacevar $output "%group" $group]
-		set output [basicreplace $output "INVITE"]
-		sndall "DEFAULT" $output
+		if {!$disable(MSGINVITE)} {
+			set output [replacevar $output "%ircnick" $nick]
+			set output [replacevar $output "%user" $username]
+			set output [replacevar $output "%host" $host]
+			set output [replacevar $output "%group" $group]
+			set output [basicreplace $output "INVITE"]
+			sndall "DEFAULT" $output
+		}
     }
 }
 #################################################################################
