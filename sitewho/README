@@ -1,13 +1,6 @@
-1. Installation
+You should no longer need to compile sitewho from here - everything is done
+from the main dir. 'make install' will copy the config, header and footer files
+along with the compiled bin into your glftpd setup.
+If the header/footer/config files are already present, it will NOT overwrite
+your copies.
 
-
-
-#################################################################
- 1. Installation
-#################################################################
-
- 1. Modify config file
- 2. Run compile.sh
- 3. Copy footer & header files
- 4. Copy binary file somewhere & put .conf file in same location
- 5. Done
