@@ -10,7 +10,6 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <ctype.h>
-#include "structonline.h"
 #include "../../zipscript/conf/zsconfig.h"
 #include "zsconfig.defaults.h"
 
@@ -18,6 +17,10 @@
 
 int		debug = 0;
 int		groups = 0, GROUPS = 0;
+
+static struct ONLINE_GL132 *online132;
+static struct ONLINE_GL200 *online200;
+static struct ONLINE_GL201 *online201;
 
 static struct ONLINE *user;
 static struct GROUP **group;
@@ -34,6 +37,7 @@ char           *header = 0, *footer = 0, *glpath = 0, *mpaths = 0, *husers = 0, 
 int		maxusers = 20 , showall = 0, uploads = 0, downloads = 0, onlineusers = 0, browsers = 0, idlers = 0, chidden = 1,
 		idle_barrier = -1, def_idle_barrier = 30, threshold = -1, def_threshold = 1024;
 double		total_dn_speed = 0, total_up_speed = 0;
+int		totusers = 0;
 
 /* CORE CODE */
 int 
@@ -47,7 +51,6 @@ main(int argc, char **argv)
 	char		raw_output = 2;
 	int		user_idx = 2;
 #endif
-	int		totusers = 0;
 	int		gnum = 0;
 
 	readconfig(argv[0]);
@@ -90,6 +93,7 @@ main(int argc, char **argv)
 			raw_output = 3;
 		}
 	}
+
 	if ((shmid = shmget((key_t) strtoll(ipckey, NULL, 16), 0, 0)) == -1) {
 		if (argc == 1 || (raw_output)) {
 			if (!raw_output && strlen(header))
@@ -105,23 +109,12 @@ main(int argc, char **argv)
 		}
 		exit(0);
 	}
-	if ((user = (struct ONLINE *)shmat(shmid, NULL, SHM_RDONLY)) == (struct ONLINE *)-1) {
-		if (!raw_output)
-			printf("Error!: (SHMAT) failed...");
-		else
-			printf("\"ERROR\" \"SHMAT Failed.\"\n");
-		exit(1);
-	}
 
-	if (shmctl(shmid, IPC_STAT, &ipcbuf) == -1) {
-		perror("shmctl");
-		exit(EXIT_FAILURE);
-	}
+	copystruct(raw_output);
 
 	if (argc == 1 && (!raw_output) && strlen(header))
 		show(header);
 
-	(signed int)totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE));
 	if (raw_output < 2)
 		showusers((totusers > maxusers ? maxusers : totusers), argc - raw_output - 1, argv[user_idx], raw_output);
 	else if (argc == 1)
@@ -170,6 +163,101 @@ main(int argc, char **argv)
 		free(nocase);
 	if (count_hidden != def_count_hidden)
 		free(count_hidden);
+	if (user)
+		free(user);
+	return 0;
+}
+
+int copystruct(int raw_output) {
+	int	glversion = 0, numusers = 0;
+
+	if (shmctl(shmid, IPC_STAT, &ipcbuf) == -1) {
+		perror("shmctl");
+		exit(EXIT_FAILURE);
+	}
+
+	if (!(ipcbuf.shm_segsz%sizeof(struct ONLINE_GL132)))
+		glversion=132;
+	else if (!(ipcbuf.shm_segsz%sizeof(struct ONLINE_GL200)))
+		glversion=200;
+	else if (!(ipcbuf.shm_segsz%sizeof(struct ONLINE_GL201)))
+		glversion=201;
+	else {
+		printf("Error!: Unsupported version of glftpd or wrong ipckey!\n");
+		exit (1);
+	}
+
+	switch (glversion) {
+		case 132:
+			(signed int)totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE_GL132));
+			user = malloc(sizeof(struct ONLINE) * totusers);
+			memset(user, 0, sizeof(struct ONLINE) * totusers);
+			if ((online132 = (struct ONLINE_GL132 *)shmat(shmid, NULL, SHM_RDONLY)) == (struct ONLINE_GL132 *)-1) {
+				if (!raw_output)
+					printf("Error!: (SHMAT) failed...");
+				else
+					printf("\"ERROR\" \"SHMAT Failed.\"\n");
+				exit(1);
+			}
+			for (numusers = 0; numusers < totusers; numusers++) {
+				memcpy(user[numusers].tagline,    online132[numusers].tagline,    sizeof(online132[numusers].tagline));
+				memcpy(user[numusers].username,   online132[numusers].username,   sizeof(online132[numusers].username));
+				memcpy(user[numusers].status,     online132[numusers].status,     sizeof(online132[numusers].status));
+				memcpy(user[numusers].currentdir, online132[numusers].currentdir, sizeof(online132[numusers].currentdir));
+				user[numusers].groupid    = online132[numusers].groupid;
+				user[numusers].login_time = online132[numusers].login_time;
+				user[numusers].tstart     = online132[numusers].tstart;
+				user[numusers].bytes_xfer = online132[numusers].bytes_xfer;
+				user[numusers].procid     = online132[numusers].procid;
+			}
+			break;
+		case 200:
+			(signed int)totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE_GL200));
+			user = malloc(sizeof(struct ONLINE) * totusers);
+			memset(user, 0, sizeof(struct ONLINE) * totusers);
+			if ((online200 = (struct ONLINE_GL200 *)shmat(shmid, NULL, SHM_RDONLY)) == (struct ONLINE_GL200 *)-1) {
+				if (!raw_output)
+					printf("Error!: (SHMAT) failed...");
+				else
+					printf("\"ERROR\" \"SHMAT Failed.\"\n");
+				exit(1);
+			}
+			for (numusers = 0; numusers < totusers; numusers++) {
+				memcpy(user[numusers].tagline  ,  online200[numusers].tagline,    sizeof(online200[numusers].tagline));
+				memcpy(user[numusers].username,   online200[numusers].username,   sizeof(online200[numusers].username));
+				memcpy(user[numusers].status,     online200[numusers].status,     sizeof(online200[numusers].status));
+				memcpy(user[numusers].currentdir, online200[numusers].currentdir, sizeof(online200[numusers].currentdir));
+				user[numusers].groupid    = online200[numusers].groupid;
+				user[numusers].login_time = online200[numusers].login_time;
+				user[numusers].tstart     = online200[numusers].tstart;
+				user[numusers].bytes_xfer = online200[numusers].bytes_xfer;
+				user[numusers].procid     = online200[numusers].procid;
+			}
+			break;
+		case 201:
+			(signed int)totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE_GL201));
+			user = malloc(sizeof(struct ONLINE) * totusers);
+			memset(user, 0, sizeof(struct ONLINE) * totusers);
+			if ((online201 = (struct ONLINE_GL201 *)shmat(shmid, NULL, SHM_RDONLY)) == (struct ONLINE_GL201 *)-1) {
+				if (!raw_output)
+					printf("Error!: (SHMAT) failed...");
+				else
+					printf("\"ERROR\" \"SHMAT Failed.\"\n");
+				exit(1);
+			}
+			for (numusers = 0; numusers < totusers; numusers++) {
+				memcpy(user[numusers].tagline  ,  online201[numusers].tagline,    sizeof(online201[numusers].tagline));
+				memcpy(user[numusers].username,   online201[numusers].username,   sizeof(online201[numusers].username));
+				memcpy(user[numusers].status,     online201[numusers].status,     sizeof(online201[numusers].status));
+				memcpy(user[numusers].currentdir, online201[numusers].currentdir, sizeof(online201[numusers].currentdir));
+				user[numusers].groupid    = online201[numusers].groupid;
+				user[numusers].login_time = online201[numusers].login_time;
+				user[numusers].tstart     = online201[numusers].tstart;
+				user[numusers].bytes_xfer = online201[numusers].bytes_xfer;
+				user[numusers].procid     = online201[numusers].procid;
+			}
+			break;
+	}
 	return 0;
 }
 
