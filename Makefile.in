@@ -5,7 +5,7 @@ bindir=@bindir@
 mandir=@mandir@
 datadir=@datadir@
 
-CFLAGS=-O2 -Wall
+CFLAGS=-O2 -Wall -pedantic
 CC=@CC@
 LIBS=@LIBS@
 ZSLIBS=@ZSLIBS@

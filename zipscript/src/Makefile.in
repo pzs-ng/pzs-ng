@@ -5,7 +5,7 @@ datadir=@datadir@
 binpath=../bin
 
 CC=@CC@
-CFLAGS=-O2 @STATIC@ -Wall -I../include/
+CFLAGS=-O2 @STATIC@ -Wall -pedantic -I../include/
 LDFLAGS=@LDFLAGS@
 ZSLIBS=@ZSLIBS@
 UNIVERSAL=race-file.o zsfunctions.o mp3info.o
