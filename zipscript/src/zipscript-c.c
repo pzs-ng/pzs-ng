@@ -347,7 +347,7 @@ main(int argc, char **argv)
 		if (!raceI.file.speed)
 			raceI.file.speed = 1;
 
-		d_log("User: %s - Group: %s - Speed: %d%s\n", raceI.user.name, raceI.user.group, raceI.file.speed);
+		d_log("User: %s - Group: %s - Speed: %d\n", raceI.user.name, raceI.user.group, raceI.file.speed);
 
 		d_log("Reading section from env (%s)\n", getenv("SECTION"));
 		if ((temp_p = strdup(gl_sections)) == NULL) {
