@@ -78,7 +78,6 @@ void getrelname(char *directory) {
    n = 0;
   } else n++;
   
- if (k!=0) exit (2);
  l = strlen(path[1]);
  
  if (( ! strncasecmp(path[1], "CD"  , 2) && l <= 4 ) ||
@@ -103,7 +102,7 @@ void getrelname(char *directory) {
   sprintf(raceI.misc.release_name, "%s", path[1]);
   locations.link_target = path[1];
   locations.incomplete = c_incomplete( incomplete_indicator, path );
-  free(path[0]);
+  if (k == 0) free(path[0]);
  }
 }
 
