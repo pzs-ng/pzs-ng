@@ -247,6 +247,7 @@ main()
 				complete_bar = video_completebar;
 				break;
 			}
+			g.v.misc.write_log = 0;
 			complete(&g, complete_type);
 			createstatusbar(convert(&g.v, g.ui, g.gi, complete_bar));
 #if (chmod_completebar)
@@ -321,6 +322,7 @@ main()
 		}
 		buffer_progress_bar(&g.v);
 		if (g.v.total.files_missing == 0) {
+			g.v.misc.write_log = 0;
 			complete(&g, complete_type);
 			createstatusbar(convert(&g.v, g.ui, g.gi, zip_completebar));
 #if (chmod_completebar)
