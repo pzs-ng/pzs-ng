@@ -36,7 +36,7 @@
 
 #define allowed_bitrates	"160,192,VBR"
 #define allowed_years		"2000,2001,2002,2003,2004"
-#define banned_genres		"Christian Rap"
+#define banned_genres		"Christian Rap,R&B"
 
 /* Creates a zero-byte file for every non-existing file defined in sfv
  */
@@ -318,9 +318,14 @@
  */
 
 #define	audio_bitrate_check	FALSE
+#define audio_bitrate_warn	TRUE
+#define audio_bitrate_warn_msg	"User %B%U%B/%G uploaded an illegal file (bitrate) file in %r. Naughty boy!"
 #define audio_year_check	FALSE
+#define audio_year_warn		TRUE
+#define audio_year_warn_msg	"User %B%U%B/%G uploaded an illegal file (year) in %r. Naughty boy!"
 #define audio_genre_check	FALSE
-
+#define audio_genre_warn	TRUE
+#define audio_genre_warn_msg	"User %B%U%B/%G uploaded an illegal file (genre) in %r. Naughty boy!"
 /* Audio related sym links
  */
 
