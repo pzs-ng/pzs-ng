@@ -156,7 +156,10 @@ STAT_GROUPS		%release, %path, %relname, %section, %g_position, %g_name, %g_mbyte
 			%g_percent, %g_avgspeed
 
 STAT_POST		%release, %path, %relname, %section, %u_count, %g_count, %t_files, %t_mbytes,
-			%t_duration, %u_avgspeed
+			%t_duration, %u_avgspeed, %u_mbytes, %u_files, %u_percent, %u_speed, %g_name,
+			%g_mbytes, %g_files, %g_percent, %g_speed, %slow_user, %slow_group,
+			%slow_speed, %fast_user, %fast_group, %fast_speed
+
 
 #
 #
