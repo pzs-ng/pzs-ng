@@ -85,6 +85,7 @@ getrelname(char *directory)
 	    (!strncasecmp(path[1], "DISC", 4) && l[1] <= 6) ||
 	    (!strncasecmp(path[1], "DISK", 4) && l[1] <= 6) ||
 	    (!strncasecmp(path[1], "DVD", 3) && l[1] <= 5) ||
+	    (!strncasecmp(path[1], "EXTRA", 5) && l[1] <= 6) ||
 	    (!strncasecmp(path[1], "SUB", 3) && l[1] <= 4) ||
 	    (!strncasecmp(path[1], "SUBTITLES", 9) && l[1] <= 9) ||
 	    (!strncasecmp(path[1], "VOBSUB", 6) && l[1] <= 7)) {
