@@ -160,12 +160,12 @@ int main () {
     locations.path = malloc( PATH_MAX );
     getcwd( locations.path, PATH_MAX );
 
-    n = locations.length_path = strlen( locations.path );
-    n += locations.length_zipdatadir = sizeof(storage) - 1;
+    n = (locations.length_path = strlen(locations.path)) + 1;
 
-    locations.race   = malloc( n += + 10 );
-    locations.sfv    = malloc( n );
-    locations.leader = malloc( n );
+    d_log("Allocating memory for variables\n");
+    locations.race   = malloc(n += 10 + (locations.length_zipdatadir = sizeof(storage) - 1));
+    locations.sfv    = malloc(n);
+    locations.leader = malloc(n);
 
     getrelname(locations.path);
     buffer_groups( GROUPFILE );
