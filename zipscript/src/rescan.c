@@ -14,6 +14,7 @@
 #include "multimedia.h"
 #include "convert.h"
 #include "dizreader.h"
+#include "stats.h"
 
 #include "../conf/zsconfig.h"
 #include "../../config.h"
@@ -43,7 +44,6 @@ struct VARS      raceI;
 struct LOCATIONS locations;
 struct stat      fileinfo;
 
-extern void sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);
 extern char* readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount);
 
 extern void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned long crc, int logtype);

@@ -13,6 +13,7 @@
 #include "multimedia.h" 
 #include "convert.h"
 #include "dizreader.h"
+#include "stats.h"
 
 #include "../conf/zsconfig.h"
 #include "../../config.h"
@@ -28,14 +29,8 @@ struct GROUPINFO **groupI;
 struct VARS      raceI;
 struct LOCATIONS locations;
 
-extern	void	get_stats(struct VARS *raceI, struct USERINFO **userI);
-
-// from stats.c - let's move to headers later. (together with USERINFO / GROUPINFO / VARS structs?)
-extern void showstats(struct VARS *, struct USERINFO **, struct GROUPINFO **);
-
 /* NEW OPTIMIZED STUFF GOES HERE */
 extern unsigned long readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount);
-extern void sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);
 extern void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned long crc, int logtype);
 extern void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);
 extern void copysfv_file(char *source, char *target, long buf_bytes);

@@ -6,9 +6,12 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
+
 #include "objects.h"
 #include "macros.h"
 #include "constants.h"
+#include "stats.h"
+
 #include "../conf/zsconfig.h"
 
 extern char*		findfile(char *filename);
@@ -18,10 +21,6 @@ extern char		isvideo(char *fileext);
 extern short		strcomp(char *instr, char *searchstr);
 extern void		create_missing(char *f, short l);
 extern unsigned long	hexstrtodec(char *s);
-
-// from stats.c - let's move to headers later.
-extern void updatestats(struct VARS *, struct USERINFO **, struct GROUPINFO **, char *, char *, unsigned long, long, long, long);
-
 
 /*
  * Modified	: 01.16.2002

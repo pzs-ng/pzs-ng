@@ -13,6 +13,7 @@
 #include "zsfunctions.h"
 #include "convert.h"
 #include "dizreader.h"
+#include "stats.h"
 
 #include "../conf/zsconfig.h"
 #include "../../config.h"
@@ -21,10 +22,6 @@ struct USERINFO  **userI;
 struct GROUPINFO **groupI;
 struct VARS      raceI;
 struct LOCATIONS locations;
-
-extern void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI,
-                        char *usern, char *group, long filesize, long speed, long startsec, long startusec);
-extern void sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);
 
 extern char* readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount);
 
