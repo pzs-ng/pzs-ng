@@ -8,13 +8,14 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include "zsfunctions.c"
+#include "race-file.c"
+
 #include "objects.h"
 #include "macros.h"
-#include "zsfunctions.h"
 #include "convert.h"
 #include "dizreader.h"
 #include "stats.h"
-#include "race-file.h"
 
 #include "../conf/zsconfig.h"
 #include "../../config.h"
