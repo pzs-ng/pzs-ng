@@ -29,11 +29,13 @@ if {![info exists binary(GLFTPD)] && ![info exists use_glftpd2]} {
 }
 
 if {![info exists use_glftpd2]} {
-	set glversion [exec strings $binary(GLFTPD) | grep -i '^glftpd ' | cut -f1 -d. | tr A-Z a-z]
+	set glversion [exec strings $binary(GLFTPD) | grep -i "^glftpd " | cut -f1 -d. | tr A-Z a-z]
 	if {$glversion == "glftpd 1"} {
-		use_glftpd2="NO"
+		putlog "detected $glversion running in legacy mode"
+		set use_glftpd2 "NO"
 	} elseif {$glversion == "glftpd 2"} {
-		use_glftpd2="YES"
+		putlog "detected $glversion running in standard mode"
+		set use_glftpd2 "YES"
 	} else {
 		putlog "dZSbot: autodetecting glftpd-version failed. Set use_glftpd in [file dirname [info script]]/dZSbconf.tcl manually."
 	}
