@@ -5,9 +5,9 @@ bindir=$(rootpath)/bin
 binpath=../bin
 
 CC=@CC@
-#CFLAGS=-m32 -O2 @STATIC@ -Wall -pedantic -I../include/
-CFLAGS=-m32 @STATIC@ -Wall -pedantic -g -I../include
-LDFLAGS=-m32 @LDFLAGS@
+#CFLAGS=-O2 @STATIC@ -Wall -pedantic -I../include/
+CFLAGS=@STATIC@ -Wall -pedantic -g -I../include
+LDFLAGS=@LDFLAGS@
 ZSLIBS=@ZSLIBS@
 UNIVERSAL=race-file.o zsfunctions.o mp3info.o
 RM=rm -f
