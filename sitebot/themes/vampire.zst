@@ -6,7 +6,7 @@
 #  Created by: Phen0menon & juanker                        #
 #  Maintained by: juanker (juanker@EFnet #pzs-ng)          #
 #  Notes: Best experienced on dark -black- backgrounds     #
-#  Tested with: pzs-ng r938                                #
+#  Tested with: pzs-ng r942                                #
 #                                                          #
 ############################################################
 #                                                          #
@@ -15,11 +15,11 @@ COLOR1 = "14"  # base color: dark grey
 COLOR2 = "15"  # section color: light grey
 COLOR3 = "04"  # highlight color: red blood
 
-#                                                        
+#
 ############################################################
 #
 
-PREFIX						= "%c1{[}%c2{%b{%sitename}}%c1{]} "
+PREFIX					= "%c1{[}%c2{%b{%sitename}}%c1{]} "
 fakesection.INVITE			= "iNViTE"
 
 # output done by glftpd
@@ -40,16 +40,13 @@ announce.NUKE				= "%b{NUKE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %
 announce.UNNUKE				= "%b{UNNUKE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{was unnuked factor} %c3{%b{x%multiplier}} %c1{by} %c3{%b{%nuker}} %c1{[reason]} %c3{%b{%reason}} %c1{[unnukees]} %c3{%nukees}%c1{.}"
 announce.NUKEES				= "%c3{%u_name} %c1{(}%c3{%b{%size}}%c1{MB)}, "
 
-# special output done by the zip filescript
+# special output done by the zipscript
 announce.DOUBLESFV			= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{tried to upload a dupe sfv.}"
 announce.BADBITRATE			= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is violating rules by uploading shit with bitrate} %c3{%b{%bitrate}}%c1{kbps.}"
 announce.BADGENRE			= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is violating rules by uploading} %c3{%b{%genre}}%c1{.}"
 announce.BADYEAR			= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is violating rules by uploading shit from} %c3{%b{%year}}%c1{.}"
 
-# standard announces done by the zip filescript
-announce.RACE					= "%b{RACE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{-} %c3{%b{%u_name}} %c1{is racing}%loop1 %c1{at} %c3{%b{%u_speed}}%c1{KB/s.}"
-announce.RACE_LOOP1				= " %c3{%b{%a_name}} %c1{/} %c3{%a_gname}"
-announce.RACE_LOOP2				= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
+# standard announces done by the zipscript
 announce.RACE_ZIP				= "%b{RACE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{-} %c3{%b{%u_name}} %c1{is racing}%loop1 %c1{at} %c3{%b{%u_speed}}%c1{KB/s.}"
 announce.RACE_ZIP_LOOP1				= " %c3{%b{%a_name}} %c1{/} %c3{%a_gname}"
 announce.RACE_ZIP_LOOP2				= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
@@ -65,27 +62,21 @@ announce.RACE_VIDEO_LOOP2			= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
 announce.RACE_AUDIO				= "%b{RACE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{-} %c3{%b{%u_name}} %c1{is racing}%loop1 %c1{at} %c3{%b{%u_speed}}%c1{KB/s.}"
 announce.RACE_AUDIO_LOOP1			= " %c3{%b{%a_name}} %c1{/} %c3{%a_gname}"
 announce.RACE_AUDIO_LOOP2			= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
-announce.SFV					= "%b{SFV%c1{:}} %c1{-}%c2{%section}%c1{- Got SFV for} %c3{%b{%relname}} %c1{uploaded by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{. Now expecting} %c3{%b{%t_filecount}} %c1{file(s).}"
 announce.SFV_RAR				= "%b{SFV%c1{:}} %c1{-}%c2{%section}%c1{- Got SFV for} %c3{%b{%relname}} %c1{uploaded by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{. Now expecting} %c3{%b{%t_filecount}} %c1{rar file(s).}"
 announce.SFV_OTHER				= "%b{SFV%c1{:}} %c1{-}%c2{%section}%c1{- Got SFV for} %c3{%b{%relname}} %c1{uploaded by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{. Now expecting} %c3{%b{%t_filecount}} %c1{file(s).}"
 announce.SFV_VIDEO				= "%b{SFV%c1{:}} %c1{-}%c2{%section}%c1{- Got SFV for} %c3{%b{%relname}} %c1{uploaded by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{. Now expecting} %c3{%b{%t_filecount}} %c1{file(s).}"
 announce.SFV_AUDIO				= "%b{SFV%c1{:}} %c1{-}%c2{%section}%c1{- Got SFV for} %c3{%b{%reldir}} %c1{uploaded by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{. Now expecting} %c3{%b{%t_filecount}} %c1{tracks.}"
-announce.UPDATE					= "%b{UPDATE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{got its first file from} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{at} %c3{%b{%u_speed}}%c1{KB/s. Now expecting} %c3{%b{%t_mbytes}}%c1{MB in }%c3{%b{%t_files}} %c1{file(s).}"
 announce.UPDATE_RAR				= "%b{UPDATE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{got its first rar file from} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{at} %c3{%b{%u_speed}}%c1{KB/s. Now expecting} %c3{%b{%t_mbytes}}%c1{MB.}"
 announce.UPDATE_ZIP				= "%b{UPDATE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{got its first zip from} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{at} %c3{%b{%u_speed}}%c1{KB/s. Now expecting} %c3{%b{%t_mbytes}}%c1{MB.}"
 announce.UPDATE_OTHER				= "%b{UPDATE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{got its first file from} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{at} %c3{%b{%u_speed}}%c1{KB/s. Now expecting} %c3{%b{%t_mbytes}}%c1{MB.}"
 announce.UPDATE_VIDEO				= "%b{UPDATE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{got its first file from} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{at} %c3{%b{%u_speed}}%c1{KB/s. Now expecting} %c3{%b{%t_mbytes}}%c1{MB.}"
 announce.UPDATE_CBR				= "%b{UPDATE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{got first track from} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{at} %c3{%b{%u_speed}}%c1{KB/s. Get ready for some} %c3{%b{%genre}} %c1{from} %c3{%b{%year}} %c1{at} %c3{%b{%sampling}}%c1{Hz in} %c3{%mode} %c3{%b{%bitrate}}%c1{kbps (}%c3{%audio}%c1{).}"
 announce.UPDATE_VBR				= "%b{UPDATE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{got first track from} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{at} %c3{%b{%u_speed}}%c1{KB/s. Get ready for some} %c3{%b{%genre}} %c1{from} %c3{%b{%year}} %c1{at} %c3{%b{%sampling}}%c1{Hz in} %c3{%mode} %c3{%b{%bitrate}}%c1{kbps (}%c3{%audio %a_stream}%c1{).}"
-announce.HALFWAY_NORACE				= "%b{HALFWAY%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{is in halfway (uploaded} %c3{%b{%t_mbytes}}%c1{MB so far) and} %c3{%b{%u_leader_name}} %c1{/} %c3{%u_leader_gname} %c1{is leading the race all alone at} %c3{%b{%u_leader_avgspeed}}%c1{KB/s.}"
 announce.HALFWAY_NORACE_RAR			= "%b{HALFWAY%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{is in halfway (uploaded} %c3{%b{%t_mbytes}}%c1{MB so far) and} %c3{%b{%u_leader_name}} %c1{/} %c3{%u_leader_gname} %c1{is leading the race all alone at} %c3{%b{%u_leader_avgspeed}}%c1{KB/s.}"
 announce.HALFWAY_NORACE_ZIP			= "%b{HALFWAY%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{is in halfway (uploaded} %c3{%b{%t_mbytes}}%c1{MB so far) and} %c3{%b{%u_leader_name}} %c1{/} %c3{%u_leader_gname} %c1{is leading the race all alone at} %c3{%b{%u_leader_avgspeed}}%c1{KB/s.}"
 announce.HALFWAY_NORACE_OTHER			= "%b{HALFWAY%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{is in halfway (uploaded} %c3{%b{%t_mbytes}}%c1{MB so far) and} %c3{%b{%u_leader_name}} %c1{/} %c3{%u_leader_gname} %c1{is leading the race all alone at} %c3{%b{%u_leader_avgspeed}}%c1{KB/s.}"
 announce.HALFWAY_NORACE_VIDEO			= "%b{HALFWAY%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{is in halfway (uploaded} %c3{%b{%t_mbytes}}%c1{MB so far) and} %c3{%b{%u_leader_name}} %c1{/} %c3{%u_leader_gname} %c1{is leading the race all alone at} %c3{%b{%u_leader_avgspeed}}%c1{KB/s.}"
 announce.HALFWAY_NORACE_AUDIO			= "%b{HALFWAY%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{is in halfway (uploaded} %c3{%b{%t_mbytes}}%c1{MB so far) and} %c3{%b{%u_leader_name}} %c1{/} %c3{%u_leader_gname} %c1{is leading the race all alone at} %c3{%b{%u_leader_avgspeed}}%c1{KB/s.}"
-announce.HALFWAY_RACE				= "%b{HALFWAY%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{is in halfway and} %c3{%b{%u_leader_name}} %c1{/} %c3{%u_leader_gname} %c1{leads the race with} %c3{%b{%u_leader_files}} %c1{files in} %c3{%b{%u_leader_percent%}} %c1{(}%c3{%b{%u_leader_mbytes}}%c1{) at} %c3{%b{%u_leader_avgspeed}}%c1{KB/s against}%loop2 %c1{-} %c1{group} %c3{%b{%g_leader_name}} %c1{leads with} %c3{%b{%g_leader_files}} %c1{files in} %c3{%b{%g_leader_percent}%} %c1{(}%c3{%b{%g_leader_mbytes}}%c1{MB) at} %c3{%b{%g_leader_avgspeed}}%c1{KB/s. Runners up are:}%loop1%c1{.}"
-announce.HALFWAY_RACE_LOOP1			= " %c3{%b{%a_name}} %c1{/} %c3{%a_gname}"
-announce.HALFWAY_RACE_LOOP2			= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
 announce.HALFWAY_RACE_RAR			= "%b{HALFWAY%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{is in halfway and} %c3{%b{%u_leader_name}} %c1{/} %c3{%u_leader_gname} %c1{leads the race with} %c3{%b{%u_leader_files}} %c1{rar files in} %c3{%b{%u_leader_percent%}} %c1{(}%c3{%b{%u_leader_mbytes}}%c1{) at} %c3{%b{%u_leader_avgspeed}}%c1{KB/s against}%loop2 %c1{-} %c1{group} %c3{%b{%g_leader_name}} %c1{leads with} %c3{%b{%g_leader_files}} %c1{rar files in} %c3{%b{%g_leader_percent}%} %c1{(}%c3{%b{%g_leader_mbytes}}%c1{MB) at} %c3{%b{%g_leader_avgspeed}}%c1{KB/s. Runners up are:}%loop1%c1{.}"
 announce.HALFWAY_RACE_RAR_LOOP1			= " %c3{%b{%a_name}} %c1{/} %c3{%a_gname}"
 announce.HALFWAY_RACE_RAR_LOOP2			= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
@@ -101,9 +92,6 @@ announce.HALFWAY_RACE_VIDEO_LOOP2		= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
 announce.HALFWAY_RACE_AUDIO			= "%b{HALFWAY%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{is in halfway and} %c3{%b{%u_leader_name}} %c1{/} %c3{%u_leader_gname} %c1{leads the race with} %c3{%b{%u_leader_files}} %c1{tracks in} %c3{%b{%u_leader_percent%}} %c1{(}%c3{%b{%u_leader_mbytes}}%c1{) at} %c3{%b{%u_leader_avgspeed}}%c1{KB/s against}%loop2 %c1{-} %c1{group} %c3{%b{%g_leader_name}} %c1{leads with} %c3{%b{%g_leader_files}} %c1{tracks in} %c3{%b{%g_leader_percent}%} %c1{(}%c3{%b{%g_leader_mbytes}}%c1{MB) at} %c3{%b{%g_leader_avgspeed}}%c1{KB/s. Runners up are:}%loop1%c1{.}"
 announce.HALFWAY_RACE_AUDIO_LOOP1		= " %c3{%b{%a_name}} %c1{/} %c3{%a_gname}"
 announce.HALFWAY_RACE_AUDIO_LOOP2		= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
-announce.NEWLEADER				= "%b{LEADER%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{-} %c3{%b{%u_leader_name}} %c1{/} %c3{%u_leader_gname} %c1{takes the lead with} %c3{%b{%u_leader_files}} %c1{files in} %c3{%b{%u_leader_percent%}} %c1{(}%c3{%b{%u_leader_mbytes}}%c1{MB) at} %c3{%b{%u_leader_avgspeed}}%c1{KB/s. Runners up are:}%loop1%c1{.}"
-announce.NEWLEADER_LOOP1			= " %c3{%b{%a_name}} %c1{/} %c3{%a_gname}"
-announce.NEWLEADER_LOOP2			= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
 announce.NEWLEADER_RAR				= "%b{LEADER%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{-} %c3{%b{%u_leader_name}} %c1{/} %c3{%u_leader_gname} %c1{takes the lead with} %c3{%b{%u_leader_files}} %c1{rar files in} %c3{%b{%u_leader_percent%}} %c1{(}%c3{%b{%u_leader_mbytes}}%c1{MB) at} %c3{%b{%u_leader_avgspeed}}%c1{KB/s. Runners up are:}%loop1%c1{.}"
 announce.NEWLEADER_RAR_LOOP1			= " %c3{%b{%a_name}} %c1{/} %c3{%a_gname}"
 announce.NEWLEADER_RAR_LOOP2			= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
@@ -119,45 +107,12 @@ announce.NEWLEADER_VIDEO_LOOP2			= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
 announce.NEWLEADER_AUDIO			= "%b{LEADER%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{-} %c3{%b{%u_leader_name}} %c1{/} %c3{%u_leader_gname} %c1{takes the lead with} %c3{%b{%u_leader_files}} %c1{tracks in} %c3{%b{%u_leader_percent%}} %c1{(}%c3{%b{%u_leader_mbytes}}%c1{MB) at} %c3{%b{%u_leader_avgspeed}}%c1{KB/s. Runners up are:}%loop1%c1{.}"
 announce.NEWLEADER_AUDIO_LOOP1			= " %c3{%b{%a_name}} %c1{/} %c3{%a_gname}"
 announce.NEWLEADER_AUDIO_LOOP2			= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
-announce.COMPLETE				= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{with} %c3{%b{%t_files}} %c1{files (}%c3{%b{%t_mbytes}}%c1{MB) was completed in} %c3{%b{%t_duration}} %c1{(avg.} %c3{%b{%t_avgspeed}}%c1{KB/s) by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{.}"
-announce.COMPLETE_RAR				= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{with} %c3{%b{%t_files}} %c1{rar files (}%c3{%b{%t_mbytes}}%c1{MB) was completed in} %c3{%b{%t_duration}} %c1{(avg.} %c3{%b{%t_avgspeed}}%c1{KB/s) by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{. Packaging method used was m}%c3{%b{%compression}}%c1{.}"
+announce.COMPLETE_RAR				= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{with} %c3{%b{%t_files}} %c1{files (}%c3{%b{%t_mbytes}}%c1{MB) was completed in} %c3{%b{%t_duration}} %c1{(avg.} %c3{%b{%t_avgspeed}}%c1{KB/s) by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{.}"
 announce.COMPLETE_ZIP				= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{with} %c3{%b{%t_files}} %c1{zip files (}%c3{%b{%t_mbytes}}%c1{MB) was completed in} %c3{%b{%t_duration}} %c1{(avg.} %c3{%b{%t_avgspeed}}%c1{KB/s) by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{.}"
 announce.COMPLETE_OTHER				= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{with} %c3{%b{%t_files}} %c1{files (}%c3{%b{%t_mbytes}}%c1{MB) was completed in} %c3{%b{%t_duration}} %c1{(avg.} %c3{%b{%t_avgspeed}}%c1{KB/s) by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{.}"
 announce.COMPLETE_VIDEO				= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{with} %c3{%b{%t_files}} %c1{files (}%c3{%b{%t_mbytes}}%c1{MB) was completed in} %c3{%b{%t_duration}} %c1{(avg.} %c3{%b{%t_avgspeed}}%c1{KB/s) by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{.}"
 announce.COMPLETE_AUDIO_CBR			= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{with} %c3{%b{%t_files}} %c1{tracks (}%c3{%b{%t_mbytes}}%c1{MB) was completed in} %c3{%b{%t_duration}} %c1{(avg.} %c3{%b{%t_avgspeed}}%c1{KB/s) by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{. Enjoy this fine} %c3{%b{%genre}} %c1{album from} %c3{%b{%year}}%c1{.}"
 announce.COMPLETE_AUDIO_VBR			= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{with} %c3{%b{%t_files}} %c1{tracks (}%c3{%b{%t_mbytes}}%c1{MB) was completed in} %c3{%b{%t_duration}} %c1{(avg.} %c3{%b{%t_avgspeed}}%c1{KB/s) by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{. Enjoy this fine} %c3{%b{%genre}} %c1{album from} %c3{%b{%year}}%c1{.}"
-announce.COMPLETE_RACE				= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{with} %c3{%b{%t_files}} %c1{files (}%c3{%b{%t_mbytes}}%c1{MB) was completed in} %c3{%b{%t_duration}} %c1{(avg.} %c3{%b{%t_avgspeed}}%c1{KB/s) by} %c3{%b{%u_count}} %c1{user(s) in} %c3{%b{%g_count}} %c1{group(s).}"
-announce.COMPLETE_RACE_LOOP1			= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
-announce.COMPLETE_RACE_LOOP2			= "%b{STATS%c1{:}} %c1{[}%c2{%g_racer_position}%c1{]} %c3{%g_racer_name} %c1{-} %c3{%b{%g_racer_files}}%c1{f} %c1{-} %c3{%b{%g_racer_mbytes}}%c1{MB} %c1{-} %c3{%b{%g_racer_percent}%} %c1{-} %c3{%b{%g_racer_avgspeed}}%c1{KB/s}|"
-announce.COMPLETE_RACE_LOOP3			= "%b{STATS%c1{:}} %c1{[}%c2{%u_racer_position}%c1{]} %c3{%b{%u_racer_name}} %c1{/} %c3{%g_racer_name} %c1{-} %c3{%b{%u_racer_files}}%c1{f} %c1{-} %c3{%b{%u_racer_mbytes}}%c1{MB} %c1{-} %c3{%b{%u_racer_percent}%} %c1{-} %c3{%b{%u_racer_avgspeed}}%c1{KB/s} %c1{-} %c1{wkup} %c3{%b{%u_racer_wkup}}|"
-announce.COMPLETE_RACE_RAR			= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{with} %c3{%b{%t_files}} %c1{rar files (}%c3{%b{%t_mbytes}}%c1{MB) was completed in} %c3{%b{%t_duration}} %c1{(avg.} %c3{%b{%t_avgspeed}}%c1{KB/s) by} %c3{%b{%u_count}} %c1{user(s) in} %c3{%b{%g_count}} %c1{group(s). Packaging method used was m}%c3{%compression}%c1{.}"
-announce.COMPLETE_RACE_RAR_LOOP1		= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
-announce.COMPLETE_RACE_RAR_LOOP2		= "%b{STATS%c1{:}} %c1{[}%c2{%g_racer_position}%c1{]} %c3{%g_racer_name} %c1{-} %c3{%b{%g_racer_files}}%c1{f} %c1{-} %c3{%b{%g_racer_mbytes}}%c1{MB} %c1{-} %c3{%b{%g_racer_percent}%} %c1{-} %c3{%b{%g_racer_avgspeed}}%c1{KB/s}|"
-announce.COMPLETE_RACE_RAR_LOOP3		= "%b{STATS%c1{:}} %c1{[}%c2{%u_racer_position}%c1{]} %c3{%b{%u_racer_name}} %c1{/} %c3{%g_racer_name} %c1{-} %c3{%b{%u_racer_files}}%c1{f} %c1{-} %c3{%b{%u_racer_mbytes}}%c1{MB} %c1{-} %c3{%b{%u_racer_percent}%} %c1{-} %c3{%b{%u_racer_avgspeed}}%c1{KB/s} %c1{-} %c1{wkup} %c3{%b{%u_racer_wkup}}|"
-announce.COMPLETE_RACE_ZIP			= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{with} %c3{%b{%t_files}} %c1{zip files (}%c3{%b{%t_mbytes}}%c1{MB) was completed in} %c3{%b{%t_duration}} %c1{(avg.} %c3{%b{%t_avgspeed}}%c1{KB/s) by} %c3{%b{%u_count}} %c1{user(s) in} %c3{%b{%g_count}} %c1{group(s).}"
-announce.COMPLETE_RACE_ZIP_LOOP1		= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
-announce.COMPLETE_RACE_ZIP_LOOP2		= "%b{STATS%c1{:}} %c1{[}%c2{%g_racer_position}%c1{]} %c3{%g_racer_name} %c1{-} %c3{%b{%g_racer_files}}%c1{f} %c1{-} %c3{%b{%g_racer_mbytes}}%c1{MB} %c1{-} %c3{%b{%g_racer_percent}%} %c1{-} %c3{%b{%g_racer_avgspeed}}%c1{KB/s}|"
-announce.COMPLETE_RACE_ZIP_LOOP3		= "%b{STATS%c1{:}} %c1{[}%c2{%u_racer_position}%c1{]} %c3{%b{%u_racer_name}} %c1{/} %c3{%g_racer_name} %c1{-} %c3{%b{%u_racer_files}}%c1{f} %c1{-} %c3{%b{%u_racer_mbytes}}%c1{MB} %c1{-} %c3{%b{%u_racer_percent}%} %c1{-} %c3{%b{%u_racer_avgspeed}}%c1{KB/s} %c1{-} %c1{wkup} %c3{%b{%u_racer_wkup}}|"
-announce.COMPLETE_RACE_OTHER			= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{with} %c3{%b{%t_files}} %c1{files (}%c3{%b{%t_mbytes}}%c1{MB) was completed in} %c3{%b{%t_duration}} %c1{(avg.} %c3{%b{%t_avgspeed}}%c1{KB/s) by} %c3{%b{%u_count}} %c1{user(s) in} %c3{%b{%g_count}} %c1{group(s).}"
-announce.COMPLETE_RACE_OTHER_LOOP1		= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
-announce.COMPLETE_RACE_OTHER_LOOP2		= "%b{STATS%c1{:}} %c1{[}%c2{%g_racer_position}%c1{]} %c3{%g_racer_name} %c1{-} %c3{%b{%g_racer_files}}%c1{f} %c1{-} %c3{%b{%g_racer_mbytes}}%c1{MB} %c1{-} %c3{%b{%g_racer_percent}%} %c1{-} %c3{%b{%g_racer_avgspeed}}%c1{KB/s}|"
-announce.COMPLETE_RACE_OTHER_LOOP3		= "%b{STATS%c1{:}} %c1{[}%c2{%u_racer_position}%c1{]} %c3{%b{%u_racer_name}} %c1{/} %c3{%g_racer_name} %c1{-} %c3{%b{%u_racer_files}}%c1{f} %c1{-} %c3{%b{%u_racer_mbytes}}%c1{MB} %c1{-} %c3{%b{%u_racer_percent}%} %c1{-} %c3{%b{%u_racer_avgspeed}}%c1{KB/s} %c1{-} %c1{wkup} %c3{%b{%u_racer_wkup}}|"
-announce.COMPLETE_RACE_VIDEO			= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{with} %c3{%b{%t_files}} %c1{files (}%c3{%b{%t_mbytes}}%c1{MB) was completed in} %c3{%b{%t_duration}} %c1{(avg.} %c3{%b{%t_avgspeed}}%c1{KB/s) by} %c3{%b{%u_count}} %c1{user(s) in} %c3{%b{%g_count}} %c1{group(s).}"
-announce.COMPLETE_RACE_VIDEO_LOOP1		= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
-announce.COMPLETE_RACE_VIDEO_LOOP2		= "%b{STATS%c1{:}} %c1{[}%c2{%g_racer_position}%c1{]} %c3{%g_racer_name} %c1{-} %c3{%b{%g_racer_files}}%c1{f} %c1{-} %c3{%b{%g_racer_mbytes}}%c1{MB} %c1{-} %c3{%b{%g_racer_percent}%} %c1{-} %c3{%b{%g_racer_avgspeed}}%c1{KB/s}|"
-announce.COMPLETE_RACE_VIDEO_LOOP3		= "%b{STATS%c1{:}} %c1{[}%c2{%u_racer_position}%c1{]} %c3{%b{%u_racer_name}} %c1{/} %c3{%g_racer_name} %c1{-} %c3{%b{%u_racer_files}}%c1{f} %c1{-} %c3{%b{%u_racer_mbytes}}%c1{MB} %c1{-} %c3{%b{%u_racer_percent}%} %c1{-} %c3{%b{%u_racer_avgspeed}}%c1{KB/s} %c1{-} %c1{wkup} %c3{%b{%u_racer_wkup}}|"
-announce.COMPLETE_RACE_AUDIO_CBR		= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{with} %c3{%b{%t_files}} %c1{tracks (}%c3{%b{%t_mbytes}}%c1{MB) was completed in} %c3{%b{%t_duration}} %c1{(avg.} %c3{%b{%t_avgspeed}}%c1{KB/s) by} %c3{%b{%u_count}} %c1{user(s) in} %c3{%b{%g_count}} %c1{group(s). Enjoy this fine} %c3{%b{%genre}} %c1{album from} %c3{%b{%year}}%c1{.}"
-announce.COMPLETE_RACE_AUDIO_CBR_LOOP1		= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
-announce.COMPLETE_RACE_AUDIO_CBR_LOOP2		= "%b{STATS%c1{:}} %c1{[}%c2{%g_racer_position}%c1{]} %c3{%g_racer_name} %c1{-} %c3{%b{%g_racer_files}}%c1{f} %c1{-} %c3{%b{%g_racer_mbytes}}%c1{MB} %c1{-} %c3{%b{%g_racer_percent}%} %c1{-} %c3{%b{%g_racer_avgspeed}}%c1{KB/s}|"
-announce.COMPLETE_RACE_AUDIO_CBR_LOOP3		= "%b{STATS%c1{:}} %c1{[}%c2{%u_racer_position}%c1{]} %c3{%b{%u_racer_name}} %c1{/} %c3{%g_racer_name} %c1{-} %c3{%b{%u_racer_files}}%c1{f} %c1{-} %c3{%b{%u_racer_mbytes}}%c1{MB} %c1{-} %c3{%b{%u_racer_percent}%} %c1{-} %c3{%b{%u_racer_avgspeed}}%c1{KB/s} %c1{-} %c1{wkup} %c3{%b{%u_racer_wkup}}|"
-announce.COMPLETE_RACE_AUDIO_VBR		= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{with} %c3{%b{%t_files}} %c1{tracks (}%c3{%b{%t_mbytes}}%c1{MB) was completed in} %c3{%b{%t_duration}} %c1{(avg.} %c3{%b{%t_avgspeed}}%c1{KB/s) by} %c3{%b{%u_count}} %c1{user(s) in} %c3{%b{%g_count}} %c1{group(s). Enjoy this fine} %c3{%b{%genre}} %c1{album from} %c3{%b{%year}}%c1{.}"
-announce.COMPLETE_RACE_AUDIO_VBR_LOOP1		= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
-announce.COMPLETE_RACE_AUDIO_VBR_LOOP2		= "%b{STATS%c1{:}} %c1{[}%c2{%g_racer_position}%c1{]} %c3{%g_racer_name} %c1{-} %c3{%b{%g_racer_files}}%c1{f} %c1{-} %c3{%b{%g_racer_mbytes}}%c1{MB} %c1{-} %c3{%b{%g_racer_percent}%} %c1{-} %c3{%b{%g_racer_avgspeed}}%c1{KB/s}|"
-announce.COMPLETE_RACE_AUDIO_VBR_LOOP3		= "%b{STATS%c1{:}} %c1{[}%c2{%u_racer_position}%c1{]} %c3{%b{%u_racer_name}} %c1{/} %c3{%g_racer_name} %c1{-} %c3{%b{%u_racer_files}}%c1{f} %c1{-} %c3{%b{%u_racer_mbytes}}%c1{MB} %c1{-} %c3{%b{%u_racer_percent}%} %c1{-} %c3{%b{%u_racer_avgspeed}}%c1{KB/s} %c1{-} %c1{wkup} %c3{%b{%u_racer_wkup}}|"
-announce.COMPLETE_STAT_RACE			= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{with} %c3{%b{%t_files}} %c1{files (}%c3{%b{%t_mbytes}}%c1{MB) was completed in} %c3{%b{%t_duration}} %c1{(avg.} %c3{%b{%t_avgspeed}}%c1{KB/s) by} %c3{%b{%u_count}} %c1{user(s) in} %c3{%b{%g_count}} %c1{group(s).}|%b{STATS%c1{:}} %c1{Users hall of fame:}|%loop3|%b{STATS%c1{:}} %c1{Groups hall of fame:}|%loop2"
-announce.COMPLETE_STAT_RACE_LOOP1		= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
-announce.COMPLETE_STAT_RACE_LOOP2 		= "%b{STATS%c1{:}} %c1{[}%c2{%g_racer_position}%c1{]} %c3{%g_racer_name} %c1{-} %c3{%b{%g_racer_files}}%c1{f} %c1{-} %c3{%b{%g_racer_mbytes}}%c1{MB} %c1{-} %c3{%b{%g_racer_percent}%} %c1{-} %c3{%b{%g_racer_avgspeed}}%c1{KB/s}|"
-announce.COMPLETE_STAT_RACE_LOOP3 		= "%b{STATS%c1{:}} %c1{[}%c2{%u_racer_position}%c1{]} %c3{%b{%u_racer_name}} %c1{/} %c3{%g_racer_name} %c1{-} %c3{%b{%u_racer_files}}%c1{f} %c1{-} %c3{%b{%u_racer_mbytes}}%c1{MB} %c1{-} %c3{%b{%u_racer_percent}%} %c1{-} %c3{%b{%u_racer_avgspeed}}%c1{KB/s} %c1{-} %c1{wkup} %c3{%b{%u_racer_wkup}}|"
 announce.COMPLETE_STAT_RACE_RAR			= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{with} %c3{%b{%t_files}} %c1{rar files (}%c3{%b{%t_mbytes}}%c1{MB) was completed in} %c3{%b{%t_duration}} %c1{(avg.} %c3{%b{%t_avgspeed}}%c1{KB/s) by} %c3{%b{%u_count}} %c1{user(s) in} %c3{%b{%g_count}} %c1{group(s). Packaging method used was m}%c3{%compression}%c1{.}|%b{STATS%c1{:}} %c1{Users hall of fame:}|%loop3|%b{STATS%c1{:}} %c1{Groups hall of fame:}|%loop2"
 announce.COMPLETE_STAT_RACE_RAR_LOOP1		= " %c3{%b{%r_name}} %c1{/} %c3{%r_gname}"
 announce.COMPLETE_STAT_RACE_RAR_LOOP2 		= "%b{STATS%c1{:}} %c1{[}%c2{%g_racer_position}%c1{]} %c3{%g_racer_name} %c1{-} %c3{%b{%g_racer_files}}%c1{f} %c1{-} %c3{%b{%g_racer_mbytes}}%c1{MB} %c1{-} %c3{%b{%g_racer_percent}%} %c1{-} %c3{%b{%g_racer_avgspeed}}%c1{KB/s}|"
@@ -186,23 +141,11 @@ announce.COMPLETE_STAT_RACE_AUDIO_VBR_LOOP3 	= "%b{STATS%c1{:}} %c1{[}%c2{%u_rac
 # Announce done by the postdel binary
 announce.INCOMPLETE				= "%b{INCOMPLETEc1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%releasename}} %c1{is now incomplete thanks to} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{.}"
 
-# Announcing stats on a race complete
-announce.STAT_USERS_HEAD      			= "%b{STATS%c1{:}} %c1{-}%c2{%section}%c1{-} %c1{Users hall of fame:}"
-announce.STAT_USERS           			= "%b{STATS%c1{:}} %c1{-}%c2{%section}%c1{-} %u_position %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{-} %c3{%b{%u_files}}%c1{f} %c1{-} %c3{%b{%u_mbytes}}%c1{MB} %c1{-} %c3{%b{%u_percent}%} %c1{-} %c3{%b{%u_avgspeed}}%c1{KB/s} %c1{-} %c1{wkup} %c3{%b{%u_wkup}}"
-announce.STAT_GROUPS_HEAD     			= "%b{STATS%c1{:}} %c1{-}%c2{%section}%c1{-} %c1{Groups hall of fame:}"
-announce.STAT_GROUPS          			= "%b{STATS%c1{:}} %c1{-}%c2{%section}%c1{-} %g_position %c3{%g_name} %c1{-} %c3{%b{%g_files}}%c1{f} %c1{-} %c3{%b{%g_mbytes}}%c1{MB} %c1{-} %c3{%b{%g_percent}%} %c1{-} %c3{%b{%g_avgspeed}}%c1{KB/s}"
-announce.STAT_POST            			= "%b{STATS%c1{:}} %c1{-}%c2{%section}%c1{-} %c1{Race for} %c3{%b{%relname}} %c1{is over, lasted} %c3{%t_duration} %c1{seconds. (}%c3{%u_count} %c1{racer(s),} %c3{%g_count} %c1{group(s)).}"
-
 # 3rd party addons - take note that these variables should possibly be changed in order to work with your setup/3rd party app.
 announce.PRE                  			= "%b{PRE%c1{:}} %c1{-}%c2{%section}%c1{-} %c1{We have a new cool pre!} %c3{%b{%reldir}} %c1{has just been released by} %c3{%b{%pregroup}} %c1{in} %c3{%b{%files}} %c1{files (}%c3{%b{%mbytes}}%c1{MB in } %c3{%b{%cds}} %c1{dirs).}"
 announce.INVITE               			= "%b{iNViTE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{invited himself as} %c3{%b{%u_ircnick}}%c1{.}"
 announce.REQUEST              			= "%b{REQUEST%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{requests} %c3{%b{%releasename}}%c1{.}"
 announce.REQFILLED            			= "%b{FiLLED%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{just filled} %c3{%b{%releasename}} %c1{for} %c3{%b{%u_requester}}%c1{.}"
-
-# 3rd party imdb announce - example for psxc-imdb
-announce.IMDBVAR              			= "%b{iMDB%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%imdbname}} %c1{ ( }%c3{%u{%imdburl}}%c1{ ), a }%c3{%imdbdirector} %c1{movie which scored} %c3{%b{%imdbscore}} %c1{of} %c3{10} %c1{(}%c3{%imdbvotes} %c1{people voted). It premiered in} %c3{%imdbpremiereinfo}%c1{, with} %c3{%b{%imdbnumscreens}} %c1{screens on the opening weekend.}|%c1{[}%c2{%b{%sitename}}%c1{]} %b{iMDB%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%imdbname}} %c1{has the following plot summary: '}%c3{%imdbplot}%c1{'. Rating: [}%c2{%imdbbar}%c1{].}"
-announce.IMDB                 			= "%b{iMDB%c1{:}} %c1{-}%c2{%section}%c1{-} %c1{%msg}"
-announce.IMDBFIND             			= "%b{iMDB%c1{:}} %c1{-}%c2{%section}%c1{-} %c1{%msg}"
 
 # internal announces
 announce.LEECH                			= "%b{BANDWiDTH%c1{:}} %c1{Current leechers:}"
@@ -211,21 +154,24 @@ announce.IDLE                 			= "%b{BANDWiDTH%c1{:}} %c1{Current idlers:}"
 announce.BW                   			= "%b{BANDWiDTH%c1{:}} %c1{(}%c3{%uploads} %c1{uploading at} %c3{%b{%upspeed}}%c1{KB/s ~} %c3{%uppercent}%c1{%) - (}%c3{%downloads} %c1{downloading at} %c3{%b{%dnspeed}}%c1{KB/s ~} %c3{%dnpercent}%c1{%) - (}%c3{%active} %c1{browsing) - (}%c3{%idlers} %c1{idling}%c1{) - [}%c3{%totallogins} %c1{users in total at} %c3{%b{%totalspeed}}%c1{KB/s ~} %c3{%totalpercent}%c1{%]}"
 announce.BWUP                 			= "%b{BANDWiDTH%c1{:}} %c3{%b{%uploads}} %c1{uploads at} %c3{%b{%upspeed}}%c1{KB/s (}%c3{%uppercent%}%c1{).}"
 announce.BWDN                 			= "%b{BANDWiDTH%c1{:}} %c3{%b{%downloads}} %c1{downloads at} %c3{%b{%dnspeed}}%c1{KB/s (}%c3{%dnpercent%}%c1{).}"
-announce.SPEEDUP              			= "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is uploading} %c3{%b{%f_name}} %c1{at} %c3{%b{%upspeed}}%c1{KB/s (}%c3{%uppercent}%c1{).}"
-announce.SPEEDDN              			= "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is downloading} %c3{%b{%f_name}} %c1{at} %c3{%b{%dnspeed}}%c1{KB/s (}%c3{%dnpercent}%c1{).}"
-announce.SPEEDID              			= "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{has been idle for} %c3{%b{%idletime}}%c1{.}"
-announce.SPEEDERROR           			= "%b{BANDWiDTH%c1{:}} %c1{The requested user is not online now.}"
 announce.TOTUPDN              			= "%b{BANDWiDTH%c1{:}} %c1{%type} %c3{%b{%count}} %c1{at} %c3{%b{%total}}%c1{KB/s (}%c3{%b{%per}%} %c1{total bandwidth usage).}"
 announce.TOTIDLE              			= "%b{BANDWiDTH%c1{:}} %c1{There are currently} %c3{%b{%count}} %c1{users idle!}"
 announce.USERIDLE             			= "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{idling for} %c3{%b{%idletime}}%c1{s.}"
 announce.USER                 			= "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{on} %c3{%b{%filename}} %c1{(}%c3{%fper} %c1{done) at} %c3{%b{%uspeed}}%c1{KB/s (}%c3{%b{%per}} %c1{bandwidth usage).}"
-                                		
-announce.MSGINVITE            			= "%b{iNViTE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{invited himself as} %c3{%b{%u_ircnick}}%c1{.}"
-announce.BADMSGINVITE         			= "%b{BAD iNViTE%c1{:}} %c3{%b{%u_ircnick}} %c1{(}%c3{%u_host}%c1{) tried to invite himself with invalid login!}"
+announce.SPEEDUP              			= "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is uploading} %c3{%b{%f_name}} %c1{at} %c3{%b{%upspeed}}%c1{KB/s (}%c3{%uppercent}%c1{).}"
+announce.SPEEDDN              			= "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is downloading} %c3{%b{%f_name}} %c1{at} %c3{%b{%dnspeed}}%c1{KB/s (}%c3{%dnpercent}%c1{).}"
+announce.SPEEDID              			= "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{has been idle for} %c3{%b{%idletime}}%c1{.}"
+announce.SPEEDERROR           			= "%b{BANDWiDTH%c1{:}} %c1{The requested user is not online now.}"
 announce.WELCOME              			= "%c1{Welcome to} %c2{%b{%sitename}}%c1{'s sitechan. Type} %c3{%cmdprehelp} %c1{for help.}"
-                                		
 announce.FREE                 			= "%b{FREE SPACE%c1{:}} %devices%c1{[}%c3{%b{%free}} %c1{of} %c3{%total} %c1{free in total (used %c3{%percentage%}%c1{)]}}"
 announce.FREE-DEV             			= "%c1{(}%b{%c3{%section}} %c1{has} %c3{%b{%free}} %c1{of} %c3{%total} %c1{free - used} %c3{%percentage%}%c1{)} %c1{-} "
+announce.MSGINVITE            			= "%b{iNViTE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{invited himself as} %c3{%b{%u_ircnick}}%c1{.}"
+announce.BADMSGINVITE         			= "%b{BAD iNViTE%c1{:}} %c3{%b{%u_ircnick}} %c1{(}%c3{%u_host}%c1{) tried to invite himself with invalid login!}"
+
+# 3rd party imdb announces (psxc-imdb)
+announce.IMDBVAR              			= "%b{iMDB%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%imdbname}} %c1{ ( }%c3{%u{%imdburl}}%c1{ ), a }%c3{%imdbdirector} %c1{movie which scored} %c3{%b{%imdbscore}} %c1{of} %c3{10} %c1{(}%c3{%imdbvotes} %c1{people voted). It premiered in} %c3{%imdbpremiereinfo}%c1{, with} %c3{%b{%imdbnumscreens}} %c1{screens on the opening weekend.}|%c1{[}%c2{%b{%sitename}}%c1{]} %b{iMDB%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%imdbname}} %c1{has the following plot summary: '}%c3{%imdbplot}%c1{'. Rating: [}%c2{%imdbbar}%c1{].}"
+announce.IMDB                 			= "%b{iMDB%c1{:}} %c1{-}%c2{%section}%c1{-} %c1{%msg}"
+announce.IMDBFIND             			= "%b{iMDB%c1{:}} %c1{-}%c2{%section}%c1{-} %c1{%msg}"
 
 # 3rd party scripts announces - other
 announce.TURGEN               			= "%c1{%msg}"
