@@ -36,10 +36,10 @@ opposite direction.
 # Coding Guidelines
 #####################################################################
 - Function names should be representative of their purpose and must
-  be in Pascal case.
+  be in Pascal case. (ThisIsPascalCase (aka upper Camel case))
 
 - Variable names should be representative of their value and must
-  be Camel case.
+  be Camel case. (thisIsCamelCase)
 
 - All functions should have a 'blurb' above them, explaining their purpose.
   This makes it easier for future developers and users to hack at the code.
