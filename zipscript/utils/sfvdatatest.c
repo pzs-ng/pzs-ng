@@ -20,10 +20,15 @@ int main(int argc, char **argv)
 		return EXIT_FAILURE;
 	}
 
+	printf(".---------------------------------------------------------.\n" \
+	       "|                FILENAMES                   |  CRC#  | # |\n" \
+	       "|--------------------------------------------|--------|---|\n");
+
 	while ((fread(&sd, sizeof(SFVDATA), 1, f))) {
-		printf("%s %.8x\n", sd.fname, sd.crc32);
+		printf("|%-44s|%.8x| %d |\n", sd.fname, sd.crc32, sd.fmatch);
 	}
 
+	printf("`---------------------------------------------------------'\n");
 	fclose(f);
 
 	return EXIT_SUCCESS;

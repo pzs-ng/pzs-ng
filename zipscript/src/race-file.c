@@ -93,7 +93,8 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 	
 	raceI->total.files = 0;
 	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
-		raceI->total.files++;
+		if (sd.fmatch)
+			raceI->total.files++;
 #if (sfv_cleanup && sfv_cleanup_lowercase)
 		if (!strcasecmp(raceI->file.name, sd.fname))
 #else
@@ -104,7 +105,7 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 			crc = sd.crc32;
 			insfv = 1;
 		}
-		if (getfcount && findfile(dir, sd.fname)) {
+		if (getfcount && findfile(dir, sd.fname) && sd.fmatch) {
 			raceI->total.files_missing--;
 		}
 	}
@@ -385,7 +386,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 	int		infd, outfd, i, retval = 0;
 	short int	music, rars, video, others, type;
 	
-	char		*ptr, fbuf[2048];
+	char		*ptr, fbuf[2048], fcompare[NAME_MAX];
 	FILE		*insfv;
 
 	DIR		*dir;
@@ -416,6 +417,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 	}
 	
 	video = music = rars = others = type = 0;
+	bzero(fcompare, NAME_MAX);
 
 	dir = opendir(".");
 
@@ -514,7 +516,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 			ptr = find_last_of(fbuf, ".");
 			if (*ptr == '.')
 				ptr++;
-			
+
 			if (!strcomp(ignored_types, ptr)) {
 
 #if ( sfv_dupecheck == TRUE )
@@ -548,15 +550,25 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 
 				if (strncasecmp(ptr, "mp3", 4) == 0)
 					music++;
-				else if (israr(ptr))
+				else if (israr(ptr)) {
 					rars++;
+					if (!*fcompare)
+						strncpy(fcompare, fbuf, ptr - fbuf - 1);
+				}
 				else if (isvideo(ptr))
 					video++;
 				else
 					others++;
 				
+				sd.fmatch = 2;
+				if (*fcompare && strncasecmp(fcompare, sd.fname, strlen(fcompare))) {
+					sd.fmatch = 0;
+					rars--;
+				} else
+					sd.fmatch = 1;
+
 #if ( create_missing_files == TRUE )
-				if (!findfile(dir, sd.fname))
+				if (!findfile(dir, sd.fname) && sd.fmatch)
 					create_missing(sd.fname);
 #endif
 

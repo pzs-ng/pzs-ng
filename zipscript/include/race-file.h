@@ -20,6 +20,7 @@ typedef struct {
 typedef struct {
 	unsigned int	crc32;
 	char		fname[NAME_MAX];
+	short int	fmatch;
 } SFVDATA;
 
 /* this is what we put in a special 'head' file for version control, lock etc */
