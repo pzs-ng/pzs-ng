@@ -106,7 +106,8 @@ main()
 	printf("Rescanning files...\n");
 	rescandir(2);		/* Rescan dir after deleting files.. */
 	
-	if ((strlcpy(g.v.file.name, findfileext(".sfv"), PATH_MAX)) > 0) {
+	if (findfileext(".sfv")) {
+		strlcpy(g.v.file.name, findfileext(".sfv"), PATH_MAX);
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
 		if (copysfv(g.v.file.name, g.l.sfv)) {
@@ -271,7 +272,8 @@ main()
 			}
 				move_progress_bar(0, &g.v, g.ui, g.gi);
 		}
-	} else if ((strlcpy(g.v.file.name, findfileext(".zip"), PATH_MAX)) > 0) {
+	} else if (findfileext(".zip")) {
+		strlcpy(g.v.file.name, findfileext(".zip"), PATH_MAX);
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
 		n = direntries;
@@ -368,7 +370,7 @@ main()
 				}
 			}
 		}
-	} else if ( mark_empty_dirs_as_incomplete_on_rescan) {
+	} else if (mark_empty_dirs_as_incomplete_on_rescan) {
 			create_incomplete();
 			printf(" Empty dir - marking as incomplete.\n");
 	}
