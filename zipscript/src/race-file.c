@@ -794,6 +794,8 @@ remove_from_race(const char *path, const char *f)
 	
 	if ((fd = open(path, O_WRONLY | O_TRUNC)) == -1) {
 		d_log("remove_from_race: open(%s): %s\n", path, strerror(errno));
+		if (tmprd)
+			free(tmprd);
 		return;
 	}
 	
@@ -805,51 +807,59 @@ remove_from_race(const char *path, const char *f)
 	
 	xunlock(&fl, fd);
 	close(fd);
+
+	if (tmprd)
+		free(tmprd);
 }
 
 int
 verify_racedata(const char *path)
 {
-	int		fd, tmpfd;
-	char		tmppath[PATH_MAX];
+	int		fd, i, max;
 	struct flock	fl;
 	
-	RACEDATA	rd;
+	RACEDATA	rd, *tmprd = 0;
 	
 	if ((fd = open(path, O_RDWR)) == -1) {
 		d_log("verify_racedata: open(%s): %s\n", path, strerror(errno));
 		return 0;
 	}
 	
-	sprintf(tmppath, "%s/rd.verifydata.tmp", storage);
-	
-	if ((tmpfd = open(tmppath, O_CREAT | O_RDWR, 0666)) == -1) {
-		d_log("verify_racedata: open(%s): %s\n", tmppath, strerror(errno));
-		exit(EXIT_FAILURE);
-	}
-
-	xlock(&fl, fd);
-	xlock(&fl, tmpfd);
-
-	while ((read(fd, &rd, sizeof(RACEDATA)))) {
-		if (fileexists(rd.fname))
-			write(tmpfd, &rd, sizeof(RACEDATA));
-		else {
+	for (i = 0; (read(fd, &rd, sizeof(RACEDATA)));) {
+		if (fileexists(rd.fname)) {
+			//write(tmpfd, &rd, sizeof(RACEDATA));
+			tmprd = realloc(tmprd, sizeof(RACEDATA)*(i+1));
+			memcpy(&tmprd[i], &rd, sizeof(RACEDATA));
+			i++;
+		} else {
 			d_log("verify_racedata: Oops! %s is missing - removing from racedata\n", rd.fname);
 			create_missing(rd.fname);
 		}
 	}
 	
-	xunlock(&fl, fd);
-	xunlock(&fl, tmpfd);
-
 	close(fd);
-	close(tmpfd);
-
-	if (rename(tmppath, path) == -1) {
-		d_log("verify_racedata: rename(\"%s\", \"%s\"): %s", tmppath, path, strerror(errno));
-		exit(EXIT_FAILURE);
+	
+	if ((fd = open(path, O_WRONLY | O_TRUNC)) == -1) {
+		d_log("remove_from_race: open(%s): %s\n", path, strerror(errno));
+		if (tmprd)
+			free(tmprd);
+		return 0;
 	}
+	
+	xlock(&fl, fd);
+	
+	max = i;
+	for (i = 0; i < max; i++)
+		write(fd, &tmprd[i], sizeof(RACEDATA));
+	
+	xunlock(&fl, fd);
+	close(fd);
+	
+	xunlock(&fl, fd);
+
+	if (tmprd)
+		free(tmprd);
+
 	return 1;
 }
 
