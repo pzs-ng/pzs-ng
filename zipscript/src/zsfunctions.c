@@ -1,3 +1,4 @@
+#include <errno.h>
 #include "zsfunctions.h"
 #include "constants.h"
 #include "convert.h"
@@ -428,57 +429,49 @@ void get_rar_info(char *filename) {
  * Description: Executes extern program and returns return value
  *
  * Modified by js on 08.08.2004 to handle " and ' in arguments
- *
+ * Rewritten by js on 07.09.2004
  */
 int execute(char *s) {
-    int n, args=-1, test=0, len=0;
-    char command[256], **argv, *p1;
+	int len, i=0, n;
+	char *argv[128], *p1, *p2;
+    
+	for (p1 = s; *p1; p1++) {
 
-    /*command = malloc(sizeof(char));*/
-    argv = malloc(sizeof(char *)*50); /* 50 args should be enough i guess */
+		/* get a pointer to the first space or the 
+		   end of the string */
+		if ((p2 = strchr(p1, ' ')) == NULL) {
+			p2 = strchr(p1, '\0');
+		}
 
-    p1 = strchr(s, ' ');
-    len = p1-s;
-    strncpy(command, s, len);
-    command[len] = '\0';
+		/* find the length of the word */
+		len = p2-p1;
+		
+		argv[i] = malloc(sizeof(char)*len);
+		strncpy(argv[i], p1, len);
+		
+		/* jump to the end of the word */
+		p1 += len;
 
-    s += len;
-   
-    while (1) {
+		i++;
 
-	if (*s == '\"') test = 1;
-	else if (*s == '\'') test = 2;
-	else if ((*s == '\"' && test == 1) || (*s == '\'' && test == 2)) test = 0;
-
-	if (*s == ' ' && test == 0) {
-	    *s = 0;
-	    args++;
-	    /*realloc(argv, (sizeof(char *)*args));*/
-	    argv[args-1] = s + 1;
-	} else if (*s == 0) {
-	    args++;
-	    /*realloc(argv, (sizeof(char *)*args));*/
-	    argv[args] = NULL;
-	    break;
 	}
-	s++;
 
-    }
+	argv[i] = NULL;
+    
+	switch (fork()) {
+		case 0: 
+			close(1);
+			close(2);
+			d_log("Executing command: %s\n", argv[0]);
+			n = execv(argv[0], argv);
+			exit(0);
+			break;
+		default:
+			wait(&n);
+			break;
+	}
 
-    switch (fork()) {
-	case 0: 
-	    close(1);
-	    close(2);
-	    d_log("Executing command: %s %s\n", command, argv);
-	    n = execv(command, argv);
-	    exit(0);
-	    break;
-	default:
-	    wait(&n);
-	    break;
-    }
-
-    return n >> 8;
+	return n >> 8;
 }
 
 int execute_old(char *s) {
