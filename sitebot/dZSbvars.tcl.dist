@@ -42,6 +42,7 @@ set variables(DELDIR)		"%pf %u_name %g_name %u_tagline"
 set variables(LOGIN)		"%u_hostmask %u_ip %dummy %u_name %g_name %u_tagline %u_pid"
 set variables(LOGOUT)		"%u_hostmask %u_ip %u_name %g_name %u_tagline"
 set variables(TIMEOUT)		"%u_name %u_hostmask %dummy1 %dummy2 %dummy3 %dummy4 %dummy5 %u_idletime %dummy6"
+set variables(TAGLINE)		"%u_name %u_group %u_tagline"
 set variables(WIPE)		"%pf %u_name %g_name %u_tagline"
 set variables(WIPE-r)		"%pf %u_name %g_name %u_tagline"
 
@@ -60,7 +61,7 @@ set variables(UPDATE_VIDEO)	"%pf %u_name %g_name %t_files %u_speed %t_mbytes %fi
 set variables(UPDATE_VBR)	"%pf %u_name %g_name %t_files %u_speed %genre %year %bitrate %sampling %mode %audio %a_stream %filename %releasename %artist %album %title %codec %layer"
 set variables(UPDATE_CBR)	"%pf %u_name %g_name %t_files %u_speed %genre %year %bitrate %sampling %mode %audio %filename %releasename %artist %album %title %codec %layer"
 set variables(HALFWAY_RACE)	"%pf %releasename %u_leader_name %u_leader_gname %u_leader_mbytes %u_leader_files %u_leader_percent %u_leader_avgspeed %g_leader_name %g_leader_mbytes %g_leader_files %g_leader_percent %g_leader_avgspeed %t_mbytes %t_files %t_percent %t_avgspeed %t_missingfiles %filename %u_count %g_count %u_name %g_name %against %t_total_files"
-set variables(HALFWAY_NORACE)	"%pf %releasename %u_name %g_name %u_mbytes %u_files %u_percent %u_speed %t_missingfiles"
+set variables(HALFWAY_NORACE)	"%pf %releasename %u_leader_name %u_leader_gname %u_leader_mbytes %u_leader_files %u_leader_percent %u_leader_avgspeed %g_leader_name %g_leader_mbytes %g_leader_files %g_leader_percent %g_leader_avgspeed %t_mbytes %t_files %t_percent %t_avgspeed %t_missingfiles %filename %u_count %g_count %u_name %g_name %t_total_files"
 set variables(NEWLEADER)	"%pf %u_name %g_name %u_speed %t_duration %uploaded_files %uploaded_percent %uploaded_mbytes %releasename %u_count %g_count %filename %t_files %t_missingfiles %u_leader_name %u_leader_gname %u_leader_mbytes %u_leader_files %u_leader_percent %u_leader_avgspeed %g_leader_name %g_leader_mbytes %g_leader_files %g_leader_percent %g_leader_avgspeed"
 
 set variables(COMPLETE)		"%pf %releasename %t_mbytes %t_files %t_avgspeed %t_duration %u_name %g_name %filename"

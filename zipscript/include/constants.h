@@ -128,7 +128,7 @@
 #define audio_complete		DISABLED
 #endif
 #if ( disable_audio_norace_halfway == FALSE )
-#define audio_norace_halfway	"{%r} {%U} {%G} {%.0m} {%f} {%.1p} {%.0A} {%M}"
+#define audio_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%M} {%n} {%u} {%g} {%U} {%G} {%f}"
 #else
 #define audio_norace_halfway	DISABLED
 #endif
@@ -170,7 +170,7 @@
 #define video_complete		DISABLED
 #endif
 #if ( disable_video_norace_halfway == FALSE )
-#define video_norace_halfway	"{%r} {%U} {%G} {%.0m} {%f} {%.1p} {%.0A} {%M}"
+#define video_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%M} {%n} {%u} {%g} {%U} {%G} {%f}"
 #else
 #define video_norace_halfway	DISABLED
 #endif
@@ -212,7 +212,7 @@
 #define rar_complete		DISABLED
 #endif
 #if ( disable_rar_norace_halfway == FALSE )
-#define rar_norace_halfway	"{%r} {%U} {%G} {%.0m} {%f} {%.1p} {%.0A} {%M}"
+#define rar_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%M} {%n} {%u} {%g} {%U} {%G} {%f}"
 #else
 #define rar_norace_halfway	DISABLED
 #endif
@@ -254,7 +254,7 @@
 #define other_complete		DISABLED
 #endif
 #if ( disable_other_norace_halfway == FALSE )
-#define other_norace_halfway	"{%r} {%U} {%G} {%.0m} {%f} {%.1p} {%.0A} {%M}"
+#define other_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%M} {%n} {%u} {%g} {%U} {%G} {%f}"
 #else
 #define other_norace_halfway	DISABLED
 #endif
@@ -291,7 +291,7 @@
 #define zip_complete		DISABLED
 #endif
 #if ( disable_zip_norace_halfway == FALSE )
-#define zip_norace_halfway	"{%r} {%U} {%G} {%.0m} {%f} {%.1p} {%.0A} {%M}"
+#define zip_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%M} {%n} {%u} {%g} {%U} {%G} {%f}"
 #else
 #define zip_norace_halfway	DISABLED
 #endif
