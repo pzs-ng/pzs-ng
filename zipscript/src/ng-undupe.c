@@ -16,7 +16,7 @@
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
 
-struct dupefile {
+struct dupeentry {
 	char		filename  [256];
 	time_t		timeup;
 	char		uploader  [25];
@@ -28,7 +28,7 @@ main(int argc, char *argv[])
 	FILE           *fp, *fp2;
 	char		dupename  [1024], data2[1024], dupefile[1024];
 
-	struct dupefile	buffer;
+	struct dupeentry buffer;
 
 	if (argc != 2) {
 		printf("Please give a filename to undupe as well\n");
@@ -49,14 +49,14 @@ main(int argc, char *argv[])
 	}
 	while (!feof(fp)) {
 
-		if (fread(&buffer, sizeof(struct dupefile), 1, fp) < 1)
+		if (fread(&buffer, sizeof(struct dupeentry), 1, fp) < 1)
 			break;
 		/* If we found the file, delete it */
 		if (strcmp(buffer.filename, dupename) == 0)
 			fflush(fp);
 		/* if not, write it to the new file */
 		if (strcmp(buffer.filename, dupename) != 0)
-			if (fwrite(&buffer, sizeof(struct dupefile), 1, fp2) < 1)
+			if (fwrite(&buffer, sizeof(struct dupeentry), 1, fp2) < 1)
 				break;
 	}
 
@@ -79,9 +79,9 @@ main(int argc, char *argv[])
 		return 1;
 	}
 	while (!feof(fp)) {
-		if (fread(&buffer, sizeof(struct dupefile), 1, fp) < 1)
+		if (fread(&buffer, sizeof(struct dupeentry), 1, fp) < 1)
 			break;
-		if (fwrite(&buffer, sizeof(struct dupefile), 1, fp2) < 1)
+		if (fwrite(&buffer, sizeof(struct dupeentry), 1, fp2) < 1)
 			break;
 	}
 
