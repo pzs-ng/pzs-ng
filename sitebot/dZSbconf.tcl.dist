@@ -15,6 +15,12 @@ set location(USERS)		"/glftpd/ftp-data/users/"
 # Should the bot die if a binary is missing - or just output that something is wrong?
 set die_on_error		"NO"
 
+# Allow people to invite themselves to the channel through IRC. WARNING! This is
+# considered a security threat because if someone steals the nickname of the bot
+# they will be able to easily harvest usernames/passwords. CONSIDER WITH CAUTION!
+# You can set it to "YES" or "NO".
+set enable_irc_invite	"NO"
+
 # Are you using glftpd2? Default setting ("AUTO") should be safe,
 # enables autodetection (if binary(GLFTPD) is set correctly)
 # To override autodetection (or if it just doesn't work), you can set

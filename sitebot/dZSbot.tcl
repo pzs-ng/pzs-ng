@@ -106,8 +106,6 @@ bind pub	-|-	[set cmdpre]help	help
 
 bind join	-|-	*			welcome_msg
 
-bind msg	-|-	!invite			invite
-
 if {$bindnopre == "YES"} {
 	bind pub	-|- !who		who
 	bind pub	-|- !speed		speed
@@ -1326,6 +1324,11 @@ proc dprint {arg1 {arg2 0}} {
 }
 #################################################################################
 
+if {[info exists enable_irc_invite]} {
+	if {[string compare -nocase $enable_irc_invite "YES"] == 0} {
+		bind msg	-|-	!invite			invite
+	}
+} else { dprint DEBUG_WARN "Could not find variable 'enable_irc_invite', pretending it's set to \"NO\"." }
 
 if {[info exists dZStimer]} {
 	if {[catch {killutimer $dZStimer} err]} {
