@@ -37,6 +37,14 @@ int		maxusers = 20 , showall = 0, uploads = 0, downloads = 0, onlineusers = 0,
 		chidden = 1;
 double		total_dn_speed = 0, total_up_speed = 0;
 
+int
+check_path(char *filename)
+{
+	if (stat(filename, &filestat) != 0)
+		return 0;
+	return 1;
+}
+
 unsigned long 
 filesize(char *filename)
 {
@@ -48,8 +56,6 @@ filesize(char *filename)
 		if (!strcmp(filename, "")) {
 			filestat.st_size = 1;
 		} else {
-			free(file);
-			file = malloc(strlen(filename) + 2);
 			sprintf(file, "/%s", filename);
 			if (stat(file, &filestat) != 0) {
 				if (!strcmp(filename, "")) {
@@ -480,11 +486,20 @@ show(char *filename)
 
 	fname = malloc(strlen(glpath) + strlen(filename) + 2);
 	sprintf(fname, "%s/%s", glpath, filename);
+	if (!check_path(fname))
+		sprintf(fname, "/%s", filename);
 
 	if ((fd = open(fname, O_RDONLY)) != -1) {
 		while ((n = read(fd, buf, sizeof(buf))) > 0)
 			printf("%.*s", n, buf);
 		close(fd);
+	} else {
+		sprintf(fname, "/%s", filename);
+		if ((fd = open(fname, O_RDONLY)) != -1) {
+			while ((n = read(fd, buf, sizeof(buf))) > 0)
+				printf("%.*s", n, buf);
+			close(fd);
+		}
 	}
 	free(fname);
 }
@@ -526,6 +541,8 @@ buffer_groups(char *groupfile)
 
 	f_name = malloc(strlen(glpath) + strlen(groupfile) + 2);
 	sprintf(f_name, "%s/%s", glpath, groupfile);
+	if (!check_path(f_name))
+		sprintf(f_name, "/%s", groupfile);
 	f = open(f_name, O_NONBLOCK);
 	fstat(f, &filestat);
 	f_size = filestat.st_size;
