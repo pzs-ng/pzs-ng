@@ -752,6 +752,17 @@ main(int argc, char **argv)
 						writelog(&g, error_msg, bad_file_nosfv_type);
 					exit_value = 2;
 					break;
+				} else if (matchpath(zip_dirs, g.l.path) && (!fileexists(g.l.sfv))) {
+					d_log("zipscript-c: This looks like a file uploaded the wrong place - Not allowing it.\n");
+					strlcpy(g.v.misc.error_msg, SFV_FIRST, 80);
+					mark_as_bad(g.v.file.name);
+					write_log = g.v.misc.write_log;
+					g.v.misc.write_log = 1;
+					error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
+					if (exit_value < 2)
+						writelog(&g, error_msg, bad_file_nosfv_type);
+					exit_value = 2;
+					break;
 				} else {
 					d_log("zipscript-c: path matched with noforce_sfv_first or zip_dirs - allowing file.\n");
 					printf(zipscript_SFV_skip);
