@@ -209,8 +209,10 @@ showusers(int n, int mode, char *ucomp, char raw)
 				((tstop.tv_sec - user[x].tstart.tv_sec) * 1. +
 			(tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.);
 
-			total_up_speed += speed;
-			uploads++;
+			if (chidden) {
+				total_up_speed += speed;
+				uploads++;
+			}
 			if (!raw)
 				sprintf(status, "Up: %7.1fKB/s", speed);
 			else if (raw == 1)
@@ -255,8 +257,10 @@ showusers(int n, int mode, char *ucomp, char raw)
 				((tstop.tv_sec - user[x].tstart.tv_sec) * 1. +
 			(tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.);
 
-			total_dn_speed += speed;
-			downloads++;
+			if (chidden) {
+				total_dn_speed += speed;
+				downloads++;
+			}
 			if (!raw)
 				sprintf(status, "Dn: %7.1fKB/s", speed);
 			else if (raw == 1)
