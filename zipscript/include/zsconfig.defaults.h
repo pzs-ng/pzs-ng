@@ -142,6 +142,13 @@
 #ifndef hide_group_uploaders
 #define hide_group_uploaders	TRUE
 #endif
+#ifndef hide_gname
+#define hide_gname		""
+#endif
+#ifndef hide_uname
+#define hide_uname		""
+#endif
+
 
 /*
  * You may also choose a custom message to be put into the .message file in

@@ -237,17 +237,22 @@ main()
 
 				/* Hide users in group_dirs */
 				if (matchpath(group_dirs, locations.path) && (hide_group_uploaders == TRUE)) {
-					d_log("Hiding user in group-dir\n");
-					sprintf(raceI.user.name, raceI.user.group);
+					d_log("Hiding user in group-dir:\n");
+					if (strlen(hide_gname) > 0) {
+						snprintf(raceI.user.group, 18, "%s", hide_gname);
+						d_log("   Changing groupname\n");
+					}
+					if (strlen(hide_uname) > 0) {
+						snprintf(raceI.user.name, 18, "%s", hide_uname);
+						d_log("   Changing username\n");
+					}
+					if (strlen(hide_uname) == 0) {
+						d_log("   Making username = groupname\n");
+						snprintf(raceI.user.name, 18, "%s", raceI.user.group);
+					}
 				}
-				unlink_missing(raceI.file.name);
-				/*
-				 * sprintf(exec, "%s-missing",
-				 * raceI.file.name); #if
-				 * (sfv_cleanup_lowercase == TRUE)
-				 * strtolower(exec); #endif unlink(exec);
-				 */
 
+				unlink_missing(raceI.file.name);
 				if (l > 44) {
 					printf("\nFile: %s", dirlist[n]->d_name + l - 44);
 				} else {

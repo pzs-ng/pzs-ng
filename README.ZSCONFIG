@@ -153,9 +153,19 @@ write_complete_message_in_group_dirs <TRUE|FALSE>
 
 hide_group_uploaders <TRUE|FALSE>
 	If you wish to hide the names of the member of a releasegroup in the
-	.message file, this option will replace the name of the uploader with
-	the name of the group.
+	.message file, this option will 'hide' the uploader.
 	Default: TRUE
+
+hide_gname <STRING>
+	Set here something you wish to use instead of the groupname when
+	hiding users. Setting this empty will not change groupname.
+	Default: ""
+
+hide_uname <STRING>
+	Set here something you wish to use instead of the username when
+	hiding users. Setting this empty will make the username the same
+	as groupname.
+	Default: ""
 
 custom_group_dirs_complete_message <STRING|DISABLED>
 	If you rather would like to put in a predefined message in the
