@@ -356,6 +356,7 @@ proc readlog {} {
 							foreach channel $privchannel($privchan) {puthelp "INVITE $ircnick $channel"}
 						}
 					}
+				}
 				if {[info exists privusers($privchan)]} {
 					foreach privuser $privusers($privchan) {
 						if {[string equal $nick $privuser]} {
@@ -392,49 +393,6 @@ proc readlog {} {
 			sndall $msgtype $section [parse $msgtype [lrange $line 6 end] $section]
 			postcmd $msgtype $section $path
 		}
-
-#		if {[denycheck $path] == 0 && $msgtype != "DISABLED"} {
-#			if {![string equal $section $defaultsection]} {
-#				if {[info exists variables($msgtype)] && $disable($msgtype) == 0} {
-#					set echoline [parse $msgtype [lrange $line 6 end] $section]
-#					sndall $section $echoline
-#					postcmd $msgtype $section $path
-#				} else {
-#					if {![info exists variables($msgtype)] && $pid == 0} {
-#						putlog "dZSbot error: \"variables($msgtype)\" not set in config, type becomes \"DEFAULT\""
-#					}
-#					if {![info exists variables($msgtype)] && $disable(DEFAULT) == 0 && $pid == 0} {
-#						set echoline [parse DEFAULT [lrange $line 6 end] $section]
-#						sndall $section $echoline
-#						postcmd $msgtype $section $path
-#					}
-#				}
-#			} else {
-#				if {[lsearch -glob $msgtypes(DEFAULT) $msgtype] != -1} {
-#					if {$disable($msgtype) == 0} {
-#						set echoline [parse $msgtype [lrange $line 6 end] "DEFAULT"]
-#						if { [info exists chanlist($msgtype)] } {
-#							sndall $msgtype $echoline
-#						} else {
-#							sndall "DEFAULT" $echoline
-#						}
-#						postcmd $msgtype "DEFAULT" $path
-#					}
-#				} else {
-#					if {$disable(DEFAULT) == 0} {
-#						set echoline [parse $msgtype [lrange $line 6 end] "DEFAULT"]
-#						sndall "DEFAULT" $echoline
-#						postcmd $msgtype "DEFAULT" $path
-#					} else {
-#						if {![info exists variables($msgtype)] && $pid > 0} {
-#							set echoline [parse $msgtype [lrange $line 6 end] $section]
-#							sndall $section $echoline
-#							postcmd $msgtype $section $path
-#						}
-#					}
-#				}
-#			}
-#		}
 	}
 
 	if {$glversion == 2} {
