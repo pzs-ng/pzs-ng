@@ -39,4 +39,8 @@ zsconfig.h:	The option 'del_progressmeter' has changed. Make sure you have
 		the default will be used.
 		Changed in: r827
 
+dZSBconf.tcl	A dZSBconf.defaults.tcl first appeared in r1120 - if your bot
+		is older than this, it is recommended to update all, including
+		dZSBconf.tcl
+
 
