@@ -392,3 +392,5 @@
 #define enable_files_ahead	TRUE
 #define newleader_files_ahead	2 
 
+/* Is this being compiled for GLFTPD 2? */
+#define for_glftpd2 TRUE
