@@ -191,6 +191,9 @@ announce.COVERS					= "[%b{COVERS}]:[%c3{%l8{%section}}] %b{%relname} by %b{%u_n
 announce.0DAY					= "[%b{NEW   }]:[%c3{%l8{%section}}] %b{%reldir} by %b{%u_name}@%g_name."
 announce.MP3					= "[%b{NEW   }]:[%c3{%l8{%section}}] %b{%reldir} by %b{%u_name}@%g_name."
 
+# Don't edit/remove this line
+announce.DISABLED				= ""
+
 # Entries for commands done by neoxed (!new/!search/!nukes/!unnukes)
 
 announce.NEW					= "%b{(NEW)} Latest Releases In: %b{%section}"

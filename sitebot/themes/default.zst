@@ -206,6 +206,9 @@ announce.BADMSGINVITE	        		= "[%b{%c1{badinv}}] %b{%u_ircnick} (%u_host) tr
 #announce.SUBTITLES				= "[%b{subs  }][%section] %b{%relname} by %b{%u_name} of %g_name."
 #announce.COVERS 				= "[%b{covers}][%section] %b{%relname} by %b{%u_name} of %g_name."
 
+# Don't edit/remove this line
+announce.DISABLED				= ""
+
 # Entries for commands done by neoxed (!new/!search/!nukes/!unnukes)
 
 announce.NEW					= "%b{(NEW)} Latest Releases In: %b{%section}"

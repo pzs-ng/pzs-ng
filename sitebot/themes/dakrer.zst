@@ -227,6 +227,9 @@ announce.NEWDISC				= "[%b{%section}] [%c1{NEW DISC}] %path/%b{%reldir} (created
 announce.SUBTITLES				= "[%b{%section}] [%c1{SUBTITLES}] %path/%b{%reldir} (created by %b{%u_name})"
 announce.COVERS					= "[%b{%section}] [%c1{COVERS}] %path/%b{%reldir} (created by %b{%u_name})"
 
+# Don't edit/remove this line
+announce.DISABLED				= ""
+
 # Entries for commands done by neoxed (!new/!search/!nukes/!unnukes)
 announce.NEW					= "[%b{NEW}] Latest releases in %b{%section} section:"
 announce.NEW_BODY				= "[%b{NEW}] %num. %path/%b{%reldir} (%b{%files}F/%b{%mbytes}MB/%age)"
