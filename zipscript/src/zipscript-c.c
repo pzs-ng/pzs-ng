@@ -74,6 +74,7 @@ main(int argc, char **argv)
 	char	       *newleader_type = 0;
 	char	       *race_halfway_type = 0;
 	char	       *norace_halfway_type = 0;
+	char	       *inc_point[2];
 #ifdef _WITH_SS5
 	unsigned char	complete_type = 1;
 #else
@@ -1270,23 +1271,19 @@ main(int argc, char **argv)
 					} else {
 						if (!findfileextparent(parent, ".nfo")) {
 							d_log("zipscript-c: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
+							/* This is not pretty, but should be functional. */
+							if ((inc_point[0] = find_last_of(g.l.path, "/")) != g.l.path)
+								*inc_point[0] = '\0';
+							if ((inc_point[1] = find_last_of(g.v.misc.release_name, "/")) != g.v.misc.release_name)
+								*inc_point[1] = '\0';
 							create_incomplete_nfo();
+							if (*inc_point[0] == '\0')
+								*inc_point[0] = '/';
+							if (*inc_point[1] == '\0')
+								*inc_point[1] = '/';
 						}
 					}
 				}
-				/* Creating no-sample link if needed.
-				if ((g.l.sample_incomplete) && (!findfileext(dir, ".nfo")) && (matchpath(check_for_missing_nfo_dirs, g.l.path)) ) {
-					if (!g.l.in_cd_dir) {
-						d_log("zipscript-c: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
-						create_incomplete_nfo();
-					} else {
-						if (!findfileextparent(parent, ".nfo")) {
-							d_log("zipscript-c: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
-							create_incomplete_nfo();
-						}
-					}
-				}
-				*/
 			}
 		} else {
 
