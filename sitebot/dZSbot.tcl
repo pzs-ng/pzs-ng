@@ -1000,7 +1000,7 @@ proc launchnuke2 {type path section sargs dargs} {
 	set output [replacevar $output "%nuker" $nuke(NUKER)]
 	set output [replacevar $output "%nukees" $nuke(NUKEE)]
 	set output [replacevar $output "%type" $nuke(TYPE)]
-	set output [replacevar $output "%mult" $nuke(MULT)]
+	set output [replacevar $output "%multiplier" $nuke(MULT)]
 	set output [replacevar $output "%reason" $nuke(REASON)]
 	set output [replacevar $output "%section" $nuke(SECTION)]
 	set output [replacevar $output "%release" [lindex $split [expr $ll -1]]]
@@ -1056,7 +1056,7 @@ proc launchnuke {} {
 	set output [replacevar $output "%nuker" $nuke(NUKER)]
 	set output [replacevar $output "%nukees" $nuke(NUKEE)]
 	set output [replacevar $output "%type" $nuke(TYPE)]
-	set output [replacevar $output "%mult" $nuke(MULT)]
+	set output [replacevar $output "%multiplier" $nuke(MULT)]
 	set output [replacevar $output "%reason" $nuke(REASON)]
 	set output [replacevar $output "%section" $nuke(SECTION)]
 	set output [replacevar $output "%release" [lindex $split [expr $ll -1]]]
@@ -1265,9 +1265,11 @@ proc themereplace {rstring} {
 	global theme
 
 	# We replace %cX{string}, %b{string} and %u{string} with their coloured, bolded and underlined equivilants ;)
-	regsub -all {%c(\d)\{([^\}]+)\}} $rstring {\\003$theme(COLOR\1)\2\\003} rstring
-	regsub -all {%b\{([^\}]+)\}} $rstring {\\002\1\\002} rstring
-	regsub -all {%u\{([^\}]+)\}} $rstring {\\037\1\\037} rstring
+	while {[regexp {(%c(\d)\{([^\{\}]+)\}|%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\})} $rstring]} {
+		regsub -all {%c(\d)\{([^\{\}]+)\}} $rstring {\\003$theme(COLOR\1)\2\\003} rstring
+		regsub -all {%b\{([^\{\}]+)\}} $rstring {\\002\1\\002} rstring
+		regsub -all {%u\{([^\{\}]+)\}} $rstring {\\037\1\\037} rstring
+	}
 
 	regsub -all {\003(\d)(?!\d)} $rstring {\\0030\1} rstring
 	return [subst -nocommands $rstring]
