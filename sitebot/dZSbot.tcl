@@ -243,9 +243,11 @@ proc readlog {} {
 		set pid 0
 		if {[regexp {\[([0-9 ]+)\] .*?:} "$line" dud pid]} { regsub "\\\[$pid\\\] " "$line" "" line }
 
+		set pid [string trim $pid]
+		set line "$line $pid"
 		set msgtype [string trim [lindex $line 5] ":"]
 		set path [lindex $line 6]
-
+		
 		if {![string compare $msgtype "INVITE"]} {
 			set nick [lindex $line 6]
 			foreach channel $invite_channels { puthelp "INVITE $nick $channel" }
