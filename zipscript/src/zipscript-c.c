@@ -688,7 +688,7 @@ main(int argc, char **argv)
 		case 3:	/* SFV BASED CRC-32 CHECK */
 			d_log("File type is: ANY\n");
 
-			d_log("Converting crc from string to integer\n");
+			d_log("Converting crc (%s) from string to integer\n", argv[3]);
 			crc = hexstrtodec((unsigned char *)argv[3]);
 			if (crc == 0) {
 				d_log("We did not get crc from ftp daemon, calculating crc now...\n");
@@ -696,7 +696,7 @@ main(int argc, char **argv)
 			}
 			if (fileexists(locations.sfv)) {
 				s_crc = readsfv_file(&locations, &raceI, 0);
-				d_log("DEBUG: crc: %d - s_crc: %d\n", crc, s_crc);
+				d_log("DEBUG: crc: %X - s_crc: %X\n", crc, s_crc);
 				if (s_crc != crc) {
 					if (s_crc == 0) {
 						d_log("Filename was not found in the SFV\n");

@@ -35,7 +35,7 @@ readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount)
 {
 	char           *fname;
 	unsigned int	crc = 0;
-	unsigned int	t_crc;
+	unsigned int	t_crc = 0;
 	FILE           *sfvfile;
 	unsigned int	len;
 
@@ -48,7 +48,8 @@ readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount)
 	while (fread(&len, sizeof(int), 1, sfvfile) == 1) {
 		fname = m_alloc(len);
 		fread(fname, 1, len, sfvfile);
-		fread(&t_crc, sizeof(int), 1, sfvfile);
+		fread(&t_crc, sizeof(unsigned int), 1, sfvfile);
+		d_log("DEBUG: crc read from sfv-file %s : %X\n", fname, t_crc);
 		raceI->total.files++;
 		if (!strcasecmp(raceI->file.name, fname))
 			crc = t_crc;
