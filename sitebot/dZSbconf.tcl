@@ -73,14 +73,14 @@ set type(MV)                "RACE"
 
 # Which channels we announce the different things to.
 # Space separated lists, you can have more than one channel :)
-set chanlist(GAMES)         "#eppp"
-set chanlist(APPS)          "#eppp"
-set chanlist(MP3)           "#eppp"
-set chanlist(0DAY)          "#eppp"
-set chanlist(MV)            "#eppp"
-set chanlist(DEFAULT)       "#eppp"
-set chanlist(INVITE)        "#eppp"
-set chanlist(WELCOME)       "#eppp"
+set chanlist(GAMES)         "#project-zs-ng"
+set chanlist(APPS)          "#project-zs-ng"
+set chanlist(MP3)           "#project-zs-ng"
+set chanlist(0DAY)          "#project-zs-ng"
+set chanlist(MV)            "#project-zs-ng"
+set chanlist(DEFAULT)       "#project-zs-ng"
+set chanlist(INVITE)        "#project-zs-ng"
+set chanlist(WELCOME)       "#project-zs-ng"
 
 # Are we disabling the announce of this stuff?
 # If its set to 1, we wont show it :)
