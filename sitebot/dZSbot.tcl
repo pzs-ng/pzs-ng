@@ -1429,7 +1429,7 @@ proc invite {nick host hand arg} {
 			foreach channel $invite_channels {puthelp "INVITE $nick $channel"}
 			foreach line [split [exec $binary(CAT) $userfile] "\n"] {
 				if {[string equal -length 5 $line "GROUP"]} {
-					set group [lrange $line 1 end]
+					set group [lindex $line 1]
 					break
 				}
 			}

@@ -120,9 +120,10 @@ strict_path_match <TRUE|FALSE>
 	Default: FALSE
 
 sfv_calc_single_fname <TRUE|FALSE>
-	Setting this to TRUE enables the zipscript to calculate a CRC checksum
-	for filenames in an SFV file that appear not to have a CRC stored with
-	them.
+	Setting this to TRUE enables the zipscript to calculate a crc checksum
+	for filenames listed in the sfv, which do not have a corresponding crc.
+	Normally only broken sfv's should have a missing crc after a filename.
+	Default: FALSE
 
 remove_sfv_data_on_delete <TRUE|FALSE>
 	If files are removed from a location, and reupped again, in the same 
