@@ -147,7 +147,7 @@ getrelname(char *directory)
 
 d_log("DEBUG: result of subdir-test: %d\n", subcomp(path[1]));
 	if (subcomp(path[1])) {
-		raceI.misc.release_name = malloc(l[0] + 18);
+		//raceI.misc.release_name = malloc(l[0] + 18);
 		locations.link_source = malloc(n = (locations.length_path - l[1]));
 		sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
 		sprintf(locations.link_source, "%.*s", n - 1, locations.path);
@@ -158,7 +158,7 @@ d_log("DEBUG: result of subdir-test: %d\n", subcomp(path[1]));
 		if (k < 2)
 			free(path[1]);
 	} else {
-		raceI.misc.release_name = malloc(l[1] + 10);
+		//raceI.misc.release_name = malloc(l[1] + 10);
 		locations.link_source = malloc(locations.length_path + 1);
 		strlcpy(locations.link_source, locations.path, locations.length_path + 1);
 		sprintf(raceI.misc.release_name, "%s", path[1]);
@@ -338,7 +338,7 @@ main(int argc, char **argv)
 
 	raceI.file.name = argv[1];
 	locations.path = argv[2];
-	raceI.misc.current_path = locations.path;
+	strncpy(raceI.misc.current_path, locations.path, PATH_MAX);
 	d_log("Changing directory to %s\n", locations.path);
 	chdir(locations.path);
 
@@ -1532,7 +1532,7 @@ main(int argc, char **argv)
 	updatestats_free(raceI, userI, groupI);
 	rescandir(1);
 	free(locations.link_source);
-	free(raceI.misc.release_name);
+	//free(raceI.misc.release_name);
 	free(fileext);
 	free(raceI.sectionname);
 	m_free(target);

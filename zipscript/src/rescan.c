@@ -104,7 +104,7 @@ getrelname(char *directory)
 	}
 
 	if (subcomp(path[1])) {
-		raceI.misc.release_name = malloc(l[0] + 18);
+		//raceI.misc.release_name = malloc(l[0] + 18);
 		locations.link_source = malloc(n = (locations.length_path - l[1]));
 		sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
 		sprintf(locations.link_source, "%.*s", n - 1, locations.path);
@@ -113,7 +113,7 @@ getrelname(char *directory)
 		locations.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &raceI);
 		locations.in_cd_dir = 1;
 	} else {
-		raceI.misc.release_name = malloc(l[1] + 10);
+		//raceI.misc.release_name = malloc(l[1] + 10);
 		locations.link_source = malloc(locations.length_path + 1);
 		strcpy(locations.link_source, locations.path);
 		sprintf(raceI.misc.release_name, "%s", path[1]);
@@ -482,7 +482,7 @@ main()
 	free(locations.sfv);
 	free(locations.leader);
 	free(raceI.sectionname);
-	free(raceI.misc.release_name);
+	//free(raceI.misc.release_name);
 	free(locations.link_source);
 	buffer_groups(GROUPFILE, gnum);
 	buffer_users(PASSWDFILE, unum);

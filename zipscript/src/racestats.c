@@ -32,12 +32,12 @@ void
 getrelname(char *directory)
 {
 	int		cnt       , l, n = 0, k = 2;
-	char           *directoryarray[2];
+	char		directoryarray[2][PATH_MAX];
 
 	for (cnt = strlen(directory) - 1; k && cnt; cnt--)
 		if (directory[cnt] == '/') {
 			k--;
-			directoryarray[k] = malloc(n + 1);
+			//directoryarray[k] = malloc(n + 1);
 			strncpy(directoryarray[k], directory + cnt + 1, n);
 			directoryarray[k][n] = 0;
 			n = 0;
@@ -47,16 +47,16 @@ getrelname(char *directory)
 	l = strlen(directoryarray[1]);
 
 	if (subcomp(directoryarray[1])) {
-		n = strlen(directoryarray[0]);
-		raceI.misc.release_name = malloc(n + 21);
+		//n = strlen(directoryarray[0]);
+		//raceI.misc.release_name = malloc(n + 21);
 		sprintf(raceI.misc.release_name, "%s/%s", directoryarray[0], directoryarray[1]);
-		if (k < 2)
-			free(directoryarray[1]);
+		//if (k < 2)
+		//	free(directoryarray[1]);
 	} else {
-		raceI.misc.release_name = malloc(l + 12);
+		//raceI.misc.release_name = malloc(l + 12);
 		sprintf(raceI.misc.release_name, "%s", directoryarray[1]);
-		if (k == 0)
-			free(directoryarray[0]);
+		//if (k == 0)
+		//	free(directoryarray[0]);
 	}
 }
 
@@ -131,7 +131,7 @@ main(int argc, char **argv)
 END:
 	free(locations.path);
 	free(locations.race);
-	free(raceI.misc.release_name);
+	//free(raceI.misc.release_name);
 	free(locations.sfv);
 
 	exit(EXIT_SUCCESS);

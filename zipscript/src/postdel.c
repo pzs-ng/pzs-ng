@@ -243,7 +243,7 @@ main(int argc, char **argv)
 	memset(groupI, 0, sizeof(struct GROUPINFO *) * 30);
 
 	locations.path = malloc(PATH_MAX);
-	raceI.misc.release_name = malloc(PATH_MAX);
+	//raceI.misc.release_name = malloc(PATH_MAX);
 	getcwd(locations.path, PATH_MAX);
 
 	if (matchpath(nocheck_dirs, locations.path) || (!matchpath(zip_dirs, locations.path) && !matchpath(sfv_dirs, locations.path) & !matchpath(group_dirs, locations.path))) {
@@ -496,7 +496,7 @@ main(int argc, char **argv)
 	updatestats_free(raceI, userI, groupI);
 	free(fileext);
 	free(target);
-	free(raceI.misc.release_name);
+	//free(raceI.misc.release_name);
 	free(raceI.sectionname);
 	free(locations.path);
 	free(locations.race);

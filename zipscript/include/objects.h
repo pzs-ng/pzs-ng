@@ -11,6 +11,15 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#ifndef PATH_MAX
+ #define _LIMITS_H_
+ #ifdef _SunOS_
+  #include <syslimits.h>
+ #else
+  #include <sys/syslimits.h>
+ #endif
+#endif
+
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
 
@@ -101,8 +110,8 @@ struct race_total {
 
 struct misc {
 	char		old_leader[24];
-	char           *release_name;
-	char	       *current_path;
+	char            release_name[PATH_MAX];
+	char	        current_path[PATH_MAX];
 	char		racer_list[1024];
 	char		total_racer_list[1024];
 	char		top_messages[2][1024];
