@@ -499,7 +499,7 @@ proc basicreplace {rstring section} {
 #################################################################################
 # CONVERT COOKIES TO DATA                                                       #
 #################################################################################
-proc parse {msgtype msgline section} { global variables announce random mpath use_glftpd2 theme theme_fakes defaultsection pid disable
+proc parse {msgtype msgline section} { global variables announce random mpath use_glftpd2 theme theme_fakes defaultsection pid disable sitename
 	set type $msgtype
 
 	if {![string compare $type "NUKE"] || ! [string compare $type "UNNUKE"]} {
@@ -595,7 +595,9 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 					set cnt2 0
 				}
 			}
-			set output [replacevar $output "%loop$loop" $output2]
+			set output2 [replacevar $output2 "%section" $section]
+			set output2 [replacevar $output2 "%sitename" $sitename]
+ 			set output [replacevar $output "%loop$loop" $output2]
 			set loop [expr $loop + 1]
 		}
 		set output [replacevar $output $vari [lindex $msgline $cnt]]
