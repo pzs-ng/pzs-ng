@@ -519,7 +519,7 @@ main(int argc, char **argv)
 	}
 #endif
 	/* No check directories */
-	if (matchpath(nocheck_dirs, locations.path) || (!matchpath(zip_dirs, locations.path) && !matchpath(sfv_dirs, locations.path) & !matchpath(group_dirs, locations.path))) {
+	if (matchpath(nocheck_dirs, locations.path) || (!matchpath(zip_dirs, locations.path) && !matchpath(sfv_dirs, locations.path) && !matchpath(group_dirs, locations.path))) {
 		d_log("Directory matched with nocheck_dirs, or is not among sfv/zip/group dirs\n");
 		no_check = TRUE;
 	} else {
@@ -1346,15 +1346,16 @@ main(int argc, char **argv)
 
 				if (raceI.misc.write_log == TRUE && !matchpath(group_dirs, locations.path)) {
 #if ( audio_genre_sort == TRUE )
-					d_log("Sorting mp3 by genre\n");
+					d_log("  Sorting mp3 by genre (%s)\n", raceI.audio.id3_genre);
 					createlink(audio_genre_path, raceI.audio.id3_genre, locations.link_source, locations.link_target);
 #endif
 #if ( audio_artist_sort == TRUE )
-					d_log("Sorting mp3 by artist\n");
+					d_log("  Sorting mp3 by artist\n");
 					if (*raceI.audio.id3_artist) {
+						d_log("    - artist: %s\n", raceI.audio.id3_artist);
 						if (memcmp(raceI.audio.id3_artist, "VA", 3)) {
 							temp_p = malloc(2);
-							sprintf(temp_p, "%c", toupper(*raceI.audio.id3_artist));
+							snprintf(temp_p, 2, "%c", toupper(*raceI.audio.id3_artist));
 							createlink(audio_artist_path, temp_p, locations.link_source, locations.link_target);
 							free(temp_p);
 						} else {
@@ -1363,18 +1364,18 @@ main(int argc, char **argv)
 					}
 #endif
 #if ( audio_year_sort == TRUE )
-					d_log("Sorting mp3 by year\n");
+					d_log("  Sorting mp3 by year (%s)\n", raceI.audio.id3_year);
 					if (*raceI.audio.id3_year != 0) {
 						createlink(audio_year_path, raceI.audio.id3_year, locations.link_source, locations.link_target);
 					}
 #endif
 #if ( audio_group_sort == TRUE )
-					d_log("Sorting mp3 by group\n");
+					d_log("  Sorting mp3 by group\n");
 					temp_p = remove_pattern(locations.link_target, "*-", RP_LONG_LEFT);
 					temp_p = remove_pattern(temp_p, "_", RP_SHORT_LEFT);
 					n = strlen(temp_p);
 					if (n > 0 && n < 15) {
-						d_log("Valid groupname found: %s (%i)\n", temp_p, n);
+						d_log("  - Valid groupname found: %s (%i)\n", temp_p, n);
 						createlink(audio_group_path, temp_p, locations.link_source, locations.link_target);
 					}
 #endif
