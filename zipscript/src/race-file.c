@@ -238,7 +238,7 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
     int		sfv_error	= FALSE;
 
 #if ( sfv_dupecheck == TRUE )
-    char		*fname[MAXIMUM_FILES_IN_RELEASE]; /* Semi-stupid. We limit @ 256, which is better than 100 anyways */
+    char		*fname[MAXIMUM_FILES_IN_RELEASE]; /* Semi-stupid. We limit @ MAXIMUM_FILES_IN_RELEASE, statically. */
     unsigned int	files 	= 0;
     unsigned char	exists;
 #endif
