@@ -772,42 +772,39 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 void
 remove_from_race(const char *path, const char *f)
 {
-	int		fd, tmpfd;
-	char		tmppath[PATH_MAX];
+	int		fd, i, max;
 	struct flock	fl;
 	
-	RACEDATA	rd;
+	RACEDATA	rd, *tmprd = 0;
 	
-	if ((fd = open(path, O_RDWR)) == -1) {
+	if ((fd = open(path, O_RDONLY)) == -1) {
 		d_log("remove_from_race: open(%s): %s\n", path, strerror(errno));
 		return;
 	}
 	
-	sprintf(tmppath, "%s/rd.%s.tmp", storage, f);
-
-	if ((tmpfd = open(tmppath, O_CREAT | O_RDWR, 0666)) == -1) {
-		d_log("remove_from_race: open(%s): %s\n", tmppath, strerror(errno));
-		exit(EXIT_FAILURE);
+	for (i = 0; (read(fd, &rd, sizeof(RACEDATA)));) {
+		if (strcmp(rd.fname, f) != 0) {
+			tmprd = realloc(tmprd, sizeof(RACEDATA)*(i+1));
+			memcpy(&tmprd[i], &rd, sizeof(RACEDATA));
+			i++;
+		}
 	}
-
-	xlock(&fl, fd);
-	xlock(&fl, tmpfd);
-
-	while ((read(fd, &rd, sizeof(RACEDATA))))
-		if (strcmp(rd.fname, f) != 0)
-			write(tmpfd, &rd, sizeof(RACEDATA));
-	
-	xunlock(&fl, fd);
-	xunlock(&fl, tmpfd);
 
 	close(fd);
-	close(tmpfd);
-
-	if (rename(tmppath, path) == -1) {
-		d_log("remove_from_race: rename(\"%s\", \"%s\"): %s", tmppath, path, strerror(errno));
-		exit(EXIT_FAILURE);
+	
+	if ((fd = open(path, O_WRONLY | O_TRUNC)) == -1) {
+		d_log("remove_from_race: open(%s): %s\n", path, strerror(errno));
+		return;
 	}
-
+	
+	xlock(&fl, fd);
+	
+	max = i;
+	for (i = 0; i < max; i++)
+		write(fd, &tmprd[i], sizeof(RACEDATA));
+	
+	xunlock(&fl, fd);
+	close(fd);
 }
 
 int
