@@ -35,7 +35,7 @@ foreach (@BNCs) {						# for each bouncer
 	$tiFinish = gettimeofday;
 	$logintime = ($tiFinish - $tiStart) * 1000;		# work out how many ms it took to login
 
-	if ($?) {						# returned an error code...so pattern match the
+	if (($? >> 8) > 0) {		# returned an error code...so pattern match the
 								# STDOUT & STDERR in order to find out what was
 								# wrong, made slightly more complex than needed
 								# as ncftpls' error codes for login issues aren't
