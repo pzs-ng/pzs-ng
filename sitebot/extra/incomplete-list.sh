@@ -24,7 +24,7 @@ MV:/site/incoming/musicvideos/
 
 # alternative, set the following variable to point to your dZSbot.conf and
 # comment out the ''sections='' directive above.
-botconf=/glftpd/sitebot/scripts/pzs-ng/dZSbot.conf
+botconf=/path/to/sitebot/pzs-ng/dZSbot.conf
 
 # set this to 1 if you wish to announce sections where no incompletes are found.
 verbose=0

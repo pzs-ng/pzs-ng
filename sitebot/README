@@ -30,11 +30,10 @@
 
  - Copy the necessary files to your Eggdrop's directory:
   mkdir -p /path/to/eggdrop/pzs-ng/themes
-  cp dZSbot.* /path/to/eggdrop/pzs-ng/
-  cp -R plugins themes /path/to/eggdrop/pzs-ng/
+  cp -R dZSbot.* plugins themes /path/to/eggdrop/pzs-ng/
 
  - On a new install (not upgrade):
-  mv dZSbot.conf.dist /path/to/eggdrop/pzs-ng/dZSbot.conf
+  cp dZSbot.conf.dist /path/to/eggdrop/pzs-ng/dZSbot.conf
 
  - Edit the configuration file (dZSbot.conf) to your liking.
 
@@ -128,6 +127,8 @@
                colors. See theme for additional info. Created and maintained by dakrer.
 
  vampire.zst - juanker's colorful theme.
+
+ psxc.zst    - psxc's go at a theme. Minimalistic, with minimal colors.
 
 --------------------------------------------------------------------------------
   c) Special theme settings
