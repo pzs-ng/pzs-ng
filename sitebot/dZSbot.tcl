@@ -71,6 +71,7 @@ bind pub	-|- [set cmdpre]leechers	ng_leechers
 bind pub	-|-	[set cmdpre]idlers	ng_idlers
 bind pub	-|-	[set cmdpre]bnc		ng_bnc_check
 bind pub	-|-	[set cmdpre]free	show_free
+bind pub	-|-	[set cmdpre]df		show_free
 
 bind pub	-|-	[set cmdpre]dayup	stats_user_dayup
 bind pub	-|-	[set cmdpre]wkup	stats_user_wkup
@@ -105,6 +106,7 @@ if {$bindnopre == "YES"} {
 	bind pub	-|- !idlers		ng_idlers
 	bind pub    -|- !bnc		ng_bnc_check
 	bind pub    -|- !free		show_free
+	bind pub	-|- !df			show_free
 
 	bind pub    -|- !dayup		stats_user_dayup
 	bind pub    -|- !wkup		stats_user_wkup
@@ -136,6 +138,7 @@ if {$bindnopre != "YES"} {
 	catch { unbind pub    -|- !idlers	ng_idlers }
 	catch { unbind pub    -|- !bnc		ng_bnc_check }
 	catch { unbind pub    -|- !free		show_free }
+	catch { unbind pub    -|- !df		show_free }
 	catch { unbind pub    -|- !dayup	stats_user_dayup }
 	catch { unbind pub    -|- !wkup		stats_user_wkup }
 	catch { unbind pub    -|- !monthup	stats_user_monthup }
