@@ -43,7 +43,7 @@ set variables(LOGIN)			"%u_hostmask %u_ip %dummy %u_name %g_name %u_tagline %u_p
 set variables(LOGOUT)			"%u_hostmask %u_ip %u_name %g_name %u_tagline"
 set variables(TIMEOUT)			"%u_name %u_hostmask %dummy1 %dummy2 %dummy3 %dummy4 %dummy5 %u_idletime %dummy6"
 set variables(TAGLINE)			"%u_name %u_group %u_tagline"
-set variables(WIPE)			"%pf %u_name %g_name %u_tagline"
+set variables(WIPE)				"%pf %u_name %g_name %u_tagline"
 set variables(WIPE-r)			"%pf %u_name %g_name %u_tagline"
 set variables(FAILLOGIN)		"%failed_nick %u_hostmask %u_ip %word1 %word2 %u_pid"
 set variables(IPNOTADDED)		"%u_hostmask %u_ip"
@@ -115,4 +115,3 @@ set variables(BAD_FILE_DISALLOWED)	"%pf %releasename %u_name %g_name %filename"
 #  set zeroconvert(%user) "NoOne"
 set zeroconvert(%u_name)		"NoOne"
 set zeroconvert(%g_name) 		"NoGroup"
-

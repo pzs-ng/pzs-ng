@@ -127,8 +127,8 @@ bind dcc n errorinfo errorinfo
 proc errorinfo {args} {
 	global errorInfo tcl_patchLevel tcl_platform
 	putlog "--\[\002Error Info\002\]------------------------------------------"
-	putlog "Tcl: v$tcl_patchLevel"
-	putlog "Box: $tcl_platform(os) $tcl_platform(osVersion) ($tcl_platform(platform))"
+	putlog "Tcl: $tcl_patchLevel"
+	putlog "Box: $tcl_platform(os) $tcl_platform(osVersion)"
 	putlog "Message:"
 	foreach line [split $errorInfo \n] {putlog $line}
 	putlog "--------------------------------------------------------"
@@ -309,7 +309,7 @@ proc readlog {} {
 			set line [linsert $line 5 "IPNOTADDED:"]
 		}
 		if {[lrange $line 8 9] == "Bad user@host."} {
-			set line [linsert $line 5 "BADUSERHOST:"]
+		set line [linsert $line 5 "BADUSERHOST:"]
 		}
 		if {[lrange $line 8 9] == "Login failure."} {
 			set line [linsert $line 5 "BADPASSWD:"]
@@ -318,14 +318,14 @@ proc readlog {} {
 		# If we cannot detect a msgtype - default to DEBUG: and insert that into the list ($line).
 		if {[string first ":" [lindex $line 5]] < 0} {
 			if {[string first "@" [lindex $line 5]] < 0} {
-			set msgtype "DEBUG"
-			if {[llength $line] < 5} {
-				set line [lappend $line "dummy debug"]
+				set msgtype "DEBUG"
+				if {[llength $line] < 5} {
+					set line [lappend $line "dummy debug"]
+				} else {
+					set line [linsert $line 5 "DEBUG:"]
+				}
 			} else {
-				set line [linsert $line 5 "DEBUG:"]
-			}
-			} else {
-			set msgtype [string trim [lindex $line 5] "@"]
+				set msgtype [string trim [lindex $line 5] "@"]
 			}
 		} else {
 			set msgtype [string trim [lindex $line 5] ":"]
@@ -1678,7 +1678,8 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 		set port [lindex $i 2]
 
 		if {[istrue $bnc(PING)]} {
-			if {[catch { set data [exec $binary(PING) -c1 $ip]} error]} {
+			if {[catch {set data [exec $binary(PING) -c1 $ip]} error]} {
+			    putlog "dZSbot warning: Unable to ping $ip ($error)."
 				putquick "NOTICE $nick :$count. .$loc - $ip:$port - DOWN (Can't ping host)"
 				continue
 			}
@@ -1701,8 +1702,8 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 				"*Remote host has closed the connection.*" {set error "Connection Lost"}
 				"*unknown host.*" {set error "Unknown Host?"}
 				default {
-					set error "Unhandled Error Type?"
-					putlog "DEBUG: dZSbot.tcl bnc check unhandled error type \"$raw\", please report to project-zs-ng developers."
+					set error "Unknown Error"
+					putlog "dZSbot error: Unknown bnc check error \"$raw\", please report to pzs-ng developers."
 				}
 			}
 			putquick "NOTICE $nick :$count. .$loc - $ip:$port - DOWN ($error)"
@@ -1773,9 +1774,9 @@ proc loadtheme {file} {
 	foreach name [array names theme_fakes] {set theme_fakes($name) [themereplace_startup $theme_fakes($name)]}
 	foreach name [array names announcetmp] {set announce($name) [themereplace_startup $announcetmp($name)]}
 
-	foreach req {COLOR1 COLOR2 COLOR3 PREFIX KB KBIT MB MBIT} {
-		if {[lsearch -exact [array names theme] $req] == -1} {
-			putlog "dZSbot error: Missing required themefile setting \"$req\", failing."
+	foreach type {COLOR1 COLOR2 COLOR3 PREFIX KB KBIT MB MBIT} {
+		if {[lsearch -exact [array names theme] $type] == -1} {
+			putlog "dZSbot error: Missing required theme setting \"$type\", failing."
 			return 0
 		}
 	}
