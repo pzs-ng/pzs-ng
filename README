@@ -182,16 +182,14 @@ This will make the necessary additions/changes to your system.
 If the make install fails, or you really wish to make the changes by hand,
 here's what to do:
 
-           cp ./zipscript/bin/* /path/to/your/glftpd/bin/
-           chmod +666 /path/to/your/glftpd/ftp-data/logs/glftpd.log
-           mkdir /path/to/your/glftpd/tmp/zipscript
-           chmod 777 /path/to/your/glftpd/tmp/zipscript
+           cp -f zipscript-c postdel racestats cleanup datacleaner rescan \
+	         racedebug pzsng-undupe ng-chown /path/to/your/glftpd/bin/
+           chmod 666 /path/to/your/glftpd/ftp-data/logs/glftpd.log
+           mkdir -pm777 /path/to/your/glftpd/tmp/zipscript
 (optional) chmod +s /path/to/your/glftpd/bin/zipscript-c
 
-If you need to recompile the script because you made a booboo in the config,
-you should always do a 'make clean' first. The quick-quick version of it is:
-
-make clean && ./configure && make && make install
+If you edited your mistake you need to recompile the zipscript. This can be done
+with just typing "make" in the top source dir.
 
 
 Changes in glftpd.conf:
