@@ -860,7 +860,7 @@ proc ng_bandwidth {nick uhost hand chan args} {
 # POST STATS                                                                    #
 #################################################################################
 proc showstats {nick type time section} {
-	global binary statsection
+	global binary statsection location
 
 	set sect 0
 	if {[string length $section] != 0} {
@@ -881,7 +881,7 @@ proc showstats {nick type time section} {
 		}
 	}
 
-	foreach line [split [exec $binary(STATS) $type $time -s $sect] "\n"] {
+	foreach line [split [exec $binary(STATS) -r $location(GLCONF) $type $time -s $sect] "\n"] {
 		if {![info exists newline($line)]} { set newline($line) 0
 		} else { set newline($line) [expr $newline($line) + 1] }
 		puthelp "PRIVMSG $nick :$line\003$newline($line)"

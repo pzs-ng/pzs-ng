@@ -11,6 +11,7 @@ set location(GLLOG)		"/glftpd/ftp-data/logs/glftpd.log"
 set location(LOGINLOG)		"/glftpd/ftp-data/logs/login.log"
 set location(PASSWD)		"/glftpd/etc/passwd"
 set location(USERS)		"/glftpd/ftp-data/users/"
+set location(GLCONF)		"/etc/glftpd.conf"
 
 # Should the bot die if a binary is missing - or just output that something is wrong?
 set die_on_error		"NO"
