@@ -138,11 +138,7 @@ paths etc, which can be tediuos.
 
     (then "./configure && make && make install" or whatever)
 
- b. Patch the sources of zipscript-c with the patch included in other/ -
-    there is a README included in the .tgz which explains things.
-
-    Add/edit the following in zipscript-c's zsconfig.h (Project-ZS) -
-    this will probably already be done:
+ b. Add/edit the following in zsconfig.h
 
      #define enable_nfo_script       TRUE
      #define nfo_script              "/bin/psxc-imdb.sh"

@@ -154,7 +154,7 @@ incomplete_cleanup(char *path, int setfree)
 								printf("Broken symbolic link \"%s\" removed.\n", temp);
 							}
 						} else
-							printf("Incomplete release: \"%s\".\n", temp);
+							printf("Incomplete release: \"%s%s\".\n", path, temp);
 					}
 				} else if (regexec(&preg[2], dp->d_name, 1, pmatch, 0) == 0) {
 					if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dp)) {
@@ -166,7 +166,7 @@ incomplete_cleanup(char *path, int setfree)
 								printf("Broken symbolic link \"%s\" removed.\n", temp);
 							}
 						} else
-							printf("Incomplete release: \"%s\".\n", temp);
+							printf("Incomplete release: \"%s%s\".\n", path, temp);
 					}
 				/* Normal */
 				} else	if (regexec(&preg[1], dp->d_name, 1, pmatch, 0) == 0) {
@@ -179,7 +179,7 @@ incomplete_cleanup(char *path, int setfree)
 								printf("Broken symbolic link \"%s\" removed.\n", temp);
 							}
 						} else
-							printf("Incomplete release: \"%s\".\n", temp);
+							printf("Incomplete release: \"%s%s\".\n", path, temp);
 					}
 				} else if (regexec(&preg[3], dp->d_name, 1, pmatch, 0) == 0) {
 					if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dp)) {
@@ -191,7 +191,7 @@ incomplete_cleanup(char *path, int setfree)
 								printf("Broken symbolic link \"%s\" removed.\n", temp);
 							}
 						} else
-							printf("Incomplete release: \"%s\".\n", temp);
+							printf("Incomplete release: \"%s%s\".\n", path, temp);
 					}
 				}
 			}
