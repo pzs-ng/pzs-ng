@@ -125,16 +125,7 @@ void showusers(int n, int mode, char *ucomp) {
 
 		maskchar = ' ';
 		mask = noshow = 0;
-
-		if ( strcmp(husers, "") == 0 ) {
-			printf("Error in config (hiddenusers)- bug sysop\n");
-			return;
-		}
-		if ( strcmp(mpaths, "") == 0 ) {
-			printf("Error in config (seeallflags) - bug sysop\n");
-			return;
-		}
-		if ( strcmp(husers, "") != 0 && strcomp(husers, user[x].username) != 0 ) {
+		if ( strcomp(husers, user[x].username) != 0 ) {
 			if ( showall )
 				maskchar = '*';
 			else
@@ -142,7 +133,7 @@ void showusers(int n, int mode, char *ucomp) {
 		}
 
 		if ( noshow == 0 ) {
-			if ( strcmp(husers,"") != 0 && ( maskchar == ' ' && matchpath(mpaths, user[x].currentdir) != 0 )) {
+			if ( maskchar == ' ' && matchpath(mpaths, user[x].currentdir) != 0 ) {
 				if ( showall )
 					maskchar = '*';
 				else
@@ -299,6 +290,7 @@ void readconfig(char *arg) {
 			case '=':
 				if ( ! e_c && ! b_w )
 					e_c = n; /* Only one '=' char per line counts */
+					b_w = n + 1;
 				break;
 			case '\t':
 			case ' ':
