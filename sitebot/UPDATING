@@ -18,6 +18,11 @@
 # Changes
 ###############################################################
 
+r1428: Added sysop.log parsing.
+- New theme file settings: ADDUSER, GADDUSER, CHGRPADD, CHGRPDEL, ADDIP,
+  DELIP, READDED, DELUSER, PURGED, and SYSOP.
+- New config option: sysoplog() for the sysop.log path.
+
 r1419: Failed login theme changes and removed the cat binary.
 - Theme file (.zst) changes:
 Renamed: BADUSERHOST -> BADHOSTMASK and BADPASSWD -> BADPASSWORD.
