@@ -18,7 +18,7 @@ bin:
 		${CC} ${CFFLAGS} -o ng-bandwidth ng-bw.c
 
 distclean: clean
-	@$(RM) Makefile
+	$(RM) Makefile
 
 clean:	
-	@$(RM) ng-bandwidth passchk
+	$(RM) ng-bandwidth passchk

@@ -71,10 +71,10 @@ install:
 	cp -f $(binpath)/ng-chmod $(bindir)/ && chmod +s $(bindir)/ng-chmod
 
 distclean: clean
-	@$(RM) Makefile
+	$(RM) Makefile
 
 clean:
-	@$(RM) *.o $(binpath)/zipscript-c $(binpath)/postdel $(binpath)/racestats $(binpath)/cleanup $(binpath)/datacleaner $(binpath)/rescan $(binpath)/racedebug $(binpath)/pzsng-undupe $(binpath)/ng-chmod
+	$(RM) *.o $(binpath)/zipscript-c $(binpath)/postdel $(binpath)/racestats $(binpath)/cleanup $(binpath)/datacleaner $(binpath)/rescan $(binpath)/racedebug $(binpath)/pzsng-undupe $(binpath)/ng-chmod
 
 strip:
 	strip $(binpath)/*

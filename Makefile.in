@@ -8,20 +8,20 @@ LIBS=@LIBS@
 all: zs
 
 install: zs
-	@( cd zipscript/src ; $(MAKE) install )
+	cd zipscript/src ; $(MAKE) install
 
 distclean: clean
-	@( rm -f *~ Makefile config.cache config.log config.status config.h )
-	@( rm -rf autom4te.cache/ )
-	@( cd zipscript/src ; $(MAKE) distclean )
-	@( cd sitebot/src ; $(MAKE) distclean )
+	rm -f *~ Makefile config.cache config.log config.status config.h
+	rm -rf autom4te.cache/
+	cd zipscript/src ; $(MAKE) distclean
+	cd sitebot/src ; $(MAKE) distclean
 
 clean:
-	@( cd zipscript/src ; $(MAKE) clean )
-	@( cd sitebot/src ; $(MAKE) clean )
+	cd zipscript/src ; $(MAKE) clean
+	cd sitebot/src ; $(MAKE) clean
 
 zs:
-	@( cd zipscript/src ; $(MAKE) all )
+	cd zipscript/src ; $(MAKE) all
 
 bot:
-	@( cd sitebot/src ; ${MAKE} all )
+	cd sitebot/src ; ${MAKE} all
