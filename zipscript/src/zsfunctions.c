@@ -99,6 +99,21 @@ findfileext(DIR *dir, char *fileext)
 	return NULL;
 }
 
+int
+check_dupefile(DIR *dir, char *fname)
+{
+	int			 found = 0;
+	static struct dirent	*dp;
+
+	rewinddir(dir);
+	while ((dp = readdir(dir))) {
+		if (strcasecmp(dp->d_name, fname) == 0)
+			found++;
+	}
+	return (found - 1);
+}
+
+
 /*
  * findfilextparent - find a filename with a matching extension in parent dir.
  * Last Modified by: psxc

@@ -134,7 +134,8 @@ main(void)
 	move_progress_bar(1, &g.v, g.ui, g.gi);
 	if (g.l.incomplete)
 		unlink(g.l.incomplete);
-	removecomplete();
+	if (del_completebar)
+		removecomplete();
 	if (g.l.race)
 		unlink(g.l.race);
 	if (g.l.sfv)
@@ -318,12 +319,14 @@ main(void)
 			g.v.misc.write_log = 0;
 			complete(&g);
 
-			createstatusbar(convert(&g.v, g.ui, g.gi, complete_bar));
+			if (complete_bar) {
+				createstatusbar(convert(&g.v, g.ui, g.gi, complete_bar));
 #if (chmod_completebar)
-			if (!matchpath(group_dirs, g.l.path)) {
-				chmod(convert(&g.v, g.ui, g.gi, complete_bar), 0222);
-			}
+				if (!matchpath(group_dirs, g.l.path)) {
+					chmod(convert(&g.v, g.ui, g.gi, complete_bar), 0222);
+				}
 #endif
+			}
 		} else {
 			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
 				create_incomplete();
