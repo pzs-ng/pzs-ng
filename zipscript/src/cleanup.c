@@ -24,7 +24,7 @@ struct tm *timenow;
 time_t     tnow;
 
 /* Relic from old cleaner.. but it works, so why to change? */
-void scandirectory(char *directoryname) {
+void scandirectory(char *directoryname, int setfree) {
     struct dirent **namelist, **namelist2;
     int m, n, fd;
     printf("[%s]\n", directoryname);
@@ -34,18 +34,22 @@ void scandirectory(char *directoryname) {
 		chdir(namelist[n]->d_name);
 		if ((m = scandir(".", &namelist2, 0, 0)) > 0) while (m--) if ( namelist2[m]->d_name[0] != '.' ) {
 		    if ( (fd = open(namelist2[m]->d_name, O_NDELAY, 0777)) != -1 ) close(fd);
-		    else {
+		    else if (setfree) {
 			unlink(namelist2[m]->d_name);
 			printf("Broken symbolic link \"%s\" removed.\n", namelist2[m]->d_name);
 		    }
 		}
 		chdir("..");
-		rmdir(namelist[n]->d_name);
+		if (setfree)
+			rmdir(namelist[n]->d_name);
 	    }
     }
 }
 
-void replace_cookies(char *s, char *pos) {
+char * replace_cookies(char *s) {
+    char	*new_string, *pos;
+
+    new_string = pos = malloc(4096);
 
     while ( *s == '.' || *s == '/' ) s++;
 
@@ -67,12 +71,15 @@ void replace_cookies(char *s, char *pos) {
 	default:
 	    *pos++ = *s;
     }
+    *pos = 0;
+
+    return new_string;
 }
 
 /*
  * Name of release (Multi CD)
  */
-void multi_name(char *s, char *q) {
+char * multi_name(char *s) {
     int	begin_multi[2], end_multi, n;
     char 	*p, *t, *r = 0;
 
@@ -127,18 +134,17 @@ void multi_name(char *s, char *q) {
 	sprintf(r, "%.*s/%s", n, s, p);
     }
 
-    q = t;
     free(p);
-    free(t);
-//    return t;
+//    free(t);
+    return t;
 }
 
 /*
  * Name of release (Common)
  */
-void single_name(char *s, char *q) {
+char * single_name(char *s) {
     int	begin_single, end_single, size;
-    char	*t;
+    char	*t = 0;
 
     begin_single = end_single = 0;
 
@@ -164,30 +170,33 @@ void single_name(char *s, char *q) {
     t = malloc(size);
     sprintf(t, "%.*s", size - 1, s + begin_single);
 
-    q = t;
-    free(t);
-//    return(t);
+//    free(t);
+
+    return(t);
 }
 
-void incomplete_cleanup(char *path) {
+void incomplete_cleanup(char *path, int setfree) {
     struct dirent	**dirlist;
     struct stat		fileinfo;
     int			entries;
     regex_t		preg[2];   
     regmatch_t		pmatch[1];
-    char		*temp, *locator2;
+    char		*temp;
     char		*locator;
 
-    temp = malloc(PATH_MAX);
-    locator = locator2 = malloc(PATH_MAX);
+    temp = malloc(sizeof(incomplete_cd_indicator) > sizeof(incomplete_indicator) ? sizeof(incomplete_cd_indicator) : sizeof(incomplete_indicator));
 
     sprintf(temp, "%s", incomplete_cd_indicator);
-    replace_cookies(temp, locator2);
+    locator = replace_cookies(temp);
     regcomp(&preg[0], locator, REG_NEWLINE|REG_EXTENDED);
+    free(locator);
 
     sprintf(temp, "%s", incomplete_indicator);
-    replace_cookies(temp, locator2);
+    locator = replace_cookies(temp);
     regcomp(&preg[1], locator, REG_NEWLINE|REG_EXTENDED);
+    free(locator);
+
+    free(temp);
 
     printf("[%s]\n", path);
 
@@ -198,11 +207,14 @@ void incomplete_cleanup(char *path) {
 		/* Multi CD */
 		if ( regexec(&preg[0], dirlist[entries]->d_name, 1, pmatch, 0) == 0 ) {
 		    if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries]) ) {
-			multi_name(dirlist[entries]->d_name, temp);
-			if ( stat(temp, &fileinfo) != 0 ) {
-			    unlink(dirlist[entries]->d_name);
-			    printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
+			temp=multi_name(dirlist[entries]->d_name);
+			if ( stat(temp, &fileinfo) != 0) {
+				if (setfree) {
+					unlink(dirlist[entries]->d_name);
+					printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
+				}
 			} else printf("Incomplete release \"%s\".\n", temp);
+			free(temp);
 			continue;
 		    }
 		}
@@ -210,30 +222,30 @@ void incomplete_cleanup(char *path) {
 		/* Normal */
 		if ( regexec(&preg[1], dirlist[entries]->d_name, 1, pmatch, 0) == 0 ) {
 		    if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries]) ) {
-			single_name(dirlist[entries]->d_name, temp);
+			temp=(dirlist[entries]->d_name);
 			if ( stat(temp, &fileinfo) != 0 ) {
-			    unlink(dirlist[entries]->d_name);
-			    printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
+				if (setfree) {
+					unlink(dirlist[entries]->d_name);
+					printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
+				}
 			} else printf("Incomplete release \"%s\".\n", temp);
 			continue;
 		    }
 		}
-//		free(&dirlist[entries]);
+		free(dirlist[entries]);
 	    }
-//    free(&dirlist);
+	    free(dirlist);
 	} else {
 	    fprintf(stderr, "Unable to scandir(%s)\n", path);
 	}
     } else {
 	fprintf(stderr, "Unable to chdir(%s)\n", path);
     }
-    free(locator);
-    free(temp);
     regfree(&preg[0]);
     regfree(&preg[1]);
 }
 
-void cleanup(char *pathlist) {
+void cleanup(char *pathlist, int setfree) {
     char *data_today, *data_yesterday, *path, *newentry, *entry;
 
     struct tm *time_today, *time_yesterday;
@@ -264,10 +276,10 @@ void cleanup(char *pathlist) {
 
 
 		if (strcmp(data_today, data_yesterday)) {
-		    if ( check_yesterday == TRUE ) incomplete_cleanup(data_yesterday);
-		    if ( check_today == TRUE ) incomplete_cleanup(data_today);
+		    if ( check_yesterday == TRUE ) incomplete_cleanup(data_yesterday, setfree);
+		    if ( check_today == TRUE ) incomplete_cleanup(data_today, setfree);
 		} else 
-		    incomplete_cleanup(data_today);
+		    incomplete_cleanup(data_today, setfree);
 
 		if (!*newentry)
 		    break;
@@ -275,32 +287,44 @@ void cleanup(char *pathlist) {
 		newentry++;
     }
 
+    free(path);
     free(data_today);
     free(data_yesterday);
-    free(path);
     free(time_today);
     free(time_yesterday);
 }
 
-int main(void) {
+int main (int argc, char **argv) {
 
+    int setfree = 1;
+
+    if (argc > 1) {
+	if (chroot(argv[1]) == -1) {
+		printf("%s: Failed to chroot to %s.\n", argv[0], argv[1]);
+		return 1;
+	}
+    }
+    if (getuid()) {
+	setfree = 0;
+	printf("%s: Running script in view mode only.\n", argv[0]);
+    }
     if (cleanupdirs[0])
-		cleanup(cleanupdirs);
+		cleanup(cleanupdirs, setfree);
 
 #if ( audio_genre_sort == TRUE )
-    scandirectory((char *)audio_genre_path);
+    scandirectory((char *)audio_genre_path, setfree);
 #endif
 
 #if ( audio_year_sort == TRUE ) 
-    scandirectory((char *)audio_year_path);
+    scandirectory((char *)audio_year_path, setfree);
 #endif
 
 #if ( audio_artist_sort == TRUE )
-    scandirectory((char *)audio_artist_path);
+    scandirectory((char *)audio_artist_path, setfree);
 #endif
 
 #if ( audio_group_sort == TRUE )
-    scandirectory((char *)audio_group_path);
+    scandirectory((char *)audio_group_path, setfree);
 #endif
 
     exit(EXIT_SUCCESS);
