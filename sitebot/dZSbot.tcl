@@ -543,7 +543,7 @@ proc speed_convert {value} {
 	switch -exact -- [string tolower $speedmeasure] {
 
 		"mb"		{
-					set value [expr $value / 1024]
+					set value [expr $value / 1024.0]
 					set type $theme(MB)
 				}
 		"kbit"		{
@@ -551,12 +551,12 @@ proc speed_convert {value} {
 					set type $theme(KBIT)
 				}
 		"mbit"		{
-					set value [expr $value * 8 / 1000]
+					set value [expr $value * 8 / 1000.0]
 					set type $theme(MBIT)
 				}
 		"autobit"	{
 					if {$value > $speedthreshold} {
-						set value [expr $value * 8 / 1000]
+						set value [expr $value * 8 / 1000.0]
 						set type $theme(MBIT)
 					} else {
 						set value [expr $value * 8]
@@ -565,7 +565,7 @@ proc speed_convert {value} {
 				}
 		"autobyte"	{
 					if {$value > $speedthreshold} {
-						set value [expr $value / 1024]
+						set value [expr $value / 1024.0]
 						set type $theme(MB)
 					} else {
 						set type $theme(KB)
