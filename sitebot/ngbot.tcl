@@ -21,27 +21,27 @@ set ng_displaylevels(CRITICAL)	4
 # Gets you the setting named $name from $section, or gets
 # the setting named $section if $name is unspecified or ""
 proc ng_get {setting {name ""}} {
-	global [subst $setting]
+	global conf
 	if {$name == ""} {
-		if {![info exists $setting]} {
+		if {![info exists conf($setting)]} {
 			ng_print "WARNING" "Tried to ng_get '$setting' which is an unknown variable."
 			return 0
 		}
-		if {![array exists $setting]} {
-			return ${$setting}
+		if {![array exists conf($setting)]} {
+			return $conf($setting)
 		} else {
 			ng_print "WARNING" "Tried to ng_get '$setting' which is an array as a scalar."
 			return 0
 		}
 	}
-	if {![array exists $setting]} {
+	if {![array exists conf($setting)]} {
 		ng_print "WARNING" "Tried to ng_get '$setting($name)', and '$setting' isn't an array, or does not exist."
 		return 0
-	} elseif {![info exists ${$setting}($name)]} {
+	} elseif {![info exists conf($setting:$name)]} {
 		ng_print "WARNING" "Tried to ng_get '$setting($name)', and '$setting($name)' does not exist."
 		return 0
 	} else {
-		return ${$setting}($name)
+		return $conf($setting:$name);
 	}
 }
 
