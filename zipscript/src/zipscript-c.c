@@ -607,7 +607,7 @@ main(int argc, char **argv)
 			d_log("Parsing sfv and creating sfv data\n");
 			copysfv_file(raceI.file.name, locations.sfv, raceI.file.size);
 
-			if ( (force_sfv_first == FALSE) || (matchpath(noforce_sfv_first_dirs, locations.path)) ) {
+			if ( (force_sfv_first == FALSE) || matchpath(noforce_sfv_first_dirs, locations.path)) {
 				if (fileexists(locations.race)) {
 					d_log("Testing files marked as untested\n");
 					testfiles_file(&locations, &raceI, 0);
@@ -713,13 +713,13 @@ main(int argc, char **argv)
 				writerace_file(&locations, &raceI, crc, F_CHECKED);
 			} else {
 #if ( force_sfv_first == TRUE )
-				if (!matchpath(noforce_sfv_first_dirs, locations.path)) {
+				if (!matchpath(noforce_sfv_first_dirs, locations.path) && !matchpath(zip_dirs, locations.path)) {
 					d_log("SFV needs to be uploaded first\n");
 					strcpy(raceI.misc.error_msg, SFV_FIRST);
 					exit_value = 2;
 					break;
 				} else {
-					d_log("path matched with noforce_sfv_first - allowing file.\n");
+					d_log("path matched with noforce_sfv_first or zip_dirs - allowing file.\n");
 				}
 #else
 				d_log("Could not check file yet - SFV is not present\n");
