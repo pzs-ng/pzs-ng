@@ -1,0 +1,1162 @@
+------------------------------------------------------------------------
+r358 | iwdisb | 2004-07-15 20:50:32 +0200 (Thu, 15 Jul 2004) | 2 lines
+
+racedebug is done first (js)
+
+------------------------------------------------------------------------
+r357 | psxc | 2004-07-15 20:49:50 +0200 (Thu, 15 Jul 2004) | 2 lines
+
+themolest's changes to bot
+
+------------------------------------------------------------------------
+r356 | iwdisb | 2004-07-15 20:39:37 +0200 (Thu, 15 Jul 2004) | 2 lines
+
+-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -std=c99 (js)
+
+------------------------------------------------------------------------
+r355 | iwdisb | 2004-07-15 20:30:47 +0200 (Thu, 15 Jul 2004) | 2 lines
+
+removed -m32, should work now on amd64
+
+------------------------------------------------------------------------
+r354 | iwdisb | 2004-07-15 20:24:32 +0200 (Thu, 15 Jul 2004) | 2 lines
+
+add mtime to racedebug.c
+
+------------------------------------------------------------------------
+r353 | iwdisb | 2004-07-15 19:45:35 +0200 (Thu, 15 Jul 2004) | 2 lines
+
+removed some comments and added -pedantic again to Makefile.in :)
+
+------------------------------------------------------------------------
+r352 | iwdisb | 2004-07-15 19:38:41 +0200 (Thu, 15 Jul 2004) | 2 lines
+
+changed online struckt and fsize (off_t) and trailing blank from %d cookie (\002TIME\002 )
+
+------------------------------------------------------------------------
+r351 | iwdisb | 2004-07-15 09:35:33 +0200 (Thu, 15 Jul 2004) | 2 lines
+
+huge update! change every 'long' to 'int' -> racefile change!
+
+------------------------------------------------------------------------
+r350 | iwdisb | 2004-07-15 09:32:09 +0200 (Thu, 15 Jul 2004) | 2 lines
+
+fix speed display in racedebug
+
+------------------------------------------------------------------------
+r349 | iwdisb | 2004-07-15 01:55:36 +0200 (Thu, 15 Jul 2004) | 2 lines
+
+indent stuff
+
+------------------------------------------------------------------------
+r348 | psxc | 2004-07-15 01:50:59 +0200 (Thu, 15 Jul 2004) | 2 lines
+
+bot colors fixed
+
+------------------------------------------------------------------------
+r347 | iwdisb | 2004-07-15 00:55:19 +0200 (Thu, 15 Jul 2004) | 2 lines
+
+another amd64 fix
+
+------------------------------------------------------------------------
+r346 | psxc | 2004-07-14 23:37:06 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+themes, 3rd's the charm ;)
+
+------------------------------------------------------------------------
+r345 | psxc | 2004-07-14 23:33:09 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+removed some includes from pzs-ng.c (js)
+
+------------------------------------------------------------------------
+r344 | psxc | 2004-07-14 23:29:31 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+themes, 2nd try (themolest)
+
+------------------------------------------------------------------------
+r343 | psxc | 2004-07-14 22:57:55 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+themolest's changes with the bot and themes
+
+------------------------------------------------------------------------
+r342 | psxc | 2004-07-14 22:02:10 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+changes in TODO only...
+
+------------------------------------------------------------------------
+r341 | psxc | 2004-07-14 21:04:29 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+auto-undupe after sfv uploaded (rescan needs testing)
+
+------------------------------------------------------------------------
+r340 | psxc | 2004-07-14 17:09:00 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+unduper capabiliy - now we just need an unduper script...
+
+------------------------------------------------------------------------
+r339 | iwdisb | 2004-07-14 16:54:18 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+make -m32 default
+
+------------------------------------------------------------------------
+r338 | iwdisb | 2004-07-14 15:41:37 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+d_log("We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE and $SPEED\n");
+
+------------------------------------------------------------------------
+r337 | psxc | 2004-07-14 15:27:09 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+relocating the internal calc_crc so it calcs crc even if sfv is not present
+
+------------------------------------------------------------------------
+r336 | iwdisb | 2004-07-14 14:41:06 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+blank $TAGLINE defaults to "No Tagline Set"
+
+------------------------------------------------------------------------
+r335 | iwdisb | 2004-07-14 14:38:46 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+blank $GROUP defaults to "NoGroup"
+
+------------------------------------------------------------------------
+r334 | iwdisb | 2004-07-14 14:29:17 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+env var check done by js_
+
+------------------------------------------------------------------------
+r333 | iwdisb | 2004-07-14 14:23:02 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+remove another temp line
+
+------------------------------------------------------------------------
+r332 | iwdisb | 2004-07-14 14:11:33 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+removed a test line in zsfunctions.c
+
+------------------------------------------------------------------------
+r331 | iwdisb | 2004-07-14 14:10:35 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+fixed core dump with getenv
+
+------------------------------------------------------------------------
+r330 | psxc | 2004-07-14 01:23:27 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+TODO changes
+
+------------------------------------------------------------------------
+r329 | psxc | 2004-07-14 01:20:56 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+js_' fix for relative symlinks :)
+
+------------------------------------------------------------------------
+r328 | iwdisb | 2004-07-14 00:25:21 +0200 (Wed, 14 Jul 2004) | 2 lines
+
+relative symlinks done by js_
+
+------------------------------------------------------------------------
+r327 | iwdisb | 2004-07-13 13:58:57 +0200 (Tue, 13 Jul 2004) | 2 lines
+
+workaround, so that %d and %A cookie work again
+
+------------------------------------------------------------------------
+r326 | psxc | 2004-07-13 11:19:45 +0200 (Tue, 13 Jul 2004) | 2 lines
+
+quick fix for struct online in sitewho and ng-bw.c
+
+------------------------------------------------------------------------
+r325 | iwdisb | 2004-07-13 04:20:48 +0200 (Tue, 13 Jul 2004) | 2 lines
+
+$SPEED * 1024
+
+------------------------------------------------------------------------
+r324 | iwdisb | 2004-07-13 01:58:13 +0200 (Tue, 13 Jul 2004) | 2 lines
+
+changed sitewho.c to work with gl1/2
+
+------------------------------------------------------------------------
+r323 | iwdisb | 2004-07-13 01:57:27 +0200 (Tue, 13 Jul 2004) | 2 lines
+
+removed some cookies and changed racestat format
+
+------------------------------------------------------------------------
+r322 | psxc | 2004-07-13 01:32:18 +0200 (Tue, 13 Jul 2004) | 2 lines
+
+pink.zst - daxxar's fav. colors ;)
+
+------------------------------------------------------------------------
+r321 | psxc | 2004-07-13 01:05:44 +0200 (Tue, 13 Jul 2004) | 2 lines
+
+sitewho should work again... this should be worked on btw - moved to main src dir perhaps...
+
+------------------------------------------------------------------------
+r320 | psxc | 2004-07-13 00:30:21 +0200 (Tue, 13 Jul 2004) | 2 lines
+
+iwdisb's changes to make zs-c shmem free - now in the trunk
+
+------------------------------------------------------------------------
+r318 | psxc | 2004-07-12 12:55:10 +0200 (Mon, 12 Jul 2004) | 2 lines
+
+fix chmod 755 on .sfv files after rescan
+
+------------------------------------------------------------------------
+r317 | iwdisb | 2004-07-12 01:19:30 +0200 (Mon, 12 Jul 2004) | 2 lines
+
+fixed unportable memory allocation noticed by js_
+
+------------------------------------------------------------------------
+r316 | psxc | 2004-07-11 15:13:44 +0200 (Sun, 11 Jul 2004) | 2 lines
+
+small mods in zsconfig, dZSbconf and rescan.c. Also added an alternative zsconfig.
+
+------------------------------------------------------------------------
+r315 | psxc | 2004-07-11 12:51:25 +0200 (Sun, 11 Jul 2004) | 2 lines
+
+passchk did not compile on openbsd - fixed (i hope)
+
+------------------------------------------------------------------------
+r314 | iwdisb | 2004-07-11 01:16:24 +0200 (Sun, 11 Jul 2004) | 2 lines
+
+remove zsconfig.h include
+
+------------------------------------------------------------------------
+r313 | iwdisb | 2004-07-11 01:13:50 +0200 (Sun, 11 Jul 2004) | 2 lines
+
+another fix for amd64 (rescan.c)
+
+------------------------------------------------------------------------
+r312 | iwdisb | 2004-07-11 01:10:16 +0200 (Sun, 11 Jul 2004) | 2 lines
+
+fix for amd64 (rescan.c)
+
+------------------------------------------------------------------------
+r311 | psxc | 2004-07-11 00:46:31 +0200 (Sun, 11 Jul 2004) | 2 lines
+
+small mod in ng-bw.c
+
+------------------------------------------------------------------------
+r309 | iwdisb | 2004-07-10 23:35:05 +0200 (Sat, 10 Jul 2004) | 2 lines
+
+passchk.c works now with gl2rc2
+
+------------------------------------------------------------------------
+r308 | psxc | 2004-07-10 22:53:00 +0200 (Sat, 10 Jul 2004) | 2 lines
+
+small mod in the glinstaller.
+
+------------------------------------------------------------------------
+r306 | psxc | 2004-07-09 03:05:29 +0200 (Fri, 09 Jul 2004) | 2 lines
+
+changed chmod to 666, fixed small bug in rescan.c (failed to extract file_id.diz)
+
+------------------------------------------------------------------------
+r303 | psxc | 2004-07-08 20:30:36 +0200 (Thu, 08 Jul 2004) | 2 lines
+
+chmod("file_id.diz",0644); in zipscript-c.c, postdel.c and rescan.c
+
+------------------------------------------------------------------------
+r302 | psxc | 2004-07-08 16:09:27 +0200 (Thu, 08 Jul 2004) | 3 lines
+
+added support for resolv.conf in installgl.sh.
+added more to TODO
+
+------------------------------------------------------------------------
+r301 | iwdisb | 2004-07-08 16:05:49 +0200 (Thu, 08 Jul 2004) | 2 lines
+
+do not exit if we run from shell..."site kill <pid>" needs more testing
+
+------------------------------------------------------------------------
+r300 | iwdisb | 2004-07-08 16:01:59 +0200 (Thu, 08 Jul 2004) | 2 lines
+
+prevent core dump if zipscript-c is called from shell with non-existing file
+
+------------------------------------------------------------------------
+r299 | iwdisb | 2004-07-07 19:17:29 +0200 (Wed, 07 Jul 2004) | 2 lines
+
+-missing link is not removed if file has uppercase chars
+
+------------------------------------------------------------------------
+r298 | iwdisb | 2004-07-07 18:44:06 +0200 (Wed, 07 Jul 2004) | 2 lines
+
+removed another core dump of rescan ;)
+
+------------------------------------------------------------------------
+r297 | iwdisb | 2004-07-07 18:22:31 +0200 (Wed, 07 Jul 2004) | 2 lines
+
+adding music.by.(rls)group support
+
+------------------------------------------------------------------------
+r296 | psxc | 2004-07-07 12:58:23 +0200 (Wed, 07 Jul 2004) | 2 lines
+
+changes in TODO
+
+------------------------------------------------------------------------
+r295 | psxc | 2004-07-07 02:05:41 +0200 (Wed, 07 Jul 2004) | 2 lines
+
+crc32 should use unsigned int (now it works on amd64)
+
+------------------------------------------------------------------------
+r294 | psxc | 2004-07-06 19:30:03 +0200 (Tue, 06 Jul 2004) | 2 lines
+
+remove my debug infos from race-file.c
+
+------------------------------------------------------------------------
+r293 | psxc | 2004-07-06 19:28:53 +0200 (Tue, 06 Jul 2004) | 2 lines
+
+remove some compiler warnings under amd64
+
+------------------------------------------------------------------------
+r292 | psxc | 2004-07-05 21:19:10 +0200 (Mon, 05 Jul 2004) | 2 lines
+
+fixed sitewho.c
+
+------------------------------------------------------------------------
+r291 | psxc | 2004-07-05 20:23:01 +0200 (Mon, 05 Jul 2004) | 2 lines
+
+#include "../zipscript/include/objects.h"
+
+------------------------------------------------------------------------
+r290 | psxc | 2004-07-05 19:05:48 +0200 (Mon, 05 Jul 2004) | 2 lines
+
+remove a few compiler warnings under amd64-gentoo w/ gcc33?
+
+------------------------------------------------------------------------
+r289 | psxc | 2004-07-05 17:21:36 +0200 (Mon, 05 Jul 2004) | 3 lines
+
+#ifndef use_glftpd2
+strip sitewho
+
+------------------------------------------------------------------------
+r288 | psxc | 2004-07-05 17:09:41 +0200 (Mon, 05 Jul 2004) | 2 lines
+
+added support for DiSC
+
+------------------------------------------------------------------------
+r287 | psxc | 2004-07-04 16:55:12 +0200 (Sun, 04 Jul 2004) | 2 lines
+
+removed a compiler warning under openbsd 3.5
+
+------------------------------------------------------------------------
+r278 | psxc | 2004-07-03 01:16:42 +0200 (Sat, 03 Jul 2004) | 2 lines
+
+more fixes in the glftpd installer. added support for european week
+
+------------------------------------------------------------------------
+r276 | psxc | 2004-07-02 21:16:29 +0200 (Fri, 02 Jul 2004) | 2 lines
+
+installer for glftpd changed - think it works on fbsd at least... needs testing on obsd, nbsd, linux, osx and 64bit systems..
+
+------------------------------------------------------------------------
+r274 | psxc | 2004-07-02 18:37:56 +0200 (Fri, 02 Jul 2004) | 2 lines
+
+if crc from glftpd is zero, calculate own crc of file
+
+------------------------------------------------------------------------
+r273 | psxc | 2004-07-01 23:38:04 +0200 (Thu, 01 Jul 2004) | 2 lines
+
+bug(?) found - placed in TODO
+
+------------------------------------------------------------------------
+r272 | psxc | 2004-07-01 18:06:19 +0200 (Thu, 01 Jul 2004) | 3 lines
+
+nothing changed... just a line in TODO.
+
+
+------------------------------------------------------------------------
+r271 | psxc | 2004-06-30 16:22:08 +0200 (Wed, 30 Jun 2004) | 2 lines
+
+removed a warning (unused char)
+
+------------------------------------------------------------------------
+r270 | psxc | 2004-06-30 16:20:07 +0200 (Wed, 30 Jun 2004) | 2 lines
+
+mp3 symlink fix
+
+------------------------------------------------------------------------
+r269 | psxc | 2004-06-30 11:07:32 +0200 (Wed, 30 Jun 2004) | 2 lines
+
+configure had wrong prefix - changed
+
+------------------------------------------------------------------------
+r268 | psxc | 2004-06-29 13:51:14 +0200 (Tue, 29 Jun 2004) | 2 lines
+
+added compatibility with gl1/2
+
+------------------------------------------------------------------------
+r267 | psxc | 2004-06-29 09:43:14 +0200 (Tue, 29 Jun 2004) | 2 lines
+
+removed some compiler warnings
+
+------------------------------------------------------------------------
+r266 | psxc | 2004-06-29 09:24:45 +0200 (Tue, 29 Jun 2004) | 2 lines
+
+revert some changes i removed mistakenly (forgot configure.in)
+
+------------------------------------------------------------------------
+r265 | psxc | 2004-06-29 09:24:19 +0200 (Tue, 29 Jun 2004) | 2 lines
+
+revert some changes i removed mistakenly
+
+------------------------------------------------------------------------
+r264 | psxc | 2004-06-29 09:08:42 +0200 (Tue, 29 Jun 2004) | 2 lines
+
+remerged changes refering to -static
+
+------------------------------------------------------------------------
+r263 | psxc | 2004-06-28 22:05:35 +0200 (Mon, 28 Jun 2004) | 2 lines
+
+using "../zipscript/conf/zsconfig.h" now
+
+------------------------------------------------------------------------
+r262 | psxc | 2004-06-28 21:58:50 +0200 (Mon, 28 Jun 2004) | 2 lines
+
+added support for gl1
+
+------------------------------------------------------------------------
+r261 | psxc | 2004-06-28 20:49:14 +0200 (Mon, 28 Jun 2004) | 2 lines
+
+changed %s to %i for video.fps
+
+------------------------------------------------------------------------
+r260 | psxc | 2004-06-28 20:43:45 +0200 (Mon, 28 Jun 2004) | 2 lines
+
+include zsfunctions.c & race-file.c instf .h
+
+------------------------------------------------------------------------
+r259 | psxc | 2004-06-28 20:41:37 +0200 (Mon, 28 Jun 2004) | 2 lines
+
+remove signal.h include
+
+------------------------------------------------------------------------
+r258 | psxc | 2004-06-28 19:00:20 +0200 (Mon, 28 Jun 2004) | 2 lines
+
+added two optional params to sitewho.conf (ipc_key & grp_path)
+
+------------------------------------------------------------------------
+r257 | psxc | 2004-06-28 14:24:16 +0200 (Mon, 28 Jun 2004) | 2 lines
+
+copied a few files from branches to trunk
+
+------------------------------------------------------------------------
+r256 | psxc | 2004-06-28 14:06:16 +0200 (Mon, 28 Jun 2004) | 2 lines
+
+removed warning in line 427: warning: suggest parentheses around assignment used as truth value
+
+------------------------------------------------------------------------
+r246 | psxc | 2004-06-27 09:43:38 +0200 (Sun, 27 Jun 2004) | 2 lines
+
+exit 2 instf exit 1 on site kill <pid>
+
+------------------------------------------------------------------------
+r241 | psxc | 2004-06-25 02:06:11 +0200 (Fri, 25 Jun 2004) | 2 lines
+
+[x]     iwdisb    fix a coredump when the user is killed/kicked on upload.
+
+------------------------------------------------------------------------
+r240 | psxc | 2004-06-24 20:45:38 +0200 (Thu, 24 Jun 2004) | 2 lines
+
+maybe fixed a bug in get_rar_info (which is called even when the user is disconnected). hopefully a coredump is avoided.
+
+------------------------------------------------------------------------
+r239 | psxc | 2004-06-24 20:28:44 +0200 (Thu, 24 Jun 2004) | 2 lines
+
+added support for no_audio_check_dirs - dirs not checked for bad audio bitrate, genre etc
+
+------------------------------------------------------------------------
+r238 | psxc | 2004-06-24 12:18:06 +0200 (Thu, 24 Jun 2004) | 2 lines
+
+mp3 genres (fixed / in name)
+
+------------------------------------------------------------------------
+r237 | psxc | 2004-06-24 02:43:55 +0200 (Thu, 24 Jun 2004) | 2 lines
+
+small change in convert.c - video fps was broken - someone check if this cookie now works please ;)
+
+------------------------------------------------------------------------
+r236 | psxc | 2004-06-24 00:48:17 +0200 (Thu, 24 Jun 2004) | 2 lines
+
+mp3 genres changes (minor)
+
+------------------------------------------------------------------------
+r235 | iono | 2004-06-12 19:52:21 +0200 (Sat, 12 Jun 2004) | 2 lines
+
+Exit code fix to bandwidth
+
+------------------------------------------------------------------------
+r234 | iono | 2004-06-12 18:51:43 +0200 (Sat, 12 Jun 2004) | 2 lines
+
+Minor fixes on bandwidth tcl proc and themefile
+
+------------------------------------------------------------------------
+r233 | psxc | 2004-06-12 17:49:34 +0200 (Sat, 12 Jun 2004) | 2 lines
+
+more TODO
+
+------------------------------------------------------------------------
+r232 | psxc | 2004-06-10 12:28:03 +0200 (Thu, 10 Jun 2004) | 2 lines
+
+more stuff in todo - bug found (Joeed)
+
+------------------------------------------------------------------------
+r231 | daxxar | 2004-06-03 14:58:19 +0200 (Thu, 03 Jun 2004) | 1 line
+
+cosmetic change to mp3info.c, removed dependency on curses.h from mp3info.h
+------------------------------------------------------------------------
+r230 | daxxar | 2004-06-01 01:12:29 +0200 (Tue, 01 Jun 2004) | 1 line
+
+updated TODO (sorted by done/not done etc, added solaris compat, added theme, finished dZStheme)
+------------------------------------------------------------------------
+r229 | daxxar | 2004-06-01 00:52:26 +0200 (Tue, 01 Jun 2004) | 1 line
+
+fixed a bug with %u and %b, and added COLOR[1-3] as required
+------------------------------------------------------------------------
+r228 | daxxar | 2004-06-01 00:44:41 +0200 (Tue, 01 Jun 2004) | 1 line
+
+added support for announces in themefile. added %b{} and %u{}
+------------------------------------------------------------------------
+r227 | daxxar | 2004-06-01 00:30:51 +0200 (Tue, 01 Jun 2004) | 1 line
+
+added checking for if theme file is readable
+------------------------------------------------------------------------
+r226 | daxxar | 2004-06-01 00:24:35 +0200 (Tue, 01 Jun 2004) | 1 line
+
+small cosmetic changes to dZSbconf.tcl, and moved theme replacement into it's own subroutine
+------------------------------------------------------------------------
+r225 | daxxar | 2004-05-31 23:52:30 +0200 (Mon, 31 May 2004) | 1 line
+
+grah, misnamed variable.
+------------------------------------------------------------------------
+r224 | daxxar | 2004-05-31 23:43:51 +0200 (Mon, 31 May 2004) | 1 line
+
+moved evaluation + replacing to *AFTER* reading of theme
+------------------------------------------------------------------------
+r223 | daxxar | 2004-05-31 23:33:32 +0200 (Mon, 31 May 2004) | 1 line
+
+grah, bloody testing string confused me into supporting another format than the one i ACTUALLY support. huhu
+------------------------------------------------------------------------
+r222 | freezy3k | 2004-05-31 23:31:16 +0200 (Mon, 31 May 2004) | 1 line
+
+test commit
+------------------------------------------------------------------------
+r221 | psxc | 2004-05-31 23:20:02 +0200 (Mon, 31 May 2004) | 2 lines
+
+removed zip spam
+
+------------------------------------------------------------------------
+r220 | daxxar | 2004-05-31 22:57:10 +0200 (Mon, 31 May 2004) | 1 line
+
+indented some in multimedia.c, hopefully fixed dzsbot.tcl
+------------------------------------------------------------------------
+r219 | psxc | 2004-05-31 20:37:05 +0200 (Mon, 31 May 2004) | 2 lines
+
+err.. forgot to change some other files to support DVD releases... fixed now (i hope)
+
+------------------------------------------------------------------------
+r218 | psxc | 2004-05-31 20:31:41 +0200 (Mon, 31 May 2004) | 2 lines
+
+Added support for DVD releases (not just CD and DISC)
+
+------------------------------------------------------------------------
+r217 | daxxar | 2004-05-31 19:07:54 +0200 (Mon, 31 May 2004) | 1 line
+
+fixed pedantic warnings in racedebug, (do we really need pedantic? i mean: "ISO C90 does not support `long long`" etc), updated TODO
+------------------------------------------------------------------------
+r216 | daxxar | 2004-05-31 18:52:26 +0200 (Mon, 31 May 2004) | 1 line
+
+attempt at fixing samplerate bug - untested.
+------------------------------------------------------------------------
+r215 | daxxar | 2004-05-31 18:02:09 +0200 (Mon, 31 May 2004) | 1 line
+
+dZSbot loads now. need to figure out errors, though.
+------------------------------------------------------------------------
+r214 | daxxar | 2004-05-31 17:24:41 +0200 (Mon, 31 May 2004) | 1 line
+
+eh, old change. "unknown if should be done" -> "undecided" in TODO
+------------------------------------------------------------------------
+r213 | psxc | 2004-05-31 15:53:17 +0200 (Mon, 31 May 2004) | 2 lines
+
+Added a line in TODO (about anonymity support)
+
+------------------------------------------------------------------------
+r212 | psxc | 2004-05-18 18:29:24 +0200 (Tue, 18 May 2004) | 2 lines
+
+added one line in TODO
+
+------------------------------------------------------------------------
+r211 | psxc | 2004-05-17 20:14:39 +0200 (Mon, 17 May 2004) | 2 lines
+
+added 'pedantic' in the Makefile.in - still some cleanup to do...
+
+------------------------------------------------------------------------
+r210 | psxc | 2004-05-17 19:52:04 +0200 (Mon, 17 May 2004) | 2 lines
+
+minor changes to the extra bins. removed the static key define in ng-bw.c, and used zsconfig.h instead.
+
+------------------------------------------------------------------------
+r209 | daxxar | 2004-05-16 23:14:48 +0200 (Sun, 16 May 2004) | 1 line
+
+fixed all warnings (added 2 headers, added a prototype, removed unused vars, added initalization for uninitialized vars)
+------------------------------------------------------------------------
+r208 | psxc | 2004-05-16 23:10:54 +0200 (Sun, 16 May 2004) | 1 line
+
+removed binary version of ng-bw, made Makefile compile it.
+------------------------------------------------------------------------
+r207 | iono | 2004-05-15 16:57:16 +0200 (Sat, 15 May 2004) | 2 lines
+
+Very slight change in procedure naming
+
+------------------------------------------------------------------------
+r206 | iono | 2004-05-15 16:55:18 +0200 (Sat, 15 May 2004) | 2 lines
+
+Added new bandwidth binary and tcl handling code
+
+------------------------------------------------------------------------
+r205 | iono | 2004-05-15 16:14:11 +0200 (Sat, 15 May 2004) | 2 lines
+
+Small changes to bnc-check addon
+
+------------------------------------------------------------------------
+r203 | daxxar | 2004-05-13 10:44:15 +0200 (Thu, 13 May 2004) | 1 line
+
+revision-thingy not working. looking for another way.
+------------------------------------------------------------------------
+r202 | daxxar | 2004-05-13 10:34:23 +0200 (Thu, 13 May 2004) | 1 line
+
+test of revision.h
+------------------------------------------------------------------------
+r201 | daxxar | 2004-05-13 10:33:41 +0200 (Thu, 13 May 2004) | 2 lines
+
+Added revision.h, keeps track of CURRENT_REVISION (<3 svn:keywords)
+
+------------------------------------------------------------------------
+r180 | daxxar | 2004-05-10 15:46:27 +0200 (Mon, 10 May 2004) | 1 line
+
+slight cleanup of "hack"
+------------------------------------------------------------------------
+r179 | psxc | 2004-05-10 10:46:48 +0200 (Mon, 10 May 2004) | 2 lines
+
+hacked bnc-checker - uses some syscall functions instead... dunno if this works on all platoforms..
+
+------------------------------------------------------------------------
+r178 | psxc | 2004-05-10 00:00:35 +0200 (Mon, 10 May 2004) | 2 lines
+
+TODO list
+
+------------------------------------------------------------------------
+r177 | iono | 2004-05-09 23:24:25 +0200 (Sun, 09 May 2004) | 2 lines
+
+Added bnc-check
+
+------------------------------------------------------------------------
+r176 | psxc | 2004-05-09 21:07:24 +0200 (Sun, 09 May 2004) | 2 lines
+
+COOKIES
+
+------------------------------------------------------------------------
+r175 | psxc | 2004-05-09 21:04:21 +0200 (Sun, 09 May 2004) | 2 lines
+
+typo
+
+------------------------------------------------------------------------
+r174 | psxc | 2004-05-09 20:49:44 +0200 (Sun, 09 May 2004) | 2 lines
+
+... little things...
+
+------------------------------------------------------------------------
+r173 | psxc | 2004-05-09 20:28:18 +0200 (Sun, 09 May 2004) | 2 lines
+
+Changed zsconfig.h layout. added support for allowed_genres (untested)
+
+------------------------------------------------------------------------
+r171 | psxc | 2004-05-09 01:45:20 +0200 (Sun, 09 May 2004) | 1 line
+
+warning on bad genre/year/bitrate
+------------------------------------------------------------------------
+r170 | daxxar | 2004-05-09 01:44:09 +0200 (Sun, 09 May 2004) | 1 line
+
+test
+------------------------------------------------------------------------
+r169 | psxc | 2004-05-07 11:42:49 +0200 (Fri, 07 May 2004) | 1 line
+
+warn_genres, warn_year and warn_bitrates option in zsconfig.h (output to gllog)
+------------------------------------------------------------------------
+r168 | psxc | 2004-05-07 10:20:51 +0200 (Fri, 07 May 2004) | 1 line
+
+added errologging if old sfv was a better match than the new sfv. also added extra complete/nfo/accept_script (for test). these patches have not been verified to work yet
+------------------------------------------------------------------------
+r160 | daxxar | 2004-05-07 01:43:04 +0200 (Fri, 07 May 2004) | 1 line
+
+updated TODO. added TESTING VERSION OF THEME FOR DZSBOT; HAS NOT EVEN BEEN SYNTAX CHECKED ON A BOT! TEST AND GIVE FEEDBACK!
+------------------------------------------------------------------------
+r159 | psxc | 2004-05-06 21:50:43 +0200 (Thu, 06 May 2004) | 6 lines
+
+new readme ... a beginning anyway...
+--Teis line, and those below, will be ignored--
+
+A    README.NEW
+M    TODO
+
+------------------------------------------------------------------------
+r148 | psxc | 2004-05-06 13:17:05 +0200 (Thu, 06 May 2004) | 2 lines
+
+included latest getnfo
+
+------------------------------------------------------------------------
+r147 | daxxar | 2004-05-06 12:50:42 +0200 (Thu, 06 May 2004) | 1 line
+
+YACM (yet another cosmetic modification)
+------------------------------------------------------------------------
+r146 | daxxar | 2004-05-06 12:43:13 +0200 (Thu, 06 May 2004) | 1 line
+
+made datacleaner only run as euid 0. also added a README for it.
+------------------------------------------------------------------------
+r145 | psxc | 2004-05-05 22:00:49 +0200 (Wed, 05 May 2004) | 2 lines
+
+A couple of README's
+
+------------------------------------------------------------------------
+r144 | psxc | 2004-05-05 21:48:55 +0200 (Wed, 05 May 2004) | 2 lines
+
+zsdircleaner is obsolete - datacleaner.c does a better job at it. ;)
+
+------------------------------------------------------------------------
+r143 | psxc | 2004-05-05 21:32:39 +0200 (Wed, 05 May 2004) | 1 line
+
+ ... typo
+------------------------------------------------------------------------
+r142 | psxc | 2004-05-05 21:26:05 +0200 (Wed, 05 May 2004) | 2 lines
+
+sitewho support for glftpd2
+
+------------------------------------------------------------------------
+r141 | psxc | 2004-05-05 20:28:38 +0200 (Wed, 05 May 2004) | 1 line
+
+Added zipscript-dir cleaner script
+------------------------------------------------------------------------
+r140 | daxxar | 2004-05-05 15:18:03 +0200 (Wed, 05 May 2004) | 1 line
+
+updated sitebot changelog
+------------------------------------------------------------------------
+r139 | daxxar | 2004-05-05 15:07:14 +0200 (Wed, 05 May 2004) | 1 line
+
+we do not need the fbsd debug.log any more ;)
+------------------------------------------------------------------------
+r138 | psxc | 2004-05-05 14:53:49 +0200 (Wed, 05 May 2004) | 2 lines
+
+small type fix for vbr/cbr
+
+------------------------------------------------------------------------
+r135 | daxxar | 2004-05-05 14:16:16 +0200 (Wed, 05 May 2004) | 1 line
+
+removed some un-needed writelog checks :) (also a minor cosmetic change)
+------------------------------------------------------------------------
+r134 | psxc | 2004-05-05 13:57:54 +0200 (Wed, 05 May 2004) | 2 lines
+
+my MAN!
+
+------------------------------------------------------------------------
+r133 | daxxar | 2004-05-05 12:55:33 +0200 (Wed, 05 May 2004) | 1 line
+
+added a small fix for group_dirs
+------------------------------------------------------------------------
+r132 | daxxar | 2004-05-05 12:39:01 +0200 (Wed, 05 May 2004) | 1 line
+
+why use no_check = 0 when we have constants! (no_check = FALSE)
+------------------------------------------------------------------------
+r128 | daxxar | 2004-05-05 00:37:18 +0200 (Wed, 05 May 2004) | 1 line
+
+fixed warnings for debug_mode FALSE \(instead of a #define, it's a inline func without action\)
+------------------------------------------------------------------------
+r127 | psxc | 2004-05-04 22:51:22 +0200 (Tue, 04 May 2004) | 2 lines
+
+logtrimmer script. may need some looking into.
+
+------------------------------------------------------------------------
+r126 | psxc | 2004-05-04 20:45:25 +0200 (Tue, 04 May 2004) | 1 line
+
+Added a better cleaner, and included my own (psxc's) getnfo as nfoextract.
+------------------------------------------------------------------------
+r125 | psxc | 2004-05-04 20:30:02 +0200 (Tue, 04 May 2004) | 1 line
+
+small mods.. nothing to write home about.
+------------------------------------------------------------------------
+r124 | psxc | 2004-05-04 19:53:06 +0200 (Tue, 04 May 2004) | 2 lines
+
+nvite script got a small mod
+
+------------------------------------------------------------------------
+r123 | psxc | 2004-05-04 18:25:44 +0200 (Tue, 04 May 2004) | 3 lines
+
+
+better, but still fails
+
+------------------------------------------------------------------------
+r122 | daxxar | 2004-05-04 18:23:20 +0200 (Tue, 04 May 2004) | 2 lines
+
+does this help? :)
+
+------------------------------------------------------------------------
+r121 | psxc | 2004-05-04 18:22:38 +0200 (Tue, 04 May 2004) | 2 lines
+
+debug log from fbsd
+
+------------------------------------------------------------------------
+r120 | psxc | 2004-05-04 18:13:28 +0200 (Tue, 04 May 2004) | 1 line
+
+updated incomplete-list - should work on fbsd/linux, and not be as annoying.
+------------------------------------------------------------------------
+r119 | daxxar | 2004-05-04 18:05:35 +0200 (Tue, 04 May 2004) | 1 line
+
+cleaned out last remnants of "mysql support".
+------------------------------------------------------------------------
+r118 | daxxar | 2004-05-04 17:38:51 +0200 (Tue, 04 May 2004) | 1 line
+
+race-file.h, complete.h, crc.h to own files.
+------------------------------------------------------------------------
+r117 | daxxar | 2004-05-04 17:27:48 +0200 (Tue, 04 May 2004) | 1 line
+
+race-file.h to own file.
+------------------------------------------------------------------------
+r116 | daxxar | 2004-05-04 17:20:22 +0200 (Tue, 04 May 2004) | 1 line
+
+erhm. and here comes stats.h ;)
+------------------------------------------------------------------------
+r115 | daxxar | 2004-05-04 17:19:54 +0200 (Tue, 04 May 2004) | 1 line
+
+stats.h to own file.
+------------------------------------------------------------------------
+r114 | daxxar | 2004-05-04 17:14:12 +0200 (Tue, 04 May 2004) | 1 line
+
+dizreader.h to own file.
+------------------------------------------------------------------------
+r113 | daxxar | 2004-05-04 17:11:01 +0200 (Tue, 04 May 2004) | 1 line
+
+convert.h to own file. removed race-mysql.c
+------------------------------------------------------------------------
+r111 | daxxar | 2004-05-04 17:03:27 +0200 (Tue, 04 May 2004) | 1 line
+
+DIE!
+------------------------------------------------------------------------
+r109 | daxxar | 2004-05-04 16:49:25 +0200 (Tue, 04 May 2004) | 1 line
+
+moving multimedia.c declarations to a headerfile
+------------------------------------------------------------------------
+r108 | daxxar | 2004-05-04 16:30:42 +0200 (Tue, 04 May 2004) | 1 line
+
+moved mp3info to include. added ../include/ as includepath. removed ../include/-part of #includes.
+------------------------------------------------------------------------
+r107 | daxxar | 2004-05-04 15:55:01 +0200 (Tue, 04 May 2004) | 1 line
+
+removed ncurses / mysql stuff from configure
+------------------------------------------------------------------------
+r106 | daxxar | 2004-05-04 15:54:13 +0200 (Tue, 04 May 2004) | 1 line
+
+converted totally to zsfunctions.c
+------------------------------------------------------------------------
+r105 | daxxar | 2004-05-04 15:30:01 +0200 (Tue, 04 May 2004) | 2 lines
+
+making it an object and not a header :P
+
+------------------------------------------------------------------------
+r104 | daxxar | 2004-05-04 15:29:28 +0200 (Tue, 04 May 2004) | 2 lines
+
+This is a HEADER FILE not a source file. *stab d1*
+
+------------------------------------------------------------------------
+r103 | daxxar | 2004-05-04 15:16:13 +0200 (Tue, 04 May 2004) | 1 line
+
+removed sql settings
+------------------------------------------------------------------------
+r102 | daxxar | 2004-05-04 15:13:56 +0200 (Tue, 04 May 2004) | 1 line
+
+cosmetic.
+------------------------------------------------------------------------
+r101 | daxxar | 2004-05-04 15:11:49 +0200 (Tue, 04 May 2004) | 1 line
+
+removed some mysql code
+------------------------------------------------------------------------
+r100 | daxxar | 2004-05-04 15:09:54 +0200 (Tue, 04 May 2004) | 1 line
+
+removed all warnings on linux for these files.
+------------------------------------------------------------------------
+r99 | daxxar | 2004-05-04 14:49:27 +0200 (Tue, 04 May 2004) | 1 line
+
+no warnings on multimedia.c :D
+------------------------------------------------------------------------
+r98 | daxxar | 2004-05-04 14:44:57 +0200 (Tue, 04 May 2004) | 1 line
+
+no warnings on convert.c :-)
+------------------------------------------------------------------------
+r97 | daxxar | 2004-05-04 14:31:33 +0200 (Tue, 04 May 2004) | 1 line
+
+added binclean targets to Makefiles (removes binaries, but not configure-files)
+------------------------------------------------------------------------
+r96 | daxxar | 2004-05-04 14:28:06 +0200 (Tue, 04 May 2004) | 2 lines
+
+no warnings in stats.c :-)
+
+------------------------------------------------------------------------
+r95 | daxxar | 2004-05-04 14:23:49 +0200 (Tue, 04 May 2004) | 1 line
+
+started a major cleanup. now compile ONLY with -Wall. no warnings in zipscript-c.c! :)
+------------------------------------------------------------------------
+r94 | daxxar | 2004-05-04 13:40:39 +0200 (Tue, 04 May 2004) | 1 line
+
+added #warn for gl1-mode in objects.h
+------------------------------------------------------------------------
+r83 | daxxar | 2004-05-04 13:00:40 +0200 (Tue, 04 May 2004) | 1 line
+
+cosmetic stuff.
+------------------------------------------------------------------------
+r82 | daxxar | 2004-05-04 12:58:58 +0200 (Tue, 04 May 2004) | 1 line
+
+moved the nuke/unnuke to iono, since he did it ;)
+------------------------------------------------------------------------
+r81 | psxc | 2004-05-03 23:37:01 +0200 (Mon, 03 May 2004) | 2 lines
+
+todo, changelog...
+
+------------------------------------------------------------------------
+r80 | daxxar | 2004-05-03 23:30:32 +0200 (Mon, 03 May 2004) | 2 lines
+
+Ehm, typo.
+
+------------------------------------------------------------------------
+r79 | daxxar | 2004-05-03 23:29:55 +0200 (Mon, 03 May 2004) | 2 lines
+
+Heh. #include zsconfig.h :-p
+
+------------------------------------------------------------------------
+r78 | psxc | 2004-05-03 21:09:46 +0200 (Mon, 03 May 2004) | 2 lines
+
+just changed default channel in dZSbconf ;)
+
+------------------------------------------------------------------------
+r77 | psxc | 2004-05-03 21:07:34 +0200 (Mon, 03 May 2004) | 7 lines
+
+fixed dzsbot - should now work with nuke on glftpd2 (and 1)
+
+-This line, and those below, will be ignored--
+
+M    trunk/sitebot/dZSbot.tcl
+M    trunk/sitebot/dZSbconf.tcl
+
+------------------------------------------------------------------------
+r76 | psxc | 2004-05-03 18:11:10 +0200 (Mon, 03 May 2004) | 3 lines
+
+added support for glftpd1/2 in dzsbot - not yet tested!
+
+
+------------------------------------------------------------------------
+r75 | daxxar | 2004-05-03 13:14:57 +0200 (Mon, 03 May 2004) | 2 lines
+
+warn_bitrates and warn_genres TODO :-)
+
+------------------------------------------------------------------------
+r74 | psxc | 2004-05-03 00:31:17 +0200 (Mon, 03 May 2004) | 3 lines
+
+added the change to dzsbot - this is not finished!
+
+
+------------------------------------------------------------------------
+r73 | daxxar | 2004-05-02 23:20:24 +0200 (Sun, 02 May 2004) | 2 lines
+
+Linux/BSD warning removal! (removed BOTH this time)
+
+------------------------------------------------------------------------
+r69 | daxxar | 2004-05-02 02:28:03 +0200 (Sun, 02 May 2004) | 2 lines
+
+added psxc to a line ;)
+
+------------------------------------------------------------------------
+r63 | daxxar | 2004-05-02 01:16:06 +0200 (Sun, 02 May 2004) | 2 lines
+
+added 'who', minor cosmetics
+
+------------------------------------------------------------------------
+r62 | psxc | 2004-05-02 01:11:17 +0200 (Sun, 02 May 2004) | 2 lines
+
+more TODO
+
+------------------------------------------------------------------------
+r61 | daxxar | 2004-05-02 00:53:25 +0200 (Sun, 02 May 2004) | 2 lines
+
+cleaned up, added removed entry from earlier r.
+
+------------------------------------------------------------------------
+r60 | psxc | 2004-05-02 00:45:08 +0200 (Sun, 02 May 2004) | 3 lines
+
+sorry ... these was missing
+
+
+------------------------------------------------------------------------
+r59 | psxc | 2004-05-02 00:37:01 +0200 (Sun, 02 May 2004) | 4 lines
+
+the missing files ...
+sorry
+
+
+------------------------------------------------------------------------
+r58 | daxxar | 2004-05-01 23:44:00 +0200 (Sat, 01 May 2004) | 1 line
+
+added two items to TODO
+------------------------------------------------------------------------
+r57 | daxxar | 2004-05-01 23:41:20 +0200 (Sat, 01 May 2004) | 1 line
+
+removed two .orig-files, they shouldnt be there ;-)
+------------------------------------------------------------------------
+r56 | daxxar | 2004-05-01 23:38:43 +0200 (Sat, 01 May 2004) | 1 line
+
+added a missing "const" to selector/selector2. (removed 2 warnings)
+------------------------------------------------------------------------
+r55 | psxc | 2004-05-01 22:05:54 +0200 (Sat, 01 May 2004) | 3 lines
+
+small change in CHANGELOG
+
+
+------------------------------------------------------------------------
+r54 | psxc | 2004-05-01 22:05:09 +0200 (Sat, 01 May 2004) | 3 lines
+
+"fixed" objects.h
+
+
+------------------------------------------------------------------------
+r53 | psxc | 2004-05-01 21:49:37 +0200 (Sat, 01 May 2004) | 3 lines
+
+added the old double-sfv patch as a config option.
+
+
+------------------------------------------------------------------------
+r51 | daxxar | 2004-05-01 19:57:49 +0200 (Sat, 01 May 2004) | 2 lines
+
+Removed GLFTPD2-constant, added as a config-option. Fixed a bug (?) in objects.h ONLINE struct.
+
+------------------------------------------------------------------------
+r50 | daxxar | 2004-05-01 19:52:10 +0200 (Sat, 01 May 2004) | 2 lines
+
+Just a cosmetic change on comments.
+
+------------------------------------------------------------------------
+r49 | psxc | 2004-05-01 19:04:02 +0200 (Sat, 01 May 2004) | 1 line
+
+vbr patch from iwdisb
+------------------------------------------------------------------------
+r48 | daxxar | 2004-04-30 18:37:54 +0200 (Fri, 30 Apr 2004) | 2 lines
+
+Fixed problems with unquoted []'s, and regenerated configure.
+
+------------------------------------------------------------------------
+r47 | psxc | 2004-04-30 09:39:28 +0200 (Fri, 30 Apr 2004) | 3 lines
+
+updated configure - it should now work on *bsd
+
+
+------------------------------------------------------------------------
+r44 | daxxar | 2004-04-30 00:33:55 +0200 (Fri, 30 Apr 2004) | 1 line
+
+detects bsd (and then compiles statically), added --enable-static to ./configure
+------------------------------------------------------------------------
+r43 | daxxar | 2004-04-29 23:39:58 +0200 (Thu, 29 Apr 2004) | 2 lines
+
+Minor cosmetic changes, glftpd1 ONLINE support (define in constants.h).
+
+------------------------------------------------------------------------
+r42 | psxc | 2004-04-29 22:17:02 +0200 (Thu, 29 Apr 2004) | 3 lines
+
+TODO changed - added a few on the list
+
+
+------------------------------------------------------------------------
+r41 | psxc | 2004-04-29 22:02:55 +0200 (Thu, 29 Apr 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r40 | daxxar | 2004-04-29 21:56:45 +0200 (Thu, 29 Apr 2004) | 2 lines
+
+Removed it.
+
+------------------------------------------------------------------------
+r39 | daxxar | 2004-04-29 21:54:58 +0200 (Thu, 29 Apr 2004) | 2 lines
+
+Heh, fear.
+
+------------------------------------------------------------------------
+r38 | daxxar | 2004-04-29 21:52:54 +0200 (Thu, 29 Apr 2004) | 2 lines
+
+ADDED TEST!
+
+------------------------------------------------------------------------
+r37 | psxc | 2004-04-29 21:40:47 +0200 (Thu, 29 Apr 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r36 | psxc | 2004-04-29 21:40:44 +0200 (Thu, 29 Apr 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r35 | psxc | 2004-04-29 21:40:40 +0200 (Thu, 29 Apr 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r34 | psxc | 2004-04-29 21:40:37 +0200 (Thu, 29 Apr 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r33 | psxc | 2004-04-29 21:40:33 +0200 (Thu, 29 Apr 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r32 | psxc | 2004-04-29 21:40:30 +0200 (Thu, 29 Apr 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r31 | psxc | 2004-04-29 21:40:27 +0200 (Thu, 29 Apr 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r30 | psxc | 2004-04-29 21:40:23 +0200 (Thu, 29 Apr 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r29 | psxc | 2004-04-29 21:40:19 +0200 (Thu, 29 Apr 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r28 | psxc | 2004-04-29 21:40:15 +0200 (Thu, 29 Apr 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r27 | psxc | 2004-04-29 21:40:12 +0200 (Thu, 29 Apr 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r26 | psxc | 2004-04-29 21:40:09 +0200 (Thu, 29 Apr 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r25 | psxc | 2004-04-29 21:40:05 +0200 (Thu, 29 Apr 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r24 | psxc | 2004-04-29 21:40:01 +0200 (Thu, 29 Apr 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r23 | psxc | 2004-04-29 21:39:56 +0200 (Thu, 29 Apr 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r22 | psxc | 2004-04-29 21:39:19 +0200 (Thu, 29 Apr 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r21 | psxc | 2004-04-29 21:38:29 +0200 (Thu, 29 Apr 2004) | 3 lines
+
+vn rm http://mental.mine.nu/repository/project-zs-ng/trunk/zipscript/include/objects.h.orig 
+
+
+------------------------------------------------------------------------
+r7 | psxc | 2004-04-29 21:24:54 +0200 (Thu, 29 Apr 2004) | 2 lines
+
+initial import
+
+------------------------------------------------------------------------
