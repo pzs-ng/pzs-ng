@@ -86,6 +86,7 @@ extern char    *findfilename(char *);
 extern void	removedotfiles();
 extern void	removecomplete();
 extern short	matchpath(char *, char *);
+extern short	matchpartialpath(char *, char *);
 extern short	strcomp(char *, char *);
 extern short	subcomp(char *);
 extern short	fileexists(char *);

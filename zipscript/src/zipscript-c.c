@@ -637,7 +637,11 @@ main(int argc, char **argv)
 				break;
 			}
 
+#if (use_partial_on_noforce == TRUE)
+			if ( (force_sfv_first == FALSE) || matchpartialpath(noforce_sfv_first_dirs, locations.path)) {
+#else
 			if ( (force_sfv_first == FALSE) || matchpath(noforce_sfv_first_dirs, locations.path)) {
+#endif
 				if (fileexists(locations.race)) {
 					d_log("Testing files marked as untested\n");
 					testfiles_file(&locations, &raceI, 0);
@@ -754,13 +758,20 @@ main(int argc, char **argv)
 				writerace_file(&locations, &raceI, crc, F_CHECKED);
 			} else {
 #if ( force_sfv_first == TRUE )
+#if (use_partial_on_noforce == TRUE)
+				if (!matchpartialpath(noforce_sfv_first_dirs, locations.path) && !matchpath(zip_dirs, locations.path)) {
+#else
 				if (!matchpath(noforce_sfv_first_dirs, locations.path) && !matchpath(zip_dirs, locations.path)) {
+#endif
 					d_log("SFV needs to be uploaded first\n");
 					strcpy(raceI.misc.error_msg, SFV_FIRST);
 					exit_value = 2;
 					break;
 				} else {
 					d_log("path matched with noforce_sfv_first or zip_dirs - allowing file.\n");
+					printf(zipscript_SFV_skip);
+					d_log("Storing new race data\n");
+					writerace_file(&locations, &raceI, crc, F_NOTCHECKED);
 				}
 #else
 				d_log("Could not check file yet - SFV is not present\n");

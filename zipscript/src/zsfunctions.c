@@ -446,7 +446,7 @@ matchpath(char *instr, char *path)
 		switch (*instr) {
 		case 0:
 		case ' ':
-			if (strncmp(instr - pos, path, pos - 1) == 0) {
+			if (!strncmp(instr - pos, path, pos - 1)) {
 				return 1;
 			}
 			pos = 0;
@@ -485,6 +485,29 @@ strcomp(char *instr, char *searchstr)
 	} while (*instr++);
 	return 0;
 }
+
+short int 
+matchpartialpath(char *instr, char *path)
+{
+	int	pos = 0;
+
+	do {
+		switch (*instr) {
+		case 0:
+		case ' ':
+			if (!strncasecmp(instr - pos, path + strlen(path) - pos, pos)) {
+				return 1;
+			}
+			pos = 0;
+			break;
+		default:
+			pos++;
+			break;
+		}
+	} while (*instr++);
+	return 0;
+}
+
 
 /* check for matching subpath
    psxc - 2004-12-18

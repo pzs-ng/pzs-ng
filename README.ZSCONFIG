@@ -92,6 +92,14 @@ noforce_sfv_first_dirs <PATHS>
 	the force.
 	Default: "/site/incoming/requests/"
 
+use_partial_on_noforce <TRUE|FALSE>
+	Usually all pathmatches are full paths. You can change this on what
+	you put in noforce_sfv_first_dirs to make it match parts of a dir,
+	like 'sample' or something. Please be careful *NOT* to include a
+	slash after the dirs if this setting is on - like '/sample', not
+	'/sample/'.
+	Default: FALSE
+
 audio_nocheck_dirs <PATHS>
 	Audio-files can be checked against a list of allowed/denied genres,
 	years etc. Audio-files found in paths defined in this variable will
