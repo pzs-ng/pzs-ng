@@ -1079,8 +1079,13 @@ proc ng_bandwidth {nick uhost hand chan args} {
 	set up [lindex $raw 1]
 	set dn [lindex $raw 3]
 	set totalspeed [lindex $raw 5]
-	set type "KB/s"
-	if {[string match -nocase $speedmeasure "mb"] == 1} {
+	set type ""
+	if {[string match -nocase $speedmeasure "kb"] == 1} {
+	    set type "KB/s"
+	    append up $type
+	    append dn $type
+	    append totalspeed $type
+	} elseif {[string match -nocase $speedmeasure "mb"] == 1} {
 	    set up [string range [expr $up / 1024] 0 [expr [string first [expr $up / 1024] "."] + 3]]
 	    set dn [string range [expr $dn / 1024] 0 [expr [string first [expr $dn / 1024] "."] + 3]]
 	    set totalspeed [string range [expr $totalspeed / 1024] 0 [expr [string first [expr $totalspeed / 1024] "."] + 3]]

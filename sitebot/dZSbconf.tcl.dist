@@ -81,8 +81,7 @@ set speed(OUTGOING)		"12500"
 
 # speed announces
 # speed should be quoted in 'kb' (kilobytes), 'mb' (megabytes), 'kbit' (kilobits),
-# 'mbits' (megabits), 'autobyte' (default) or 'autobit'. 'kb', 'mb' and 'auto' are ^2 based,
-# 'kbit', 'mbit' and 'autobit' are ^10 based.
+# 'mbits' (megabits), 'autobyte', 'autobit' or 'disabled'.
 set speedmeasure "autobyte"
 #threshold used on auto-setting, to move from on to the other. (normally is 1000 or 1024)
 set speedthreshold 1024
