@@ -396,7 +396,7 @@
 #ifndef max_users_in_top
 	#define max_users_in_top        7
 #endif
-#ifndef max_group_in_top
+#ifndef max_groups_in_top
 	#define max_groups_in_top       7
 #endif
 

@@ -12,11 +12,6 @@
 
 
 
-/*
- *      General Settings
- *      ================
- */
-
 #define group_dirs                      "/site/groups/"
 #define zip_dirs                        "/site/test/ /site/incoming/0day/"
 #define sfv_dirs                        "/site/test/ /site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/requests/"
@@ -36,7 +31,6 @@
 #define ignored_types           ",diz,jpg,cue,m3u,nfo,sfv,debug"
 
 #define debug_mode		TRUE
-#define debug_altlog		FALSE
 
 #define deny_double_sfv         FALSE
 #define force_sfv_first         FALSE
