@@ -676,3 +676,47 @@
 	#define unduper_script          "/bin/ng-undupe"
 #endif
 
+/* The following settings allow you to disable certain announces. This
+ * should probably be done in your bot, but as of this writing, the default
+ * dzsbot does not support such an option.
+ */
+#define disable_audio_race		FALSE
+#define disable_audio_sfv		FALSE
+#define disable_audio_update		FALSE
+#define disable_audio_halfway		FALSE
+#define disable_audio_newleader		FALSE
+#define disable_audio_complete		FALSE
+#define disable_audio_norace_halfway	FALSE
+#define disable_audio_norace_complete	FALSE
+#define disable_video_race		FALSE
+#define disable_video_sfv		FALSE
+#define disable_video_update		FALSE
+#define disable_video_halfway		FALSE
+#define disable_video_newleader		FALSE
+#define disable_video_complete		FALSE
+#define disable_video_norace_halfway	FALSE
+#define disable_video_norace_complete	FALSE
+#define disable_rar_race		FALSE
+#define disable_rar_sfv			FALSE
+#define disable_rar_update		FALSE
+#define disable_rar_halfway		FALSE
+#define disable_rar_newleader		FALSE
+#define disable_rar_complete		FALSE
+#define disable_rar_norace_halfway	FALSE
+#define disable_rar_norace_complete	FALSE
+#define disable_other_race		FALSE
+#define disable_other_sfv		FALSE
+#define disable_other_update		FALSE
+#define disable_other_halfway		FALSE
+#define disable_other_newleader		FALSE
+#define disable_other_complete		FALSE
+#define disable_other_norace_halfway	FALSE
+#define disable_other_norace_complete	FALSE
+#define disable_zip_race		FALSE
+#define disable_zip_update		FALSE
+#define disable_zip_halfway		FALSE
+#define disable_zip_newleader		FALSE
+#define disable_zip_complete		FALSE
+#define disable_zip_norace_halfway	FALSE
+#define disable_zip_norace_complete	FALSE
+
