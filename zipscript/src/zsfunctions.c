@@ -424,7 +424,7 @@ void readsfv_ffile(char *filename, long buf_bytes ) {
 void get_rar_info(char *filename) {
  FILE	*file;
 
- if (file = fopen(filename, "r")) {
+ if ((file = fopen(filename, "r"))) {
    fseek(file, 45, SEEK_CUR);
    fread(&raceI.file.compression_method, 1, 1, file);
    fclose(file);
