@@ -21,28 +21,32 @@
 
 #include "stats.h"
 
+void
+updatestats_free(GLOBAL *g)
+{
+	int n;
+
+	for (n = 0; n < g->v.total.users; n++)
+		if (g->ui[n])
+			free(g->ui[n]);
+			
+	if (g->ui)
+		free(g->ui);
+
+	for (n = 0; n < g->v.total.groups; n++)
+		if (g->gi[n])
+			free(g->gi[n]);
+
+	if (g->gi)
+		free(g->gi);
+}
+
 /*
  * Modified   : 01.27.2002 Author     : Dark0n3
  * 
  * Description: Updates existing entries in userI and groupI or creates new, if
  * old doesnt exist
  */
-void
-updatestats_free(struct VARS raceI, struct USERINFO **userI, struct GROUPINFO **groupI) {
-	int n;
-
-	for (n = 0; n < raceI.total.users; n++) {
-	if (userI[n])
-		free(userI[n]);
-	}
-	free(userI);
-	for (n = 0; n < raceI.total.groups; n++) {
-	if (groupI[n])
-		free(groupI[n]);
-	}
-	free(groupI);
-}
-
 void 
 updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *usern, char *group, off_t filesize, unsigned int speed, unsigned int start_time)
 {

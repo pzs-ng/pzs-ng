@@ -128,8 +128,6 @@ main(int argc, char **argv)
 	g.gi = malloc(sizeof(struct GROUPINFO *) * 30);
 	memset(g.gi, 0, sizeof(struct GROUPINFO *) * 30);
 
-	//g.l.path = malloc(PATH_MAX);
-	//g.v.misc.release_name = malloc(PATH_MAX);
 	getcwd(g.l.path, PATH_MAX);
 
 	if (matchpath(nocheck_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
@@ -137,7 +135,6 @@ main(int argc, char **argv)
 		d_log("Freeing memory, and exiting\n");
 		free(g.ui);
 		free(g.gi);
-		free(g.l.path);
 
 		if (remove_dot_debug_on_delete)
 			unlink(".debug");
@@ -150,11 +147,10 @@ main(int argc, char **argv)
 	g.l.leader = malloc(n);
 	target = malloc(4096);
 
-	if (getenv("SECTION") == NULL) {
+	if (getenv("SECTION") == NULL)
 		sprintf(g.v.sectionname, "DEFAULT");
-	} else {
+	else
 		snprintf(g.v.sectionname, 127, getenv("SECTION"));
-	}
 
 	d_log("Copying data &g.l into memory\n");
 	strlcpy(g.v.file.name, fname, PATH_MAX);
@@ -168,10 +164,6 @@ main(int argc, char **argv)
 
 	d_log("Parsing file extension from filename...\n");
 
-	/*for (temp_p = name_p = g.v.file.name; *name_p != 0; name_p++) {
-		if (*name_p == '.')
-			temp_p = name_p;
-	}*/
 	temp_p = find_last_of(g.v.file.name, ".");
 
 	if (*temp_p != '.') {
@@ -204,13 +196,7 @@ main(int argc, char **argv)
 				break;
 			}
 		}
-/*		if ((g.v.misc.write_log = matchpath(zip_dirs, g.l.path)))) {
-			g.v.misc.write_log = 1 - matchpath(group_dirs, g.l.path);
-		} else if (matchpath(sfv_dirs, g.l.path)) {
-			d_log("Directory did not match with zip_dirs\n");
-			break;
-		}
-*/
+
 		if (!fileexists("file_id.diz")) {
 			temp_p = findfileext_old_(".zip");
 			if (temp_p != NULL) {
@@ -343,29 +329,31 @@ main(int argc, char **argv)
 		break;
 	}
 
-	//rescandir(2);
 	if (empty_dir == 1) {
+		
 		d_log("Removing all files and directories created by zipscript\n");
 		removecomplete();
+		
 		if (fileexists(g.l.sfv))
 			delete_sfv(g.l.sfv);
 		if (g.l.nfo_incomplete)
 			unlink(g.l.nfo_incomplete);
 		if (g.l.incomplete)
 			unlink(g.l.incomplete);
-//		if (fileexists("file_id.diz"))
-			unlink("file_id.diz");
-//		if (fileexists(g.l.sfv))
-			unlink(g.l.sfv);
-//		if (fileexists(g.l.race))
-			unlink(g.l.race);
-//		if (fileexists(g.l.leader))
-			unlink(g.l.leader);
+			
+		unlink("file_id.diz");
+		unlink(g.l.sfv);
+		unlink(g.l.race);
+		unlink(g.l.leader);
+		
 		move_progress_bar(1, &g.v, g.ui, g.gi);
+		
 #if (remove_dot_files_on_delete == TRUE)
 		removedotfiles();
 #endif
+
 	}
+
 	if (incomplete == 1 && g.v.total.files > 0) {
 
 		getrelname(&g);
@@ -398,12 +386,11 @@ main(int argc, char **argv)
 		d_log("Moving progress bar\n");
 		move_progress_bar(0, &g.v, g.ui, g.gi);
 	}
+	
 	d_log("Releasing memory\n");
 	rescandir(1);
-	updatestats_free(g.v, g.ui, g.gi);
-	//free(fileext);
+	updatestats_free(&g);
 	free(target);
-	//free(g.l.path);
 	free(g.l.race);
 	free(g.l.sfv);
 	free(g.l.leader);
@@ -425,10 +412,9 @@ get_filetype_postdel(GLOBAL *g, char *ext)
 		return 4;
 	if (!strcasecmp(ext, "zip"))
 		return 0;
-	if (!strcasecmp(ext, "nfo")) {
-		
+	if (!strcasecmp(ext, "nfo"))
 		return 2;
-	} if (!strcomp(ignored_types, ext) || !strcomp(allowed_types, ext))
+	if (!strcomp(ignored_types, ext) || !strcomp(allowed_types, ext))
 		return 3;
 
 	return 255;

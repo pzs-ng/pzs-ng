@@ -378,7 +378,7 @@ main(void)
 	closedir(dir);
 	closedir(parent);
 	//rescandir(1);
-	updatestats_free(g.v, g.ui, g.gi);
+	updatestats_free(&g);
 	free(g.l.race);
 	free(g.l.sfv);
 	free(g.l.leader);

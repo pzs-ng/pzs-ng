@@ -1354,7 +1354,7 @@ main(int argc, char **argv)
 	d_log("Releasing memory\n");
 	buffer_groups(GROUPFILE, gnum);
 	buffer_users(PASSWDFILE, unum);
-	updatestats_free(g.v, g.ui, g.gi);
+	updatestats_free(&g);
 	rescandir(1);
 	//free(g.l.link_source);
 	//free(g.v.misc.release_name);
