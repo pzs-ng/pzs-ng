@@ -6,7 +6,7 @@
 #  Created by: Phen0menon & juanker                        #
 #  Maintained by: juanker (juanker@EFnet #pzs-ng)          #
 #  Notes: Best experienced on dark -black- backgrounds     #
-#  Tested with: pzs-ng r988                                #
+#  Tested with: pzs-ng r989                                #
 #                                                          #
 ############################################################
 #                                                          #
@@ -21,6 +21,11 @@ COLOR3 = "04"  # highlight color: red blood
 
 PREFIX						= "%c1{[}%c2{%b{%sitename}}%c1{]} "
 SPLITTER					= "%c1{,} "
+KB						= "%c1{KB/s}"
+MB						= "%c1{MB/s}"
+KBIT						= "%c1{Kbit/s}"
+MBIT						= "%c1{Mbit/s}"
+
 fakesection.INVITE				= "iNViTE"
 
 # output done by glftpd

@@ -538,44 +538,41 @@ proc from_mb {str} {
 #################################################################################
 proc speed_convert {value} {
 
-	global speedmeasure speedthreshold
+	global speedmeasure speedthreshold theme
 
 	switch -exact -- [string tolower $speedmeasure] {
 
-			   "kb"	{
-			   		set type "KB/s"
-			   	}
 			   "mb"	{
 					set value [expr $value / 1024]
-					set type "MB/s"
+					set type $theme(MB)
 				}
 		     	 "kbit"	{
 					set value [expr $value * 8]
-					set type "Kbit/s"
+					set type $theme(KBIT)
 				}
 		         "mbit"	{
 					set value [expr $value * 8 / 1000]
-					set type "Mbit/s"
+					set type $theme(MBIT)
 				}
 		      "autobit"	{
 					if {$value > $speedthreshold} {
 						set value [expr $value * 8 / 1000]
-						set type "Mbit/s"
+						set type $theme(MBIT)
 					} else {
 						set value [expr $value * 8]
-						set type "Kbit/s"
+						set type $theme(KBIT)
 					}
 				}
 		     "autobyte"	{
 					if {$value> $speedthreshold} {
 						set value [expr $value / 1024]
-						set type "MB/s"
+						set type $theme(MB)
 					} else {
-						set type "KB/s"
+						set type $theme(KB)
 					}
 				}
 		      "default"	{
-					set type $speedmeasure
+					set type $theme(KB)
 				}
 
 	}

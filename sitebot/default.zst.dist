@@ -2,11 +2,15 @@
 # This is the default theme for pzs-ng's dZSbot.
 # For a list of variables you can use, please see sitebot/COOKIES
 
-COLOR1 = "04"
-COLOR2 = "07"
-COLOR3 = "11"
-PREFIX = "%b{%sitename} :: "
-SPLITTER = ", "
+COLOR1		= "04"
+COLOR2		= "07"
+COLOR3		= "11"
+PREFIX		= "%b{%sitename} :: "
+SPLITTER	= ", "
+KB		= "KB/s"
+MB		= "MB/s"
+KBIT		= "Kbit/s"
+MBIT		= "Mbit/s"
 fakesection.INVITE = "iNViTE"
 
 # output done by glftpd
