@@ -72,6 +72,7 @@ extern int selector (struct dirent *);
 extern void rescandir();
 extern void rescanparent();
 extern void strtolower(char *);
+extern void unlink_missing(char *);
 extern char israr(char *);
 extern char isvideo(char *);
 extern void buffer_progress_bar(struct VARS *);

@@ -23,7 +23,7 @@ int	groups = 0,
 static struct ONLINE	*user;
 static struct GROUP	**group;
 
-int			 shmid;
+long long		 shmid;
 struct shmid_ds 	 ipcbuf;
 struct stat		 filestat;
 
@@ -485,7 +485,7 @@ int main (int argc, char **argv) {
 		}
 	}
 
-	if ((shmid = shmget((key_t)strtol(ipckey, NULL, 16), 0, 0)) == -1) {
+	if ((shmid = shmget((key_t)strtoll(ipckey, NULL, 16), 0, 0)) == -1) {
 		if (argc == 1 || (raw_output)) {
 			if (!raw_output)
 				show(header);

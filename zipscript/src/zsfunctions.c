@@ -194,6 +194,18 @@ void strtolower(char *s) {
     while ( (*s = tolower(*s)) ) s++;
 }
 
+void unlink_missing(char *s) {
+    char	*t, *u;
+
+    t = u = malloc(strlen(s) + 9);
+    sprintf(t, "%s-missing", s);
+    unlink(t);
+    while ( (*u = tolower(*u)) ) u++;
+    unlink(t);
+    free(t);
+//    free(u);
+}
+
 /*
  * Modified: 01.16.2002
  */
@@ -451,7 +463,11 @@ void readsfv_ffile(char *filename, off_t buf_bytes ) {
 		    buf[index_start + line_start] = 0;
 		    fname = buf + line_start;
 		    ext_start = index_start;
+#if (sfv_cleanup_lowercase == TRUE)
 		    while ( (fname[ext_start] = tolower(fname[ext_start])) != '.' && ext_start > 0 ) ext_start--;
+#else
+		    while ( fname[ext_start] != '.' && ext_start > 0 ) ext_start--;
+#endif
 		    if ( fname[ext_start] != '.' ) {
 			ext_start = index_start; 
 		    } else {

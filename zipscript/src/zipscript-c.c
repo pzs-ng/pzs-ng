@@ -802,11 +802,13 @@ d_log("DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", raceI.file.size))
 
 		if ( exit_value == EXIT_SUCCESS ) {
 		    d_log("Removing missing indicator\n");
-		    sprintf(target, "%s-missing", raceI.file.name);
+		    unlink_missing(raceI.file.name);
+/*		    sprintf(target, "%s-missing", raceI.file.name);
 #if (sfv_cleanup_lowercase == TRUE)
 		    strtolower(target);
 #endif
 		    unlink(target);
+*/
 		}
 
 		break;

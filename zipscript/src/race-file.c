@@ -275,9 +275,9 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
 
     for ( newline = buf ; newline < eof ; newline++ ) {
 	for ( line = newline ; *newline != '\n' && newline < eof ; newline++ ) {
-		if (sfv_cleanup_lowercase == TRUE) {
+#if (sfv_cleanup_lowercase == TRUE)
 			*newline = tolower(*newline);
-		}
+#endif
 	}
 	if ( *line != ';' && newline > line ) {
 	    *newline = crclen = 0;

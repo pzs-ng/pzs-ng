@@ -225,11 +225,13 @@ int main () {
 			sprintf(raceI.user.name, raceI.user.group);
 		}
 
-		sprintf(exec, "%s-missing", raceI.file.name);
+		unlink_missing(raceI.file.name);
+/*		sprintf(exec, "%s-missing", raceI.file.name);
 #if (sfv_cleanup_lowercase == TRUE)
 		strtolower(exec);
 #endif
 		unlink(exec);
+*/
 
 		if ( l > 44 ) {
 		    printf("\nFile: %s", dirlist[n]->d_name + l - 44 );
