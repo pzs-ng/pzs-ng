@@ -219,11 +219,16 @@ showusers(int n, int mode, char *ucomp, char raw)
 
 				strcpy(bar, "?->");
 				if (!raw)
-					sprintf(status, "Up: %7.1fKB/s", speed);
+					if (speed > 1024) {
+						speed = (speed / 1024.0);
+						sprintf(status, "Up: %7.2fKB/s", speed);
+					} else {
+						sprintf(status, "Up: %7.0fKB/s", speed);
+					}
 				else if (raw == 1)
-					sprintf(status, "\"UP\" \"%.1f\"", speed);
+					sprintf(status, "\"UP\" \"%.0f\"", speed);
 				else
-					sprintf(status, "upld|%.1f", speed);
+					sprintf(status, "upld|%.0f", speed);
 
 				mb_xfered = user[x].bytes_xfer * 1.0 / 1024 / 1024;
 			}
@@ -269,7 +274,12 @@ showusers(int n, int mode, char *ucomp, char raw)
 					sprintf(filename, "%.15s", user[x].status + m - 10);
 
 				if (!raw)
-					sprintf(status, "Dn: %7.1fKB/s", speed);
+					if (speed > 1024) {
+						speed = (speed / 1024.0);
+						sprintf(status, "Dn: %7.2fKB/s", speed);
+					} else {
+						sprintf(status, "Dn: %7.0fKB/s", speed);
+					}
 				else if (raw == 1)
 					sprintf(status, "\"DN\" \"%.1f\"", speed);
 				else
@@ -532,7 +542,13 @@ void
 showtotals(char raw)
 {
 	if (!raw) {
-		printf("| Up: %3i / %7.1fKB/s | Dn: %3i / %7.1fKB/s | Total: %3i / %7.1fKB/s |\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed);
+		if ((total_up_speed > 1024) || (total_dn_speed > 1024)) {
+			total_up_speed = (total_up_speed / 1024);
+			total_dn_speed = (total_dn_speed / 1024);
+			printf("| Up: %2i / %7.2fMB/s | Dn: %2i / %7.2fKB/s | Total: %2i / %7.2fMB/s |\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed);
+		} else {
+			printf("| Up: %2i / %7.0fKB/s | Dn: %2i / %7.0fKB/s | Total: %2i / %7.0fKB/s |\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed);
+		}
 		printf("| Currently %2i of %2i users are online...                                |\n", onlineusers, maxusers);
 	} else if (raw == 1) {
 		/*
