@@ -19,7 +19,7 @@
 /* On default, announcing is disabled everywhere, use zip/sfv paths to enable annouces and private paths to disable
  */
 
-#define group_dirs	"/site/groups/"
+#define group_dirs	"/site/groups/ /site/incoming/mp3/.groups/"
 #define zip_dirs	"/site/incoming/0day/"
 #define sfv_dirs	"/site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/"
 #define nocheck_dirs	"/site/private/"
@@ -145,8 +145,8 @@
 /* Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 & mpeg2.5 + layer1 & 2 can be added if needed
  */
 
-#define audio_vbr       "%w %Y %XKbps %i %I"
-#define audio_cbr       "%w %Y %XKbps"
+#define audio_vbr       "%XKbps VBR %I (%Q)"
+#define audio_cbr       "%XKbps CBR (%Q)"
 
 #define audio_race	    "%B%U%B is racing [ %R ] on %r @ %B%.0S%BkB/s."
 #define audio_sfv	    "Got SFV for %r. Expecting %B%f%BF."
