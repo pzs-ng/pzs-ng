@@ -219,6 +219,9 @@
 #ifndef debug_altlog
 #define debug_altlog		FALSE
 #endif
+#ifndef debug_announce
+#define debug_announce		FALSE
+#endif
 #ifndef benchmark_mode
 #define benchmark_mode		TRUE
 #endif

@@ -209,6 +209,15 @@ debug_altlog <TRUE|FALSE>
 	'storage' path, while FALSE will use the upload-dir.
 	Default: FALSE
 
+debug_announce <TRUE|FALSE>
+	If this variable is set to TRUE, and debug_mode is set to TRUE the
+	zipscript will announce to the uploader that the script is running in
+	debug mode. The announce is done at the very beginning of the script,
+	which means that it should give some output no matter what, if it
+	manages to start. Good to find out if the script has actually been
+	executed.
+	Default: FALSE
+
 benchmark_mode <TRUE|FALSE>
 	This option will show the user uploading an estimate of how long it
 	took the zipscript to scan the uploaded file.

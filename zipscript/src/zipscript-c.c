@@ -275,6 +275,10 @@ main(int argc, char **argv)
 	int		write_log = 0;
 	struct stat	fileinfo;
 
+#if ( debug_mode == debug_announce == TRUE)
+	printf("PZS-NG: Running in debug mode.\n");
+#endif
+
 #if ( benchmark_mode == TRUE )
 	struct timeval	bstart, bstop;
 	d_log("Reading time for benchmark\n");
