@@ -298,7 +298,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 		}
 		sprintf(online, "%02d:%02d:%02d", hours, minutes, seconds);
 
-		if (mode == 0) {
+		if (mode == 0 && raw != 3 ) {
 			if (!raw && (showall || (!noshow && !mask && !(maskchar == '*')))) {
 				if (mb_xfered)
 					printf("|%1c%-16.16s/%-10.10s | %-15s | XFER: %13.1fMB |\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, mb_xfered);
@@ -320,8 +320,12 @@ showusers(int n, int mode, char *ucomp, char raw)
 			if ((!noshow && !mask && !(maskchar == '*')) || chidden) {
 				onlineusers++;
 			}
+		} else if (raw == 3) {
+			if ((!noshow && !mask && !(maskchar == '*')) || chidden) {
+				onlineusers++;
+			}
 //		} else if (!strcasecmp(ucomp, user[x].username)) {
-		} else if (!strcmp(ucomp, user[x].username)) {
+		} else if (user[x].username && !strcmp(ucomp, user[x].username)) {
 #ifdef _WITH_ALTWHO
 			if (!raw && (showall || (!noshow && !mask && !(maskchar == '*')))) {
 				if (mb_xfered)
@@ -532,6 +536,8 @@ showtotals(char raw)
 		 * total_dn_speed, uploads + downloads, total_up_speed +
 		 * total_dn_speed, onlineusers, maxusers);
 		 */
+	} else if (raw == 3) {
+		printf("%i %.1f %i %.1f %i %.1f %i %i %i %i\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed, onlineusers - uploads - downloads, onlineusers - uploads - downloads, onlineusers, maxusers);
 	}
 }
 
@@ -636,6 +642,9 @@ main(int argc, char **argv)
 		} else if (!strcasecmp(argv[1], "--ss5")) {
 			user_idx = 2;
 			raw_output = 2;
+		} else if (!strcasecmp(argv[1], "--nbw")) {
+			user_idx = 2;
+			raw_output = 3;
 		}
 	}
 	if ((shmid = shmget((key_t) strtoll(ipckey, NULL, 16), 0, 0)) == -1) {
@@ -670,11 +679,13 @@ main(int argc, char **argv)
 		showusers((totusers > maxusers ? maxusers : totusers), argc - raw_output - 1, argv[user_idx], raw_output);
 	else if (argc == 1)
 		showusers((totusers > maxusers ? maxusers : totusers), argc - 1, argv[user_idx], raw_output);
-	else
+	else if (raw_output == 3)
 		showusers((totusers > maxusers ? maxusers : totusers), argc - 2, argv[user_idx], raw_output);
+	else
+		showusers((totusers > maxusers ? maxusers : totusers), 0, argv[user_idx], raw_output);
 
 
-	if (argc == 1) {
+	if (argc == 1 || raw_output == 3) {
 		showtotals(raw_output);
 		if (!raw_output && strlen(footer))
 			show(footer);

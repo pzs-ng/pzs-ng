@@ -247,7 +247,7 @@ set disable(IMDB)					0
 set disable(IMDBVAR)					0
 set disable(IMDBFIND)					0
 set disable(FAILLOGIN)					0
-set disable(ALTWHO)					1
+set disable(ALTWHO)					0
 
 #########################################################
 # ADVANCED CONFIG, EDIT CAREFULLY                       #
