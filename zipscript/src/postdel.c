@@ -22,137 +22,11 @@
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
 
+#include "postdel.h"
+
 struct USERINFO **userI;
 struct GROUPINFO **groupI;
 struct VARS	raceI;
-/*struct LOCATIONS locations;*/
-
-void 
-writelog(struct LOCATIONS *locations, char *msg, char *status)
-{
-	FILE           *glfile;
-	char           *date;
-	char           *line, *newline;
-	time_t		timenow;
-
-	if (raceI.misc.write_log == TRUE && !matchpath(group_dirs, locations->path)) {
-		timenow = time(NULL);
-		date = ctime(&timenow);
-		if (!(glfile = fopen(log, "a+"))) {
-			d_log("Unable to open %s for read/write (append) - NO RACEINFO WILL BE WRITTEN!\n", log);
-			return;
-		}
-		line = newline = msg;
-		while (1) {
-			switch (*newline++) {
-			case 0:
-				fprintf(glfile, "%.24s %s: \"%s\" %s\n", date, status, locations->path, line);
-				fclose(glfile);
-				return;
-			case '\n':
-				fprintf(glfile, "%.24s %s: \"%s\" %.*s\n", date, status, locations->path, (int)(newline - line - 1), line);
-				line = newline;
-				break;
-			}
-		}
-	}
-}
-
-/*
- * GET NAME OF MULTICD RELEASE (CDx/D[Ii]S[CK]x/DVDx) (SYMLINK LOCATION +
- * INCOMPLETE FILENAME)
- */
-void 
-getrelname(struct LOCATIONS *locations)
-{
-	int		cnt       , l[2], n = 0, k = 2;
-	char           *path[2];
-
-	for (cnt = strlen(locations->path); k && cnt; cnt--) {
-		if (locations->path[cnt] == '/') {
-			k--;
-			l[k] = n;
-			path[k] = malloc(n + 1);
-			strncpy(path[k], locations->path + cnt + 1, n);
-			path[k][n] = 0;
-			n = 0;
-		} else {
-			n++;
-		}
-	}
-
-	if (subcomp(path[1])) {
-//		raceI.misc.release_name = malloc(l[0] + 18);
-		sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
-		locations->incomplete = c_incomplete(incomplete_cd_indicator, path, &raceI);
-		locations->nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &raceI);
-		locations->in_cd_dir = 1;
-		if (k < 2)
-			free(path[1]);
-		if (k == 0)
-			free(path[0]);
-	} else {
-//		raceI.misc.release_name = malloc(l[1] + 10);
-		sprintf(raceI.misc.release_name, "%s", path[1]);
-		locations->incomplete = c_incomplete(incomplete_indicator, path, &raceI);
-		locations->nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &raceI);
-		locations->in_cd_dir = 0;
-		if (k < 2)
-			free(path[1]);
-		if (k == 0)
-			free(path[0]);
-	}
-}
-
-void 
-remove_nfo_indicator(struct LOCATIONS *locations)
-{
-	int		cnt, l[2], n = 0, k = 2;
-	char		*path[2];
-
-	locations->length_path = strlen(locations->path);
-
-	for (cnt = locations->length_path - 1; k && cnt; cnt--) {
-		if (locations->path[cnt] == '/') {
-			k--;
-			l[k] = n;
-			path[k] = malloc(n + 1);
-			strncpy(path[k], locations->path + cnt + 1, n);
-			path[k][n] = 0;
-			n = 0;
-		} else
-			n++;
-	}
-	locations->nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &raceI);
-	if (locations->nfo_incomplete)
-		unlink(locations->nfo_incomplete);
-	locations->nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &raceI);
-	if (locations->nfo_incomplete)
-		unlink(locations->nfo_incomplete);
-	if (k < 2)
-		free(path[1]);
-	if (k == 0)
-		free(path[0]);
-}
-
-unsigned char 
-get_filetype(struct LOCATIONS *locations, char *ext)
-{
-	if (!memcmp(ext, "sfv", 4))
-		return 1;
-	if (!clear_file_file(locations, raceI.file.name))
-		return 4;
-	if (!memcmp(ext, "zip", 4))
-		return 0;
-	if (!memcmp(ext, "nfo", 4))
-		return 2;
-	if (!strcomp(ignored_types, ext) || !strcomp(allowed_types, ext))
-		return 3;
-
-	return 255;
-}
-
-
 
 int 
 main(int argc, char **argv)
@@ -509,3 +383,124 @@ main(int argc, char **argv)
 
 	return 0;
 }
+
+void 
+writelog(struct LOCATIONS *locations, char *msg, char *status)
+{
+	FILE           *glfile;
+	char           *date;
+	char           *line, *newline;
+	time_t		timenow;
+
+	if (raceI.misc.write_log == TRUE && !matchpath(group_dirs, locations->path)) {
+		timenow = time(NULL);
+		date = ctime(&timenow);
+		if (!(glfile = fopen(log, "a+"))) {
+			d_log("Unable to open %s for read/write (append) - NO RACEINFO WILL BE WRITTEN!\n", log);
+			return;
+		}
+		line = newline = msg;
+		while (1) {
+			switch (*newline++) {
+			case 0:
+				fprintf(glfile, "%.24s %s: \"%s\" %s\n", date, status, locations->path, line);
+				fclose(glfile);
+				return;
+			case '\n':
+				fprintf(glfile, "%.24s %s: \"%s\" %.*s\n", date, status, locations->path, (int)(newline - line - 1), line);
+				line = newline;
+				break;
+			}
+		}
+	}
+}
+
+char **
+buffer_paths(struct LOCATIONS *locations, char **path, int *k, int len)
+{
+	int		cnt, n = 0;
+
+	path = malloc(sizeof(char *)*2);
+
+	for (cnt = len; *k && cnt; cnt--) {
+		if (locations->path[cnt] == '/') {
+			(*k)--;
+			path[*k] = malloc(n + 1);
+			strncpy(path[*k], locations->path + cnt + 1, n);
+			path[*k][n] = 0;
+			n = 0;
+		} else {
+			n++;
+		}
+	}
+	
+	return path;
+}
+
+/*
+ * GET NAME OF MULTICD RELEASE (CDx/D[Ii]S[CK]x/DVDx) (SYMLINK LOCATION +
+ * INCOMPLETE FILENAME)
+ */
+void 
+getrelname(struct LOCATIONS *locations)
+{
+	int		k = 2;
+	char		**path = 0;
+
+	path = buffer_paths(locations, path, &k, strlen(locations->path));
+
+	if (subcomp(path[1])) {
+		sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
+		locations->incomplete = c_incomplete(incomplete_cd_indicator, path, &raceI);
+		locations->nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &raceI);
+		locations->in_cd_dir = 1;
+	} else {
+		sprintf(raceI.misc.release_name, "%s", path[1]);
+		locations->incomplete = c_incomplete(incomplete_indicator, path, &raceI);
+		locations->nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &raceI);
+		locations->in_cd_dir = 0;
+	}
+
+	if (k < 2)
+		free(path[1]);
+	if (k == 0)
+		free(path[0]);
+}
+
+void 
+remove_nfo_indicator(struct LOCATIONS *locations)
+{
+	int		k = 2;
+	char		**path = 0;
+
+	path = buffer_paths(locations, path, &k, (strlen(locations->path)-1));
+
+	locations->nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &raceI);
+	if (locations->nfo_incomplete)
+		unlink(locations->nfo_incomplete);
+	locations->nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &raceI);
+	if (locations->nfo_incomplete)
+		unlink(locations->nfo_incomplete);
+	if (k < 2)
+		free(path[1]);
+	if (k == 0)
+		free(path[0]);
+}
+
+unsigned char 
+get_filetype(struct LOCATIONS *locations, char *ext)
+{
+	if (!memcmp(ext, "sfv", 4))
+		return 1;
+	if (!clear_file_file(locations, raceI.file.name))
+		return 4;
+	if (!memcmp(ext, "zip", 4))
+		return 0;
+	if (!memcmp(ext, "nfo", 4))
+		return 2;
+	if (!strcomp(ignored_types, ext) || !strcomp(allowed_types, ext))
+		return 3;
+
+	return 255;
+}
+
