@@ -88,6 +88,10 @@ void getrelname(char *directory) {
 	raceI.misc.release_name = malloc( l[1] + 10 );
 	sprintf(raceI.misc.release_name, "%s", path[1]);
 	locations.incomplete = c_incomplete(incomplete_indicator, path);
+	if (show_missing_nfo) {
+		locations.incompletenfo = c_incomplete(incomplete_nfo_indicator, path);
+		create_incomplete_nfo();
+	}
 	if (k == 0) free(path[0]);
     }
 }
@@ -309,6 +313,7 @@ int main( int argc, char **argv ) {
 	    delete_sfv_file(&locations);
 	}
 	unlink(locations.incomplete);
+	unlink(locations.incompletenfo);
 	unlink("file_id.diz");
 	unlink(locations.sfv);
 	unlink(locations.race);

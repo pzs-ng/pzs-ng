@@ -108,6 +108,7 @@ struct VARS {
 struct LOCATIONS {
     char				*leader;
     char				*incomplete;
+    char				*incompletenfo;
     char				*sfv;
     char				*race;
     char				*link_target;

@@ -40,6 +40,9 @@
 
 #define cleanupdirs     "/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 
+/* Should an incomplete pointer be put if nfo's are missing? */
+#define show_missing_nfo	FALSE
+
 /* Do not write .message file on complete in group_dirs */
 #define write_complete_message_in_group_dirs    TRUE
 
@@ -283,6 +286,7 @@
 /* How Indicators look */
 #define incomplete_cd_indicator         "../../(incomplete)-(%0)-%1"
 #define incomplete_indicator            "../(incomplete)-%0"
+#define incomplete_nfo_indicator	"../(no-nfo)-%0"
 
 #define progressmeter                   "[%V] - %3.0p%% Complete - [dS]"
 #define del_progressmeter               "\\[.*] - ...% Complete - \\[dS]"

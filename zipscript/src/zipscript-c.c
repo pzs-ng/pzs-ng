@@ -112,6 +112,12 @@ void getrelname(char *directory) {
 		sprintf(raceI.misc.release_name, "%s", path[1]);
 		locations.link_target = path[1];
 		locations.incomplete = c_incomplete(incomplete_indicator, path);
+		d_log("checking for missing nfo.\n");
+		if ((show_missing_nfo) && (! findfileext(".nfo"))) {
+			d_log("Creating missing-nfo indicator.\n");
+			locations.incompletenfo = c_incomplete(incomplete_nfo_indicator, path);
+			create_incomplete_nfo();
+		}
 		if (k == 0)
 			free(path[0]);
 	}
@@ -538,6 +544,8 @@ int main( int argc, char **argv ) {
 		no_check = TRUE;
 		d_log("File type is: NFO\n");
 		writerace_file(&locations, &raceI, 0, F_NFO);
+
+		d_log("Here I should've removed the missing nfo-indicator.\n");
 
 		if ( enable_nfo_script == TRUE )
 		{

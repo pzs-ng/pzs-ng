@@ -498,3 +498,4 @@ char *c_incomplete(char *instr, char **path) {
     *buf_p = 0;  
     return i_buf;
 }
+
