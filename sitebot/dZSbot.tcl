@@ -772,7 +772,7 @@ proc loadtheme {file} {
 	foreach name [array names announcetmp] { set announce($name) [themereplace $announcetmp($name)] }
 
 	set ret 1
-	set required "PREFIX"
+	set required "PREFIX COLOR1 COLOR2 COLOR3"
 	foreach req [split $required " "] {
 		if {[lsearch -exact [array names theme] $req] == -1} {
 			putlog "dZSbot: missing required themefile setting (in $file): '$req', failing."
@@ -794,8 +794,8 @@ proc themereplace {rstring} {
 
 	# We replace %cX{string}, %b{string} and %u{string} with their coloured, bolded and underlined equivilants ;)
 	regsub -all {%c(\d)\{([^\}]+)\}} $rstring {\\003$theme(COLOR\1)\2\\003} rstring
-	regsub -all {%b\{([^\}]+)\}} $rstring {\\002$theme(COLOR\1)\2\\002} rstring
-	regsub -all {%u\{([^\}]+)\}} $rstring {\\037$theme(COLOR\1)\2\\037} rstring
+	regsub -all {%b\{([^\}]+)\}} $rstring {\\002\1\\002} rstring
+	regsub -all {%u\{([^\}]+)\}} $rstring {\\037\1\\037} rstring
 	
 	regsub -all {\003(\d)(?!\d)} $rstring {\\0030\1} rstring
 	regsub -all {\[} $rstring {\\[} rstring; regsub -all {\]} $rstring {\\]} rstring
