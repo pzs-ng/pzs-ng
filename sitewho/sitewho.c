@@ -315,7 +315,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 			if (!raw)
 				sprintf(status, "Idle: %02d:%02d:%02d", hours, minutes, seconds);
 			else if (raw == 1)
-				sprintf(status, "\"ID\" \"%02d:%02d:%02d\"", hours, minutes, seconds);
+				sprintf(status, "\"ID\" \"%d\"", (hours * 60 * 60) + (minutes * 60) + seconds);
 			else
 				sprintf(status, "idle|%02d:%02d:%02d", hours, minutes, seconds);
 		}
