@@ -556,10 +556,12 @@ proc who {nick uhost hand chan args} {
 proc speed {nick uhost hand chan args} {
 	global binary announce theme
 
-	set output "$theme(PREFIX)$announce(DEFAULT)"
-	set output [replacevar $output "%msg" [exec $binary(WHO) [lindex $args 0]]]
-	set output [basicreplace $output "SPEED"]
-	putserv "PRIVMSG $chan :$output "
+	set base_output "$theme(PREFIX)$announce(DEFAULT)"
+	foreach line [split [exec $binary(WHO) [lindex $args 0]] "\n"] {
+		set output [replacevar $base_output "%msg" $line]
+		set output [basicreplace $output "SPEED"]
+		putserv "PRIVMSG $chan :$output"
+	}
 }
 #################################################################################
 

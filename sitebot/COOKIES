@@ -153,7 +153,7 @@ STAT_USERS		%release, %path, %relname, %section, %u_position, %u_name, %g_name, 
 STAT_GROUPS_HEAD	%release, %path, %relname, %section, %dummy
 
 STAT_GROUPS		%release, %path, %relname, %section, %g_position, %g_name, %g_mbytes, %g_files,
-			%g_percent, %u_avgspeed
+			%g_percent, %g_avgspeed
 
 STAT_POST		%release, %path, %relname, %section, %u_count, %g_count, %t_files, %t_mbytes,
 			%t_duration, %u_avgspeed

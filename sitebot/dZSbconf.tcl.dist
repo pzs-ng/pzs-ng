@@ -271,7 +271,7 @@ set variables(INCOMPLETE)		"%pf %u_name %g_name %releasename"
 set variables(STAT_USERS_HEAD)	"%pf %dummy"
 set variables(STAT_USERS)		"%pf %u_position %u_name %g_name %u_mbytes %u_files %u_percent %u_avgspeed %u_dayup %u_wkup %u_monthup %u_allup"
 set variables(STAT_GROUPS_HEAD)	"%pf %dummy"
-set variables(STAT_GROUPS)		"%pf %g_position %g_name %g_mbytes %g_files %g_percent %u_avgspeed"
+set variables(STAT_GROUPS)		"%pf %g_position %g_name %g_mbytes %g_files %g_percent %g_avgspeed"
 set variables(STAT_POST)		"%pf %u_count %g_count %t_files %t_mbytes %t_duration %u_avgspeed"
 
 # Variables pasted from 3rd party apps
