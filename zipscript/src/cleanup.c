@@ -235,15 +235,16 @@ void incomplete_cleanup(char *path) {
 void cleanup(char *pathlist) {
     char *data_today, *data_yesterday, *path, *newentry, *entry;
 
+    struct tm *time_today, *time_yesterday;
+    time_t     t_today, t_yesterday;
+    
     path                = malloc(PATH_MAX);
     data_today          = malloc(PATH_MAX);
     data_yesterday      = malloc(PATH_MAX);
 
-    struct tm *time_today, *time_yesterday;
     time_today=malloc(sizeof(struct tm));
     time_yesterday=malloc(sizeof(struct tm));
 
-    time_t     t_today, t_yesterday;
 
     t_today = time( NULL );
     time_today = localtime_r( &t_today, time_today );
