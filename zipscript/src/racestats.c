@@ -12,6 +12,7 @@
 #include "macros.h"
 #include "zsfunctions.h"
 #include "convert.h"
+#include "dizreader.h"
 
 #include "../conf/zsconfig.h"
 #include "../../config.h"
@@ -28,10 +29,6 @@ extern void sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPI
 extern char* readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount);
 
 extern void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);
-
-// from dizreader.c - let's move to headers later.
-extern int read_diz(char *);
-
 
 #define data_exists(paths, datalocation) fileexists(datalocation)
 #define file_set_race   sprintf

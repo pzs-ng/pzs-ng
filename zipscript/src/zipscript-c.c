@@ -12,6 +12,7 @@
 #include "zsfunctions.h"
 #include "multimedia.h" 
 #include "convert.h"
+#include "dizreader.h"
 
 #include "../conf/zsconfig.h"
 #include "../../config.h"
@@ -29,8 +30,6 @@ struct LOCATIONS locations;
 
 extern	void	get_stats(struct VARS *raceI, struct USERINFO **userI);
 
-// from dizreader.c - let's move to headers later.
-extern int read_diz(char *);
 // from stats.c - let's move to headers later. (together with USERINFO / GROUPINFO / VARS structs?)
 extern void showstats(struct VARS *, struct USERINFO **, struct GROUPINFO **);
 

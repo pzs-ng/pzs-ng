@@ -15,6 +15,7 @@
 #include "macros.h"
 #include "zsfunctions.h"
 #include "convert.h"
+#include "dizreader.h"
 
 #include "../conf/zsconfig.h"
 #include "../../config.h"
@@ -30,8 +31,6 @@ extern unsigned long readsfv_file(struct LOCATIONS *locations, struct VARS *race
 
 extern short clear_file_file(struct LOCATIONS *, char *);
 
-// from dizreader.c - let's move to headers later.
-extern int read_diz(char *);
 // from race-file.c - let's move to headers later.
 extern void delete_sfv_file(struct LOCATIONS *locations);
 

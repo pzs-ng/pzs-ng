@@ -13,6 +13,7 @@
 #include "zsfunctions.h"
 #include "multimedia.h"
 #include "convert.h"
+#include "dizreader.h"
 
 #include "../conf/zsconfig.h"
 #include "../../config.h"
@@ -51,9 +52,6 @@ extern void copysfv_file(char *source, char *target, long buf_bytes);
 extern void testfiles_file(struct LOCATIONS *locations, struct VARS *raceI);
 extern void create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char *filename);
 extern void maketempdir(struct LOCATIONS *locations);
-
-// from dizreader.c - let's move to headers later.
-extern int read_diz(char *);
 
 extern unsigned long calc_crc32( char *f );
 extern void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, int completetype );
