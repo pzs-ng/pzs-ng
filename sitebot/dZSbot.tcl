@@ -592,7 +592,7 @@ proc speed_convert {value} {
 proc basicreplace {rstring section} {
 	global sitename
 
-	set output [themereplace $rstring]
+	set output [themereplace $rstring $section]
 	set output [replacevar $output "%sitename" $sitename]
 	set output [replacevar $output "%bold" "\002"]
 	set output [replacevar $output "%uline" "\037"]
@@ -1480,7 +1480,7 @@ proc welcome_msg { nick uhost hand chan } {
 	if {$disable(WELCOME) == 0} {
 		foreach c_chan $chanlist(WELCOME) {
 			if {[string match -nocase $c_chan $chan] == 1} {
-				set output "$announce(WELCOME)"
+				set output [themereplace "$announce(WELCOME)" "none"]
 				set output [replacevar $output "%bold" "\002"]
 				set output [replacevar $output "%sitename" $sitename]
 				set output [replacevar $output "%cmdpre" $cmdpre]
@@ -1634,9 +1634,15 @@ proc loadtheme {file} {
 		}
 	}
 
-	foreach name [array names theme] { set theme($name) [themereplace $theme($name)] }
-	foreach name [array names theme_fakes] { set theme_fakes($name) [themereplace $theme_fakes($name)] }
-	foreach name [array names announcetmp] { set announce($name) [themereplace $announcetmp($name)] }
+# This is slightly hackish. Only thing that is dynamic is colors, so replacing bold and underline
+# should probably still be done here.
+#	foreach name [array names theme] { set theme($name) [themereplace $theme($name)] }
+#	foreach name [array names theme_fakes] { set theme_fakes($name) [themereplace $theme_fakes($name)] }
+#	foreach name [array names announcetmp] { set announce($name) [themereplace $announcetmp($name)] }
+
+	foreach name [array names theme] { set theme($name) $theme($name) }
+	foreach name [array names theme_fakes] { set theme_fakes($name) $theme_fakes($name) }
+	foreach name [array names announcetmp] { set announce($name) $announcetmp($name) }
 
 	set ret 1
 	set required "PREFIX COLOR1 COLOR2 COLOR3"
@@ -1659,10 +1665,15 @@ proc themereplace {rstring} {
 
 	# We replace %cX{string}, %b{string} and %u{string} with their coloured, bolded and underlined equivilants ;)
 	while {[regexp {(%c(\d)\{([^\{\}]+)\}|%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\})} $rstring]} {
-		regsub -all {%c(\d)\{([^\{\}]+)\}} $rstring {\\003$theme(COLOR\1)\2\\003} rstring
+		set tmpstr [format "COLOR_%s_1" $section]
+		if {[lsearch -exact [array names theme] $tmpstr] != -1} {
+			regsub -all {%c(\d)\{([^\{\}]+)\}} $rstring {\\003$theme([format "COLOR_%s_" $section]\1)\2\\003} rstring
+		} else {
+			regsub -all {%c(\d)\{([^\{\}]+)\}} $rstring {\\003$theme(COLOR\1)\2\\003} rstring
+		}
 		regsub -all {%b\{([^\{\}]+)\}} $rstring {\\002\1\\002} rstring
 		regsub -all {%u\{([^\{\}]+)\}} $rstring {\\037\1\\037} rstring
-	}
+        }
 
 	regsub -all {\003(\d)(?!\d)} $rstring {\\0030\1} rstring
 	return [subst -nocommands $rstring]

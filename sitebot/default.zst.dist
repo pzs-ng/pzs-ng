@@ -2,9 +2,21 @@
 # This is the default theme for pzs-ng's dZSbot.
 # For a list of variables you can use, please see sitebot/COOKIES
 
+# Default colors, used for all sections except those defined below
 COLOR1		= "04"
 COLOR2		= "07"
 COLOR3		= "11"
+
+# Custom section colors. Use same section names as defined in dZSbconf.tcl.
+# IMPORTANT: You MUST define the same number of colors as there are default colors FOR EACH SECTION!
+# Sections not defined here will use the default colors above.
+COLOR_GAMES_1	= "05"
+COLOR_GAMES_2	= "08"
+COLOR_GAMES_3	= "12"
+COLOR_APPS_1	= "06"
+COLOR_APPS_2	= "09"
+COLOR_APPS_3	= "13"
+
 PREFIX		= "%b{%sitename} :: "
 SPLITTER	= ", "
 KB		= "KB/s"
