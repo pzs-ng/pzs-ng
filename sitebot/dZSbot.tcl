@@ -824,7 +824,7 @@ proc ng_uptime {nick uhost hand chan argv} {
 
     if {[catch {exec $binary(UPTIME)} reply]} {
         putlog "dZSbot error: Unable to execute uptime ($reply)."
-    } elseif {[regexp {.+ up (.+), (.+), (.+) users?, load averages: (.+)} $reply reply sysup time users load]} {
+    } elseif {[regexp {.+ up (.+), (.+), (.+) users?, load averages?: (.+)} $reply reply sysup time users load]} {
         set sysup [format_duration [clock scan $sysup -base 0]]
     } else {
         putlog "dZSbot error: Unable to parse uptime reply \"$reply\", please report to pzs-ng developers."
@@ -1122,6 +1122,7 @@ proc who {nick uhost hand chan argv} {
 		} else { set newline($line) [expr $newline($line) + 1] }
 		puthelp "PRIVMSG $nick :$line\003$newline($line)"
 	}
+	return
 }
 
 #################################################################################
@@ -1844,7 +1845,7 @@ proc themereplace_startup {rstring} {
 		regsub -all {%u\{([^\{\}]+)\}} $rstring {\\037\1\\037} rstring
 	}
 
-	return [subst -nocommands $rstring]
+	return [subst -nocommands -novariables $rstring]
 }
 
 #################################################################################
@@ -1891,7 +1892,7 @@ proc themereplace {targetString section} {
 		}
 	}
 
-	return [subst -nocommands $targetString]
+	return [subst -nocommands -novariables $targetString]
 }
 
 #################################################################################
