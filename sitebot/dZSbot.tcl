@@ -1396,7 +1396,7 @@ proc launchnuke2 {type path section sargs dargs} {
 			set nukee "[themereplace $announce(NUKEES) "none"]"
 			set nukee [replacevar $nukee "%u_name" [lindex $entry 0]]
 			set nukee [replacevar $nukee "%size" $mb]
-			append nuke(NUKEE) "$nukee" "$theme(SPLITTER)"
+			append nuke(NUKEE) "$nukee" "[themereplace $theme(SPLITTER) "none"]"
 		}
 	}
 
