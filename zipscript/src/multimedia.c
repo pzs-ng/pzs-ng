@@ -252,50 +252,63 @@ void get_mpeg_audio_info(char *f, struct audio *audio) {
     }
   };
   
-  if ( n == 0 ) { /* mp3 header */
+  /* mp3 header:
+   * AAAAAAAA AAABBCCD EEEEFFGH IIJJKLMM
+   * A - Frame sync
+   * B - MPEG audio version (version)
+   * C - Layer (layer)
+   * D - Protected by CRC (protected)
+   * E - Bitrate (t_bitrate)
+   * F - Sampling rate (t_samplingrate)
+   * G - Padding 
+   * H - Private bit
+   * I - Channel mode (channelmode)
+   * J - Mode extension, K - Copyright
+   * L - Original, M - Emphasis
+   */
+  if (n == 0) {
     *(header + 1) -= 224;
     
     read(fd, header + 2, 2);
     
-    version = *(header + 1) >> 3;
-    layer = (*(header + 1) - (version << 3)) >> 1;
-    if ( ! *(header + 1) & 1 ) protected = 0;
-    t_bitrate = *(header + 2) >> 4;
-    //t_samplingrate = *(header + 2) - (t_bitrate << 4) >> 2; -- original
-    t_samplingrate = *((header + 2) - (t_bitrate << 4)) >> 2;
-    switch ( version ) {
-    case 3:
-      samplingrate = sr_v1[t_samplingrate];
-      switch ( layer ) {
-      case 1:
-	bitrate = br_v1_l3[t_bitrate];
-	break;
-      case 2:
-	bitrate = br_v1_l2[t_bitrate];
-	break;
-      case 3:
-	bitrate = br_v1_l1[t_bitrate];
-	break;
-      }
-      break;
-    case 0:
-      samplingrate = sr_v25[t_samplingrate];
-    case 2:
-      if ( ! samplingrate ) {
-	samplingrate = sr_v2[t_samplingrate];
-      }
-      switch ( layer ) {
-      case 3:
-	bitrate = br_v2_l1[t_bitrate];
-	break;
-      case 1:
-      case 2:
-	bitrate = br_v2_l23[t_bitrate];
-	break;
-      }
-      break;
-    }
-    channelmode = *(header + 3) >> 6;
+    version = (*(header + 1)) >> 3;
+	layer = (*(header + 1) >> 1) & ((1 << 2) - 1); // Nasty code, keeps CC in 'layer'. (layer = (*(header + 1) - (version << 3)) >> 1)
+	protected = (*(header + 1)) & 1;
+    t_bitrate = (*(header + 2)) >> 4;
+	t_samplingrate = (*(header + 2) >> 2) & ((1 << 2) - 1); // Nasty code, keeps FF in 't_samplingrate'. (t_samplingrate = *(header + 2) - (t_bitrate << 4) >> 2)
+	
+	switch (version) {
+		case 0:
+			samplingrate = sr_v25[t_samplingrate];
+		case 2:
+			if (!samplingrate)
+				samplingrate = sr_v2[t_samplingrate];
+			switch (layer) {
+				case 3:
+					bitrate = br_v2_l1[t_bitrate];
+					break;
+				case 1:
+				case 2:
+					bitrate = br_v2_l23[t_bitrate];
+					break;
+			}
+			break;
+		case 3:
+			samplingrate = sr_v1[t_samplingrate];
+			switch (layer) {
+				case 1:
+					bitrate = br_v1_l3[t_bitrate];
+					break;
+				case 2:
+					bitrate = br_v1_l2[t_bitrate];
+					break;
+				case 3:
+					bitrate = br_v1_l1[t_bitrate];
+					break;
+			}
+			break;
+	}
+    channelmode = (*(header + 3)) >> 6;
     
     sprintf(audio->samplingrate, "%i", samplingrate);
     sprintf(audio->bitrate, "%i", bitrate);
@@ -327,7 +340,7 @@ void get_mpeg_audio_info(char *f, struct audio *audio) {
     lseek(fd, 36+vbr_offset, SEEK_SET);
     read(fd, fraunhofer_header, 4);
     
-    if ( memcmp(xing_header1, "Xing", 4) == 0 || 
+    if (memcmp(xing_header1, "Xing", 4) == 0 || 
 	 memcmp(xing_header2, "Xing", 4) == 0 || 
 	 memcmp(xing_header3, "Xing", 4) == 0 ||
 	 memcmp(fraunhofer_header, "VBRI", 4) == 0 ) {
