@@ -209,7 +209,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 				((tstop.tv_sec - user[x].tstart.tv_sec) * 1. + (tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.);
 
 			if (debug) {
-				printf("username: %s\ntime online: %f seconds\nTransfered: %lf KB\nspeed: %f KB/s\n", user[x].username, ((tstop.tv_sec - user[x].tstart.tv_sec) * 1. + (tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.), (double)(user[x].bytes_xfer / 1024.), speed);
+				printf("DEBUG SPEED INFO: username   = %s\nDEBUG SPEED INFO: time spent = %.2f seconds\nDEBUG SPEED INFO: transfered = %.0f KB\nDEBUG SPEED INFO: speed      = %.2f KB/s\n", user[x].username, ((tstop.tv_sec - user[x].tstart.tv_sec) * 1. + (tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.), (double)(user[x].bytes_xfer / 1024.), speed);
 				}
 			if ((!noshow && !mask && !(maskchar == '*')) || chidden) {
 				total_up_speed += speed;
@@ -269,7 +269,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 				(tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.);
 
 			if (debug) {
-				printf("username: %s\ntime online: %f seconds\nTransfered: %lf KB\nspeed: %f KB/s\n", user[x].username, ((tstop.tv_sec - user[x].tstart.tv_sec) * 1. + (tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.), (double)(user[x].bytes_xfer / 1024.), speed);
+				printf("DEBUG SPEED INFO: username   = %s\nDEBUG SPEED INFO: time spent = %.2f seconds\nDEBUG SPEED INFO: transfered = %.0f KB\nDEBUG SPEED INFO: speed      = %.2f KB/s\n", user[x].username, ((tstop.tv_sec - user[x].tstart.tv_sec) * 1. + (tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.), (double)(user[x].bytes_xfer / 1024.), speed);
 				}
 
 			if ((!noshow && !mask && !(maskchar == '*')) || chidden) {
