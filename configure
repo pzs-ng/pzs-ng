@@ -4621,7 +4621,11 @@ fi
 # Check whether --enable-ss5 or --disable-ss5 was given.
 if test "${enable_ss5+set}" = set; then
   enableval="$enable_ss5"
-  CFLAGS="$CFLAGS -D_WITH_SS5"
+
+	CFLAGS="$CFLAGS -D_WITH_SS5"
+	! [ -f zipscript/conf/zsconfig.h ] && cp -i zipscript/conf/zsconfig.h.ss5.dist zipscript/conf/zsconfig.h
+
+
 fi;
 
 NOFORMAT="-D_WITH_NOFORMAT"

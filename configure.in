@@ -88,7 +88,11 @@ if [[ $(uname -s) = "SunOS" ]]; then
 fi
 
 dnl sitestat5
-AC_ARG_ENABLE(ss5, AS_HELP_STRING([--enable-ss5], [compiles the zipscript for use with SiteStat 5]), CFLAGS="$CFLAGS -D_WITH_SS5")
+AC_ARG_ENABLE(ss5, AS_HELP_STRING([--enable-ss5], [compiles the zipscript for use with SiteStat 5]), [
+	CFLAGS="$CFLAGS -D_WITH_SS5"
+	! [[ -f zipscript/conf/zsconfig.h ]] && cp -i zipscript/conf/zsconfig.h.ss5.dist zipscript/conf/zsconfig.h
+	]
+)
 
 dnl noformat
 NOFORMAT="-D_WITH_NOFORMAT"
