@@ -25,7 +25,8 @@
 #define group_dirs	"/site/groups/ /site/incoming/mp3/.groups/"
 #define zip_dirs	"/site/incoming/0day/"
 #define sfv_dirs	"/site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/requests/"
-#define nocheck_dirs	"/site/private/"
+#define no_message_dirs	"/site/groups/ /site/requests/"
+##define nocheck_dirs	"/site/private/"
 #define audio_nocheck	"/site/groups/ /site/incoming/requests/"
 
 /* Directories for cleanup to check for broken incomplete files
