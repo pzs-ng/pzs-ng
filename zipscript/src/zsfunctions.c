@@ -493,23 +493,24 @@ removedotfiles()
 	}
 }
 
-int
-findfilename(char *filename)
+char *
+findfilename(char *filename, char *dest)
 {
-	int		retval = 0;
 	DIR		*dir;
 	struct dirent 	*dp;
 
 	dir = opendir(".");
 	while ((dp = readdir(dir))) {
 		if (!strcasecmp(dp->d_name, filename)) {
-			retval = 1;
+			if (dest == 0)
+				dest = malloc(strlen(dp->d_name));
+			strcpy(dest, dp->d_name);
 			break;
 		}
 	}
 	
 	closedir(dir);
-	return retval;
+	return dest;
 }
 
 /*

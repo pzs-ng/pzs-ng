@@ -37,7 +37,7 @@
 #include <errno.h>
 #include <sys/types.h>
 
-char           *
+char *
 abs2rel(path, base, result, size)
 	const char     *path;
 	const char     *base;

@@ -192,7 +192,7 @@ sfvdata_to_sfv(const char *source, const char *dest)
 void 
 delete_sfv(const char *path)
 {
-	char		missing_fname[PATH_MAX];
+	char		*f = 0, missing_fname[PATH_MAX];
 	FILE		*sfvfile;
 
 	SFVDATA		sd;
@@ -207,7 +207,7 @@ delete_sfv(const char *path)
 
 	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
 		snprintf(missing_fname, PATH_MAX, "%s-missing", sd.fname);
-		if (findfilename(missing_fname))
+		if ((f = findfilename(missing_fname, f)))
 			unlink(missing_fname);
 	}
 	
