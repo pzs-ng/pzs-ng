@@ -734,7 +734,11 @@ main(int argc, char **argv)
 			printf("\"ERROR\" \"SHMAT Failed.\"\n");
 		exit(1);
 	}
-	shmctl(shmid, IPC_STAT, &ipcbuf);
+
+	if (shmctl(shmid, IPC_STAT, &ipcbuf) == -1) {
+		perror("shmctl");
+		exit(EXIT_FAILURE);
+	}
 
 	if (argc == 1 && (!raw_output) && strlen(header))
 		show(header);
