@@ -67,7 +67,10 @@ void delete_sfv_file(struct LOCATIONS *locations) {
     FILE		*sfvfile;
     unsigned int	len;
 
-    if ((sfvfile = fopen(locations->sfv, "r")) == NULL) { d_log("Couldn't fopen %s.\n", locations->sfv); exit(EXIT_FAILURE); }
+    if ((sfvfile = fopen(locations->sfv, "r")) == NULL) {
+	d_log("Couldn't fopen %s.\n", locations->sfv);
+	exit(EXIT_FAILURE);
+    }
     /*sfvfile = fopen(locations->sfv, "r");*/
 
     fseek(sfvfile, sizeof(short int), SEEK_CUR);
@@ -130,7 +133,10 @@ void read_write_leader_file(struct LOCATIONS *locations, struct VARS *raceI, str
 	fwrite(userI->name, 1, 24, file);
     } else {
 	*raceI->misc.old_leader = 0;
-	if ((file = fopen( locations->leader, "w+" )) == NULL) { d_log("Couldn't write to %s.\n", locations->leader); exit(EXIT_FAILURE); }
+	if ((file = fopen( locations->leader, "w+" )) == NULL) { 
+		d_log("Couldn't write to %s.\n", locations->leader);
+		exit(EXIT_FAILURE);
+	}
 	fwrite(userI->name, 1, 24, file);
     }
     fclose(file);
@@ -231,6 +237,7 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
     int		fd_new	= open(".tmpsfv", O_CREAT|O_TRUNC|O_WRONLY, 0644);
     if ( fd_new != NULL ) {
         d_log("Failed to create temporary sfv file.\n");
+	exit(EXIT_FAILURE);
     }
 
     if ( sfv_comment != NULL ) {
@@ -241,6 +248,7 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
     fd = open(source, O_RDONLY);
     if ( fd == NULL ) {
         d_log("Failed to open %s.\n", source);
+	exit(EXIT_FAILURE);
     }
     buf = m_alloc(buf_bytes);
     read(fd, buf, buf_bytes);
@@ -250,6 +258,7 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
     fd = open(target, O_CREAT|O_TRUNC|O_WRONLY, 0666);
     if ( fd == NULL ) {
         d_log("Failed to create %s.\n", target);
+	exit(EXIT_FAILURE);
     }
     write(fd, &n, sizeof(short int));
 
@@ -354,7 +363,10 @@ void create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char
     pos = m_alloc(sizeof(int) * raceI->total.files);
     t_pos = m_alloc(sizeof(int) * raceI->total.files);
     fname = m_alloc(sizeof(char*) * raceI->total.files);
-    if ((r = fopen( locations->race, "r" )) == NULL) { d_log("Couldn't fopen %s.\n", locations->race); exit(EXIT_FAILURE); }
+    if ((r = fopen( locations->race, "r" )) == NULL) {
+	d_log("Couldn't fopen %s.\n", locations->race);
+	exit(EXIT_FAILURE);
+	}
     /*r = fopen( locations->race, "r" );*/
     c = 0;
 

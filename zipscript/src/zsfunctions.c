@@ -469,6 +469,7 @@ int execute(char *s) {
 	case 0: 
 	    close(1);
 	    close(2);
+	    d_log("Executing command: %s %s\n", command, argv);
 	    n = execv(command, argv);
 	    exit(0);
 	    break;
