@@ -20,7 +20,7 @@ set use_glftpd2					"AUTO"
 
 # What types of messages are counted as the different types of output
 # (for disabling etc)
-set msgtypes(RACE)					"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV UPDATE HALFWAY NEWLEADER COMPLETE STATS BADGENRE BADYEAR BADBITRATE WIPE WIPE-r"
+set msgtypes(RACE)					"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV DOUBLESFV UPDATE HALFWAY NEWLEADER COMPLETE STATS BADGENRE BADYEAR BADBITRATE WIPE WIPE-r"
 set msgtypes(DEFAULT)				"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT"
 
 # Sitename is for the %sitename-cookie in announces :)
@@ -118,6 +118,7 @@ set disable(LOGOUT)					1
 set disable(INCOMPLETE)					0
 set disable(RACE)					0
 set disable(SFV)					0
+set disable(DOUBLESFV)				0
 set disable(UPDATE)					0
 set disable(HALFWAY)					0
 set disable(NEWLEADER)					0

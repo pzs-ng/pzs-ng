@@ -299,9 +299,7 @@ proc basicreplace {rstring section} {
 #################################################################################
 # CONVERT COOKIES TO DATA                                                       #
 #################################################################################
-proc parse {msgtype msgline section} {
-	global variables announce random mpath use_glftpd2 theme theme_fakes defaultsection
-
+proc parse {msgtype msgline section} { global variables announce random mpath use_glftpd2 theme theme_fakes defaultsection
 	set type $msgtype
 
 	if {![string compare $type "NUKE"] || ! [string compare $type "UNNUKE"]} {
