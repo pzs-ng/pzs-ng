@@ -72,6 +72,7 @@ unsigned int
 readsfv(const char *path, struct VARS *raceI, int getfcount)
 {
 	int		insfv = 0;
+	short int	l_sfv_version = 0, v_sfv_version = sfv_version;
 	unsigned int	crc = 0;
 	FILE		*sfvfile;
 	DIR		*dir;
@@ -80,6 +81,16 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 
 	if (!(sfvfile = fopen(path, "r"))) {
 		d_log("readsfv: Failed to open sfv (%s): %s\n", path, strerror(errno));
+		return 0;
+	}
+
+	/* check version of the sfvdata */
+	fread(&l_sfv_version, sizeof(short int), 1, sfvfile);
+d_log("l: %d - v: %d\n", l_sfv_version, v_sfv_version);
+	if (l_sfv_version != v_sfv_version) {
+		d_log("sfvdata out of date - removing.\n");
+		fclose(sfvfile);
+		unlink(path);
 		return 0;
 	}
 
@@ -138,7 +149,7 @@ update_sfvdata(const char *path, const unsigned int crc)
 	
 	sd.crc32 = crc;
 	
-	lseek(fd, sizeof(short int), SEEK_CUR);
+	lseek(fd, sizeof(short int) * 2, SEEK_CUR);
 
 	while (read(fd, &sd, sizeof(SFVDATA))) {
 		if (strcasecmp(path, sd.fname) == 0) {
@@ -178,7 +189,7 @@ sfvdata_to_sfv(const char *source, const char *dest)
 	xlock(&fl, infd, F_RDLCK);
 	xlock(&fl, outfd, F_WRLCK);
 	
-	lseek(infd, sizeof(short int), SEEK_CUR);
+	lseek(infd, sizeof(short int) * 2, SEEK_CUR);
 
 	while (read(infd, &sd, sizeof(SFVDATA))) {
 		
@@ -222,7 +233,7 @@ delete_sfv(const char *path)
 	}
 	
 	/* jump past release_type */
-	fseek(sfvfile, sizeof(short int), SEEK_CUR);
+	fseek(sfvfile, sizeof(short int) * 2, SEEK_CUR);
 
 	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
 		snprintf(missing_fname, NAME_MAX, "%s-missing", sd.fname);
@@ -388,7 +399,7 @@ int
 copysfv(const char *source, const char *target)
 {
 	int		infd, outfd, i, retval = 0;
-	short int	music, rars, video, others, type;
+	short int	music, rars, video, others, type, l_sfv_version = sfv_version;
 	
 	char		*ptr, fbuf[2048];
 	FILE		*insfv;
@@ -431,6 +442,7 @@ copysfv(const char *source, const char *target)
 
 	dir = opendir(".");
 
+	write(outfd, &l_sfv_version, sizeof(short int));
 	write(outfd, &type, sizeof(short int));
 	
 	insfv = fdopen(infd, "r");
@@ -600,7 +612,8 @@ END:
 #endif
 	
 	closedir(dir);
-	lseek(outfd, 0L, SEEK_SET);
+//	lseek(outfd, 0L, SEEK_SET);
+	lseek(outfd, sizeof(short int), SEEK_SET);
 	write(outfd, &type, sizeof(short int));
 	xunlock(&fl, infd);
 	close(outfd);
