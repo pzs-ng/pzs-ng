@@ -1140,6 +1140,13 @@ main(int argc, char **argv)
 			d_log("Creating complete bar\n");
 			createstatusbar(convert(&raceI, userI, groupI, complete_bar));
 
+#if ( enable_complete_script == TRUE )
+			d_log("Executing complete script\n");
+			sprintf(target, complete_script " \"%s\"", raceI.file.name);
+			if (execute(target) != 0) {
+				d_log("Failed to execute complete_script: %s\n", strerror(errno));
+			}
+#endif
 			if ((locations.nfo_incomplete)) {
 				if (findfileext(".nfo")) {
 					d_log("Removing missing-nfo indicator (if any)\n");
@@ -1160,13 +1167,6 @@ main(int argc, char **argv)
 					}
 				}
 			}
-#if ( enable_complete_script == TRUE )
-			d_log("Executing complete script\n");
-			sprintf(target, complete_script " \"%s\"", raceI.file.name);
-			if (execute(target) != 0) {
-				d_log("Failed to execute complete_script: %s\n", strerror(errno));
-			}
-#endif
 		} else {
 
 			/* Release is at unknown state */
