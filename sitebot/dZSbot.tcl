@@ -29,7 +29,7 @@ if {![info exists binary(GLFTPD)] && ![info exists use_glftpd2]} {
 }
 
 if {![info exists use_glftpd2]} {
-	set glversion [exec "strings $binary(GLFTPD)|grep -i '^glftpd '|cut -f1 -d.|tr A-Z a-z"]
+	set glversion [exec strings $binary(GLFTPD) | grep -i '^glftpd ' | cut -f1 -d. | tr A-Z a-z]
 	if {$glversion == "glftpd 1"} {
 		use_glftpd2="NO"
 	} elseif {$glversion == "glftpd 2"} {
