@@ -80,7 +80,7 @@ if {$bindnopre == "YES"} {
 bind pub    -|- !who		who
 bind pub    -|- !speed		speed
 bind pub    -|- !bw			ng_bandwidth
-bind pub    -|- !bedn		ng_leechers
+bind pub    -|- !bwdn		ng_leechers
 bind pub    -|- !bwup		ng_uploaders
 bind pub    -|- !bnc		ng_bnc_check
 bind pub    -|- !free		show_free
