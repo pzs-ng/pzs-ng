@@ -52,8 +52,8 @@
 #
 #### MP3 specific cookies
 #
- %w  = Artist
- %x  = Genre
+ %x  = Artist
+ %w  = Genre
  %X  = Album
  %y  = Title
  %Y  = Year
