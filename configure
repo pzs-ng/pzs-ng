@@ -308,7 +308,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT GREP STRINGS CUT RM INSTALL MAKE CPP EGREP SSL_LIBS SSL_INCLUDE NOFORMAT ALTWHO GLPATH GLVERSION STATIC LCRYPT LCRYPTO PASSCHK PASSCHK2 M32 STRLCPY LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT GREP STRINGS CUT RM INSTALL MAKE CPP EGREP SSL_LIBS SSL_INCLUDE NOFORMAT ALTWHO GLPATH GLVERSION STATIC LCRYPT LCRYPTO PASSCHK PASSCHK2 M32 LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -4311,7 +4311,6 @@ fi
 done
 
 
-STRLCPY=""
 echo "$as_me:$LINENO: checking for strlcpy" >&5
 echo $ECHO_N "checking for strlcpy... $ECHO_C" >&6
 if test "${ac_cv_func_strlcpy+set}" = set; then
@@ -4407,8 +4406,6 @@ cat >>confdefs.h <<\_ACEOF
 #define HAVE_STRLCPY 1
 _ACEOF
 
-else
-  STRLCPY="strlcpy.o"
 fi
 
 
@@ -4531,8 +4528,6 @@ echo "$as_me: error: Couldn't detect glversion, please run ./configure --enable-
    { (exit 1); exit 1; }; }
   fi; fi
 fi
-
-
 
 
 
@@ -5201,7 +5196,6 @@ s,@LCRYPTO@,$LCRYPTO,;t t
 s,@PASSCHK@,$PASSCHK,;t t
 s,@PASSCHK2@,$PASSCHK2,;t t
 s,@M32@,$M32,;t t
-s,@STRLCPY@,$STRLCPY,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t
 CEOF

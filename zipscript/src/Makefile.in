@@ -9,12 +9,7 @@ LDFLAGS=@LDFLAGS@
 UNIVERSAL=stats.o convert.o race-file.o zsfunctions.o mp3info.o
 RM=@RM@ -f
 INSTALL=@INSTALL@
-
-# Nasty, but I know of now better way! :)
-STRLCPY=@STRLCPY@
-ifdef STRLCPY
- STRLCPY:=../../lib/strl/$(STRLCPY)
-endif
+STRLCPY=../../lib/strl/strlcpy.o
 
 RD-OBJECTS=racedebug.o
 ZS-OBJECTS=zipscript-c.o dizreader.o complete.o multimedia.o crc.o $(UNIVERSAL)

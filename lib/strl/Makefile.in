@@ -2,7 +2,7 @@ CC=@CC@
 CFLAGS=@CFLAGS@ -W -Wall @STATIC@ @NOFORMAT@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE @DEFS@ -I../include/ -I../../
 LDFLAGS=@LDFLAGS@
 
-all: @STRLCPY@
+all: strlcpy.o
 
 distclean: clean
 
