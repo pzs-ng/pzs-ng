@@ -348,8 +348,10 @@ short int fileexists(char *f) {
 
 /* Create symbolic link */
 void createlink(char *factor1, char *factor2, char *source, char *ltarget) {
- char	result[MAXPATHLEN],
-	*org,
+#if ( userellink == 1 )
+ char	result[MAXPATHLEN];
+#endif
+ char	*org,
 	*target;
  int	l1, l2, l3;
 
@@ -371,15 +373,19 @@ void createlink(char *factor1, char *factor2, char *source, char *ltarget) {
  memcpy(target - 1, "/", 2);
 
  mkdir(org, 0777);
+#if ( userellink == 1 )
  abs2rel(source, org, result, MAXPATHLEN);
+#endif
 
  memcpy(target, ltarget, l3);
 
+#if ( userellink == 1 )
  d_log("new: ln -s %s %s\n", result, org);
  symlink(result, org);
-
-/* d_log("old: ln -s %s %s\n", source, org);
- symlink(source, org);*/
+#else
+ d_log("old: ln -s %s %s\n", source, org);
+ symlink(source, org);
+#endif
 
  m_free(org);
 }

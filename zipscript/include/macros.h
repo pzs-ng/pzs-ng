@@ -17,12 +17,13 @@
 #endif
 
 
-/* absolute symlinks - obsolete*/
-/*symlink(locations.path, locations.incomplete)*/
-
 /* General */
 #if ( incompleteislink == 1 )
-# define create_incomplete() symlink(raceI.misc.release_name, locations.incomplete);
+# if ( userellink == 1 )
+#  define create_incomplete() symlink(raceI.misc.release_name, locations.incomplete)
+# else
+#  define create_incomplete() symlink(locations.path, locations.incomplete)
+# endif
 #else
 # define create_incomplete() createzerofile(locations.incomplete)
 #endif
