@@ -19,8 +19,9 @@ UD-OBJECTS=pzsng-undupe.o
 SC-OBJECTS=rescan.o dizreader.o stats.o convert.o complete.o crc.o multimedia.o $(UNIVERSAL)
 CH-OBJECTS=ng-chown.o
 ZS-DEPEND=cleanup.o complete.o convert.o datacleaner.o postdel.o racestats.o rescan.o stats.o zipscript-c.o multimedia.o $(UNIVERSAL)
+VID-OBECTS=video_info.o video.o audio.o avinfo.o
 
-all: pzsng-undupe racedebug zipscript-c postdel racestats cleanup datacleaner rescan ng-chown
+all: pzsng-undupe racedebug zipscript-c postdel racestats cleanup datacleaner rescan ng-chown video_info
 
 $(ZS-DEPEND): ../conf/zsconfig.h
 
@@ -51,22 +52,25 @@ ng-chown: $(CH-OBJECTS)
 rescan: $(SC-OBJECTS)
 	$(CC) $(LDFLAGS) -o $@ $(SC-OBJECTS)
 
+video_info: $(VID-OBECTS)
+	$(CC) $(LDFLAGS) -o $@ $(VID-OBECTS)
+
 install:
 	if [ ! -e "$(prefix)$(storage)" ]; then mkdir -p "$(prefix)$(storage)"; fi
 	chown 0:0 $(prefix)$(storage)
 	chmod 4777 $(prefix)$(storage)
 	if [ -e $(prefix)$(datapath)/logs/glftpd.log ]; then chmod 666 $(prefix)$(datapath)/logs/glftpd.log; fi
-	if [ -e $(bindir) ]; then cp -f zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chown $(bindir)/; fi
+	if [ -e $(bindir) ]; then cp -f zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chown video_info $(bindir)/; fi
 
 distclean: clean
 	$(RM) Makefile
 
 clean:
-	$(RM) *.o zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chown
+	$(RM) *.o zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chown video_info
 
 uninstall:
 	rm -rf "$(prefix)$(storage)"
-	rm -f $(bindir)/{zipscript-c,postdel,racestats,cleanup,datacleaner,rescan,racedebug,pzsng-undupe,ng-chown}
+	rm -f $(bindir)/{zipscript-c,postdel,racestats,cleanup,datacleaner,rescan,racedebug,pzsng-undupe,ng-chown,video_info}
 
 strip:
-	strip zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chown
+	strip zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chown video_info

@@ -19,4 +19,5 @@ announce.BADMSGINVITE	= "- %bold%ircnick%bold (%host) tried to invite himself wi
 announce.WELCOME	= "Welcome to %bold%sitename%bold's sitechan. Type %cmdprehelp for help."
 announce.WIPE		= "- Directory Wiped: %path/%bold%release%bold by %bold%user%bold@%group"
 announce.WIPE-r		= "- Directory Wiped: %path/%bold%release%bold and all subdirectories by %bold%user%bold@%group"
+announce.VIDEO_INFO	= "- Getting info from sample: %path/%bold%release%bold (STREAM: %bold%program_stream_type%bold@%bold%program_avg_bit_rate%boldkbps) (ViDEO: %boldMPEG-%video_mpeg_type %video_frame_rate%boldfps %bold%video_horizontal_size%boldx%bold%video_vertical_size%boldpx %bold%video_aspect_ratio%boldar) (AUDiO: %bold%audio_mpeg_type%bold@%bold%audio_bitrate%boldkbps %bold%audio_sampling_frequency%boldHz %bold%audio_mode%bold)."
 announce.DEFAULT 	= "- %msg"

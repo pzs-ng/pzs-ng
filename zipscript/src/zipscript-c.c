@@ -216,6 +216,9 @@ int main( int argc, char **argv ) {
     int			cnt, cnt2, n;
     int			write_log;
     struct stat		fileinfo;
+    unsigned int video_info_i;
+    char *video_info_arg;
+    char video_info_filter[8] = "/sample";
 
 #if ( benchmark_mode == TRUE )
     struct timeval bstart, bstop;
@@ -742,6 +745,29 @@ int main( int argc, char **argv ) {
 	    case 4: /* ACCEPTED FILE */
 		d_log("File type: NO CHECK\n"); 
 		no_check = TRUE;
+		if(!matchpath(group_dirs, locations.path) && !matchpath(nocheck_dirs, locations.path)) {
+			d_log("video_info: dir is set to be processed by video_info, continuing\n");
+			if(strlen(argv[2]) < 8)
+				break;
+			if((video_info_arg = malloc(strlen(argv[2]) + strlen(argv[1]) + 13)) == NULL) {
+				d_log("video_info: couldn't allocate memory, aborting\n");
+				break;
+			}
+			for(video_info_i = strlen(argv[2]) - 7; video_info_i < strlen(argv[2]); video_info_i++) {
+				if(tolower(argv[2][video_info_i]) != video_info_filter[video_info_i + 7 - strlen(argv[2])])
+					break;
+			}
+			if(video_info_i == strlen(argv[2])) {
+				sprintf(video_info_arg, "video_info %s/%s\n", argv[2], argv[1]);
+				if(system(video_info_arg) != 0)
+					d_log("video_info: failed to execute\n");
+				else
+					d_log("video_info: executed ok\n");
+			}
+			free(video_info_arg);
+		}
+		else
+			d_log("video_info: dir is set to NOT be processed by video_info, aborting\n");
 		break;
 		/* END OF ACCEPTED FILE CHECK */
 
