@@ -50,7 +50,7 @@ main()
 	g.gi = malloc(sizeof(struct GROUPINFO *) * 30);
 	memset(g.gi, 0, sizeof(struct GROUPINFO *) * 30);
 
-	getcwd(g.l.path, PATH_MAX);
+	getwd(g.l.path);
 
 	if ((matchpath(nocheck_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) && rescan_nocheck_dirs_allowed == FALSE) {
 		d_log("Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
