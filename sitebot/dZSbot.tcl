@@ -2073,6 +2073,11 @@ proc themereplace {targetString section} {
 	while {[regexp {(%c(\d)\{([^\{\}]+)\}|%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\}|%([lrm])(\d\d?)\{([^\{\}]+)\})} $targetString matchString dud padOp padLength padString]} {
 		# Check if any innermost %r/%l/%m are present. :-)
 		while {[regexp {%([lrm])(\d\d?)\{([^\{\}]+)\}} $targetString matchString padOp padLength padString]} {
+			set tmpPadString $padString
+			regsub -all {\003\d\d} $tmpPadString {} tmpPadString
+			set tmpPadString [string map {\002 "" \003 "" \037 ""} $tmpPadString]
+			incr padLength [expr [string length $padString] - [string length $tmpPadString]]
+
 			if {[string length $padString] >= $padLength} {
 				set paddedString $padString
 			} elseif {$padOp == "l"} {
@@ -2093,12 +2098,13 @@ proc themereplace {targetString section} {
 		set colorString [format "COLOR_%s_1" $section]
 		if {[lsearch -exact [array names theme] $colorString] != -1} {
 			regsub -all {%c(\d)\{([^\{\}]+)\}} $targetString {\\003$theme([format "COLOR_%s_" $section]\1)\2\\003} targetString
+			regsub {\003(\d)(?!\d)} $targetString {\\0030\1} targetString
 		} else {
 			regsub -all {%c(\d)\{([^\{\}]+)\}} $targetString {\\003$theme(COLOR\1)\2\\003} targetString
+			regsub {\003(\d)(?!\d)} $targetString {\\0030\1} targetString
 		}
 	}
 
-	regsub -all {\003(\d)(?!\d)} $targetString {\\0030\1} targetString
 	return [subst -nocommands $targetString]
 }
 #################################################################################
