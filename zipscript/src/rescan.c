@@ -48,6 +48,7 @@ main(int argc, char *argv[])
 	long		loc;
 	short		rescan_quick = FALSE;
 	char		one_name[NAME_MAX];
+	time_t		timenow;
 
 	GLOBAL		g;
 
@@ -399,6 +400,7 @@ main(int argc, char *argv[])
 		//n = direntries;
 		crc = 0;
 		rewinddir(dir);
+		timenow = time(NULL);
 		while ((dp = readdir(dir))) {
 			m = l = (int)strlen(dp->d_name);
 			
@@ -411,6 +413,10 @@ main(int argc, char *argv[])
 				f_uid = fileinfo.st_uid;
 				f_gid = fileinfo.st_gid;
 
+				if ((timenow == fileinfo.st_ctime) && (fileinfo.st_mode & 0111)) {
+					d_log("rescan.c: Seems this file (%s) is in the process of being uploaded. Ignoring for now.\n", dp->d_name);
+					continue;
+				}
 				strcpy(g.v.user.name, get_u_name(f_uid));
 				strcpy(g.v.user.group, get_g_name(f_gid));
 				strlcpy(g.v.file.name, dp->d_name, NAME_MAX);
@@ -419,7 +425,7 @@ main(int argc, char *argv[])
 				g.v.total.start_time = 0;
 
 				if (!fileexists("file_id.diz")) {
-					sprintf(exec, "%s -qqjnCLL \"%s\" file_id.diz", unzip_bin, g.v.file.name);
+					sprintf(exec, "%s -qqjnCLL \"%s\" file_id.diz 2>/dev/null", unzip_bin, g.v.file.name);
 					if (execute(exec) != 0) {
 						d_log("rescan: No file_id.diz found (#%d): %s\n", errno, strerror(errno));
 					} else {

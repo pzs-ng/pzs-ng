@@ -353,9 +353,9 @@ scripts. Here's a short description of each compiled binary:
     How to test: chroot /glftpd /bin/datacleaner
 		 chroot /glftpd /bin/datacleaner /site/path/to/file
 		 chroot /glftpd /bin/datacleaner "RMD /path/to/file" (no /site
-		 in front!)
+		 				 in front!)
 		 chroot /glftpd /bin/datacleaner "NUKE /path/to/file" (no /site
-		 in front!)
+		 				 in front!)
 
   - postdel - Should be run after you delete something (as a cscript). Will
     re-check the release and update the racedata accordingly.
@@ -387,8 +387,11 @@ scripts. Here's a short description of each compiled binary:
     handy when you manually move releases/files, or you suspect corruption of
     some files.
     How to test: (in chroot, in a site dir):
-                 /bin/rescan
-                 /bin/rescan --quick (scans directory for file-changes only)
+		 /bin/rescan
+		 /bin/rescan --quick (scans directory for file-changes only)
+		 /bin/rescan filename (rescan only one file)
+		 /bin/rescan "filename*" (rescan all files starting with
+			     the word "filename")
 
 The bot:
 --------
