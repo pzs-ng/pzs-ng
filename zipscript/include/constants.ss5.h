@@ -43,6 +43,8 @@
 #define general_race_type			"RACE"
 #define general_newleader_type			"NEWLEADER"
 #define general_halfway_type			"HALFWAY"
+#define norace_halfway_type                     "HALFWAY"
+#define race_halfway_type                       "HALFWAY"
 #define general_doublesfv_type			"DOUBLESFV"
 #define general_sfv_type			"SFV"
 #define general_badgenre_type			"BADGENRE"
