@@ -157,7 +157,7 @@
  */
 #define	audio_cbr_check			FALSE
 #define audio_cbr_warn			TRUE
-#define audio_cbr_warn_msg		"%B%U%B/%G has started an illegal upload %B%r%B (bitrate: %Wkbps). Naughty boy!"
+#define audio_cbr_warn_msg		"%B%U%B/%G has started an illegal upload %B%r%B (bitrate: %Xkbps). Naughty boy!"
 #define audio_year_check		TRUE
 #define audio_year_warn			TRUE
 #define audio_year_warn_msg		"%B%U%B/%G has started an illegal upload %B%r%B (year: %Y). Naughty boy!"
