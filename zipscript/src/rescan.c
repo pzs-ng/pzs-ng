@@ -88,14 +88,16 @@ void getrelname(char *directory) {
 	   k = 2;
     char   *path[2];
 
-    for ( cnt = locations.length_path - 1 ; k && cnt ; cnt-- ) if ( directory[cnt] == '/' ) {
-	k--;
-	l[k] = n;
-	path[k] = malloc(n + 1);
-	strncpy(path[k], directory + cnt + 1, n);
-	path[k][n] = 0;
-	n = 0;
-    } else n++;
+    for ( cnt = locations.length_path - 1 ; k && cnt ; cnt-- ) {
+	if ( directory[cnt] == '/' ) {
+		k--;
+		l[k] = n;
+		path[k] = malloc(n + 1);
+		strncpy(path[k], directory + cnt + 1, n);
+		path[k][n] = 0;
+		n = 0;
+	} else n++;
+    }
 
     if (( ! strncasecmp(path[1], "CD"  , 2) && l[1] <= 4 ) ||
 	    ( ! strncasecmp(path[1], "DISC", 4) && l[1] <= 6 ) ||
@@ -114,7 +116,6 @@ void getrelname(char *directory) {
 #else
 	locations.nfo_incomplete = NULL;
 #endif
-	if (k < 2) free(path[1]);
     } else {
 	raceI.misc.release_name = malloc(l[1] + 10);
 	locations.link_source   = malloc(locations.length_path + 1);
@@ -124,6 +125,7 @@ void getrelname(char *directory) {
 	locations.incomplete = c_incomplete(incomplete_indicator, path);
 	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
     }
+    if (k < 2) free(path[1]);
     if (k == 0) free(path[0]);
 }
 
@@ -146,10 +148,14 @@ int main () {
 
     umask(0666 & 000);
 
-	userI = malloc(sizeof(struct USERINFO *) * 30);
-	memset(userI, 0, sizeof(struct USERINFO *) * 30);
-	groupI = malloc(sizeof(struct GROUPINFO *) * 30);
-	memset(groupI, 0, sizeof(struct GROUPINFO *) * 30);
+    d_log("Allocating memory for variables\n");
+    userI = malloc(sizeof(struct USERINFO *) * 30);
+    memset(userI, 0, sizeof(struct USERINFO *) * 30);
+    groupI = malloc(sizeof(struct GROUPINFO *) * 30);
+    memset(groupI, 0, sizeof(struct GROUPINFO *) * 30);
+
+    locations.path = malloc( PATH_MAX );
+    getcwd( locations.path, PATH_MAX );
 
     raceI.misc.slowest_user[0] = 30000;
 
@@ -157,15 +163,11 @@ int main () {
     raceI.misc.fastest_user[0] = 0;
 	raceI.misc.release_type = RTYPE_NULL;
 
-    locations.path = malloc( PATH_MAX );
-    getcwd( locations.path, PATH_MAX );
-
-    n = (locations.length_path = strlen(locations.path)) + 1;
-
-    d_log("Allocating memory for variables\n");
-    locations.race   = malloc(n += 10 + (locations.length_zipdatadir = sizeof(storage) - 1));
+    locations.race   = malloc(n = strlen(locations.path) + 10 + sizeof(storage));
     locations.sfv    = malloc(n);
     locations.leader = malloc(n);
+    locations.length_path = strlen(locations.path);
+    locations.length_zipdatadir = sizeof(storage);
 
     getrelname(locations.path);
     buffer_groups( GROUPFILE );
