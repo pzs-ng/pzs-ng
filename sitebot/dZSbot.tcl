@@ -584,12 +584,46 @@ proc speed {nick uhost hand chan args} {
 			return 0
 		}
 	}
-	set base_output "$theme(PREFIX)$announce(DEFAULT)"
-	foreach line [split [exec $binary(WHO) [lindex $args 0]] "\n"] {
-		set output [replacevar $base_output "%msg" $line]
-		set output [basicreplace $output "SPEED"]
-		putserv "PRIVMSG $chan :$output"
+
+	set line ""
+	if { $disable(ALTWHO) == 0 } {
+		set output "$theme(PREFIX)$announce(SPEEDERROR)"
+		foreach line [split [exec $binary(WHO) --raw [lindex $args 0]] "\n"] {
+			set action [lindex $line 4]
+			if {$action == "DN"} {
+				set output "$theme(PREFIX)$announce(SPEEDDN)"
+			} elseif {$action == "UP"} {
+				set output "$theme(PREFIX)$announce(SPEEDUP)"
+			} elseif {$action == "ID"} {
+				set output "$theme(PREFIX)$announce(SPEEDID)"
+			}
+			set output [replacevar $output "%u_name" [lindex $line 2]]
+			set output [replacevar $output "%g_name" [lindex $line 3]]
+			set output [replacevar $output "%upspeed" [lindex $line 5]]
+			set output [replacevar $output "%dnspeed" [lindex $line 5]]
+			set output [replacevar $output "%idletime" [lindex $line 5]]
+			set output [replacevar $output "%tagline" [lindex $line 6]]
+			set output [replacevar $output "%timeonline" [lindex $line 7]]
+			set output [replacevar $output "%f_name" [lindex $line 8]]
+			set output [replacevar $output "%dnpercent" [lindex $line 9]]
+			set output [replacevar $output "%uppercent" [lindex $line 9]]
+			set output [basicreplace $output "SPEED"]
+			putserv "PRIVMSG $chan :$output"
+		}
+	} else {
+		set base_output "$theme(PREFIX)$announce(DEFAULT)"
+		foreach line [split [exec $binary(WHO) [lindex $args 0]] "\n"] {
+			set output [replacevar $base_output "%msg" $line]
+			set output [basicreplace $output "SPEED"]
+			putserv "PRIVMSG $chan :$output"
+		}
 	}
+
+        if {$line == ""} {
+              set output [basicreplace $output "SPEED"]
+                putserv "PRIVMSG $chan :$output"
+        }
+
 }
 #################################################################################
 

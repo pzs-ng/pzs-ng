@@ -150,8 +150,8 @@ set disable(COMPLETE_RACE_ZIP)				0
 set disable(COMPLETE_RACE_OTHER)			0
 set disable(COMPLETE_RACE_VIDEO)			0
 set disable(COMPLETE_RACE_AUDIO)			0
-set disable(DEBUG)					0
-set disable(DEFAULT)					0
+set disable(DEBUG)					1
+set disable(DEFAULT)					1
 set disable(DELDIR)					0
 set disable(DOUBLESFV)					0
 set disable(HALFWAY_RACE)				0
@@ -191,6 +191,7 @@ set disable(IMDB)					0
 set disable(IMDBVAR)					0
 set disable(IMDBFIND)					0
 set disable(FAILLOGIN)					0
+set disable(ALTWHO)					1
 
 #########################################################
 # ADVANCED CONFIG, EDIT CAREFULLY                       #

@@ -85,6 +85,11 @@ announce.TOTUPDN		= "[%b{bwinfo}] %type %b{%count} at %b{%total}KB/s (%b{%per}%)
 announce.TOTIDLE		= "[%b{bwinfo}] Currently %b{%count} users idle!"
 announce.USERIDLE		= "[%b{bwinfo}] %b{%u_name} of %g_name at %b{%idletime}s."
 announce.USER			= "[%b{bwinfo}] %b{%u_name} of %g_name on %b{%filename} (%b{%fper} done) at %b{%uspeed}KB/s (%b{%per} usage)."
+announce.SPEEDUP		= "[%b{bwinfo}] %b{%u_name} of %g_name is uploading %b{%f_name} at %b{%upspeed}KB/s (%uppercent)."
+announce.SPEEDDN		= "[%b{bwinfo}] %b{%u_name} of %g_name is downloading %b{%f_name} at %b{%dnspeed}KB/s (%dnpercent)."
+announce.SPEEDID		= "[%b{bwinfo}] %b{%u_name} of %g_name has been idle for %b{%idletime}."
+announce.SPEEDERROR		= "[%b{bwinfo}] Nope, try again. Found noone by that name on site."
+
 announce.NUKE		        = "[%b{nuke  }][%section] %b{%reldir} factor %b{%multiplier} by %b{%nuker} [reason] %b{%reason} [nukees] %b{%nukees}."
 announce.UNNUKE		        = "[%b{unnuke}][%section] %b{%reldir} factor %b{%multiplier} by %b{%nuker} [reason] %b{%reason} [nukees] %b{%nukees}."
 announce.MSGINVITE	        = "[%b{invite}] %b{%u_name} of %g_name invited himself as %b{%u_ircnick}."
