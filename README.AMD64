@@ -3,8 +3,9 @@ Special notes for sitewho and ng-bw on the AMD64 platform
 
 Because glftpd is compiled as 32-bit, the variable datatypes in the shared
 memory it allocates have different sizes from the corresponding 64-bit
-datatypes. This means that when sitewho and ng-bw are compiled as 64-bit and tryto read the "struct ONLINE" that glftpd shares, they try to read it with the
-size it would be if it was 64-bit.
+datatypes. This means that when sitewho and ng-bw are compiled as 64-bit and
+try to read the "struct ONLINE" that glftpd shares, they try to read it with
+the size it would be if it was 64-bit.
 
 To solve this, "-m32" is added to the Makefiles for sitewho and ng-bw. With
 this option, the binaries are compiled 32-bit instead of 64-bit. However, to
