@@ -1327,7 +1327,7 @@ main(int argc, char **argv)
 
 #if ( del_banned_release )
 	if (deldir) {
-		move_progress_bar(1, &g.v);
+		move_progress_bar(1, &g.v, g.ui, g.gi);
 		if (g.l.incomplete)
 			unlink(g.l.incomplete);
 		del_releasedir(g.l.path);
