@@ -33,6 +33,7 @@
 #### Appended messages
 #
  %R  = Racers message 
+ %B  = All Racers
  %l  = Fastest file message
  %L  = Slowest file message
  %t  = Group TopN
@@ -42,7 +43,7 @@
 #
 #### Static cookies
 #
- %B  = Bold (on/off)
+ %Z  = short_sitename
  %%  = % char
  %K  = user's tagline
 #
@@ -74,7 +75,7 @@
  %H  = Frame rate (fps) 
 #
 #
- %Z  = RAR Compression method (!! NOT USED ATM !!)
+ %J  = RAR Compression method (!! SHOULD NOT BE USED ATM !!)
 
 
 

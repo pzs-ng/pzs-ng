@@ -1144,6 +1144,14 @@ proc launchnuke2 {type path section sargs dargs} {
 	set nuke(NUKEE) [string trim $nuke(NUKEE) ", "]
 	set split [split $nuke(PATH) "/"]
 	set ll [llength $split]
+	set split2 [split $mpath "/"]
+	set sl [llength $split2]
+	set temp [lrange $split [expr $sl - 1] end]
+	set relname ""
+	foreach part $temp {
+		set relname $relname/$part
+	}
+	set relname [string range $relname 1 end]
 
 	set output "$theme(PREFIX)$announce($nuke(TYPE))"
 	set output [replacevar $output "%nuker" $nuke(NUKER)]
@@ -1152,21 +1160,7 @@ proc launchnuke2 {type path section sargs dargs} {
 	set output [replacevar $output "%multiplier" $nuke(MULT)]
 	set output [replacevar $output "%reason" $nuke(REASON)]
 	set output [replacevar $output "%section" $nuke(SECTION)]
-
-	set split [split $nuke(PATH) "/"]
-	set ll [llength $split]
-
-	set split2 [split $mpath "/"]
-	set sl [llength $split2]
-
-	set temp [lrange $split [expr $sl - 1] end]
-		set relname ""
-		foreach part $temp {
-		set relname $relname/$part
-	}
-	set temp [string range $relname 1 end]
-
-        set output [replacevar $output "%relname" $temp]
+	set output [replacevar $output "%relname" $relname]
 	set output [replacevar $output "%reldir" [lindex $split [expr $ll -1]]]
 	set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
 	set output [basicreplace $output $nuke(TYPE)]
@@ -1215,6 +1209,14 @@ proc launchnuke {} {
 
 	set split [split $nuke(PATH) "/"]
 	set ll [llength $split]
+	set split2 [split $mpath "/"]
+	set sl [llength $split2]
+	set temp [lrange $split [expr $sl - 1] end]
+	set relname ""
+	foreach part $temp {
+		set relname $relname/$part
+	}
+	set relname [string range $relname 1 end]
 
 	set output "$theme(PREFIX)$announce($nuke(TYPE))"
 	set output [replacevar $output "%nuker" $nuke(NUKER)]
@@ -1223,21 +1225,7 @@ proc launchnuke {} {
 	set output [replacevar $output "%multiplier" $nuke(MULT)]
 	set output [replacevar $output "%reason" $nuke(REASON)]
 	set output [replacevar $output "%section" $nuke(SECTION)]
-
-        set split [split $nuke(PATH) "/"]
-        set ll [llength $split]
-
-        set split2 [split $mpath "/"]
-        set sl [llength $split2]
-
-        set temp [lrange $split [expr $sl - 1] end]
-                set relname ""
-                foreach part $temp {
-                set relname $relname/$part
-        }
-        set temp [string range $relname 1 end]
-
-        set output [replacevar $output "%relname" $temp]
+	set output [replacevar $output "%relname" $relname]
 	set output [replacevar $output "%reldir" [lindex $split [expr $ll -1]]]
 	set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
 	set output [basicreplace $output $nuke(TYPE)]
