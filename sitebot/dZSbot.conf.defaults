@@ -13,18 +13,18 @@
 #############################################################
 # Locations of all the usual files, change is usually only required
 # if you have another glroot than /glftpd/.
-set location(PASSWD)        "/glftpd/etc/passwd"
-set location(USERS)         "/glftpd/ftp-data/users/"
-set location(GLCONF)        "/etc/glftpd.conf"
-set location(GROUP)         "/glftpd/etc/group"
+set location(PASSWD)    "/glftpd/etc/passwd"
+set location(USERS)     "/glftpd/ftp-data/users/"
+set location(GLCONF)    "/etc/glftpd.conf"
+set location(GROUP)     "/glftpd/etc/group"
 
 # Multiple Log Files
 # If you wish to read several logfiles, uncomment/add and change path/name(s).
-set glftpdlog(GLLOG01)      "/glftpd/ftp-data/logs/glftpd.log"
-set loginlog(LOGINLOG01)    "/glftpd/ftp-data/logs/login.log"
-#set glftpdlog(GLLOG02)     "/glftpd/ftp-data/logs.ext/glftpd.log"
-#set loginlog(LOGINLOG02)   "/glftpd/ftp-data/logs.ext/login.log"
-set max_log_change          3000
+set glftpdlog(GL1)      "/glftpd/ftp-data/logs/glftpd.log"
+set loginlog(LOGIN1)    "/glftpd/ftp-data/logs/login.log"
+#set glftpdlog(GL2)     "/glftpd/ftp-data/logs.ext/glftpd.log"
+#set loginlog(LOGIN2)   "/glftpd/ftp-data/logs.ext/login.log"
+set max_log_change      3000
 
 # These are the binaries the script will use. They are usually best left
 # as their default values (btw, check that they all are where they should
@@ -68,42 +68,52 @@ set sitename            "pzs-ng"
 set cmdpre              "!pn"
 set bindnopre           "TRUE"
 
-# Your sites bandwidth - used for % of bandwidth used calculations in !bw (in kilobytes)
-# 100 mbit full duplex
+# Your sites bandwidth, used for bandwidth usage calculations (in kilobytes/s).
+# 100mbit full duplex
 set speed(INCOMING)     12500
 set speed(OUTGOING)     12500
-# 4096 / 1024 kbit asymmetric dsl
+# 10mbit full duplex
+#set speed(INCOMING)    1280
+#set speed(OUTGOING)    1280
+# 4096/1024 kbit ADSL
 #set speed(INCOMING)    512
 #set speed(OUTGOING)    128
-# etc.
 
-# speed announces
-# speed should be quoted in 'kb' (kilobytes), 'mb' (megabytes), 'kbit' (kilobits),
-# 'mbit' (megabits), 'autobyte', 'autobit' or 'disabled'.
+# Speed unit conversions:
+#
+# autobyte - Convert to most appropriate byte unit.
+#  autobit - Convert to most appropriate bit unit.
+#       kb - Convert to KB/s
+#       mb - Convert to MB/s
+#     kbit - Convert to Kbit/s
+#     mbit - Convert to Mbit/s
+# disabled - No conversion
 set speedmeasure        "autobyte"
 
-# threshold used on auto-setting, to move from on to the other. (normally is 1000 or 1024)
+# Threshold used on auto-setting, to move from on to the other. (normally is 1000 or 1024)
 set speedthreshold      1024
 
-# During !idlers what is the minimum amount of seconds for a user to be shown as "idle"
-# set to 0 to show all users who are not currently upload/downloading (may be a lot)
-set minidletime         30
+# During !idlers what is the minimum amount of seconds for a user to be shown as idle,
+# set to 0 to show all users who are not currently upload/downloading (may be a lot).
+set minidletime         15
 
 # Default number of results to return for !new, !search, !nukes and !unnukes.
 set default_results     10
+
 # Maximum number of results to return, when the -max parameter is specified.
 set maximum_results     25
+
 # Required number of alphanumeric characters for the !search pattern.
 set search_chars        3
 
-# Definition of hd devices (for freespace) Syntax is "disk sections".
-# 'sections' is purely for cosmetic uses (output)
+# Definition of hd devices, for free space. Format: "disk sections"
+# The 'sections' are purely for cosmetic use.
 set device(0)           "/dev/ad0s1f MP3"
 #set device(1)          "/dev/ad0s1e ISO"
 
 # Max length of devices before splitting to new line (note: you need to take
-# the rest of the announce(FREE) into account yourself) Also, it'll output
-# total on all lines, if you have multiple. Set it to 0 to disable.
+# the rest of the announce.FREE into account) Also, it will output the total
+# on each line, if there are multiple lines. Set to 0 to disable.
 set dev_max_length      300
 
 #############################################################
@@ -121,7 +131,7 @@ set bnc(PING)           "TRUE"
 set bnc(SECURE)         "TRUE"
 
 # List of bouncers to check for the !bnc command.
-# Format: description:hhostname:port
+# Format: description:hostname:port
 set bnc(LIST)           "Canada:bnc.host.ca:123 Germany:bnc.host.de:456 Sweden:bnc.host.se:789"
 
 # Username and password to use for testing bncs (must exist with this box's ip added)
@@ -156,8 +166,7 @@ set sections            ""
 #set disabletypes(0DAY) "BAD_* HALFWAY_* NEWLEADER_* RACE_* UPDATE_*"
 #set disabletypes(MP3)  "BADBITRATE BADGENRE BADMSGINVITE BADYEAR UPDATE_*"
 
-# Which channels we announce the different things to.
-# Space separated lists, you can have more than one channel.
+# Which channels we announce to, separate multiple channels with a single space.
 set mainchan            ""
 #set chanlist(0DAY)     $mainchan
 #set chanlist(APPS)     $mainchan
@@ -169,8 +178,8 @@ set chanlist(DEFAULT)   $mainchan
 set chanlist(INVITE)    $mainchan
 set chanlist(WELCOME)   $mainchan
 
-# Which channels we invite nicks to. (per default it invites
-# to the channels it announces invites to, but you can change that)
+# Which channels should users be invited to (by default, users are invited
+# to the same channel the invite is announced in).
 set invite_channels     $chanlist(INVITE)
 
 # Separate private/staff channel(s). For each channel you can define which
@@ -201,7 +210,7 @@ set announce(THEMEFILE) "themes/default.zst"
 set msgtypes(SECTION)   "IMDB IMDBVAR PRE NEWDIR DELDIR NUKE UNNUKE WIPE WIPE-r BAD_FILE_0SIZE BAD_FILE_BITRATE BAD_FILE_CRC BAD_FILE_DISALLOWED BAD_FILE_DUPENFO BAD_FILE_GENRE BAD_FILE_NOSFV BAD_FILE_SFV BAD_FILE_WRONGDIR BAD_FILE_YEAR BAD_FILE_ZIP BADBITRATE BADGENRE BADYEAR COMPLETE_AUDIO_CBR COMPLETE_AUDIO_VBR COMPLETE_OTHER COMPLETE_RAR COMPLETE_VIDEO COMPLETE_ZIP COMPLETE_STAT_RACE_AUDIO_CBR COMPLETE_STAT_RACE_AUDIO_VBR COMPLETE_STAT_RACE_OTHER COMPLETE_STAT_RACE_RAR COMPLETE_STAT_RACE_VIDEO COMPLETE_STAT_RACE_ZIP DOUBLESFV HALFWAY_NORACE_AUDIO HALFWAY_NORACE_OTHER HALFWAY_NORACE_RAR HALFWAY_NORACE_VIDEO HALFWAY_NORACE_ZIP HALFWAY_RACE_AUDIO HALFWAY_RACE_OTHER HALFWAY_RACE_RAR HALFWAY_RACE_VIDEO HALFWAY_RACE_ZIP INCOMPLETE NEWLEADER_AUDIO NEWLEADER_OTHER NEWLEADER_RAR NEWLEADER_VIDEO NEWLEADER_ZIP RACE_AUDIO RACE_OTHER RACE_RAR RACE_VIDEO RACE_ZIP SFV_AUDIO SFV_OTHER SFV_RAR SFV_VIDEO UPDATE_CBR UPDATE_OTHER UPDATE_RAR UPDATE_VBR UPDATE_VIDEO UPDATE_ZIP"
 set msgtypes(DEFAULT)   "BADHOSTMASK BADMSGINVITE BADPASSWORD BANNEDHOST DELETED IMDBFIND IMDBFINDVAR INVITE IPNOTADDED LOGIN LOGOUT  MSGINVITE REQFILLED REQUEST TAGLINE TIMEOUT"
 
-# Redirect messages to the defined channels.
+# Redirect events to the defined channels.
 #set redirect(LOGIN)    "#pzs-ng #ng-staff"
 #set redirect(LOGOUT)   "#pzs-ng #ng-staff"
 #set redirect(WIPE)     "#ng-staff"
