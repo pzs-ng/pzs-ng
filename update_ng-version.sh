@@ -18,7 +18,8 @@ if [ -z "$1" ]; then
 	echo "syntax: $0 <revision>";
 	exit 1
 fi
-
-echo -n 'const char* ng_version(void) { const char* NG_Version = "'	> $FILE
-echo -n "$STRING_PRE$REV$STRING_POST"								>> $FILE
-echo '"; return NG_Version; }'										>> $FILE
+echo '' > $FILE
+echo -n 'const char* ng_version(void) { const char* NG_Version = "' >> $FILE
+echo -n "$STRING_PRE$REV$STRING_POST" >> $FILE
+echo '"; return NG_Version; }' >> $FILE
+echo '' >> $FILE
