@@ -30,12 +30,16 @@
 #define rar_announce_norace_complete_type	"COMPLETE_RAR"
 #define other_announce_norace_complete_type	"COMPLETE_OTHER"
 #define audio_announce_norace_complete_type	"COMPLETE_AUDIO"
+#define audio_vbr_announce_norace_complete_type	"COMPLETE_AUDIO_VBR"
+#define audio_cbr_announce_norace_complete_type	"COMPLETE_AUDIO_CBR"
 #define general_announce_norace_complete_type	"COMPLETE"
 #define video_announce_race_complete_type	"COMPLETE_RACE_VIDEO"
 #define zip_announce_race_complete_type		"COMPLETE_RACE_ZIP"
 #define rar_announce_race_complete_type		"COMPLETE_RACE_RAR"
 #define other_announce_race_complete_type	"COMPLETE_RACE_OTHER"
 #define audio_announce_race_complete_type	"COMPLETE_RACE_AUDIO"
+#define audio_vbr_announce_race_complete_type	"COMPLETE_RACE_AUDIO_VBR"
+#define audio_cbr_announce_race_complete_type	"COMPLETE_RACE_AUDIO_CBR"
 #define general_announce_race_complete_type	"COMPLETE_RACE"
 #define audio_announce_vbr_update_type		"UPDATE_VBR"
 #define audio_announce_cbr_update_type		"UPDATE_CBR"
@@ -90,8 +94,8 @@
 					 * cookie - !!MUST BE ONLY ONE (1)
 					 * CHAR!! */
 #define racersmsg		"%u/%g"	/* Put in %R cookie */
-#define audio_vbr		"{%X} {%z} {%Q} {VBR} {%I}"	/* Put in %j cookie */
-#define audio_cbr		"{%X} {%z} {%Q} {CBR}"	/* Put in %j cookie */
+#define audio_vbr		"{%w} {%Y} {%X} {%z} {%Q} {VBR} {%I} {%x} {%W} {%y} {%h} {%q}"	/* Put in %j cookie */
+#define audio_cbr		"{%w} {%Y} {%X} {%z} {%Q} {CBR} {%x} {%W} {%y} {%h} {%q}"	/* Put in %j cookie */
 
 /*
  * Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 &
@@ -108,7 +112,7 @@
 #define audio_sfv		DISABLED
 #endif
 #if ( disable_audio_update == FALSE )
-#define audio_update		"{%U} {%G} {%f} {%.0S} {%w} {%Y} %j {%n} {%r} {%x} {%W} {%y} {%h} {%q} {%K}"
+#define audio_update		"{%U} {%G} {%f} {%.0S} %j {%n} {%r} {%K}"
 #else
 #define audio_update		DISABLED
 #endif
@@ -123,7 +127,7 @@
 #define audio_newleader		DISABLED
 #endif
 #if ( disable_audio_complete == FALSE )
-#define audio_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0 {%n} %t %T"
+#define audio_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %j %l %L %C0 %c0 {%n} %t %T"
 #else
 #define audio_complete		DISABLED
 #endif
@@ -133,7 +137,7 @@
 #define audio_norace_halfway	DISABLED
 #endif
 #if ( disable_audio_norace_complete == FALSE )
-#define audio_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G} {%n} {%K}"
+#define audio_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G} %j {%n} {%K}"
 #else
 #define audio_norace_complete	DISABLED
 #endif

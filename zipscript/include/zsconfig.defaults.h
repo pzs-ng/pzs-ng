@@ -869,3 +869,10 @@
 #define KEY				0x0000DEAD
 #endif
 
+#ifndef charbar_missing
+#define charbar_missing			":"
+#endif
+#ifndef charbar_filled
+#define charbar_filled			"#"
+#endif
+

@@ -982,8 +982,11 @@ main(int argc, char **argv)
 				complete_bar = audio_completebar;
 				complete_msg = CHOOSE(raceI.total.users, audio_complete, audio_norace_complete);
 				complete_type = CHOOSE(raceI.total.users, audio_complete_type, audio_norace_complete_type);
-				complete_announce = CHOOSE(raceI.total.users, audio_announce_race_complete_type, audio_announce_norace_complete_type);
-
+				if (raceI.audio.is_vbr == 0) {
+					complete_announce = CHOOSE(raceI.total.users, audio_cbr_announce_race_complete_type, audio_cbr_announce_norace_complete_type);
+				} else {
+					complete_announce = CHOOSE(raceI.total.users, audio_vbr_announce_race_complete_type, audio_vbr_announce_norace_complete_type);
+				}
 
 				d_log("Symlinking audio\n");
 				if (!strncasecmp(locations.link_target, "VA", 2) && (locations.link_target[2] == '-' || locations.link_target[2] == '_'))

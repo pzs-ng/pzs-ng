@@ -280,14 +280,22 @@ void
 buffer_progress_bar(struct VARS *raceI)
 {
 	int		n;
+	char		*char_filled = 0, *char_missing = 0;
+//	char		char_missing = ':';
 
+	char_filled = malloc(sizeof(charbar_filled));
+	char_missing = malloc(sizeof(charbar_missing));
+	char_filled = charbar_filled;
+	char_missing = charbar_missing;
 	raceI->misc.progress_bar[14] = 0;
 	if (raceI->total.files > 0) {
 		for (n = 0; n < (raceI->total.files - raceI->total.files_missing) * 14 / raceI->total.files; n++)
-			raceI->misc.progress_bar[n] = '#';
+			raceI->misc.progress_bar[n] = *char_filled;
 		for (; n < 14; n++)
-			raceI->misc.progress_bar[n] = ':';
+			raceI->misc.progress_bar[n] = *char_missing;
 	}
+	free(char_filled);
+	free(char_missing);
 }
 
 /*

@@ -45,14 +45,15 @@ announce.COMPLETE_RAR		= "[%b{done  }][%section] %b{%reldir} with %b{%t_files} f
 announce.COMPLETE_ZIP		= "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}MB) was completed in %b{%t_duration} (avg. %b{%t_avgspeed}KB/s) by %b{%u_name} of %b{%g_name}."
 announce.COMPLETE_OTHER		= "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}MB) was completed in %b{%t_duration} (avg. %b{%t_avgspeed}KB/s) by %b{%u_name} of %b{%g_name}."
 announce.COMPLETE_VIDEO		= "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}MB) was completed in %b{%t_duration} (avg. %b{%t_avgspeed}KB/s) by %b{%u_name} of %b{%g_name}."
-announce.COMPLETE_AUDIO		= "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}MB) was completed in %b{%t_duration} (avg. %b{%t_avgspeed}KB/s) by %b{%u_name} of %b{%g_name}."
+announce.COMPLETE_AUDIO_CBR	= "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}MB) was completed in %b{%t_duration} (avg. %b{%t_avgspeed}KB/s) by %b{%u_name} of %b{%g_name}."
+announce.COMPLETE_AUDIO_VBR	= "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}MB) was completed in %b{%t_duration} (avg. %b{%t_avgspeed}KB/s) by %b{%u_name} of %b{%g_name}."
 announce.COMPLETE_RACE		= "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}MB) was completed in %b{%t_duration} (avg. %b{%t_avgspeed}KB/s) by %b{%u_count} user(s) in %b{%g_count} group(s)."
 announce.COMPLETE_RACE_RAR	= "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}MB) was completed in %b{%t_duration} (avg. %b{%t_avgspeed}KB/s) by %b{%u_count} user(s) in %b{%g_count} group(s)."
 announce.COMPLETE_RACE_ZIP	= "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}MB) was completed in %b{%t_duration} (avg. %b{%t_avgspeed}KB/s) by %b{%u_count} user(s) in %b{%g_count} group(s)."
 announce.COMPLETE_RACE_OTHER	= "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}MB) was completed in %b{%t_duration} (avg. %b{%t_avgspeed}KB/s) by %b{%u_count} user(s) in %b{%g_count} group(s)."
 announce.COMPLETE_RACE_VIDEO	= "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}MB) was completed in %b{%t_duration} (avg. %b{%t_avgspeed}KB/s) by %b{%u_count} user(s) in %b{%g_count} group(s)."
-announce.COMPLETE_RACE_AUDIO	= "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}MB) was completed in %b{%t_duration} (avg. %b{%t_avgspeed}KB/s) by %b{%u_count} user(s) in %b{%g_count} group(s)."
-
+announce.COMPLETE_RACE_AUDIO_CBR	= "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}MB) was completed in %b{%t_duration} (avg. %b{%t_avgspeed}KB/s) by %b{%u_count} user(s) in %b{%g_count} group(s)."
+announce.COMPLETE_RACE_AUDIO_VBR	= "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}MB) was completed in %b{%t_duration} (avg. %b{%t_avgspeed}KB/s) by %b{%u_count} user(s) in %b{%g_count} group(s)."
 # Announce done by the postdel binary
 announce.INCOMPLETE		= "[%b{d0h!  }][%section] %b{%releasename} is now incomplete thanks to %b{%u_name} of %b{%g_name}."
 
