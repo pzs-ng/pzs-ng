@@ -81,7 +81,8 @@ void getrelname(char *directory) {
  l = strlen(path[1]);
  
  if (( ! strncasecmp(path[1], "CD"  , 2) && l <= 4 ) ||
-     ( ! strncasecmp(path[1], "DISC", 4) && l <= 6 )) {
+     ( ! strncasecmp(path[1], "DISC", 4) && l <= 6 ) ||
+     ( ! strncasecmp(path[1], "DVD" , 3) && l <= 5 )) {
   n = strlen(path[0]);
   raceI.misc.release_name = malloc( n + 18 );
   locations.link_source = malloc(k = (locations.length_path - l)); k--;
