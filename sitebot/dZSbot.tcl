@@ -762,14 +762,14 @@ proc loadtheme {file} {
 		regsub -all {%c(\d)\{([^\}]+)\}} $value {\\003$theme(COLOR\1)\2\\003} value
 		regsub -all {\003(\d)(?!\d)} $value {\\0030\1} value
 		regsub -all {\[} $value {\\[} value; regsub -all {\]} $value {\\]} value
-		set theme($setting) [subst $value]
+		set theme($name) [subst $value]
 	}
 	foreach name [array names theme_fakes] {
 		set value $theme_fakes($name)
 		regsub -all {%c(\d)\{([^\}]+)\}} $value {\\003$theme(COLOR\1)\2\\003} value
 		regsub -all {\003(\d)(?!\d)} $value {\\0030\1} value
 		regsub -all {\[} $value {\\[} value; regsub -all {\]} $value {\\]} value
-		set theme_fakes($setting) [subst $value]
+		set theme_fakes($name) [subst $value]
 	}
 	return 1
 }	
