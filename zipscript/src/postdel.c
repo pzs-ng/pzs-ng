@@ -336,7 +336,6 @@ int main( int argc, char **argv ) {
  free(locations.race);
  free(locations.sfv);
  free(locations.leader);
- free(raceI.user.name);
 
  d_log("Exit\n");
  return 0;
