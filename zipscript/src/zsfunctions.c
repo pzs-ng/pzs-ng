@@ -1064,6 +1064,7 @@ mark_as_bad(char *filename)
 		d_log("Error - failed to rename %s to %s.\n", filename, newname);
 	} else {
 		createzerofile(filename);
+		chmod(newname, 0644);
 	}
 	free(newname);
 #endif

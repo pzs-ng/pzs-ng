@@ -502,7 +502,7 @@ main(int argc, char **argv)
 			d_log("Testing file integrity with %s\n", unzip_bin);
 			sprintf(target, "%s -qqt \"%s\"", unzip_bin, raceI.file.name);
 			if (execute(target) != 0) {
-				d_log("Integrity check failed: %s\n", strerror(errno));
+				d_log("Integrity check failed (#%d): %s\n", errno, strerror(errno));
 				sprintf(raceI.misc.error_msg, BAD_ZIP);
 				mark_as_bad(raceI.file.name);
 				write_log = raceI.misc.write_log;
@@ -536,7 +536,7 @@ main(int argc, char **argv)
 				d_log("file_id.diz does not exist, trying to extract it from %s\n", raceI.file.name);
 				sprintf(target, "%s -qqjnCLL %s file_id.diz", unzip_bin, raceI.file.name);
 				if (execute(target) != 0) {
-					d_log("No file_id.diz found: %s\n", strerror(errno));
+					d_log("No file_id.diz found (#%d): %s\n", errno, strerror(errno));
 				}
 				chmod("file_id.diz", 0666);
 			}
