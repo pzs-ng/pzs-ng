@@ -645,7 +645,7 @@ proc ng_uploaders {nick uhost hand chan args} {
 					UP {
 						set user  [lindex $line 2]
 						set group [lindex $line 3]
-						set uspeed [replacevar [lindex $line 5] "KBs" ""]
+						set uspeed [replacevar [lindex $line 5] "KB/s" ""]
 						set tagline [lindex $line 6]
 						set since [lindex $line 7]
 						set filename [lindex $line 8]
@@ -735,7 +735,7 @@ proc ng_leechers {nick uhost hand chan args} {
 					DN {
 						set user  [lindex $line 2]
 						set group [lindex $line 3]
-						set uspeed [replacevar [lindex $line 5] "KBs" ""]
+						set uspeed [replacevar [lindex $line 5] "KB/s" ""]
 						set tagline [lindex $line 6]
 						set since [lindex $line 7]
 						set filename [lindex $line 8]
