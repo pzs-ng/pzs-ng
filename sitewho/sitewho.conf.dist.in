@@ -3,6 +3,7 @@ headerfile = /ftp-data/misc/who.head
 footerfile = /ftp-data/misc/who.foot
 maskeddirectories = /site/groups/ /site/admins/ /site/private/
 hiddenusers = sitebot siteop
+hiddengroups = bots siteops
 seeallflags = 1DE
 maxusers = 20
 
@@ -10,6 +11,7 @@ maxusers = 20
 ##############
 # maskeddirectories = <directory> <directory2> ... Real actions of users in these directories are not shown
 # hiddenusers = <login> <login2> ... These users are not shown in the list
+# hiddengroups = <group> <group2> ... nor these groups
 # seeallflags = Users with these flags see everything
 ##################################################
 
