@@ -2,28 +2,28 @@
 #include "constants.h"
 
 struct USERINFO {
- char				name[24];	/* Username				*/
- unsigned long long	bytes;		/* Bytes uploaded			*/
- double				speed;		/* Time spent uploading (secs)	*/
- unsigned char		files;		/* Files uploaded			*/
- unsigned char		pos;		/* User position 			*/
- unsigned char		group;		/* Primary group number		*/
+ char				name[24];	/* Username */
+ unsigned long long	bytes;		/* Bytes uploaded */
+ double				speed;		/* Time spent uploading (secs) */
+ unsigned char		files;		/* Files uploaded */
+ unsigned char		pos;		/* User position */
+ unsigned char		group;		/* Primary group number */
 
- unsigned			dayup;		/* Day up stats 			*/
- unsigned			wkup;		/* Week				*/
- unsigned			monthup;	/* Month				*/
- unsigned			allup;		/* Alltime				*/
+ unsigned			dayup;		/* Day up stats */
+ unsigned			wkup;		/* Week */
+ unsigned			monthup;	/* Month */
+ unsigned			allup;		/* Alltime */
 };
 
 
 
 struct GROUPINFO {
- char				name[24];	/* Groupname				*/
- unsigned long long	bytes;		/* Bytes uploaded			*/
- double				speed;		/* Time spent uploading (secs)	*/
- unsigned char		files;		/* Files uploaded			*/
- unsigned char		pos;		/* Group position			*/
- unsigned char		users;		/* Users in group;			*/
+ char				name[24];	/* Groupname */
+ unsigned long long	bytes;		/* Bytes uploaded */
+ double				speed;		/* Time spent uploading (secs) */
+ unsigned char		files;		/* Files uploaded */
+ unsigned char		pos;		/* Group position */
+ unsigned char		users;		/* Users in group; */
 };
 
 
