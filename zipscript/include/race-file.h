@@ -16,7 +16,6 @@ typedef struct {
 			group[24];
 } RACEDATA;
 
-/* IMPLEMENT THIS */
 /* this is put in sfvdata files */
 typedef struct {
 	unsigned int	crc32;

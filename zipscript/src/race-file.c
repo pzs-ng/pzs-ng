@@ -485,11 +485,10 @@ create_indexfile(const char *path, struct VARS *raceI, char *f)
 	for (n = 0; n < c; n++) {
 		m = t_pos[n];
 		for (l = n + 1; l < c; l++) {
-			if (strcasecmp(fname[l], fname[n]) < 0) {
+			if (strcasecmp(fname[l], fname[n]) < 0)
 				m++;
-			} else {
+			else
 				t_pos[l]++;
-			}
 		}
 		pos[m] = n;
 	}
