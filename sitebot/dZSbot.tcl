@@ -366,9 +366,9 @@ proc ng_bandwidth {nick uhost hand chan args} { global binary announce speed
 
 	set output $announce(BW)
 	set raw [exec $binary(BW)]
-	set $upper [format "%.0f" [expr [lindex $raw 1] / $speed(INCOMING)]]]
-	set $dnper [format "%.0f" [expr [lindex $raw 3] / $speed(OUTGOING)]]]
-	set $totalper [format "%.0f" [expr [lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING) )]]]
+	set upper [format "%.0f" [expr [lindex $raw 1] / $speed(INCOMING)]]
+	set dnper [format "%.0f" [expr [lindex $raw 3] / $speed(OUTGOING)]]
+	set totalper [format "%.0f" [expr [lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING) )]]
 
 	set output [replacevar $output "%uploads" [lindex $raw 0]]
 	set output [replacevar $output "%upspeed" [lindex $raw 1]]
