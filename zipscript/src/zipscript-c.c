@@ -220,7 +220,7 @@ main(int argc, char **argv)
 	g.gi = malloc(sizeof(struct GROUPINFO *) * 30);
 	memset(g.gi, 0, sizeof(struct GROUPINFO *) * 30);
 
-	d_log("Copying data g.l.into memory\n");
+	d_log("Copying data g.l into memory\n");
 	sprintf(g.l.sfv, storage "/%s/sfvdata", g.l.path);
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
@@ -239,13 +239,12 @@ main(int argc, char **argv)
 	/* Get file extension */
 
 	d_log("Parsing file extension from filename... (%s)\n", argv[1]);
-	/*for (temp_p = name_p = argv[1]; *name_p != 0; name_p++) {
+	for (temp_p = name_p = argv[1]; *name_p != 0; name_p++) {
 		if (*name_p == '.') {
 			temp_p = name_p;
 		}
-	}*/
+	}
 	
-	name_p = temp_p = find_last_of(argv[1], ".");
 	if (*temp_p != '.') {
 		d_log("Got: no extension\n");
 		temp_p = name_p;
@@ -274,7 +273,7 @@ main(int argc, char **argv)
 #endif
 #endif
 	d_log("Reading directory structure\n");
-	//rescandir(2);
+	rescandir(2);
 
 	d_log("Caching release name\n");
 	getrelname(&g);
