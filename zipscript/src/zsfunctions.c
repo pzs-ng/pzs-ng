@@ -1174,35 +1174,30 @@ writelog(GLOBAL *g, char *msg, char *status)
 	}
 }
 
-char **
-buffer_paths(GLOBAL *g, char **path, int *k, int len)
+void
+buffer_paths(GLOBAL *g, char path[2][PATH_MAX], int *k, int len)
 {
 	int		cnt, n = 0;
-
-	path = malloc(sizeof(char *)*2);
 
 	for (cnt = len; *k && cnt; cnt--) {
 		if (g->l.path[cnt] == '/') {
 			(*k)--;
-			path[*k] = malloc(n + 1);
-			strlcpy(path[*k], g->l.path + cnt + 1, n);
+			strlcpy(path[*k], g->l.path + cnt + 1, n+1);
 			path[*k][n] = 0;
 			n = 0;
 		} else {
 			n++;
 		}
 	}
-	
-	return path;
 }
 
 void 
 remove_nfo_indicator(GLOBAL *g)
 {
 	int		k = 2;
-	char		**path = 0;
+	char		path[2][PATH_MAX];
 
-	path = buffer_paths(g, path, &k, (strlen(g->l.path)-1));
+	buffer_paths(g, path, &k, (strlen(g->l.path)-1));
 
 	g->l.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &g->v);
 	if (fileexists(g->l.nfo_incomplete))
@@ -1210,21 +1205,15 @@ remove_nfo_indicator(GLOBAL *g)
 	g->l.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &g->v);
 	if (fileexists(g->l.nfo_incomplete))
 		unlink(g->l.nfo_incomplete);
-	if (k < 2)
-		free(path[1]);
-	if (k == 0)
-		free(path[0]);
-	
-	free(path);
 }
 
 void 
 getrelname(GLOBAL *g)
 {
 	int		k = 2, subc;
-	char		**path = 0;
+	char		path[2][PATH_MAX];
 
-	path = buffer_paths(g, path, &k, (strlen(g->l.path)-1));
+	buffer_paths(g, path, &k, (strlen(g->l.path)-1));
 
 	subc = subcomp(path[1]);
 	
@@ -1251,13 +1240,6 @@ getrelname(GLOBAL *g)
 	
 	d_log("\t\t\tlink_source:\t%s\n", g->l.link_source);
 	d_log("\t\t\tlink_target:\t%s\n", g->l.link_target);
-
-	if (k < 2)
-		free(path[1]);
-	if (k == 0)
-		free(path[0]);
-
-	free(path);
 }
 
 unsigned char 

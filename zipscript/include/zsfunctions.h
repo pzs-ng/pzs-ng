@@ -129,7 +129,7 @@ extern void	mark_as_bad(char *);
 
 /* split from zsipscript-c.c */
 extern void writelog(GLOBAL *, char *, char *);
-extern char **buffer_paths(GLOBAL *, char **, int *, int);
+extern void buffer_paths(GLOBAL *, char [2][PATH_MAX], int *, int);
 extern void remove_nfo_indicator(GLOBAL *);
 extern void getrelname(GLOBAL *);
 extern unsigned char get_filetype(GLOBAL *, char *);

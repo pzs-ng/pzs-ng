@@ -760,7 +760,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 /* Converts cookies in incomplete indicators */
 char		i_buf     [FILE_MAX];
 char           *
-c_incomplete(char *instr, char **path, struct VARS *raceI)
+c_incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI)
 {
 	char           *buf_p;
 
@@ -791,8 +791,8 @@ c_incomplete(char *instr, char **path, struct VARS *raceI)
 
 /* Converts cookies in nfo-incomplete indicators */
 char		j_buf     [FILE_MAX];
-char           *
-i_incomplete(char *instr, char **path, struct VARS *raceI)
+char *
+i_incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI)
 {
 	char           *buf_p;
 
