@@ -152,3 +152,10 @@ announce.IMDBFIND				= "[%b{imdb  }][%section] %msg"
 announce.MSGINVITE	        		= "[%b{invite}] %b{%u_name} of %g_name invited himself as %b{%u_ircnick}."
 announce.BADMSGINVITE	        		= "[%b{%c1{badinv}}] %b{%u_ircnick} (%u_host) tried to invite himself with invalid login!"
 
+# Example of custom announces (see dZSbconf.tcl for info on how to enable)
+#announce.SAMPLE 				= "[%b{sample}][%section] %b{%relname} by %b{%u_name} of %g_name."
+#announce.NEWCD					= "[%b{cd    }][%section] %b{%relname} by %b{%u_name} of %g_name."
+#announce.NEWDISC				= "[%b{disc  }][%section] %b{%relname} by %b{%u_name} of %g_name."
+#announce.SUBTITLES				= "[%b{subs  }][%section] %b{%relname} by %b{%u_name} of %g_name."
+#announce.COVERS 				= "[%b{covers}][%section] %b{%relname} by %b{%u_name} of %g_name."
+
