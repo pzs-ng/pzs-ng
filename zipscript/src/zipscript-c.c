@@ -304,7 +304,7 @@ int main( int argc, char **argv ) {
 			raceI.misc.write_log = 1 - matchpath(group_dirs, locations.path); 
 			} else if (matchpath(sfv_dirs, locations.path)) {
 			d_log("Directory matched with sfv_dirs\n");
-			no_check = 0;
+			no_check = FALSE;
 			break;
 			}
 
