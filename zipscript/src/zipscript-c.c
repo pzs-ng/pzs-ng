@@ -18,7 +18,7 @@
 #include "macros.h"
 #include "constants.h"
 #include "errors.h"
-#include "multimedia.h"
+#include "multimedia.h" 
 #include "convert.h"
 #include "dizreader.h"
 #include "stats.h"
@@ -61,11 +61,11 @@ void writelog(char *msg, char *status) {
 	while ( 1 ) {
 	    switch ( *newline++ ) {
 		case 0:
-		    fprintf(glfile, "%.24s %s: \"%s\" %s\n", date, status, locations.path, line);
+		    fprintf(glfile, "%.24s %s: \"%s\" \"%s\"\n", date, status, locations.path, line);
 		    fclose(glfile);
 		    return;
 		case '\n':
-		    fprintf(glfile, "%.24s %s: \"%s\" %.*s\n", date, status, locations.path, (int)(newline - line - 1), line);
+		    fprintf(glfile, "%.24s %s: \"%s\" \"%.*s\"\n", date, status, locations.path, (int)(newline - line - 1), line);
 		    line = newline;
 		    break;
 	    }
@@ -92,7 +92,9 @@ void getrelname(char *directory) {
     if (( ! strncasecmp(path[1], "CD"  , 2) && l[1] <= 4 ) ||
 	    ( ! strncasecmp(path[1], "DISC", 4) && l[1] <= 6 ) ||
 	    ( ! strncasecmp(path[1], "DISK", 4) && l[1] <= 6 ) ||
-	    ( ! strncasecmp(path[1], "DVD" , 3) && l[1] <= 5 )) {
+	    ( ! strncasecmp(path[1], "DVD" , 3) && l[1] <= 5 ) ||
+	    ( ! strncasecmp(path[1], "SUB" , 3) && l[1] <= 4 ) ||
+	    ( ! strncasecmp(path[1], "SUBTITLES" , 9) && l[1] <= 9 )) {
 	raceI.misc.release_name = malloc(l[0] + 18);
 	locations.link_source = malloc(n = (locations.length_path - l[1]));
 	sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
@@ -121,8 +123,8 @@ unsigned char get_filetype(char *ext) {
     return 255;
 }
 
-    static char *
-remove_pattern (param, pattern, op)
+#if ( audio_group_sort == TRUE )
+static char *remove_pattern (param, pattern, op)
     char *param, *pattern;
     int op;
 {
@@ -195,6 +197,7 @@ remove_pattern (param, pattern, op)
     }
     return (param);  /* no match, return original string */
 }
+#endif
 
 int main( int argc, char **argv ) {
     char		*fileext, *name_p, *temp_p;
@@ -203,7 +206,6 @@ int main( int argc, char **argv ) {
     char		*update_msg = 0;
     char		*race_msg = 0;
     char		*sfv_msg = 0;
-    char		*update_type = 0;
     char		*newleader_msg = 0;
     char		*halfway_msg = 0;
     char		*complete_bar = 0;
@@ -215,6 +217,11 @@ int main( int argc, char **argv ) {
     int			cnt, cnt2, n;
     int			write_log;
     struct stat		fileinfo;
+
+/* Adding version-number to head if .debug message
+   15.09.2004 - psxc
+ */
+   d_log("Project-ZS Next Generation (pzs-ng) v%s debug log.\n", VERSION);
 
 #if ( benchmark_mode == TRUE )
     struct timeval bstart, bstop;
@@ -278,7 +285,7 @@ int main( int argc, char **argv ) {
 	    d_log("Can't allocate memory for sections\n");
 	} else {
 	    n=0;
-	    while (temp_p)
+	    while (temp_p) 
 		if (strcmp(strsep(&temp_p," "), getenv("SECTION")) == 0) {
 		    raceI.section=(unsigned char)n;
 		    break;
@@ -302,7 +309,7 @@ int main( int argc, char **argv ) {
     locations.leader = m_alloc(n);
 
     target = m_alloc(n + 256);
-    userI  = malloc(sizeof(struct USERINFO *) * 30);
+    userI  = malloc(sizeof(struct USERINFO *) * 30);     
     groupI = malloc(sizeof(struct GROUPINFO *) * 30);
 
     d_log("Copying data locations into memory\n");
@@ -319,7 +326,7 @@ int main( int argc, char **argv ) {
     d_log("Parsing file extension from filename...\n");
     for ( temp_p = name_p = argv[1]; *name_p != 0 ; name_p++ ) {
 	if ( *name_p == '.' ) {
-	    temp_p = name_p;
+	    temp_p = name_p;        
 	}
     }
 
@@ -364,13 +371,13 @@ int main( int argc, char **argv ) {
     if ( matchpath(nocheck_dirs, locations.path) ) {
 	d_log("Directory matched with nocheck_dirs\n");
 	no_check = TRUE;
-    } else {
+    } else { 
 	/* Process file */
 	switch ( get_filetype(fileext) ) {
 	    case 0: /* ZIP CHECK */
 		d_log("File type is: ZIP\n");
 		d_log("Testing file integrity with unzip\n");
-		sprintf(target, "/bin/unzip -qqt \"%s\"", raceI.file.name);
+		sprintf(target, "/bin/unzip -qqt %s", raceI.file.name);
 		if (execute(target) != 0) {
 		    d_log("Integrity check failed\n");
 		    sprintf(raceI.misc.error_msg, BAD_ZIP);
@@ -389,7 +396,7 @@ int main( int argc, char **argv ) {
 
 		if ( ! fileexists("file_id.diz") ) {
 		    d_log("file_id.diz does not exist, trying to extract it from %s\n", raceI.file.name);
-		    sprintf(target, "/bin/unzip -qqjnCL \"%s\" file_id.diz", raceI.file.name);
+		    sprintf(target, "/bin/unzip -qqjnCL %s file_id.diz", raceI.file.name);
 		    execute(target);
 		    chmod("file_id.diz",0666);
 		}
@@ -436,7 +443,7 @@ int main( int argc, char **argv ) {
 			exit_value = 2;
 			raceI.misc.write_log = write_log;
 			break;
-		    } else {
+		    } else if ( findfileextcount(".sfv") > 1 ) {
 			d_log("Reading remainders of old sfv\n");
 			readsfv_file(&locations, &raceI, 1);
 			cnt = raceI.total.files - raceI.total.files_missing;
@@ -456,6 +463,8 @@ int main( int argc, char **argv ) {
 			    break;
 			}
 			raceI.total.files = raceI.total.files_missing = 0;
+		    } else {
+			d_log("Hmm.. Seems the old .sfv was deleted. Allowing new one.\n");
 		    }
 		}
 		d_log("Parsing sfv and creating sfv data\n");
@@ -526,9 +535,12 @@ int main( int argc, char **argv ) {
 
 		if ( enable_nfo_script == TRUE )
 		{
-		    d_log("Executing nfo script\n");
+		    d_log("Executing nfo script (%s %s)\n", nfo_script, raceI.file.name);
 		    sprintf(target, nfo_script " %s", raceI.file.name);
-		    execute(target);
+		    /*if ( execute_old(target) != 0 ) {*/
+		    if ( execute(target) != 0 ) {
+			d_log("Failed to execute nfo_script!");
+		    }
 		}
 
 		break;
@@ -739,7 +751,7 @@ int main( int argc, char **argv ) {
 		/* END OF SFV BASED CRC-32 CHECK */
 
 	    case 4: /* ACCEPTED FILE */
-		d_log("File type: NO CHECK\n");
+		d_log("File type: NO CHECK\n"); 
 		no_check = TRUE;
 		break;
 		/* END OF ACCEPTED FILE CHECK */
@@ -794,15 +806,8 @@ int main( int argc, char **argv ) {
 	    } else {
 
 		if ( userI[raceI.user.pos]->files == 1 && raceI.total.files >= min_update_files && update_msg != NULL ) {
-			d_log("Writing UPDATE to %s\n", log);
-			update_type = "UPDATE";
-			switch( raceI.misc.release_type ) {
-				case 1: update_type = "UPDATE_RAR";   break; /* rar */
-				case 2: update_type = "UPDATE_OTHER"; break; /* other */
-				case 3: update_type = "UPDATE_AUDIO"; break; /* audio */
-				case 4: update_type = "UPDATE_VIDEO"; break; /* video */
-			}
-			writelog(convert(&raceI, userI, groupI, update_msg), update_type );
+		    d_log("Writing UPDATE to %s\n", log);
+		    writelog(convert(&raceI, userI, groupI, update_msg), "UPDATE");
 		}
 	    }
 	}
@@ -968,7 +973,7 @@ int main( int argc, char **argv ) {
     m_free(locations.leader);
     m_free(locations.link_target);
 
-#if ( benchmark_mode == TRUE )
+#if ( benchmark_mode == TRUE ) 
     gettimeofday(&bstop, (struct timezone *)0);
     printf("Checks completed in %0.6f seconds\n", ((bstop.tv_sec - bstart.tv_sec) + (bstop.tv_usec - bstart.tv_usec) / 1000000.));
 #endif
