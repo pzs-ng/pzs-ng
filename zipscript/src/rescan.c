@@ -292,17 +292,17 @@ main()
 					}
 				}
 
+				crc = calc_crc32(dirlist[n]->d_name);
 				if (!S_ISDIR(fileinfo.st_mode)) {
 					if (raceI.file.name)
 						unlink_missing(raceI.file.name);
 					if (l > 44) {
-						printf("\nFile: %s", dirlist[n]->d_name + l - 44);
+						printf("\nFile: %s %x", dirlist[n]->d_name + l - 35, crc);
 					} else {
-						printf("\nFile: %-44s", dirlist[n]->d_name);
+						printf("\nFile: %-35s %x", dirlist[n]->d_name, crc);
 					}
 				}
 				fflush(stdout);
-				crc = calc_crc32(dirlist[n]->d_name);
 				writerace_file(&locations, &raceI, crc, F_NOTCHECKED);
 			}
 		}

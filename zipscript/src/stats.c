@@ -268,17 +268,17 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 {
 	int		users;
 	int		u1;
-	int		n         , m;
+	int		n, m;
 	int		fd;
 	unsigned char	space;
 	unsigned char	args;
 	unsigned char	shift;
-	char           *p_buf = 0, *eof = 0;
+	char		*p_buf = 0, *eof = 0;
 	char		t_buf[PATH_MAX];
-	char           *arg[45];/* Enough to hold 10 sections (noone has
-				 * more?) */
-	struct dirent **userlist;
-	struct userdata **user;
+	char		*arg[45]; /* Enough to hold 10 sections (noone has
+				   * more?) */
+	struct dirent	**userlist;
+	struct userdata	**user;
 	struct stat	fileinfo;
 
 	users = scandir(gl_userfiles, &userlist, 0, 0);
@@ -297,8 +297,8 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 
 			eof = t_buf + fileinfo.st_size;
 
-			user[n] = malloc(sizeof(struct userdata) + 2);
-			bzero(user[n], (sizeof(struct userdata)) + 2);
+			user[n] = malloc(sizeof(struct userdata));
+			bzero(user[n], (sizeof(struct userdata)));
 
 			read(fd, t_buf, fileinfo.st_size);
 
