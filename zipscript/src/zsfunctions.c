@@ -1128,7 +1128,7 @@ mark_as_bad(char *filename)
 		d_log("Debug: Failed to open file \"%s\"\n", filename);
 		return;
 	}
-	newname=malloc(strlen(filename) + 4);
+	newname=malloc((strlen(filename) + 5) * sizeof(char));
 	sprintf(newname, "%s.bad", filename);
 	if (rename(filename, newname)) {
 		d_log("Error - failed to rename %s to %s.\n", filename, newname);
