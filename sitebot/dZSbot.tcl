@@ -189,7 +189,7 @@ if {$bindnopre != "YES"} {
 # MAIN LOOP - PARSES DATA FROM GLFTPD.LOG                                       #
 #################################################################################
 proc readlog {} {
-	global location lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2
+	global location lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2 invite_channels
 
 	set dZStimer [utimer 1 "readlog"]
 
@@ -803,7 +803,7 @@ proc showstats {nick type time section} {
 # INVITE CHECK                                                                  #
 #################################################################################
 proc invite {nick host hand arg} {
-	global location binary chanlist announce theme
+	global location binary chanlist announce theme invite_channels
 
 	if {[llength $arg] == 2} {
 		set username [lindex $arg 0]
