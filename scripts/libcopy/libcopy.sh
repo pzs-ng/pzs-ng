@@ -13,6 +13,14 @@
 #
 ###############################################################################
 
+# a list of possible paths to glroot
+possible_glroot_paths="/glftpd /jail/glftpd /usr/glftpd /usr/jail/glftpd /usr/local/glftpd /usr/local/jail/glftpd /$HOME/glftpd /glftpd/glftpd"
+
+#
+###################################
+# CODEPART - PLEASE DO NOT CHANGE #
+###################################
+
 # Set system type
 case $(uname -s) in
     Linux) os=linux ;;
@@ -39,13 +47,22 @@ PATH="$PATH:/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:\
 /usr/compat/linux/usr/sbin"
 
 if [ $# -eq 0 ]; then
-	echo ""
-	echo "This util will try to copy the necessary libs into your"
-	echo "glftpd environment."
-	echo ""
-	echo "Usage: $0 /path/to/glftpd-root-dir"
-	echo ""
-	exit 0
+	for possible_glroot in $possible_glroot_paths; do
+		if [ -e ${possible_glroot}/bin/glftpd ]; then
+		glroot=${possible_glroot}
+		break
+		fi
+	done
+
+	if [ -z ${glroot} ]; then
+		echo ""
+		echo "This util will try to copy the necessary libs into your"
+		echo "glftpd environment."
+		echo ""
+		echo "Usage: $0 /path/to/glftpd-root-dir"
+		echo ""
+		exit 0
+	fi
 else
 	glroot=$1
 	if [ ! -e /$glroot/bin/glftpd ]; then
@@ -74,7 +91,7 @@ lddsequence() {
     fi
 }
 
-echo -e "\nCopying required shared library files:"
+echo -e "\nLibCopy\n\nUsing glroot: $glroot\nCopying required shared library files:"
 echo -n "" > "$glroot/etc/ld.so.conf"
 case $os in
     openbsd)

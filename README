@@ -228,6 +228,17 @@ here's what to do:
 (optional) chmod +s /path/to/your/glftpd/bin/zipscript-c
 
 
+Making sure you have the libs:
+------------------------------
+To make sure you have all the libs you need, there is a script in scripts/
+called libcopy. Use this after you've installed the zipscript.
+
+Usage: ./libcopy.sh <glftpd path>
+
+This will copy all libs needed by the binaries in glftpd's bin dir correctly.
+Can/should(?) be used once in a while to make sure all libs needed are present.
+
+
 Changes in glftpd.conf:
 -----------------------
 You're almost done now. To actually make glftpd use your new zipscript, we need
@@ -373,8 +384,5 @@ The bot:
 If everything is working smoothly on your site, it's time to add a bot to
 your channel. It is expected that you already have installed an eggdrop,
 that it's working and have found its way into your channel.
-
-<mental note - add something about editing sitebot/src/structonline.h if
-the user uses a different ipc key than default>
 
 For details on the sitebot please read the file "sitebot/README".
