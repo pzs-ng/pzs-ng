@@ -64,12 +64,14 @@ char* findfileext(char *fileext) {
  * Modified: 11.12.2003 (daxxar)
  */
 int findfileextcount(char *fileext) { 
-    int	n, k, c = 0;
+    int	n, fnamelen, c = 0;
 
     n = direntries;
-    while(n--) {
-	if ((k = NAMLEN(dirlist[n])) < 4 ) continue;
-	if ( strcasecmp(dirlist[n]->d_name + k - 4, fileext) == 0 ) c++;
+    while (n--) {
+		if ((fnamelen = NAMLEN(dirlist[n])) < 4)
+			continue;
+		if (strcasecmp((dirlist[n]->d_name + fnamelen - 4), fileext) == 0)
+			c++;
     }
     return c;
 }
