@@ -514,7 +514,10 @@ void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned in
 
  clear_file_file(locations, raceI->file.name);
 
- file = fopen(locations->race, "a+");
+ if ( (file = fopen(locations->race, "a+")) == NULL) {
+  d_log("Racefile cannot be written. Aborting.");
+  exit (2);
+ }
 
  len = strlen(raceI->file.name) + 1;
  sz = len + 1 + 2*24 + 4 * sizeof(int) + sizeof(off_t);
