@@ -112,6 +112,9 @@
 
  psxc.zst:	psxc's go at a theme - minimalistic.
 
+ dakrer.zst:	dakrer's theme. Similar to default.zst but with less output
+		and a (small) splash of colours. See theme for additional info.
+
 --------------------------------------------------------------------------------
  2-3 Special settings in the theme
 --------------------------------------------------------------------------------
