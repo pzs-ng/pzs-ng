@@ -977,7 +977,8 @@ proc show_free {nick uhost hand chan arg} {
 		}
 	}
 	if {[llength [array names "tmpdev"]]} {
-		putlog "dZSbot error: following devices had no matching \"df -Phx none\" entry: [join [array names tmpdev]]"
+		putlog "dZSbot error: following devices had no matching \"df -Phx\" entry: [join [array names tmpdev]]"
+		return
 	}
 	set output [replacevar $output "%total" $total]
 	set output [replacevar $output "%used" $used]

@@ -153,6 +153,7 @@ main()
 
 	umask(0666 & 000);
 
+	d_log("PZS-NG (rescan) v%s debug log.\n", VERSION);
 	d_log("Allocating memory for variables\n");
 	userI = malloc(sizeof(struct USERINFO *) * 30);
 	memset(userI, 0, sizeof(struct USERINFO *) * 30);
