@@ -4,21 +4,26 @@ CFLAGS=-Wall -g
 CC=@CC@
 LIBS=@LIBS@
 
-all: zs bot
+all: zs bot swho
 	@(echo -e "\n\tProject-ZS-NG is now compiled!\n\tType 'make install' to install it into $(prefix).\n")
 
 install: zs
 	cd zipscript/src ; $(MAKE) install
+	cd sitewho ; $(MAKE) install
 
 distclean: clean
-	rm -f *~ Makefile config.cache config.log config.status config.h sitewho/compile.sh
+	rm -f *~ config.cache config.log config.status config.h
 	rm -rf autom4te.cache/
 	cd zipscript/src ; $(MAKE) distclean
 	cd sitebot/src ; $(MAKE) distclean
+	cd sitewho ; $(MAKE) distclean
+	find . -name Makefile | xargs rm -f
 
 clean:
+	find . -name '*.o' | xargs rm -f
 	cd zipscript/src ; $(MAKE) clean
 	cd sitebot/src ; $(MAKE) clean
+	cd sitewho ; $(MAKE) clean
 
 uninstall:
 	cd zipscript/src ; $(MAKE) uninstall
@@ -30,3 +35,7 @@ zs:
 bot:
 	@(echo -e "\n\033[1;37mCompiling the bot binaries\033[0m")
 	cd sitebot/src ; $(MAKE) all
+
+swho:
+	@(echo -e "\n\033[1;37mCompiling the sitewho\033[0m")
+	cd sitewho/ ; $(MAKE) all
