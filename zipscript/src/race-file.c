@@ -569,11 +569,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	clear_file(path, raceI->file.name);
 
 	/* create file if it doesn't exist */
-
-//	id = open(path, O_CREAT);
-//	close(id);
-	
-	if ((id = open(path, O_CREAT | O_TRUNC | O_WRONLY, 0666)) == -1) {
+	if ((id = open(path, O_CREAT | O_APPEND, 0666)) == -1) {
 		d_log("Failed to create %s: %s\n", path, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
@@ -591,7 +587,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 			break;
 		}
 	}
-			
+
 	rd.status = status;
 	rd.crc32 = crc;
 	
