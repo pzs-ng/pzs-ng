@@ -631,9 +631,7 @@ void buffer_groups(char *groupfile) {
  int    GROUPS = 0;
  struct stat   fileinfo;
 
- if ((f = open( groupfile, O_NONBLOCK )) == NULL) {
-  exit(EXIT_FAILURE);
- }
+ f = open( groupfile, O_NONBLOCK );
 
  fstat( f, &fileinfo );
  f_size = fileinfo.st_size;
