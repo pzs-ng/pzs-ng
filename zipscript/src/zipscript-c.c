@@ -36,7 +36,7 @@
 #include "stats.h"
 #include "complete.h"
 #include "crc.h"
-#include "ng-version.c"
+#include "ng-version.h"
 
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
