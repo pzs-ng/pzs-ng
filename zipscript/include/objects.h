@@ -31,7 +31,7 @@ struct GROUPINFO {
 };
 
 
-#if (for_glftpd2 == FALSE)
+#ifndef use_glftpd2
 struct ONLINE {
  char				tagline[64];	/* The users tagline */
  char   			username[24];	/* The username of the user */

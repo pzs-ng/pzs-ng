@@ -12,6 +12,11 @@
  *	================
  */
 
+/* Are you using GLFTPD 2?
+   If you do not use GLFTDP 2, comment out the next line!
+ */
+#define use_glftpd2
+
 /* These should be changed to match your glftpd installation.
  */
 #define site_root	"/glftpd/"
@@ -22,10 +27,6 @@
 /* SHM area to use (for glftpd) - Only change if you know what you're doing.
  */
 #define KEY		0x0000DEAD
-
-/* Are you using GLFTPD 2?
- */
-#define for_glftpd2	TRUE
 
 /* On default, announcing is disabled everywhere, use zip/sfv paths to enable annouces and private paths to disable.
  * Don't be lazy! Be specific! And remember - pathnames are case sensitive.

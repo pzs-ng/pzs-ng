@@ -14,6 +14,8 @@ if [ $? -gt 0 ]; then
 fi
 echo "[OK]"
 
+strip ${file%.c}
+
 echo ""
 echo "Installing...";
 conf="${file%.c}.conf"
