@@ -1339,9 +1339,12 @@ main(int argc, char **argv)
 
 #if ( del_banned_release )
 	if (deldir) {
+		d_log("zipscript-c: del_banned_release is set - removing entire dir.\n");
 		move_progress_bar(1, &g.v, g.ui, g.gi);
 		if (g.l.incomplete)
 			unlink(g.l.incomplete);
+		closedir(dir);
+		dir = opendir(".");
 		del_releasedir(dir, g.l.path);
 	}
 #endif
@@ -1380,4 +1383,5 @@ main(int argc, char **argv)
 #endif
 	d_log("zipscript-c: Exit %d\n", exit_value);
 	return exit_value;
+		d_log("zipscript-c: del_banned_release is set - removing entire dir.\n");
 }
