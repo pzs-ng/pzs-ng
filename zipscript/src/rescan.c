@@ -78,6 +78,7 @@ void getrelname(char *directory) {
    n = 0;
   } else n++;
   
+ if (k!=0) exit (2);
  l = strlen(path[1]);
  
  if (( ! strncasecmp(path[1], "CD"  , 2) && l <= 4 ) ||
