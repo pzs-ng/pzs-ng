@@ -35,16 +35,17 @@
 
 struct USERINFO {
 	char		name[24];	/* Username */
-	off_t		bytes;	/* Bytes uploaded */
-	double		speed;	/* Time spent uploading (secs) */
-	unsigned char	files;	/* Files uploaded */
-	unsigned char	pos;	/* User position */
-	unsigned char	group;	/* Primary group number */
+	off_t		bytes;		/* Bytes uploaded */
+	double		speed;		/* Time spent uploading (secs) */
+	unsigned char	files;		/* Files uploaded */
+	unsigned char	pos;		/* User position */
+	unsigned char	group;		/* Primary group number */
 
-	unsigned int	dayup;	/* Day up stats */
-	unsigned int	wkup;	/* Week */
-	unsigned int	monthup;/* Month */
-	unsigned int	allup;	/* Alltime */
+	unsigned int	dayup;		/* Day up stats */
+	unsigned int	wkup;		/* Week */
+	unsigned int	monthup;	/* Month */
+	unsigned int	allup;		/* Alltime */
+	char		tagline[64];	/* Tagline */
 };
 
 struct GROUPINFO {
@@ -93,7 +94,7 @@ struct VIDEO {
 struct current_user {
 	char		name      [24];
 	char		group     [24];
-	char		tagline   [255];
+	char		tagline   [64];
 	short int	pos;
 };
 
@@ -133,6 +134,14 @@ struct misc {
 	long		slowest_user[2];
 };
 
+struct LOCK {
+	char		headpath[PATH_MAX];
+	short int	data_incrementor;
+	short int	data_in_use;
+	short int	data_queue;
+	short int	data_type;
+};
+	
 struct VARS {
 	struct current_user user;
 	struct current_file file;
@@ -140,13 +149,9 @@ struct VARS {
 	struct misc	misc;
 	struct audio	audio;
 	struct video	video;
+	struct LOCK	lock;
 	unsigned char	section;
 	char		sectionname[128];
-	char		headpath[PATH_MAX];
-	short int	data_incrementor;
-	short int	data_in_use;
-	short int	data_queue;
-	short int	data_type;
 };
 
 struct LOCATIONS {

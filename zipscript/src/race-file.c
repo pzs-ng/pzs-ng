@@ -89,7 +89,7 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 		exit(EXIT_FAILURE);
 	}
 
-	raceI->misc.release_type = raceI->data_type;
+	raceI->misc.release_type = raceI->lock.data_type;
 
 	d_log("readsfv: Reading data from sfv for (%s)\n", raceI->file.name);
 	
@@ -596,7 +596,7 @@ END:
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
-	raceI->data_type = type;
+	raceI->lock.data_type = type;
 	return retval;
 }
 
@@ -894,10 +894,10 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 	struct stat	sb;
 
 	/* this should really be moved out of the proc - we'll worry about it later */
-	snprintf(raceI->headpath, PATH_MAX, "%s/%s/headdata", storage, path);
+	snprintf(raceI->lock.headpath, PATH_MAX, "%s/%s/headdata", storage, path);
 
-	if ((fd = open(raceI->headpath, O_CREAT | O_RDWR, 0666)) == -1) {
-		d_log("create_lock: open(%s): %s\n", raceI->headpath, strerror(errno));
+	if ((fd = open(raceI->lock.headpath, O_CREAT | O_RDWR, 0666)) == -1) {
+		d_log("create_lock: open(%s): %s\n", raceI->lock.headpath, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
@@ -905,10 +905,10 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 
 	if (!sb.st_size) {							/* no lock file exists - let's create one with default values. */
 		hd.data_version = sfv_version;
-		raceI->data_type = hd.data_type = 0;
-		raceI->data_in_use = hd.data_in_use = progtype;
-		raceI->data_incrementor = hd.data_incrementor = 1;
-		raceI->data_queue = hd.data_queue = 1;
+		raceI->lock.data_type = hd.data_type = 0;
+		raceI->lock.data_in_use = hd.data_in_use = progtype;
+		raceI->lock.data_incrementor = hd.data_incrementor = 1;
+		raceI->lock.data_queue = hd.data_queue = 1;
 		hd.data_qcurrent = 0;
 		hd.data_pid = (short int)getpid();
 		write(fd, &hd, sizeof(HEADDATA));
@@ -923,9 +923,9 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 			return 1;
 		}
 		if ((time(NULL) - sb.st_ctime >= max_seconds_wait_for_lock)) {
-			raceI->data_in_use = hd.data_in_use = progtype;
-			raceI->data_incrementor = hd.data_incrementor = 1;
-			raceI->data_queue = hd.data_queue = 1;
+			raceI->lock.data_in_use = hd.data_in_use = progtype;
+			raceI->lock.data_incrementor = hd.data_incrementor = 1;
+			raceI->lock.data_queue = hd.data_queue = 1;
 			hd.data_qcurrent = 0;
 			hd.data_pid = (short int)getpid();
 			lseek(fd, 0L, SEEK_SET);
@@ -936,12 +936,12 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 		}
 		if (hd.data_in_use) {						/* the lock is active */
 			if (force_lock == 2) {
-				raceI->data_queue = hd.data_queue = 1;
+				raceI->lock.data_queue = hd.data_queue = 1;
 				hd.data_qcurrent = 0;
 				d_log("create_lock: Unlock forced.\n");
 			} else {
 				if (force_lock == 3) {				/* we got a request to queue a lock if active */
-					raceI->data_queue = hd.data_queue;	/* we give the current queue number to the calling process */
+					raceI->lock.data_queue = hd.data_queue;	/* we give the current queue number to the calling process */
 					hd.data_queue++;			/* we increment the number in the queue */
 					lseek(fd, 0L, SEEK_SET);
 					write(fd, &hd, sizeof(HEADDATA));
@@ -953,15 +953,15 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 		}
 		if (!hd.data_in_use) {						/* looks like the lock is inactive */
 			if (force_lock == 2) {
-				raceI->data_queue = hd.data_queue = 1;
+				raceI->lock.data_queue = hd.data_queue = 1;
 				hd.data_qcurrent = 0;
 				d_log("create_lock: Unlock forced.\n");
 			} else if (force_lock == 3 && hd.data_queue > hd.data_qcurrent) {		/* we got a request to queue a lock if active, */
 										/* and there seems to be others in queue. Will not allow the */
 										/* process to lock, but wait for the queued process to do so. */
-				raceI->data_queue = hd.data_queue;		/* we give the queue number to the calling process */
+				raceI->lock.data_queue = hd.data_queue;		/* we give the queue number to the calling process */
 				hd.data_queue++;				/* we increment the number in the queue */
-				raceI->data_incrementor = hd.data_incrementor;
+				raceI->lock.data_incrementor = hd.data_incrementor;
 				lseek(fd, 0L, SEEK_SET);
 				write(fd, &hd, sizeof(HEADDATA));
 				close(fd);
@@ -970,7 +970,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 			} else if (hd.data_queue && (queue > hd.data_qcurrent) && !force_lock) {
 										/* seems there is a queue, and the calling process' place in */
 										/* the queue is still less than current. */
-				raceI->data_incrementor = hd.data_incrementor;	/* feed back the current incrementor */
+				raceI->lock.data_incrementor = hd.data_incrementor;	/* feed back the current incrementor */
 				close(fd);
 				return -1;
 			}
@@ -982,13 +982,13 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 			hd.data_incrementor = 1;
 			hd.data_in_use = progtype;
 		}
-		raceI->data_incrementor = hd.data_incrementor;
+		raceI->lock.data_incrementor = hd.data_incrementor;
 		hd.data_pid = (short int)getpid();
 		lseek(fd, 0L, SEEK_SET);
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
-		raceI->data_in_use = progtype;
-		raceI->data_type = 0;
+		raceI->lock.data_in_use = progtype;
+		raceI->lock.data_type = 0;
 		d_log("create_lock: lock set. pid: %d\n", hd.data_pid);
 		return 0;
 	}
@@ -1003,8 +1003,8 @@ remove_lock(struct VARS *raceI)
 	int		fd;
 	HEADDATA	hd;
 
-	if ((fd = open(raceI->headpath, O_RDWR, 0666)) == -1) {
-		d_log("remove_lock: open(%s): %s\n", raceI->headpath, strerror(errno));
+	if ((fd = open(raceI->lock.headpath, O_RDWR, 0666)) == -1) {
+		d_log("remove_lock: open(%s): %s\n", raceI->lock.headpath, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
@@ -1038,8 +1038,8 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 	HEADDATA	hd;
 	struct stat	sb;
 
-	if ((fd = open(raceI->headpath, O_RDWR, 0666)) == -1) {
-		d_log("update_lock: open(%s): %s\n", raceI->headpath, strerror(errno));
+	if ((fd = open(raceI->lock.headpath, O_RDWR, 0666)) == -1) {
+		d_log("update_lock: open(%s): %s\n", raceI->lock.headpath, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 	read(fd, &hd, sizeof(HEADDATA));
@@ -1050,13 +1050,13 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 		close(fd);
 		return 1;
 	}
-	if ((hd.data_in_use != raceI->data_in_use) && counter) {
+	if ((hd.data_in_use != raceI->lock.data_in_use) && counter) {
 		d_log("update_lock: Lock not active or progtype mismatch - no choice but to exit.\n");
 		close(fd);
 		exit(EXIT_FAILURE);
 	}
 	if (!hd.data_incrementor) {
-		d_log("update_lock: Lock suggested removed by a different process (%d/%d).\n", hd.data_incrementor, raceI->data_incrementor);
+		d_log("update_lock: Lock suggested removed by a different process (%d/%d).\n", hd.data_incrementor, raceI->lock.data_incrementor);
 		retval = 0;
 	} else {
 		if (counter)
@@ -1068,7 +1068,7 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 	}
 	if (hd.data_pid != (short int)getpid() && hd.data_incrementor) {
 		d_log("update_lock: Oops! Race condition - another process has the lock. pid: %d != %d\n", hd.data_pid, (short int)getpid());
-		hd.data_queue = raceI->data_queue - 1;
+		hd.data_queue = raceI->lock.data_queue - 1;
 		lseek(fd, 0L, SEEK_SET);
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
@@ -1079,12 +1079,12 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 	if ((retval && !lock_optimize) || !retval || !hd.data_incrementor || (time(NULL) - sb.st_ctime >= lock_optimize && hd.data_incrementor > 1)) {
 		lseek(fd, 0L, SEEK_SET);
 		write(fd, &hd, sizeof(HEADDATA));
-		d_log("update_lock: updating lock (%d)\n", raceI->data_incrementor);
+		d_log("update_lock: updating lock (%d)\n", raceI->lock.data_incrementor);
 	}
 	close(fd);
 	if (counter) {
-		raceI->data_incrementor = hd.data_incrementor;
-		raceI->data_in_use = hd.data_in_use;
+		raceI->lock.data_incrementor = hd.data_incrementor;
+		raceI->lock.data_in_use = hd.data_in_use;
 	}
 	return retval;
 }

@@ -27,7 +27,8 @@ int main(int argc, char **argv)
 		printf("Time:   %i\n", rd.start_time);
 		printf("Status: %u\n", rd.status);
 		printf("Uname:  %s\n", rd.uname);
-		printf("Group:  %s\n\n", rd.group);
+		printf("Group:  %s\n", rd.group);
+		printf("Speed:  %dkb/s\n\n", rd.speed / 1024);
 	}
 
 	fclose(f);

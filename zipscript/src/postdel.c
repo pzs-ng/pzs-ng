@@ -154,13 +154,13 @@ main(int argc, char **argv)
 			for ( n = 0; n <= max_seconds_wait_for_lock * 10; n++) {
 				d_log("postdel: sleeping for .1 second before trying to get a lock.\n");
 				usleep(100000);
-				if (!(m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0, g.v.data_queue)))
+				if (!(m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0, g.v.lock.data_queue)))
 					break;
 			}
 			if (n >= max_seconds_wait_for_lock * 10) {
 				if (m == PROGTYPE_RESCAN) {
 					d_log("postdel: Failed to get lock. Forcing unlock.\n");
-					if (create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 2, g.v.data_queue)) {
+					if (create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 2, g.v.lock.data_queue)) {
 						d_log("postdel: Failed to force a lock. No choice but to exit.\n");
 						exit(EXIT_FAILURE);
 					}

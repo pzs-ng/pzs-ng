@@ -116,9 +116,9 @@ main(void)
 				exit(EXIT_FAILURE);
 			}
 			for ( k = 0; k <= max_seconds_wait_for_lock * 10; k++) {
-				d_log("rescan: sleeping for .1 second before trying to get a lock (queue: %d).\n", g.v.data_queue);
+				d_log("rescan: sleeping for .1 second before trying to get a lock (queue: %d).\n", g.v.lock.data_queue);
 				usleep(100000);
-				if (!create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0, g.v.data_queue))
+				if (!create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0, g.v.lock.data_queue))
 					break;
 			}
 			if (k >= max_seconds_wait_for_lock * 10) {
