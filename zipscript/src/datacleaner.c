@@ -45,6 +45,7 @@ void check_dir_loop(char *path) {
  
 	chdir(path);
 	n = scandir(path, &list, 0, 0);
+	if (n<2) exit(2);
 	while ( n-- ) if ( list[n]->d_name[0] != '.' ) {
 		stat(list[n]->d_name, &entry_stat);
 		if ( S_ISDIR(entry_stat.st_mode) ) {
@@ -63,18 +64,38 @@ void check_dir_loop(char *path) {
 	free(list);
 }
 
-/* TODO: clean special path (use argc/argv) */
-/*int main (int argc, char **argv) {*/
-int main (void) {
-/*	if (geteuid() != 0) {
+int main (int argc, char **argv) {
+char	st[PATH_MAX];
+
+/*
+	if (geteuid() != 0) {
 		printf("%s: you can only run this program under effective UID 0.\n", argv[0]);
 		printf("%s: (read README.datacleaner for information on how to change effective UID)\n", argv[0]);
 		return 1;
 	} else {
-*/
 		zd_length = strlen(storage);
-/*		chroot(site_root); */
+		chroot(site_root);
 		check_dir_loop(storage);
-/*	} */
+	}
+	return 0;
+*/
+
+	zd_length = strlen(storage);
+
+	if ( argc == 1 ) {
+		check_dir_loop(storage);
+	} else {
+		if ((zd_length + 1 + strlen(argv[1]))< PATH_MAX)
+			sprintf(st, storage "/%s", argv[1]);
+
+		/* check subdirs */
+		check_dir_loop(st);
+
+		/* check current dir */
+		if (! opendir(st + zd_length)) {
+			remove_dir_loop(st);
+			rmdir(st);
+		}
+	}
 	return 0;
 }
