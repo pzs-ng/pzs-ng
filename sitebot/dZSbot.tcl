@@ -481,6 +481,26 @@ proc to_mb {str} {
 
 
 #################################################################################
+# CONVERT ANYTHING>1000MB TO BETTER UNIT                                        #
+#################################################################################
+proc from_mb {str} {
+	set units(1) "MB"
+	set units(2) "GB"
+	set units(3) "TB"
+	set units(4) "PB"
+	
+	set unit 1
+	while {$str >= 1000} {
+		set str [expr $str / 1000.0]
+		incr unit
+	}
+
+	return "[format %.1f $str]$units($unit)"
+}
+#################################################################################
+
+
+#################################################################################
 # CONVERT BASIC COOKIES TO DATA                                                 #
 #################################################################################
 proc basicreplace {rstring section} {
@@ -1133,16 +1153,20 @@ proc show_free {nick uhost hand chan arg} {
 		regsub -all {,} $line {.} line
 		foreach dev [array names "tmpdev"] {
 			if {[string match [lindex $line 0] [lindex $tmpdev($dev) 0]] == 1} {
-				set tmp [replacevar $announce(FREE-DEV) "%total" "[lindex $line 1]B"]
-				set tmp [replacevar $tmp "%used" "[lindex $line 2]B"]
-				set tmp [replacevar $tmp "%free" "[lindex $line 3]B"]
-				set tmp [replacevar $tmp "%percentage" "[string trim [lindex $line 4] " %"]"]
+				set dev_total [to_mb [lindex $line 1]]
+				set dev_used [to_mb [lindex $line 1]]
+				set dev_free [to_mb [lindex $line 1]]
+				set dev_percent [format "%.1f" [expr $dev_used/$dev_total * 100.0]]
+				set tmp [replacevar $announce(FREE-DEV) "%total" "[from_mb $dev_total]"]
+				set tmp [replacevar $tmp "%used" "[from_mb $dev_used]"]
+				set tmp [replacevar $tmp "%free" "[from_mb $dev_free]"]
+				set tmp [replacevar $tmp "%percentage" "$dev_percent"]
 				set tmp [replacevar $tmp "%section" [lrange $device($dev) 1 end]]
 				append devices $tmp
 
-				incr total [to_mb [lindex $line 1]]; incr used [to_mb [lindex $line 2]]
-				incr free [to_mb [lindex $line 3]]; incr num
-				incr perc [string trim [lindex $line 4] " %"]
+				incr total $dev_total; incr used $dev_used
+				incr free $dev_free; incr num
+				incr perc $dev_percent
 				array unset "tmpdev" $dev
 			}
 		}
@@ -1152,12 +1176,12 @@ proc show_free {nick uhost hand chan arg} {
 		putlog "dZSbot warning: The following devices had no matching \"df -Ph\" entry: $tmpstr"
 	}
 
-	set totalgb [format "%.1f" [expr $total / 1000]]
-	set usedgb [format "%.1f" [expr $used / 1000]]
-	set freegb [format "%.1f" [expr $free / 1000]]
-	set output [replacevar $output "%total" "${totalgb}GB"]
-	set output [replacevar $output "%used" "${usedgb}GB"]
-	set output [replacevar $output "%free" "${freegb}GB"]
+	set totalgb [from_mb $total]
+	set usedgb [from_mb $used]
+	set freegb [from_mb $free]
+	set output [replacevar $output "%total" "${totalgb}"]
+	set output [replacevar $output "%used" "${usedgb}"]
+	set output [replacevar $output "%free" "${freegb}"]
 	set output [replacevar $output "%percentage" [expr round($perc/$num)]]
 	set output [replacevar $output "%devices" $devices]
 	set output [basicreplace $output "FREE"]
