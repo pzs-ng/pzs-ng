@@ -91,8 +91,6 @@ bind join	-|-	*					welcome_msg
 
 bind msg	-|-	!invite				invite
 
-bind evnt	-|-	rehash				pre_rehash
-
 if {$bindnopre == "YES"} { 
 	bind pub    -|- !who		who
 	bind pub    -|- !speed		speed
@@ -846,21 +844,6 @@ proc help {nick uhost hand chan arg} {
 		puthelp "PRIVMSG $nick :$line"
 	}
 	puthelp "PRIVMSG $nick : Valid sections are: $sections"
-}
-#################################################################################
-
-
-#################################################################################
-# DO STUFF BEFORE REHASH                                                        #
-#################################################################################
-proc pre_rehash {type} {
-	global use_glftpd2
-	# Prevents people uncommenting use_glftpd2 and .rehashing, thinking it'll
-	# autodetect. (It wouldn't have.)
-	set use_glftpd2 "AUTO"
-	# Should we perhaps unset all the other config vars here too? (to prevent
-	# similar stuff as above, and also preventing thing to work after .rehash,
-	# but not after .restart, rather crashing on .rehash)
 }
 #################################################################################
 
