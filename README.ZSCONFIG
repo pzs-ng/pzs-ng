@@ -252,6 +252,12 @@ benchmark_mode <TRUE|FALSE>
 	took the zipscript to scan the uploaded file.
 	Default: TRUE
 
+ignore_zero_size <TRUE|FALSE>
+	This option is for debugging purposes only. Normally files of size
+	0 bytes are logged as bad, meaning glftpd will delete them. This
+	option makes it possible to allow such files.
+	Default: FALSE
+
 remove_dot_debug_on_delete <TRUE|FALSE>
 	If you have debug mode on, users may or may not be able to see the
 	hidden files in the dir, and glftpd may be set up to deny the user
@@ -1027,7 +1033,7 @@ disable_other_norace_complete <TRUE|FALSE>
 racersmsg <STRING>
 	This is a cookie formatted string containing info of the racers. This
 	string will be used for each racer in a race.
-	Default: "%u/%g"
+	Default: "{%u} {%g}"
 
 racersplit <CHAR>
 	This is one(!) char used to split racers in a race announce.

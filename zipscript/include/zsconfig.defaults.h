@@ -237,6 +237,9 @@
 #ifndef benchmark_mode
 #define benchmark_mode		TRUE
 #endif
+#ifndef ignore_zero_size
+#define ignore_zero_size	FALSE
+#endif
 
 /*
  * Set this to TRUE if you wish to remove the .debug when removing a dir

@@ -378,7 +378,10 @@ main(int argc, char **argv)
 
 	d_log("Setting race times\n");
 	raceI.total.stop_time = fileinfo.st_mtime;
-	raceI.total.start_time = raceI.total.stop_time - ((unsigned int)(raceI.file.size) / raceI.file.speed);
+	if (raceI.file.size != 0)
+		raceI.total.start_time = raceI.total.stop_time - ((unsigned int)(raceI.file.size) / raceI.file.speed);
+	else
+		raceI.total.start_time = raceI.total.stop_time > (raceI.total.stop_time - 1) ? raceI.total.stop_time : (raceI.total.stop_time -1);
 	if ((int)(raceI.total.stop_time - raceI.total.start_time) < 1)
 		raceI.total.stop_time = raceI.total.start_time + 1;
 
@@ -464,11 +467,13 @@ main(int argc, char **argv)
 		}
 	}
 	/* Empty file recieved */
+#if (ignore_zero_size == FALSE )
 	if (raceI.file.size == 0) {
 		d_log("File seems to be 0\n");
 		sprintf(raceI.misc.error_msg, EMPTY_FILE);
 		exit_value = 2;
 	}
+#endif
 	/* No check directories */
 	if (matchpath(nocheck_dirs, locations.path) || (!matchpath(zip_dirs, locations.path) && !matchpath(sfv_dirs, locations.path) & !matchpath(group_dirs, locations.path))) {
 		d_log("Directory matched with nocheck_dirs, or is not among sfv/zip/group dirs\n");
