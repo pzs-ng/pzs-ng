@@ -53,8 +53,8 @@ announce.DELDIR                 = "%b{[%c1{%section}]} - Directory deleted: %b{%
 announce.NUKE                   = "%b{[%c1{%section}]} + %b{%relname} was %u{nuked  %b{%multiplier}x} by %b{%nuker} - reason: %reason - nukees: %nukees"
 announce.UNNUKE                 = "%b{[%c1{%section}]} + %b{%relname} was %u{unnuked %b{%multiplier}x} by %b{%nuker} - reason: %reason - nukees: %nukees"
 announce.NUKEES                 = "%b{%u_name} (%b{%size}MB)"
-announce.WIPE                   = "%b{[%c1{%section}]} - Directory Wiped: %b{%relname} by %b{%u_name}/%g_name"
-announce.WIPE-r                 = "%b{[%c1{%section}]} - Directory Wiped: %b{%relname} by %b{%u_name}/%g_name"
+announce.WIPE                   = "%b{[%c1{%section}]} - Directory wiped: %b{%relname} by %b{%u_name}/%g_name"
+announce.WIPE-r                 = "%b{[%c1{%section}]} - Directory wiped: %b{%relname} by %b{%u_name}/%g_name"
 
 ## Special zipscript announcements
 announce.DOUBLESFV              = "%b{[%c1{%section}]} - %b{%u_name}/%g_name tried to upload a second SFV in %b{%releasename}."
@@ -154,12 +154,12 @@ announce.NEWLEADER_RAR                  = "%b{[%c1{%section}]} - %b{%u_leader_na
 announce.NEWLEADER_VIDEO                = "%b{[%c1{%section}]} - %b{%u_leader_name}/%b{%u_leader_gname} [%b{%u_leader_mbytes}MB/%b{%u_leader_files}F/%b{%u_leader_percent}%/%u_leader_avgspeed] takes the lead in %b{%relname}."
 announce.NEWLEADER_ZIP                  = "%b{[%c1{%section}]} - %b{%u_leader_name}/%b{%u_leader_gname} [%b{%u_leader_mbytes}MB/%b{%u_leader_files}F/%b{%u_leader_percent}%/%u_leader_avgspeed] takes the lead in %b{%reldir}."
 
-announce.COMPLETE_AUDIO_CBR             = "%b{[%c1{%section}]} - %b{%reldir} [%b{%t_mbytes}MB in %b{%u_leader_files}F at %r_avgspeed - %b{%t_duration}] was completed by %b{%u_name}/%g_name."
-announce.COMPLETE_AUDIO_VBR             = "%b{[%c1{%section}]} - %b{%reldir} [%b{%t_mbytes}MB in %b{%u_leader_files}F at %r_avgspeed - %b{%t_duration}] was completed by %b{%u_name}/%g_name."
-announce.COMPLETE_OTHER                 = "%b{[%c1{%section}]} - %b{%relname} [%b{%t_mbytes}MB in %b{%u_leader_files}F at %r_avgspeed - %b{%t_duration}] was completed by %b{%u_name}/%g_name."
-announce.COMPLETE_RAR                   = "%b{[%c1{%section}]} - %b{%relname} [%b{%t_mbytes}MB in %b{%u_leader_files}F at %r_avgspeed - %b{%t_duration}] was completed by %b{%u_name}/%g_name."
-announce.COMPLETE_VIDEO                 = "%b{[%c1{%section}]} - %b{%relname} [%b{%t_mbytes}MB in %b{%u_leader_files}F at %r_avgspeed - %b{%t_duration}] was completed by %b{%u_name}/%g_name."
-announce.COMPLETE_ZIP                   = "%b{[%c1{%section}]} - %b{%reldir} [%b{%t_mbytes}MB in %b{%u_leader_files}F at %r_avgspeed - %b{%t_duration}] was completed by %b{%u_name}/%g_name."
+announce.COMPLETE_AUDIO_CBR             = "%b{[%c1{%section}]} - %b{%reldir} [%b{%t_mbytes}MB in %b{%t_files}F at %r_avgspeed - %b{%t_duration}] was completed by %b{%u_name}/%g_name."
+announce.COMPLETE_AUDIO_VBR             = "%b{[%c1{%section}]} - %b{%reldir} [%b{%t_mbytes}MB in %b{%t_files}F at %r_avgspeed - %b{%t_duration}] was completed by %b{%u_name}/%g_name."
+announce.COMPLETE_OTHER                 = "%b{[%c1{%section}]} - %b{%relname} [%b{%t_mbytes}MB in %b{%t_files}F at %r_avgspeed - %b{%t_duration}] was completed by %b{%u_name}/%g_name."
+announce.COMPLETE_RAR                   = "%b{[%c1{%section}]} - %b{%relname} [%b{%t_mbytes}MB in %b{%t_files}F at %r_avgspeed - %b{%t_duration}] was completed by %b{%u_name}/%g_name."
+announce.COMPLETE_VIDEO                 = "%b{[%c1{%section}]} - %b{%relname} [%b{%t_mbytes}MB in %b{%t_files}F at %r_avgspeed - %b{%t_duration}] was completed by %b{%u_name}/%g_name."
+announce.COMPLETE_ZIP                   = "%b{[%c1{%section}]} - %b{%reldir} [%b{%t_mbytes}MB in %b{%t_files}F at %r_avgspeed - %b{%t_duration}] was completed by %b{%u_name}/%g_name."
 
 announce.COMPLETE_STAT_RACE_AUDIO_CBR   = "%b{[%c1{%section}]} - %b{%reldir} [%b{%t_mbytes}MB in %b{%u_leader_files}F at %t_avgspeed - %b{%t_duration}] was completed by %b{%u_count} racers in %b{%g_count} group(s).\n-%b{%sitename}- %b{[%c1{%section}]} - User Top:%loop3\n-%b{%sitename}- %b{[%c1{%section}]} - Group Top:\n%loop2"
 announce.COMPLETE_STAT_RACE_AUDIO_VBR   = "%b{[%c1{%section}]} - %b{%reldir} [%b{%t_mbytes}MB in %b{%u_leader_files}F at %t_avgspeed - %b{%t_duration}] was completed by %b{%u_count} racers in %b{%g_count} group(s).\n-%b{%sitename}- %b{[%c1{%section}]} - User Top:%loop3\n-%b{%sitename}- %b{[%c1{%section}]} - Group Top:\n%loop2"

@@ -26,8 +26,12 @@ if {[catch {source $scriptpath/dZSbot.vars} error]} {
 	die
 }
 if {[catch {source $scriptpath/dZSbot.conf} error]} {
-	putlog "dZSbot warning: Unable to load dZSbot.conf ($error), using defaults."
-	putlog "dZSbot warning: If this is your first install, do: cp dZSbot.conf.dist dZSbot.conf"
+	putlog "dZSbot warning: Unable to load dZSbot.conf, using default values."
+	if {[file exists $scriptpath/dZSbot.conf]} {
+		putlog "dZSbot warning: Config error:\n$errorInfo"
+	} else {
+		putlog "dZSbot warning: Since this is your first install, do: cp dZSbot.conf.dist dZSbot.conf"
+	}
 }
 
 #################################################################################
