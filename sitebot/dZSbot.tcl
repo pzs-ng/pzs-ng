@@ -1144,8 +1144,8 @@ proc show_free {nick uhost hand chan arg} {
 			return 0
 		}
 	}
-	set devices ""; set free 0; set used 0
-	set total 0; set num 0; set perc 0
+	set devices(0) ""; set free 0.0; set used 0.0
+	set total 0.0; set num 0; set perc 0.0
 	array set "tmpdev" [array get "device"]
 
 	set i 0
@@ -1156,21 +1156,25 @@ proc show_free {nick uhost hand chan arg} {
 				set dev_total [to_mb [lindex $line 1]]
 				set dev_used [to_mb [lindex $line 1]]
 				set dev_free [to_mb [lindex $line 1]]
-				set dev_percent [format "%.1f" [expr $dev_used/$dev_total * 100.0]]
-				set tmp [replacevar $announce(FREE-DEV) "%total" "[from_mb $dev_total]"]
-				set tmp [replacevar $tmp "%used" "[from_mb $dev_used]"]
-				set tmp [replacevar $tmp "%free" "[from_mb $dev_free]"]
+				set dev_percent [format "%.1f" "[expr (double($dev_used)/double($dev_total)) * 100]"]
+				set tmp [replacevar $announce(FREE-DEV) "%total" [from_mb $dev_total]]
+				set tmp [replacevar $tmp "%used" [from_mb $dev_used]]
+				set tmp [replacevar $tmp "%free" [from_mb $dev_free]]
 				set tmp [replacevar $tmp "%percentage" "$dev_percent"]
 				set tmp [replacevar $tmp "%section" [lrange $device($dev) 1 end]]
+
 				if {[info exists dev_max_length] && $dev_max_length &&
-					[expr [string length $devices($i)] + [string length $tmp]] > $dev_max_length} {
+				    [expr [string length $devices($i)] + [string length $tmp]] > $dev_max_length} {
 					incr i
+					set devices($i) ""
 				}
 				append devices($i) $tmp
 
-				incr total $dev_total; incr used $dev_used
-				incr free $dev_free; incr num
-				incr perc $dev_percent
+				set total [expr $total + double($dev_total)];
+				set used [expr $used + double($dev_used)]
+				set free [expr $free + double($dev_free)];
+				set perc [expr $perc + double($dev_percent)]
+				incr num
 				array unset "tmpdev" $dev
 			}
 		}
@@ -1183,16 +1187,18 @@ proc show_free {nick uhost hand chan arg} {
 	set totalgb [from_mb $total]
 	set usedgb [from_mb $used]
 	set freegb [from_mb $free]
-	while {$i > -1} {
+
+	set o 0
+	while {$o < [expr $i + 1]} {
 		set output "$theme(PREFIX)$announce(FREE)"
 		set output [replacevar $output "%total" "${totalgb}"]
 		set output [replacevar $output "%used" "${usedgb}"]
 		set output [replacevar $output "%free" "${freegb}"]
 		set output [replacevar $output "%percentage" [expr round($perc/$num)]]
-		set output [replacevar $output "%devices" $devices($i)]
+		set output [replacevar $output "%devices" $devices($o)]
 		set output [basicreplace $output "FREE"]
 		putserv "PRIVMSG $chan :$output"
-		incr i -1
+		incr o
 	}
 }
 #################################################################################
