@@ -38,6 +38,7 @@ announce.FREE-DEV	        = "%section :: %bold%free%bold of %bold%total%bold (us
 announce.BADBITRATE		= "[%boldnotice%bold] %bold%user%bold of %group is violating rules by uploading shit with bitrate %bold%bitrate%boldkbps"
 announce.BADGENRE		= "[%boldnotice%bold] %bold%user%bold of %group is violating rules by uploading %bold%genre%bold"
 announce.BADYEAR		= "[%boldnotice%bold] %bold%user%bold of %group is violating rules by uploading shit from %bold%year%bold"
+announce.DOUBLESFV		= "[%boldnotice%bold] %bold%user%bold of %group tried to upload a dupe sfv."
 
 announce.SFV		        = "[%boldsfv   %bold][%section] %bold%relname%bold by %bold%user%bold of %group :: now expecting %bold%files%bold file(s)"
 

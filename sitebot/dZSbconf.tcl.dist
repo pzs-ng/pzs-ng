@@ -218,6 +218,7 @@ set variables(WIPE)		"%pf %user %group %tagline"
 set variables(WIPE-r)		"%pf %user %group %tagline"
 
 # Variables pasted from the zipscript
+set variables(DOUBLESFV)	"%pf %user %group %rel %fname"
 set variables(BADBITRATE)	"%pf %user %group %bitrate"
 set variables(BADGENRE)		"%pf %user %group %genre"
 set variables(BADYEAR)		"%pf %user %group %year"
