@@ -102,9 +102,9 @@ proc ::ngBot::PreTime::DeInit {args} {
     ## Close the MySQL connection.
     catch {mysqlclose $mysql(handle)}
 
-    ## Remove the script event from postcommand.
-    if {[info exists postcommand(NEWDIR)] && [set pos [lsearch -exact $postcommand(NEWDIR) $scriptName]] !=  -1} {
-        set postcommand(NEWDIR) [lreplace $postcommand(NEWDIR) $pos $pos]
+    ## Remove the script event from precommand.
+    if {[info exists precommand(NEWDIR)] && [set pos [lsearch -exact $precommand(NEWDIR) $scriptName]] !=  -1} {
+        set precommand(NEWDIR) [lreplace $precommand(NEWDIR) $pos $pos]
     }
 
     catch {unbind evnt -|- prerehash [namespace current]::DeInit}
