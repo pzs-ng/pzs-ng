@@ -147,7 +147,7 @@ announce.COMPLETE_STAT_RACE_AUDIO_VBR_LOOP2 	= "|%b{STATS%c1{:}} %c1{[}%c2{%g_ra
 announce.COMPLETE_STAT_RACE_AUDIO_VBR_LOOP3 	= "|%b{STATS%c1{:}} %c1{[}%c2{%u_racer_position}%c1{]} %c3{%b{%u_racer_name}} %c1{/} %c3{%g_racer_name} %c1{-} %c3{%b{%u_racer_files}}%c1{f} %c1{-} %c3{%b{%u_racer_mbytes}}%c1{MB} %c1{-} %c3{%b{%u_racer_percent}%} %c1{-} %c3{%b{%u_racer_avgspeed}} %c1{-} %c1{wkup} %c3{%b{%u_racer_wkup}}"
 
 # announce done by the postdel binary
-announce.INCOMPLETE				= "%b{INCOMPLETEc1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%releasename}} %c1{is now incomplete thanks to} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{.}"
+announce.INCOMPLETE				= "%b{INCOMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%releasename}} %c1{is now incomplete thanks to} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{.}"
 
 # 3rd party addons - take note that these variables should possibly be changed in order to work with your setup/3rd party app.
 announce.PRE					= "%b{PRE%c1{:}} %c1{-}%c2{%section}%c1{-} %c1{We have a new cool pre!} %c3{%b{%reldir}} %c1{has just been released by} %c3{%b{%pregroup}} %c1{in} %c3{%b{%files}} %c1{files (}%c3{%b{%mbytes}}%c1{MB in } %c3{%b{%cds}} %c1{dirs).}"
