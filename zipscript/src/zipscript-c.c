@@ -530,7 +530,8 @@ int main( int argc, char **argv ) {
 		{
 		    d_log("Executing nfo script (%s %s)\n", nfo_script, raceI.file.name);
 		    sprintf(target, nfo_script " %s", raceI.file.name);
-		    if ( execute_old(target) != 0 ) {
+		    /*if ( execute_old(target) != 0 ) {*/
+		    if ( execute(target) != 0 ) {
 			d_log("Failed to execute nfo_script!");
 		    }
 		}
