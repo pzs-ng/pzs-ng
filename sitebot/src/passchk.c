@@ -5,16 +5,12 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "structonline.h"
+#include <paths.h>
+#include <openssl/sha.h>
+#include <openssl/evp.h>
+#include <openssl/hmac.h>
 
-#ifdef use_glftpd2
-# include <paths.h>
-# include <openssl/sha.h>
-# include <openssl/evp.h>
-# include <openssl/hmac.h>
-#else
- extern char *crypt(const char *key, const char *salt);
-#endif
+extern char *crypt(const char *key, const char *salt);
 
 #ifndef  __USE_SVID
 struct passwd pwd;
@@ -60,8 +56,6 @@ struct passwd* fgetpwent(FILE *fp) {
  return &pwd;
 }
 #endif
-
-#ifdef use_glftpd2
 
 /* see http://lists.jammed.com/secprog/2002/11/0008.html for info */
 #define HLEN (20)               /*Using SHA-1 */
@@ -142,37 +136,35 @@ int pw_encrypt(const unsigned char *pwd, char *digest) {
         *digest='\0';
         return 1;
 }
-#endif /* use_glftpd2 */
 
 int main(int argc, char *argv[]) {
 	FILE *fp;
 	struct passwd *buf;
 
-#ifdef use_glftpd2
-	char crypted[SHA_DIGEST_LENGTH * 2 + 1];
-#else
 	char *crypted;
 	char salt[2];
-#endif
 
 	if (argc != 4) {
 		printf("Usage: %s <user> <pass> <passwdfile>\n", argv[0]);
 		return 1;
 	}
-	if ((fp=fopen(argv[3], "r")) == NULL) {
+	if ((fp = fopen(argv[3], "r")) == NULL) {
 		printf("Ooops, couldn\'t open your passwd file.\n");
 		printf("Looks like you didnt specify a correct path.\n");
 		return 1;
 	}
-	while ((buf=fgetpwent(fp)) != NULL) {
+	while ((buf = fgetpwent(fp)) != NULL) {
 		if (strcmp(buf->pw_name, argv[1]))
 			continue;
-#ifdef use_glftpd2
-		pw_encrypt(argv[2], crypted);
-#else
-		strncpy(salt, buf->pw_passwd, 2);
-		crypted = crypt(argv[2], salt);
-#endif
+		
+		if (strlen(buf->pw_passwd) == 13) {
+			strncpy(salt, buf->pw_passwd, 2);
+			crypted = crypt(argv[2], salt);
+		} else {
+			crypted = malloc(SHA_DIGEST_LENGTH * 2 + 1);
+			pw_encrypt(argv[2], crypted);
+		}
+		
 		if (strcmp(buf->pw_passwd, crypted) == 0) {
 			printf("MATCH\n");
 			return 0;
