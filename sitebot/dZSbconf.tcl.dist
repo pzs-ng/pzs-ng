@@ -277,8 +277,8 @@ set variables(STAT_POST)		"%pf %u_count %g_count %t_files %t_mbytes %t_duration 
 # Variables pasted from 3rd party apps
 set variables(PRE)			"%pf %releasename %pregroup %section %files %mbytes %cds %who %user %g_name %tagline"
 set variables(INVITE)		"%u_ircnick %u_name %g_name"
-set variables(REQUEST)		"%release %u_name %g_name %u_tagline"
-set variables(REQFILLED)	"%release %u_name %g_name %u_tagline %u_name_requester"
+set variables(REQUEST)		"%releasename %u_name %g_name %u_tagline"
+set variables(REQFILLED)	"%releasename %u_name %g_name %u_tagline %u_name_requester"
 
 # Using psxc-imdb, setting TRIGGER to "IMDBVAR" and LOGFORMAT to "SPECIAL" will allow you use format the output in the bot.
 set variables(IMDBVAR)	"%pf %imdbdirname %imdburl %imdbtitle %imdbgenre %imdbrating %imdbcountry %imdblanguage %imdbcertification %imdbruntime %imdbdirector %imdbbusinessdata %imdbpremiereinfo %imdblimitedinfo %imdbvotes %imdbscore %imdbname %imdbyear %imdbnumscreens %imdbislimited %imdbcastleadname %imdbcastleadchar %imdbtagline %imdbplot \[%imdbbar\] %imdbcasting %imdbcommentshort %imdbdestination"
@@ -293,8 +293,8 @@ set variables(IMDBFIND)		"%pf %msg"
 #
 # Example:
 #  set zeroconvert(%user) "NoOne"
-set zeroconvert(%user)				"NoOne"
-set zeroconvert(%group) 			"NoGroup"
+set zeroconvert(%u_name)			"NoOne"
+set zeroconvert(%g_name) 			"NoGroup"
 
 # IMDB variables
 set zeroconvert(%imdbdirname)		"N/A"
