@@ -528,9 +528,11 @@ int main( int argc, char **argv ) {
 
 		if ( enable_nfo_script == TRUE )
 		{
-		    d_log("Executing nfo script\n");
+		    d_log("Executing nfo script (%s %s)\n", nfo_script, raceI.file.name);
 		    sprintf(target, nfo_script " %s", raceI.file.name);
-		    execute(target);
+		    if ( execute_old(target) != 0 ) {
+			d_log("Failed to execute nfo_script!");
+		    }
 		}
 
 		break;

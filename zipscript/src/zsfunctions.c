@@ -478,6 +478,42 @@ int execute(char *s) {
     return n >> 8;
 }
 
+int execute_old(char *s) {
+ int    n;
+ int	args = 0;
+ char	*argv[128]; /* Noone uses this many args anyways */
+
+ argv[0] = s;
+ while ( 1 ) {
+	if ( *s == ' ' ) {
+		*s = 0;
+		args++;
+		argv[args] = s + 1;
+		} else if ( *s == 0 ) {
+		args++;
+		argv[args] = NULL;
+		break;
+		}
+	s++;
+	}
+
+ switch ( fork() ) {
+	case 0: 
+		close(1);
+		close(2);
+		n = execv(argv[0], argv);
+		exit(0);
+		break;
+	default:
+		wait(&n);
+		break;
+	}
+
+ return n >> 8;
+}
+
+
+
 /*
  * Copyright (c) 1997 Shigio Yamaguchi. All rights reserved.
  * Copyright (c) 1999 Tama Communications Corporation. All rights reserved.
