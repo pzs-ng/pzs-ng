@@ -40,6 +40,7 @@ status  who       what
  [ ]               add support for showing when racers joined the, eh, race in the .message.
  [ ]               make it possible to change the name of the .message file.
  [ ]               change how mp3-links are created from absolute paths to relative paths.
+ [ ]               look over shmem use - does the zipscript need to access it?
 
 status   description
  [ ]     not done 
