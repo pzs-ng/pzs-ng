@@ -6,8 +6,6 @@
 #include <stdio.h>
 #include <fcntl.h>
 
-#include "config.h"
-
 #include "objects.h"
 #include "macros.h"
 #include "../conf/zsconfig.h"

@@ -7,8 +7,6 @@
 #include <sys/stat.h>
 #include <sys/uio.h>
 
-#include "config.h"
-
 #include "objects.h"
 #include "macros.h"
 #include "convert.h"

@@ -71,7 +71,7 @@ dnl A whole whack of possible places where this might be
     AC_MSG_RESULT(will try to find)
     AC_CHECK_LIB(ssl,SSL_accept,[AC_DEFINE(PZSNG_SSL_EXT)
      SSL_LIBS="-lssl -lcrypto"],SSL_LIBS="",-lcrypto)
-    AC_CHECK_HEADERS("openssl/ssl.h",,SSL_INCLUDE="",)
+    AC_CHECK_HEADERS(openssl/ssl.h,,SSL_INCLUDE="",)
     dnl AC_CHECK_HEADERS("openssl/ssl.h",,[AC_MSG_ERROR([OpenSSL was not found. Please supply a pathname to OpenSSL])],)
      dnl SSL_LIBS="-lssl -lcrypto"],[AC_MSG_ERROR([OpenSSL was not found. Please supply a pathname to OpenSSL])],-lcrypto)
 

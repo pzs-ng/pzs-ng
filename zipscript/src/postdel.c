@@ -10,8 +10,6 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 
-#include "config.h"
-
 #include "zsfunctions.h"
 #include "race-file.h"
 #include "objects.h"

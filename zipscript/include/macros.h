@@ -1,6 +1,10 @@
 #ifndef _MACROS_H_
 #define _MACROS_H_
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #if HAVE_DIRENT_H
 #include <dirent.h>
 #define NAMLEN(dirent) strlen((dirent)->d_name)
