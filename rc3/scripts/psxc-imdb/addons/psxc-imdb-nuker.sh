@@ -285,6 +285,9 @@ if [ ! -z "$NUKE_WARN_FILE" ] && [ ! -z"$NUKE_WARN_MSG" ]; then
  fi
 fi
 
+# Zero the nuke-combo
+COMBO=0
+
 # Let's check to see if this script is run independently
 if [ -z "$IMDBRELPATH" ]; then
  echo "Looks like you've run this as a standalone script."
@@ -333,7 +336,6 @@ else
   NUKE_COMBO=1
  fi
 
-COMBO=0
 # Let's do a quick test to see if the release should be nuked
  NUKE_REASON=""
  if [ `echo "$IMDBSCORE" | tr '. ' '\n' | grep -v "^$" | head -n 1` -lt $MIN_SCORE ]; then
