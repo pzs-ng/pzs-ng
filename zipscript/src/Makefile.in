@@ -1,6 +1,6 @@
 prefix=@GLPATH@
 datapath=/ftp-data
-storage=/tmp/zipscript
+storage=/ftp-data/pzs-ng
 bindir=$(prefix)/bin
 
 CC=@CC@

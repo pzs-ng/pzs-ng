@@ -39,7 +39,7 @@ announce.BADBITRATE		= [%boldnotice%bold] %bold%user%bold of %group is violating
 announce.BADGENRE		= [%boldnotice%bold] %bold%user%bold of %group is violating rules by uploading %bold%genre%bold"
 announce.BADYEAR		= [%boldnotice%bold] %bold%user%bold of %group is violating rules by uploading shit from %bold%year%bold"
 
-announce.SFV		        = "[%boldsfv   %bold][%section] %bold%relname%bold expects %bold%files%bold file(s)"
+announce.SFV		        = "[%boldsfv   %bold][%section] %bold%relname%bold by %bold%user%bold of %group :: now expecting %bold%files%bold file(s)"
 
 announce.UPDATE	        	= "[%boldupdate%bold][%section] %bold%relname%bold got first file from %bold%user%bold of %group at %bold%spd%boldkbs. Now expecting %bold%mbytes%boldmb in %bold%files%bold file(s)"
 announce.UPDATE_RAR	        = "[%boldupdate%bold][%section] %bold%relname%bold got first file from %bold%user%bold of %group at %bold%spd%boldkbs. Now expecting %bold%mbytes%boldmb"
