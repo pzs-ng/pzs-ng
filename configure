@@ -4167,7 +4167,7 @@ fi
 #	exit 1
 #fi
 
-                                                  ac_config_files="$ac_config_files Makefile zipscript/src/Makefile sitebot/src/Makefile sitewho/Makefile sitewho/sitewho.conf.dist"
+                                                  ac_config_files="$ac_config_files Makefile zipscript/src/Makefile sitebot/src/Makefile sitewho/Makefile sitewho/sitewho.conf"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -4696,7 +4696,7 @@ do
   "zipscript/src/Makefile" ) CONFIG_FILES="$CONFIG_FILES zipscript/src/Makefile" ;;
   "sitebot/src/Makefile" ) CONFIG_FILES="$CONFIG_FILES sitebot/src/Makefile" ;;
   "sitewho/Makefile" ) CONFIG_FILES="$CONFIG_FILES sitewho/Makefile" ;;
-  "sitewho/sitewho.conf.dist" ) CONFIG_FILES="$CONFIG_FILES sitewho/sitewho.conf.dist" ;;
+  "sitewho/sitewho.conf" ) CONFIG_FILES="$CONFIG_FILES sitewho/sitewho.conf" ;;
   "config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
@@ -5301,7 +5301,6 @@ fi
 
 
 ! [ -f zipscript/conf/zsconfig.h ] && cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h
-! [ -f sitewho/sitewho.conf ] && cp -i sitewho/sitewho.conf.dist sitewho/sitewho.conf
 
 if [ "$PASSCHK" = "" ]; then
 echo "$as_me:$LINENO: result: $( echo )

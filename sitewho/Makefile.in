@@ -18,7 +18,7 @@ install: all
 	[ -f "$(prefix)/bin/sitewho.conf" ] || $(INSTALL) -m644 sitewho.conf $(prefix)/bin
 
 distclean: clean
-	$(RM) sitewho.conf.dist
+	$(RM) sitewho.conf
 
 clean:
 	$(RM) sitewho
