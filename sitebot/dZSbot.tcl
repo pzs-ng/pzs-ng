@@ -2058,7 +2058,6 @@ proc themereplace_startup {rstring} {
 		regsub -all {%u\{([^\{\}]+)\}} $rstring {\\037\1\\037} rstring
 	}
 
-	regsub -all {\003(\d)(?!\d)} $rstring {\\0030\1} rstring
 	return [subst -nocommands $rstring]
 }
 
@@ -2071,7 +2070,7 @@ proc themereplace {targetString section} {
 	# We replace %cX{string}, %b{string} and %u{string} with their coloured, bolded and underlined equivilants ;)
 	# We also do the justification and padding that is required for %r / %l / %m to work.
 	# bold and underline replacement should not be needed here...
-	while {[regexp {(%c(\d)\{([^\{\}]+)\}|%([lrm])(\d\d?)\{([^\{\}]+)\})} $targetString matchString dud padOp padLength padString]} {
+	while {[regexp {(%c(\d)\{([^\{\}]+)\}|%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\}|%([lrm])(\d\d?)\{([^\{\}]+)\})} $targetString matchString dud padOp padLength padString]} {
 		# Check if any innermost %r/%l/%m are present. :-)
 		while {[regexp {%([lrm])(\d\d?)\{([^\{\}]+)\}} $targetString matchString padOp padLength padString]} {
 			if {[string length $padString] >= $padLength} {
@@ -2088,6 +2087,8 @@ proc themereplace {targetString section} {
 			set targetString [string map [list $matchString $paddedString] $targetString]
 		}
 
+		regsub -all {%b\{([^\{\}]+)\}} $targetString {\\002\1\\002} targetString
+		regsub -all {%u\{([^\{\}]+)\}} $targetString {\\037\1\\037} targetString
 	
 		set colorString [format "COLOR_%s_1" $section]
 		if {[lsearch -exact [array names theme] $colorString] != -1} {
