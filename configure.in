@@ -110,5 +110,5 @@ AC_SUBST(STATIC)
 AC_SUBST(LCRYPT)
 AC_SUBST(LCRYPTO)
 
-AC_OUTPUT(Makefile zipscript/src/Makefile sitebot/src/Makefile sitewho/compile.sh)
+AC_OUTPUT(Makefile zipscript/src/Makefile sitebot/src/Makefile)
 AC_MSG_RESULT(Now type 'make' to compile)
