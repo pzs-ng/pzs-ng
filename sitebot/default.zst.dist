@@ -19,7 +19,7 @@ announce.TIMEOUT		= "[%b{logout}] %b{%u_name} has timed out after %b{%u_idletime
 announce.TAGLINE		= "[%b{tag   }] %b{%u_name}@%g_name has changed tagline to %b{%u_tagline}."
 announce.WIPE		        = "[%b{wipe  }][%section] %b{%relname} by %b{%u_name} of %g_name."
 announce.WIPE-r		        = "[%b{wipe-r}][%section] %b{%relname} and all subdirectories by %b{%u_name} of %g_name."
-announce.FAILLOGIN		= "[%b{login }] %b{%failed_nick} tried to log in with wrong password."
+announce.FAILLOGIN		= "[%b{login }] %b{%failed_nick} failed login: %b{%word1 %word2}"
 
 # special announces done by glftpd
 announce.NUKE		        = "[%b{nuke  }][%section] %b{%relname} factor %b{%multiplier} by %b{%nuker} [reason] %b{%reason} [nukees] %b{%nukees}."

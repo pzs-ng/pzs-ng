@@ -45,7 +45,7 @@ set variables(TIMEOUT)			"%u_name %u_hostmask %dummy1 %dummy2 %dummy3 %dummy4 %d
 set variables(TAGLINE)			"%u_name %u_group %u_tagline"
 set variables(WIPE)			"%pf %u_name %g_name %u_tagline"
 set variables(WIPE-r)			"%pf %u_name %g_name %u_tagline"
-set variables(FAILLOGIN)		"%failed_nick %u_hostmask %u_ip"
+set variables(FAILLOGIN)		"%failed_nick %u_hostmask %u_ip %word1 %word2 %u_pid"
 
 # Variables pasted from the zipscript
 set variables(DOUBLESFV)		"%pf %u_name %g_name %releasename %filename"

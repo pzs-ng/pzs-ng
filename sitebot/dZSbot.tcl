@@ -370,6 +370,12 @@ proc readlog {} {
 						set echoline [parse $msgtype [lrange $line 6 end] "DEFAULT"]
 						sndall "DEFAULT" $echoline
 						postcmd $msgtype "DEFAULT" $path
+					} else {
+						if {![info exists variables($msgtype)] && $pid > 0} {
+							set echoline [parse $msgtype [lrange $line 6 end] $section]
+							sndall $section $echoline
+							postcmd $msgtype $section $path
+						}
 					}
 				}
 			}
