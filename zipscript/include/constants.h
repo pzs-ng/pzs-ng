@@ -118,7 +118,7 @@
 #define audio_halfway		DISABLED
 #endif
 #if ( disable_audio_newleader == FALSE )
-#define audio_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n}"
+#define audio_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0"
 #else
 #define audio_newleader		DISABLED
 #endif
@@ -160,7 +160,7 @@
 #define video_halfway		DISABLED
 #endif
 #if ( disable_video_newleader == FALSE )
-#define video_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M}"
+#define video_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0"
 #else
 #define video_newleader		DISABLED
 #endif
@@ -202,7 +202,7 @@
 #define rar_halfway		DISABLED
 #endif
 #if ( disable_rar_newleader == FALSE )
-#define rar_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M}"
+#define rar_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0"
 #else
 #define rar_newleader		DISABLED
 #endif
@@ -244,7 +244,7 @@
 #define other_halfway		DISABLED
 #endif
 #if ( disable_other_newleader == FALSE )
-#define other_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M}"
+#define other_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0"
 #else
 #define other_newleader		DISABLED
 #endif
@@ -281,7 +281,7 @@
 #define zip_halfway		DISABLED
 #endif
 #if ( disable_zip_newleader == FALSE )
-#define zip_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%u} {%g} {%f} {%M}"
+#define zip_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0"
 #else
 #define zip_newleader		DISABLED
 #endif

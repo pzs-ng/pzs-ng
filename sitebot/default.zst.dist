@@ -15,6 +15,7 @@ announce.NEWDIR		        = "[%b{new   }][%section] %b{%relname} by %b{%u_name} o
 announce.DELDIR		        = "[%b{delete}][%section] %b{%relname} by %b{%u_name} of %g_name"
 announce.LOGIN		        = "[%b{login }] %b{%u_name}@%g_name has logged in"
 announce.LOGOUT		        = "[%b{logout}] %b{%u_name}@%g_name has logged out"
+announce.TIMEOUT		= "[%b{logout}] %b{%u_name} has timed out after %b{%u_idletime}s."
 announce.WIPE		        = "[%b{wipe  }][%section] %bold%reldir%bold by %b{%u_name} of %g_name"
 announce.WIPE-r		        = "[%b{wipe-r}][%section] %bold%reldir%bold and all subdirectories by %b{%u_name} of %g_name"
 
@@ -36,7 +37,7 @@ announce.UPDATE_CBR	        = "[%b{update}][%section] %b{%reldir} got first file
 announce.UPDATE_VBR	        = "[%b{update}][%section] %b{%reldir} got first file from %b{%u_name} of %g_name at %b{%u_speed}kbs. Get ready for some %b{%genre} from %b{%year} at %b{%sampling}Hz in %mode %b{%bitrate}kbps (%audio %a_stream)"
 announce.HALFWAY_NORACE	        = "[%b{50%   }][%section] %b{%reldir} :: %b{%u_name} of %b{%g_name} is all alone and halfway at %bold%u_speed%boldkb/s"
 announce.HALFWAY_RACE	        = "[%b{50%   }][%section] %b{%reldir} :: %b{%u_leader_name} of %b{%u_leader_gname} leads with %b{%u_leader_files} files in %b{%u_leader_percent%} (%b{%u_leader_mbytes}) at %b{%u_leader_avgspeed}kb/s against %against :: group %b{%g_leader_name} leads with %b{%g_leader_files} files in %b{%g_leader_percent}% (%b{%g_leader_mbytes}mb) at %b{%g_leader_avgspeed}kb/s"
-announce.NEWLEADER	        = "[%b{leader}][%section] %b{%reldir} :: %b{%u_name} of %b{%g_name} takes the lead with %b{%u_files} files in %b{%u_percent}& (%b{%u_mbytes}mb) at %b{%u_speed}kb/s"
+announce.NEWLEADER	        = "[%b{leader}][%section] %b{%reldir} :: %b{%u_leader_name} of %b{%u_leader_gname} takes the lead with %b{%u_leader_files} files in %b{%u_leader_percent}% (%b{%u_leader_mbytes}mb) at %b{%u_leader_avgspeed}kb/s"
 announce.COMPLETE		= "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}mb) was completed in %b{%t_duration} (avg. %b{%t_avgspeed}kb/s) by %b{%u_name} of %b{%g_name}."
 announce.COMPLETE_RAR		= "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}mb) was completed in %b{%t_duration} (avg. %b{%t_avgspeed}kb/s) by %b{%u_name} of %b{%g_name}."
 announce.COMPLETE_ZIP		= "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}mb) was completed in %b{%t_duration} (avg. %b{%t_avgspeed}kb/s) by %b{%u_name} of %b{%g_name}."
