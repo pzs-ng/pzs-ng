@@ -740,7 +740,7 @@ proc help {nick uhost hand chan arg} {
 # LOAD A THEME FILE                                                             #
 #################################################################################
 proc loadtheme {file} {
-	global theme
+	global theme announce
 
 	if {[string index $file 0] != "/"} { set file "[file dirname [info script]]/$file" }
 	if {![file readable $file]} {
@@ -757,6 +757,9 @@ proc loadtheme {file} {
 			if {[regexp -nocase -- {fakesection\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
 				set setting [string toupper $setting]
 				set theme_fakes($setting) $value
+			} elseif {[regexp -nocase -- {announce\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+				set setting [string toupper $setting]
+				set announcetmp($setting) $value
 			} elseif {[regexp -nocase -- {(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
 				set setting [string toupper $setting]
 				set theme($setting) $value
@@ -766,6 +769,7 @@ proc loadtheme {file} {
 	
 	foreach name [array names theme] { set theme($name) [themereplace $theme($name)] }
 	foreach name [array names theme_fakes] { set theme_fakes($name) [themereplace $theme_fakes($name)] }
+	foreach name [array names announcetmp] { set announce($name) [themereplace $announcetmp($name)] }
 
 	set ret 1
 	set required "PREFIX"
@@ -787,7 +791,12 @@ proc loadtheme {file} {
 #################################################################################
 proc themereplace {rstring} {
 	global theme
+
+	# We replace %cX{string}, %b{string} and %u{string} with their coloured, bolded and underlined equivilants ;)
 	regsub -all {%c(\d)\{([^\}]+)\}} $rstring {\\003$theme(COLOR\1)\2\\003} rstring
+	regsub -all {%b\{([^\}]+)\}} $rstring {\\002$theme(COLOR\1)\2\\002} rstring
+	regsub -all {%u\{([^\}]+)\}} $rstring {\\037$theme(COLOR\1)\2\\037} rstring
+	
 	regsub -all {\003(\d)(?!\d)} $rstring {\\0030\1} rstring
 	regsub -all {\[} $rstring {\\[} rstring; regsub -all {\]} $rstring {\\]} rstring
 	return [subst $rstring]

@@ -179,20 +179,8 @@ set splitter(CHAR) "\n"
 #         RANDOM ----------^    ^
 #             # OF IDS ---------^
 
+# Announces are now set in announce(THEMEFILE). they can still be set here like you're used to, but it's deprecated.
 set announce(THEMEFILE)		"default.zst"
-
-set announce(NEWDIR)        "+ New Release: %path/%bold%release%bold (%relname) by %bold%user%bold@%group"
-set announce(DELDIR)        "- Directory deleted: %path/%bold%release%bold by %bold%user%bold@%group"
-set announce(BW)            "- %bold%uploads%bold uploads @ %bold%upspeed%boldkb/sec (%uppercent%) - %bold%downloads%bold downloads @ %bold%dnspeed%bold kb/sec (%dnpercent%) - total: %bold%transfers%bold transfers @ %bold%totalspeed%boldkb/sec (%totalpercent%) - %active people browsing, %idle people idling, %totallogins people in total"
-set announce(LOGIN)         "+ %bold%user%bold@%group has logged in"
-set announce(LOGOUT)        "- %bold%user%bold@%group has logged out"
-set announce(NUKE)          "+ %path/%bold%release%bold was %ulinenuked %mult%ulinex by %bold%nuker%bold - reason: %reason - nukees: %nukees"
-set announce(UNNUKE)        "+ %path/%bold%release%bold was %ulineunnuked %mult%ulinex by %bold%nuker%bold - reason: %reason - nukees: %nukees"
-set announce(INVITE)        "+ %bold%user%bold@%group invited himself as %bold%ircnick%bold"
-set announce(MSGINVITE)     "+ %bold%user%bold@%group invited himself as %bold%ircnick%bold"
-set announce(BADMSGINVITE)  "- %bold%ircnick%bold (%host) tried to invite himself with invalid login!"
-set announce(WELCOME)		"Welcome to pzs-ng's sitechan. Type !pnhelp for help."
-set announce(DEFAULT)		"- %msg"
 
 # In this announce you can use %free, %total and %used for the free/total/used sum of all disks
 # and you can use %devices. Each device specified (see above (set device(0) etc)) will be inserted
