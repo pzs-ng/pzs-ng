@@ -157,6 +157,18 @@ get_gluid(char *passwdfile, char *user_name)
 	int		f, n, m, l, l_start = 0;
 	struct stat	fileinfo;
 
+#if (change_spaces_to_underscore_in_ng_chown)
+	char	       *u_modname = 0;
+
+	u_modname = malloc(strlen(user_name) * sizeof(char) + 1);
+	for (n = 0; n < ((int)strlen(user_name) + 1); n++) {
+		if (user_name[n] == ' ')
+			sprintf(u_modname + n, "_");
+		else
+			memcpy(u_modname + n, user_name + n, 1);
+	}
+#endif
+
 	f = open(passwdfile, O_NONBLOCK);
 	fstat(f, &fileinfo);
 	f_size = fileinfo.st_size;
@@ -180,7 +192,11 @@ get_gluid(char *passwdfile, char *user_name)
 				}
 				while (f_buf[m] != ':' && m > l_start)
 					m--;
+#if (change_spaces_to_underscore_in_ng_chown)
+				if ((m != n) && (strlen(u_name) == strlen(user_name)) && !strcmp(u_name, u_modname)){
+#else
 				if ((m != n) && (strlen(u_name) == strlen(user_name)) && !strcmp(u_name, user_name)){
+#endif
 					u_id = atoi(f_buf + m + 1);
 					break;
 				}
@@ -190,6 +206,9 @@ get_gluid(char *passwdfile, char *user_name)
 	}
 	close(f);
 	free(f_buf);
+#if (change_spaces_to_underscore_in_ng_chown)
+	free(u_modname);
+#endif
 	return u_id;
 }
 
@@ -203,8 +222,19 @@ get_glgid(char *groupfile, char *group_name)
 	int		f, n, m, l_start = 0;
 	struct stat	fileinfo;
 
-	f = open(groupfile, O_NONBLOCK);
+#if (change_spaces_to_underscore_in_ng_chown)
+	char	       *g_modname = 0;
 
+	g_modname = malloc(strlen(group_name) * sizeof(char) + 1);
+	for (n = 0; n < ((int)strlen(group_name) + 1); n++) {
+		if (group_name[n] == ' ')
+			sprintf(g_modname + n, "_");
+		else
+			memcpy(g_modname + n, group_name + n, 1);
+	}
+#endif
+
+	f = open(groupfile, O_NONBLOCK);
 	fstat(f, &fileinfo);
 	f_size = fileinfo.st_size;
 	f_buf = malloc(f_size);
@@ -225,7 +255,11 @@ get_glgid(char *groupfile, char *group_name)
 				f_buf[m] = 0;
 				while (f_buf[m] != ':' && m > l_start)
 					m--;
+#if (change_spaces_to_underscore_in_ng_chown)
+				if ((m != n) && (strlen(g_name) == strlen(group_name)) && !strcmp(g_name, g_modname)){
+#else
 				if ((m != n) && (strlen(g_name) == strlen(group_name)) && !strcmp(g_name, group_name)){
+#endif
 					g_id = atoi(f_buf + m + 1);
 					break;
 				}
@@ -236,6 +270,9 @@ get_glgid(char *groupfile, char *group_name)
 
 	close(f);
 	free(f_buf);
+#if (change_spaces_to_underscore_in_ng_chown)
+	free(g_modname);
+#endif
 	return g_id;
 }
 

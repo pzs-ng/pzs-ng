@@ -936,3 +936,7 @@
 #define allow_dir_chown_in_ng_chown	FALSE
 #endif
 
+#ifndef change_spaces_to_underscore_in_ng_chown
+#define change_spaces_to_underscore_in_ng_chown	TRUE
+#endif
+

@@ -1063,18 +1063,25 @@ allow_uid_change_in_ng_chown <TRUE|FALSE>
 
 allow_gid_change_in_ng_chown <TRUE|FALSE>
 	Same as with allow_uid_change_in_ng_chown, only with gid.
-	DEFAULT: FALSE
+	Default: FALSE
 
 allow_dir_chown_in_ng_chown <TRUE|FALSE>
 	In ng-chown you have to specify a dir or a file to chmod. This setting
 	allows/denies to change the ownership of that file/dir.
-	DEFAULT: FALSE
+	Default: FALSE
 
 allow_files_chown_in_ng_chown <TRUE|FALSE>
 	In ng-chown you have to specify a dir or a file to chmod. If you specify
 	a dir, this setting will chown the files in that dir, but not the dir
 	itself.
-	DEFAULT: FALSE
+	Default: FALSE
+
+change_spaces_to_underscore_in_ng_chown <TRUE|FALSE>
+	Some ftp-clients have trouble reading the names of uid/gid if they have
+	spaces in them. This will search for a uid/gid with a underscore, if
+	the name (genre) given has a space inside. It is recommended to *NOT*
+	change this value (from TRUE).
+	Default: TRUE
 
 --END
 

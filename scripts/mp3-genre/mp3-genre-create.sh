@@ -196,7 +196,8 @@ IFSBAK="$IFS"
 IFS="
 "
 
-for genre in $mp3genres; do
+for genreorig in $mp3genres; do
+  genre="`echo "$genreorig" | tr ' ' '_'`"
   if [ -z "`grep -e "^$genre:" $groupfile`" ]; then
     gid=`tail -n 1 $groupfile | cut -d ':' -f 3`
     let gid=gid+100
