@@ -5,7 +5,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <sys/types.h>
-#if defined(USE_HSREGEX)
+#ifdef	USE_HSREGEX
  #include "hsregex.h"
 #else
  #include <regex.h>

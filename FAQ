@@ -67,6 +67,10 @@ A: If you get either of the following errors in partyline:
    This is usually a result of you turning on debug in sitewho.conf. Try
    to turn debug off.
 
+Q: (BOT) I can't get the !bnc command to work!
+----------------------------------------------
+A: If you enforce ssl on your box, make sure the bnc user is exempted from
+   that rule. Check glftpd.docs for more info.
 
 
 

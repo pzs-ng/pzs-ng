@@ -62,10 +62,10 @@ filesize(char *filename)
 				if (!strcmp(filename, "")) {
 					filestat.st_size = 1;
 				} else {
-//					fprintf(stderr, "Could not stat file '%s', is glrootpath set correctly in sitewho.conf? (error: %s)\n", file, strerror(errno));
-//					free(file);
+					if (debug) {
+						fprintf(stderr, "Could not stat file '%s', is glrootpath set correctly in sitewho.conf? (error: %s)\n", file, strerror(errno));
+					}
 					filestat.st_size = 1;
-//					exit(1);
 				}
 			}
 		}
@@ -206,9 +206,11 @@ showusers(int n, int mode, char *ucomp, char raw)
 		    user[x].bytes_xfer) {
 
 			speed = user[x].bytes_xfer / 1024. /
-				((tstop.tv_sec - user[x].tstart.tv_sec) * 1. +
-				(tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.);
+				((tstop.tv_sec - user[x].tstart.tv_sec) * 1. + (tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.);
 
+			if (debug) {
+				printf("username: %s\ntime online: %f seconds\nTransfered: %lf KB\nspeed: %f KB/s\n", user[x].username, ((tstop.tv_sec - user[x].tstart.tv_sec) * 1. + (tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.), (double)(user[x].bytes_xfer / 1024.), speed);
+				}
 			if ((!noshow && !mask && !(maskchar == '*')) || chidden) {
 				total_up_speed += speed;
 				uploads++;
@@ -265,6 +267,10 @@ showusers(int n, int mode, char *ucomp, char raw)
 			speed = user[x].bytes_xfer / 1024. /
 				((tstop.tv_sec - user[x].tstart.tv_sec) * 1. +
 				(tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.);
+
+			if (debug) {
+				printf("username: %s\ntime online: %f seconds\nTransfered: %lf KB\nspeed: %f KB/s\n", user[x].username, ((tstop.tv_sec - user[x].tstart.tv_sec) * 1. + (tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.), (double)(user[x].bytes_xfer / 1024.), speed);
+				}
 
 			if ((!noshow && !mask && !(maskchar == '*')) || chidden) {
 				total_dn_speed += speed;
