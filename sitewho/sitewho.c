@@ -592,11 +592,20 @@ showtotals(char raw)
 }
 
 /* Buffer groups file */
-void 
-buffer_groups(char *groupfile)
+int 
+buffer_groups(char *groupfile, int setfree)
 {
 	char           *f_buf, *g_name, *f_name;
-	long		f        , n, m, f_size, g_id, g_n_size, l_start = 0;
+	long		f, n = 0, m, f_size, g_id, g_n_size, l_start = 0;
+
+	if (setfree) {
+		for (n = 0; n < setfree; n++) {
+			free(group[n]->name);
+			free(group[n]);
+		}
+		free(group);
+		return 0;
+        }
 
 	f_name = malloc(strlen(glpath) + strlen(groupfile) + 2);
 	sprintf(f_name, "%s/%s", glpath, groupfile);
@@ -645,6 +654,7 @@ buffer_groups(char *groupfile)
 	close(f);
 	free(f_buf);
 	free(f_name);
+	return groups;
 }
 
 /* CORE CODE */
@@ -660,6 +670,7 @@ main(int argc, char **argv)
 	int		user_idx = 2;
 #endif
 	int		totusers = 0;
+	int		gnum = 0;
 
 	readconfig(argv[0]);
 	if (!ipckey)
@@ -687,7 +698,7 @@ main(int argc, char **argv)
 	if (threshold < 1)
 		threshold = def_threshold;
 
-	buffer_groups(glgroup);
+	gnum = buffer_groups(glgroup, 0);
 
 	if (argc > 1 && strlen(argv[1]) == 5) {
 		if (!strcasecmp(argv[1], "--raw")) {
@@ -756,6 +767,26 @@ main(int argc, char **argv)
 		}
 #endif
 	}
-
+	buffer_groups(glgroup, gnum);
+	if (footer != def_footer)
+		free(footer);
+	if (header != def_header)
+		free(header);
+	if (mpaths != def_mpaths)
+		free(mpaths);
+	if (husers != def_husers)
+		free(husers);
+	if (hgroups != def_hgroups)
+		free(hgroups);
+	if (glpath != def_glpath)
+		free(glpath);
+	if (ipckey != def_ipckey)
+		free(ipckey);
+	if (glgroup != def_glgroup)
+		free(glgroup);
+	if (nocase != def_nocase)
+		free(nocase);
+	if (count_hidden != def_count_hidden)
+		free(count_hidden);
 	return 0;
 }
