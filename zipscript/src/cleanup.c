@@ -69,7 +69,7 @@ replace_cookies(char *s)
 {
 	char           *new_string, *pos;
 
-	if (!(new_string = pos = malloc(4096))) {
+	if ((new_string = pos = malloc(4096)) == NULL) {
 		printf("Error! Could not allocate enough memory\n");
 		exit(1);
 	}
@@ -144,7 +144,7 @@ multi_name(char *s)
 		for (t = p + begin_multi[1] + 2; *t; t++)
 			end_multi++;
 
-		if (!(p = malloc(6))) {
+		if ((p = malloc(6)) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
 			exit(1);
 		}
@@ -152,7 +152,7 @@ multi_name(char *s)
 		s += sprintf(p, "%.*s", tolower(*s) == 'd' ? 5 : 3, s);
 
 		s += begin_multi[1] - begin_multi[0] - 2;
-		if (!(t = malloc((n = strlen(s)) + 7))) {
+		if ((t = malloc((n = strlen(s)) + 7)) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
 			exit(1);
 		}
@@ -165,7 +165,7 @@ multi_name(char *s)
 		n = strlen(s) - end_multi;
 
 		t = s + n - 3;
-		if (!(p = malloc(6))) {
+		if ((p = malloc(6)) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
 			exit(1);
 		}
@@ -176,7 +176,7 @@ multi_name(char *s)
 			sprintf(p, "%s", t);
 		}
 		n = t - s - (begin_multi[0] - begin_multi[1] - 2);
-		if (!(t = malloc(n + 7))) {
+		if ((t = malloc(n + 7)) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
 			exit(1);
 		}
@@ -222,7 +222,7 @@ multi_nfo_name(char *s)
 		for (t = p + begin_multi[1] + 2; *t; t++)
 			end_multi++;
 
-		if (!(p = malloc(6))) {
+		if ((p = malloc(6)) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
 			exit(1);
 		}
@@ -230,7 +230,7 @@ multi_nfo_name(char *s)
 		s += sprintf(p, "%.*s", tolower(*s) == 'd' ? 5 : 3, s);
 
 		s += begin_multi[1] - begin_multi[0] - 2;
-		if (!(t = malloc((n = strlen(s)) + 7))) {
+		if ((t = malloc((n = strlen(s)) + 7)) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
 			exit(1);
 		}
@@ -243,7 +243,7 @@ multi_nfo_name(char *s)
 		n = strlen(s) - end_multi;
 
 		t = s + n - 3;
-		if (!(p = malloc(6))) {
+		if ((p = malloc(6)) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
 			exit(1);
 		}
@@ -254,7 +254,7 @@ multi_nfo_name(char *s)
 			sprintf(p, "%s", t);
 		}
 		n = t - s - (begin_multi[0] - begin_multi[1] - 2);
-		if (!(t = malloc(n + 7))) {
+		if ((t = malloc(n + 7)) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
 			exit(1);
 		}
@@ -300,7 +300,7 @@ single_name(char *s)
 
 	size = strlen(s) - begin_single - end_single + 1;
 
-	if(!(t = malloc(size))) {
+	if((t = malloc(size)) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
 			exit(1);
 		}
@@ -340,7 +340,7 @@ single_nfo_name(char *s)
 
 	size = strlen(s) - begin_single - end_single + 1;
 
-	if (!(t = malloc(size))) {
+	if ((t = malloc(size)) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
 			exit(1);
 		}
@@ -360,7 +360,7 @@ incomplete_cleanup(char *path, int setfree)
 	char           *temp;
 	char           *locator;
 
-	if(!(temp = malloc(sizeof(incomplete_cd_indicator) > sizeof(incomplete_indicator) ? sizeof(incomplete_cd_indicator) : sizeof(incomplete_indicator)))) {
+	if((temp = malloc(sizeof(incomplete_cd_indicator) > sizeof(incomplete_indicator) ? sizeof(incomplete_cd_indicator) : sizeof(incomplete_indicator))) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
 			exit(1);
 		}
@@ -471,24 +471,24 @@ cleanup(char *pathlist, int setfree, char *startpath)
 	struct tm      *time_today, *time_yesterday;
 	time_t		t_today, t_yesterday;
 
-	if (!(path = malloc(PATH_MAX))) {
+	if ((path = malloc(PATH_MAX)) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
 			exit(1);
 		}
-	if (!(data_today = malloc(PATH_MAX))) {
+	if ((data_today = malloc(PATH_MAX)) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
 			exit(1);
 		}
-	if (!(data_yesterday = malloc(PATH_MAX))) {
+	if ((data_yesterday = malloc(PATH_MAX)) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
 			exit(1);
 		}
 
-	if (!(time_today = malloc(sizeof(struct tm)))) {
+	if ((time_today = malloc(sizeof(struct tm))) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
 			exit(1);
 		}
-	if (!(time_yesterday = malloc(sizeof(struct tm)))) {
+	if ((time_yesterday = malloc(sizeof(struct tm))) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
 			exit(1);
 		}
@@ -542,7 +542,7 @@ main(int argc, char **argv)
 	int		setfree = 1;
 	char           *startdir = 0, *wd = 0;
 
-	if (!(startdir = malloc(PATH_MAX))) {
+	if ((startdir = malloc(PATH_MAX)) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
 			exit(1);
 		}

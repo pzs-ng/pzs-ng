@@ -4,7 +4,7 @@ storage=/ftp-data/pzs-ng
 bindir=$(prefix)/bin
 
 CC=@CC@
-CFLAGS=@CFLAGS@ -W -Wall @STATIC@ @NOFORMAT@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE @DEFS@ -I../include/ -I../../ -I../../lib/
+CFLAGS=@CFLAGS@ -W -g -Wall @STATIC@ @NOFORMAT@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE @DEFS@ -I../include/ -I../../ -I../../lib/
 LDFLAGS=@LDFLAGS@
 UNIVERSAL=stats.o convert.o race-file.o zsfunctions.o mp3info.o ng-version.o
 RM=@RM@ -f

@@ -1319,6 +1319,7 @@ main(int argc, char **argv)
 			d_log("Removing old complete bar, if any\n");
 			removecomplete();
 
+			d_log("Removing incomplete indicator (%s)\n", locations.incomplete);
 			complete(&locations, &raceI, userI, groupI, complete_type);
 
 			if (complete_msg != NULL) {
