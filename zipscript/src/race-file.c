@@ -1055,14 +1055,6 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 		close(fd);
 		exit(EXIT_FAILURE);
 	}
-	if (hd.data_pid != (short int)getpid()) {
-		d_log("update_lock: Oops! Race condition - another process has the lock. pid: %d != %d\n", hd.data_pid, (short int)getpid());
-		hd.data_queue = raceI->data_queue - 1;
-		lseek(fd, 0L, SEEK_SET);
-		write(fd, &hd, sizeof(HEADDATA));
-		close(fd);
-		return -1;
-	}
 	if (!hd.data_incrementor) {
 		d_log("update_lock: Lock suggested removed by a different process (%d/%d).\n", hd.data_incrementor, raceI->data_incrementor);
 		retval = 0;
@@ -1074,9 +1066,17 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 
 		retval = hd.data_incrementor;
 	}
+	if (hd.data_pid != (short int)getpid() && hd.data_incrementor) {
+		d_log("update_lock: Oops! Race condition - another process has the lock. pid: %d != %d\n", hd.data_pid, (short int)getpid());
+		hd.data_queue = raceI->data_queue - 1;
+		lseek(fd, 0L, SEEK_SET);
+		write(fd, &hd, sizeof(HEADDATA));
+		close(fd);
+		return -1;
+	}
 	if (datatype && counter)
 		hd.data_type = datatype;
-	if ((retval && !lock_optimize) || !retval || (time(NULL) - sb.st_ctime >= lock_optimize && hd.data_incrementor > 1)) {
+	if ((retval && !lock_optimize) || !retval || !hd.data_incrementor || (time(NULL) - sb.st_ctime >= lock_optimize && hd.data_incrementor > 1)) {
 		lseek(fd, 0L, SEEK_SET);
 		write(fd, &hd, sizeof(HEADDATA));
 		d_log("update_lock: updating lock (%d)\n", raceI->data_incrementor);
