@@ -284,7 +284,7 @@ unpad(char *string)
 	return string;
 }
 
-float 
+void
 get_mp3_info(char *f, struct audio *audio)
 {
 	int		fullscan = 1;
@@ -303,7 +303,7 @@ get_mp3_info(char *f, struct audio *audio)
 	off_t		sample_pos, data_start = 0;
 
 	if (!(fp = fopen(f, "r"))) {
-		return 2;
+		return;
 	}
 	memset(&mp3, 0, sizeof(mp3info));
 
@@ -375,9 +375,8 @@ get_mp3_info(char *f, struct audio *audio)
 	fclose(mp3.file);
 	if (mp3.vbr)
 		sprintf(audio->bitrate, "%.0f", (mp3.vbr_average));
-//	memcpy(&(audio->bitrate), &(mp3.vbr_average), 5);
 	audio->is_vbr = mp3.vbr;
-	return mp3.vbr_average;
+//	return mp3.vbr_average;
 }
 
 /*

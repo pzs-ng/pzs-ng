@@ -273,8 +273,8 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	unsigned char	space;
 	unsigned char	args;
 	unsigned char	shift;
-	char           *buf, *p_buf, *eof;
-	char           *arg[31];/* Enough to hold 10 sections (noone has
+	char           *buf = 0, *p_buf = 0, *eof = 0;
+	char           *arg[45];/* Enough to hold 10 sections (noone has
 				 * more?) */
 	struct dirent **userlist;
 	struct userdata **user;
@@ -299,8 +299,8 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 			eof = buf = m_alloc(fileinfo.st_size);
 			eof += fileinfo.st_size;
 
-			user[n] = malloc(sizeof(struct userdata));
-			bzero(user[n], sizeof(struct userdata));
+			user[n] = malloc(sizeof(struct userdata) + 2);
+			bzero(user[n], (sizeof(struct userdata)) + 2);
 
 			read(fd, buf, fileinfo.st_size);
 

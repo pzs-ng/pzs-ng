@@ -65,6 +65,7 @@ d_log(char *fmt,...)
 	chmod(debugname, 0666);
 	free(debugname);
 #endif
+	return;
 }
 
 void 
