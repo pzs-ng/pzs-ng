@@ -132,8 +132,8 @@ unsigned char get_filetype(char *ext) {
 	if (!memcmp(ext, "zip", 4)) return 0;
 	if (!memcmp(ext, "sfv", 4)) return 1;
 	if (!memcmp(ext, "nfo", 4)) return 2;
+	if ( strcomp(allowed_types, ext) && !matchpath(allowed_types_exemption_dirs, locations.path )) return 4;
 	if (!strcomp(ignored_types, ext)) return 3;
-	if ( strcomp(allowed_types, ext)) return 4;
 
 	return 255;
 }
@@ -631,7 +631,7 @@ int main( int argc, char **argv ) {
 					}
 
 
-						if ( ! matchpath(audio_nocheck, locations.path) ) {
+						if ( ! matchpath(audio_nocheck_dirs, locations.path) ) {
 #if ( audio_banned_genre_check == TRUE )
 					if ( strcomp(banned_genres, raceI.audio.id3_genre)) {
 						d_log("File is from banned genre\n");

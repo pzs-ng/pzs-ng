@@ -28,7 +28,9 @@ void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
  unlink(locations->incomplete);
  
 #if ( write_complete_message == TRUE )
- if ( !matchpath(no_message_dirs, locations->path) ) {
+ if ( matchpath(group_dirs, locations->path) && ( write_complete_message_in_group_dirs == FALSE )) {
+  d_log("No message File is written. Directory matched with group_dirs\n");
+ } else {
   d_log("Writing %s file\n", message_file_name);
   if ((msgfile = fopen(message_file_name, "w")) == NULL) {
 	d_log("Couldn't fopen %s\n", message_file_name); exit(EXIT_FAILURE);
@@ -52,7 +54,7 @@ void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
 
   fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_footer));
   fclose(msgfile);
- } else { d_log("Directory matched with no_message_dirs\n"); }
+ }
 #endif
 
  user_p = raceI->misc.top_messages[0];

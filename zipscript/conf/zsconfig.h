@@ -22,12 +22,12 @@
 /* On default, announcing is disabled everywhere, use zip/sfv paths to enable annouces and private paths to disable.
  * Don't be lazy! Be specific! And remember - pathnames are case sensitive.
  */
-#define group_dirs	"/site/groups/"
-#define zip_dirs	"/site/incoming/0day/"
-#define sfv_dirs	"/site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/requests/"
-#define no_message_dirs	"/site/groups/ /site/requests/"
-#define nocheck_dirs	"/site/private/"
-#define audio_nocheck	"/site/groups/ /site/incoming/requests/"
+#define group_dirs			"/site/groups/"
+#define zip_dirs			"/site/incoming/0day/"
+#define sfv_dirs			"/site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/requests/"
+#define nocheck_dirs			"/site/private/"
+#define audio_nocheck_dirs		"/site/groups/ /site/incoming/requests/"
+#define allowed_types_exemption_dirs	"/site/incoming/musicvideos/"
 
 #define GROUPFILE	"/etc/group"
 #define PASSWDFILE	"/etc/passwd"
@@ -36,6 +36,10 @@
  * Use same % values as with date
  */
 #define cleanupdirs	"/site/incoming/games/ /site/incoming/apps/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
+
+/* Do not write .message file on complete in group_dirs
+ */
+#define write_complete_message_in_group_dirs	FALSE
 
 /* Hide name of uploaders in the .message-file in group-dirs? Setting this
  * to TRUE will convert the username to the groupname of the user.
@@ -70,9 +74,9 @@
 #define program_uid		20
 #define program_gid		200
 
-/* These file types are allowed without any checks (types need to be also ignored)
+/* These file types are allowed without any checks
  */
-#define allowed_types		"jpg,avi,mpg,cue,m3u"
+#define allowed_types		"jpg,cue,m3u,avi,mpg"
 
 /* These file types are ignored from sfv
  * NOTE: , at the beginning ignores all files without extensions
@@ -153,7 +157,6 @@
 /* Audio related checks for quality/type - here you enable/disable the restriction you defined earlier.
  * If warn is true, any banned files will not be deleted, but instead a warning message will be logged
  * to your glftpd.log.
- * Bitrate checking is useless on VBR encoded mp3 files, so it's recommended you leave this FALSE.
  */
 #define	audio_cbr_check			FALSE
 #define audio_cbr_warn			TRUE
