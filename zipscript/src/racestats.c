@@ -29,8 +29,8 @@ main(int argc, char **argv)
 		exit(EXIT_SUCCESS);
 	}
 
-	g.l.race = malloc(n += 10 + strlen(storage));
-	g.l.sfv = malloc(n + 10);
+	g.l.race = malloc(PATH_MAX);
+	g.l.sfv = malloc(PATH_MAX);
 
 	g.ui = malloc(sizeof(struct USERINFO *) * 30);
 	memset(g.ui, 0, sizeof(struct USERINFO *) * 30);
@@ -88,6 +88,8 @@ main(int argc, char **argv)
 END:
 	free(g.l.race);
 	free(g.l.sfv);
+	free(g.gi);
+	free(g.ui);
 
 	exit(EXIT_SUCCESS);
 }
