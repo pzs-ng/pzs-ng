@@ -18,7 +18,6 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include "../../zipscript/include/objects.h"
-#include "../../zipscript/conf/zsconfig.h"
 
 /* You shouldn't need to modify below here */
 
