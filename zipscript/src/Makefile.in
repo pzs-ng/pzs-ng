@@ -17,10 +17,10 @@ CU-OBJECTS=cleanup.o
 DC-OBJECTS=datacleaner.o
 UD-OBJECTS=pzsng-undupe.o
 SC-OBJECTS=rescan.o dizreader.o stats.o convert.o complete.o crc.o multimedia.o $(UNIVERSAL)
-CH-OBJECTS=ng-chmod.o
+CH-OBJECTS=ng-chown.o
 ZS-DEPEND=cleanup.o complete.o convert.o datacleaner.o postdel.o racestats.o rescan.o stats.o zipscript-c.o multimedia.o $(UNIVERSAL)
 
-all: pzsng-undupe racedebug zipscript-c postdel racestats cleanup datacleaner rescan ng-chmod
+all: pzsng-undupe racedebug zipscript-c postdel racestats cleanup datacleaner rescan ng-chown
 
 $(ZS-DEPEND): ../conf/zsconfig.h
 
@@ -45,7 +45,7 @@ datacleaner: $(DC-OBJECTS)
 pzsng-undupe: $(UD-OBJECTS)
 	$(CC) $(LDFLAGS) -o $@ $(UD-OBJECTS)
 
-ng-chmod: $(CH-OBJECTS)
+ng-chown: $(CH-OBJECTS)
 	$(CC) $(LDFLAGS) -o $@ $(CH-OBJECTS)
 
 rescan: $(SC-OBJECTS)
@@ -53,19 +53,19 @@ rescan: $(SC-OBJECTS)
 
 install:
 	if [ ! -e "$(prefix)$(storage)" ]; then mkdir -p "$(prefix)$(storage)"; fi
-	chmod 777 $(prefix)$(storage)
-	if [ -e $(prefix)$(datapath)/logs/glftpd.log ]; then chmod 666 $(prefix)$(datapath)/logs/glftpd.log; fi
-	if [ -e $(bindir) ]; then cp -f zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chmod $(bindir)/; fi
+	chown 777 $(prefix)$(storage)
+	if [ -e $(prefix)$(datapath)/logs/glftpd.log ]; then chown 666 $(prefix)$(datapath)/logs/glftpd.log; fi
+	if [ -e $(bindir) ]; then cp -f zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chown $(bindir)/; fi
 
 distclean: clean
 	$(RM) Makefile
 
 clean:
-	$(RM) *.o zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chmod
+	$(RM) *.o zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chown
 
 uninstall:
 	rm -rf "$(prefix)$(storage)"
-	rm -f $(bindir)/{zipscript-c,postdel,racestats,cleanup,datacleaner,rescan,racedebug,pzsng-undupe,ng-chmod}
+	rm -f $(bindir)/{zipscript-c,postdel,racestats,cleanup,datacleaner,rescan,racedebug,pzsng-undupe,ng-chown}
 
 strip:
-	strip zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chmod
+	strip zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chown
