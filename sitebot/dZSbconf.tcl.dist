@@ -104,7 +104,6 @@ set statsection(2)		"ISO"
 # and chmodded to eXecutable :) (chmod 755 <file>)
 set binary(CAT)			"/glftpd/bin/cat"
 set binary(WHO)			"/glftpd/bin/sitewho"
-set binary(BW)			"/glftpd/bin/ng-bw"
 set binary(STATS)		"/glftpd/bin/stats"
 set binary(PASSCHK)		"/glftpd/bin/passchk"
 set binary(INCOMPLETE)		"/glftpd/bin/incomplete-list.sh"

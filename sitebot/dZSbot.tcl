@@ -844,7 +844,7 @@ proc bandwidth {nick uhost hand chan args} {
 		}
 	}
 	set output "$theme(PREFIX)$announce(BW)"
-	set data [exec $binary(BW)]
+	set data [exec $binary(WHO) --nbw]
 	set output [replacevar $output "%uploads" [lindex $data 0]]
 	set output [replacevar $output "%downloads" [lindex $data 2]]
 	set output [replacevar $output "%transfers" [lindex $data 4]]
@@ -870,7 +870,7 @@ proc ng_bwup { nick uhost hand chan args} {
 		}
 	}
 	set output "$theme(PREFIX)$announce(BWUP)"
-	set raw [exec $binary(BW)]
+	set raw [exec $binary(WHO) --nbw]
 	set upper [format "%.1f" [expr 100 * ([lindex $raw 1] / $speed(INCOMING))]]
 	set dnper [format "%.1f" [expr 100 * ([lindex $raw 3] / $speed(OUTGOING))]]
 	set totalper [format "%.0f" [expr 100 * ([lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING)))]]
@@ -884,6 +884,7 @@ proc ng_bwup { nick uhost hand chan args} {
 	set output [replacevar $output "%idlers" [lindex $raw 6]]
 	set output [replacevar $output "%active" [lindex $raw 7]]
 	set output [replacevar $output "%totallogins" [lindex $raw 8]]
+	set output [replacevar $output "%maxusers" [lindex $raw 9]]
 
 	set output [replacevar $output "%uppercent" $upper]
 	set output [replacevar $output "%dnpercent" $dnper]
@@ -972,7 +973,7 @@ proc ng_bwdn { nick uhost hand chan args} {
 		}
 	}
 	set output "$theme(PREFIX)$announce(BWDN)"
-	set raw [exec $binary(BW)]
+	set raw [exec $binary(WHO) --nbw]
 	set upper [format "%.1f" [expr 100 * ([lindex $raw 1] / $speed(INCOMING))]]
 	set dnper [format "%.1f" [expr 100 * ([lindex $raw 3] / $speed(OUTGOING))]]
 	set totalper [format "%.0f" [expr [lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING))]]
@@ -986,6 +987,7 @@ proc ng_bwdn { nick uhost hand chan args} {
 	set output [replacevar $output "%idlers" [lindex $raw 6]]
 	set output [replacevar $output "%active" [lindex $raw 7]]
 	set output [replacevar $output "%totallogins" [lindex $raw 8]]
+	set output [replacevar $output "%maxusers" [lindex $raw 9]]
 
 	set output [replacevar $output "%uppercent" $upper]
 	set output [replacevar $output "%dnpercent" $dnper]
@@ -1133,7 +1135,7 @@ proc ng_bandwidth {nick uhost hand chan args} {
 		}
 	}
 	set output "$theme(PREFIX)$announce(BW)"
-	set raw [exec $binary(BW)]
+	set raw [exec $binary(WHO) --nbw]
 	set upper [format "%.0f" [expr [lindex $raw 1] * 100 / $speed(INCOMING)]]
 	set dnper [format "%.0f" [expr [lindex $raw 3] *100 / $speed(OUTGOING)]]
 	set totalper [format "%.0f" [expr [lindex $raw 5] * 100 / ( $speed(INCOMING) + $speed(OUTGOING) )]]
@@ -1151,6 +1153,7 @@ proc ng_bandwidth {nick uhost hand chan args} {
 	set output [replacevar $output "%idlers" [lindex $raw 6]]
 	set output [replacevar $output "%active" [lindex $raw 7]]
 	set output [replacevar $output "%totallogins" [lindex $raw 8]]
+	set output [replacevar $output "%maxusers" [lindex $raw 9]]
 
 	set output [replacevar $output "%uppercent" $upper]
 	set output [replacevar $output "%dnpercent" $dnper]

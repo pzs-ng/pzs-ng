@@ -6,7 +6,7 @@
 #  Created by: Phen0menon & juanker                        #
 #  Maintained by: juanker (juanker@EFnet #pzs-ng)          #
 #  Notes: Best experienced on dark -black- backgrounds     #
-#  Tested with: pzs-ng r992                                #
+#  Tested with: pzs-ng r1001                               #
 #                                                          #
 ############################################################
 #                                                          #
@@ -149,7 +149,7 @@ announce.REQFILLED				= "%b{FiLLED%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %
 announce.LEECH					= "%b{BANDWiDTH%c1{:}} %c1{Current leechers:}"
 announce.UPLOAD					= "%b{BANDWiDTH%c1{:}} %c1{Current uploaders:}"
 announce.IDLE					= "%b{BANDWiDTH%c1{:}} %c1{Current idlers:}"
-announce.BW					= "%b{BANDWiDTH%c1{:}} %c1{(}%c3{%uploads} %c1{uploading at} %c3{%b{%upspeed}} %c1{~} %c3{%uppercent}%c1{%) - (}%c3{%downloads} %c1{downloading at} %c3{%b{%dnspeed}} %c1{~} %c3{%dnpercent}%c1{%) - (}%c3{%active} %c1{browsing) - (}%c3{%idlers} %c1{idling}%c1{) - [}%c3{%totallogins} %c1{users in total at} %c3{%b{%totalspeed}} %c1{~} %c3{%totalpercent}%c1{%]}"
+announce.BW					= "%b{BANDWiDTH%c1{:}} %c1{(}%c3{%uploads} %c1{uploading at} %c3{%b{%upspeed}} %c1{~} %c3{%uppercent}%c1{%) - (}%c3{%downloads} %c1{downloading at} %c3{%b{%dnspeed}} %c1{~} %c3{%dnpercent}%c1{%) - (}%c3{%active} %c1{browsing) - (}%c3{%idlers} %c1{idling}%c1{) - [}%c3{%totallogins} %c1{out of} %c3{%maxusers} %c1{users in total at} %c3{%b{%totalspeed}} %c1{~} %c3{%totalpercent}%c1{%]}"
 announce.BWUP					= "%b{BANDWiDTH%c1{:}} %c3{%b{%uploads}} %c1{uploads at} %c3{%b{%upspeed}} %c1{(}%c3{%uppercent%}%c1{).}"
 announce.BWDN					= "%b{BANDWiDTH%c1{:}} %c3{%b{%downloads}} %c1{downloads at} %c3{%b{%dnspeed}} %c1{(}%c3{%dnpercent%}%c1{).}"
 announce.TOTUPDN				= "%b{BANDWiDTH%c1{:}} %c1{%type} %c3{%b{%count}} %c1{at} %c3{%b{%total}} %c1{(}%c3{%b{%per}%} %c1{total bandwidth usage).}"
