@@ -5,22 +5,24 @@
 #################################################################################
 
 #################################################################################
-# READING THE CONFIG (and being a cryptic bitch;)                               #
+# READING THE CONFIG (and NOT being a cryptic bitch;)                           #
 #################################################################################
 set dver "0.0.3"
+set dzerror "0"
+
+putlog "Launching dZSBot (v$dver) for zipscript-c..."
+
 if {[catch {source [file dirname [info script]]/dZSbconf.tcl} tmperror]} {
-    putlog "You didn't sacrifice a lamb like you were told, did you?"
+    putlog "dZSbot: dZSbconf.tcl not found. Cannot continue."
     die
 }
 
 foreach bin [array names binary] { 
     if {![file executable $binary($bin)]} {
-        putlog "Blood has been spilled this night. ($bin)"
-        die
+        putlog "dZSbot: Wrong path/missing bin for $bin - Please fix."
+	set dzerror "1"
     }
 }
-
-putlog "Launching dZSBot (v$dver) for zipscript-c..."
 
 #################################################################################
 # SOME IMPORTANT GLOBAL VARIABLES                                               #
@@ -73,7 +75,7 @@ bind msg    -|- !invite             invite
 # MAIN LOOP - PARSES DATA FROM GLFTPD.LOG                                       #
 #################################################################################
 proc readlog {} {
-    global location lastoct disable defaultsection variables msgtypes chanlist dZStimer
+    global location lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2
 
     set dZStimer [utimer 1 "readlog"]
 
@@ -125,7 +127,7 @@ proc readlog {} {
 
     close $of
     set lastoct [file size $location(GLLOG)]
-    if { output_glftpd2 != 1 } {
+    if { $use_glftpd2 != "YES" } {
        launchnuke
     }
     return 0
@@ -221,12 +223,12 @@ proc basicreplace {rstring section} {
 # CONVERT COOKIES TO DATA                                                       #
 #################################################################################
 proc parse {msgtype msgline section} {
-    global variables announce random mpath
+    global variables announce random mpath use_glftpd2
 
     set type $msgtype
 
     if {![string compare $type "NUKE"] || ! [string compare $type "UNNUKE"]} {
-	if { output_glftpd2 != 1 } {
+	if { $use_glftpd2 != "YES" } {
 	        fuelnuke $type [lindex $msgline 0] $section $msgline
 	} else {
 		fuelnuke2 $type [lindex $msgline 0] $section [lrange $msgline 1 3] [lrange $msgline 4 end]
@@ -688,4 +690,10 @@ if {[info exists dZStimer]} {
 }
 set dZStimer [utimer 1 "readlog"]
 
-putlog "dZSbot loaded ok!"
+if { $dzerror == "0" } { putlog "dZSbot loaded ok!"
+} else {
+ putlog "dZSbot had errors. Please check log and fix."
+ die
+}
+
+

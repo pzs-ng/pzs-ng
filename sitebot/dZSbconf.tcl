@@ -11,8 +11,8 @@ set location(GLLOG)         "/glftpd/ftp-data/logs/glftpd.log"
 set location(PASSWD)        "/glftpd/etc/passwd"
 set location(USERS)         "/glftpd/ftp-data/users/"
 
-# Are you using glftpd2? Set to 1 if you are, 0 if not.
-set output_glftpd2          "1"
+# Are you using glftpd2? Set to "YES" if you are, "NO" if not.
+set use_glftpd2             "NO"
 
 # What types of messages are counted as the different types of output
 # (for disabling etc)
@@ -73,14 +73,14 @@ set type(MV)                "RACE"
 
 # Which channels we announce the different things to.
 # Space separated lists, you can have more than one channel :)
-set chanlist(GAMES)         "#dserver"
-set chanlist(APPS)          "#dserver"
-set chanlist(MP3)           "#dserver"
-set chanlist(0DAY)          "#dserver"
-set chanlist(MV)            "#dserver"
-set chanlist(DEFAULT)       "#dserver"
-set chanlist(INVITE)        "#dserver"
-set chanlist(WELCOME)       "#dserver"
+set chanlist(GAMES)         "#eppp"
+set chanlist(APPS)          "#eppp"
+set chanlist(MP3)           "#eppp"
+set chanlist(0DAY)          "#eppp"
+set chanlist(MV)            "#eppp"
+set chanlist(DEFAULT)       "#eppp"
+set chanlist(INVITE)        "#eppp"
+set chanlist(WELCOME)       "#eppp"
 
 # Are we disabling the announce of this stuff?
 # If its set to 1, we wont show it :)
