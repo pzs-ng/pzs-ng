@@ -274,7 +274,9 @@ main(int argc, char **argv)
 	char           *complete_announce = 0;
 	int		cnt, cnt2, n = 0;
 	int		write_log = 0;
+#if ( enable_complete_script == TRUE || enable_accept_script == TRUE )
 	int		nfofound = 0;
+#endif
 	struct stat	fileinfo;
 
 #if ( debug_mode == TRUE && debug_announce == TRUE)
