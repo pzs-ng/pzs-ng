@@ -15,7 +15,7 @@
 /* These should be changed to match your glftpd installation.
  */
 #define log		"/ftp-data/logs/glftpd.log"
-#define storage		"/ftp-data/zipscript/"
+#define storage		"/tmp/zipscript/"
 #define gl_userfiles	"/ftp-data/users/"
 #define dupepath	"/ftp-data/logs/dupefile"
 
