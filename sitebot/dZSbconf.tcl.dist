@@ -174,7 +174,9 @@ set disable(WIPE-r)					0
 
 # Space separated list of wildcards that we match against
 # paths to see if we announce it or not =) 
+# REMEMBER: This is CaSe SeNsItIvE.
 set denypost						""
+
 # Do not show it if this user gets nuked
 set hidenuke						"UNKNOWN"
 
