@@ -120,10 +120,12 @@ sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 	int		t;
 	int            *p_array;
 	char           *r_list;
+	char           *t_list;
 
 	p_array = (int *)m_alloc(raceI->total.users * sizeof(int));
 	bzero(p_array, raceI->total.users * sizeof(int));
 	r_list = raceI->misc.racer_list;
+	t_list = raceI->misc.total_racer_list;
 
 	for (n = 0; n < raceI->total.users; n++) {
 		t = p_array[n];
@@ -137,9 +139,10 @@ sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 		userI[t]->pos = n;
 #if ( get_competitor_list == TRUE )
 		if (strcmp(raceI->user.name, userI[n]->name)) {
-			r_list += sprintf(r_list, "%s", racersplit);
-			r_list += sprintf(r_list, "%s", convert2(raceI, userI[n], groupI, racersmsg, t));
+			r_list += sprintf(r_list, "%s%s", racersplit, convert2(raceI, userI[n], groupI, racersmsg, t));
+			t_list += sprintf(t_list, "%s%s", racersplit, convert2(raceI, userI[n], groupI, racersmsg, t));
 		} else {
+			t_list += sprintf(t_list, "%s%s", racersplit, convert2(raceI, userI[n], groupI, racersmsg, t));
 			raceI->user.pos = n;
 		}
 #else

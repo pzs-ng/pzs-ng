@@ -83,9 +83,9 @@ convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, 
 				}
 
 				switch (*instr) {
-				case 'B':
-					out_p += sprintf(out_p, "\\002");
-					break;
+//				case 'B':
+//					out_p += sprintf(out_p, "\\002");
+//					break;
 				case 'K':
 					out_p += sprintf(out_p, "%s", raceI->user.tagline);
 					break;
@@ -207,9 +207,9 @@ convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short int gr
 			}
 
 			switch (*instr) {
-			case 'B':
-				out_p += sprintf(out_p, "\\002");
-				break;
+//			case 'B':
+//				out_p += sprintf(out_p, "\\002");
+//				break;
 			case 'K':
 				out_p += sprintf(out_p, "%s", raceI->user.tagline);
 				break;
@@ -510,9 +510,9 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 			case 'b':
 				out_p += sprintf(out_p, "%*u", val1, (unsigned int)raceI->total.size);
 				break;	/* what about files bigger than 4gb? */
-			case 'B':
-				out_p += sprintf(out_p, "\\002");
-				break;
+//			case 'B':
+//				out_p += sprintf(out_p, "\\002");
+//				break;
 			case 'K':
 				out_p += sprintf(out_p, "%s", raceI->user.tagline);
 				break;
@@ -652,6 +652,9 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				break;
 			case 'R':
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.racer_list + 1);
+				break;
+			case 'B':
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.total_racer_list + 1);
 				break;
 			case 't':
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.top_messages[1] + 1);

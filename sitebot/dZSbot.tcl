@@ -29,6 +29,35 @@ foreach bin [array names binary] {
 	}
 }
 
+## READ LOGFILES
+set countlog 0
+foreach log [array names glftpdlog] {
+    if {![file exists $glftpdlog($log)]} {
+	putlog "dZSbot: Could not find log file $glftpdlog($log)."
+	set dzerror "1"
+	unset glftpdlog($log)
+    } else {
+	set countlog [expr $countlog + 1]
+	set lastoct($log) [file size $glftpdlog($log)]
+    }
+}
+putlog "dZSbot: Number of gl logfiles found: $countlog"
+
+set countlog 0
+foreach login [array names loginlog] {
+    if {![file exists $loginlog($login)]} {
+	putlog "dZSbot: Could not find log file $glftpdlog($login)."
+	set dzerror "1"
+	unset glftpdlog($login)
+    } else {
+	set countlog [expr $countlog + 1]
+	set loglastoct($login) [file size $loginlog($login)]
+    }
+}
+putlog "dZSbot: Number of login logfiles found: $countlog"
+
+
+
 if {![info exists use_glftpd2] || ($use_glftpd2 == "AUTO" && ![info exists binary(GLFTPD)])} {
 	putlog "dZSbot: you did not thouroughly edit your [file dirname [info script]]/dZSbconf.tcl file. Try again."
 	die
@@ -52,13 +81,10 @@ if {![info exists invite_channels] && [info exists chanlist(INVITE)]} {
 	set invite_channels $chanlist(INVITE)
 }
 
-
 #################################################################################
 # SOME IMPORTANT GLOBAL VARIABLES                                               #
 #################################################################################
 
-set lastoct [file size $location(GLLOG)]
-set loglastoct [file size $location(LOGINLOG)]
 set defaultsection "DEFAULT"
 set nuke(LASTTYPE) ""
 set nuke(LASTDIR) ""
@@ -216,23 +242,20 @@ set debuglevel [DEBUG_INFO]
 
 #################################################################################
 # MAIN LOOP - PARSES DATA FROM GLFTPD.LOG                                       #
+# Modified: 2004-11-18 by Zenuka
 #################################################################################
+
 proc readlog {} {
-	global location lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2 invite_channels loglastoct pid
+
+	global location glftpdlog loginlog lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2 invite_channels loglastoct pid
 
 	set dZStimer [utimer 1 "readlog"]
-
-	set glftpdlogsize [file size $location(GLLOG)]
-	set loginlogsize [file size $location(LOGINLOG)]
-
-	if {$glftpdlogsize == $lastoct && $loginlogsize == $loglastoct} { return 0 }
-	if {$glftpdlogsize  < $lastoct} { set lastoct 0 }
-	
 	set lines ""
-	
-	if {$glftpdlogsize != $lastoct} {
-		if {![catch {set of [open $location(GLLOG) r]} ]} {
-			seek $of $lastoct
+
+	foreach log [array names glftpdlog] {
+	    if {$lastoct($log) < [file size $glftpdlog($log)]} {
+		if {![catch {set of [open $glftpdlog($log) r]} ]} {
+			seek $of $lastoct($log)
 			while {![eof $of]} {
 				set line [gets $of]
 				if {$line == ""} { continue; }
@@ -240,15 +263,17 @@ proc readlog {} {
 			}
 			close $of
 		} else {
-			putlog "dZSbot error: Could not open GLLOG. ($location(GLLOG))"
+			putlog "dZSbot error: Could not open GLLOG: $glftpdlog($log)"
 			return 0
 		}
+	    }
+	    set lastoct($log) [file size $glftpdlog($log)]
 	}
 
-	
-	if {$loginlogsize != $loglastoct} {
-		if {![catch {set of [open $location(LOGINLOG) r]} ]} {
-			seek $of $loglastoct
+	foreach login [array names loginlog] {
+	    if {$loglastoct($login) < [file size $loginlog($login)]} {
+		if {![catch {set of [open $loginlog($login) r]} ]} {
+			seek $of $loglastoct($login)
 			while {![eof $of]} {
 				set line [gets $of]
 				if {$line == ""} { continue; }
@@ -256,13 +281,12 @@ proc readlog {} {
 			}
 			close $of
 		} else {
-			putlog "dZSbot error: Could not open LOGINLOG. ($location(LOGINLOG))"
+			putlog "dZSbot error: Could not open LOGINLOG: $loginlog($login)"
 			return 0
 		}
+	    }
+	    set loglastoct($login) [file size $loginlog($login)]
 	}
-
-	set lastoct [file size $location(GLLOG)]
-	set loglastoct [file size $location(LOGINLOG)]
 
 	foreach line $lines {
 		# Slightly hackish /daxxar
@@ -273,7 +297,7 @@ proc readlog {} {
 			regsub "\\\[$pid\\\] " "$line" "" line
 			set pid [string trim $pid]
 		}
-		
+
 		# If we cannot detect a msgtype - default to DEBUG: and insert that into the list ($line).
 		if {[string first ":" [lindex $line 5]] < 0} {
 			set msgtype "DEBUG"
@@ -298,9 +322,8 @@ proc readlog {} {
 		if {$pid > 0} {
 			set line "$line $pid"
 		}
-		
+
 		set path [lindex $line 6]
-		
 		if {![string compare $msgtype "INVITE"]} {
 			set nick [lindex $line 6]
 			foreach channel $invite_channels { puthelp "INVITE $nick $channel" }
@@ -348,8 +371,10 @@ proc readlog {} {
 	if {$use_glftpd2 != "YES"} {
 		launchnuke
 	}
+
 	return 0
 }
+
 #################################################################################
 
 #################################################################################
@@ -1076,9 +1101,10 @@ proc show_free {nick uhost hand chan arg} {
 		}
 	}
 	if {[llength [array names "tmpdev"]]} {
-		putlog "dZSbot error: following devices had no matching \"df -Phx\" entry: [join [array names tmpdev]]"
+		putlog "dZSbot error: The following devices had no matching \"df -Phx\" entry: [join [array names tmpdev]]"
 		return
 	}
+
 	set totalgb [format "%.1f" [expr $total / 1000]]
         set usedgb [format "%.1f" [expr $used / 1000]]
         set freegb [format "%.1f" [expr $free / 1000]]

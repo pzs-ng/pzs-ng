@@ -103,6 +103,7 @@ struct misc {
 	char		old_leader[24];
 	char           *release_name;
 	char		racer_list[1024];
+	char		total_racer_list[1024];
 	char		top_messages[2][1024];
 	char		error_msg [80];
 	char		progress_bar[15];
