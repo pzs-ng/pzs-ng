@@ -141,7 +141,7 @@ gl_sections <STRING>
 	Here you should put a list of all sections on your site. Sections is
 	not the same as dirs, but is what you have defined as sections in
 	glftpd.conf. See glftpd's docs for more info on sections.
-	First section is always named 'DEFAULT'. The order in which you put
+	First section is normally named 'DEFAULT'. The order in which you put
 	the names of the sections are important. Separate sections with a
 	space character.
 	Default: "DEFAULT"

@@ -221,6 +221,7 @@ main(int argc, char **argv)
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
 	g.v.user.pos = 0;
+	sprintf(g.v.misc.old_leader, "none");
 
 	//d_log("Creating directory to store racedata in\n");
 	//maketempdir(&g.l.;

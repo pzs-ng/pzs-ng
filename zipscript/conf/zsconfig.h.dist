@@ -21,7 +21,8 @@
 #define allowed_types_exemption_dirs	"/site/incoming/musicvideos/"
 #define check_for_missing_nfo_dirs	"/site/incoming/games/ /site/incoming/apps/"
 
-#define cleanupdirs			"/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
+#define cleanupdirs			"/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/"
+#define cleanupdirs_dated		"/site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 
 #define short_sitename			"NG"
 
@@ -46,8 +47,8 @@
 #define audio_group_path		"/site/incoming/music.by.group/"
 #define allowed_constant_bitrates	"160,192"
 #define allowed_years			"2003,2004,2005"
-#define banned_genres			"Christian Rap"
-#define allowed_genres			"Rock"
+#define banned_genres			"Christian Rap,Christian Rock,Christian Gangsta Rap,Contemporary Christian"
+#define allowed_genres			"Rock,Ethnic,Indie,Instrumental Rock,Soundtrack"
 #define audio_genre_sort		FALSE
 #define audio_year_sort			FALSE
 #define audio_artist_sort		FALSE
