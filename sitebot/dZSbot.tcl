@@ -1540,6 +1540,7 @@ proc welcome_msg { nick uhost hand chan } {
 			if {[string match -nocase $c_chan $chan] == 1} {
 				set output [themereplace "$announce(WELCOME)" "none"]
 				set output [replacevar $output "%bold" "\002"]
+				set output [replacevar $output "%ircnick" $nick]
 				set output [replacevar $output "%sitename" $sitename]
 				set output [replacevar $output "%cmdpre" $cmdpre]
 				puthelp "NOTICE $nick : $output"
