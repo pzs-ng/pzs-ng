@@ -20,25 +20,42 @@
 #include "../../zipscript/conf/zsconfig.h"
 
 /* Change this if you are using a custom ipc-key
-static key_t KEY = 0x0000DEAD; 
+static key_t KEY = 0x0000DEAD;
 */
 
 /* You shouldn't need to modify below here */
 
-struct USER {
-  char tagline[64];
-  char username[24];
-  char status[256];
-  char host[256];
-  char currentdir[256];
-  long groupid;
-  time_t login_time;
-  struct timeval tstart;
-  unsigned long bytes_xfer;
-  pid_t procid;
+#if (for_glftpd2 == FALSE)
+struct ONLINE {
+ char                           tagline[64];    /* The users tagline */
+ char                           username[24];   /* The username of the user */
+ char                           status[256];    /* The status of the user, idle, RETR, etc */
+ char                           host[256];      /* The host the user is comming from (with ident) */
+ char                           currentdir[256];/* The users current dir (fullpath) */
+ long                           groupid;        /* The groupid of the users primary group */
+ time_t                         login_time;     /* The login time since the epoch (man 2 time) */
+ struct timeval         tstart;         /* Replacement for last_update. */
+ unsigned long          bytes_xfer;     /* Bytes transferred this far. */
+ pid_t                          procid;         /* The processor id of the process */
+} __attribute__ ((deprecated));
+#else
+struct ONLINE {
+ char                   tagline[64];            /* The users tagline */
+ char                   username[24];           /* The username of the user */
+ char                   status[256];            /* The status of the user, idle, RETR, etc */
+ short int              ssl_flag;               /* 0 = no ssl, 1 = ssl on control, 2 = ssl on control and data */
+ char                   host[256];              /* The host the user is comming from (with ident) */
+ char                   currentdir[256];        /* The users current dir (fullpath) */
+ long                   groupid;                /* The groupid of the users primary group */
+ time_t                 login_time;             /* The login time since the epoch (man 2 time) */
+ struct timeval         tstart;                 /* replacement for last_update. */
+ struct timeval         txfer;                  /* The time of the last succesfull transfer. */
+ unsigned long long     bytes_xfer;             /* bytes transferred so far. */
+ pid_t                  procid;                 /* The processor id of the process */
 };
+#endif
 
-static int numUsers = 0; static struct USER *users; static struct shmid_ds ipcbuf;
+static int numUsers = 0; static struct ONLINE *users; static struct shmid_ds ipcbuf;
 
 /* Implicit declarations are *BAD*! */
 int OutputData(void); 
@@ -52,14 +69,14 @@ int main() {
 		printf("0 0.0 0 0.0 0 0.0 0 0 0\n");
 		exit(0);
 	}
-	users = (struct USER *)shmat(shmid, 0, SHM_RDONLY);
-	if (users == (struct USER *)(-1)) {
+	users = (struct ONLINE *)shmat(shmid, 0, SHM_RDONLY);
+	if (users == (struct ONLINE *)(-1)) {
 		perror("3-SHMAT Failed");
 		exit(3);
 	}
 	
 	shmctl( shmid, IPC_STAT, &ipcbuf);
-	numUsers = ipcbuf.shm_segsz / sizeof(struct USER);
+	numUsers = ipcbuf.shm_segsz / sizeof(struct ONLINE);
 	retv = OutputData();
 	
 	if (shmdt(users) == -1) {
