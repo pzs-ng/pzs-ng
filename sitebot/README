@@ -1,6 +1,6 @@
-                       This script is part of: 
-    Dark0n3's C++ ZipScript - the most advanced public zipscript ever!
-                http://kotisivu.raketti.net/darkone/
+                       This script is part of:
+            Project Zipscript Next Generation (www.pzs-ng.com)
+    (Based on dZSbot by Dark0n3 - http://kotisivu.raketti.net/darkone/)
 
 --------------------------------------------------------------------------------
  INDEX
@@ -9,36 +9,70 @@
  1. Installation
 
  1-1 Configuration
- 1-2 Compiling with gcc
+ 1-2 Compiling
  1-3 Using with eggdrop 
  1-4 Cryptic errors
 
-
+ 2. Ressources
+ 
+ 2-1 Links
 
 --------------------------------------------------------------------------------
  1-1 Configuration
 --------------------------------------------------------------------------------
- Edit dZSbconf.tcl ... nothing else :)
+ Please edit the actual file dZSbconf.tcl for general setup and hints.
 
 
 --------------------------------------------------------------------------------
- 1-2 Compiling with gcc
+ 1-2 Compiling
 --------------------------------------------------------------------------------
- Change dir to extra, run 'make all'.. keep your fingers crossed... done
- Now copy these files to /glftpd/bin/:
- bnctest.sh - if you want a functioning bnc tester :)
- incomplete-list.sh - if you want a functioning !inc-trigger
- passchk - if you want a functioning !invite
- (the rest are for additional features that are not directly linked to
-  this script, like invite.sh is for a "site invite" command etc, read
-  comments in scripts to find out more)
-
+ Directory "src" contains ng-bw and passchk. These are compiled from root
+ makefile. Anyhow - you can always compile these seperately by issuing
+ "make" and "make install" inside this dir.
+ 
+ ng-bw:   Used for !bw !bwup !bwdn
+ passchk: Used for !invite to validate passwd (requires openssl header files)
+ 
+ Directory "extra" contains helper scripts for use with the sitebot.
+ 
+ fakelog.sh:         Use this to simulate log entries.
+ incomplete-list.sh: The bot can show a list of incompletes for each section
+                     defined in the actual script. (remember to edit sections)
+ invite.sh:          This is used with custom command "site invite".
+                     Add the following to glftpd.conf:
+                     site_cmd        INVITE  EXEC    /bin/invite.sh
+                     custom-invite   !8 *
+ weektop.sh:         Use at will :)
+ top.tcl:            Load this in your eggdrop.conf like:
+                     source scripts/top.tcl (edit #chan first)
+                     
+ Directory "ngplugins" contains plugins for the bot in development.
+ This dir is not an active part of pzs-ng (yet).
+ 
 
 --------------------------------------------------------------------------------
  1-3 Using with eggdrop
 --------------------------------------------------------------------------------
- Just load it with other scripts and you're done. Remeber to
- put the dZSbconf.tcl in the same dir as the script.
+ Load the sitebot like any other script. Add this to eggdrop.conf:
+ 
+ source scripts/dZSbot.tcl (or any other path you choose)
+ 
+ For first install you need to copy dZSbconf.tcl.dist to dZSbconf.tcl and
+ make sure to include dZSbot.help for !help to work.
+ 
+ To upgrade later - you only need to copy dZSbot.tcl and maybe dZSbot.help.
+ Always check the changelog to be sure you have all possible settings reflected
+ in your installed dZSbconf.tcl.
+
+ Files "*.zst" is theme files and was introduced with pzs-ng and heavily
+ extended in beta3. You can change them to your liking but it is suggested
+ that you simply make a copy of the bundled themes if you want to change
+ anything.
+ 
+ When installing the sitebot for the first time it will look for default.zst.
+ You need to copy this yourself "cp default.zst.dist default.zst".
+ If the sitebot cannot find the default.zst file it will try to load
+ default.zst.dist and fail to work if it's missing :)
 
 
 --------------------------------------------------------------------------------
@@ -49,3 +83,13 @@
  "Blood has been spilled this night. (<something>)"
   - the binary specified in 'set binary(<something>)' does not exist or is not
     executable by the eggdrop.
+
+--------------------------------------------------------------------------------
+ 2-1 Links
+--------------------------------------------------------------------------------
+ http://www.tcl.tk/                    Main page for TCL
+ http://www.scriptics.com/             General TCL page
+ http://www.eggheads.org/              Main page for eggdrop
+ http://www.egghelp.org/               Addons for eggdrop
+ http://mircryption.sourceforge.net/   FiSH encryption
+ http://www.pzs-ng.com/                Main page for pzs-ng.
