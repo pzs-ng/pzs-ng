@@ -5058,5 +5058,6 @@ if test "$no_create" != yes; then
   $ac_cs_success || { (exit 1); exit 1; }
 fi
 
+chmod +x sitewho/compile.sh
 echo "$as_me:$LINENO: result: Now type 'make' to compile" >&5
 echo "${ECHO_T}Now type 'make' to compile" >&6
