@@ -39,11 +39,7 @@
 
 #include "objects.h"
 #include "macros.h"
-#ifdef _WITH_SS5
-#include "constants.ss5.h"
-#else
 #include "constants.h"
-#endif
 
 #if ( debug_mode == TRUE )
 #include <stdarg.h>
