@@ -35,15 +35,17 @@ status  who       what
  [/]     iwdisb    group and albumname sort in mp3
  [ ]               add support to change the gid of the releasedir based on genre. need a script to initiate the
                    glftpd groupfile too (create groups based on genre names), if we are to include it.
- [ ]               add support for hiding affill uploads (in both output to channel and the .message. Should also
+ [/]               add support for hiding affill uploads (in both output to channel and the .message. Should also
                    consider the 'anonymity' setting above.)
+                   - hiding affills in group_dirs in the .message file should now work.
  [ ]               add support for showing when racers joined the, eh, race in the .message.
- [ ]     js        make it possible to change the name of the .message file.
+ [x]     js        make it possible to change the name of the .message file.
  [x]     js        change how mp3-links are created from absolute paths to relative paths.
  [x]     iwdisb    look over shmem use - does the zipscript need to access it?
  [x]     psxc      add support for unduping bad files after sfv upload
  [ ]               add support for accumulative upload-speed (as in, calc total upload speed of entire release, calc
                    the percentage each racer did, and base stats on that)
+ [ ]               create a modded datacleaner to be used as 'cscript RMD post /bin/zscleanup'
 
 status   description
  [ ]     not done 
