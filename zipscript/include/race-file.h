@@ -22,7 +22,7 @@ typedef struct {
 	char		fname[NAME_MAX];
 } SFVDATA;
 
-/* this is special bits we put in the head of both files */
+/* this is what we put in a special 'head' file for version control, lock etc */
 typedef struct {
 	short int	data_version;
 	short int	data_type;
@@ -46,5 +46,7 @@ extern void remove_from_race(const char *, const char *);
 extern int verify_racedata(const char *);
 extern int create_lock(const char *, short int, short int);
 extern void remove_lock(const char *);
+extern int update_lock(const char *, short int, short int, short int);
 
 #endif
+

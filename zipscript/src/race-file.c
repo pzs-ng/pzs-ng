@@ -806,7 +806,7 @@ verify_racedata(const char *path)
 	
 	RACEDATA	rd, *tmprd = 0;
 	
-	if ((fd = open(path, O_RDWR)) == -1) {
+	if ((fd = open(path, O_RDWR, 0666)) == -1) {
 		d_log("verify_racedata: open(%s): %s\n", path, strerror(errno));
 		return 0;
 	}
@@ -908,7 +908,7 @@ remove_lock(const char *path)
 	int		fd;
 	HEADDATA	hd;
 
-	if ((fd = open(path, O_CREAT | O_RDWR, 0666)) == -1) {
+	if ((fd = open(path, O_RDWR, 0666)) == -1) {
 		d_log("remove_lock: open(%s): %s\n", path, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
@@ -920,4 +920,39 @@ remove_lock(const char *path)
 	write(fd, &hd, sizeof(HEADDATA));
 	close(fd);
 }
+
+int
+update_lock(const char *path, short int progtype, short int counter, short int datatype)
+{
+	int		fd, retval = 1;
+	HEADDATA	hd;
+
+	if ((fd = open(path, O_RDWR, 0666)) == -1) {
+		d_log("update_lock: open(%s): %s\n", path, strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+
+	read(fd, &hd, sizeof(HEADDATA));
+	if (hd.data_in_use != progtype) {
+		d_log("update_lock: Lock not active - no choice but to exit.\n");
+		exit(EXIT_FAILURE);
+	}
+
+	if (((counter) && (hd.data_incrementor < counter)) || !hd.data_incrementor) {
+		d_log("update_lock: Lock suggested removed by a different process.\n");
+		retval = 0;
+	} else {
+		hd.data_incrementor++;
+		retval = hd.data_incrementor;
+	}
+	if (datatype)
+		hd.data_type = datatype;
+	lseek(fd, 0L, SEEK_SET);
+	write(fd, &hd, sizeof(HEADDATA));
+	close(fd);
+	return retval;
+}
+
+
+	
 
