@@ -640,10 +640,6 @@ main(int argc, char **argv)
 			d_log("File type is: NFO\n");
 			writerace_file(&locations, &raceI, 0, F_NFO);
 
-			if ((findfileext(".nfo")) && (locations.nfo_incomplete)) {
-				d_log("Removing missing-nfo indicator (if any)\n");
-				remove_nfo_indicator(locations.path);
-			}
 #if ( enable_nfo_script == TRUE )
 			d_log("Executing nfo script (%s)\n", nfo_script);
 			sprintf(target, nfo_script " \"%s\"", raceI.file.name);
@@ -1147,23 +1143,15 @@ main(int argc, char **argv)
 				d_log("Failed to execute complete_script: %s\n", strerror(errno));
 			}
 #endif
-			if ((locations.nfo_incomplete)) {
-				if (findfileext(".nfo")) {
-					d_log("Removing missing-nfo indicator (if any)\n");
-					remove_nfo_indicator(locations.path);
-				} else if (matchpath(check_for_missing_nfo_dirs, locations.path)) {
-					if (!locations.in_cd_dir) {
-						d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
+			if ((locations.nfo_incomplete) && (!findfileext(".nfo")) && (matchpath(check_for_missing_nfo_dirs, locations.path)) ) {
+				if (!locations.in_cd_dir) {
+					d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
+					create_incomplete_nfo();
+				} else {
+					rescanparent();
+					if (!findfileextparent(".nfo")) {
+						d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
 						create_incomplete_nfo();
-					} else {
-						rescanparent();
-						if (findfileextparent(".nfo")) {
-							d_log("Removing missing-nfo indicator (if any)\n");
-							remove_nfo_indicator(locations.path);
-						} else {
-							d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
-							create_incomplete_nfo();
-						}
 					}
 				}
 			}
@@ -1191,7 +1179,7 @@ main(int argc, char **argv)
 		}
 	}
 #endif
-	if ((findfileext(".nfo")) && (locations.nfo_incomplete)) {
+	if ((findfileext(".nfo") || (findfileextparent(".nfo"))) && (locations.nfo_incomplete)) {
 		d_log("Removing missing-nfo indicator (if any)\n");
 		remove_nfo_indicator(locations.path);
 	}
