@@ -20,13 +20,7 @@
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
 
-struct userdata {
-	int		allup_bytes;
-	int		monthup_bytes;
-	int		wkup_bytes;
-	int		dayup_bytes;
-	short		name;
-};
+#include "stats.h"
 
 /*
  * Modified   : 01.27.2002 Author     : Dark0n3
@@ -267,99 +261,102 @@ showstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 void 
 get_stats(struct VARS *raceI, struct USERINFO **userI)
 {
-	int		users;
 	int		u1;
-	int		n, m;
+	int		n = 0, m, users = 0;
 	int		fd;
 	unsigned char	space;
 	unsigned char	args;
-	unsigned char	shift;
 	char		*p_buf = 0, *eof = 0;
 	char		t_buf[PATH_MAX];
 	char		*arg[45]; /* Enough to hold 10 sections (noone has
 				   * more?) */
-	struct dirent	**userlist;
-	struct userdata	**user;
+	struct userdata	*user = 0;
 	struct stat	fileinfo;
 
-	users = scandir(gl_userfiles, &userlist, 0, 0);
+	DIR		*dir;
+	struct dirent	*dp;
 
-	user = m_alloc(users * sizeof(char *));
-	shift = 0;
-
+	if (!(dir = opendir(gl_userfiles))) {
+		d_log("opendir(%s): %s\n", gl_userfiles, strerror(errno));
+		return; 
+	}
+	
 	/* User stats reader */
-	for (n = 0; n < users; n++) {
-		sprintf(t_buf, "%s/%s", gl_userfiles, userlist[n + shift]->d_name);
-		fd = open(t_buf, O_RDONLY);
+	while ((dp = readdir(dir))) {
+		
+		sprintf(t_buf, "%s/%s", gl_userfiles, dp->d_name);
 
+		if ((fd = open(t_buf, O_RDONLY)) == -1) {
+			d_log("open(%s): %s\n", t_buf, strerror(errno));
+			continue;
+		}
+		
 		fileinfo.st_mode = 0;
-		fstat(fd, &fileinfo);
+		if (fstat(fd, &fileinfo) == -1) {
+			d_log("fstat(): %s\n", strerror(errno));
+			continue;
+		}
+		
 		if (S_ISDIR(fileinfo.st_mode) == 0) {
 
 			eof = t_buf + fileinfo.st_size;
 
-			user[n] = malloc(sizeof(struct userdata));
-			bzero(user[n], (sizeof(struct userdata)));
+			user = realloc(user, sizeof(struct userdata)*(n+1));
+			bzero(&user[n], (sizeof(struct userdata)));
 
 			read(fd, t_buf, fileinfo.st_size);
+			close(fd);
 
 			args = 0;
 			space = 1;
 
 			for (p_buf = t_buf; p_buf < eof; p_buf++)
 				switch (*p_buf) {
-				case '\n':
-					*p_buf = 0;
-					if (!memcmp(arg[0], "DAYUP", 5))
-						user[n]->dayup_bytes = atoi(arg[raceI->section * 3 + 2]);
-					else if (!memcmp(arg[0], "WKUP", 4))
-						user[n]->wkup_bytes = atoi(arg[raceI->section * 3 + 2]);
-					else if (!memcmp(arg[0], "MONTHUP", 7))
-						user[n]->monthup_bytes = atoi(arg[raceI->section * 3 + 2]);
-					else if (!memcmp(arg[0], "ALLUP", 5))
-						user[n]->allup_bytes = atoi(arg[raceI->section * 3 + 2]);
-					args = 0;
-					space = 1;
-					break;
-				case '\t':
-				case ' ':
-					*p_buf = 0;
-					space = 1;
-					break;
-				default:
-					if (space && args < 30) {
-						space = 0;
-						arg[args] = p_buf;
-						args++;
-					}
-					break;
+					case '\n':
+						*p_buf = 0;
+						if (!memcmp(arg[0], "DAYUP", 5))
+							user[n].dayup_bytes = atoi(arg[raceI->section * 3 + 2]);
+						else if (!memcmp(arg[0], "WKUP", 4))
+							user[n].wkup_bytes = atoi(arg[raceI->section * 3 + 2]);
+						else if (!memcmp(arg[0], "MONTHUP", 7))
+							user[n].monthup_bytes = atoi(arg[raceI->section * 3 + 2]);
+						else if (!memcmp(arg[0], "ALLUP", 5))
+							user[n].allup_bytes = atoi(arg[raceI->section * 3 + 2]);
+						args = 0;
+						space = 1;
+						break;
+					case '\t':
+					case ' ':
+						*p_buf = 0;
+						space = 1;
+						break;
+					default:
+						if (space && args < 30) {
+							space = 0;
+							arg[args] = p_buf;
+							args++;
+						}
+						break;
 				}
 
-			user[n]->name = -1;
+			user[n].name = -1;
 
 			for (m = 0; m < raceI->total.users; m++) {
-				if (strcmp(userlist[n + shift]->d_name, userI[m]->name) != 0)
+				if (strcmp(dp->d_name, userI[m]->name) != 0)
 					continue;
 				if (!strcmp(raceI->user.name, userI[m]->name)) {
-					user[n]->dayup_bytes += raceI->file.size >> 10;
-					user[n]->wkup_bytes += raceI->file.size >> 10;
-					user[n]->monthup_bytes += raceI->file.size >> 10;
-					user[n]->allup_bytes += raceI->file.size >> 10;
+					user[n].dayup_bytes += raceI->file.size >> 10;
+					user[n].wkup_bytes += raceI->file.size >> 10;
+					user[n].monthup_bytes += raceI->file.size >> 10;
+					user[n].allup_bytes += raceI->file.size >> 10;
 				}
-				user[n]->name = m;
+				user[n].name = m;
 				break;
 			}
-		} else {
-			shift++;
-			users--;
-			n--;
+			n++;
 		}
-
-		free(userlist[n + shift]);
-		close(fd);
 	}
-	if (n != 0)
-		free(userlist);
+	closedir(dir);
 
 	for (m = 0; m < raceI->total.users; m++) {
 		userI[m]->dayup =
@@ -368,26 +365,27 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 			userI[m]->allup = users;
 	}
 
+	users = n;
 	/* Sort */
 	for (n = 0; n < users; n++) {
-		if ((u1 = user[n]->name) == -1)
+		if ((u1 = user[n].name) == -1)
 			continue;
 		for (m = 0; m < users; m++)
 			if (m != n) {
-				if (user[n]->wkup_bytes >= user[m]->wkup_bytes) {
+				printf("%i\n", userI[u1]->monthup);
+				if (user[n].wkup_bytes >= user[m].wkup_bytes) {
 					userI[u1]->wkup--;
 				}
-				if (user[n]->monthup_bytes >= user[m]->monthup_bytes) {
+				if (user[n].monthup_bytes >= user[m].monthup_bytes) {
 					userI[u1]->monthup--;
 				}
-				if (user[n]->allup_bytes >= user[m]->allup_bytes) {
+				if (user[n].allup_bytes >= user[m].allup_bytes) {
 					userI[u1]->allup--;
 				}
-				if (user[n]->dayup_bytes >= user[m]->dayup_bytes) {
+				if (user[n].dayup_bytes >= user[m].dayup_bytes) {
 					userI[u1]->dayup--;
 				}
 			}
 	}
-	for (n = 0; n < users; n++)
-		free(user[n]);
+	free(user);
 }

@@ -216,6 +216,8 @@ main(int argc, char **argv)
 	g.gi = malloc(sizeof(struct GROUPINFO *) * 30);
 	memset(g.gi, 0, sizeof(struct GROUPINFO *) * 30);
 
+	g.v.user.pos = 0;
+
 	d_log("Copying data g.l.into memory\n");
 	sprintf(g.l.sfv, storage "/%s/sfvdata", g.l.path);
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
