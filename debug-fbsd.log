@@ -1,0 +1,85 @@
+gcc -O2 -static -Wall -I../include/ -c zipscript-c.c
+In file included from zipscript-c.c:5:
+/usr/include/sys/shm.h:67: error: syntax error before "time_t"
+In file included from zipscript-c.c:12:
+zsfunctions.h: In function `create_missing':
+zsfunctions.h:44: warning: implicit declaration of function `malloc'
+zsfunctions.h:44: warning: assignment makes pointer from integer without a cast
+zsfunctions.h:48: warning: implicit declaration of function `free'
+zsfunctions.h: In function `findfileext':
+zsfunctions.h:78: error: dereferencing pointer to incomplete type
+zsfunctions.h:79: error: dereferencing pointer to incomplete type
+zsfunctions.h:79: error: dereferencing pointer to incomplete type
+zsfunctions.h: In function `findfileextcount':
+zsfunctions.h:94: error: dereferencing pointer to incomplete type
+zsfunctions.h:95: error: dereferencing pointer to incomplete type
+zsfunctions.h: In function `selector':
+zsfunctions.h:135: error: dereferencing pointer to incomplete type
+zsfunctions.h: In function `selector2':
+zsfunctions.h:145: error: dereferencing pointer to incomplete type
+zsfunctions.h: In function `rescandir':
+zsfunctions.h:160: warning: implicit declaration of function `scandir'
+zsfunctions.h: In function `rescandir2':
+zsfunctions.h:170: error: `alphasort' undeclared (first use in this function)
+zsfunctions.h:170: error: (Each undeclared identifier is reported only once
+zsfunctions.h:170: error: for each function it appears in.)
+In file included from zipscript-c.c:12:
+zsfunctions.h: In function `move_progress_bar':
+zsfunctions.h:255: error: dereferencing pointer to incomplete type
+zsfunctions.h:256: error: dereferencing pointer to incomplete type
+zsfunctions.h:257: error: dereferencing pointer to incomplete type
+zsfunctions.h:258: error: dereferencing pointer to incomplete type
+zsfunctions.h:265: warning: implicit declaration of function `convert'
+zsfunctions.h:265: error: `userI' undeclared (first use in this function)
+zsfunctions.h:265: error: `groupI' undeclared (first use in this function)
+zsfunctions.h:265: warning: assignment makes pointer from integer without a cast
+zsfunctions.h:267: error: dereferencing pointer to incomplete type
+zsfunctions.h:268: error: dereferencing pointer to incomplete type
+zsfunctions.h:269: error: dereferencing pointer to incomplete type
+zsfunctions.h: In function `findfile':
+zsfunctions.h:287: error: dereferencing pointer to incomplete type
+zsfunctions.h: In function `removecomplete':
+zsfunctions.h:308: error: dereferencing pointer to incomplete type
+zsfunctions.h:309: error: dereferencing pointer to incomplete type
+zsfunctions.h:310: error: dereferencing pointer to incomplete type
+zsfunctions.h:311: error: dereferencing pointer to incomplete type
+zsfunctions.h: In function `createlink':
+zsfunctions.h:391: warning: assignment makes pointer from integer without a cast
+zsfunctions.h: In function `readsfv_ffile':
+zsfunctions.h:421: warning: assignment makes pointer from integer without a cast
+zsfunctions.h:442: error: `raceI' undeclared (first use in this function)
+In file included from zipscript-c.c:12:
+zsfunctions.h: In function `get_rar_info':
+zsfunctions.h:461: error: `raceI' undeclared (first use in this function)
+zsfunctions.h: In function `execute':
+zsfunctions.h:498: warning: implicit declaration of function `exit'
+In file included from zipscript-c.c:14:
+../include/convert.h: At top level:
+../include/convert.h:5: warning: type mismatch with previous implicit declaration
+zsfunctions.h:265: warning: previous implicit declaration of `convert'
+../include/convert.h:5: warning: `convert' was previously implicitly declared to return `int'
+zipscript-c.c:29: error: `userI' used prior to declaration
+zipscript-c.c:30: error: `groupI' used prior to declaration
+zipscript-c.c:31: error: `raceI' used prior to declaration
+zipscript-c.c: In function `getrelname':
+zipscript-c.c:78: warning: assignment makes pointer from integer without a cast
+zipscript-c.c:86: warning: assignment makes pointer from integer without a cast
+zipscript-c.c:87: warning: assignment makes pointer from integer without a cast
+zipscript-c.c:94: warning: assignment makes pointer from integer without a cast
+zipscript-c.c:95: warning: assignment makes pointer from integer without a cast
+zipscript-c.c: In function `main':
+zipscript-c.c:198: warning: implicit declaration of function `getenv'
+zipscript-c.c:198: warning: passing arg 2 of `sprintf' makes pointer from integer without a cast
+zipscript-c.c:210: warning: assignment makes pointer from integer without a cast
+zipscript-c.c:211: warning: assignment makes pointer from integer without a cast
+zipscript-c.c:212: warning: assignment makes pointer from integer without a cast
+zipscript-c.c:214: warning: assignment makes pointer from integer without a cast
+zipscript-c.c:215: warning: assignment makes pointer from integer without a cast
+zipscript-c.c:216: warning: assignment makes pointer from integer without a cast
+zipscript-c.c:246: warning: assignment makes pointer from integer without a cast
+*** Error code 1
+
+Stop in /glftpd/sources/project-zs/p-zs-ng/build/zipscript/src.
+*** Error code 1
+
+Stop in /glftpd/sources/project-zs/p-zs-ng/build.
