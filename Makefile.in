@@ -5,6 +5,7 @@ CC=@CC@
 LIBS=@LIBS@
 
 all: zs
+	@(echo -e "\n\tProject-ZS-NG is now compiled!\n\tType 'make install' to install it into @prefix@.\n")
 
 install: zs
 	cd zipscript/src ; $(MAKE) install
@@ -18,6 +19,9 @@ distclean: clean
 clean:
 	cd zipscript/src ; $(MAKE) clean
 	cd sitebot/src ; $(MAKE) clean
+
+uninstall:
+	cd zipscript/src ; $(MAKE) uninstall
 
 zs:
 	cd zipscript/src ; $(MAKE) all

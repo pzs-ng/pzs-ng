@@ -2,7 +2,6 @@ prefix=@prefix@
 datapath=/ftp-data
 storage=/tmp/zipscript
 bindir=$(prefix)/bin
-binpath=../bin
 
 CC=@CC@
 CFLAGS=@CFLAGS@ -W -Wall -O2 @STATIC@ -g -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I../include/ -I../../
@@ -26,52 +25,47 @@ all: pzsng-undupe racedebug zipscript-c postdel racestats cleanup datacleaner re
 $(ZS-DEPEND): ../conf/zsconfig.h
 
 zipscript-c: $(ZS-OBJECTS) $(ZS-DEPEND)
-	     $(CC) $(LDFLAGS) $(ZS-OBJECTS) -o $(binpath)/$@
+	$(CC) $(LDFLAGS) -o $@ $(ZS-OBJECTS)
 
 racedebug: $(RD-OBJECTS)
-	   $(CC) $(LDFLAGS) $(RD-OBJECTS) -o $(binpath)/$@
+	$(CC) $(LDFLAGS) -o $@ $(RD-OBJECTS)
 
 postdel: $(PD-OBJECTS)
-	 $(CC) $(LDFLAGS) $(PD-OBJECTS) -o $(binpath)/$@
+	$(CC) $(LDFLAGS) -o $@ $(PD-OBJECTS)
 
 racestats: $(RS-OBJECTS)
-	   $(CC) $(LDFLAGS) $(RS-OBJECTS) -o $(binpath)/$@
+	$(CC) $(LDFLAGS) -o $@ $(RS-OBJECTS)
 
 cleanup: $(CU-OBJECTS)
-	 $(CC) $(LDFLAGS) $(CU-OBJECTS) -o $(binpath)/$@
+	$(CC) $(LDFLAGS) -o $@ $(CU-OBJECTS)
 
 datacleaner: $(DC-OBJECTS)
-	     $(CC) $(LDFLAGS) $(DC-OBJECTS) -o $(binpath)/$@
+	$(CC) $(LDFLAGS) -o $@ $(DC-OBJECTS)
 
 pzsng-undupe: $(UD-OBJECTS)
-	      $(CC) $(LDFLAGS) $(UD-OBJECTS) -o $(binpath)/$@
+	$(CC) $(LDFLAGS) -o $@ $(UD-OBJECTS)
 
 ng-chmod: $(CH-OBJECTS)
-	      $(CC) $(LDFLAGS) $(CH-OBJECTS) -o $(binpath)/$@
+	$(CC) $(LDFLAGS) -o $@ $(CH-OBJECTS)
 
 rescan: $(SC-OBJECTS)
-	$(CC) $(LDFLAGS) $(SC-OBJECTS) -o $(binpath)/$@
+	$(CC) $(LDFLAGS) -o $@ $(SC-OBJECTS)
 
 install:
 	if [ ! -e "$(prefix)$(storage)" ]; then mkdir -p "$(prefix)$(storage)"; fi
 	chmod 777 $(prefix)$(storage)
-	chmod 666 $(prefix)$(datapath)/logs/glftpd.log
-#	strip $(binpath)/*
-	cp -f $(binpath)/zipscript-c $(bindir)/
-	cp -f $(binpath)/postdel $(bindir)/
-	cp -f $(binpath)/racestats $(bindir)/
-	cp -f $(binpath)/cleanup $(bindir)/
-	cp -f $(binpath)/datacleaner $(bindir)/
-	cp -f $(binpath)/rescan $(bindir)/
-	cp -f $(binpath)/racedebug $(bindir)/
-	cp -f $(binpath)/pzsng-undupe $(bindir)/
-	cp -f $(binpath)/ng-chmod $(bindir)/ && chmod +s $(bindir)/ng-chmod
+	if [ -e $(prefix)$(datapath)/logs/glftpd.log ]; then chmod 666 $(prefix)$(datapath)/logs/glftpd.log; fi
+	if [ -e $(bindir) ]; then cp -f zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chmod $(bindir)/; fi
 
 distclean: clean
 	$(RM) Makefile
 
 clean:
-	$(RM) *.o $(binpath)/zipscript-c $(binpath)/postdel $(binpath)/racestats $(binpath)/cleanup $(binpath)/datacleaner $(binpath)/rescan $(binpath)/racedebug $(binpath)/pzsng-undupe $(binpath)/ng-chmod
+	$(RM) *.o zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chmod
+
+uninstall:
+	rm -rf "$(prefix)$(storage)"
+	rm -f $(bindir)/{zipscript-c,postdel,racestats,cleanup,datacleaner,rescan,racedebug,pzsng-undupe,ng-chmod}
 
 strip:
-	strip $(binpath)/*
+	strip zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chmod
