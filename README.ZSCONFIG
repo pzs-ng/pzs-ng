@@ -111,6 +111,16 @@ strict_path_match <TRUE|FALSE>
 	way around. group dirs are not affected, as they can be both.
 	Default: FALSE
 
+subdir_list <STRING>
+	This is a list of what is defined as subdirs. Dirs matching these
+	patterns will be considered subdirs, and follow a different pattern
+	regarding symlinks and nfo-rules etc.
+	Put the char '?' where a number or char may or may not be, but *only*
+	at the end of a dirname. Ie, cd?? will match cdA, cd12, but not cd123.
+	Do not put '?' at the beginning or in the middle - it will not work.
+	The string is not case-sensitive (dVd == DvD).
+	Default: "cd??,disc??,disk??,dvd??,extra?,sub?,subtitles,vobsub?,sample?,subpack?"
+
 gl_sections <STRING>
 	Here you should put a list of all sections on your site. Sections is
 	not the same as dirs, but is what you have defined as sections in

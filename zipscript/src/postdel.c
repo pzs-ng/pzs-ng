@@ -81,14 +81,7 @@ getrelname(char *directory)
 		}
 	}
 
-	if ((!strncasecmp(path[1], "CD", 2) && l[1] <= 4) ||
-	    (!strncasecmp(path[1], "DISC", 4) && l[1] <= 6) ||
-	    (!strncasecmp(path[1], "DISK", 4) && l[1] <= 6) ||
-	    (!strncasecmp(path[1], "DVD", 3) && l[1] <= 5) ||
-	    (!strncasecmp(path[1], "EXTRA", 5) && l[1] <= 6) ||
-	    (!strncasecmp(path[1], "SUB", 3) && l[1] <= 4) ||
-	    (!strncasecmp(path[1], "SUBTITLES", 9) && l[1] <= 9) ||
-	    (!strncasecmp(path[1], "VOBSUB", 6) && l[1] <= 7)) {
+	if (subcomp(path[1])) {
 //		raceI.misc.release_name = malloc(l[0] + 18);
 		sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
 		locations.incomplete = c_incomplete(incomplete_cd_indicator, path);

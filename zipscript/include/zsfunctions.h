@@ -87,6 +87,7 @@ extern void	removedotfiles();
 extern void	removecomplete();
 extern short	matchpath(char *, char *);
 extern short	strcomp(char *, char *);
+extern short	subcomp(char *);
 extern short	fileexists(char *);
 extern void	createlink(char *, char *, char *, char *);
 extern void	readsfv_ffile(char *, off_t);

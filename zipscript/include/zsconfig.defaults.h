@@ -110,6 +110,13 @@
 #endif
 
 /*
+ * Here is a list of subdirs (not case sensitive). Use ? as wildcard.
+ */
+#ifndef subdir_list
+#define subdir_list	"cd??,disc??,disk??,dvd??,extra?,sub?,subtitle?,vobsub?,sample?,subpack?"
+#endif
+
+/*
  * Directories for cleanup to check for broken incomplete files. Used by the
  * cleanup binary (which should be run in crontab) to remove stale links. Use
  * same %-values as with date. All paths are chroot'ed. check_today - check

@@ -486,6 +486,49 @@ strcomp(char *instr, char *searchstr)
 	return 0;
 }
 
+/* check for matching subpath
+   psxc - 2004-12-18
+ */
+short int 
+subcomp(char *directory)
+{
+	int 	k = strlen(directory);
+	int	m = strlen(subdir_list);
+	int	pos = 0, l = 0, n = 0, j = 0;
+	char	tstring[m];
+
+	do {
+		switch (subdir_list[l]) {
+		case 0:
+			break;
+		case '?':
+			tstring[j] = subdir_list[l];
+			tstring[j+1] = '\0';
+			n++;
+			j++;
+			break;
+		case ',':
+			tstring[j] = '\0';
+			if (k <= j && !strncasecmp(tstring, directory, j - n)) {
+				return 1;
+			}
+			pos = l;
+			n = 0;
+			j=0;
+			break;
+		default:
+			tstring[j] = subdir_list[l];
+			tstring[j+1] = '\0';
+			pos++;
+			j++;
+			break;
+		}
+	m--;
+	l++;
+	} while (m);
+	return 0;
+}
+
 /* Checks if file exists */
 short int 
 fileexists(char *f)
