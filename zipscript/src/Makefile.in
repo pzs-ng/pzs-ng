@@ -53,7 +53,7 @@ rescan: $(SC-OBJECTS)
 	$(CC) $(LDFLAGS) -o $@ $(SC-OBJECTS)
 
 install:
-	if [ ! -e "$(prefix)$(storage)" ]; then mkdir -p "$(prefix)$(storage)"; fi
+	if [ ! -e "$(prefix)$(storage)" ]; then mkdir -p -m777 "$(prefix)$(storage)"; fi
 	chown 0:0 $(prefix)$(storage)
 	chmod 4777 $(prefix)$(storage)
 	if [ -e $(prefix)$(datapath)/logs/glftpd.log ]; then chmod 666 $(prefix)$(datapath)/logs/glftpd.log; fi
