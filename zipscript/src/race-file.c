@@ -845,12 +845,7 @@ verify_racedata(const char *path)
 
 /* Locking mechanism and version control.
  * Not yet fully functional, but we're getting there.
- * progtype == a code for what program calls the lock:
- *		 2 = zipscript-c
- *		 4 = postdel
- *		 8 = cleanup
- *		16 = datacleaner
- *		32 = rescan
+ * progtype == a code for what program calls the lock is found in constants.h
  * force_lock == int used to suggest/force a lock on the file.
  *		set to 1 to suggest a lock, >1 to force a lock.
  */
@@ -869,7 +864,7 @@ create_lock(const char *path, short int progtype, short int force_lock)
 
 	fstat(fd, &sb);
 
-	if (sb.st_size == 0) {
+	if (!sb.st_size) {
 		hd.data_version = sfv_version;
 		hd.data_type = 0;
 		hd.data_in_use = progtype;
@@ -878,12 +873,14 @@ create_lock(const char *path, short int progtype, short int force_lock)
 		close(fd);
 	} else {
 		read(fd, &hd, sizeof(HEADDATA));
-		if (hd.data_in_use && (force_lock > 1)) {
-			d_log("create_lock: Unlock forced.\n");
-		} else {
-			d_log("create_lock: Data is already locked.\n");
-			close(fd);
-			return 1;
+		if (hd.data_in_use) {
+			if (force_lock > 1) {
+				d_log("create_lock: Unlock forced.\n");
+			} else {
+				d_log("create_lock: Data is already locked.\n");
+				close(fd);
+				return 1;
+			}
 		}
 		if (force_lock == 1) {
 			d_log("create_lock: Unlock suggested.\n");
@@ -891,6 +888,11 @@ create_lock(const char *path, short int progtype, short int force_lock)
 		} else {
 			hd.data_incrementor = 1;
 			hd.data_in_use = progtype;
+		}
+		if (hd.data_version != sfv_version) {
+			d_log("create_lock: version of datafile mismatch. Stopping and suggesting a cleanup.\n");
+			close(fd);
+			return 1;
 		}
 		lseek(fd, 0L, SEEK_SET);
 		write(fd, &hd, sizeof(HEADDATA));
@@ -934,7 +936,7 @@ update_lock(const char *path, short int progtype, short int counter, short int d
 
 	read(fd, &hd, sizeof(HEADDATA));
 	if (hd.data_in_use != progtype) {
-		d_log("update_lock: Lock not active - no choice but to exit.\n");
+		d_log("update_lock: Lock not active or prog mismatch - no choice but to exit.\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -942,7 +944,11 @@ update_lock(const char *path, short int progtype, short int counter, short int d
 		d_log("update_lock: Lock suggested removed by a different process.\n");
 		retval = 0;
 	} else {
-		hd.data_incrementor++;
+		if (counter)
+			hd.data_incrementor++;
+		else
+			hd.data_incrementor = 0;
+
 		retval = hd.data_incrementor;
 	}
 	if (datatype)
@@ -953,6 +959,4 @@ update_lock(const char *path, short int progtype, short int counter, short int d
 	return retval;
 }
 
-
-	
 

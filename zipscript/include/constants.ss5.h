@@ -16,6 +16,12 @@
 #define FILE_MAX			256
 #define MAXIMUM_FILES_IN_RELEASE	1024
 
+#define PROGTYPE_ZIPSCRIPT              2
+#define PROGTYPE_POSTDEL                4
+#define PROGTYPE_CLEANUP                8
+#define PROGTYPE_DATACLEANER            16
+#define PROGTYPE_RESCAN                 32
+
 #ifndef O_SYNC
 #define O_SYNC O_FSYNC
 #endif
