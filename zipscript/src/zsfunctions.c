@@ -34,9 +34,11 @@ d_log(char *fmt,...)
 	time_t		timenow;
 	FILE           *file;
 	va_list		ap;
-	char           *debugname;
+	char		debugname[] = ".debug";
 #if ( debug_altlog == TRUE )
-	char           *debugpath = 0;
+	//char           *debugpath = 0;
+	char		debugpath[PATH_MAX];
+	char		debugname[PATH_MAX];
 #endif
 #endif
 
@@ -47,14 +49,14 @@ d_log(char *fmt,...)
 	timenow = time(NULL);
 
 #if ( debug_altlog == TRUE )
-	debugpath = malloc(PATH_MAX);
+	//debugpath = malloc(PATH_MAX);
 	getcwd(debugpath, PATH_MAX);
-	debugname = malloc(PATH_MAX);
+	//debugname = malloc(PATH_MAX);
 	sprintf(debugname, "%s/%s/.debug", storage, debugpath);
-	free(debugpath);
+	//free(debugpath);
 #else
-	debugname = malloc(strlen(".debug") + 2);
-	sprintf(debugname, ".debug");
+	//debugname = malloc(strlen(".debug") + 2);
+	//sprintf(debugname, ".debug");
 #endif
 
 	if ((file = fopen(debugname, "a+"))) {
@@ -63,7 +65,7 @@ d_log(char *fmt,...)
 		fclose(file);
 	}
 	chmod(debugname, 0666);
-	free(debugname);
+	//free(debugname);
 #endif
 	return;
 }
