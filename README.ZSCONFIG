@@ -95,9 +95,9 @@ noforce_sfv_first_dirs <PATHS>
 use_partial_on_noforce <TRUE|FALSE>
 	Usually all pathmatches are full paths. You can change this on what
 	you put in noforce_sfv_first_dirs to make it match parts of a dir,
-	like 'sample' or something. Please be careful *NOT* to include a
-	slash after the dirs if this setting is on - like '/sample', not
-	'/sample/'.
+	like 'sample' or something. Please be careful to include a slash after
+	the dirs if this setting is on - like '/sample/', to minimize the
+	number of possible wrong hits.
 	Default: FALSE
 
 audio_nocheck_dirs <PATHS>

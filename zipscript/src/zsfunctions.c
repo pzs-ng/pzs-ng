@@ -490,12 +490,16 @@ short int
 matchpartialpath(char *instr, char *path)
 {
 	int	pos = 0;
+	char   *partstring = 0;
 
+	partstring = malloc(strlen(path + 2));
+	sprintf(partstring, "%s/", path);
 	do {
 		switch (*instr) {
 		case 0:
 		case ' ':
-			if (!strncasecmp(instr - pos, path + strlen(path) - pos, pos)) {
+			if (!strncasecmp(instr - pos, partstring + strlen(partstring) - pos, pos)) {
+				free(partstring);
 				return 1;
 			}
 			pos = 0;
@@ -505,6 +509,7 @@ matchpartialpath(char *instr, char *path)
 			break;
 		}
 	} while (*instr++);
+	free(partstring);
 	return 0;
 }
 
