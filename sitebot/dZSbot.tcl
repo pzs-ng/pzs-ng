@@ -468,11 +468,11 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 	}
 
 	if {![info exists variables($type)]} {
-		putlog "dZSbot error: \"variables($type)\" not set in config, type becomes \"DEFAULT\""
+		putlog "dZSbot error: \"variables($type)\" not set in theme, type becomes \"DEFAULT\""
 		set type "DEFAULT"
 	}
 	if {![info exists announce($type)]} {
-		putlog "dZSbot error: \"announce($type)\" not set in config, type becomes \"DEFAULT\""
+		putlog "dZSbot error: \"announce($type)\" not set in theme, type becomes \"DEFAULT\""
 		set type "DEFAULT"
 	}
 
@@ -916,10 +916,10 @@ proc invite {nick host hand arg} {
 		}
 
 		if {!$disable(MSGINVITE)} {
-			set output [replacevar $output "%ircnick" $nick]
-			set output [replacevar $output "%user" $username]
-			set output [replacevar $output "%host" $host]
-			set output [replacevar $output "%group" $group]
+			set output [replacevar $output "%u_ircnick" $nick]
+			set output [replacevar $output "%u_name" $username]
+			set output [replacevar $output "%u_host" $host]
+			set output [replacevar $output "%g_name" $group]
 			set output [basicreplace $output "INVITE"]
 			sndall "DEFAULT" $output
 		}
