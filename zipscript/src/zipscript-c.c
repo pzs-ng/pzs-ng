@@ -272,8 +272,9 @@ main(int argc, char **argv)
 	char	       *norace_halfway_type = 0;
 	unsigned char	complete_type = 0;
 	char           *complete_announce = 0;
-	int		cnt       , cnt2, n = 0;
+	int		cnt, cnt2, n = 0;
 	int		write_log = 0;
+	int		nfofound = 0;
 	struct stat	fileinfo;
 
 #if ( debug_mode == TRUE && debug_announce == TRUE)
@@ -1204,11 +1205,24 @@ main(int argc, char **argv)
 			createstatusbar(convert(&raceI, userI, groupI, complete_bar));
 
 #if ( enable_complete_script == TRUE )
+			nfofound = (int)findfileext(".nfo");
 			d_log("Executing complete script\n");
 			sprintf(target, complete_script " \"%s\"", raceI.file.name);
 			if (execute(target) != 0) {
 				d_log("Failed to execute complete_script: %s\n", strerror(errno));
+			} else {
+				rescandir();
 			}
+
+#if ( enable_nfo_script == TRUE )
+			if (!nfofound && findfileext(".nfo")) {
+				d_log("Executing nfo script (%s)\n", nfo_script);
+				sprintf(target, nfo_script " \"%s\"", raceI.file.name);
+				if (execute(target) != 0) {
+					d_log("Failed to execute nfo_script: %s\n", strerror(errno));
+				}
+			}
+#endif
 #endif
 			/* Creating no-nfo link if needed. */
 			if ((locations.nfo_incomplete) && (!findfileext(".nfo")) && (matchpath(check_for_missing_nfo_dirs, locations.path)) ) {
@@ -1256,11 +1270,22 @@ main(int argc, char **argv)
 	}
 #if ( enable_accept_script == TRUE )
 	if (exit_value == EXIT_SUCCESS) {
+		nfofound = (int)findfileext(".nfo");
 		d_log("Executing accept script\n");
 		sprintf(target, accept_script " \"%s\"", raceI.file.name);
 		if (execute(target) != 0) {
 			d_log("Failed to execute accept_script: %s\n", strerror(errno));
 		}
+#if ( enable_nfo_script == TRUE )
+		rescandir();
+		if (!nfofound && findfileext(".nfo")) {
+			d_log("Executing nfo script (%s)\n", nfo_script);
+			sprintf(target, nfo_script " \"%s\"", raceI.file.name);
+			if (execute(target) != 0) {
+				d_log("Failed to execute nfo_script: %s\n", strerror(errno));
+			}
+		}
+#endif
 	}
 #endif
 	rescandir();
