@@ -631,7 +631,7 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 #if ( userellink == 1 )
 	char		result    [MAXPATHLEN];
 #endif
-	char           *org, *target;
+	char           *org = 0, *target = 0;
 	int		l1        , l2, l3;
 
 
@@ -639,7 +639,7 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 	l2 = strlen(factor2) + 1;
 	l3 = strlen(ltarget) + 1;
 
-	org = target = malloc(l1 + l2 + l3);
+	org = target = malloc((l1 + l2 + l3) * sizeof(char));
 
 	memcpy(target, factor1, l1);
 	target += l1 - 1;
