@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -36,8 +37,12 @@ unsigned long filesize(char *filename) {
 
 	file = malloc(strlen(glpath) + strlen(filename) + 2);
 	sprintf(file, "%s/%s", glpath, filename);
-	if (stat(file, &filestat) != 0)
-		filestat.st_size = 1;
+
+	if (stat(file, &filestat) != 0) {
+		fprintf(stderr, "Could not stat file '%s', is glrootpath set correctly in sitewho.conf? (error: %s)\n", file, strerror(errno));
+		free(file);
+		exit(1);
+	}
 
 	free(file);
 	return filestat.st_size;
@@ -146,6 +151,7 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			strncasecmp(user[x].status, "APPE ", 5) == 0) &&
 			user[x].bytes_xfer != 0 && mask == 0 ) {
 
+			pct = 0;
 			m = strplen(user[x].status) - 5;
 			if (m < 15 || raw)
 				sprintf(filename, "%.*s", m, user[x].status + 5);

@@ -32,7 +32,10 @@ void d_log(char *fmt, ...) {
 	time_t		timenow;
 	FILE		*file;
 	va_list		ap;
-	char		*debugname, *debugpath = 0;
+	char		*debugname;
+# if ( debug_altlog == TRUE )
+	char		*debugpath = 0;
+# endif
 #endif
 
 	if (fmt == NULL)
