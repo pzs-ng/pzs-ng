@@ -46,12 +46,6 @@
 #include "strsep.h"
 #endif
 
-struct ONLINE  *online;
-/*struct USERINFO **g.ui;
-struct GROUPINFO **g.gi;
-struct VARS	g.v;
-struct LOCATIONS g.l.*/
-
 int 
 main(int argc, char **argv)
 {
