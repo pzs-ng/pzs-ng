@@ -7,7 +7,6 @@
 
 int main(int argc, char **argv)
 {
-	int release_type = 0, version = 0;
 	SFVDATA sd;
 	FILE *f;
 	
@@ -20,11 +19,6 @@ int main(int argc, char **argv)
 		perror("fopen");
 		return EXIT_FAILURE;
 	}
-
-	fread(&version, sizeof(short int), 1, f);
-	fread(&release_type, sizeof(short int), 1, f);
-	printf("Release type: %i\n", release_type);
-	printf("File version: %i\n\n", version);
 
 	while ((fread(&sd, sizeof(SFVDATA), 1, f))) {
 		printf("%s %.8x\n", sd.fname, sd.crc32);

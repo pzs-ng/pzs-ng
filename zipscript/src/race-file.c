@@ -291,7 +291,6 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 
 	count = 0;
 	while ((read(fd, &rd, sizeof(RACEDATA)))) {
-
 		if (!update_lock(raceI, 1, 0)) {
 			d_log("testfiles: Lock is suggested removed. Will comply and exit\n");
 			remove_lock(raceI);
@@ -302,7 +301,6 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 		ext = find_last_of(realfile, ".");
 		if (*ext == '.')
 			ext++;
-
 		if (rd.status == F_NOTCHECKED) {
 			strlcpy(raceI->file.name, rd.fname, NAME_MAX);
 			Tcrc = readsfv(locations->sfv, raceI, 0);
@@ -320,7 +318,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 					   (strcomp(allowed_types, ext) &&
 				   !matchpath(allowed_types_exemption_dirs, locations->path)))
 				rd.status = F_IGNORED;
-			else if	((timenow == filestat.st_ctime) && (filestat.st_mode & 077111)) {
+			else if	((timenow == filestat.st_ctime) && (filestat.st_mode & 0111)) {
 				d_log("testfiles: Looks like this file (%s) is in the process of being uploaded. Ignoring.\n", rd.fname);
 				rd.status = F_IGNORED;
 				create_missing(rd.fname);
@@ -361,11 +359,11 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 					exit(EXIT_FAILURE);
 				}
 				write(fd, &rd, sizeof(RACEDATA));
-				if (rd.status != F_IGNORED)
+				if (!((timenow == filestat.st_ctime) && (filestat.st_mode & 0111)))
 					unlink_missing(rd.fname);
 			}
+			count++;
 		}
-		count++;
 	}
 	strlcpy(raceI->file.name, realfile, strlen(realfile)+1);
 	raceI->total.files = raceI->total.files_missing = 0;
