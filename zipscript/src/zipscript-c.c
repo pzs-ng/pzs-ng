@@ -272,6 +272,7 @@ int main( int argc, char **argv ) {
 	raceI.file.speed=2004;
   } else {
 	sprintf(raceI.user.name, getenv("USER"));
+	sprintf(raceI.user.name, getenv("USER"));
 	sprintf(raceI.user.group, getenv("GROUP"));
 	if (strlen(raceI.user.group)==0) memcpy(raceI.user.group, "NoGroup", 8);
 	sprintf(raceI.user.tagline, getenv("TAGLINE"));
@@ -347,6 +348,12 @@ int main( int argc, char **argv ) {
  if ( matchpath(nocheck_dirs, locations.path) ) {
 	d_log("Directory matched with nocheck_dirs\n");
 	no_check = TRUE;
+	}
+
+	/* Hide users in group_dirs */
+if ( matchpath(group_dirs, locations.path )) {
+	d_log("Hiding user\n");
+	sprintf(raceI.user.name, raceI.user.group);
 	}
 
 	/* Empty file recieved	*/
