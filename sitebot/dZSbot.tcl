@@ -1673,12 +1673,12 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 	set num 0
 	foreach entry $bnc(LIST) {
 		set entrysplit [split $entry ":"]
-		if {[llength $entrysplit] != 4} {
+		if {[llength $entrysplit] != 3} {
 			putlog "dZSbot error: Invalid bouncer line \"$entry\" (check bnc(LIST))."
 			continue
 		}
 		incr num; set ping "N/A"
-		foreach {desc secure ip port} $entrysplit {break}
+		foreach {desc ip port} $entrysplit {break}
 
 		if {[istrue $bnc(PING)]} {
 			if {[catch {exec $binary(PING) -c 1 -t $bnc(TIMEOUT) $ip} reply]} {
@@ -1699,7 +1699,7 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 		}
 
 		set response [clock clicks -milliseconds]
-		if {[istrue $secure]} {
+		if {[istrue $bnc(SECURE)]} {
 			set status [catch {exec $binary(CURL) --connect-timeout $bnc(TIMEOUT) --ftp-ssl --insecure -u $bnc(USER):$bnc(PASS) ftp://$ip:$port 2>@stdout} reply]
 		} else {
 			set status [catch {exec $binary(CURL) --connect-timeout $bnc(TIMEOUT) -u $bnc(USER):$bnc(PASS) ftp://$ip:$port 2>@stdout} reply]

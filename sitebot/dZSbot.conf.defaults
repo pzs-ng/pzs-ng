@@ -114,9 +114,15 @@ set dev_max_length      300
 # this is not needed. It will also disable check of binary(CURL).
 set bnc(ENABLED)        "TRUE"
 
+# Should we make a ping test too? TRUE/FALSE
+set bnc(PING)           "TRUE"
+
+# Connect to the FTP using AUTH TLS? TRUE/FALSE
+set bnc(SECURE)         "TRUE"
+
 # List of bouncers to check for the !bnc command.
-# Format: description:use tls:hhostname:port
-set bnc(LIST)           "Canada:TRUE:bnc.host.ca:123 Germany:TRUE:bnc.host.de:456 Sweden:TRUE:bnc.host.se:789"
+# Format: description:hhostname:port
+set bnc(LIST)           "Canada:bnc.host.ca:123 Germany:bnc.host.de:456 Sweden:bnc.host.se:789"
 
 # Username and password to use for testing bncs (must exist with this box's ip added)
 set bnc(USER)           "bncuser"
@@ -124,9 +130,6 @@ set bnc(PASS)           "bncpass"
 
 # Number of seconds to wait before giving up on connecting to the BNCs (Note that SSL takes extra time)
 set bnc(TIMEOUT)        20
-
-# Should we make a ping test too? TRUE/FALSE
-set bnc(PING)           "TRUE"
 
 #############################################################
 # SECTIONS                                                  #
