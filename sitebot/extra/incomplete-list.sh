@@ -38,14 +38,14 @@ for section in $sections; do
   secname="`echo $section | cut -d ':' -f 1`"
   secpath="`echo $section | cut -d ':' -f 2`"
 
-  results="`$cleanup $glroot 2>/dev/null | grep -e "^Incomplete" | tr '\"' '\n' | grep -e "$secpath"`"
+  results="`$cleanup $glroot 2>/dev/null | grep -e "^Incomplete" | tr '\"' '\n' | grep -e "$secpath" | tr -s '/'`"
   if [ -z "$results" ]; then
     if [ $verbose -eq 1 ]; then
       echo "$secname: No incomplete releases found."
     fi
   else
     for result in $results; do
-      secrel="`echo $result | sed "s|$glroot$secpath||"`"
+      secrel="`echo $result | sed "s|$glroot$secpath||" | tr -s '/'`"
       echo "$secname: ${bold}${secrel}${bold} is incomplete."
     done
   fi
