@@ -25,6 +25,9 @@ MV:/site/incoming/musicvideos/
 # set this to 1 if you wish to announce sections no incompletes are found.
 verbose=0
 
+#bold char
+bold=""
+
 
 #############################
 # END OF CONFIG             #
@@ -42,8 +45,8 @@ for section in $sections; do
     fi
   else
     for result in $results; do
-      secrel="`echo $result | sed "s|$secpath||"`"
-      echo "$secname: $secrel is incomplete."
+      secrel="`echo $result | sed "s|$glroot$secpath||"`"
+      echo "$secname: ${bold}${secrel}${bold} is incomplete."
     done
   fi
 done
