@@ -4,7 +4,7 @@
 #ifndef __CONSTANTS_H_
 #define __CONSTANTS_H_
 
-#define VERSION				"0.7.3 BETA4 (PRE)"
+#define VERSION				"0.7.3 BETA4"
 
 #define F_IGNORED			254
 #define F_BAD				255
