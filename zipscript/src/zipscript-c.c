@@ -278,7 +278,11 @@ main(int argc, char **argv)
 	char	       *newleader_type = 0;
 	char	       *race_halfway_type = 0;
 	char	       *norace_halfway_type = 0;
+#ifdef _WITH_SS5
+	unsigned char	complete_type = 1;
+#else
 	unsigned char	complete_type = 0;
+#endif
 	char           *complete_announce = 0;
 	int		cnt, cnt2, n = 0;
 	int		write_log = 0;
