@@ -289,7 +289,7 @@ int main( int argc, char **argv ) {
     locations.sfv    = m_alloc(n);
     locations.leader = m_alloc(n);
 
-    target	= m_alloc(n + 256);
+    target = m_alloc(n + 256);
     userI  = malloc(sizeof(struct USERINFO *) * 30);     
     groupI = malloc(sizeof(struct GROUPINFO *) * 30);
 
@@ -341,7 +341,7 @@ int main( int argc, char **argv ) {
 	sprintf(raceI.user.name, raceI.user.group);
     }
 
-    /* Empty file recieved	*/
+    /* Empty file recieved */
     if ( raceI.file.size == 0 ) {
 	d_log("File seems to be 0\n");
 	sprintf(raceI.misc.error_msg, EMPTY_FILE);
@@ -352,10 +352,10 @@ int main( int argc, char **argv ) {
     if ( matchpath(nocheck_dirs, locations.path) ) {
 	d_log("Directory matched with nocheck_dirs\n");
 	no_check = TRUE;
-    } else {
-	/* Process file		*/
+    } else { 
+	/* Process file */
 	switch ( get_filetype(fileext) ) {
-	    case 0: /* ZIP */
+	    case 0: /* ZIP CHECK */
 		d_log("File type is: ZIP\n");
 		d_log("Testing file integrity with unzip\n");
 		sprintf(target, "/bin/unzip -qqt %s", raceI.file.name);
@@ -409,10 +409,9 @@ int main( int argc, char **argv ) {
 		newleader_msg = zip_newleader;
 
 		break;
-		/* END OF ZIP */
+		/* END OF ZIP CHECK */
 
-
-	    case 1:	/* SFV */
+	    case 1: /* SFV CHECK */
 		d_log("File type is: SFV\n");
 		if ( fileexists(locations.sfv) ) {
 		    if (deny_double_sfv == TRUE && findfileextcount(".sfv") > 1 ) {
@@ -506,8 +505,9 @@ int main( int argc, char **argv ) {
 		    }
 		}
 		break;
-	    case 2:
-		/* NFO */
+		/* END OF SFV CHECK */
+
+	    case 2: /* NFO CHECK */
 		no_check = TRUE;
 		d_log("File type is: NFO\n");
 		writerace_file(&locations, &raceI, 0, F_NFO);
@@ -522,9 +522,7 @@ int main( int argc, char **argv ) {
 		break;
 		/* END OF NFO CHECK */
 
-
-	    case 3:
-		/* SFV BASED CRC-32 CHECK */
+	    case 3: /* SFV BASED CRC-32 CHECK */
 		d_log("File type is: ANY\n");
 
 		d_log("Converting crc from string to integer\n");
@@ -564,11 +562,6 @@ int main( int argc, char **argv ) {
 
 		raceI.misc.write_log = matchpath(sfv_dirs, locations.path);
 
-		d_log("Removing missing indicator\n");
-		sprintf(target, "%s-missing", raceI.file.name);
-		strtolower(target);
-		unlink(target);
-
 		d_log("Reading race data from file to memory\n");
 		readrace_file(&locations, &raceI, userI, groupI);
 
@@ -605,13 +598,11 @@ int main( int argc, char **argv ) {
 #if ( exclude_non_sfv_dirs == TRUE )
 			if ( raceI.misc.write_log == TRUE ) {
 #endif
-
 			    if (( enable_mp3_script == TRUE ) && ( userI[raceI.user.pos]->files == 1 )) {
 				d_log("Executing mp3 script\n");
 				sprintf(target, mp3_script " \"%s\" %s", raceI.file.name, convert(&raceI,userI,groupI,mp3_script_cookies));
 				execute(target);
 			    }
-
 
 			    if ( ! matchpath(audio_nocheck_dirs, locations.path) ) {
 #if ( audio_banned_genre_check == TRUE )
@@ -655,7 +646,6 @@ int main( int argc, char **argv ) {
 				    }
 				    break;
 				}
-
 #endif
 #if ( audio_year_check == TRUE )
 				if ( ! strcomp(allowed_years, raceI.audio.id3_year)) {
@@ -726,25 +716,32 @@ int main( int argc, char **argv ) {
 			newleader_msg = video_newleader;
 			break;
 		}
-		/* END OF SFV CHECK */
+
+		if ( exit_value == EXIT_SUCCESS ) {
+		    d_log("Removing missing indicator\n");
+		    sprintf(target, "%s-missing", raceI.file.name);
+		    strtolower(target);
+		    unlink(target);
+		}
+
 		break;
-	    case 4:
-		/* ACCEPTED FILE */
+		/* END OF SFV BASED CRC-32 CHECK */
+
+	    case 4: /* ACCEPTED FILE */
 		d_log("File type: NO CHECK\n"); 
 		no_check = TRUE;
 		break;
-	    case 255:
-		/* UNKNOWN - WE DELETE THESE, SINCE IT WAS ALSO IGNORED */
+		/* END OF ACCEPTED FILE CHECK */
+
+	    case 255: /* UNKNOWN - WE DELETE THESE, SINCE IT WAS ALSO IGNORED */
 		d_log("File type: UNKNOWN [ignored in sfv]\n");
 
 		sprintf(raceI.misc.error_msg, UNKNOWN_FILE, fileext);
 		exit_value = 2;
-		/* END OF UNKNOWN CHECK */
 		break;
+		/* END OF UNKNOWN CHECK */
 	}
     }
-
-
 
     if ( no_check == TRUE ) {	/* File was not checked */
 	printf(zipscript_any_ok);
