@@ -105,6 +105,7 @@ void getrelname(char *directory) {
 	sprintf(locations.link_source, "%.*s", n - 1, locations.path);
 	locations.link_target = path[0];
 	locations.incomplete = c_incomplete(incomplete_cd_indicator, path);
+	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
 	if (k < 2) free(path[1]);
     } else {
 	raceI.misc.release_name = malloc(l[1] + 10);
@@ -113,10 +114,7 @@ void getrelname(char *directory) {
 	sprintf(raceI.misc.release_name, "%s", path[1]);
 	locations.link_target = path[1];
 	locations.incomplete = c_incomplete(incomplete_indicator, path);
-	if ((show_missing_nfo) && (! findfileext(".nfo"))) {
-		d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
-		create_incomplete_nfo();
-	}
+	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
 	if (k == 0) free(path[0]);
     }
 }
@@ -221,6 +219,15 @@ int main () {
 	readrace_file( &locations, &raceI, userI, groupI );
 	sortstats( &raceI, userI, groupI );
 	buffer_progress_bar( &raceI );
+	if (show_missing_nfo) {
+		if (findfileext(".nfo")) {
+			d_log("Removing missing-nfo indicator (if any)\n");
+			remove_nfo_indicator(locations.path);
+		} else {
+			d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
+			create_incomplete_nfo();
+		}
+	}
 	if (raceI.misc.release_type == RTYPE_AUDIO)
 		get_mpeg_audio_info(findfileext(".mp3"), &raceI.audio);
 
@@ -312,9 +319,14 @@ int main () {
 	    create_incomplete();
 	    move_progress_bar(0, &raceI);
 	}
-	if ((show_missing_nfo) && ( ! findfileext(".nfo"))) {
-		d_log("Removing missing-nfo indicator (if any)\n");
-		remove_nfo_indicator(locations.path);
+	if ((show_missing_nfo) && (locations.nfo_incomplete)) {
+		if (findfileext(".nfo")) {
+			d_log("Removing missing-nfo indicator (if any)\n");
+			remove_nfo_indicator(locations.path);
+		} else {
+			d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
+			create_incomplete_nfo();
+		}
 	}
     }
     printf(" Passed : %i\n", raceI.total.files - raceI.total.files_missing );

@@ -566,7 +566,7 @@ int main( int argc, char **argv ) {
 		d_log("File type is: NFO\n");
 		writerace_file(&locations, &raceI, 0, F_NFO);
 
-		if ((show_missing_nfo) && (findfileext(".nfo"))) {
+		if ((show_missing_nfo) && (findfileext(".nfo")) && (locations.nfo_incomplete)) {
 			d_log("Removing missing-nfo indicator (if any)\n");
 			remove_nfo_indicator(locations.path);
 		}
@@ -870,12 +870,6 @@ int main( int argc, char **argv ) {
 	    d_log("Creating incomplete indicator %s\n", locations.incomplete);
 	    create_incomplete();
 
-/*	    if ((show_missing_nfo) && (! findfileext(".nfo"))) {
-	    	d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
-	    	create_incomplete_nfo();
-	    }
-*/
-
 	    d_log("Creating/moving progress bar\n");
 	    move_progress_bar(0, &raceI);
 
@@ -986,7 +980,7 @@ int main( int argc, char **argv ) {
 	    d_log("Creating complete bar\n");
 	    createstatusbar(convert(&raceI, userI, groupI, complete_bar));
 
-	    if (show_missing_nfo) {
+	    if ((show_missing_nfo) && (locations.nfo_incomplete)) {
 		if  (findfileext(".nfo")) {
 			d_log("Removing missing-nfo indicator (if any)\n");
 			remove_nfo_indicator(locations.path);
