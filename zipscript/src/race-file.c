@@ -30,9 +30,12 @@ unsigned int readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int g
     FILE		*sfvfile;
     unsigned int	len;
 
-    if ( (sfvfile = fopen(locations->sfv, "r")) == NULL ) return 0;
-
+    if ( (sfvfile = fopen(locations->sfv, "r")) == NULL ) {
+      d_log("Failed to open sfv.\n");
+      return 0;
+    }
     fread( &raceI->misc.release_type, sizeof(short int), 1, sfvfile);
+	d_log("Reading data from sfv (%s)\n", raceI->file.name);
     while ( fread(&len, sizeof(int), 1, sfvfile) == 1 ) {
 	fname = m_alloc(len);
 	fread(fname, 1, len, sfvfile);
@@ -44,6 +47,8 @@ unsigned int readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int g
 	if (getfcount && findfile(fname)) {
 	    raceI->total.files_missing--;
 	}
+
+	d_log("Storing data on %s - CRC: %u - T_CRC: %u.\n", fname, crc, t_crc);
 	m_free(fname);
     }
     fclose(sfvfile);
