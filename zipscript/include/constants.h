@@ -27,19 +27,19 @@
 #define other_announce_norace_complete_type	"COMPLETE_OTHER"
 #define audio_announce_norace_complete_type	"COMPLETE_AUDIO"
 #define general_announce_norace_complete_type	"COMPLETE"
-#define video_announce_race_complete_type	"RACE_COMPLETE_VIDEO"
-#define zip_announce_race_complete_type		"RACE_COMPLETE_ZIP"
-#define rar_announce_race_complete_type		"RACE_COMPLETE_RAR"
-#define other_announce_race_complete_type	"RACE_COMPLETE_OTHER"
-#define audio_announce_race_complete_type	"RACE_COMPLETE_AUDIO"
-#define general_announce_race_complete_type	"RACE_COMPLETE"
+#define video_announce_race_complete_type	"COMPLETE_RACE_VIDEO"
+#define zip_announce_race_complete_type		"COMPLETE_RACE_ZIP"
+#define rar_announce_race_complete_type		"COMPLETE_RACE_RAR"
+#define other_announce_race_complete_type	"COMPLETE_RACE_OTHER"
+#define audio_announce_race_complete_type	"COMPLETE_RACE_AUDIO"
+#define general_announce_race_complete_type	"COMPLETE_RACE"
 #define audio_announce_vbr_update_type		"UPDATE_VBR"
 #define audio_announce_cbr_update_type		"UPDATE_CBR"
+#define rar_announce_update_type		"UPDATE_RAR"
+#define zip_announce_update_type		"UPDATE_ZIP"
+#define other_announce_update_type		"UPDATE_OTHER"
+#define video_announce_update_type		"UPDATE_VIDEO"
 #define general_announce_update_type		"UPDATE"
-#define rar_announce_update_type		"RAR_UPDATE"
-#define zip_announce_update_type		"ZIP_UPDATE"
-#define other_announce_update_type		"OTHER_UPDATE"
-#define video_announce_update_type		"VIDEO_UPDATE"
 
 #define deny_double_msg		"{%U} {%G} {%r} {%n}"
 #define audio_cbr_warn_msg	"{%U} {%G} {%X}"
@@ -72,7 +72,7 @@
 #define audio_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
 #define audio_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0"
 #define audio_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define audio_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0"
+#define audio_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G}"
 
 /* Video files - supports mpeg1/mpeg2 and various avi formats */
 #define video_race		"{%U} {%G} %R {%r} {%.0S}"
@@ -82,7 +82,7 @@
 #define video_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
 #define video_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0"
 #define video_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define video_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0"
+#define video_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G}"
 
 /* RAR - allows usage of compression mode cookie (%Z) for rarred releases */
 #define rar_race		"{%U} {%G} %R {%r} {%.0S}"
@@ -92,7 +92,7 @@
 #define rar_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
 #define rar_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L  %C0 %c0 {%Z}"
 #define rar_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define rar_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L  %C0 %c0 {%Z}"
+#define rar_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G} {%Z}"
 
 
 /* Rest of the stuff inside sfv */
@@ -103,7 +103,7 @@
 #define other_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
 #define other_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L  %C0 %c0"
 #define other_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define other_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L  %C0 %c0"
+#define other_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g}"
 
 /* Zipped files */
 #define zip_race		"{%U} {%G} %R {%r} {%.0S}"
@@ -112,7 +112,7 @@
 #define zip_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
 #define zip_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L  %C0 %c0 {%T}"
 #define zip_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define zip_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L  %C0 %c0 {%T}"
+#define zip_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} {%T}"
 
 /* Output of racestats binary */
 #define stats_line		"{%r} {%F} {%f} {%u} {%g} %C0"

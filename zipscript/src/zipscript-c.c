@@ -807,7 +807,13 @@ int main( int argc, char **argv ) {
 			switch( raceI.misc.release_type ) {
 				case RTYPE_RAR: update_type = rar_announce_update_type;   break; /* rar */
 				case RTYPE_OTHER: update_type = other_announce_update_type; break; /* other */
-				case RTYPE_AUDIO: update_type = CHOOSE(raceI.audio.is_vbr, audio_announce_vbr_update_type, audio_announce_cbr_update_type); break; /* audio */
+				case RTYPE_AUDIO: 
+					if (raceI.audio.is_vbr == 0 ) {
+						update_type = audio_announce_cbr_update_type;
+					} else {
+						update_type = audio_announce_vbr_update_type;
+					};
+					break; /* audio */
 				case RTYPE_VIDEO: update_type = video_announce_update_type; break; /* video */
 				case RTYPE_NULL: update_type = zip_announce_update_type; break; /* zip */
 			}
