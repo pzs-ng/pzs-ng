@@ -219,14 +219,15 @@ strtolower(char *s)
 void 
 unlink_missing(char *s)
 {
-	char           *t, *u;
+	char           *t, *u, *v;
 
-	t = u = malloc(strlen(s) + 9);
+	t = u = v = malloc(strlen(s) + 9);
 	sprintf(t, "%s-missing", s);
+d_log("DEBUG : t=%s\n", t);
 	unlink(t);
-	while ((*u = tolower(*u)))
-		u++;
-	unlink(t);
+	v = findfilename(t);
+d_log("DEBUG : v=%s\n", v);
+	unlink(v);
 	free(t);
 	//free(u);
 }
@@ -357,6 +358,19 @@ findfile(char *filename)
 		}
 	}
 	return 0;
+}
+
+char           *
+findfilename(char *filename)
+{
+	int	n;
+
+	n = direntries;
+	while (n--) {
+		if (!strcasecmp(dirlist[n]->d_name, filename))
+			return dirlist[n]->d_name;
+	}
+	return NULL;
 }
 
 /*
@@ -516,11 +530,10 @@ readsfv_ffile(char *filename, off_t buf_bytes)
 					ext_start = index_start;
 #if (sfv_cleanup_lowercase == TRUE)
 					while ((fname[ext_start] = tolower(fname[ext_start])) != '.' && ext_start > 0)
-						ext_start--;
 #else
 					while (fname[ext_start] != '.' && ext_start > 0)
-						ext_start--;
 #endif
+						ext_start--;
 					if (fname[ext_start] != '.') {
 						ext_start = index_start;
 					} else {

@@ -69,7 +69,7 @@ readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount)
 void 
 delete_sfv_file(struct LOCATIONS *locations)
 {
-	char           *fname;
+	char           *fname, *fnname;
 	FILE           *sfvfile;
 	unsigned int	len;
 
@@ -80,11 +80,13 @@ delete_sfv_file(struct LOCATIONS *locations)
 	fseek(sfvfile, sizeof(short int), SEEK_CUR);
 
 	while (fread(&len, sizeof(int), 1, sfvfile) == 1) {
-		fname = m_alloc(len + 8);
+		fname = fnname = m_alloc(len + 8);
 		fread(fname, 1, len, sfvfile);
 		fseek(sfvfile, sizeof(int), SEEK_CUR);
 		memcpy(fname + len - 1, "-missing", 9);
 		unlink(fname);
+		fnname = findfilename(fname);
+		unlink(fnname);
 		m_free(fname);
 	}
 	fclose(sfvfile);

@@ -90,7 +90,7 @@ convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, 
 					out_p += sprintf(out_p, "\\003");
 					break;
 				case 'F':
-					out_p += sprintf(out_p, "%*i", val1, (int)raceI->misc.fastest_user[0]);
+					out_p += sprintf(out_p, "%*i", val1, (unsigned int)raceI->misc.fastest_user[0]);
 					break;
 				case 'n':
 					out_p += sprintf(out_p, "%*i", val1, (int)userpos + 1);
@@ -113,7 +113,7 @@ convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, 
 					out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)ctrl);
 					break;
 				case 'b':
-					out_p += sprintf(out_p, "%*i", val1, (int)userI->bytes);
+					out_p += sprintf(out_p, "%*f", val1, (double)userI->bytes);
 					break;
 				case 'k':
 					out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(userI->bytes / 1024.));
@@ -128,7 +128,7 @@ convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, 
 					out_p += sprintf(out_p, "%*i", val1, (int)userI->files);
 					break;
 				case 'S':
-					out_p += sprintf(out_p, "%*i", val1, (int)raceI->misc.slowest_user[0]);
+					out_p += sprintf(out_p, "%*i", val1, (unsigned int)raceI->misc.slowest_user[0]);
 					break;
 				case 's':
 					out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(userI->bytes / userI->speed));

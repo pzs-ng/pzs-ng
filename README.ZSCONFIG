@@ -18,6 +18,7 @@ sitepath_dir <PATH>
 	This is used as a base for datacleaner, when it's run as a cscript.
 	It is normally set to /site/, which is the common location in which all
 	your site's public dirs reside.
+	Default: "/site/"
 
 log <PATH>
 	This setting should point to a file where all logging will occur. The
@@ -26,7 +27,7 @@ log <PATH>
 	Default: "/ftp-data/logs/glftpd.log"
 
 storage <PATH>
-	This is the place where the zipscript keeps a "mirror" of your site's
+	This is the place where the zipscript keeps a 'mirror' of your site's
 	setup. Here stats for racers and releases are stored. This storage
 	should not be accessible to your site's users, but must be world
 	read/writable (+rwx).
@@ -46,7 +47,7 @@ group_dirs <PATHS>
 	This is the place(s) where your site's groups/affilliates have space
 	provided. Normally each (release-)group have a designated area
 	accessible only to the group's members, in which they upload a new
-	release and "pre" it (release it) simultanously on several sites.
+	release and 'pre' it (release it) simultanously on several sites.
 	Uploads and races in these dirs will not be logged. Dirs are separated
 	with the space character.
 	Default: "/site/groups/"
@@ -90,10 +91,15 @@ gl_sections <STRING>
 	Here you should put a list of all sections on your site. Sections is
 	not the same as dirs, but is what you have defined as sections in
 	glftpd.conf. See glftpd's docs for more info on sections.
-	First section is always named "DEFAULT". The order in which you put
+	First section is always named 'DEFAULT'. The order in which you put
 	the names of the sections are important. Separate sections with a
 	space character.
 	Default: "DEFAULT"
+
+short_sitename <STRING>
+	Insert here the name of your site, short format. This will be used on
+	progressbars, completebars etc. This can be used in a cookie (%Z).
+	Default: "NG"
 
 allowed_types_exemption_dirs <PATHS>
 	In allowed_types we define filetypes that are allowed on site w/o
@@ -175,7 +181,7 @@ userellink <0|1>
 
 program_uid <NUMBER>
 	Some may want to run zipscript-c as a special user, which will be
-	set as "owner" of links, missing files etc. Setting this to anything
+	set as 'owner' of links, missing files etc. Setting this to anything
 	but 0 will force the zipscript to change uid to the number you put
 	here. In order for this to work, zipscript-c needs the suid bit set.
 	Default: 0
@@ -505,8 +511,7 @@ message_header <STRING|DISABLED>
 
 message_user_header <STRING|DISABLED>
 	Define here what should be put above a list of racers (users).
-	Default: "\n                           U S E R T O P\n" \
-		 "+--------------------------------------------------------------------+\n"
+	Default: "\n                           U S E R T O P\n+--------------------------------------------------------------------+\n"
 	    
 message_user_body <STRING|DISABLED>
 	Define here the body of the list of racers (users).
@@ -514,13 +519,11 @@ message_user_body <STRING|DISABLED>
 
 message_user_footer <STRING|DISABLED>
 	Define here the footer of the list of racers (users).
-	Default: "+--------------------------------------------------------------------+\n" \
-		 "%3u Total %36.1mM %3fF 100.0%% %5.0aKBs\n"
+	Default: "+--------------------------------------------------------------------+\n%3u Total %36.1mM %3fF 100.0%% %5.0aKBs\n"
 	    
 message_group_header <STRING|DISABLED>
 	Define here what should be put above a list of racers (groups).
-	Default: "\n\n                          G R O U P T O P\n" \
-		 "+--------------------------------------------------------------------+\n"
+	Default: "\n\n                          G R O U P T O P\n+--------------------------------------------------------------------+\n"
 
 message_group_body <STRING|DISABLED>
 	Define here the body of the list of racers (groups).
@@ -528,19 +531,11 @@ message_group_body <STRING|DISABLED>
 
 message_group_footer <STRING|DISABLED>
 	Define here the footer of the list of racers (groups).
-	Default: "+--------------------------------------------------------------------+\n" \
-		 "%3g Total %36.1mM %3fF 100.0%% %5.0aKBs\n"
+	Default: "+--------------------------------------------------------------------+\n%3g Total %36.1mM %3fF 100.0%% %5.0aKBs\n"
 	    
 message_mp3 <STRING|DISABLED>
 	Define here a special complete_message for mp3-releases.
-	Default: "\n\n                            I D 3 - T A G\n" \
-		 "+--------------------------------------------------------------------+\n" \
-		 "  Artist : %x\n" \
-		 "  Album  : %W\n" \
-		 "  Genre  : %-34w Rate  : %Xkbit/sec\n" \
-		 "  Tracks : %-34f Year  : %Y\n" \
-		 "  Encoder: %-34i Preset: %I\n" \
-		 "+--------------------------------------------------------------------+\n"
+	Default: "\n\n                            I D 3 - T A G\n+--------------------------------------------------------------------+\n  Artist : %x\n  Album  : %W\n  Genre  : %-34w Rate  : %Xkbit/sec\n  Tracks : %-34f Year  : %Y\n  Encoder: %-34i Preset: %I\n+--------------------------------------------------------------------+\n"
 	
 message_footer <STRING|DISABLED>
 	Define here what should be put at the bottom of the complete_message
@@ -616,12 +611,7 @@ realtime_mp3_info <STRING|DISABLED>
 	When files are uploaded, some output is shown to the racer uploading.
 	Put here what should be shown as the body of that message on mp3-file
 	upload.
-	Default: "+-=[ID3tag]=------------------------===------------+\n" \
-		 "| Title  : %-39y |\n" \
-		 "| Artist : %-39x |\n" \
-		 "| Album  : %-39W |\n" \
-		 "| Genre  : %-39w |\n" \
-		 "| Year   : %-39Y |\n"
+	Default: "+-=[ID3tag]=------------------------===------------+\n| Title  : %-39y |\n| Artist : %-39x |\n| Album  : %-39W |\n| Genre  : %-39w |\n| Year   : %-39Y |\n"
 	
 realtime_user_header <STRING|DISABLED>
 	When files are uploaded, some output is shown to the racer uploading.
@@ -976,11 +966,6 @@ disable_other_norace_complete <TRUE|FALSE>
 	You can choose to disable some announces. Set to TRUE to disable the
 	announce.
 	Default: FALSE
-
-short_sitename <STRING>
-	Insert here the name of your site, short format. This will be used on
-	progressbars, completebars etc. This can be used in a cookie (%Z).
-	Default: "dS"
 
 KEY <IPCKEY>
 	You can define glftpd's ipckey with this argument. This is only used

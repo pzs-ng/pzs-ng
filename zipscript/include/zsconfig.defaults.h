@@ -27,19 +27,19 @@
 #define sitepath_dir	"/site/"
 #endif
 #ifndef log
-#define log             "/ftp-data/logs/glftpd.log"
+#define log		"/ftp-data/logs/glftpd.log"
 #endif
 #ifndef storage
-#define storage         "/ftp-data/pzs-ng/"
+#define storage		"/ftp-data/pzs-ng/"
 #endif
 #ifndef gl_userfiles
-#define gl_userfiles    "/ftp-data/users/"
+#define gl_userfiles	"/ftp-data/users/"
 #endif
 #ifndef dupepath
-#define dupepath        "/ftp-data/logs/dupefile"
+#define dupepath	"/ftp-data/logs/dupefile"
 #endif
 #ifndef gl_sections
-#define gl_sections     "DEFAULT"
+#define gl_sections	"DEFAULT"
 #endif
 
 
@@ -59,25 +59,25 @@
  */
 
 #ifndef group_dirs
-#define group_dirs                      "/site/groups/"
+#define group_dirs			"/site/groups/"
 #endif
 #ifndef zip_dirs
-#define zip_dirs                        "/site/test/ /site/incoming/0day/"
+#define zip_dirs			"/site/test/ /site/incoming/0day/"
 #endif
 #ifndef sfv_dirs
-#define sfv_dirs                        "/site/test/ /site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/requests/"
+#define sfv_dirs			"/site/test/ /site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/requests/"
 #endif
 #ifndef nocheck_dirs
-#define nocheck_dirs                    "/site/private/"
+#define nocheck_dirs			"/site/private/"
 #endif
 #ifndef rescan_nocheck_dirs_allowed
 #define rescan_nocheck_dirs_allowed	TRUE
 #endif
 #ifndef audio_nocheck_dirs
-#define audio_nocheck_dirs              "/site/groups/ /site/incoming/requests/"
+#define audio_nocheck_dirs		"/site/groups/ /site/incoming/requests/"
 #endif
 #ifndef allowed_types_exemption_dirs
-#define allowed_types_exemption_dirs    "/site/incoming/musicvideos/"
+#define allowed_types_exemption_dirs	"/site/incoming/musicvideos/"
 #endif
 #ifndef check_for_missing_nfo_dirs
 #define check_for_missing_nfo_dirs	"/site/incoming/games/ /site/incoming/apps/"
@@ -90,10 +90,10 @@
  * /path/name of glftpd's passwd file
  */
 #ifndef GROUPFILE
-#define GROUPFILE       "/etc/group"
+#define GROUPFILE	"/etc/group"
 #endif
 #ifndef PASSWDFILE
-#define PASSWDFILE      "/etc/passwd"
+#define PASSWDFILE	"/etc/passwd"
 #endif
 
 /*
@@ -116,20 +116,20 @@
  */
 
 #ifndef check_today
-#define check_today             TRUE
+#define check_today		TRUE
 #endif
 #ifndef check_yesterday
-#define check_yesterday         TRUE
+#define check_yesterday		TRUE
 #endif
 #ifndef cleanupdirs
-#define cleanupdirs     "/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
+#define cleanupdirs		"/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 #endif
 
 /*
  * Write .message file on complete in group_dirs?
  */
 #ifndef write_complete_message_in_group_dirs
-#define write_complete_message_in_group_dirs    TRUE
+#define write_complete_message_in_group_dirs	TRUE
 #endif
 
 /*
@@ -137,7 +137,7 @@
  * TRUE will convert the username to the groupname of the user.
  */
 #ifndef hide_group_uploaders
-#define hide_group_uploaders    TRUE
+#define hide_group_uploaders	TRUE
 #endif
 
 /*
@@ -145,14 +145,14 @@
  * the group dirs. Define your message here, or put DISABLED to disable.
  */
 #ifndef custom_group_dirs_complete_message
-#define custom_group_dirs_complete_message      "... Looks like this is a pre. :)"
+#define custom_group_dirs_complete_message	"... Looks like this is a pre. :)"
 #endif
 
 /*
  * Creates a zero-byte file for every non-existing file defined in sfv?
  */
 #ifndef create_missing_files
-#define create_missing_files    TRUE
+#define create_missing_files	TRUE
 #endif
 
 /*
@@ -160,7 +160,7 @@
  * = file 1 = directory
  */
 #ifndef status_bar_type
-#define status_bar_type         1
+#define status_bar_type		1
 #endif
 
 /*
@@ -168,7 +168,7 @@
  * incomplete pointer) 0 = file 1 = symbolic link
  */
 #ifndef incompleteislink
-#define incompleteislink        1
+#define incompleteislink	1
 #endif
 
 /*
@@ -176,7 +176,7 @@
  * absolute path 1 = relative path
  */
 #ifndef userellink
-#define userellink              1
+#define userellink		1
 #endif
 
 /*
@@ -184,17 +184,17 @@
  * option uncompiled)
  */
 #ifndef program_uid
-#define program_uid             0
+#define program_uid		0
 #endif
 #ifndef program_gid
-#define program_gid             0
+#define program_gid		0
 #endif
 
 /*
  * These file types are allowed without any checks
  */
 #ifndef allowed_types
-#define allowed_types           "jpg,cue,m3u,mpg,avi,nfo,txt"
+#define allowed_types		"jpg,cue,m3u,mpg,avi,nfo,txt"
 #endif
 
 /*
@@ -202,7 +202,7 @@
  * files without extensions
  */
 #ifndef ignored_types
-#define ignored_types           ",diz,jpg,cue,m3u,nfo,sfv,debug"
+#define ignored_types		",diz,jpg,cue,m3u,nfo,sfv,debug"
 #endif
 
 /*
@@ -258,7 +258,7 @@
  * seem to add duplicate entries :p
  */
 #ifndef sfv_dupecheck
-#define sfv_dupecheck           TRUE
+#define sfv_dupecheck		TRUE
 #endif
 
 /*
@@ -287,21 +287,21 @@
  * and denied/allowed depending on the content of the sfv.
  */
 #ifndef deny_double_sfv
-#define deny_double_sfv         FALSE
+#define deny_double_sfv		FALSE
 #endif
 
 /*
  * Exclude non sfv directories (ie group/request directory)
  */
 #ifndef exclude_non_sfv_dirs
-#define exclude_non_sfv_dirs    TRUE
+#define exclude_non_sfv_dirs	TRUE
 #endif
 
 /*
  * Force sfv to be uploaded first, before accepting any files
  */
 #ifndef force_sfv_first
-#define force_sfv_first         FALSE
+#define force_sfv_first		FALSE
 #endif
 
 
@@ -315,16 +315,16 @@
  * your releases. All paths are chroot'ed.
  */
 #ifndef audio_genre_path
-#define audio_genre_path                "/site/incoming/music.by.genre/"
+#define audio_genre_path	"/site/incoming/music.by.genre/"
 #endif
 #ifndef audio_artist_path
-#define audio_artist_path               "/site/incoming/music.by.artist/"
+#define audio_artist_path	"/site/incoming/music.by.artist/"
 #endif
 #ifndef audio_year_path
-#define audio_year_path                 "/site/incoming/music.by.year/"
+#define audio_year_path		"/site/incoming/music.by.year/"
 #endif
 #ifndef audio_group_path
-#define audio_group_path                "/site/incoming/music.by.group/"
+#define audio_group_path	"/site/incoming/music.by.group/"
 #endif
 
 /*
@@ -332,16 +332,16 @@
  * settings if you do not plan to restrict your uploads.
  */
 #ifndef allowed_constant_bitrates
-#define allowed_constant_bitrates       "160,192"
+#define allowed_constant_bitrates	"160,192"
 #endif
 #ifndef allowed_years
-#define allowed_years                   "2000,2001,2002,2003,2004,2005"
+#define allowed_years			"2000,2001,2002,2003,2004,2005"
 #endif
 #ifndef banned_genres
-#define banned_genres                   "Christian Rap,Christian Gangsta Rap,Contemporary Christian,Christian Rock"
+#define banned_genres			"Christian Rap,Christian Gangsta Rap,Contemporary Christian,Christian Rock"
 #endif
 #ifndef allowed_genres
-#define allowed_genres                  "Top 40,Pop Funk,Rock,Pop"
+#define allowed_genres			"Top 40,Pop Funk,Rock,Pop"
 #endif
 
 /*
@@ -349,16 +349,16 @@
  * or FALSE if not.
  */
 #ifndef audio_genre_sort
-#define audio_genre_sort                FALSE
+#define audio_genre_sort	FALSE
 #endif
 #ifndef audio_year_sort
-#define audio_year_sort                 FALSE
+#define audio_year_sort		FALSE
 #endif
 #ifndef audio_artist_sort
-#define audio_artist_sort               FALSE
+#define audio_artist_sort	FALSE
 #endif
 #ifndef audio_group_sort
-#define audio_group_sort                FALSE
+#define audio_group_sort	FALSE
 #endif
 
 /*
@@ -368,16 +368,16 @@
  * glftpd.log.
  */
 #ifndef audio_cbr_check
-#define audio_cbr_check                 TRUE
+#define audio_cbr_check		TRUE
 #endif
 #ifndef audio_cbr_warn
-#define audio_cbr_warn                  TRUE
+#define audio_cbr_warn		TRUE
 #endif
 #ifndef audio_year_check
-#define audio_year_check                TRUE
+#define audio_year_check	TRUE
 #endif
 #ifndef audio_year_warn
-#define audio_year_warn                 TRUE
+#define audio_year_warn		TRUE
 #endif
 
 /*
@@ -385,20 +385,20 @@
  * set to TRUE
  */
 #ifndef audio_banned_genre_check
-#define audio_banned_genre_check        TRUE
+#define audio_banned_genre_check	TRUE
 #endif
 #ifndef audio_allowed_genre_check
-#define audio_allowed_genre_check       FALSE
+#define audio_allowed_genre_check	FALSE
 #endif
 #ifndef audio_genre_warn
-#define audio_genre_warn                TRUE
+#define audio_genre_warn		TRUE
 #endif
 
 /*
  * Create m3u file on release complete for audio release?
  */
 #ifndef create_m3u
-#define create_m3u                      TRUE
+#define create_m3u			TRUE
 #endif
 
 
@@ -413,10 +413,10 @@
  * counted as "newleader" (reduces "spam" in channel)
  */
 #ifndef enable_files_ahead
-#define enable_files_ahead      TRUE
+#define enable_files_ahead	TRUE
 #endif
 #ifndef newleader_files_ahead
-#define newleader_files_ahead   2
+#define newleader_files_ahead	2
 #endif
 
 /*
@@ -424,23 +424,23 @@
  * entered represents the minimum number of files in the release.
  */
 #ifndef min_newleader_files
-#define min_newleader_files     1
+#define min_newleader_files	1
 #endif
 #ifndef min_update_files
-#define min_update_files        1
+#define min_update_files	1
 #endif
 #ifndef min_halfway_files
-#define min_halfway_files       10
+#define min_halfway_files	10
 #endif
 
 /*
  * Limit number of users/groups to display in stats.
  */
 #ifndef max_users_in_top
-#define max_users_in_top        7
+#define max_users_in_top	7
 #endif
 #ifndef max_groups_in_top
-#define max_groups_in_top       7
+#define max_groups_in_top	7
 #endif
 
 /*
@@ -448,7 +448,7 @@
  * if there is only one user in race)
  */
 #ifndef announce_norace
-#define announce_norace         TRUE
+#define announce_norace		TRUE
 #endif
 
 /*
@@ -456,34 +456,34 @@
  * mode (complete, pre_stats, user top, between stats, group top, post stats)
  */
 #ifndef zip_complete_type
-#define zip_complete_type               0
+#define zip_complete_type		0
 #endif
 #ifndef zip_norace_complete_type
-#define zip_norace_complete_type        0
+#define zip_norace_complete_type	0
 #endif
 #ifndef rar_complete_type
-#define rar_complete_type               1
+#define rar_complete_type		1
 #endif
 #ifndef rar_norace_complete_type
-#define rar_norace_complete_type        0
+#define rar_norace_complete_type	0
 #endif
 #ifndef audio_complete_type
-#define audio_complete_type             1
+#define audio_complete_type		1
 #endif
 #ifndef audio_norace_complete_type
-#define audio_norace_complete_type      0
+#define audio_norace_complete_type	0
 #endif
 #ifndef video_complete_type
-#define video_complete_type             1
+#define video_complete_type		1
 #endif
 #ifndef video_norace_complete_type
-#define video_norace_complete_type      0
+#define video_norace_complete_type	0
 #endif
 #ifndef other_complete_type
-#define other_complete_type             1
+#define other_complete_type		1
 #endif
 #ifndef other_norace_complete_type
-#define other_norace_complete_type      0
+#define other_norace_complete_type	0
 #endif
 
 /*
@@ -491,7 +491,7 @@
  * cookie
  */
 #ifndef get_competitor_list
-#define get_competitor_list     TRUE
+#define get_competitor_list	TRUE
 #endif
 
 
@@ -513,131 +513,114 @@
  * Write a file on complete in the releasedir, containing stats/raceinfo.
  */
 #ifndef write_complete_message
-#define write_complete_message  TRUE
+#define write_complete_message	TRUE
 #endif
 
 /*
  * What the file should be called.
  */
 #ifndef message_file_name
-#define message_file_name       ".message"
+#define message_file_name	".message"
 #endif
 
 /*
  * Various Output
  */
 #ifndef message_header
-#define message_header          ""
+#define message_header		""
 #endif
 #ifndef message_user_header
-#define message_user_header     "\n                           U S E R T O P\n" \
-	    "+--------------------------------------------------------------------+\n"
+#define message_user_header	"\n                           U S E R T O P\n+--------------------------------------------------------------------+\n"
 #endif
 #ifndef message_user_body
-#define message_user_body       "%3n %-34U %7.1mM %3fF %5.1p%% %5.0sKBs\n"
+#define message_user_body	"%3n %-34U %7.1mM %3fF %5.1p%% %5.0sKBs\n"
 #endif
 #ifndef message_user_footer
-#define message_user_footer     "+--------------------------------------------------------------------+\n" \
-	    "%3u Total %36.1mM %3fF 100.0%% %5.0aKBs\n"
+#define message_user_footer	"+--------------------------------------------------------------------+\n%3u Total %36.1mM %3fF 100.0%% %5.0aKBs\n"
 #endif
 #ifndef message_group_header
-#define message_group_header    "\n\n                          G R O U P T O P\n" \
-	    "+--------------------------------------------------------------------+\n"
+#define message_group_header	"\n\n                          G R O U P T O P\n+--------------------------------------------------------------------+\n"
 #endif
 #ifndef message_group_body
-#define message_group_body      "%3n %-34g %7.1mM %3fF %5.1p%% %5.0sKBs\n"
+#define message_group_body	"%3n %-34g %7.1mM %3fF %5.1p%% %5.0sKBs\n"
 #endif
 #ifndef message_group_footer
-#define message_group_footer    "+--------------------------------------------------------------------+\n" \
-	    "%3g Total %36.1mM %3fF 100.0%% %5.0aKBs\n"
+#define message_group_footer	"+--------------------------------------------------------------------+\n%3g Total %36.1mM %3fF 100.0%% %5.0aKBs\n"
 #endif
 #ifndef message_mp3
-#define message_mp3             "\n\n                            I D 3 - T A G\n" \
-	    "+--------------------------------------------------------------------+\n" \
-	"  Artist : %x\n" \
-	"  Album  : %W\n" \
-	"  Genre  : %-34w Rate  : %Xkbit/sec\n" \
-	"  Tracks : %-34f Year  : %Y\n" \
-	"  Encoder: %-34i Preset: %I\n" \
-	"+--------------------------------------------------------------------+\n"
+#define message_mp3		"\n\n                            I D 3 - T A G\n+--------------------------------------------------------------------+\n  Artist : %x\n  Album  : %W\n  Genre  : %-34w Rate  : %Xkbit/sec\n  Tracks : %-34f Year  : %Y\n  Encoder: %-34i Preset: %I\n+--------------------------------------------------------------------+\n"
 #endif
 #ifndef message_footer
-#define message_footer          ""
+#define message_footer		""
 #endif
 #ifndef video_completebar
-#define video_completebar       "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
+#define video_completebar	"[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 #endif
 #ifndef audio_completebar
-#define audio_completebar       "[%Z] - ( %.0mM %fF - COMPLETE - %w %Y ) - [%Z]"
+#define audio_completebar	"[%Z] - ( %.0mM %fF - COMPLETE - %w %Y ) - [%Z]"
 #endif
 #ifndef rar_completebar
-#define rar_completebar         "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
+#define rar_completebar		"[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 #endif
 #ifndef other_completebar
-#define other_completebar       "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
+#define other_completebar	"[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 #endif
 #ifndef zip_completebar
-#define zip_completebar         "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
+#define zip_completebar		"[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 #endif
 #ifndef del_completebar
-#define del_completebar         "\\[%Z] - \\( .*F - COMPLETE.*) - \\[%Z]"
+#define del_completebar		"\\[%Z] - \\( .*F - COMPLETE.*) - \\[%Z]"
 #endif
 #ifndef zipscript_header
-#define zipscript_header         ".-== PZS-NG Zipscript-C ==--,d1'--== (C) 2004 ==---.\n"
+#define zipscript_header	".-== PZS-NG Zipscript-C ==--,d1'--== (C) 2004 ==---.\n"
 #endif
 #ifndef zipscript_sfv_ok
-#define zipscript_sfv_ok         "| + SFV-file: oK!                                  |\n"
+#define zipscript_sfv_ok	"| + SFV-file: oK!                                  |\n"
 #endif
 #ifndef zipscript_any_ok
-#define zipscript_any_ok         "| + File: ok!                                      |\n"
+#define zipscript_any_ok	"| + File: ok!                                      |\n"
 #endif
 #ifndef zipscript_SFV_ok
-#define zipscript_SFV_ok         "| + CRC-Check: oK!                                 |\n"
+#define zipscript_SFV_ok	"| + CRC-Check: oK!                                 |\n"
 #endif
 #ifndef zipscript_SFV_skip
-#define zipscript_SFV_skip       "| + CRC-Check: SKIPPED!                            |\n"
+#define zipscript_SFV_skip	"| + CRC-Check: SKIPPED!                            |\n"
 #endif
 #ifndef zipscript_zip_ok
-#define zipscript_zip_ok         "| + ZiP integrity: oK!                             |\n"
+#define zipscript_zip_ok	"| + ZiP integrity: oK!                             |\n"
 #endif
 #ifndef realtime_mp3_info
-#define realtime_mp3_info        "+-=[ID3tag]=------------------------===------------+\n" \
-	"| Title  : %-39y |\n" \
-	"| Artist : %-39x |\n" \
-	"| Album  : %-39W |\n" \
-	"| Genre  : %-39w |\n" \
-	"| Year   : %-39Y |\n"
+#define realtime_mp3_info	"+-=[ID3tag]=------------------------===------------+\n| Title  : %-39y |\n| Artist : %-39x |\n| Album  : %-39W |\n| Genre  : %-39w |\n| Year   : %-39Y |\n"
 #endif
 #ifndef realtime_user_header
-#define realtime_user_header     "+-=[UserTop]=-------------------===----------------+\n"
+#define realtime_user_header	"+-=[UserTop]=-------------------===----------------+\n"
 #endif
 #ifndef realtime_user_body
-#define realtime_user_body       "| %2n. %-17u %8.1mmB %2fF %7.0skB/s |\n"
+#define realtime_user_body	"| %2n. %-17u %8.1mmB %2fF %7.0skB/s |\n"
 #endif
 #ifndef realtime_user_footer
-#define realtime_user_footer     ""
+#define realtime_user_footer	""
 #endif
 #ifndef realtime_group_header
-#define realtime_group_header    "+-=[GroupTop]=--------------------===--------------+\n"
+#define realtime_group_header	"+-=[GroupTop]=--------------------===--------------+\n"
 #endif
 #ifndef realtime_group_body
-#define realtime_group_body      "| %2n. %-17g %8.1mmB %2fF %7.0skB/s |\n"
+#define realtime_group_body	"| %2n. %-17g %8.1mmB %2fF %7.0skB/s |\n"
 #endif
 #ifndef realtime_group_footer
-#define realtime_group_footer    ""
+#define realtime_group_footer	""
 #endif
 #ifndef zipscript_footer_unknown
-#define zipscript_footer_unknown "`-[ - NO - SFV - ]------------------------[%2F/??]--'\n"
+#define zipscript_footer_unknown	"`-[ - NO - SFV - ]------------------------[%2F/??]--'\n"
 #endif
 #ifndef zipscript_footer_ok
-#define zipscript_footer_ok      "`-[%V]------------------------[%2F/%-2f]--'\n"
+#define zipscript_footer_ok	"`-[%V]------------------------[%2F/%-2f]--'\n"
 #endif
 #ifndef zipscript_footer_error
-#define zipscript_footer_error   "| - %-46v |\n" \
-	    "`-----------------------------------========-------'\n"
+#define zipscript_footer_error	"| - %-46v |\n`-----------------------------------========-------'\n"
 #endif
 #ifndef zipscript_footer_skip
-#define zipscript_footer_skip    "`--------------------------------=====-------------'\n"
+#define zipscript_footer_skip	"`--------------------------------=====-------------'\n"
 #endif
 
 
@@ -653,10 +636,10 @@
  * nfo in the base dir.
  */
 #ifndef incomplete_cd_indicator
-#define incomplete_cd_indicator         "../../(incomplete)-(%0)-%1"
+#define incomplete_cd_indicator		"../../(incomplete)-(%0)-%1"
 #endif
 #ifndef incomplete_indicator
-#define incomplete_indicator            "../(incomplete)-%0"
+#define incomplete_indicator		"../(incomplete)-%0"
 #endif
 #ifndef incomplete_nfo_indicator
 #define incomplete_nfo_indicator	"../(no-nfo)-%0"
@@ -665,10 +648,10 @@
 #define incomplete_base_nfo_indicator	"../../(no-nfo)-%1"
 #endif
 #ifndef progressmeter
-#define progressmeter                   "[%V] - %3.0p%% Complete - [%Z]"
+#define progressmeter			"[%V] - %3.0p%% Complete - [%Z]"
 #endif
 #ifndef del_progressmeter
-#define del_progressmeter               "\\[.*] - ...%% Complete - \\[%Z]"
+#define del_progressmeter		"\\[.*] - ...%% Complete - \\[%Z]"
 #endif
 
 
@@ -680,20 +663,20 @@
  * Enable/disable accept script (accept script is run, if file is ok)
  */
 #ifndef enable_accept_script
-#define enable_accept_script    FALSE
+#define enable_accept_script	FALSE
 #endif
 #ifndef accept_script
-#define accept_script           "/bin/imdb_parse.sh"
+#define accept_script		"/bin/imdb_parse.sh"
 #endif
 
 /*
  * Enable/disable nfo script (only run on .nfo files)
  */
 #ifndef enable_nfo_script
-#define enable_nfo_script       FALSE
+#define enable_nfo_script	FALSE
 #endif
 #ifndef nfo_script
-#define nfo_script              "/bin/psxc-imdb.sh"
+#define nfo_script		"/bin/psxc-imdb.sh"
 #endif
 
 /*
@@ -701,10 +684,10 @@
  * complete)
  */
 #ifndef enable_complete_script
-#define enable_complete_script  FALSE
+#define enable_complete_script	FALSE
 #endif
 #ifndef complete_script
-#define complete_script         "/bin/nfo_copy.sh"
+#define complete_script		"/bin/nfo_copy.sh"
 #endif
 
 /*
@@ -712,13 +695,13 @@
  * uploaded)
  */
 #ifndef enable_mp3_script
-#define enable_mp3_script       FALSE
+#define enable_mp3_script	FALSE
 #endif
 #ifndef mp3_script
-#define mp3_script              "/bin/mp3-genres.sh"
+#define mp3_script		"/bin/mp3-genres.sh"
 #endif
 #ifndef mp3_script_cookies
-#define mp3_script_cookies      "\"%w\" \"%W\" \"%x\" \"%X\" \"%y\" \"%Y\" \"%z\" \"%h\" \"%q\" \"%Q\" \"%j\" \"%i\" \"%I\""
+#define mp3_script_cookies	"\"%w\" \"%W\" \"%x\" \"%X\" \"%y\" \"%Y\" \"%z\" \"%h\" \"%q\" \"%Q\" \"%j\" \"%i\" \"%I\""
 #endif
 
 /*
@@ -726,10 +709,10 @@
  * files are marked as bad and deleted)
  */
 #ifndef enable_unduper_script
-#define enable_unduper_script   TRUE
+#define enable_unduper_script	TRUE
 #endif
 #ifndef unduper_script
-#define unduper_script          "/bin/ng-undupe"
+#define unduper_script		"/bin/ng-undupe"
 #endif
 
 /*

@@ -108,8 +108,8 @@ struct misc {
 	char		progress_bar[15];
 	short int	release_type;
 	unsigned char	write_log;
-	short int	fastest_user[2];
-	short int	slowest_user[2];
+	long		fastest_user[2];
+	long		slowest_user[2];
 };
 
 struct VARS {
