@@ -206,7 +206,7 @@ main(int argc, char **argv)
 
 	if (!strcmp(fname, "debug"))
 		d_log("Reading directory structure\n");
-	rescandir();
+	rescandir(2);
 
 	if (fileexists(fname)) {
 		d_log("File (%s) still exists\n", fname);
@@ -471,7 +471,7 @@ main(int argc, char **argv)
 					d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
 					create_incomplete_nfo();
 				} else {
-					rescanparent();
+					rescanparent(2);
 					if (findfileextparent(".nfo")) {
 						d_log("Removing missing-nfo indicator (if any)\n");
 						remove_nfo_indicator(locations.path);
@@ -479,7 +479,7 @@ main(int argc, char **argv)
 						d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
 						create_incomplete_nfo();
 					}
-				temprescanparent(1);
+					rescanparent(1);
 				}
 			}
 		}
@@ -492,7 +492,7 @@ main(int argc, char **argv)
 		move_progress_bar(0, &raceI);
 	}
 	d_log("Releasing memory\n");
-	temprescandir(1);
+	rescandir(1);
 	updatestats_free(raceI, userI, groupI);
 	free(fileext);
 	free(target);

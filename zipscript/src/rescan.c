@@ -193,7 +193,7 @@ main()
 	sprintf(locations.leader, storage "/%s/leader", locations.path);
 	sprintf(locations.race, storage "/%s/racedata", locations.path);
 
-	rescandir();
+	rescandir(2);
 	move_progress_bar(1, &raceI);
 	if (locations.incomplete)
 		unlink(locations.incomplete);
@@ -203,7 +203,7 @@ main()
 	if (locations.sfv)
 		unlink(locations.sfv);
 	printf("Rescanning files...\n");
-	rescandir();		/* Rescan dir after deleting files.. */
+	rescandir(2);		/* Rescan dir after deleting files.. */
 
 	if ((raceI.file.name = findfileext(".sfv")) != NULL) {
 		maketempdir(&locations);
@@ -211,7 +211,7 @@ main()
 		if (copysfv_file(raceI.file.name, locations.sfv, fileinfo.st_size)) {
 			printf("Found invalid entries in SFV - Exiting.\n");
 
-			rescandir();
+			rescandir(2);
 			n = direntries;
 			while (n--) {
 				m = l = strlen(dirlist[n]->d_name);
@@ -321,7 +321,7 @@ main()
 					d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
 					create_incomplete_nfo();
 				} else {
-					rescanparent();
+					rescanparent(2);
 					if (findfileextparent(".nfo")) {
 						d_log("Removing missing-nfo indicator (if any)\n");
 						remove_nfo_indicator(locations.path);
@@ -329,7 +329,7 @@ main()
 						d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
 						create_incomplete_nfo();
 					}
-					temprescanparent(1);
+					rescanparent(1);
 				}
 			}
 		}
@@ -448,7 +448,7 @@ main()
 					d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
 					create_incomplete_nfo();
 				} else {
-					rescanparent();
+					rescanparent(2);
 					if (findfileextparent(".nfo")) {
 						d_log("Removing missing-nfo indicator (if any)\n");
 						remove_nfo_indicator(locations.path);
@@ -456,7 +456,7 @@ main()
 						d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
 						create_incomplete_nfo();
 					}
-					temprescanparent(1);
+					rescanparent(1);
 				}
 			}
 		}
@@ -470,7 +470,7 @@ main()
 	printf("  Total : %i\n", (int)raceI.total.files);
 
 	d_log("Freeing memory.\n");
-	temprescandir(1);	/* We need to rescan again */
+	rescandir(1);
 	updatestats_free(raceI, userI, groupI);
 	free(locations.path);
 	free(locations.race);
@@ -481,8 +481,6 @@ main()
 	free(locations.link_source);
 	buffer_groups(GROUPFILE, gnum);
 	buffer_users(PASSWDFILE, unum);
-//	free(userI);
-//	free(groupI);
 
 	exit(0);
 }

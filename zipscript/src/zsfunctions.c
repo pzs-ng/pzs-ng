@@ -176,6 +176,11 @@ hexstrtodec(unsigned char *s)
 }
 
 /*
+ * selector - dangling links
+ * Last modified by: js(?)
+ *         Revision: ??
+ */
+/*
  * dangling links
  */
 #if defined(__linux__)
@@ -195,54 +200,40 @@ selector(struct dirent *d)
 }
 
 /*
- * Modified: Unknown
+ * rescandir - extract/store the dirlist for current dir
+ * Last modified by: psxc
+ *         Revision: r1220
  */
-void 
-rescandir()
-{
-	if (direntries > 0) {
-		while (direntries--) {
-			free(dirlist[direntries]);
-		}
-		free(dirlist);
-	}
-	direntries = scandir(".", &dirlist, selector, 0);
-}
 
 void 
-temprescandir(int usefree)
+rescandir(int usefree)
 {
 	if (direntries > 0 && usefree) {
 		while (direntries--) {
 			free(dirlist[direntries]);
 		}
 		free(dirlist);
-	} else {
+	}
+	if (usefree != 1) {
 		direntries = scandir(".", &dirlist, selector, 0);
 	}
 }
 
+/*
+ * rescanparent - extract/store the dirlist for parent dir
+ * Last modified by: psxc
+ *         Revision: r1220
+ */
 void 
-rescanparent()
-{
-	if (direntriesp > 0) {
-		while (direntriesp--) {
-			free(dirlistp[direntriesp]);
-		}
-		free(dirlistp);
-	}
-	direntriesp = scandir("..", &dirlistp, 0, 0);
-}
-
-void 
-temprescanparent(int usefree)
+rescanparent(int usefree)
 {
 	if (direntriesp > 0 && usefree) {
 		while (direntriesp--) {
 			free(dirlistp[direntriesp]);
 		}
 		free(dirlistp);
-	} else {
+	}
+	if (usefree != 1) {
 		direntriesp = scandir("..", &dirlistp, 0, 0);
 	}
 }
@@ -356,12 +347,11 @@ move_progress_bar(unsigned char delete, struct VARS *raceI)
 	regex_t		preg;
 	regmatch_t	pmatch[1];
 
-//	delbar = malloc(PATH_MAX);
 	delbar = convert5(del_progressmeter);
 	d_log("del_progressmeter: %s\n", delbar);
 	regcomp(&preg, delbar, REG_NEWLINE | REG_EXTENDED);
 	/* workaround if progressbar was changed while zs-c is running */
-	rescandir();
+	rescandir(2);
 
 	n = direntries;
 

@@ -483,7 +483,7 @@ main(int argc, char **argv)
 #endif
 #endif
 	d_log("Reading directory structure\n");
-	rescandir();
+	rescandir(2);
 
 	d_log("Caching release name\n");
 	getrelname(locations.path);
@@ -694,7 +694,7 @@ main(int argc, char **argv)
 				unlink(locations.race);
 				unlink(locations.sfv);
 
-				rescandir();
+				rescandir(2);
 				n = direntries;
 				while (n--) {
 					cnt = cnt2 = strlen(dirlist[n]->d_name);
@@ -721,7 +721,7 @@ main(int argc, char **argv)
 				if (fileexists(locations.race)) {
 					d_log("Testing files marked as untested\n");
 					testfiles_file(&locations, &raceI, 0);
-					rescandir();
+					rescandir(2);
 				}
 			}
 			d_log("Reading file count from SFV\n");
@@ -1414,7 +1414,7 @@ main(int argc, char **argv)
 				if (execute(target) != 0) {
 					d_log("Failed to execute complete_script: %s\n", strerror(errno));
 				} else {
-					rescandir();
+					rescandir(2);
 				}
 			}
 
@@ -1439,12 +1439,12 @@ main(int argc, char **argv)
 						d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
 						create_incomplete_nfo();
 					} else {
-						rescanparent();
+						rescanparent(2);
 						if (!findfileextparent(".nfo")) {
 							d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
 							create_incomplete_nfo();
 						}
-						temprescanparent(1);
+						rescanparent(1);
 					}
 				}
 				/* Creating no-sample link if needed.
@@ -1453,12 +1453,12 @@ main(int argc, char **argv)
 						d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
 						create_incomplete_nfo();
 					} else {
-						rescanparent();
+						rescanparent(2);
 						if (!findfileextparent(".nfo")) {
 							d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
 							create_incomplete_nfo();
 						}
-						temprescanparent(1);
+						rescanparent(1);
 					}
 				}
 				*/
@@ -1491,7 +1491,7 @@ main(int argc, char **argv)
 			}
 		}
 #if ( enable_nfo_script == TRUE )
-		rescandir();
+		rescandir(2);
 		if (!nfofound && findfileext(".nfo")) {
 			if (!fileexists(nfo_script)) {
 				d_log("Could not execute nfo_script (%s) - file does not exists\n", nfo_script);
@@ -1506,13 +1506,13 @@ main(int argc, char **argv)
 #endif
 	}
 #endif
-	rescandir();
-	rescanparent();
+	rescandir(2);
+	rescanparent(2);
 	if ((findfileext(".nfo") || (findfileextparent(".nfo"))) && (locations.nfo_incomplete)) {
 		d_log("Removing missing-nfo indicator (if any)\n");
 		remove_nfo_indicator(locations.path);
 	}
-	temprescanparent(1);
+	rescanparent(1);
 
 #if ( del_banned_release )
 	if (deldir) {
@@ -1527,7 +1527,7 @@ main(int argc, char **argv)
 	buffer_groups(GROUPFILE, gnum);
 	buffer_users(PASSWDFILE, unum);
 	updatestats_free(raceI, userI, groupI);
-	temprescandir(1);
+	rescandir(1);
 	free(locations.link_source);
 	free(raceI.misc.release_name);
 	free(fileext);
