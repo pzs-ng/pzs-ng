@@ -379,7 +379,7 @@ proc readlog {} {
 		} elseif {[lsearch -exact $msgtypes(DEFAULT) $msgtype] != -1} {
 			set section $defaultsection
 		} else {
-			putlog "dZSbot error: undefined message type \"$msgtype\"."; continue
+			putlog "dZSbot error: undefined message type \"$msgtype\", check \"msgtypes(SECTION)\" and msgtypes(DEFAULT)\" in the config."; continue
 		}
 		if {![info exists variables($msgtype)]} {
 			putlog "dZSbot error: \"variables($msgtype)\" not defined in the config, type becomes \"DEFAULT\"."
@@ -1153,7 +1153,7 @@ proc speed {nick uhost hand chan argv} {
 				set output [replacevar $output "%uppercent" [lindex $line 9]]
 			} elseif {$action == "ID"} {
 				set output "$theme(PREFIX)$announce(SPEEDID)"
-				set output [replacevar $output "%idletime" [lindex $line 5]]
+				set output [replacevar $output "%idletime" [format_duration [lindex $line 5]]]
 			}
 			set output [replacevar $output "%u_name" [lindex $line 2]]
 			set output [replacevar $output "%g_name" [lindex $line 3]]
@@ -1360,17 +1360,11 @@ proc ng_idlers {nick uhost hand chan argv} {
 		if {[string equal "USER" [lindex $line 0]] && [string equal "ID" [lindex $line 4]]} {
 			set user  [lindex $line 2]
 			set group [lindex $line 3]
-
-			set rawtime [lindex $line 5]
-			set hours [lindex [split $rawtime ":"] 0]
-			set minutes [lindex [split $rawtime ":"] 1]
-			set seconds [lindex [split $rawtime ":"] 2]
-			set idletime [expr ($hours*60+$minutes)*60+$seconds]
-
+			set idletime [format_duration [lindex $line 5]]
 			set tagline [lindex $line 6]
 			set since [lindex $line 7]
 
-			if { $idletime > $minidletime } {
+			if {$idletime > $minidletime} {
 				set output [replacevar "$theme(PREFIX)$announce(USERIDLE)" "%u_name" $user]
 				set output [replacevar $output "%g_name" $group]
 				set output [replacevar $output "%idletime" $idletime]
