@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include "mp3info.h"
 #include "../include/objects.h"
 
 #define WHITESPACE_STR  " \f\n\r\t\v"
@@ -349,7 +350,7 @@ void get_mpeg_audio_info(char *f, struct audio *audio) {
  
         if (audio->vbr_version_string[4] == 32) audio->vbr_version_string[4] = 0;
 
-        strcpy(audio->bitrate, "VBR");
+       strcpy(audio->bitrate, "VBR");
       } else {
         strcpy(audio->vbr_version_string, "Not LAME");
         strcpy(audio->vbr_preset, "NA");
@@ -411,4 +412,6 @@ void get_mpeg_audio_info(char *f, struct audio *audio) {
   }
   
   close(fd);
+  
+  sprintf(audio->bitrate, "VBR %.0f", get_mp3_info(f));
 }

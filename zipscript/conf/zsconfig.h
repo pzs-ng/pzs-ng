@@ -35,7 +35,7 @@
  */
 
 #define allowed_bitrates	"160,192,VBR"
-#define allowed_years		"2003,2004"
+#define allowed_years		"2000,2001,2002,2003,2004"
 #define banned_genres		"Christian Rap"
 
 /* Creates a zero-byte file for every non-existing file defined in sfv
@@ -138,7 +138,7 @@
 /* Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 & mpeg2.5 + layer1 & 2 can be added if needed
  */
 
-#define audio_vbr       "%w %Y VBR %i %I"
+#define audio_vbr       "%w %Y %XKbps %i %I"
 #define audio_cbr       "%w %Y %XKbps"
 
 #define audio_race	    "%B%U%B is racing [ %R ] on %r @ %B%.0S%BkB/s."
@@ -318,7 +318,7 @@
 /* Audio related checks for quality/type
  */
 
-#define	audio_bitrate_check	TRUE
+#define	audio_bitrate_check	FALSE
 #define audio_year_check	TRUE
 #define audio_genre_check	TRUE
 
