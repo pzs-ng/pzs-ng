@@ -25,7 +25,7 @@ announce.TOTUPDN		= "[%boldbwinfo%bold] %type %bold%count%bold at %bold%total%bo
 announce.IDLE			= "[%boldbwinfo%bold] Current idlers:"
 announce.TOTIDLE		= "[%boldbwinfo%bold] Currently %bold%count%bold users idle!"
 announce.USERIDLE		= "[%boldbwinfo%bold] %bold%user%bold of %group at %bold%idletime%bolds"
-announce.USER			= "[%boldbwinfo%bold] %bold%user%bold of %group on %bold%filename%bold (%bold%fper%bold% done) at %bold%uspeed%boldKB/sec (%bold%per%bold% usage)"
+announce.USER			= "[%boldbwinfo%bold] %bold%user%bold of %group on %bold%filename%bold (%bold%fper%bold done) at %bold%uspeed%boldKB/sec (%bold%per%bold usage)"
 
 announce.DEFAULT 	        = "[%boldinfo  %bold] %msg"
 

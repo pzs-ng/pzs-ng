@@ -49,12 +49,12 @@ void getrelname(char *directory) {
 
     l = strlen(directoryarray[1]);
 
-    if (( l && l <= 4 && ( ! strncasecmp(directoryarray[1], "CD"  , 2))) ||
-        ( l && l <= 6 && ( ! strncasecmp(directoryarray[1], "DISC", 4))) ||
-        ( l && l <= 6 && ( ! strncasecmp(directoryarray[1], "DISK", 4))) ||
-        ( l && l <= 5 && ( ! strncasecmp(directoryarray[1], "DVD" , 3))) ||
-        ( l && l <= 4 && ( ! strncasecmp(directoryarray[1], "SUB" , 3))) ||
-        ( l && l <= 9 && ( ! strncasecmp(directoryarray[1], "SUBTITLES" , 9)))) {
+    if ( l && ((l <= 4 && ( ! strncasecmp(directoryarray[1], "CD"  , 2))) ||
+              (l <= 6 && ( ! strncasecmp(directoryarray[1], "DISC", 4))) ||
+              (l <= 6 && ( ! strncasecmp(directoryarray[1], "DISK", 4))) ||
+              (l <= 5 && ( ! strncasecmp(directoryarray[1], "DVD" , 3))) ||
+              (l <= 4 && ( ! strncasecmp(directoryarray[1], "SUB" , 3))) ||
+              (l <= 9 && ( ! strncasecmp(directoryarray[1], "SUBTITLES" , 9))))) {
 
  	n = strlen(directoryarray[0]);
 	raceI.misc.release_name = malloc(n + 21);
