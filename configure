@@ -2006,7 +2006,7 @@ if test $ac_cv_lib_crypt_crypt = yes; then
 else
   { { echo "$as_me:$LINENO: error: Couldn't find libcrypt" >&5
 echo "$as_me: error: Couldn't find libcrypt" >&2;}
-   { (exit quitting!); exit quitting!; }; }
+   { (exit 1); exit 1; }; }
 fi
 
 echo "$as_me:$LINENO: checking for HMAC in -lcrypto" >&5
@@ -2069,7 +2069,7 @@ if test $ac_cv_lib_crypto_HMAC = yes; then
 else
   { { echo "$as_me:$LINENO: error: Couldn't find libcrypto" >&5
 echo "$as_me: error: Couldn't find libcrypto" >&2;}
-   { (exit quitting!); exit quitting!; }; }
+   { (exit 1); exit 1; }; }
 fi
 
 
@@ -2932,7 +2932,7 @@ _ACEOF
 else
   { { echo "$as_me:$LINENO: error: Couldn't find required header" >&5
 echo "$as_me: error: Couldn't find required header" >&2;}
-   { (exit quitting!); exit quitting!; }; }
+   { (exit 1); exit 1; }; }
 fi
 
 done
@@ -3052,7 +3052,7 @@ _ACEOF
 else
   { { echo "$as_me:$LINENO: error: Couldn't find required header" >&5
 echo "$as_me: error: Couldn't find required header" >&2;}
-   { (exit quitting!); exit quitting!; }; }
+   { (exit 1); exit 1; }; }
 fi
 
 done
@@ -3175,7 +3175,7 @@ _ACEOF
 else
   { { echo "$as_me:$LINENO: error: Couldn't find required header" >&5
 echo "$as_me: error: Couldn't find required header" >&2;}
-   { (exit quitting!); exit quitting!; }; }
+   { (exit 1); exit 1; }; }
 fi
 
 done

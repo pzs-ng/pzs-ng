@@ -1,6 +1,5 @@
 prefix=@prefix@
 
-#CFLAGS=-O2 -Wall
 CFLAGS=-Wall -g
 CC=@CC@
 LIBS=@LIBS@

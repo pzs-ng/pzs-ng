@@ -1,13 +1,11 @@
 prefix=@prefix@
-rootpath=$(prefix)
 datapath=/ftp-data
 storage=/tmp/zipscript
-bindir=$(rootpath)/bin
+bindir=$(prefix)/bin
 binpath=../bin
 
 CC=@CC@
-#CFLAGS=-O2 @STATIC@ -Wall -pedantic -I../include/
-CFLAGS=-W -Wall -O2 @STATIC@ -g -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I../include/ -I../../
+CFLAGS=@CFLAGS@ -W -Wall -O2 @STATIC@ -g -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I../include/ -I../../
 LDFLAGS=@LDFLAGS@
 UNIVERSAL=race-file.o zsfunctions.o mp3info.o
 RM=rm -f
@@ -24,7 +22,6 @@ CH-OBJECTS=ng-chmod.o
 ZS-DEPEND=cleanup.o complete.o convert.o datacleaner.o postdel.o racestats.o rescan.o stats.o zipscript-c.o multimedia.o $(UNIVERSAL)
 
 all: pzsng-undupe racedebug zipscript-c postdel racestats cleanup datacleaner rescan ng-chmod
-	@(ls -lA $(binpath))
 
 $(ZS-DEPEND): ../conf/zsconfig.h
 
@@ -56,9 +53,9 @@ rescan: $(SC-OBJECTS)
 	$(CC) $(LDFLAGS) $(SC-OBJECTS) -o $(binpath)/$@
 
 install:
-	if [ ! -e "$(rootpath)$(storage)" ]; then mkdir -p "$(rootpath)$(storage)"; fi
-	chmod 777 $(rootpath)$(storage)
-	chmod 666 $(rootpath)$(datapath)/logs/glftpd.log
+	if [ ! -e "$(prefix)$(storage)" ]; then mkdir -p "$(prefix)$(storage)"; fi
+	chmod 777 $(prefix)$(storage)
+	chmod 666 $(prefix)$(datapath)/logs/glftpd.log
 #	strip $(binpath)/*
 	cp -f $(binpath)/zipscript-c $(bindir)/
 	cp -f $(binpath)/postdel $(bindir)/
