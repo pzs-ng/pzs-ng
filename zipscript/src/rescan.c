@@ -72,7 +72,11 @@ void remove_nfo_indicator(char *directory) {
 		} else n++;
 	}
 	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
-	unlink(locations.nfo_incomplete);
+	if (fileexists(locations.nfo_incomplete))
+		unlink(locations.nfo_incomplete);
+	locations.nfo_incomplete = i_incomplete(incomplete_cd_nfo_indicator, path);
+	if (fileexists(locations.nfo_incomplete))
+		unlink(locations.nfo_incomplete);
 	if (k < 2) free(path[1]);
 	if (k == 0) free(path[0]);
 }
