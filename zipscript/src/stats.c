@@ -30,71 +30,76 @@ struct	userdata	{
  * Description: Updates existing entries in userI and groupI or creates new, if old doesnt exist
  */
 void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *usern, char *group, off_t filesize, unsigned int speed, unsigned int start_time) {
-    int		u_no = -1;
-    int		g_no = -1;
-    int		n;
-    double		speedD = filesize * 1024. / speed;
+	int		u_no = -1;
+	int		g_no = -1;
+	int		n;
+	double		speedD = filesize * 1024. / speed;
 
-    for (n = 0; n < raceI->total.users; n++) {
-	if (strncmp(userI[n]->name, usern, 24) == 0) {
-	    u_no = n;
-	    g_no = userI[n]->group;
-	    break;
-	}
-    }
-
-    if ( u_no == -1 ) {
-	if ( ! raceI->total.users ) {
-	    raceI->total.start_time = start_time;
-	    /* to prevent a possible floating point exception in convert, */
-	    /* if first entry in racefile is not the oldest one           */
-	    if ((int)(raceI->total.stop_time - raceI->total.start_time) < 1)
-		raceI->total.stop_time = raceI->total.start_time + 1;
-	}
-	u_no = raceI->total.users++;
-	userI[u_no] = malloc(sizeof(struct USERINFO));
-	bzero(userI[u_no], sizeof(struct USERINFO));
-	memcpy(userI[u_no]->name, usern, 24);
-
-	for (n = 0; n < raceI->total.groups; n++ ) {
-	    if (strncmp(groupI[n]->name, group, 24) == 0) {
-		g_no = n;
-		break;
-	    }
+	for (n = 0; n < raceI->total.users; n++) {
+		if (strncmp(userI[n]->name, usern, 24) == 0) {	
+			u_no = n;
+			g_no = userI[n]->group;
+			break;
+		}
 	}
 
-	if ( g_no == -1 ) {
-	    g_no = raceI->total.groups++;
-	    groupI[g_no] = malloc(sizeof(struct GROUPINFO));
-	    bzero(groupI[g_no], sizeof(struct GROUPINFO));
-	    memcpy(groupI[g_no]->name, group, 24);
+	if ( u_no == -1 ) {
+		if ( ! raceI->total.users ) {
+			raceI->total.start_time = start_time;
+			/* to prevent a possible floating point exception in convert, */
+			/* if first entry in racefile is not the oldest one           */
+			if ((int)(raceI->total.stop_time - raceI->total.start_time) < 1)
+			raceI->total.stop_time = raceI->total.start_time + 1;
+		}
+		u_no = raceI->total.users++;
+		if (userI[u_no])
+			free(userI[u_no]);
+		userI[u_no] = malloc(sizeof(struct USERINFO));
+		memset(userI[u_no], 0, sizeof(struct USERINFO));
+		memcpy(userI[u_no]->name, usern, 24);
+
+		for (n = 0; n < raceI->total.groups; n++ ) {
+		    if (strncmp(groupI[n]->name, group, 24) == 0) {
+				g_no = n;
+				break;
+			}
+		}
+
+		if ( g_no == -1 ) {
+			g_no = raceI->total.groups++;
+			if (groupI[g_no])
+				free(groupI[g_no]);
+		
+			groupI[g_no] = malloc(sizeof(struct GROUPINFO));
+			memset(groupI[g_no], 0, sizeof(struct GROUPINFO));
+			memcpy(groupI[g_no]->name, group, 24);
+		}
+		userI[u_no]->group = g_no;
 	}
-	userI[u_no]->group = g_no;
-    }
 
-    userI[u_no]->bytes += filesize;
-    groupI[g_no]->bytes += filesize;
-    raceI->total.size += filesize;
+	userI[u_no]->bytes += filesize;
+	groupI[g_no]->bytes += filesize;
+	raceI->total.size += filesize;
 
-    userI[u_no]->speed += speedD;
-    groupI[g_no]->speed += speedD;
-    raceI->total.speed += speedD;
+	userI[u_no]->speed += speedD;
+	groupI[g_no]->speed += speedD;
+	raceI->total.speed += speedD;
 
-    userI[u_no]->files++;
-    groupI[g_no]->files++;
-    raceI->total.files_missing--;
+	userI[u_no]->files++;
+	groupI[g_no]->files++;
+	raceI->total.files_missing--;
 
-    speed >>= 10;
+	speed >>= 10;
 
-    if ( speed > (unsigned int)raceI->misc.fastest_user[0] ) {
-	raceI->misc.fastest_user[1] = u_no;
-	raceI->misc.fastest_user[0] = speed;
-    }
+	if ( speed > (unsigned int)raceI->misc.fastest_user[0] ) {
+		raceI->misc.fastest_user[1] = u_no;
+		raceI->misc.fastest_user[0] = speed;
+	}
 
-    if ( speed < (unsigned int)raceI->misc.slowest_user[0] ) {
-	raceI->misc.slowest_user[1] = u_no;
-	raceI->misc.slowest_user[0] = speed;
-    }
+	if ( speed < (unsigned int)raceI->misc.slowest_user[0] ) {
+		raceI->misc.slowest_user[1] = u_no;
+		raceI->misc.slowest_user[0] = speed;
+	}
 }
 
 /*

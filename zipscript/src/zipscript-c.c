@@ -1,4 +1,4 @@
-#include <stdio.h>
+einclude <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
@@ -357,7 +357,9 @@ int main( int argc, char **argv ) {
 
     target = m_alloc(n + 256);
     userI  = malloc(sizeof(struct USERINFO *) * 30);
+    memset(userI, 0, sizeof(struct USERINFO *) * 30);
     groupI = malloc(sizeof(struct GROUPINFO *) * 30);
+    memset(groupI, 0, sizeof(struct GROUPINFO *) * 30);
 
     d_log("Copying data locations into memory\n");
     sprintf(locations.sfv, storage "/%s/sfvdata", locations.path);

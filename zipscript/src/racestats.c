@@ -79,8 +79,10 @@ int main( int argc, char **argv ) {
     locations.race = malloc( n += 10 + strlen(storage) );
     locations.sfv  = malloc( n + 10 );
 
-    userI    = malloc( sizeof( struct USERINFO * ) * 30 );
-    groupI   = malloc( sizeof( struct GROUPINFO * ) * 30 );
+	userI  = malloc(sizeof(struct USERINFO *) * 30);
+	memset(userI, 0, sizeof(struct USERINFO *) * 30);
+    groupI = malloc(sizeof(struct GROUPINFO *) * 30 );
+	memset(groupI, 0, sizeof(struct GROUPINFO *) * 30);
 
     raceI.misc.slowest_user[0] = 30000;
     raceI.misc.fastest_user[0] =

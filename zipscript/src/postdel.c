@@ -185,8 +185,10 @@ int main( int argc, char **argv ) {
 		memcpy(raceI.user.group, "NoGroup", 8);
 
     d_log("Allocating memory for variables\n");
-    userI	= malloc(sizeof(struct USERINFO *) * 30);
-    groupI	= malloc(sizeof(struct GROUPINFO *) * 30);
+	userI  = malloc(sizeof(struct USERINFO *) * 30);
+	memset(userI, 0, sizeof(struct USERINFO *) * 30);
+	groupI = malloc(sizeof(struct GROUPINFO *) * 30);
+	memset(groupI, 0, sizeof(struct GROUPINFO *) * 30);
 
     locations.path = malloc(PATH_MAX);
     getcwd(locations.path, PATH_MAX);
