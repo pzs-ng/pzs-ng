@@ -436,15 +436,18 @@ void readsfv_ffile(char *filename, off_t buf_bytes ) {
 					ext_start++;
 					}
 				index_start++;
+				raceI.total.files++;
 				if ( ! strcomp(ignored_types, fname + ext_start) ) {
-					if ( findfile(fname) ) raceI.total.files_missing--;
+					if ( findfile(fname) ) { 
+						raceI.total.files_missing--;
+						}
 					}
 				}
 			}
 		line_start = n + 1;
 		}
 	}
- raceI.total.files_missing += raceI.total.files;
+raceI.total.files_missing = raceI.total.files + raceI.total.files_missing;
  m_free(buf);
 }
 

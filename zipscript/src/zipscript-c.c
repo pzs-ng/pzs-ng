@@ -445,13 +445,13 @@ if ( matchpath(group_dirs, locations.path ) && ( hide_group_uploaders == TRUE ))
 				d_log("Reading remainders of old sfv\n");
 				readsfv_file(&locations, &raceI, 1);
 				cnt = raceI.total.files - raceI.total.files_missing;
+				cnt2 = raceI.total.files;
 				raceI.total.files_missing = raceI.total.files = 0;
 				readsfv_ffile(raceI.file.name, raceI.file.size);
-				cnt2 = raceI.total.files;
-				if ( ( (raceI.total.files - raceI.total.files_missing) != cnt ) && (raceI.total.files <= cnt2) ) {
+				if ( ( raceI.total.files <= cnt2 ) || ( raceI.total.files != ( cnt + raceI.total.files_missing ) ) ) {
 					write_log = raceI.misc.write_log;
 					raceI.misc.write_log = 1;
-					d_log("Old sfv seems to match with more files than current one - %d %d %d\n",cnt,cnt2,raceI.total.files);
+					d_log("Old sfv seems to match with more files than current one\n");
 					strcpy(raceI.misc.error_msg, "SFV does not match with files!");
 					error_msg = convert(&raceI,userI,groupI,deny_double_msg);
 					writelog(error_msg, "DOUBLESFV");
