@@ -22,9 +22,9 @@
 /* On default, announcing is disabled everywhere, use zip/sfv paths to enable annouces and private paths to disable.
  * Don't be lazy! Be specific! And remember - pathnames are case sensitive.
  */
-#define group_dirs		"/site/groups/"
-#define zip_dirs		"/site/incoming/0day/"
-#define sfv_dirs		"/site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/requests/"
+#define group_dirs			"/site/groups/"
+#define zip_dirs			"/site/incoming/0day/"
+#define sfv_dirs			"/site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/requests/"
 #define nocheck_dirs			"/site/private/"
 #define audio_nocheck_dirs		"/site/groups/ /site/incoming/requests/"
 #define allowed_types_exemption_dirs	"/site/incoming/musicvideos/"
@@ -164,6 +164,7 @@
 #define audio_year_check		TRUE
 #define audio_year_warn			TRUE
 #define audio_year_warn_msg		"%B%U%B/%G has started an illegal upload %B%r%B (year: %Y). Naughty boy!"
+/* either "audio_banned_genre_check" or "audio_allowed_genre_check" should be set to TRUE */
 #define audio_banned_genre_check	TRUE
 #define audio_allowed_genre_check	FALSE
 #define audio_genre_warn		TRUE
@@ -401,7 +402,7 @@
 
 /* Enable/disable mp3 script (run only once, after first mp3-file is uploaded)
 */
-#define enable_mp3_script	TRUE
+#define enable_mp3_script	FALSE
 #define mp3_script		"/bin/mp3-genres.sh"
 #define mp3_script_cookies	"\"%w\" \"%W\" \"%x\" \"%X\" \"%y\" \"%Y\" \"%z\" \"%h\" \"%q\" \"%Q\" \"%j\" \"%i\" \"%I\""
 

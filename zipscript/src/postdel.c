@@ -53,7 +53,7 @@ void writelog(char *msg, char *status) {
     }           
 }
 
-/* GET NAME OF MULTICD RELEASE (CDx/DISCx) (SYMLINK LOCATION + INCOMPLETE FILENAME)*/
+/* GET NAME OF MULTICD RELEASE (CDx/D[Ii]S[CK]x/DVDx) (SYMLINK LOCATION + INCOMPLETE FILENAME) */
 void getrelname(char *directory) {
     int    cnt,
 	   l[2],

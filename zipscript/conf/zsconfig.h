@@ -150,6 +150,7 @@
 #define audio_year_check		TRUE
 #define audio_year_warn			TRUE
 #define audio_year_warn_msg		"%B%U%B/%G has started an illegal upload %B%r%B (year: %Y). Naughty boy!"
+/* either "audio_banned_genre_check" or "audio_allowed_genre_check" should be set to TRUE */
 #define audio_banned_genre_check	TRUE
 #define audio_allowed_genre_check	FALSE
 #define audio_genre_warn		TRUE

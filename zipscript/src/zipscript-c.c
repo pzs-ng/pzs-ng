@@ -625,8 +625,7 @@ int main( int argc, char **argv ) {
 				    }
 				    break;
 				}
-#endif
-#if ( audio_allowed_genre_check == TRUE )
+#elif ( audio_allowed_genre_check == TRUE )
 				if ( ! strcomp(allowed_genres, raceI.audio.id3_genre)) {
 				    d_log("File is not in allowed genre\n");
 				    sprintf(raceI.misc.error_msg, BANNED_GENRE, raceI.audio.id3_genre);
@@ -743,10 +742,10 @@ int main( int argc, char **argv ) {
 	}
     }
 
-    if ( no_check == TRUE ) {	/* File was not checked */
+    if ( no_check == TRUE ) { /* File was not checked */
 	printf(zipscript_any_ok);
 	printf(convert(&raceI, userI, groupI, zipscript_footer_skip));
-    } else if ( exit_value == EXIT_SUCCESS ) {		/* File was checked */
+    } else if ( exit_value == EXIT_SUCCESS ) { /* File was checked */
 
 	if ( raceI.total.users > 0 ) {
 	    d_log("Sorting race stats\n");
