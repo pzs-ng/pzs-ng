@@ -185,8 +185,6 @@ here's what to do:
            mkdir /path/to/your/glftpd/tmp/zipscript
            chmod 777 /path/to/your/glftpd/tmp/zipscript
 (optional) chmod +s /path/to/your/glftpd/bin/zipscript-c
-(optional) chmod 666 /path/to/your/glftpd/ftp-data/logs/dupelog (needed by the unduper)
-(optional) chmod 777 /path/to/your/glftpd/ftp-data/logs         (needed by the unduper)
 
 If you need to recompile the script because you made a booboo in the config,
 you should always do a 'make clean' first. The quick-quick version of it is:
@@ -238,6 +236,11 @@ Crontab:
 --------
 All that's left now is to tie up some loose ends, and installing the bot,
 of course. As for loose ends:
+
+chmod 666 /path/to/your/glftpd/ftp-data/logs/dupelog
+
+This is needed by the unduper. Without this file being world writable, it
+will not be able to undupe files.
 
 You might have noticed that we added a dir in tmp called zipscript.
 This is the place we keep all racedata - a sort of mirror of the site if

@@ -33,14 +33,14 @@ int main (int argc, char *argv[]) {
     strcpy(dupefile, dupepath);
     strcpy(dupename, argv[1]);
 
-    sprintf(data2, "%s2", dupefile);
+    sprintf(data2, "%s/dupefile", storage);
 
     if((fp = fopen(dupefile, "r+b")) == NULL) {
-	printf("FATAL ERROR: Unable to open dupefile\n");
+	printf("FATAL ERROR: Unable to open dupefile (%s)\n", dupefile);
 	return 1;
     }
     if((fp2 = fopen(data2, "w+b")) == NULL) {
-	printf("FATAL ERROR: Unable to write to tempfile\n");
+	printf("FATAL ERROR: Unable to write to tempfile (%s)\n", data2);
 	return 1;
     }
     while (!feof(fp)) {
@@ -59,11 +59,31 @@ int main (int argc, char *argv[]) {
     fclose(fp);
     fclose(fp2);
 
-    if (rename(data2, dupefile) != 0) {
-	printf("FATAL ERROR: Error renaming new dupefile\n");
+/* Time to put back the remainder of the dupefile. Instead of renaming the file */
+/* as was done before, we stream the content back - this is a workaround for a  */
+/* world writable logs directory...                                             */
+
+    if((fp = fopen(data2, "r+b")) == NULL) {
+	printf("FATAL ERROR: Unable to open tempfile (%s)\n", data2);
 	return 1;
     }
+    if((fp2 = fopen(dupefile, "w+b")) == NULL) {
+	printf("FATAL ERROR: Unable to write to dupefile (%s)\n", dupefile);
+	return 1;
+    }
+
+    while (!feof(fp)) {
+	if (fread(&buffer, sizeof(struct dupefile), 1, fp) < 1)
+	    break;
+	if (fwrite(&buffer, sizeof(struct dupefile), 1, fp2) < 1)
+	    break;
+    }
+
+    fclose(fp);
+    fclose(fp2);
+
     chmod(dupefile,0666);
+
     return 0;
 }
 
