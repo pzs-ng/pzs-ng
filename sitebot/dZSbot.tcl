@@ -206,16 +206,17 @@ proc to_mb {str} {
 # CONVERT BASIC COOKIES TO DATA                                                 #
 #################################################################################
 proc basicreplace {rstring section} {
-    global sitename theme
+	global sitename theme
 
-	regsub -all {%c\((\d)\)\{([^\}]+)\}} $rstring {\003$theme(COLOR\1)\2\003} output
+	regsub -all {%c(\d)\{([^\}]+)\}} $rstring {\003$theme(COLOR\1)\2\003} output
+	regsub -all {\[} $output {\\[} output; regsub -all {\]} $output {\\]} output
 	
 	set output [subst $output]
-    set output [replacevar $output "%sitename" $sitename]
-    set output [replacevar $output "%bold" "\002"]
-    set output [replacevar $output "%uline" "\037"]
-    set output [replacevar $output "%section" $section]
-    return "$output"
+	set output [replacevar $output "%sitename" $sitename]
+	set output [replacevar $output "%bold" "\002"]
+	set output [replacevar $output "%uline" "\037"]
+	set output [replacevar $output "%section" $section]
+	return "$output"
 }
 #################################################################################
 
@@ -747,14 +748,16 @@ proc loadtheme {file} {
 		if {![regexp -nocase -- "^#" $line]} {
 			if {[regexp -nocase -- {fakesection\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
 				set setting [string toupper $setting]
-				regsub -all {%c\((\d)\)\{([^\}]+)\}} $value {\\003\1\2\\003} value
+				regsub -all {%c(\d)\{([^\}]+)\}} $value {\\003\1\2\\003} value
 				regsub -all {\003(\d)(?!\d)} $value {\\0030\1} value
+				regsub -all {\[} $value {\\[} value; regsub -all {\]} $value {\\]} value
 				set theme_fakes($setting) [subst $value]
 			} elseif {[regexp -nocase -- {(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
 				set setting [string toupper $setting]
-				regsub -all {%c\((\d)\)\{([^\}]+)\}} $value {\\003\1\2\\003} value
+				regsub -all {%c(\d)\{([^\}]+)\}} $value {\\003\1\2\\003} value
 				regsub -all {\003(\d)(?!\d)} $value {\\0030\1} value
-				set theme($setting) [subst $value}
+				regsub -all {\[} $value {\\[} value; regsub -all {\]} $value {\\]} value
+				set theme($setting) [subst $value]
 			}
 		}
 	}
