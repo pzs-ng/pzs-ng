@@ -54,14 +54,12 @@
  * group_dirs - paths where announcing should be turned off.
  * zip_dirs - paths where zipfiles normally are uploaded.
  * sfv_dirs - paths where sfv-releases normally are uploaded.
- * nocheck_dirs - paths where no checking of files occur at all. This overrides
- * zip/sfv/group-dirs.
- * audio_nocheck_dirs - paths where mp3 files are not checked for genre,
- * bitrate etc.
- * allowed_types_exemption_dirs - paths where certain files are not
- * checked/denied if no sfv-file is uploaded.
- * check_for_missing_nfo_dirs - these dirs will be checked for missing nfo's
- * after a release is complete.
+ * nocheck_dirs - paths where no checking of files occur at all. This overrides zip/sfv/group-dirs.
+ * audio_nocheck_dirs - paths where mp3 files are not checked for genre, bitrate etc.
+ * allowed_types_exemption_dirs - paths where certain files are not checked/denied if no sfv-file is uploaded.
+ * check_for_missing_nfo_dirs - these dirs will be checked for missing nfo's after a release is complete.
+ * check_for_missing_nfo_filetypes - these filetypes will be checked for missing nfo's after a release is complete.
+ *  Please note that the list of filetypes is defined (rar,other,audio,video,zip)
  */
 
 #ifndef group_dirs
@@ -93,6 +91,9 @@
 #endif
 #ifndef check_for_missing_nfo_dirs
 #define check_for_missing_nfo_dirs	"/site/incoming/games/ /site/incoming/apps/"
+#endif
+#ifndef check_for_missing_nfo_filetypes
+#define check_for_missing_nfo_filetypes	DISABLED
 #endif
 #ifndef create_incomplete_links_in_group_dirs
 #define create_incomplete_links_in_group_dirs	TRUE

@@ -423,27 +423,52 @@ main(int argc, char **argv)
 			if (findfileext(dir, ".nfo")) {
 				d_log("postdel: Removing missing-nfo indicator (if any)\n");
 				remove_nfo_indicator(&g);
-			} else if (matchpath(check_for_missing_nfo_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
-				if (!g.l.in_cd_dir) {
-					d_log("postdel: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
-					create_incomplete_nfo();
-				} else {
-					
-					if (findfileextparent(parent, ".nfo")) {
-						d_log("postdel: Removing missing-nfo indicator (if any)\n");
-						remove_nfo_indicator(&g);
-					} else {
-						d_log("postdel: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
-		 				/* This is not pretty, but should be functional. */
-						if ((inc_point[0] = find_last_of(g.l.path, "/")) != g.l.path)
-							*inc_point[0] = '\0';
-						if ((inc_point[1] = find_last_of(g.v.misc.release_name, "/")) != g.v.misc.release_name)
-							*inc_point[1] = '\0';
+			} else {
+				if (check_for_missing_nfo_filetypes) {
+					switch (g.v.misc.release_type) {
+						case RTYPE_RAR:
+							if (strcomp(check_for_missing_nfo_filetypes, "rar"))
+								n = 1;
+							break;
+						case RTYPE_OTHER:
+							if (strcomp(check_for_missing_nfo_filetypes, "other"))
+								n = 1;
+							break;
+						case RTYPE_AUDIO:
+							if (strcomp(check_for_missing_nfo_filetypes, "audio"))
+								n = 1;
+							break;
+						case RTYPE_VIDEO:
+							if (strcomp(check_for_missing_nfo_filetypes, "video"))
+								n = 1;
+							break;
+						case RTYPE_NULL:
+							if (strcomp(check_for_missing_nfo_filetypes, "zip"))
+								n = 1;
+							break;
+					}
+				}
+				if ((matchpath(check_for_missing_nfo_dirs, g.l.path) || n) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
+					if (!g.l.in_cd_dir) {
+						d_log("postdel: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
-						if (*inc_point[0] == '\0')
-							*inc_point[0] = '/';
-						if (*inc_point[1] == '\0')
-							*inc_point[1] = '/';
+					} else {
+						if (findfileextparent(parent, ".nfo")) {
+							d_log("postdel: Removing missing-nfo indicator (if any)\n");
+							remove_nfo_indicator(&g);
+						} else {
+							d_log("postdel: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
+		 					/* This is not pretty, but should be functional. */
+							if ((inc_point[0] = find_last_of(g.l.path, "/")) != g.l.path)
+								*inc_point[0] = '\0';
+							if ((inc_point[1] = find_last_of(g.v.misc.release_name, "/")) != g.v.misc.release_name)
+								*inc_point[1] = '\0';
+							create_incomplete_nfo();
+							if (*inc_point[0] == '\0')
+								*inc_point[0] = '/';
+							if (*inc_point[1] == '\0')
+								*inc_point[1] = '/';
+						}
 					}
 				}
 			}

@@ -1379,7 +1379,32 @@ main(int argc, char **argv)
 #endif
 			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
 				/* Creating no-nfo link if needed. */
-				if ((g.l.nfo_incomplete) && (!findfileext(dir, ".nfo")) && (matchpath(check_for_missing_nfo_dirs, g.l.path)) ) {
+				n = 0;
+				if (check_for_missing_nfo_filetypes) {
+					switch (g.v.misc.release_type) {
+						case RTYPE_RAR:
+							if (strcomp(check_for_missing_nfo_filetypes, "rar"))
+								n = 1;
+							break;
+						case RTYPE_OTHER:
+							if (strcomp(check_for_missing_nfo_filetypes, "other"))
+								n = 1;
+							break;
+						case RTYPE_AUDIO:
+							if (strcomp(check_for_missing_nfo_filetypes, "audio"))
+								n = 1;
+							break;
+						case RTYPE_VIDEO:
+							if (strcomp(check_for_missing_nfo_filetypes, "video"))
+								n = 1;
+							break;
+						case RTYPE_NULL:
+							if (strcomp(check_for_missing_nfo_filetypes, "zip"))
+								n = 1;
+							break;
+					}
+				}
+				if ((g.l.nfo_incomplete) && (!findfileext(dir, ".nfo")) && (matchpath(check_for_missing_nfo_dirs, g.l.path) || n) ) {
 					if (!g.l.in_cd_dir) {
 						d_log("zipscript-c: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();

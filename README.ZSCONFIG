@@ -163,6 +163,14 @@ check_for_missing_nfo_dirs <PATHS>
 	dirs with a space character.
 	Default: "/site/incoming/games/ /site/incoming/apps/"
 
+check_for_missing_nfo_filetypes <STRING|DISABLED>
+	Same as with check_for_missing_nfo_dirs above, but this is for
+	filetypes. Filetypes is not the same as file extensions, so the only
+	5 valid filetypes you can use here is:
+	rar,other,audio,video,zip
+	That's it - no others.
+	Default: DISABLED
+
 create_incomplete_links_in_group_dirs <TRUE|FALSE>
 	Should incomplete indicators be created in groupdirs? With the default
 	settings this should be no problem, but if you change the location of
