@@ -1154,8 +1154,8 @@ proc show_free {nick uhost hand chan arg} {
 		foreach dev [array names "tmpdev"] {
 			if {[string match [lindex $line 0] [lindex $tmpdev($dev) 0]] == 1} {
 				set dev_total [to_mb [lindex $line 1]]
-				set dev_used [to_mb [lindex $line 1]]
-				set dev_free [to_mb [lindex $line 1]]
+				set dev_used [to_mb [lindex $line 2]]
+				set dev_free [to_mb [lindex $line 3]]
 				set dev_percent [format "%.1f" "[expr (double($dev_used)/double($dev_total)) * 100]"]
 				set tmp [replacevar $announce(FREE-DEV) "%total" [from_mb $dev_total]]
 				set tmp [replacevar $tmp "%used" [from_mb $dev_used]]
