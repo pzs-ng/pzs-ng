@@ -376,10 +376,6 @@
     "`-----------------------------------========-------'\n"
 #define zipscript_footer_skip	    "`--------------------------------=====-------------'\n"
 
-/*#define sfv_comment		    "; sfv raped by zipscript-c on the mighty ,dS'\r\n" \
-    "; \r\n"*/
-#define sfv_comment		    ""
-
 /* How Indicators look
 */
 #define incomplete_cd_indicator		"../../(incomplete)-(%0)-%1"

@@ -242,9 +242,14 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
 	sfv_error = TRUE;
     }
 
+/* 15.09.2004 - Removing/Hiding the feature of adding comments to .sfv files
+ *            - psxc
+
     if ( sfv_comment != NULL ) {
 	write(fd_new, sfv_comment, sizeof(sfv_comment) - 1);
     }
+ */
+
 #endif
 
     fd = open(source, O_RDONLY);
