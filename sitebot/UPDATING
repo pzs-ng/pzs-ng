@@ -18,6 +18,12 @@
 # Changes
 ###############################################################
 
+r1463: Changed the default splitter(CHAR) to "\n".
+- You may have to update your themes to use "\n" instead of "|".
+
+r1455: Added recognition for the "killed PID" sysop.log message.
+- New theme file setting: KILLED.
+
 r1447: Added recognition for the "killed ghost with PID" login.log message.
 - New theme file setting: KILLGHOST.
 
