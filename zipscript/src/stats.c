@@ -110,7 +110,9 @@ updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **grou
 /*
  * Modified   : 01.17.2002 Author     : Dark0n3
  * 
- * Description: Sorts userI and groupI Modified by psxc 09.25.2004 - nasty bug
+ * Description: Sorts userI and groupI
+ * Modified by psxc 09.25.2004 - nasty bug
+ * Modified by psxc 11.22.2004 - added support for list of ppl against leader.
  */
 void 
 sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI)
@@ -138,7 +140,8 @@ sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 		}
 		userI[t]->pos = n;
 #if ( get_competitor_list == TRUE )
-		if (strcmp(raceI->user.name, userI[n]->name)) {
+		if ((userI[t]->pos) > 0) {
+//		if (strcmp(raceI->user.name, userI[n]->name)) {
 			r_list += sprintf(r_list, "%s%s", racersplit, convert2(raceI, userI[n], groupI, racersmsg, t));
 			t_list += sprintf(t_list, "%s%s", racersplit, convert2(raceI, userI[n], groupI, racersmsg, t));
 		} else {
