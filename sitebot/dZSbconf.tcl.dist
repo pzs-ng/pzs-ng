@@ -159,11 +159,6 @@ set invite_channels					$chanlist(INVITE)
 #set staffchan(GROUPS)					"SiTEOPS STAFF"
 #set staffchan(USERS)					"someuser1 someuser2"
 
-# Always print invite information in this channel, no matter what the settings
-# are elsewhere. Useful if you want to move invite announcements to a private
-# channel.
-#set invitemessageoverride(CHANNELS)			"#pzs-ng_staff"
-
 # Set to 0 to allow trigger commands in all channels bot is in,
 # or set to 1 if you want the triggers to only work in $mainchan
 set disable(TRIGINALLCHAN)				0

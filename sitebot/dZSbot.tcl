@@ -255,7 +255,7 @@ set debuglevel [DEBUG_INFO]
 
 proc readlog {} {
 
-	global location glftpdlog loginlog lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2 invite_channels loglastoct pid msgreplace staffchan invitemessageoverride
+	global location glftpdlog loginlog lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2 invite_channels loglastoct pid msgreplace staffchan
 
 	set dZStimer [utimer 1 "readlog"]
 	set lines ""
@@ -348,11 +348,6 @@ proc readlog {} {
 					if {![string compare $nick $staffuser]} {
 						foreach channel $staffchan(CHANNELS) { puthelp "INVITE $ircnick $channel" }
 					}
-				}
-			}
-			if {[info exists invitemessageoverride]} {
-				foreach msgchan $invitemessageoverride(CHANNELS) {
-					putquick "PRIVMSG $msgchan :\[INVITE\] $nick/$group invited himself as $ircnick from site"
 				}
 			}
 		}
