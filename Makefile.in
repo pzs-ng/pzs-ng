@@ -22,6 +22,9 @@ clean:
 	@( cd zipscript/src ; $(MAKE) clean )
 	@( rm -f *~ Makefile config.cache config.log config.status config.h )
 
+binclean:
+	@( cd zipscript/src ; $(MAKE) binclean )
+
 zs:
 	@( cd zipscript/src ; $(MAKE) all )
 
