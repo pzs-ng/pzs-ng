@@ -74,7 +74,7 @@
  %H  = Frame rate (fps) 
 #
 #
- %Z  = RAR Compression method
+ %Z  = RAR Compression method (!! NOT USED ATM !!)
 
 
 

@@ -66,7 +66,7 @@
 #define winner			"dummy_winner"
 #define loser			"dummy_loser"
 
-#define user_top		"{%n} {%-9u} {%-9g} {%5.1m} {%2f} {%5.1p} {%5.0s} {%2W}"
+#define user_top		"{%n} {%-9u} {%-9g} {%5.1m} {%2f} {%5.1p} {%5.0s} {%2D} {%2W} {%2M} {%2A}"
 #define user_info		"{%u} {%g} {%.1m} {%f} {%.1p} {%.0s}"
 #define group_top		"{%n} {%-9g} {%.1m} {%f} {%.1p} {%5.0s}"
 #define group_info		"{%g} {%.1m} {%-2f} {%.1p} {%.0s}"
@@ -75,7 +75,7 @@
 #define fastestfile		"{%u} {%g} {%.3F}" /* Put in %l cookie */
 #define slowestfile		"{%u} {%g} {%.3S}" /* Put in %L cookie */
 #define racersplit		" " /* Put between racers in the %R cookie - !!MUST BE ONLY ONE (1) CHAR!! */
-#define racersmsg		"%u(%g)" /* Put in %R cookie */
+#define racersmsg		"%u@%g" /* Put in %R cookie */
 #define audio_vbr		"{%X} {%z} {%Q} {VBR} {%I}" /* Put in %j cookie */
 #define audio_cbr		"{%X} {%z} {%Q} {CBR}"    /* Put in %j cookie */
 
@@ -105,9 +105,9 @@
 #define rar_update		"{%U} {%G} {%f} {%.0S} {%.1e}"
 #define rar_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
 #define rar_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
-#define rar_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L  %C0 %c0 {%Z}"
+#define rar_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0"
 #define rar_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define rar_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G} {%Z}"
+#define rar_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G}"
 
 
 /* Rest of the stuff inside sfv */
@@ -116,7 +116,7 @@
 #define other_update		"{%U} {%G} {%f} {%.0S} {%.1e}"
 #define other_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
 #define other_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
-#define other_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L  %C0 %c0"
+#define other_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0"
 #define other_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
 #define other_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G}"
 
@@ -125,9 +125,9 @@
 #define zip_update		"{%U} {%G} {%f} {%.0S} {%.1e}"
 #define zip_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
 #define zip_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
-#define zip_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L  %C0 %c0 {%T}"
+#define zip_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0"
 #define zip_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define zip_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G} {%T}"
+#define zip_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G}"
 
 /* Get user day/week/month/allup position */
 #define get_user_stats		TRUE
