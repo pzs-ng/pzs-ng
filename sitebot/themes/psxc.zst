@@ -46,6 +46,7 @@ announce.DOUBLESFV				= "[%b{%c1{RULES} }] %b{%u_name}@%g_name tried to upload a
 announce.BADBITRATE				= "[%b{%c1{RULES} }] %b{%u_name}@%g_name is violating mp3 rules - bitrate %b{%bitrate}kbps not allowed."
 announce.BADGENRE				= "[%b{%c1{RULES} }] %b{%u_name}@%g_name is violating mp3 rules - genre %b{%genre} not allowed."
 announce.BADYEAR				= "[%b{%c1{RULES} }] %b{%u_name}@%g_name is violating mp3 rules - releases from %b{%year} not allowed."
+announce.BAD					= "[%b{%c1{RULES} }] %b{%u_name}@%g_name uploaded a bad file in %b{%releasename}."
 
 # some special loop variables - these format the racers and stats for each racer in the corresponding output.
 announce.RACE_ZIP_LOOP1				= "%b{%a_name}@%a_gname%splitter"
