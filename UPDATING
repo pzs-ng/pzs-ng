@@ -39,6 +39,11 @@ zsconfig.h:	The option 'del_progressmeter' has changed. Make sure you have
 		the default will be used.
 		Changed in: r827
 
+		The options 'cleanup_yesterday' and 'cleanup_today' is gone and
+		is replaced by 'days_back_cleanup'. The option 'cleanupdirs' is
+		split in two, 'cleanupdirs' and 'cleanupdirs_dated'.
+		Changed in: r1273
+
 dZSBconf.tcl	A dZSBconf.defaults.tcl first appeared in r1120 - if your bot
 		is older than this, it is recommended to update all, including
 		dZSBconf.tcl
