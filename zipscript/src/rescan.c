@@ -91,6 +91,9 @@ getrelname(char *directory)
 	int		cnt       , l[2], n = 0, k = 2;
 	char           *path[2];
 
+	path[0] = 0;
+	path[1] = 0;
+
 	for (cnt = locations.length_path - 1; k && cnt; cnt--) {
 		if (directory[cnt] == '/') {
 			k--;
@@ -101,6 +104,11 @@ getrelname(char *directory)
 			n = 0;
 		} else
 			n++;
+	}
+
+	if (!(path[1])) {
+		d_log("ERROR! Seems the command is run from / - exiting\n");
+		exit (1);
 	}
 
 	if (subcomp(path[1])) {
