@@ -4,7 +4,7 @@ COLOR3 = "11"
 PREFIX = "-%bold%c1{%sitename}%bold- [%bold%c2{%section}]%bold"
 fakesection.INVITE = "iNViTE"
 
-announce.NEWDIR		= "+ New Release: %path/%bold%release%bold (%relname) by %bold%user%bold@%group"
+announce.NEWDIR		= "+ New Release: %path/%bold%release%bold by %bold%user%bold@%group"
 announce.DELDIR		= "- Directory deleted: %path/%bold%release%bold by %bold%user%bold@%group"
 announce.BW		= "- %bold%uploads%bold uploads @ %bold%upspeed%boldkb/sec (%uppercent%) - %bold%downloads%bold downloads @ %bold%dnspeed%boldkb/sec (%dnpercent%) - total: %bold%transfers%bold transfers @ %bold%totalspeed%boldkb/sec (%totalpercent%) - %active people browsing, %idlers people idling, %totallogins people in total"
 announce.BWUP		= "- %bold%uploads%bold uploads @ %bold%upspeed%boldkb/sec (%uppercent%)"

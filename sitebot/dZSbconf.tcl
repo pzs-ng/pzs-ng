@@ -9,7 +9,7 @@
 # if you have another glroot than /glftpd/ =)
  
 set location(GLLOG)					"/glftpd/ftp-data/logs/glftpd.log"
-set location(PASSWD)				"/glftpd/etc/passwd"
+set location(PASSWD)					"/glftpd/etc/passwd"
 set location(USERS)					"/glftpd/ftp-data/users/"
 
 # Are you using glftpd2? Set to "YES" if you are, "NO" if not.
@@ -20,14 +20,14 @@ set location(USERS)					"/glftpd/ftp-data/users/"
 # What types of messages are counted as the different types of output
 # (for disabling etc)
 set msgtypes(RACE)					"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV UPDATE HALFWAY NEWLEADER COMPLETE STATS BADGENRE BADYEAR BADBITRATE WIPE WIPE-r"
-set msgtypes(DEFAULT)				"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT"
+set msgtypes(DEFAULT)					"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT"
 
 # Sitename is for the %sitename-cookie in announces :)
 set sitename						"pzs-ng"
 # Prefix on commands (f. x. !pnfree if cmdpre is !pn, !free if cmdpre is !, etc)
 # bindnopre does not replace the cmd pre command, it meirly adds a second 
 # trigger option. example: you can set cmdpre to !pn but if bindnopre is set to # "YES" then the sitebot will respond to !pnbnc and also !bnc useful for rings.
-set cmdpre							"!pn"
+set cmdpre						"!pn"
 set bindnopre						"YES"
 # List of bnc's (used for BNC-testing with the <prefix>bnc command in channel)
 # Format: countrycode:hostname:port (space seperated)
@@ -61,8 +61,8 @@ set binary(STATS)					"/glftpd/bin/stats"
 set binary(PASSCHK)					"/glftpd/bin/passchk"
 set binary(NCFTPLS)					"/usr/local/bin/ncftpls"
 set binary(BNCTEST)					"/glftpd/bin/bnctest.sh"
-set binary(BNCCHECK)				"/glftpd/bin/bnc-check.pl"
-set binary(INCOMPLETE)				"/glftpd/bin/incomplete-list.sh"
+set binary(BNCCHECK)					"/glftpd/bin/bnc-check.pl"
+set binary(INCOMPLETE)					"/glftpd/bin/incomplete-list.sh"
 set binary(DF)						"/bin/df"
 
 # Definition of hd devices (for freespace) Syntax is "disk sections".
@@ -85,15 +85,15 @@ set type(MV)						"RACE"
 
 # Which channels we announce the different things to.
 # Space separated lists, you can have more than one channel :)
-set mainchan						"#project-zs-ng"
+set mainchan						"#pzs-ng"
 set chanlist(GAMES)					"$mainchan"
 set chanlist(APPS)					"$mainchan"
 set chanlist(MP3)					"$mainchan"
 set chanlist(0DAY)					"$mainchan"
 set chanlist(MV)					"$mainchan"
-set chanlist(DEFAULT)				"$mainchan"
-set chanlist(INVITE)				"$mainchan"
-set chanlist(WELCOME)				"$mainchan"
+set chanlist(DEFAULT)					"$mainchan"
+set chanlist(INVITE)					"$mainchan"
+set chanlist(WELCOME)					"$mainchan"
 
 # Are we disabling the announce of this stuff?
 # If its set to 1, we wont show it :)
@@ -103,23 +103,23 @@ set disable(PRE)					0
 set disable(INVITE)					0
 set disable(NUKE)					0
 set disable(UNNUKE)					0
-set disable(MSGINVITE)				0
-set disable(BADMSGINVITE)			0
+set disable(MSGINVITE)					0
+set disable(BADMSGINVITE)				0
 set disable(LOGIN)					1 
 set disable(LOGOUT)					1
-set disable(INCOMPLETE)				0
+set disable(INCOMPLETE)					0
 set disable(RACE)					0
 set disable(SFV)					0
 set disable(UPDATE)					0
-set disable(HALFWAY)				0
-set disable(NEWLEADER)				0
-set disable(COMPLETE)				0
+set disable(HALFWAY)					0
+set disable(NEWLEADER)					0
+set disable(COMPLETE)					0
 set disable(STATS)					0
-set disable(BADGENRE)				0
-set disable(BADYEAR)				0
-set disable(BADBITRATE)				0
-set disable(WELCOME)				0
-set disable(DEFAULT)				1
+set disable(BADGENRE)					0
+set disable(BADYEAR)					0
+set disable(BADBITRATE)					0
+set disable(WELCOME)					0
+set disable(DEFAULT)					1
 set disable(WIPE)					0
 set disable(WIPE-r)					0
 #########################################################
@@ -162,7 +162,7 @@ set variables(INVITE)				"%ircnick %user %group"
 set variables(BADGENRE)				"%pf %msg"
 set variables(BADYEAR)				"%pf %msg"
 set variables(BADBITRATE)			"%pf %msg"
-set variables(WIPE)					"%pf %user %group %tagline"
+set variables(WIPE)				"%pf %user %group %tagline"
 set variables(WIPE-r)				"%pf %user %group %tagline"
 set variables(DEFAULT)				"%pf %msg"
 ## Converts empty or zero variable to something else if defined
@@ -177,7 +177,7 @@ set zeroconvert(%group) 			"NoGroup"
 #
 # To disable set it to "\n"
 
-set splitter(CHAR)					"\n"
+set splitter(CHAR)				"|"
 
 
 ## RANDOMIZING OUTPUT
@@ -200,7 +200,7 @@ set announce(THEMEFILE)				"default.zst"
 # In this announce you can use %free, %total and %used for the free/total/used sum of all disks
 # and you can use %devices. Each device specified (see above (set device(0) etc)) will be inserted
 # with stats as specified in announce(FREE-DEV) (see below)
-set announce(FREE)					"-%sitename- \[FREE\] - %devices"
+set announce(FREE)				"-%sitename- \[FREE\] - %devices"
 # Stats for each device (Replaces %devices in announce(FREE) for each device), here you can use
 # %free, %total and %used :)
 set announce(FREE-DEV)				"%bold%free%bold of %bold%total%bold (used %percentage%) "
