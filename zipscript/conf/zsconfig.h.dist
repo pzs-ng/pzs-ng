@@ -137,9 +137,14 @@
 
 /* Special modes
  * debug_mode - create .debug files in releasedirs.
+ * debug_altlog - put all .debug files in the mirror stored in the storage variable.
+ *                Not reccommended with first use, as not all debug info will make it
+ *                into that file. But might be good on a prolonged debug period on a
+ *                "live" site.
  * benchmark_mode - output to the user uploading how long it took to run the zipscript.
  */
 #define debug_mode		TRUE
+#define debug_altlog		FALSE
 #define benchmark_mode		TRUE
 
 /* Set this to TRUE if you wish to remove the .debug when removing a dir completely.

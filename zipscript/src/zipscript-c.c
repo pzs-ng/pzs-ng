@@ -379,6 +379,10 @@ int main( int argc, char **argv ) {
     sprintf(locations.leader, storage "/%s/leader", locations.path);
     sprintf(locations.race, storage "/%s/racedata", locations.path);
 
+//    d_log("Creating directory to store racedata in\n");
+//    maketempdir(&locations);
+
+
 /*    d_log("Changing directory to %s\n", locations.path);
     chdir(locations.path);
 */

@@ -32,6 +32,7 @@ void d_log(char *fmt, ...) {
 	time_t		timenow;
 	FILE		*file;
 	va_list		ap;
+	char		*debugname, *debugpath = 0;
 #endif
 
 	if (fmt == NULL)
@@ -40,12 +41,24 @@ void d_log(char *fmt, ...) {
 	va_start(ap, fmt);
 	timenow = time(NULL);
 
-	if ((file = fopen(".debug", "a+"))) {
+#if ( debug_altlog == TRUE )
+	debugpath = malloc(PATH_MAX);
+	getcwd(debugpath, PATH_MAX);
+	debugname = malloc(PATH_MAX);
+	sprintf(debugname, "%s/%s/.debug", storage, debugpath);
+	free(debugpath);
+#else
+	debugname = malloc(6);
+	sprintf(debugname, ".debug");
+#endif
+
+	if ((file = fopen(debugname, "a+"))) {
 	    fprintf(file, "%.24s - ", ctime(&timenow));
 	    vfprintf(file, fmt, ap);
 	    fclose(file);
 	}
-	chmod(".debug",0666);
+	chmod(debugname,0666);
+	free(debugname);
 #endif
 }
 
