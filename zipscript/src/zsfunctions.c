@@ -495,6 +495,7 @@ removedotfiles(DIR *dir)
 {
 	struct dirent *dp;
 
+	rewinddir(dir);
 	while ((dp = readdir(dir)))
 		if ((!strncasecmp(dp->d_name, ".", 1)) &&
 		    (strlen(dp->d_name) > 2))
