@@ -22,9 +22,9 @@
 #include <strings.h>
 #include <unistd.h>
 
-/* Comment this line to compile showlog for glftpd v1.x */
+/* Comment this line to compile showlog for glftpd v2.x */
 /* (psxc) - well, we'll do, since it's defined already when compiling in pzs-ng." */
-//#define USE_GLFTPD2
+//#define GLVERSION 132
 
 /* Default values */
 #define GLCONF "/etc/glftpd.conf"
@@ -34,7 +34,7 @@ static int max_results = 10;
 static int match_full = 0;
 static int search_mode = 0;
 
-#ifndef USE_GLFTPD2
+#if ( GLVERSION == 132 )
 struct dirlog {
 	ushort status;		            /* 0 = NEWDIR, 1 = NUKE, 2 = UNNUKE, 3 = DELETED */
 	time_t uptime;                  /* Creation time since epoch (man 2 time) */
@@ -292,12 +292,12 @@ void show_newdirs(const char *pattern)
 				}
 			}
 			/* Format: status|uptime|uploader|group|files|kilobytes|dirname */
-#ifndef USE_GLFTPD2
-			printf("%d|%u|%d|%d|%d|%ld|",
+#ifndef USE_GLFTPD132
+			printf("%d|%u|%d|%d|%d|%lld|",
 				buffer.status, (unsigned int)buffer.uptime, buffer.uploader, buffer.group,
 				buffer.files, buffer.bytes/1024);
 #else
-			printf("%d|%u|%d|%d|%d|%lld|",
+			printf("%d|%u|%d|%d|%d|%ld|",
 				buffer.status, (unsigned int)buffer.uptime, buffer.uploader, buffer.group,
 				buffer.files, buffer.bytes/1024);
 #endif

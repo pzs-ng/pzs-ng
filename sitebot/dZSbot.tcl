@@ -1742,28 +1742,25 @@ proc loadtheme {file} {
 
 	foreach line [split $data "\n"] {
 		if {[string index $line 0] != "#"} {
-			## TODO (neoxed):
-			## The first three regular expressions can easily be unified (as shown with the code below);
-			## however, the time taken to parse the theme file drastically increased (I'm talking minutes).
-			if {[regexp -nocase -- {announce\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-				set announce($setting) $value
-			} elseif {[regexp -nocase -- {fakesection\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-				set theme_fakes($setting) $value
-			} elseif {[regexp -nocase -- {random\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-				set random($setting) $value
-			} elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
-				set theme($setting) $value
-			}
-#			if {[regexp -- {(\S+)\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud type setting quote value]} {
-#				switch -exact -- [string tolower $type] {
-#					"announce"    {set announce($setting) $value}
-#					"fakesection" {set theme_fakes($setting) $value}
-#					"random"      {set random($setting) $value}
-#					default       {putlog "dZSbot warning: Invalid theme setting \"$type.$setting\"."}
-#				}
+#			if {[regexp -nocase -- {announce\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+#				set announce($setting) $value
+#			} elseif {[regexp -nocase -- {fakesection\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+#				set theme_fakes($setting) $value
+#			} elseif {[regexp -nocase -- {random\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+#				set random($setting) $value
 #			} elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
 #				set theme($setting) $value
 #			}
+			if {[regexp -- {(\S+)\.(\S+)\s*=\s*(['\"])(.+)\3} $line dud type setting quote value]} {
+				switch -exact -- [string tolower $type] {
+					"announce"    {set announce($setting) $value}
+					"fakesection" {set theme_fakes($setting) $value}
+					"random"      {set random($setting) $value}
+					default       {putlog "dZSbot warning: Invalid theme setting \"$type.$setting\"."}
+				}
+			} elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
+				set theme($setting) $value
+			}
 		}
 	}
 

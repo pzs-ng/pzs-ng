@@ -848,10 +848,12 @@ Optional Features:
   --disable-altwho        compiles the sitewho to not use an alternative
                           output on single user who lookups
   --enable-static         enable static linking of zs-c
-  --enable-gl1            disable autodetect of glversion, and compile bot
-                          binaries for glftpd1
-  --enable-gl2            disable autodetect of glversion, and compile bot
-                          binaries for glftpd2
+  --enable-gl132          disable autodetect of glversion, and compile bot
+                          binaries for glftpd 1.32
+  --enable-gl200          disable autodetect of glversion, and compile bot
+                          binaries for glftpd 2.00
+  --enable-gl201          disable autodetect of glversion, and compile bot
+                          binaries for glftpd 2.01
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -4669,23 +4671,32 @@ else
 echo "${ECHO_T}NOTICE: linking dynamically." >&6
 fi
 
-# Check whether --enable-gl1 or --disable-gl1 was given.
-if test "${enable_gl1+set}" = set; then
-  enableval="$enable_gl1"
-  GLVERSION=""
-              echo "$as_me:$LINENO: result: NOTICE: compiling bot binaries for glftpd1. (--enable-gl1)." >&5
-echo "${ECHO_T}NOTICE: compiling bot binaries for glftpd1. (--enable-gl1)." >&6
+# Check whether --enable-gl132 or --disable-gl132 was given.
+if test "${enable_gl132+set}" = set; then
+  enableval="$enable_gl132"
+  GLVERSION="-DGLVERSION=132"
+              echo "$as_me:$LINENO: result: NOTICE: compiling bot binaries for glftpd 1.32. (--enable-gl132)." >&5
+echo "${ECHO_T}NOTICE: compiling bot binaries for glftpd 1.32. (--enable-gl132)." >&6
 else
   GLVERSION="detect"
 fi;
 
 if [ "$GLVERSION" = "detect" ]; then
-  # Check whether --enable-gl2 or --disable-gl2 was given.
-if test "${enable_gl2+set}" = set; then
-  enableval="$enable_gl2"
-  GLVERSION="-DUSE_GLFTPD2"
-                echo "$as_me:$LINENO: result: NOTICE: compiling bot binaries for glftpd2. (--enable-gl2)." >&5
-echo "${ECHO_T}NOTICE: compiling bot binaries for glftpd2. (--enable-gl2)." >&6
+  # Check whether --enable-gl200 or --disable-gl200 was given.
+if test "${enable_gl200+set}" = set; then
+  enableval="$enable_gl200"
+  GLVERSION="-DGLVERSION=200"
+                echo "$as_me:$LINENO: result: NOTICE: compiling bot binaries for glftpd 2.00. (--enable-gl200)." >&5
+echo "${ECHO_T}NOTICE: compiling bot binaries for glftpd 2.00. (--enable-gl200)." >&6
+else
+  GLVERSION="detect"
+fi;
+  # Check whether --enable-gl201 or --disable-gl201 was given.
+if test "${enable_gl201+set}" = set; then
+  enableval="$enable_gl201"
+  GLVERSION="-DGLVERSION=201"
+                echo "$as_me:$LINENO: result: NOTICE: compiling bot binaries for glftpd 2.01. (--enable-gl201)." >&5
+echo "${ECHO_T}NOTICE: compiling bot binaries for glftpd 2.01. (--enable-gl201)." >&6
 else
   GLVERSION="detect"
 fi;
@@ -4702,24 +4713,22 @@ fi;
 
 if [ "$GLVERSION" = "detect" ]; then
   if [ ! -d "$GLPATH" ] || [ ! -x "${GLPATH}/bin/glftpd" ]; then
-    { { echo "$as_me:$LINENO: error: Invalid glpath \"$GLPATH\". Use ./configure --with-glpath=PATH with a valid path! (or --enable-gl1/2 to disable autodetect). Quitting!" >&5
-echo "$as_me: error: Invalid glpath \"$GLPATH\". Use ./configure --with-glpath=PATH with a valid path! (or --enable-gl1/2 to disable autodetect). Quitting!" >&2;}
+    { { echo "$as_me:$LINENO: error: Invalid glpath \"$GLPATH\". Use ./configure --with-glpath=PATH with a valid path! (or --enable-gl(132|200) to disable autodetect). Quitting!" >&5
+echo "$as_me: error: Invalid glpath \"$GLPATH\". Use ./configure --with-glpath=PATH with a valid path! (or --enable-gl(132|200) to disable autodetect). Quitting!" >&2;}
    { (exit 1); exit 1; }; }
   fi
-  glversion="`strings $GLPATH/bin/glftpd | grep -i '^glftpd '| cut -f1 -d. | tr A-Z a-z`"
-  if [ "$glversion" = "glftpd 1" ]; then
-    GLVERSION=""
-    echo "$as_me:$LINENO: result: NOTICE: detected glversion, compiling bot binaries for glftpd1." >&5
-echo "${ECHO_T}NOTICE: detected glversion, compiling bot binaries for glftpd1." >&6
-  else if [ "$glversion" = "glftpd 2" ]; then
-      GLVERSION="-DUSE_GLFTPD2"
-      echo "$as_me:$LINENO: result: NOTICE: detected glversion, compiling bot binaries for glftpd2." >&5
-echo "${ECHO_T}NOTICE: detected glversion, compiling bot binaries for glftpd2." >&6
+  glversion="`strings $GLPATH/bin/glftpd | grep -i '^glftpd ' | cut -c8-11 | tr -d '.'`"
+  #echo "$v" | grep -E "^(132)|(200)|(201)$"
+  if [ "$glversion" = "132" ] || [ "$glversion" = "200" ] || [ "$glversion" = "201" ]; then
+    GLVERSION="-DGLVERSION=$glversion"
+    glversion="`echo "$glversion" | sed 's/^\(.\)/\1\./'`"
+    echo "$as_me:$LINENO: result: NOTICE: detected glversion, compiling bot binaries for glftpd $glversion." >&5
+echo "${ECHO_T}NOTICE: detected glversion, compiling bot binaries for glftpd $glversion." >&6
   else
-    { { echo "$as_me:$LINENO: error: Couldn't detect glversion, please run ./configure --enable-gl1 or ./configure --enable-gl2. Quitting!" >&5
-echo "$as_me: error: Couldn't detect glversion, please run ./configure --enable-gl1 or ./configure --enable-gl2. Quitting!" >&2;}
+    { { echo "$as_me:$LINENO: error: Couldn't detect glversion, please run ./configure --enable-gl132 or ./configure --enable-gl200 or ./configure --enable-gl201. Quitting!" >&5
+echo "$as_me: error: Couldn't detect glversion, please run ./configure --enable-gl132 or ./configure --enable-gl200 or ./configure --enable-gl201. Quitting!" >&2;}
    { (exit 1); exit 1; }; }
-  fi; fi
+  fi
 fi
 
 
