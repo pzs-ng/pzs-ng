@@ -1,3 +1,5 @@
+/* ADD MORE ERROR CHECKING IN THIE FILE */
+
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -11,8 +13,8 @@
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
 
-struct stat	entry_stat;
-int		zd_length;
+//struct stat	entry_stat;
+//int		zd_length;
 
 #ifndef PATH_MAX
  #define _LIMITS_H_
@@ -30,47 +32,67 @@ int		zd_length;
 void 
 remove_dir_loop(char *path)
 {
-	struct dirent **list;
-	int		n;
-	char		target    [PATH_MAX];
+	DIR 		*dir;
+	//struct dirent **list;
+	struct dirent	*dp;
+	//int		n;
+	char		target[PATH_MAX];
+	struct stat	sb;
 
-	chdir(path);
-	n = scandir(path, &list, 0, 0);
-	while (n--)
-		if (list[n]->d_name[0] != '.') {
-			stat(list[n]->d_name, &entry_stat);
-			if (S_ISDIR(entry_stat.st_mode)) {
-				sprintf(target, "%s/%s", path, list[n]->d_name);
+	if ((chdir(path)) == -1) {
+		perror(path);
+		exit(EXIT_FAILURE);
+	}
+	
+	//n = scandir(path, &list, 0, 0);
+	dir = opendir(path);
+	//while (n--)
+	while ((dp = readdir(dir))) {
+		if (dp->d_name[0] != '.') {
+			stat(dp->d_name, &sb);
+			if (S_ISDIR(sb.st_mode)) {
+				sprintf(target, "%s/%s", path, dp->d_name);
 				remove_dir_loop(target);
 				rmdir(target);
 				chdir(path);
 			} else
-				unlink(list[n]->d_name);
-			free(list[n]);
+				unlink(dp->d_name);
+			//free(list[n]);
 		}
-	free(list);
+	}
+	//free(list);
+	closedir(dir);
 }
 
 void 
-check_dir_loop(char *path)
+check_dir_loop(char *path, int zd_length)
 {
-	struct dirent **list;
-	int		n;
+	DIR 		*dir1, *dir2;
+	struct dirent	*dp;
+	//struct dirent **list;
+	//int		n;
 	char		target    [PATH_MAX];
-	DIR            *dirp;
+	//DIR            *dirp;
+	struct stat	sb;
 
-	chdir(path);
-	n = scandir(path, &list, 0, 0);
-	if (n < 2)
-		exit(2);
-	while (n--)
-		if (list[n]->d_name[0] != '.') {
-			stat(list[n]->d_name, &entry_stat);
-			if (S_ISDIR(entry_stat.st_mode)) {
-				sprintf(target, "%s/%s", path, list[n]->d_name);
-				if ((dirp = opendir(target + zd_length))) {
-					closedir(dirp);
-					check_dir_loop(target);
+	if (chdir(path) == -1) {
+		perror(path);
+		exit(EXIT_FAILURE);
+	}
+
+	//n = scandir(path, &list, 0, 0);
+	//if (n < 2)
+	//	exit(2);
+	dir1 = opendir(path);
+	//while (n--)
+	while ((dp = readdir(dir1))) {
+		if (dp->d_name[0] != '.') {
+			stat(dp->d_name, &sb);
+			if (S_ISDIR(sb.st_mode)) {
+				sprintf(target, "%s/%s", path, dp->d_name);
+				if ((dir2 = opendir(target + zd_length))) {
+					closedir(dir2);
+					check_dir_loop(target, zd_length);
 					chdir(path);
 				} else {
 					remove_dir_loop(target);
@@ -78,22 +100,24 @@ check_dir_loop(char *path)
 					chdir(path);
 				}
 			}
-			free(list[n]);
+			//free(list[n]);
 		}
-	free(list);
+	}
+	//free(list);
 }
 
 int 
 main(int argc, char **argv)
 {
-	char		st        [PATH_MAX];
+	int		zd_length;
+	char		st[PATH_MAX];
 	char		*wd;
 	DIR		*od;
 
 	zd_length = strlen(storage);
 
 	if (argc == 1) {
-		check_dir_loop(storage);
+		check_dir_loop(storage, zd_length);
 	} else {
 		if ((zd_length + 1 + strlen(argv[1])) < PATH_MAX) {
 			if ( !strncmp(argv[1], "RMD ", 4)) {
@@ -125,7 +149,7 @@ main(int argc, char **argv)
 			}
 		}
 		/* check subdirs */
-		check_dir_loop(st);
+		check_dir_loop(st, zd_length);
 
 		/* check current dir */
 		if (( od = opendir(st + zd_length)) == NULL) {
