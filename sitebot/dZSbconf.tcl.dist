@@ -116,6 +116,10 @@ set chanlist(DEFAULT)					"$mainchan"
 set chanlist(INVITE)					"$mainchan"
 set chanlist(WELCOME)					"$mainchan"
 
+# Which channels we invite nicks to. (per default it invites
+# to the channels it announces invites to, but you can change that)
+set invite_channels					$chanlist(INVITE)
+
 # Are we disabling the announce of this stuff?
 # If its set to 1, we wont show it :)
 set disable(BADBITRATE)					0

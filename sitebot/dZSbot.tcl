@@ -42,6 +42,11 @@ if {$use_glftpd2 == "AUTO"} {
 	}
 }
 
+if {![info exists invite_channels] && [info exists chanlist(INVITE)]} {
+	putlog "dZSbot: no invite_channels variable found in config, setting to \"$chanlist(INVITE)\" (chanlist(INVITE))"
+	set invite_channels $chanlist(INVITE)
+}
+
 
 
 #################################################################################
@@ -203,7 +208,7 @@ proc readlog {} {
 
 		if {![string compare $msgtype "INVITE"]} {
 			set nick [lindex $line 6]
-			foreach channel $chanlist(INVITE) { puthelp "INVITE $nick $channel" }
+			foreach channel $invite_channels { puthelp "INVITE $nick $channel" }
 		}
 
 		set section [getsection $path $msgtype]
@@ -214,10 +219,10 @@ proc readlog {} {
 					sndall $section $echoline
 					postcmd $msgtype $section $path
 				} else {
-					if {![info exists variables($mstype)] && $disable($msgtype) == 0} {
+					if {![info exists variables($msgtype)]} {
 						putlog "dZSbot error: \"variables($msgtype)\" not set in config, type becomes \"DEFAULT\""
 					}
-					if {$disable(DEFAULT) == 0} {
+					if {![info exists variables($msgtype)] && $disable(DEFAULT) == 0} {
 						set echoline [parse DEFAULT [lrange $line 6 end] $section]
 						sndall $section $echoline
 						postcmd $msgtype $section $path
@@ -811,7 +816,7 @@ proc invite {nick host hand arg} {
 
 		if {![string compare $result "MATCH"]} {
 			set output "$theme(PREFIX)$announce(MSGINVITE)"
-			foreach channel $chanlist(INVITE) { puthelp "INVITE $nick $channel" }
+			foreach channel $invite_channels { puthelp "INVITE $nick $channel" }
 			foreach line [split [exec $binary(CAT) $userfile] "\n"] {
 				if {![string compare [lindex $line 0] "GROUP"]} {
 					set group [lrange $line 1 end]
@@ -845,7 +850,7 @@ proc show_free {nick uhost hand chan arg} {
 	array set "tmpdev" [array get "device"]
 
 	foreach line [split [exec $binary(DF) "-Phx none"] "\n"] {
-		regsub {,} $line {.} line
+		regsub -all {,} $line {.} line
 		foreach dev [array names "tmpdev"] {
 			if {[string match [lindex $line 0] [lindex $tmpdev($dev) 0]] == 1} {
 				set tmp [replacevar $announce(FREE-DEV) "%total" "[lindex $line 1]B"]
