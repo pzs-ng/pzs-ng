@@ -11,7 +11,7 @@
  %o  = # of rejected files
  %M  = # of missing files
 
- %e  = estimated release size in kb
+ %e  = estimated release size in mb
  %b  = total bytes uploaded
  %k  = total kilobytes uploaded
  %P  = total kilobytes in rejected files
