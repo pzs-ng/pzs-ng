@@ -34,9 +34,9 @@ struct	userdata	{
  *
  */
 void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *usern, char *group, unsigned long filesize, long speed, long startsec, long startusec) {
- char		u_no = -1;
- char		g_no = -1;
- char		n;
+ int		u_no = -1;
+ int		g_no = -1;
+ int		n;
  double		speedD = filesize * 1024.0 / speed;
 
  for (n = 0; n < raceI->total.users; n++) {
