@@ -124,14 +124,22 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 void
 update_sfvdata(const char *path, const unsigned int crc)
 {
+	int		id;
 	FILE		*sfvfile;
 	
 	SFVDATA		sd;
 
-	if (!(sfvfile = fopen(path, "r"))) {
+	if ((id = open(path, O_RDWR, 0666)) == -1) {
 		d_log("Failed to open sfvdata (%s): %s\n", path, strerror(errno));
 		return;
 	}
+
+	if (!(sfvfile = fdopen(id, "r+"))) {
+		d_log("Failed to open sfvdata (%s): %s\n", path, strerror(errno));
+		return;
+	}
+
+	flock(id, LOCK_EX);
 
 	sd.crc32 = crc;
 	
@@ -145,6 +153,7 @@ update_sfvdata(const char *path, const unsigned int crc)
 	
 	fseek(sfvfile, -sizeof(SFVDATA), SEEK_CUR);
 	fwrite(&sd, sizeof(SFVDATA), 1, sfvfile);
+	flock(id, LOCK_UN);
 	fclose(sfvfile);
 }
 
@@ -228,20 +237,29 @@ delete_sfv(const char *path)
 void 
 read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
 {
+	int		id;
 	FILE           *file;
 
-	if ((file = fopen(path, "r+"))) {
+	if ((id = open(path, O_CREAT | O_RDWR, 0666)) == -1) {
+		d_log("Failed to open %s: %s\n", path, strerror(errno));
+		return;
+	}
+
+	flock(id, LOCK_EX);
+	
+	if ((file = fdopen(id, "r+"))) {
 		fread(&raceI->misc.old_leader, 1, 24, file);
 		rewind(file);
 		fwrite(userI->name, 1, 24, file);
 	} else {
 		*raceI->misc.old_leader = 0;
-		if (!(file = fopen(path, "w+"))) {
-			d_log("Couldn't write to %s: %s\n", path, strerror(errno));
+		if (!(file = fdopen(id, "w+"))) {
+			d_log("Couldn't open to %s: %s\n", path, strerror(errno));
 			exit(EXIT_FAILURE);
 		}
 		fwrite(userI->name, 1, 24, file);
 	}
+	flock(id, LOCK_UN);
 	fclose(file);
 }
 
@@ -255,6 +273,7 @@ read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
 void 
 testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 {
+	int		id;
 	FILE		*file;
 	char		*realfile, target[256], *ext;
 	unsigned int	Tcrc;
@@ -262,7 +281,16 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 
 	RACEDATA	rd;
 
-	if ((file = fopen(locations->race, "r+"))) {
+	if ((id = open(locations->race, O_CREAT | O_RDWR, 0666)) == -1) {
+		if (errno != EEXIST) {
+			d_log("Failed to open %s: %s\n", locations->race, strerror(errno));
+			exit(EXIT_FAILURE);
+		}
+	}
+	
+	flock(id, LOCK_EX);
+
+	if ((file = fdopen(id, "r+"))) {
 		realfile = raceI->file.name;
 		if (rstatus)
 			printf("\n");
@@ -325,6 +353,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 		}
 		strlcpy(raceI->file.name, realfile, strlen(realfile)+1);
 		raceI->total.files = raceI->total.files_missing = 0;
+		flock(id, LOCK_EX);
 		fclose(file);
 	}
 }
@@ -669,8 +698,6 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 
 	RACEDATA	rd;
 
-	//clear_file(path, raceI->file.name);
-
 	/* create file if it doesn't exist */
 	if ((id = open(path, O_CREAT | O_RDWR, 0666)) == -1) {
 		if (errno != EEXIST) {
@@ -683,6 +710,8 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 		d_log("Couldn't fopen racefile (%s): %s\n", path, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
+
+	fcntl(id, LOCK_EX);
 
 	/* find an existing entry that we will overwrite */
 	while (fread(&rd, sizeof(RACEDATA), 1, file)) {
@@ -705,6 +734,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 
 	fwrite(&rd, sizeof(RACEDATA), 1, file);
 	
+	fcntl(id, LOCK_UN);
 	fclose(file);
 }
 
