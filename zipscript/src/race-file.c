@@ -349,8 +349,12 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
 					}
 					fname[files++] = line;
 #endif
+					if (((unsigned int)strlen(line) + 1) < (unsigned int)len) {
+						d_log("DEBUG: NULL encountered in filename (%s)\n", line);
+						continue;
+					}
 
-					d_log("DEBUG: file in sfv - %s (%s)\n", line,crc);
+					d_log("DEBUG: file in sfv - %s (%s)\n", line, crc);
 
 #if ( sfv_cleanup == TRUE && sfv_error == FALSE )
 					write(fd_new, line, len - 1);
