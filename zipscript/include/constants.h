@@ -43,7 +43,6 @@
 #define general_announce_update_type		"UPDATE"
 #define general_race_type			"RACE"
 #define general_newleader_type			"NEWLEADER"
-#define general_halfway_type			"HALFWAY"
 #define norace_halfway_type			"HALFWAY_NORACE"
 #define race_halfway_type			"HALFWAY_RACE"
 #define general_doublesfv_type			"DOUBLESFV"

@@ -114,6 +114,7 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 	struct timeval	tstop;
 	double		mb_xfered = 0;
 	double		speed, pct = 0;
+	double		my_filesize = 0;
 	int		mask;
 	int		noshow;
 	int		maskchar;
@@ -182,16 +183,25 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			mb_xfered = 0;
 			m = strplen(user[x].status) - 5;
 
-			for (i = sprintf(realfile, "%s", user[x].currentdir); realfile[i] != '/' && i > 0; i--);
-			sprintf(realfile + i + 1, "%.*s", m, user[x].status + 5);
+			sprintf(realfile, "%s", user[x].currentdir);
 
 			if (m < 15 || raw)
 				sprintf(filename, "%.*s", m, user[x].status + 5);
 			else
 				sprintf(filename, "%.15s", user[x].status + m - 10);
 
-			pct = ( user[x].bytes_xfer * 1. / filesize(realfile) ) * 100;
-			i = 15 * user[x].bytes_xfer * 1. / filesize(realfile);
+			/* Dirty way to get around the fact that the buffered reading will change user[x].currentdir
+			   to not include filename once it's done reading the entire file "to memory".
+			   This means user[x].currentdir in fact will be _currentdir_ and this cannot tell us a true
+			   filesize since it's calculated from filesize(/site/incoming/path) - w/o filename :(
+			*/
+			my_filesize = filesize(realfile);
+			if( my_filesize < user[x].bytes_xfer ) {
+				my_filesize = user[x].bytes_xfer;
+			}
+
+			pct = ( user[x].bytes_xfer * 1. / my_filesize ) * 100;
+			i = 15 * user[x].bytes_xfer * 1. / my_filesize;
 			i = (i > 15 ? 15 : i);
 
 			bar[i] = 0;
@@ -239,8 +249,8 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 				printf("| %-27.27s | since %8.8s  | file: %-15.15s |\n", user[x].tagline, online, filename);
 				printf("+-----------------------------------------------------------------------+\n");
 			} else if (raw == 1) {
-				/* Maskeduser / Username / GroupName / Status / TagLine / Online / Filename */
-				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\" \"%.1f%s\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename, ( pct >= 0 ? pct : mb_xfered ), ( pct >= 0 ? "" : "MB" ) );
+				/* Maskeduser / Username / GroupName / Status / TagLine / Online / Filename / Part up/down-loaded / Current dir */
+				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\" \"%.1f%s\" \"%s\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename, ( pct >= 0 ? pct : mb_xfered ), ( pct >= 0 ? "%" : "MB" ), user[x].currentdir );
 			} else {
 				printf("%s|%s|%s|%s|%s\n",user[x].username,get_g_name(user[x].groupid),user[x].tagline,status,filename);
 			}
