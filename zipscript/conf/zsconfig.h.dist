@@ -106,7 +106,13 @@
 #define sfv_dupecheck           TRUE
 
 /* Writes a plain sfv - removing all comments etc */
-#define sfv_cleanup             TRUE
+#define sfv_cleanup		TRUE
+
+/* Also changes the case of the text in the sfv to all lowercase */
+#define sfv_cleanup_lowercase	FALSE
+
+/* Use windows style linefeeds (<cr><lf>) in the cleaned sfv file */
+#define sfv_cleanup_crlf	TRUE
 
 /* Should new sfv files be denied in dir? If not, the new sfv will be checked and denied/allowed depending on the
  * content of the sfv.

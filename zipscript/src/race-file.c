@@ -274,7 +274,11 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
     write(fd, &n, sizeof(short int));
 
     for ( newline = buf ; newline < eof ; newline++ ) {
-	for ( line = newline ; *newline != '\n' && newline < eof ; newline++ ) *newline = tolower(*newline);
+	for ( line = newline ; *newline != '\n' && newline < eof ; newline++ ) {
+		if (sfv_cleanup_lowercase == TRUE) {
+			*newline = tolower(*newline);
+		}
+	}
 	if ( *line != ';' && newline > line ) {
 	    *newline = crclen = 0;
 	    for ( crc = newline - 1; isxdigit(*crc) == 0 && crc > line ; crc-- ) *crc = 0;
@@ -304,7 +308,10 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
 		    write(fd_new, line, len - 1);
 		    write(fd_new, " ", 1);
 		    write(fd_new, crc, 8);
-		    write(fd_new, "\r\n", 2);
+#if (sfv_cleanup_crlf == TRUE && sfv_error == FALSE )
+		    write(fd_new, "\r", 1);
+#endif
+		    write(fd_new, "\n", 1);
 #endif
 		    if ( ! memcmp(fext, "mp3", 4) ) {
 			music++;

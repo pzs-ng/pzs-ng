@@ -142,10 +142,11 @@ int main( int argc, char **argv ) {
     raceI.misc.slowest_user[0] = 30000;
     raceI.misc.fastest_user[0] = 0;
 
-    d_log("Reading user name from env\n");
+    d_log("Reading user name from env (%s)\n", getenv("USER"));
     strncpy(raceI.user.name, getenv("USER"), 25);
-    d_log("Reading group name from env\n");
+    d_log("Reading group name from env (%s)\n", getenv("GROUP"));
     strncpy(raceI.user.group, getenv("GROUP"), 25);
+    d_log("File to remove is: %s\n", argv[1]);
 
     if ( ! *raceI.user.group ) {
 	memcpy(raceI.user.group, "NoGroup", 8);
