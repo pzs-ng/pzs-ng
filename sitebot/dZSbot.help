@@ -12,15 +12,15 @@
 %cmdprenukes [section]   - Displays latest nukes
 %cmdpreunnukes [section] - Displays latest unnukes
 %cmdpresearch <pattern>  - Search for a release
-%cmdprealldn <section>   - Shows top alltime downloaders
-%cmdpreallup <section>   - Shows top alltime uploaders
-%cmdpredaydn <section>   - Shows top day downloaders
-%cmdpredayup <section>   - Shows top day uploaders
-%cmdpremonthdn <section> - Shows top month downloaders
-%cmdpremonthup <section> - Shows top month uploaders
-%cmdprewkdn <section>    - Shows top week downloaders
-%cmdprewkup <section>    - Shows top week uploaders
-%cmdpregpad <section>    - Shows top downloading groups of alltime
-%cmdpregpal <section>    - Shows top uploading groups of alltime
-%cmdpregpwk <section>    - Shows top uploading groups of the week
-%cmdpregwpd <section>    - Shows top downloading groups of the week
+%cmdprealldn [section]   - Shows top alltime downloaders
+%cmdpreallup [section]   - Shows top alltime uploaders
+%cmdpredaydn [section]   - Shows top day downloaders
+%cmdpredayup [section]   - Shows top day uploaders
+%cmdpremonthdn [section] - Shows top month downloaders
+%cmdpremonthup [section] - Shows top month uploaders
+%cmdprewkdn [section]    - Shows top week downloaders
+%cmdprewkup [section]    - Shows top week uploaders
+%cmdpregpad [section]    - Shows top downloading groups of alltime
+%cmdpregpal [section]    - Shows top uploading groups of alltime
+%cmdpregpwk [section]    - Shows top uploading groups of the week
+%cmdpregwpd [section]    - Shows top downloading groups of the week
