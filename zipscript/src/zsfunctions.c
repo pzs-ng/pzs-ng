@@ -36,7 +36,7 @@ d_log(char *fmt,...)
 	va_list		ap;
 #if ( debug_altlog == TRUE )
 	static char	debugpath[PATH_MAX];
-	static char	debugname[NAME_MAX];
+	static char	debugname[PATH_MAX];
 #else
 	static char	debugname[] = ".debug";
 #endif
