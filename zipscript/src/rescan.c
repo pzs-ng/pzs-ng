@@ -7,9 +7,12 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+
 #include "objects.h"
 #include "macros.h"
 #include "zsfunctions.h"
+#include "multimedia.h"
+
 #include "../conf/zsconfig.h"
 #include "../../config.h"
 
@@ -55,10 +58,6 @@ extern void maketempdir(struct LOCATIONS *locations);
 
 // from dizreader.c - let's move to headers later.
 extern int read_diz(char *);
-
-/* NEW STUFF */
-extern void get_mpeg_audio_info(char *f, struct audio *audio);
-/* END OF NEW STUFF */
 
 extern unsigned long calc_crc32( char *f );
 extern void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, int completetype );

@@ -4,11 +4,14 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/stat.h>
+
 #include "objects.h"
 #include "macros.h"
 #include "constants.h"
 #include "errors.h"
 #include "zsfunctions.h"
+#include "multimedia.h" 
+
 #include "../conf/zsconfig.h"
 #include "../../config.h"
 
@@ -27,9 +30,6 @@ extern	void	get_stats(struct VARS *raceI, struct USERINFO **userI);
 
 // from dizreader.c - let's move to headers later.
 extern int read_diz(char *);
-// from multimedia.c - let's move to headers later. (together with struct video)
-extern void avi_video(char *, struct video *);
-extern void mpeg_video(char *, struct video *);
 // from stats.c - let's move to headers later. (together with USERINFO / GROUPINFO / VARS structs?)
 extern void showstats(struct VARS *, struct USERINFO **, struct GROUPINFO **);
 
@@ -41,7 +41,6 @@ extern unsigned long readsfv_file(struct LOCATIONS *locations, struct VARS *race
 extern char * c_incomplete(char *instr, char **path);
 extern void sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);
 extern void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned long crc, int logtype);
-extern void get_mpeg_audio_info(char *f, struct audio *audio);
 extern void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);
 extern void copysfv_file(char *source, char *target, long buf_bytes);
 extern void create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char *filename);
