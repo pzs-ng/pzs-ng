@@ -1,18 +1,23 @@
 #!/bin/bash
 
-# A small script that installs pzs-ng #
-#                                     #
-#######################################
+#############################################################################
+# ng-install.sh                                                             #
+# -------------                                                             #
+# A small script that installs pzs-ng.                                      #
+# You can run it at any time - no config-files will be overwritten, and no  #
+# scripts will be overwritten. The only files that will be overwritten if   #
+# they exists are the binary files and the bot files (not the bot config)   #
+#                                                                           #
+#############################################################################
 
 # Enter glpath (usually not necessay - autodetect will take care of it).
-glpath=/glftpd/testbot
+glpath=
 
 # Enter sslpath (usually not necessary - autodetect will take care of it).
 sslpath=
 
 # If you wish to install the bot, enter a valid path below.
 eggpath="/path/to/eggdrop/"
-eggpath="/glftpd/testbot"
 
 # Do you use ss5? Leave empty if not.
 use_ss5=
