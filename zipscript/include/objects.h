@@ -78,9 +78,9 @@ struct race_total {
     unsigned int			stop_time;
     unsigned char			users;
     unsigned char			groups;
-    unsigned char			files;
-    short int				files_missing;
-    unsigned char			files_bad;
+    int					files;
+    int					files_missing;
+    int					files_bad;
     unsigned char			nfo_present;
     double				speed;
     off_t				size;

@@ -395,10 +395,10 @@ int main () {
 	}
 
     }
-    printf(" Passed : %i\n", raceI.total.files - raceI.total.files_missing );
-    printf(" Failed : %i\n", raceI.total.files_bad );
-    printf(" Missing: %i\n", raceI.total.files_missing );
-    printf("  Total : %i\n", raceI.total.files );
+    printf(" Passed : %i\n", (int)raceI.total.files - (int)raceI.total.files_missing );
+    printf(" Failed : %i\n", (int)raceI.total.files_bad );
+    printf(" Missing: %i\n", (int)raceI.total.files_missing );
+    printf("  Total : %i\n", (int)raceI.total.files );
 
     d_log("Freeing memory.\n");
     free(locations.path);

@@ -418,7 +418,7 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 			      (char *)hms(raceI->total.stop_time - raceI->total.start_time)); break;
 	    case 'e': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->file.size * raceI->total.files >> 10) / 1024.)); break;
 	    case 'f': out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.files); break;
-	    case 'F': out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.files - raceI->total.files_missing); break;
+	    case 'F': out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.files - (int)raceI->total.files_missing); break;
 	    case 'g': out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.groups); break;
 	    case 'G': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->user.group); break;
 	    case 'k': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size / 1024.)); break;
