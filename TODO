@@ -11,6 +11,7 @@ status  who       what
  [ ]     daxxar    make a config-file format that is parsed to .h, instead of people editing .h :-)
  [ ]     psxc      add option to use average/median on vbr mp3's?
  [ ]     pending   check the mp3 patch - does it check all files? can we save this info and use it later?
+ [ ]     daxxar    warn_genres and warn_bitrates option in zsconfig.h (output to gllog)
 
 status   description
  [ ]      not done 
