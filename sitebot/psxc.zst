@@ -35,9 +35,9 @@ announce.REQFILLED	        = "[%boldfilled%bold] %bold%user%bold of %group just 
 announce.FREE		        = "[%boldspace %bold] %devices"
 announce.FREE-DEV	        = "%c3{%section} :: %bold%free%bold of %bold%total%bold (used %percentage%) "
 
-announce.BADBITRATE		= [%bold%c2{notice}%bold] %bold%user%bold of %group is violating rules by uploading shit with bitrate %bold%bitrate%boldkbps"
-announce.BADGENRE		= [%bold%c2{notice}%bold] %bold%user%bold of %group is violating rules by uploading %bold%genre%bold"
-announce.BADYEAR		= [%bold%c2{notice}%bold] %bold%user%bold of %group is violating rules by uploading shit from %bold%year%bold"
+announce.BADBITRATE		= "[%bold%c2{notice}%bold] %bold%user%bold of %group is violating rules by uploading shit with bitrate %bold%bitrate%boldkbps"
+announce.BADGENRE		= "[%bold%c2{notice}%bold] %bold%user%bold of %group is violating rules by uploading %bold%genre%bold"
+announce.BADYEAR		= "[%bold%c2{notice}%bold] %bold%user%bold of %group is violating rules by uploading shit from %bold%year%bold"
 
 announce.SFV		        = "[%boldsfv   %bold][%c3{%section}] %bold%relname%bold by %bold%user%bold of %group :: now expecting %bold%files%bold file(s)"
 
