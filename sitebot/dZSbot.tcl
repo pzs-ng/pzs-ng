@@ -842,10 +842,11 @@ proc show_free {nick uhost hand chan arg} {
 	set output "$theme(PREFIX)$announce(FREE)"
 	set devices ""; set free 0; set used 0
 	set total 0; set num 0; set perc 0
-	set tmpdev $device
+	array set "tmpdev" [array get "device"]
+
 	foreach line [split [exec $binary(DF) "-Phx none"] "\n"] {
 		regsub {,} $line {.} line
-		foreach dev [array names device] {
+		foreach dev [array names tmpdev] {
 			if {[string match [lindex $line 0] [lindex $tmpdev($dev) 0]] == 1} {
 				set tmp [replacevar $announce(FREE-DEV) "%total" "[lindex $line 1]B"]
 				set tmp [replacevar $tmp "%used" "[lindex $line 2]B"]
