@@ -8,6 +8,8 @@
 [ ] write documentation for different things (especially dZSbot (comments?))
 [ ] add theme-support to dZSbot.tcl, so that it reads an external theme file. (theme/skin)
 [ ] make a config-file format that is parsed to .h, instead of people editing .h :-)
+[ ] add option to use average/median on vbr mp3's?
+[ ] check the mp3 patch - does it check all files? can we save this info and use it later?
 
 key   description
 [ ]   not done 
