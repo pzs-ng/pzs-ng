@@ -523,7 +523,12 @@ void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned lo
 
 /* do not coredump when user disconnects or is killed
  */
- if (!raceI->user.name) exit(2);
+ if (!raceI->user.name) {
+  raceI->user.name = malloc(25);
+  printf("Reading user name from environment, because we are running from shell\n");
+  strncpy(raceI->user.name, getenv("USER"), 25);
+//  exit(2);
+ }
 
  memcpy(p_buf, &len, sizeof(int));				p_buf += sizeof(int);
  memcpy(p_buf, raceI->file.name, len);				p_buf += len;
