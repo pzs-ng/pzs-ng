@@ -6,7 +6,7 @@
 #  Created by: Phen0menon & juanker                        #
 #  Maintained by: juanker (juanker@EFnet #pzs-ng)          #
 #  Notes: Best experienced on dark -black- backgrounds     #
-#  Tested with: pzs-ng r982                                #
+#  Tested with: pzs-ng r988                                #
 #                                                          #
 ############################################################
 #                                                          #
@@ -144,15 +144,15 @@ announce.REQFILLED				= "%b{FiLLED%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %
 announce.LEECH					= "%b{BANDWiDTH%c1{:}} %c1{Current leechers:}"
 announce.UPLOAD					= "%b{BANDWiDTH%c1{:}} %c1{Current uploaders:}"
 announce.IDLE					= "%b{BANDWiDTH%c1{:}} %c1{Current idlers:}"
-announce.BW					= "%b{BANDWiDTH%c1{:}} %c1{(}%c3{%uploads} %c1{uploading at} %c3{%b{%upspeed}}%c1{KB/s ~} %c3{%uppercent}%c1{%) - (}%c3{%downloads} %c1{downloading at} %c3{%b{%dnspeed}}%c1{KB/s ~} %c3{%dnpercent}%c1{%) - (}%c3{%active} %c1{browsing) - (}%c3{%idlers} %c1{idling}%c1{) - [}%c3{%totallogins} %c1{users in total at} %c3{%b{%totalspeed}}%c1{KB/s ~} %c3{%totalpercent}%c1{%]}"
-announce.BWUP					= "%b{BANDWiDTH%c1{:}} %c3{%b{%uploads}} %c1{uploads at} %c3{%b{%upspeed}}%c1{KB/s (}%c3{%uppercent%}%c1{).}"
-announce.BWDN					= "%b{BANDWiDTH%c1{:}} %c3{%b{%downloads}} %c1{downloads at} %c3{%b{%dnspeed}}%c1{KB/s (}%c3{%dnpercent%}%c1{).}"
-announce.TOTUPDN				= "%b{BANDWiDTH%c1{:}} %c1{%type} %c3{%b{%count}} %c1{at} %c3{%b{%total}}%c1{KB/s (}%c3{%b{%per}%} %c1{total bandwidth usage).}"
+announce.BW					= "%b{BANDWiDTH%c1{:}} %c1{(}%c3{%uploads} %c1{uploading at} %c3{%b{%upspeed}} %c1{~} %c3{%uppercent}%c1{%) - (}%c3{%downloads} %c1{downloading at} %c3{%b{%dnspeed}} %c1{~} %c3{%dnpercent}%c1{%) - (}%c3{%active} %c1{browsing) - (}%c3{%idlers} %c1{idling}%c1{) - [}%c3{%totallogins} %c1{users in total at} %c3{%b{%totalspeed}} %c1{~} %c3{%totalpercent}%c1{%]}"
+announce.BWUP					= "%b{BANDWiDTH%c1{:}} %c3{%b{%uploads}} %c1{uploads at} %c3{%b{%upspeed}} %c1{(}%c3{%uppercent%}%c1{).}"
+announce.BWDN					= "%b{BANDWiDTH%c1{:}} %c3{%b{%downloads}} %c1{downloads at} %c3{%b{%dnspeed}} %c1{(}%c3{%dnpercent%}%c1{).}"
+announce.TOTUPDN				= "%b{BANDWiDTH%c1{:}} %c1{%type} %c3{%b{%count}} %c1{at} %c3{%b{%total}} %c1{(}%c3{%b{%per}%} %c1{total bandwidth usage).}"
 announce.TOTIDLE				= "%b{BANDWiDTH%c1{:}} %c1{There are currently} %c3{%b{%count}} %c1{users idle!}"
 announce.USERIDLE				= "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{idling for} %c3{%b{%idletime}}%c1{s.}"
-announce.USER					= "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{on} %c3{%b{%filename}} %c1{(}%c3{%fper} %c1{done) at} %c3{%b{%uspeed}}%c1{KB/s (}%c3{%b{%per}} %c1{bandwidth usage).}"
-announce.SPEEDUP				= "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is uploading} %c3{%b{%f_name}} %c1{at} %c3{%b{%upspeed}}%c1{KB/s (}%c3{%uppercent}%c1{).}"
-announce.SPEEDDN				= "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is downloading} %c3{%b{%f_name}} %c1{at} %c3{%b{%dnspeed}}%c1{KB/s (}%c3{%dnpercent}%c1{).}"
+announce.USER					= "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{on} %c3{%b{%filename}} %c1{(}%c3{%fper} %c1{done) at} %c3{%b{%uspeed}} %c1{(}%c3{%b{%per}} %c1{bandwidth usage).}"
+announce.SPEEDUP				= "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is uploading} %c3{%b{%f_name}} %c1{at} %c3{%b{%upspeed}} %c1{(}%c3{%uppercent}%c1{).}"
+announce.SPEEDDN				= "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is downloading} %c3{%b{%f_name}} %c1{at} %c3{%b{%dnspeed}} %c1{(}%c3{%dnpercent}%c1{).}"
 announce.SPEEDID				= "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{has been idle for} %c3{%b{%idletime}}%c1{.}"
 announce.SPEEDERROR				= "%b{BANDWiDTH%c1{:}} %c1{The requested user is not online now.}"
 announce.WELCOME				= "%c1{Welcome to} %c2{%b{%sitename}}%c1{'s sitechan. Type} %c3{%cmdprehelp} %c1{for help.}"
