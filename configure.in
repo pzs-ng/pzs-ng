@@ -69,8 +69,7 @@ dnl OS :)
 #fi
 
 dnl Static linking :)
-AC_ARG_ENABLE(static, AS_HELP_STRING([--enable-static], [enable static linking of zs-c]), 
-              STATIC="-static"; static="yes", STATIC="")
+AC_ARG_ENABLE(static, AS_HELP_STRING([--enable-static], [enable static linking of zs-c]), CFLAGS="$CFLAGS -static"; static="yes")
 if test "$static" = "yes" ; then
   AC_MSG_RESULT([NOTICE: linking statically (--enable-static).])
 else

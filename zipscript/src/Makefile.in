@@ -27,31 +27,31 @@ all: pzsng-undupe racedebug zipscript-c postdel racestats cleanup datacleaner re
 $(ZS-DEPEND): ../conf/zsconfig.h
 
 zipscript-c: $(ZS-OBJECTS) $(ZS-DEPEND)
-	$(CC) $(LDFLAGS) -o $@ $(ZS-OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(ZS-OBJECTS)
 
 racedebug: $(RD-OBJECTS)
-	$(CC) $(LDFLAGS) -o $@ $(RD-OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(RD-OBJECTS)
 
 postdel: $(PD-OBJECTS)
-	$(CC) $(LDFLAGS) -o $@ $(PD-OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(PD-OBJECTS)
 
 racestats: $(RS-OBJECTS)
-	$(CC) $(LDFLAGS) -o $@ $(RS-OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(RS-OBJECTS)
 
 cleanup: $(CU-OBJECTS)
-	$(CC) $(LDFLAGS) -o $@ $(CU-OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(CU-OBJECTS)
 
 datacleaner: $(DC-OBJECTS)
-	$(CC) $(LDFLAGS) -o $@ $(DC-OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(DC-OBJECTS)
 
 pzsng-undupe: $(UD-OBJECTS)
-	$(CC) $(LDFLAGS) -o $@ $(UD-OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(UD-OBJECTS)
 
 ng-chown: $(CH-OBJECTS)
-	$(CC) $(LDFLAGS) -o $@ $(CH-OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(CH-OBJECTS)
 
 rescan: $(SC-OBJECTS)
-	$(CC) $(LDFLAGS) -o $@ $(SC-OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(SC-OBJECTS)
 
 install:
 	if [ ! -e "$(prefix)$(storage)" ]; then mkdir -p -m777 "$(prefix)$(storage)"; fi
