@@ -496,7 +496,11 @@ proc replacevar {rstring what withwhat} {
 #################################################################################
 proc to_mb {str} {
 	set type [string index $str end]
-	set size [string range $str 0 end-1]
+	if {($type == "b" || $type == "B") && [string is alpha [string index $str end-1]]} {
+		set type [string index $str end-1]
+		set size [string range $str 0 end-2]
+	} else { set size [string range $str 0 end-1] }
+
 	set factor 0
 	switch -regexp [string index $str end] {
 		[mM] { set factor 1 }
