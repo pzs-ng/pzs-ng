@@ -107,11 +107,14 @@ fi
 
 dnl GL version =)
 AC_ARG_ENABLE(gl1, AS_HELP_STRING([--enable-gl1], [disable autodetect of glversion, and compile bot binaries for glftpd1]),
-              GLVERSION=""; AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd1. (--enable-gl1).]),
+              GLVERSION=""
+              AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd1. (--enable-gl1).]),
               GLVERSION="detect")			  
-if [[ "$GLVERSION" = "" ]]; then
+
+if [[ "$GLVERSION" = "detect" ]]; then
   AC_ARG_ENABLE(gl2, AS_HELP_STRING([--enable-gl2], [disable autodetect of glversion, and compile bot binaries for glftpd2]),
-                GLVERSION="-DUSE_GLFTPD2"; AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd2. (--enable-gl2).]),
+                GLVERSION="-DUSE_GLFTPD2"
+                AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd2. (--enable-gl2).]),
                 GLVERSION="detect")
 fi
 

@@ -4482,16 +4482,19 @@ fi
 # Check whether --enable-gl1 or --disable-gl1 was given.
 if test "${enable_gl1+set}" = set; then
   enableval="$enable_gl1"
-  GLVERSION=""; echo "$as_me:$LINENO: result: NOTICE: compiling bot binaries for glftpd1. (--enable-gl1)." >&5
+  GLVERSION=""
+              echo "$as_me:$LINENO: result: NOTICE: compiling bot binaries for glftpd1. (--enable-gl1)." >&5
 echo "${ECHO_T}NOTICE: compiling bot binaries for glftpd1. (--enable-gl1)." >&6
 else
   GLVERSION="detect"
 fi;
-if [ "$GLVERSION" = "" ]; then
+
+if [ "$GLVERSION" != "" ]; then
   # Check whether --enable-gl2 or --disable-gl2 was given.
 if test "${enable_gl2+set}" = set; then
   enableval="$enable_gl2"
-  GLVERSION="-DUSE_GLFTPD2"; echo "$as_me:$LINENO: result: NOTICE: compiling bot binaries for glftpd2. (--enable-gl2)." >&5
+  GLVERSION="-DUSE_GLFTPD2"
+                echo "$as_me:$LINENO: result: NOTICE: compiling bot binaries for glftpd2. (--enable-gl2)." >&5
 echo "${ECHO_T}NOTICE: compiling bot binaries for glftpd2. (--enable-gl2)." >&6
 else
   GLVERSION="detect"
@@ -4504,7 +4507,7 @@ if test "${with_glpath+set}" = set; then
   withval="$with_glpath"
   GLPATH="$withval"
 else
-  GLPATH="/glftpd"
+  GLPATH="/glftpdasg"
 fi;
 
 if [ "$GLVERSION" = "detect" ]; then
