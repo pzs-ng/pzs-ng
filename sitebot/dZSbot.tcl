@@ -214,6 +214,9 @@ proc readlog {} {
 					sndall $section $echoline
 					postcmd $msgtype $section $path
 				} else {
+					if {![info exists variables($mstype)] && $disable($msgtype) == 0} {
+						putlog "dZSbot error: \"variables($msgtype)\" not set in config, type becomes \"DEFAULT\""
+					}
 					if {$disable(DEFAULT) == 0} {
 						set echoline [parse DEFAULT [lrange $line 6 end] $section]
 						sndall $section $echoline
@@ -281,6 +284,11 @@ proc getsection {cpath msgtype} {
 	global sections msgtypes paths type defaultsection mpath
 
 	foreach section $sections {
+		if {[llength [array names "paths" -exact $section]]} {
+			putlog "dZSbot error: \"paths($section)\" not set in config, section becomes \"$defaultsection\""
+			continue
+		}
+
 		foreach path $paths($section) {
 			if {[string match $path $cpath] == 1 && [string first $msgtype $msgtypes($type($section))] != -1} {
 				set mpath $path
@@ -366,7 +374,14 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 		return ""
 	}
 
-	if {![info exists announce($type)] || ! [info exists variables($type)]} { set type "DEFAULT" }
+	if {![info exists variables($type)]} {
+		putlog "dZSbot error: \"variables($type)\" not set in config, type becomes \"DEFAULT\""
+		set type "DEFAULT"
+	}
+	if {![info exists announce($type)]} {
+		putlog "dZSbot error: \"announce($type)\" not set in config, type becomes \"DEFAULT\""
+		set type "DEFAULT"
+	}
 
 	set vars $variables($type)
 
