@@ -393,5 +393,5 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	}
 	for (n = 0; n < users; n++)
 		free(user[n]);
-	free(user);
+//	free(user);
 }

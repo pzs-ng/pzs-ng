@@ -667,7 +667,7 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 	symlink(source, org);
 #endif
 
-	m_free(org);
+	free(org);
 }
 
 void 

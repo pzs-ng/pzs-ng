@@ -26,6 +26,7 @@
  */
 
 #include "mp3info.h"
+#include "objects.h"
 
 int		layer_tab  [4] = {0, 3, 2, 1};
 
@@ -224,7 +225,7 @@ sameConstant(mp3header * h1, mp3header * h2)
 }
 
 int 
-get_id3(mp3info * mp3)
+get_id3(mp3info * mp3, struct audio *audio)
 {
 	int		retcode = 0;
 	char		fbuf      [4];
@@ -261,6 +262,12 @@ get_id3(mp3info * mp3)
 				unpad(mp3->id3.album);
 				unpad(mp3->id3.year);
 				unpad(mp3->id3.comment);
+
+				memcpy(&(audio->id3_artist), &(mp3->id3.artist), sizeof(mp3->id3.artist));
+				memcpy(&(audio->id3_title), &(mp3->id3.title), sizeof(mp3->id3.title));
+				memcpy(&(audio->id3_album), &(mp3->id3.album), sizeof(mp3->id3.album));
+				memcpy(&(audio->id3_year), &(mp3->id3.year), sizeof(mp3->id3.year));
+				memcpy(&(audio->id3_artist), &(mp3->id3.artist), sizeof(mp3->id3.artist));
 			}
 		}
 	}
@@ -278,7 +285,7 @@ unpad(char *string)
 }
 
 float 
-get_mp3_info(char *f)
+get_mp3_info(char *f, struct audio *audio)
 {
 	int		fullscan = 1;
 
@@ -305,7 +312,7 @@ get_mp3_info(char *f)
 
 	stat(mp3.filename, &filestat);
 	mp3.datasize = filestat.st_size;
-	get_id3(&mp3);
+	get_id3(&mp3, audio);
 
 	if (fullscan == 0) {
 		if (get_first_header(&mp3, 0L)) {
@@ -366,6 +373,10 @@ get_mp3_info(char *f)
 		}
 	}
 	fclose(mp3.file);
+	if (mp3.vbr)
+		sprintf(audio->bitrate, "%.0f", (mp3.vbr_average));
+//	memcpy(&(audio->bitrate), &(mp3.vbr_average), 5);
+	audio->is_vbr = mp3.vbr;
 	return mp3.vbr_average;
 }
 

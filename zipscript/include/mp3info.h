@@ -33,6 +33,7 @@
 #include <sys/stat.h>
 #include <ctype.h>
 #include <string.h>
+#include "objects.h"
 
 /*
  * MIN_CONSEC_GOOD_FRAMES defines how many consecutive valid MP3 frames we
@@ -89,8 +90,8 @@ int		frame_length(mp3header * header);
 int		header_layer(mp3header * h);
 int		header_bitrate(mp3header * h);
 int		sameConstant(mp3header * h1, mp3header * h2);
-float		get_mp3_info(char *f);
-int		get_id3    (mp3info * mp3);
+float		get_mp3_info(char *f, struct audio *);
+int		get_id3    (mp3info * mp3, struct audio *);
 char           *unpad(char *string);
 int		header_frequency(mp3header * h);
 char           *header_emphasis(mp3header * h);

@@ -166,7 +166,7 @@ d_log("DEBUG: result of subdir-test: %d\n", subcomp(path[1]));
 		locations.incomplete = c_incomplete(incomplete_indicator, path, &raceI);
 		locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &raceI);
 		locations.in_cd_dir = 0;
-		free(path[1]);
+//		free(path[1]);
 	}
 	if (k == 0)
 		free(path[0]);

@@ -436,5 +436,6 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 	}
 	close(fd);
 
-	sprintf(audio->bitrate, "%.0f", get_mp3_info(f));
+	get_mp3_info(f, audio);
+//	sprintf(audio->bitrate, "%.0f", get_mp3_info(f));
 }
