@@ -1191,6 +1191,10 @@ main(int argc, char **argv)
 		}
 	}
 #endif
+	if ((findfileext(".nfo")) && (locations.nfo_incomplete)) {
+		d_log("Removing missing-nfo indicator (if any)\n");
+		remove_nfo_indicator(locations.path);
+	}
 
 	d_log("Releasing memory\n");
 	free(locations.link_source);
