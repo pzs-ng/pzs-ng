@@ -7,13 +7,9 @@
 #################################################################################
 # Read The Config                                                               #
 #################################################################################
-interp alias {} istrue {} string is true -strict
-interp alias {} isfalse {} string is false -strict
-
-set dzerror 0; set pid 0
-set scriptpath [file dirname [info script]]
-
 putlog "Launching dZSbot for project-zs-ng..."
+
+set scriptpath [file dirname [info script]]
 
 if {[catch {source $scriptpath/dZSbot.conf.defaults} error]} {
 	putlog "dZSbot error: Unable to load dZSbot.conf.defaults ($error), cannot continue."
@@ -30,95 +26,20 @@ if {[catch {source $scriptpath/dZSbot.vars} error]} {
 	die
 }
 
-foreach entry [array names binary] {
-	if {![istrue $bnc(ENABLED)]} {
-		if {[string equal "CURL" $entry]} {continue}
-		if {[string equal "PING" $entry] && ![istrue $bnc(PING)]} {continue}
-	}
-	if {![file executable $binary($entry)]} {
-		putlog "dZSbot error: Invalid path/permissions for $entry - please fix."
-		set dzerror 1
-	}
-}
-
-foreach entry [array names location] {
-	if {![file exists $location($entry)]} {
-		putlog "dZSbot error: Invalid path for $entry - please fix."
-		set dzerror 1
-	}
-}
-
-set logcount 0
-foreach entry [array names glftpdlog] {
-	if {![file exists $glftpdlog($entry)]} {
-		putlog "dZSbot error: Could not find log file $glftpdlog($entry)."
-		set dzerror 1
-		unset glftpdlog($entry)
-	} else {
-		incr logcount
-		set lastoct($entry) [file size $glftpdlog($entry)]
-	}
-}
-if {!$logcount} {
-	putlog "dZSbot error: No gl logfiles found!"
-	set dzerror 1
-} else {
-	putlog "dZSbot: Number of gl logfiles found: $logcount"
-}
-
-set logcount 0
-foreach entry [array names loginlog] {
-	if {![file exists $loginlog($entry)]} {
-		putlog "dZSbot: Could not find log file $loginlog($entry)."
-		set dzerror 1
-		unset loginlog($entry)
-	} else {
-		incr logcount
-		set loglastoct($entry) [file size $loginlog($entry)]
-	}
-}
-if {!$logcount} {
-	putlog "dZSbot warning: No login logfiles found!"
-} else {
-	putlog "dZSbot: Number of login logfiles found: $logcount"
-}
-
-if {[string equal -nocase "AUTO" $use_glftpd2]} {
-	if {![info exists binary(GLFTPD)]} {
-		die "dZSbot: you did not thoroughly edit the $scriptpath/dZSbot.conf file (hint: binary(GLFTPD))."
-	}
-	set glversion [exec strings $binary(GLFTPD) | grep -i "^glftpd " | cut -f1 -d. | tr A-Z a-z]
-
-	if {[string equal "glftpd 1" $glversion]} {
-		putlog "dZSbot: Detected $glversion, running in legacy mode."
-		set glversion 1
-	} elseif {[string equal "glftpd 2" $glversion]} {
-		putlog "dZSbot: Detected $glversion, running in standard mode."
-		set glversion 2
-	} else {
-		die "dZSbot: Auto-detecting glftpd version failed, set \"use_glftpd2\" in $scriptpath/dZSbot.conf manually."
-	}
-} else {
-	set glversion [expr [istrue $use_glftpd2] ? 2 : 1]
-	putlog "dZSbot: glftpd version defined as: $glversion."
-}
-
-if {![info exists invite_channels] && [info exists chanlist(INVITE)]} {
-	putlog "dZSbot warning: No \"invite_channels\" defined in the config, setting to \"$chanlist(INVITE)\" (chanlist(INVITE))"
-	set invite_channels $chanlist(INVITE)
-}
-
 #################################################################################
 # Important Global Variables                                                    #
 #################################################################################
 
+set dzerror 0; set mpath ""; set pid 0
 set defaultsection "DEFAULT"
-set nuke(LASTTYPE) ""
 set nuke(LASTDIR) ""
+set nuke(LASTTYPE) ""
 set nuke(SHOWN) 1
 set variables(NUKE)   ""
 set variables(UNNUKE) ""
-set mpath ""
+
+interp alias {} istrue {} string is true -strict
+interp alias {} isfalse {} string is false -strict
 
 #################################################################################
 # Set Bindings                                                                  #
@@ -132,7 +53,7 @@ proc errorinfo {args} {
 	putlog "Tcl: $tcl_patchLevel"
 	putlog "Box: $tcl_platform(os) $tcl_platform(osVersion)"
 	putlog "Message:"
-	foreach line [split $errorInfo \n] {putlog $line}
+	foreach line [split $errorInfo "\n"] {putlog $line}
 	putlog "--------------------------------------------------------"
 }
 
@@ -157,7 +78,7 @@ proc bindcommands {cmdpre} {
 	bind pub -|- [set cmdpre]new         ng_new
 	bind pub -|- [set cmdpre]nukes       ng_nukes
 	bind pub -|- [set cmdpre]search      ng_search
-	bind pub -|- [set cmdpre]speed       speed
+	bind pub -|- [set cmdpre]speed       ng_speed
 	bind pub -|- [set cmdpre]unnukes     ng_unnukes
 	bind pub -|- [set cmdpre]up          ng_uploaders
 	bind pub -|- [set cmdpre]uploaders   ng_uploaders
@@ -202,7 +123,7 @@ if {[istrue $bindnopre]} {
 	catch {unbind pub -|- !new         ng_new}
 	catch {unbind pub -|- !nukes       ng_nukes}
 	catch {unbind pub -|- !search      ng_search}
-	catch {unbind pub -|- !speed       speed}
+	catch {unbind pub -|- !speed       ng_speed}
 	catch {unbind pub -|- !unnukes     ng_unnukes}
 	catch {unbind pub -|- !up          ng_uploaders}
 	catch {unbind pub -|- !uploaders   ng_uploaders}
@@ -1839,7 +1760,6 @@ proc loadtheme {file} {
 # REPLACES THEMERELATED STUFF IN A GIVEN STRING, STATIC REPLACE FOR STARTUP     #
 #################################################################################
 proc themereplace_startup {rstring} {
-	global theme
 
 	# We replace %b{string} and %u{string} with their bolded and underlined equivilants ;)
 	while {[regexp {(%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\})} $rstring]} {
@@ -1900,6 +1820,84 @@ proc themereplace {targetString section} {
 #################################################################################
 # START UP STUFF                                                                #
 #################################################################################
+
+foreach entry [array names binary] {
+	if {![istrue $bnc(ENABLED)]} {
+		if {[string equal "CURL" $entry]} {continue}
+		if {[string equal "PING" $entry] && ![istrue $bnc(PING)]} {continue}
+	}
+	if {![file executable $binary($entry)]} {
+		putlog "dZSbot error: Invalid path/permissions for $entry - please fix."
+		set dzerror 1
+	}
+}
+
+foreach entry [array names location] {
+	if {![file exists $location($entry)]} {
+		putlog "dZSbot error: Invalid path for $entry - please fix."
+		set dzerror 1
+	}
+}
+
+set logcount 0
+foreach entry [array names glftpdlog] {
+	if {![file exists $glftpdlog($entry)]} {
+		putlog "dZSbot error: Could not find log file $glftpdlog($entry)."
+		set dzerror 1
+		unset glftpdlog($entry)
+	} else {
+		incr logcount
+		set lastoct($entry) [file size $glftpdlog($entry)]
+	}
+}
+if {!$logcount} {
+	putlog "dZSbot error: No gl logfiles found!"
+	set dzerror 1
+} else {
+	putlog "dZSbot: Number of gl logfiles found: $logcount"
+}
+
+set logcount 0
+foreach entry [array names loginlog] {
+	if {![file exists $loginlog($entry)]} {
+		putlog "dZSbot: Could not find log file $loginlog($entry)."
+		set dzerror 1
+		unset loginlog($entry)
+	} else {
+		incr logcount
+		set loglastoct($entry) [file size $loginlog($entry)]
+	}
+}
+if {!$logcount} {
+	putlog "dZSbot warning: No login logfiles found!"
+} else {
+	putlog "dZSbot: Number of login logfiles found: $logcount"
+}
+
+if {[string equal -nocase "AUTO" $use_glftpd2]} {
+	if {![info exists binary(GLFTPD)]} {
+		die "dZSbot: you did not thoroughly edit the $scriptpath/dZSbot.conf file (hint: binary(GLFTPD))."
+	}
+	set glversion [exec strings $binary(GLFTPD) | grep -i "^glftpd " | cut -f1 -d. | tr A-Z a-z]
+
+	if {[string equal "glftpd 1" $glversion]} {
+		putlog "dZSbot: Detected $glversion, running in legacy mode."
+		set glversion 1
+	} elseif {[string equal "glftpd 2" $glversion]} {
+		putlog "dZSbot: Detected $glversion, running in standard mode."
+		set glversion 2
+	} else {
+		die "dZSbot: Auto-detecting glftpd version failed, set \"use_glftpd2\" in $scriptpath/dZSbot.conf manually."
+	}
+} else {
+	set glversion [expr [istrue $use_glftpd2] ? 2 : 1]
+	putlog "dZSbot: glftpd version defined as: $glversion."
+}
+
+if {![info exists invite_channels] && [info exists chanlist(INVITE)]} {
+	putlog "dZSbot warning: No \"invite_channels\" defined in the config, setting to \"$chanlist(INVITE)\" (chanlist(INVITE))"
+	set invite_channels $chanlist(INVITE)
+}
 
 if {[istrue $enable_irc_invite]} {
 	bind msg -|- !invite invite
