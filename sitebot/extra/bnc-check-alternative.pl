@@ -3,6 +3,9 @@
 #######################################################################
 # bnc-check.pl -> checks a bnc list for connectivity using ncftpls    #
 # Args : <ncftpls location> <user> <pass> <timeout> <bnc1> [bnc2] ... #
+#								      #
+# This version is for people using old perl vers. who do not wish to  #
+# install the Time::HiRes module on their system		      #
 #######################################################################
 
 use strict;

@@ -5,8 +5,10 @@
 # Args : <ncftpls location> <user> <pass> <timeout> <bnc1> [bnc2] ... #
 #######################################################################
 
-use strict;
-use Time::HiRes qw( gettimeofday );
+require 5.8.0;							# Time::HiRes is not included before 5.8.0
+
+use strict;							# However, it will work if you install this module on <5.8.0
+use Time::HiRes qw( gettimeofday );				# Comment out the require line if you do this
 use Net::Ping;
 
 die( "Wrong arguments specified?\n" ) unless ( @ARGV == 5 ); 
@@ -19,19 +21,19 @@ $i = 0;
 
 @BNCs = 	split( / /, $ARGV[4] );
 
-foreach (@BNCs) {					# for each bouncer
+foreach (@BNCs) {						# for each bouncer
 	$i++;
-	if ( m/[a-zA-Z]+:[^:]+:[^:]+/ ) {	# bouncer format check
+	if ( m/[a-zA-Z]+:[^:]+:[^:]+/ ) {			# bouncer format check
 		($country, $host, $port) = split(/:/, $_);
 	} else {
 		print( "$i. Bouncer entry '$_' is not using correct syntax (countrycode:host:port)\n" );
 		next;
 	}
 
-	$tiStart = gettimeofday;		# time the ncftpls execution
+	$tiStart = gettimeofday;				# time the ncftpls execution
 	$reply = `$ncftpls -P $port -u $username -p $password -t $timeout -r 0 ftp://$host 2>&1`;
 	$tiFinish = gettimeofday;
-	$logintime = ($tiFinish - $tiStart) * 1000;	# work out how many ms it took to login
+	$logintime = ($tiFinish - $tiStart) * 1000;		# work out how many ms it took to login
 
 	if ($?) {						# returned an error code...so pattern match the
 								# STDOUT & STDERR in order to find out what was
