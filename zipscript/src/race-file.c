@@ -237,9 +237,9 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
 #endif
 #if ( sfv_cleanup == TRUE && sfv_error == FALSE )
     int		fd_new	= open(".tmpsfv", O_CREAT|O_TRUNC|O_WRONLY, 0644);
-    if ( fd_new != NULL ) {
+    if (fd_new) {
         d_log("Failed to create temporary sfv file - setting cleanup of sfv to false and tries to continue.\n");
-	sfv_error = TRUE;
+		sfv_error = TRUE;
     }
 
 /* 15.09.2004 - Removing/Hiding the feature of adding comments to .sfv files
@@ -253,9 +253,9 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
 #endif
 
     fd = open(source, O_RDONLY);
-    if ( fd == NULL ) {
+    if (!fd) {
         d_log("Failed to open %s.\n", source);
-	exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
     }
     buf = m_alloc(buf_bytes);
     read(fd, buf, buf_bytes);
@@ -263,9 +263,9 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
     eof = buf + buf_bytes;
 
     fd = open(target, O_CREAT|O_TRUNC|O_WRONLY, 0666);
-    if ( fd == NULL ) {
+    if (!fd) {
         d_log("Failed to create %s.\n", target);
-	exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
     }
     write(fd, &n, sizeof(short int));
 

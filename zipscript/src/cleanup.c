@@ -255,23 +255,23 @@ void cleanup(char *pathlist) {
     newentry = pathlist;
 
     while ( 1 ) {
-	for ( entry = newentry ; *newentry != ' ' && *newentry != 0 ; newentry++ );
+		for (entry = newentry; *newentry != ' ' && *newentry != 0; newentry++);
 
-	sprintf(path, "%.*s", (int)(newentry - entry), entry);
-	strftime(data_today, PATH_MAX, path, time_today);
-	strftime(data_yesterday, PATH_MAX, path, time_yesterday);
+		sprintf(path, "%.*s", (int)(newentry - entry), entry);
+		strftime(data_today, PATH_MAX, path, time_today);
+		strftime(data_yesterday, PATH_MAX, path, time_yesterday);
 
 
-	if (strcmp(data_today, data_yesterday) != NULL) {
-	    if ( check_yesterday == TRUE ) incomplete_cleanup(data_yesterday);
-	    if ( check_today == TRUE ) incomplete_cleanup(data_today);
-	} else 
-	    incomplete_cleanup(data_today);
+		if (strcmp(data_today, data_yesterday)) {
+		    if ( check_yesterday == TRUE ) incomplete_cleanup(data_yesterday);
+		    if ( check_today == TRUE ) incomplete_cleanup(data_today);
+		} else 
+		    incomplete_cleanup(data_today);
 
-	if ( *newentry == 0 ) {
-	    break;
-	}
-	newentry++;
+		if (!*newentry)
+		    break;
+		
+		newentry++;
     }
 
     free(data_today);
@@ -281,8 +281,8 @@ void cleanup(char *pathlist) {
 
 int main(void) {
 
-    if ( cleanupdirs[0] )
-	cleanup(cleanupdirs);
+    if (cleanupdirs[0])
+		cleanup(cleanupdirs);
 
 #if ( audio_genre_sort == TRUE )
     scandirectory((char *)audio_genre_path);
