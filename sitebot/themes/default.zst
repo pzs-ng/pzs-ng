@@ -52,7 +52,7 @@ announce.BADPASSWORD            = "[%b{login }] %b{%u_name} could not login, inv
 announce.BANNEDHOST             = "[%b{login }] %b{%u_name} could not login, hostmask %b{%u_hostmask} is banned."
 announce.DELETED                = "[%b{login }] %b{%u_name} could not login, account deleted."
 announce.IPNOTADDED             = "[%b{login }] denied unknown connection from %b{%u_hostmask}."
-announce.KILLGHOST              = "[%b{ghost }] %b{%u_name} killed killed a ghost with PID %b{%pid}."
+announce.KILLGHOST              = "[%b{ghost }] %b{%u_name} killed a ghost with PID %b{%pid}."
 announce.TAGLINE                = "[%b{tag   }] %b{%u_name}@%g_name has changed tagline to %b{%u_tagline}."
 announce.TIMEOUT                = "[%b{logout}] %b{%u_name} has timed out after %b{%u_idletime}s."
 
