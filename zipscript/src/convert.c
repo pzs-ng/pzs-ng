@@ -449,7 +449,7 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 
 		case 'D': out_p += sprintf(out_p, "%*i", val1, raceI->video.width); break;
 		case 'E': out_p += sprintf(out_p, "%*i", val1, raceI->video.height); break;
-		case 'H': out_p += sprintf(out_p, "%*i", val1, (int)raceI->video.fps); break;
+		case 'H': out_p += sprintf(out_p, "%*s", val1, (int)raceI->video.fps); break;
 
 		/* Other */
 
