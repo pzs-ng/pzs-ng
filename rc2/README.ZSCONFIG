@@ -310,7 +310,7 @@ debug_mode <TRUE|FALSE>
 	If something seems weird/doesn't work, you should debug. Setting this
 	variable to TRUE will turn on debugging. A file named .debug will be
 	created, normally in the same dir as the upload-dir.
-	Default: FALSE
+	Default: TRUE
 
 debug_altlog <TRUE|FALSE>
 	If debug is on, you can choose wether you wish to have the .debug file
@@ -318,7 +318,7 @@ debug_altlog <TRUE|FALSE>
 	note that if you choose to put the debug file in the 'storage' path,
 	some debug-info may be lost. Setting this to TRUE will use the
 	'storage' path, while FALSE will use the upload-dir.
-	Default: FALSE
+	Default: TRUE
 
 debug_announce <TRUE|FALSE>
 	If this variable is set to TRUE, and debug_mode is set to TRUE the
