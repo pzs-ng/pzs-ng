@@ -8,6 +8,7 @@
 #include <regex.h>
 #include <time.h>
 #include <unistd.h>
+#include <errno.h>
 
 #include "objects.h"
 #include "macros.h"
@@ -30,8 +31,46 @@
 struct tm      *timenow;
 time_t		tnow;
 
+/* new try without expensive scandir() */
+void
+scandirectory(char *dirname, int setfree)
+{
+	int		fd;
+	DIR		*dir1, *dir2;
+	struct dirent	*dp1, *dp2;
+	
+	printf("[%s]\n", dirname);
+
+	if (chdir(dirname) != -1) {
+		if ((dir1 = opendir("."))) {
+			while ((dp1 = readdir(dir1))) {
+				if (dp1->d_name[0] != '.') {
+					chdir(dp1->d_name);
+					if ((dir2 = opendir("."))) {
+						while ((dp2 = readdir(dir2))) {
+							if (dp1->d_name[0] != '.') {
+								if ((fd = open(dp2->d_name, O_NDELAY, 0777)) != -1) {
+									close(fd);
+								} else if (setfree) {
+									unlink(dp2->d_name);
+									printf("Broken symbolic link \"%s\" removed.\n", dp2->d_name);
+								}
+							}
+						}
+					}
+					closedir(dir2);
+					chdir("..");
+					if (setfree)
+						rmdir(dp1->d_name);
+				}
+			}
+		}
+		closedir(dir1);
+	}
+}
+
 /* Relic from old cleaner.. but it works, so why to change? */
-void 
+/*void 
 scandirectory(char *directoryname, int setfree)
 {
 	struct dirent **namelist, **namelist2;
@@ -66,7 +105,7 @@ scandirectory(char *directoryname, int setfree)
 		free(namelist);
 		}
 	}
-}
+}*/
 
 char           *
 replace_cookies(char *s)
@@ -110,9 +149,13 @@ replace_cookies(char *s)
 void 
 incomplete_cleanup(char *path, int setfree)
 {
-	struct dirent **dirlist;
+	DIR		*dir;
+	struct dirent	*dp;
+	
+	//struct dirent **dirlist;
 	struct stat	fileinfo;
-	int		entries, tempsize = 0;
+	//int		entries, tempsize = 0;
+	int		tempsize = 0;
 	regex_t		preg   [4];
 	regmatch_t	pmatch[1];
 	char		temp[PATH_MAX];
@@ -137,68 +180,71 @@ incomplete_cleanup(char *path, int setfree)
 	printf("[%s]\n", path);
 
 	if (chdir(path) != -1) {
-		if ((entries = scandir(".", &dirlist, 0, 0)) != -1) {
-			while (entries--) {
+		//if ((entries = scandir(".", &dirlist, 0, 0)) != -1) {
+			//while (entries--) {
+		if ((dir = opendir("."))) {
+			while ((dp = readdir(dir))) {
 
 				/* Multi CD */
-				if (regexec(&preg[0], dirlist[entries]->d_name, 1, pmatch, 0) == 0) {
-					if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries])) {
-						tempsize = readlink(dirlist[entries]->d_name, temp, PATH_MAX);
+				if (regexec(&preg[0], dp->d_name, 1, pmatch, 0) == 0) {
+					if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dp)) {
+						tempsize = readlink(dp->d_name, temp, PATH_MAX);
 						temp[tempsize] = '\0';
-						if (stat(dirlist[entries]->d_name, &fileinfo)) {
+						if (stat(dp->d_name, &fileinfo)) {
 							if (setfree) {
-								unlink(dirlist[entries]->d_name);
+								unlink(dp->d_name);
 								printf("Broken symbolic link \"%s\" removed.\n", temp);
 							}
 						} else
 							printf("Incomplete release: \"%s\".\n", temp);
 					}
-				} else if (regexec(&preg[2], dirlist[entries]->d_name, 1, pmatch, 0) == 0) {
-					if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries])) {
-						tempsize = readlink(dirlist[entries]->d_name, temp, PATH_MAX);
+				} else if (regexec(&preg[2], dp->d_name, 1, pmatch, 0) == 0) {
+					if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dp)) {
+						tempsize = readlink(dp->d_name, temp, PATH_MAX);
 						temp[tempsize] = '\0';
-						if (stat(dirlist[entries]->d_name, &fileinfo)) {
+						if (stat(dp->d_name, &fileinfo)) {
 							if (setfree) {
-								unlink(dirlist[entries]->d_name);
+								unlink(dp->d_name);
 								printf("Broken symbolic link \"%s\" removed.\n", temp);
 							}
 						} else
 							printf("Incomplete release: \"%s\".\n", temp);
 					}
 				/* Normal */
-				} else	if (regexec(&preg[1], dirlist[entries]->d_name, 1, pmatch, 0) == 0) {
-					if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries])) {
-						tempsize = readlink(dirlist[entries]->d_name, temp, PATH_MAX);
+				} else	if (regexec(&preg[1], dp->d_name, 1, pmatch, 0) == 0) {
+					if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dp)) {
+						tempsize = readlink(dp->d_name, temp, PATH_MAX);
 						temp[tempsize] = '\0';
-						if (stat(dirlist[entries]->d_name, &fileinfo)) {
+						if (stat(dp->d_name, &fileinfo)) {
 							if (setfree) {
-								unlink(dirlist[entries]->d_name);
+								unlink(dp->d_name);
 								printf("Broken symbolic link \"%s\" removed.\n", temp);
 							}
 						} else
 							printf("Incomplete release: \"%s\".\n", temp);
 					}
-				} else if (regexec(&preg[3], dirlist[entries]->d_name, 1, pmatch, 0) == 0) {
-					if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries])) {
-						tempsize = readlink(dirlist[entries]->d_name, temp, PATH_MAX);
+				} else if (regexec(&preg[3], dp->d_name, 1, pmatch, 0) == 0) {
+					if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dp)) {
+						tempsize = readlink(dp->d_name, temp, PATH_MAX);
 						temp[tempsize] = '\0';
-						if (stat(dirlist[entries]->d_name, &fileinfo)) {
+						if (stat(dp->d_name, &fileinfo)) {
 							if (setfree) {
-								unlink(dirlist[entries]->d_name);
+								unlink(dp->d_name);
 								printf("Broken symbolic link \"%s\" removed.\n", temp);
 							}
 						} else
 							printf("Incomplete release: \"%s\".\n", temp);
 					}
 				}
-				free(dirlist[entries]);
+				//free(dirlist[entries]);
 			}
-			free(dirlist);
+			//free(dirlist);
+			closedir(dir);
 		} else {
-			fprintf(stderr, "Unable to scandir(%s)\n", path);
+			fprintf(stderr, "opendir(%s): %s\n", path, strerror(errno));
 		}
 	} else {
-		fprintf(stderr, "Unable to chdir(%s)\n", path);
+		fprintf(stderr, "chdir(%s): %s\n", path, strerror(errno));
 	}
 	regfree(&preg[0]);
 	regfree(&preg[1]);
