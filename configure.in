@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(zipscript/conf/zsconfig.h)
 AC_CONFIG_HEADER(config.h)
-AC_PREFIX_DEFAULT(/glftpd/bin/)
+AC_PREFIX_DEFAULT(/glftpd/)
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -12,44 +12,42 @@ dnl Checks for libraries.
 dnl Checks for header files.
 
 AC_HEADER_TIME
-AC_CHECK_HEADERS(sys/time.h unistd.h) #mysql/mysql.h)
+AC_CHECK_HEADERS(sys/time.h unistd.h mysql/mysql.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 
 dnl Checks for library functions.
-dnl These two aren't used yet.
 
-#AC_CHECK_LIB(mysqlclient, mysql_query, ZSLIBS="-lmysqlclient")
-#AC_CHECK_LIB(curses, curses_version, CFGLIBS="-lcurses")
+AC_CHECK_LIB(mysqlclient, mysql_query, ZSLIBS="-lmysqlclient")
+AC_CHECK_LIB(curses, curses_version, CFGLIBS="-lcurses")
 
-#want_mysql=no
-#AC_ARG_WITH(mysql,
-#[  --with-mysql	  mysql support [default = disabled] ],
-# want_mysql=yes
-#)
+want_mysql=no
+AC_ARG_WITH(mysql,
+[  --with-mysql	  mysql support [default = disabled] ],
+ want_mysql=yes
+)
 
 dnl features
 
-#if test "x$CFGLIBS" = "x" ; then
-# AC_MSG_RESULT(NOTICE: Could not find curses. Configurator will not be compiled.)
-# CFGLIBS=""
-#fi
+if test "x$CFGLIBS" = "x" ; then
+ AC_MSG_RESULT(NOTICE: Could not find curses. Configurator will not be compiled.)
+ CFGLIBS=""
+fi
 
-#ZSTYPE="race-file.o"
-#if test "$want_mysql" = "no" ; then
-# AC_MSG_RESULT(NOTICE: mysql support disabled. )
-# ZSLIBS=""
-# ZSTYPE="race-file.o"
-#else
-# if test "x$ZSLIBS" = "x" ; then
-#  AC_MSG_ERROR(could not find mysqlclient library. Use file logging instead!)
-#  ZSTYPE="race-file.o"
-# else
-#  AC_MSG_RESULT(NOTICE: mysql support enabled.)
-#  ZSTYPE="race-mysql.o"
-#  AC_DEFINE(HAVE_MYSQL)
-# fi
-#fi
+if test "$want_mysql" = "no" ; then
+ AC_MSG_RESULT(NOTICE: mysql support disabled. )
+ ZSLIBS=""
+ ZSTYPE="race-file.o"
+else
+ if test "x$ZSLIBS" = "x" ; then
+  AC_MSG_ERROR(could not find mysqlclient library. Use file logging instead!)
+  ZSTYPE="race-file.o"
+ else
+  AC_MSG_RESULT(NOTICE: mysql support enabled.)
+  ZSTYPE="race-mysql.o"
+  AC_DEFINE(HAVE_MYSQL)
+ fi
+fi
 
 dnl OS :)
 
@@ -86,7 +84,7 @@ fi
 
 AC_SUBST(ZSLIBS)
 AC_SUBST(CFGLIBS)
-#AC_SUBST(ZSTYPE)
+AC_SUBST(ZSTYPE)
 AC_SUBST(STATIC)
 
 AC_OUTPUT(Makefile zipscript/src/Makefile)

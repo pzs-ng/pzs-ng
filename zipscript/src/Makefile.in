@@ -1,24 +1,25 @@
 prefix=@prefix@
-bindir=@bindir@
-mandir=@mandir@
-datadir=@datadir@
+rootpath=$(prefix)
+datapath=/ftp-data
+bindir=$(rootpath)/bin
 binpath=../bin
 
 CC=@CC@
-CFLAGS=-O2 @STATIC@ -Wall -pedantic -I../include/
+#CFLAGS=-O2 @STATIC@ -Wall
+CFLAGS=@STATIC@ -Wall -g
 LDFLAGS=@LDFLAGS@
 ZSLIBS=@ZSLIBS@
-UNIVERSAL=race-file.o zsfunctions.o mp3info.o
+ZSTYPE=@ZSTYPE@
 RM=rm -f
 
 RD-OBJECTS=racedebug.o
-ZS-OBJECTS=zipscript-c.o dizreader.o stats.o complete.o convert.o multimedia.o $(UNIVERSAL)
-PD-OBJECTS=postdel.o dizreader.o stats.o convert.o multimedia.o $(UNIVERSAL)
-RS-OBJECTS=racestats.o dizreader.o stats.o convert.o $(UNIVERSAL)
+ZS-OBJECTS=zipscript-c.o dizreader.o stats.o complete.o convert.o multimedia.o mp3info.o $(ZSTYPE)
+PD-OBJECTS=postdel.o dizreader.o stats.o convert.o multimedia.o mp3info.o $(ZSTYPE)
+RS-OBJECTS=racestats.o dizreader.o stats.o convert.o mp3info.o $(ZSTYPE)
 CU-OBJECTS=cleanup.o
 DC-OBJECTS=datacleaner.o
-SC-OBJECTS=rescan.o dizreader.o stats.o convert.o complete.o crc.o multimedia.o $(UNIVERSAL)
-ZS-DEPEND=cleanup.o complete.o convert.o datacleaner.o postdel.o racestats.o rescan.o stats.o zipscript-c.o multimedia.o $(UNIVERSAL)
+SC-OBJECTS=rescan.o dizreader.o stats.o convert.o complete.o crc.o multimedia.o mp3info.o $(ZSTYPE)
+ZS-DEPEND=cleanup.o complete.o convert.o datacleaner.o postdel.o racestats.o rescan.o stats.o zipscript-c.o multimedia.o mp3info.o $(ZSTYPE)
 
 all: zipscript-c postdel racestats cleanup datacleaner rescan racedebug
 	@(ls -lA $(binpath))
@@ -47,15 +48,17 @@ rescan: $(SC-OBJECTS)
 	$(CC) $(LDFLAGS) $(SC-OBJECTS) -o $(binpath)/$@ $(ZSLIBS)
 
 install:
-	if [ ! -e "/glftpd/ftp-data/zipscript/" ] ; then mkdir "/glftpd/ftp-data/zipscript/" ; fi
-	chmod 666 /glftpd/ftp-data/logs/glftpd.log
-	chmod 777 /glftpd/ftp-data/zipscript/
-	cp -f $(binpath)/zipscript-c /glftpd/bin/
-	cp -f $(binpath)/postdel /glftpd/bin/
-	cp -f $(binpath)/racestats /glftpd/bin/
-	cp -f $(binpath)/cleanup /glftpd/bin/
-	cp -f $(binpath)/datacleaner /glftpd/bin/
-	cp -f $(binpath)/rescan /glftpd/bin/
+	if [ ! -e "$(rootpath)$(datapath)/zipscript/" ] ; then mkdir "$(rootpath)$(datapath)/zipscript/" ; fi
+	chmod 666 $(rootpath)$(datapath)/logs/glftpd.log
+	chmod 777 $(rootpath)$(datapath)/zipscript/
+#	strip $(binpath)/*
+	cp -f $(binpath)/zipscript-c $(bindir)/
+	cp -f $(binpath)/postdel $(bindir)/
+	cp -f $(binpath)/racestats $(bindir)/
+	cp -f $(binpath)/cleanup $(bindir)/
+	cp -f $(binpath)/datacleaner $(bindir)/
+	cp -f $(binpath)/rescan $(bindir)/
+	cp -f $(binpath)/racedebug $(bindir)/
 
 clean:
 	@$(RM) *.o $(binpath)/zipscript-c $(binpath)/postdel $(binpath)/racestats $(binpath)/cleanup $(binpath)/datacleaner $(binpath)/rescan $(binpath)/racedebug Makefile
