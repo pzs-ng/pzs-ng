@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 
+#include "helpfunctions.h"
 #include "zsfunctions.h"
 #include "race-file.h"
 #include "objects.h"
@@ -36,7 +37,7 @@ int
 main(int argc, char **argv)
 {
 	char		*fileext;
-	char		*name_p;
+	char		*name_p = 0;
 	char		*temp_p;
 	char		*target;
 	char		*fname;
@@ -160,10 +161,11 @@ main(int argc, char **argv)
 
 	d_log("Parsing file extension from filename...\n");
 
-	for (temp_p = name_p = g.v.file.name; *name_p != 0; name_p++) {
+	/*for (temp_p = name_p = g.v.file.name; *name_p != 0; name_p++) {
 		if (*name_p == '.')
 			temp_p = name_p;
-	}
+	}*/
+	temp_p = find_last_of(".", g.v.file.name);
 
 	if (*temp_p != '.') {
 		d_log("Got: no extension\n");
