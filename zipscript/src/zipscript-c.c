@@ -371,9 +371,9 @@ int main( int argc, char **argv ) {
 	    case 0: /* ZIP CHECK */
 		d_log("File type is: ZIP\n");
 		d_log("Testing file integrity with unzip\n");
-		sprintf(target, "/bin/unzip -qqt %s", raceI.file.name);
+		sprintf(target, "/bin/unzip -qqt \"%s\"", raceI.file.name);
 		if (execute(target) != 0) {
-		    d_log("Integriy check failed\n");
+		    d_log("Integrity check failed\n");
 		    sprintf(raceI.misc.error_msg, BAD_ZIP);
 		    exit_value = 2;
 		    break;
@@ -390,7 +390,7 @@ int main( int argc, char **argv ) {
 
 		if ( ! fileexists("file_id.diz") ) {
 		    d_log("file_id.diz does not exist, trying to extract it from %s\n", raceI.file.name);
-		    sprintf(target, "/bin/unzip -qqjnCL %s file_id.diz", raceI.file.name);
+		    sprintf(target, "/bin/unzip -qqjnCL \"%s\" file_id.diz", raceI.file.name);
 		    execute(target);
 		    chmod("file_id.diz",0666);
 		}

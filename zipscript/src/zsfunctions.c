@@ -426,40 +426,58 @@ void get_rar_info(char *filename) {
  * Author     : dark0n3
  *
  * Description: Executes extern program and returns return value
+ *
+ * Modified by js on 08.08.2004 to handle " and ' in arguments
+ *
  */
 int execute(char *s) {
-    int    n;
-    int	args = 0;
-    char	*argv[128]; /* Noone uses this many args anyways */
+	int n, args=-1, test=0;
+	char *command, **argv;
 
-    argv[0] = s;
-    while ( 1 ) {
-	if ( *s == ' ' ) {
-	    *s = 0;
-	    args++;
-	    argv[args] = s + 1;
-	} else if ( *s == 0 ) {
-	    args++;
-	    argv[args] = NULL;
-	    break;
+	command = malloc(sizeof(char));
+	argv = malloc(sizeof(char *));
+
+	while (1) {
+
+		if (*s == '\"') test = 1;
+		else if (*s == '\'') test = 2;
+		else if ((*s == '\"' && test == 1) || (*s == '\'' && test == 2)) test = 0;
+
+		if (*s == ' ' && test == 0) {
+			*s = 0;
+			args++;
+			if (args == 0) {
+				command = malloc(sizeof(char)*strlen(s+1));
+				strcpy(command, s+1);
+			} else {
+				realloc(argv, (sizeof(char *)*args));
+				argv[args-1] = s + 1;
+			}
+		} else if (*s == 0) {
+			args++;
+			realloc(argv, (sizeof(char *)*args));
+			argv[args] = NULL;
+			break;
+		}
+		s++;
+
 	}
-	s++;
-    }
 
-    switch ( fork() ) {
-	case 0: 
-	    close(1);
-	    close(2);
-	    n = execv(argv[0], argv);
-	    exit(0);
-	    break;
-	default:
-	    wait(&n);
-	    break;
-    }
+	switch (fork()) {
+		case 0: 
+			close(1);
+			close(2);
+			n = execv(command, argv);
+			exit(0);
+			break;
+		default:
+			wait(&n);
+			break;
+	}
 
-    return n >> 8;
+	return n >> 8;
 }
+
 /*
  * Copyright (c) 1997 Shigio Yamaguchi. All rights reserved.
  * Copyright (c) 1999 Tama Communications Corporation. All rights reserved.
