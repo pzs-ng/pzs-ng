@@ -160,9 +160,16 @@ int main(int argc, char *argv[]) {
 		if (strlen(buf->pw_passwd) == 13) {
 			strncpy(salt, buf->pw_passwd, 2);
 			crypted = crypt(argv[2], salt);
-		} else {
+		} else if (strlen(buf->pw_passwd) == 40) {
 			crypted = malloc(SHA_DIGEST_LENGTH * 2 + 1);
+			if (!crypted) {
+				printf("Ooops, couldn't allocate %d bytes of memory for hash.\n", (SHA_DIGEST_LENGTH * 2 + 1));
+				return 1;
+			}
 			pw_encrypt(argv[2], crypted);
+		} else {
+			printf("Ooops, password is of invalid length! (not gl1 nor gl2).\n");
+			return 1;
 		}
 		
 		if (strcmp(buf->pw_passwd, crypted) == 0) {
