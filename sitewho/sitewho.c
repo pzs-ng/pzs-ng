@@ -328,7 +328,7 @@ compareflags(char *flags, char *checkflags)
 	unsigned int	n1 = 0, n2 = 0;
 	char           *userflags;
 
-	userflags = (flags != NULL ? flags : "1234ABCDEFGHI");
+	userflags = (flags != NULL ? flags : "3");
 
 	for (n1 = 0; n1 < strlen(userflags); n1++) {
 		for (n2 = 0; n2 < strlen(checkflags); n2++) {
