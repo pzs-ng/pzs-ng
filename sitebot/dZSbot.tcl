@@ -732,11 +732,11 @@ proc ng_inviteuser {nick user group flags} {
 
 	## Invite the user to the defined channels.
 	foreach chan $invite_channels {
-		putquick "INVITE $nick :$chan"
+		putquick "INVITE $nick $chan"
 	}
 	foreach {chan rights} [array get privchannel] {
 		if {[rightscheck $user $group $flags $rights]} {
-			putquick "INVITE $nick :$chan"
+			putquick "INVITE $nick $chan"
 		}
 	}
 
