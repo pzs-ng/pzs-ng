@@ -267,7 +267,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	unsigned char	space;
 	unsigned char	args;
 	char		*p_buf = 0, *eof = 0;
-	char		t_buf[PATH_MAX];
+	char		t_buf[PATH_MAX], *f_buf = 0;
 	char		*arg[45]; /* Enough to hold 10 sections (noone has
 				   * more?) */
 	struct userdata	*user = 0;
@@ -299,18 +299,19 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 		
 		if (S_ISDIR(fileinfo.st_mode) == 0) {
 
-			eof = t_buf + fileinfo.st_size;
-
 			user = realloc(user, sizeof(struct userdata)*(n+1));
 			bzero(&user[n], (sizeof(struct userdata)));
 
-			read(fd, t_buf, fileinfo.st_size);
+			eof = f_buf = realloc(f_buf, fileinfo.st_size);
+			eof += fileinfo.st_size;
+
+			read(fd, f_buf, fileinfo.st_size);
 			close(fd);
 
 			args = 0;
 			space = 1;
 
-			for (p_buf = t_buf; p_buf < eof; p_buf++)
+			for (p_buf = f_buf; p_buf < eof; p_buf++)
 				switch (*p_buf) {
 					case '\n':
 						*p_buf = 0;
@@ -386,5 +387,9 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 				}
 			}
 	}
-	free(user);
+	
+	if (f_buf)
+		free(f_buf);
+	if (user)
+		free(user);
 }
