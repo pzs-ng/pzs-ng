@@ -1123,7 +1123,7 @@ proc show_free {nick uhost hand chan arg} {
 # LAUNCH A NUKE (GL2.0)                                                         #
 #################################################################################
 proc launchnuke2 {type path section sargs dargs} {
-	global nuke hidenuke announce sitename theme
+	global nuke hidenuke announce sitename theme mpath
 
 	set nuke(TYPE) $type
 	set nuke(PATH) $path
@@ -1152,6 +1152,21 @@ proc launchnuke2 {type path section sargs dargs} {
 	set output [replacevar $output "%multiplier" $nuke(MULT)]
 	set output [replacevar $output "%reason" $nuke(REASON)]
 	set output [replacevar $output "%section" $nuke(SECTION)]
+
+	set split [split $nuke(PATH) "/"]
+	set ll [llength $split]
+
+	set split2 [split $mpath "/"]
+	set sl [llength $split2]
+
+	set temp [lrange $split [expr $sl - 1] end]
+		set relname ""
+		foreach part $temp {
+		set relname $relname/$part
+	}
+	set temp [string range $relname 1 end]
+
+        set output [replacevar $output "%relname" $temp]
 	set output [replacevar $output "%reldir" [lindex $split [expr $ll -1]]]
 	set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
 	set output [basicreplace $output $nuke(TYPE)]
@@ -1194,7 +1209,7 @@ proc fuelnuke {type path section args} {global nuke
 # FLUSH NUKE BUFFER  (GL1.0)                                                    #
 #################################################################################
 proc launchnuke {} {
-	global nuke sitename announce theme
+	global nuke sitename announce theme mpath
 	if {$nuke(SHOWN) == 1} {return 0}
 	set nuke(NUKEE) [string trim $nuke(NUKEE) ", "]
 
@@ -1208,6 +1223,21 @@ proc launchnuke {} {
 	set output [replacevar $output "%multiplier" $nuke(MULT)]
 	set output [replacevar $output "%reason" $nuke(REASON)]
 	set output [replacevar $output "%section" $nuke(SECTION)]
+
+        set split [split $nuke(PATH) "/"]
+        set ll [llength $split]
+
+        set split2 [split $mpath "/"]
+        set sl [llength $split2]
+
+        set temp [lrange $split [expr $sl - 1] end]
+                set relname ""
+                foreach part $temp {
+                set relname $relname/$part
+        }
+        set temp [string range $relname 1 end]
+
+        set output [replacevar $output "%relname" $temp]
 	set output [replacevar $output "%reldir" [lindex $split [expr $ll -1]]]
 	set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
 	set output [basicreplace $output $nuke(TYPE)]

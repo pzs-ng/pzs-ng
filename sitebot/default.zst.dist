@@ -21,6 +21,11 @@ announce.WIPE		        = "[%b{wipe  }][%section] %b{%relname} by %b{%u_name} of 
 announce.WIPE-r		        = "[%b{wipe-r}][%section] %b{%relname} and all subdirectories by %b{%u_name} of %g_name."
 announce.FAILLOGIN		= "[%b{login }] %b{%failed_nick} tried to log in with wrong password."
 
+# special announces done by glftpd
+announce.NUKE		        = "[%b{nuke  }][%section] %b{%relname} factor %b{%multiplier} by %b{%nuker} [reason] %b{%reason} [nukees] %b{%nukees}."
+announce.UNNUKE		        = "[%b{unnuke}][%section] %b{%relname} factor %b{%multiplier} by %b{%nuker} [reason] %b{%reason} [nukees] %b{%nukees}."
+announce.NUKEES                 = "%b{%u_name} (%b{%size}MB), "
+
 # special output done by the zipscript
 announce.DOUBLESFV		= "[%b{notice}] %b{%u_name} of %g_name tried to upload a dupe sfv."
 announce.BADBITRATE		= "[%b{notice}] %b{%u_name} of %g_name is violating rules by uploading shit with bitrate %b{%bitrate}kbps."
@@ -93,11 +98,6 @@ announce.INVITE		        = "[%b{invite}] %b{%u_name} of %g_name invited himself 
 announce.REQUEST	        = "[%b{req   }] %b{%u_name} of %g_name requests %b{%releasename}."
 announce.REQFILLED	        = "[%b{filled}] %b{%u_name} of %g_name just filled %b{%releasename} for %b{%u_requester}."
 
-# 3rd party imdb announce - example for psxc-imdb
-announce.IMDBVAR		= "[%b{imdb  }][%section] %b{%imdbname} (%imdburl), a %imdbdirector movie which scored %b{%imdbscore of 10} (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.|%b{%sitename} :: [%b{imdb  }][%section] %b{%imdbname} plot summary: %imdbplot \[%imdbbar\]"
-announce.IMDB			= "[%b{imdb  }][%section] %msg"
-announce.IMDBFIND		= "[%b{imdb  }][%section] %msg"
-
 # internal announces
 announce.LEECH			= "[%b{bwinfo}] Current leechers:"
 announce.UPLOAD			= "[%b{bwinfo}] Current uploaders:"
@@ -113,14 +113,15 @@ announce.SPEEDUP		= "[%b{bwinfo}] %b{%u_name} of %g_name is uploading %b{%f_name
 announce.SPEEDDN		= "[%b{bwinfo}] %b{%u_name} of %g_name is downloading %b{%f_name} at %b{%dnspeed}KB/s (%dnpercent)."
 announce.SPEEDID		= "[%b{bwinfo}] %b{%u_name} of %g_name has been idle for %b{%idletime}."
 announce.SPEEDERROR		= "[%b{bwinfo}] Nope, try again. Found noone by that name on site."
-
-announce.NUKE		        = "[%b{nuke  }][%section] %b{%relname} factor %b{%multiplier} by %b{%nuker} [reason] %b{%reason} [nukees] %b{%nukees}."
-announce.UNNUKE		        = "[%b{unnuke}][%section] %b{%relname} factor %b{%multiplier} by %b{%nuker} [reason] %b{%reason} [nukees] %b{%nukees}."
-announce.NUKEES                 = "%b{%u_name} (%b{%size}MB), "
-announce.MSGINVITE	        = "[%b{invite}] %b{%u_name} of %g_name invited himself as %b{%u_ircnick}."
-announce.BADMSGINVITE	        = "[%b{%c1{badinv}}] %b{%u_ircnick} (%u_host) tried to invite himself with invalid login!"
 announce.WELCOME	        = "Welcome to %b{%sitename}'s sitechan. Type %cmdprehelp for help."
-
 announce.FREE		        = "[%b{space }] %devices[Totals: %b{%free} of %b{%total} (used %percentage%)]."
 announce.FREE-DEV	        = "%section: %b{%free} of %b{%total} (used %percentage%) :: "
+
+# 3rd party imdb announce - example for psxc-imdb
+announce.IMDBVAR		= "[%b{imdb  }][%section] %b{%imdbname} (%imdburl), a %imdbdirector movie which scored %b{%imdbscore of 10} (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.|%b{%sitename} :: [%b{imdb  }][%section] %b{%imdbname} plot summary: %imdbplot \[%imdbbar\]"
+announce.IMDB			= "[%b{imdb  }][%section] %msg"
+announce.IMDBFIND		= "[%b{imdb  }][%section] %msg"
+announce.MSGINVITE	        = "[%b{invite}] %b{%u_name} of %g_name invited himself as %b{%u_ircnick}."
+announce.BADMSGINVITE	        = "[%b{%c1{badinv}}] %b{%u_ircnick} (%u_host) tried to invite himself with invalid login!"
+
 

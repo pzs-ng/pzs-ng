@@ -734,7 +734,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 
 				/* Other */
 
-			//case 'Z':
+			case 'J':
 				*out_p++ = raceI->file.compression_method;
 				break;
 			case 'Z':
@@ -742,6 +742,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				break;
 			case '%':
 				*out_p++ = *instr;
+				break;
 			}
 		} else
 			*out_p++ = *instr;

@@ -572,6 +572,9 @@ get_rar_info(char *filename)
 	if ((file = fopen(filename, "r"))) {
 		fseek(file, 45, SEEK_CUR);
 		fread(&raceI.file.compression_method, 1, 1, file);
+//		d_log("DEBUG: raceI.file.compression_method : %d\n", raceI.file.compression_method);
+		if ( ! (( 47 < raceI.file.compression_method ) && ( raceI.file.compression_method < 54 )) )
+			raceI.file.compression_method = 88;
 		fclose(file);
 	}
 }

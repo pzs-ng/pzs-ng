@@ -208,7 +208,7 @@
 #define video_norace_complete	DISABLED
 #endif
 
-/* RAR - allows usage of compression mode cookie (%Z) for rarred releases */
+/* RAR - allows usage of compression mode cookie (%J) for rarred releases */
 #if ( disable_rar_race == FALSE )
 #define rar_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%K} {%B}"
 #else
@@ -220,7 +220,7 @@
 #define rar_sfv			DISABLED
 #endif
 #if ( disable_rar_update == FALSE )
-#define rar_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r} {%K}"
+#define rar_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r} {%K} {%J}"
 #else
 #define rar_update		DISABLED
 #endif

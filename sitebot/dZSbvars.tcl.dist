@@ -64,7 +64,7 @@ set variables(SFV_OTHER)		"%pf %releasename %t_filecount %u_name %g_name %u_tagl
 set variables(SFV_VIDEO)		"%pf %releasename %t_filecount %u_name %g_name %u_tagline"
 set variables(SFV_AUDIO)		"%pf %releasename %t_filecount %u_name %g_name %u_tagline"
 set variables(UPDATE)			"%pf %u_name %g_name %t_files %u_speed %t_mbytes %filename %releasename %u_tagline"
-set variables(UPDATE_RAR)		"%pf %u_name %g_name %t_files %u_speed %t_mbytes %filename %releasename %u_tagline"
+set variables(UPDATE_RAR)		"%pf %u_name %g_name %t_files %u_speed %t_mbytes %filename %releasename %u_tagline %compression"
 set variables(UPDATE_ZIP)		"%pf %u_name %g_name %t_files %u_speed %t_mbytes %filename %releasename %u_tagline"
 set variables(UPDATE_OTHER)		"%pf %u_name %g_name %t_files %u_speed %t_mbytes %filename %releasename %u_tagline"
 set variables(UPDATE_VIDEO)		"%pf %u_name %g_name %t_files %u_speed %t_mbytes %filename %releasename %u_tagline"
