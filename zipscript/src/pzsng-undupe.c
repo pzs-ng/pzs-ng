@@ -21,16 +21,17 @@ struct dupefile {
 
 int main (int argc, char *argv[]) {
 
-  if ( argc != 2 ) {
-    printf("Please give a filename to undupe as well\n");
-    return 1;
-  }
   FILE *fp, *fp2;
   char dupename[1024], data2[1024], dupefile[1024];
   
   struct dupefile buffer;
   
- strcpy(dupefile, dupepath);
+  if ( argc != 2 ) {
+    printf("Please give a filename to undupe as well\n");
+    return 1;
+  }
+  
+  strcpy(dupefile, dupepath);
   strcpy(dupename, argv[1]);
   
   sprintf(data2, "%s2", dupefile);
