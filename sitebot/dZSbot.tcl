@@ -191,9 +191,11 @@ proc readlog {} {
 				if {[info exists variables($msgtype)]} {
 					set echoline [parse $msgtype [lrange $line 6 end] $section]
 					sndall $section $echoline
+					postcmd $msgtype $section $path
 				} else {
 					set echoline [parse DEFAULT [lrange $line 6 end] $section]
 					sndall $section $echoline
+					postcmd $msgtype $section $path
 				}
 			}
 			} else {
@@ -201,11 +203,13 @@ proc readlog {} {
 					if {$disable($msgtype) == 0} {
 						set echoline [parse $msgtype [lrange $line 6 end] "DEFAULT"]
 						sndall "DEFAULT" $echoline
+						postcmd $msgtype "DEFAULT" $path
 					}
 				} else {
 					if {$disable(DEFAULT) == 0} {
 						set echoline [parse $msgtype [lrange $line 6 end] "DEFAULT"]
 						sndall "DEFAULT" $echoline
+						postcmd $msgtype "DEFAULT" $path
 					}
 				}
 			}
@@ -221,6 +225,20 @@ proc readlog {} {
 }
 #################################################################################
 
+#################################################################################
+# POST COMMAND                                                                  #
+#################################################################################
+proc postcmd {msgtype section path} {
+	global postcommand
+
+	if {[info exists postcommand($msgtype)]} {
+		foreach cmd $postcommand($msgtype) {
+			if {[catch {$cmd $msgtype $section $path} result] != 0} {
+				putlog "dZSbot error: $cmd caused an error - $result"
+			}
+		}
+	}
+}
 
 #################################################################################
 # GET SECTION NAME (BASED ON PATH)                                              #

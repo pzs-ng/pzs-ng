@@ -104,6 +104,27 @@ set chanlist(DEFAULT)					"$mainchan"
 set chanlist(INVITE)					"$mainchan"
 set chanlist(WELCOME)					"$mainchan"
 
+## RUNNING POST COMMANDS
+#
+# Example:
+#  set postcommand(NEWDIR)       "imdb:check some:other:cmd"
+#   TYPE -------------^
+#             COMMANDS -------------^
+#
+# Notes:
+#  Any process you list here must be waiting to accept 3 parameter
+#
+#  1st - message type, eg: NEWDIR
+#  2nd - section name, eg: 0DAY
+#  3rd - path to release, eg: /site/incoming/0day
+
+#set postcommand(NEWDIR)        "misc:gfaq:search"
+#set postcommand(DELDIR)        ""
+#set postcommand(NUKE)          ""
+#set postcommand(UNNUKE)        ""
+#set postcommand(DEFAULT)       ""
+#set postcommand(COMPLETE)      "misc:rominfo"
+
 # Are we disabling the announce of this stuff?
 # If its set to 1, we wont show it :)
 set disable(NEWDIR)					0
