@@ -55,7 +55,7 @@ d_log(char *fmt,...)
 #endif
 
 	if ((file = fopen(debugname, "a+"))) {
-		fprintf(file, "%.24s - ", ctime(&timenow));
+		fprintf(file, "%.24s - %.6d - ", ctime(&timenow), getpid());
 		vfprintf(file, fmt, ap);
 		fclose(file);
 	}
