@@ -117,7 +117,7 @@
 #define other_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
 #define other_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L  %C0 %c0"
 #define other_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define other_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g}"
+#define other_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G}"
 
 /* Zipped files */
 #define zip_race		"{%U} {%G} {%R} {%r} {%.0S}"
@@ -126,7 +126,7 @@
 #define zip_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
 #define zip_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L  %C0 %c0 {%T}"
 #define zip_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define zip_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} {%T}"
+#define zip_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G} {%T}"
 
 /* Output of racestats binary */
 #define stats_line		"{%r} {%F} {%f} {%u} {%g} %C0"
