@@ -170,7 +170,7 @@ announce.COMPLETE_STAT_RACE_VIDEO		= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{
 announce.COMPLETE_STAT_RACE_ZIP			= "%b{COMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{with} %c3{%b{%t_files}} %c1{zip files (}%c3{%b{%t_mbytes}}%c1{MB) was completed in} %c3{%b{%t_duration}} %c1{(avg.} %c3{%r_avgspeed}%c1{) by} %c3{%b{%u_count}} %c1{user(s) in} %c3{%b{%g_count}} %c1{group(s).}\n%b{STATS%c1{:}} %c1{Users hall of fame:}%loop3\n%b{STATS%c1{:}} %c1{Groups hall of fame:}%loop2"
 
 ## Postdel announce
-announce.INCOMPLETE				= "%b{INCOMPLETEc1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%releasename}} %c1{is now incomplete thanks to} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{.}"
+announce.INCOMPLETE				= "%b{INCOMPLETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%releasename}} %c1{is now incomplete thanks to} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{.}"
 
 ## Third party scripts
 announce.IMDB					= "%c1{%msg}"
