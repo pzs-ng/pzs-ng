@@ -908,6 +908,10 @@
 #define charbar_filled			"#"
 #endif
 
+#ifndef chmod_completebar
+#define	chmod_completebar		FALSE
+#endif
+
 /*
  * Some setting used in ng-chown
  * -----------------------------

@@ -1300,6 +1300,9 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 			}
 			d_log("Creating complete bar\n");
 			createstatusbar(convert(&raceI, userI, groupI, complete_bar));
+#if (chmod_completebar)
+			chmod(convert(&raceI, userI, groupI, complete_bar), 0222);
+#endif
 
 #if ( enable_complete_script == TRUE )
 			nfofound = (int)findfileext(".nfo");
