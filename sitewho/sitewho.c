@@ -30,7 +30,7 @@ struct stat	filestat;
 
 char           *header = 0, *footer = 0, *glpath = 0, *mpaths = 0, *husers = 0, *hgroups = 0, *ipckey = 0, *glgroup = 0, *nocase = 0,
                *def_ipckey = "0x0000DEAD", *def_glgroup = "/etc/group", *def_nocase = "false", 
-	       *def_husers = "", *def_hgroups = "", *def_mpaths = "", *def_glpath = "/glftpd/",
+	       *def_husers = "pzs-ng", *def_hgroups = "pzs-ng", *def_mpaths = "/ftp-data/pzs-ng", *def_glpath = "/glftpd/",
 	       *def_count_hidden = "true", *count_hidden, *def_header = "/ftp-data/misc/who.head",
 	       *def_footer = "/ftp-data/misc/who.foot";
 int		maxusers = 20 , showall = 0, uploads = 0, downloads = 0, onlineusers = 0, browsers = 0, idlers = 0, chidden = 1,
@@ -99,12 +99,17 @@ strplen(char *strin)
 short 
 matchpath(char *instr, char *path)
 {
-	int		cnt       , pos, k;
+	int		cnt, pos, k, ncase = 0;
+
+	if (!strncasecmp(nocase, "true", 4))
+		ncase = 1;
 
 	k = strlen(instr) + 1;
 	for (cnt = pos = 0; cnt < k; cnt++) {
 		if (instr[cnt] == ' ' || instr[cnt] == 0) {
-			if (!strncmp(instr + cnt - pos, path, pos - 1))
+			if (ncase == 0 && !strncmp(instr + cnt - pos, path, pos))
+				return 1;
+			else if (ncase == 1 && !strncasecmp(instr + cnt - pos, path, pos))
 				return 1;
 			pos = 0;
 		} else
@@ -128,11 +133,10 @@ strcomp(char *instr, char *searchstr)
 	for (cnt = pos = 0; cnt < l; cnt++) {
 		if (instr[cnt] == ' ' || instr[cnt] == 0) {
 			if (k == pos) {
-				if (ncase == 0 && !strncmp(instr + cnt - pos, searchstr, pos)) {
+				if (ncase == 0 && !strncmp(instr + cnt - pos, searchstr, pos))
 					return 1;
-				} else if (ncase == 1 && !strncasecmp(instr + cnt - pos, searchstr, pos)) {
+				else if (ncase == 1 && !strncasecmp(instr + cnt - pos, searchstr, pos))
 					return 1;
-				}
 			}
 			pos = 0;
 		} else {
@@ -195,42 +199,39 @@ showusers(int n, int mode, char *ucomp, char raw)
 
 		if ((!strncasecmp(user[x].status, "STOR ", 5) ||
 		     !strncasecmp(user[x].status, "APPE ", 5)) &&
-		    user[x].bytes_xfer && !mask) {
+		    user[x].bytes_xfer) {
 
-			pct = -1;
-			m = strplen(user[x].status) - 5;
-			if (m < 15 || raw)
-				sprintf(filename, "%.*s", m, user[x].status + 5);
-			else
-				sprintf(filename, "%.15s", user[x].status + m - 10);
-
-			strcpy(bar, "?->");
 			speed = user[x].bytes_xfer / 1024. /
 				((tstop.tv_sec - user[x].tstart.tv_sec) * 1. +
-			(tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.);
+				(tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.);
 
 			if ((!noshow && !mask && !(maskchar == '*')) || chidden) {
 				total_up_speed += speed;
 				uploads++;
 			}
-			if (!raw)
-				sprintf(status, "Up: %7.1fKB/s", speed);
-			else if (raw == 1)
-				sprintf(status, "\"UP\" \"%.1f\"", speed);
-			else
-				sprintf(status, "upld|%.1f", speed);
+			if (!mask) {
+				pct = -1;
+				m = strplen(user[x].status) - 5;
+				if (m < 15 || raw)
+					sprintf(filename, "%.*s", m, user[x].status + 5);
+				else
+					sprintf(filename, "%.15s", user[x].status + m - 10);
 
-			mb_xfered = user[x].bytes_xfer * 1.0 / 1024 / 1024;
+				strcpy(bar, "?->");
+				if (!raw)
+					sprintf(status, "Up: %7.1fKB/s", speed);
+				else if (raw == 1)
+					sprintf(status, "\"UP\" \"%.1f\"", speed);
+				else
+					sprintf(status, "upld|%.1f", speed);
+
+				mb_xfered = user[x].bytes_xfer * 1.0 / 1024 / 1024;
+			}
 		} else if ((!strncasecmp(user[x].status, "RETR ", 5) && user[x].bytes_xfer)) {
 			mb_xfered = 0;
 			m = strplen(user[x].status) - 5;
 
 			sprintf(realfile, "%s", user[x].currentdir);
-
-			if (m < 15 || raw)
-				sprintf(filename, "%.*s", m, user[x].status + 5);
-			else
-				sprintf(filename, "%.15s", user[x].status + m - 10);
 
 			/*
 			 * Dirty way to get around the fact that the buffered
@@ -261,12 +262,19 @@ showusers(int n, int mode, char *ucomp, char raw)
 				total_dn_speed += speed;
 				downloads++;
 			}
-			if (!raw)
-				sprintf(status, "Dn: %7.1fKB/s", speed);
-			else if (raw == 1)
-				sprintf(status, "\"DN\" \"%.1f\"", speed);
-			else
-				sprintf(status, "dnld|%.1f", speed);
+			if (!mask) {
+				if (m < 15 || raw)
+					sprintf(filename, "%.*s", m, user[x].status + 5);
+				else
+					sprintf(filename, "%.15s", user[x].status + m - 10);
+
+				if (!raw)
+					sprintf(status, "Dn: %7.1fKB/s", speed);
+				else if (raw == 1)
+					sprintf(status, "\"DN\" \"%.1f\"", speed);
+				else
+					sprintf(status, "dnld|%.1f", speed);
+			}
 		} else {
 			pct = *bar = *filename = hours = minutes = mb_xfered = 0;
 			seconds = tstop.tv_sec - user[x].tstart.tv_sec;
