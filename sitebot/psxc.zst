@@ -27,6 +27,7 @@ announce.TOTIDLE		= "[%boldbwinfo%bold] Currently %bold%count%bold users idle!"
 announce.USERIDLE		= "[%boldbwinfo%bold] %bold%user%bold of %group at %bold%idletime%bolds"
 announce.USER			= "[%boldbwinfo%bold] %bold%user%bold of %group on %bold%filename%bold (%bold%fper%bold done) at %bold%uspeed%boldKB/sec (%bold%per%bold usage)"
 
+announce.DEBUG	 	        = "[%bolddebug %bold] %msg"
 announce.DEFAULT 	        = "[%boldinfo  %bold] %msg"
 
 announce.REQUEST	        = "[%boldreq   %bold] %bold%user%bold of %group requests %bold%rl%bold"

@@ -241,11 +241,36 @@ proc readlog {} {
 		# (We remove the element if it's [*], since it's PID)
 		# (I store it in $pid so we can add a cookie for that later (or?))
 		set pid 0
-		if {[regexp {\[([0-9 ]+)\] .*?:} "$line" dud pid]} { regsub "\\\[$pid\\\] " "$line" "" line }
+		if {[regexp {\[([0-9\ ]+)\]} "$line" dud pid]} {
+			regsub "\\\[$pid\\\] " "$line" "" line
+			set pid [string trim $pid]
+		}
+		
+		# If we cannot detect a msgtype - default to DEBUG: and insert that into the list ($line).
+		if {[string first ":" [lindex $line 5]] < 0} {
+			set msgtype "DEBUG"
+			if {[llength $line] < 5} {
+				set line [lappend $line "dummy debug"]
+			} else {
+				set line [linsert $line 5 "DEBUG:"]
+			}
+		} else {		
+			set msgtype [string trim [lindex $line 5] ":"]
+		}
 
-		set pid [string trim $pid]
-		set line "$line $pid"
-		set msgtype [string trim [lindex $line 5] ":"]
+		# Catch regular as generated DEBUG lines.
+		if {$msgtype == "DEBUG"} {
+			# Now gather all list items after item 5 into one item compounded by {}
+			set tmp_begin [lrange $line 0 5]
+			set tmp [list [lrange $line 6 end]]
+			set line "$tmp_begin $tmp"
+		}
+
+		# Since PID is kinda special, we append this _after_ the above compound list item is generated.
+		if {$pid > 0} {
+			set line "$line $pid"
+		}
+		
 		set path [lindex $line 6]
 		
 		if {![string compare $msgtype "INVITE"]} {
