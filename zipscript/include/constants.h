@@ -114,10 +114,14 @@
 /* Special reformat cookies */
 #define fastestfile		"{%u} {%g} {%.3F}"	/* Put in %l cookie */
 #define slowestfile		"{%u} {%g} {%.3S}"	/* Put in %L cookie */
+#ifndef racersplit
 #define racersplit		" "	/* Put between racers in the %R
 					 * cookie - !!MUST BE ONLY ONE (1)
 					 * CHAR!! */
+#endif
+#ifndef racersmsg
 #define racersmsg		"%u/%g"	/* Put in %R cookie */
+#endif
 #define audio_vbr		"{%w} {%Y} {%X} {%z} {%Q} {VBR} {%I} {%x} {%W} {%y} {%h} {%q}"	/* Put in %j cookie */
 #define audio_cbr		"{%w} {%Y} {%X} {%z} {%Q} {CBR} {%x} {%W} {%y} {%h} {%q}"	/* Put in %j cookie */
 

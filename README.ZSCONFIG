@@ -1018,6 +1018,15 @@ disable_other_norace_complete <TRUE|FALSE>
 	announce.
 	Default: FALSE
 
+racersmsg <STRING>
+	This is a cookie formatted string containing info of the racers. This
+	string will be used for each racer in a race.
+	Default: "%u/%g"
+
+racersplit <CHAR>
+	This is one(!) char used to split racers in a race announce.
+	Default: " "
+
 KEY <IPCKEY>
 	You can define glftpd's ipckey with this argument. This is only used
 	in ng-bw, since the rest of the bins either does not access the shared
