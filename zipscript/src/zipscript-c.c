@@ -546,16 +546,11 @@ int main( int argc, char **argv ) {
 
 		d_log("Converting crc from string to integer\n");
 		crc = hexstrtodec((unsigned char*)argv[3]);
+		if ( crc == 0 ) {
+			d_log("We did not get crc from ftp daemon, calculating crc now...\n");
+			crc=calc_crc32(raceI.file.name);
+			}
 		if (fileexists(locations.sfv)) {
-			if ( crc == 0 ) {
-				d_log("We did not get crc from ftp daemon, calculating crc now...\n");
-				crc=calc_crc32(raceI.file.name);
-//				d_log("We did not get crc from ftp daemon\n");
-//				sprintf(raceI.misc.error_msg, ZERO_CRC);
-//				exit_value = 2;
-//				break;
-				}
-//				else
 			if ((s_crc = readsfv_file(&locations, &raceI, 0)) != crc ) {
 				if ( s_crc == 0 ) {
 					d_log("Filename was not found in the SFV\n");
