@@ -194,10 +194,8 @@ are shown when you type:
 Among the options are these:
   --enable-ss5            compiles the zipscript for use with SiteStat 5
   --enable-static         enable static linking of zs-c
-  --enable-gl1            disable autodetect of glversion, and compile bot
-                          binaries for glftpd1
-  --enable-gl2            disable autodetect of glversion, and compile bot
-                          binaries for glftpd2
+  --with-glpath=PATH      specify nondefault path to root glftpd dir (/glftpd
+                          per default)
 
 The configure process takes a couple of seconds. When it's done, it will have
 made zsconfig.h, which is a copy of zsconfig.h.dist. Do not edit zsconfig.h.dist

@@ -9,7 +9,6 @@
                on 64bit platforms.
 */
 
-#include <machine/param.h>
 #include <sys/file.h>
 #include <sys/param.h>
 #include <sys/stat.h>
