@@ -49,3 +49,13 @@ Q: Anything special worth mentioning for <enter-systemname-here>?
 -----------------------------------------------------------------
 A: Gentoo: You need baselayout 1.8.6.13 or newer.
 
+Q: I don't want announces of CD/SAMPLE/SUBS etc. How do I do that?
+------------------------------------------------------------------
+A: You should disable the announce in glftpd.conf. Change your dirlog lines
+   to something like this:
+     dirlog          /site/0DAY/*/*/                 *
+     dirlog          /site/BOOKWARE/*/               *
+   The / at the end hinders announces/logging of new dirs after it, ie dirs
+   created in /site/BOOKWARE/some_release/* is not announced. For more info
+   see glftpd.docs.
+

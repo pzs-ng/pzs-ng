@@ -138,7 +138,7 @@
  * mpeg2.5 + layer1 & 2 can be added if needed
  */
 #if ( disable_audio_race == FALSE )
-#define audio_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%K} {%B}"
+#define audio_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%K} {%B} {%$}"
 #else
 #define audio_race		DISABLED
 #endif
@@ -148,17 +148,17 @@
 #define audio_sfv		DISABLED
 #endif
 #if ( disable_audio_update == FALSE )
-#define audio_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r} {%K} %j"
+#define audio_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r} {%K} %j {%$}"
 #else
 #define audio_update		DISABLED
 #endif
 #if ( disable_audio_halfway == FALSE )
-#define audio_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%B}"
+#define audio_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%B} {%$}"
 #else
 #define audio_halfway		DISABLED
 #endif
 #if ( disable_audio_newleader == FALSE )
-#define audio_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%K} {%R}"
+#define audio_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%K} {%R} {%$}"
 #else
 #define audio_newleader		DISABLED
 #endif
@@ -168,7 +168,7 @@
 #define audio_complete		DISABLED
 #endif
 #if ( disable_audio_norace_halfway == FALSE )
-#define audio_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%K}"
+#define audio_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%K} {%$}"
 #else
 #define audio_norace_halfway	DISABLED
 #endif
@@ -180,7 +180,7 @@
 
 /* Video files - supports mpeg1/mpeg2 and various avi formats */
 #if ( disable_video_race == FALSE )
-#define video_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%K} {%B}"
+#define video_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%K} {%B} {%$}"
 #else
 #define video_race		DISABLED
 #endif
@@ -190,17 +190,17 @@
 #define video_sfv		DISABLED
 #endif
 #if ( disable_video_update == FALSE )
-#define video_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r} {%K}"
+#define video_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r} {%K} {%$}"
 #else
 #define video_update		DISABLED
 #endif
 #if ( disable_video_halfway == FALSE )
-#define video_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%B}"
+#define video_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%B} {%$}"
 #else
 #define video_halfway		DISABLED
 #endif
 #if ( disable_video_newleader == FALSE )
-#define video_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%K} {%R}"
+#define video_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%K} {%R} {%$}"
 #else
 #define video_newleader		DISABLED
 #endif
@@ -210,7 +210,7 @@
 #define video_complete		DISABLED
 #endif
 #if ( disable_video_norace_halfway == FALSE )
-#define video_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%K}"
+#define video_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%K} {%$}"
 #else
 #define video_norace_halfway	DISABLED
 #endif
@@ -264,7 +264,7 @@
 
 /* Rest of the stuff inside sfv */
 #if ( disable_other_race == FALSE )
-#define other_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%K} {%B}"
+#define other_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%K} {%B} {%$}"
 #else
 #define other_race		DISABLED
 #endif
@@ -274,17 +274,17 @@
 #define other_sfv		DISABLED
 #endif
 #if ( disable_other_update == FALSE )
-#define other_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r} {%K}"
+#define other_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r} {%K} {%$}"
 #else
 #define other_update		DISABLED
 #endif
 #if ( disable_other_halfway == FALSE )
-#define other_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%B}"
+#define other_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%B} {%$}"
 #else
 #define other_halfway		DISABLED
 #endif
 #if ( disable_other_newleader == FALSE )
-#define other_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%K} {%R}"
+#define other_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%K} {%R} {%$}"
 #else
 #define other_newleader		DISABLED
 #endif
@@ -294,7 +294,7 @@
 #define other_complete		DISABLED
 #endif
 #if ( disable_other_norace_halfway == FALSE )
-#define other_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%K}"
+#define other_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%K} {%$}"
 #else
 #define other_norace_halfway	DISABLED
 #endif
@@ -306,22 +306,22 @@
 
 /* Zipped files */
 #if ( disable_zip_race == FALSE )
-#define zip_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%K} {%B}"
+#define zip_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%K} {%B} {%$}"
 #else
 #define zip_race		DISABLED
 #endif
 #if ( disable_zip_update == FALSE )
-#define zip_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r} {%K}"
+#define zip_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r} {%K} {%$}"
 #else
 #define zip_update		DISABLED
 #endif
 #if ( disable_zip_halfway == FALSE )
-#define zip_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%B}"
+#define zip_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%B} {%$}"
 #else
 #define zip_halfway		DISABLED
 #endif
 #if ( disable_zip_newleader == FALSE )
-#define zip_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%K} {%R}"
+#define zip_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%K} {%R} {%$}"
 #else
 #define zip_newleader		DISABLED
 #endif
@@ -331,7 +331,7 @@
 #define zip_complete		DISABLED
 #endif
 #if ( disable_zip_norace_halfway == FALSE )
-#define zip_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%K}"
+#define zip_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%K} {%$}"
 #else
 #define zip_norace_halfway	DISABLED
 #endif
