@@ -895,10 +895,12 @@ int main( int argc, char **argv ) {
 #endif
 		    }
 #if ( create_m3u == TRUE )
-		    d_log("Creating m3u\n");
-		    cnt = sprintf(target, findfileext(".sfv"));
-		    strcpy(target + cnt - 3, "m3u");
-		    create_indexfile_file(&locations, &raceI, target);
+		    if (findfileext(".sfv")) {
+			d_log("Creating m3u\n");
+			cnt = sprintf(target, findfileext(".sfv"));
+			strcpy(target + cnt - 3, "m3u");
+			create_indexfile_file(&locations, &raceI, target);
+		    } else d_log("Cannot create m3u, sfv is missing\n");
 #endif
 		    break;
 		case 4:
