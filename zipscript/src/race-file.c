@@ -305,7 +305,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 					}
 				}
 			}
-			fseek(file, sizeof(RACEDATA), SEEK_SET);
+			fseek(file, -sizeof(RACEDATA), SEEK_CUR);
 			fwrite(&rd, sizeof(RACEDATA), 1, file);
 		}
 
