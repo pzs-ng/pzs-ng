@@ -3,7 +3,7 @@
 # classic.zst
 #
 # Maintained by: neoxed
-# Tested with: r1496
+# Tested with: r1567
 # Notes: Based on the original dZSbot theme.
 #
 ##############################################################################
@@ -142,11 +142,11 @@ announce.HALFWAY_NORACE_RAR             = "%b{[%c1{%section}]} - %b{%relname} is
 announce.HALFWAY_NORACE_VIDEO           = "%b{[%c1{%section}]} - %b{%relname} is in halfway. %b{%u_leader_name}/%b{%u_leader_gname} is all alone and halfway at %u_leader_avgspeed. Estimated time left: %b{%t_timeleft}."
 announce.HALFWAY_NORACE_ZIP             = "%b{[%c1{%section}]} - %b{%reldir} is in halfway, %b{%u_leader_name}/%b{%u_leader_gname} is all alone and halfway at %u_leader_avgspeed. Estimated time left: %b{%t_timeleft}."
 
-announce.HALFWAY_RACE_AUDIO             = "%b{[%c1{%section}]} - %b{%reldir} is in halfway with %b{%u_count} racers from %b{%g_count} group(s). Leading uploader is %b{%u_leader_name}/%u_leader_gname [%b{%u_leader_mbytes}MB/%b{%u_leader_files}F/%b{%u_leader_percent}%/%u_leader_avgspeed], leading group is %b{%g_leader_name} [%b{%g_leader_mbytes}MB/%b{%g_leader_files}F/%b{%g_leader_percent}%/%g_leader_avgspeed]."
-announce.HALFWAY_RACE_OTHER             = "%b{[%c1{%section}]} - %b{%relname} is in halfway with %b{%u_count} racers from %b{%g_count} group(s). Leading uploader is %b{%u_leader_name}/%u_leader_gname [%b{%u_leader_mbytes}MB/%b{%u_leader_files}F/%b{%u_leader_percent}%/%u_leader_avgspeed], leading group is %b{%g_leader_name} [%b{%g_leader_mbytes}MB/%b{%g_leader_files}F/%b{%g_leader_percent}%/%g_leader_avgspeed]."
-announce.HALFWAY_RACE_RAR               = "%b{[%c1{%section}]} - %b{%relname} is in halfway with %b{%u_count} racers from %b{%g_count} group(s). Leading uploader is %b{%u_leader_name}/%u_leader_gname [%b{%u_leader_mbytes}MB/%b{%u_leader_files}F/%b{%u_leader_percent}%/%u_leader_avgspeed], leading group is %b{%g_leader_name} [%b{%g_leader_mbytes}MB/%b{%g_leader_files}F/%b{%g_leader_percent}%/%g_leader_avgspeed]."
-announce.HALFWAY_RACE_VIDEO             = "%b{[%c1{%section}]} - %b{%relname} is in halfway with %b{%u_count} racers from %b{%g_count} group(s). Leading uploader is %b{%u_leader_name}/%u_leader_gname [%b{%u_leader_mbytes}MB/%b{%u_leader_files}F/%b{%u_leader_percent}%/%u_leader_avgspeed], leading group is %b{%g_leader_name} [%b{%g_leader_mbytes}MB/%b{%g_leader_files}F/%b{%g_leader_percent}%/%g_leader_avgspeed]."
-announce.HALFWAY_RACE_ZIP               = "%b{[%c1{%section}]} - %b{%reldir} is in halfway with %b{%u_count} racers from %b{%g_count} group(s). Leading uploader is %b{%u_leader_name}/%u_leader_gname [%b{%u_leader_mbytes}MB/%b{%u_leader_files}F/%b{%u_leader_percent}%/%u_leader_avgspeed], leading group is %b{%g_leader_name} [%b{%g_leader_mbytes}MB/%b{%g_leader_files}F/%b{%g_leader_percent}%/%g_leader_avgspeed]."
+announce.HALFWAY_RACE_AUDIO             = "%b{[%c1{%section}]} - %b{%reldir} is in halfway with %b{%u_count} user(s) from %b{%g_count} group(s). Leading uploader is %b{%u_leader_name}/%u_leader_gname [%b{%u_leader_mbytes}MB/%b{%u_leader_files}F/%b{%u_leader_percent}%/%u_leader_avgspeed], leading group is %b{%g_leader_name} [%b{%g_leader_mbytes}MB/%b{%g_leader_files}F/%b{%g_leader_percent}%/%g_leader_avgspeed]."
+announce.HALFWAY_RACE_OTHER             = "%b{[%c1{%section}]} - %b{%relname} is in halfway with %b{%u_count} user(s) from %b{%g_count} group(s). Leading uploader is %b{%u_leader_name}/%u_leader_gname [%b{%u_leader_mbytes}MB/%b{%u_leader_files}F/%b{%u_leader_percent}%/%u_leader_avgspeed], leading group is %b{%g_leader_name} [%b{%g_leader_mbytes}MB/%b{%g_leader_files}F/%b{%g_leader_percent}%/%g_leader_avgspeed]."
+announce.HALFWAY_RACE_RAR               = "%b{[%c1{%section}]} - %b{%relname} is in halfway with %b{%u_count} user(s) from %b{%g_count} group(s). Leading uploader is %b{%u_leader_name}/%u_leader_gname [%b{%u_leader_mbytes}MB/%b{%u_leader_files}F/%b{%u_leader_percent}%/%u_leader_avgspeed], leading group is %b{%g_leader_name} [%b{%g_leader_mbytes}MB/%b{%g_leader_files}F/%b{%g_leader_percent}%/%g_leader_avgspeed]."
+announce.HALFWAY_RACE_VIDEO             = "%b{[%c1{%section}]} - %b{%relname} is in halfway with %b{%u_count} user(s) from %b{%g_count} group(s). Leading uploader is %b{%u_leader_name}/%u_leader_gname [%b{%u_leader_mbytes}MB/%b{%u_leader_files}F/%b{%u_leader_percent}%/%u_leader_avgspeed], leading group is %b{%g_leader_name} [%b{%g_leader_mbytes}MB/%b{%g_leader_files}F/%b{%g_leader_percent}%/%g_leader_avgspeed]."
+announce.HALFWAY_RACE_ZIP               = "%b{[%c1{%section}]} - %b{%reldir} is in halfway with %b{%u_count} user(s) from %b{%g_count} group(s). Leading uploader is %b{%u_leader_name}/%u_leader_gname [%b{%u_leader_mbytes}MB/%b{%u_leader_files}F/%b{%u_leader_percent}%/%u_leader_avgspeed], leading group is %b{%g_leader_name} [%b{%g_leader_mbytes}MB/%b{%g_leader_files}F/%b{%g_leader_percent}%/%g_leader_avgspeed]."
 
 announce.NEWLEADER_AUDIO                = "%b{[%c1{%section}]} - %b{%u_leader_name}/%b{%u_leader_gname} [%b{%u_leader_mbytes}MB/%b{%u_leader_files}F/%b{%u_leader_percent}%/%u_leader_avgspeed] takes the lead in %b{%reldir}."
 announce.NEWLEADER_OTHER                = "%b{[%c1{%section}]} - %b{%u_leader_name}/%b{%u_leader_gname} [%b{%u_leader_mbytes}MB/%b{%u_leader_files}F/%b{%u_leader_percent}%/%u_leader_avgspeed] takes the lead in %b{%relname}."
@@ -161,12 +161,12 @@ announce.COMPLETE_RAR                   = "%b{[%c1{%section}]} - %b{%relname} [%
 announce.COMPLETE_VIDEO                 = "%b{[%c1{%section}]} - %b{%relname} [%b{%t_mbytes}MB in %b{%t_files}F at %r_avgspeed - %b{%t_duration}] was completed by %b{%u_name}/%g_name."
 announce.COMPLETE_ZIP                   = "%b{[%c1{%section}]} - %b{%reldir} [%b{%t_mbytes}MB in %b{%t_files}F at %r_avgspeed - %b{%t_duration}] was completed by %b{%u_name}/%g_name."
 
-announce.COMPLETE_STAT_RACE_AUDIO_CBR   = "%b{[%c1{%section}]} - %b{%reldir} [%b{%t_mbytes}MB in %b{%u_leader_files}F at %t_avgspeed - %b{%t_duration}] was completed by %b{%u_count} racers in %b{%g_count} group(s).\n-%b{%sitename}- %b{[%c1{%section}]} - User Top:%loop3\n-%b{%sitename}- %b{[%c1{%section}]} - Group Top:\n%loop2"
-announce.COMPLETE_STAT_RACE_AUDIO_VBR   = "%b{[%c1{%section}]} - %b{%reldir} [%b{%t_mbytes}MB in %b{%u_leader_files}F at %t_avgspeed - %b{%t_duration}] was completed by %b{%u_count} racers in %b{%g_count} group(s).\n-%b{%sitename}- %b{[%c1{%section}]} - User Top:%loop3\n-%b{%sitename}- %b{[%c1{%section}]} - Group Top:\n%loop2"
-announce.COMPLETE_STAT_RACE_OTHER       = "%b{[%c1{%section}]} - %b{%relname} [%b{%t_mbytes}MB in %b{%u_leader_files}F at %t_avgspeed - %b{%t_duration}] was completed by %b{%u_count} racers in %b{%g_count} group(s).\n-%b{%sitename}- %b{[%c1{%section}]} - User Top:%loop3\n-%b{%sitename}- %b{[%c1{%section}]} - Group Top:\n%loop2"
-announce.COMPLETE_STAT_RACE_RAR         = "%b{[%c1{%section}]} - %b{%relname} [%b{%t_mbytes}MB in %b{%u_leader_files}F at %t_avgspeed - %b{%t_duration}] was completed by %b{%u_count} racers in %b{%g_count} group(s).\n-%b{%sitename}- %b{[%c1{%section}]} - User Top:%loop3\n-%b{%sitename}- %b{[%c1{%section}]} - Group Top:\n%loop2"
-announce.COMPLETE_STAT_RACE_VIDEO       = "%b{[%c1{%section}]} - %b{%relname} [%b{%t_mbytes}MB in %b{%u_leader_files}F at %t_avgspeed - %b{%t_duration}] was completed by %b{%u_count} racers in %b{%g_count} group(s).\n-%b{%sitename}- %b{[%c1{%section}]} - User Top:%loop3\n-%b{%sitename}- %b{[%c1{%section}]} - Group Top:\n%loop2"
-announce.COMPLETE_STAT_RACE_ZIP         = "%b{[%c1{%section}]} - %b{%reldir} [%b{%t_mbytes}MB in %b{%u_leader_files}F at %t_avgspeed - %b{%t_duration}] was completed by %b{%u_count} racers in %b{%g_count} group(s).\n-%b{%sitename}- %b{[%c1{%section}]} - User Top:%loop3\n-%b{%sitename}- %b{[%c1{%section}]} - Group Top:\n%loop2"
+announce.COMPLETE_STAT_RACE_AUDIO_CBR   = "%b{[%c1{%section}]} - %b{%reldir} [%b{%t_mbytes}MB in %b{%t_files}F at %t_avgspeed - %b{%t_duration}] was completed by %b{%u_count} user(s) in %b{%g_count} group(s).\n-%b{%sitename}- %b{[%c1{%section}]} - User Top:%loop3\n-%b{%sitename}- %b{[%c1{%section}]} - Group Top:\n%loop2"
+announce.COMPLETE_STAT_RACE_AUDIO_VBR   = "%b{[%c1{%section}]} - %b{%reldir} [%b{%t_mbytes}MB in %b{%t_files}F at %t_avgspeed - %b{%t_duration}] was completed by %b{%u_count} user(s) in %b{%g_count} group(s).\n-%b{%sitename}- %b{[%c1{%section}]} - User Top:%loop3\n-%b{%sitename}- %b{[%c1{%section}]} - Group Top:\n%loop2"
+announce.COMPLETE_STAT_RACE_OTHER       = "%b{[%c1{%section}]} - %b{%relname} [%b{%t_mbytes}MB in %b{%t_files}F at %t_avgspeed - %b{%t_duration}] was completed by %b{%u_count} user(s) in %b{%g_count} group(s).\n-%b{%sitename}- %b{[%c1{%section}]} - User Top:%loop3\n-%b{%sitename}- %b{[%c1{%section}]} - Group Top:\n%loop2"
+announce.COMPLETE_STAT_RACE_RAR         = "%b{[%c1{%section}]} - %b{%relname} [%b{%t_mbytes}MB in %b{%t_files}F at %t_avgspeed - %b{%t_duration}] was completed by %b{%u_count} user(s) in %b{%g_count} group(s).\n-%b{%sitename}- %b{[%c1{%section}]} - User Top:%loop3\n-%b{%sitename}- %b{[%c1{%section}]} - Group Top:\n%loop2"
+announce.COMPLETE_STAT_RACE_VIDEO       = "%b{[%c1{%section}]} - %b{%relname} [%b{%t_mbytes}MB in %b{%t_files}F at %t_avgspeed - %b{%t_duration}] was completed by %b{%u_count} user(s) in %b{%g_count} group(s).\n-%b{%sitename}- %b{[%c1{%section}]} - User Top:%loop3\n-%b{%sitename}- %b{[%c1{%section}]} - Group Top:\n%loop2"
+announce.COMPLETE_STAT_RACE_ZIP         = "%b{[%c1{%section}]} - %b{%reldir} [%b{%t_mbytes}MB in %b{%t_files}F at %t_avgspeed - %b{%t_duration}] was completed by %b{%u_count} user(s) in %b{%g_count} group(s).\n-%b{%sitename}- %b{[%c1{%section}]} - User Top:%loop3\n-%b{%sitename}- %b{[%c1{%section}]} - Group Top:\n%loop2"
 
 ## Postdel announce
 announce.INCOMPLETE                     = "%b{[%c1{%section}]} - %b{%releasename} is now incomplete thanks to %b{%u_name}/%g_name"
@@ -189,7 +189,7 @@ announce.WELCOME                = "Welcome to %b{%sitename}'s sitechan. Type %cm
 ## Bouncer status
 announce.BNC                    = "%b{[%c1{BNC}]} + Checking bouncer status..."
 announce.BNC_PING               = "%b{[%c1{BNC}]} + %ip:%port - %b{DOWN} (can't ping host)"
-announce.BNC_ONLINE             = "%b{[%c1{BNC}]} + %ip:%port - %b{UP} (login: %b{%response}ms ping: %b{%ping}ms)"
+announce.BNC_ONLINE             = "%b{[%c1{BNC}]} + %ip:%port - %b{UP} (response: %b{%response}ms)"
 announce.BNC_OFFLINE            = "%b{[%c1{BNC}]} + %ip:%port - %b{DOWN} (%error)"
 
 ## Stats Commands
@@ -201,12 +201,12 @@ announce.LEECH                  = "%b{[%c1{STATUS}]} + Current leechers:"
 announce.UPLOAD                 = "%b{[%c1{STATUS}]} + Current uploaders:"
 announce.IDLE                   = "%b{[%c1{STATUS}]} + Current idlers:"
 announce.USERIDLE               = "%b{[%c1{STATUS}]} + %b{%u_name}/%g_name at %idletime"
-announce.USER                   = "%b{[%c1{STATUS}]} + %b{%u_name}/%g_name on %b{%filename} (%b{%fper} done) at %speed"
+announce.USER                   = "%b{[%c1{STATUS}]} + %b{%u_name}/%g_name on %b{%filename} at %speed (%b{%fper} done)"
 announce.TOTUPDN                = "%b{[%c1{STATUS}]} + %type %b{%count} at %total"
 announce.TOTIDLE                = "%b{[%c1{STATUS}]} + Currently %b{%count} users idle"
 
-announce.SPEEDUP                = "%b{[%c1{SPEED}]} + %b{%u_name}/%g_name is uploading %b{%f_name} at %upspeed (%uppercent done)"
-announce.SPEEDDN                = "%b{[%c1{SPEED}]} + %b{%u_name}/%g_name is downloading %b{%f_name} at %dnspeed (%dnpercent done)"
+announce.SPEEDUP                = "%b{[%c1{SPEED}]} + %b{%u_name}/%g_name is uploading %b{%f_name} at %upspeed (%b{%dnpercent} done)"
+announce.SPEEDDN                = "%b{[%c1{SPEED}]} + %b{%u_name}/%g_name is downloading %b{%f_name} at %dnspeed (%b{%dnpercent} done)"
 announce.SPEEDID                = "%b{[%c1{SPEED}]} + %b{%u_name}/%g_name has been idle for %idletime"
 announce.SPEEDERROR             = "%b{[%c1{SPEED}]} + The specified user is not online."
 
