@@ -1336,6 +1336,15 @@ if {[info exists dZStimer]} {
 }
 set dZStimer [utimer 1 "readlog"]
 
+if {![loadtheme $announce(THEMEFILE)]} {
+	if {[loadtheme "default.zst.dist"]} {
+		putlog "dZSbot error: Couldn't load theme '$announce(THEMEFILE)', loaded 'default.zst.dist' instead!"
+	} else {
+		putlog "dZSbot error: Couldn't load theme '$announce(THEMEFILE)' and not 'default.zst.dist' either. Cannot continue!"
+		set dzerror 1
+	}
+}
+
 if {![array exists chanlist] || [llength [array names "chanlist" "DEFAULT"]] == 0} {
 	putlog "dZSbot error: no entry in chanlist set, or chanlist(DEFAULT) not set."
 	set dzerror 1
@@ -1355,16 +1364,6 @@ if {![array exists disable] || [llength [array names "disable" "DEFAULT"]] == 0}
 	putlog "dZSbot error: setting disable(DEFAULT) to '0."
 	set disable(DEFAULT) "0"
 }
-
-if {![loadtheme $announce(THEMEFILE)]} {
-	if {[loadtheme "default.zst.dist"]} {
-		putlog "dZSbot error: Couldn't load theme '$announce(THEMEFILE)', loaded 'default.zst.dist' instead!"
-	} else {
-		putlog "dZSbot error: Couldn't load theme '$announce(THEMEFILE)' and not 'default.zst.dist' either. Cannot continue!"
-		set dzerror 1
-	}
-}
-
 
 if { $dzerror == "0" } {
 	putlog "dZSbot loaded ok!"
