@@ -206,9 +206,9 @@ main()
 		printf("\n");
 		testfiles(&g.l, &g.v, 1);
 		printf("\n");
-//
-//		temprescandir(0);	/* We need to rescan again */
-//
+
+		rescandir(2);	/* We need to rescan again */
+
 		readsfv(g.l.sfv, &g.v, 0);
 		readrace(g.l.race, &g.v, g.ui, g.gi);
 		sortstats(&g.v, g.ui, g.gi);
