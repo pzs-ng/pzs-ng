@@ -1221,29 +1221,36 @@ remove_nfo_indicator(GLOBAL *g)
 void 
 getrelname(GLOBAL *g)
 {
-	int		n = 0, k = 2;
+	int		k = 2, subc;
 	char		**path = 0;
 
 	path = buffer_paths(g, path, &k, (strlen(g->l.path)-1));
 
-d_log("DEBUG: result of subdir-test: %d\n", subcomp(path[1]));
-	if (subcomp(path[1])) {
-		//g->l.link_source = malloc(n = (g->l.length_path - l[1]));
-		sprintf(g->v.misc.release_name, "%s/%s", path[0], path[1]);
-		sprintf(g->l.link_source, "%.*s", n - 1, g->l.path);
-		strlcpy(g->l.link_target, path[0], PATH_MAX);
+	subc = subcomp(path[1]);
+	
+	d_log("getrelname():\tsubc:\t\t%d\n", subc);
+	d_log("\t\t\tpath[0]:\t%s\n", path[0]);
+	d_log("\t\t\tpath[1]:\t%s\n", path[1]);
+	d_log("\t\t\tg->l_path:\t%s\n", path[1]);
+
+	if (subc) {
+		snprintf(g->v.misc.release_name, PATH_MAX, "%s/%s", path[0], path[1]);
+		strlcpy(g->l.link_source, g->l.path, PATH_MAX);
+		strlcpy(g->l.link_target, path[1], PATH_MAX);
 		g->l.incomplete = c_incomplete(incomplete_cd_indicator, path, &g->v);
 		g->l.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &g->v);
 		g->l.in_cd_dir = 1;
 	} else {
-		//g->l.link_source = malloc(g->l.length_path + 1);
+		strlcpy(g->v.misc.release_name, path[1], PATH_MAX);
 		strlcpy(g->l.link_source, g->l.path, PATH_MAX);
-		sprintf(g->v.misc.release_name, "%s", path[1]);
-		strlcpy(g->l.link_target, path[0], PATH_MAX);
+		strlcpy(g->l.link_target, path[1], PATH_MAX);
 		g->l.incomplete = c_incomplete(incomplete_indicator, path, &g->v);
 		g->l.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &g->v);
 		g->l.in_cd_dir = 0;
 	}
+	
+	d_log("\t\t\tlink_source:\t%s\n", g->l.link_source);
+	d_log("\t\t\tlink_target:\t%s\n", g->l.link_target);
 
 	if (k < 2)
 		free(path[1]);
