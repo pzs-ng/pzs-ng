@@ -24,7 +24,7 @@ status  who       what
  [ ]               use mp3info as much as possible to get mp3 info.
  [ ]               add anonymity support - chown files/dirs as they are uploaded to a "special" user (will only
                    work if zs-c is +s)
- [ ]     freezy3k  fix solaris compatability.
+ [ ]     freezy3k  fix solaris compatibility.
  [x]     psxc      fix bug(?) in Sort.By.Artist (not confirmed - Joeed reported this from r140 - fails to compile)
  [ ]               ignore setting in allowed.bitrates if mp3 is vbr
  [ ]               fix the %U cookie in message_group_footer (should be "user/group", not "user")
@@ -39,8 +39,8 @@ status  who       what
                    consider the 'anonymity' setting above.)
  [ ]               add support for showing when racers joined the, eh, race in the .message.
  [ ]               make it possible to change the name of the .message file.
- [ ]               change how mp3-links are created from absolute paths to relative paths.
- [ ]               look over shmem use - does the zipscript need to access it?
+ [x]     js        change how mp3-links are created from absolute paths to relative paths.
+ [x]     iwdisb    look over shmem use - does the zipscript need to access it?
 
 status   description
  [ ]     not done 
