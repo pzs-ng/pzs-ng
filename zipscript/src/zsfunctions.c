@@ -380,7 +380,7 @@ void createlink(char *factor1, char *factor2, char *source, char *ltarget) {
  	relative = malloc(strlen(org)*sizeof(char)+1);
 	memset(relative, 0, strlen(org)*sizeof(char)+1);
 	
-	while(source[0] == org[0]) {
+	while(source[1] == org[1]) {
 		source++;
 		org++;
 	}

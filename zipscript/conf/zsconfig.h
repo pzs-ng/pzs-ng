@@ -134,7 +134,7 @@
 /* Audio related symlinks - set to TRUE if you wish to sort/symlink releases, or FALSE if not.
  */
 #define audio_genre_sort		TRUE
-#define audio_year_sort			TRUE
+#define audio_year_sort			FALSE
 #define audio_artist_sort		TRUE
 #define audio_group_sort		TRUE
 
@@ -234,9 +234,9 @@
 #define audio_update		"Got MP3 info for %r. Expecting %B%f%BF of %B%w%B from %B%Y%B. %j"
 #define audio_halfway		"%r is in halfway. Leading uploader is %C0. Leading group is %c0."
 #define audio_newleader		"%C0 takes the lead in %r!"
-#define audio_complete		"%r [ %B%.0m%BmB in %B%f%BF at %B%.0S%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
+#define audio_complete		"%r [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
 #define audio_norace_halfway	"%r is in halfway. Leading uploader is %C0. Leading group is %c0."
-#define audio_norace_complete	"%r [ %B%.0m%BmB in %B%f%BF at %B%.0S%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
+#define audio_norace_complete	"%r [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
 
 /* Video files - supports mpeg1/mpeg2 and various avi formats
  */
@@ -245,9 +245,9 @@
 #define video_update		"%B%U%B/%G was the first to upload file in %r. Expecting %B%.1e%BmB."
 #define video_halfway		"%r is in halfway. Leading uploader is %C0. Leading group is %c0."
 #define video_newleader		"%C0 takes the lead in %r!"
-#define video_complete		"%r [ %B%.0m%BmB in %B%f%BF at %B%.0S%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). Compression method: m%B%Z%B. %l %L"
+#define video_complete		"%r [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). Compression method: m%B%Z%B. %l %L"
 #define video_norace_halfway	"%r is in halfway. Leading uploader is %C0. Leading group is %c0."
-#define video_norace_complete	"%r [ %B%.0m%BmB in %B%f%BF at %B%.0S%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
+#define video_norace_complete	"%r [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
 
 /* RAR - allows usage of compression mode cookie for rarred releases
  */
@@ -256,9 +256,9 @@
 #define rar_update		"%B%U%B/%G was the first to upload file in %r. Expecting %B%.1e%BmB."
 #define rar_halfway		"%r is in halfway. Leading uploader is %C0. Leading group is %c0."
 #define rar_newleader		"%C0 takes the lead in %r!"
-#define rar_complete		"%r [ %B%.0m%BmB in %B%f%BF at %B%.0S%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). Compression method: m%B%Z%B. %l %L"
+#define rar_complete		"%r [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). Compression method: m%B%Z%B. %l %L"
 #define rar_norace_halfway	"%r is in halfway. Leading uploader is %C0. Leading group is %c0."
-#define rar_norace_complete	"%r [ %B%.0m%BmB in %B%f%BF at %B%.0S%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
+#define rar_norace_complete	"%r [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
 
 /* Rest of the stuff inside sfv
  */
@@ -267,9 +267,9 @@
 #define other_update		"%B%U%B/%G was the first to upload file in %r. Expecting %B%.1e%BmB."
 #define other_halfway		"%r is in halfway. Leading uploader is %C0. Leading group is %c0."
 #define other_newleader		"%C0 takes the lead in %r!"
-#define other_complete		"%r [ %B%.0m%BmB in %B%f%BF at %B%.0S%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
+#define other_complete		"%r [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
 #define other_norace_halfway	"%r is in halfway. Leading uploader is %C0. Leading group is %c0."
-#define other_norace_complete	"%r [ %B%.0m%BmB in %B%f%BF at %B%.0S%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
+#define other_norace_complete	"%r [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
 
 /* Zipped files
  */
@@ -277,9 +277,9 @@
 #define zip_update		"Got DiZ for %r. Expecting %B%.1e%BmB in %B%f%BF"
 #define zip_halfway		"%r is in halfway. Leading uploader is %C0. Leading group is %c0."
 #define zip_newleader		"%C0 takes the lead in %r!"
-#define zip_complete		"%r [ %B%.0m%BmB in %B%f%BF at %B%.0S%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L Lucky7: %T"
+#define zip_complete		"%r [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L Lucky7: %T"
 #define zip_norace_halfway	"%r is in halfway. Leading uploader is %C0. Leading group is %c0."
-#define zip_norace_complete	"%r [ %B%.0m%BmB in %B%f%BF at %B%.0S%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
+#define zip_norace_complete	"%r [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
 
 
 
