@@ -18,8 +18,10 @@
 
 int		debug = 0;
 int		groups = 0, GROUPS = 0;
+int		user, totusers = 20, glversion = 0;
 
-static struct ONLINE *user;
+static struct ONLINE_GL1 *user_gl1;
+static struct ONLINE_GL2 *user_gl2;
 static struct GROUP **group;
 
 long long	shmid;
@@ -47,7 +49,7 @@ main(int argc, char **argv)
 	char		raw_output = 2;
 	int		user_idx = 2;
 #endif
-	int		totusers = 0;
+//	int		totusers = 0;
 	int		gnum = 0;
 
 	readconfig(argv[0]);
@@ -90,6 +92,7 @@ main(int argc, char **argv)
 			raw_output = 3;
 		}
 	}
+
 	if ((shmid = shmget((key_t) strtoll(ipckey, NULL, 16), 0, 0)) == -1) {
 		if (argc == 1 || (raw_output)) {
 			if (!raw_output && strlen(header))
@@ -105,23 +108,42 @@ main(int argc, char **argv)
 		}
 		exit(0);
 	}
-	if ((user = (struct ONLINE *)shmat(shmid, NULL, SHM_RDONLY)) == (struct ONLINE *)-1) {
-		if (!raw_output)
-			printf("Error!: (SHMAT) failed...");
-		else
-			printf("\"ERROR\" \"SHMAT Failed.\"\n");
-		exit(1);
-	}
 
 	if (shmctl(shmid, IPC_STAT, &ipcbuf) == -1) {
 		perror("shmctl");
 		exit(EXIT_FAILURE);
 	}
 
+	if (((signed int)sizeof(struct ONLINE_GL1) * totusers == (signed int)ipcbuf.shm_segsz)) {
+		glversion = 1;
+		user = (int)user_gl1;
+	} else {
+		glversion = 2;
+		user = (int)user_gl2;
+	}
+
+	if (glversion == 1) {
+		if ((user_gl1 = (struct ONLINE_GL1 *)shmat(shmid, NULL, SHM_RDONLY)) == (struct ONLINE_GL1 *)-1) {
+			if (!raw_output)
+				printf("Error!: (SHMAT) failed...");
+			else
+				printf("\"ERROR\" \"SHMAT Failed.\"\n");
+			exit(1);
+		}
+	} else {
+		if ((user_gl2 = (struct ONLINE_GL2 *)shmat(shmid, NULL, SHM_RDONLY)) == (struct ONLINE_GL2 *)-1) {
+			if (!raw_output)
+				printf("Error!: (SHMAT) failed...");
+			else
+				printf("\"ERROR\" \"SHMAT Failed.\"\n");
+			exit(1);
+		}
+	}
+
 	if (argc == 1 && (!raw_output) && strlen(header))
 		show(header);
 
-	(signed int)totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE));
+//	(signed int)totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE));
 	if (raw_output < 2)
 		showusers((totusers > maxusers ? maxusers : totusers), argc - raw_output - 1, argv[user_idx], raw_output);
 	else if (argc == 1)

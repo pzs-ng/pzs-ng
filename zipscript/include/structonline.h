@@ -1,5 +1,5 @@
-#ifndef USE_GLFTPD2
-struct ONLINE {
+//#ifndef USE_GLFTPD2
+struct ONLINE_GL1 {
 	char		tagline   [64];	/* The users tagline */
 	char		username  [24];	/* The username of the user */
 	char		status    [256];	/* The status of the user,
@@ -14,9 +14,9 @@ struct ONLINE {
 	struct timeval	tstart;	/* Replacement for last_update. */
 	unsigned long	bytes_xfer;	/* Bytes transferred this far. */
 	pid_t		procid;	/* The processor id of the process */
-}		__attribute__((deprecated));
-#else
-struct ONLINE {
+};//		__attribute__((deprecated));
+//#else
+struct ONLINE_GL2 {
 	char		tagline   [64];	/* The users tagline */
 	char		username  [24];	/* The username of the user */
 	char		status    [256];	/* The status of the user,
@@ -35,4 +35,4 @@ struct ONLINE {
 	unsigned long long bytes_xfer;	/* bytes transferred so far. */
 	pid_t		procid;	/* The processor id of the process */
 };
-#endif
+//#endif
