@@ -5,6 +5,10 @@
 %cmdprebw                  shows site bandwidth
 %cmdprebnc                 shows active bnc's
 %cmdpreinc                 shows incomplete releases
+%cmdprenew [section]       Displays latest releases
+%cmdpresearch <pattern>    Search for a release
+%cmdprenukes [section]     Displays latest nukes
+%cmdpreunnukes [section]   Displays latest unnukes
 %cmdpredayup <section>     shows top day uploaders
 %cmdprewkup <section>      shows top week uploaders
 %cmdpremonthup <section>   shows top month uploaders

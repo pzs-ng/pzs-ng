@@ -194,3 +194,21 @@ announce.BADMSGINVITE	        		= "[%b{%c1{badinv}}] %b{%u_ircnick} (%u_host) tr
 #announce.SUBTITLES				= "[%b{subs  }][%section] %b{%relname} by %b{%u_name} of %g_name."
 #announce.COVERS 				= "[%b{covers}][%section] %b{%relname} by %b{%u_name} of %g_name."
 
+# Entries for commands done by neoxed (!new/!search/!nukes/!unnukes)
+
+announce.NEW					= "%b{(NEW)} Latest Releases In: %b{%section}"
+announce.NEW_BODY				= "%b{-} %num. %path/%b{%reldir} by %b{%u_name}/%g_name (%b{%files}F/%b{%mbytes}MB/%age)"
+announce.NEW_NONE				= "%b{-} No releases found."
+
+announce.SEARCH					= "%b{(SEARCH)} Searching for: %pattern"
+announce.SEARCH_BODY				= "%b{-} %num. %path/%b{%reldir} (%b{%files}F/%b{%mbytes}MB/%age)"
+announce.SEARCH_NONE				= "%b{-} No matching results found."
+
+announce.NUKES					= "%b{(NUKES)} Latest Nukes In: %b{%section}"
+announce.NUKES_BODY				= "%b{-} %num. %date %b{%reldir} was nuked %b{%multiplier}x by %b{%nuker}. Reason: %b{%reason}"
+announce.NUKES_NONE				= "%b{-} No nukes found."
+
+announce.UNNUKES				= "%b{(UNNUKES)} Latest Unnukes In: %b{%section}"
+announce.UNNUKES_BODY				= "%b{-} %num. %date %b{%reldir} was unnuked %b{%multiplier}x by %b{%unnuker}. Reason: %b{%reason}"
+announce.UNNUKES_NONE				= "%b{-} No unnukes found."
+

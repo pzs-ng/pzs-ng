@@ -10,6 +10,7 @@
 set location(PASSWD)		"/glftpd/etc/passwd"
 set location(USERS)		"/glftpd/ftp-data/users/"
 set location(GLCONF)		"/etc/glftpd.conf"
+set location(GROUP)		"/glftpd/etc/group"
 
 # Multiple Log Files
 # If you wish to read several logfiles, uncomment/add and change path/name(s).
@@ -117,6 +118,15 @@ set binary(DF)			"/bin/df"
 # This is needed for autodetection of glversion. If you unset this, use_glftpd2
 # MUST be set to YES or NO :)
 set binary(GLFTPD)		"/glftpd/bin/glftpd"
+
+set binary(SHOWLOG)		"/glftpd/bin/showlog"
+
+# Default number of results to return for !new, !search, !nukes and !unnukes.
+set default_results		10
+# Maximum number of results to return, when the -max parameter is specified.
+set maximum_results		25
+# Required number of alphanumeric characters for the !search pattern.
+set search_chars		3
 
 # Definition of hd devices (for freespace) Syntax is "disk sections".
 # 'sections' is purely for cosmetic uses (output)

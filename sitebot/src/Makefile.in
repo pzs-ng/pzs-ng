@@ -6,8 +6,8 @@ CFLAGS=@CFLAGS@ -W -Wall @GLVERSION@ -I../../ -I../../zipscript/include/
 LDFLAGS=@LDFLAGS@
 INSTALL=@INSTALL@
 
-targets=@PASSCHK@
-install_targets=@PASSCHK2@
+targets=@PASSCHK@ showlog
+install_targets=@PASSCHK2@ showlog-install
 
 all: $(targets)
 
@@ -15,7 +15,10 @@ passchk: passchk.c
 	$(CC) $(LDFLAGS) $(CFLAGS) -o passchk passchk.c @SSL_INCLUDE@ @SSL_LIBS@ @LCRYPT@
 
 ng-bw: ng-bw.c
-	$(CC) $(LDFLAGS) $(CFLAGS) @M32@ -o ng-bw ng-bw.c @SSL_INCLUDE@ @SSL_LIBS@ @LCRYPT@
+	$(CC) $(LDFLAGS) $(CFLAGS) @M32@ -o ng-bw ng-bw.c
+
+showlog: showlog.c
+	$(CC) $(LDFLAGS) $(CFLAGS) @M32@ -o showlog showlog.c
 
 install: $(install_targets)
 
@@ -25,7 +28,10 @@ ng-bw-install: ng-bw
 passchk-install: passchk
 	$(INSTALL) -m755 passchk $(prefix)/bin
 
+showlog-install: showlog
+	$(INSTALL) -m755 showlog $(prefix)/bin
+
 distclean: clean
 
 clean:
-	$(RM) ng-bw passchk
+	$(RM) ng-bw passchk showlog

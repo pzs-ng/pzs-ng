@@ -147,6 +147,12 @@ bind pub	-|-	[set cmdpre]help	help
 
 bind join	-|-	*			welcome_msg
 
+bind pub	-|-	[set cmdpre]dupe	ng_search
+bind pub	-|-	[set cmdpre]new		ng_new
+bind pub	-|-	[set cmdpre]nukes	ng_nukes
+bind pub	-|-	[set cmdpre]search	ng_search
+bind pub	-|-	[set cmdpre]unnukes	ng_unnukes
+
 if {$bindnopre == "YES"} {
 	bind pub	-|- !who		who
 	bind pub	-|- !speed		speed
@@ -184,9 +190,14 @@ if {$bindnopre == "YES"} {
 	bind pub	-|- !gwpd		stats_group_gpwd
 	bind pub	-|- !gpad		stats_group_gpad
 	bind pub	-|- !help		help
-}
 
-if {$bindnopre != "YES"} {
+	bind pub	-|- !dupe		ng_search
+	bind pub	-|- !new		ng_new
+	bind pub	-|- !nukes		ng_nukes
+	bind pub	-|- !search		ng_search
+	bind pub	-|- !unnukes		ng_unnukes
+
+} else {
 	catch { unbind pub    -|- !who		who }
 	catch { unbind pub    -|- !speed	speed }
 	catch { unbind pub    -|- !bw		ng_bandwidth }
@@ -222,6 +233,12 @@ if {$bindnopre != "YES"} {
 	catch { unbind pub    -|- !gwpd		stats_group_gpwd }
 	catch { unbind pub    -|- !gpad		stats_group_gpad }
 	catch { unbind pub    -|- !help		help }
+
+	catch { unbind pub    -|- !dupe		ng_search}
+	catch { unbind pub    -|- !new		ng_new}
+	catch { unbind pub    -|- !nukes	ng_nukes}
+	catch { unbind pub    -|- !search	ng_search}
+	catch { unbind pub    -|- !unnukes	ng_unnukes}
 }
 
 ## Some 'constants'
@@ -470,25 +487,15 @@ proc getsection {cpath msgtype} {
 
 
 #################################################################################
-# REPLACE WHAT WITH WITHWHAT                                                    #
+# Replace Cookie With Value                                                     #
 #################################################################################
-proc replacevar {rstring what withwhat} {
+proc replacevar {string cookie value} {
 	global zeroconvert
-
-	set output $rstring
-	set replacement $withwhat
-
-	if {[string length $replacement] == 0 && [info exists zeroconvert($what)]} {
-		set replacement $zeroconvert($what)
+	if {[string length $value] == 0 && [info exists zeroconvert($cookie)]} {
+		set value $zeroconvert($cookie)
 	}
-	set cutpos 0
-
-	while {[string first $what $output] != -1} {
-		set cutstart [expr [string first $what $output] - 1]
-		set cutstop  [expr $cutstart + [string length $what] + 1]
-		set output [string range $output 0 $cutstart]$replacement[string range $output $cutstop end]
-	}
-	return $output
+	## Why not use Tcl's string replacement function? It's faster :P
+	return [string map [list $cookie $value] $string]
 }
 #################################################################################
 
@@ -778,6 +785,372 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 
 	set output [themereplace [justifyandpad $output] $section]
 	return $output
+}
+#################################################################################
+
+#################################################################################
+# Channel trigger check.                                                        #
+#################################################################################
+proc checkchan {chan} {
+	global disable mainchan
+	## Better than including this in every proc!
+	if {$disable(TRIGINALLCHAN) == 1 && [string equal -nocase $chan $mainchan]} {
+		return -code return
+	}
+}
+#################################################################################
+
+
+#################################################################################
+# Parse command options.                                                        #
+#################################################################################
+proc getsectionpath {getsection} {
+	global paths sections
+	foreach section $sections {
+		if {![info exists paths($section)]} {
+			putlog "dZSbot error: \"paths($section)\" not set in config."
+		} elseif {[string equal -nocase $getsection $section]} {
+			return [list $section $paths($section)]
+		}
+	}
+	return ""
+}
+#################################################################################
+
+
+#################################################################################
+# Retrieve a list of UIDs and users.                                            #
+#################################################################################
+proc gl_userids {} {
+	global location
+	set userlist ""
+	if {![catch {set fh [open $location(PASSWD) r]} error]} {
+		while {![eof $fh]} {
+			## user:password:uid:gid:date:homedir:irrelevant
+			set line [split [gets $fh] ":"]
+			if {[llength $line] != 7} {continue}
+			lappend userlist [lindex $line 2] [lindex $line 0]
+		}
+		close $fh
+	} else {
+		putlog "dZSbot error: Could not open PASSWD: $error"
+	}
+	return $userlist
+}
+#################################################################################
+
+
+#################################################################################
+# Retrieve a list of GIDs and groups.                                           #
+#################################################################################
+proc gl_groupids {} {
+	global location
+	set grouplist ""
+	if {![catch {set fh [open $location(GROUP) r]} error]} {
+		while {![eof $fh]} {
+			## group:description:gid:irrelevant
+			set line [split [gets $fh] ":"]
+			if {[llength $line] != 4} {continue}
+			lappend grouplist [lindex $line 2] [lindex $line 0]
+		}
+		close $fh
+	} else {
+		putlog "dZSbot error: Could not open GROUP: $error"
+	}
+	return $grouplist
+}
+#################################################################################
+
+
+#################################################################################
+# Parse IRC command options.                                                    #
+#################################################################################
+proc getoptions {argv p_results p_other} {
+	global default_results maximum_results
+	upvar $p_results results $p_other other
+
+	set results $default_results
+	set other ""
+
+	## Arguments should be "split" to form a valid list, this avoids any issues when performing
+	## list operations (lindex,lrange,llength etc.) on "reserved" characters (i.e. curly braces).
+	set argv [split $argv]
+	set argc [llength $argv]
+
+	for {set i 0} {$i < $argc} {incr i} {
+		set arg [lindex $argv $i]
+		if {[string equal -nocase "-h" $arg] || [string equal -nocase "-help" $arg]} {
+			return 0
+		} elseif {[string equal -nocase "-m" $arg] || [string equal -nocase "-max" $arg]} {
+			set arg [lindex $argv [incr i]]
+			if {![string is digit -strict $arg]} {return 0}
+			set results [expr {$arg < $maximum_results ? $arg : $maximum_results}]
+		} elseif {![string equal -length 1 "-" $arg] || $i == $argc} {
+			## The lrange result must be joined to reverse the effect of the "split".
+			set other [join [lrange $argv $i end]]
+			return 1
+		} else {
+			return 0
+		}
+	}
+	return 1
+}
+#################################################################################
+
+
+#################################################################################
+# Format The Time Duration                                                      #
+#################################################################################
+proc format_duration {secs} {
+	set duration ""
+	foreach div {31536000 604800 86400 3600 60 1} mod {0 52 7 24 60 60} unit {y w d h m s} {
+		set num [expr {$secs / $div}]
+		if {$mod > 0} {set num [expr {$num % $mod}]}
+		if {$num > 0} {lappend duration "\002$num\002$unit"}
+	}
+	if {[llength $duration]} {return [join $duration]} else {return "\0020\002s"}
+}
+#################################################################################
+
+
+#################################################################################
+# Display the latest releases.                                                  #
+#################################################################################
+proc ng_new {nick uhost hand chan argv} {
+	global announce binary defaultsection lastbind location sections theme
+	checkchan $chan
+
+	if {![getoptions $argv results section]} {
+		## By displaying the command syntax in the channel (opposed to private message), we can inform others
+		## at the same time. There's this recurring phenomena, every time a user types an "uncommon" command, half
+		## a dozen others will as well...to learn about this command. So, let's kill a few idiots with one stone.
+		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] \[section\]"
+		return
+	}
+	if {$section == ""} {
+		set section $defaultsection
+		set lines [exec $binary(SHOWLOG) -l -m $results -r $location(GLCONF)]
+	} else {
+		if {[set sectiondata [getsectionpath $section]] == ""} {
+			puthelp "PRIVMSG $nick :Invalid section, sections: \002[join [lsort -ascii $sections] {, }]\002"
+			return
+		}
+		foreach {section sectionpath} $sectiondata {break}
+		set lines [exec $binary(SHOWLOG) -f -l -m $results -p $sectionpath -r $location(GLCONF)]
+	}
+
+	## Retrieve a list of UIDs/users and GIDs/groups
+	array set uid [gl_userids]
+	array set gid [gl_groupids]
+
+	set output [themereplace "$theme(PREFIX)$announce(NEW)" "none"]
+	set output [replacevar $output "%section" $section]
+	sndone $nick [basicreplace $output "NEW"]
+	set body [themereplace "$theme(PREFIX)$announce(NEW_BODY)" "none"]
+	set num 0
+
+	foreach line [split $lines "\n"] {
+		## Format: status|uptime|uploader|group|files|kilobytesdirname
+		if {[llength [set line [split $line "|"]]] != 7} {continue}
+		foreach {status ctime userid groupid files kbytes dirname} $line {break}
+
+		## If array get returns "", zeroconvert will replace the value with NoOne/NoGroup.
+		set user [lindex [array get uid $userid] 1]
+		set group [lindex [array get gid $groupid] 1]
+
+		set output [replacevar $body "%num" [format "%02d" [incr num]]]
+		set age [lrange [format_duration [expr {[clock seconds] - $ctime}]] 0 1]
+		set output [replacevar $output "%age" $age]
+		set output [replacevar $output "%date" [clock format $ctime -format "%m-%d-%y"]]
+		set output [replacevar $output "%time" [clock format $ctime -format "%H:%M:%S"]]
+		set output [replacevar $output "%u_name" $user]
+		set output [replacevar $output "%g_name" $group]
+		set output [replacevar $output "%files" $files]
+		set output [replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
+		set path [lrange [file split [string trim [file dirname $dirname] "/"]] 1 end]
+		set output [replacevar $output "%path" [join $path "/"]]
+		set output [replacevar $output "%reldir" [file tail $dirname]]
+		sndone $nick [basicreplace $output "NEW"]
+	}
+
+	if {!$num} {
+		set output [themereplace "$theme(PREFIX)$announce(NEW_NONE)" "none"]
+		sndone $nick [basicreplace $output "NEW"]
+	}
+}
+#################################################################################
+
+
+#################################################################################
+# Search the dirlog for releases.                                               #
+#################################################################################
+proc ng_search {nick uhost hand chan argv} {
+	global announce binary defaultsection lastbind location search_chars theme
+	checkchan $chan
+
+	if {![getoptions $argv results pattern] || $pattern == ""} {
+		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] <pattern>"
+		return
+	}
+	if {$search_chars > 0 && [regexp -all {[a-zA-Z0-9]} $pattern] < $search_chars} {
+		puthelp "PRIVMSG $nick :The search pattern must at be at least \002$search_chars\002 alphanumeric characters."
+		return
+	}
+	## Retrieve matching dirlog entries
+	regsub -all {[\s\*]+} "*${pattern}*" {*} pattern
+	set lines [exec $binary(SHOWLOG) -l -s -m $results -p $pattern -r $location(GLCONF)]
+
+	## Retrieve a list of UIDs/users and GIDs/groups
+	array set uid [gl_userids]
+	array set gid [gl_groupids]
+
+	set output [themereplace "$theme(PREFIX)$announce(SEARCH)" "none"]
+	set output [replacevar $output "%pattern" $pattern]
+	sndone $nick [basicreplace $output "SEARCH"]
+	set body [themereplace "$theme(PREFIX)$announce(SEARCH_BODY)" "none"]
+	set num 0
+
+	foreach line [split $lines "\n"] {
+		## Format: status|uptime|uploader|group|files|kilobytes|dirname
+		if {[llength [set line [split $line "|"]]] != 7} {continue}
+		foreach {status ctime userid groupid files kbytes dirname} $line {break}
+
+		## If array get returns "", zeroconvert will replace the value with NoOne/NoGroup.
+		set user [lindex [array get uid $userid] 1]
+		set group [lindex [array get gid $groupid] 1]
+
+		set output [replacevar $body "%num" [format "%02d" [incr num]]]
+		set age [lrange [format_duration [expr {[clock seconds] - $ctime}]] 0 1]
+		set output [replacevar $output "%age" $age]
+		set output [replacevar $output "%date" [clock format $ctime -format "%m-%d-%y"]]
+		set output [replacevar $output "%time" [clock format $ctime -format "%H:%M:%S"]]
+		set output [replacevar $output "%u_name" $user]
+		set output [replacevar $output "%g_name" $group]
+		set output [replacevar $output "%files" $files]
+		set output [replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
+		set path [lrange [file split [string trim [file dirname $dirname] "/"]] 1 end]
+		set output [replacevar $output "%path" [join $path "/"]]
+		set output [replacevar $output "%reldir" [file tail $dirname]]
+		sndone $nick [basicreplace $output "SEARCH"]
+	}
+
+	if {!$num} {
+		set output [themereplace "$theme(PREFIX)$announce(SEARCH_NONE)" "none"]
+		sndone $nick [basicreplace $output "SEARCH"]
+	}
+}
+#################################################################################
+
+
+#################################################################################
+# Display the latest nukes.                                                     #
+#################################################################################
+proc ng_nukes {nick uhost hand chan argv} {
+	global announce binary defaultsection lastbind location sections theme
+	checkchan $chan
+
+	if {![getoptions $argv results section]} {
+		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] \[section\]"
+		return
+	}
+	if {$section == ""} {
+		set section $defaultsection
+		set lines [exec $binary(SHOWLOG) -n -m $results -r $location(GLCONF)]
+	} else {
+		if {[set sectiondata [getsectionpath $section]] == ""} {
+			puthelp "PRIVMSG $nick :Invalid section, sections: \002[join [lsort -ascii $sections] {, }]\002"
+			return
+		}
+		foreach {section sectionpath} $sectiondata {break}
+		set lines [exec $binary(SHOWLOG) -f -n -m $results -p $sectionpath -r $location(GLCONF)]
+	}
+
+	set output [themereplace "$theme(PREFIX)$announce(NUKES)" "none"]
+	set output [replacevar $output "%section" $section]
+	sndone $nick [basicreplace $output "NUKES"]
+	set body [themereplace "$theme(PREFIX)$announce(NUKES_BODY)" "none"]
+	set num 0
+
+	foreach line [split $lines "\n"] {
+		## Format: status|nuketime|nuker|unnuker|nukee|multiplier|reason|kilobytes|dirname
+		if {[llength [set line [split $line "|"]]] != 9} {continue}
+		foreach {status nuketime nuker unnuker nukee multiplier reason kbytes dirname} $line {break}
+
+		set output [replacevar $body "%num" [format "%02d" [incr num]]]
+		set output [replacevar $output "%date" [clock format $nuketime -format "%m-%d-%y"]]
+		set output [replacevar $output "%time" [clock format $nuketime -format "%H:%M:%S"]]
+		set output [replacevar $output "%nuker" $nuker]
+		set output [replacevar $output "%nukee" $nukee]
+		set output [replacevar $output "%multiplier" $multiplier]
+		set output [replacevar $output "%reason" $reason]
+		set output [replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
+		set path [lrange [file split [string trim [file dirname $dirname] "/"]] 1 end]
+		set output [replacevar $output "%path" [join $path "/"]]
+		set output [replacevar $output "%reldir" [file tail $dirname]]
+		sndone $nick [basicreplace $output "NUKES"]
+	}
+
+	if {!$num} {
+		set output [themereplace "$theme(PREFIX)$announce(NUKES_NONE)" "none"]
+		sndone $nick [basicreplace $output "NUKES"]
+	}
+}
+#################################################################################
+
+
+#################################################################################
+# Display the latest unnukes.                                                   #
+#################################################################################
+proc ng_unnukes {nick uhost hand chan argv} {
+	global announce binary defaultsection lastbind location sections theme
+	checkchan $chan
+
+	if {![getoptions $argv results section]} {
+		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] \[section\]"
+		return
+	}
+	if {$section == ""} {
+		set section $defaultsection
+		set lines [exec $binary(SHOWLOG) -u -m $results -r $location(GLCONF)]
+	} else {
+		if {[set sectiondata [getsectionpath $section]] == ""} {
+			puthelp "PRIVMSG $nick :Invalid section, sections: \002[join [lsort -ascii $sections] {, }]\002"
+			return
+		}
+		foreach {section sectionpath} $sectiondata {break}
+		set lines [exec $binary(SHOWLOG) -f -u -m $results -p $sectionpath -r $location(GLCONF)]
+	}
+
+	set output [themereplace "$theme(PREFIX)$announce(UNNUKES)" "none"]
+	set output [replacevar $output "%section" $section]
+	sndone $nick [basicreplace $output "UNNUKES"]
+	set body [themereplace "$theme(PREFIX)$announce(UNNUKES_BODY)" "none"]
+	set num 0
+
+	foreach line [split $lines "\n"] {
+		## Format: status|nuketime|nuker|unnuker|nukee|multiplier|reason|kilobytes|dirname
+		if {[llength [set line [split $line "|"]]] != 9} {continue}
+		foreach {status nuketime nuker unnuker nukee multiplier reason kbytes dirname} $line {break}
+
+		set output [replacevar $body "%num" [format "%02d" [incr num]]]
+		set output [replacevar $output "%date" [clock format $nuketime -format "%m-%d-%y"]]
+		set output [replacevar $output "%time" [clock format $nuketime -format "%H:%M:%S"]]
+		set output [replacevar $output "%nuker" $nuker]
+		set output [replacevar $output "%unnuker" $unnuker]
+		set output [replacevar $output "%nukee" $nukee]
+		set output [replacevar $output "%multiplier" $multiplier]
+		set output [replacevar $output "%reason" $reason]
+		set output [replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
+		set path [lrange [file split [string trim [file dirname $dirname] "/"]] 1 end]
+		set output [replacevar $output "%path" [join $path "/"]]
+		set output [replacevar $output "%reldir" [file tail $dirname]]
+		sndone $nick [basicreplace $output "UNNUKES"]
+	}
+
+	if {!$num} {
+		set output [themereplace "$theme(PREFIX)$announce(UNNUKES_NONE)" "none"]
+		sndone $nick [basicreplace $output "UNNUKES"]
+	}
 }
 #################################################################################
 
