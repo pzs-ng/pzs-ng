@@ -14,10 +14,10 @@
 
 #include <strl/strl.h>
 
-struct dirent **dirlist;
+/*struct dirent **dirlist;
 struct dirent **dirlistp;
 unsigned int	direntries = 0;
-unsigned int	direntriesp = 0;
+unsigned int	direntriesp = 0;*/
 int		num_groups = 0, num_users = 0;
 struct USER   **user;
 struct GROUP  **group;
@@ -123,7 +123,7 @@ findfileextparent(DIR *dir, char *fileext)
 	return NULL;
 }
 
-char           *
+/*char           *
 findfileext_old_(char *fileext) 
 {
     int     n, k;
@@ -152,7 +152,7 @@ findfileext_old_parent(char *fileext)
         }
     }
     return NULL;
-}
+}*/
 
 /*
  * findfilextcount - count files with given extension
@@ -160,15 +160,16 @@ findfileext_old_parent(char *fileext)
  *         Revision: ?? (2003.12.11)
  */
 int 
-findfileextcount(char *fileext)
+findfileextcount(DIR *dir, char *fileext)
 {
-	int		n         , fnamelen, c = 0;
-
-	n = direntries;
-	while (n--) {
-		if ((fnamelen = NAMLEN(dirlist[n])) < 4)
+	int		fnamelen, c = 0;
+	struct dirent	*dp;
+	
+	rewinddir(dir);
+	while ((dp = readdir(dir))) {
+		if ((fnamelen = NAMLEN(dp)) < 4)
 			continue;
-		if (!strcasecmp((dirlist[n]->d_name + fnamelen - 4), fileext))
+		if (!strcasecmp((dp->d_name + fnamelen - 4), fileext))
 			c++;
 	}
 	return c;
@@ -235,7 +236,7 @@ selector(struct dirent *d)
  *         Revision: r1220
  */
 
-void 
+/*void 
 rescandir(int usefree)
 {
 	if (direntries > 0 && usefree) {
@@ -247,14 +248,14 @@ rescandir(int usefree)
 	if (usefree != 1) {
 		direntries = scandir(".", &dirlist, selector, 0);
 	}
-}
+}*/
 
 /*
  * rescanparent - extract/store the dirlist for parent dir
  * Last modified by: psxc
  *         Revision: r1220
  */
-void 
+/*void 
 rescanparent(int usefree)
 {
 	if (direntriesp > 0 && usefree) {
@@ -266,7 +267,7 @@ rescanparent(int usefree)
 	if (usefree != 1) {
 		direntriesp = scandir("..", &dirlistp, 0, 0);
 	}
-}
+}*/
 
 
 /*
@@ -275,16 +276,13 @@ rescanparent(int usefree)
  *         Revision: ??
  */
 void 
-del_releasedir(char *relname)
+del_releasedir(DIR *dir, char *relname)
 {
-	int	fnum = direntries;
+	struct dirent *dp;
 
-	if (fnum > 0) {
-		while (fnum--) {
-			unlink(dirlist[fnum]->d_name);
-		}
-		rmdir(relname);
-	}
+	while ((dp = readdir(dir)))
+		unlink(dp->d_name);
+	rmdir(relname);
 }
 
 
@@ -309,7 +307,9 @@ void
 unlink_missing(char *s)
 {
 	char		t[PATH_MAX];
-	int		n = 0;
+	long		loc;
+	DIR		*dir;
+	struct dirent	*dp;
 
 	snprintf(t, PATH_MAX, "%s-missing", s);
 	unlink(t);
@@ -317,8 +317,12 @@ unlink_missing(char *s)
 	strtolower(t);
 	unlink(t);
 #endif
-	if ((n = findfile(t)))
-		unlink(dirlist[n]->d_name);
+	dir = opendir(".");
+	if ((loc = findfile(dir, t))) {
+		seekdir(dir, loc);
+		dp = readdir(dir);
+		unlink(dp->d_name);
+	}
 
 	snprintf(t, PATH_MAX, "%s.bad", s);
 	unlink(t);
@@ -326,9 +330,13 @@ unlink_missing(char *s)
 	strtolower(t);
 	unlink(t);
 #endif
-	if ((n = findfile(t)))
-		unlink(dirlist[n]->d_name);
-
+	rewinddir(dir);
+	if ((loc = findfile(dir, t))) {
+		seekdir(dir, loc);
+		dp = readdir(dir);
+		unlink(dp->d_name);
+	}
+	closedir(dir);
 }
 
 /*
@@ -461,36 +469,36 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 /*
  * Modified: Unknown
  */
-short int 
-findfile(char *filename)
+long
+findfile(DIR *dir, char *filename)
 {
-	int		n = direntries;
+	struct dirent	*dp;
 
-	while (n--) {
+	rewinddir(dir);
+	while ((dp = readdir(dir))) {
 #if (sfv_cleanup)
 #if (sfv_cleanup_lowercase)
-		if (!strcasecmp(dirlist[n]->d_name, filename))
+		if (!strcasecmp(dp->d_name, filename))
 #else
-		if (!strcmp(dirlist[n]->d_name, filename))
+		if (!strcmp(dp->d_name, filename))
 #endif
 #else
-		if (!strcmp(dirlist[n]->d_name, filename))
+		if (!strcmp(dp->d_name, filename))
 #endif
-			return n;
+			return telldir(dir);
 	}
 	return 0;
 }
 
 void
-removedotfiles()
+removedotfiles(DIR *dir)
 {
-	int		n = direntries;
+	struct dirent *dp;
 
-	while (n--) {
-		if ((!strncasecmp(dirlist[n]->d_name, ".", 1)) && (strlen(dirlist[n]->d_name) > 2)) {
-			unlink(dirlist[n]->d_name);
-		}
-	}
+	while ((dp = readdir(dir)))
+		if ((!strncasecmp(dp->d_name, ".", 1)) &&
+		    (strlen(dp->d_name) > 2))
+			unlink(dp->d_name);
 }
 
 char *
@@ -736,13 +744,18 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 void 
 readsfv_ffile(struct VARS *raceI)
 {
-	int		fd, line_start = 0, index_start, ext_start, n;
-	char           *buf, *fname;
+	int		fd, line_start = 0, index_start,
+			ext_start, n;
+	char		*buf, *fname;
+	
+	DIR		*dir;
 
 	fd = open(raceI->file.name, O_RDONLY);
 	buf = m_alloc(raceI->file.size + 2);
 	read(fd, buf, raceI->file.size);
 	close(fd);
+
+	dir = opendir(".");
 
 	for (n = 0; n <= raceI->file.size; n++) {
 		if (buf[n] == '\n' || n == raceI->file.size) {
@@ -771,7 +784,7 @@ readsfv_ffile(struct VARS *raceI)
 					index_start++;
 					raceI->total.files++;
 					if (!strcomp(ignored_types, fname + ext_start)) {
-						if (findfile(fname)) {
+						if (findfile(dir, fname)) {
 							raceI->total.files_missing--;
 						}
 					}
@@ -782,6 +795,7 @@ readsfv_ffile(struct VARS *raceI)
 	}
 	raceI->total.files_missing = raceI->total.files + raceI->total.files_missing;
 	m_free(buf);
+	closedir(dir);
 }
 
 void 
@@ -1047,30 +1061,37 @@ sample_dir(char *dirname)
 unsigned long 
 sfv_compare_size(char *fileext, unsigned long fsize)
 {
-	int		n, k = 0;
+	int		k = 0;
 	unsigned long	l = 0;
 	struct stat	filestat;
 
-	n = direntries;
-	while (n--) {
-		if ((k = NAMLEN(dirlist[n])) < 4)
+	DIR		*dir;
+	struct dirent	*dp;
+
+	dir = opendir(".");
+
+	while ((dp = readdir(dir))) {
+		if ((k = NAMLEN(dp)) < 4)
 			continue;
-		if (strcasecmp(dirlist[n]->d_name + k - 4, fileext) == 0) {
-			if (stat(dirlist[n]->d_name, &filestat) != 0)
+		if (strcasecmp(dp->d_name + k - 4, fileext) == 0) {
+			if (stat(dp->d_name, &filestat) != 0)
 				filestat.st_size = 1;
 			l = l + filestat.st_size;
 			continue;
 		}
 	}
+	
 	if (!(l = l - fsize) > 0)
 		l = 0;
+	
+	closedir(dir);
+
 	return l;
 }
 
 void
 mark_as_bad(char *filename)
 {
-
 #if (mark_file_as_bad == TRUE)
 	char	newname[PATH_MAX];
 
@@ -1085,8 +1106,8 @@ mark_as_bad(char *filename)
 		createzerofile(filename);
 		chmod(newname, 0644);
 	}
-	d_log("File (%s) marked as bad.\n", filename);
 #endif
+	d_log("File (%s) marked as bad.\n", filename);
 }
 
 void 

@@ -80,8 +80,9 @@ main(int argc, char **argv)
 	unsigned char	complete_type = 0;
 #endif
 	char           *complete_announce = 0;
-	int		cnt, cnt2, n = 0, f_id = 0;
+	int		cnt, cnt2, n = 0;
 	int		write_log = 0;
+	long		loc;
 #if ( enable_complete_script || enable_accept_script )
 	int		nfofound = 0;
 #endif
@@ -274,7 +275,8 @@ main(int argc, char **argv)
 #endif
 #endif
 	d_log("Reading directory structure\n");
-	rescandir(2);
+	dir = opendir(".");
+	parent = opendir("..");
 
 	d_log("Caching release name\n");
 	getrelname(&g);
@@ -385,8 +387,11 @@ main(int argc, char **argv)
 				if (execute(target) != 0) {
 					d_log("No file_id.diz found (#%d): %s\n", errno, strerror(errno));
 				} else {
-					if ((f_id = findfile("file_id.diz.bad")))
-						unlink(dirlist[f_id]->d_name);
+					if ((loc = findfile(dir, "file_id.diz.bad"))) {
+						seekdir(dir, loc);
+						dp = readdir(dir);
+						unlink(dp->d_name);
+					}
 					chmod("file_id.diz", 0666);
 				}
 			}
@@ -440,7 +445,7 @@ main(int argc, char **argv)
 			}
 
 			if (fileexists(g.l.sfv)) {
-				if (deny_double_sfv == TRUE && findfileextcount(".sfv") > 1 && sfv_compare_size(".sfv", g.v.file.size) > 0) {
+				if (deny_double_sfv == TRUE && findfileextcount(dir, ".sfv") > 1 && sfv_compare_size(".sfv", g.v.file.size) > 0) {
 					write_log = g.v.misc.write_log;
 					g.v.misc.write_log = 1;
 					d_log("DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g.v.file.size));
@@ -452,7 +457,7 @@ main(int argc, char **argv)
 					exit_value = 2;
 					g.v.misc.write_log = write_log;
 					break;
-				} else if (findfileextcount(".sfv") > 1 && sfv_compare_size(".sfv", g.v.file.size) > 0) {
+				} else if (findfileextcount(dir, ".sfv") > 1 && sfv_compare_size(".sfv", g.v.file.size) > 0) {
 					d_log("DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g.v.file.size));
 					d_log("Reading remainders of old sfv\n");
 					readsfv(g.l.sfv, &g.v, 1);
@@ -498,11 +503,10 @@ main(int argc, char **argv)
 				unlink(g.l.race);
 				unlink(g.l.sfv);
 
-				rescandir(2);
-				n = direntries;
-				while (n--) {
-					cnt = cnt2 = strlen(dirlist[n]->d_name);
-					ext = dirlist[n]->d_name;
+				rewinddir(dir);
+				while ((dp = readdir(dir))) {
+					cnt = cnt2 = strlen(dp->d_name);
+					ext = dp->d_name;
 					while (ext[cnt] != '-' && cnt > 0)
 						cnt--;
 					if (ext[cnt] != '-')
@@ -511,7 +515,7 @@ main(int argc, char **argv)
 						cnt++;
 					ext += cnt;
 					if (!strncmp(ext, "missing", 7))
-						unlink(dirlist[n]->d_name);
+						unlink(dp->d_name);
 				}
 
 				break;
@@ -526,7 +530,6 @@ main(int argc, char **argv)
 				if (fileexists(g.l.race)) {
 					d_log("Testing files marked as untested\n");
 					testfiles(&g.l, &g.v, 0);
-					rescandir(2);
 				}
 			}
 			d_log("Reading file count from SFV\n");
@@ -583,7 +586,7 @@ main(int argc, char **argv)
 			} else {
 				if (g.v.misc.release_type == RTYPE_AUDIO) {
 					d_log("Reading audio info for completebar\n");
-					get_mpeg_audio_info(findfileext_old_(".mp3"), &g.v.audio);
+					get_mpeg_audio_info(findfileext(dir, ".mp3"), &g.v.audio);
 				}
 			}
 			break;
@@ -593,7 +596,7 @@ main(int argc, char **argv)
 			no_check = TRUE;
 			d_log("File type is: NFO\n");
 #if ( deny_double_nfo )
-			if (findfileextcount(".nfo") > 1) {
+			if (findfileextcount(dir, ".nfo") > 1) {
 				d_log("Looks like there already is a nfo uploaded. Denying this one.\n");
 				sprintf(g.v.misc.error_msg, DUPE_NFO);
 				mark_as_bad(g.v.file.name);
@@ -1195,9 +1198,9 @@ main(int argc, char **argv)
 #endif
 				}
 #if ( create_m3u == TRUE )
-				if (findfileext_old_(".sfv")) {
+				if (findfileext(dir, ".sfv")) {
 					d_log("Creating m3u\n");
-					cnt = sprintf(target, findfileext_old_(".sfv"));
+					cnt = sprintf(target, findfileext(dir, ".sfv"));
 					strlcpy(target + cnt - 3, "m3u", 4);
 					create_indexfile(g.l.race, &g.v, target);
 				} else
@@ -1234,21 +1237,18 @@ main(int argc, char **argv)
 #endif
 
 #if ( enable_complete_script == TRUE )
-			nfofound = (int)findfileext_old_(".nfo");
+			nfofound = (int)findfileext(dir, ".nfo");
 			if (!fileexists(complete_script)) {
 				d_log("Could not execute complete_script (%s) - file does not exists\n", complete_script);
 			} else {
 				d_log("Executing complete script\n");
 				sprintf(target, complete_script " \"%s\"", g.v.file.name);
-				if (execute(target) != 0) {
+				if (execute(target) != 0)
 					d_log("Failed to execute complete_script: %s\n", strerror(errno));
-				} else {
-					rescandir(2);
-				}
 			}
 
 #if ( enable_nfo_script == TRUE )
-			if (!nfofound && findfileext_old_(".nfo")) {
+			if (!nfofound && findfileext(dir, ".nfo")) {
 				if (!fileexists(nfo_script)) {
 					d_log("Could not execute nfo_script (%s) - file does not exists\n", nfo_script);
 				} else {
@@ -1263,31 +1263,27 @@ main(int argc, char **argv)
 #endif
 			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
 				/* Creating no-nfo link if needed. */
-				if ((g.l.nfo_incomplete) && (!findfileext_old_(".nfo")) && (matchpath(check_for_missing_nfo_dirs, g.l.path)) ) {
+				if ((g.l.nfo_incomplete) && (!findfileext(dir, ".nfo")) && (matchpath(check_for_missing_nfo_dirs, g.l.path)) ) {
 					if (!g.l.in_cd_dir) {
 						d_log("Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
 					} else {
-						rescanparent(2);
-						if (!findfileext_old_parent(".nfo")) {
+						if (!findfileextparent(parent, ".nfo")) {
 							d_log("Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
 							create_incomplete_nfo();
 						}
-						rescanparent(1);
 					}
 				}
 				/* Creating no-sample link if needed.
-				if ((g.l.sample_incomplete) && (!findfileext_old_(".nfo")) && (matchpath(check_for_missing_nfo_dirs, g.l.path)) ) {
+				if ((g.l.sample_incomplete) && (!findfileext(dir, ".nfo")) && (matchpath(check_for_missing_nfo_dirs, g.l.path)) ) {
 					if (!g.l.in_cd_dir) {
 						d_log("Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
 					} else {
-						rescanparent(2);
-						if (!findfileext_old_parent(".nfo")) {
+						if (!findfileextparent(parent, ".nfo")) {
 							d_log("Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
 							create_incomplete_nfo();
 						}
-						rescanparent(1);
 					}
 				}
 				*/
@@ -1311,7 +1307,7 @@ main(int argc, char **argv)
 	}
 #if ( enable_accept_script == TRUE )
 	if (exit_value == EXIT_SUCCESS) {
-		nfofound = (int)findfileext_old_(".nfo");
+		nfofound = (int)findfileext(dir, ".nfo");
 		if (!fileexists(accept_script)) {
 			d_log("Could not execute accept_script (%s) - file does not exists\n", accept_script);
 		} else {
@@ -1322,8 +1318,7 @@ main(int argc, char **argv)
 			}
 		}
 #if ( enable_nfo_script == TRUE )
-		rescandir(2);
-		if (!nfofound && findfileext_old_(".nfo")) {
+		if (!nfofound && findfileext(dir, ".nfo")) {
 			if (!fileexists(nfo_script)) {
 				d_log("Could not execute nfo_script (%s) - file does not exists\n", nfo_script);
 			} else {
@@ -1337,28 +1332,27 @@ main(int argc, char **argv)
 #endif
 	}
 #endif
-	rescandir(2);
-	rescanparent(2);
-	if ((findfileext_old_(".nfo") || (findfileext_old_parent(".nfo"))) && (g.l.nfo_incomplete)) {
+	if ((findfileext(dir, ".nfo") || (findfileextparent(parent, ".nfo"))) && (g.l.nfo_incomplete)) {
 		d_log("Removing missing-nfo indicator (if any)\n");
 		remove_nfo_indicator(&g);
 	}
-	rescanparent(1);
 
 #if ( del_banned_release )
 	if (deldir) {
 		move_progress_bar(1, &g.v, g.ui, g.gi);
 		if (g.l.incomplete)
 			unlink(g.l.incomplete);
-		del_releasedir(g.l.path);
+		del_releasedir(dir, g.l.path);
 	}
 #endif
 
 	d_log("Releasing memory\n");
+	closedir(dir);
+	closedir(parent);
+	
 	buffer_groups(GROUPFILE, gnum);
 	buffer_users(PASSWDFILE, unum);
 	updatestats_free(&g);
-	rescandir(1);
 	//free(g.l.link_source);
 	//free(g.v.misc.release_name);
 	free(fileext);

@@ -95,7 +95,7 @@ extern char    *findfileext_old_(char *);
 extern char    *findfileext_old_parent(char *);
 /* mkay? */
 
-extern int	findfileextcount(char *);
+extern int	findfileextcount(DIR *, char *);
 extern unsigned int hexstrtodec(unsigned char *);
 #if defined(__linux__) || defined(__NetBSD__)
 extern int	selector(const struct dirent *);
@@ -103,18 +103,18 @@ extern int	selector(const struct dirent *);
 extern int	selector(struct dirent *);
 #endif
 
-extern void	rescandir(int);
-extern void	rescanparent(int);
-extern void	del_releasedir(char *);
+/*extern void	rescandir(int);
+extern void	rescanparent(int);*/
+extern void	del_releasedir(DIR *, char *);
 extern void	strtolower(char *);
 extern void	unlink_missing(char *);
 extern char	israr(char *);
 extern char	isvideo(char *);
 extern void	buffer_progress_bar(struct VARS *);
 extern void	move_progress_bar(unsigned char, struct VARS *, struct USERINFO **, struct GROUPINFO **);
-extern short	findfile(char *);
+extern long	findfile(DIR *, char *);
 extern char	*findfilename(char *, char *);
-extern void	removedotfiles(void);
+extern void	removedotfiles(DIR *);
 extern void	removecomplete(void);
 extern short	matchpath(char *, char *);
 extern short	matchpartialpath(char *, char *);

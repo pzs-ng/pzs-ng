@@ -34,7 +34,7 @@
 int 
 main(void)
 {
-	int		n, m, l, complete_type = 0, gnum = 0, unum = 0, f_id = 0;
+	int		n, m, l, complete_type = 0, gnum = 0, unum = 0;
 	char           *ext, exec[4096], *complete_bar = 0;
 	unsigned int	crc;
 	struct stat	fileinfo;
@@ -45,6 +45,7 @@ main(void)
 
 	DIR		*dir, *parent;
 	struct dirent	*dp;
+	long		loc;
 
 	GLOBAL		g;
 
@@ -97,7 +98,6 @@ main(void)
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
 
-	//rescandir(2);
 	move_progress_bar(1, &g.v, g.ui, g.gi);
 	if (g.l.incomplete)
 		unlink(g.l.incomplete);
@@ -209,7 +209,6 @@ main(void)
 		testfiles(&g.l, &g.v, 1);
 		printf("\n");
 
-		//rescandir(2);	/* We need to rescan again */
 		readsfv(g.l.sfv, &g.v, 0);
 		readrace(g.l.race, &g.v, g.ui, g.gi);
 		sortstats(&g.v, g.ui, g.gi);
@@ -302,8 +301,11 @@ main(void)
 					if (execute(exec) != 0) {
 						d_log("No file_id.diz found (#%d): %s\n", errno, strerror(errno));
 					} else {
-						if ((f_id = findfile("file_id.diz.bad")))
+						if ((loc = findfile(dir, "file_id.diz.bad"))) {
+							seekdir(dir, loc);
+							dp = readdir(dir);
 							unlink(dp->d_name);
+						}
 						chmod("file_id.diz", 0666);
 					}
 				}
@@ -377,7 +379,6 @@ main(void)
 	d_log("Freeing memory.\n");
 	closedir(dir);
 	closedir(parent);
-	//rescandir(1);
 	updatestats_free(&g);
 	free(g.l.race);
 	free(g.l.sfv);

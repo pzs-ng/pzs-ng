@@ -74,6 +74,7 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 	int		insfv = 0;
 	unsigned int	crc = 0;
 	FILE		*sfvfile;
+	DIR		*dir;
 	
 	SFVDATA		sd;
 
@@ -86,6 +87,8 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 	fread(&raceI->misc.release_type, sizeof(short int), 1, sfvfile);
 	
 	d_log("Reading data from sfv (%s)\n", raceI->file.name);
+	
+	dir = opendir(".");
 	
 	raceI->total.files = 0;
 	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
@@ -100,11 +103,12 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 			crc = sd.crc32;
 			insfv = 1;
 		}
-		if (getfcount && findfile(sd.fname)) {
+		if (getfcount && findfile(dir, sd.fname)) {
 			raceI->total.files_missing--;
 		}
 	}
 	
+	closedir(dir);
 	fclose(sfvfile);
 	
 	raceI->total.files_missing += raceI->total.files;
@@ -343,6 +347,8 @@ copysfv(const char *source, const char *target)
 	char		*ptr, fbuf[2048];
 	FILE		*insfv, *outsfv;
 
+	DIR		*dir;
+
 	SFVDATA		sd;
 	
 #if ( sfv_dupecheck == TRUE )
@@ -369,6 +375,8 @@ copysfv(const char *source, const char *target)
 	}
 	
 	video = music = rars = others = type = 0;
+
+	dir = opendir(".");
 
 	fwrite(&type, sizeof(short int), 1, outsfv);
 	
@@ -491,7 +499,7 @@ copysfv(const char *source, const char *target)
 					others++;
 				
 #if ( create_missing_files == TRUE )
-				if (!findfile(sd.fname))
+				if (!findfile(dir, sd.fname))
 					create_missing(sd.fname);
 #endif
 
@@ -499,6 +507,7 @@ copysfv(const char *source, const char *target)
 			}
 		}
 	}
+
 	
 	if (music > rars) {
 		if (video > music)
@@ -522,6 +531,7 @@ END:
 	rename(".tmpsfv", source);
 #endif
 	
+	closedir(dir);
 	rewind(outsfv);
 	fwrite(&type, sizeof(short int), 1, outsfv);
 	fclose(outsfv);
