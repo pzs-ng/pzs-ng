@@ -402,8 +402,8 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
 #if (sfv_cleanup == TRUE)
 							sfv_error = TRUE;
 #endif
-							break;
 						}
+						break;
 					}
 				}
 			}

@@ -1410,6 +1410,7 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 #if ( benchmark_mode == TRUE )
 	gettimeofday(&bstop, (struct timezone *)0);
 	printf("Checks completed in %0.6f seconds\n", ((bstop.tv_sec - bstart.tv_sec) + (bstop.tv_usec - bstart.tv_usec) / 1000000.));
+	d_log("Checks completed in %0.6f seconds\n", ((bstop.tv_sec - bstart.tv_sec) + (bstop.tv_usec - bstart.tv_usec) / 1000000.));
 #endif
 
 #if ( sleep_on_bad > 0 && sleep_on_bad < 1001 )

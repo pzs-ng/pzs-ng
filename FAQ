@@ -39,3 +39,9 @@ A: In dZSbconf.tcl there's a 'set variables(PRE)' line. Either change this to
    match your foo setup, or change the announce in foo's config to:
    group.DEFAULT.announce=PRE: "%PP/%R" "%R" "%G" "%D" "%F" "%S" "%C" "%W" "%U" "%g" "%T"
 
+Q: Integrity check failed (#17): File exists
+--------------------------------------------
+A: This is usually seen with zipfiles. It means you'ved changed the variable
+   unzip_bin to a location outside glftpd's chroot, or to a place it is not
+   found, or have forgotten to copy unzip into glftpd's bin/ dir.
+

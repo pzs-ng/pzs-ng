@@ -10,6 +10,7 @@
 
 
 
+/* DO NOT USE WILDCARDS HERE - only cleanupdirs use wildcards! */
 #define sitepath_dir			"/site/"
 #define group_dirs			"/site/groups/"
 #define zip_dirs			"/site/incoming/0day/"
