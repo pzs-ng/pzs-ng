@@ -31,7 +31,7 @@
  - Copy the necessary files to your Eggdrop's directory:
   mkdir -p /path/to/eggdrop/pzs-ng/themes
   cp dZSbot.* /path/to/eggdrop/pzs-ng/
-  cp -R plugins themes /path/to/eggdrop/pzs-ng/themes/
+  cp -R plugins themes /path/to/eggdrop/pzs-ng/
 
  - On a new install (not upgrade):
   mv dZSbot.conf.dist /path/to/eggdrop/pzs-ng/dZSbot.conf

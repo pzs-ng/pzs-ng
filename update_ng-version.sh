@@ -12,7 +12,7 @@ if [ ! -r "$FILE" ]; then
 	exit 1;
 fi
 
-REV="`echo $1|sed 's/[^0-9]+//g'`"
+REV="`echo $1|sed 's/[^0-9]\{1,\}//g'`"
 if [ -z "$1" ]; then
 	echo " ERROR: Invalid or missing revision parameter.";
 	echo "syntax: $0 <revision>";

@@ -93,7 +93,13 @@ A: Already exists. Try http://poci.u5-inside.de/index.php
 
 Q: (BOT) What does "Tcl error in script for 'timer#####'" mean?
 ------------------------------------------------------------
-A: It means Eggdrop encountered a problem while evaluating a timed procedure. In other
-   words, you found a bug in sitebot. Please type .errorinfo in the bot's partyline
-   after you see that error message. Be sure to include the output from .errorinfo
-   in your bug report on http://bugs.pzs-ng.com.
+A: It means Eggdrop encountered a problem while evaluating a timed procedure.
+   In other words, you found a bug in sitebot. Please type .errorinfo in the
+   bot's partyline after you see that error message. Be sure to include the
+   output from .errorinfo in your bug report on http://bugs.pzs-ng.com.
+
+Q: (BOT) !bnc does not work. (I use curl 7.13.1)
+------------------------------------------------
+A: There is a bug in this version of curl when connection to a SSL site. Please
+   downgrade to 7.12.3.
+

@@ -22,7 +22,11 @@ APPS:/site/incoming/apps/
 MV:/site/incoming/musicvideos/
 "
 
-# set this to 1 if you wish to announce sections no incompletes are found.
+# alternative, set the following variable to point to your dZSbot.conf and
+# comment out the ''sections='' directive above.
+botconf=/glftpd/sitebot/scripts/pzs-ng/dZSbot.conf
+
+# set this to 1 if you wish to announce sections where no incompletes are found.
 verbose=0
 
 #bold char
@@ -33,6 +37,11 @@ bold=""
 # END OF CONFIG             #
 # ^^^^^^^^^^^^^             #
 #############################
+
+# grab sections from the sitebot's conf instead
+if [ -z $section ]; then
+ sections=`grep "^set paths(" $botconf | sed 's/^set paths(\(.*\)) \"\(.*\)\*\"/\1:\2/'`
+fi;
 
 for section in $sections; do
   secname="`echo $section | cut -d ':' -f 1`"
