@@ -696,7 +696,7 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 void 
 readsfv_ffile(char *filename, off_t buf_bytes)
 {
-	int		fd        , line_start = 0, index_start, ext_start, n;
+	int		fd, line_start = 0, index_start, ext_start, n;
 	char           *buf, *fname;
 
 	fd = open(filename, O_RDONLY);
@@ -1019,7 +1019,7 @@ buffer_users(char *passwdfile, int setfree)
 	char           *f_buf, *u_name;
 	uid_t		u_id;
 	off_t		f_size;
-	int		f         , n, m, l, u_n_size, l_start = 0;
+	int		f, n, m, l, u_n_size, l_start = 0;
 	int		USERS = 0;
 	struct stat	fileinfo;
 
@@ -1087,7 +1087,7 @@ buffer_users(char *passwdfile, int setfree)
 unsigned long
 sample_dir(char *dirname)
 {
-	int		n         , k = 0;
+	int		n, k = 0;
 	unsigned long	l = 0;
 	struct stat	filestat;
 
@@ -1120,7 +1120,7 @@ sample_dir(char *dirname)
 unsigned long 
 sfv_compare_size(char *fileext, unsigned long fsize)
 {
-	int		n         , k = 0;
+	int		n, k = 0;
 	unsigned long	l = 0;
 	struct stat	filestat;
 
@@ -1145,13 +1145,12 @@ mark_as_bad(char *filename)
 {
 
 #if (mark_file_as_bad == TRUE)
-	char    *newname = 0;
+	char	newname[PATH_MAX];
 
 	if (!fileexists(filename)) {
 		d_log("Debug: Failed to open file \"%s\"\n", filename);
 		return;
 	}
-	newname=malloc((strlen(filename) + 5) * sizeof(char));
 	sprintf(newname, "%s.bad", filename);
 	if (rename(filename, newname)) {
 		d_log("Error - failed to rename %s to %s.\n", filename, newname);
@@ -1159,7 +1158,6 @@ mark_as_bad(char *filename)
 		createzerofile(filename);
 		chmod(newname, 0644);
 	}
-	free(newname);
 #endif
 	d_log("File (%s) marked as bad.\n", filename);
 }
