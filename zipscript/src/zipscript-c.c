@@ -232,7 +232,7 @@ int main( int argc, char **argv ) {
  unsigned char	exit_value = 0;
  unsigned char	no_check = FALSE;
  unsigned char	complete_type = 0;
- int		cnt;
+ int		cnt, cnt2;
  int		n;
  int		write_log;
  struct	stat	fileinfo;
@@ -447,10 +447,11 @@ if ( matchpath(group_dirs, locations.path ) && ( hide_group_uploaders == TRUE ))
 				cnt = raceI.total.files - raceI.total.files_missing;
 				raceI.total.files_missing = raceI.total.files = 0;
 				readsfv_ffile(raceI.file.name, raceI.file.size);
-				if ( (raceI.total.files - raceI.total.files_missing) &&  ! cnt ) {
+				cnt2 = raceI.total.files;
+				if ( ( (raceI.total.files - raceI.total.files_missing) != cnt ) && (raceI.total.files <= cnt2) ) {
 					write_log = raceI.misc.write_log;
 					raceI.misc.write_log = 1;
-					d_log("Old sfv seems to match with more files than current one\n");
+					d_log("Old sfv seems to match with more files than current one - %d %d %d\n",cnt,cnt2,raceI.total.files);
 					strcpy(raceI.misc.error_msg, "SFV does not match with files!");
 					error_msg = convert(&raceI,userI,groupI,deny_double_msg);
 					writelog(error_msg, "DOUBLESFV");

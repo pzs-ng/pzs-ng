@@ -241,7 +241,8 @@
 #define audio_cbr		"Encoded @ %XKbps CBR in %zHz %Q."		/* Put in %j cookie */
 
 #define audio_race		"%B%U%B is racing [ %R ] on %B%r%B @ %B%.0S%BkB/s."
-#define audio_sfv		"Got SFV for %B%r%B. Expecting %B%f%BF."
+#define audio_sfv		DISABLED
+//#define audio_sfv		"Got SFV for %B%r%B. Expecting %B%f%BF."
 #define audio_update		"Got MP3 info for %B%r%B. Expecting %B%f%BF of %B%w%B from %B%Y%B. %j"
 #define audio_halfway		"%B%r%B is in halfway. Leading uploader is %C0. Leading group is %c0."
 #define audio_newleader		"%C0 takes the lead in %B%r%B!"
