@@ -691,7 +691,7 @@
 #define zip_completebar		"[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 #endif
 #ifndef del_completebar
-#define del_completebar		"\\[.*] - \\( .*F - COMPLETE.*) - \\[.*]"
+#define del_completebar		"^\\[.*] - \\( .*F - COMPLETE.*) - \\[.*]$"
 #endif
 #ifndef zipscript_header
 #define zipscript_header	".-== PZS-NG Zipscript-C ==--,d1'--== (C) 2005 ==---.\n"
@@ -774,7 +774,7 @@
 #define progressmeter			"[%V] - %3.0p%% Complete - [%Z]"
 #endif
 #ifndef del_progressmeter
-#define del_progressmeter		"\\[.*] - .*%% Complete - \\[.*]"
+#define del_progressmeter		"^\\[.*] - .*%% Complete - \\[.*]$"
 #endif
 
 

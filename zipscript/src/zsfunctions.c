@@ -415,12 +415,10 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 	if (delete) {
 		while ((dp = readdir(dir))) {
 			if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
-				if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dp)) {
-					d_log("Found progress bar (%s), removing\n", dp->d_name);
-					remove(dp->d_name);
-					*dp->d_name = 0;
-					m = 1;
-				}
+				d_log("Found progress bar (%s), removing\n", dp->d_name);
+				remove(dp->d_name);
+				*dp->d_name = 0;
+				m = 1;
 			}
 		}
 		if (m) {
@@ -439,17 +437,15 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 		bar = convert(raceI, userI, groupI, progressmeter);
 		while ((dp = readdir(dir))) {
 			if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
-				if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dp)) {
-					if (!m) {
-						d_log("Found progress bar (%s), renaming (to %s)\n", dp->d_name, bar);
-						rename(dp->d_name, bar);
-						m = 1;
-					} else {
-						d_log("Found (extra) progress bar (%s), removing\n", dp->d_name);
-						remove(dp->d_name);
-						*dp->d_name = 0;
-						m = 2;
-					}
+				if (!m) {
+					d_log("Found progress bar (%s), renaming (to %s)\n", dp->d_name, bar);
+					rename(dp->d_name, bar);
+					m = 1;
+				} else {
+					d_log("Found (extra) progress bar (%s), removing\n", dp->d_name);
+					remove(dp->d_name);
+					*dp->d_name = 0;
+					m = 2;
 				}
 			}
 		}
