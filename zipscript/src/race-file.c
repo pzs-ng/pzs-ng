@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "crc.h"
 #include "race-file.h" 
 
 #include "objects.h"
@@ -264,7 +265,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 int
 copysfv(const char *source, const char *target)
 {
-	int		i, retval = 0;
+	int		i;
 	short int	music, rars, video, others, type;
 	
 	char		*ptr, fbuf[2048];
@@ -284,6 +285,8 @@ copysfv(const char *source, const char *target)
 	if ((tmpsfv = fopen(".tmpsfv", "w+")) == NULL)
 		d_log("Failed to open '.tmpsfv': %s\n", strerror(errno));
 
+#else
+	int		retval = 0;
 #endif
 
 	if ((insfv = fopen(source, "r")) == NULL) {
@@ -349,20 +352,26 @@ copysfv(const char *source, const char *target)
 		
 		} else {
 			/* we have a filename only. */
-
-#if (sfv_calc_single_fname == TRUE)
-			/* TODO */
-			/* calculate file's crc if it exists */
+#if (sfv_cleanup == TRUE)
+			/* do stuff  */
 #else
 			retval = 1;
 			goto END;
 #endif
-
 		}
 
 		/* we assume what's left is a filename */
 		if (strlen(fbuf) > 0) {
 			strlcpy(sd.fname, fbuf, PATH_MAX);
+
+#if (sfv_calc_single_fname == TRUE)
+			/* TODO */
+			/* calculate file's crc if it exists */
+			if (sd.crc32 == 0) {
+				d_log("Got filename (%s) without crc, trying to calculate.\n", sd.fname);
+				sd.crc32 = calc_crc32(sd.fname);
+			}
+#endif
 			
 			/* get file extension */
 			ptr = find_last_of(fbuf, ".");
@@ -391,7 +400,7 @@ copysfv(const char *source, const char *target)
 #if ( sfv_cleanup == TRUE )
 				/* write good stuff to .tmpsfv */
 				if (tmpsfv) {
-					sprintf(crctmp, "%x", sd.crc32);
+					sprintf(crctmp, "%.8x", sd.crc32);
 					fwrite(sd.fname, strlen(sd.fname), 1, tmpsfv);
 					fwrite(" ", 1, 1, tmpsfv);
 					fwrite(crctmp, 8, 1, tmpsfv);
@@ -433,7 +442,9 @@ copysfv(const char *source, const char *target)
 			type = (rars >= others ? 1 : 2);
 	}
 
+#if ( sfv_cleanup == FALSE )
 END:
+#endif
 	fclose(insfv);
 #if ( sfv_cleanup == TRUE && sfv_error == FALSE )
 	unlink(source);

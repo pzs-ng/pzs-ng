@@ -76,20 +76,16 @@ unsigned int
 calc_crc32(char *f)
 {
 	FILE		*in;
-	//unsigned char  *buf;
 	char		buf[32768];
 	unsigned int	crc;
 	size_t		i, j;
 	int		k;
 
-	if (!(in = fopen(f, "rb"))) {
+	if (!(in = fopen(f, "r"))) {
 		fprintf(stderr, "Error opening %s: %s\n", f, strerror(errno));
 		return 0;
-//		exit(2);
 	}
-	//buf = malloc(32766);
 	crc = 0xFFFFFFFF;
-	//while ((i = fread(buf, 1, 32766, in)) > 0) {
 	while ((i = fread(buf, 1, sizeof(buf), in)) > 0) {
 		for (j = 0; j < i; j++) {
 			k = (crc ^ buf[j]) & 0x000000FFL;
@@ -97,6 +93,5 @@ calc_crc32(char *f)
 		}
 	}
 	fclose(in);
-	//free(buf);
 	return ~crc;
 }

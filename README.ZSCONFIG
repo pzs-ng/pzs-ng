@@ -119,6 +119,11 @@ strict_path_match <TRUE|FALSE>
 	way around. group dirs are not affected, as they can be both.
 	Default: FALSE
 
+sfv_calc_single_fname <TRUE|FALSE>
+	Setting this to TRUE enables the zipscript to calculate a CRC checksum
+	for filenames in an SFV file that appear not to have a CRC stored with
+	them.
+
 remove_sfv_data_on_delete <TRUE|FALSE>
 	If files are removed from a location, and reupped again, in the same 
 	place, the zipscript will probably announce complete messages after each
