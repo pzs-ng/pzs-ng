@@ -32,6 +32,10 @@ set bnc(PASS)               "bncpass"
 # Number of seconds to wait before giving up on connecting to the BNCs
 set bnc(TIMEOUT)            "2"
 
+# Your sites bandwidth - used for % of bandwidth used calculations in !bw
+set speed(INCOMING)	    "12500"
+set speed(OUTGOING)	    "12500"
+
 # What sections are we announcing for? (Remeber to define path and type below)
 set sections                "GAMES APPS MP3 0DAY MV"
 
@@ -46,7 +50,7 @@ set statsection(2)          "ISO"
 # and chmodded to eXecutable :) (chmod 755 <file>)
 set binary(CAT)             "/glftpd/bin/cat"
 set binary(WHO)             "/glftpd/bin/sitewho"
-set binary(BW)              "/glftpd/bin/bandwidth.sh"
+set binary(BW)              "/glftpd/bin/ng-bandwidth"
 set binary(STATS)           "/glftpd/bin/stats"
 set binary(PASSCHK)         "/glftpd/bin/passchk"
 set binary(NCFTPLS)         "/usr/bin/ncftpls"
@@ -178,7 +182,7 @@ set announce(THEMEFILE)		"default.zst"
 
 set announce(NEWDIR)        "+ New Release: %path/%bold%release%bold (%relname) by %bold%user%bold@%group"
 set announce(DELDIR)        "- Directory deleted: %path/%bold%release%bold by %bold%user%bold@%group"
-set announce(BW)            "- %bold%uploads%bold uploads @ %bold%upspeed%boldkb/sec - %bold%downloads%bold downloads @ %bold%dnspeed%bold kb/sec - total: %bold%transfers%bold transfers @ %bold%totalspeed%boldkb/sec"
+set announce(BW)            "- %bold%uploads%bold uploads @ %bold%upspeed%boldkb/sec (%uppercent%) - %bold%downloads%bold downloads @ %bold%dnspeed%bold kb/sec (%dnpercent%) - total: %bold%transfers%bold transfers @ %bold%totalspeed%boldkb/sec (%totalpercent%) - %active people browsing, %idle people idling, %totallogins people in total"
 set announce(LOGIN)         "+ %bold%user%bold@%group has logged in"
 set announce(LOGOUT)        "- %bold%user%bold@%group has logged out"
 set announce(NUKE)          "+ %path/%bold%release%bold was %ulinenuked %mult%ulinex by %bold%nuker%bold - reason: %reason - nukees: %nukees"

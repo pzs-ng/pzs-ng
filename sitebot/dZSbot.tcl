@@ -44,7 +44,7 @@ set mpath ""
 # Where?   Flags    What?       Proc to call
 bind pub    -|- [set cmdpre]who     who
 bind pub    -|- [set cmdpre]speed   speed
-bind pub    -|- [set cmdpre]bw      bandwidth
+bind pub    -|- [set cmdpre]bw      ng_bandwidth
 bind pub    -|- [set cmdpre]bnc     bnc_check
 bind pub    -|- [set cmdpre]free    show_free
 
@@ -355,6 +355,42 @@ proc bandwidth {nick uhost hand chan args} {
     putserv "PRIVMSG $chan :$output "
 }
 #################################################################################
+
+
+
+
+
+#################################################################################
+# UPDATED BANDWIDTH								#
+#################################################################################
+proc ng_bandwidth {nick uhost hand chan args} { global binary announce speed
+
+	set output $announce(BW)
+	set raw [exec $binary(BW)]
+	set $upper [format "%.0f" [expr [lindex $raw 1] / $speed(INCOMING)]]]
+	set $dnper [format "%.0f" [expr [lindex $raw 3] / $speed(OUTGOING)]]]
+	set $totalper [format "%.0f" [expr [lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING) )]]]
+
+	set output [replacevar $output "%uploads" [lindex $raw 0]]
+	set output [replacevar $output "%upspeed" [lindex $raw 1]]
+	set output [replacevar $output "%downloads" [lindex $raw 2]]
+	set output [replacevar $output "%dnspeed" [lindex $raw 3]]
+	set output [replacevar $output "%transfers" [lindex $raw 4]]
+	set output [replacevar $output "%totalspeed" [lindex $raw 5]]
+	set output [replacevar $output "%idlers" [lindex $raw 6]]
+	set output [replacevar $output "%active" [lindex $raw 7]]
+	set output [replacevar $output "%totallogins" [lindex $raw 8]]
+
+	set output [replacevar $output "%uppercent" $upper]
+	set output [replacevar $output "%dnpercent" $dnper]
+	set output [replacevar $output "%totalpercent" $totalper]
+
+	set output [basicreplace "$output" "BW"]
+
+	putserv "PRIVMSG $chan :$output"
+
+}
+################################################################################
 
 
 
