@@ -2,7 +2,7 @@ v0.7.2
  - added a fix to prevent coredump on cookie usage when the cookie is DISABLED (iwdisb)
  - iwdisb made a patch which will show bitrate on mp3's on vbr files as well!
  - daxxar made some changes in the Makefile, to detect os and make the appropriate changes.
- - daxxar made an option to choose between glftpd 1 or 2 (NOT! WORKING!)
+ - daxxar made an option to choose between glftpd 1 or 2
  - added support for the old double-sfv deny patch (psxc).
 
 v0.7.1
