@@ -38,12 +38,17 @@
 #define cleanupdirs	"/site/incoming/games/ /site/incoming/apps/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 
 /* Do not write .message file on complete in group_dirs */
-#define write_complete_message_in_group_dirs	FALSE
+#define write_complete_message_in_group_dirs	TRUE
 
 /* Hide name of uploaders in the .message-file in group-dirs? Setting this
  * to TRUE will convert the username to the groupname of the user.
  */
 #define hide_group_uploaders	TRUE
+
+/* You may also choose a custom message to be put into the .message file in
+ * the group dirs. Define your message here, or put DISABLED to disable.
+ */
+#define custom_group_dirs_complete_message	"... Looks like this is a pre. :)"
 
 /* Creates a zero-byte file for every non-existing file defined in sfv? */
 #define create_missing_files	TRUE
