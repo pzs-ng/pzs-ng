@@ -433,30 +433,13 @@ void get_rar_info(char *filename) {
  */
 int execute(char *s) {
 	int len, i=0, n;
-	char *argv[128], *p1, *p2;
+	char **ap, *argv[128], *p1, *p2;
     
-	for (p1 = s; *p1; p1++) {
-
-		/* get a pointer to the first space or the 
-		   end of the string */
-		if ((p2 = strchr(p1, ' ')) == NULL) {
-			p2 = strchr(p1, '\0');
-		}
-
-		/* find the length of the word */
-		len = p2-p1;
-		
-		argv[i] = malloc(sizeof(char)*len);
-		strncpy(argv[i], p1, len);
-		
-		/* jump to the end of the word */
-		p1 += len;
-
-		i++;
-
-	}
-
-	argv[i] = NULL;
+	/* man strsep, omg */
+	for (ap = argv; (*ap = strsep(&s, " ")) != NULL;)
+		if (**ap != '\0')
+			if (++ap >= &argv[128])
+				break;
     
 	switch (fork()) {
 		case 0: 
