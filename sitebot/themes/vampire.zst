@@ -6,7 +6,7 @@
 #  Created by: Phen0menon & juanker                        #
 #  Maintained by: juanker (juanker@EFnet #pzs-ng)          #
 #  Notes: Best experienced on dark -black- backgrounds     #
-#  Tested with: pzs-ng r1245                               #
+#  Tested with: pzs-ng r1386                               #
 #                                                          #
 ############################################################
 #                                                          #
@@ -38,7 +38,10 @@ announce.TIMEOUT				= "%b{LOGOUT%c1{:}} %c3{%b{%u_name}} %c1{has timed out after
 announce.TAGLINE				= "%b{TAGLiNE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{has changed his tagline to} %c3{%b{%u_tagline}}%c1{.}"
 announce.WIPE					= "%b{WiPE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{has been wiped by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{.}"
 announce.WIPE-r					= "%b{WiPE-R%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{and all its subdirectories were just wiped by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{.}"
-announce.FAILLOGIN				= "%b{LOGiN%c1{:}} %c3{%b{%failed_nick}} %c1{tried to log in with wrong password.}"
+announce.FAILLOGIN				= "%b{LOGiN%c1{:}} %c3{%b{%failed_nick}} %c1{failed to log in.}"
+announce.IPNOTADDED				= "%b{LOGiN%c1{:}} %c1{denied unknown connection from} %c3{%b{%u_hostmask}}%c1{.}"
+announce.BADUSERHOST				= "%b{LOGiN%c1{:}} %c3{%b{%u_name}} %c1{failed to log in from} %c3{%u_hostmask}%c1{.}"
+announce.BADPASSWD				= "%b{LOGiN%c1{:}} %c3{%b{%u_name}} %c1{tried to log in with a wrong password.}"
 
 # special announces done by glftpd
 announce.NUKE					= "%b{NUKE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{was nuked factor} %c3{%b{x%multiplier}} %c1{by} %c3{%b{%nuker}} %c1{[reason]} %c3{%b{%reason}} %c1{[nukees]} %nukees%c1{.}"
@@ -180,7 +183,7 @@ announce.FREE					= "%b{FREE SPACE%c1{:}} %devices%c1{[}%c3{%b{%free}} %c1{of} %
 announce.FREE-DEV				= "%c1{(}%b{%c3{%section}} %c1{has} %c3{%b{%free}} %c1{of} %c3{%total} %c1{free - used} %c3{%percentage%}%c1{)} %c1{-} "
 announce.MSGINVITE				= "%b{iNViTE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{invited himself as} %c3{%b{%u_ircnick}}%c1{.}"
 announce.BADMSGINVITE				= "%b{BAD iNViTE%c1{:}} %c3{%b{%u_ircnick}} %c1{(}%c3{%u_host}%c1{) tried to invite himself with invalid login!}"
-announce.UPTIME                 = "%b{UPTiME%c1{:}} System: %system, %b{%users} user(s), %time, load: %load Eggdrop: %eggdrop"
+announce.UPTIME					= "%b{UPTiME%c1{:}} %c2{system:} %c3{%b{%users}} %c1{user(s) - online for} %c3{%b{%time}} %c1{- load of} %c3{%b{%load}} %c1{-} %c2{sitebot:} %c3{%eggdrop}%c1{.}"
 
 # 3rd party imdb announces (psxc-imdb)
 announce.IMDBVAR				= "%b{iMDB%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%imdbname}} %c1{ ( }%c3{%u{%imdburl}}%c1{ ), a }%c3{%imdbdirector} %c1{movie which scored} %c3{%b{%imdbscore}} %c1{of} %c3{10} %c1{(}%c3{%imdbvotes} %c1{people voted). It premiered in} %c3{%imdbpremiereinfo}%c1{, with} %c3{%b{%imdbnumscreens}} %c1{screens on the opening weekend.}|%c1{[}%c2{%b{%sitename}}%c1{]} %b{iMDB%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%imdbname}} %c1{has the following plot summary: '}%c3{%imdbplot}%c1{'. Rating: [}%c2{%imdbbar}%c1{].}"
