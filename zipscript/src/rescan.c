@@ -74,9 +74,6 @@ void remove_nfo_indicator(char *directory) {
 	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
 	if (fileexists(locations.nfo_incomplete))
 		unlink(locations.nfo_incomplete);
-	locations.nfo_incomplete = i_incomplete(incomplete_cd_nfo_indicator, path);
-	if (fileexists(locations.nfo_incomplete))
-		unlink(locations.nfo_incomplete);
 	locations.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path);
 	if (fileexists(locations.nfo_incomplete))
 		unlink(locations.nfo_incomplete);
@@ -114,11 +111,7 @@ void getrelname(char *directory) {
 	sprintf(locations.link_source, "%.*s", n - 1, locations.path);
 	locations.link_target = path[0];
 	locations.incomplete = c_incomplete(incomplete_cd_indicator, path);
-#if (show_missing_nfo_in_cd == TRUE)
-	locations.nfo_incomplete = i_incomplete(incomplete_cd_nfo_indicator, path);
-#else
 	locations.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path);
-#endif
 	locations.in_cd_dir = 1;
     } else {
 	raceI.misc.release_name = malloc(l[1] + 10);
@@ -257,7 +250,7 @@ int main () {
 	sortstats( &raceI, userI, groupI );
 	buffer_progress_bar( &raceI );
 
-	if ((show_missing_nfo) && (locations.nfo_incomplete)) {
+	if (locations.nfo_incomplete) {
 		if  (findfileext(".nfo")) {
 			d_log("Removing missing-nfo indicator (if any)\n");
 			remove_nfo_indicator(locations.path);
@@ -369,7 +362,7 @@ int main () {
 	    create_incomplete();
 	    move_progress_bar(0, &raceI);
 	}
-	if ((show_missing_nfo) && (locations.nfo_incomplete)) {
+	if (locations.nfo_incomplete) {
 		if  (findfileext(".nfo")) {
 			d_log("Removing missing-nfo indicator (if any)\n");
 			remove_nfo_indicator(locations.path);

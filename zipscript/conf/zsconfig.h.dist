@@ -70,20 +70,6 @@
 
 #define cleanupdirs     "/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 
-/* Should a missing-nfo pointer be put instead of the normal
- * incomplete-pointer if nfo's are missing after release is complete?
- * Also see "incomplete_base_nfo_indicator" and "incomplete_nfo_indicator" (below)
- */
-#define show_missing_nfo	TRUE
-
-/* Should we also show missing nfo's in cd/dvd/etc dirs?
- * 99 percent of times you wish to put this to FALSE. Setting this to TRUE
- * will make a pointer to the actual cd-directory, instead of the base/main
- * directory of a multi-cd release.
- * Also see "incomplete_cd_nfo_indicator" (below)
- */
-#define show_missing_nfo_in_cd	FALSE
-
 /* Write .message file on complete in group_dirs?
  */
 #define write_complete_message_in_group_dirs    TRUE
@@ -380,7 +366,6 @@
  */
 #define incomplete_cd_indicator         "../../(incomplete)-(%0)-%1"
 #define incomplete_indicator            "../(incomplete)-%0"
-#define incomplete_cd_nfo_indicator	"../../(no-nfo)-(%0)-%1"
 #define incomplete_nfo_indicator	"../(no-nfo)-%0"
 #define incomplete_base_nfo_indicator	"../../(no-nfo)-%1"
 

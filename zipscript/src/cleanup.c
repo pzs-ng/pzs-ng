@@ -146,7 +146,7 @@ char * multi_nfo_name(char *s) {
 
     end_multi = 0;
 
-    t = incomplete_cd_nfo_indicator;
+    t = incomplete_base_nfo_indicator;
 
     while ( *t == '.' || *t == '/' ) t++;
     p = t;
@@ -286,7 +286,7 @@ void incomplete_cleanup(char *path, int setfree) {
     regcomp(&preg[1], locator, REG_NEWLINE|REG_EXTENDED);
     free(locator);
 
-    sprintf(temp, "%s", incomplete_cd_nfo_indicator);
+    sprintf(temp, "%s", incomplete_base_nfo_indicator);
     locator = replace_cookies(temp);
     regcomp(&preg[2], locator, REG_NEWLINE|REG_EXTENDED);
     free(locator);
