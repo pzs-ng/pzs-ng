@@ -83,6 +83,7 @@ int main (int argc, char *argv[]) {
     fclose(fp2);
 
     chmod(dupefile,0666);
+    chmod(data2,0666);
 
     return 0;
 }
