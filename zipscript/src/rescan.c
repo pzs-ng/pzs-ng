@@ -22,120 +22,6 @@
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
 
-/*struct USERINFO **g.ui;
-struct GROUPINFO **g.gi;
-struct VARS	g.v;
-struct LOCATIONS g.l;*/
-
-/*void 
-writelog(char *msg, char *status)
-{
-	FILE           *glfile;
-	char           *date;
-	char           *line, *newline;
-	time_t		timenow;
-
-	if (g.v.misc.write_log == TRUE && !matchpath(group_dirs, g.l.path)) {
-		timenow = time(NULL);
-		date = ctime(&timenow);
-		glfile = fopen(log, "a+");
-
-		line = newline = msg;
-		while (1) {
-			switch (*newline++) {
-			case 0:
-				fprintf(glfile, "%.24s %s: \"%s\" %s\n", date, status, g.l.path, line);
-				fclose(glfile);
-				return;
-			case '\n':
-				fprintf(glfile, "%.24s %s: \"%s\" %.*s\n", date, status, g.l.path, (int)(newline - line - 1), line);
-				line = newline;
-				break;
-			}
-		}
-	}
-}*/
-
-/*void 
-remove_nfo_indicator(char *directory)
-{
-	int		cnt       , l[2], n = 0, k = 2;
-	char           *path[2];
-
-	for (cnt = g.l.length_path - 1; k && cnt; cnt--) {
-		if (directory[cnt] == '/') {
-			k--;
-			l[k] = n;
-			path[k] = malloc(n + 1);
-			strncpy(path[k], directory + cnt + 1, n);
-			path[k][n] = 0;
-			n = 0;
-		} else
-			n++;
-	}
-	g.l.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &g.v);
-	if (fileexists(g.l.nfo_incomplete))
-		unlink(g.l.nfo_incomplete);
-	g.l.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &g.v);
-	if (fileexists(g.l.nfo_incomplete))
-		unlink(g.l.nfo_incomplete);
-	if (k < 2)
-		free(path[1]);
-	if (k == 0)
-		free(path[0]);
-}*/
-
-/*void 
-getrelname(char *directory)
-{
-	int		cnt       , l[2], n = 0, k = 2;
-	char           *path[2];
-
-	path[0] = 0;
-	path[1] = 0;
-
-	for (cnt = g.l.length_path - 1; k && cnt; cnt--) {
-		if (directory[cnt] == '/') {
-			k--;
-			l[k] = n;
-			path[k] = malloc(n + 1);
-			strncpy(path[k], directory + cnt + 1, n);
-			path[k][n] = 0;
-			n = 0;
-		} else
-			n++;
-	}
-
-	if (!(path[1])) {
-		d_log("ERROR! Seems the command is run from / - exiting\n");
-		exit (1);
-	}
-
-	if (subcomp(path[1])) {
-		//g.v.misc.release_name = malloc(l[0] + 18);
-		g.l.link_source = malloc(n = (g.l.length_path - l[1]));
-		sprintf(g.v.misc.release_name, "%s/%s", path[0], path[1]);
-		sprintf(g.l.link_source, "%.*s", n - 1, g.l.path);
-		g.l.link_target = path[0];
-		g.l.incomplete = c_incomplete(incomplete_cd_indicator, path, &g.v);
-		g.l.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &g.v);
-		g.l.in_cd_dir = 1;
-	} else {
-		//g.v.misc.release_name = malloc(l[1] + 10);
-		g.l.link_source = malloc(g.l.length_path + 1);
-		strcpy(g.l.link_source, g.l.path);
-		sprintf(g.v.misc.release_name, "%s", path[1]);
-		g.l.link_target = path[1];
-		g.l.incomplete = c_incomplete(incomplete_indicator, path, &g.v);
-		g.l.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &g.v);
-		g.l.in_cd_dir = 0;
-	}
-	if (k < 2)
-		free(path[1]);
-	if (k == 0)
-		free(path[0]);
-}*/
-
 int 
 main()
 {
@@ -164,15 +50,13 @@ main()
 	g.gi = malloc(sizeof(struct GROUPINFO *) * 30);
 	memset(g.gi, 0, sizeof(struct GROUPINFO *) * 30);
 
-	/*g.l.path = malloc(PATH_MAX);*/
 	getcwd(g.l.path, PATH_MAX);
 
 	if ((matchpath(nocheck_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) && rescan_nocheck_dirs_allowed == FALSE) {
 		d_log("Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
 		d_log("Freeing memory, and exiting\n");
-		/*free(g.ui);
+		free(g.ui);
 		free(g.gi);
-		free(g.l.path);*/
 		return 0;
 	}
 	g.v.misc.slowest_user[0] = 30000;
@@ -484,7 +368,6 @@ main()
 	d_log("Freeing memory.\n");
 	rescandir(1);
 	updatestats_free(g.v, g.ui, g.gi);
-	//free(g.l.path);
 	free(g.l.race);
 	free(g.l.sfv);
 	free(g.l.leader);

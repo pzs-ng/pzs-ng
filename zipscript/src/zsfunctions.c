@@ -1203,10 +1203,10 @@ remove_nfo_indicator(GLOBAL *g)
 	path = buffer_paths(g, path, &k, (strlen(g->l.path)-1));
 
 	g->l.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &g->v);
-	if (g->l.nfo_incomplete)
+	if (fileexists(g->l.nfo_incomplete))
 		unlink(g->l.nfo_incomplete);
 	g->l.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &g->v);
-	if (g->l.nfo_incomplete)
+	if (fileexists(g->l.nfo_incomplete))
 		unlink(g->l.nfo_incomplete);
 	if (k < 2)
 		free(path[1]);
