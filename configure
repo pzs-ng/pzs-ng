@@ -2219,9 +2219,8 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
-<<<<<<< .mine
 LCRYPT=""
-if  $(uname -s) != "OpenBSD" ; then
+if [ $(uname -s) != "OpenBSD" ]; then
 
 echo "$as_me:$LINENO: checking for crypt in -lcrypt" >&5
 echo $ECHO_N "checking for crypt in -lcrypt... $ECHO_C" >&6
@@ -2289,9 +2288,9 @@ echo "${ECHO_T}$ac_cv_lib_crypt_crypt" >&6
 if test $ac_cv_lib_crypt_crypt = yes; then
   LCRYPT="-lcrypt /usr/lib/libcrypt.a"
 else
-  { { echo "$as_me:$LINENO: error: Couldn't find libcrypt" >&5
-echo "$as_me: error: Couldn't find libcrypt" >&2;}
-   { (exit quitting!); exit quitting!; }; }
+  { { echo "$as_me:$LINENO: error: Couldn't find libcrypt, quitting!" >&5
+echo "$as_me: error: Couldn't find libcrypt, quitting!" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 fi
@@ -2362,155 +2361,11 @@ echo "${ECHO_T}$ac_cv_lib_crypto_HMAC" >&6
 if test $ac_cv_lib_crypto_HMAC = yes; then
   LCRYPTO="-lcrypto /usr/lib/libcrypto.a"
 else
-  { { echo "$as_me:$LINENO: error: Couldn't find libcrypto" >&5
-echo "$as_me: error: Couldn't find libcrypto" >&2;}
-   { (exit quitting!); exit quitting!; }; }
-fi
-
-=======
-echo "$as_me:$LINENO: checking for crypt in -lcrypt" >&5
-echo $ECHO_N "checking for crypt in -lcrypt... $ECHO_C" >&6
-if test "${ac_cv_lib_crypt_crypt+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lcrypt  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-/* Override any gcc2 internal prototype to avoid an error.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-/* We use char because int might match the return type of a gcc2
-   builtin and then its argument prototype would still apply.  */
-char crypt ();
-int
-main ()
-{
-crypt ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; } &&
-	 { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_lib_crypt_crypt=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_lib_crypt_crypt=no
-fi
-rm -f conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_crypt_crypt" >&5
-echo "${ECHO_T}$ac_cv_lib_crypt_crypt" >&6
-if test $ac_cv_lib_crypt_crypt = yes; then
-  LCRYPT="-lcrypt /usr/lib/libcrypt.a"
-else
-  { { echo "$as_me:$LINENO: error: Couldn't find libcrypt" >&5
-echo "$as_me: error: Couldn't find libcrypt" >&2;}
+  { { echo "$as_me:$LINENO: error: Couldn't find libcrypto, quitting!" >&5
+echo "$as_me: error: Couldn't find libcrypto, quitting!" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
-echo "$as_me:$LINENO: checking for HMAC in -lcrypto" >&5
-echo $ECHO_N "checking for HMAC in -lcrypto... $ECHO_C" >&6
-if test "${ac_cv_lib_crypto_HMAC+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lcrypto  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-/* Override any gcc2 internal prototype to avoid an error.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-/* We use char because int might match the return type of a gcc2
-   builtin and then its argument prototype would still apply.  */
-char HMAC ();
-int
-main ()
-{
-HMAC ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; } &&
-	 { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_lib_crypto_HMAC=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_lib_crypto_HMAC=no
-fi
-rm -f conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_crypto_HMAC" >&5
-echo "${ECHO_T}$ac_cv_lib_crypto_HMAC" >&6
-if test $ac_cv_lib_crypto_HMAC = yes; then
-  LCRYPTO="-lcrypto /usr/lib/libcrypto.a"
-else
-  { { echo "$as_me:$LINENO: error: Couldn't find libcrypto" >&5
-echo "$as_me: error: Couldn't find libcrypto" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
->>>>>>> .r468
 
 echo "$as_me:$LINENO: checking whether time.h and sys/time.h may both be included" >&5
 echo $ECHO_N "checking whether time.h and sys/time.h may both be included... $ECHO_C" >&6
@@ -3538,8 +3393,8 @@ if test `eval echo '${'$as_ac_Header'}'` = yes; then
 _ACEOF
 
 else
-  { { echo "$as_me:$LINENO: error: Couldn't find required header" >&5
-echo "$as_me: error: Couldn't find required header" >&2;}
+  { { echo "$as_me:$LINENO: error: Couldn't find required header, quitting!" >&5
+echo "$as_me: error: Couldn't find required header, quitting!" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
@@ -3693,8 +3548,8 @@ if test `eval echo '${'$as_ac_Header'}'` = yes; then
 _ACEOF
 
 else
-  { { echo "$as_me:$LINENO: error: Couldn't find required header" >&5
-echo "$as_me: error: Couldn't find required header" >&2;}
+  { { echo "$as_me:$LINENO: error: Couldn't find required header, quitting!" >&5
+echo "$as_me: error: Couldn't find required header, quitting!" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
@@ -3851,8 +3706,8 @@ if test `eval echo '${'$as_ac_Header'}'` = yes; then
 _ACEOF
 
 else
-  { { echo "$as_me:$LINENO: error: Couldn't find required header" >&5
-echo "$as_me: error: Couldn't find required header" >&2;}
+  { { echo "$as_me:$LINENO: error: Couldn't find required header, quitting!" >&5
+echo "$as_me: error: Couldn't find required header, quitting!" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
@@ -3886,7 +3741,7 @@ done
 #esac
 
 #if test "$os" = "unknown" ; then
-# AC_MSG_ERROR(Couldn't identify OS, quitting!)
+# AC_MSG_ERROR([Couldn't identify OS, quitting!])
 #fi
 
 #if test "$static" = "yes" ; then
