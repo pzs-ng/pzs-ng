@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.7d"
+VERSION="v2.7e"
 
 ######################################################################################################
 
@@ -774,7 +774,7 @@ echo "BIZNUM : $BUSINESSSCREENSNUMBER ( $BUSINESSSCREENS )" >/tmp/imdebug.log
      if [ -z "$LOGFORMAT" ]; then
       echo "$DATE $TRIGGER \"$IMDBLKL\" \"$ONELINE\" \"$IMDBDST\"" >> $GLLOG
      elif [ "$LOGFORMAT" = "MYOWN" ]; then
-      NEWLINE="|"
+#      NEWLINE="|"
       MYOWNPAIRS="%imdbdirname|IMDBDIR %imdburl|IMDBURL %imdbtitle|TITLE %imdbgenre|GENRECLEAN %imdbrating|RATINGCLEAN %imdbcountry|COUNTRYCLEAN %imdblanguage|LANGUAGECLEAN %imdbcertification|CERTCLEAN %imdbruntime|RUNTIMECLEAN %imdbdirector|DIRECTORCLEAN %imdbbusinessdata|BUSINESSSHORT %imdbpremiereinfo|PREMIERE %imdblimitedinfo|LIMITED %imdbvotes|RATINGVOTES %imdbscore|RATINGSCORE %imdbname|TITLENAME %imdbyear|TITLEYEAR %imdbnumscreens|BUSINESSSCREENS %imdbislimited|ISLIMITED %imdbcastleadname|CASTLEADNAME %imdbcastleadchar|CASTLEADCHAR %imdbtagline|TAGLINECLEAN %imdbplot|PLOTCLEAN %imdbbar|RATINGBAR %imdbcasting|CASTCLEAN %imdbcommentshort|COMMENTSHORTCLEAN %newline|NEWLINE %bold|BOLD"
       for OWNPAIR in $MYOWNPAIRS; do
        MYOWNSTRING="`echo "$OWNPAIR" | cut -d '|' -f 1`"
