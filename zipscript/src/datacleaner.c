@@ -87,10 +87,15 @@ main(int argc, char **argv)
 	if (argc == 1) {
 		check_dir_loop(storage);
 	} else {
-		if ((zd_length + 1 + strlen(argv[1])) < PATH_MAX)
-			sprintf(st, storage "/%s", argv[1]);
-
+		if ((zd_length + 1 + strlen(argv[1])) < PATH_MAX) {
+			if ( !strncmp(argv[1], "RMD ", 4)) {
+				sprintf(st, storage "/%s/%s", sitepath_dir, argv[1] + 4);
+			} else {
+				sprintf(st, storage "/%s", argv[1]);
+			}
+		}
 		/* check subdirs */
+printf("removing dir: %s\n",st);
 		check_dir_loop(st);
 
 		/* check current dir */

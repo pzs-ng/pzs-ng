@@ -23,6 +23,9 @@
  * glftpd's dir with userfiles. dupepath - /path/name to glftpd's dupefile.
  * gl_section - names of sections defined in glftpd.conf
  */
+#ifndef sitepath_dir
+#define sitepath_dir	"/site/"
+#endif
 #ifndef log
 #define log             "/ftp-data/logs/glftpd.log"
 #endif

@@ -254,9 +254,10 @@ This will invoke the zipscript after a file is uploaded. For more info
 on the post_check line, refer to glftpd.docs. Forget to add this, and
 the zipscript will not run, and no files are checked.
 
-You should also add the following line:
+You should also add the following lines:
 
 cscript		DELE	post	/bin/postdel
+cscript		RMD	post	/bin/datacleaner
 
 This will take care of making things right when something is deleted. Like
 updating the race stats, adding/editing the (in)complete-bar etc. Forget
@@ -315,10 +316,11 @@ scripts. Here's a short description of each compiled binary:
   - datacleaner - This one will remove the racedata of dirs no longer found
     on your site.
     How to test: chroot /glftpd /bin/datacleaner
-
+		 chroot /glftpd /bin/datacleaner "RMD /path/to/file" (no /site
+		 in front!)
   - postdel - Should be run after you delete something (as a cscript). Will
     re-check the release and update the racedata accordingly.
-    How to test: chroot /glftpd /bin/postdel DELE /site/path/to/file
+    How to test: chroot /glftpd /bin/postdel "DELE /site/path/to/file"
  
   - ng-undupe - Removes entry in dupelog after a file fails sfv check.
     How to test: chroot /glftpd /bin/ng-undupe filename

@@ -2,8 +2,9 @@
  * UnDUPE.C - Clean the dupefile of unwanted data Works as far as i know
  * evilution @ efnet 02-25-99
  * 
- * Fixed USAGE spelling error - Turranius 2004-01-04 Modded/stripped for use
- * with pzs-ng - psxc 2004-07-14
+ * Fixed USAGE spelling error - Turranius 2004-01-04
+ *
+ * Modded/stripped for use with pzs-ng - psxc 2004-07-14
  */
 
 #include <stdio.h>
@@ -64,13 +65,10 @@ main(int argc, char *argv[])
 
 	/*
 	 * Time to put back the remainder of the dupefile. Instead of
-	 * renaming the file
+	 * renaming the file as was done before, we stream the content
+	 * back - this is a workaround for a world writable logs
+	 * directory...
 	 */
-	/*
-	 * as was done before, we stream the content back - this is a
-	 * workaround for a
-	 */
-	/* world writable logs directory...                                             */
 
 	if (!(fp = fopen(data2, "r+b"))) {
 		printf("FATAL ERROR: Unable to open tempfile (%s)\n", data2);
@@ -97,3 +95,4 @@ main(int argc, char *argv[])
 	}
 	return 0;
 }
+

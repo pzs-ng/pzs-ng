@@ -180,7 +180,7 @@ main(int argc, char **argv)
 		printf(" - this is supposed to be run from glftpd.\n");
 		printf(" - if you wish to run it yourself from chroot, \n");
 		printf(" - use /bin/postdel \"DELE <filename>\"\n");
-		printf(" - thank you. (rememeber the quotes!)\n");
+		printf(" - thank you. (remember the quotes!)\n");
 		return 0;
 	}
 	fname = argv[1] + 5;	/* This way we simply skip the required

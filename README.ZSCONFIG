@@ -14,6 +14,11 @@ what the different things does.
 -------------------------------------------------------------------------------
 
 
+sitepath_dir <PATH>
+	This is used as a base for datacleaner, when it's run as a cscript.
+	It is normally set to /site/, which is the common location in which all
+	your site's public dirs reside.
+
 log <PATH>
 	This setting should point to a file where all logging will occur. The
 	usual place is glftpd's glftpd.log. This file must be world read/
