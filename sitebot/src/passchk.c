@@ -142,7 +142,7 @@ pw_encrypt(const unsigned char *pw_pwd, char *digest)
 	int		mdlen = SHA_DIGEST_LENGTH, i;
 
 	/* see pbe.c for info, 100x multihash */
-	pbkdf2(pw_pwd, strlen((char *)pw_pwd), 100, md, SHA_DIGEST_LENGTH);
+	pbkdf2(pw_pwd, (int)strlen((char *)pw_pwd), 100, md, SHA_DIGEST_LENGTH);
 
 	for (i = 0; i < mdlen; i++) {
 		sprintf(digest, "%02x", md[i]);
@@ -176,7 +176,7 @@ pw_encrypt_new(const unsigned char *pw_pwd, unsigned char *encryp, char *digest)
 		real_salt[i] = strtol(hexconvert, NULL, 16);
 	}
 
-	PKCS5_PBKDF2_HMAC_SHA1(pw_pwd, strlen(pw_pwd), real_salt, SHA_SALT_LEN, 100,
+	PKCS5_PBKDF2_HMAC_SHA1(pw_pwd, (int)strlen(pw_pwd), real_salt, SHA_SALT_LEN, 100,
 			       mdlen, md);
 
 	*digest = '$';
@@ -219,10 +219,10 @@ main(int argc, char *argv[])
 		if (strcmp(buf->pw_name, argv[1]))
 			continue;
 
-		if (strlen(buf->pw_passwd) == 13) {
+		if ((int)strlen(buf->pw_passwd) == 13) {
 			strncpy(salt, buf->pw_passwd, 2);
 			crypted = crypt(argv[2], salt);
-		} else if (strlen(buf->pw_passwd) == SHA_DIGEST_LENGTH * 2) {
+		} else if ((int)strlen(buf->pw_passwd) == SHA_DIGEST_LENGTH * 2) {
 			crypted = malloc(SHA_DIGEST_LENGTH * 2 + 1);
 			if (!crypted) {
 				printf
@@ -231,7 +231,7 @@ main(int argc, char *argv[])
 				return 1;
 			}
 			pw_encrypt((unsigned char *)argv[2], crypted);
-		} else if (strlen(buf->pw_passwd) == 50) {
+		} else if ((int)strlen(buf->pw_passwd) == 50) {
 			crypted = malloc(51);
 			if (!crypted) {
 				printf

@@ -45,11 +45,11 @@ void
 strip_whitespaces(char *s)
 {
 	if (s)
-		while (s[strlen(s)-1] == ' '  ||
-	           s[strlen(s)-1] == '\t' ||
-		   s[strlen(s)-1] == '\n' ||
-	           s[strlen(s)-1] == '\r')
-			s[strlen(s)-1] = '\0';
+		while (s[(int)strlen(s)-1] == ' '  ||
+	           s[(int)strlen(s)-1] == '\t' ||
+		   s[(int)strlen(s)-1] == '\n' ||
+	           s[(int)strlen(s)-1] == '\r')
+			s[(int)strlen(s)-1] = '\0';
 }
 
 /* remove preceding whitespaces and newline stuff */

@@ -83,13 +83,13 @@ main(int argc, char *argv[])
 		dir_flag = atoi(argv[6]);	/* make changes on the dir itself if > 0       */
 
 	if ((new_user == 0) && (new_group == 0)) {
-		if (strlen(argv[7]) < 25)
+		if ((int)strlen(argv[7]) < 25)
 			new_user = (int)get_gluid(PASSWDFILE, argv[7]);
-		if (strlen(argv[8]) < 25)
+		if ((int)strlen(argv[8]) < 25)
 			new_group = (int)get_glgid(GROUPFILE, argv[8]);
 	}
 	
-	if ((strlen(argv[9]) < PATH_MAX) && (new_user < 65536) && (new_group < 65535)) {
+	if (((int)strlen(argv[9]) < PATH_MAX) && (new_user < 65536) && (new_group < 65535)) {
 		sprintf(my_path, "%s", argv[9]);
 	} else {
 		printf("%s - Error in argument(s)\n", argv[0]);
@@ -223,7 +223,7 @@ get_gluid(char *passwdfile, char *user_name)
 #if (change_spaces_to_underscore_in_ng_chown)
 	char	       *u_modname = 0;
 
-	u_modname = malloc(strlen(user_name) * sizeof(char) + 1);
+	u_modname = malloc((int)strlen(user_name) * sizeof(char) + 1);
 	for (i = 0; i < ((int)strlen(user_name) + 1); i++) {
 		if (user_name[i] == ' ')
 			sprintf(u_modname + i, "_");
@@ -256,9 +256,9 @@ get_gluid(char *passwdfile, char *user_name)
 				while (f_buf[m] != ':' && m > l_start)
 					m--;
 #if (change_spaces_to_underscore_in_ng_chown)
-				if ((m != i) && (strlen(u_name) == strlen(user_name)) && !strcmp(u_name, u_modname)){
+				if ((m != i) && ((int)strlen(u_name) == (int)strlen(user_name)) && !strcmp(u_name, u_modname)){
 #else
-				if ((m != i) && (strlen(u_name) == strlen(user_name)) && !strcmp(u_name, user_name)){
+				if ((m != i) && ((int)strlen(u_name) == (int)strlen(user_name)) && !strcmp(u_name, user_name)){
 #endif
 					u_id = atoi(f_buf + m + 1);
 					break;
@@ -288,7 +288,7 @@ get_glgid(char *groupfile, char *group_name)
 #if (change_spaces_to_underscore_in_ng_chown)
 	char	       *g_modname = 0;
 
-	g_modname = malloc(strlen(group_name) * sizeof(char) + 1);
+	g_modname = malloc((int)strlen(group_name) * sizeof(char) + 1);
 	for (i = 0; i < ((int)strlen(group_name) + 1); i++) {
 		if (group_name[i] == ' ')
 			sprintf(g_modname + i, "_");
@@ -319,9 +319,9 @@ get_glgid(char *groupfile, char *group_name)
 				while (f_buf[m] != ':' && m > l_start)
 					m--;
 #if (change_spaces_to_underscore_in_ng_chown)
-				if ((m != i) && (strlen(g_name) == strlen(group_name)) && !strcmp(g_name, g_modname)){
+				if ((m != i) && ((int)strlen(g_name) == (int)strlen(group_name)) && !strcmp(g_name, g_modname)){
 #else
-				if ((m != i) && (strlen(g_name) == strlen(group_name)) && !strcmp(g_name, group_name)){
+				if ((m != i) && ((int)strlen(g_name) == (int)strlen(group_name)) && !strcmp(g_name, group_name)){
 #endif
 					g_id = atoi(f_buf + m + 1);
 					break;

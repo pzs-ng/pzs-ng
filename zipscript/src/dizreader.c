@@ -71,7 +71,7 @@ read_diz(char *filename)
 			for (cnt2 = 0; cnt2 < strings; cnt2++) {
 				pos = matches = control = 0;
 				disks[0] = disks[1] = disks[2] = disks[3] = '\0';
-				for (cnt3 = 0; (unsigned int)cnt3 <= (strlen(search[cnt2]) - control); cnt3++)
+				for (cnt3 = 0; (unsigned int)cnt3 <= ((unsigned int)strlen(search[cnt2]) - control); cnt3++)
 					switch (search[cnt2][cnt3 + control]) {
 					case '#':
 						if (isdigit(data[cnt + cnt3]) || data[cnt + cnt3] == ' ') {
@@ -95,7 +95,7 @@ read_diz(char *filename)
 							matches++;
 						break;
 					}
-				if ((unsigned int)matches == strlen(search[cnt2]) - control && (diskc = atoi(disks)))
+				if ((unsigned int)matches == (unsigned int)strlen(search[cnt2]) - control && (diskc = atoi(disks)))
 					return diskc;
 			}
 	}
