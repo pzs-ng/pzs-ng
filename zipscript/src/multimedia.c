@@ -212,14 +212,13 @@ void get_mpeg_audio_info(char *f, struct audio *audio) {
   unsigned char xing_header1[4], xing_header2[4], xing_header3[4];
   unsigned char fraunhofer_header[4];
   unsigned char id3v2_header[10];
-  char  	*vbr_buffer;
   unsigned char	version;
   unsigned char	layer;
   unsigned char	protected = 1;
   unsigned char	t_bitrate;
   unsigned char	t_samplingrate;
   unsigned char	channelmode;
-  short		bitrate;
+  short		bitrate = 0;
   short		br_v1_l3[]  = { 0, 32, 40, 48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, 0 };
   short		br_v1_l2[]  = { 0, 32, 48, 56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, 384, 0 };
   short		br_v1_l1[]  = { 0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, 0 };
@@ -230,7 +229,7 @@ void get_mpeg_audio_info(char *f, struct audio *audio) {
   unsigned	sr_v2[] = { 22050, 24000, 16000, 0 };
   unsigned	sr_v25[] = { 11025, 12000, 8000, 0 };
   int           vbr_offset = 0;
-  int           t1, t2;
+  int           t1;
 
   fd = open(f, O_RDONLY);
   
@@ -263,7 +262,8 @@ void get_mpeg_audio_info(char *f, struct audio *audio) {
     layer = (*(header + 1) - (version << 3)) >> 1;
     if ( ! *(header + 1) & 1 ) protected = 0;
     t_bitrate = *(header + 2) >> 4;
-    t_samplingrate = *(header + 2) - (t_bitrate << 4) >> 2;
+    //t_samplingrate = *(header + 2) - (t_bitrate << 4) >> 2; -- original
+    t_samplingrate = *((header + 2) - (t_bitrate << 4)) >> 2;
     switch ( version ) {
     case 3:
       samplingrate = sr_v1[t_samplingrate];
@@ -336,11 +336,11 @@ void get_mpeg_audio_info(char *f, struct audio *audio) {
       lseek(fd, 156+vbr_offset, SEEK_SET);
       read(fd, audio->vbr_version_string, 9);
       audio->vbr_version_string[9] = 0;
-      for (t2=9; t2>0; t2--) {
-        if (audio->vbr_version_string[t2] > 32) {
+      for (t1=9; t1>0; t1--) {
+        if (audio->vbr_version_string[t1] > 32) {
           break;
         }
-        audio->vbr_version_string[t2] = 0;
+        audio->vbr_version_string[t1] = 0;
       }
       audio->is_vbr = 1;
       if ( memcmp(audio->vbr_version_string, "LAME", 4) == 0) {
