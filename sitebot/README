@@ -16,8 +16,9 @@
 
  2-1 Installation
  2-2 Bundled themes
- 2-3 Customizing
- 2-4 Submit your theme?
+ 2-3 Special settings in the theme
+ 2-4 Customizing
+ 2-5 Submit your theme?
 
  3. Ressources
  
@@ -126,7 +127,17 @@
 
 
 --------------------------------------------------------------------------------
- 2-3 Customizing
+ 2-3 Special settings in the theme
+--------------------------------------------------------------------------------
+Some settings in the theme may seem odd. One thing in particular is the *_LOOP#
+variables seen in the script. I'll try to explain:
+Some variables pasted from the zipscript is repeated for each racer in a race.
+To make output from that, we have to loop thru the vars, formatting and printing
+them. To do that we use the %loop# variable in the theme, which will be replaced
+with the corresponding _LOOP# variable.
+
+--------------------------------------------------------------------------------
+ 2-4 Customizing
 --------------------------------------------------------------------------------
  Feel free to edit and customize any of the bundled themes, but it is advised
  for you to make a copy first. Maybe do "cp default.zst.dist mytheme.zst" before
@@ -157,7 +168,7 @@
 
 
 --------------------------------------------------------------------------------
- 2-4 Submit your theme?
+ 2-5 Submit your theme?
 -------------------------------------------------------------------------------- 
  Did you make your own theme - and is it ready for the public?
 
