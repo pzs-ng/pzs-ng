@@ -146,6 +146,7 @@
 #define stat_groups_head_type				"STAT_GROUPS_HEAD"
 #define stat_groups_type				"STAT_GROUPS"
 #define stat_post_type					"STAT_POST"
+#define bad_file_msg_type				"BAD"
 
 #define deny_double_msg		"{%U} {%G} {%r} {%n}"
 #define audio_cbr_warn_msg	"{%U} {%G} {%X}"
@@ -398,6 +399,8 @@
 
 /* Output of postdel binary */
 #define incompletemsg		"{%U} {%G} {%r}"
+
+#define bad_file_msg		"{%r} {%U} {%G}"
 
 enum ReleaseTypes {
 	RTYPE_NULL = 0,

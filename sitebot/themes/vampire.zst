@@ -51,6 +51,7 @@ announce.DOUBLESFV				= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %
 announce.BADBITRATE				= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is violating rules by uploading shit with bitrate} %c3{%b{%bitrate}}%c1{kbps.}"
 announce.BADGENRE				= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is violating rules by uploading} %c3{%b{%genre}}%c1{.}"
 announce.BADYEAR				= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is violating rules by uploading shit from} %c3{%b{%year}}%c1{.}"
+announce.BAD					= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{uploaded a bad file in} %c3{%b{%releasename}}%c1{.}"
 
 # standard announces done by the zipscript
 announce.RACE_ZIP				= "%b{RACE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%reldir}} %c1{-} %c3{%b{%u_name}} %c1{is racing}%c1{ }%loop1 %c1{at} %c3{%b{%u_speed}}%c1{.}"

@@ -77,7 +77,7 @@ announce.DOUBLESFV				= "%b{[DOUBLE SFV]} %b{%u_name} tried to upload a dupe sfv
 announce.BADBITRATE				= "%b{[BAD BITRATE]} %b{%u_name} is violating rules by uploading shit with bitrate %b{%bitrate}kbps."
 announce.BADGENRE				= "%b{[BAD GENRE]} %b{%u_name} is violating rules by uploading %b{%genre}."
 announce.BADYEAR				= "%b{[BAD YEAR]} %b{%u_name} is violating rules by uploading shit from %b{%year}."
-
+announce.BAD					= "%b{[BAD FILE]} %b{%u_name} of %g_name uploaded a bad file in %b{%releasename}."
 # some special loop variables - these format the racers and stats for each racer in the corresponding output.
 announce.RACE_ZIP_LOOP1				= "%b{%a_name}%splitter"
 announce.RACE_ZIP_LOOP2				= "%b{%r_name}%splitter"

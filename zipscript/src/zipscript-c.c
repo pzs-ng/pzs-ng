@@ -482,7 +482,11 @@ main(int argc, char **argv)
 	if (raceI.file.size == 0) {
 		d_log("File seems to be 0\n");
 		sprintf(raceI.misc.error_msg, EMPTY_FILE);
+		write_log = raceI.misc.write_log;
+		raceI.misc.write_log = 1;
 		mark_as_bad(raceI.file.name);
+		error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+		writelog(error_msg, bad_file_msg_type);
 		exit_value = 2;
 	}
 #endif
@@ -501,6 +505,10 @@ main(int argc, char **argv)
 				d_log("Integrity check failed: %s\n", strerror(errno));
 				sprintf(raceI.misc.error_msg, BAD_ZIP);
 				mark_as_bad(raceI.file.name);
+				write_log = raceI.misc.write_log;
+				raceI.misc.write_log = 1;
+				error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+				writelog(error_msg, bad_file_msg_type);
 				exit_value = 2;
 				break;
 			}
@@ -516,6 +524,10 @@ main(int argc, char **argv)
 					d_log("Strict mode on - exiting\n");
 					sprintf(raceI.misc.error_msg, UNKNOWN_FILE, fileext);
 					mark_as_bad(raceI.file.name);
+					write_log = raceI.misc.write_log;
+					raceI.misc.write_log = 1;
+					error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+					writelog(error_msg, bad_file_msg_type);
 					exit_value = 2;
 					break;
 				}
@@ -567,6 +579,10 @@ main(int argc, char **argv)
 					d_log("Strict mode on - exiting\n");
 					sprintf(raceI.misc.error_msg, UNKNOWN_FILE, fileext);
 					mark_as_bad(raceI.file.name);
+					write_log = raceI.misc.write_log;
+					raceI.misc.write_log = 1;
+					error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+					writelog(error_msg, bad_file_msg_type);
 					exit_value = 2;
 					break;
 				}
@@ -619,6 +635,10 @@ main(int argc, char **argv)
 			d_log("Parsing sfv and creating sfv data\n");
 			if (copysfv_file(raceI.file.name, locations.sfv, raceI.file.size)) {
 				d_log("Found invalid entries in SFV.\n");
+				write_log = raceI.misc.write_log;
+				raceI.misc.write_log = 1;
+				error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+				writelog(error_msg, bad_file_msg_type);
 				mark_as_bad(raceI.file.name);
 				exit_value = 2;
 				sprintf(raceI.misc.error_msg, EMPTY_SFV);
@@ -662,6 +682,10 @@ main(int argc, char **argv)
 				d_log("SFV seems to have no files of accepted types, or has errors.\n");
 				sprintf(raceI.misc.error_msg, EMPTY_SFV);
 				mark_as_bad(raceI.file.name);
+				write_log = raceI.misc.write_log;
+				raceI.misc.write_log = 1;
+				error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+				writelog(error_msg, bad_file_msg_type);
 				exit_value = 2;
 				break;
 			}
@@ -759,6 +783,11 @@ main(int argc, char **argv)
 						strcpy(raceI.misc.error_msg, BAD_CRC);
 					}
 					mark_as_bad(raceI.file.name);
+					write_log = raceI.misc.write_log;
+					raceI.misc.write_log = 1;
+					error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+					writelog(error_msg, bad_file_msg_type);
+d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 					exit_value = 2;
 					break;
 				}
@@ -775,6 +804,10 @@ main(int argc, char **argv)
 					d_log("SFV needs to be uploaded first\n");
 					strcpy(raceI.misc.error_msg, SFV_FIRST);
 					mark_as_bad(raceI.file.name);
+					write_log = raceI.misc.write_log;
+					raceI.misc.write_log = 1;
+					error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+					writelog(error_msg, bad_file_msg_type);
 					exit_value = 2;
 					break;
 				} else {
@@ -851,6 +884,10 @@ main(int argc, char **argv)
 									d_log("warn on - have already logged to logfile\n");
 							} else {
 								mark_as_bad(raceI.file.name);
+								write_log = raceI.misc.write_log;
+								raceI.misc.write_log = 1;
+								error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+								writelog(error_msg, bad_file_msg_type);
 								exit_value = 2;
 							}
 							break;
@@ -871,6 +908,10 @@ main(int argc, char **argv)
 									d_log("warn on - have already logged to logfile\n");
 							} else {
 								mark_as_bad(raceI.file.name);
+								write_log = raceI.misc.write_log;
+								raceI.misc.write_log = 1;
+								error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+								writelog(error_msg, bad_file_msg_type);
 								exit_value = 2;
 							}
 							break;
@@ -892,6 +933,10 @@ main(int argc, char **argv)
 									d_log("warn on - have already logged to logfile\n");
 							} else {
 								mark_as_bad(raceI.file.name);
+								write_log = raceI.misc.write_log;
+								raceI.misc.write_log = 1;
+								error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+								writelog(error_msg, bad_file_msg_type);
 								exit_value = 2;
 							}
 							break;
@@ -914,6 +959,10 @@ main(int argc, char **argv)
 										d_log("warn on - have already logged to logfile\n");
 								} else {
 									mark_as_bad(raceI.file.name);
+									write_log = raceI.misc.write_log;
+									raceI.misc.write_log = 1;
+									error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+									writelog(error_msg, bad_file_msg_type);
 									exit_value = 2;
 								}
 								break;
@@ -976,6 +1025,10 @@ main(int argc, char **argv)
 			d_log("File type: UNKNOWN [ignored in sfv]\n");
 			sprintf(raceI.misc.error_msg, UNKNOWN_FILE, fileext);
 			mark_as_bad(raceI.file.name);
+			write_log = raceI.misc.write_log;
+			raceI.misc.write_log = 1;
+			error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+			writelog(error_msg, bad_file_msg_type);
 			exit_value = 2;
 			break;
 			/* END OF UNKNOWN CHECK */

@@ -1,4 +1,13 @@
-v0.7.4 (aka beta4 of pzs-ng (r???))
+v0.7.5 (aka beta5 of pzs-ng (r????))
+ - new - setting in zsconfig: use_partial_on_noforce
+ - new - setting in zsconfig: remove_sfv_data_on_delete
+ - new - setting in zsconfig: mark_file_as_bad
+ - new - setting in zsconfig: subdir_list
+ - change - setting in zsconfig: allowed_types
+ - new - setting in zsconfig: allow_files_not_in_sfv
+ - new - setting in zsconfig: strict_sfv_check
+
+v0.7.4 (aka beta4 of pzs-ng (r1047))
  - fixed - cleanup just removes the incomplete indicator when run, valid or not.
  - fixed - cleanup does not report incomplete releases.
  - changed - sitebot command !inc uses new code (and actually work!).
