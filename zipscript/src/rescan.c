@@ -208,7 +208,6 @@ main(void)
 		printf("\n");
 		testfiles(&g.l, &g.v, 1);
 		printf("\n");
-
 		readsfv(g.l.sfv, &g.v, 0);
 		readrace(g.l.race, &g.v, g.ui, g.gi);
 		sortstats(&g.v, g.ui, g.gi);

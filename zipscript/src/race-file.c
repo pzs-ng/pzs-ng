@@ -86,7 +86,7 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 	/* release_type is stored in the beginning of sfvdata */
 	fread(&raceI->misc.release_type, sizeof(short int), 1, sfvfile);
 	
-	d_log("Reading data from sfv (%s)\n", raceI->file.name);
+	d_log("readsfv: Reading data from sfv for (%s)\n", raceI->file.name);
 	
 	dir = opendir(".");
 	
@@ -99,7 +99,7 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 		if (!strcmp(raceI->file.name, sd.fname))
 #endif
 		{
-			d_log("DEBUG: crc read from sfv-file%s : %X\n", sd.fname, sd.crc32);
+			d_log("readsfv: crc read from sfv-file (%s): %.8x\n", sd.fname, sd.crc32);
 			crc = sd.crc32;
 			insfv = 1;
 		}
@@ -341,19 +341,23 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 							  rd.fname, unduper_script);
 					} else {
 						sprintf(target, unduper_script " \"%s\"", rd.fname);
-						if (execute(target) == 0) {
+						if (execute(target) == 0)
 							d_log("undupe of %s successful.\n", rd.fname);
-						} else {
+						else
 							d_log("undupe of %s failed.\n", rd.fname);
-						}
 					}
 				}
 			}
+			if (rd.status == F_BAD) {
+				xunlock(&fl, fd);
+				remove_from_race(locations->race, rd.fname);
+				xlock(&fl, fd);
+			} else {
+				lseek(fd, -sizeof(RACEDATA), SEEK_CUR);
+				write(fd, &rd, sizeof(RACEDATA));
+				unlink_missing(rd.fname);
+			}
 		}
-		lseek(fd, -sizeof(RACEDATA), SEEK_CUR);
-		write(fd, &rd, sizeof(RACEDATA));
-		if (rd.status != F_BAD)
-			unlink_missing(rd.fname);
 	}
 	strlcpy(raceI->file.name, realfile, strlen(realfile)+1);
 	raceI->total.files = raceI->total.files_missing = 0;
@@ -678,12 +682,12 @@ clear_file(const char *path, char *f)
 void 
 readrace(const char *path, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI)
 {
-	FILE           *file;
+	int		fd;
 
 	RACEDATA	rd;
 
-	if ((file = fopen(path, "r"))) {
-		while (fread(&rd, sizeof(RACEDATA), 1, file)) {
+	if ((fd = open(path, O_RDONLY)) != -1) {
+		while (read(fd, &rd, sizeof(RACEDATA))) {
 			switch (rd.status) {
 				case F_NOTCHECKED:
 				case F_CHECKED:
@@ -699,7 +703,7 @@ readrace(const char *path, struct VARS *raceI, struct USERINFO **userI, struct G
 					break;
 			}
 		}
-		fclose(file);
+		close(fd);
 	}
 }
 
@@ -725,7 +729,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	}
 
 	xlock(&fl, fd);
-
+	
 	/* find an existing entry that we will overwrite */
 	while (read(fd, &rd, sizeof(RACEDATA))) {
 		if (strncmp(rd.fname, raceI->file.name, PATH_MAX) == 0) {
