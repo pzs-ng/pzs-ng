@@ -7,7 +7,7 @@
 
 #include "structonline.h"
 
-#if use_glftpd2
+#ifdef use_glftpd2
 # include <paths.h>
 # include <openssl/sha.h>
 # include <openssl/evp.h>
@@ -61,7 +61,7 @@ struct passwd* fgetpwent(FILE *fp) {
 }
 #endif
 
-#if use_glftpd2
+#ifdef use_glftpd2
 
 /* see http://lists.jammed.com/secprog/2002/11/0008.html for info */
 #define HLEN (20)               /*Using SHA-1 */
@@ -149,7 +149,7 @@ int main(int argc, char *argv[]) {
 	FILE *fp;
 	struct passwd *buf;
 
-#if use_glftpd2
+#ifdef use_glftpd2
 	char crypted[SHA_DIGEST_LENGTH * 2 + 1];
 	char *salt;
 #else
@@ -169,7 +169,7 @@ int main(int argc, char *argv[]) {
 	while ((buf=fgetpwent(fp)) != NULL) {
 		if (strcmp(buf->pw_name, argv[1]))
 			continue;
-#if use_glftpd2
+#ifdef use_glftpd2
 		salt = buf->pw_gecos;
 		pw_encrypt(argv[2], crypted, salt);
 #else

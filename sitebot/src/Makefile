@@ -8,18 +8,13 @@ CC = gcc
 RM = rm -f
 MAKE = make
 
-CCFLAGS = -Wall -lcrypto -O2
+CCFLAGS = -Wall -lcrypt -lssl -O2
 CFFLAGS = -Wall -static -O2
 
-all:	clean gl2
-old:	clean gl1
+all:	clean bin
 
-gl2:	
+bin:	
 		${CC} ${CCFLAGS} -o passchk passchk.c
-		${CC} ${CFFLAGS} -o ng-bandwidth ng-bw.c
-
-gl1:	
-		${CC} ${CCFLAGS} -o passchk passchk-old.c
 		${CC} ${CFFLAGS} -o ng-bandwidth ng-bw.c
 
 clean:	
