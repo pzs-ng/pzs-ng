@@ -908,7 +908,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 		raceI->data_type = hd.data_type = 0;
 		raceI->data_in_use = hd.data_in_use = progtype;
 		raceI->data_incrementor = hd.data_incrementor = 1;
-		raceI->data_queue = hd.data_queue = 0;
+		raceI->data_queue = hd.data_queue = 1;
 		hd.data_qcurrent = 0;
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
@@ -924,7 +924,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 		if ((time(NULL) - sb.st_ctime >= max_seconds_wait_for_lock)) {
 			raceI->data_in_use = hd.data_in_use = progtype;
 			raceI->data_incrementor = hd.data_incrementor = 1;
-			raceI->data_queue = hd.data_queue = 0;
+			raceI->data_queue = hd.data_queue = 1;
 			hd.data_qcurrent = 0;
 			lseek(fd, 0L, SEEK_SET);
 			write(fd, &hd, sizeof(HEADDATA));
@@ -934,16 +934,16 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 		}
 		if (hd.data_in_use) {						/* the lock is active */
 			if (force_lock == 2) {
-				raceI->data_queue = hd.data_queue = 0;
+				raceI->data_queue = hd.data_queue = 1;
 				hd.data_qcurrent = 0;
 				d_log("create_lock: Unlock forced.\n");
 			} else {
 				if (force_lock == 3) {				/* we got a request to queue a lock if active */
-					d_log("create_lock: lock active - putting you in queue.\n");
+					raceI->data_queue = hd.data_queue;	/* we give the current queue number to the calling process */
 					hd.data_queue++;			/* we increment the number in the queue */
-					raceI->data_queue = hd.data_queue;	/* and give the number back to the calling process */
 					lseek(fd, 0L, SEEK_SET);
 					write(fd, &hd, sizeof(HEADDATA));
+					d_log("create_lock: lock active - putting you in queue. (%d/%d)\n", hd.data_qcurrent, hd.data_queue);
 				}
 				close(fd);
 				return hd.data_in_use;
@@ -951,19 +951,19 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 		}
 		if (!hd.data_in_use) {						/* looks like the lock is inactive */
 			if (force_lock == 2) {
-				raceI->data_queue = hd.data_queue = 0;
+				raceI->data_queue = hd.data_queue = 1;
 				hd.data_qcurrent = 0;
 				d_log("create_lock: Unlock forced.\n");
 			} else if (force_lock == 3 && hd.data_queue > hd.data_qcurrent) {		/* we got a request to queue a lock if active, */
 										/* and there seems to be others in queue. Will not allow the */
 										/* process to lock, but wait for the queued process to do so. */
-				d_log("create_lock: putting you in queue.\n");
+				raceI->data_queue = hd.data_queue;		/* we give the queue number to the calling process */
 				hd.data_queue++;				/* we increment the number in the queue */
-				raceI->data_queue = hd.data_queue;		/* and give the number back to the calling process */
 				raceI->data_incrementor = hd.data_incrementor;
 				lseek(fd, 0L, SEEK_SET);
 				write(fd, &hd, sizeof(HEADDATA));
 				close(fd);
+				d_log("create_lock: putting you in queue. (%d/%d)\n", hd.data_qcurrent, hd.data_queue);
 				return -1;
 			} else if (hd.data_queue && (queue > hd.data_qcurrent) && !force_lock) {
 										/* seems there is a queue, and the calling process' place in */
@@ -1008,16 +1008,17 @@ remove_lock(struct VARS *raceI)
 	read(fd, &hd, sizeof(HEADDATA));
 	hd.data_in_use = 0;
 	hd.data_incrementor = 0;
-	if (hd.data_queue)							/* if queue, increase the number in current so next */
+	if (hd.data_queue)							/* if queue, increase the number in current so the next */
 		hd.data_qcurrent++;						/* process can start. */
-	if (hd.data_queue < hd.data_qcurrent)					/* If the next in line is bigger than the queue itself, */
-		hd.data_queue = hd.data_qcurrent = 0;				/* it should be fair to assume there is noone else in queue */
-										/* and reset the queue. Normally, this should not happen. */
+	if (hd.data_queue < hd.data_qcurrent) {					/* If the next in line is bigger than the queue itself, */
+		hd.data_queue = 0;						/* it should be fair to assume there is noone else in queue */
+		hd.data_qcurrent = 0;						/* and reset the queue. Normally, this should not happen. */
+	}
 	lseek(fd, 0L, SEEK_SET);
 	write(fd, &hd, sizeof(HEADDATA));
 	close(fd);
 	close(fd);
-	d_log("remove_lock: queue %d/%d (%d)\n", hd.data_qcurrent, hd.data_queue);
+	d_log("remove_lock: queue %d/%d\n", hd.data_qcurrent, hd.data_queue);
 }
 
 /* update a lock. This should be used after each file checked.

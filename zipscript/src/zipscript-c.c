@@ -292,17 +292,22 @@ main(int argc, char **argv)
 			d_log("zipscript-c: Detected rescan running - will try to make it quit.\n");
 			update_lock(&g.v, 0, 0);
 		}
-		for ( m = 0; m <= max_seconds_wait_for_lock * 10; m++) {
+		for ( n = 0; n <= max_seconds_wait_for_lock * 10; n++) {
 			d_log("zipscript-c: sleeping for .1 second before trying to get a lock.\n");
 			usleep(100000);
-			if (!create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0, g.v.data_queue))
+			if (!(m = create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0, g.v.data_queue)))
 				break;
 			
 		}
-		if (m >= max_seconds_wait_for_lock * 10) {
-			d_log("zipscript-c: Failed to get lock. Forcing unlock.\n");
-			if (create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 2, g.v.data_queue)) {
-				d_log("zipscript-c: Failed to force a lock. No choice but to exit.\n");
+		if (n >= max_seconds_wait_for_lock * 10) {
+			if (m == PROGTYPE_RESCAN) {
+				d_log("zipscript-c: Failed to get lock. Forcing unlock.\n");
+				if (create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 2, g.v.data_queue)) {
+					d_log("zipscript-c: Failed to force a lock. No choice but to exit.\n");
+					exit(EXIT_FAILURE);
+				}
+			} else {
+				d_log("zipscript-c: Failed to get a lock. No choice but to exit.\n");
 				exit(EXIT_FAILURE);
 			}
 		}
