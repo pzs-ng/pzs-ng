@@ -597,12 +597,12 @@ proc format_duration {secs} {
 }
 
 proc format_kb {amount} {
-	set units [list KB MB GB TB PB]
-	for {set index 0} {$amount >= 1024 && $index < 4} {incr index} {
-		set amount [expr {double($amount) / 1024.0}]
+	foreach dec {0 1 2 2 2} unit {KB MB GB TB PB} {
+		if {abs($amount) >= 1024} {
+			set amount [expr {double($amount) / 1024.0}]
+		} else {break}
 	}
-	set amount [format "%.1f" $amount]
-	return [append amount [lindex $units $index]]
+	return [format "%.*f%s" $dec $amount $unit]
 }
 
 proc format_speed {value section} {
@@ -1087,8 +1087,8 @@ proc ng_free {nick uhost hand chan arg} {
 					continue
 				}
 				foreach {devName devSize devUsed devFree} $line {break}
-				set devPercFree [format "%.1f" [expr (double($devFree) / double($devSize)) * 100]]
-				set devPercUsed [format "%.1f" [expr (double($devUsed) / double($devSize)) * 100]]
+				set devPercFree [format "%.1f" [expr {(double($devFree) / double($devSize)) * 100}]]
+				set devPercUsed [format "%.1f" [expr {(double($devUsed) / double($devSize)) * 100}]]
 
 				set output $announce(FREE-DEV)
 				set output [replacevar $output "%free" [format_kb $devFree]]
@@ -1123,8 +1123,8 @@ proc ng_free {nick uhost hand chan arg} {
 	}
 
 	if {$totalSize} {
-		set percFree [format "%.1f" [expr (double($totalFree) / double($totalSize)) * 100]]
-		set percUsed [format "%.1f" [expr (double($totalUsed) / double($totalSize)) * 100]]
+		set percFree [format "%.1f" [expr {(double($totalFree) / double($totalSize)) * 100}]]
+		set percUsed [format "%.1f" [expr {(double($totalUsed) / double($totalSize)) * 100}]]
 	} else {
 		set percFree 0.0; set percUsed 0.0
 	}
@@ -1154,7 +1154,9 @@ proc ng_incompletes {nick uhost hand chan arg} {
 	foreach line [split [exec $binary(INCOMPLETE)] "\n"] {
 		if {![info exists newline($line)]} {
 			set newline($line) 0
-		} else { set newline($line) [expr $newline($line) + 1] }
+		} else {
+			incr newline($line)
+		}
 		puthelp "PRIVMSG $nick :$line\003$newline($line)"
 	}
 	return
@@ -1181,9 +1183,17 @@ proc ng_stats {type time nick uhost hand chan argv} {
 		}
 	}
 
-	foreach line [split [exec $binary(STATS) -r $location(GLCONF) $type $time -s $section] "\n"] {
-		if {![info exists newline($line)]} { set newline($line) 0
-		} else { set newline($line) [expr $newline($line) + 1] }
+	if {[catch {set output [exec $binary(STATS) -r $location(GLCONF) $type $time -s $section]} error]} {
+		putlog "dZSbot error: Unable to retrieve stats ($error)."
+		return
+	}
+
+	foreach line [split $output "\n"] {
+		if {![info exists newline($line)]} {
+			set newline($line) 0
+		} else {
+			incr newline($line)
+		}
 		puthelp "PRIVMSG $nick :$line\003$newline($line)"
 	}
 	puthelp "PRIVMSG $nick :------------------------------------------------------------------------"
@@ -1700,7 +1710,9 @@ proc ng_who {nick uhost hand chan argv} {
 	foreach line [split [exec $binary(WHO)] "\n"] {
 		if {![info exists newline($line)]} {
 			set newline($line) 0
-		} else { set newline($line) [expr $newline($line) + 1] }
+		} else {
+			incr newline($line)
+		}
 		puthelp "PRIVMSG $nick :$line\003$newline($line)"
 	}
 	return
