@@ -126,23 +126,6 @@ void getrelname(char *directory) {
 
 
 
-void read_user_info() {
- gettimeofday(&raceI.transfer_stop, (struct timezone *)0 );
- sprintf(raceI.user.name, getenv("USER"));
- sprintf(raceI.user.group, getenv("GROUP"));
- if ( sprintf(raceI.user.group, getenv("GROUP")) == 0 ) {
-	memcpy(raceI.user.group, "NoGroup", 8);
- }
- sprintf(raceI.user.tagline, getenv("TAGLINE"));
- raceI.file.speed=atoi(getenv("SPEED"));
- if (raceI.file.speed==0) raceI.file.speed=1;
-/*	raceI.transfer_start.tv_sec = 0;
-        raceI.transfer_start.tv_usec = 0;*/
-}
-
-
-
-
 unsigned char get_filetype(char *ext) {
 	if (!memcmp(ext, "zip", 4)) return 0;
 	if (!memcmp(ext, "sfv", 4)) return 1;
@@ -279,7 +262,17 @@ int main( int argc, char **argv ) {
  raceI.misc.release_type = 0;
 
  d_log("Reading data from shared memory\n");
- read_user_info();
+// gettimeofday(&raceI.transfer_stop, (struct timezone *)0 );
+ sprintf(raceI.user.name, getenv("USER"));
+ sprintf(raceI.user.group, getenv("GROUP"));
+ if ( sprintf(raceI.user.group, getenv("GROUP")) == 0 ) {
+        memcpy(raceI.user.group, "NoGroup", 8);
+ }
+ sprintf(raceI.user.tagline, getenv("TAGLINE"));
+ raceI.file.speed=atoi(getenv("SPEED"));
+ if (raceI.file.speed==0) raceI.file.speed=1;
+/*      raceI.transfer_start.tv_sec = 0;
+        raceI.transfer_start.tv_usec = 0;*/
 
  d_log("Checking the file size\n");
  stat(argv[1], &fileinfo);

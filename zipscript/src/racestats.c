@@ -91,8 +91,8 @@ int main( int argc, char **argv ) {
    raceI.total.size =
    raceI.total.users =
    raceI.total.groups = 0;
-//   raceI.user.name = "abc";
-//   raceI.file.name = "abc";
+//   raceI.user.name = "";
+//   raceI.file.name = "";
 
 
    strcpy(locations.path, site_root);

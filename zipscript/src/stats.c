@@ -46,10 +46,10 @@ void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO *
 	}
 
  if ( u_no == -1 ) {
-	if ( ! raceI->total.users ) {
-		raceI->transfer_start.tv_sec = startsec;
-		raceI->transfer_start.tv_usec = startusec;
-		}
+//	if ( ! raceI->total.users ) {
+//		raceI->transfer_start.tv_sec = startsec;
+//		raceI->transfer_start.tv_usec = startusec;
+//		}
 	u_no = raceI->total.users++;
 	userI[u_no] = malloc(sizeof(struct USERINFO));
 	bzero(userI[u_no], sizeof(struct USERINFO));
