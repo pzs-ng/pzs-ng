@@ -6,7 +6,9 @@ CFLAGS=@CFLAGS@ -W -Wall @GLVERSION@ -I../../ -I../../zipscript/include/
 LDFLAGS=@LDFLAGS@
 INSTALL=@INSTALL@
 
-all: passchk ng-bw
+targets=ng-bw @PASSCHK@
+
+all: $(targets)
 
 passchk: passchk.c
 	$(CC) $(LDFLAGS) $(CFLAGS) -o passchk passchk.c @LCRYPT@ @LCRYPTO@

@@ -18,12 +18,16 @@ AC_CHECK_PROG(INSTALL, install, install)
 if [[ -z "$INSTALL" ]]; then AC_MSG_ERROR([Couldn't find install, quitting!]); fi
 
 dnl Checks for libraries.
-LCRYPT=""
+LCRYPT=""; PASSCHK=""
 if [[ $(uname -s) != "OpenBSD" ]]; then
-	AC_CHECK_LIB(crypt, crypt, LCRYPT="-lcrypt", AC_MSG_ERROR([[Couldn't find libcrypt, quitting!]]))
+	#AC_CHECK_LIB(crypt, crypt, LCRYPT="-lcrypt", AC_MSG_ERROR([[Couldn't find libcrypt, quitting!]]))
+	AC_CHECK_LIB(crypt, crypt, LCRYPT="-lcrypt")
 fi
 
-AC_CHECK_LIB(crypto, HMAC, LCRYPTO="-lcrypto", AC_MSG_ERROR([[Couldn't find libcrypto, quitting! Install SSL dev package and try again.]]))
+
+#AC_CHECK_LIB(crypto, HMAC, LCRYPTO="-lcrypto", AC_MSG_ERROR([[Couldn't find libcrypto, quitting! Install SSL dev package and try again.]]))
+AC_CHECK_LIB(crypto, HMAC, LCRYPTO="-lcrypto"; PASSCHK="passchk")
+
 
 dnl Checks for header files.
 AC_HEADER_TIME
@@ -68,9 +72,12 @@ dnl OS :)
 # AC_MSG_ERROR([Couldn't identify OS, quitting!])
 #fi
 
+#dnl sitestat5
+AC_ARG_ENABLE(ss5, AS_HELP_STRING([--enable-ss5], [compiles the zipscript for use with SiteStat 5]), CFLAGS="$CFLAGS -D_WITH_SS5")
+
 dnl Static linking :)
 AC_ARG_ENABLE(static, AS_HELP_STRING([--enable-static], [enable static linking of zs-c]), CFLAGS="$CFLAGS -static"; static="yes")
-if test "$static" = "yes" ; then
+if test "$static" = "yes"; then
   AC_MSG_RESULT([NOTICE: linking statically (--enable-static).])
 else
   AC_MSG_RESULT([NOTICE: linking dynamically.])
@@ -95,7 +102,7 @@ if [[ "$GLVERSION" == "detect" ]]; then
   if [[ ! -d "$GLPATH" ] || [ ! -x "${GLPATH}/bin/glftpd" ]]; then
     AC_MSG_ERROR([Invalid glpath "$GLPATH". Use ./configure --with-glpath=PATH with a valid path! (or --enable-gl1/2 to disable autodetect). Quitting!])
   fi
-  glversion="`strings $GLPATH/bin/glftpd|grep -i '^glftpd '|cut -f1 -d.|tr A-Z a-z`"
+  glversion="`strings $GLPATH/bin/glftpd | grep -i '^glftpd '| cut -f1 -d. | tr A-Z a-z`"
   if [[ "$glversion" == "glftpd 1" ]]; then
     GLVERSION=""
     AC_MSG_RESULT([NOTICE: detected glversion, compiling bot binaries for glftpd1.])
@@ -112,14 +119,26 @@ AC_SUBST(GLVERSION)
 AC_SUBST(STATIC)
 AC_SUBST(LCRYPT)
 AC_SUBST(LCRYPTO)
+AC_SUBST(PASSCHK)
 
-[[ ! -f zipscript/conf/zsconfig.h ]] && cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h \
-					> /dev/null 2>&1 || {
-	echo "ERROR: You need zsconfig.h in the 'zipscript/conf' directory."
-	exit 1
-}
+! [[ -f zipscript/conf/zsconfig.h ]] && cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h
+
+#if [[ "`ls zipscript/conf/zsconfig.h`" == "" ]]; then
+#	cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h  /dev/null 2>&1
+#else
+#	echo "ERROR: You need zsconfig.h in the 'zipscript/conf' directory."
+#	exit 1
+#fi
 
 AC_OUTPUT(Makefile zipscript/src/Makefile sitebot/src/Makefile sitewho/Makefile)
+
+if [[ "$PASSCHK" == "" ]]; then
+AC_MSG_RESULT(
+$( echo )
+libcrypt/OpenSSL not found. Not building passchk
+)
+fi
+
 AC_MSG_RESULT(
 $( echo )
 The makefiles are now configured. Next up you need to edit
