@@ -24,7 +24,7 @@ Dark0n3 stopped development in June(?) 2002, and remained stagnant for a
 long time. Up until now various coders/scripters have made patches to fix
 bugs or make some enhancements, but the patches have at times been
 overlapping, or complete replacements of source-files, making it hard for
-the siteops to implement them all. 
+the siteops to implement them all.
 In April, 2004, daxxar and psxc collected the various patches into packages,
 but soon found out it was better to pool resources and make a unified
 version. The result - Project-ZS-NG.
@@ -50,6 +50,7 @@ Project-ZS-NG should compile fine on the following platforms:
 - FreeBSD
 - OpenBSD
 - (AIX - untested, but the original docs say it works there)
+- (Solaris - soon *g*)
 
 Only i386 platforms is tested, but feel free to let us know if you try it
 on anything else. :)
@@ -163,7 +164,7 @@ Installation:
 -------------
 Back? Good. You now should have edited zsconfig.h and made the output reflect
 how you wish it to be. Don't worry, we'll get to the bot-output soon enough.
-First, you need to compile the script. People with more than 2 weeks 
+First, you need to compile the script. People with more than 2 weeks
 experience with linux/unix/bsd (aka '*nix' - get used to the expression) will
 not see this as particularly challenging. Compiling stuff is quite common
 under *nix. Anyway, I'll walk you thru it. First off, type:
