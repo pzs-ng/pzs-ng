@@ -84,6 +84,7 @@ updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **grou
 		userI[u_no] = malloc(sizeof(struct USERINFO));
 		memset(userI[u_no], 0, sizeof(struct USERINFO));
 		memcpy(userI[u_no]->name, usern, 24);
+		userI[u_no]->files = 0;
 
 		for (n = 0; n < raceI->total.groups; n++) {
 			if (strncmp(groupI[n]->name, group, 24) == 0) {
