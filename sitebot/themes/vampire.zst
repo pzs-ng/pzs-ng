@@ -8,7 +8,7 @@
 #  Notes: Best experienced on dark -black- backgrounds.    #
 #         Please contact me if you have any suggestions,   #
 #         fixes or additions for this theme.               #
-#  Tested with: pzs-ng r1439                               #
+#  Tested with: pzs-ng r1454                               #
 #                                                          #
 ############################################################
 #                                                          #
@@ -40,7 +40,7 @@ announce.BADPASSWORD				= "%b{LOGiN%c1{:}} %c3{%b{%u_name}} %c1{tried to log in 
 announce.BANNEDHOST				= "%b{LOGiN%c1{:}} %c3{%b{%u_name}} %c1{could not log, hostmask} %c3{%u_hostmask} %c1{is banned.}"
 announce.DELETED				= "%b{LOGiN%c1{:}} %c3{%b{%u_name}} %c1{could not log in, user deleted.}"
 announce.IPNOTADDED				= "%b{LOGiN%c1{:}} %c1{denied unknown connection from} %c3{%b{%u_hostmask}}%c1{.}"
-announce.KILLGHOST				= "%b{GHOST%c1{:}} %c3{%b{%u_name}} %c1{killed a ghost with PID} %c3{%b{%pid}}%c1{.}"
+announce.KILLGHOST				= "%b{GHOST%c1{:}} %c3{%b{%u_name}} %c1{killed a ghost with PiD} %c3{%b{%pid}}%c1{.}"
 announce.TAGLINE				= "%b{TAGLiNE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{has changed his tagline to} %c3{%b{%u_tagline}}%c1{.}"
 announce.TIMEOUT				= "%b{LOGOUT%c1{:}} %c3{%b{%u_name}} %c1{has timed out after} %c3{%b{%u_idletime}}%c1{s.}"
 
@@ -54,6 +54,7 @@ announce.DELIP					= "%b{SYSOP%c1{:}} %c3{%b{%u_siteop}} %c1{removed ip} %c3{%b{
 announce.READDED				= "%b{SYSOP%c1{:}} %c3{%b{%u_siteop}} %c1{readded} %c3{%b{%u_name}}%c1{.}"
 announce.DELUSER				= "%b{SYSOP%c1{:}} %c3{%b{%u_siteop}} %c1{deleted} %c3{%b{%u_name}}%c1{.}"
 announce.PURGED					= "%b{SYSOP%c1{:}} %c3{%b{%u_siteop}} %c1{purged} %c3{%b{%u_name}}%c1{.}"
+announce.KILLED					= "%b{SYSOP%c1{:}} %c3{%b{%u_siteop}} %c1{killed} %c3{%b{%u_name}} %c1{(PiD:} %c3{%b{%pid}}%c1{).}"
 announce.SYSOP					= "%b{SYSOP%c1{:}} %c1{%msg}"
 
 ## glFTPd announcements

@@ -332,6 +332,7 @@ proc parsesysop {line eventvar datavar} {
 		READDED  {^'(.+)' readded '(.+)'\.$} \
 		DELUSER  {^'(.+)' deleted user '(.+)'\.$} \
 		PURGED   {^'(.+)' purged '(.+)'$} \
+		KILLED   {^'(.+)' killed PID (\d+) \((.+)\)\.$} \
 	]
 	foreach {event pattern} $patterns {
 		if {[llength [set data [regexp -inline -- $pattern $line]]]} {

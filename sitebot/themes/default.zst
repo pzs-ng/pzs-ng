@@ -66,6 +66,7 @@ announce.DELIP                  = "[%b{sysop}] %b{%u_siteop} removed ip %b{%u_ip
 announce.READDED                = "[%b{sysop}] %b{%u_siteop} readded %b{%u_name}."
 announce.DELUSER                = "[%b{sysop}] %b{%u_siteop} deleted %b{%u_name}."
 announce.PURGED                 = "[%b{sysop}] %b{%u_siteop} purged %b{%u_name}."
+announce.KILLED                 = "[%b{sysop}] %b{%u_siteop} killed %b{%u_name} (PID: %b{%pid})."
 announce.SYSOP                  = "[%b{sysop}] %msg"
 
 ## glFTPd announcements
