@@ -40,8 +40,8 @@
 
 #define cleanupdirs     "/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 
-/* Should an incomplete pointer be put if nfo's are missing? */
-#define show_missing_nfo	FALSE
+/* Should an incomplete pointer be put instead of the incomplete-pointer if nfo's are missing after release is complete? */
+#define show_missing_nfo	TRUE
 
 /* Do not write .message file on complete in group_dirs */
 #define write_complete_message_in_group_dirs    TRUE
@@ -93,13 +93,6 @@
 /* Special modes */
 #define debug_mode              TRUE
 #define benchmark_mode          TRUE
-
-/* Get user day/week/month/allup position */
-#define get_user_stats          TRUE
-
-#define show_user_info          TRUE
-#define show_group_info         TRUE
-
 
 /*
  *      SFV Settings

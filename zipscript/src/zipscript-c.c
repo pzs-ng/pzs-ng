@@ -90,7 +90,6 @@ void remove_nfo_indicator(char *directory) {
 			n = 0;
 		} else n++;
 	}
-	d_log("Removing nfo-missing indicator.\n");
 	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
 	unlink(locations.nfo_incomplete);
 	if (k < 2)
@@ -138,9 +137,7 @@ void getrelname(char *directory) {
 		sprintf(raceI.misc.release_name, "%s", path[1]);
 		locations.link_target = path[1];
 		locations.incomplete = c_incomplete(incomplete_indicator, path);
-		d_log("incomplete-indicator: %s\n", locations.incomplete);
 		locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
-		d_log("incomplete-nfo-indicator: %s\n", locations.nfo_incomplete);
 
 		if (k == 0)
 			free(path[0]);
@@ -569,20 +566,19 @@ int main( int argc, char **argv ) {
 		d_log("File type is: NFO\n");
 		writerace_file(&locations, &raceI, 0, F_NFO);
 
-		d_log("Here I should've removed the missing nfo-indicator....\n" );
-		remove_nfo_indicator(locations.path);
-//		target = i_incomplete(incomplete_indicator, nfopointer);
-//		d_log("Here I should've removed the missing nfo-indicator %s.\n", target );
+		if ((show_missing_nfo) && (findfileext(".nfo"))) {
+			d_log("Removing missing-nfo indicator (if any)\n");
+			remove_nfo_indicator(locations.path);
+		}
 
-		if ( enable_nfo_script == TRUE )
-		{
+#if ( enable_nfo_script == TRUE )
 		    d_log("Executing nfo script (%s %s)\n", nfo_script, raceI.file.name);
 		    sprintf(target, nfo_script " %s", raceI.file.name);
 		    /*if ( execute_old(target) != 0 ) {*/
 		    if ( execute(target) != 0 ) {
 			d_log("Failed to execute nfo_script!");
 		    }
-		}
+#endif
 
 		break;
 		/* END OF NFO CHECK */
@@ -874,10 +870,11 @@ int main( int argc, char **argv ) {
 	    d_log("Creating incomplete indicator %s\n", locations.incomplete);
 	    create_incomplete();
 
-	    if ((show_missing_nfo) && (! findfileext(".nfo"))) {
+/*	    if ((show_missing_nfo) && (! findfileext(".nfo"))) {
 	    	d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
 	    	create_incomplete_nfo();
 	    }
+*/
 
 	    d_log("Creating/moving progress bar\n");
 	    move_progress_bar(0, &raceI);
@@ -988,6 +985,16 @@ int main( int argc, char **argv ) {
 
 	    d_log("Creating complete bar\n");
 	    createstatusbar(convert(&raceI, userI, groupI, complete_bar));
+
+	    if (show_missing_nfo) {
+		if  (findfileext(".nfo")) {
+			d_log("Removing missing-nfo indicator (if any)\n");
+			remove_nfo_indicator(locations.path);
+	    	} else {
+		    	d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
+		    	create_incomplete_nfo();
+		}
+	    }
 
 #if ( enable_complete_script == TRUE )
 	    d_log("Executing complete script\n");
