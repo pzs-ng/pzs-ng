@@ -1,8 +1,10 @@
 #!/bin/bash
-#####################################################
-# PSXC's GetNFO v0.5a (get_nfo.sh)                   #
+######################################################
+# PSXC's GetNFO v0.5b (get_nfo.sh - nfoextract.sh)   #
 #                                                    #
 # History:                                           #
+# v0.5b - changed some code which i didn't           #
+          understand the meaning of.                 #
 # v0.5a - added support for a different file than    #
 #         the default .message                       #
 # v0.5 - more bugs fixed                             #
@@ -24,19 +26,19 @@
 # Project-ZS v0.6.x, edit the following in zsconfig.h:
 #
 # #define enable_complete_script  TRUE
-# #define complete_script         "/bin/get_nfo.sh"
+# #define complete_script         "/bin/nfoextract.sh"
 #
 # Then deny *.nfo uploads in your 0day dirs. Here is an example with the
 # default precheck.sh (replace 0DAY with the name of your 0day dir):
 #
 #  *.[nN][fF][oO])
 #   if [ ! "`echo $2 | grep 0DAY`" = "" ]; then
-#    echo -e ".---=== GetNFO v0.5a =====--- psxc (C)2003 --====--.\n| NFO file uploads denied.                         |\n| The .nfo will instead be extracted from the zip. |\n\`--------=======-----------------=====-------------'\n"
+#    echo -e ".---=== GetNFO v0.5b =====--- psxc (C)2004 --====--.\n| NFO file uploads denied.                         |\n| The .nfo will instead be extracted from the zip. |\n\`--------=======-----------------=====-------------'\n"
 #    exit 2
 #   fi
 #  ;;
 #
-# copy get_nfo.sh to glftpd's bin directory (/glftpd/bin) and make sure you have the following
+# copy nfoextract.sh to glftpd's bin directory (/glftpd/bin) and make sure you have the following
 # in glftpd's bin directory: bash chmod chown unzip ls echo cat
 #
 ####################################################################################################
@@ -72,10 +74,7 @@ if [ -z "$nfocount" ] ; then
      if [ ! -z "`echo $Name | grep "\.[Nn][Ff][Oo]$"`" ]; then
       if [ ! $found = 1 ]; then
        found=1
-       plain=`echo $Name | /bin/sed "s|/| |g"`
-       for plain_name in $plain; do
-        New_Name=`echo $plain_name | tr '[:upper:]' '[:lower:]'`
-       done
+       New_Name=`echo $Name | tr '/' '\n' | grep -v "^$" | tail -n 1 | tr '[:upper:]' '[:lower:]'`
        /bin/unzip -Cqqp $file $Name > $New_Name
        if [ ! "$copy_to_message" = "0" ]; then
         echo "" >> $name_message
