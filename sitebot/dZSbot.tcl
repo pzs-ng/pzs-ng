@@ -12,6 +12,9 @@ putlog "Launching dZSbot for project-zs-ng..."
 
 set scriptpath [file dirname [info script]]
 
+if {[catch {package require Tcl 8.4} error]} {
+	die "dZSbot error: You must be using Tcl v8.4, or newer with dZSbot."
+}
 if {[catch {source $scriptpath/dZSbot.conf.defaults} error]} {
 	putlog "dZSbot error: Unable to load dZSbot.conf.defaults ($error), cannot continue."
 	putlog "dZSbot error: See FAQ for possible solutions/debugging options."
@@ -159,10 +162,10 @@ proc ng_preview {handle idx text} {
 	global announce defaultsection lastbind
 
 	if {[string equal "" $text]} {
-	    putdcc $idx "\002Preview Usage:\002"
-	    putdcc $idx "- .$lastbind <event pattern>"
-	    putdcc $idx "- Only events matching the pattern are shown (* for all)."
-	    return
+		putdcc $idx "\002Preview Usage:\002"
+		putdcc $idx "- .$lastbind <event pattern>"
+		putdcc $idx "- Only events matching the pattern are shown (* for all)."
+		return
 	}
 
 	if {[catch {set handle [open $announce(THEMEFILE) r]} error]} {
@@ -177,20 +180,20 @@ proc ng_preview {handle idx text} {
 
 	foreach line [split $data "\n"] {
 		if {![string equal "" $line] && [string index $line 0] != "#"} {
-    		if {[regexp -nocase -- {announce\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-    			set prefix "announce."
-    		} elseif {[regexp -nocase -- {random\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-    			set prefix "random."
-    		} elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
-    			set prefix ""
-    		} else {
-    		    continue
-    		}
-    		if {[string match -nocase $text $setting]} {
-    	    	set value [themereplace [replacebasic $value $defaultsection] $defaultsection]
-        		putdcc $idx "$prefix$setting = $value"
-        	}
-        }
+			if {[regexp -nocase -- {announce\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+				set prefix "announce."
+			} elseif {[regexp -nocase -- {random\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+				set prefix "random."
+			} elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
+				set prefix ""
+			} else {
+				continue
+			}
+			if {[string match -nocase $text $setting]} {
+				set value [themereplace [replacebasic $value $defaultsection] $defaultsection]
+				putdcc $idx "$prefix$setting = $value"
+			}
+		}
 	}
 	return
 }
@@ -393,7 +396,7 @@ proc ng_random {event rndvar} {
 	global random
 
 	## Select a random announce theme
-	set eventlist [array names random "${event}-*"]
+	set eventlist [array names random -exact "${event}-*"]
 	if {[set items [llength $eventlist]]} {
 		set rndevent [lindex $eventlist [rand $items]]
 		return 1
@@ -1691,7 +1694,7 @@ proc loadtheme {file} {
 	if {[string index $file 0] != "/"} {
 		set file "$scriptpath/$file"
 	}
-	set announce(THEMEFILE) $file
+	set announce(THEMEFILE) [file normalize $file]
 
 	putlog "dZSbot: Loading theme \"$file\"."
 
@@ -1843,7 +1846,7 @@ foreach {varname logtype} {glftpdlog 0 loginlog 1 sysoplog 2} {
 			putlog "dZSbot error: Unable to read the log file \"$filepath\"."
 			set dzerror 1
 		} else {
-			lappend loglist $logtype [incr logid] $filepath
+			lappend loglist $logtype [incr logid] [file normalize $filepath]
 			set lastread($logid) [file size $filepath]
 		}
 	}
