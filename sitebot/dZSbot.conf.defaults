@@ -199,8 +199,8 @@ set announce(THEMEFILE) "themes/default.zst"
 
 # Announce types, "SECTION" types are path oriented (COMPLETE: /site/MP3/...),
 # and "REGULAR" types are regular event based announces.
-set msgtypes(SECTION)   "NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE_RAR RACE_ZIP RACE_OTHER RACE_VIDEO RACE_AUDIO SFV_RAR SFV_OTHER SFV_VIDEO SFV_AUDIO DOUBLESFV UPDATE_RAR UPDATE_OTHER UPDATE_VBR UPDATE_CBR UPDATE_VIDEO UPDATE_ZIP HALFWAY_RACE_RAR HALFWAY_RACE_ZIP HALFWAY_RACE_OTHER HALFWAY_RACE_VIDEO HALFWAY_RACE_AUDIO HALFWAY_NORACE_RAR HALFWAY_NORACE_ZIP HALFWAY_NORACE_OTHER HALFWAY_NORACE_VIDEO HALFWAY_NORACE_AUDIO NEWLEADER_RAR NEWLEADER_ZIP NEWLEADER_OTHER NEWLEADER_VIDEO NEWLEADER_AUDIO COMPLETE_RAR COMPLETE_ZIP COMPLETE_AUDIO_CBR COMPLETE_AUDIO_VBR COMPLETE_OTHER COMPLETE_VIDEO COMPLETE_STAT_RACE_RAR COMPLETE_STAT_RACE_ZIP COMPLETE_STAT_RACE_AUDIO_CBR COMPLETE_STAT_RACE_AUDIO_VBR COMPLETE_STAT_RACE_OTHER COMPLETE_STAT_RACE_VIDEO BADGENRE BADYEAR BADBITRATE BAD_FILE_CRC BAD_FILE_0SIZE BAD_FILE_ZIP BAD_FILE_WRONGDIR BAD_FILE_SFV BAD_FILE_NOSFV BAD_FILE_GENRE BAD_FILE_YEAR BAD_FILE_BITRATE BAD_FILE_DISALLOWED WIPE WIPE-r IMDB IMDBVAR"
-set msgtypes(DEFAULT)   "MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT REQUEST REQFILLED IMDBFIND IMDBFINDVAR DEBUG BADPASSWD BADUSERHOST IPNOTADDED TIMEOUT TAGLINE"
+set msgtypes(SECTION)   "IMDB IMDBVAR PRE NEWDIR DELDIR NUKE UNNUKE WIPE WIPE-r BAD_FILE_0SIZE BAD_FILE_BITRATE BAD_FILE_CRC BAD_FILE_DISALLOWED BAD_FILE_DUPENFO BAD_FILE_GENRE BAD_FILE_NOSFV BAD_FILE_SFV BAD_FILE_WRONGDIR BAD_FILE_YEAR BAD_FILE_ZIP BADBITRATE BADGENRE BADYEAR COMPLETE_AUDIO_CBR COMPLETE_AUDIO_VBR COMPLETE_OTHER COMPLETE_RAR COMPLETE_VIDEO COMPLETE_ZIP COMPLETE_STAT_RACE_AUDIO_CBR COMPLETE_STAT_RACE_AUDIO_VBR COMPLETE_STAT_RACE_OTHER COMPLETE_STAT_RACE_RAR COMPLETE_STAT_RACE_VIDEO COMPLETE_STAT_RACE_ZIP DOUBLESFV HALFWAY_NORACE_AUDIO HALFWAY_NORACE_OTHER HALFWAY_NORACE_RAR HALFWAY_NORACE_VIDEO HALFWAY_NORACE_ZIP HALFWAY_RACE_AUDIO HALFWAY_RACE_OTHER HALFWAY_RACE_RAR HALFWAY_RACE_VIDEO HALFWAY_RACE_ZIP INCOMPLETE NEWLEADER_AUDIO NEWLEADER_OTHER NEWLEADER_RAR NEWLEADER_VIDEO NEWLEADER_ZIP RACE_AUDIO RACE_OTHER RACE_RAR RACE_VIDEO RACE_ZIP SFV_AUDIO SFV_OTHER SFV_RAR SFV_VIDEO UPDATE_CBR UPDATE_OTHER UPDATE_RAR UPDATE_VBR UPDATE_VIDEO UPDATE_ZIP"
+set msgtypes(DEFAULT)   "BADMSGINVITE BADPASSWD BADUSERHOST DEBUG IMDBFIND IMDBFINDVAR INVITE IPNOTADDED LOGIN LOGOUT MSGINVITE REQFILLED REQUEST TAGLINE TIMEOUT"
 
 # Redirect messages to the defined channels.
 #set redirect(LOGIN)    "#pzs-ng #ng-staff"
@@ -230,90 +230,101 @@ set disable(TRIGINALLCHAN)              0
 
 # Are we disabling the announce of this stuff?
 # If its set to 1, we wont show it.
+
+## script announcements
+set disable(ALTWHO)                         0
+set disable(DEBUG)                          1
+set disable(INVITE)                         0
+set disable(MSGINVITE)                      0
+set disable(WELCOME)                        0
+
+## login announcements
+set disable(BADMSGINVITE)                   0
+set disable(BADPASSWD)                      1
+set disable(BADUSERHOST)                    1
+set disable(FAILLOGIN)                      0
+set disable(LOGIN)                          1
+set disable(LOGOUT)                         1
+set disable(TAGLINE)                        1
+set disable(TIMEOUT)                        1
+
+## glftpd announcements
+set disable(DELDIR)                         0
+set disable(NEWDIR)                         0
+set disable(NUKE)                           0
+set disable(UNNUKE)                         0
+set disable(REQFILLED)                      0
+set disable(REQUEST)                        0
+set disable(WIPE)                           0
+set disable(WIPE-r)                         0
+
+## 3rd party announcements
+set disable(IMDB)                           0
+set disable(IMDBFIND)                       0
+set disable(IMDBFINDVAR)                    0
+set disable(IMDBVAR)                        0
+set disable(IPNOTADDED)                     1
+set disable(PRE)                            0
+
+## zipscript announcements
+set disable(BAD_FILE_0SIZE)                 0
+set disable(BAD_FILE_BITRATE)               1
+set disable(BAD_FILE_CRC)                   0
+set disable(BAD_FILE_DISALLOWED)            0
+set disable(BAD_FILE_DUPENFO)               0
+set disable(BAD_FILE_GENRE)                 1
+set disable(BAD_FILE_NOSFV)                 0
+set disable(BAD_FILE_SFV)                   0
+set disable(BAD_FILE_WRONGDIR)              0
+set disable(BAD_FILE_YEAR)                  1
+set disable(BAD_FILE_ZIP)                   0
 set disable(BADBITRATE)                     0
 set disable(BADGENRE)                       0
-set disable(BADMSGINVITE)                   0
 set disable(BADYEAR)                        0
-set disable(COMPLETE_RAR)                   0
-set disable(COMPLETE_ZIP)                   0
-set disable(COMPLETE_OTHER)                 0
-set disable(COMPLETE_VIDEO)                 0
 set disable(COMPLETE_AUDIO_CBR)             0
 set disable(COMPLETE_AUDIO_VBR)             0
-set disable(COMPLETE_STAT_RACE_RAR)         0
-set disable(COMPLETE_STAT_RACE_ZIP)         0
-set disable(COMPLETE_STAT_RACE_OTHER)       0
-set disable(COMPLETE_STAT_RACE_VIDEO)       0
+set disable(COMPLETE_OTHER)                 0
+set disable(COMPLETE_RAR)                   0
+set disable(COMPLETE_VIDEO)                 0
+set disable(COMPLETE_ZIP)                   0
 set disable(COMPLETE_STAT_RACE_AUDIO_CBR)   0
 set disable(COMPLETE_STAT_RACE_AUDIO_VBR)   0
-set disable(DEBUG)                      1
-set disable(DELDIR)                     0
-set disable(DOUBLESFV)                  0
-set disable(HALFWAY_RACE_RAR)           0
-set disable(HALFWAY_RACE_ZIP)           0
-set disable(HALFWAY_RACE_OTHER)         0
-set disable(HALFWAY_RACE_VIDEO)         0
-set disable(HALFWAY_RACE_AUDIO)         0
-set disable(HALFWAY_NORACE_RAR)         0
-set disable(HALFWAY_NORACE_ZIP)         0
-set disable(HALFWAY_NORACE_OTHER)       0
-set disable(HALFWAY_NORACE_VIDEO)       0
-set disable(HALFWAY_NORACE_AUDIO)       0
-set disable(INCOMPLETE)                 0
-set disable(INVITE)                     0
-set disable(LOGIN)                      1
-set disable(LOGOUT)                     1
-set disable(TIMEOUT)                    1
-set disable(TAGLINE)                    1
-set disable(MSGINVITE)                  0
-set disable(NEWDIR)                     0
-set disable(NEWLEADER_RAR)              0
-set disable(NEWLEADER_ZIP)              0
-set disable(NEWLEADER_OTHER)            0
-set disable(NEWLEADER_VIDEO)            0
-set disable(NEWLEADER_AUDIO)            0
-set disable(NUKE)                       0
-set disable(PRE)                        0
-set disable(RACE_RAR)                   0
-set disable(RACE_ZIP)                   0
-set disable(RACE_OTHER)                 0
-set disable(RACE_VIDEO)                 0
-set disable(RACE_AUDIO)                 0
-set disable(REQUEST)                    0
-set disable(REQFILLED)                  0
-set disable(SFV_RAR)                    0
-set disable(SFV_OTHER)                  0
-set disable(SFV_VIDEO)                  0
-set disable(SFV_AUDIO)                  0
-set disable(UNNUKE)                     0
-set disable(UPDATE_RAR)                 0
-set disable(UPDATE_OTHER)               0
-set disable(UPDATE_CBR)                 0
-set disable(UPDATE_VBR)                 0
-set disable(UPDATE_VIDEO)               0
-set disable(UPDATE_ZIP)                 0
-set disable(WELCOME)                    0
-set disable(WIPE)                       0
-set disable(WIPE-r)                     0
-set disable(BAD_FILE_0SIZE)             0
-set disable(BAD_FILE_BITRATE)           1
-set disable(BAD_FILE_CRC)               0
-set disable(BAD_FILE_DISALLOWED)        0
-set disable(BAD_FILE_GENRE)             1
-set disable(BAD_FILE_NOSFV)             0
-set disable(BAD_FILE_SFV)               0
-set disable(BAD_FILE_WRONGDIR)          0
-set disable(BAD_FILE_YEAR)              1
-set disable(BAD_FILE_ZIP)               0
-set disable(IMDB)                       0
-set disable(IMDBFIND)                   0
-set disable(IMDBFINDVAR)                0
-set disable(IMDBVAR)                    0
-set disable(BADPASSWD)                  1
-set disable(BADUSERHOST)                1
-set disable(FAILLOGIN)                  0
-set disable(IPNOTADDED)                 1
-set disable(ALTWHO)                     0
+set disable(COMPLETE_STAT_RACE_OTHER)       0
+set disable(COMPLETE_STAT_RACE_RAR)         0
+set disable(COMPLETE_STAT_RACE_VIDEO)       0
+set disable(COMPLETE_STAT_RACE_ZIP)         0
+set disable(DOUBLESFV)                      0
+set disable(HALFWAY_NORACE_AUDIO)           0
+set disable(HALFWAY_NORACE_OTHER)           0
+set disable(HALFWAY_NORACE_RAR)             0
+set disable(HALFWAY_NORACE_VIDEO)           0
+set disable(HALFWAY_NORACE_ZIP)             0
+set disable(HALFWAY_RACE_AUDIO)             0
+set disable(HALFWAY_RACE_OTHER)             0
+set disable(HALFWAY_RACE_RAR)               0
+set disable(HALFWAY_RACE_VIDEO)             0
+set disable(HALFWAY_RACE_ZIP)               0
+set disable(INCOMPLETE)                     0
+set disable(NEWLEADER_AUDIO)                0
+set disable(NEWLEADER_OTHER)                0
+set disable(NEWLEADER_RAR)                  0
+set disable(NEWLEADER_VIDEO)                0
+set disable(NEWLEADER_ZIP)                  0
+set disable(RACE_AUDIO)                     0
+set disable(RACE_OTHER)                     0
+set disable(RACE_RAR)                       0
+set disable(RACE_VIDEO)                     0
+set disable(RACE_ZIP)                       0
+set disable(SFV_AUDIO)                      0
+set disable(SFV_OTHER)                      0
+set disable(SFV_RAR)                        0
+set disable(SFV_VIDEO)                      0
+set disable(UPDATE_CBR)                     0
+set disable(UPDATE_OTHER)                   0
+set disable(UPDATE_RAR)                     0
+set disable(UPDATE_VBR)                     0
+set disable(UPDATE_VIDEO)                   0
+set disable(UPDATE_ZIP)                     0
 
 #########################################################
 # ADVANCED CONFIG, EDIT CAREFULLY                       #
@@ -349,33 +360,6 @@ set hidenuke    "UNKNOWN"
 #  %reason  = nuke reason
 #  %nukee   = ppl that got nuked
 #
-# PLEASE! DO NOT CHANGE THESE VALUES IF YOU DO NOT KNOW WHAT THEY DO! IT *WILL* BREAK THE BOT!
-
-## Read as:
-# %t_ = Total, %t_files: Total files.
-# %u_ = User, %u_count: User count.
-# %g_ = Group, %g_name: Group name.
-
-# Variables pasted from glftpd          <- moved to dZSbot.vars
-# Variables pasted from the zipscript       <- moved to dZSbot.vars
-# Variables pasted from 3rd party apps      <- moved to dZSbot.vars
-
-set variables(PRE)       "%pf %releasename %pregroup %section %files %mbytes %cds %who %user %g_name %tagline"
-set variables(INVITE)    "%u_ircnick %u_name %g_name"
-set variables(REQUEST)   "%releasename %u_name %g_name %u_tagline"
-set variables(REQFILLED) "%releasename %u_name %g_name %u_tagline %u_requester"
-
-# Using psxc-imdb, setting TRIGGER to "IMDBVAR" and LOGFORMAT to "SPECIAL" will allow you use format the output in the bot.
-set variables(IMDBVAR)  "%pf %imdbdirname %imdburl %imdbtitle %imdbgenre %imdbrating %imdbcountry %imdblanguage %imdbcertification %imdbruntime %imdbdirector %imdbbusinessdata %imdbpremiereinfo %imdblimitedinfo %imdbvotes %imdbscore %imdbname %imdbyear %imdbnumscreens %imdbislimited %imdbcastleadname %imdbcastleadchar %imdbtagline %imdbplot %imdbbar %imdbcasting %imdbcommentshort %imdbdestination"
-
-# Using psxc-imdb setting TRIGGER to "IMDB" and LOGFORMAT to "" or "MYOWN" will allow a pre-formatted output
-set variables(IMDB)     "%pf %msg"
-
-# Using psxc-imdb, setting FIDNTRIGGER to "IMDBFINDVAR" and LOGFORMAT to "SPECIAL" will allow you use format the output in the bot.
-set variables(IMDBFINDVAR)  "%pf %imdbdirname %imdburl %imdbtitle %imdbgenre %imdbrating %imdbcountry %imdblanguage %imdbcertification %imdbruntime %imdbdirector %imdbbusinessdata %imdbpremiereinfo %imdblimitedinfo %imdbvotes %imdbscore %imdbname %imdbyear %imdbnumscreens %imdbislimited %imdbcastleadname %imdbcastleadchar %imdbtagline %imdbplot %imdbbar %imdbcasting %imdbcommentshort %imdbdestination"
-
-# Using psxc-imdb setting FINDTRIGGER to "IMDBFIND" and LOGFORMAT to "" or "MYOWN" will allow a pre-formatted output.
-set variables(IMDBFIND)     "%pf %msg"
 
 ## Converts empty or zero variable to something else if defined
 #
