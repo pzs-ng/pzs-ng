@@ -14,7 +14,7 @@ passchk: passchk.c
 	$(CC) $(LDFLAGS) $(CFLAGS) -o passchk passchk.c @LCRYPT@ @LCRYPTO@
 
 ng-bw: ng-bw.c
-	$(CC) $(LDFLAGS) $(CFLAGS) -o ng-bw ng-bw.c @LCRYPT@ @LCRYPTO@
+	$(CC) $(LDFLAGS) $(CFLAGS) @M32@ -o ng-bw ng-bw.c @LCRYPT@ @LCRYPTO@
 
 install: all
 	$(INSTALL) -m755 passchk $(prefix)/bin
