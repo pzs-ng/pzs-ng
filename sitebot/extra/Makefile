@@ -9,7 +9,7 @@ RM = rm -f
 MAKE = make
 
 CCFLAGS = -Wall -lcrypt -lcrypto -O2
-CFFLAGS = -Wall -pedantic -static -O2
+CFFLAGS = -Wall -static -O2
 
 all:	clean compile
 
