@@ -256,7 +256,7 @@ int main () {
 		if  (findfileext(".nfo")) {
 			d_log("Removing missing-nfo indicator (if any)\n");
 			remove_nfo_indicator(locations.path);
-		} else if ( matchpath( no_nfo_dirs, locations.path )) {	
+		} else if ( matchpath( check_for_missing_nfo_dirs, locations.path )) {	
 			if (!locations.in_cd_dir) {
 				d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
 				create_incomplete_nfo();
@@ -330,12 +330,12 @@ int main () {
 		raceI.total.start_time = 0;
 
 		if ( ! fileexists("file_id.diz") ) {
-		    sprintf(exec, "/bin/unzip -qqjnCL %s file_id.diz > file_id.diz", raceI.file.name);
+		    sprintf(exec, "%s -qqjnCL %s file_id.diz > file_id.diz", unzip_bin, raceI.file.name);
 		    execute(exec);
 		    chmod("file_id.diz",0666);
 		}
 
-		sprintf(exec, "/bin/unzip -qqt %s &> /dev/null", raceI.file.name);
+		sprintf(exec, "%s -qqt %s &> /dev/null", unzip_bin, raceI.file.name);
 		if ( system(exec) == 0 ) {
 		    writerace_file(&locations, &raceI, crc, F_CHECKED);
 		} else {
@@ -368,7 +368,7 @@ int main () {
 		if  (findfileext(".nfo")) {
 			d_log("Removing missing-nfo indicator (if any)\n");
 			remove_nfo_indicator(locations.path);
-		} else if ( matchpath( no_nfo_dirs, locations.path )) {
+		} else if ( matchpath( check_for_missing_nfo_dirs, locations.path )) {
 			if (!locations.in_cd_dir) {
 				d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
 				create_incomplete_nfo();

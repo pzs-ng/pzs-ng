@@ -441,7 +441,7 @@ int main( int argc, char **argv ) {
 	    case 0: /* ZIP CHECK */
 		d_log("File type is: ZIP\n");
 		d_log("Testing file integrity with unzip\n");
-		sprintf(target, "/bin/unzip -qqt \"%s\"", raceI.file.name);
+		sprintf(target, "%s -qqt \"%s\"", unzip_bin, raceI.file.name);
 		if (execute(target) != 0) {
 		    d_log("Integrity check failed\n");
 		    sprintf(raceI.misc.error_msg, BAD_ZIP);
@@ -460,7 +460,7 @@ int main( int argc, char **argv ) {
 
 		if ( ! fileexists("file_id.diz") ) {
 		    d_log("file_id.diz does not exist, trying to extract it from %s\n", raceI.file.name);
-		    sprintf(target, "/bin/unzip -qqjnCL %s file_id.diz", raceI.file.name);
+		    sprintf(target, "%s -qqjnCL %s file_id.diz", unzip_bin, raceI.file.name);
 		    execute(target);
 		    chmod("file_id.diz",0666);
 		}
@@ -1021,7 +1021,7 @@ d_log("DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", raceI.file.size))
 		if  (findfileext(".nfo")) {
 			d_log("Removing missing-nfo indicator (if any)\n");
 			remove_nfo_indicator(locations.path);
-	    	} else if ( matchpath( no_nfo_dirs, locations.path )) {
+	    	} else if ( matchpath( check_for_missing_nfo_dirs, locations.path )) {
 			if (!locations.in_cd_dir) {
 			    	d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
 			    	create_incomplete_nfo();

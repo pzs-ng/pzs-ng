@@ -281,7 +281,7 @@ int main( int argc, char **argv ) {
 			temp_p = findfileext(".zip");
 			if ( temp_p != NULL ) {
 			    d_log("file_id.diz does not exist, trying to extract it from %s\n", temp_p);
-			    sprintf(target, "/bin/unzip -qqjnCL %s file_id.diz", temp_p);
+			    sprintf(target, "%s -qqjnCL %s file_id.diz", unzip_bin, temp_p);
 			    execute(target);
 			    chmod("file_id.diz",0666);
 			}
@@ -408,7 +408,7 @@ int main( int argc, char **argv ) {
 			if  (findfileext(".nfo")) {
 				d_log("Removing	missing-nfo indicator (if any)\n");
 				remove_nfo_indicator(locations.path);
-			} else if ( matchpath( no_nfo_dirs, locations.path )) {	
+			} else if ( matchpath( check_for_missing_nfo_dirs, locations.path )) {	
 				if (!locations.in_cd_dir) {
 					d_log("Creating	missing-nfo indicator %s.\n", locations.nfo_incomplete);
 					create_incomplete_nfo();
