@@ -748,20 +748,29 @@ proc loadtheme {file} {
 		if {![regexp -nocase -- "^#" $line]} {
 			if {[regexp -nocase -- {fakesection\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
 				set setting [string toupper $setting]
-				regsub -all {%c(\d)\{([^\}]+)\}} $value {\\003\1\2\\003} value
-				regsub -all {\003(\d)(?!\d)} $value {\\0030\1} value
-				regsub -all {\[} $value {\\[} value; regsub -all {\]} $value {\\]} value
-				set theme_fakes($setting) [subst $value]
+				set theme_fakes($setting) $value
 			} elseif {[regexp -nocase -- {(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
 				set setting [string toupper $setting]
-				regsub -all {%c(\d)\{([^\}]+)\}} $value {\\003\1\2\\003} value
-				regsub -all {\003(\d)(?!\d)} $value {\\0030\1} value
-				regsub -all {\[} $value {\\[} value; regsub -all {\]} $value {\\]} value
-				set theme($setting) [subst $value]
+				set theme($setting) $value
 			}
 		}
 	}
 	close $fh
+	
+	foreach name [array names theme] {
+		set value $theme($name)
+		regsub -all {%c(\d)\{([^\}]+)\}} $value {\\003$theme(COLOR\1)\2\\003} value
+		regsub -all {\003(\d)(?!\d)} $value {\\0030\1} value
+		regsub -all {\[} $value {\\[} value; regsub -all {\]} $value {\\]} value
+		set theme($setting) [subst $value]
+	}
+	foreach name [array names theme_fakes] {
+		set value $theme_fakes($name)
+		regsub -all {%c(\d)\{([^\}]+)\}} $value {\\003$theme(COLOR\1)\2\\003} value
+		regsub -all {\003(\d)(?!\d)} $value {\\0030\1} value
+		regsub -all {\[} $value {\\[} value; regsub -all {\]} $value {\\]} value
+		set theme_fakes($setting) [subst $value]
+	}
 	return 1
 }	
 
