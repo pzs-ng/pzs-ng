@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
+#include <ctype.h>
 #include "../conf/zsconfig.h"
 #include "../include/objects.h"
 
@@ -39,69 +40,71 @@ char* hms(long secs) {
  * Modified: 01.16.2002
  */
 char* convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, char *instr, short userpos) {
- int	val1;
- int	val2;
- char   *out_p;
- char	*m;
- char	ctrl[50];
+	int	 val1;
+ 	int  val2;
+ 	char *out_p;
+ 	char *m;
+	char ctrl[50];
+	
+	out_p = output2;
+	if (instr) {
+		for ( ; *instr ; instr++ ) {
+			if ( *instr == '%' ) {
+				instr++;
+				m = instr;
+				if (*instr == '-' && isdigit(*(instr + 1))) instr += 2;
+				while (isdigit(*instr)) instr++;
+				if ( m != instr ) {
+					sprintf(ctrl, "%.*s", instr - m, m);
+					val1 = atoi(ctrl);
+				} else 
+					val1 = 0;
+				if ( *instr == '.' ) {
+					instr++;
+					m = instr;
+					if (*instr == '-' && isdigit(*(instr + 1))) instr += 2;
+					while (isdigit(*instr)) instr++;
+					if ( m != instr ) {
+						sprintf(ctrl, "%.*s", instr - m, m);
+						val2 = atoi(ctrl);
+					} else
+						val2 = 0;
+				} else {
+					val2 = -1;
+				}
 
-
- out_p = output2;
- if (instr)
- for ( ; *instr ; instr++ ) if ( *instr == '%' ) {
-	instr++;
-	m = instr;
-	if (*instr == '-' && isdigit(*(instr + 1))) instr += 2;
-	while (isdigit(*instr)) instr++;
-	if ( m != instr ) {
-		sprintf(ctrl, "%.*s", instr - m, m);
-		val1 = atoi(ctrl);
-		} else {
-		val1 = 0;
-		}
-
-	if ( *instr == '.' ) {
-		instr++;
-		m = instr;
-		if (*instr == '-' && isdigit(*(instr + 1))) instr += 2;
-		while (isdigit(*instr)) instr++;
-		if ( m != instr ) {
-			sprintf(ctrl, "%.*s", instr - m, m);
-			val2 = atoi(ctrl);
+				switch ( *instr ) {
+					case 'B': out_p += sprintf(out_p, "\\002"); break;
+					case 'F': out_p += sprintf(out_p, "%*i", val1, (int)raceI->misc.fastest_user[0]); break;
+					case 'n': out_p += sprintf(out_p, "%*i", val1, (int)userpos + 1); break;
+					case 'u': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)userI->name); break;
+					case 'g': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)groupI[userI->group]->name); break;
+					case 'U':
+						  sprintf(ctrl, "%s/%s", userI->name, groupI[userI->group]->name);
+						  out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)ctrl);
+						  break;
+					case 'b': out_p += sprintf(out_p, "%*i", val1, (int)userI->bytes); break;
+					case 'k': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(userI->bytes / 1024.)); break;
+					case 'm': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((userI->bytes >> 10) / 1024.)); break;
+					case 'p': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(userI->bytes * 100. / raceI->total.size)); break;
+					case 'f': out_p += sprintf(out_p, "%*i", val1, (int)userI->files); break;
+					case 'S': out_p += sprintf(out_p, "%*i", val1, (int)raceI->misc.slowest_user[0]); break;
+					case 's': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(userI->bytes / userI->speed)); break;
+									  
+					case 'D': out_p += sprintf(out_p, "%*i", val1, (int)userI->dayup); break;
+					case 'W': out_p += sprintf(out_p, "%*i", val1, (int)userI->wkup); break;
+					case 'M': out_p += sprintf(out_p, "%*i", val1, (int)userI->monthup); break;
+					case 'A': out_p += sprintf(out_p, "%*i", val1, (int)userI->allup); break;
+					case '%': *out_p++ = *instr;
+				}
 			} else {
-			val2 = 0;
+				*out_p++ = *instr;
 			}
-		} else {
-		val2 = -1;
 		}
-
-	 switch ( *instr ) {
-		case 'B': out_p += sprintf(out_p, "\\002"); break;
-		case 'F': out_p += sprintf(out_p, "%*i", val1, (int)raceI->misc.fastest_user[0]); break;
-		case 'n': out_p += sprintf(out_p, "%*i", val1, (int)userpos + 1); break;
-		case 'u': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)userI->name); break;
-		case 'g': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)groupI[userI->group]->name); break;
-		case 'U':
-			sprintf(ctrl, "%s/%s", userI->name, groupI[userI->group]->name);
-			out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)ctrl);
-			break;
-		case 'b': out_p += sprintf(out_p, "%*i", val1, (int)userI->bytes); break;
-		case 'k': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(userI->bytes / 1024.)); break;
-		case 'm': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((userI->bytes >> 10) / 1024.)); break;
-		case 'p': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(userI->bytes * 100. / raceI->total.size)); break;
-		case 'f': out_p += sprintf(out_p, "%*i", val1, (int)userI->files); break;
-		case 'S': out_p += sprintf(out_p, "%*i", val1, (int)raceI->misc.slowest_user[0]); break;
-		case 's': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(userI->bytes / userI->speed)); break;
-
-		case 'D': out_p += sprintf(out_p, "%*i", val1, (int)userI->dayup); break;
-		case 'W': out_p += sprintf(out_p, "%*i", val1, (int)userI->wkup); break;
-		case 'M': out_p += sprintf(out_p, "%*i", val1, (int)userI->monthup); break;
-		case 'A': out_p += sprintf(out_p, "%*i", val1, (int)userI->allup); break;
-		case '%': *out_p++ = *instr;
-		}
-	} else *out_p++ = *instr;
- *out_p = 0;
- return output2;
+	}
+			
+	*out_p = 0;
+	return output2;
 } 
  
 
@@ -164,8 +167,7 @@ char* convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short 
 }
 
 char* convert_obsolete(struct VARS *raceI, char *instr) {
- int    val1, val2, n;
- int    from, to, reverse;
+ int    val1, val2;
  char   *out_p;
  char   *m;
  char   ctrl[10];
@@ -209,8 +211,7 @@ char* convert_obsolete(struct VARS *raceI, char *instr) {
 }
 
 char* convert4(struct VARS *raceI, char *instr) {
- int    val1, val2, n;
- int    from, to, reverse;
+ int    val1, val2;
  char   *out_p;
  char   *m;
  char   ctrl[10];
@@ -408,8 +409,8 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 		case 'm': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->total.size >> 10) / 1024.)); break;
 		case 'M': out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.files_missing); break;
 		case 'n': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->file.name); break;
-	/*	case 'o': out_p += sprintf(out_p, "%i%i%i", val1, val2, (int)raceI->total.files_bad); break;*/
-		case 'o': out_p += sprintf(out_p, "%*i", val1, val2, (int)raceI->total.files_bad); break;
+		// case 'o': out_p += sprintf(out_p, "%*i", val1, val2, (int)raceI->total.files_bad); break; -- original
+		case 'o': out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.files_bad); break; 
 		case 'O': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->total.bad_size >> 10) / 1024.)); break;
 		case 'p': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->total.files - raceI->total.files_missing) * 100. / raceI->total.files)); break;
 		case 'P': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.bad_size / 1024.)); break;
