@@ -83,8 +83,8 @@
 #### User's
 #
  %u  = Name
- %g  = Group
- %U  = Name/Group
+ %U  = Name
+ %G  = Group
  %D  = DayUp position
  %W  = WkUp position
  %M  = MonthUp position
