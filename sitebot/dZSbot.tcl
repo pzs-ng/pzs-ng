@@ -284,7 +284,7 @@ proc getsection {cpath msgtype} {
 	global sections msgtypes paths type defaultsection mpath
 
 	foreach section $sections {
-		if {[llength [array names "paths" $section]]} {
+		if {![llength [array names "paths" $section]]} {
 			putlog "dZSbot error: \"paths($section)\" not set in config, section becomes \"$defaultsection\""
 			continue
 		}
