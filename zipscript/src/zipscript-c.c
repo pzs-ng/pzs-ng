@@ -269,6 +269,11 @@ main(int argc, char **argv)
 	unsigned int	crc, s_crc = 0;
 	unsigned char	exit_value = EXIT_SUCCESS;
 	unsigned char	no_check = FALSE;
+	char	       *sfv_type = 0;
+	char	       *race_type = 0;
+	char	       *newleader_type = 0;
+	char	       *race_halfway_type = 0;
+	char	       *norace_halfway_type = 0;
 	unsigned char	complete_type = 0;
 	char           *complete_announce = 0;
 	int		cnt       , cnt2, n = 0;
@@ -582,18 +587,23 @@ main(int argc, char **argv)
 			removecomplete();
 
 			d_log("Setting message pointers\n");
+			sfv_type = general_announce_sfv_type;
 			switch (raceI.misc.release_type) {
 			case RTYPE_RAR:
 				sfv_msg = rar_sfv;
+				sfv_type = rar_announce_sfv_type;
 				break;
 			case RTYPE_OTHER:
 				sfv_msg = other_sfv;
+				sfv_type = other_announce_sfv_type;
 				break;
 			case RTYPE_AUDIO:
 				sfv_msg = audio_sfv;
+				sfv_type = audio_announce_sfv_type;
 				break;
 			case RTYPE_VIDEO:
 				sfv_msg = video_sfv;
+				sfv_type = video_announce_sfv_type;
 				break;
 			}
 			halfway_msg = newleader_msg = race_msg = update_msg = NULL;
@@ -602,7 +612,7 @@ main(int argc, char **argv)
 			if (raceI.total.files_missing > 0) {
 				if (sfv_msg != NULL) {
 					d_log("Writing SFV message to %s\n", log);
-					writelog(convert(&raceI, userI, groupI, sfv_msg), general_sfv_type);
+					writelog(convert(&raceI, userI, groupI, sfv_msg), sfv_type);
 				}
 			} else {
 				if (raceI.misc.release_type == RTYPE_AUDIO) {
@@ -885,7 +895,25 @@ main(int argc, char **argv)
 			if (raceI.total.users > 1) {
 				if (userI[raceI.user.pos]->files == 1 && race_msg != NULL) {
 					d_log("Writing RACE to %s\n", log);
-					writelog(convert(&raceI, userI, groupI, race_msg), general_race_type);
+					race_type = general_announce_race_type;
+					switch (raceI.misc.release_type) {
+					case RTYPE_RAR:
+						race_type = rar_announce_race_type;
+						break;	/* rar */
+					case RTYPE_OTHER:
+						race_type = other_announce_race_type;
+						break;	/* other */
+					case RTYPE_AUDIO:
+						race_type = audio_announce_race_type;
+						break;	/* audio */
+					case RTYPE_VIDEO:
+						race_type = video_announce_race_type;
+						break;	/* video */
+					case RTYPE_NULL:
+						race_type = zip_announce_race_type;
+						break;	/* zip */
+					}
+					writelog(convert(&raceI, userI, groupI, race_msg), race_type);
 				}
 				/*
 				 * Modification by <daxxar@mental.mine.nu>
@@ -894,7 +922,25 @@ main(int argc, char **argv)
 				 */
 				if (raceI.total.files >= min_newleader_files && strcmp(raceI.misc.old_leader, userI[userI[0]->pos]->name) && newleader_msg != NULL && userI[userI[0]->pos]->files >= (userI[userI[1]->pos]->files + newleader_files_ahead)) {
 					d_log("Writing NEWLEADER to %s\n", log);
-					writelog(convert(&raceI, userI, groupI, newleader_msg), general_newleader_type);
+					newleader_type = general_announce_newleader_type;
+					switch (raceI.misc.release_type) {
+					case RTYPE_RAR:
+						newleader_type = rar_announce_newleader_type;
+						break;	/* rar */
+					case RTYPE_OTHER:
+						newleader_type = other_announce_newleader_type;
+						break;	/* other */
+					case RTYPE_AUDIO:
+						newleader_type = audio_announce_newleader_type;
+						break;	/* audio */
+					case RTYPE_VIDEO:
+						newleader_type = video_announce_newleader_type;
+						break;	/* video */
+					case RTYPE_NULL:
+						newleader_type = zip_announce_newleader_type;
+						break;	/* zip */
+					}
+					writelog(convert(&raceI, userI, groupI, newleader_msg), newleader_type);
 				}
 			} else {
 
@@ -932,6 +978,30 @@ main(int argc, char **argv)
 
 			if (raceI.total.files_missing == raceI.total.files >> 1 && raceI.total.files >= min_halfway_files && halfway_msg != NULL) {
 				d_log("Writing HALFWAY to %s\n", log);
+				norace_halfway_type = general_announce_norace_halfway_type;
+				race_halfway_type = general_announce_race_halfway_type;
+				switch (raceI.misc.release_type) {
+				case RTYPE_RAR:
+					norace_halfway_type = rar_announce_norace_halfway_type;
+					race_halfway_type = rar_announce_race_halfway_type;
+					break;	/* rar */
+				case RTYPE_OTHER:
+					norace_halfway_type = other_announce_norace_halfway_type;
+					race_halfway_type = other_announce_race_halfway_type;
+					break;	/* other */
+				case RTYPE_AUDIO:
+					norace_halfway_type = audio_announce_norace_halfway_type;
+					race_halfway_type = audio_announce_race_halfway_type;
+					break;	/* audio */
+				case RTYPE_VIDEO:
+					norace_halfway_type = video_announce_norace_halfway_type;
+					race_halfway_type = video_announce_race_halfway_type;
+					break;	/* video */
+				case RTYPE_NULL:
+					norace_halfway_type = zip_announce_norace_halfway_type;
+					race_halfway_type = zip_announce_race_halfway_type;
+					break;	/* zip */
+				}
 				writelog(convert(&raceI, userI, groupI, halfway_msg), (raceI.total.users > 1 ? race_halfway_type : norace_halfway_type));
 			}
 			/*

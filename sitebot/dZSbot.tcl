@@ -46,9 +46,9 @@ putlog "dZSbot: Number of gl logfiles found: $countlog"
 set countlog 0
 foreach login [array names loginlog] {
     if {![file exists $loginlog($login)]} {
-	putlog "dZSbot: Could not find log file $glftpdlog($login)."
+	putlog "dZSbot: Could not find log file $loginlog($login)."
 	set dzerror "1"
-	unset glftpdlog($login)
+	unset loginlog($login)
     } else {
 	set countlog [expr $countlog + 1]
 	set loglastoct($login) [file size $loginlog($login)]
