@@ -1420,7 +1420,7 @@ proc launchnuke2 {type path section sargs dargs} {
 	set output [replacevar $output "%relname" $relname]
 	set output [replacevar $output "%reldir" [lindex $split [expr $ll -1]]]
 	set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
-	set output [basicreplace $output $nuke(TYPE)]
+	set output [justifyandpad [basicreplace $output $nuke(TYPE)]]
 	sndall $nuke(SECTION) $output
 }
 #################################################################################
@@ -1485,7 +1485,7 @@ proc launchnuke {} {
 	set output [replacevar $output "%relname" $relname]
 	set output [replacevar $output "%reldir" [lindex $split [expr $ll -1]]]
 	set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
-	set output [basicreplace $output $nuke(TYPE)]
+	set output [justifyandpad [basicreplace $output $nuke(TYPE)]]
 	sndall $nuke(SECTION) $output
 
 	set nuke(SHOWN) 1
