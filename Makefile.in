@@ -1,0 +1,32 @@
+# $Id: Makefile.in,v 1.11 2000/06/19 17:04:34 zap Exp $
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+mandir=@mandir@
+datadir=@datadir@
+
+CFLAGS=-O2 -Wall
+CC=@CC@
+LIBS=@LIBS@
+ZSLIBS=@ZSLIBS@
+CFGLIBS=@CFGLIBS@
+ZSTYPE=@ZSTYPE@
+
+all: zs
+#Configurator
+
+install: zs
+	@( cd zipscript/src ; $(MAKE) install )
+
+clean:
+	@( cd zipscript/src ; $(MAKE) clean )
+	@( rm -f *~ Makefile config.cache config.log config.status config.h )
+
+binclean:
+	@( cd zipscript/src ; $(MAKE) binclean )
+
+zs:
+	@( cd zipscript/src ; $(MAKE) all )
+
+#Configurator:
+#	@( if test x$(CFGLIBS) != x ; then cd configurator ; $(MAKE) all ; fi )
