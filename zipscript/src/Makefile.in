@@ -4,7 +4,7 @@ storage=/ftp-data/pzs-ng
 bindir=$(prefix)/bin
 
 CC=@CC@
-CFLAGS=@CFLAGS@ -W -Wall -Wundef -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline @STATIC@ @NOFORMAT@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE @DEFS@ -I../include/ -I../../ -I../../lib/
+CFLAGS=@CFLAGS@ @STATIC@ @NOFORMAT@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE @DEFS@ -I../include/ -I../../ -I../../lib/
 LDFLAGS=@LDFLAGS@
 RM=@RM@ -f
 INSTALL=@INSTALL@
