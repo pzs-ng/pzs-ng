@@ -3108,11 +3108,11 @@ fi
 os=unknown
 static=no
 case $(uname -s) in
-    Linux)
+    [Ll][Ii][Nn][Uu][Xx])
 		os=linux
 		static=no
         ;;
-    *bBsSdD*)
+    *[Bb][Ss][Dd]*)
 		os=bsd
 		echo "$as_me:$LINENO: result: NOTICE: BSD flavour detected, linking statically." >&5
 echo "${ECHO_T}NOTICE: BSD flavour detected, linking statically." >&6
@@ -3120,13 +3120,13 @@ echo "${ECHO_T}NOTICE: BSD flavour detected, linking statically." >&6
         ;;
 esac
 
-if test $os = unknown ; then
+if test "$os" = "unknown" ; then
  { { echo "$as_me:$LINENO: error: Couldn't identify OS" >&5
 echo "$as_me: error: Couldn't identify OS" >&2;}
    { (exit quitting!); exit quitting!; }; }
 fi
 
-if test $static = yes ; then
+if test "$static" = "yes" ; then
  STATIC="-static"
 else
  # Check whether --enable-static or --disable-static was given.
