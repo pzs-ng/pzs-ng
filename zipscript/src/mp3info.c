@@ -52,7 +52,7 @@ int bitrate[2][3][14] = {
 int frame_size_index[] = {24000, 72000, 72000};
 
 char *mode_text[] = {
-  "stereo", "joint stereo", "dual channel", "mono"
+  "Stereo", "Joint Stereo", "Dual Channel", "Mono"
 };
 
 char *emphasis_text[] = {

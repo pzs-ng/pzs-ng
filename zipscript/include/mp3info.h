@@ -33,7 +33,6 @@
 #include <sys/stat.h>
 #include <ctype.h>
 #include <string.h>
-#include <curses.h>
 #include <signal.h>
 
 /* MIN_CONSEC_GOOD_FRAMES defines how many consecutive valid MP3 frames
