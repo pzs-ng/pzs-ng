@@ -70,7 +70,7 @@ announce.REQUEST	        = "[%b{req   }] %b{%u_name} of %g_name requests %b{%rel
 announce.REQFILLED	        = "[%b{filled}] %b{%u_name} of %g_name just filled %b{%releasename} for %b{%u_requester}."
 
 # 3rd party imdb announce - example for psxc-imdb
-announce.IMDBVAR		= "[%b{imdb  }][%section] %b{%imdbname} (%imdburl), a %imdbdirector movie which scored %b{%imdbscore of 10} (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.|%b{%sitename} :: [%b{imdb  }][%section] %b{%imdbname} plot summary: %imdbplot %imdbbar"
+announce.IMDBVAR		= "[%b{imdb  }][%section] %b{%imdbname} (%imdburl), a %imdbdirector movie which scored %b{%imdbscore of 10} (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.|%b{%sitename} :: [%b{imdb  }][%section] %b{%imdbname} plot summary: %imdbplot \[%imdbbar\]"
 announce.IMDB			= "[%b{imdb  }][%section] %msg"
 announce.IMDBFIND		= "[%b{imdb  }][%section] %msg"
 
