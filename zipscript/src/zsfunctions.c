@@ -431,12 +431,19 @@ void get_rar_info(char *filename) {
  *
  */
 int execute(char *s) {
-    int n, args=-1, test=0;
-    char *command, **argv;
+    int n, args=-1, test=0, len=0;
+    char command[256], **argv, *p1;
 
-    command = malloc(sizeof(char));
-    argv = malloc(sizeof(char *));
+    /*command = malloc(sizeof(char));*/
+    argv = malloc(sizeof(char *)*50); /* 50 args should be enough i guess */
 
+    p1 = strchr(s, ' ');
+    len = p1-s;
+    strncpy(command, s, len);
+    command[len] = '\0';
+
+    s += len;
+   
     while (1) {
 
 	if (*s == '\"') test = 1;
@@ -446,16 +453,11 @@ int execute(char *s) {
 	if (*s == ' ' && test == 0) {
 	    *s = 0;
 	    args++;
-	    if (args == 0) {
-		command = malloc(sizeof(char)*strlen(s+1));
-		strcpy(command, s+1);
-	    } else {
-		realloc(argv, (sizeof(char *)*args));
-		argv[args-1] = s + 1;
-	    }
+	    /*realloc(argv, (sizeof(char *)*args));*/
+	    argv[args-1] = s + 1;
 	} else if (*s == 0) {
 	    args++;
-	    realloc(argv, (sizeof(char *)*args));
+	    /*realloc(argv, (sizeof(char *)*args));*/
 	    argv[args] = NULL;
 	    break;
 	}
