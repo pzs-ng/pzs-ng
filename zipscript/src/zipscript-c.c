@@ -152,10 +152,10 @@ main(int argc, char **argv)
 		unum = buffer_users(PASSWDFILE, 0);
 		sprintf(g.v.user.name, getenv("USER"));
 		sprintf(g.v.user.group, getenv("GROUP"));
-		if (!strlen(g.v.user.group))
+		if (!(int)strlen(g.v.user.group))
 			memcpy(g.v.user.group, "NoGroup", 8);
 		sprintf(g.v.user.tagline, getenv("TAGLINE"));
-		if (!strlen(g.v.user.tagline))
+		if (!(int)strlen(g.v.user.tagline))
 			memcpy(g.v.user.tagline, "No Tagline Set", 15);
 		g.v.file.speed = (unsigned int)strtol(getenv("SPEED"), NULL, 0);
 		if (!g.v.file.speed)
@@ -204,7 +204,7 @@ main(int argc, char **argv)
 	if ((int)(g.v.total.stop_time - g.v.total.start_time) < 1)
 		g.v.total.stop_time = g.v.total.start_time + 1;
 
-	n = (g.l.length_path = strlen(g.l.path)) + 1;
+	n = (g.l.length_path = (int)strlen(g.l.path)) + 1;
 
 	d_log("zipscript-c: Allocating memory for variables\n");
 	g.l.race = m_alloc(n += 10 + (g.l.length_zipdatadir = sizeof(storage) - 1));
@@ -315,15 +315,15 @@ main(int argc, char **argv)
 	/* Hide users in group_dirs */
 	if (matchpath(group_dirs, g.l.path) && (hide_group_uploaders == TRUE)) {
 		d_log("zipscript-c: Hiding user in group-dir:\n");
-		if (strlen(hide_gname) > 0) {
+		if ((int)strlen(hide_gname) > 0) {
 			snprintf(g.v.user.group, 18, "%s", hide_gname);
 			d_log("zipscript-c:    Changing groupname\n");
 		}
-		if (strlen(hide_uname) > 0) {
+		if ((int)strlen(hide_uname) > 0) {
 			snprintf(g.v.user.name, 18, "%s", hide_uname);
 			d_log("zipscript-c:    Changing username\n");
 		}
-		if (strlen(hide_uname) == 0) {
+		if ((int)strlen(hide_uname) == 0) {
 			d_log("zipscript-c:    Making username = groupname\n");
 			snprintf(g.v.user.name, 18, "%s", g.v.user.group);
 		}
@@ -514,7 +514,7 @@ main(int argc, char **argv)
 					unlink(g.l.sfv);
 					rewinddir(dir);
 					while ((dp = readdir(dir))) {
-						cnt = cnt2 = strlen(dp->d_name);
+						cnt = cnt2 = (int)strlen(dp->d_name);
 						ext = dp->d_name;
 						while (ext[cnt] != '-' && cnt > 0)
 							cnt--;
@@ -544,7 +544,7 @@ main(int argc, char **argv)
 
 				rewinddir(dir);
 				while ((dp = readdir(dir))) {
-					cnt = cnt2 = strlen(dp->d_name);
+					cnt = cnt2 = (int)strlen(dp->d_name);
 					ext = dp->d_name;
 					while (ext[cnt] != '-' && cnt > 0)
 						cnt--;
@@ -1286,7 +1286,7 @@ main(int argc, char **argv)
 					d_log("zipscript-c:   Sorting mp3 by group\n");
 					temp_p = remove_pattern(g.l.link_target, "*-", RP_LONG_LEFT);
 					temp_p = remove_pattern(temp_p, "_", RP_SHORT_LEFT);
-					n = strlen(temp_p);
+					n = (int)strlen(temp_p);
 					if (n > 0 && n < 15) {
 						d_log("zipscript-c:   - Valid groupname found: %s (%i)\n", temp_p, n);
 						createlink(audio_group_path, temp_p, g.l.link_source, g.l.link_target);

@@ -153,7 +153,7 @@ hexstrtodec(char *s)
 	unsigned int	n = 0;
 	unsigned char	r;
 
-	if ((strlen(s) > 8 ) || (!strlen(s)))
+	if (((int)strlen(s) > 8 ) || (!(int)strlen(s)))
 		return 0;
 
 	while (1) {
@@ -425,7 +425,7 @@ removedotfiles(DIR *dir)
 	rewinddir(dir);
 	while ((dp = readdir(dir)))
 		if ((!strncasecmp(dp->d_name, ".", 1)) &&
-		    (strlen(dp->d_name) > 2))
+		    ((int)strlen(dp->d_name) > 2))
 			unlink(dp->d_name);
 }
 
@@ -439,7 +439,7 @@ findfilename(char *filename, char *dest)
 	while ((dp = readdir(dir))) {
 		if (!strcasecmp(dp->d_name, filename)) {
 			if (dest == 0)
-				dest = malloc(strlen(dp->d_name));
+				dest = malloc((int)strlen(dp->d_name));
 			strcpy(dest, dp->d_name);
 			break;
 		}
@@ -491,7 +491,7 @@ matchpath(char *instr, char *path)
 {
 	int		pos = 0;
 
-	if ( strlen(instr) < 2 || strlen(path) < 2 )
+	if ( (int)strlen(instr) < 2 || (int)strlen(path) < 2 )
 		return 0;
 	do {
 		switch (*instr) {
@@ -518,9 +518,9 @@ strcomp(char *instr, char *searchstr)
 {
 	int		pos = 0,	k;
 
-	k = strlen(searchstr);
+	k = (int)strlen(searchstr);
 
-	if ( strlen(instr) == 0 || k == 0 )
+	if ( (int)strlen(instr) == 0 || k == 0 )
 		return 0;
 
 	do {
@@ -546,7 +546,7 @@ matchpartialpath(char *instr, char *path)
 	int	pos = 0;
 	char	partstring[PATH_MAX + 2];
 
-	if ( strlen(instr) < 2 || strlen(path) < 2 )
+	if ( (int)strlen(instr) < 2 || (int)strlen(path) < 2 )
 		return 0;
 
 	sprintf(partstring, "%s/", path);
@@ -554,7 +554,7 @@ matchpartialpath(char *instr, char *path)
 		switch (*instr) {
 		case 0:
 		case ' ':
-			if (!strncasecmp(instr - pos, partstring + strlen(partstring) - pos, pos)) {
+			if (!strncasecmp(instr - pos, partstring + (int)strlen(partstring) - pos, pos)) {
 				return 1;
 			}
 			pos = 0;
@@ -574,8 +574,8 @@ matchpartialpath(char *instr, char *path)
 short int 
 subcomp(char *directory)
 {
-	int 	k = strlen(directory);
-	int	m = strlen(subdir_list);
+	int 	k = (int)strlen(directory);
+	int	m = (int)strlen(subdir_list);
 	int	pos = 0, l = 0, n = 0, j = 0;
 	char	tstring[m + 1];
 
@@ -640,9 +640,9 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 #endif
 	char		org	[PATH_MAX];
 	char	       *target = org;
-	int		l1 = strlen(factor1) + 1,
-			l2 = strlen(factor2) + 1,
-			l3 = strlen(ltarget) + 1;
+	int		l1 = (int)strlen(factor1) + 1,
+			l2 = (int)strlen(factor2) + 1,
+			l3 = (int)strlen(ltarget) + 1;
 
 	memcpy(target, factor1, l1);
 	target += l1 - 1;
@@ -1016,7 +1016,7 @@ remove_nfo_indicator(GLOBAL *g)
 	int		k = 2;
 	char		path[2][PATH_MAX];
 
-	buffer_paths(g, path, &k, (strlen(g->l.path)-1));
+	buffer_paths(g, path, &k, ((int)strlen(g->l.path)-1));
 
 	g->l.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &g->v);
 	if (fileexists(g->l.nfo_incomplete))
@@ -1032,7 +1032,7 @@ getrelname(GLOBAL *g)
 	int		k = 2, subc;
 	char		path[2][PATH_MAX];
 
-	buffer_paths(g, path, &k, (strlen(g->l.path)-1));
+	buffer_paths(g, path, &k, ((int)strlen(g->l.path)-1));
 
 	subc = subcomp(path[1]);
 	
@@ -1093,7 +1093,7 @@ remove_pattern(param, pattern, op)
 	if (pattern == NULL || *pattern == '\0')	/* minor optimization */
 		return (param);
 
-	len = strlen(param);
+	len = (int)strlen(param);
 	end = param + len;
 
 	switch (op) {

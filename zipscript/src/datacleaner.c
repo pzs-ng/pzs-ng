@@ -36,12 +36,12 @@ main(int argc, char **argv)
 	char		*wd;
 	DIR		*od;
 
-	zd_length = strlen(storage);
+	zd_length = (int)strlen(storage);
 
 	if (argc == 1) {
 		check_dir_loop(storage, zd_length);
 	} else {
-		if ((zd_length + 1 + strlen(argv[1])) < PATH_MAX) {
+		if ((zd_length + 1 + (int)strlen(argv[1])) < PATH_MAX) {
 			if ( !strncmp(argv[1], "RMD ", 4)) {
 				/* script is called as a cscript for RMD */
 				if (!strncmp(argv[1] + 4, "/", 1)) {

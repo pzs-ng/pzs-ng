@@ -195,7 +195,7 @@ void load_sysconfig(const char *config_file)
 
 	while(fgets(work_buff, sizeof(work_buff), fp) != NULL) {
 		/* Clip out comments */
-		for(x = 0; x < (signed)strlen(work_buff); x++) {
+		for(x = 0; x < (signed)(int)strlen(work_buff); x++) {
 			if (work_buff[x] == '#') {
 				work_buff[x] = '\0';
 			}
@@ -210,7 +210,7 @@ void load_sysconfig(const char *config_file)
 
 		/* Parse lvalue */
 		y = 0;
-		for(x = 0; x < (signed)strlen(work_buff) && work_buff[x] != ' '; x++) {
+		for(x = 0; x < (signed)(int)strlen(work_buff) && work_buff[x] != ' '; x++) {
 			if (isprint(work_buff[x])) {
 				lvalue[y++] = work_buff[x];
 			}
@@ -219,7 +219,7 @@ void load_sysconfig(const char *config_file)
 		/* Parse rvalue */
 		y = 0;
 		x++;
-		for (; x < (signed)strlen(work_buff); x++) {
+		for (; x < (signed)(int)strlen(work_buff); x++) {
 			if (isprint(work_buff[x])) {
 				rvalue[y++] = work_buff[x];
 			}

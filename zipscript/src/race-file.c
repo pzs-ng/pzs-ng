@@ -361,7 +361,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 			count++;
 		}
 	}
-	strlcpy(raceI->file.name, realfile, strlen(realfile)+1);
+	strlcpy(raceI->file.name, realfile, (int)strlen(realfile)+1);
 	raceI->total.files = raceI->total.files_missing = 0;
 	close(fd);
 }
@@ -433,7 +433,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 		if (ptr != fbuf)
 			d_log("copysfv: prestripped whitespaces (%d chars)\n", ptr - fbuf);
 
-		if (strlen(ptr) == 0)
+		if ((int)strlen(ptr) == 0)
 			continue;
 	
 #if (sfv_cleanup == TRUE)
@@ -488,7 +488,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 		if (ptr != fbuf)
 			d_log("copysfv: prestripped whitespaces (%d chars)\n", ptr - fbuf);
 
-		if (strlen(ptr) > 0 && strlen(ptr) < NAME_MAX-9 ) {
+		if ((int)strlen(ptr) > 0 && (int)strlen(ptr) < NAME_MAX-9 ) {
 			strlcpy(sd.fname, ptr, NAME_MAX-9);
 
 			if (sd.fname != find_last_of(sd.fname, "\t/") || *sd.fname == '/') {
@@ -532,7 +532,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 				/* write good stuff to .tmpsfv */
 				if (tmpfd != -1) {
 					sprintf(crctmp, "%.8x", sd.crc32);
-					write(tmpfd, sd.fname, strlen(sd.fname));
+					write(tmpfd, sd.fname, (int)strlen(sd.fname));
 					write(tmpfd, " ", 1);
 					write(tmpfd, crctmp, 8);
 #if (sfv_cleanup_crlf == TRUE )
@@ -1034,7 +1034,7 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 	HEADDATA	hd;
 	struct stat	sb;
 
-	if (!strlen(raceI->lock.headpath)) {
+	if (!(int)strlen(raceI->lock.headpath)) {
 		d_log("update_lock: variable 'headpath' empty - assuming no lock is set\n");
 		return -1;
 	}

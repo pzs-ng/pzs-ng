@@ -233,9 +233,9 @@ int gl_raw()
 					
 					sprintf(filename, "%.*s", (strplen(shm->status)-5), shm->status + 5);
 					
-					while (filename[strlen(filename) - 1] == '\r' || 
-					       filename[strlen(filename) - 1] == '\n')
-						filename[strlen(filename) - 1] = '\0';				
+					while (filename[(int)strlen(filename) - 1] == '\r' || 
+					       filename[(int)strlen(filename) - 1] == '\n')
+						filename[(int)strlen(filename) - 1] = '\0';				
 				
 					speed =	shm->bytes_xfer/1024./(time.tv_sec+(time.tv_usec/1000000.)-
 						shm->tstart.tv_sec+(shm->tstart.tv_usec/1000000.));
@@ -249,9 +249,9 @@ int gl_raw()
 					sprintf(filename, "%.*s", (strplen(shm->status)-5), shm->status + 5);
 					sprintf(filename, "%s", shm->status + 5);
 
-					while (filename[strlen(filename) - 1] == '\r' || 
-					       filename[strlen(filename) - 1] == '\n')
-						filename[strlen(filename) - 1] = '\0';				
+					while (filename[(int)strlen(filename) - 1] == '\r' || 
+					       filename[(int)strlen(filename) - 1] == '\n')
+						filename[(int)strlen(filename) - 1] = '\0';				
 					
 					speed =	shm->bytes_xfer/1024./(time.tv_sec+(time.tv_usec/1000000.)-
 						shm->tstart.tv_sec+(shm->tstart.tv_usec/1000000.));
