@@ -190,8 +190,9 @@ cleanupdirs <PATHS>
 cleanupdirs_dated <PATHS>
 	To keep your site tidy and free from stale/dead symlinks created by the
 	zipscript, you should put here a list of dirs to scan for dead links.
-	The list is not recursive, and does not take wildcards. This list takes
-	dated format (%m=month, %d=day <-only these two).
+	The list is not recursive, and does not take wildcards. This list can
+	contain format cookies for dated directories, refer to 'man strftime' 
+	for a list of available date cookies.
 	Default: "/site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 
 always_scan_audio_syms <TRUE|FALSE>
