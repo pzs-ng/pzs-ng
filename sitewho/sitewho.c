@@ -61,9 +61,10 @@ filesize(char *filename)
 				if (!strcmp(filename, "")) {
 					filestat.st_size = 1;
 				} else {
-					fprintf(stderr, "Could not stat file '%s', is glrootpath set correctly in sitewho.conf? (error: %s)\n", file, strerror(errno));
-					free(file);
-					exit(1);
+//					fprintf(stderr, "Could not stat file '%s', is glrootpath set correctly in sitewho.conf? (error: %s)\n", file, strerror(errno));
+//					free(file);
+					filestat.st_size = 1;
+//					exit(1);
 				}
 			}
 		}
