@@ -1224,7 +1224,7 @@ proc ng_bandwidth {nick uhost hand chan args} {
 #################################################################################
 # POST STATS                                                                    #
 #################################################################################
-proc showstats {nick type time section} {
+proc showstats {chan nick type time section} {
 	global binary statsection location disable mainchan
 
 	if { $disable(TRIGINALLCHAN) == 1 } {
@@ -1603,23 +1603,23 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 #################################################################################
 # CHOOSE STATS PARAMETERS                                                       #
 #################################################################################
-proc stats_user_dayup {nick uhost hand chan args} { showstats "$nick" "-u" "-t" "[lindex $args 0]" }
-proc stats_user_daydn {nick uhost hand chan args} { showstats "$nick" "-d" "-t" "[lindex $args 0]" }
+proc stats_user_dayup {nick uhost hand chan args} { showstats "$chan" "$nick" "-u" "-t" "[lindex $args 0]" }
+proc stats_user_daydn {nick uhost hand chan args} { showstats "$chan" "$nick" "-d" "-t" "[lindex $args 0]" }
 #################################################################################
-proc stats_user_wkup {nick uhost hand chan args} { showstats "$nick" "-u" "-w" "[lindex $args 0]" }
-proc stats_user_wkdn {nick uhost hand chan args} { showstats "$nick" "-d" "-w" "[lindex $args 0]" }
+proc stats_user_wkup {nick uhost hand chan args} { showstats "$chan" "$nick" "-u" "-w" "[lindex $args 0]" }
+proc stats_user_wkdn {nick uhost hand chan args} { showstats "$chan" "$nick" "-d" "-w" "[lindex $args 0]" }
 #################################################################################
-proc stats_user_monthup {nick uhost hand chan args} { showstats "$nick" "-u" "-m" "[lindex $args 0]" }
-proc stats_user_monthdn {nick uhost hand chan args} { showstats "$nick" "-d" "-m" "[lindex $args 0]" }
+proc stats_user_monthup {nick uhost hand chan args} { showstats "$chan" "$nick" "-u" "-m" "[lindex $args 0]" }
+proc stats_user_monthdn {nick uhost hand chan args} { showstats "$chan" "$nick" "-d" "-m" "[lindex $args 0]" }
 #################################################################################
-proc stats_user_allup {nick uhost hand chan args} { showstats "$nick" "-u" "-a" "[lindex $args 0]" }
-proc stats_user_alldn {nick uhost hand chan args} { showstats "$nick" "-d" "-a" "[lindex $args 0]" }
+proc stats_user_allup {nick uhost hand chan args} { showstats "$chan" "$nick" "-u" "-a" "[lindex $args 0]" }
+proc stats_user_alldn {nick uhost hand chan args} { showstats "$chan" "$nick" "-d" "-a" "[lindex $args 0]" }
 #################################################################################
-proc stats_group_gpwk {nick uhost hand chan args} { showstats "$nick" "-u" "-W" "[lindex $args 0]" }
-proc stats_group_gpwd {nick uhost hand chan args} { showstats "$nick" "-d" "-W" "[lindex $args 0]" }
+proc stats_group_gpwk {nick uhost hand chan args} { showstats "$chan" "$nick" "-u" "-W" "[lindex $args 0]" }
+proc stats_group_gpwd {nick uhost hand chan args} { showstats "$chan" "$nick" "-d" "-W" "[lindex $args 0]" }
 #################################################################################
-proc stats_group_gpal {nick uhost hand chan args} { showstats "$nick" "-u" "-A" "[lindex $args 0]" }
-proc stats_group_gpad {nick uhost hand chan args} { showstats "$nick" "-d" "-A" "[lindex $args 0]" }
+proc stats_group_gpal {nick uhost hand chan args} { showstats "$chan" "$nick" "-u" "-A" "[lindex $args 0]" }
+proc stats_group_gpad {nick uhost hand chan args} { showstats "$chan" "$nick" "-d" "-A" "[lindex $args 0]" }
 #################################################################################
 
 
