@@ -492,7 +492,10 @@ del_banned_release <TRUE|FALSE>
 	more bandwith or space than necessary, you can choose to completely
 	remove the releasedir. This is *NOT* recommended, however. If you
 	somehow allow files to be uploaded in, say, /site, and a person uploads
-	a banned mp3-file here, imagine what will happen?
+	a banned mp3-file here, imagine what will happen? No, the entire site
+	will not be deleted, but any empty dirs and possibly important files
+	in the dir will. Just consider worst case scenario on your site before
+	you enable it.
 	Default: FALSE
 
 create_m3u <TRUE|FALSE>

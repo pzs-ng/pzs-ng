@@ -1412,6 +1412,9 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 
 #if ( del_banned_release )
 	if (deldir) {
+		move_progress_bar(1, &raceI);
+		if (locations.incomplete)
+			unlink(locations.incomplete);
 		del_releasedir(locations.path);
 	}
 #endif
