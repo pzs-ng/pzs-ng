@@ -2,61 +2,67 @@
   - this is a list of planned changes to zs-c :)
   - devs: please update frequently with ideas / progress :-)
 
-status  who       what
- [x]     psxc      change "VBR" to real bps number (average)
- [x]     psxc      warn_genres and warn_bitrates option in zsconfig.h (output to gllog)
- [x]     iono      fix NUKE/UNNUKE in dZSbot.tcl for glftpd2 output
- [x]     daxxar    add theme-support to dZSbot.tcl, so that it reads an external theme file. (theme/skin)
-                   - does it need more features? more testing atleast.
-				   - can you easily crash the eggie with malformed themes?
- [!]     psxc      add option to use average/median on vbr mp3's?
-                   - would there be any benefit from this? Scrap it?
- [?]     pending   check the mp3 patch - does it check all files (YES)? can we save this info and use it later?
-                   - would there be any benefit from this? Scrap it?
- [!]     psxc      add a cleaner script/bin for the zipscript dir in ftp-data - to run in crontab
-                   - not needed
- [x]     daxxar    zipscript reports wrong sample rate (48khz instf 44.1khz etc) - why? mp3info reports correctly.
- [/]     all       write documentation for different things (especially dZSbot (comments?))
- [ ]               make a good-looking default theme for the zs. ask some 'fan/supporter' to do it?
- [ ]     daxxar    make a config-file format that is parsed to .h, instead of people editing .h :-)
- [x]               hybrid_types, are allowed if no sfv, will be checked against sfv if there is one.
- [x]     iwdisb    fix a coredump when the user is killed/kicked on upload.
- [ ]               use mp3info as much as possible to get mp3 info.
- [/]     psxc      add anonymity support - chown files/dirs as they are uploaded to a "special" user (will only
-                   work if zs-c is +s)
- [ ]     freezy3k  fix solaris compatibility.
- [x]     psxc      fix bug(?) in Sort.By.Artist (not confirmed - Joeed reported this from r140 - fails to compile)
- [x]               ignore setting in allowed.bitrates if mp3 is vbr
- [ ]               fix the %U cookie in message_group_footer (should be "user/group", not "user")
- [ ]               compare the list of files stored in .rar to what's in the .sfv --> channel message if they differ.
- [x]     psxc      fix mysterious bug - upload of sfv fails if old data is in ftp-data/zipscript (unconfirmed) -
-                   running datacleaner fixes the problem... maybe check race-file.c (readsfv_file())
- [x]     iwdisb    calc crc on the fly if glftpd does not pass crc
- [x]     iwdisb    group and albumname sort in mp3
- [/]     psxc      add support to change the gid of the releasedir based on genre. need a script to initiate the
-                   glftpd groupfile too (create groups based on genre names), if we are to include it.
- [/]               add support for hiding affill uploads (in both output to channel and the .message. Should also
-                   consider the 'anonymity' setting above.)
-                   - hiding affills in group_dirs in the .message file should now work.
- [ ]               add support for showing when racers joined the, eh, race in the .message.
- [x]     js        make it possible to change the name of the .message file.
- [x]     js        change how mp3-links are created from absolute paths to relative paths.
- [x]     iwdisb    look over shmem use - does the zipscript need to access it?
- [x]     psxc      add support for unduping bad files after sfv upload
- [ ]               add support for accumulative upload-speed (as in, calc total upload speed of entire release, calc
-                   the percentage each racer did, and base stats on that)
- [x]               create a modded datacleaner to be used as 'cscript RMD post /bin/zscleanup'
- [ ]               modifiy cleanup.c to take glftpd'ish args like /* and */ (recursive and non-recursive). Also add
-                   support for cleanup in yesterday's dir.
- [ ]               make zs-c send info in cookie format instf. formatting the output in zsconfig.h, and make the bot
-                   pick it up and format it.
- [ ]               include as much of the extra scripts for the bot into the bot (maybe add support for modules?)
- [ ]               req by tomb0y - change STATS in complete.c to USERSTATS and GROUPSTATS for diff. output.
+History:
 
-status   description
- [ ]     not done 
- [/]     partially done 
- [x]     done 
- [!]     cancelled
- [?]	 undecided
+2004-08-16: Updated item 0034, 0036, and 0037 (avizion)
 
+no.  status  who       what
+0001 [x]     psxc      change "VBR" to real bps number (average)
+0002 [x]     psxc      warn_genres and warn_bitrates option in zsconfig.h (output to gllog)
+0003 [x]     iono      fix NUKE/UNNUKE in dZSbot.tcl for glftpd2 output
+0004 [x]     daxxar    add theme-support to dZSbot.tcl, so that it reads an external theme file. (theme/skin)
+                       - does it need more features? more testing atleast.
+                       - can you easily crash the eggie with malformed themes?
+0005 [!]     psxc      add option to use average/median on vbr mp3's?
+                       - would there be any benefit from this? Scrap it?
+0006 [?]     pending   check the mp3 patch - does it check all files (YES)? can we save this info and use it later?
+                       - would there be any benefit from this? Scrap it?
+0007 [!]     psxc      add a cleaner script/bin for the zipscript dir in ftp-data - to run in crontab
+                       - not needed
+0008 [x]     daxxar    zipscript reports wrong sample rate (48khz instf 44.1khz etc) - why? mp3info reports correctly.
+0009 [/]     all       write documentation for different things (especially dZSbot (comments?))
+0010 [ ]               make a good-looking default theme for the zs. ask some 'fan/supporter' to do it?
+0011 [ ]     daxxar    make a config-file format that is parsed to .h, instead of people editing .h :-)
+0012 [x]               hybrid_types, are allowed if no sfv, will be checked against sfv if there is one.
+0013 [x]     iwdisb    fix a coredump when the user is killed/kicked on upload.
+0014 [ ]               use mp3info as much as possible to get mp3 info.
+0015 [/]     psxc      add anonymity support - chown files/dirs as they are uploaded to a "special" user (will only
+                       work if zs-c is +s)
+0016 [ ]     freezy3k  fix solaris compatibility.
+0017 [x]     psxc      fix bug(?) in Sort.By.Artist (not confirmed - Joeed reported this from r140 - fails to compile)
+0018 [x]               ignore setting in allowed.bitrates if mp3 is vbr
+0019 [ ]               fix the %U cookie in message_group_footer (should be "user/group", not "user")
+0020 [ ]               compare the list of files stored in .rar to what's in the .sfv --> channel message if they differ.
+0021 [x]     psxc      fix mysterious bug - upload of sfv fails if old data is in ftp-data/zipscript (unconfirmed) -
+                       running datacleaner fixes the problem... maybe check race-file.c (readsfv_file())
+0022 [x]     iwdisb    calc crc on the fly if glftpd does not pass crc
+0023 [x]     iwdisb    group and albumname sort in mp3
+0024 [/]     psxc      add support to change the gid of the releasedir based on genre. need a script to initiate the
+                       glftpd groupfile too (create groups based on genre names), if we are to include it.
+0025 [/]               add support for hiding affill uploads (in both output to channel and the .message.
+                       Should also consider the 'anonymity' setting above.)
+                       - hiding affills in group_dirs in the .message file should now work.
+0026 [ ]               add support for showing when racers joined the, eh, race in the .message.
+0027 [x]     js        make it possible to change the name of the .message file.
+0028 [x]     js        change how mp3-links are created from absolute paths to relative paths.
+0029 [x]     iwdisb    look over shmem use - does the zipscript need to access it?
+0030 [x]     psxc      add support for unduping bad files after sfv upload
+0031 [ ]               add support for accumulative upload-speed (as in, calc total upload speed of entire release.
+                       calc the percentage each racer did, and base stats on that)
+0032 [x]               create a modded datacleaner to be used as 'cscript RMD post /bin/zscleanup'
+0033 [ ]               modifiy cleanup.c to take glftpd'ish args like /* and */ (recursive and non-recursive). Also add
+                       support for cleanup in yesterday's dir.
+0034 [/]     avizion   Make zs-c send info in cookie format instf. formatting the output in zsconfig.h
+                       Make the bot pick it up and format it.
+0035 [ ]               include as much of the extra scripts for the bot into the bot (maybe add support for modules?)
+0036 [/]     avizion   req by tomb0y - change STATS in complete.c to USERSTATS and GROUPSTATS for diff. output.
+0037 [/]     avizion   make bot talk and read fish with option ON/OFF.
+
+Legend:
+
+     status  description
+     [ ]     not done 
+     [/]     partially done 
+     [x]     done 
+     [!]     cancelled
+     [?]     undecided
