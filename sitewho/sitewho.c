@@ -212,7 +212,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 			total_up_speed += speed;
 			uploads++;
 			if (!raw)
-				sprintf(status, "Up: %7.1fKBs", speed);
+				sprintf(status, "Up: %7.1fKB/s", speed);
 			else if (raw == 1)
 				sprintf(status, "\"UP\" \"%.1f\"", speed);
 			else
@@ -258,7 +258,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 			total_dn_speed += speed;
 			downloads++;
 			if (!raw)
-				sprintf(status, "Dn: %7.1fKBs", speed);
+				sprintf(status, "Dn: %7.1fKB/s", speed);
 			else if (raw == 1)
 				sprintf(status, "\"DN\" \"%.1f\"", speed);
 			else
@@ -509,7 +509,7 @@ void
 showtotals(char raw)
 {
 	if (!raw) {
-		printf("| Up: %3i / %7.1fkbs | Dn: %3i / %7.1fkbs | Total: %3i / %7.1fkbs |\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed);
+		printf("| Up: %3i / %7.1fKB/s | Dn: %3i / %7.1fKB/s | Total: %3i / %7.1fKB/s |\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed);
 		printf("| Currently %2i of %2i users are online...                                |\n", onlineusers, maxusers);
 	} else if (raw == 1) {
 		/*

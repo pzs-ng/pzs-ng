@@ -1,0 +1,12 @@
+Here follow a list of questions often asked, with possible answers.
+===================================================================
+
+Q: Error: post_check script (zipscript) could not be executed, file not tested.
+-------------------------------------------------------------------------------
+A: Several possible reasons. The most probable is missing libs. Make sure you
+   have all the libs needed to run the zipscript. To find out which ones you
+   need, do 'ldd /glftpd/bin/zipscript-c' - you'll get a list of libs it uses.
+   Add '/glftpd' in front of all paths in the list given, and make sure you have
+   them all, in the location listed.
+A: Check perms on the binary - it needs +x.
+
