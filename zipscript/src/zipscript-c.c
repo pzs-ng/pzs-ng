@@ -363,9 +363,16 @@ int main( int argc, char **argv ) {
 				raceI.total.files_missing = raceI.total.files = 0;
 				readsfv_ffile(raceI.file.name, raceI.file.size);
 				if ( (raceI.total.files - raceI.total.files_missing) &&  ! cnt ) {
+					char * error_msg;
+					int write_log = raceI.misc.write_log;
+					raceI.misc.write_log = 1;
 					d_log("Old sfv seems to match with more files than current one\n");
 					strcpy(raceI.misc.error_msg, "SFV does not match with files!");
-					exit_value = 2;
+					error_msg = convert(&raceI,userI,groupI,deny_double_msg);
+					writelog(error_msg,"DOUBLESFV");
+					sprintf(raceI.misc.error_msg, DOUBLE_SFV);
+ 					exit_value = 2;
+					raceI.misc.write_log = write_log;
 					break;
 				}
 				raceI.total.files = raceI.total.files_missing = 0;
@@ -441,6 +448,12 @@ int main( int argc, char **argv ) {
 		        d_log("Executing nfo script\n");
 		        sprintf(target, nfo_script " %s", raceI.file.name);
 		        execute(target);
+			}
+                if ( enable_nfo_script2 == TRUE )
+			{
+			d_log("Executing 2nd nfo script\n");
+			sprintf(target, nfo_script2 " %s", raceI.file.name);
+			execute(target);
 			}
 
 		break;
@@ -750,6 +763,11 @@ int main( int argc, char **argv ) {
 		sprintf(target, complete_script " %s", raceI.file.name);
 		execute(target);
 #endif
+#if ( enable_complete_script2 == TRUE )
+		d_log("Executing 2nd complete script\n");
+		sprintf(target, complete_script2 " %s", raceI.file.name);
+		execute(target);
+#endif
 		} else {
 
 			/* Release is at unknown state */
@@ -770,6 +788,13 @@ int main( int argc, char **argv ) {
  if ( exit_value == 0 ) {
 	d_log("Executing accept script\n");
 	sprintf(target, accept_script " %s", raceI.file.name);
+	execute(target);
+	}
+#endif
+#if ( enable_accept_script2 == TRUE )
+ if ( exit_value == 0 ) {
+	d_log("Executing 2nd accept script\n");
+	sprintf(target, accept_script2 " %s", raceI.file.name);
 	execute(target);
 	}
 #endif

@@ -349,18 +349,25 @@
 
 #define enable_accept_script	FALSE
 #define accept_script		"/bin/imdb_parse.sh"
+#define enable_accept_script2	FALSE
+#define accept_script2		"/bin/imdb_parse.sh"
 
 /* Enable/disable nfo script (only run on .nfo files)
  */
 
 #define enable_nfo_script	FALSE
 #define nfo_script		"/bin/psxc-imdb.sh"
+#define enable_nfo_script2	FALSE
+#define nfo_script2		"/bin/psxc-imdb2.sh"
 
 /* Enable/disable complete script (complete script is run, if release is complete)
  */
 
 #define enable_complete_script	FALSE
 #define complete_script		"/bin/nfo_copy.sh"
+
+#define enable_complete_script2	FALSE
+#define complete_script2	"/bin/nfo_copy2.sh"
 
 /* Get user day/week/month/allup position
  */
