@@ -201,7 +201,20 @@ main()
 	if ((raceI.file.name = findfileext(".sfv")) != NULL) {
 		maketempdir(&locations);
 		stat(raceI.file.name, &fileinfo);
-		copysfv_file(raceI.file.name, locations.sfv, fileinfo.st_size);
+		if (copysfv_file(raceI.file.name, locations.sfv, fileinfo.st_size)) {
+			printf("Found invalid entries in SFV - Exiting.\n");
+			d_log("Freeing memory, and exiting\n");
+			unlink(locations.sfv);
+			unlink(locations.race);
+//			unlink(raceI.file.name);
+			free(userI);
+			free(groupI);
+			free(locations.path);
+			free(locations.race);
+			free(locations.sfv);
+			free(locations.leader);
+			return 0;
+		}
 		n = direntries;
 		raceI.total.start_time = 0;
 		while (n--) {

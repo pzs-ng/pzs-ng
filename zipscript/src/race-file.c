@@ -253,7 +253,7 @@ testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
  * 
  * Todo		: Add dupefile remover.
  */
-void 
+int
 copysfv_file(char *source, char *target, off_t buf_bytes)
 {
 	int		fd;
@@ -271,15 +271,13 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
 	int		len = 0;
 	short int	n = 0;
 	unsigned int	t_crc;
-
+	short int	sfv_failed = 0;
 #if (sfv_cleanup == TRUE )
 	int		sfv_error = FALSE;
 #endif
 #if ( sfv_dupecheck == TRUE )
-	char           *fname[MAXIMUM_FILES_IN_RELEASE];	/* Semi-stupid. We limit
-								 * @
-								 * MAXIMUM_FILES_IN_RELEA
-								 * SE, statically. */
+	char           *fname[MAXIMUM_FILES_IN_RELEASE];	/* Semi-stupid. We limit @
+								 * MAXIMUM_FILES_IN_RELEASE, statically. */
 	unsigned int	files = 0;
 	unsigned char	exists;
 #endif
@@ -349,12 +347,19 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
 					}
 					fname[files++] = line;
 #endif
-					if (((unsigned int)strlen(line) + 1) < (unsigned int)len) {
-						d_log("DEBUG: NULL encountered in filename (%s)\n", line);
+					if ((strlen(line) + 1) < (unsigned int)len) {
+						d_log("ERROR: NULL encountered in filename (%s)\n", line);
+						if (strict_sfv_check == TRUE) {
+							sfv_failed = 1;
+						d_log("       Strict mode on - logging rest of sfv as bad.\n");
+#if (sfv_cleanup == TRUE)
+							sfv_error = TRUE;
+#endif
+						}
 						continue;
 					}
 
-					d_log("DEBUG: file in sfv - %s (%s)\n", line, crc);
+					d_log("file in sfv - %s (%s)\n", line, crc);
 
 #if ( sfv_cleanup == TRUE && sfv_error == FALSE )
 					write(fd_new, line, len - 1);
@@ -365,23 +370,42 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
 #endif
 					write(fd_new, "\n", 1);
 #endif
-					if (!memcmp(fext, "mp3", 4)) {
+					if (!memcmp(fext, "mp3", 4) && !sfv_failed) {
 						music++;
-					} else if (israr(fext)) {
+					} else if (israr(fext) && !sfv_failed) {
 						rars++;
-					} else if (isvideo(fext)) {
+					} else if (isvideo(fext) && !sfv_failed) {
 						video++;
-					} else {
+					} else if (!sfv_failed) {
 						others++;
 					}
 #if ( create_missing_files == TRUE )
-					if (!findfile(line)) {
+					if (!findfile(line) && !sfv_failed) {
 						create_missing(line, len - 1);
 					}
 #endif
-					write(fd, &len, sizeof(int));
-					write(fd, line, len);
-					write(fd, &t_crc, sizeof(int));
+					if (!sfv_failed) {
+						write(fd, &len, sizeof(int));
+						write(fd, line, len);
+						write(fd, &t_crc, sizeof(int));
+					}
+				}
+			} else {
+				crc = line;
+				while (*crc) {
+					if (*crc == ' ' || *crc == '\n' || *crc == '\r') {
+						crc++;
+					} else {
+						d_log("ERROR: Found an entry in SFV without checksum (%s).\n", line);
+						if (strict_sfv_check == TRUE) {
+							sfv_failed = 1;
+							d_log("       Strict mode on - logging rest of sfv as bad.\n");
+#if (sfv_cleanup == TRUE)
+							sfv_error = TRUE;
+#endif
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -403,7 +427,8 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
 		}
 	}
 
-	write(fd, &n, sizeof(short int));
+	if (!sfv_failed)
+		write(fd, &n, sizeof(short int));
 	close(fd);
 
 #if ( sfv_cleanup == TRUE && sfv_error == FALSE )
@@ -414,6 +439,7 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
 #endif
 
 	m_free(buf);
+	return sfv_failed;
 }
 
 /*

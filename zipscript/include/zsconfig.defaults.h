@@ -233,6 +233,15 @@
 #endif
 
 /*
+ * Whenever "bad" entries are found in the sfv, they are usually ignored.
+ * Setting this settingto true will mark the entire sfv as bad if such entries
+ * are found, forcing the user to upload a valid sfv file.
+ */
+#ifndef strict_sfv_check
+#define strict_sfv_check	FALSE
+#endif
+
+/*
  * Special modes debug_mode - create .debug files in releasedirs.
  * debug_altlog - put all .debug files in the mirror stored in the storage
  * variable. Not reccommended with first use, as not all debug info will make

@@ -606,7 +606,12 @@ main(int argc, char **argv)
 				}
 			}
 			d_log("Parsing sfv and creating sfv data\n");
-			copysfv_file(raceI.file.name, locations.sfv, raceI.file.size);
+			if (copysfv_file(raceI.file.name, locations.sfv, raceI.file.size)) {
+				d_log("Found invalid entries in SFV - Logging as bad.\n");
+				exit_value = 2;
+				sprintf(raceI.misc.error_msg, EMPTY_SFV);
+				break;
+			}
 
 			if ( (force_sfv_first == FALSE) || matchpath(noforce_sfv_first_dirs, locations.path)) {
 				if (fileexists(locations.race)) {
@@ -619,7 +624,7 @@ main(int argc, char **argv)
 			readsfv_file(&locations, &raceI, 0);
 
 			if (raceI.total.files == 0) {
-				d_log("SFV seems to have no files of accepted types\n");
+				d_log("SFV seems to have no files of accepted types, or has errors.\n");
 				sprintf(raceI.misc.error_msg, EMPTY_SFV);
 				exit_value = 2;
 				break;

@@ -253,6 +253,14 @@ allow_files_not_in_sfv <TRUE|FALSE>
 	this option allows on your site...
 	Default: FALSE
 
+strict_sfv_check <TRUE|FALSE>
+	Whenever "bad" entries are found in the sfv, they are usually ignored.
+	Setting this settingto true will mark the entire sfv as bad if such
+	entries are found, forcing the user to upload a valid sfv file.
+	Bad entries consist of lines containing the NULL char, or lines without
+	a valid crc code.
+	Default: FALSE
+
 debug_mode <TRUE|FALSE>
 	If something seems weird/doesn't work, you should debug. Setting this
 	variable to TRUE will turn on debugging. A file named .debug will be
