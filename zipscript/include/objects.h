@@ -125,6 +125,7 @@ struct misc {
 	char		error_msg [80];
 	char		progress_bar[15];
 	short int	release_type;
+	short int	sfv_match;
 	unsigned char	write_log;
 	long		fastest_user[2];
 	long		slowest_user[2];

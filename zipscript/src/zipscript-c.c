@@ -573,6 +573,7 @@ main(int argc, char **argv)
 			}
 			d_log("zipscript-c: Reading file count from SFV\n");
 			readsfv(g.l.sfv, &g.v, 0);
+			
 
 			if (g.v.total.files == 0) {
 				d_log("zipscript-c: SFV seems to have no files of accepted types, or has errors.\n");
@@ -684,15 +685,18 @@ main(int argc, char **argv)
 			}
 			if (fileexists(g.l.sfv)) {
 				s_crc = readsfv(g.l.sfv, &g.v, 0);
-				
+
 #if (sfv_calc_single_fname == TRUE)
 				if (s_crc == 0 && errno == 1) {
 					d_log("zipscript-c: CRC in SFV is 0 - trying to calculate it from the file\n");
 					s_crc = calc_crc32(g.v.file.name);
-					update_sfvdata(g.v.file.name, s_crc);
+					update_sfvdata(g.l.sfv, g.v.file.name, s_crc);
 				}
 #endif
-				d_log("zipscript-c: DEBUG: crc: %X - s_crc: %X\n", crc, s_crc);
+				if (!g.v.misc.sfv_match)
+					update_sfvdata(g.l.sfv, g.v.file.name, s_crc);
+
+				d_log("zipscript-c: DEBUG: crc: %X - s_crc: %X - match:%d\n", crc, s_crc, g.v.misc.sfv_match);
 				if (s_crc != crc) {
 					if (s_crc == 0) {
 						if (!strcomp(allowed_types, fileext)) {

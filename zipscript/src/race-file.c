@@ -104,6 +104,11 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 			d_log("readsfv: crc read from sfv-file (%s): %.8x\n", sd.fname, sd.crc32);
 			crc = sd.crc32;
 			insfv = 1;
+			raceI->misc.sfv_match = sd.fmatch;
+			if (!sd.fmatch) {
+				raceI->total.files++;
+				sd.fmatch = 1;
+			}
 		}
 		if (getfcount && findfile(dir, sd.fname) && sd.fmatch) {
 			raceI->total.files_missing--;
@@ -124,7 +129,7 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 }
 
 void
-update_sfvdata(const char *path, const unsigned int crc)
+update_sfvdata(const char *path, const char *filename, const unsigned int crc)
 {
 	int		fd, count;
 	
@@ -135,11 +140,12 @@ update_sfvdata(const char *path, const unsigned int crc)
 		return;
 	}
 
-	sd.crc32 = crc;
 	count = 0;
 	while (read(fd, &sd, sizeof(SFVDATA))) {
-		if (strcasecmp(path, sd.fname) == 0) {
+		if (!strcasecmp(filename, sd.fname)) {
 			sd.crc32 = crc;
+			sd.fmatch = 1;
+			d_log("update_sfvdata: updating sfvdata with file '%s', crc '%8X', fmatch '%d'\n", sd.fname, sd.crc32, sd.fmatch);
 			break;
 		}
 		count++;
