@@ -25,17 +25,17 @@
 struct USERINFO **userI;
 struct GROUPINFO **groupI;
 struct VARS	raceI;
-struct LOCATIONS locations;
+/*struct LOCATIONS locations;*/
 
 void 
-writelog(char *msg, char *status)
+writelog(struct LOCATIONS *locations, char *msg, char *status)
 {
 	FILE           *glfile;
 	char           *date;
 	char           *line, *newline;
 	time_t		timenow;
 
-	if (raceI.misc.write_log == TRUE && !matchpath(group_dirs, locations.path)) {
+	if (raceI.misc.write_log == TRUE && !matchpath(group_dirs, locations->path)) {
 		timenow = time(NULL);
 		date = ctime(&timenow);
 		if (!(glfile = fopen(log, "a+"))) {
@@ -46,11 +46,11 @@ writelog(char *msg, char *status)
 		while (1) {
 			switch (*newline++) {
 			case 0:
-				fprintf(glfile, "%.24s %s: \"%s\" %s\n", date, status, locations.path, line);
+				fprintf(glfile, "%.24s %s: \"%s\" %s\n", date, status, locations->path, line);
 				fclose(glfile);
 				return;
 			case '\n':
-				fprintf(glfile, "%.24s %s: \"%s\" %.*s\n", date, status, locations.path, (int)(newline - line - 1), line);
+				fprintf(glfile, "%.24s %s: \"%s\" %.*s\n", date, status, locations->path, (int)(newline - line - 1), line);
 				line = newline;
 				break;
 			}
@@ -63,17 +63,17 @@ writelog(char *msg, char *status)
  * INCOMPLETE FILENAME)
  */
 void 
-getrelname(char *directory)
+getrelname(struct LOCATIONS *locations)
 {
 	int		cnt       , l[2], n = 0, k = 2;
 	char           *path[2];
 
-	for (cnt = strlen(directory); k && cnt; cnt--) {
-		if (directory[cnt] == '/') {
+	for (cnt = strlen(locations->path); k && cnt; cnt--) {
+		if (locations->path[cnt] == '/') {
 			k--;
 			l[k] = n;
 			path[k] = malloc(n + 1);
-			strncpy(path[k], directory + cnt + 1, n);
+			strncpy(path[k], locations->path + cnt + 1, n);
 			path[k][n] = 0;
 			n = 0;
 		} else {
@@ -84,9 +84,9 @@ getrelname(char *directory)
 	if (subcomp(path[1])) {
 //		raceI.misc.release_name = malloc(l[0] + 18);
 		sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
-		locations.incomplete = c_incomplete(incomplete_cd_indicator, path, &raceI);
-		locations.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &raceI);
-		locations.in_cd_dir = 1;
+		locations->incomplete = c_incomplete(incomplete_cd_indicator, path, &raceI);
+		locations->nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &raceI);
+		locations->in_cd_dir = 1;
 		if (k < 2)
 			free(path[1]);
 		if (k == 0)
@@ -94,9 +94,9 @@ getrelname(char *directory)
 	} else {
 //		raceI.misc.release_name = malloc(l[1] + 10);
 		sprintf(raceI.misc.release_name, "%s", path[1]);
-		locations.incomplete = c_incomplete(incomplete_indicator, path, &raceI);
-		locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &raceI);
-		locations.in_cd_dir = 0;
+		locations->incomplete = c_incomplete(incomplete_indicator, path, &raceI);
+		locations->nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &raceI);
+		locations->in_cd_dir = 0;
 		if (k < 2)
 			free(path[1]);
 		if (k == 0)
@@ -105,30 +105,30 @@ getrelname(char *directory)
 }
 
 void 
-remove_nfo_indicator(char *directory)
+remove_nfo_indicator(struct LOCATIONS *locations)
 {
 	int		cnt, l[2], n = 0, k = 2;
-	char           *path[2];
+	char		*path[2];
 
-	locations.length_path = strlen(locations.path);
+	locations->length_path = strlen(locations->path);
 
-	for (cnt = locations.length_path - 1; k && cnt; cnt--) {
-		if (directory[cnt] == '/') {
+	for (cnt = locations->length_path - 1; k && cnt; cnt--) {
+		if (locations->path[cnt] == '/') {
 			k--;
 			l[k] = n;
 			path[k] = malloc(n + 1);
-			strncpy(path[k], directory + cnt + 1, n);
+			strncpy(path[k], locations->path + cnt + 1, n);
 			path[k][n] = 0;
 			n = 0;
 		} else
 			n++;
 	}
-	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &raceI);
-	if (locations.nfo_incomplete)
-		unlink(locations.nfo_incomplete);
-	locations.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &raceI);
-	if (locations.nfo_incomplete)
-		unlink(locations.nfo_incomplete);
+	locations->nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &raceI);
+	if (locations->nfo_incomplete)
+		unlink(locations->nfo_incomplete);
+	locations->nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &raceI);
+	if (locations->nfo_incomplete)
+		unlink(locations->nfo_incomplete);
 	if (k < 2)
 		free(path[1]);
 	if (k == 0)
@@ -136,11 +136,11 @@ remove_nfo_indicator(char *directory)
 }
 
 unsigned char 
-get_filetype(char *ext)
+get_filetype(struct LOCATIONS *locations, char *ext)
 {
 	if (!memcmp(ext, "sfv", 4))
 		return 1;
-	if (!clear_file_file(&locations, raceI.file.name))
+	if (!clear_file_file(locations, raceI.file.name))
 		return 4;
 	if (!memcmp(ext, "zip", 4))
 		return 0;
@@ -157,16 +157,18 @@ get_filetype(char *ext)
 int 
 main(int argc, char **argv)
 {
-	char           *fileext;
-	char           *name_p;
-	char           *temp_p;
-	char           *target;
-	char           *fname;
-	char           *env_user;
-	char           *env_group;
+	char		*fileext;
+	char		*name_p;
+	char		*temp_p;
+	char		*target;
+	char		*fname;
+	char		*env_user;
+	char		*env_group;
 	int		n;
 	unsigned char	empty_dir = 0;
 	unsigned char	incomplete = 0;
+	
+	struct LOCATIONS locations;
 
 	if (argc == 1) {
 		d_log("no param specified\n");
@@ -272,7 +274,7 @@ main(int argc, char **argv)
 	sprintf(locations.race, storage "/%s/racedata", locations.path);
 
 	d_log("Caching release name\n");
-	getrelname(locations.path);
+	getrelname(&locations);
 	d_log("DEBUG 0: incomplete: '%s', path: '%s'\n", locations.incomplete, locations.path);
 
 	d_log("Parsing file extension from filename...\n");
@@ -296,7 +298,7 @@ main(int argc, char **argv)
 	memcpy(fileext, temp_p, name_p - temp_p);
 	strtolower(fileext);
 
-	switch (get_filetype(fileext)) {
+	switch (get_filetype(&locations, fileext)) {
 	case 0:
 		d_log("File type is: ZIP\n");
 		if (matchpath(zip_dirs, locations.path)) {
@@ -355,7 +357,7 @@ main(int argc, char **argv)
 		} else if (raceI.total.files_missing < raceI.total.files) {
 			if (raceI.total.files_missing == 1) {
 				d_log("Writing INCOMPLETE to %s\n", log);
-				writelog(convert(&raceI, userI, groupI, incompletemsg), general_incomplete_type);
+				writelog(&locations, convert(&raceI, userI, groupI, incompletemsg), general_incomplete_type);
 			}
 			incomplete = 1;
 		} else {
@@ -403,7 +405,7 @@ main(int argc, char **argv)
 		if (raceI.total.files_missing < raceI.total.files) {
 			if (raceI.total.files_missing == 1) {
 				d_log("Writing INCOMPLETE to %s\n", log);
-				writelog(convert(&raceI, userI, groupI, incompletemsg), general_incomplete_type);
+				writelog(&locations, convert(&raceI, userI, groupI, incompletemsg), general_incomplete_type);
 			}
 			incomplete = 1;
 		} else {
@@ -459,11 +461,11 @@ main(int argc, char **argv)
 	}
 	if (incomplete == 1 && raceI.total.files > 0) {
 
-		getrelname(locations.path);
+		getrelname(&locations);
 		if (locations.nfo_incomplete) {
 			if (findfileext(".nfo")) {
 				d_log("Removing missing-nfo indicator (if any)\n");
-				remove_nfo_indicator(locations.path);
+				remove_nfo_indicator(&locations);
 			} else if (matchpath(check_for_missing_nfo_dirs, locations.path) && (!matchpath(group_dirs, locations.path) || create_incomplete_links_in_group_dirs)) {
 				if (!locations.in_cd_dir) {
 					d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
@@ -472,7 +474,7 @@ main(int argc, char **argv)
 					rescanparent(2);
 					if (findfileextparent(".nfo")) {
 						d_log("Removing missing-nfo indicator (if any)\n");
-						remove_nfo_indicator(locations.path);
+						remove_nfo_indicator(&locations);
 					} else {
 						d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
 						create_incomplete_nfo();
