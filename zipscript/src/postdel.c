@@ -248,6 +248,7 @@ main(int argc, char **argv)
 		} else {
 			empty_dir = 1;
 		}
+		remove_from_race(g.l.race, g.v.file.name);
 		break;
 	case 1: /* SFV */
 		d_log("Reading file count from sfvdata\n");
@@ -319,9 +320,9 @@ main(int argc, char **argv)
 		remove_from_race(g.l.race, g.v.file.name);
 		break;
 	case 4:
-//		break;
+		break;
 	case 255:
-//		break;
+		break;
 	case 2:
 		if (!fileexists(g.l.race)) {
 			empty_dir = 1;
@@ -419,9 +420,10 @@ get_filetype_postdel(GLOBAL *g, char *ext)
 		return 4;
 	if (!strcasecmp(ext, "zip"))
 		return 0;
-	if (!strcasecmp(ext, "nfo"))
+	if (!strcasecmp(ext, "nfo")) {
+		
 		return 2;
-	if (!strcomp(ignored_types, ext) || !strcomp(allowed_types, ext))
+	} if (!strcomp(ignored_types, ext) || !strcomp(allowed_types, ext))
 		return 3;
 
 	return 255;

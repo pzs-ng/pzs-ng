@@ -14,7 +14,6 @@
 
 #ifdef _SunOS_
 #include "scandir.h"
-/*#include "sc.h"*/
 #endif
 
 #include "../conf/zsconfig.h"
@@ -50,7 +49,6 @@ updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **grou
 	int		u_no = -1;
 	int		g_no = -1;
 	int		n;
-//	double		speedD = filesize * 1024. / speed;
 	double		speedD = filesize * speed;
 
 	for (n = 0; n < raceI->total.users; n++) {
