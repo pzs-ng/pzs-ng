@@ -1657,7 +1657,7 @@ proc loadtheme {file} {
 #################################################################################
 # REPLACES THEMERELATED STUFF IN A GIVEN STRING                                 #
 #################################################################################
-proc themereplace {rstring} {
+proc themereplace {rstring section} {
 	global theme
 
 	# We replace %cX{string}, %b{string} and %u{string} with their coloured, bolded and underlined equivilants ;)
