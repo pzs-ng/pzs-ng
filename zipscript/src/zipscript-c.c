@@ -153,7 +153,7 @@ unsigned char get_filetype(char *ext) {
 
 int main( int argc, char **argv ) {
  char		*fileext, *name_p, *temp_p;
- char		*target;
+ char		*target, *chr;
  char		*complete_msg = 0;
  char		*update_msg = 0;
  char		*race_msg = 0;
@@ -773,25 +773,29 @@ int main( int argc, char **argv ) {
 
 				if ( raceI.misc.write_log == TRUE ) {
 #if ( audio_genre_sort == TRUE )
+					d_log("Sorting mp3 by genre\n");
 					createlink(audio_genre_path, raceI.audio.id3_genre, locations.link_source, locations.link_target);
 #endif
 #if ( audio_artist_sort == TRUE )
+					d_log("Sorting mp3 by artist\n");
 					if ( *raceI.audio.id3_artist ) {
 						if ( memcmp(raceI.audio.id3_artist, "VA", 3) ) {
-							sprintf(chr, "%c", toupper(*raceI.audio.id3_artist));
-							createlink(audio_artist_path, chr, locations.link_source, locations.link_target);
+							sprintf(raceI.audio.id3_artist, "%c", toupper(*raceI.audio.id3_artist));
+							createlink(audio_artist_path, raceI.audio.id3_artist, locations.link_source, locations.link_target);
 							} else {
 							createlink(audio_artist_path, "VA", locations.link_source, locations.link_target);
 							}
 						}
 #endif
 #if ( audio_year_sort == TRUE )
+					d_log("Sorting mp3 by year\n");
 					if ( *raceI.audio.id3_year != 0 ) {
 						createlink(audio_year_path, raceI.audio.id3_year, locations.link_source, locations.link_target);
 						}
 #endif
 					}
 #if ( create_m3u == TRUE ) 
+				d_log("Creating m3u\n");
 				cnt = sprintf(target, findfileext(".sfv"));
 				strcpy(target + cnt - 3, "m3u");
 				create_indexfile_file(&locations, &raceI, target);

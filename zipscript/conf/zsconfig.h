@@ -140,9 +140,9 @@
 
 /* Audio related symlinks - set to TRUE if you wish to sort/symlink releases, or FALSE if not.
  */
-#define audio_genre_sort		FALSE
-#define audio_year_sort			FALSE
-#define audio_artist_sort		FALSE
+#define audio_genre_sort		TRUE
+#define audio_year_sort			TRUE
+#define audio_artist_sort		TRUE
 
 /* Audio related checks for quality/type - here you enable/disable the restriction you defined earlier.
  * If warn is true, any banned files will not be deleted, but instead a warning message will be logged
