@@ -640,7 +640,7 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 			set values [lindex $msgline $cnt]
 			set output2 ""
 			foreach value $values {
-				if { $cnt2 == 0 } { append output2 "$announce(${type}_LOOP${loop})" "$theme(SPLITTER)" }
+				if { $cnt2 == 0 } { append output2 "$announce(${type}_LOOP${loop})" }
 				set output2 [replacevar $output2 "[lindex $vari $cnt2]" $value]
 				set cnt2 [expr $cnt2 + 1]
 				if { [lindex $vari $cnt2] ==  "" } {
@@ -650,6 +650,7 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 			}
 			set output2 [replacevar $output2 "%section" $section]
 			set output2 [replacevar $output2 "%sitename" $sitename]
+			set output2 [replacevar $output2 "%splitter" $theme(SPLITTER)]
 			set output2 [string trim $output2 "$theme(SPLITTER)"]
 			set output [replacevar $output "%loop$loop" $output2]
 			set loop [expr $loop + 1]
