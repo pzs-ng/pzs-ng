@@ -1378,6 +1378,6 @@ main(int argc, char **argv)
 		d_log("Sleeping for %d seconds.\n", sleep_on_bad);
 	}
 #endif
-	d_log("Exit\n");
+	d_log("Exit %d\n", exit_value);
 	return exit_value;
 }

@@ -324,6 +324,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 				   !matchpath(allowed_types_exemption_dirs, locations->path)))
 				rd.status = F_IGNORED;
 			else {
+				d_log("testfiles: Marking file (%s) as bad and removing it.\n", rd.fname);
 				mark_as_bad(rd.fname);
 				if (rd.fname)
 					unlink(rd.fname);
