@@ -100,11 +100,21 @@ complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **user
 
 	if (raceI->misc.write_log && completetype == 0) {
 		if (user_top != NULL) {
-			for (cnt = 0; cnt < max_users_in_top && cnt < raceI->total.users; cnt++)
+#if ( show_stats_from_pos2_only )
+			for (cnt = 1;
+#else
+			for (cnt = 0;
+#endif
+			cnt < max_users_in_top && cnt < raceI->total.users; cnt++)
 				user_p += sprintf(user_p, " %s", convert2(raceI, userI[userI[cnt]->pos], groupI, user_top, cnt));
 		}
 		if (group_top != NULL) {
-			for (cnt = 0; cnt < max_groups_in_top && cnt < raceI->total.groups; cnt++)
+#if ( show_stats_from_pos2_only )
+			for (cnt = 1;
+#else
+			for (cnt = 0;
+#endif
+			cnt < max_groups_in_top && cnt < raceI->total.groups; cnt++)
 				group_p += sprintf(group_p, " %s", convert3(raceI, groupI[groupI[cnt]->pos], group_top, cnt));
 		}
 	}
@@ -123,9 +133,6 @@ writetop(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI,
 	char	       *buffer = 0;
 
 	if (completetype == 1) {
-//		if (pre_stats != NULL) {
-//			writelog(convert(raceI, userI, groupI, pre_stats), stat_users_head_type);
-//		}
 		if (user_top != NULL) {
 			buffer = templine;
 			for (cnt = 0; cnt < max_users_in_top && cnt < raceI->total.users; cnt++) {
@@ -134,9 +141,6 @@ writetop(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI,
 			*buffer -= '\0';
 			writelog(templine, stat_users_type);
 		}
-//		if (between_stats != NULL) {
-//			writelog(convert(raceI, userI, groupI, between_stats), stat_groups_head_type);
-//		}
 		if (group_top != NULL) {
 			buffer = templine;
 			for (cnt = 0; cnt < max_groups_in_top && cnt < raceI->total.groups; cnt++) {

@@ -584,6 +584,11 @@ get_user_stats <TRUE|FALSE>
 	racers userfiles.
 	Default: TRUE
 
+show_stats_from_pos2_only <TRUE|FALSE>
+	If this is set to true, only racers in position 2 and below is shown
+	in the %T and %t cookies - this affects the LOOP variables in the bot.
+	Default: FALSE
+
 show_user_info <TRUE|FALSE>
 	If you wish to print stat info after a file is uploaded to the racer,
 	set this to true. It will display racers (usernames) and stats on the

@@ -574,6 +574,9 @@
 #ifndef max_groups_in_top
 #define max_groups_in_top	7
 #endif
+#ifndef show_stats_from_pos2_only
+#define show_stats_from_pos2_only	FALSE
+#endif
 
 /*
  * Enable/disable norace announces (will be used instead of normal announces,

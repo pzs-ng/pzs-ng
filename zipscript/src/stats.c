@@ -273,7 +273,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	unsigned char	space;
 	unsigned char	args;
 	unsigned char	shift;
-	char           *buf = 0, *p_buf = 0, *eof = 0;
+	char           *p_buf = 0, *eof = 0;
 	char		t_buf[PATH_MAX];
 	char           *arg[45];/* Enough to hold 10 sections (noone has
 				 * more?) */
@@ -288,29 +288,23 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 
 	/* User stats reader */
 	for (n = 0; n < users; n++) {
-//		buf = m_alloc(sizeof(gl_userfiles) + strlen(userlist[n + shift]->d_name) + 2);
 		sprintf(t_buf, "%s/%s", gl_userfiles, userlist[n + shift]->d_name);
 		fd = open(t_buf, O_RDONLY);
-//		m_free(buf);
 
 		fileinfo.st_mode = 0;
 		fstat(fd, &fileinfo);
 		if (S_ISDIR(fileinfo.st_mode) == 0) {
 
-//			eof = buf = m_alloc(fileinfo.st_size);
-//			eof += fileinfo.st_size;
 			eof = t_buf + fileinfo.st_size;
 
 			user[n] = malloc(sizeof(struct userdata) + 2);
 			bzero(user[n], (sizeof(struct userdata)) + 2);
 
-//			read(fd, buf, fileinfo.st_size);
 			read(fd, t_buf, fileinfo.st_size);
 
 			args = 0;
 			space = 1;
 
-//			for (p_buf = buf; p_buf < eof; p_buf++)
 			for (p_buf = t_buf; p_buf < eof; p_buf++)
 				switch (*p_buf) {
 				case '\n':
@@ -339,8 +333,6 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 					}
 					break;
 				}
-
-//			m_free(buf);
 
 			user[n]->name = -1;
 
@@ -397,5 +389,4 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	}
 	for (n = 0; n < users; n++)
 		free(user[n]);
-//	free(user);
 }
