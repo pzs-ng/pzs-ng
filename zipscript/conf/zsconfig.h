@@ -394,7 +394,7 @@
                                   are marked as bad and deleted)
  */
 #define enable_unduper_script	TRUE
-#define unduper_script		"/bin/pzsng-unduper.sh"
+#define unduper_script		"/bin/pzsng-undupe"
 
 /*
  *	Other binary settings

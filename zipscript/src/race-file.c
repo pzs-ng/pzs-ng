@@ -233,9 +233,13 @@ void testfiles_file(struct LOCATIONS *locations, struct VARS *raceI) {
 #endif
 				status = F_BAD;
 				if ( enable_unduper_script == TRUE ) {
-					d_log("%s is marked as bad\n",fname);
+					d_log("marking %s bad.\n",fname);
 					sprintf(target, unduper_script " %s", fname);
-					execute(target);
+					if ( execute(target) == 0 ) {
+						d_log("undupe of %s successful.\n", fname);
+					} else {
+						d_log("undupe of %s failed.\n", fname);
+						}
 					}
 				}
 			}
