@@ -17,7 +17,7 @@
 #include <sys/types.h> 
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#include "../../zipscript/include/structonline.h"
+#include "structonline.h"
 
 /* You shouldn't need to modify below here */
 
