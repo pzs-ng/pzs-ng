@@ -172,8 +172,9 @@ testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	int		len;
 	unsigned char	status;
 	FILE           *file;
-	char           *fname, *realfile, *target;
+	char           *fname, *realfile, *target, *ext;
 	unsigned int	Tcrc, crc;
+	int		m= 0, l = 0;
 
 	target = m_alloc(256);
 
@@ -188,21 +189,40 @@ testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 			fread(&status, 1, 1, file);
 			fread(&crc, sizeof(int), 1, file);
 
+			m = l = strlen(realfile);
+			ext = realfile;
+			while (ext[m] != '.' && m > 0)
+				m--;
+			if (ext[m] != '.')
+				m = l;
+			else
+				m++;
+			ext += m;
+
 			if (status == F_NOTCHECKED) {
 				raceI->file.name = fname;
 				Tcrc = readsfv_file(locations, raceI, 0);
 				if (crc != 0 && Tcrc == crc) {
 					status = F_CHECKED;
+				} else if (crc != 0 && strcomp(ignored_types, ext)) {
+					status = F_IGNORED;
+				} else if (crc != 0 && Tcrc == 0 && strcomp(allowed_types, ext)) {
+					status = F_IGNORED;
+				} else if ((crc != 0) && (Tcrc != crc) && (strcomp(allowed_types, ext) && !matchpath(allowed_types_exemption_dirs, locations->path))) {
+					status = F_IGNORED;
 				} else {
 					if (fname)
 						unlink(fname);
+					status = F_BAD;
+
 #if ( create_missing_files )
 					if (Tcrc != 0)
 						create_missing(fname, len - 1);
 #endif
-					status = F_BAD;
+
 					if (rstatus)
 						printf("File: %s FAILED!\n", fname);
+
 					d_log("marking %s bad.\n", fname);
 					if (enable_unduper_script == TRUE) {
 						sprintf(target, unduper_script " \"%s\"", fname);

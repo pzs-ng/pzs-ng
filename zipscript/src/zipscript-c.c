@@ -703,8 +703,14 @@ main(int argc, char **argv)
 				d_log("DEBUG: crc: %X - s_crc: %X\n", crc, s_crc);
 				if (s_crc != crc) {
 					if (s_crc == 0) {
-						d_log("Filename was not found in the SFV\n");
-						strcpy(raceI.misc.error_msg, NOT_IN_SFV);
+						if (!strcomp(allowed_types, fileext)) {
+							d_log("Filename was not found in the SFV\n");
+							strcpy(raceI.misc.error_msg, NOT_IN_SFV);
+						} else {
+							d_log("filetype is part of allowed_types.\n");
+							no_check = TRUE;
+							break;
+						}
 					} else {
 						d_log("CRC-32 check failed\n");
 						strcpy(raceI.misc.error_msg, BAD_CRC);
