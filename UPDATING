@@ -1,0 +1,42 @@
+UPDATING BETWEEN VERSIONS/REVISIONS
+-----------------------------------
+
+There seems to be much confusion about updating. The general idea is as follows:
+
+Keep zsconfig.h and dZSBconf.tcl
+
+These are your config files. There is no need to redo the config files each time
+you update your zipscript/bot. I'll say again: THERE IS NO NEED TO REDO THE
+CONFIG FILES EACH TIME YOU UPGRADE.
+
+Okay, now that that is clear, here's the general process:
+
+1.  download/unpack the latest version/revision.
+2.  copy your old zsconfig.h into zipscript/conf/
+3.  ./configure && make && make install
+3a. chmod +s /glftpd/bin/ng-chown (optional, only if you use it)
+4.  cp sitebot dZSb* /path/to/sitebot/scripts/pzs-ng/
+5.  .rehash or .restart your bot.
+
+That's it! You've upgraded.
+Any new additions/changes to either the sitebot or the zipscript is used with
+default values - your bot/zipscript will not break.
+
+In case you're wondering about step 4 above - no, it will not overwrite your
+config - there is no dZSBconf.tcl in the archive. The above cp command is
+quite safe to use.
+
+Themes - these will be updated from time to time. Themes in general should
+continue to work as they always have.
+
+
+ANY CHANGES THAT DEVIATE FROM THE ABOVE IS LISTED BELOW.
+--------------------------------------------------------------------------------
+
+zsconfig.h:	The option 'del_progressmeter' has changed. Make sure you have
+		two percentage signs '%%' in it. See README.ZSCONFIG for more
+		info. Optionally, just remove the option from your config, and
+		the default will be used.
+		Changed in: r827
+
+
