@@ -141,7 +141,7 @@ AC_SUBST(M32)
 #	exit 1
 #fi
 
-AC_OUTPUT(Makefile zipscript/src/Makefile sitebot/src/Makefile sitewho/Makefile)
+AC_OUTPUT(Makefile zipscript/src/Makefile sitebot/src/Makefile sitewho/Makefile sitewho/sitewho.conf.dist)
 
 if [[ "$PASSCHK" == "" ]]; then
 AC_MSG_RESULT(

@@ -1,4 +1,4 @@
-glrootpath = /glftpd/
+glrootpath = @GLPATH@
 headerfile = /ftp-data/misc/who.head
 footerfile = /ftp-data/misc/who.foot
 maskeddirectories = /site/groups/ /site/admins/ /site/private/
