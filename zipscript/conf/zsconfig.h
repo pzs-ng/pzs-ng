@@ -18,6 +18,7 @@
 #define log		"/ftp-data/logs/glftpd.log"
 #define storage		"/ftp-data/zipscript/"
 #define gl_userfiles	"/ftp-data/users/"
+#define dupepath	"/ftp-data/logs/dupefile"
 
 /* On default, announcing is disabled everywhere, use zip/sfv paths to enable annouces and private paths to disable.
  * Don't be lazy! Be specific! And remember - pathnames are case sensitive.

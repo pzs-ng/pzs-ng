@@ -4,14 +4,13 @@
  ** 02-25-99
  **
  ** Fixed USAGE spelling error - Turranius 2004-01-04
- ** Modded for use with pzs-ng - psxc 2004-07-14
+ ** Modded/stripped for use with pzs-ng - psxc 2004-07-14
  **/
 
 #include <stdio.h>
 #include <sys/stat.h>
 #include <string.h>
-
-#define DUPEFILE "/ftp-data/logs/dupefile"
+#include "../conf/zsconfig.h"
 
 struct dupefile {
        char filename[256];
@@ -30,7 +29,7 @@ int main (int argc, char *argv[]) {
   
   struct dupefile buffer;
   
-  strcpy(dupefile, DUPEFILE);
+ strcpy(dupefile, dupepath);
   strcpy(dupename, argv[1]);
   
   sprintf(data2, "%s2", dupefile);

@@ -18,10 +18,11 @@ PD-OBJECTS=postdel.o dizreader.o stats.o convert.o multimedia.o $(UNIVERSAL)
 RS-OBJECTS=racestats.o dizreader.o stats.o convert.o $(UNIVERSAL)
 CU-OBJECTS=cleanup.o
 DC-OBJECTS=datacleaner.o
+UD-OBJECTS=pzsng-undupe.o
 SC-OBJECTS=rescan.o dizreader.o stats.o convert.o complete.o crc.o multimedia.o $(UNIVERSAL)
 ZS-DEPEND=cleanup.o complete.o convert.o datacleaner.o postdel.o racestats.o rescan.o stats.o zipscript-c.o multimedia.o $(UNIVERSAL)
 
-all: racedebug zipscript-c postdel racestats cleanup datacleaner rescan
+all: racedebug zipscript-c postdel racestats cleanup datacleaner rescan pzsng-undupe
 	@(ls -lA $(binpath))
 
 $(ZS-DEPEND): ../conf/zsconfig.h
@@ -44,6 +45,9 @@ cleanup: $(CU-OBJECTS)
 datacleaner: $(DC-OBJECTS)
 	     $(CC) $(LDFLAGS) $(DC-OBJECTS) -o $(binpath)/$@
 
+pzsng-undupe: $(UD-OBJECTS)
+	      $(CC) $(LDFLAGS) $(UD-OBJECTS) -o $(binpath)/$@
+
 rescan: $(SC-OBJECTS)
 	$(CC) $(LDFLAGS) $(SC-OBJECTS) -o $(binpath)/$@ $(ZSLIBS)
 
@@ -59,11 +63,12 @@ install:
 	cp -f $(binpath)/datacleaner $(bindir)/
 	cp -f $(binpath)/rescan $(bindir)/
 	cp -f $(binpath)/racedebug $(bindir)/
+	cp -f $(binpath)/pzsng-undupe $(bindir)/
 
 clean:
-	@$(RM) *.o $(binpath)/zipscript-c $(binpath)/postdel $(binpath)/racestats $(binpath)/cleanup $(binpath)/datacleaner $(binpath)/rescan $(binpath)/racedebug Makefile
+	@$(RM) *.o $(binpath)/zipscript-c $(binpath)/postdel $(binpath)/racestats $(binpath)/cleanup $(binpath)/datacleaner $(binpath)/rescan $(binpath)/racedebug $(binpath)/pzsng-undupe Makefile
 binclean:
-	@$(RM) *.o $(binpath)/zipscript-c $(binpath)/postdel $(binpath)/racestats $(binpath)/cleanup $(binpath)/datacleaner $(binpath)/rescan $(binpath)/racedebug
+	@$(RM) *.o $(binpath)/zipscript-c $(binpath)/postdel $(binpath)/racestats $(binpath)/cleanup $(binpath)/datacleaner $(binpath)/rescan $(binpath)/racedebug $(binpath)/pzsng-undupe
 
 strip:
 	strip $(binpath)/*

@@ -1,12 +1,12 @@
- Project-ZS-NG (Next Generation)
----------------------------------
+ PZS-NG (Project-ZS - Next Generation)
+--------------------------------------
 
 
 
 
 Introduction:
 -------------
-Project-ZS-NG is based off of Project-ZS by Dark0n3. It is what is commonly
+PZS-NG is based off of Project-ZS by Dark0n3. It is what is commonly
 known as a zipscript, or a post check script for file uploads. It's task is,
 among others, to check the integrety of the files uploaded, and make sure
 a "release" is complete, ie, not missing any files.
@@ -19,15 +19,15 @@ find out why this zipscript is considered the best of the bunch by most.
 
 History:
 --------
-Project-ZS-NG is a continuance of the original Project-ZS by Dark0n3.
-Dark0n3 stopped development in June(?) 2002, and remained stagnant for a
-long time. Up until now various coders/scripters have made patches to fix
-bugs or make some enhancements, but the patches have at times been
-overlapping, or complete replacements of source-files, making it hard for
-the siteops to implement them all.
+PZS-NG is a continuance of the original Project-ZS by Dark0n3, which stopped
+development in June(?) 2002, and remained stagnant for a long time. Up until
+now various coders/scripters have made patches to fix bugs or make some
+enhancements, but the patches have at times been overlapping, or complete
+replacements of source-files, making it hard for the siteops to implement
+them all.
 In April, 2004, daxxar and psxc collected the various patches into packages,
 but soon found out it was better to pool resources and make a unified
-version. The result - Project-ZS-NG.
+version. The result - PZS-NG.
 
 
 
@@ -44,13 +44,17 @@ The Team:
 
 Supported Platforms:
 --------------------
-Project-ZS-NG should compile fine on the following platforms:
+PZS-NG should compile fine on the following platforms:
 
 - Linux
 - FreeBSD
 - OpenBSD
 - (AIX - untested, but the original docs say it works there)
 - (Solaris - soon *g*)
+
+64-bit processors - this is still very shady. We do work to make it work
+on AMD64 for instance, but have limited ability to test on this platform
+since none of the devs currently owns one.
 
 Only i386 platforms is tested, but feel free to let us know if you try it
 on anything else. :)
@@ -75,7 +79,7 @@ As mentioned in Introduction earlier, a zipscript checks the integrity of
 the files, and keep tabs on when a release is complete. How it does this
 depends on the filetype. 'ZIP'-files have an integrity code build within
 the file itself, which makes it easy to verify the file. To keep track of
-wether or not a release based on zip-files is complete, a file named
+whether or not a release based on zip-files is complete, a file named
 file-id.diz is scanned.
 The most common method of checking files, however, is by 'SFV'. Unlike zip,
 the sfv-file is a text file which stores the filenames and a CRC (cyclic
@@ -89,11 +93,10 @@ easy to find out if a release is complete by counting files in the sfv-file.
 
 
 
-Features of Project-ZS-NG:
---------------------------
-Project-ZS-NG would not be considered the best zipscript by most unless it
-had features beyond simple filechecking. Here's a list of a few things it
-can do:
+Features of PZS-NG:
+-------------------
+PZS-NG would not be considered the best zipscript by most unless it had
+features beyond simple filechecking. Here's a list of a few things it can do:
 
 - Log information about sfv files (how many files expected etc)
 - Log information about mp3 files (genre, year, bps etc)
@@ -124,16 +127,15 @@ a high fun-factor :)
 
 Setting it up:
 --------------
-Project-ZS-NG is made in C. This means that it compiles sourcecode into
-binaries you use. In other words, it's not a script where you can edit
-the config and test immediatly after - you have to compile the zipscript
-and copy the binaries every time you change the config. I'll say again -
-edit config --> recompile and copy bins. How we compile and copy I'll get
-back to.
+PZS-NG is made in C. This means that it compiles sourcecode into binaries you
+use. In other words, it's not a script where you can edit the config and test
+immediatly after - you have to compile the zipscript and copy the binaries
+every time you change the config. I'll say again - edit config --> recompile
+and copy bins. How we compile and copy I'll get back to.
 
 First off - COOKIES. Read it. Print it out. Keep it close by when you edit
 your config.
-Project-ZS-NG is based on a cookie system. This means that certain character-
+PZS-NG is based on a cookie system. This means that certain character-
 combinations is replaced by text dynamically as the zipscript runs. So learn
 the cookie-system.
 
@@ -190,17 +192,16 @@ This will make the necessary additions/changes to your system.
 If the make install fails, or you really wish to make the changes by hand,
 here's what to do:
 
-cp ./zipscript/bin/* /path/to/your/glftpd/bin/
-chmod +666 /path/to/your/glftpd/ftp-data/logs/glftpd.log
-mkdir /path/to/your/glftpd/ftp-data/zipscript
-chmod 777 /path/to/your/glftpd/ftp-data/zipscript
-chmod +s /path/to/your/glftpd/bin/datacleaner
-chmod +s /path/to/your/glftpd/bin/zipscript-c
+           cp ./zipscript/bin/* /path/to/your/glftpd/bin/
+           chmod +666 /path/to/your/glftpd/ftp-data/logs/glftpd.log
+           mkdir /path/to/your/glftpd/ftp-data/zipscript
+           chmod 777 /path/to/your/glftpd/ftp-data/zipscript
+(optional) chmod +s /path/to/your/glftpd/bin/zipscript-c
 
 If you need to recompile the script because you made a booboo in the config,
 you should always do a 'make clean' first. The quick-quick version of it is:
 
-> make clean && ./configure && make && make install
+> make clean; ./configure && make && make install
 
 
 
@@ -218,8 +219,9 @@ calc_crc	*.[mM][pP]3 *.[rR][aA][rR] *.[rRsS0-9][0-9][0-9] *.[mM][pP][gG] *.[mM]2
 
 The first one will calculate crc codes on all files. The 2nd and 3rd line
 will only make a crc code on files matching the criteria set. Whichever
-of these lines you choose to add to glftpd.conf is up to you. Forget to
-add this, and all your sfv files will fail.
+of these lines you choose to add to glftpd.conf is up to you. You may skip
+to add this line in glftpd.conf, and the zipscript will calculate it instead.
+This is, however, slower than if glftpd does it on the fly.
 
 Next, add:
 
@@ -249,7 +251,6 @@ Forget to add this and you will hit yourself hard quite a few times. ;)
 
 
 
-
 Crontab:
 --------
 All that's left now is to tie up some loose ends. And installing the bot,
@@ -262,12 +263,14 @@ refuse to add more files. Thus, the included 'datacleaner' bin. This will
 remove all the racedata from dirs that no longer exists on your site.
 We also have a bin named 'cleaner' which helps clean out dead symlinks -
 you might have nuked an incomplete release, in which case the incomplete-
-link will still exist. Up to the rescue comes crontab :)
+link will still exist. To the rescue comes crontab :)
 Add the following lines in a users crontab if the bins are owned by root
 and have the setuid bit, or run it in root's crontab if not.
 
 59	*	*	*	*	/glftpd/bin/cleaner >/dev/null 2>&1
-29	4	*	*	*	/glftpd/bin/datacleaner >/dev/null 2>&1
+29	4	*	*	*	/chroot /glftpd /bin/datacleaner >/dev/null 2>&1
+
+<CLEANER DOES NOT EXIST - WE NEED TO CREATE IT>
 
 This should help keep your site nice and tidy, not burden the hardware too
 much, and stop crontab from sending you annoying emails. ;)
@@ -282,24 +285,9 @@ If everything is working smoothly on your site, it's time to add a bot to
 your channel. It is expected that you already have installed an eggdrop,
 that's it working and have found it's way into your channel.
 
+<SOMEONE PLEASE FILL IN STUFF HERE>
 
 ....
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

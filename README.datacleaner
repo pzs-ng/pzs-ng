@@ -1,18 +1,41 @@
 
-datacleaner:
-  datacleaner is a simple tool that recursively cleans out unused zipscript-c data.
-  (this data is stored in what you've set site_root to, in a subdir named what you've
-  set storage to, these two are defines in zsconfig.h)
-  crontabbing it to run once a day is the best option :-)
+datacleaner - short description:
+--------------------------------
+  datacleaner is a simple tool that recursively cleans out unused zipscript-c
+  data.
 
-  to change the effective uid:
-    there are two solutions to do this:
-     1) make the script run as the "root" user (uid 0)
-     2) chown the file to root:somegroup, chmod it +rx for somegroup, and chmod it to +s.
+datacleaner - how to use:
+-------------------------
+  datacleaner run under chroot, which means you have several posibilities on
+  how to run it. The best way is to run it once a day, as root using crontab.
+  -----
+  0	2	*	*	*	/sbin/chroot /glftpd /bin/datacleaner >/dev/null 2>&1
+  -----
+  replace path to chroot, and your glftpd rootdir accordingly.
 
-     #2 sets the "suid" bit on the file, and makes it so that it changes uid to the owner
-     of the files UID when run. you should only make this bit set for files where you've 
-     restricted +rx rights, that is; chown to root:somegroup, and do NOT give "all" the +rx
-     rights, only the members of somegroup. this is due to security reasons, but you knew that, right?
+  The other ways to use it is as a site command,
+  -----
+  site_cmd ZSCLEAN	/bin/datacleaner
+  custom-zsclean	127ABCD
+  -----
 
-  -- daxxar
+  or as a cscript to.
+  -----
+  cscript	RMD			post	/bin/datacleaner
+  cscript	SITE[:space:]WIPE	post	/bin/datacleaner
+  -----
+
+  Using it as a cscript may, or may not be such a great idea, since it will
+  search the entire directory-tree under ftp-data/zipscript/site/* and check
+  to see if the corresponding dir exists under site/*, ie, it can take time.
+
+datacleaner - why:
+------------------
+  Why use it? Simple - the zipscript stores race-data in a 'mirror' of your
+  site tree - after a while, this gets *huge*. Weird problems can occur when
+  your computer runs out of storage, or when the filesystem gets too many
+  files. You will also notice weird output on dupe uploads, ie, a release
+  that was uploaded, has been deleted, and is uploaded anew.
+
+- Team PZS-NG
+

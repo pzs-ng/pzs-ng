@@ -74,6 +74,6 @@ int main (int argc, char **argv) {
 		zd_length = strlen(storage);
 /*		chroot(site_root); */
 		check_dir_loop(storage);
-/	} */
+/*	} */
 	return 0;
 }
