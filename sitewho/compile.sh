@@ -16,18 +16,20 @@ echo "[OK]"
 
 strip ${file%.c}
 
-echo ""
-echo "Installing...";
-conf="${file%.c}.conf"
-for v in glrootpath headerfile footerfile; do
- eval $v=$(grep "^$v" $conf | awk {'print $3'})
-done
+if [ "`id -u`" -eq 0 ]; then
+	echo ""
+	echo "Installing..."
+	conf="${file%.c}.conf"
+	for v in glrootpath headerfile footerfile; do
+	 eval $v=$(grep "^$v" $conf | awk {'print $3'})
+	done
 
-cp -f ${headerfile##*/} $glrootpath$headerfile
-cp -f ${footerfile##*/} $glrootpath$footerfile
-for f in ${file%.c} $conf bandwidth.sh; do
- cp $f $glrootpath/bin/
-done
+	cp -f ${headerfile##*/} $glrootpath$headerfile
+	cp -f ${footerfile##*/} $glrootpath$footerfile
+	for f in ${file%.c} $conf bandwidth.sh; do
+	 cp $f $glrootpath/bin/
+	done
+fi
 
 echo ""
 echo "Check README, if you want to learn how this works!"
