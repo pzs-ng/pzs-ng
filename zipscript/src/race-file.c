@@ -15,6 +15,8 @@
 
 #include "../conf/zsconfig.h"
 
+
+
 /*
  * Modified	: 01.16.2002
  * Author	: Dark0n3
@@ -79,56 +81,6 @@ void delete_sfv_file(struct LOCATIONS *locations) {
 
 
 
-
-/*
- * Modified	: 02.19.2002
- * Author	: Dark0n3
- *
- * Description	: Reads current race statistics from fixed format file.
- *
- */
-void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI) {
- off_t		fsize;
- unsigned int	uspeed;
- unsigned int	mtime;
- unsigned char	*p_buf;
- unsigned char	buf[49 + 5 * sizeof(int)];
- unsigned int	len;
- FILE		*file;
- char		*uname;
- char		*ugroup;
- 
- if ( (file = fopen(locations->race, "r")) == NULL ) {
-	return;
-	}
-
- while ( fread(&len, sizeof(int), 1, file) == 1 ) {
-	fseek(file, len, SEEK_CUR);
-	fread(buf, 1, sizeof(buf), file);
-
-	p_buf = buf + 1 + sizeof(int);
-	uname = (char*)p_buf;				p_buf += 24;
-	ugroup = (char*)p_buf;				p_buf += 24;
-	memcpy(&fsize, p_buf, sizeof(off_t));	p_buf += sizeof(off_t);
-	memcpy(&uspeed, p_buf, sizeof(int));		p_buf += sizeof(int);
-	memcpy(&mtime, p_buf, sizeof(int));
-
-	switch (*buf) {
-		case F_NOTCHECKED:
-		case F_CHECKED: updatestats(raceI, userI, groupI, uname, ugroup, fsize, uspeed, mtime); break;
-		case F_BAD: raceI->total.files_bad++; raceI->total.bad_size += fsize; break;
-		case F_NFO:
-			raceI->total.nfo_present = 1;
-			break;
-		}
- 	}
- fclose(file);
-}
-
-
-
-
-
 /*
  * Modified	: 02.19.2002
  * Author	: Dark0n3
@@ -163,7 +115,6 @@ void maketempdir(struct LOCATIONS *locations) {
 
 
 
-
 /*
  * Modified	: 01.16.2002
  * Author	: Dark0n3
@@ -187,7 +138,6 @@ void read_write_leader_file(struct LOCATIONS *locations, struct VARS *raceI, str
 	}
  fclose(file);
 }
-
 
 
 
@@ -253,9 +203,6 @@ void testfiles_file(struct LOCATIONS *locations, struct VARS *raceI) {
 	fclose(file);
 	}
 }
-
-
-
 
 
 
@@ -391,7 +338,6 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
 
 
 
-
 /*
  * Modified	: 01.17.2002
  * Author	: Dark0n3
@@ -467,9 +413,6 @@ void create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char
 
 
 
-
-
-
 /*
  * Modified	: 01.16.2002
  * Author	: Dark0n3
@@ -509,6 +452,56 @@ short int clear_file_file(struct LOCATIONS *locations, char *f) {
 
 
 /*
+ * Modified	: 02.19.2002
+ * Author	: Dark0n3
+ *
+ * Description	: Reads current race statistics from fixed format file.
+ *
+ */
+void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI) {
+ off_t		fsize;
+ unsigned int	uspeed=0;
+ unsigned int	mtime=0;
+ unsigned char	*p_buf;
+ unsigned char	buf[1 + 2*24 + 3 * sizeof(int) + sizeof(off_t)];
+ unsigned int	len;
+ FILE		*file;
+ char		*uname;
+ char		*ugroup;
+ 
+ if ( (file = fopen(locations->race, "r")) == NULL ) {
+	return;
+	}
+
+ while ( fread(&len, sizeof(int), 1, file) == 1 ) {
+	fseek(file, len, SEEK_CUR);
+	fread(buf, 1, sizeof(buf), file);
+
+	p_buf	= buf + 1 + sizeof(int);
+	uname	= (char *)p_buf;			p_buf += 24;
+	ugroup	= (char *)p_buf;			p_buf += 24;
+	memcpy(&fsize , p_buf, sizeof(off_t));		p_buf += sizeof(off_t);
+	memcpy(&uspeed, p_buf, sizeof(int));		p_buf += sizeof(int);
+	memcpy(&mtime , p_buf, sizeof(int));
+
+	switch (*buf) {
+		case F_NOTCHECKED:
+		case F_CHECKED:
+d_log("DEBUG A: uspeed: %u mtime: %u\n",uspeed, mtime);
+d_log("DEBUG B: uname: %s - ugroup: %s - fsize: %zu - uspeed: %u - mtime: %u\n",uname, ugroup, fsize, uspeed, mtime);
+updatestats(raceI, userI, groupI, uname, ugroup, (off_t)fsize, (unsigned int)uspeed, (unsigned int)mtime); break;
+		case F_BAD: raceI->total.files_bad++; raceI->total.bad_size += fsize; break;
+		case F_NFO:
+			raceI->total.nfo_present = 1;
+			break;
+		}
+ 	}
+ fclose(file);
+}
+
+
+
+/*
  * Modified	: 01.18.2002
  * Author	: Dark0n3
  *
@@ -527,7 +520,7 @@ void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned in
  file = fopen(locations->race, "a+");
 
  len = strlen(raceI->file.name) + 1;
- sz = len + 49 + 5 * sizeof(int) + sizeof(int);
+ sz = len + 1 + 2*24 + 4 * sizeof(int) + sizeof(off_t);
  p_buf = buf = m_alloc(sz);
 
  memcpy(p_buf, &len, sizeof(int));				p_buf += sizeof(int);

@@ -28,9 +28,9 @@ char* hms(int secs) {
 	 secs -= 60; 
 	}
 
- if ( hours ) tmp = sprintf(ttime, "\\002%i\\002h", (int)hours);
- if ( mins ) tmp += sprintf(ttime + tmp, "\\002%i\\002m", (int)mins);
- if ( secs || ! tmp ) tmp += sprintf(ttime + tmp, "\\002%i\\002s", (int)secs);
+ if ( hours ) tmp = sprintf(ttime, "%ih", (int)hours);
+ if ( mins ) tmp += sprintf(ttime + tmp, "%im", (int)mins);
+ if ( secs || ! tmp ) tmp += sprintf(ttime + tmp, "%is", (int)secs);
  return ttime;
 }
 
@@ -306,8 +306,8 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 
 	 switch ( *instr ) {
 		case 'a': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size) / raceI->total.speed); break;
-		case 'A': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size) / (raceI->file.speed/1024.)); break;
-		case 'b': out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.size); break;
+		case 'A': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size) / raceI->file.speed); break;
+		case 'b': out_p += sprintf(out_p, "%*u", val1, (unsigned int)raceI->total.size); break; /* what about files bigger than 4gb? */
 		case 'B': out_p += sprintf(out_p, "\\002"); break;
 		case 'c':
 			from = to = reverse = 0;
@@ -413,7 +413,7 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 		case 'O': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->total.bad_size >> 10) / 1024.)); break;
 		case 'p': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->total.files - raceI->total.files_missing) * 100. / raceI->total.files)); break;
 		case 'P': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.bad_size / 1024.)); break;
-		case 'S': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->file.speed / 1024. )); break; /* kbps */
+		case 'S': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->file.speed / 1024)); break; /* kbps */
 		case 'r': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.release_name); break;
 		case 'R': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.racer_list + 1); break;
 		case 't': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.top_messages[1] + 1); break;

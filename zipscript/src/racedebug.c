@@ -12,7 +12,7 @@ int main (int argc, char **argv) {
  unsigned int	*uspeed;
  unsigned int	*mtime;
  unsigned int	*crc;
- unsigned char  buf[49 + 5 * sizeof(int)];
+ unsigned char  buf[1 + 2*24 + 3 * sizeof(int) + sizeof(off_t)];
  char		*status = 0;
  char		*fname;
  char		*p_buf;
@@ -39,18 +39,19 @@ int main (int argc, char **argv) {
 	fname = malloc(len);
 	fread(fname, 1, len, file);
 	if ( fread(buf, 1, sizeof(buf), file) != sizeof(buf) ) {
+
 		printf("|-[CORRUPTED]\n");
 		return 0;
 		}
 	files++;
 
-	p_buf= (char *)(buf + 1);
-	crc		= (unsigned int *)p_buf;		p_buf += sizeof(int);
-	uname	= p_buf;						p_buf += 24;
-	ugroup	= p_buf;						p_buf += 24;
-	fsize	= (off_t *)p_buf;		p_buf += sizeof(off_t);
+	p_buf	= (char *)(buf + 1);
+	crc	= (unsigned int *)p_buf;		p_buf += sizeof(int);
+	uname	= p_buf;				p_buf += 24;
+	ugroup	= p_buf;				p_buf += 24;
+	fsize	= (off_t *)p_buf;			p_buf += sizeof(off_t);
 	uspeed	= (unsigned int *)p_buf;		p_buf += sizeof(int);
-	mtime = (unsigned int *)p_buf;
+	mtime	= (unsigned int *)p_buf;
 
 	switch ( *buf ) {
 		case F_NOTCHECKED:

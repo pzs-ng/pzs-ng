@@ -35,7 +35,8 @@ void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO *
  int		u_no = -1;
  int		g_no = -1;
  int		n;
- double		speedD = filesize * 1024. / speed;
+d_log("DEBUG: filesize %zu speed %u mtime %u\n", filesize, speed, mtime);
+ double		speedD = filesize / (double)speed;
 
  for (n = 0; n < raceI->total.users; n++) {
 	if (strncmp(userI[n]->name, usern, 24) == 0) {
@@ -74,7 +75,9 @@ void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO *
  groupI[g_no]->bytes += filesize;
  raceI->total.size += filesize;
 
+d_log("DEBUG1: %i userI[u_no]->speed %f speedD %f\n", u_no, userI[u_no]->speed, speedD);
  userI[u_no]->speed += speedD;
+d_log("DEBUG2: userI[u_no]->speed %f speedD %f\n", userI[u_no]->speed, speedD);
  groupI[g_no]->speed += speedD;
  raceI->total.speed += speedD;
 
