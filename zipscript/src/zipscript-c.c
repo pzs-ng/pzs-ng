@@ -374,7 +374,9 @@ main(int argc, char **argv)
 	raceI.file.speed *= 1024;
 
 	d_log("Checking the file size of %s\n", raceI.file.name);
-	stat(raceI.file.name, &fileinfo);
+	if (stat(raceI.file.name, &fileinfo)) {
+		d_log("Failed to stat file: %s\n", strerror);
+	}
 	raceI.file.size = fileinfo.st_size;
 	d_log("File size was: %d\n", raceI.file.size);
 
