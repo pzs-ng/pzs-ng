@@ -358,18 +358,3 @@ set denypost    ""
 
 # Do not show these users if they get nuked (multiple entries allowed)
 set hidenuke    "UNKNOWN"
-
-## RANDOMIZING OUTPUT
-#
-# Example:
-#  set announce(NEWDIR) "random 3"
-#   TYPE ---------'        |    |
-#         RANDOM ----------'    |
-#             # OF IDS ---------'
-#
-#  set random(NEWDIR-0)       "-%sitename- \[%section\] + %u_name@%g_name creates a directory called %relname"
-#  set random(NEWDIR-1)       "-%sitename- \[%section\] + %u_name@%g_name makes a directory called %relname"
-#  set random(NEWDIR-2)       "-%sitename- \[%section\] + %u_name@%g_name does mkdir %relname"
-#   TYPE --------'   |
-#         ID --------'
-#

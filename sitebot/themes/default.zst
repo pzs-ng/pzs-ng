@@ -78,6 +78,18 @@ announce.NUKEES                 = "%b{%u_name} (%b{%size}MB)"
 announce.WIPE                   = "[%b{wipe  }][%section] %b{%relname} by %b{%u_name} of %g_name."
 announce.WIPE-r                 = "[%b{wipe-r}][%section] %b{%relname} and all subdirectories by %b{%u_name} of %g_name."
 
+## Custom announcements (see dZSbot.defaults.conf for info on how to enable)
+#announce.COVERS                = "[%b{covers}][%section] %b{%relname} by %b{%u_name} of %g_name."
+#announce.NEWCD                 = "[%b{cd    }][%section] %b{%relname} by %b{%u_name} of %g_name."
+#announce.NEWDISC               = "[%b{disc  }][%section] %b{%relname} by %b{%u_name} of %g_name."
+#announce.SAMPLE                = "[%b{sample}][%section] %b{%relname} by %b{%u_name} of %g_name."
+#announce.SUBTITLES             = "[%b{subs  }][%section] %b{%relname} by %b{%u_name} of %g_name."
+
+## Random announcements (random.EVENT-##)
+#random.NEWDIR-0                 = "[%b{new   }][%section] %b{%u_name} of %g_name creates a directory called %b{%relname}."
+#random.NEWDIR-1                 = "[%b{new   }][%section] %b{%u_name} of %g_name makes a directory called %b{%relname}."
+#random.NEWDIR-2                 = "[%b{new   }][%section] %b{%u_name} of %g_name does mkdir %b{%relname}."
+
 ## Special zipscript announcements
 announce.DOUBLESFV              = "[%b{notice}] %b{%u_name} of %g_name tried to upload a dupe sfv."
 announce.BADBITRATE             = "[%b{notice}] %b{%u_name} of %g_name is violating rules by uploading shit with bitrate %b{%bitrate}kbps."
@@ -183,13 +195,6 @@ announce.COMPLETE_STAT_RACE_ZIP         = "[%b{done  }][%section] %b{%reldir} wi
 
 ## Postdel announce
 announce.INCOMPLETE             = "[%b{d0h!  }][%section] %b{%releasename} is now incomplete thanks to %b{%u_name} of %b{%g_name}."
-
-## Custom announcements (see dZSbot.defaults.conf for info on how to enable)
-#announce.COVERS                = "[%b{covers}][%section] %b{%relname} by %b{%u_name} of %g_name."
-#announce.NEWCD                 = "[%b{cd    }][%section] %b{%relname} by %b{%u_name} of %g_name."
-#announce.NEWDISC               = "[%b{disc  }][%section] %b{%relname} by %b{%u_name} of %g_name."
-#announce.SAMPLE                = "[%b{sample}][%section] %b{%relname} by %b{%u_name} of %g_name."
-#announce.SUBTITLES             = "[%b{subs  }][%section] %b{%relname} by %b{%u_name} of %g_name."
 
 ## Third party scripts
 announce.IMDB                   = "%msg"

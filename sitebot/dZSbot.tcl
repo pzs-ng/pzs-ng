@@ -342,6 +342,19 @@ proc parsesysop {line eventvar datavar} {
 	return 0
 }
 
+proc ng_random {event rndvar} {
+	upvar $rndvar rndevent
+	global random
+
+	## Select a random announce theme
+	set eventlist [array names random "${event}-*"]
+	if {[set items [llength $eventlist]]} {
+		set rndevent [lindex $eventlist [rand $items]]
+		return 1
+	}
+	return 0
+}
+
 proc ng_format {event section line} {
 	global announce defaultsection disable glversion mpath random sitename theme theme_fakes variables
 
@@ -361,15 +374,15 @@ proc ng_format {event section line} {
 		set event "DEFAULT"
 	}
 	set vars $variables($event)
+	set output $theme(PREFIX)
 
 	## Random announce messages
-	if {[string equal "random" [lindex $announce($event) 0]] && [string is digit -strict [lindex $announce($event) 1]]} {
-		set output $random(${event}-[rand [lindex $announce($event) 1]])
+	if {[string equal "random" $announce($event)] && [ng_random $event rndevent]} {
+		append output $random($rndevent)
 	} else {
-		set output $announce($event)
+		append output $announce($event)
 	}
 
-	set output "$theme(PREFIX)$output"
 	if {[string equal $section $defaultsection] && [info exists theme_fakes($event)]} {
 		set section $theme_fakes($event)
 	}
@@ -1626,8 +1639,8 @@ proc ng_who {nick uhost hand chan argv} {
 #################################################################################
 
 proc loadtheme {file} {
-	global announce scriptpath theme theme_fakes variables
-	unset announce
+	global announce random scriptpath theme theme_fakes variables
+	unset -nocomplain announce random
 	set announce(THEMEFILE) $file
 
 	if {[string index $file 0] != "/"} {
@@ -1644,20 +1657,44 @@ proc loadtheme {file} {
 	close $handle
 
 	foreach line [split $data "\n"] {
-		if {![regexp -nocase -- "^#" $line]} {
-			if {[regexp -nocase -- {fakesection\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+		if {[string index $line 0] != "#"} {
+			## TODO (neoxed):
+			## The first three regular expressions can easily be unified (as shown with the code below);
+			## however, the time taken to parse the theme file drastically increased (I'm talking minutes).
+			if {[regexp -nocase -- {announce\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+				set announce($setting) $value
+			} elseif {[regexp -nocase -- {fakesection\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
 				set theme_fakes($setting) $value
-			} elseif {[regexp -nocase -- {announce\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-				set announcetmp($setting) $value
-			} elseif {[regexp -nocase -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
+			} elseif {[regexp -nocase -- {random\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+				set random($setting) $value
+			} elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
 				set theme($setting) $value
 			}
+#			if {[regexp -- {(\S+)\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud type setting quote value]} {
+#				switch -exact -- [string tolower $type] {
+#					"announce"    {set announce($setting) $value}
+#					"fakesection" {set theme_fakes($setting) $value}
+#					"random"      {set random($setting) $value}
+#					default       {putlog "dZSbot warning: Invalid theme setting \"$type.$setting\"."}
+#				}
+#			} elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
+#				set theme($setting) $value
+#			}
 		}
 	}
 
+	foreach name [array names random] {
+		if {![regexp {(.+)-\d+$} $name dud base]} {
+			putlog "dZSbot warning: Invalid setting \"random.$name\", must be in the format of \"random.EVENT-#\"."
+			unset random($name)
+		} else {
+			set announce($base) "random"
+			set random($name) [themereplace_startup $random($name)]
+		}
+	}
+	foreach name [array names announce] {set announce($name) [themereplace_startup $announce($name)]}
 	foreach name [array names theme] {set theme($name) [themereplace_startup $theme($name)]}
 	foreach name [array names theme_fakes] {set theme_fakes($name) [themereplace_startup $theme_fakes($name)]}
-	foreach name [array names announcetmp] {set announce($name) [themereplace_startup $announcetmp($name)]}
 
 	## Sanity checks
 	foreach type {COLOR1 COLOR2 COLOR3 PREFIX KB KBIT MB MBIT} {

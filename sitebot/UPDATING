@@ -18,6 +18,9 @@
 # Changes
 ###############################################################
 
+r1483: Random announcements were moved to the theme file.
+- Check the default.zst theme file for an example.
+
 r1463: Changed the default splitter(CHAR) to "\n".
 - You may have to update your themes to use "\n" instead of "|".
 
