@@ -9,6 +9,7 @@
 #################################################################################
 set dver "0.0.4"
 set dzerror "0"
+set pid 0
 set tclroot [file dirname [info script]]
 putlog "Launching dZSBot (v$dver) for zipscript-c..."
 
@@ -217,7 +218,7 @@ set debuglevel [DEBUG_INFO]
 # MAIN LOOP - PARSES DATA FROM GLFTPD.LOG                                       #
 #################################################################################
 proc readlog {} {
-	global location lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2 invite_channels loglastoct
+	global location lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2 invite_channels loglastoct pid
 
 	set dZStimer [utimer 1 "readlog"]
 
@@ -313,10 +314,10 @@ proc readlog {} {
 					sndall $section $echoline
 					postcmd $msgtype $section $path
 				} else {
-					if {![info exists variables($msgtype)]} {
+					if {![info exists variables($msgtype)] && $pid == 0} {
 						putlog "dZSbot error: \"variables($msgtype)\" not set in config, type becomes \"DEFAULT\""
 					}
-					if {![info exists variables($msgtype)] && $disable(DEFAULT) == 0} {
+					if {![info exists variables($msgtype)] && $disable(DEFAULT) == 0 && $pid == 0} {
 						set echoline [parse DEFAULT [lrange $line 6 end] $section]
 						sndall $section $echoline
 						postcmd $msgtype $section $path
@@ -459,7 +460,7 @@ proc basicreplace {rstring section} {
 #################################################################################
 # CONVERT COOKIES TO DATA                                                       #
 #################################################################################
-proc parse {msgtype msgline section} { global variables announce random mpath use_glftpd2 theme theme_fakes defaultsection
+proc parse {msgtype msgline section} { global variables announce random mpath use_glftpd2 theme theme_fakes defaultsection pid
 	set type $msgtype
 
 	if {![string compare $type "NUKE"] || ! [string compare $type "UNNUKE"]} {
@@ -472,12 +473,22 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 	}
 
 	if {![info exists variables($type)]} {
-		putlog "dZSbot error: \"variables($type)\" not set in theme, type becomes \"DEFAULT\""
-		set type "DEFAULT"
+		if {$pid == 0} {
+			putlog "dZSbot error: \"variables($type)\" not set in theme, type becomes \"DEFAULT\""
+			set type "DEFAULT"
+		} else {
+			set f_user $type
+			set type "FAILLOGIN"
+		}
 	}
 	if {![info exists announce($type)]} {
-		putlog "dZSbot error: \"announce($type)\" not set in theme, type becomes \"DEFAULT\""
-		set type "DEFAULT"
+		if {$pid == 0} {
+			putlog "dZSbot error: \"announce($type)\" not set in theme, type becomes \"DEFAULT\""
+			set type "DEFAULT"
+		} else {
+			set f_user $type
+			set type "FAILLOGIN"
+		}
 	}
 
 	set vars $variables($type)
@@ -510,6 +521,9 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 		set output [replacevar $output "%reldir" [lindex $split [expr $ll -1]]]
 		set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
 		set vars [string range $vars 4 end]
+		set cnt 1
+	} elseif {[ string compare [lindex $vars 0] "%failed_nick" ] == 0 && $pid != 0} {
+		set output [replacevar $output "%failed_nick" $f_user ]
 		set cnt 1
 	}
 

@@ -19,6 +19,7 @@ announce.TIMEOUT		= "[%b{logout}] %b{%u_name} has timed out after %b{%u_idletime
 announce.TAGLINE		= "[%b{tag   }] %b{%u_name}@%g_name has changed tagline to %b{%u_tagline}."
 announce.WIPE		        = "[%b{wipe  }][%section] %b{%reldir} by %b{%u_name} of %g_name."
 announce.WIPE-r		        = "[%b{wipe-r}][%section] %b{%reldir} and all subdirectories by %b{%u_name} of %g_name."
+announce.FAILLOGIN		= "[%b{login }] %b{%failed_nick} tried to log in with wrong password."
 
 # special output done by the zipscript
 announce.DOUBLESFV		= "[%b{notice}] %b{%u_name} of %g_name tried to upload a dupe sfv."
