@@ -16,6 +16,8 @@ status  who       what
                    - would there be any benefit from this? Scrap it?
  [x]     psxc      warn_genres and warn_bitrates option in zsconfig.h (output to gllog)
  [ ]     daxxar    hybrid_types, are allowed if no sfv, will be checked against sfv if there is one.
+ [ ]               fix a coredump when the user is killed/kicked on upload.
+ [ ]               use mp3info as much as possible to get mp3 info.
 
 status   description
  [ ]     not done 
