@@ -20,7 +20,9 @@ struct USER {
 };
 
 struct dirent	**dirlist;
+struct dirent	**dirlistp;
 unsigned int direntries = 0;
+unsigned int direntriesp = 0;
 int num_groups = 0, num_users = 0;
 struct USER	**user;
 struct GROUP	**group;
@@ -69,6 +71,23 @@ char* findfileext(char *fileext) {
 			continue;
 		if (strcasecmp(dirlist[n]->d_name + k - 4, fileext) == 0)
 			return dirlist[n]->d_name;
+    }
+    return NULL;
+}
+
+/*
+ * Modified: 2004.10.06 (psxc)
+ */
+char* findfileextparent(char *fileext) { 
+    int	n, k;
+
+    n = direntriesp;
+    while(n--) {
+		if ((k = NAMLEN(dirlistp[n])) < 4 )
+			continue;
+		if (strcasecmp(dirlistp[n]->d_name + k - 4, fileext) == 0) {
+			return dirlistp[n]->d_name;
+		}
     }
     return NULL;
 }
@@ -140,6 +159,16 @@ void rescandir() {
 	free(dirlist);
     }
     direntries = scandir(".", &dirlist, selector, 0);
+}
+
+void rescanparent() {
+    if ( direntriesp > 0 ) {
+	while ( direntriesp-- ) {
+	    free(dirlistp[direntriesp]);
+	}
+	free(dirlistp);
+    }
+    direntriesp = scandir("..", &dirlistp, 0 , 0);
 }
 
 /*
@@ -728,7 +757,6 @@ void buffer_users(char *passwdfile) {
 unsigned long sfv_compare_size(char *fileext, unsigned long fsize) {
 	int		n, k = 0;
 	unsigned long	l = 0;
-//	char		*filestat;
 	struct stat	filestat;
 
 	n = direntries;

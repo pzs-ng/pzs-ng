@@ -58,6 +58,7 @@ extern void d_log(char *, ...);
 
 extern void create_missing(char *, short);
 extern char * findfileext(char *);
+extern char * findfileextparent(char *);
 extern int findfileextcount(char *);
 extern unsigned int hexstrtodec(unsigned char *);
 #if defined(__linux__)
@@ -69,6 +70,7 @@ extern int selector (struct dirent *);
 #endif
 
 extern void rescandir();
+extern void rescanparent();
 extern void strtolower(char *);
 extern char israr(char *);
 extern char isvideo(char *);
@@ -89,6 +91,5 @@ extern char *get_u_name(int);
 extern void buffer_groups(char *);
 extern void buffer_users(char *);
 extern unsigned long sfv_compare_size(char *, unsigned long);
-
 #endif
 

@@ -120,6 +120,7 @@ struct LOCATIONS {
     char				*path;
     unsigned int			length_path;
     unsigned int			length_zipdatadir;
+    unsigned int			in_cd_dir;
 };
 
 #endif

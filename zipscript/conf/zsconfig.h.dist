@@ -359,11 +359,17 @@
  */
 
 /* How Indicators look
+ * incomplete_cd_indicator = when a multi-cd release is incomplete.
+ * incomplete_indicator = when a normal release is incomplete.
+ * incomplete_cd_nfo_indicator = when a multi-cd release is missing nfo in the cd dir.
+ * incomplete_nfo_indicator = when a normal release is missing nfo in the dir.
+ * incomplete_base_nfo_indicator = when a multi-cd release is missing nfo in the base dir.
  */
 #define incomplete_cd_indicator         "../../(incomplete)-(%0)-%1"
 #define incomplete_indicator            "../(incomplete)-%0"
 #define incomplete_cd_nfo_indicator	"../../(no-nfo)-(%0)-%1"
 #define incomplete_nfo_indicator	"../(no-nfo)-%0"
+#define incomplete_base_nfo_indicator	"../../(no-nfo)-%1"
 
 #define progressmeter                   "[%V] - %3.0p%% Complete - [dS]"
 #define del_progressmeter               "\\[.*] - ...% Complete - \\[dS]"

@@ -88,8 +88,9 @@ void getrelname(char *directory) {
 #if (show_missing_nfo_in_cd == TRUE)
 	locations.nfo_incomplete = i_incomplete(incomplete_cd_nfo_indicator, path);
 #else
-	locations.nfo_incomplete = NULL;
+	locations.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path);
 #endif
+	locations.in_cd_dir = 1;
 	if (k < 2) free(path[1]);
 	if (k == 0) free(path[0]);
     } else {
@@ -97,9 +98,40 @@ void getrelname(char *directory) {
 	sprintf(raceI.misc.release_name, "%s", path[1]);
 	locations.incomplete = c_incomplete(incomplete_indicator, path);
 	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
+	locations.in_cd_dir = 0;
 	if (k < 2) free(path[1]);
 	if (k == 0) free(path[0]);
     }
+}
+
+void remove_nfo_indicator(char *directory) {
+	int	cnt,	
+	l[2],		
+	n = 0,		
+	k = 2;		
+	char	*path[2];
+
+	for ( cnt = locations.length_path - 1 ;	k && cnt ; cnt-- ) {
+		if ( directory[cnt] == '/' ) {
+			k--;
+			l[k] = n;
+			path[k]	= malloc(n + 1);
+			strncpy(path[k], directory + cnt + 1, n);
+			path[k][n] = 0;	
+			n = 0;
+		} else n++;
+	}
+	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
+	if (fileexists(locations.nfo_incomplete))
+		unlink(locations.nfo_incomplete);
+	locations.nfo_incomplete = i_incomplete(incomplete_cd_nfo_indicator, path);
+	if (fileexists(locations.nfo_incomplete))
+		unlink(locations.nfo_incomplete);
+	locations.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path);
+	if (fileexists(locations.nfo_incomplete))
+		unlink(locations.nfo_incomplete);
+	if (k <	2) free(path[1]);
+	if (k == 0) free(path[0]);
 }
 
 unsigned char get_filetype(char *ext) {
@@ -369,11 +401,35 @@ int main( int argc, char **argv ) {
     }
 
     if ( incomplete == 1 && raceI.total.files > 0 ) {
+		if ((show_missing_nfo) && (locations.nfo_incomplete)) {
+			if  (findfileext(".nfo")) {
+				d_log("Removing	missing-nfo indicator (if any)\n");
+				remove_nfo_indicator(locations.path);
+			} else if ( matchpath( no_nfo_dirs, locations.path )) {	
+				if (!locations.in_cd_dir) {
+					d_log("Creating	missing-nfo indicator %s.\n", locations.nfo_incomplete);
+					create_incomplete_nfo();
+				} else {
+					rescanparent();	
+					if (findfileextparent(".nfo")) {
+						d_log("Removing	missing-nfo indicator (if any)\n");
+						remove_nfo_indicator(locations.path);
+					} else {
+						d_log("Creating	missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);	
+						create_incomplete_nfo();
+					}
+				}
+			}
+		}
+
+/*
 		if ((show_missing_nfo) && (!findfileext(".nfo")) && (matchpath(no_nfo_dirs, locations.path))) {
 		    create_incomplete_nfo();
 		} else if (locations.nfo_incomplete) {
 			unlink(locations.nfo_incomplete);
 		}
+
+*/
 		d_log("Creating incomplete indicator\n");
 		create_incomplete();
 		d_log("Moving progress bar\n");
