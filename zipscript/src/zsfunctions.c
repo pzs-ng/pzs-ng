@@ -744,10 +744,10 @@ get_rar_info(struct VARS *raceI)
 	}
 }
 
-/* New execute function which takes stdarg type arguments
- * this function is still a bit primitive because it can only
- * handle the format %s right now, and the format argument have
- * to consist of contiguous %s's, nothing else 
+/* New execute function which takes stdarg type arguments.
+ * This function is still a bit primitive because it can only
+ * handle the format '%s' right now, and the format argument has
+ * to consist of contiguous %s's, nothing else.
  */
 int
 execute(char *fmt, ...)
@@ -761,7 +761,7 @@ execute(char *fmt, ...)
 	
 	while (*fmt) {
 		switch (*fmt++) {
-			/* add more types here maybe? */
+			/* add more types here maybe, or use another approach? */
 			case 's':
 				cmdv = realloc(cmdv, sizeof(char *)*(args+1));
 				cmdv[args] = va_arg(ap, char *);
