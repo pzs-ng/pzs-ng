@@ -21,16 +21,56 @@
 #define FILE_MAX			256
 #define MAXIMUM_FILES_IN_RELEASE	1024
 
+#ifdef zip_complete_type
+	__attribute__((deprecated));
+#else
 #define zip_complete_type		0
+#endif
+#ifdef  zip_norace_complete_type
+	__attribute__((deprecated));
+#else
 #define zip_norace_complete_type	0
+#endif
+#ifdef rar_complete_type
+	__attribute__((deprecated));
+#else
 #define rar_complete_type		0
+#endif
+#ifdef rar_norace_complete_type
+	__attribute__((deprecated));
+#else
 #define rar_norace_complete_type	0
+#endif
+#ifdef audio_complete_type
+	__attribute__((deprecated));
+#else
 #define audio_complete_type		0
+#endif
+#ifdef audio_norace_complete_type
+	__attribute__((deprecated));
+#else
 #define audio_norace_complete_type	0
+#endif
+#ifdef video_complete_type
+	__attribute__((deprecated));
+#else
 #define video_complete_type		0
+#endif
+#ifdef video_norace_complete_type
+	__attribute__((deprecated));
+#else
 #define video_norace_complete_type	0
+#endif
+#ifdef other_complete_type
+	__attribute__((deprecated));
+#else
 #define other_complete_type		0
+#endif
+#ifdef other_norace_complete_type
+	__attribute__((deprecated));
+#else
 #define other_norace_complete_type	0
+#endif
 
 #ifndef O_SYNC
 #define O_SYNC O_FSYNC
