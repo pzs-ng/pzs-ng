@@ -1,10 +1,10 @@
-echo -n "Compiling sitewho.c :"
-gcc -O2 sitewho.c -O2 -static -o sitewho 2> /dev/null
+echo -n "Compiling sitewho.c : "
+gcc -O2 -static -o sitewho sitewho.c 2> /dev/null
 if [ $? -gt 0 ] ; then
- echo " [FAIL]"
+ echo "[FAIL]"
  exit 2
 fi
-echo " [OK]"
+echo "[OK]"
 
 echo ""
 echo "Check README, if you want to learn how this works!"

@@ -1,6 +1,3 @@
-#define KEY	 0x0000DEAD   
-#define GLGROUP  "/etc/group"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,7 +8,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-
+#include <ctype.h>
 
 struct ONLINE {
   char	 tagline[64];		   /* The users tagline */
@@ -46,7 +43,7 @@ struct stat		 filestat;
 
 char			*header, *footer,
 			*glpath, *mpaths,
-			*husers;
+			*husers, *ipckey, *glgroup, *def_ipckey="0x0000DEAD", *def_glgroup="/etc/group";
 int			 maxusers,
 			 showall	= 0,
 			 uploads	= 0,
@@ -100,7 +97,7 @@ short matchpath(char *instr, char *path) {
 	}
  return 0;
 }
- 
+
 
 short strcomp(char *instr, char *searchstr) {
  int	cnt;
@@ -183,7 +180,7 @@ void showusers(int n, int mode, char *ucomp) {
 
 				} else if ((!strncasecmp (user[x].status, "RETR ", 5) && user[x].bytes_xfer) && mask == 0 ) {
 				m = strplen(user[x].status) - 5;
-				
+
 				for (i = sprintf(realfile, "%s", user[x].currentdir); realfile[i] != '/' && i > 0; i--);
 				sprintf(realfile + i + 1, "%.*s", m, user[x].status + 5);
 
@@ -195,6 +192,7 @@ void showusers(int n, int mode, char *ucomp) {
 
 				i = 15 * user[x].bytes_xfer * 1. / filesize(realfile);
 				i = i > 15 ? 15 : i;
+
 				bar[i] = 0;
 
 				for (m = 0; m < i; m++) bar[m] = 'x';
@@ -217,7 +215,7 @@ void showusers(int n, int mode, char *ucomp) {
 			hours = minutes = 0;
 			seconds = tstop.tv_sec - user[x].login_time;
 			while ( seconds >= 3600 ) { hours++; seconds -= 3600; }
-			while ( seconds >= 60 ) { minutes++; seconds -= 60; } 
+			while ( seconds >= 60 ) { minutes++; seconds -= 60; }
 			sprintf(online, "%02d:%02d:%02d", hours, minutes, seconds);
 
 			if ( mode == 0 ) {
@@ -271,7 +269,7 @@ void readconfig(char *arg) {
 
  if ( n == 0 ) {
 	tmp = malloc(18);
-	sprintf(tmp, "/bin/sitewho.conf", arg);
+	sprintf(tmp, "/bin/sitewho.conf");
 	} else {
 	tmp = malloc(n + 14);
 	sprintf(tmp, "%.*s/sitewho.conf", n, arg);
@@ -287,7 +285,7 @@ void readconfig(char *arg) {
  buf = malloc(filestat.st_size);
  fread(buf, 1, filestat.st_size, cfgfile);
  fclose(cfgfile);
-  
+
  for ( n = 0; n < filestat.st_size ; n++ ) switch( *(buf + n) ) {
 	case '\n':
 		if ( b_w > l_b && e_w > l_b ) {
@@ -299,7 +297,9 @@ void readconfig(char *arg) {
 				else if ( !memcmp(buf + l_b, "footerfile", 10) ) footer = tmp;
 				else if ( !memcmp(buf + l_b, "maskeddirectories", 17) ) mpaths = tmp;
 				else if ( !memcmp(buf + l_b, "hiddenusers", 11) ) husers = tmp;
-				else if ( !memcmp(buf + l_b, "glrootpath", 10) ) glpath = tmp;
+				else if ( !memcmp(buf + l_b, "rootpath", 8) ) glpath = tmp;
+				else if ( !memcmp(buf + l_b, "ipc_key", 7) ) ipckey = tmp;
+				else if ( !memcmp(buf + l_b, "grp_path", 8) ) glgroup = tmp;
 				else {
 				if ( !memcmp(buf + l_b, "seeallflags", 11) ) showall = compareflags(getenv("FLAGS"), tmp);
 					else if ( !memcmp(buf + l_b, "maxusers", 8) ) maxusers = atoi(tmp);
@@ -406,24 +406,24 @@ void buffer_groups(char *groupfile) {
    l_start = n + 1;
   }
  }
- 
+
  close( f );
  free( f_buf );
  free( f_name );
 }
 
 
-
-
-
 /* CORE CODE */
-main (int argc, char **argv) {
+int main (int argc, char **argv) {
 
  readconfig(argv[0]);
- buffer_groups(GLGROUP);
+ if (!ipckey) ipckey=def_ipckey;
+ if (!glgroup) glgroup=def_glgroup;
 
- if ((shmid = shmget((key_t)KEY, 0, 0)) == -1) {
-	if ( argc == 1 ) { 
+ buffer_groups(glgroup);
+
+ if ((shmid = shmget((key_t)strtol(ipckey, NULL, 16), 0, 0)) == -1) {
+	if ( argc == 1 ) {
 		show(header);
 		showtotals();
 		show(footer);
@@ -432,12 +432,12 @@ main (int argc, char **argv) {
 		}
 	exit(0);
 	}
-            
+
  if ((user = (struct ONLINE *)shmat( shmid, NULL, SHM_RDONLY)) == (struct ONLINE *)-1) {
 	printf("Error!: (SHMAT) failed...");
 	exit(1);
 	}
-      
+
  shmctl( shmid, IPC_STAT, &ipcbuf);
 
  if ( argc == 1 ) {
@@ -453,7 +453,7 @@ main (int argc, char **argv) {
 	if ( ! onlineusers ) {
 		printf("\002%s\002 is not online\n", argv[1]);
 		} else {
-		printf("\n"); 
+		printf("\n");
 		}
 	}
 
