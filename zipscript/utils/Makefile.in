@@ -12,4 +12,4 @@ sfvdatatest: sfvdatatest.c
 	$(CC) $(CFLAGS) sfvdatatest.c -o $@
 
 headdatatest: headdatatest.c
-	$(CC) $(CFLAGS) sfvdatatest.c -o $@
+	$(CC) $(CFLAGS) headdatatest.c -o $@

@@ -910,10 +910,10 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 		raceI->data_incrementor = hd.data_incrementor = 1;
 		raceI->data_queue = hd.data_queue = 1;
 		hd.data_qcurrent = 0;
-		hd.data_pid = getpid();
+		hd.data_pid = (short int)getpid();
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
-		d_log("create_lock: lock set. (no previous lockfile found)\n");
+		d_log("create_lock: lock set. (no previous lockfile found) pid: %d\n", hd.data_pid);
 		return 0;
 	} else {
 		read(fd, &hd, sizeof(HEADDATA));
@@ -927,11 +927,11 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 			raceI->data_incrementor = hd.data_incrementor = 1;
 			raceI->data_queue = hd.data_queue = 1;
 			hd.data_qcurrent = 0;
-			hd.data_pid = getpid();
+			hd.data_pid = (short int)getpid();
 			lseek(fd, 0L, SEEK_SET);
 			write(fd, &hd, sizeof(HEADDATA));
 			close(fd);
-			d_log("create_lock: lock set. (lockfile exceeded max life time)\n");
+			d_log("create_lock: lock set. (lockfile exceeded max life time) pid: %d\n", hd.data_pid);
 			return 0;
 		}
 		if (hd.data_in_use) {						/* the lock is active */
@@ -983,13 +983,13 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 			hd.data_in_use = progtype;
 		}
 		raceI->data_incrementor = hd.data_incrementor;
-		hd.data_pid = getpid();
+		hd.data_pid = (short int)getpid();
 		lseek(fd, 0L, SEEK_SET);
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
 		raceI->data_in_use = progtype;
 		raceI->data_type = 0;
-		d_log("create_lock: lock set.\n");
+		d_log("create_lock: lock set. pid: %d\n", hd.data_pid);
 		return 0;
 	}
 }
@@ -1053,8 +1053,8 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 		close(fd);
 		exit(EXIT_FAILURE);
 	}
-	if (hd.data_pid != getpid()) {
-		d_log("update_lock: Oops! Race condition - another process has the lock.\n");
+	if (hd.data_pid != (short int)getpid()) {
+		d_log("update_lock: Oops! Race condition - another process has the lock. pid: %d != %d\n", hd.data_pid, (short int)getpid());
 		hd.data_queue = raceI->data_queue - 1;
 		lseek(fd, 0L, SEEK_SET);
 		write(fd, &hd, sizeof(HEADDATA));
