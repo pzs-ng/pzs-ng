@@ -69,7 +69,7 @@ int main (int argc, char **argv) {
 
 	printf("|-[File #%i]\n", files);
 	printf("| Filename: %s - Status: %s - CRC-32: %08X - Filesize: %u\n", fname, status, (unsigned int)*crc, (unsigned int)*fsize);
-	printf("| User    : %s - Group: %s - Speed: %0.1fKb/s\n", uname, ugroup, *fsize * 1024. / *uspeed );
+	printf("| User    : %s - Group: %s - Speed: %0.1fKb/s\n", uname, ugroup, *uspeed / 1024. );
 
 	free(fname);
 	}
