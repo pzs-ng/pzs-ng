@@ -1127,7 +1127,7 @@ proc ng_stats {type time nick uhost hand chan argv} {
 	checkchan $nick $chan
 
 	set section $statdefault
-	if {[string length $section]} {
+	if {[string length [lindex $argv 0]]} {
 		set error 1
 		set sections ""
 		foreach {name value} [array get statsection] {
