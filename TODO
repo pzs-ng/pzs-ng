@@ -32,13 +32,14 @@ status  who       what
  [ ]               fix mysterious bug - upload of sfv fails if old data is in ftp-data/zipscript (unconfirmed) -
                    running datacleaner fixes the problem... maybe check race-file.c (readsfv_file())
  [x]     iwdisb    calc crc on the fly if glftpd does not pass crc
- [ ]               group and albumname sort in mp3
+ [/]     iwdisb    group and albumname sort in mp3
  [ ]               add support to change the gid of the releasedir based on genre. need a script to initiate the
                    glftpd groupfile too (create groups based on genre names), if we are to include it.
  [ ]               add support for hiding affill uploads (in both output to channel and the .message. Should also
                    consider the 'anonymity' setting above.)
  [ ]               add support for showing when racers joined the, eh, race in the .message.
  [ ]               make it possible to change the name of the .message file.
+ [ ]               change how mp3-links are created from absolute paths to relative paths.
 
 status   description
  [ ]     not done 
