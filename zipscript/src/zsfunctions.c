@@ -223,13 +223,10 @@ unlink_missing(char *s)
 
 	t = u = v = malloc(strlen(s) + 9);
 	sprintf(t, "%s-missing", s);
-d_log("DEBUG : t=%s\n", t);
 	unlink(t);
 	v = findfilename(t);
-d_log("DEBUG : v=%s\n", v);
 	unlink(v);
 	free(t);
-	//free(u);
 }
 
 /*
@@ -274,35 +271,20 @@ isvideo(char *fileext)
 }
 
 /*
- * Modified: Unknown
+ * Modified: 2004-11-17 (psxc) - added support to modify the chars used in the progressbar
  */
 void 
 buffer_progress_bar(struct VARS *raceI)
 {
 	int		n;
-	char		char_missing = ':';
-	char		char_filled = '#';
 
-/* Some new routine that needs more testing - disabled for now
- *	char		*char_filled = 0, *char_missing = 0;
-
- *	char_filled = malloc(sizeof(charbar_filled));
- *	char_missing = malloc(sizeof(charbar_missing));
- *	char_filled = charbar_filled;
- *	char_missing = charbar_missing;
- */
 	raceI->misc.progress_bar[14] = 0;
 	if (raceI->total.files > 0) {
 		for (n = 0; n < (raceI->total.files - raceI->total.files_missing) * 14 / raceI->total.files; n++)
-			raceI->misc.progress_bar[n] = char_filled;
+			raceI->misc.progress_bar[n] = *charbar_filled;
 		for (; n < 14; n++)
-			raceI->misc.progress_bar[n] = char_missing;
+			raceI->misc.progress_bar[n] = *charbar_missing;
 	}
-
-/*
- *	free(char_filled);
- *	free(char_missing);
- */
 }
 
 /*
