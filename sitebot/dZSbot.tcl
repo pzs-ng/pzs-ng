@@ -973,8 +973,8 @@ proc ng_bwdn { nick uhost hand chan args} {
 	}
 	set output "$theme(PREFIX)$announce(BWDN)"
 	set raw [exec $binary(BW)]
-	set upper [format "%.0f" [expr [lindex $raw 1] / $speed(INCOMING)]]
-	set dnper [format "%.0f" [expr [lindex $raw 3] / $speed(OUTGOING)]]
+	set upper [format "%.1f" [expr 100 * ([lindex $raw 1] / $speed(INCOMING))]]
+	set dnper [format "%.1f" [expr 100 * ([lindex $raw 3] / $speed(OUTGOING))]]
 	set totalper [format "%.0f" [expr [lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING))]]
 
 	set output [replacevar $output "%uploads" [lindex $raw 0]]
