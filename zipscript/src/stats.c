@@ -113,6 +113,7 @@ updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **grou
  * Description: Sorts userI and groupI
  * Modified by psxc 09.25.2004 - nasty bug
  * Modified by psxc 11.22.2004 - added support for list of ppl against leader.
+ * Modified by psxc 12.01.2004 - fixed this routine! :)
  */
 void 
 sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI)
@@ -140,19 +141,18 @@ sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 		}
 		userI[t]->pos = n;
 #if ( get_competitor_list == TRUE )
-		d_log("DEBUG:userI[n]->pos = %d , userI[n]->name = %s\n", userI[n]->pos, userI[n]->name);
 		if ( (strncmp(raceI->user.name, userI[n]->name, strlen(raceI->user.name) < strlen(userI[n]->name) ? strlen(raceI->user.name) : strlen(userI[n]->name))) || ((strlen(raceI->user.name) != strlen(userI[n]->name)) && (!strncmp(raceI->user.name, userI[n]->name, strlen(raceI->user.name) < strlen(userI[n]->name) ? strlen(raceI->user.name) : strlen(userI[n]->name))))) {
 			r_list += sprintf(r_list, "%s%s", racersplit, convert2(raceI, userI[n], groupI, racersmsg, t));
 		} else {
 			raceI->user.pos = n;
 		}
-		if ((userI[t]->pos) > 0) {
-			t_list += sprintf(t_list, "%s%s", racersplit, convert2(raceI, userI[n], groupI, racersmsg, t));
-		}
 #else
 		if (!strcmp(raceI->user.name, userI[n]->name))
 			raceI->user.pos = n;
 #endif
+	}
+	for (n = 1; n < raceI->total.users; n++) {
+		t_list += sprintf(t_list, "%s%s", racersplit, convert2(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
 	}
 	bzero(p_array, raceI->total.groups * sizeof(int));
 
