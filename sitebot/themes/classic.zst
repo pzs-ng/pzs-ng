@@ -205,7 +205,7 @@ announce.USER                   = "%b{[%c1{STATUS}]} + %b{%u_name}/%g_name on %b
 announce.TOTUPDN                = "%b{[%c1{STATUS}]} + %type %b{%count} at %total"
 announce.TOTIDLE                = "%b{[%c1{STATUS}]} + Currently %b{%count} users idle"
 
-announce.SPEEDUP                = "%b{[%c1{SPEED}]} + %b{%u_name}/%g_name is uploading %b{%f_name} at %upspeed (%b{%dnpercent} done)"
+announce.SPEEDUP                = "%b{[%c1{SPEED}]} + %b{%u_name}/%g_name is uploading %b{%f_name} at %upspeed (%b{%uppercent} done)"
 announce.SPEEDDN                = "%b{[%c1{SPEED}]} + %b{%u_name}/%g_name is downloading %b{%f_name} at %dnspeed (%b{%dnpercent} done)"
 announce.SPEEDID                = "%b{[%c1{SPEED}]} + %b{%u_name}/%g_name has been idle for %idletime"
 announce.SPEEDERROR             = "%b{[%c1{SPEED}]} + The specified user is not online."
