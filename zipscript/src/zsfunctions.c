@@ -757,6 +757,12 @@ execute(char *s)
 	pid_t	pid;
 	char	*cmdv[52]; /* 52 arguments */
 
+#if (use_old_execute)
+	if ((i = system(s)) == -1)
+		d_log("execute (old): %s\n", strerror(errno));
+	return i;
+#endif
+
 	bzero(cmdv, sizeof(char *)*52);
 
 	/* TODO: make this understand quoted strings */

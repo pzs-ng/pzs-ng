@@ -981,6 +981,10 @@
 #define max_seconds_wait_for_lock	20
 #endif
 
+#ifndef use_old_execute
+#define use_old_execute			FALSE
+#endif
+
 /*
  * Some setting used in ng-chown
  * -----------------------------
