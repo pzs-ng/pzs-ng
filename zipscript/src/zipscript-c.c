@@ -129,11 +129,12 @@ void getrelname(char *directory) {
      ( ! strncasecmp(path[1], "DiSK", 4) && l[1] <= 6 ) ||
      ( ! strncasecmp(path[1], "DVD" , 3) && l[1] <= 5 )) {
 	raceI.misc.release_name = malloc(l[0] + 18);
-	locations.link_source = malloc(k = (locations.length_path - l[1]));
+	locations.link_source = malloc(n = (locations.length_path - l[1]));
 	sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
-	sprintf(locations.link_source, "%.*s", k - 1, locations.path);
+	sprintf(locations.link_source, "%.*s", n - 1, locations.path);
 	locations.link_target = path[0];
 	locations.incomplete = c_incomplete(incomplete_cd_indicator, path);
+	if (k < 2) free(path[1]);
 	} else {
 	raceI.misc.release_name = malloc(l[1] + 10);
 	locations.link_source	= malloc(locations.length_path + 1);
@@ -141,9 +142,8 @@ void getrelname(char *directory) {
 	sprintf(raceI.misc.release_name, "%s", path[1]);
 	locations.link_target = path[1];
 	locations.incomplete = c_incomplete(incomplete_indicator, path);
+	if (k == 0) free(path[0]);
 	}
- if (k < 2) free(path[1]);
- if (k == 0) free(path[0]);
 }
 
 
@@ -816,6 +816,7 @@ if ( matchpath(group_dirs, locations.path ) && ( hide_group_uploaders == TRUE ))
 				writelog(convert(&raceI, userI, groupI, newleader_msg), "NEWLEADER");
 				}
 			} else {
+
 			if ( userI[raceI.user.pos]->files == 1 && raceI.total.files >= min_update_files && update_msg != NULL ) {
 				d_log("Writing UPDATE to %s\n", log);
 				writelog(convert(&raceI, userI, groupI, update_msg), "UPDATE");
@@ -874,6 +875,7 @@ if ( matchpath(group_dirs, locations.path ) && ( hide_group_uploaders == TRUE ))
 				complete_bar = audio_completebar;
  				complete_msg = CHOOSE(raceI.total.users, audio_complete, audio_norace_complete);
 				complete_type = CHOOSE(raceI.total.users, audio_complete_type, audio_norace_complete_type);
+
 				
 				d_log("Symlinking audio\n");
 				if ( ! strncasecmp(locations.link_target, "VA", 2) && (locations.link_target[2] == '-' || locations.link_target[2] =='_')) {

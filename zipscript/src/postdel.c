@@ -77,7 +77,7 @@ void writelog(char *msg, char *status) {
 /* GET NAME OF MULTICD RELEASE (CDx/DISCx) (SYMLINK LOCATION + INCOMPLETE FILENAME)*/
 void getrelname(char *directory) {
  int    cnt,
-        l,
+        l[2],
         n = 0,
         k = 2;
  char   *path[2];
@@ -85,6 +85,7 @@ void getrelname(char *directory) {
  for ( cnt = strlen(directory) ; k && cnt ; cnt-- ) {
 	if ( directory[cnt] == '/' ) {
 		k--;
+		l[k] = n;
 		path[k] = malloc(n + 1);
 		strncpy(path[k], directory + cnt + 1, n);
 		path[k][n] = 0;
@@ -94,25 +95,22 @@ void getrelname(char *directory) {
 		}
 	}
 
- l = strlen(path[1]);
-
- if (( ! strncasecmp(path[1], "CD"  , 2) && l <= 4 ) ||
-     ( ! strncasecmp(path[1], "DISC", 4) && l <= 6 ) ||
-     ( ! strncasecmp(path[1], "DiSC", 4) && l <= 6 ) ||
-     ( ! strncasecmp(path[1], "DISK", 4) && l <= 6 ) ||
-     ( ! strncasecmp(path[1], "DiSK", 4) && l <= 6 ) ||
-     ( ! strncasecmp(path[1], "DVD" , 3) && l <= 5 )) {  
-	n = strlen(path[0]);
-	raceI.misc.release_name = malloc( n + 18 );
+ if (( ! strncasecmp(path[1], "CD"  , 2) && l[1] <= 4 ) ||
+     ( ! strncasecmp(path[1], "DISC", 4) && l[1] <= 6 ) ||
+     ( ! strncasecmp(path[1], "DiSC", 4) && l[1] <= 6 ) ||
+     ( ! strncasecmp(path[1], "DISK", 4) && l[1] <= 6 ) ||
+     ( ! strncasecmp(path[1], "DiSK", 4) && l[1] <= 6 ) ||
+     ( ! strncasecmp(path[1], "DVD" , 3) && l[1] <= 5 )) {  
+	raceI.misc.release_name = malloc( l[0] + 18 );
 	sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
  	locations.incomplete = c_incomplete(incomplete_cd_indicator, path);
+	if (k < 2) free(path[1]);
 	} else {
-	raceI.misc.release_name = malloc( l + 10 );
+	raceI.misc.release_name = malloc( l[1] + 10 );
 	sprintf(raceI.misc.release_name, "%s", path[1]);
 	locations.incomplete = c_incomplete(incomplete_indicator, path);
+	if (k == 0) free(path[0]);
 	}
- if (k < 2) free(path[1]);
- if (k == 0) free(path[0]);
 }
 
 

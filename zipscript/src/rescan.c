@@ -84,46 +84,42 @@ void writelog(char *msg, char *status) {
 
 void getrelname(char *directory) {
  int    cnt,
-        l,
+        l[2],
         n = 0,
         k = 2;
  char   *path[2];
- 
- for ( cnt = locations.length_path - 1 ; k && cnt ; cnt-- )
-  if ( directory[cnt] == '/' ) {
-   k--;
-   path[k] = malloc(n + 1);
-   strncpy(path[k], directory + cnt + 1, n);
-   path[k][n] = 0;
-   n = 0;
-  } else n++;
-  
- l = strlen(path[1]);
- 
- if (( ! strncasecmp(path[1], "CD"  , 2) && l <= 4 ) ||
-     ( ! strncasecmp(path[1], "DISC", 4) && l <= 6 ) ||
-     ( ! strncasecmp(path[1], "DiSC", 4) && l <= 6 ) ||
-     ( ! strncasecmp(path[1], "DISK", 4) && l <= 6 ) ||
-     ( ! strncasecmp(path[1], "DiSK", 4) && l <= 6 ) ||
-     ( ! strncasecmp(path[1], "DVD" , 3) && l <= 5 )) {
-  n = strlen(path[0]);
-  raceI.misc.release_name = malloc( n + 18 );
-  locations.link_source = malloc(k = (locations.length_path - l)); k--;
-  sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
-  strncpy(locations.link_source, locations.path, k);
-  locations.link_source[k] = 0;
-  locations.link_target = path[0];
-  locations.incomplete = c_incomplete( incomplete_cd_indicator, path );
- } else {
-  raceI.misc.release_name    = malloc( l + 10 );
-  locations.link_source = malloc( locations.length_path + 1 );
-  strcpy(locations.link_source, locations.path);
-  sprintf(raceI.misc.release_name, "%s", path[1]);
-  locations.link_target = path[1];
-  locations.incomplete = c_incomplete( incomplete_indicator, path );
- }
- if (k < 2) free(path[1]);
- if (k == 0) free(path[0]);
+
+ for ( cnt = locations.length_path - 1 ; k && cnt ; cnt-- ) if ( directory[cnt] == '/' ) {
+        k--;
+        l[k] = n;
+        path[k] = malloc(n + 1);
+        strncpy(path[k], directory + cnt + 1, n);
+        path[k][n] = 0;
+        n = 0;
+        } else n++;
+
+ if (( ! strncasecmp(path[1], "CD"  , 2) && l[1] <= 4 ) ||
+     ( ! strncasecmp(path[1], "DISC", 4) && l[1] <= 6 ) ||
+     ( ! strncasecmp(path[1], "DiSC", 4) && l[1] <= 6 ) ||
+     ( ! strncasecmp(path[1], "DISK", 4) && l[1] <= 6 ) ||
+     ( ! strncasecmp(path[1], "DiSK", 4) && l[1] <= 6 ) ||
+     ( ! strncasecmp(path[1], "DVD" , 3) && l[1] <= 5 )) {
+        raceI.misc.release_name = malloc(l[0] + 18);
+        locations.link_source = malloc(n = (locations.length_path - l[1]));
+        sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
+        sprintf(locations.link_source, "%.*s", n - 1, locations.path);
+        locations.link_target = path[0];
+        locations.incomplete = c_incomplete(incomplete_cd_indicator, path);
+	if (k < 2) free(path[1]);
+        } else {
+        raceI.misc.release_name = malloc(l[1] + 10);
+        locations.link_source   = malloc(locations.length_path + 1);
+        strcpy(locations.link_source, locations.path);
+        sprintf(raceI.misc.release_name, "%s", path[1]);
+        locations.link_target = path[1];
+        locations.incomplete = c_incomplete(incomplete_indicator, path);
+	if (k == 0) free(path[0]);
+        }
 }
 
 

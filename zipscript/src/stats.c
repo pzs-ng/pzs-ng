@@ -225,6 +225,7 @@ void get_stats(struct VARS *raceI, struct USERINFO **userI) {
  struct stat		fileinfo;
 
  users = scandir(gl_userfiles, &userlist, 0, 0);
+
  user = m_alloc(users * sizeof(char *));
  shift = 0;
 

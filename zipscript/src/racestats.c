@@ -78,12 +78,12 @@ void getrelname(char *directory) {
   n = strlen(directoryarray[0]);
   raceI.misc.release_name    = malloc(n + 18);
   sprintf(raceI.misc.release_name, "%s/%s", directoryarray[0], directoryarray[1]); 
+  if (k < 2) free(directoryarray[1]);
  } else {
   raceI.misc.release_name    = malloc(l + 12);
   sprintf(raceI.misc.release_name, "%s", directoryarray[1]);
+  if (k == 0) free(directoryarray[0]);
  }
- if (k < 2) free(directoryarray[1]);
- if (k == 0) free(directoryarray[0]);
 }
 
 

@@ -21,7 +21,7 @@ UD-OBJECTS=pzsng-undupe.o
 SC-OBJECTS=rescan.o dizreader.o stats.o convert.o complete.o crc.o multimedia.o $(UNIVERSAL)
 ZS-DEPEND=cleanup.o complete.o convert.o datacleaner.o postdel.o racestats.o rescan.o stats.o zipscript-c.o multimedia.o $(UNIVERSAL)
 
-all: racedebug zipscript-c postdel racestats cleanup datacleaner rescan pzsng-undupe
+all: pzsng-undupe racedebug zipscript-c postdel racestats cleanup datacleaner rescan
 	@(ls -lA $(binpath))
 
 $(ZS-DEPEND): ../conf/zsconfig.h
