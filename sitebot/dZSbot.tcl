@@ -47,17 +47,6 @@ interp alias {} isfalse {} string is false -strict
 #################################################################################
 
 bind join -|- * ng_welcome
-bind dcc n errorinfo errorinfo
-
-proc errorinfo {args} {
-	global errorInfo tcl_patchLevel tcl_platform
-	putlog "--\[\002Error Info\002\]------------------------------------------"
-	putlog "Tcl: $tcl_patchLevel"
-	putlog "Box: $tcl_platform(os) $tcl_platform(osVersion)"
-	putlog "Message:"
-	foreach line [split $errorInfo "\n"] {putlog $line}
-	putlog "--------------------------------------------------------"
-}
 
 proc bindcommands {cmdpre} {
 	bind pub -|- [set cmdpre]bnc         ng_bnc
@@ -148,6 +137,63 @@ if {[istrue $bindnopre]} {
 
 ## Bind the user defined command prefix.
 bindcommands $cmdpre
+
+#################################################################################
+# Internal Commands                                                             #
+#################################################################################
+
+bind dcc n errorinfo ng_error
+bind dcc n preview ng_preview
+
+proc ng_error {args} {
+	global errorInfo tcl_patchLevel tcl_platform
+	putlog "--\[\002Error Info\002\]------------------------------------------"
+	putlog "Tcl: $tcl_patchLevel"
+	putlog "Box: $tcl_platform(os) $tcl_platform(osVersion)"
+	putlog "Message:"
+	foreach line [split $errorInfo "\n"] {putlog $line}
+	putlog "--------------------------------------------------------"
+}
+
+proc ng_preview {handle idx text} {
+	global announce defaultsection lastbind
+
+	if {[string equal "" $text]} {
+	    putdcc $idx "\002Preview Usage:\002"
+	    putdcc $idx "- .$lastbind <event pattern>"
+	    putdcc $idx "- Only events matching the pattern are shown (* for all)."
+	    return
+	}
+
+	if {[catch {set handle [open $announce(THEMEFILE) r]} error]} {
+		putlog "dZSbot error: Unable to read the theme file ($error)."
+		return
+	}
+	set data [read -nonewline $handle]
+	close $handle
+
+	putdcc $idx "\002Previewing:\002 $announce(THEMEFILE)\n"
+	putdcc $idx ""
+
+	foreach line [split $data "\n"] {
+		if {![string equal "" $line] && [string index $line 0] != "#"} {
+    		if {[regexp -nocase -- {announce\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+    			set prefix "announce."
+    		} elseif {[regexp -nocase -- {random\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+    			set prefix "random."
+    		} elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
+    			set prefix ""
+    		} else {
+    		    continue
+    		}
+    		if {[string match -nocase $text $setting]} {
+    	    	set value [themereplace [replacebasic $value $defaultsection] $defaultsection]
+        		putdcc $idx "$prefix$setting = $value"
+        	}
+        }
+	}
+	return
+}
 
 #################################################################################
 # Log Parsing for glFTPd and Login Logs                                         #
@@ -280,8 +326,8 @@ proc readlog {} {
 			([info exists disable($event)] && $disable($event) == 1)} {continue}
 
 		if {![info exists variables($event)]} {
-			putlog "dZSbot error: \"variables($event)\" not defined in the config, type becomes \"DEFAULT\"."
-			set event "DEFAULT"
+			putlog "dZSbot error: \"variables($event)\" not defined in the config, type becomes \"$defaultsection\"."
+			set event $defaultsection
 		}
 		if {![eventcheck $section $event]} {
 			sndall $event $section [ng_format $event $section $line]
@@ -370,8 +416,8 @@ proc ng_format {event section line} {
 	}
 
 	if {![info exists announce($event)]} {
-		putlog "dZSbot error: \"announce($event)\" not set in theme, event becomes \"DEFAULT\"."
-		set event "DEFAULT"
+		putlog "dZSbot error: \"announce($event)\" not set in theme, event becomes \"$defaultsection\"."
+		set event $defaultsection
 	}
 	set vars $variables($event)
 	set output $theme(PREFIX)
@@ -1641,11 +1687,11 @@ proc ng_who {nick uhost hand chan argv} {
 proc loadtheme {file} {
 	global announce random scriptpath theme theme_fakes variables
 	unset -nocomplain announce random
-	set announce(THEMEFILE) $file
 
 	if {[string index $file 0] != "/"} {
 		set file "$scriptpath/$file"
 	}
+	set announce(THEMEFILE) $file
 
 	putlog "dZSbot: Loading theme \"$file\"."
 
