@@ -178,13 +178,9 @@ main(int argc, char **argv)
 	}
 	name_p++;
 
-//	d_log("Copying lowercased version of extension to memory\n");
-
-//	fileext = malloc(sizeof(temp_p));
-
-//	memcpy(fileext, temp_p, sizeof(temp_p));
-	snprintf(fileext, 4, "%s", temp_p);
-//	strtolower(fileext);
+	if (sizeof(temp_p) - 4 > 0)
+		temp_p = temp_p + sizeof(temp_p) - 4;
+	sprintf(fileext, "%s", temp_p);
 
 	switch (get_filetype_postdel(&g, fileext)) {
 	case 0:
