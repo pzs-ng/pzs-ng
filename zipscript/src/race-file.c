@@ -71,6 +71,7 @@ maketempdir(char *path)
 unsigned int 
 readsfv(const char *path, struct VARS *raceI, int getfcount)
 {
+	int		insfv = 0;
 	unsigned int	crc = 0;
 	FILE		*sfvfile;
 	
@@ -90,12 +91,14 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
 		raceI->total.files++;
 #if (sfv_cleanup && sfv_cleanup_lowercase)
-		if (!strcasecmp(raceI->file.name, sd.fname)) {
+		if (!strcasecmp(raceI->file.name, sd.fname))
 #else
-		if (!strcmp(raceI->file.name, sd.fname)) {
+		if (!strcmp(raceI->file.name, sd.fname))
 #endif
-			d_log("DEBUG: crc read from sfv-file %s : %X\n", sd.fname, sd.crc32);
+		{
+			d_log("DEBUG: crc read from sfv-file%s : %X\n", sd.fname, sd.crc32);
 			crc = sd.crc32;
+			insfv = 1;
 		}
 		if (getfcount && findfile(sd.fname)) {
 			raceI->total.files_missing--;
@@ -106,6 +109,11 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 	
 	raceI->total.files_missing += raceI->total.files;
 	
+	if (insfv)
+		errno = 1;
+	else
+		errno = 0;
+
 	return crc;
 }
 
