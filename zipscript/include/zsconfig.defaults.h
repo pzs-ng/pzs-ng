@@ -366,7 +366,7 @@
  * Calculate CRC for a filename without CRC in its SFV
  */
 #ifndef sfv_calc_single_fname
-#define				FALSE
+#define	sfv_calc_single_fname	FALSE
 #endif
 
 /*
