@@ -544,7 +544,7 @@ subcomp(char *directory)
 	int 	k = strlen(directory);
 	int	m = strlen(subdir_list);
 	int	pos = 0, l = 0, n = 0, j = 0;
-	char	tstring[m];
+	char	tstring[m + 1];
 
 	if ( k < 2 )
 		return 0;
@@ -552,12 +552,6 @@ subcomp(char *directory)
 	do {
 		switch (subdir_list[l]) {
 		case 0:
-			break;
-		case '?':
-			tstring[j] = subdir_list[l];
-			tstring[j+1] = '\0';
-			n++;
-			j++;
 			break;
 		case ',':
 			tstring[j] = '\0';
@@ -567,6 +561,12 @@ subcomp(char *directory)
 			pos = l;
 			n = 0;
 			j=0;
+			break;
+		case '?':
+			tstring[j] = subdir_list[l];
+			tstring[j+1] = '\0';
+			n++;
+			j++;
 			break;
 		default:
 			tstring[j] = subdir_list[l];
@@ -578,6 +578,9 @@ subcomp(char *directory)
 	m--;
 	l++;
 	} while (m);
+	if (k <= j && !strncasecmp(tstring, directory, j - n)) {
+		return 1;
+	}
 	return 0;
 }
 
