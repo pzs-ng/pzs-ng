@@ -1,18 +1,19 @@
-  --- TODO ---
+  -- TODO
   - this is a list of planned changes to zs-c :)
   - devs: please update frequently with ideas / progress :-)
 
-[x] change "VBR" to real bps number (average)
-[ ] add a cleaner script/bin for the zipscript dir in ftp-data - to run in crontab
-[ ] fix NUKE/UNNUKE in dZSbot.tcl for glftpd2 output
-[ ] write documentation for different things (especially dZSbot (comments?))
-[ ] add theme-support to dZSbot.tcl, so that it reads an external theme file. (theme/skin)
-[ ] make a config-file format that is parsed to .h, instead of people editing .h :-)
-[ ] add option to use average/median on vbr mp3's?
-[ ] check the mp3 patch - does it check all files? can we save this info and use it later?
+status  who       what
+ [x]     psxc      change "VBR" to real bps number (average)
+ [ ]     psxc      add a cleaner script/bin for the zipscript dir in ftp-data - to run in crontab
+ [ ]     daxxar    fix NUKE/UNNUKE in dZSbot.tcl for glftpd2 output
+ [ ]     all       write documentation for different things (especially dZSbot (comments?))
+ [ ]     daxxar    add theme-support to dZSbot.tcl, so that it reads an external theme file. (theme/skin)
+ [ ]     daxxar    make a config-file format that is parsed to .h, instead of people editing .h :-)
+ [ ]     psxc      add option to use average/median on vbr mp3's?
+ [ ]     pending   check the mp3 patch - does it check all files? can we save this info and use it later?
 
-key   description
-[ ]   not done 
-[/]   partially done 
-[x]   done 
+status   description
+ [ ]      not done 
+ [/]      partially done 
+ [x]      done 
 
