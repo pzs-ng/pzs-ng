@@ -444,7 +444,7 @@ int main( int argc, char **argv ) {
 			raceI.misc.write_log = 1;
 			d_log("No double sfv allowed\n");
 			error_msg = convert(&raceI,userI,groupI,deny_double_msg);
-			writelog(error_msg, "DOUBLESFV");
+			writelog(error_msg, general_doublesfv_type);
 			sprintf(raceI.misc.error_msg, DOUBLE_SFV);
 			exit_value = 2;
 			raceI.misc.write_log = write_log;
@@ -462,7 +462,7 @@ int main( int argc, char **argv ) {
 			    d_log("Old sfv seems to match with more files than current one\n");
 			    strcpy(raceI.misc.error_msg, "SFV does not match with files!");
 			    error_msg = convert(&raceI,userI,groupI,deny_double_msg);
-			    writelog(error_msg, "DOUBLESFV");
+			    writelog(error_msg, general_doublesfv_type);
 			    sprintf(raceI.misc.error_msg, DOUBLE_SFV);
 			    exit_value = 2;
 			    raceI.misc.write_log = write_log;
@@ -523,7 +523,7 @@ int main( int argc, char **argv ) {
 		if ( raceI.total.files_missing > 0 ) {
 		    if ( sfv_msg != NULL ) {
 				d_log("Writing SFV message to %s\n", log);
-				writelog(convert(&raceI, userI, groupI, sfv_msg), "SFV");
+				writelog(convert(&raceI, userI, groupI, sfv_msg), general_sfv_type);
 		    }
 		} else {
 		    if (raceI.misc.release_type == RTYPE_AUDIO) {
@@ -644,7 +644,7 @@ int main( int argc, char **argv ) {
 								write_log = raceI.misc.write_log;
 								raceI.misc.write_log = 1;
 								error_msg = convert(&raceI,userI,groupI,audio_genre_warn_msg);
-								writelog(error_msg, "BADGENRE");
+								writelog(error_msg, general_badgenre_type);
 								raceI.misc.write_log = write_log;
 							} else
 							    d_log("warn on - have already logged to logfile\n");
@@ -662,7 +662,7 @@ int main( int argc, char **argv ) {
 							write_log = raceI.misc.write_log;
 							raceI.misc.write_log = 1;
 							error_msg = convert(&raceI,userI,groupI,audio_genre_warn_msg);
-							writelog(error_msg, "BADGENRE");
+							writelog(error_msg, general_badgenre_type);
 							raceI.misc.write_log = write_log;
 						} else
 						d_log("warn on - have already logged to logfile\n");
@@ -682,7 +682,7 @@ int main( int argc, char **argv ) {
 							write_log = raceI.misc.write_log;
 							raceI.misc.write_log = 1;
 							error_msg = convert(&raceI,userI,groupI,audio_year_warn_msg);
-							writelog(error_msg, "BADYEAR");
+							writelog(error_msg, general_badyear_type);
 							raceI.misc.write_log = write_log;
 						} else
 							d_log("warn on - have already logged to logfile\n");
@@ -702,7 +702,7 @@ int main( int argc, char **argv ) {
 								write_log = raceI.misc.write_log;
 								raceI.misc.write_log = 1;
 								error_msg = convert(&raceI,userI,groupI,audio_cbr_warn_msg);
-								writelog(error_msg, "BADBITRATE");
+								writelog(error_msg, general_badbitrate_type);
 								raceI.misc.write_log = write_log;
 							} else
 								d_log("warn on - have already logged to logfile\n");
@@ -789,7 +789,7 @@ int main( int argc, char **argv ) {
 	    if ( raceI.total.users > 1 ) {
 		if ( userI[raceI.user.pos]->files == 1 && race_msg != NULL ) {
 		    d_log("Writing RACE to %s\n", log);
-		    writelog(convert(&raceI, userI, groupI, race_msg), "RACE");
+		    writelog(convert(&raceI, userI, groupI, race_msg), general_race_type);
 		}
 		/* Modification by <daxxar@mental.mine.nu>
 		 *  Only announce new leader if he leads with
@@ -797,7 +797,7 @@ int main( int argc, char **argv ) {
 		 */
 		if ( raceI.total.files >= min_newleader_files && strcmp(raceI.misc.old_leader, userI[userI[0]->pos]->name) && newleader_msg != NULL && userI[userI[0]->pos]->files >= (userI[userI[1]->pos]->files + newleader_files_ahead) ) {
 		    d_log("Writing NEWLEADER to %s\n", log);
-		    writelog(convert(&raceI, userI, groupI, newleader_msg), "NEWLEADER");
+		    writelog(convert(&raceI, userI, groupI, newleader_msg), general_newleader_type);
 		}
 	    } else {
 
@@ -827,8 +827,8 @@ int main( int argc, char **argv ) {
 	    /* Release is incomplete */
 
 	    if ( raceI.total.files_missing == raceI.total.files >> 1 && raceI.total.files >= min_halfway_files && halfway_msg != NULL ) {
-		d_log("Writing COMPLETE to %s\n", log);
-		writelog(convert(&raceI, userI, groupI, halfway_msg), "HALFWAY");
+		d_log("Writing HALFWAY to %s\n", log);
+		writelog(convert(&raceI, userI, groupI, halfway_msg), general_halfway_type);
 	    }
 
 	    /* It is _very_ unlikely that halfway would be announced on complete release ;) */

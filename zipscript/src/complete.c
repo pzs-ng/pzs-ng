@@ -90,23 +90,23 @@ void writetop(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 
     if ( completetype == 1 ) {
 	if ( pre_stats != NULL ) {
-	    writelog(convert(raceI, userI, groupI, pre_stats), "STAT_USERS_HEAD");
+	    writelog(convert(raceI, userI, groupI, pre_stats), stat_users_head_type);
 	}
 	if ( user_top != NULL ) {
 	    for ( cnt = 0 ; cnt < max_users_in_top && cnt < raceI->total.users; cnt++ ) {
-		writelog(convert2(raceI, userI[userI[cnt]->pos], groupI, user_top, cnt), "STAT_USERS");
+		writelog(convert2(raceI, userI[userI[cnt]->pos], groupI, user_top, cnt), stat_users_type);
 	    }
 	}
 	if ( between_stats != NULL ) {
-	    writelog(convert(raceI, userI, groupI, between_stats), "STAT_GROUPS_HEAD");
+	    writelog(convert(raceI, userI, groupI, between_stats), stat_groups_head_type);
 	}
 	if ( group_top != NULL ) {
 	    for ( cnt = 0 ; cnt < max_groups_in_top && cnt < raceI->total.groups; cnt++ ) {
-		writelog(convert3(raceI, groupI[groupI[cnt]->pos], group_top, cnt), "STAT_GROUPS");
+		writelog(convert3(raceI, groupI[groupI[cnt]->pos], group_top, cnt), stat_groups_type);
 	    }
 	}
 	if ( post_stats != NULL ) {
-	    writelog(convert(raceI, userI, groupI, post_stats), "STAT_POST");
+	    writelog(convert(raceI, userI, groupI, post_stats), stat_post_type);
 	}
     }
 }
