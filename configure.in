@@ -10,10 +10,10 @@ AC_PROG_CC
 dnl Checks for libraries.
 LCRYPT=""
 if [[ $(uname -s) != "OpenBSD" ]]; then
-	AC_CHECK_LIB(crypt, crypt, LCRYPT="-lcrypt /usr/lib/libcrypt.a", AC_MSG_ERROR([[Couldn't find libcrypt, quitting!]]))
+	AC_CHECK_LIB(crypt, crypt, LCRYPT="-lcrypt", AC_MSG_ERROR([[Couldn't find libcrypt, quitting!]]))
 fi
 
-AC_CHECK_LIB(crypto, HMAC, LCRYPTO="-lcrypto /usr/lib/libcrypto.a", AC_MSG_ERROR([[Couldn't find libcrypto, quitting!]]))
+AC_CHECK_LIB(crypto, HMAC, LCRYPTO="-lcrypto", AC_MSG_ERROR([[Couldn't find libcrypto, quitting!]]))
 
 dnl Checks for header files.
 AC_HEADER_TIME
