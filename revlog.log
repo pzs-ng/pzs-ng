@@ -1,4 +1,251 @@
 ------------------------------------------------------------------------
+r423 | psxc | 2004-07-20 23:04:09 +0200 (Tue, 20 Jul 2004) | 2 lines
+Changed paths:
+   M /project-zs-ng/trunk/zipscript/conf/zsconfig.h
+   M /project-zs-ng/trunk/zipscript/src/zipscript-c.c
+
+mp3-script support (by request - script is run after 1st mp3 file is uploaded)
+
+------------------------------------------------------------------------
+r422 | js | 2004-07-20 22:38:17 +0200 (Tue, 20 Jul 2004) | 1 line
+Changed paths:
+   M /project-zs-ng/trunk/zipscript/src/racestats.c
+   M /project-zs-ng/trunk/zipscript/src/rescan.c
+
+bad mallocs
+------------------------------------------------------------------------
+r420 | daxxar | 2004-07-20 19:48:45 +0200 (Tue, 20 Jul 2004) | 1 line
+Changed paths:
+   M /project-zs-ng/trunk/sitebot/src/Makefile.in
+   M /project-zs-ng/trunk/zipscript/src/Makefile.in
+
+added a -I to zs and sb Makefile.in
+------------------------------------------------------------------------
+r419 | daxxar | 2004-07-20 19:47:50 +0200 (Tue, 20 Jul 2004) | 1 line
+Changed paths:
+   M /project-zs-ng/trunk/Makefile.in
+   D /project-zs-ng/trunk/acconfig.h
+   M /project-zs-ng/trunk/config.h.in
+   M /project-zs-ng/trunk/zipscript/include/zsfunctions.h
+   M /project-zs-ng/trunk/zipscript/src/cleanup.c
+   M /project-zs-ng/trunk/zipscript/src/datacleaner.c
+   M /project-zs-ng/trunk/zipscript/src/postdel.c
+   M /project-zs-ng/trunk/zipscript/src/racestats.c
+   M /project-zs-ng/trunk/zipscript/src/rescan.c
+   M /project-zs-ng/trunk/zipscript/src/stats.c
+   M /project-zs-ng/trunk/zipscript/src/zipscript-c.c
+
+made a decent config.h, added includes, added rm -rf autom4te.cache/ to distclean, removed useless acconfig.
+------------------------------------------------------------------------
+r418 | daxxar | 2004-07-20 19:33:26 +0200 (Tue, 20 Jul 2004) | 1 line
+Changed paths:
+   M /project-zs-ng/trunk/Makefile.in
+   M /project-zs-ng/trunk/configure
+   M /project-zs-ng/trunk/configure.in
+   M /project-zs-ng/trunk/zipscript/include/zsfunctions.h
+   M /project-zs-ng/trunk/zipscript/src/Makefile.in
+   M /project-zs-ng/trunk/zipscript/src/cleanup.c
+   M /project-zs-ng/trunk/zipscript/src/datacleaner.c
+   M /project-zs-ng/trunk/zipscript/src/postdel.c
+   M /project-zs-ng/trunk/zipscript/src/racestats.c
+   M /project-zs-ng/trunk/zipscript/src/rescan.c
+   M /project-zs-ng/trunk/zipscript/src/stats.c
+   M /project-zs-ng/trunk/zipscript/src/zipscript-c.c
+
+more checks in ./configure, removed some unused configure-stuff in makefiles/configure.in, added a good dirent check (?)
+------------------------------------------------------------------------
+r417 | iwdisb | 2004-07-20 16:13:30 +0200 (Tue, 20 Jul 2004) | 2 lines
+Changed paths:
+   M /project-zs-ng/trunk/sitebot/src/Makefile.in
+   M /project-zs-ng/trunk/sitebot/src/passchk.c
+   M /project-zs-ng/trunk/zipscript/src/race-file.c
+
+passchk now compiles with -static
+
+------------------------------------------------------------------------
+r416 | iwdisb | 2004-07-20 14:40:45 +0200 (Tue, 20 Jul 2004) | 2 lines
+Changed paths:
+   M /project-zs-ng/trunk/sitebot/src/Makefile.in
+   M /project-zs-ng/trunk/zipscript/src/race-file.c
+
+m3u file is now created correctly on amd64 (ty hujer)
+
+------------------------------------------------------------------------
+r415 | daxxar | 2004-07-20 00:03:28 +0200 (Tue, 20 Jul 2004) | 1 line
+Changed paths:
+   M /project-zs-ng/trunk/sitebot/src/passchk.c
+
+c99, -pedantic, -Wall. passchk is good :)
+------------------------------------------------------------------------
+r414 | daxxar | 2004-07-19 23:42:01 +0200 (Mon, 19 Jul 2004) | 1 line
+Changed paths:
+   M /project-zs-ng/trunk/sitebot/src/passchk.c
+
+added some errorchecking for passchk.
+------------------------------------------------------------------------
+r413 | daxxar | 2004-07-19 23:39:00 +0200 (Mon, 19 Jul 2004) | 1 line
+Changed paths:
+   M /project-zs-ng/trunk/sitebot/src/passchk.c
+
+gl1+gl2 in one passchk binary! magic!
+------------------------------------------------------------------------
+r412 | iwdisb | 2004-07-19 23:23:00 +0200 (Mon, 19 Jul 2004) | 2 lines
+Changed paths:
+   M /project-zs-ng/trunk/README.NEW
+   M /project-zs-ng/trunk/sitebot/src/passchk.c
+   M /project-zs-ng/trunk/zipscript/conf/zsconfig.h
+   M /project-zs-ng/trunk/zipscript/conf/zsconfig.ss5.h
+
+removed salt from passchk (gl2)
+
+------------------------------------------------------------------------
+r411 | daxxar | 2004-07-19 23:22:40 +0200 (Mon, 19 Jul 2004) | 1 line
+Changed paths:
+   M /project-zs-ng/trunk/configure
+   M /project-zs-ng/trunk/configure.in
+
+updated configure and configure.in, commented out OS-detection. (only -static if you --enable-static)
+------------------------------------------------------------------------
+r410 | daxxar | 2004-07-19 23:16:14 +0200 (Mon, 19 Jul 2004) | 1 line
+Changed paths:
+   M /project-zs-ng/trunk/sitebot/src/Makefile.in
+
+removed static and -lssl
+------------------------------------------------------------------------
+r409 | daxxar | 2004-07-19 23:08:25 +0200 (Mon, 19 Jul 2004) | 1 line
+Changed paths:
+   M /project-zs-ng/trunk/sitebot/src/Makefile.in
+
+omg, more dependencies for sitebot srcs!
+------------------------------------------------------------------------
+r408 | js | 2004-07-19 22:57:28 +0200 (Mon, 19 Jul 2004) | 1 line
+Changed paths:
+   M /project-zs-ng/trunk/zipscript/src/race-file.c
+
+fopen error checking in race-file.c
+------------------------------------------------------------------------
+r407 | daxxar | 2004-07-19 22:23:24 +0200 (Mon, 19 Jul 2004) | 1 line
+Changed paths:
+   M /project-zs-ng/trunk/Makefile.in
+   M /project-zs-ng/trunk/configure
+   M /project-zs-ng/trunk/configure.in
+   D /project-zs-ng/trunk/sitebot/src/Makefile
+   A /project-zs-ng/trunk/sitebot/src/Makefile.in
+   M /project-zs-ng/trunk/zipscript/src/Makefile.in
+
+various changes to autoconf/makefiles. removed old sitebot src makefile, removed leftover commented stuff. added sitebot/ to clean/distclean
+------------------------------------------------------------------------
+r406 | daxxar | 2004-07-19 22:03:55 +0200 (Mon, 19 Jul 2004) | 1 line
+Changed paths:
+   M /project-zs-ng/trunk/sitebot/src/Makefile
+   D /project-zs-ng/trunk/sitebot/src/passchk-old.c
+   M /project-zs-ng/trunk/sitebot/src/passchk.c
+   M /project-zs-ng/trunk/sitebot/src/structonline.h
+
+removed old passchk, various gl1/2 passchk fixes
+------------------------------------------------------------------------
+r405 | daxxar | 2004-07-19 21:48:38 +0200 (Mon, 19 Jul 2004) | 1 line
+Changed paths:
+   M /project-zs-ng/trunk/sitebot/src/passchk.c
+
+made passchk.c work for gl1/2 based on structonline.h
+------------------------------------------------------------------------
+r404 | daxxar | 2004-07-19 21:35:01 +0200 (Mon, 19 Jul 2004) | 1 line
+Changed paths:
+   M /project-zs-ng/trunk/sitebot/src/passchk-old.c
+
+added correct (?) passchk for gl1
+------------------------------------------------------------------------
+r403 | daxxar | 2004-07-19 21:22:47 +0200 (Mon, 19 Jul 2004) | 1 line
+Changed paths:
+   M /project-zs-ng/trunk/sitebot/dZSbot.tcl
+
+dZSbot now allows empty settings in themefile
+------------------------------------------------------------------------
+r402 | daxxar | 2004-07-19 21:19:51 +0200 (Mon, 19 Jul 2004) | 1 line
+Changed paths:
+   M /project-zs-ng/trunk/zipscript/src/zipscript-c.c
+
+duplicate lines, removed.
+------------------------------------------------------------------------
+r401 | psxc | 2004-07-19 20:37:25 +0200 (Mon, 19 Jul 2004) | 2 lines
+Changed paths:
+   M /project-zs-ng/trunk/README.NEW
+   M /project-zs-ng/trunk/TODO
+   M /project-zs-ng/trunk/revlog.log
+   M /project-zs-ng/trunk/sitebot/src/Makefile
+   A /project-zs-ng/trunk/sitebot/src/passchk-old.c
+
+added passchk-old (for gl1), change sitebot/src/makefile. made changes to TODO, and some in README.NEW
+
+------------------------------------------------------------------------
+r400 | iwdisb | 2004-07-19 17:12:53 +0200 (Mon, 19 Jul 2004) | 2 lines
+Changed paths:
+   M /project-zs-ng/trunk/zipscript/src/datacleaner.c
+
+added argc/argv support to datacleaner
+
+------------------------------------------------------------------------
+r399 | iwdisb | 2004-07-19 16:25:22 +0200 (Mon, 19 Jul 2004) | 2 lines
+Changed paths:
+   M /project-zs-ng/trunk/zipscript/conf/zsconfig.h
+   M /project-zs-ng/trunk/zipscript/conf/zsconfig.ss5.h
+   M /project-zs-ng/trunk/zipscript/src/cleanup.c
+   M /project-zs-ng/trunk/zipscript/src/racestats.c
+
+remove "site_root" from config, racestats and cleanup run only chrooted now
+
+------------------------------------------------------------------------
+r398 | iwdisb | 2004-07-19 14:49:00 +0200 (Mon, 19 Jul 2004) | 2 lines
+Changed paths:
+   M /project-zs-ng/trunk/zipscript/conf/zsconfig.ss5.h
+
+ss5 config update (relative links)
+
+------------------------------------------------------------------------
+r397 | iwdisb | 2004-07-19 13:35:46 +0200 (Mon, 19 Jul 2004) | 2 lines
+Changed paths:
+   M /project-zs-ng/trunk/zipscript/src/postdel.c
+   M /project-zs-ng/trunk/zipscript/src/rescan.c
+   M /project-zs-ng/trunk/zipscript/src/zipscript-c.c
+
+remade last fix
+
+------------------------------------------------------------------------
+r396 | iwdisb | 2004-07-19 13:29:42 +0200 (Mon, 19 Jul 2004) | 2 lines
+Changed paths:
+   M /project-zs-ng/trunk/zipscript/src/rescan.c
+   M /project-zs-ng/trunk/zipscript/src/zipscript-c.c
+
+fixed core dump in path[] handling
+
+------------------------------------------------------------------------
+r395 | iwdisb | 2004-07-19 13:20:56 +0200 (Mon, 19 Jul 2004) | 2 lines
+Changed paths:
+   M /project-zs-ng/trunk/zipscript/conf/zsconfig.h
+   M /project-zs-ng/trunk/zipscript/include/macros.h
+   M /project-zs-ng/trunk/zipscript/src/zipscript-c.c
+   M /project-zs-ng/trunk/zipscript/src/zsfunctions.c
+
+use relative links is now optional
+
+------------------------------------------------------------------------
+r394 | iwdisb | 2004-07-19 02:15:44 +0200 (Mon, 19 Jul 2004) | 2 lines
+Changed paths:
+   M /project-zs-ng/trunk/zipscript/src/zsfunctions.c
+
+macro cleanup and some other stuff
+
+------------------------------------------------------------------------
+r393 | iwdisb | 2004-07-19 02:12:51 +0200 (Mon, 19 Jul 2004) | 2 lines
+Changed paths:
+   M /project-zs-ng/trunk/zipscript/conf/zsconfig.h
+   M /project-zs-ng/trunk/zipscript/include/macros.h
+   M /project-zs-ng/trunk/zipscript/src/zipscript-c.c
+
+incomplete links are now relative
+
+------------------------------------------------------------------------
 r392 | iwdisb | 2004-07-19 02:04:43 +0200 (Mon, 19 Jul 2004) | 2 lines
 Changed paths:
    M /project-zs-ng/trunk/zipscript/include/zsfunctions.h
@@ -2315,3 +2562,4 @@ Changed paths:
 
 initial import
 
+------------------------------------------------------------------------

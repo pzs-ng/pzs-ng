@@ -14,8 +14,6 @@
 
 /* These should be changed to match your glftpd installation.
  */
-/* site_root is obsolete */
-/*#define site_root	"/glftpd/"*/
 #define log		"/ftp-data/logs/glftpd.log"
 #define storage		"/ftp-data/zipscript/"
 #define gl_userfiles	"/ftp-data/users/"
@@ -35,7 +33,7 @@
 #define cleanupdirs	"/site/incoming/games/ /site/incoming/apps/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 
 /* Hide name of uploaders in the .message-file in group-dirs? Setting this
-   to TRUE will convert the username to the groupname of the user.
+ * to TRUE will convert the username to the groupname of the user.
  */
 #define hide_group_uploaders	TRUE
 
@@ -64,7 +62,7 @@
 
 /* If file has suid bit set, program changes uid and gid to these (0 leaves option uncompiled)
  */
-#define program_uid		10
+#define program_uid		20
 #define program_gid		200
 
 /* These file types are allowed without any checks (types need to be also ignored)

@@ -24,13 +24,19 @@ them all.
 
 In April, 2004, daxxar and psxc collected the various patches into packages,
 but soon found out it was better to pool resources and make a unified
-version. The result - PZS-NG.
+version. After rounding up/threatening some of the scene's brightest boys, they
+got the result - PZS-NG.
 
 
 The Team:
 ---------
-Head developers: daxxar and psxc
-Santa's helpers: iwdisb, freezy3k, iono, js and themolester
+daxxar (allround programmer)
+psxc (allround programmer)
+iwdisb (c-specialist)
+js (c-specialist)
+freezy3k (c-specialist)
+iono (tcl-guru)
+themolester (tcl-guru)
 
 
 Supported Platforms:
@@ -45,10 +51,11 @@ PZS-NG should compile fine on the following platforms:
 
 64-bit processors - this is still very shady. We do work to make it work
 on AMD64 for instance, but have limited ability to test on this platform
-since none of the devs currently owns one.
+since none of the devs currently owns one. Feel free to contact us if
+you feel the need to share your box with us.
 
-Only the i386 platform is tested, but feel free to let us know if you
-try it on anything else. :)
+Only the i386 platform is tested, so if you try it on anything else, don't
+hesitate to contact us and inform us of the result.
 
 
 Supported FTP Daemons:

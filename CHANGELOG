@@ -1,17 +1,32 @@
-v0.7.2
- - psxc added support for allowed_genres on mp3 releases.
- - psxc added support for warning messages on illegal mp3 genre/year/bitrate.
- - psxc added a iwdisb's fix to prevent coredump on cookie usage when the cookie is DISABLED.
- - iwdisb made a patch which will show bitrate on mp3's on vbr files as well!
- - daxxar made some changes in the autoconf file to detect os and make the appropriate changes.
- - daxxar made an option to choose between glftpd 1 or 2.
- - psxc added support for the old double-sfv deny patch.
- - psxc added iono's fix for glftpd2 nuke style.
- - daxxar fixed an ugly group dir bug.
- - psxc added support for DVD announces.
- - psxc removed support for adding nfo to zip (spam! begone!)
- - psxc changed mp3-genres to match mp3info
- - iwdisb added support for on-the-fly sfv calc.
+v0.7.2 (aka beta1 of pzs-ng)
+ - Added support for the *bsd platforms
+ - Included VBR support
+ - Double-SFV support
+ - Sitewho is now part of the package
+ - passchk (for the bot) now supports both gl1 and 2
+ - zipscript-c can now run from (chroot) shell
+ - zipscript-c is compatible with gl1/2
+ - Added warning messages on bad/illegal genre/year/bitrate
+ - The mysql code was removed (might include a better one later, if needed)
+ - Changed to use the genres found in mp3info
+ - Datacleaner and racestats now runs under chroot *only*
+ - LOTS of bugs fixed (the list is too long to put here)
+ - MUCH cleanup/rewrite of code
+ - The sitebot now has a separate config
+ - The sitebot uses skins for easy modification of look/feel
+ - New/added/fixed scripts for the sitebot
+ - Removed adding an NFO file to zips (aka zip spam)
+ - Some cookies added/renamed/removed
+ - Symlinks can be either relative or absolute
+ - zipscript-c now calculates the crc code if no crc is sent from glftpd
+ - Added music.by.releasegroup as a sorting option
+ - Support for hiding users uploading in group dirs in the .message file
+ - Added an unduper (undupes file if it fails sfv check)
+ - CD/DISK/DVD dirname support
+ - Added mp3-script support (run after 1st mp3 is uploaded)
+ - Added nfo-script support (run after an NFO is uploaded)
+ - Added support for stopping race-spam (the race-ahead patch)
+ - Sitebot now supports gl1/2
 
 v0.7.1
  - merged in freebsd patches by iwdisb ( http://mobilcom.dyndns.org/~iwdisb/glftpd/ )
@@ -478,5 +493,4 @@ v0.0.2
    be announced as ONE file release, however racestats in directory will be
    logged correctly and complete msg shows right filecount.
 
-v0.0.1
- + First public release
+v0.0.1 + First public release
