@@ -126,7 +126,8 @@ void sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **g
 	userI[t]->pos = n;
 #if ( get_competitor_list == TRUE )
 	if ( strcmp(raceI->user.name, userI[n]->name) ) {
-	    r_list += sprintf(r_list, " %s", convert2(raceI, userI[n], groupI, racersmsg, t));
+	    r_list += sprintf(r_list, "%s", racersplit);
+	    r_list += sprintf(r_list, "%s", convert2(raceI, userI[n], groupI, racersmsg, t));
 	} else {
 	    raceI->user.pos = n;
 	}

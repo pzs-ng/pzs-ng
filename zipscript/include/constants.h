@@ -60,6 +60,7 @@
 /* Special reformat cookies */
 #define fastestfile		"{%u} {%g} {%.3F}" /* Put in %l cookie */
 #define slowestfile		"{%u} {%g} {%.3S}" /* Put in %L cookie */
+#define racersplit		" " /* Put between racers in the %R cookie - !!MUST BE ONLY ONE (1) CHAR!! */
 #define racersmsg		"%u(%g)" /* Put in %R cookie */
 #define audio_vbr		"{%X} {%z} {%Q} {VBR} {%I}" /* Put in %j cookie */
 #define audio_cbr		"{%X} {%z} {%Q} {CBR}"    /* Put in %j cookie */
