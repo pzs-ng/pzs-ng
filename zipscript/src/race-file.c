@@ -243,8 +243,10 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
 	int		len = 0;
 	short int	n = 0;
 	unsigned int	t_crc;
-	int		sfv_error = FALSE;
 
+#if (sfv_cleanup == TRUE )
+	int		sfv_error = FALSE;
+#endif
 #if ( sfv_dupecheck == TRUE )
 	char           *fname[MAXIMUM_FILES_IN_RELEASE];	/* Semi-stupid. We limit
 								 * @

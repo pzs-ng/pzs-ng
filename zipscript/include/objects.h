@@ -56,7 +56,19 @@ struct audio {
 struct video {
 	int		height;
 	int		width;
-	unsigned char  *fps;
+	char	       *fps;
+};
+
+struct VIDEO {
+	int		height;
+	int		width;
+	double		fps;
+	char	       *vids;
+	char	       *fourcc;
+	long		hz;
+	int		ch;
+	char	       *audio;
+	char	       *audiotype;
 };
 
 struct current_user {
