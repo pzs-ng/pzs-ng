@@ -125,7 +125,9 @@ proc readlog {} {
 
     close $of
     set lastoct [file size $location(GLLOG)]
-#    launchnuke
+    if { output_glftpd2 != 1 } {
+       launchnuke
+    }
     return 0
 }
 #################################################################################
@@ -224,8 +226,11 @@ proc parse {msgtype msgline section} {
     set type $msgtype
 
     if {![string compare $type "NUKE"] || ! [string compare $type "UNNUKE"]} {
-#        fuelnuke $type [lindex $msgline 0] $section $msgline
-	fuelnuke2 $type [lindex $msgline 0] $section [lrange $msgline 1 3] [lrange $msgline 4 end]
+	if { output_glftpd2 != 1 } {
+	        fuelnuke $type [lindex $msgline 0] $section $msgline
+	} else {
+		fuelnuke2 $type [lindex $msgline 0] $section [lrange $msgline 1 3] [lrange $msgline 4 end]
+	}
         return ""
     }
 

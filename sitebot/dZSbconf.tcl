@@ -11,6 +11,9 @@ set location(GLLOG)         "/glftpd/ftp-data/logs/glftpd.log"
 set location(PASSWD)        "/glftpd/etc/passwd"
 set location(USERS)         "/glftpd/ftp-data/users/"
 
+# Are you using glftpd2? Set to 1 if you are, 0 if not.
+set output_glftpd2          "1"
+
 # What types of messages are counted as the different types of output
 # (for disabling etc)
 set msgtypes(RACE)          "NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV UPDATE HALFWAY NEWLEADER COMPLETE STATS"
