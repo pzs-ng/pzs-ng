@@ -4,21 +4,6 @@
  *
  */
 
-/*      DaxPatch settings
- */
-
-/* New leader needs this number of files more than current leader to be counted as "newleader"
- * (reduces "spam" in channel)
- */
-#define enable_files_ahead	TRUE
-#define newleader_files_ahead	2 
-
-/* Dont allow upload of DUPE SFVs, and announce to send to channel if user does it :-)
-#define enable_dupesfv  TRUE
-#define sfv_double      "User %B%U%B/%G uploaded a second (dupe) SFV in %r (%n). Naughty boy!"
- */
-
-
 /*	Basic settings
  */
 
@@ -401,12 +386,9 @@
 #define progressmeter		"[%V] - %3.0p%% Complete - [dS]"
 #define del_progressmeter	"\\[.*] - ...% Complete - \\[dS]"
 
-
-
-
-
-/*	Dark0n3 only settings
+/* New leader needs this number of files more than current leader to be counted as "newleader"
+ * (reduces "spam" in channel)
  */
+#define enable_files_ahead	TRUE
+#define newleader_files_ahead	2 
 
-
-#define version		"0.6.0"

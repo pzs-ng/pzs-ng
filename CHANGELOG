@@ -11,9 +11,10 @@ v0.7.1
  - glftpd2 support (ONLINE struct changed in object.h).
 
 ---- 20040428 - Project-ZS is now supported again. Development concentrate on support
----- for the new glftpd2. Daxxar/psxc takes responsibility, but welcome anyone who
----- wish to contribute! :)
----- BELOW IS DAXXARS CHANGELOG
+---- for the new glftpd2. daxxar/psxc takes responsibility, but welcome anyone who
+---- wish to contribute! :) (contact psxc or daxxar @ #glftpd / #project-zs on EFNet)
+----
+---- BELOW IS DAXXARS CHANGELOG FOR "DAXPATCH"! (merged with TNG)
 
 v0.4 daxpatch - 15th Apr. 2004
  - fixed a error with the time-cookie (%d); it would fuck up output, *hrhr*

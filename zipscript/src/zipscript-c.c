@@ -12,6 +12,7 @@
 #include "../conf/zsconfig.h"
 #include "../include/objects.h"
 #include "../include/macros.h"
+#include "../include/constants.h"
 #include "../include/errors.h"
 #include "../../config.h"
 
@@ -254,7 +255,7 @@ int main( int argc, char **argv ) {
 
  if ( argc != 4 ) {
 	d_log("Wrong number of arguments used\n");
-	printf(" - - ZipScript-C v" version " - - dark0n3 (c) 2001 - 2002 - -\n\nUsage: %s <filename> <path> <crc>\n\n", argv[0]);
+	printf(" - - ZipScript-C v" VERSION " - - dark0n3 (c) 2001 - 2004 - -\n\nUsage: %s <filename> <path> <crc>\n\n", argv[0]);
 	exit(1);
 	}
 
