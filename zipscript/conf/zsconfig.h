@@ -292,6 +292,10 @@
  */
 #define write_complete_message	TRUE
 
+/* What the .message file should be called
+ */
+#define message_file_name	".message"
+
 /* Various Output
  */
 #define message_header		""
