@@ -142,7 +142,7 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			user[x].bytes_xfer != 0 && mask == 0 ) {
 
 			m = strplen(user[x].status) - 5;
-			if ( m < 15 )
+			if (m < 15 || raw)
 				sprintf(filename, "%.*s", m, user[x].status + 5);
 			else
 				sprintf(filename, "%.15s", user[x].status + m - 10);
@@ -164,10 +164,14 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			for (i = sprintf(realfile, "%s", user[x].currentdir); realfile[i] != '/' && i > 0; i--);
 			sprintf(realfile + i + 1, "%.*s", m, user[x].status + 5);
 
-			if (m < 15)
+			if (m < 15 || raw)
 				sprintf(filename, "%.*s", m, user[x].status + 5);
 			else
 				sprintf(filename, "%.15s", user[x].status + m - 10);
+/*			if (m < 15)
+				sprintf(filename, "%.*s", m, user[x].status + 5);
+			else
+				sprintf(filename, "%.15s", user[x].status + m - 10);*/
 
 			i = 15 * user[x].bytes_xfer * 1. / filesize(realfile);
 			i = (i > 15 ? 15 : i);
