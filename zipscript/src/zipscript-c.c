@@ -464,7 +464,7 @@ main(int argc, char **argv)
 			d_log("Testing file integrity with %s\n", unzip_bin);
 			sprintf(target, "%s -qqt \"%s\"", unzip_bin, raceI.file.name);
 			if (execute(target) != 0) {
-				d_log("Integrity check failed\n");
+				d_log("Integrity check failed: %s\n", strerror(errno));
 				sprintf(raceI.misc.error_msg, BAD_ZIP);
 				exit_value = 2;
 				break;
@@ -481,7 +481,9 @@ main(int argc, char **argv)
 			if (!fileexists("file_id.diz")) {
 				d_log("file_id.diz does not exist, trying to extract it from %s\n", raceI.file.name);
 				sprintf(target, "%s -qqjnCL %s file_id.diz", unzip_bin, raceI.file.name);
-				execute(target);
+				if (execute(target) != 0) {
+					d_log("No file_id.diz found: %s\n", strerror(errno));
+				}
 				chmod("file_id.diz", 0666);
 			}
 			d_log("Reading diskcount from diz\n");
@@ -625,7 +627,7 @@ main(int argc, char **argv)
 			sprintf(target, nfo_script " \"%s\"", raceI.file.name);
 			/* if ( execute_old(target) != 0 ) { */
 			if (execute(target) != 0) {
-				d_log("Failed to execute nfo_script!");
+				d_log("Failed to execute nfo_script: %s\n", strerror(errno));
 			}
 #endif
 
@@ -713,7 +715,9 @@ main(int argc, char **argv)
 					if ((enable_mp3_script == TRUE) && (userI[raceI.user.pos]->files == 1)) {
 						d_log("Executing mp3 script\n");
 						sprintf(target, mp3_script " \"%s\" %s", raceI.file.name, convert(&raceI, userI, groupI, mp3_script_cookies));
-						execute(target);
+						if (execute(target) != 0) {
+							d_log("Failed to execute mp3_script: %s\n", strerror(errno));
+						}
 					}
 					if (!matchpath(audio_nocheck_dirs, locations.path)) {
 #if ( audio_banned_genre_check == TRUE )
@@ -1074,7 +1078,9 @@ main(int argc, char **argv)
 #if ( enable_complete_script == TRUE )
 			d_log("Executing complete script\n");
 			sprintf(target, complete_script " \"%s\"", raceI.file.name);
-			execute(target);
+			if (execute(target) != 0) {
+				d_log("Failed to execute complete_script: %s\n", strerror(errno));
+			}
 #endif
 		} else {
 
@@ -1095,7 +1101,9 @@ main(int argc, char **argv)
 	if (exit_value == EXIT_SUCCESS) {
 		d_log("Executing accept script\n");
 		sprintf(target, accept_script " \"%s\"", raceI.file.name);
-		execute(target);
+		if (execute(target) != 0) {
+			d_log("Failed to execute accept_script: %s\n", strerror(errno));
+		}
 	}
 #endif
 
