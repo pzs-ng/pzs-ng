@@ -29,7 +29,7 @@ if [[ $(uname -s) != "OpenBSD" ]]; then
 fi
 
 #AC_CHECK_LIB(crypto, HMAC, LCRYPTO="-lcrypto", AC_MSG_ERROR([[Couldn't find libcrypto, quitting! Install SSL dev package and try again.]]))
-AC_CHECK_LIB(crypto, HMAC, LCRYPTO="-lcrypto"; PASSCHK="passchk")
+AC_CHECK_LIB(crypto, HMAC, LCRYPTO="-lcrypto"; PASSCHK="passchk"; PASSCHK2="passchk-install")
 
 dnl Checks for header files.
 AC_HEADER_TIME
@@ -136,6 +136,7 @@ AC_SUBST(STATIC)
 AC_SUBST(LCRYPT)
 AC_SUBST(LCRYPTO)
 AC_SUBST(PASSCHK)
+AC_SUBST(PASSCHK2)
 AC_SUBST(MAKE)
 AC_SUBST(M32)
 

@@ -308,7 +308,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT GREP STRINGS CUT RM INSTALL MAKE CPP EGREP GLPATH GLVERSION STATIC LCRYPT LCRYPTO PASSCHK M32 LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT GREP STRINGS CUT RM INSTALL MAKE CPP EGREP GLPATH GLVERSION STATIC LCRYPT LCRYPTO PASSCHK PASSCHK2 M32 LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -2666,7 +2666,7 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_lib_crypto_HMAC" >&5
 echo "${ECHO_T}$ac_cv_lib_crypto_HMAC" >&6
 if test $ac_cv_lib_crypto_HMAC = yes; then
-  LCRYPTO="-lcrypto"; PASSCHK="passchk"
+  LCRYPTO="-lcrypto"; PASSCHK="passchk"; PASSCHK2="passchk-install"
 fi
 
 
@@ -4154,6 +4154,7 @@ fi
 
 
 
+
 #if [[ "`ls zipscript/conf/zsconfig.h`" == "" ]]; then
 #	cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h  /dev/null 2>&1
 #else
@@ -4801,6 +4802,7 @@ s,@STATIC@,$STATIC,;t t
 s,@LCRYPT@,$LCRYPT,;t t
 s,@LCRYPTO@,$LCRYPTO,;t t
 s,@PASSCHK@,$PASSCHK,;t t
+s,@PASSCHK2@,$PASSCHK2,;t t
 s,@M32@,$M32,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t

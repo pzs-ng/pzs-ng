@@ -7,6 +7,7 @@ LDFLAGS=@LDFLAGS@
 INSTALL=@INSTALL@
 
 targets=ng-bw @PASSCHK@
+install_targets=ng-bw-install @PASSCHK2@
 
 all: $(targets)
 
@@ -16,9 +17,13 @@ passchk: passchk.c
 ng-bw: ng-bw.c
 	$(CC) $(LDFLAGS) $(CFLAGS) @M32@ -o ng-bw ng-bw.c @LCRYPT@ @LCRYPTO@
 
-install: all
-	$(INSTALL) -m755 passchk $(prefix)/bin
+install: $(install_targets)
+
+ng-bw-install: ng-bw
 	$(INSTALL) -m755 ng-bw $(prefix)/bin
+
+passchk-install: passchk
+	$(INSTALL) -m755 passchk $(prefix)/bin
 
 distclean: clean
 
