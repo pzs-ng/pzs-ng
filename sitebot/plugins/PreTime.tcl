@@ -18,16 +18,14 @@
 # 4. Add the following to dZSbot.conf:
 #    set disable(NEWPRETIME) 0
 #    set disable(OLDPRETIME) 0
-#
-# 5. Add the following to dZSbot.vars:
 #    set variables(NEWPRETIME) "%pf %u_name %g_name %u_tagline %preage %predate %pretime"
 #    set variables(OLDPRETIME) "%pf %u_name %g_name %u_tagline %preage %predate %pretime"
 #
-# 6. Add the following to your theme file (.zst):
+# 5. Add the following to your theme file (.zst):
 #    announce.NEWPRETIME = "[%b{NEW}][%section] %b{%relname} by %b{%u_name} of %g_name :: released %preage ago :: %predate %pretime."
 #    announce.OLDPRETIME = "[%b{OLD}][%section] %b{%relname} by %b{%u_name} of %g_name :: released %preage ago :: %predate %pretime."
 #
-# 4. Rehash or restart your eggdrop for the changes to take effect.
+# 6. Rehash or restart your eggdrop for the changes to take effect.
 #
 #################################################################################
 
@@ -183,4 +181,4 @@ proc ::ngBot::PreTime::LogEvent {event section logData} {
     return 1
 }
 
-PreTime::Init
+::ngBot::PreTime::Init

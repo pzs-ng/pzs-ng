@@ -183,18 +183,11 @@ set chanlist(WELCOME)   $mainchan
 # to the same channel the invite is announced in).
 set invite_channels     $chanlist(INVITE)
 
-# Separate private/staff channel(s). For each channel you can define which
-# groups and/or users should be invited. Please note that the code only looks at
-# a users primary group when checking if he/she should be invited to a specific
-# channel. If you have a STAFF member whose primary group is something else,
-# then you need to list that user separately in the privusers list for the
-# channel.
-#set privchannel(STAFF) "#pzs-ng_staff"
-#set privgroups(STAFF)  "SiTEOPS STAFF"
-#set privusers(STAFF)   "someuser1 someuser2"
-#set privchannel(TECH)  "#pzs-ng_tech"
-#set privgroups(TECH)   "STAFF"
-#set privusers(TECH)    "someuser3 someuser4"
+# Private invite channels, only users matching the glFTPd-style permissions
+# are invited to the channel. You may only define one channel per line.
+#set privchannel(#NG-STAFF)  "-glftpd =SiTEOPS =STAFF 1"
+#set privchannel(#NG-FREAKS) "=FREAKS"
+#set privchannel(#NG-EVIL)   "!-test* !=FRiENDS *"
 
 #############################################################
 # ANNOUNCING                                                #

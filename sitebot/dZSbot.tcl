@@ -17,14 +17,14 @@ if {[catch {source $scriptpath/dZSbot.conf.defaults} error]} {
 	putlog "dZSbot error: See FAQ for possible solutions/debugging options."
 	die
 }
-if {[catch {source $scriptpath/dZSbot.conf} error]} {
-	putlog "dZSbot warning: Unable to load dZSbot.conf ($error), using defaults."
-	putlog "dZSbot warning: If this is your first install, do: cp dZSbot.conf.dist dZSbot.conf"
-}
 if {[catch {source $scriptpath/dZSbot.vars} error]} {
 	putlog "dZSbot error: Unable to load dZSbot.vars ($error), cannot continue."
 	putlog "dZSbot error: See FAQ for possible solutions/debugging options."
 	die
+}
+if {[catch {source $scriptpath/dZSbot.conf} error]} {
+	putlog "dZSbot warning: Unable to load dZSbot.conf ($error), using defaults."
+	putlog "dZSbot warning: If this is your first install, do: cp dZSbot.conf.dist dZSbot.conf"
 }
 
 #################################################################################
@@ -182,7 +182,7 @@ proc eventhandler {type event argv} {
 		if {[catch {set retval [eval $script $event $argv]} error]} {
 			putlog "dZSbot error: Error evaluating the script \"$script\" for $varname ($error)."
 		} elseif {[isfalse $retval]} {
-		    #putlog "dZSbot: The script \"$script\" for $varname returned false."
+			#putlog "dZSbot: The script \"$script\" for $varname returned false."
 			return 0
 		} elseif {![istrue $retval]} {
 			putlog "dZSbot warning: The script \"$script\" for $varname must return a boolean value (0/FALSE or 1/TRUE)."
@@ -191,10 +191,17 @@ proc eventhandler {type event argv} {
 	return 1
 }
 
+proc readlogtimer {} {
+	global dZStimer
+	if {[catch {readlog} error]} {
+		putlog "dZSbot error: Unable to read log data ($error)."
+	}
+	set dZStimer [utimer 1 readlogtimer]
+}
+
 proc readlog {} {
-	global chanlist dZStimer defaultsection disable glversion lastread loglist max_log_change msgreplace msgtypes variables
+	global chanlist defaultsection disable glversion lastread loglist max_log_change msgreplace msgtypes variables
 	set lines ""
-	set dZStimer [utimer 1 "readlog"]
 
 	foreach {logtype logid logpath} $loglist {
 		if {![file readable $logpath]} {
@@ -232,18 +239,18 @@ proc readlog {} {
 	foreach {type event line} $lines {
 		## Login and sysop log specific parsing.
 		if {$type == 1 && ![parselogin $line event line]} {
-		    putlog "dZSbot error: Unknown login.log line: $line"; continue
+			putlog "dZSbot error: Unknown login.log line: $line"; continue
 		} elseif {$type == 2 && ![parsesysop $line event line]} {
-            set event "SYSOP"; set line [list $line]
-	    }
-	    ## Check that the log line is a valid Tcl list.
-	    if {[catch {llength $line} error]} {
-	        putlog "dZSbot error: Invalid log line (not a valid list): $line"
-	        continue
-	    }
+			set event "SYSOP"; set line [list $line]
+		}
+		## Check that the log line is a valid Tcl list.
+		if {[catch {llength $line} error]} {
+			putlog "dZSbot error: Invalid log line (not a valid list): $line"
+			continue
+		}
 		## Invite users to public and private channels.
 		if {[string equal $event "INVITE"]} {
-		    foreach {nick user group flags} $line {break}
+			foreach {nick user group flags} $line {break}
 			ng_inviteuser $nick $user $group $flags
 		}
 		if {[lsearch -exact $msgtypes(SECTION) $event] != -1} {
@@ -284,11 +291,11 @@ proc readlog {} {
 }
 
 proc parselogin {line eventvar datavar} {
-    upvar $eventvar event $datavar data
-    if {[regexp {^(.+@.+) \((.+)\): connection refused: .+$} $line result hostmask ip]} {
-        set event "IPNOTADDED"
-        set data [list $hostmask $ip]
-    } elseif {[regexp {^(\S+): (.+@.+) \((.+)\): (.+)} $line result user hostmask ip error]} {
+	upvar $eventvar event $datavar data
+	if {[regexp {^(.+@.+) \((.+)\): connection refused: .+$} $line result hostmask ip]} {
+		set event "IPNOTADDED"
+		set data [list $hostmask $ip]
+	} elseif {[regexp {^(\S+): (.+@.+) \((.+)\): (.+)} $line result user hostmask ip error]} {
 		switch -exact -- $error {
 			"Bad user@host."    {set event "BADHOSTMASK"}
 			"Banned user@host." {set event "BANNEDHOST"}
@@ -296,33 +303,33 @@ proc parselogin {line eventvar datavar} {
 			"Login failure."    {set event "BADPASSWORD"}
 			default {return 0}
 		}
-        set data [list $user $hostmask $ip]
-    } elseif {![regexp {^(\S+): (.+)$} $line result event data]} {
-        return 0
-    }
-    return 1
+		set data [list $user $hostmask $ip]
+	} elseif {![regexp {^(\S+): (.+)$} $line result event data]} {
+		return 0
+	}
+	return 1
 }
 
 proc parsesysop {line eventvar datavar} {
-    upvar $eventvar event $datavar newdata
-    set patterns [list \
-        ADDUSER  {^'(.+)' added user '(.+)'\.$} \
-        GADDUSER {^'(.+)' added user '(.+)' to group '(.+)'\.$} \
-        CHGRPADD {^'(.+)': successfully added to '(.+)' by (.+)$} \
-        CHGRPDEL {^'(.+)': successfully removed from '(.+)' by (.+)$} \
-        ADDIP    {^'(.+)' added ip '(.+)' to '(.+)'$} \
-        DELIP    {^'(.+)' .*removed ip '(.+)' from '(.+)'$} \
-        READDED  {^'(.+)' readded '(.+)'\.$} \
-        DELUSER  {^'(.+)' deleted user '(.+)'\.$} \
-        PURGED   {^'(.+)' purged '(.+)'$} \
-    ]
-    foreach {event pattern} $patterns {
-        if {[llength [set data [regexp -inline -- $pattern $line]]]} {
-            set newdata [lrange $data 1 end]
-            return 1
-        }
-    }
-    return 0
+	upvar $eventvar event $datavar newdata
+	set patterns [list \
+		ADDUSER  {^'(.+)' added user '(.+)'\.$} \
+		GADDUSER {^'(.+)' added user '(.+)' to group '(.+)'\.$} \
+		CHGRPADD {^'(.+)': successfully added to '(.+)' by (.+)$} \
+		CHGRPDEL {^'(.+)': successfully removed from '(.+)' by (.+)$} \
+		ADDIP    {^'(.+)' added ip '(.+)' to '(.+)'$} \
+		DELIP    {^'(.+)' .*removed ip '(.+)' from '(.+)'$} \
+		READDED  {^'(.+)' readded '(.+)'\.$} \
+		DELUSER  {^'(.+)' deleted user '(.+)'\.$} \
+		PURGED   {^'(.+)' purged '(.+)'$} \
+	]
+	foreach {event pattern} $patterns {
+		if {[llength [set data [regexp -inline -- $pattern $line]]]} {
+			set newdata [lrange $data 1 end]
+			return 1
+		}
+	}
+	return 0
 }
 
 proc ng_format {event section line} {
@@ -678,27 +685,61 @@ proc sndone {chan text {section "none"}} {
 # Invite User                                                                   #
 #################################################################################
 
-proc ng_inviteuser {nick user group flags} {
-	global invite_channels privchannel privgroups privusers
-    if {![eventhandler precommand INVITEUSER [list $nick $user $group]]} {return}
+proc flagcheck {currentflags needflags} {
+	set currentflags [split $currentflags ""]
+	foreach needflag [split $needflags ""] {
+		if {![string equal "" $needflag] && [lsearch -glob $currentflags $needflag] != -1} {return 1}
+	}
+	return 0
+}
 
-	foreach chan $invite_channels {puthelp "INVITE $nick $chan"}
-	foreach {type chanlist} [array get privchannel] {
-		if {[info exists privusers($type)]} {
-			foreach privuser $privusers($type) {
-				if {[string equal $user $privuser]} {
-					foreach chan $chanlist {puthelp "INVITE $nick $chan"}
-				}
+proc rightscheck {user group flags rights} {
+	set retval 0
+	foreach right $rights {
+		set prefix [string index $right 0]
+		if {[string equal "!" $prefix]} {
+			## 'Not' matching (!)
+			set right [string range $right 1 end]
+			set prefix [string index $right 0]
+
+			if {[string equal "-" $prefix]} {
+				set right [string range $right 1 end]
+				if {[string match $right $user]} {return 0}
+			} elseif {[string equal "=" $prefix]} {
+				set right [string range $right 1 end]
+				if {[string match $right $group]} {return 0}
+			} elseif {[flagcheck $flags $right]} {
+				return 0
 			}
-		}
-		if {[info exists privgroups($type)]} {
-			foreach privgroup $privgroups($type) {
-				if {[string equal $group $privgroup]} {
-					foreach chan $chanlist {puthelp "INVITE $nick $chan"}
-				}
-			}
+
+		## Regular matching
+		} elseif {[string equal "-" $prefix]} {
+			set right [string range $right 1 end]
+			if {[string match $right $user]} {set retval 1}
+		} elseif {[string equal "=" $prefix]} {
+			set right [string range $right 1 end]
+			if {[string match $right $group]} {set retval 1}
+		} elseif {[flagcheck $flags $right]} {
+			set retval 1
 		}
 	}
+	return $retval
+}
+
+proc ng_inviteuser {nick user group flags} {
+	global invite_channels privchannel
+	if {![eventhandler precommand INVITEUSER [list $nick $user $group]]} {return}
+
+	## Invite the user to the defined channels.
+	foreach chan $invite_channels {
+		putquick "INVITE $nick :$chan"
+	}
+	foreach {chan rights} [array get privchannel] {
+		if {[rightscheck $user $group $flags $rights]} {
+			putquick "INVITE $nick :$chan"
+		}
+	}
+
 	eventhandler postcommand INVITEUSER [list $nick $user $group $flags]
 	return
 }
@@ -719,10 +760,10 @@ proc ng_invite {nick host hand argv} {
 				set data [read $handle]
 				close $handle
 				foreach line [split $data "\n"] {
-				    switch -exact -- [lindex $line 0] {
-				        "FLAGS" {set flags [lindex $line 1]}
-				        "GROUP" {set group [lindex $line 1]}
-				    }
+					switch -exact -- [lindex $line 0] {
+						"FLAGS" {set flags [lindex $line 1]}
+						"GROUP" {set group [lindex $line 1]}
+					}
 				}
 			} else {
 				putlog "dZSbot error: Unable to open user file for \"$user\" ($error)."
@@ -1053,7 +1094,7 @@ proc ng_stats {type time nick uhost hand chan argv} {
 }
 
 proc ng_uptime {nick uhost hand chan argv} {
-	global announce binary theme
+	global announce binary theme uptime
 	checkchan $nick $chan
 
 	if {[catch {exec $binary(UPTIME)} reply]} {
@@ -1771,7 +1812,7 @@ if {[info exists dZStimer] && [catch {killutimer $dZStimer} error]} {
 	putlog "dZSbot warning: Unable to kill log timer ($error)."
 	putlog "dZSbot warning: You should .restart the bot to be safe."
 }
-set dZStimer [utimer 1 readlog]
+set dZStimer [utimer 1 readlogtimer]
 
 ## Default channels and variables
 if {![array exists chanlist] || ![info exists chanlist(DEFAULT)]} {

@@ -18,6 +18,13 @@
 # Changes
 ###############################################################
 
+r1435: Private invite channel changes.
+- Remove all previous privgroups, privusers, and privchannel settings.
+- Check the defaults.conf for an example on the new privchannel syntax.
+
+r1434: Updated the SITE INVITE script.
+- Replace the /glftpd/bin/invite.sh with sitebot/extra/invite.sh.
+
 r1428: Added sysop.log parsing.
 - New theme file settings: ADDUSER, GADDUSER, CHGRPADD, CHGRPDEL, ADDIP,
   DELIP, READDED, DELUSER, PURGED, and SYSOP.

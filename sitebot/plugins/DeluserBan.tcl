@@ -3,8 +3,8 @@
 #################################################################################
 #
 # Description:
-# - Automatically kicks/bans or kills a user when they are deleted or purged.
-# - This plug-in requires the NickDb plug-in and sysop.log reading.
+# - Automatically kills or kick/bans a user from all channels when they are deleted/purged.
+# - This plug-in requires the NickDb plug-in and sysop.log reading must be enabled.
 # - Thanks to compieter for the idea.
 #
 # Installation:
@@ -88,7 +88,6 @@ proc ::ngBot::DeluserBan::DeInit {args} {
 # "DELUSER" and "PURGED" announces.
 #
 proc ::ngBot::DeluserBan::LogEvent {event section logData} {
-    global botnick invite_channels
     variable banUser
     variable killUser
     variable message
@@ -107,7 +106,7 @@ proc ::ngBot::DeluserBan::LogEvent {event section logData} {
 
     set reason [string map [list %(user) $ftpSiteop] $message]
 
-    ## Kill the user.
+    ## Kill the user, die you bastard!
     if {[IsTrue $killUser]} {
         putlog "\[ngBot\] DeluserBan :: Killing IRC user \"$ircUser\"."
         putquick "KILL $ircUser :$reason"
@@ -119,10 +118,10 @@ proc ::ngBot::DeluserBan::LogEvent {event section logData} {
         set userHost "$ircUser!*@*"
     }
 
-    ## Kick/ban from invite channels.
-    putlog "\[ngBot\] DeluserBan :: Kicking/banning IRC user \"$ircUser\" from [join $invite_channels {, }]."
-    foreach channel $invite_channels {
-        if {[onchan $ircUser $channel]} {
+    ## Kick/ban the user from all channels.
+    putlog "\[ngBot\] DeluserBan :: Kicking/banning IRC user \"$ircUser\" from all channels."
+    foreach channel [channels] {
+        if {[botisop $channel] && [onchan $ircUser $channel]} {
             putkick $channel $ircUser $reason
         }
         if {[IsTrue $banUser]} {
