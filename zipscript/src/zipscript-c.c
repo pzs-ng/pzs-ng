@@ -455,7 +455,7 @@ main(int argc, char **argv)
 		switch (get_filetype(fileext)) {
 		case 0:	/* ZIP CHECK */
 			d_log("File type is: ZIP\n");
-			d_log("Testing file integrity with unzip\n");
+			d_log("Testing file integrity with %s\n", unzip_bin);
 			sprintf(target, "%s -qqt \"%s\"", unzip_bin, raceI.file.name);
 			if (execute(target) != 0) {
 				d_log("Integrity check failed\n");
