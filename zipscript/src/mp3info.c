@@ -21,7 +21,7 @@
 
  * MP3Info 0.5 by Ricardo Cerqueira <rmc@rccn.net>
  * MP3Stat 0.9 by Ed Sweetman <safemode@voicenet.com> and 
-   Johannes Overmann <overmann@iname.com>
+ Johannes Overmann <overmann@iname.com>
 
 */
 
@@ -340,11 +340,11 @@ float get_mp3_info (char *f) {
 }
 
 /*
-int main(void){
-  FILE *fp;
-  char b[32];
-  sprintf(b, "VBR %.0f", get_mp3_info("test.mp3"));
-  printf("%s\n",b);
-  return 0;
-}
-*/
+   int main(void){
+   FILE *fp;
+   char b[32];
+   sprintf(b, "VBR %.0f", get_mp3_info("test.mp3"));
+   printf("%s\n",b);
+   return 0;
+   }
+   */

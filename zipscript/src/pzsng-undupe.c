@@ -14,28 +14,28 @@
 #include "../conf/zsconfig.h"
 
 struct dupefile {
-       char filename[256];
-       time_t timeup;
-       char uploader[25];
+  char filename[256];
+  time_t timeup;
+  char uploader[25];
 };
 
 int main (int argc, char *argv[]) {
 
   FILE *fp, *fp2;
   char dupename[1024], data2[1024], dupefile[1024];
-  
+
   struct dupefile buffer;
-  
+
   if ( argc != 2 ) {
     printf("Please give a filename to undupe as well\n");
     return 1;
   }
-  
+
   strcpy(dupefile, dupepath);
   strcpy(dupename, argv[1]);
-  
+
   sprintf(data2, "%s2", dupefile);
-  
+
   if((fp = fopen(dupefile, "r+b")) == NULL) {
     printf("FATAL ERROR: Unable to open dupefile\n");
     return 1;
@@ -45,16 +45,16 @@ int main (int argc, char *argv[]) {
     return 1;
   }
   while (!feof(fp)) {
-      
+
     if (fread(&buffer, sizeof(struct dupefile), 1, fp) < 1)
-	break;
+      break;
     /* If we found the file, delete it */
     if (strcmp(buffer.filename, dupename) == 0)
-	fflush(fp);
+      fflush(fp);
     /* if not, write it to the new file */
     if (strcmp(buffer.filename, dupename) != 0)
-	if (fwrite(&buffer, sizeof(struct dupefile), 1, fp2) < 1)
-	  break;
+      if (fwrite(&buffer, sizeof(struct dupefile), 1, fp2) < 1)
+	break;
   }
 
   fclose(fp);

@@ -13,18 +13,18 @@
  */
 
 /* These should be changed to match your glftpd installation.
- */
+*/
 #define site_root	"/glftpd/"
 #define log		"/ftp-data/logs/glftpd.log"
 #define storage		"/ftp-data/zipscript/"
 #define gl_userfiles	"/ftp-data/users/"
 
 /* SHM area to use (for glftpd) - Only change if you know what you're doing.
- */
+*/
 #define KEY		0x0000DEAD
 
 /* Are you using GLFTPD 2?
- */
+*/
 #define for_glftpd2	TRUE
 
 /* On default, announcing is disabled everywhere, use zip/sfv paths to enable annouces and private paths to disable.
@@ -41,7 +41,7 @@
 #define cleanupdirs	"/site/COVERS/ /site/DVDR/ /site/GBA/ /site/MP3/%Y-%m-%d/ /site/FR-APPS/ /site/US-APPS/ /site/PRE/ /site/Requests/ /site/FR-GAMES/ /site/US-GAMES/ /site/XBOX/ /site/STAFF/"
 
 /* Creates a zero-byte file for every non-existing file defined in sfv?
- */
+*/
 #define create_missing_files	TRUE
 
 /* Defines type of status bar
@@ -58,12 +58,12 @@
 
 
 /* If file has suid bit set, program changes uid and gid to these (0 leaves option uncompiled)
- */
+*/
 #define program_uid		10
 #define program_gid		200
 
 /* These file types are allowed without any checks (types need to be also ignored)
- */
+*/
 #define allowed_types		"jpg,avi,mpg,cue,m3u"
 
 /* These file types are ignored from sfv
@@ -72,12 +72,12 @@
 #define ignored_types		",diz,jpg,cue,m3u,nfo,sfv"
 
 /* Special modes
- */
+*/
 #define debug_mode		FALSE
 #define benchmark_mode		FALSE
 
 /* Get user day/week/month/allup position
- */
+*/
 #define get_user_stats		TRUE
 
 #define show_user_info		TRUE
@@ -90,11 +90,11 @@
  */
 
 /* Removes duplicate entries and comments from the sfv - some lame zipscripts seem to add duplicate entries :p
- */
+*/
 #define sfv_dupecheck		TRUE
 
 /* Writes a plain sfv - removing all comments etc
- */
+*/
 
 #define sfv_cleanup		TRUE
 
@@ -106,11 +106,11 @@
 #define deny_double_msg		"10%U uploaded a second (dupe) SFV in %r (%n). Dumb Ass!"
 
 /* Exclude non sfv directories (ie group/request directory)
- */
+*/
 #define exclude_non_sfv_dirs	TRUE
 
 /* Force sfv to be uploaded first, before accepting any files
- */
+*/
 #define force_sfv_first		FALSE
 
 
@@ -121,7 +121,7 @@
 
 /* These directories will contain symlinks to your audio releases, based on genre, year and artist.
    Ignore these paths if you have no plans on sorting your releases.
- */
+   */
 #define audio_genre_path		"/site/iNDEX/Music.By.Genre/"
 #define audio_artist_path		"/site/incoming/music.by.artist/"
 #define audio_year_path			"/site/incoming/music.by.year/"
@@ -136,7 +136,7 @@
 
 
 /* Audio related symlinks - set to TRUE if you wish to sort/symlink releases, or FALSE if not.
- */
+*/
 #define audio_genre_sort		TRUE
 #define audio_year_sort			FALSE
 #define audio_artist_sort		FALSE
@@ -158,7 +158,7 @@
 #define audio_genre_warn_msg		"10%U/%G has started an illegal upload %r (genre: %w). Naughty boy!"
 
 /* Create m3u file on release complete for audio release?
- */
+*/
 #define create_m3u			TRUE
 
 
@@ -183,13 +183,13 @@
 #define min_halfway_files	10
 
 /* Limit number of users/groups to display in stats.
- */
+*/
 #define max_users_in_top	7
 #define max_groups_in_top	7
 
 
 /* Enable/disable norace announces (will be used instead of normal announces, if there is only one user in race)
- */
+*/
 #define	announce_norace		TRUE
 
 /* Defines how stats are written into log
@@ -209,7 +209,7 @@
 
 
 /* General output settings and cookies
- */
+*/
 #define pre_stats		"Top Users: "
 #define between_stats		"Top Groups: "
 #define post_stats		DISABLED
@@ -223,7 +223,7 @@
 
 
 /* Get list of competitors (all racers excluding current user) - stored in %R cookie
- */
+*/
 #define get_competitor_list	TRUE
 #define racersmsg		"10%u(%g)"					/* Put in %R cookie */
 
@@ -244,7 +244,7 @@
 #define audio_norace_complete	"%r [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ]. %l %L"
 
 /* Video files - supports mpeg1/mpeg2 and various avi formats
- */
+*/
 #define video_race		"10%U is racing [ %R ] on %r @ %B%.0S%BkB/s."
 #define video_sfv		"Got SFV for %r. Expecting %B%f%B File(s)."
 #define video_update		"10%U/%G was the first to upload file in %r at %.0S kB/s. Expecting %B%.1e%BmB."
@@ -255,7 +255,7 @@
 #define video_norace_complete	"%r [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ]. %l %L"
 
 /* RAR - allows usage of compression mode cookie for rarred releases
- */
+*/
 #define rar_race		"10%U is racing [ %R ] on %r @ %B%.0S%BkB/s."
 #define rar_sfv			"Got SFV for %r. Expecting %B%f%B File(s)."
 #define rar_update		"10%U/%G was the first to upload file in %r at %.0S kB/s. Expecting %B%.1e%BmB."
@@ -266,7 +266,7 @@
 #define rar_norace_complete	"%r [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ]. %l %L"
 
 /* Rest of the stuff inside sfv
- */
+*/
 #define other_race		"10%U is racing [ %R ] on %r @ %B%.0S%BkB/s."
 #define other_sfv		"Got SFV for %r. Expecting %B%f%B File(s)."
 #define other_update		"10%U/%G was the first to upload file in %r at %.0S kB/s. Expecting %B%.1e%BmB."
@@ -277,7 +277,7 @@
 #define other_norace_complete	"%r [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ]. %l %L"
 
 /* Zipped files
- */
+*/
 #define zip_race		"10%U is racing [ %R ] on %r @ %B%.0S%bkB/s."
 #define zip_update		"Got DiZ for %r. Expecting %B%.1e%BmB in %B%f%B File(s). First File upped at %.0S kB/s"
 #define zip_halfway		DISABLED
@@ -294,40 +294,40 @@
  */
 
 /* Write .message file on complete
- */
+*/
 #define write_complete_message	TRUE
 
 /* Various Output
- */
+*/
 #define message_header		"\n                          __          __\n                  _______/  |______ _/  |_  ______\n                 /  ___/\\   __\\__  \\\\   __\\/  ___/ \n                 \\___ \\  |  |  / __ \\|  |  \\___ \\ \n                /____  > |__| (____  /__| /____  >\n                     \\/            \\/          \\/ \n"
 #define message_user_header	"\n.....................................................................\n"  \
-				".                                                                   .\n"  \
-				".  [+]   Racers   [+]                        size   #    Speed      .\n"  \
-				".                                                                   .\n"
+  ".                                                                   .\n"  \
+".  [+]   Racers   [+]                        size   #    Speed      .\n"  \
+".                                                                   .\n"
 #define message_user_body	". %3n %-34U %7.1mM %3fF %5.0sKBs     .\n"
 #define message_user_footer	".....................................................................\n"  \
-				".                                                                   .\n"
+  ".                                                                   .\n"
 #define message_group_header	".  [+]   Groups   [+]                                               .\n"  \
-				".                                                                   .\n"
+  ".                                                                   .\n"
 #define message_group_body	". %3n %-34g %7.1mM %3fF %5.0sKBs     .\n"
 #define message_group_footer	".....................................................................\n"
 
 #define message_mp3 		".                                                                   .\n"  \
-				".  [+]   I D 3 - T A G   [+]                                        .\n"  \
-				".                                                                   .\n"  \
-				".  Artist: %-34x                       .\n"  \
-				".  Album : %-34W                       .\n"  \
-				".  Genre : %-15w Encoding: %-30j .\n"  \
-				".  Tracks: %-15f Year: %-34Y .\n"  \
-				".                                                                   .\n"  \
-				".....................................................................\n"
+  ".  [+]   I D 3 - T A G   [+]                                        .\n"  \
+".                                                                   .\n"  \
+".  Artist: %-34x                       .\n"  \
+".  Album : %-34W                       .\n"  \
+".  Genre : %-15w Encoding: %-30j .\n"  \
+".  Tracks: %-15f Year: %-34Y .\n"  \
+".                                                                   .\n"  \
+".....................................................................\n"
 #define message_footer		".                                                                   .\n"  \
-				".  [+]   Infos   [+]                                                .\n"  \
-				".                                                                   .\n"  \
-				".  Release size:       %5.0m MB                                     .\n"  \
-				".  Global race speed: %6.0A kB/s                                   .\n"  \
-				".                                                                   .\n"  \
-				".....................................................................\n"
+  ".  [+]   Infos   [+]                                                .\n"  \
+".                                                                   .\n"  \
+".  Release size:       %5.0m MB                                     .\n"  \
+".  Global race speed: %6.0A kB/s                                   .\n"  \
+".                                                                   .\n"  \
+".....................................................................\n"
 
 #define video_completebar	"[PZS] - ( %.0mM %fF @ %0.A kBps - COMPLETE ) - [PZS]"
 #define audio_completebar	"[PZS] - ( %.0mM %fF @ %0.A kBps - COMPLETE - %w %Y ) - [PZS]"
@@ -338,60 +338,60 @@
 
 
 #define zipscript_header	 "....................................................\n"  \
-				 ".                                                  .\n"  \
-				 ".                [+]    PZS    [+]                 .\n"  \
-				 "....................................................\n"
+  ".                                                  .\n"  \
+".                [+]    PZS    [+]                 .\n"  \
+"....................................................\n"
 #define zipscript_sfv_ok	 ".                                                  .\n"  \
-				 ". [+]  SFV-file: oK!  [+]                          .\n"  \
-				 ".                                                  .\n"
+  ". [+]  SFV-file: oK!  [+]                          .\n"  \
+".                                                  .\n"
 #define zipscript_any_ok	 ".                                                  .\n"  \
-				 ". [+]  File: ok!      [+]                          .\n"  \
-				 ".                                                  .\n"
+  ". [+]  File: ok!      [+]                          .\n"  \
+".                                                  .\n"
 #define zipscript_SFV_ok	 ".                                                  .\n"  \
-				 ". [+]  CRC-Check: oK! [+]                          .\n"  \
-				 ".                                                  .\n"
+  ". [+]  CRC-Check: oK! [+]                          .\n"  \
+".                                                  .\n"
 #define zipscript_SFV_skip	 ".                                                  .\n"  \
-				 ". [+]  CRC-Check: SKIPPED!  [+]                    .\n"  \
-				 ".                                                  .\n"
+  ". [+]  CRC-Check: SKIPPED!  [+]                    .\n"  \
+".                                                  .\n"
 #define zipscript_zip_ok	 ".                                                  .\n"  \
-				 ". [+]  ZiP integrity: oK!  [+]                     .\n"  \
-				 ".                                                  .\n"
+  ". [+]  ZiP integrity: oK!  [+]                     .\n"  \
+".                                                  .\n"
 #define realtime_mp3_info	 "....................................................\n" \
-				 ".                                                  .\n" \
-				 ". [+]  ID3-TAG  [+]                                .\n" \
-				 ".                                                  .\n" \
-				 ". Title    : %-37y .\n" \
-				 ". Artist   : %-37x .\n" \
-				 ". Album    : %-37W .\n" \
-				 ". Genre    : %-37w .\n" \
-				 ". Year     : %-37Y .\n" \
-				 ". Encoding : %-37j .\n"
+  ".                                                  .\n" \
+". [+]  ID3-TAG  [+]                                .\n" \
+".                                                  .\n" \
+". Title    : %-37y .\n" \
+". Artist   : %-37x .\n" \
+". Album    : %-37W .\n" \
+". Genre    : %-37w .\n" \
+". Year     : %-37Y .\n" \
+". Encoding : %-37j .\n"
 #define realtime_user_header	 "....................................................\n" \
-				 ".                                                  .\n" \
-				 ". [+] Top Racers [+]                               .\n" \
-				 ".                                                  .\n"
+  ".                                                  .\n" \
+". [+] Top Racers [+]                               .\n" \
+".                                                  .\n"
 #define realtime_user_body	 ". %2n. %-17u %8.1mmB %2fF %7.0skB/s .\n"
 #define realtime_user_footer	 ""
 #define realtime_group_header	 "....................................................\n" \
-				 ".                                                  .\n" \
-				 ". [+] Top Groups [+]                               .\n" \
-				 ".                                                  .\n"
+  ".                                                  .\n" \
+". [+] Top Groups [+]                               .\n" \
+".                                                  .\n"
 #define realtime_group_body	 ". %2n. %-17g %8.1mmB %2fF %7.0skB/s .\n"
 #define realtime_group_footer	 ""
 #define zipscript_footer_unknown "..[ - NO - SFV - ]........................[%2F/??]...\n"
 #define zipscript_footer_ok	 "....................................................\n" \
-				 ".                                                  .\n" \
-				 ". [+] Progression : [%V]      [%2F/%-2f]  .\n"  \
-				 ".                                                  .\n"  \
-				 "....................................................\n"
+  ".                                                  .\n" \
+". [+] Progression : [%V]      [%2F/%-2f]  .\n"  \
+".                                                  .\n"  \
+"....................................................\n"
 #define zipscript_footer_error	 ". - %-46v .\n" \
-				 "....................................................\n"
+  "....................................................\n"
 #define zipscript_footer_skip	 "....................................................\n"
 
 #define sfv_comment		 ""
 
 /* How Indicators look
- */
+*/
 #define incomplete_cd_indicator		"../../(iNCOMPLETE)-(%0)-%1"
 #define incomplete_indicator		"../(iNCOMPLETE)-%0"
 
@@ -408,21 +408,21 @@
  */
 
 /* Enable/disable accept script (accept script is run, if file is ok)
- */
+*/
 #define enable_accept_script	FALSE
 #define accept_script		"/bin/imdb_parse.sh"
 #define enable_accept_script2	FALSE
 #define accept_script2		"/bin/imdb_parse2.sh"
 
 /* Enable/disable nfo script (only run on .nfo files)
- */
+*/
 #define enable_nfo_script	FALSE
 #define nfo_script		"/bin/psxc-imdb.sh"
 #define enable_nfo_script2	FALSE
 #define nfo_script2		"/bin/psxc-imdb2.sh"
 
 /* Enable/disable complete script (complete script is run, if release is complete)
- */
+*/
 #define enable_complete_script	FALSE
 #define complete_script		"/bin/nfo_copy.sh"
 #define enable_complete_script2	FALSE
@@ -434,10 +434,10 @@
  */
 
 /* Output of racestats binary
- */
+*/
 #define stats_line		"%r: %B%F%B of %B%f%B files uploaded by %B%u%B racer(s) from %B%g%B group(s). Leading uploader: %C0."
 
 /* Output of postdel binary
- */
+*/
 #define incompletemsg		"10%U deletes file from %r. Release is now %Bincomplete%B!"
 

@@ -9,44 +9,44 @@
 #define WHITESPACE_STR  " \f\n\r\t\v"
 
 char * genre_s[] = {
-	"Blues",		"Classic Rock",		"Country",		"Dance",
-	"Disco",		"Funk",			"Grunge",		"Hip-Hop",
-	"Jazz",			"Metal",		"New Age",		"Oldies",
-	"Other",		"Pop",			"R&B",			"Rap",
-	"Reggae",		"Rock",			"Techno",		"Industrial",
-	"Alternative",		"Ska",			"Death Metal",		"Pranks",
-	"Soundtrack",		"Euro-Techno",		"Ambient",		"Trip-Hop",
-	"Vocal",		"Jazz+Funk",		"Fusion",		"Trance",
-	"Classical",		"Instrumental",		"Acid",			"House",
-	"Game",			"Sound Clip",		"Gospel",		"Noise",
-	"Alt. Rock",		"Bass",			"Soul",			"Punk",
-	"Space",		"Meditative",		"Instrumental Pop",	"Instrumental Rock",
-	"Ethnic",		"Gothic",		"Darkwave",		"Techno-Industrial",
-	"Electronic",		"Pop-Folk",		"Eurodance",		"Dream",
-	"Southern Rock",	"Comedy",		"Cult",			"Gangsta Rap",
-	"Top 40",		"Christian Rap",	"Pop Funk",		"Jungle",
-	"Native American",	"Cabaret",		"New Wave",		"Psychedelic",
-	"Rave",			"Showtunes",		"Trailer",		"Lo-Fi",
-	"Tribal",		"Acid Punk",		"Acid Jazz",		"Polka",
-	"Retro",		"Musical",		"Rock & Roll",		"Hard Rock",
-	"Folk",			"Folk Rock",		"National Folk",	"Swing",
-	"Fast-Fusion",		"Bebob",		"Latin",		"Revival",
-	"Celtic",		"Bluegrass",		"Avantgarde",		"Gothic Rock",
-	"Progressive Rock",	"Psychedelic Rock",	"Symphonic Rock",	"Slow Rock",
-	"Big Band",		"Chorus",		"Easy Listening",	"Acoustic",
-	"Humour",		"Speech",		"Chanson",		"Opera",
-	"Chamber Music",	"Sonata",		"Symphony",		"Booty Bass",
-	"Primus",		"Porn Groove",		"Satire",		"Slow Jam",
-	"Club",			"Tango",		"Samba",		"Folklore",
-	"Ballad",		"Power Ballad",		"Rhythmic Soul",	"Freestyle",
-	"Duet",			"Punk Rock",		"Drum Solo",		"A Cappella",
-	"Euro-House",		"Dance Hall",		"Goa",			"Drum & Bass",
-	"Club-House",		"Hardcore",		"Terror",		"Indie",
-	"BritPop",		"Negerpunk",		"Polsk Punk",		"Beat",
-	"Christian Gangsta Rap","Heavy Metal",		"Black Metal",		"Crossover",
-	"Contemporary Christian","Christian Rock",	"Merengue",		"Salsa",
-	"Thrash Metal",		"Anime",		"JPop",			"Synthpop",
-	"Unknown"
+  "Blues",		"Classic Rock",		"Country",		"Dance",
+  "Disco",		"Funk",			"Grunge",		"Hip-Hop",
+  "Jazz",			"Metal",		"New Age",		"Oldies",
+  "Other",		"Pop",			"R&B",			"Rap",
+  "Reggae",		"Rock",			"Techno",		"Industrial",
+  "Alternative",		"Ska",			"Death Metal",		"Pranks",
+  "Soundtrack",		"Euro-Techno",		"Ambient",		"Trip-Hop",
+  "Vocal",		"Jazz+Funk",		"Fusion",		"Trance",
+  "Classical",		"Instrumental",		"Acid",			"House",
+  "Game",			"Sound Clip",		"Gospel",		"Noise",
+  "Alt. Rock",		"Bass",			"Soul",			"Punk",
+  "Space",		"Meditative",		"Instrumental Pop",	"Instrumental Rock",
+  "Ethnic",		"Gothic",		"Darkwave",		"Techno-Industrial",
+  "Electronic",		"Pop-Folk",		"Eurodance",		"Dream",
+  "Southern Rock",	"Comedy",		"Cult",			"Gangsta Rap",
+  "Top 40",		"Christian Rap",	"Pop Funk",		"Jungle",
+  "Native American",	"Cabaret",		"New Wave",		"Psychedelic",
+  "Rave",			"Showtunes",		"Trailer",		"Lo-Fi",
+  "Tribal",		"Acid Punk",		"Acid Jazz",		"Polka",
+  "Retro",		"Musical",		"Rock & Roll",		"Hard Rock",
+  "Folk",			"Folk Rock",		"National Folk",	"Swing",
+  "Fast-Fusion",		"Bebob",		"Latin",		"Revival",
+  "Celtic",		"Bluegrass",		"Avantgarde",		"Gothic Rock",
+  "Progressive Rock",	"Psychedelic Rock",	"Symphonic Rock",	"Slow Rock",
+  "Big Band",		"Chorus",		"Easy Listening",	"Acoustic",
+  "Humour",		"Speech",		"Chanson",		"Opera",
+  "Chamber Music",	"Sonata",		"Symphony",		"Booty Bass",
+  "Primus",		"Porn Groove",		"Satire",		"Slow Jam",
+  "Club",			"Tango",		"Samba",		"Folklore",
+  "Ballad",		"Power Ballad",		"Rhythmic Soul",	"Freestyle",
+  "Duet",			"Punk Rock",		"Drum Solo",		"A Cappella",
+  "Euro-House",		"Dance Hall",		"Goa",			"Drum & Bass",
+  "Club-House",		"Hardcore",		"Terror",		"Indie",
+  "BritPop",		"Negerpunk",		"Polsk Punk",		"Beat",
+  "Christian Gangsta Rap","Heavy Metal",		"Black Metal",		"Crossover",
+  "Contemporary Christian","Christian Rock",	"Merengue",		"Salsa",
+  "Thrash Metal",		"Anime",		"JPop",			"Synthpop",
+  "Unknown"
 };
 
 char * fps_s[]		= { "Unknown", "23.976", "24", "25", "29.97", "30", "50", "59.94", "60" };
@@ -63,25 +63,25 @@ char *trim (char *string) {
 
   /* Ignore NULL pointers.  */
   if (string)
-    {
-      char *ptr = string;
+  {
+    char *ptr = string;
 
-      /* Skip leading whitespace.  */
-      while (strchr (WHITESPACE_STR, *ptr))
-        ++ptr;
+    /* Skip leading whitespace.  */
+    while (strchr (WHITESPACE_STR, *ptr))
+      ++ptr;
 
-      /* Make a copy of the remainder.  */
-      result = strdup (ptr);
+    /* Make a copy of the remainder.  */
+    result = strdup (ptr);
 
-      /* Move to the last character of the copy.  */
-      for (ptr = result; *ptr; ++ptr)
-        /* NOWORK */;
-      --ptr;
+    /* Move to the last character of the copy.  */
+    for (ptr = result; *ptr; ++ptr)
+      /* NOWORK */;
+    --ptr;
 
-      /* Remove trailing whitespace.  */
-      for (--ptr; strchr (WHITESPACE_STR, *ptr); --ptr)
-          *ptr = '\0';
-   }
+    /* Remove trailing whitespace.  */
+    for (--ptr; strchr (WHITESPACE_STR, *ptr); --ptr)
+      *ptr = '\0';
+  }
 
   return result;
 }
@@ -104,20 +104,20 @@ void mpeg_video(char *f, struct video *video) {
   unsigned char	aspect_ratio;
   unsigned char	fps = 0;
   short	int	t = 0;
-  
+
   fd = open(f, O_RDONLY);
-  
+
   while ( read(fd, buf, 1) == 1 ) {
     if ( *buf == *(header + t)) {
       t++;
       if ( t == sizeof(header) ) {
 	read(fd, buf, 8);
 	memcpy(&t, buf, 2);
-	
+
 	t = *(buf + 1) >> 4;
 	width = (*buf << 4) + t;
 	height = ((*(buf + 1) - (t << 4)) << 4) + *(buf + 2);
-	
+
 	aspect_ratio = *(buf + 3) >> 4;
 	fps = *(buf + 3) - (aspect_ratio << 4);
 	break;
@@ -128,11 +128,11 @@ void mpeg_video(char *f, struct video *video) {
       t = 0;
     }
   }
-  
+
   video->height = height;
   video->width = width;
   video->fps = (unsigned char*)fps_s[fps > 8 ? 0 : fps];
-  
+
   close(fd);
 }
 
@@ -152,10 +152,10 @@ void avi_video(char *f, struct video *video) {
   int		fd;
   unsigned char	buf[56];
   int		fps;
-  
+
   fd = open(f, O_RDONLY);
   if ( lseek(fd, 32, 0) != -1 &&
-       read(fd, buf, 56) == 56 ) {
+      read(fd, buf, 56) == 56 ) {
     memcpy(&fps, buf, 4);
     if ( fps > 0 ) {
       memcpy(&video->width, buf + 32, 4);
@@ -181,14 +181,14 @@ char* get_preset(char vbr_header[4]) {
 
   strcpy(returnval,"NA");
   switch (preset) {
-  case 1000 : strcpy(returnval,"APR");  break;  /* r3mix         */
-  case 1001 : strcpy(returnval,"APS");  break;  /* standard      */
-  case 1002 : strcpy(returnval,"APE");  break;  /* extreme       */
-  case 1003 : strcpy(returnval,"API");  break;  /* insane        */
-  case 1004 : strcpy(returnval,"FAPS"); break;  /* fast standard */
-  case 1005 : strcpy(returnval,"FAPE"); break;  /* fast extreme  */
-  case 1006 : strcpy(returnval,"APM");  break;  /* medium        */
-  case 1007 : strcpy(returnval,"FAPM"); break;  /* fast medium   */
+    case 1000 : strcpy(returnval,"APR");  break;  /* r3mix         */
+    case 1001 : strcpy(returnval,"APS");  break;  /* standard      */
+    case 1002 : strcpy(returnval,"APE");  break;  /* extreme       */
+    case 1003 : strcpy(returnval,"API");  break;  /* insane        */
+    case 1004 : strcpy(returnval,"FAPS"); break;  /* fast standard */
+    case 1005 : strcpy(returnval,"FAPE"); break;  /* fast extreme  */
+    case 1006 : strcpy(returnval,"APM");  break;  /* medium        */
+    case 1007 : strcpy(returnval,"FAPM"); break;  /* fast medium   */
   }
   return returnval;
 }
@@ -231,23 +231,23 @@ void get_mpeg_audio_info(char *f, struct audio *audio) {
   int           t1;
 
   fd = open(f, O_RDONLY);
-  
+
   n = 2;
   while (read(fd, header + 2 - n, n) == n) {
-	if ( *header == 255 ) {
-		n = 2;
-		if (*(header + 1) >= 224) {
-			n = 0;
-			break;
-		} else { n = 2; }
-	} else {
-		if (*(header + 1) == 255 ) {
-			*header = *(header + 1);
-			n = 1;
-		} else { n = 2; }
-	}
+    if ( *header == 255 ) {
+      n = 2;
+      if (*(header + 1) >= 224) {
+	n = 0;
+	break;
+      } else { n = 2; }
+    } else {
+      if (*(header + 1) == 255 ) {
+	*header = *(header + 1);
+	n = 1;
+      } else { n = 2; }
+    }
   }
-  
+
   /* mp3 header:
    * AAAAAAAA AAABBCCD EEEEFFGH IIJJKLMM
    * A - Frame sync
@@ -264,69 +264,69 @@ void get_mpeg_audio_info(char *f, struct audio *audio) {
    */
   if (n == 0) {
     *(header + 1) -= 224;
-    
+
     read(fd, header + 2, 2);
-    
+
     version = (*(header + 1)) >> 3;
-	layer = (*(header + 1) >> 1) & ((1 << 2) - 1); /* Nasty code, keeps CC in 'layer'. (layer = (*(header + 1) - (version << 3)) >> 1) */
-	protected = (*(header + 1)) & 1;
+    layer = (*(header + 1) >> 1) & ((1 << 2) - 1); /* Nasty code, keeps CC in 'layer'. (layer = (*(header + 1) - (version << 3)) >> 1) */
+    protected = (*(header + 1)) & 1;
     t_bitrate = (*(header + 2)) >> 4;
-	t_samplingrate = (*(header + 2) >> 2) & ((1 << 2) - 1); /* Nasty code, keeps FF in 't_samplingrate'. (t_samplingrate = *(header + 2) - (t_bitrate << 4) >> 2) */
-	
-	switch (version) {
-		case 0:
-			samplingrate = sr_v25[t_samplingrate];
-		case 2:
-			if (!samplingrate)
-				samplingrate = sr_v2[t_samplingrate];
-			switch (layer) {
-				case 3:
-					bitrate = br_v2_l1[t_bitrate];
-					break;
-				case 1:
-				case 2:
-					bitrate = br_v2_l23[t_bitrate];
-					break;
-			}
-			break;
-		case 3:
-			samplingrate = sr_v1[t_samplingrate];
-			switch (layer) {
-				case 1:
-					bitrate = br_v1_l3[t_bitrate];
-					break;
-				case 2:
-					bitrate = br_v1_l2[t_bitrate];
-					break;
-				case 3:
-					bitrate = br_v1_l1[t_bitrate];
-					break;
-			}
-			break;
+    t_samplingrate = (*(header + 2) >> 2) & ((1 << 2) - 1); /* Nasty code, keeps FF in 't_samplingrate'. (t_samplingrate = *(header + 2) - (t_bitrate << 4) >> 2) */
+
+    switch (version) {
+      case 0:
+	samplingrate = sr_v25[t_samplingrate];
+      case 2:
+	if (!samplingrate)
+	  samplingrate = sr_v2[t_samplingrate];
+	switch (layer) {
+	  case 3:
+	    bitrate = br_v2_l1[t_bitrate];
+	    break;
+	  case 1:
+	  case 2:
+	    bitrate = br_v2_l23[t_bitrate];
+	    break;
 	}
+	break;
+      case 3:
+	samplingrate = sr_v1[t_samplingrate];
+	switch (layer) {
+	  case 1:
+	    bitrate = br_v1_l3[t_bitrate];
+	    break;
+	  case 2:
+	    bitrate = br_v1_l2[t_bitrate];
+	    break;
+	  case 3:
+	    bitrate = br_v1_l1[t_bitrate];
+	    break;
+	}
+	break;
+    }
     channelmode = (*(header + 3)) >> 6;
-    
+
     sprintf(audio->samplingrate, "%i", samplingrate);
     sprintf(audio->bitrate, "%i", bitrate);
     audio->codec = codec_s[version];
     audio->layer = layer_s[layer];
     audio->channelmode = chanmode_s[channelmode];
-    
+
     /* LAME VBR TAG */
 
     lseek(fd, 0, SEEK_SET);
     read(fd, id3v2_header, 10);
-    
+
     if (memcmp(id3v2_header, "ID3", 3) == 0) {
       /*
-	The ID3V2 tag is prepended to the mp3file, so we must adjust
-	the vbr_offset accordingly.
-	ID3V2 uses synchsafe integers hence this bitmanipulation.
-	Reference : http://www.id3.org/id3v2.4.0-structure.txt
-       */
+	 The ID3V2 tag is prepended to the mp3file, so we must adjust
+	 the vbr_offset accordingly.
+	 ID3V2 uses synchsafe integers hence this bitmanipulation.
+Reference : http://www.id3.org/id3v2.4.0-structure.txt
+*/
       vbr_offset = (id3v2_header[8] >> 1)*256 + ((id3v2_header[8] & 1)*128) + id3v2_header[9] + 10;
     }
-    
+
     lseek(fd, 13+vbr_offset, SEEK_SET);
     read(fd, xing_header1, 4);
     lseek(fd, 21+vbr_offset, SEEK_SET);
@@ -335,47 +335,47 @@ void get_mpeg_audio_info(char *f, struct audio *audio) {
     read(fd, xing_header3, 4);
     lseek(fd, 36+vbr_offset, SEEK_SET);
     read(fd, fraunhofer_header, 4);
-    
+
     if (memcmp(xing_header1, "Xing", 4) == 0 || 
-	 memcmp(xing_header2, "Xing", 4) == 0 || 
-	 memcmp(xing_header3, "Xing", 4) == 0 ||
-	 memcmp(fraunhofer_header, "VBRI", 4) == 0 ) {
-      
+	memcmp(xing_header2, "Xing", 4) == 0 || 
+	memcmp(xing_header3, "Xing", 4) == 0 ||
+	memcmp(fraunhofer_header, "VBRI", 4) == 0 ) {
+
       lseek(fd, 156+vbr_offset, SEEK_SET);
       read(fd, audio->vbr_version_string, 9);
       audio->vbr_version_string[9] = 0;
       for (t1=9; t1>0; t1--) {
-        if (audio->vbr_version_string[t1] > 32) {
-          break;
-        }
-        audio->vbr_version_string[t1] = 0;
+	if (audio->vbr_version_string[t1] > 32) {
+	  break;
+	}
+	audio->vbr_version_string[t1] = 0;
       }
       audio->is_vbr = 1;
       if ( memcmp(audio->vbr_version_string, "LAME", 4) == 0) {
-        lseek(fd, 182+vbr_offset, SEEK_SET);
-        read(fd, vbr_header, 2);
-        sprintf(audio->vbr_preset, "%s", get_preset((char*)vbr_header));
- 
-        if (audio->vbr_version_string[4] == 32) audio->vbr_version_string[4] = 0;
+	lseek(fd, 182+vbr_offset, SEEK_SET);
+	read(fd, vbr_header, 2);
+	sprintf(audio->vbr_preset, "%s", get_preset((char*)vbr_header));
 
-/*        strcpy(audio->bitrate, "VBR");*/
+	if (audio->vbr_version_string[4] == 32) audio->vbr_version_string[4] = 0;
+
+	/*        strcpy(audio->bitrate, "VBR");*/
       } else {
-        strcpy(audio->vbr_version_string, "Not LAME");
-        strcpy(audio->vbr_preset, "NA");
+	strcpy(audio->vbr_version_string, "Not LAME");
+	strcpy(audio->vbr_preset, "NA");
       }
-      
+
     } else {
       audio->is_vbr = 0;
       strcpy(audio->vbr_version_string, "NA");
       strcpy(audio->vbr_preset, "NA");
     }
-    
+
     if ( memcmp(fraunhofer_header, "VBRI", 4) == 0 ) {
       strcpy(audio->vbr_version_string, "FHG");
     }
 
     /* ID3 TAG */
-    
+
     lseek(fd, -128, SEEK_END);
     read(fd, header, 3);
     if ( memcmp(header, "TAG", 3) == 0 ) { /* id3 tag */
@@ -383,20 +383,20 @@ void get_mpeg_audio_info(char *f, struct audio *audio) {
       read(fd, audio->id3_title, 30);
       read(fd, audio->id3_artist, 30);
       read(fd, audio->id3_album, 30);
-      
+
       lseek(fd, -35, SEEK_END);
       read(fd, audio->id3_year, 4);
       if ( tolower(audio->id3_year[1]) == 'k' ) {
 	memcpy(header, audio->id3_year, 3);
 	sprintf(audio->id3_year, "%c00%c", *header, *(header + 2));
       }
-      
+
       lseek(fd, -1, SEEK_END);
       read(fd, header, 1);
       t_genre = (int)*header;
       if ( t_genre < 0 ) t_genre += 256;
       if ( t_genre > 148 ) t_genre = 148;
-      
+
       audio->id3_genre = genre_s[t_genre];
       audio->id3_year[4] =
 	audio->id3_artist[30] =
@@ -410,7 +410,7 @@ void get_mpeg_audio_info(char *f, struct audio *audio) {
     audio->layer = layer_s[0];
     audio->channelmode = chanmode_s[4];
   }
-  
+
   if ( tag_ok == 0 ) {
     strcpy(audio->id3_year, "0000");
     strcpy(audio->id3_title, "Unknown");
@@ -418,8 +418,8 @@ void get_mpeg_audio_info(char *f, struct audio *audio) {
     strcpy(audio->id3_album, "Unknown");
     audio->id3_genre = genre_s[148];
   }
-  
+
   close(fd);
-  
+
   sprintf(audio->bitrate, "%.0f", get_mp3_info(f));
 }

@@ -68,24 +68,24 @@ unsigned int crc32_table[256] = {
   0xbad03605, 0xcdd70693, 0x54de5729, 0x23d967bf,
   0xb3667a2e, 0xc4614ab8, 0x5d681b02, 0x2a6f2b94,
   0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d,
- };
+};
 
 unsigned int calc_crc32(char *f) {
- FILE		*in;
- unsigned char	*buf;
- unsigned int	crc;
- size_t		i, j;
- int		k;
+  FILE		*in;
+  unsigned char	*buf;
+  unsigned int	crc;
+  size_t		i, j;
+  int		k;
 
- if (!(in = fopen(f, "rb"))) { printf("Cannot find file %s.\n",f); exit(2); }
- buf = malloc(32766);
- crc = 0xFFFFFFFF;
- while( ( i = fread( buf, 1, 32766, in ) ) > 0 ){
-		for(j=0; j<i; j++){
-			k=(crc ^ buf[j]) & 0x000000FFL;
-			crc=((crc >> 8) & 0x00FFFFFFL) ^ crc32_table[k];
-			}
-		}
- fclose(in);
- return ~crc;
+  if (!(in = fopen(f, "rb"))) { printf("Cannot find file %s.\n",f); exit(2); }
+  buf = malloc(32766);
+  crc = 0xFFFFFFFF;
+  while( ( i = fread( buf, 1, 32766, in ) ) > 0 ){
+    for(j=0; j<i; j++){
+      k=(crc ^ buf[j]) & 0x000000FFL;
+      crc=((crc >> 8) & 0x00FFFFFFL) ^ crc32_table[k];
+    }
+  }
+  fclose(in);
+  return ~crc;
 }
