@@ -8,13 +8,13 @@ CC = gcc
 RM = rm -f
 MAKE = make
 
-CCFLAGS = -W -Wall -lcrypt -lcrypto -O2
+CCFLAGS = -W -Wall -lcrypt -lcrypto @STATIC@ -O2
 CFFLAGS = -W -Wall @STATIC@ -O2
 
 all:	clean bin
 
 bin:	
-		${CC} ${CCFLAGS} -o passchk passchk.c
+		${CC} ${CCFLAGS} -o passchk passchk.c /usr/lib/libcrypt.a /usr/lib/libcrypto.a
 		${CC} ${CFFLAGS} -o ng-bandwidth ng-bw.c
 
 distclean: clean

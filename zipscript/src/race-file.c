@@ -135,7 +135,7 @@ void read_write_leader_file(struct LOCATIONS *locations, struct VARS *raceI, str
 	fwrite(userI->name, 1, 24, file);
 	} else {
 	*raceI->misc.old_leader = 0;
-	file = fopen(locations->leader, "w+");
+	if ((file = fopen( locations->leader, "w+" )) == NULL) { d_log("Couldn't write to %s.\n", locations->leader); exit(EXIT_FAILURE); }
 	fwrite(userI->name, 1, 24, file);
 	}
  fclose(file);
