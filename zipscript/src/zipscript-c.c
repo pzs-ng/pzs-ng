@@ -1434,6 +1434,17 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 	printf("Checks completed in %0.6f seconds\n", ((bstop.tv_sec - bstart.tv_sec) + (bstop.tv_usec - bstart.tv_usec) / 1000000.));
 #endif
 
+#if ( sleep_on_bad > 0 && sleep_on_bad < 1001 )
+	if (exit_value == 2) {
+		if (sleep_on_bad == 117) {
+			exit_value = 126;
+		} else {
+			exit_value = sleep_on_bad + 10;
+		}
+		d_log("Sleeping for %d seconds.\n", sleep_on_bad);
+	}
+#endif
+
 	d_log("Exit\n");
 	return exit_value;
 }

@@ -117,6 +117,15 @@
 #endif
 
 /*
+ * Whenever a bad file is encountered, you can add a delay for the user between
+ * 1 and 1000 seconds. Put the number of seconds glftpd should sleep. Setting
+ * this to 0 ( or >1000) will disable this feature.
+ */
+#ifndef sleep_on_bad
+#define sleep_on_bad			0
+#endif
+
+/*
  * Certain files are needed to change uid/gid to real names. All paths are
  * chroot'ed. GROUPFILE - /path/name of glftpd's group file PASSWDFILE -
  * /path/name of glftpd's passwd file
