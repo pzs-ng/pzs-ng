@@ -112,9 +112,9 @@ void getrelname(char *directory) {
 void buffer_groups(char *groupfile) {
  char   *f_buf,
         *g_name;
+ gid_t	g_id;
  long   f, n, m,
         f_size,
-        g_id,
         g_n_size,
         l_start = 0;
  int	GROUPS = 0;
@@ -126,7 +126,7 @@ void buffer_groups(char *groupfile) {
  read( f, f_buf, f_size );
  
  for ( n = 0 ; n < f_size ; n++ ) if ( f_buf[n] == '\n' ) GROUPS++;
- group = malloc( GROUPS * sizeof( int ) );
+ group = malloc( GROUPS * sizeof( long ) );
    
  for ( n = 0 ; n < f_size ; n++ ) {
   if ( f_buf[n] == '\n' || n == f_size ) {
