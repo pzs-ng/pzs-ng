@@ -19,6 +19,7 @@ struct GROUP {
 	gid_t		id;
 };
 
+int		debug = 0;
 int		groups = 0, GROUPS = 0;
 
 static struct ONLINE *user;
@@ -476,10 +477,12 @@ readconfig(char *arg)
 						showall = compareflags(getenv("FLAGS"), tmp);
 					else if (!memcmp(buf + l_b, "maxusers", 8))
 						maxusers = atoi(tmp);
-					else if (!memcmp(buf + l_b, "idle_barrier", 8))
+					else if (!memcmp(buf + l_b, "idle_barrier", 12))
 						idle_barrier = atoi(tmp);
-					else if (!memcmp(buf + l_b, "speed_threshold", 8))
+					else if (!memcmp(buf + l_b, "speed_threshold", 15))
 						threshold = atoi(tmp);
+					else if (!memcmp(buf + l_b, "debug", 5))
+						debug = atoi(tmp);
 					free(tmp);
 				}
 			}
@@ -507,6 +510,10 @@ readconfig(char *arg)
 		}
 	}
 	free(buf);
+
+	if (debug) {
+		printf("DEBUG: header=\"%s\"\nDEBUG: footer=\"%s\"\nDEBUG: mpaths=\"%s\"\nDEBUG: husers=\"%s\"\nDEBUG: hgroups=\"%s\"\nDEBUG: glpath=\"%s\"\nDEBUG: ipckey=\"%s\"\nDEBUG: glgroup=\"%s\"\nDEBUG: nocase=\"%s\"\nDEBUG: count_hidden=\"%s\"\nDEBUG: showall=\"%d\"\nDEBUG: maxusers=\"%d\"\nDEBUG: idle_barrier=\"%d\"\nDEBUG: threshold=\"%d\"\n", header, footer, mpaths, husers, hgroups, glpath, ipckey, glgroup, nocase, count_hidden, showall, maxusers, idle_barrier, threshold);
+	}
 
 //	if (filesize("") == 1)
 //		*glpath = 0;
