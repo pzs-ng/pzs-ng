@@ -555,24 +555,17 @@ short int
 matchpartialpath(char *instr, char *path)
 {
 	int	pos = 0;
-	char   *partstring = 0;
+	char	partstring[PATH_MAX + 2];
 
 	if ( strlen(instr) < 2 || strlen(path) < 2 )
 		return 0;
 
-	if ((partstring = malloc((strlen(path) + 2) * sizeof(char))) == NULL) {
-		d_log("Failed to allocate memory (partstring)\n");
-		return 0;
-	}
-d_log("path: '%s'\n", path);
 	sprintf(partstring, "%s/", path);
-d_log("partstring: '%s'\n", path);
 	do {
 		switch (*instr) {
 		case 0:
 		case ' ':
 			if (!strncasecmp(instr - pos, partstring + strlen(partstring) - pos, pos)) {
-				free(partstring);
 				return 1;
 			}
 			pos = 0;
@@ -582,7 +575,6 @@ d_log("partstring: '%s'\n", path);
 			break;
 		}
 	} while (*instr++);
-	free(partstring);
 	return 0;
 }
 
@@ -662,7 +654,7 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 	l2 = strlen(factor2) + 1;
 	l3 = strlen(ltarget) + 1;
 
-	org = target = malloc((l1 + l2 + l3) * sizeof(char));
+	org = target = malloc(l1 + l2 + l3);
 
 	memcpy(target, factor1, l1);
 	target += l1 - 1;
