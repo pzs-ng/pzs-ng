@@ -272,7 +272,7 @@ ignored_types <STRING>
 	upload, and ignored on rescan/postdel/etc. The list is comma-separated.
 	Defining a file with no extension can be done by starting the list
 	with a comma.
-	Default: ",diz,debug,message,imdb"
+	Default: ",diz,debug,message,imdb,html,url"
 
 allow_files_not_in_sfv <TRUE|FALSE>
 	Should we allow files uploaded that is not in the sfv? This is only
