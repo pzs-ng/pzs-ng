@@ -209,7 +209,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 				((tstop.tv_sec - user[x].tstart.tv_sec) * 1. +
 			(tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.);
 
-			if (chidden) {
+			if ((!noshow && !mask && !(maskchar == '*')) || chidden) {
 				total_up_speed += speed;
 				uploads++;
 			}
@@ -257,7 +257,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 				((tstop.tv_sec - user[x].tstart.tv_sec) * 1. +
 			(tstop.tv_usec - user[x].tstart.tv_usec) / 1000000.);
 
-			if (chidden) {
+			if ((!noshow && !mask && !(maskchar == '*')) || chidden) {
 				total_dn_speed += speed;
 				downloads++;
 			}
@@ -317,10 +317,9 @@ showusers(int n, int mode, char *ucomp, char raw)
 			} else if (showall || (!noshow && !mask && !(maskchar == '*'))) {
 				printf("%s|%s|%s|%s|%s\n", user[x].username, get_g_name(user[x].groupid), user[x].tagline, status, filename);
 			}
-			if (!noshow && !mask && !(maskchar == '*'))
+			if ((!noshow && !mask && !(maskchar == '*')) || chidden) {
 				onlineusers++;
-			else if (chidden)
-				onlineusers++;
+			}
 //		} else if (!strcasecmp(ucomp, user[x].username)) {
 		} else if (!strcmp(ucomp, user[x].username)) {
 #ifdef _WITH_ALTWHO
