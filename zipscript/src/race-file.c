@@ -134,7 +134,7 @@ update_sfvdata(const char *path, const unsigned int crc)
 		return;
 	}
 
-	xunlock(&fl, fd);
+	xlock(&fl, fd);
 	
 	sd.crc32 = crc;
 	
