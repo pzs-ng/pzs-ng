@@ -153,8 +153,8 @@ void read_write_leader_file(struct LOCATIONS *locations, struct VARS *raceI, str
  *
  * Todo		: Add unduper
  */
-void testfiles_file(struct LOCATIONS *locations, struct VARS *raceI) {
-    int		len;
+void testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus) {
+    int			len;
     unsigned char	status;
     FILE		*file;
     char		*fname, *realfile, *target;
@@ -164,6 +164,7 @@ void testfiles_file(struct LOCATIONS *locations, struct VARS *raceI) {
 
     if ((file = fopen( locations->race, "r+" ))) {
 	realfile = raceI->file.name;
+	if (rstatus) printf("\n");
 	while ( fread( &len, sizeof(int), 1, file ) == 1 ) {
 
 	    fname = m_alloc(len);
@@ -182,8 +183,10 @@ void testfiles_file(struct LOCATIONS *locations, struct VARS *raceI) {
 		    if ( Tcrc != 0 ) create_missing(fname, len - 1);
 #endif
 		    status = F_BAD;
+		    if (rstatus)
+			printf("File: %s FAILED!\n",fname);
+		    d_log("marking %s bad.\n",fname);
 		    if ( enable_unduper_script == TRUE ) {
-			d_log("marking %s bad.\n",fname);
 			sprintf(target, unduper_script " \"%s\"", fname);
 			if ( execute(target) == 0 ) {
 			    d_log("undupe of %s successful.\n", fname);

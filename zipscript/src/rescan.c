@@ -232,8 +232,9 @@ int main () {
 		writerace_file(&locations, &raceI, crc, F_NOTCHECKED);
 	    }
 	}
-	printf("\n\n");
-	testfiles_file( &locations, &raceI );
+	printf("\n");
+	testfiles_file( &locations, &raceI, 1 );
+	printf("\n");
 //	rescandir(); /* We need to rescan again */
 	readsfv_file( &locations, &raceI, 0 );
 	readrace_file( &locations, &raceI, userI, groupI );

@@ -533,7 +533,7 @@ int main( int argc, char **argv ) {
 #if ( force_sfv_first == FALSE )
 		if (fileexists(locations.race)) {
 		    d_log("Testing files marked as untested\n");
-		    testfiles_file(&locations, &raceI);
+		    testfiles_file(&locations, &raceI, 0);
 		    rescandir();
 		}
 #endif
