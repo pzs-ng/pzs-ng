@@ -4,7 +4,7 @@
 #
 # Created & maintained by: dakrer (dakrer@hotmail.com, #pzs-ng @ EFnet)
 #
-# Tested with: pzs-ng, revision 1464 (pre RC1)
+# Tested with: pzs-ng, revision 1490 (pre RC1)
 #
 # The theme is designed to limit the amount of output while keeping readability
 # high. The use of colors is limited to important events such as pre, newdir,
@@ -255,8 +255,8 @@ announce.SPEEDDN				= "[%b{SPEED}] %b{%u_name} is downloading %b{%f_name} at %dn
 announce.SPEEDID				= "[%b{SPEED}] %b{%u_name} has been idle for %idletime"
 announce.SPEEDERROR				= "[%b{ERROR}] Nope, try again. Found noone by that name on site"
 announce.WELCOME				= "Welcome to %b{%sitename}'s sitechan. Type %cmdprehelp for help"
-announce.FREE					= "[%b{SPACE}] Free space on site:\n%devices[%b{SPACE}] TOTALS: %b{%free} of %b{%total} (used %percentage%)"
-announce.FREE-DEV				= "[%b{SPACE}] %section: %b{%free} of %b{%total} (used %percentage%)\n"
+announce.FREE					= "[%b{SPACE}] Free space on site:\n%devices[%b{SPACE}] TOTALS: %b{%free} of %b{%total}"
+announce.FREE-DEV				= "[%b{SPACE}] %section: %b{%free} of %b{%total} (used %perc_used%)\n"
 announce.UPTIME					= "[%b{UPTIME}] %b{System:} %time, %b{%users} user(s), load: %load\n[%b{UPTIME}] %b{Eggdrop:} %eggdrop"
 
 ## IRC Command: !new
