@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 #include <paths.h>
+#include <openssl/sha.h>
 #include <openssl/evp.h>
 #include <openssl/hmac.h>
 
