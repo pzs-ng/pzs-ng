@@ -319,6 +319,7 @@ main(int argc, char **argv)
 		break;
 	}
 
+	rescandir(2);
 	if (empty_dir == 1) {
 		d_log("Removing all files and directories created by zipscript\n");
 		removecomplete();
