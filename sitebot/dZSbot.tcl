@@ -226,7 +226,7 @@ proc readlog {} {
 
 		## Invite users to public and private channels.
 		if {[string equal $event "INVITE"]} {
-			eval invitechans [lrange $line 0 2]
+			eval ng_invitechans [lrange $line 0 2]
 		}
 
 		if {[lsearch -exact $msgtypes(SECTION) $event] != -1} {
