@@ -38,6 +38,19 @@
 
  - Edit the configuration file (dZSbot.conf) to your liking.
 
+ - If you want the bouncer checker, you must install a recent version of cURL.
+ cURL supports secure FTP connections (AUTH TLS), this feature is only available
+ if cURL is compiled with SSL support. Check cURL's version for more information.
+
+ $ curl --version
+ curl 7.12.3 (i386-portbld-freebsd4.11) libcurl/7.12.3 OpenSSL/0.9.7d zlib/1.1.4
+ Protocols: ftp gopher telnet dict ldap http file https ftps
+ Features: IPv6 Largefile NTLM SSL libz
+
+ - If "ftps" is not listed in protocols and "SSL" is not listed in features, you
+ must disable the secure BNC option, (set bnc(SECURE) FALSE). Alternatively, you
+ could recompile cURL with SSL support, your choice.
+
 --------------------------------------------------------------------------------
   b) Compiling
 --------------------------------------------------------------------------------
@@ -138,6 +151,10 @@
 
  - Feel free to edit and customize any of the bundled themes, but it is advised
  to create a copy of it first. For example: "cp default.zst mytheme.zst"
+
+ - You can preview your theme while editing it, using the .preview DCC command
+ added in beta5. Type .preview in a DCC chat session with your Eggdrop for more
+ information.
 
  - Using colors is fairly simple in dZSbot. Simply define a color in the theme:
 

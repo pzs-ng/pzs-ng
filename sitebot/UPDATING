@@ -14,7 +14,6 @@
 - Always replace the following files when upgrading:
   dZSbot.tcl, dZSbot.conf.defaults, dZSbot.conf.dist and dZSbot.vars.
 
-
 # Changes
 ###############################################################
 
