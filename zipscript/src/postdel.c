@@ -87,11 +87,13 @@ void getrelname(char *directory) {
 	locations.incomplete = c_incomplete(incomplete_cd_indicator, path);
 	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
 	if (k < 2) free(path[1]);
+	if (k == 0) free(path[0]);
     } else {
 	raceI.misc.release_name = malloc( l[1] + 10 );
 	sprintf(raceI.misc.release_name, "%s", path[1]);
 	locations.incomplete = c_incomplete(incomplete_indicator, path);
 	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
+	if (k < 2) free(path[1]);
 	if (k == 0) free(path[0]);
     }
 }
@@ -109,9 +111,13 @@ unsigned char get_filetype(char *ext) {
 
 
 int main( int argc, char **argv ) {
-    char		*fileext, *name_p, *temp_p;
-    char		*target, *fname;
-	char		*env_user, *env_group;
+    char		*fileext;
+    char		*name_p;
+    char		*temp_p;
+    char		*target;
+    char		*fname;
+    char		*env_user;
+    char		*env_group;
     int			n;
     unsigned char	empty_dir = 0;
     unsigned char	incomplete = 0;
@@ -184,7 +190,7 @@ int main( int argc, char **argv ) {
 
     locations.path = malloc(PATH_MAX);
     getcwd(locations.path, PATH_MAX);
-    locations.race = malloc(n = strlen(locations.path) + 9 + sizeof(storage));
+    locations.race = malloc(n = strlen(locations.path) + 10 + sizeof(storage));
     locations.sfv = malloc(n);
     locations.leader = malloc(n);
     target = malloc(4096);
@@ -372,6 +378,9 @@ int main( int argc, char **argv ) {
     free(locations.race);
     free(locations.sfv);
     free(locations.leader);
+    free(userI);
+    free(groupI);
+    m_free(direntries);
 
     if ((empty_dir == 1) && (fileexists(".debug")) && (remove_dot_debug_on_delete == TRUE)) 
 		unlink(".debug");
