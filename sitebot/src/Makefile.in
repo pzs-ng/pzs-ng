@@ -8,7 +8,7 @@ CC = gcc
 RM = rm -f
 MAKE = make
 
-CCFLAGS = -W -Wall -lcrypt -lcrypto @STATIC@ -O2 -I../../
+CCFLAGS = -W -Wall @LCRYPT@ @LCRYPTO@ @STATIC@ -O2 -I../../
 CFFLAGS = -W -Wall @STATIC@ -O2
 
 all:	clean bin
