@@ -559,7 +559,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 				else if (israr(ptr)) {
 					rars++;
 					if (!*fcompare)
-						strncpy(fcompare, fbuf, ptr - fbuf - 1);
+						strncpy(fcompare, fbuf, find_first_of(fbuf, ".") - fbuf);
 				}
 				else if (isvideo(ptr))
 					video++;
