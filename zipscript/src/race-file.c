@@ -207,8 +207,10 @@ void testfiles_file(struct LOCATIONS *locations, struct VARS *raceI) {
  int		len;
  unsigned char	status;
  FILE		*file;
- char		*fname, *realfile;
+ char		*fname, *realfile, *target;
  unsigned long	Tcrc, crc;
+
+ target = m_alloc(256);
 
  if ( ( file = fopen( locations->race, "r+" ) ) != NULL ) {
 	realfile = raceI->file.name;
@@ -230,6 +232,11 @@ void testfiles_file(struct LOCATIONS *locations, struct VARS *raceI) {
 				if ( Tcrc != 0 ) create_missing(fname, len - 1);
 #endif
 				status = F_BAD;
+				if ( enable_unduper_script == TRUE ) {
+					d_log("%s is marked as bad\n",fname);
+					sprintf(target, unduper_script " %s", fname);
+					execute(target);
+					}
 				}
 			}
 

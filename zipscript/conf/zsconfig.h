@@ -390,6 +390,12 @@
 #define enable_complete_script2	FALSE
 #define complete_script2	"/bin/nfo_copy2.sh"
 
+/* Enable/disable unduper script (runs if sfv is uploaded after files, and files
+                                  are marked as bad and deleted)
+ */
+#define enable_unduper_script	TRUE
+#define unduper_script		"/bin/pzsng-unduper.sh"
+
 /*
  *	Other binary settings
  *	=====================
