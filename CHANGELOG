@@ -1,4 +1,22 @@
-v0.7.2 (aka beta1 of pzs-ng)
+v0.7.2 (aka beta2 of pzs-ng (r511))
+ - The default storage path changed.
+ - Compile now works under nbsd/obsd.
+ - The double-sfv is fixed.
+ - A bug in rescan is fixed (time).
+ - The default ipc key fixed.
+ - The progress bar bug is fixed.
+ - Initial support for hiding affils added.
+ - Some cookies are renamed/changed.
+ - Auto-detection of glftpd version added.
+ - Some bugs with the -missing files are fixed.
+ - The unduper is improved.
+ - The makefile/configure is improved.
+ - Dangling incomplete links are found/removed in rescan.
+ - Hybrid types support is added.
+ - only cbr music is checked for bad bitrate.
+ - + lots of other stuff.
+
+v0.7.2 (aka beta1 of pzs-ng (r434))
  - Added support for the *bsd platforms
  - Included VBR support
  - Double-SFV support
