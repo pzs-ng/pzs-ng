@@ -347,6 +347,8 @@ main(int argc, char **argv)
 		if (!raceI.file.speed)
 			raceI.file.speed = 1;
 
+		d_log("User: %s - Group: %s - Speed: %d%s\n", raceI.user.name, raceI.user.group, raceI.file.speed);
+
 		d_log("Reading section from env (%s)\n", getenv("SECTION"));
 		if ((temp_p = strdup(gl_sections)) == NULL) {
 			d_log("Can't allocate memory for sections\n");
@@ -546,6 +548,7 @@ main(int argc, char **argv)
 					}
 					raceI.total.files = raceI.total.files_missing = 0;
 				} else {
+					d_log("DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", raceI.file.size));
 					d_log("Hmm.. Seems the old .sfv was deleted. Allowing new one.\n");
 				}
 			}
