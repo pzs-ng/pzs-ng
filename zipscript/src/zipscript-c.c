@@ -786,7 +786,9 @@ int main( int argc, char **argv ) {
 		if ( exit_value == EXIT_SUCCESS ) {
 		    d_log("Removing missing indicator\n");
 		    sprintf(target, "%s-missing", raceI.file.name);
+#if (sfv_cleanup_lowercase == TRUE)
 		    strtolower(target);
+#endif
 		    unlink(target);
 		}
 

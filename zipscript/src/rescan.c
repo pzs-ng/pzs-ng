@@ -207,7 +207,9 @@ int main () {
 		}
 
 		sprintf(exec, "%s-missing", raceI.file.name);
+#if (sfv_cleanup_lowercase == TRUE)
 		strtolower(exec);
+#endif
 		unlink(exec);
 
 		if ( l > 44 ) {
