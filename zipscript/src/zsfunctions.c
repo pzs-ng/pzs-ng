@@ -638,23 +638,22 @@ fileexists(char *f)
 
 }
 
-/* Create symbolic link */
+/* Create symbolic link (related to mp3 genre/year/group etc)
+ * Last midified by: psxc
+ *         Revision: r1228
+ */
 void 
 createlink(char *factor1, char *factor2, char *source, char *ltarget)
 {
 
 #if ( userellink == 1 )
-	char		result    [MAXPATHLEN];
+	char		result	[MAXPATHLEN];
 #endif
-	char           *org = 0, *target = 0;
-	int		l1        , l2, l3;
-
-
-	l1 = strlen(factor1) + 1;
-	l2 = strlen(factor2) + 1;
-	l3 = strlen(ltarget) + 1;
-
-	org = target = malloc(l1 + l2 + l3);
+	char		org	[PATH_MAX];
+	char	       *target = org;
+	int		l1 = strlen(factor1) + 1,
+			l2 = strlen(factor2) + 1,
+			l3 = strlen(ltarget) + 1;
 
 	memcpy(target, factor1, l1);
 	target += l1 - 1;
@@ -675,15 +674,12 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 	memcpy(target, ltarget, l3);
 
 #if ( userellink == 1 )
-	d_log("new: ln -s %s %s\n", result, org);
 	symlink(result, org);
 #else
-	d_log("old: ln -s %s %s\n", source, org);
 	symlink(source, org);
 #endif
-
-	free(org);
 }
+
 
 void 
 readsfv_ffile(char *filename, off_t buf_bytes)
