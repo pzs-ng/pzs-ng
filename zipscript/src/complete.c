@@ -18,6 +18,7 @@ extern void writelog(char *, char *);
  *
  */
 void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, int completetype) {
+
  int    cnt, pos;
  char	*user_p,
 	*group_p;
@@ -27,7 +28,9 @@ void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
  unlink(locations->incomplete);
  
 #if ( write_complete_message == TRUE )
- msgfile = fopen(".message", "w");
+// msgfile = fopen(".message", "w");
+ if ((msgfile = fopen(".message", "w")) == NULL) { d_log("Couldn't fopen .message\n"); exit(EXIT_FAILURE); }
+
  fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_header));
  fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_user_header));
  for ( cnt = 0 ; cnt < raceI->total.users ; cnt++ ) {

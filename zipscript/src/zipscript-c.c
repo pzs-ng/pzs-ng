@@ -263,28 +263,32 @@ int main( int argc, char **argv ) {
 
  //gettimeofday(&raceI.transfer_stop, (struct timezone *)0 );
 
- d_log("Reading data from environment Variables\n");
- sprintf(raceI.user.name, getenv("USER"));
- sprintf(raceI.user.group, getenv("GROUP"));
- if ( sprintf(raceI.user.group, getenv("GROUP")) == 0 ) {
-        memcpy(raceI.user.group, "NoGroup", 8);
- }
- sprintf(raceI.user.tagline, getenv("TAGLINE"));
- raceI.file.speed=atoi(getenv("SPEED"));
+puts("b");
+ d_log("Reading data from environment variables\n");
+ if ( (temp_p=getenv("USER")) == NULL ) memcpy(raceI.user.name, "glftpd", 7);
+ else sprintf(raceI.user.name, temp_p);
+ if ( (temp_p=getenv("GROUP")) == NULL ) memcpy(raceI.user.group, "NoGroup", 8);
+ else sprintf(raceI.user.group, temp_p);
+ if ( (temp_p=getenv("TAGLINE")) == NULL ) memcpy(raceI.user.tagline, "No Tagline Set", 15);
+ else sprintf(raceI.user.tagline, temp_p);
 // raceI.file.speed=strtol(getenv("SPEED"),NULL,0);
- if (raceI.file.speed==0) raceI.file.speed=1;
+ if ( (temp_p=getenv("SPEED")) == NULL ) raceI.file.speed=2004;
+ else {
+	raceI.file.speed=atoi(temp_p);
+	if (raceI.file.speed==0) raceI.file.speed=1;
+ }
  raceI.file.speed*=1024;
 
- raceI.file.name = argv[1];
+ raceI.file.name=argv[1];
  d_log("Checking the file size of %s\n", raceI.file.name);
  stat(raceI.file.name, &fileinfo);
- raceI.file.size = fileinfo.st_size;
+ raceI.file.size=fileinfo.st_size;
  /* Store mtime */
- raceI.transfer_stop.tv_sec = fileinfo.st_mtime;
- raceI.transfer_stop.tv_usec = 0;
- /* Store upload duration */
- raceI.transfer_start.tv_sec = raceI.transfer_stop.tv_sec - (raceI.file.size/raceI.file.speed);
- raceI.transfer_start.tv_usec = 0;
+ raceI.transfer_stop.tv_sec=fileinfo.st_mtime;
+ raceI.transfer_stop.tv_usec=0;
+ /* Store upload duration/start time */
+ raceI.transfer_start.tv_sec=raceI.transfer_stop.tv_sec-(raceI.file.size/raceI.file.speed);
+ raceI.transfer_start.tv_usec=0;
 
 
 
