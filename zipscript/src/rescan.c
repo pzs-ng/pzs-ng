@@ -52,66 +52,30 @@ extern void testfiles_file(struct LOCATIONS *locations, struct VARS *raceI);
 extern void create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char *filename);
 extern void maketempdir(struct LOCATIONS *locations);
 
-extern long get_index_mysql(struct LOCATIONS *locations);
-
-extern void remove_table_mysql(char *table);
+// from dizreader.c - let's move to headers later.
+extern int read_diz(char *);
 
 /* NEW STUFF */
 extern void get_mpeg_audio_info(char *f, struct audio *audio);
 /* END OF NEW STUFF */
 
-extern char* readsfv_mysql(struct LOCATIONS *locations, struct VARS *raceI, int getfcount);
-extern void writerace_mysql(struct LOCATIONS *locations, struct VARS *raceI, char *crc, int status);
-extern void readrace_mysql(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);
-extern void copysfv_mysql(struct LOCATIONS *locations, char *source, char *target, unsigned long buf_bytes);
-extern void create_indexfile_mysql(struct LOCATIONS *locations, char *filename);
-extern void testfiles_mysql(struct LOCATIONS *locations, struct VARS *raceI);
 extern unsigned long calc_crc32( char *f );
 extern void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, int completetype );
-extern short table_exists(struct LOCATIONS *locations, char *table);
 
 #include "zsfunctions.h"
 
-#ifdef HAVE_MYSQL
- #define data_exists(paths, datalocation) table_exists(paths, datalocation)
- #define sql_set_race   sprintf   
- #define sql_set_sfv    sprintf  
- #define sql_set_leader sprintf
- #define sql_get_index(x)       index = get_index_mysql(x)
- #define file_set_race
- #define remove_data    remove_table_mysql
- #define file_set_sfv
- #define file_set_leader
- #define maketempdir
+#define data_exists(paths, datalocation) fileexists(datalocation)
+#define file_set_race   sprintf
+#define file_set_sfv    sprintf
+#define file_set_leader sprintf
+#define remove_data     unlink
 
- #define readsfv           readsfv_mysql
- #define writerace         writerace_mysql
- #define copysfv(a,b,c,d)  copysfv_mysql(a,b,c,d)
- #define readrace          readrace_mysql
- #define testfiles         testfiles_mysql
- #define create_indexfile(l,r,f)  create_indexfile_mysql(l,f)
-#else
- #define data_exists(paths, datalocation) fileexists(datalocation)
- #define sql_set_sfv
- #define sql_set_race
- #define sql_set_leader
- #define file_set_race   sprintf
- #define file_set_sfv    sprintf
- #define file_set_leader sprintf
- #define remove_data     unlink
-
- #define sql_get_index(x)
-
- #define readsfv           readsfv_file
- #define writerace         writerace_file
- #define copysfv(a,b,c,d)  copysfv_file(b,c,d)
- #define readrace          readrace_file
- #define testfiles         testfiles_file
- #define create_indexfile(l,r,f)  create_indexfile_file(l,r,f)
- #define connect_mysql()
- #define disconnect_mysql()
-#endif
-
+#define readsfv           readsfv_file
+#define writerace         writerace_file
+#define copysfv(a,b,c,d)  copysfv_file(b,c,d)
+#define readrace          readrace_file
+#define testfiles         testfiles_file
+#define create_indexfile(l,r,f)  create_indexfile_file(l,r,f)
 
 /* WRITE TO GLFTPD LOG */
 void writelog(char *msg, char *status) {
@@ -132,7 +96,6 @@ void getrelname(char *directory) {
         l,
         n = 0,
         k = 2;
- long   index; 
  char   *path[2];
  
  for ( cnt = locations.length_path - 1 ; k && cnt ; cnt-- )
@@ -146,11 +109,6 @@ void getrelname(char *directory) {
   
  l = strlen(path[1]);
  
- sql_get_index(&locations);
- sql_set_race(locations.race, "R_%i", index);
- sql_set_sfv(locations.sfv, "S_%i", index);
- sql_set_leader(locations.leader, "L_%i", index);
-  
  if (( ! strncasecmp(path[1], "CD"  , 2) && l <= 4 ) ||
      ( ! strncasecmp(path[1], "DISC", 4) && l <= 6 )) {
   n = strlen(path[0]);
@@ -296,10 +254,10 @@ char* get_u_name(int uid) {
 
 int main () {
  int	n, m, l,
-	complete_type;
+	complete_type = 0;
  char	*ext,
 	exec[ 4096 ],
-	*complete_bar;
+	*complete_bar = 0;
  unsigned long crc;
  
  uid_t	f_uid;
@@ -310,7 +268,6 @@ int main () {
   seteuid(program_uid);
  #endif
 
- connect_mysql();
  umask(0666 & 000);
 
  userI    = malloc( sizeof( int ) * 30 );

@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <regex.h>
 #include <time.h>
+#include <unistd.h>
 #include "../include/objects.h"
 #include "../include/macros.h"
 #include "../conf/zsconfig.h"
@@ -80,8 +81,8 @@ char * replace_cookies(char *s) {
  *
  */
 char * multi_name(char *s) {
- int	begin_multi[2], end_multi, n, size;
- char 	*p, *t, *r;
+ int	begin_multi[2], end_multi, n;
+ char 	*p, *t, *r = 0;
 
  end_multi = 0;
 

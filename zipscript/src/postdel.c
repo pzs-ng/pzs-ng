@@ -25,55 +25,29 @@ extern char	*c_incomplete(char *instr, char **path);
 extern void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);
 extern void read_write_leader_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI);
 extern unsigned long readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount);
-extern char* readsfv_mysql(struct LOCATIONS *locations, struct VARS *raceI, int getfcount);
-extern void remove_table_mysql(char *table);
-extern void delete_sfv_mysql(struct LOCATIONS *locations);
 
-extern short	clear_file_mysql(struct LOCATIONS *locations, char *f);
-extern short	clear_file_file(struct LOCATIONS *locations, char *f); 
-extern void	readrace_mysql(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);
-extern void	read_write_leader_mysql(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI);
-extern short	table_exists(struct LOCATIONS *locations, char *table);
 extern char*	convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *instr);
+extern short clear_file_file(struct LOCATIONS *, char *);
+
+// from dizreader.c - let's move to headers later.
+extern int read_diz(char *);
+// from race-file.c - let's move to headers later.
+extern void delete_sfv_file(struct LOCATIONS *locations);
+
 
 #include "zsfunctions.h"
  
-#ifdef HAVE_MYSQL
- #define data_exists(paths, datalocation) table_exists(paths, datalocation)
- #define sql_set_race   sprintf
- #define sql_set_sfv    sprintf
- #define sql_set_leader sprintf
- #define file_set_race
- #define file_set_sfv
- #define file_set_leader
+#define data_exists(paths, datalocation) fileexists(datalocation)
+#define file_set_race	 sprintf
+#define file_set_sfv	 sprintf
+#define file_set_leader sprintf
 
- #define sql_get_index(x)	index = get_index_mysql(x)
-
- #define clear_file	clear_file_mysql
- #define remove_data	remove_table_mysql     
- #define readsfv	readsfv_mysql
- #define readrace	readrace_mysql
- #define delete_sfv	delete_sfv_mysql
-#else
- #define data_exists(paths, datalocation) fileexists(datalocation)
- #define sql_set_sfv
- #define sql_set_race   
- #define sql_set_leader
- #define file_set_race	 sprintf
- #define file_set_sfv	 sprintf
- #define file_set_leader sprintf
-
- #define sql_get_index(x)
-
- #define remove_data	unlink
- #define readsfv	readsfv_file
- #define readrace	readrace_file
- #define delete_sfv	delete_sfv_file
- #define read_write_leader read_write_leader_file
- #define clear_file	clear_file_file
- #define connect_mysql()
- #define disconnect_mysql()
-#endif
+#define remove_data	unlink
+#define readsfv	readsfv_file
+#define readrace	readrace_file
+#define delete_sfv	delete_sfv_file
+#define read_write_leader read_write_leader_file
+#define clear_file	clear_file_file
 
 
 void writelog(char *msg, char *status) {
@@ -110,7 +84,6 @@ void getrelname(char *directory) {
         l,
         n = 0,
         k = 2;
- long   index;
  char   *path[2];
   
  for ( cnt = strlen(directory) ; k && cnt ; cnt-- ) {
@@ -127,11 +100,6 @@ void getrelname(char *directory) {
 
  l = strlen(path[1]);
 
- sql_get_index(&locations);
- sql_set_race(locations.race, "R_%i", index);
- sql_set_sfv(locations.sfv, "S_%i", index);
- sql_set_leader(locations.leader, "L_%i", index);
- 
  if (( ! strncasecmp(path[1], "CD"  , 2) && l <= 4 ) ||
      ( ! strncasecmp(path[1], "DISC", 4) && l <= 6 )) {  
 	n = strlen(path[0]);
@@ -189,7 +157,6 @@ int main( int argc, char **argv ) {
 	return 0;
 	}
 
- connect_mysql();
  umask(0666 & 000);
 
  d_log("Clearing arrays\n");
@@ -391,7 +358,6 @@ int main( int argc, char **argv ) {
  free(locations.sfv);
  free(locations.leader);
  free(raceI.user.name);
- disconnect_mysql();
 
  d_log("Exit\n");
  return 0;

@@ -9,6 +9,9 @@ extern char * convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr
 extern char * convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *instr);
 extern void writelog(char *msg, char *status);
 
+// from zsfunctions.h *shiver* - MAKE zsfunctions.h TO A .c AND AN ACCOMPANYING HEADER!
+void move_progress_bar(short, struct VARS *);
+
 
 /*
  * Modified     : 01.27.2002

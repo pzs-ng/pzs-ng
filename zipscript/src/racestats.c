@@ -25,41 +25,18 @@ extern char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPIN
 extern char* readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount);
 
 extern void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);
-extern char* readsfv_mysql(struct LOCATIONS *locations, struct VARS *raceI, int getfcount);
 
-extern void readrace_mysql(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);
-extern void read_write_leader_mysql(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI);
-extern short table_exists(struct LOCATIONS *locations, char *table);
+// from dizreader.c - let's move to headers later.
+extern int read_diz(char *);
 
 #include "zsfunctions.h"
 
-#ifdef HAVE_MYSQL   
- #define data_exists(paths, datalocation) table_exists(paths, datalocation)
- #define sql_set_race   sprintf 
- #define sql_set_sfv    sprintf
- #define file_set_race
- #define file_set_sfv
- #define maketempdir
+#define data_exists(paths, datalocation) fileexists(datalocation)
+#define file_set_race   sprintf
+#define file_set_sfv    sprintf
 
- #define sql_get_index(x)	index = get_index_mysql(x)
-
- #define readsfv        readsfv_mysql
- #define readrace       readrace_mysql
-#else
- #define data_exists(paths, datalocation) fileexists(datalocation)
- #define sql_set_sfv
- #define sql_set_race
- #define sql_set_leader
- #define file_set_race   sprintf
- #define file_set_sfv    sprintf
-
- #define sql_get_index(x)
-
- #define readsfv        readsfv_file
- #define readrace       readrace_file
- #define connect_mysql()
- #define disconnect_mysql()
-#endif
+#define readsfv        readsfv_file
+#define readrace       readrace_file
 
 
 char      error_msg  [80],
@@ -75,7 +52,6 @@ void getrelname(char *directory) {
      l,
      n = 0,
      k = 2;
- long index;
  char *directoryarray[2];
    
  for ( cnt = strlen(directory) - 1 ; k && cnt ; cnt-- )
@@ -89,10 +65,6 @@ void getrelname(char *directory) {
   
  l = strlen(directoryarray[1]);
 
- sql_get_index(&locations);
- sql_set_race(locations.race, "R_%i", index);
- sql_set_sfv(locations.sfv, "S_%i", index);
-   
  if (( ! strncasecmp(directoryarray[1], "CD"  , 2) && l <= 4 ) ||
      ( ! strncasecmp(directoryarray[1], "DISC", 4) && l <= 6 )) {
   n = strlen(directoryarray[0]);
@@ -117,7 +89,6 @@ int main( int argc, char **argv ) {
     printf("Usage: %s <path>\n", argv[0]);
     exit(0);
    }
-   connect_mysql();
   
    locations.path = malloc( n = strlen(argv[1]) + strlen(site_root) + 1 ); 
    locations.race = malloc( n += 10 + strlen(storage) );
@@ -148,9 +119,6 @@ int main( int argc, char **argv ) {
    
 
    if ( chdir(locations.path) ) goto END;
-   #ifdef HAVE_MYSQL
-    strcpy(locations.path, argv[1]);
-   #endif
 
    getrelname(locations.path);
 
@@ -178,7 +146,6 @@ int main( int argc, char **argv ) {
    printf("%s\n", convert(&raceI, userI, groupI, stats_line));
 
 END:
-   disconnect_mysql();
    free(locations.path);
    free(locations.race);
    free(raceI.misc.release_name);

@@ -8,14 +8,19 @@
 #include <stdio.h>
 #include "../include/objects.h"
 #include "../include/macros.h"
+#include "../include/constants.h"
 #include "../conf/zsconfig.h"
 
 extern char*		findfile(char *filename);
 extern char		israr(char *fileext);
 extern char		isavi(char *fileext);
+extern char		isvideo(char *fileext); 
 extern short		strcomp(char *instr, char *searchstr);
 extern void		create_missing(char *f, short l);
 extern unsigned long	hexstrtodec(char *s);
+
+// from stats.c - let's move to headers later.
+extern void updatestats(struct VARS *, struct USERINFO **, struct GROUPINFO **, char *, char *, unsigned long, long, long, long);
 
 
 /*

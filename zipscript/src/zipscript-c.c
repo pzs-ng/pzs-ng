@@ -25,12 +25,12 @@ static struct LOCATIONS locations;
 extern	void	get_stats(struct VARS *raceI, struct USERINFO **userI);
 
 // from dizreader.c - let's move to headers later.
-int read_diz(char *);
+extern int read_diz(char *);
 // from multimedia.c - let's move to headers later. (together with struct video)
-void avi_video(char *, struct video *);
-void mpeg_video(char *, struct video *);
+extern void avi_video(char *, struct video *);
+extern void mpeg_video(char *, struct video *);
 // from stats.c - let's move to headers later. (together with USERINFO / GROUPINFO / VARS structs?)
-void showstats(struct VARS *, struct USERINFO **, struct GROUPINFO **);
+extern void showstats(struct VARS *, struct USERINFO **, struct GROUPINFO **);
 
 /* NEW OPTIMIZED STUFF GOES HERE */
 extern char * convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, char *instr, short userpos);

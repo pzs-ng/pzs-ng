@@ -10,7 +10,7 @@ int main (int argc, char **argv) {
  unsigned long	*startusec;
  unsigned long	*crc;
  unsigned char  buf[49 + 5 * sizeof(long)];
- char		*status;
+ char		*status = 0;
  char		*fname;
  char		*p_buf;
  char		*uname;
@@ -47,8 +47,10 @@ int main (int argc, char **argv) {
         ugroup = p_buf;			p_buf += 24;
 	fsize = (long *)p_buf;		p_buf += sizeof(long);
 	uspeed = (long *)p_buf;		p_buf += sizeof(long);
-	startsec = (long *)&p_buf;	p_buf += sizeof(long);
-	startusec = (long *)&p_buf;
+//	startsec = (long *)&p_buf;	p_buf += sizeof(long); -- original
+	startsec = (long *)p_buf;	p_buf += sizeof(long);
+//	startusec = (long *)&p_buf; -- original
+	startusec = (long *)p_buf;
 
 	switch ( *buf ) {
 		case F_NOTCHECKED:
