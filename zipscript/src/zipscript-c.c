@@ -101,10 +101,8 @@ void remove_nfo_indicator(char *directory) {
 	}
 	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
 	unlink(locations.nfo_incomplete);
-	if (k < 2)
-		free(path[1]);
-	if (k == 0)
-		free(path[0]);
+	if (k < 2) free(path[1]);
+	if (k == 0) free(path[0]);
 }
 
 void getrelname(char *directory) {
@@ -137,8 +135,7 @@ void getrelname(char *directory) {
 		sprintf(locations.link_source, "%.*s", n - 1, locations.path);
 		locations.link_target = path[0];
 		locations.incomplete = c_incomplete(incomplete_cd_indicator, path);
-		if (k < 2)
-			free(path[1]);
+		if (k < 2) free(path[1]);
 	} else {
 		raceI.misc.release_name = malloc(l[1] + 10);
 		locations.link_source	= malloc(locations.length_path + 1);
@@ -147,10 +144,8 @@ void getrelname(char *directory) {
 		locations.link_target = path[1];
 		locations.incomplete = c_incomplete(incomplete_indicator, path);
 		locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
-
-		if (k == 0)
-			free(path[0]);
 	}
+		if (k == 0) free(path[0]);
 }
 
 unsigned char get_filetype(char *ext) {

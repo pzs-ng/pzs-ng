@@ -115,8 +115,8 @@ void getrelname(char *directory) {
 	locations.link_target = path[1];
 	locations.incomplete = c_incomplete(incomplete_indicator, path);
 	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
-	if (k == 0) free(path[0]);
     }
+    if (k == 0) free(path[0]);
 }
 
 int main () {
@@ -343,6 +343,14 @@ int main () {
     printf(" Failed : %i\n", raceI.total.files_bad );
     printf(" Missing: %i\n", raceI.total.files_missing );
     printf("  Total : %i\n", raceI.total.files );
+
+    d_log("Freeing memory.\n");
+    free(locations.path);
+    free(locations.race);
+    free(locations.sfv);
+    free(locations.leader);
+    free(userI);
+    free(groupI);
 
     exit( 0 );
 }
