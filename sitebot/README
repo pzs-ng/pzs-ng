@@ -49,7 +49,7 @@
 
  - If "ftps" is not listed in protocols and "SSL" is not listed in features, you
  must disable the secure BNC option, (set bnc(SECURE) FALSE). Alternatively, you
- could recompile cURL with SSL support, your choice.
+ could recompile cURL with SSL support, it's your choice.
 
 --------------------------------------------------------------------------------
   b) Compiling
@@ -122,14 +122,12 @@
                theme should be used a reference when creating a new theme or
                updating your existing one.
 
+ classic.zst - A simple theme, based on the original dZSbot and project-zs look.
+
  dakrer.zst  - Similar to default.zst but with less output and a (small) splash of
                colors. See theme for additional info. Created and maintained by dakrer.
 
  vampire.zst - juanker's colorful theme.
-
- nfs.zst     - Based on the "Need for Speed" game, created by maziah.
-
- psxc.zst    - A minimalistic, yet effective theme, created by psxc.
 
 --------------------------------------------------------------------------------
   c) Special theme settings
