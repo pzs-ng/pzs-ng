@@ -1,31 +1,189 @@
 #################################################################################
 # dZSbot - NickDb Plug-in                                                       #
 #################################################################################
-# - Keeps track of IRC nick names and their corrosponding FTP user name.        #
-# - Remember, this only effective if the channel is invite-only.                #
+#
+# Description:
+# - Keeps track of IRC nick names and their corresponding FTP user name.
+# - Remember, this only effective if the channel is invite-only.
+# - Thanks to compieter for the idea.
+#
+# Installation:
+# 1. Compile and install the SQLite v3.1.x Tcl binding:
+#    http://www.sqlite.org/download.html
+#
+#    tar zxf sqlite-3.1.x.tar.gz
+#    cd sqlite-3.1.x
+#    mkdir bld
+#    cd bld
+#    ../configure
+#    FreeBSD users may have to specify the path to tclConfig.sh:
+#    ../configure --with-tcl=/usr/local/lib/tcl8.4/
+#    make
+#    make install
+#
+# 2. Edit the configuration options below.
+#
+# 3. Add the following to your eggdrop.conf:
+#    source pzs-ng/plugins/NickDb.tcl
+#
+# 4. Rehash or restart your eggdrop for the changes to take effect.
+#
 #################################################################################
 
-## TODO (neoxed):
-## - Use SQLite v3 databse to keep track of users (or a simple text file?).
-## - Maybe add an option for an in-memory db (array) and offline db (sqlite)?
-## - Add InviteEvent to postcommand(INVITEUSER).
+namespace eval ::ngBot::NickDb {
 
-namespace eval NickDb {
-    namespace export InviteEvent NickToUser UserToNick
+    ## Config Settings ###############################
+    ##
+    ## Change host masks of users on invite.
+    ## The eggdrop must be an IRCOp on an UnrealIRCd (or CHGHOST compatible) daemon.
+    variable hostChange True
+    ##
+    ## Host mask format, cookies: %(user) and %(group).
+    variable hostFormat "%(user).Users.PZS-NG.com"
+    ##
+    ## Path to the Tcl binding for SQLite v3.1.
+    variable libSQLite "/usr/local/lib/tcl8.4/sqlite3/libtclsqlite3.so"
+    ##
+    ##################################################
+
+    namespace export GetFtpUser GetIrcUser
+    variable filePath   [file join [file dirname [info script]] "Nicks.db"]
+    variable scriptName [namespace current]::InviteEvent
+    bind evnt -|- prerehash [namespace current]::DeInit
 }
 
-proc NickDb::Init {} {
+interp alias {} IsTrue {} string is true -strict
+interp alias {} IsFalse {} string is false -strict
+
+####
+# NickDb::Init
+#
+# Called on initialization; opens the database and
+# registers the event handler.
+#
+proc ::ngBot::NickDb::Init {args} {
     global postcommand
-    set scriptName [namespace current]::InviteEvent
+    variable filePath
+    variable libSQLite
+    variable scriptName
+
+    ## Load the Tcl SQLite library.
+    if {[catch {load $libSQLite Tclsqlite3} errorMsg]} {
+        putlog "\[ngBot\] NickDb :: $errorMsg"
+        return
+    }
+
+    ## The event handler will only be registered if the SQLite
+    ## database is opened successfully.
+    if {[catch {sqlite3 [namespace current]::db $filePath} errorMsg]} {
+        putlog "\[ngBot\] NickDb :: Unable to open database \"$filePath\" - $errorMsg"
+        return
+    }
+
+    ## Create the Ftp table
+    if {![db eval {SELECT count(*) FROM sqlite_master WHERE name='UserNames' AND type='table'}]} {
+        db eval {CREATE TABLE UserNames (time INT, ircUser TEXT, ftpUser TEXT UNIQUE)}
+    }
+    db function StrCaseEq {string equal -nocase}
+
+    ## Register the event handler.
+    lappend postcommand(INVITEUSER) $scriptName
+
+    putlog "\[ngBot\] NickDb :: Loaded successfully."
+    return
 }
 
-proc NickDb::NickToUser {ircNick} {
+####
+# NickDb::DeInit
+#
+# Called on rehash; closes the database and
+# unregisters the event handler.
+#
+proc ::ngBot::NickDb::DeInit {args} {
+    global postcommand
+    variable scriptName
+
+    ## Close the SQLite database in case we're being unloaded.
+    catch {db close}
+
+    ## Remove the script event from postcommand.
+    if {[info exists postcommand(INVITEUSER)] && [set pos [lsearch -exact $postcommand(INVITEUSER) $scriptName]] !=  -1} {
+        set postcommand(INVITEUSER) [lreplace $postcommand(INVITEUSER) $pos $pos]
+    }
+
+    namespace delete [namespace current]
+    return
 }
 
-proc NickDb::UserToNick {ftpUser} {
+####
+# NickDb::StripName
+#
+# Strips illegal characters from IRC user names.
+#
+proc ::ngBot::NickDb::StripName {name} {
+    return [regsub -all {[^\w\[\]\{\}\-\`\^\\]+} $name {}]
 }
 
-proc NickDb::InviteEvent {} {
+####
+# NickDb::InviteEvent
+#
+# Called by the sitebot's event handler on
+# the "INVITEUSER" event.
+#
+proc ::ngBot::NickDb::InviteEvent {event ircUser ftpUser ftpGroup} {
+    variable hostChange
+    variable hostFormat
+    if {![string equal "INVITEUSER" $event]} {return 1}
+
+    if {[IsTrue $hostChange]} {
+        ## glFTPD allows characters in user names which are not allowed on IRC.
+        set stripUser [StripName $ftpUser]
+        set stripGroup [StripName $ftpGroup]
+
+        ## Change the user's host.
+        set host [string map [list %(user) $stripUser %(group) $stripGroup] $hostFormat]
+        putquick "CHGHOST $ircUser :$host"
+    }
+
+    ## Update the user name database.
+    set time [clock seconds]
+    db eval {INSERT OR REPLACE INTO UserNames (time,ircUser,ftpUser) values($time,$ircUser,$ftpUser)}
+
+    return 1
 }
 
-NickDb::Init
+####
+# NickDb::GetIrcUser
+#
+# Retrieve the IRC user name for the specified FTP user. If
+# no matches are found, an empty string is returned.
+#
+proc ::ngBot::NickDb::GetIrcUser {ftpUser} {
+    set ircUser ""
+
+    ## Since the ftpUser column is unique, the query is simplier.
+    db eval {SELECT ircUser FROM UserNames WHERE ftpUser=$ftpUser} values {
+        set ircUser $values(ircUser)
+    }
+
+    return $ircUser
+}
+
+####
+# NickDb::GetFtpUser
+#
+# Retrieve the FTP user name for the specified IRC user. If
+# no matches are found, an empty string is returned.
+#
+proc ::ngBot::NickDb::GetFtpUser {ircUser} {
+    set ftpUser ""
+
+    ## IRC user names are case-insensitive.
+    db eval {SELECT ftpUser FROM UserNames WHERE StrCaseEq(ircUser,$ircUser) ORDER BY time DESC LIMIT 1} values {
+        set ftpUser $values(ftpUser)
+    }
+
+    return $ftpUser
+}
+
+::ngBot::NickDb::Init

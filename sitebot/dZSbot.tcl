@@ -182,7 +182,7 @@ proc eventhandler {type event argv} {
 		if {[catch {set retval [eval $script $event $argv]} error]} {
 			putlog "dZSbot error: Error evaluating the script \"$script\" for $varname ($error)."
 		} elseif {[isfalse $retval]} {
-		    putlog "dZSbot: The script \"$script\" for $varname returned false."
+		    #putlog "dZSbot: The script \"$script\" for $varname returned false."
 			return 0
 		} elseif {![istrue $retval]} {
 			putlog "dZSbot warning: The script \"$script\" for $varname must return a boolean value (0/FALSE or 1/TRUE)."
@@ -218,7 +218,7 @@ proc readlog {} {
 					if {[regexp $regex $line result event line]} {
 						lappend lines $logtype $event $line
 					} else {
-						putlog "dZSbot warning: Invalid log line \"$line\"."
+						putlog "dZSbot warning: Invalid log line: $line"
 					}
 				}
 				close $handle
@@ -230,20 +230,21 @@ proc readlog {} {
 	}
 
 	foreach {type event line} $lines {
-		#putlog "DATA: type=$type event=\{$event\} line=\{$line\}"
-
 		## Login and sysop log specific parsing.
 		if {$type == 1 && ![parselogin $line event line]} {
-		    putlog "dZSbot error: Unknown login entry \"$line\"."; continue
+		    putlog "dZSbot error: Unknown login.log line: $line"; continue
 		} elseif {$type == 2 && ![parsesysop $line event line]} {
             set event "SYSOP"; set line [list $line]
 	    }
-
+	    ## Check that the log line is a valid Tcl list.
+	    if {[catch {llength $line} error]} {
+	        putlog "dZSbot error: Invalid log line (not a valid list): $line"
+	        continue
+	    }
 		## Invite users to public and private channels.
 		if {[string equal $event "INVITE"]} {
 			eval ng_inviteuser [lrange $line 0 2]
 		}
-
 		if {[lsearch -exact $msgtypes(SECTION) $event] != -1} {
 			set path [lindex $line 0]
 			if {[denycheck $path]} {continue}
@@ -263,6 +264,7 @@ proc readlog {} {
 		} else {
 			putlog "dZSbot error: Undefined message type \"$event\", check \"msgtypes(SECTION)\" and \"msgtypes(DEFAULT)\" in the config."; continue
 		}
+
 		## If a pre-event script returns false, skip the announce.
 		if {![eventhandler precommand $event [list $section $line]]} {continue}
 		if {![info exists variables($event)]} {
@@ -324,7 +326,6 @@ proc parsesysop {line eventvar datavar} {
 
 proc ng_format {event section line} {
 	global announce defaultsection disable glversion mpath random sitename theme theme_fakes variables
-	#putlog "FORMAT: event=\{$event\} section=\{$section\} line=\{$line\}"
 
 	if {[string equal $event "NUKE"] || [string equal $event "UNNUKE"]} {
 		if {$glversion == 1} {
