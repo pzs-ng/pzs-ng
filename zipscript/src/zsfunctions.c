@@ -621,7 +621,7 @@ execute(char *s)
 	int		n;
 
 	if ((n = system(s)) == -1)
-		d_log("%s\n", errno);
+		d_log("%s\n", strerror(errno));
 
 	return n;
 
