@@ -246,7 +246,7 @@ announce.SPEEDERROR				= "[%b{ERROR}] Nope, try again. Found noone by that name 
 announce.WELCOME				= "Welcome to %b{%sitename}'s sitechan. Type %cmdprehelp for help"
 announce.FREE					= "[%b{SPACE}] Free space on site:|%devices[%b{SPACE}] TOTALS: %b{%free} of %b{%total} (used %percentage%)"
 announce.FREE-DEV				= "[%b{SPACE}] %section: %b{%free} of %b{%total} (used %percentage%)|"
-announce.UPTIME					= "[%b{UPTIME}] System: %time, %b{%users} user(s), load: %load Eggdrop: %eggdrop"
+announce.UPTIME					= "[%b{UPTIME}] %b{System:} %time, %b{%users} user(s), load: %load|[%b{UPTIME}] %b{Eggdrop:} %eggdrop"
 
 ## IRC Command: !new
 announce.NEW					= "[%b{NEW}] Latest releases in %b{%section} section:"
