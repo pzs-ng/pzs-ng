@@ -15,8 +15,8 @@ announce.NEWDIR		        = "[%b{new   }][%section] %b{%relname} by %b{%u_name} o
 announce.DELDIR		        = "[%b{delete}][%section] %b{%relname} by %b{%u_name} of %g_name"
 announce.LOGIN		        = "[%b{login }] %b{%u_name}@%g_name has logged in"
 announce.LOGOUT		        = "[%b{logout}] %b{%u_name}@%g_name has logged out"
-announce.WIPE		        = "[%b{wipe  }][%section] %bold%release%bold by %b{%u_name} of %g_name"
-announce.WIPE-r		        = "[%b{wipe-r}][%section] %bold%release%bold and all subdirectories by %b{%u_name} of %g_name"
+announce.WIPE		        = "[%b{wipe  }][%section] %bold%reldir%bold by %b{%u_name} of %g_name"
+announce.WIPE-r		        = "[%b{wipe-r}][%section] %bold%reldir%bold and all subdirectories by %b{%u_name} of %g_name"
 
 # special output done by the zipscript
 announce.DOUBLESFV		= "[%b{notice}] %b{%u_name} of %g_name tried to upload a dupe sfv."
@@ -82,8 +82,8 @@ announce.TOTUPDN		= "[%b{bwinfo}] %type %bold%count%bold at %bold%total%boldKB/s
 announce.TOTIDLE		= "[%b{bwinfo}] Currently %bold%count%bold users idle!"
 announce.USERIDLE		= "[%b{bwinfo}] %b{%u_name} of %g_name at %bold%idletime%bolds"
 announce.USER			= "[%b{bwinfo}] %b{%u_name} of %g_name on %bold%filename%bold (%bold%fper%bold done) at %bold%uspeed%boldKB/sec (%bold%per%bold usage)"
-announce.NUKE		        = "[%b{nuke  }][%section] %bold%release%bold factor %bold%multiplier%bold by %bold%nuker%bold [reason] %bold%reason%bold [nukees] %bold%nukees%bold"
-announce.UNNUKE		        = "[%b{unnuke}][%section] %bold%release%bold factor %bold%multiplier%bold by %bold%nuker%bold [reason] %bold%reason%bold [nukees] %bold%nukees%bold"
+announce.NUKE		        = "[%b{nuke  }][%section] %bold%reldir%bold factor %bold%multiplier%bold by %bold%nuker%bold [reason] %bold%reason%bold [nukees] %bold%nukees%bold"
+announce.UNNUKE		        = "[%b{unnuke}][%section] %bold%reldir%bold factor %bold%multiplier%bold by %bold%nuker%bold [reason] %bold%reason%bold [nukees] %bold%nukees%bold"
 announce.MSGINVITE	        = "[%b{invite}] %b{%u_name} of %g_name invited himself as %bold%u_ircnick%bold"
 announce.BADMSGINVITE	        = "[%b{%c1{badinv}}] %bold%u_ircnick%bold (%host) tried to invite himself with invalid login!"
 announce.WELCOME	        = "Welcome to %bold%sitename%bold's sitechan. Type %cmdprehelp for help."

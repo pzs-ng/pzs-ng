@@ -200,11 +200,11 @@ set hidenuke						"UNKNOWN"
 #
 # Example:
 #  set variables(PRE) "%pf %user %group %pregroup %files %mbytes"
-#  set announce(PRE)  "-%sitename- \[%section\] %user@%group launches new %pregroup-pre called %release (%mbytesM in %filesF)"
+#  set announce(PRE)  "-%sitename- \[%section\] %user@%group launches new %pregroup-pre called %reldir (%mbytesM in %filesF)"
 #
 # Special variables:
 #  %pf      = path filter, must be the first parameter and contain full path of the release, it defines:
-#   %release = Last directory in path ( /site/xxx/marissa-exxtasy/cd1 => cd1 )
+#   %reldir  = Last directory in path ( /site/xxx/marissa-exxtasy/cd1 => cd1 )
 #   %path    = Second last directory in path ( /site/xxx/marissa-exxtasy/cd1 => marissa-exxtasy )
 #   %relname = all directories after those defined in paths
 #              ( paths(ISO) = "/site/xxx/" does: /site/xxx/marissa-exxtasy/cd1 => marissa-exxtasy/cd1 )

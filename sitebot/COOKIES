@@ -6,7 +6,7 @@ Quickreference of cookies:
 ## Read %t_ as 'Total'
 ##
 ## General cookies found where %pf is are:
-## %release, %path, %relname, %section, %bold, %uline
+## %reldir, %path, %relname, %section, %bold, %uline
 
 #
 #
@@ -16,19 +16,19 @@ Quickreference of cookies:
 
 DEBUG			%msg, %u_pid
 
-DEFAULT			%release, %path, %relname, %section, %msg
+DEFAULT			%reldir, %path, %relname, %section, %msg
 
-NEWDIR			%release, %path, %relname, %section, %u_name, %g_name, %u_tagline
+NEWDIR			%reldir, %path, %relname, %section, %u_name, %g_name, %u_tagline
 
-DELDIR			%release, %path, %relname, %section, %u_name, %g_name, %u_tagline
+DELDIR			%reldir, %path, %relname, %section, %u_name, %g_name, %u_tagline
 
 LOGIN			%u_hostmask, %u_ip, %dummy, %u_name, %g_name, %u_tagline, %u_pid
 
 LOGOUT			%u_hostmask, %u_ip, %u_name, %g_name, %u_tagline
 
-WIPE			%release, %path, %relname, %section, %u_name, %g_name, %u_tagline
+WIPE			%reldir, %path, %relname, %section, %u_name, %g_name, %u_tagline
 
-WIPE-r			%release, %path, %relname, %section, %u_name, %g_name, %u_tagline
+WIPE-r			%reldir, %path, %relname, %section, %u_name, %g_name, %u_tagline
 
 #
 #
@@ -36,126 +36,126 @@ WIPE-r			%release, %path, %relname, %section, %u_name, %g_name, %u_tagline
 # Variables pasted from the zipscript #
 #######################################
 
-DOUBLESFV		%release, %path, %relname, %section, %u_name, %g_name, %releasename, %filename
+DOUBLESFV		%reldir, %path, %relname, %section, %u_name, %g_name, %releasename, %filename
 
-BADBITRATE		%release, %path, %relname, %section, %u_name, %g_name, %bitrate
+BADBITRATE		%reldir, %path, %relname, %section, %u_name, %g_name, %bitrate
 
-BADGENRE		%release, %path, %relname, %section, %u_name, %g_name, %genre
+BADGENRE		%reldir, %path, %relname, %section, %u_name, %g_name, %genre
 
-BADYEAR			%release, %path, %relname, %section, %u_name, %g_name, %year
+BADYEAR			%reldir, %path, %relname, %section, %u_name, %g_name, %year
 
-RACE			%release, %path, %relname, %section, %u_name, %g_name, %against, %releasename,
+RACE			%reldir, %path, %relname, %section, %u_name, %g_name, %against, %releasename,
 			%u_speed, %filename, %t_duration, %t_percent, %u_count, %g_count, %t_upfiles,
 			%t_files, %missing_files
 
-SFV			%release, %path, %relname, %section, %releasename, %t_filecount, %u_name, %g_name
+SFV			%reldir, %path, %relname, %section, %releasename, %t_filecount, %u_name, %g_name
 
-UPDATE			%release, %path, %relname, %section, %u_name, %g_name, %t_files, %u_speed, %t_mbytes,
+UPDATE			%reldir, %path, %relname, %section, %u_name, %g_name, %t_files, %u_speed, %t_mbytes,
 			%filename, %releasename
 
-UPDATE_RAR		%release, %path, %relname, %section, %u_name, %g_name, %t_files, %u_speed, %t_mbytes,
+UPDATE_RAR		%reldir, %path, %relname, %section, %u_name, %g_name, %t_files, %u_speed, %t_mbytes,
 			%filename, %releasename
 
-UPDATE_ZIP		%release, %path, %relname, %section, %u_name, %g_name, %t_files, %u_speed, %t_mbytes,
+UPDATE_ZIP		%reldir, %path, %relname, %section, %u_name, %g_name, %t_files, %u_speed, %t_mbytes,
 			%filename, %releasename
 
-UPDATE_OTHER		%release, %path, %relname, %section, %u_name, %g_name, %t_files, %u_speed, %t_mbytes,
+UPDATE_OTHER		%reldir, %path, %relname, %section, %u_name, %g_name, %t_files, %u_speed, %t_mbytes,
 			%filename, %releasename
 
-UPDATE_VIDEO		%release, %path, %relname, %section, %u_name, %g_name, %t_files, %u_speed, %t_mbytes,
+UPDATE_VIDEO		%reldir, %path, %relname, %section, %u_name, %g_name, %t_files, %u_speed, %t_mbytes,
 			%filename, %releasename
 
-UPDATE_CBR		%release, %path, %relname, %section, %u_name, %g_name, %t_files, %u_speed, %genre,
+UPDATE_CBR		%reldir, %path, %relname, %section, %u_name, %g_name, %t_files, %u_speed, %genre,
 			%year, %bitrate, %sampling, %mode, %audio, %filename, %releasename
 
-UPDATE_VBR		%release, %path, %relname, %section, %u_name, %g_name, %t_files, %u_speed, %genre,
+UPDATE_VBR		%reldir, %path, %relname, %section, %u_name, %g_name, %t_files, %u_speed, %genre,
 			%year, %bitrate, %sampling, %mode, %audio, %a_stream, %filename, %releasename
 
-HALFWAY_RACE		%release, %path, %relname, %section, %releasename, %u_name, %g_name, %u_mbytes,
+HALFWAY_RACE		%reldir, %path, %relname, %section, %releasename, %u_name, %g_name, %u_mbytes,
 			%u_files, %u_percent, %u_speed, %g_name, %g_mbytes, %g_files, %g_percent, %g_speed,
 			%t_missingfiles, %filename, %u_count, %g_count
 
-HALFWAY_NORACE		%release, %path, %relname, %section, %releasename, %u_name, %g_name, %u_mbytes,
+HALFWAY_NORACE		%reldir, %path, %relname, %section, %releasename, %u_name, %g_name, %u_mbytes,
 			%u_files, %u_percent, %u_speed, %g_name, %g_mbytes, %g_files, %g_percent, %g_speed,
 			%t_missingfiles, %filename, %u_count, %g_count
 
-NEWLEADER		%release, %path, %relname, %section, %u_name, %g_name, %u_speed, %t_duration,
+NEWLEADER		%reldir, %path, %relname, %section, %u_name, %g_name, %u_speed, %t_duration,
 			%u_files, %u_percent, %u_mbytes, %releasename, %u_count, %g_count, %filename,
 			%t_missingfiles
 
-COMPLETE		%release, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
+COMPLETE		%reldir, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
 			%t_duration, %u_name, %g_name, %filename
 
-COMPLETE_RAR		%release, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
+COMPLETE_RAR		%reldir, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
 			%t_duration, %u_name, %g_name, %filename
 
-COMPLETE_ZIP		%release, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
+COMPLETE_ZIP		%reldir, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
 			%t_duration, %u_name, %g_name, %filename
 
-COMPLETE_OTHER		%release, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
+COMPLETE_OTHER		%reldir, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
 			%t_duration, %u_name, %g_name, %filename
 
-COMPLETE_VIDEO		%release, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
+COMPLETE_VIDEO		%reldir, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
 			%t_duration, %u_name, %g_name, %filename
 
-COMPLETE_AUDIO		%release, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
+COMPLETE_AUDIO		%reldir, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
 			%t_duration, %u_name, %g_name, %filename
 
-COMPLETE_RACE		%release, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
+COMPLETE_RACE		%reldir, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
 			%t_duration, %u_count, %g_count, %u_name_slowest, %g_name_slowest, %t_avgspeed_slowest,
 			%u_name_fastest, %g_name_fastest, %t_avgspeed_fastest, %u_name_winner, %g_name,
 			%u_mbytes_winner, %u_files_winner, %u_percent_winner, %t_avgspeed_winner,
 			%g_name_winner, %g_mbytes_winner, %g_files_winner, %g_percent_winner,
 			%g_avgspeed_winner, %filename
 
-COMPLETE_RACE_RAR	%release, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
+COMPLETE_RACE_RAR	%reldir, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
 			%t_duration, %u_count, %g_count, %u_name_slowest, %g_name_slowest, %u_avgspeed_slowest,
 			%u_name_fastest, %g_name_fastest, %u_avgspeed_fastest, %u_name_winner, %g_name,
 			%u_mbytes_winner, %u_files_winner, %u_percent_winner, %u_avgspeed_winner,
 			%g_name_winner, %g_mbytes_winner, %g_files_winner, %g_percent_winner,
 			%g_avgspeed_winner, %filename
 
-COMPLETE_RACE_ZIP	%release, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
+COMPLETE_RACE_ZIP	%reldir, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
 			%t_duration, %u_count, %g_count, %u_name_slowest, %g_name_slowest, %u_avgspeed_slowest,
 			%u_name_fastest, %g_name_fastest, %u_avgspeed_fastest, %u_name_winner, %g_name,
 			%u_mbytes_winner, %u_files_winner, %u_percent_winner, %u_avgspeed_winner,
 			%g_name_winner, %g_mbytes_winner, %g_files_winner, %g_percent_winner,
  			%g_avgspeed_winner, %filename
 
-COMPLETE_RACE_OTHER	%release, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
+COMPLETE_RACE_OTHER	%reldir, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
 			%t_duration, %u_count, %g_count, %u_name_slowest, %g_name_slowest, %u_avgspeed_slowest,
 			%u_name_fastest, %g_name_fastest, %u_avgspeed_fastest, %u_name_winner, %g_name,
 			%u_mbytes_winner, %u_files_winner, %u_percent_winner, %u_avgspeed_winner,
 			%g_name_winner, %g_mbytes_winner, %g_files_winner, %g_percent_winner,
 			%g_avgspeed_winner, %filename
 
-COMPLETE_RACE_VIDEO	%release, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
+COMPLETE_RACE_VIDEO	%reldir, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
 			%t_duration, %u_count, %g_count, %u_name_slowest, %g_name_slowest, %u_avgspeed_slowest,
 			%u_name_fastest, %g_name_fastest, %u_avgspeed_fastest, %u_name_winner, %g_name,
 			%u_mbytes_winner, %u_files_winner, %u_percent_winner, %u_avgspeed_winner,
 			%g_name_winner, %g_mbytes_winner, %g_files_winner, %g_percent_winner,
 			%g_avgspeed_winner, %filename
 
-COMPLETE_RACE_AUDIO	%release, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
+COMPLETE_RACE_AUDIO	%reldir, %path, %relname, %section, %releasename, %t_mbytes, %t_files, %t_avgspeed,
 			%t_duration, %u_count, %g_count, %u_name_slowest, %g_name_slowest, %u_avgspeed_slowest,
 			%u_name_fastest, %g_name_fastest, %u_avgspeed_fastest, %u_name_winner, %g_name,
 			%u_mbytes_winner, %u_files_winner, %u_percent_winner, %u_avgspeed_winner,
 			%g_name_winner, %g_mbytes_winner, %g_files_winner, %g_percent_winner,
 			%g_avgspeed_winner, %filename
 
-INCOMPLETE		%release, %path, %relname, %section, %u_name, %g_name, %releasename
+INCOMPLETE		%reldir, %path, %relname, %section, %u_name, %g_name, %releasename
 
-STAT_USERS_HEAD		%release, %path, %relname, %section, %dummy
+STAT_USERS_HEAD		%reldir, %path, %relname, %section, %dummy
 
-STAT_USERS		%release, %path, %relname, %section, %u_position, %u_name, %g_name, %u_mbytes,
+STAT_USERS		%reldir, %path, %relname, %section, %u_position, %u_name, %g_name, %u_mbytes,
 			%u_files, %u_percent, %u_avgspeed, %u_dayup, %u_wkup, %u_monthup, %u_allup
 
-STAT_GROUPS_HEAD	%release, %path, %relname, %section, %dummy
+STAT_GROUPS_HEAD	%reldir, %path, %relname, %section, %dummy
 
-STAT_GROUPS		%release, %path, %relname, %section, %g_position, %g_name, %g_mbytes, %g_files,
+STAT_GROUPS		%reldir, %path, %relname, %section, %g_position, %g_name, %g_mbytes, %g_files,
 			%g_percent, %g_avgspeed
 
-STAT_POST		%release, %path, %relname, %section, %u_count, %g_count, %t_files, %t_mbytes,
+STAT_POST		%reldir, %path, %relname, %section, %u_count, %g_count, %t_files, %t_mbytes,
 			%t_duration, %u_avgspeed, %u_name_winner, %u_gname_winner, %u_mbytes_winner,
 			%u_files_winner, %u_percent_winner, %u_speed_winner, %g_name_winner,
 			%g_mbytes_winner, %g_files_winner, %g_percent_winner, %g_speed_winner,
@@ -173,7 +173,7 @@ STAT_POST		%release, %path, %relname, %section, %u_count, %g_count, %t_files, %t
 # Variables used in 3rd part scripts (examples) #
 #################################################
 
-PRE			%release, %path, %relname, %section, %releasename, %pregroup, %section, %files,
+PRE			%reldir, %path, %relname, %section, %releasename, %pregroup, %section, %files,
 			%mbytes, %cds, %who, %u_name, %g_name, %tagline
 
 INVITE			%u_ircnick, %u_name, %g_name
@@ -182,16 +182,16 @@ REQUEST			%releasename, %u_name, %g_name, %u_tagline
 
 REQFILLED		%releasename, %u_name, %g_name, %u_tagline, %u_name_requester
 
-IMDBVAR			%release, %path, %relname, %section, %imdbdirname, %imdburl, %imdbtitle, %imdbgenre,
+IMDBVAR			%reldir, %path, %relname, %section, %imdbdirname, %imdburl, %imdbtitle, %imdbgenre,
 			%imdbrating, %imdbcountry, %imdblanguage, %imdbcertification, %imdbruntime,
 			%imdbdirector, %imdbbusinessdata, %imdbpremiereinfo, %imdblimitedinfo, %imdbvotes,
 			%imdbscore, %imdbname, %imdbyear, %imdbnumscreens, %imdbislimited, %imdbcastleadname,
 			%imdbcastleadchar, %imdbtagline, %imdbplot, \[%imdbbar\], %imdbcasting,
 			%imdbcommentshort, %imdbdestination
 
-IMDB			%release, %path, %relname, %section, %msg
+IMDB			%reldir, %path, %relname, %section, %msg
 
-IMDBFIND		%release, %path, %relname, %section, %msg
+IMDBFIND		%reldir, %path, %relname, %section, %msg
 
 #
 #
@@ -216,9 +216,9 @@ USERIDLE		%u_name, %g_name, %idletime, %tagline, %since
 
 USER			%u_name, %g_name, %fper, %uspeed, %per, %tagline, %since, %filename
 
-NUKE			%nuker, %nukees, %type, %multiplier, %reason, %section, %release, %path
+NUKE			%nuker, %nukees, %type, %multiplier, %reason, %section, %reldir, %path
 
-UNNUKE			%nuker, %nukees, %type, %multiplier, %reason, %section, %release, %path
+UNNUKE			%nuker, %nukees, %type, %multiplier, %reason, %section, %reldir, %path
 
 MSGINVITE		%u_ircnick, %u_name, %g_name, %u_host
 

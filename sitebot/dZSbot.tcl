@@ -503,7 +503,7 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 		}
 		set temp [string range $relname 1 end]
 		set output [replacevar $output "%relname" $temp]
-		set output [replacevar $output "%release" [lindex $split [expr $ll -1]]]
+		set output [replacevar $output "%reldir" [lindex $split [expr $ll -1]]]
 		set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
 		set vars [string range $vars 4 end]
 		set cnt 1
