@@ -135,9 +135,68 @@ char * multi_name(char *s) {
     }
 
     free(p);
-//    free(t);
     return t;
 }
+
+char * multi_nfo_name(char *s) {
+    int	begin_multi[2], end_multi, n;
+    char 	*p, *t, *r = 0;
+
+    end_multi = 0;
+
+    t = incomplete_cd_nfo_indicator;
+
+    while ( *t == '.' || *t == '/' ) t++;
+    p = t;
+
+    for ( n = 0 ; *t ; t++ ) if ( *t == '%' && *(t+1) == '0' ) {
+	begin_multi[0] = n;
+	break;
+    } else {
+	n++;
+    }
+
+    t = p;
+    for ( n = 0 ; *t ; t++ ) if ( *t == '%' && *(t+1) == '1' ) {
+	begin_multi[1] = n;
+	break;
+    } else {
+	n++;
+    }
+
+    if ( begin_multi[0] < begin_multi[1] ) {
+	for ( t = p + begin_multi[1] + 2; *t ; t++ ) end_multi++;
+
+	p = malloc(6);
+	s += begin_multi[0];
+	s += sprintf(p, "%.*s", tolower(*s) == 'd' ? 5 : 3,  s);
+
+	s += begin_multi[1] - begin_multi[0] - 2;
+	t = malloc((n = strlen(s)) + 7);
+	sprintf(t, "%.*s/%s", n - end_multi, s, p);
+    } else {
+	for ( t = p + begin_multi[0] + 2; *t ; t++ ) end_multi++;
+
+	s += begin_multi[1];
+	n = strlen(s) - end_multi;
+
+	t = s + n - 3;
+	p = malloc(6);
+	if ( tolower(*t) == 'c' ) {
+	    sprintf(p, "%s", t);
+	} else {
+	    r--;
+	    sprintf(p, "%s", t);
+	}
+	n = t - s - (begin_multi[0] - begin_multi[1] - 2);
+	t = malloc(n + 7);
+	sprintf(r, "%.*s/%s", n, s, p);
+    }
+
+    free(p);
+    return t;
+}
+
 
 /*
  * Name of release (Common)
@@ -170,7 +229,36 @@ char * single_name(char *s) {
     t = malloc(size);
     sprintf(t, "%.*s", size - 1, s + begin_single);
 
-//    free(t);
+    return(t);
+}
+
+char * single_nfo_name(char *s) {
+    int	begin_single, end_single, size;
+    char	*t = 0;
+
+    begin_single = end_single = 0;
+
+    t = incomplete_nfo_indicator;
+
+    while ( *t == '.' || *t == '/' ) t++;
+
+    for ( ; *t ; t++ ) if ( *t == '%' && *(t+1) == '0' ) {
+	t += 2;
+	break;
+    } else {
+	begin_single++;
+    }
+    for ( ; *t ; t++ ) if ( *t == '%' ) {
+	t++;
+	if ( *t == '%' ) end_single++;
+    } else {
+	end_single++;
+    }
+
+    size = strlen(s) - begin_single - end_single + 1;
+
+    t = malloc(size);
+    sprintf(t, "%.*s", size - 1, s + begin_single);
 
     return(t);
 }
@@ -179,7 +267,7 @@ void incomplete_cleanup(char *path, int setfree) {
     struct dirent	**dirlist;
     struct stat		fileinfo;
     int			entries;
-    regex_t		preg[2];   
+    regex_t		preg[4];   
     regmatch_t		pmatch[1];
     char		*temp;
     char		*locator;
@@ -195,6 +283,17 @@ void incomplete_cleanup(char *path, int setfree) {
     locator = replace_cookies(temp);
     regcomp(&preg[1], locator, REG_NEWLINE|REG_EXTENDED);
     free(locator);
+
+    sprintf(temp, "%s", incomplete_cd_nfo_indicator);
+    locator = replace_cookies(temp);
+    regcomp(&preg[2], locator, REG_NEWLINE|REG_EXTENDED);
+    free(locator);
+
+    sprintf(temp, "%s", incomplete_nfo_indicator);
+    locator = replace_cookies(temp);
+    regcomp(&preg[3], locator, REG_NEWLINE|REG_EXTENDED);
+    free(locator);
+
 
     free(temp);
 
@@ -219,6 +318,20 @@ void incomplete_cleanup(char *path, int setfree) {
 		    }
 		}
 
+		if ( regexec(&preg[2], dirlist[entries]->d_name, 1, pmatch, 0) == 0 ) {
+		    if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries]) ) {
+			temp=multi_nfo_name(dirlist[entries]->d_name);
+			if ( stat(temp, &fileinfo) != 0) {
+				if (setfree) {
+					unlink(dirlist[entries]->d_name);
+					printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
+				}
+			}
+			free(temp);
+			continue;
+		    }
+		}
+
 		/* Normal */
 		if ( regexec(&preg[1], dirlist[entries]->d_name, 1, pmatch, 0) == 0 ) {
 		    if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries]) ) {
@@ -229,6 +342,21 @@ void incomplete_cleanup(char *path, int setfree) {
 					printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
 				}
 			} else printf("Incomplete release: \"%s%s\".\n", path, temp);
+			free(temp);
+			continue;
+		    }
+		}
+
+		if ( regexec(&preg[3], dirlist[entries]->d_name, 1, pmatch, 0) == 0 ) {
+		    if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries]) ) {
+			temp=single_nfo_name(dirlist[entries]->d_name);
+			if ( stat(temp, &fileinfo) != 0 ) {
+				if (setfree) {
+					unlink(dirlist[entries]->d_name);
+					printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
+				}
+			}
+			free(temp);
 			continue;
 		    }
 		}
@@ -243,6 +371,8 @@ void incomplete_cleanup(char *path, int setfree) {
     }
     regfree(&preg[0]);
     regfree(&preg[1]);
+    regfree(&preg[2]);
+    regfree(&preg[3]);
 }
 
 void cleanup(char *pathlist, int setfree, char *startpath) {
@@ -303,35 +433,29 @@ int main (int argc, char **argv) {
     sprintf(startdir, "/");
 
     if (argc > 1) {
-/*	if (chroot(argv[1]) == -1) {
-		printf("%s: Failed to chroot to %s.\n", argv[0], argv[1]);
-		return 1;
-	}
-    }
-    if (getuid()) { */
 	setfree = 0;
 	printf("%s: Running script in view mode only.\n", argv[0]);
 	sprintf(startdir, "%s", argv[1]);
     }
-//    if (cleanupdirs[0])
-		cleanup(cleanupdirs, setfree, startdir);
+
+    cleanup(cleanupdirs, setfree, startdir);
 
     if (argc < 2) {
 
 #if ( audio_genre_sort == TRUE )
-    scandirectory((char *)audio_genre_path, setfree);
+	scandirectory((char *)audio_genre_path, setfree);
 #endif
 
 #if ( audio_year_sort == TRUE ) 
-    scandirectory((char *)audio_year_path, setfree);
+	scandirectory((char *)audio_year_path, setfree);
 #endif
 
 #if ( audio_artist_sort == TRUE )
-    scandirectory((char *)audio_artist_path, setfree);
+	scandirectory((char *)audio_artist_path, setfree);
 #endif
 
 #if ( audio_group_sort == TRUE )
-    scandirectory((char *)audio_group_path, setfree);
+	scandirectory((char *)audio_group_path, setfree);
 #endif
 
 	printf("Finished successfully.\n");
