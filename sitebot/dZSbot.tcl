@@ -16,6 +16,10 @@ if {[catch {source [file dirname [info script]]/dZSbconf.tcl} tmperror]} {
 	putlog "dZSbot: dZSbconf.tcl not found or has errors. Cannot continue."
 	die
 }
+if {[catch {source [file dirname [info script]]/dZSbvars.tcl} tmperror]} {
+	putlog "dZSbot: dZSbvars.tcl not found or has errors. Cannot continue."
+	die
+}
 
 foreach bin [array names binary] {
 	if {![file executable $binary($bin)]} {

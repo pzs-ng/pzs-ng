@@ -28,12 +28,16 @@
 --------------------------------------------------------------------------------
  1-1 Configuration
 --------------------------------------------------------------------------------
- Please edit the actual file dZSbconf.tcl for general setup and hints.
- (But copy dZSbconf.tcl.dist to dZSbconf.tcl first)
+ Copy necessary files to your bot's script dir:
+   cp dZSbot.tcl /path/to/egg/scripts/
+   cp dZSbot.help /path/to/egg/scripts/
+   cp dZSbconf.tcl.dist /path/to/egg/scripts/dZSbconf.tcl
+   cp dZSbvars.tcl.dist /path/to/egg/scripts/dZSbvars.tcl
+   cp *.zst /path/to/egg/scripts/
 
- Copy dZSbot.tcl, dZSbot.help, and dZSbconf.tcl somewhere readable to your
- TCL enabled bot. Read below for use with eggdrop.
-
+ Edit dZSbconf.tcl to match your setup, and enter the name of a theme (.zst)
+ you wish to use.
+ Edit the theme you wish to use to match your setup, or make your own.
 
 --------------------------------------------------------------------------------
  1-2 Compiling
@@ -65,14 +69,6 @@
 --------------------------------------------------------------------------------
  1-3 Using with eggdrop
 --------------------------------------------------------------------------------
- First - copy at least 4 files to your sitebot's dir:
-
- cp sitebot/dZSbot.tcl /glftpd/bot/scripts/
- cp sitebot/dZSbot.help /glftpd/bot/scripts/
- cp sitebot/dZSbconf.tcl.dist /glftpd/bot/scripts/dZSbconf.tcl
- cp sitebot/default.zst.dist /glftpd/bot/scripts/default.zst
-
- Then: vi /glftpd/bot/scripts/dZSbconf.tcl
 
  Load the sitebot like any other script. Add this to eggdrop.conf:
  

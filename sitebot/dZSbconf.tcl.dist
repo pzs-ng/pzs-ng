@@ -225,56 +225,10 @@ set hidenuke						"UNKNOWN"
 # %u_ = User, %u_count: User count.
 # %g_ = Group, %g_name: Group name.
 
-# Variables pasted from glftpd
-set variables(DEBUG)		"%msg %u_pid"
-set variables(DEFAULT)		"%pf %msg"
-set variables(NEWDIR)		"%pf %u_name %g_name %u_tagline"
-set variables(DELDIR)		"%pf %u_name %g_name %u_tagline"
-set variables(LOGIN)		"%u_hostmask %u_ip %dummy %u_name %g_name %u_tagline %u_pid"
-set variables(LOGOUT)		"%u_hostmask %u_ip %u_name %g_name %u_tagline"
-set variables(WIPE)		"%pf %u_name %g_name %u_tagline"
-set variables(WIPE-r)		"%pf %u_name %g_name %u_tagline"
+# Variables pasted from glftpd			<- moved to dZSbvars.tcl
+# Variables pasted from the zipscript		<- moved to dZSbvars.tcl
+# Variables pasted from 3rd party apps		<- moved to dZSbvars.tcl
 
-# Variables pasted from the zipscript
-set variables(DOUBLESFV)	"%pf %u_name %g_name %releasename %filename"
-set variables(BADBITRATE)	"%pf %u_name %g_name %bitrate"
-set variables(BADGENRE)		"%pf %u_name %g_name %genre"
-set variables(BADYEAR)		"%pf %u_name %g_name %year"
-set variables(RACE)		"%pf %u_name %g_name %against %releasename %u_speed %filename %t_duration %t_percent %u_count %g_count %t_upfiles %t_files %missing_files"
-set variables(SFV)		"%pf %releasename %t_filecount %u_name %g_name"
-set variables(UPDATE)		"%pf %u_name %g_name %t_files %u_speed %t_mbytes %filename %releasename"
-set variables(UPDATE_RAR)	"%pf %u_name %g_name %t_files %u_speed %t_mbytes %filename %releasename"
-set variables(UPDATE_ZIP)	"%pf %u_name %g_name %t_files %u_speed %t_mbytes %filename %releasename"
-set variables(UPDATE_OTHER)	"%pf %u_name %g_name %t_files %u_speed %t_mbytes %filename %releasename"
-set variables(UPDATE_VIDEO)	"%pf %u_name %g_name %t_files %u_speed %t_mbytes %filename %releasename"
-set variables(UPDATE_VBR)	"%pf %u_name %g_name %t_files %u_speed %genre %year %bitrate %sampling %mode %audio %a_stream %filename %releasename %artist %album %title %codec %layer"
-set variables(UPDATE_CBR)	"%pf %u_name %g_name %t_files %u_speed %genre %year %bitrate %sampling %mode %audio %filename %releasename %artist %album %title %codec %layer"
-set variables(HALFWAY_RACE)	"%pf %releasename %u_leader_name %u_leader_gname %u_leader_mbytes %u_leader_files %u_leader_percent %u_leader_avgspeed %g_leader_name %g_leader_mbytes %g_leader_files %g_leader_percent %g_leader_avgspeed %t_mbytes %t_files %t_percent %t_avgspeed %t_missingfiles %filename %u_count %g_count %u_name %g_name %against %t_total_files"
-set variables(HALFWAY_NORACE)	"%pf %releasename %u_name %g_name %u_mbytes %u_files %u_percent %u_speed %t_missingfiles"
-set variables(NEWLEADER)	"%pf %u_name %g_name %u_speed %t_duration %u_files %u_percent %u_mbytes %releasename %u_count %g_count %filename %t_missingfiles"
-
-set variables(COMPLETE)		"%pf %releasename %t_mbytes %t_files %t_avgspeed %t_duration %u_name %g_name %filename"
-set variables(COMPLETE_RAR)	"%pf %releasename %t_mbytes %t_files %t_avgspeed %t_duration %u_name %g_name %filename"
-set variables(COMPLETE_ZIP)	"%pf %releasename %t_mbytes %t_files %t_avgspeed %t_duration %u_name %g_name %filename"
-set variables(COMPLETE_OTHER)	"%pf %releasename %t_mbytes %t_files %t_avgspeed %t_duration %u_name %g_name %filename"
-set variables(COMPLETE_VIDEO)	"%pf %releasename %t_mbytes %t_files %t_avgspeed %t_duration %u_name %g_name %filename"
-set variables(COMPLETE_AUDIO)	"%pf %releasename %t_mbytes %t_files %t_avgspeed %t_duration %u_name %g_name %filename"
-
-set variables(COMPLETE_RACE)		"%pf %releasename %t_mbytes %t_files %t_avgspeed %t_duration %u_count %g_count %u_slowest_name %g_slowest_name %t_slowest_avgspeed %u_fastest_name %g_fastest_name %g_fastest_avgspeed %u_winner_name %u_winner_gname %u_winner_mbytes %u_winner_files %u_winner_percent %u_winner_avgspeed %g_winner_name %g_winner_mbytes %g_winner_files %g_winner_percent %g_winner_avgspeed %filename"
-set variables(COMPLETE_RACE_RAR)	"%pf %releasename %t_mbytes %t_files %t_avgspeed %t_duration %u_count %g_count %u_slowest_name %g_slowest_name %t_slowest_avgspeed %u_fastest_name %g_fastest_name %g_fastest_avgspeed %u_winner_name %u_winner_gname %u_winner_mbytes %u_winner_files %u_winner_percent %u_winner_avgspeed %g_winner_name %g_winner_mbytes %g_winner_files %g_winner_percent %g_winner_avgspeed %filename"
-set variables(COMPLETE_RACE_ZIP)	"%pf %releasename %t_mbytes %t_files %t_avgspeed %t_duration %u_count %g_count %u_slowest_name %g_slowest_name %t_slowest_avgspeed %u_fastest_name %g_fastest_name %g_fastest_avgspeed %u_winner_name %u_winner_gname %u_winner_mbytes %u_winner_files %u_winner_percent %u_winner_avgspeed %g_winner_name %g_winner_mbytes %g_winner_files %g_winner_percent %g_winner_avgspeed %filename"
-set variables(COMPLETE_RACE_OTHER)	"%pf %releasename %t_mbytes %t_files %t_avgspeed %t_duration %u_count %g_count %u_name_slowest %g_name_slowest %u_avgspeed_slowest %u_fastest_name %g_name_fastest %u_avgspeed_fastest %u_name_winner %g_name %u_mbytes_winner %u_files_winner %u_percent_winner %u_avgspeed_winner %g_name_winner %g_mbytes_winner %g_files_winner %g_percent_winner %g_avgspeed_winner %filename"
-set variables(COMPLETE_RACE_VIDEO)	"%pf %releasename %t_mbytes %t_files %t_avgspeed %t_duration %u_count %g_count %u_slowest_name %g_slowest_name %t_slowest_avgspeed %u_fastest_name %g_fastest_name %g_fastest_avgspeed %u_winner_name %u_winner_gname %u_winner_mbytes %u_winner_files %u_winner_percent %u_winner_avgspeed %g_winner_name %g_winner_mbytes %g_winner_files %g_winner_percent %g_winner_avgspeed %filename"
-set variables(COMPLETE_RACE_AUDIO)	"%pf %releasename %t_mbytes %t_files %t_avgspeed %t_duration %u_count %g_count %u_slowest_name %g_slowest_name %t_slowest_avgspeed %u_fastest_name %g_fastest_name %g_fastest_avgspeed %u_winner_name %u_winner_gname %u_winner_mbytes %u_winner_files %u_winner_percent %u_winner_avgspeed %g_winner_name %g_winner_mbytes %g_winner_files %g_winner_percent %g_winner_avgspeed %filename"
-
-set variables(INCOMPLETE)		"%pf %u_name %g_name %releasename"
-set variables(STAT_USERS_HEAD)	"%pf %dummy"
-set variables(STAT_USERS)		"%pf %u_position %u_name %g_name %u_mbytes %u_files %u_percent %u_avgspeed %u_dayup %u_wkup %u_monthup %u_allup"
-set variables(STAT_GROUPS_HEAD)	"%pf %dummy"
-set variables(STAT_GROUPS)		"%pf %g_position %g_name %g_mbytes %g_files %g_percent %g_avgspeed"
-set variables(STAT_POST)		"%pf %u_count %g_count %t_files %t_mbytes %t_duration %u_avgspeed %u_winner_name %u_winner_gname %u_winner_mbytes %u_winner_files %u_winner_percent %u_winner_speed %g_winner_name %g_winner_mbytes %g_winner_files %g_winner_percent %g_winner_speed %slow_user %slow_group %slow_speed %fast_user %fast_group %fast_speed"
-
-# Variables pasted from 3rd party apps
 set variables(PRE)			"%pf %releasename %pregroup %section %files %mbytes %cds %who %user %g_name %tagline"
 set variables(INVITE)		"%u_ircnick %u_name %g_name"
 set variables(REQUEST)		"%releasename %u_name %g_name %u_tagline"
@@ -293,8 +247,6 @@ set variables(IMDBFIND)		"%pf %msg"
 #
 # Example:
 #  set zeroconvert(%user) "NoOne"
-set zeroconvert(%u_name)			"NoOne"
-set zeroconvert(%g_name) 			"NoGroup"
 
 # IMDB variables
 set zeroconvert(%imdbdirname)		"N/A"
