@@ -44,6 +44,7 @@ void check_dir_loop(char *path) {
     struct dirent	**list;
     int			n;
     char		target[PATH_MAX];
+    DIR			*dirp;
 
     chdir(path);
     n = scandir(path, &list, 0, 0);
@@ -52,8 +53,9 @@ void check_dir_loop(char *path) {
 	stat(list[n]->d_name, &entry_stat);
 	if ( S_ISDIR(entry_stat.st_mode) ) {
 	    sprintf(target, "%s/%s", path, list[n]->d_name );
-	    if (opendir(target + zd_length)) {
+	    if ((dirp = opendir(target + zd_length))) {
 		check_dir_loop(target);
+		closedir(dirp);
 		chdir(path);
 	    } else {
 		remove_dir_loop(target);
