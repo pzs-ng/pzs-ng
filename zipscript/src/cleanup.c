@@ -212,7 +212,7 @@ void incomplete_cleanup(char *path) {
 			/* Multi CD */
 
 	                if ( regexec(&preg[0], dirlist[entries]->d_name, 1, pmatch, 0) == 0 ) {
-				if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == D_NAMLEN(dirlist[entries]) ) {
+				if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)D_NAMLEN(dirlist[entries]) ) {
 					if ( stat(multi_name(dirlist[entries]->d_name), &fileinfo) != 0 ) {
 						unlink(dirlist[entries]->d_name);
 						}
@@ -223,7 +223,7 @@ void incomplete_cleanup(char *path) {
 			/* Normal */
 
 	                if ( regexec(&preg[1], dirlist[entries]->d_name, 1, pmatch, 0) == 0 ) {
-				if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == D_NAMLEN(dirlist[entries]) ) {
+				if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)D_NAMLEN(dirlist[entries]) ) {
 					if ( stat(single_name(dirlist[entries]->d_name), &fileinfo) != 0 ) {
 						unlink(dirlist[entries]->d_name);
 						}

@@ -221,7 +221,7 @@ void move_progress_bar(short int delete, struct VARS *raceI) {
  if ( delete ) {
 	while(n--) {
 		if ( regexec( &preg, dirlist[n]->d_name, 1, pmatch, 0) == 0 ) {
-			if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == D_NAMLEN(dirlist[n]) ) {
+			if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)D_NAMLEN(dirlist[n]) ) {
 				remove(dirlist[n]->d_name);
 				*dirlist[n]->d_name = 0;
 				return;
@@ -233,7 +233,7 @@ void move_progress_bar(short int delete, struct VARS *raceI) {
 	bar = convert(raceI, userI, groupI, progressmeter);
 	while(n--) {
 		if ( regexec( &preg, dirlist[n]->d_name, 1, pmatch, 0) == 0 ) {
-			if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == D_NAMLEN(dirlist[n]) ) {
+			if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)D_NAMLEN(dirlist[n]) ) {
 				 rename(dirlist[n]->d_name, bar);
 				return;
 				}
@@ -274,7 +274,7 @@ void removecomplete() {
  n = direntries;
  while(n--) {
 	if(regexec(&preg, dirlist[n]->d_name, 1, pmatch, 0 ) == 0) {
-		if ((int)pmatch[0].rm_so == 0 && (int)pmatch[0].rm_eo == D_NAMLEN(dirlist[n])) {
+		if ((int)pmatch[0].rm_so == 0 && (int)pmatch[0].rm_eo == (int)D_NAMLEN(dirlist[n])) {
 			remove(dirlist[n]->d_name);
 			*dirlist[n]->d_name = 0;
 			}
