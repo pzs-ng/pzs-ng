@@ -786,9 +786,23 @@ main(int argc, char **argv)
 		case 2:	/* NFO CHECK */
 			no_check = TRUE;
 			d_log("File type is: NFO\n");
+#if ( deny_double_nfo )
+			if (findfileextcount(".nfo") > 1) {
+				d_log("Looks like there already is a nfo uploaded. Denying this one.\n");
+				sprintf(raceI.misc.error_msg, DUPE_NFO);
+				mark_as_bad(raceI.file.name);
+				write_log = raceI.misc.write_log;
+				raceI.misc.write_log = 1;
+				error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+				if (exit_value < 2)
+					writelog(error_msg, bad_file_nfo_type);
+				exit_value = 2;
+				break;
+			}
+#endif
 			writerace_file(&locations, &raceI, 0, F_NFO);
 
-#if ( enable_nfo_script == TRUE )
+#if ( enable_nfo_script )
 			if (!fileexists(nfo_script)) {
 				d_log("Could not execute nfo_script (%s) - file does not exists\n", nfo_script);
 			} else {

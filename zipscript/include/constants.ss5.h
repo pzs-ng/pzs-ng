@@ -102,6 +102,7 @@
 #define	bad_file_year_type				"BAD_FILE_YEAR"	
 #define	bad_file_bitrate_type				"BAD_FILE_BITRATE"
 #define	bad_file_disallowed_type			"BAD_FILE_DISALLOWED"
+#define bad_file_nfo_type				"BAD_FILE_DUPENFO"
 
 #define deny_double_msg		"{%U} {%G} {%r} {%n}"
 #define audio_cbr_warn_msg	"{%U} {%G} {%X}"

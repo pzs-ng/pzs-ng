@@ -393,6 +393,11 @@ deny_double_sfv <TRUE|FALSE>
 	dir, it will be allowed and used. If it does not, it will be denied.
 	Default: FALSE
 
+deny_double_nfo <TRUE|FALSE>
+	This is usually done (better) with a 3rd party app, but ... You can
+	deny a nfo upload if one already exists in the same dir.
+	Default: FALSE
+
 exclude_non_sfv_dirs <TRUE|FALSE>
 	Applies only to audio/mp3 releases - NEEDS MORE INFO HERE!!!!!
 	Default: TRUE
