@@ -102,20 +102,21 @@ short strcomp(char *instr, char *searchstr) {
 }
 
 void showusers(int n, int mode, char *ucomp, char raw) {
-	char	    status[20];
-	char	    online[20];
-	char	    *filename = 0;
-	char	    realfile[512];
-	char	    bar[20];
-	struct timeval  tstop;
-	double	    speed, pct = 0;
-	int		    mask;
-	int		    noshow;
-	int		    maskchar;
-	int		    i, x, m;
-	unsigned	    hours;
-	unsigned char   minutes;
-	unsigned	    seconds;
+	char		status[20];
+	char		online[20];
+	char		*filename = 0;
+	char		realfile[512];
+	char		bar[20];
+	struct timeval	tstop;
+	double		mb_xfered = 0;
+	double		speed, pct = 0;
+	int		mask;
+	int		noshow;
+	int		maskchar;
+	int		i, x, m;
+	unsigned	hours;
+	unsigned char	minutes;
+	unsigned	seconds;
 
 	gettimeofday(&tstop, (struct timezone *)0);
 
@@ -151,7 +152,7 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			strncasecmp(user[x].status, "APPE ", 5) == 0) &&
 			user[x].bytes_xfer != 0 && mask == 0 ) {
 
-			pct = 0;
+			pct = -1;
 			m = strplen(user[x].status) - 5;
 			if (m < 15 || raw)
 				sprintf(filename, "%.*s", m, user[x].status + 5);
@@ -172,7 +173,9 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			else
 				sprintf(status, "upld|%.1f", speed);
 
+			mb_xfered = user[x].bytes_xfer / 1024 / 1024;
 		} else if ((!strncasecmp (user[x].status, "RETR ", 5) && user[x].bytes_xfer) && mask == 0 ) {
+			mb_xfered = 0;
 			m = strplen(user[x].status) - 5;
 
 			for (i = sprintf(realfile, "%s", user[x].currentdir); realfile[i] != '/' && i > 0; i--);
@@ -204,7 +207,7 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			else
 				sprintf(status, "dnld|%.1f", speed);
 		} else {
-			pct = *bar = *filename = hours = minutes = 0;
+			pct = *bar = *filename = hours = minutes = mb_xfered = 0;
 			seconds = tstop.tv_sec - user[x].tstart.tv_sec;
 			while (seconds >= 3600) { hours++; seconds -= 3600; }
 			while (seconds >= 60) { minutes++; seconds -= 60; }
@@ -224,12 +227,16 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 
 		if ( mode == 0 ) {
 			if (!raw) {
-				printf("|%1c%-16.16s/%-10.10s | %-15s | %3.0f%%: %-15.15s |\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, pct, bar);
+				if (mb_xfered)
+					printf("|%1c%-16.16s/%-10.10s | %-15s | Uploaded: %9.1fMb |\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, mb_xfered);
+				else
+					printf("|%1c%-16.16s/%-10.10s | %-15s | %3.0f%%: %-15.15s |\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, pct, bar);
+
 				printf("| %-27.27s | since %8.8s  | file: %-15.15s |\n", user[x].tagline, online, filename);
 				printf("+-----------------------------------------------------------------------+\n");
 			} else if (raw == 1) {
 				/* Maskeduser / Username / GroupName / Status / TagLine / Online / Filename */
-				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\" \"%.1f\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename, pct);
+				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\" \"%.1f\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename, ( pct >= 0 ? pct : mb_xfered ) );
 			} else {
 				printf("%s|%s|%s|%s|%s\n",user[x].username,get_g_name(user[x].groupid),user[x].tagline,status,filename);
 			}
