@@ -281,7 +281,7 @@ void copysfv_file(char *source, char *target, long buf_bytes) {
  unsigned char	exists;
 #endif
 #if ( sfv_cleanup == TRUE )
- int		fd_new	= open(".tmpsfv", O_CREAT|O_TRUNC|O_WRONLY, 0755);
+ int		fd_new	= open(".tmpsfv", O_CREAT|O_TRUNC|O_WRONLY, 0644);
 
  if ( sfv_comment != NULL ) {
 	write(fd_new, sfv_comment, sizeof(sfv_comment) - 1);
