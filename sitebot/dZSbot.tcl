@@ -115,133 +115,95 @@ set mpath ""
 # SET BINDINGS                                                                  #
 #################################################################################
 
-bind pub -|- [set cmdpre]who         who
-bind pub -|- [set cmdpre]speed       speed
-bind pub -|- [set cmdpre]bw          ng_bandwidth
-bind pub -|- [set cmdpre]bwup        ng_bwup
-bind pub -|- [set cmdpre]uploaders   ng_uploaders
-bind pub -|- [set cmdpre]up          ng_uploaders
-bind pub -|- [set cmdpre]bwdn        ng_bwdn
-bind pub -|- [set cmdpre]leechers    ng_leechers
-bind pub -|- [set cmdpre]downloaders ng_leechers
-bind pub -|- [set cmdpre]down        ng_leechers
-bind pub -|- [set cmdpre]dn          ng_leechers
-bind pub -|- [set cmdpre]idlers      ng_idlers
-bind pub -|- [set cmdpre]idle        ng_idlers
-bind pub -|- [set cmdpre]bnc         ng_bnc_check
-bind pub -|- [set cmdpre]free        show_free
-bind pub -|- [set cmdpre]df          show_free
-bind pub -|- [set cmdpre]inc         show_incompletes
-bind pub -|- [set cmdpre]incomplete  show_incompletes
-bind pub -|- [set cmdpre]incompletes show_incompletes
-bind pub -|- [set cmdpre]help        help
+proc bindcommands {cmdpre} {
+    bind pub -|- [set cmdpre]bnc         ng_bnc_check
+    bind pub -|- [set cmdpre]bw          ng_bandwidth
+    bind pub -|- [set cmdpre]bwdn        ng_bwdn
+    bind pub -|- [set cmdpre]bwup        ng_bwup
+    bind pub -|- [set cmdpre]df          show_free
+    bind pub -|- [set cmdpre]free        show_free
+    bind pub -|- [set cmdpre]dn          ng_leechers
+    bind pub -|- [set cmdpre]down        ng_leechers
+    bind pub -|- [set cmdpre]downloaders ng_leechers
+    bind pub -|- [set cmdpre]leechers    ng_leechers
+    bind pub -|- [set cmdpre]dupe        ng_search
+    bind pub -|- [set cmdpre]help        help
+    bind pub -|- [set cmdpre]idle        ng_idlers
+    bind pub -|- [set cmdpre]idlers      ng_idlers
+    bind pub -|- [set cmdpre]inc         show_incompletes
+    bind pub -|- [set cmdpre]incomplete  show_incompletes
+    bind pub -|- [set cmdpre]incompletes show_incompletes
+    bind pub -|- [set cmdpre]new         ng_new
+    bind pub -|- [set cmdpre]nukes       ng_nukes
+    bind pub -|- [set cmdpre]search      ng_search
+    bind pub -|- [set cmdpre]speed       speed
+    bind pub -|- [set cmdpre]unnukes     ng_unnukes
+    bind pub -|- [set cmdpre]up          ng_uploaders
+    bind pub -|- [set cmdpre]uploaders   ng_uploaders
+    bind pub -|- [set cmdpre]who         who
 
-bind pub -|- [set cmdpre]dupe    ng_search
-bind pub -|- [set cmdpre]new     ng_new
-bind pub -|- [set cmdpre]nukes   ng_nukes
-bind pub -|- [set cmdpre]search  ng_search
-bind pub -|- [set cmdpre]unnukes ng_unnukes
+    bind pub -|- [set cmdpre]gpad    [list showstats "-d" "-A"]
+    bind pub -|- [set cmdpre]gpal    [list showstats "-u" "-A"]
+    bind pub -|- [set cmdpre]gpwk    [list showstats "-d" "-W"]
+    bind pub -|- [set cmdpre]gwpd    [list showstats "-u" "-W"]
 
-bind pub -|- [set cmdpre]alldn   stats_user_alldn
-bind pub -|- [set cmdpre]allup   stats_user_allup
-bind pub -|- [set cmdpre]daydn   stats_user_daydn
-bind pub -|- [set cmdpre]dayup   stats_user_dayup
-bind pub -|- [set cmdpre]monthdn stats_user_monthdn
-bind pub -|- [set cmdpre]monthup stats_user_monthup
-bind pub -|- [set cmdpre]wkdn    stats_user_wkdn
-bind pub -|- [set cmdpre]wkup    stats_user_wkup
+    bind pub -|- [set cmdpre]alldn   [list showstats "-d" "-a"]
+    bind pub -|- [set cmdpre]allup   [list showstats "-u" "-a"]
+    bind pub -|- [set cmdpre]daydn   [list showstats "-d" "-t"]
+    bind pub -|- [set cmdpre]dayup   [list showstats "-u" "-t"]
+    bind pub -|- [set cmdpre]monthdn [list showstats "-d" "-m"]
+    bind pub -|- [set cmdpre]monthup [list showstats "-u" "-m"]
+    bind pub -|- [set cmdpre]wkdn    [list showstats "-d" "-w"]
+    bind pub -|- [set cmdpre]wkup    [list showstats "-u" "-w"]
+}
 
-bind pub -|- [set cmdpre]gpad    stats_group_gpad
-bind pub -|- [set cmdpre]gpal    stats_group_gpal
-bind pub -|- [set cmdpre]gpwk    stats_group_gpwk
-bind pub -|- [set cmdpre]gwpd    stats_group_gpwd
-
-bind join -|- *           welcome_msg
-
-if {$bindnopre == "YES"} {
-	bind pub -|- !who         who
-	bind pub -|- !speed       speed
-	bind pub -|- !bw          ng_bandwidth
-	bind pub -|- !bwdn        ng_bwdn
-	bind pub -|- !uploaders   ng_uploaders
-	bind pub -|- !up          ng_uploaders
-	bind pub -|- !bwup        ng_bwup
-	bind pub -|- !leechers    ng_leechers
-	bind pub -|- !downloaders ng_leechers
-	bind pub -|- !down        ng_leechers
-	bind pub -|- !dn          ng_leechers
-	bind pub -|- !idlers      ng_idlers
-	bind pub -|- !idle        ng_idlers
-	bind pub -|- !bnc         ng_bnc_check
-	bind pub -|- !free        show_free
-	bind pub -|- !df          show_free
-	bind pub -|- !inc         show_incompletes
-	bind pub -|- !incomplete  show_incompletes
-	bind pub -|- !incompletes show_incompletes
-	bind pub -|- !help        help
-
-	bind pub -|- !dupe        ng_search
-	bind pub -|- !new         ng_new
-	bind pub -|- !nukes       ng_nukes
-	bind pub -|- !search      ng_search
-	bind pub -|- !unnukes     ng_unnukes
-
-	bind pub -|- !alldn       stats_user_alldn
-	bind pub -|- !allup       stats_user_allup
-	bind pub -|- !daydn       stats_user_daydn
-	bind pub -|- !dayup       stats_user_dayup
-	bind pub -|- !monthdn     stats_user_monthdn
-	bind pub -|- !monthup     stats_user_monthup
-	bind pub -|- !wkdn        stats_user_wkdn
-	bind pub -|- !wkup        stats_user_wkup
-
-	bind pub -|- !gpad        stats_group_gpad
-	bind pub -|- !gpal        stats_group_gpal
-	bind pub -|- !gpwk        stats_group_gpwk
-	bind pub -|- !gwpd        stats_group_gpwd
-
+if {[string equal -nocase "YES" $bindnopre]} {
+	bindcommands "!"
 } elseif {![string equal "!" $cmdpre]} {
-	catch {unbind pub -|- !who         who}
-	catch {unbind pub -|- !speed       speed}
-	catch {unbind pub -|- !bw          ng_bandwidth}
-	catch {unbind pub -|- !bwup        ng_bwup}
-	catch {unbind pub -|- !uploaders   ng_uploaders}
-	catch {unbind pub -|- !up          ng_uploaders}
-	catch {unbind pub -|- !bwdn        ng_bwdn}
-	catch {unbind pub -|- !leechers    ng_leechers}
-	catch {unbind pub -|- !downloaders ng_leechers}
-	catch {unbind pub -|- !down        ng_leechers}
-	catch {unbind pub -|- !dn          ng_leechers}
-	catch {unbind pub -|- !idlers      ng_idlers}
-	catch {unbind pub -|- !idle        ng_idlers}
 	catch {unbind pub -|- !bnc         ng_bnc_check}
-	catch {unbind pub -|- !free        show_free}
+	catch {unbind pub -|- !bw          ng_bandwidth}
+	catch {unbind pub -|- !bwdn        ng_bwdn}
+	catch {unbind pub -|- !bwup        ng_bwup}
 	catch {unbind pub -|- !df          show_free}
+	catch {unbind pub -|- !free        show_free}
+	catch {unbind pub -|- !dn          ng_leechers}
+	catch {unbind pub -|- !down        ng_leechers}
+	catch {unbind pub -|- !downloaders ng_leechers}
+	catch {unbind pub -|- !leechers    ng_leechers}
+	catch {unbind pub -|- !dupe        ng_search}
+	catch {unbind pub -|- !help        help}
+	catch {unbind pub -|- !idle        ng_idlers}
+	catch {unbind pub -|- !idlers      ng_idlers}
 	catch {unbind pub -|- !inc         show_incompletes}
 	catch {unbind pub -|- !incomplete  show_incompletes}
 	catch {unbind pub -|- !incompletes show_incompletes}
-	catch {unbind pub -|- !help        help}
+	catch {unbind pub -|- !new         ng_new}
+	catch {unbind pub -|- !nukes       ng_nukes}
+	catch {unbind pub -|- !search      ng_search}
+	catch {unbind pub -|- !speed       speed}
+	catch {unbind pub -|- !unnukes     ng_unnukes}
+	catch {unbind pub -|- !up          ng_uploaders}
+	catch {unbind pub -|- !uploaders   ng_uploaders}
+	catch {unbind pub -|- !who         who}
 
-	catch {unbind pub -|- !dupe     ng_search}
-	catch {unbind pub -|- !new      ng_new}
-	catch {unbind pub -|- !nukes    ng_nukes}
-	catch {unbind pub -|- !search   ng_search}
-	catch {unbind pub -|- !unnukes  ng_unnukes}
-
-	catch {unbind pub -|- !alldn    stats_user_alldn}
-	catch {unbind pub -|- !allup    stats_user_allup}
-	catch {unbind pub -|- !daydn    stats_user_daydn}
-	catch {unbind pub -|- !dayup    stats_user_dayup}
-	catch {unbind pub -|- !monthdn  stats_user_monthdn}
-	catch {unbind pub -|- !monthup  stats_user_monthup}
-	catch {unbind pub -|- !wkdn     stats_user_wkdn}
-	catch {unbind pub -|- !wkup     stats_user_wkup}
-
-	catch {unbind pub -|- !gpad     stats_group_gpad}
-	catch {unbind pub -|- !gpal     stats_group_gpal}
-	catch {unbind pub -|- !gpwk     stats_group_gpwk}
-	catch {unbind pub -|- !gwpd     stats_group_gpwd}
+	catch {unbind pub -|- !gpad    [list showstats "-d" "-A"]}
+	catch {unbind pub -|- !gpal    [list showstats "-u" "-A"]}
+	catch {unbind pub -|- !gpwk    [list showstats "-d" "-W"]}
+	catch {unbind pub -|- !gwpd    [list showstats "-u" "-W"]}
+	catch {unbind pub -|- !alldn   [list showstats "-d" "-a"]}
+	catch {unbind pub -|- !allup   [list showstats "-u" "-a"]}
+	catch {unbind pub -|- !daydn   [list showstats "-d" "-t"]}
+	catch {unbind pub -|- !dayup   [list showstats "-u" "-t"]}
+	catch {unbind pub -|- !monthdn [list showstats "-d" "-m"]}
+	catch {unbind pub -|- !monthup [list showstats "-u" "-m"]}
+	catch {unbind pub -|- !wkdn    [list showstats "-d" "-w"]}
+	catch {unbind pub -|- !wkup    [list showstats "-u" "-w"]}
 }
+
+## Bind the user defined command prefix.
+bindcommands $cmdpre
+bind join -|- * welcome_msg
+
 
 ## Some 'constants'
 proc DEFAULT_LEVEL {{string 0}} {
@@ -1230,7 +1192,7 @@ proc speed {nick uhost hand chan argv} {
 #################################################################################
 # uploaders BANDWIDTH                                                           #
 #################################################################################
-proc ng_bwup { nick uhost hand chan argv} {
+proc ng_bwup {nick uhost hand chan argv} {
 	global binary announce speed theme
 	if {![checkchan $nick $chan]} {return}
 
@@ -1324,7 +1286,7 @@ proc ng_uploaders {nick uhost hand chan argv} {
 #################################################################################
 # downloaders BANDWIDTH                                                         #
 #################################################################################
-proc ng_bwdn { nick uhost hand chan argv} {
+proc ng_bwdn {nick uhost hand chan argv} {
 	global binary announce speed theme
 	if {![checkchan $nick $chan]} {return}
 
@@ -1418,7 +1380,7 @@ proc ng_leechers {nick uhost hand chan argv} {
 #################################################################################
 # ng_idlers - Origional by Celerex - Mod/Merge by themolester                   #
 #################################################################################
-proc ng_idlers { nick uhost hand chan argv} {
+proc ng_idlers {nick uhost hand chan argv} {
 	global binary announce speed minidletime theme
 	if {![checkchan $nick $chan]} {return}
 
@@ -1511,11 +1473,12 @@ proc ng_bandwidth {nick uhost hand chan argv} {
 #################################################################################
 # POST STATS                                                                    #
 #################################################################################
-proc showstats {chan nick type time section} {
+proc showstats {type time nick uhost hand chan argv} {
 	global binary statsection location
 	if {![checkchan $nick $chan]} {return}
 
 	set sect 0
+	set section [lindex $argv 1]
 	if {[string length $section] != 0} {
 		set error 1
 		set sections ""
@@ -1786,7 +1749,7 @@ proc denycheck {release} {
 #################################################################################
 # SHOW INCOMPLETE LIST                                                          #
 #################################################################################
-proc show_incompletes { nick uhost hand chan arg } {
+proc show_incompletes {nick uhost hand chan arg } {
 	global sitename binary
 	if {![checkchan $nick $chan]} {return}
 
@@ -1803,7 +1766,7 @@ proc show_incompletes { nick uhost hand chan arg } {
 #################################################################################
 # SHOW WELCOME MSG                                                              #
 #################################################################################
-proc welcome_msg { nick uhost hand chan } {
+proc welcome_msg {nick uhost hand chan } {
 	global announce disable chanlist sitename cmdpre
 
 	if {$disable(WELCOME) == 0} {
@@ -1875,29 +1838,6 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 		set raw ""
 	}
 }
-#################################################################################
-
-
-#################################################################################
-# CHOOSE STATS PARAMETERS                                                       #
-#################################################################################
-proc stats_user_dayup {nick uhost hand chan argv} { showstats $chan $nick "-u" "-t" $argv }
-proc stats_user_daydn {nick uhost hand chan argv} { showstats $chan $nick "-d" "-t" $argv }
-#################################################################################
-proc stats_user_wkup {nick uhost hand chan argv} { showstats $chan $nick "-u" "-w" $argv }
-proc stats_user_wkdn {nick uhost hand chan argv} { showstats $chan $nick "-d" "-w" $argv }
-#################################################################################
-proc stats_user_monthup {nick uhost hand chan argv} { showstats $chan $nick "-u" "-m" $argv }
-proc stats_user_monthdn {nick uhost hand chan argv} { showstats $chan $nick "-d" "-m" $argv }
-#################################################################################
-proc stats_user_allup {nick uhost hand chan argv} { showstats $chan $nick "-u" "-a" $argv }
-proc stats_user_alldn {nick uhost hand chan argv} { showstats $chan $nick "-d" "-a" $argv }
-#################################################################################
-proc stats_group_gpwk {nick uhost hand chan argv} { showstats $chan $nick "-u" "-W" $argv }
-proc stats_group_gpwd {nick uhost hand chan argv} { showstats $chan $nick "-d" "-W" $argv }
-#################################################################################
-proc stats_group_gpal {nick uhost hand chan argv} { showstats $chan $nick "-u" "-A" $argv }
-proc stats_group_gpad {nick uhost hand chan argv} { showstats $chan $nick "-d" "-A" $argv }
 #################################################################################
 
 
