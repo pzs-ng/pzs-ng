@@ -355,19 +355,6 @@ main(int argc, char **argv)
 			empty_dir = 1;
 		}
 		break;
-	case 2:
-		if (!fileexists(locations.race)) {
-			empty_dir = 1;
-		} else {
-			d_log("Reading race data from file to memory\n");
-			readrace_file(&locations, &raceI, userI, groupI);
-			d_log("Caching progress bar\n");
-			buffer_progress_bar(&raceI);
-			if (raceI.total.files_missing == raceI.total.files) {
-				empty_dir = 1;
-			}
-		}
-		break;
 	case 3:
 		d_log("Removing old complete bar, if any\n");
 		removecomplete();
@@ -409,8 +396,21 @@ main(int argc, char **argv)
 		}
 		break;
 	case 4:
-		break;
+//		break;
 	case 255:
+//		break;
+	case 2:
+		if (!fileexists(locations.race)) {
+			empty_dir = 1;
+		} else {
+			d_log("Reading race data from file to memory\n");
+			readrace_file(&locations, &raceI, userI, groupI);
+			d_log("Caching progress bar\n");
+			buffer_progress_bar(&raceI);
+			if (raceI.total.files_missing == raceI.total.files) {
+				empty_dir = 1;
+			}
+		}
 		break;
 	}
 
