@@ -230,10 +230,14 @@
 /*#define pre_stats		"UserTop: "
 #define between_stats		"GroupTop: "
 #define post_stats		DISABLED
+#define winner			"\00312\037WINNER\003\037"
+#define loser			"\00307\037LOSER\003\037"
 
 #define user_top		"%n. %B%u%B/%-10g [%.1mM/%fF/%.1p%%/%.0sKB/s]"
+/*#define user_top		"%N %B%u%B/%g [%.1mM/%fF/%.1p%%/%.0sKB/s]"*/
 #define user_info		"%B%u%B/%g [%.1mM/%fF/%.1p%%/%.0sKB/s]"
 #define group_top		"%n. %B%g%B [%.1mM/%fF/%.1p%%/%.0sKB/s]"
+/*#define group_top		"%N %B%g%B [%.1mM/%fF/%.1p%%/%.0sKB/s]"*/
 #define group_info		"%B%g%B [%.1mM/%fF/%.1p%%/%.0sKB/s]"
 #define fastestfile		"Fastest upload by %B%u%B/%g at %B%.3F%BKB/S."*/		/* Put in %l cookie */
 /*#define slowestfile		"Slowest upload by %B%u%B/%g at %B%.3S%BKB/S."*/		/* Put in %L cookie */

@@ -99,6 +99,7 @@
 #### Both
 #
  %n  = rank
+ %N  = comment winner/loser
  %f  = # of uploaded files
  %b  = total bytes uploaded
  %k  = total kilobytes uploaded
