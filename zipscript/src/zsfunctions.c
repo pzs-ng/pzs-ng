@@ -27,6 +27,11 @@ int		num_groups = 0, num_users = 0;
 struct USER   **user;
 struct GROUP  **group;
 
+/*
+ * d_log - create/put comments in a .debug file
+ * Last revised by: js
+ *        Revision: r1217
+ */
 void 
 d_log(char *fmt,...)
 {
@@ -36,7 +41,6 @@ d_log(char *fmt,...)
 	va_list		ap;
 	static char	debugname[] = ".debug";
 #if ( debug_altlog == TRUE )
-	//char           *debugpath = 0;
 	static char	debugpath[PATH_MAX];
 	static char	debugname[PATH_MAX];
 #endif
@@ -49,14 +53,8 @@ d_log(char *fmt,...)
 	timenow = time(NULL);
 
 #if ( debug_altlog == TRUE )
-	//debugpath = malloc(PATH_MAX);
 	getcwd(debugpath, PATH_MAX);
-	//debugname = malloc(PATH_MAX);
 	sprintf(debugname, "%s/%s/.debug", storage, debugpath);
-	//free(debugpath);
-#else
-	//debugname = malloc(strlen(".debug") + 2);
-	//sprintf(debugname, ".debug");
 #endif
 
 	if ((file = fopen(debugname, "a+"))) {
@@ -65,27 +63,30 @@ d_log(char *fmt,...)
 		fclose(file);
 	}
 	chmod(debugname, 0666);
-	//free(debugname);
 	va_end(ap);
 #endif
 	return;
 }
 
+/*
+ * create_missing - create a <filename>-missing 0byte file.
+ * Last revised by: js
+ *        Revision: 1218
+ */
 void 
 create_missing(char *f, short int l)
 {
-	//char           *fname;
 	char		fname[l+9];
 
-	//fname = m_alloc(l + 9);
 	memcpy(fname, f, l);
 	memcpy(fname + l, "-missing", 9);
 	createzerofile(fname);
-	//m_free(fname);
 }
 
 /*
- * Modified: 01.16.2002
+ * findfilext - find a filename with a matching extension in current dir.
+ * Last Modified by: d1
+ *         Revision: r1 (2002.01.16)
  */
 char           *
 findfileext(char *fileext)
@@ -103,7 +104,9 @@ findfileext(char *fileext)
 }
 
 /*
- * Modified: 2004.10.06 (psxc)
+ * findfilextparent - find a filename with a matching extension in parent dir.
+ * Last Modified by: psxc
+ *         Revision: ?? (2004.10.06)
  */
 char           *
 findfileextparent(char *fileext)
@@ -122,7 +125,9 @@ findfileextparent(char *fileext)
 }
 
 /*
- * Modified: 11.12.2003 (daxxar)
+ * findfilextcount - count files with given extension
+ * Last Modified by: daxxar
+ *         Revision: ?? (2003.12.11)
  */
 int 
 findfileextcount(char *fileext)
@@ -140,13 +145,18 @@ findfileextcount(char *fileext)
 }
 
 /*
- * Modified: 01.16.2002
+ * hexstrtodec - make sure a valid hex number is present in sfv
+ * Last modified by: psxc
+ *         Revision: r1219
  */
 unsigned int 
 hexstrtodec(unsigned char *s)
 {
 	unsigned int	n = 0;
 	unsigned char	r;
+
+	if ((strlen(s) > 8 ) || (!strlen(s)))
+		return 0;
 
 	while (1) {
 		if ((unsigned char)*s >= 48 && (unsigned char)*s <= 57) {
