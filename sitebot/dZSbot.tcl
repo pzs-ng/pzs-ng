@@ -539,8 +539,8 @@ proc showstats {nick type time section} {
 	}
 
 	foreach line [split [exec $binary(STATS) $type $time -s $sect] "\n"] {
-		if {![info exists newline($line)]} { set newline($line) 0 } 
-		else { set newline($line) [expr $newline($line) + 1] }
+		if {![info exists newline($line)]} { set newline($line) 0
+		} else { set newline($line) [expr $newline($line) + 1] }
 		puthelp "PRIVMSG $nick :$line\003$newline($line)"
 	}
 	puthelp "PRIVMSG $nick :------------------------------------------------------------------------"
