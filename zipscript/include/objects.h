@@ -2,7 +2,11 @@
 #define _OBJECTS_H_
 
 #include <sys/time.h>
-#include "constants.h"
+#ifdef _WITH_SS5
+    #include "constants.ss5.h"
+#else
+    #include "constants.h"
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
