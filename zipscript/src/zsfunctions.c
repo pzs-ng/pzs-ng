@@ -429,7 +429,6 @@ findfile(char *filename)
 			return n;
 		}
 	}
-d_log("\nfilename='%s'\n", filename);
 	return 0;
 }
 
