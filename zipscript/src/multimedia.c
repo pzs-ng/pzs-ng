@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include "mp3info.h"
 #include "objects.h"
+#include "multimedia.h"
 
 #define WHITESPACE_STR  " \f\n\r\t\v"
 
@@ -57,9 +58,7 @@ char * chanmode_s[]	= { "Stereo", "Joint Stereo", "Dual Channel", "Single Channe
  * Remove whitespace characters from both ends of a copy of
  *  '\0' terminated STRING and return the result.
  **/
-char *
-trim (char *string)
-{
+char *trim (char *string) {
   char *result = 0;
 
   /* Ignore NULL pointers.  */
