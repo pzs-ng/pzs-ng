@@ -289,7 +289,7 @@ main(int argc, char **argv)
 	unsigned char	complete_type = 0;
 #endif
 	char           *complete_announce = 0;
-	int		cnt, cnt2, n = 0;
+	int		cnt, cnt2, n = 0, f_id = 0;
 	int		write_log = 0;
 #if ( enable_complete_script || enable_accept_script )
 	int		nfofound = 0;
@@ -584,8 +584,11 @@ main(int argc, char **argv)
 				sprintf(target, "%s -qqjnCLL %s file_id.diz", unzip_bin, raceI.file.name);
 				if (execute(target) != 0) {
 					d_log("No file_id.diz found (#%d): %s\n", errno, strerror(errno));
+				} else {
+					if ((f_id = findfile("file_id.diz.bad")))
+						unlink(dirlist[f_id]->d_name);
+					chmod("file_id.diz", 0666);
 				}
-				chmod("file_id.diz", 0666);
 			}
 			d_log("Reading diskcount from diz:\n");
 			raceI.total.files = read_diz("file_id.diz");

@@ -131,7 +131,7 @@ getrelname(char *directory)
 int 
 main()
 {
-	int		n, m, l, complete_type = 0, gnum = 0, unum = 0;
+	int		n, m, l, complete_type = 0, gnum = 0, unum = 0, f_id = 0;
 	char           *ext, exec[4096], *complete_bar = 0;
 	unsigned int	crc;
 	struct stat	fileinfo;
@@ -398,8 +398,13 @@ main()
 
 				if (!fileexists("file_id.diz")) {
 					sprintf(exec, "%s -qqjnCLL %s file_id.diz", unzip_bin, raceI.file.name);
-					execute(exec);
-					chmod("file_id.diz", 0666);
+					if (execute(exec) != 0) {
+						d_log("No file_id.diz found (#%d): %s\n", errno, strerror(errno));
+					} else {
+						if ((f_id = findfile("file_id.diz.bad")))
+							unlink(dirlist[f_id]->d_name);
+						chmod("file_id.diz", 0666);
+					}
 				}
 				sprintf(exec, "%s -qqt %s &> /dev/null", unzip_bin, raceI.file.name);
 				if (system(exec) == 0) {
