@@ -1234,8 +1234,6 @@ d_log("DEBUG: result of subdir-test: %d\n", subcomp(path[1]));
 		g->l.incomplete = c_incomplete(incomplete_cd_indicator, path, &g->v);
 		g->l.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &g->v);
 		g->l.in_cd_dir = 1;
-		if (k < 2)
-			free(path[1]);
 	} else {
 		g->l.link_source = malloc(g->l.length_path + 1);
 		strlcpy(g->l.link_source, g->l.path, g->l.length_path + 1);
@@ -1244,9 +1242,12 @@ d_log("DEBUG: result of subdir-test: %d\n", subcomp(path[1]));
 		g->l.incomplete = c_incomplete(incomplete_indicator, path, &g->v);
 		g->l.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &g->v);
 		g->l.in_cd_dir = 0;
-		if (k == 0)
-			free(path[0]);
 	}
+
+	if (k < 2)
+		free(path[1]);
+	if (k == 0)
+		free(path[0]);
 
 	free(path);
 }

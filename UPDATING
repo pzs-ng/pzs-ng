@@ -18,6 +18,9 @@ Okay, now that that is clear, here's the general process:
 4.  cp sitebot dZSb* /path/to/sitebot/scripts/pzs-ng/
 5.  .rehash or .restart your bot.
 
+6.  If you're upgrading from -1277 to +1277, you need to
+    rm -rf ftp-data/psz-ng/*
+
 That's it! You've upgraded.
 Any new additions/changes to either the sitebot or the zipscript is used with
 default values - your bot/zipscript will not break.
