@@ -86,7 +86,9 @@
 #define check_for_missing_nfo_dirs	"/site/incoming/games/ /site/incoming/apps/"
 #endif
 
-
+#ifndef strict_path_match
+#define strict_path_match	FALSE
+#endif
 /*
  * Certain files are needed to change uid/gid to real names. All paths are
  * chroot'ed. GROUPFILE - /path/name of glftpd's group file PASSWDFILE -

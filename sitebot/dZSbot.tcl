@@ -578,7 +578,26 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 		set cnt 0
 	}
 
+	set loop 1
+
 	foreach vari $vars {
+		if { [llength $vari] > 1 } {
+			set cnt2 0
+			set cnt3 1
+			set values [lindex $msgline $cnt]
+			set output2 ""
+			foreach value $values {
+				if { $cnt2 == 0 } { append output2 "$announce(${type}_LOOP${loop})" }
+				set output2 [replacevar $output2 "[lindex $vari $cnt2]" $value]
+				set cnt2 [expr $cnt2 + 1]
+				if { [lindex $vari $cnt2] ==  "" } {
+					set cnt3 [expr $cnt3 + 1]
+					set cnt2 0
+				}
+			}
+			set output [replacevar $output "%loop$loop" $output2]
+			set loop [expr $loop + 1]
+		}
 		set output [replacevar $output $vari [lindex $msgline $cnt]]
 		set cnt [expr $cnt + 1]
 	}

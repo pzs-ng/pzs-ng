@@ -489,11 +489,17 @@ main(int argc, char **argv)
 			d_log("Integrity ok\n");
 			printf(zipscript_zip_ok);
 
-			if ((raceI.misc.write_log = matchpath(zip_dirs, locations.path))) {
-				d_log("Directory matched with zip_dirs\n");
-			} else if (matchpath(sfv_dirs, locations.path)) {
-				d_log("Directory matched with sfv_dirs\n");
-				break;
+			if ((matchpath(zip_dirs, locations.path)) || (matchpath(group_dirs, locations.path))  ) {
+				raceI.misc.write_log = 1;
+				d_log("Directory matched with zip_dirs/group_dirs\n");
+			} else {
+				d_log("WARNING! Directory did not match with zip_dirs/group_dirs\n");
+				if (strict_path_match == TRUE) {
+					d_log("Strict mode on - exiting\n");
+					sprintf(raceI.misc.error_msg, UNKNOWN_FILE, fileext);
+					exit_value = 2;
+					break;
+				}
 			}
 			if (!fileexists("file_id.diz")) {
 				d_log("file_id.diz does not exist, trying to extract it from %s\n", raceI.file.name);
@@ -533,6 +539,18 @@ main(int argc, char **argv)
 
 		case 1:	/* SFV CHECK */
 			d_log("File type is: SFV\n");
+			if ((matchpath(sfv_dirs, locations.path)) || (matchpath(group_dirs, locations.path))  ) {
+				d_log("Directory matched with sfv_dirs/group_dirs\n");
+			} else {
+				d_log("WARNING! Directory did not match with sfv_dirs/group_dirs\n");
+				if (strict_path_match == TRUE) {
+					d_log("Strict mode on - exiting\n");
+					sprintf(raceI.misc.error_msg, UNKNOWN_FILE, fileext);
+					exit_value = 2;
+					break;
+				}
+			}
+
 			if (fileexists(locations.sfv)) {
 				if (deny_double_sfv == TRUE && findfileextcount(".sfv") > 1 && sfv_compare_size(".sfv", raceI.file.size) > 0) {
 					write_log = raceI.misc.write_log;
@@ -1043,28 +1061,48 @@ d_log("DEBUG: raceI.total.users=%d - files=%d, race_msg=%s\n", raceI.total.users
 				complete_bar = zip_completebar;
 				complete_msg = CHOOSE(raceI.total.users, zip_complete, zip_norace_complete);
 				complete_type = CHOOSE(raceI.total.users, zip_complete_type, zip_norace_complete_type);
-				complete_announce = CHOOSE(raceI.total.users, zip_announce_race_complete_type, zip_announce_norace_complete_type);
+				if (!complete_type) {
+					complete_announce = CHOOSE(raceI.total.users, zip_announce_one_race_complete_type, zip_announce_norace_complete_type);
+				} else {
+					complete_announce = CHOOSE(raceI.total.users, zip_announce_race_complete_type, zip_announce_norace_complete_type);
+				}
 				break;
 			case RTYPE_RAR:
 				complete_bar = rar_completebar;
 				complete_msg = CHOOSE(raceI.total.users, rar_complete, rar_norace_complete);
 				complete_type = CHOOSE(raceI.total.users, rar_complete_type, rar_norace_complete_type);
+				if (!complete_type) {
+					complete_announce = CHOOSE(raceI.total.users, rar_announce_one_race_complete_type, rar_announce_norace_complete_type);
+				} else {
 				complete_announce = CHOOSE(raceI.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
+				}
 				break;
 			case RTYPE_OTHER:
 				complete_bar = other_completebar;
 				complete_msg = CHOOSE(raceI.total.users, other_complete, other_norace_complete);
 				complete_type = CHOOSE(raceI.total.users, other_complete_type, other_norace_complete_type);
-				complete_announce = CHOOSE(raceI.total.users, other_announce_race_complete_type, other_announce_norace_complete_type);
+				if (!complete_type) {
+					complete_announce = CHOOSE(raceI.total.users, other_announce_one_race_complete_type, other_announce_norace_complete_type);
+				} else {
+					complete_announce = CHOOSE(raceI.total.users, other_announce_race_complete_type, other_announce_norace_complete_type);
+				}
 				break;
 			case RTYPE_AUDIO:
 				complete_bar = audio_completebar;
 				complete_msg = CHOOSE(raceI.total.users, audio_complete, audio_norace_complete);
 				complete_type = CHOOSE(raceI.total.users, audio_complete_type, audio_norace_complete_type);
 				if (raceI.audio.is_vbr == 0) {
-					complete_announce = CHOOSE(raceI.total.users, audio_cbr_announce_race_complete_type, audio_cbr_announce_norace_complete_type);
+					if (!complete_type) {
+						complete_announce = CHOOSE(raceI.total.users, audio_cbr_announce_one_race_complete_type, audio_cbr_announce_norace_complete_type);
+					} else {
+						complete_announce = CHOOSE(raceI.total.users, audio_cbr_announce_race_complete_type, audio_cbr_announce_norace_complete_type);
+					}
 				} else {
-					complete_announce = CHOOSE(raceI.total.users, audio_vbr_announce_race_complete_type, audio_vbr_announce_norace_complete_type);
+					if (!complete_type) {
+						complete_announce = CHOOSE(raceI.total.users, audio_vbr_announce_one_race_complete_type, audio_vbr_announce_norace_complete_type);
+					} else {
+						complete_announce = CHOOSE(raceI.total.users, audio_vbr_announce_race_complete_type, audio_vbr_announce_norace_complete_type);
+					}
 				}
 
 				d_log("Symlinking audio\n");
@@ -1120,7 +1158,11 @@ d_log("DEBUG: raceI.total.users=%d - files=%d, race_msg=%s\n", raceI.total.users
 				complete_bar = video_completebar;
 				complete_msg = CHOOSE(raceI.total.users, video_complete, video_norace_complete);
 				complete_type = CHOOSE(raceI.total.users, video_complete_type, video_norace_complete_type);
-				complete_announce = CHOOSE(raceI.total.users, video_announce_race_complete_type, video_announce_norace_complete_type);
+				if (!complete_type) {
+					complete_announce = CHOOSE(raceI.total.users, video_announce_one_race_complete_type, video_announce_norace_complete_type);
+				} else {
+					complete_announce = CHOOSE(raceI.total.users, video_announce_race_complete_type, video_announce_norace_complete_type);
+				}
 				break;
 			}
 

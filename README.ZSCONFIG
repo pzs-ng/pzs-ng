@@ -94,6 +94,12 @@ rescan_nocheck_dirs_allowed <TRUE|FALSE>
 	option dead in nocheck_dirs areas.
 	Default: TRUE
 
+strict_path_match <TRUE|FALSE>
+	This setting is used to enforce the filetype (zip/sfv) based on path.
+	When set to TRUE, zip files is not allowed in sfv dirs, and the other
+	way around. group dirs are not affected, as they can be both.
+	Default: FALSE
+
 gl_sections <STRING>
 	Here you should put a list of all sections on your site. Sections is
 	not the same as dirs, but is what you have defined as sections in
