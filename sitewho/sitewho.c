@@ -177,7 +177,7 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			else
 				sprintf(status, "upld|%.1f", speed);
 
-			mb_xfered = user[x].bytes_xfer / 1024 / 1024;
+			mb_xfered = user[x].bytes_xfer * 1.0 / 1024 / 1024;
 		} else if ((!strncasecmp (user[x].status, "RETR ", 5) && user[x].bytes_xfer) && mask == 0 ) {
 			mb_xfered = 0;
 			m = strplen(user[x].status) - 5;
@@ -240,7 +240,7 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 				printf("+-----------------------------------------------------------------------+\n");
 			} else if (raw == 1) {
 				/* Maskeduser / Username / GroupName / Status / TagLine / Online / Filename */
-				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\" \"%.1f\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename, ( pct >= 0 ? pct : mb_xfered ) );
+				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\" \"%.1f%s\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename, ( pct >= 0 ? pct : mb_xfered ), ( pct >= 0 ? "" : "MB" ) );
 			} else {
 				printf("%s|%s|%s|%s|%s\n",user[x].username,get_g_name(user[x].groupid),user[x].tagline,status,filename);
 			}
