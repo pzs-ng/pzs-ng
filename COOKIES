@@ -55,11 +55,11 @@
 #
  %x  = Artist
  %w  = Genre
- %X  = Album
+ %W  = Album
  %y  = Title
  %Y  = Year
  %z  = Sampling rate
- %W  = Bitrate
+ %X  = Bitrate
  %h  = Codec
  %q  = Layer
  %Q  = Channel mode
