@@ -44,6 +44,7 @@ extern void testfiles(struct LOCATIONS *, struct VARS *, int);
 extern int copysfv(const char *, const char *, struct VARS *);
 extern void create_indexfile(const char *, struct VARS *, char *);
 extern short clear_file(const char *, char *);
+extern short match_file(char *, char *);
 extern void writerace(const char *, struct VARS *, unsigned int, unsigned char);
 extern void remove_from_race(const char *, const char *);
 extern int verify_racedata(const char *);

@@ -32,20 +32,21 @@
 #endif
 
 int 
-main(void)
+main(int argc, char **argv)
 {
 	int		k, n, m, l, gnum = 0, unum = 0;
 	char           *ext, exec[4096], *complete_bar = 0, *inc_point[2];
-	unsigned int	crc;
+	unsigned int	crc = 0;
 	struct stat	fileinfo;
 
 	uid_t		f_uid;
 	gid_t		f_gid;
 	double		temp_time = 0;
 
-	DIR		*dir, *parent;
+	DIR		*dir = 0, *parent = 0;
 	struct dirent	*dp;
 	long		loc;
+	short		rescan_quick = FALSE;
 
 	GLOBAL		g;
 
@@ -61,6 +62,9 @@ main(void)
 #ifdef _ALT_MAX
 	d_log("rescan: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
 #endif
+
+	if (argc > 1 && !strncasecmp(argv[1], "--quick", 7))
+		rescan_quick = TRUE;
 
 	d_log("rescan: Allocating memory for variables\n");
 	g.ui = malloc(sizeof(struct USERINFO *) * 30);
@@ -136,22 +140,28 @@ main(void)
 		unlink(g.l.incomplete);
 	if (del_completebar)
 		removecomplete();
-	if (g.l.race)
-		unlink(g.l.race);
-	if (g.l.sfv)
-		unlink(g.l.sfv);
-	printf("Rescanning files...\n");
-	
+
 	dir = opendir(".");
 	parent = opendir("..");
 
+	if (rescan_quick && findfileext(dir, ".sfv")) {
+//		readsfv(g.l.sfv, &g.v, 0);
+//		readrace(g.l.race, &g.v, g.ui, g.gi);
+	} else {
+		if (g.l.sfv)
+			unlink(g.l.sfv);
+		if (g.l.race)
+			unlink(g.l.race);
+	}
+	printf("Rescanning files...\n");
+	
 	if (findfileext(dir, ".sfv")) {
 		strlcpy(g.v.file.name, findfileext(dir, ".sfv"), NAME_MAX);
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
 
 		if (copysfv(g.v.file.name, g.l.sfv, &g.v)) {
-			printf("Found invalid entries in SFV - Exiting.\n");
+			printf("rescan: Found invalid entries in SFV - Exiting.\n");
 
 			while ((dp = readdir(dir))) {
 				m = l = (int)strlen(dp->d_name);
@@ -240,19 +250,30 @@ main(void)
 					}
 				}
 
-				crc = calc_crc32(dp->d_name);
+				if (!rescan_quick || (g.l.race && !match_file(g.l.race, dp->d_name)))
+					crc = calc_crc32(dp->d_name);
+				else
+					crc = 1;
+
 				if (!S_ISDIR(fileinfo.st_mode)) {
 					if (g.v.file.name)
 						unlink_missing(g.v.file.name);
 					if (l > 44) {
-						printf("\nFile: %s %.8x", dp->d_name + l - 44, crc);
+						if (crc == 1)
+							printf("\nFile: %s CHECKED", dp->d_name + l - 44);
+						else
+							printf("\nFile: %s %.8x", dp->d_name + l - 44, crc);
 					} else {
-						printf("\nFile: %-44s %.8x", dp->d_name, crc);
+						if (crc == 1)
+							printf("\nFile: %-44s CHECKED", dp->d_name);
+						else
+							printf("\nFile: %-44s %.8x", dp->d_name, crc);
 					}
 				}
 				if(fflush(stdout))
 					d_log("rescan: ERROR: %s\n", strerror(errno));
-				writerace(g.l.race, &g.v, crc, F_NOTCHECKED);
+				if (!rescan_quick || (g.l.race && !match_file(g.l.race, dp->d_name)))
+					writerace(g.l.race, &g.v, crc, F_NOTCHECKED);
 			}
 		}
 		printf("\n");

@@ -297,28 +297,32 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 		ext = find_last_of(realfile, ".");
 		if (*ext == '.')
 			ext++;
-		if (rd.status == F_NOTCHECKED) {
+//		if (rd.status != F_NOTCHECKED) {
 			strlcpy(raceI->file.name, rd.fname, NAME_MAX);
 			Tcrc = readsfv(locations->sfv, raceI, 0);
-			stat(rd.fname, &filestat);
 			timenow = time(NULL);
-			if (S_ISDIR(filestat.st_mode))
-				rd.status = F_IGNORED;
-			else if (rd.crc32 != 0 && Tcrc == rd.crc32)
-				rd.status = F_CHECKED;
-			else if (rd.crc32 != 0 && strcomp(ignored_types, ext))
-				rd.status = F_IGNORED;
-			else if (rd.crc32 != 0 && Tcrc == 0 && strcomp(allowed_types, ext))
-				rd.status = F_IGNORED;
-			else if ((rd.crc32 != 0) && (Tcrc != rd.crc32) &&
-					   (strcomp(allowed_types, ext) &&
-				   !matchpath(allowed_types_exemption_dirs, locations->path)))
-				rd.status = F_IGNORED;
-			else if	((timenow == filestat.st_ctime) && (filestat.st_mode & 0111)) {
-				d_log("testfiles: Looks like this file (%s) is in the process of being uploaded. Ignoring.\n", rd.fname);
-				rd.status = F_IGNORED;
-				create_missing(rd.fname);
-			} else {
+			stat(rd.fname, &filestat);
+			if (fileexists(rd.fname)) {
+				if (S_ISDIR(filestat.st_mode))
+					rd.status = F_IGNORED;
+				else if (rd.crc32 != 0 && Tcrc == rd.crc32)
+					rd.status = F_CHECKED;
+				else if (rd.crc32 != 0 && strcomp(ignored_types, ext))
+					rd.status = F_IGNORED;
+				else if (rd.crc32 != 0 && Tcrc == 0 && strcomp(allowed_types, ext))
+					rd.status = F_IGNORED;
+				else if ((rd.crc32 != 0) && (Tcrc != rd.crc32) &&
+						   (strcomp(allowed_types, ext) &&
+					   !matchpath(allowed_types_exemption_dirs, locations->path)))
+					rd.status = F_IGNORED;
+				else if	((timenow == filestat.st_ctime) && (filestat.st_mode & 0111)) {
+					d_log("testfiles: Looks like this file (%s) is in the process of being uploaded. Ignoring.\n", rd.fname);
+					rd.status = F_IGNORED;
+					create_missing(rd.fname);
+				}
+			} else
+				rd.status = F_NOTCHECKED;
+			if (rd.status == F_NOTCHECKED) {
 				d_log("testfiles: Marking file (%s) as bad and removing it.\n", rd.fname);
 				mark_as_bad(rd.fname);
 				if (rd.fname)
@@ -359,7 +363,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 					unlink_missing(rd.fname);
 			}
 			count++;
-		}
+//		}
 	}
 	strlcpy(raceI->file.name, realfile, (int)strlen(realfile)+1);
 	raceI->total.files = raceI->total.files_missing = 0;
@@ -689,6 +693,32 @@ clear_file(const char *path, char *f)
 
 	return n;
 }
+
+
+short int 
+match_file(char *rname, char *f)
+{
+	int		n;
+	FILE           *file;
+
+	RACEDATA	rd;
+
+	n = 0;
+	if ((file = fopen(rname, "r+"))) {
+		while (fread(&rd, sizeof(RACEDATA), 1, file)) {
+			if (strncmp(rd.fname, f, NAME_MAX) == 0 && rd.status == F_CHECKED) {
+d_log("match: '%s' == '%s'\n", rd.fname, f);
+				n = 1;
+				break;
+			}
+		}
+		fclose(file);
+	} else {
+		d_log("match_file: Error fopen(%s): %s\n", rname, strerror(errno));
+	}
+	return n;
+}
+
 
 /*
  * Modified	: 02.19.2002 Author	: Dark0n3
