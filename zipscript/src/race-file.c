@@ -943,7 +943,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 				raceI->data_queue = hd.data_queue = 0;
 				hd.data_qcurrent = 0;
 				d_log("create_lock: Unlock forced.\n");
-			} else if (force_lock == 3 && hd.data_queue) {		/* we got a request to queue a lock if active, */
+			} else if (force_lock == 3 && hd.data_queue > hd.data_qcurrent) {		/* we got a request to queue a lock if active, */
 										/* and there seems to be others in queue. Will not allow the */
 										/* process to lock, but wait for the queued process to do so. */
 				d_log("create_lock: putting you in queue.\n");
