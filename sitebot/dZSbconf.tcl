@@ -9,25 +9,26 @@
 # if you have another glroot than /glftpd/ =)
  
 set location(GLLOG)					"/glftpd/ftp-data/logs/glftpd.log"
-set location(PASSWD)					"/glftpd/etc/passwd"
+set location(PASSWD)				"/glftpd/etc/passwd"
 set location(USERS)					"/glftpd/ftp-data/users/"
 
 # Are you using glftpd2? Set to "YES" if you are, "NO" if not.
-# This setting is intentionally commented, so that the user will be alerted if 
-# they start the bot without uncommenting and setting to the correct value
+# This should be autodetected if binary(GLFTPD) is set correctly.
+# If you want to override autodetection, or if autodetection does not
+# work, uncomment this and set it to YES or NO. :-)
 #set use_glftpd2					"NO"
 
 # What types of messages are counted as the different types of output
 # (for disabling etc)
 set msgtypes(RACE)					"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV UPDATE HALFWAY NEWLEADER COMPLETE STATS BADGENRE BADYEAR BADBITRATE WIPE WIPE-r"
-set msgtypes(DEFAULT)					"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT"
+set msgtypes(DEFAULT)				"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT"
 
 # Sitename is for the %sitename-cookie in announces :)
 set sitename						"pzs-ng"
 # Prefix on commands (f. x. !pnfree if cmdpre is !pn, !free if cmdpre is !, etc)
 # bindnopre does not replace the cmd pre command, it meirly adds a second 
 # trigger option. example: you can set cmdpre to !pn but if bindnopre is set to # "YES" then the sitebot will respond to !pnbnc and also !bnc useful for rings.
-set cmdpre						"!pn"
+set cmdpre							"!pn"
 set bindnopre						"YES"
 # List of bnc's (used for BNC-testing with the <prefix>bnc command in channel)
 # Format: countrycode:hostname:port (space seperated)
@@ -61,12 +62,15 @@ set binary(STATS)					"/glftpd/bin/stats"
 set binary(PASSCHK)					"/glftpd/bin/passchk"
 set binary(NCFTPLS)					"/usr/local/bin/ncftpls"
 set binary(BNCTEST)					"/glftpd/bin/bnctest.sh"
-set binary(BNCCHECK)					"/glftpd/bin/bnc-check.pl"
-set binary(INCOMPLETE)					"/glftpd/bin/incomplete-list.sh"
+set binary(BNCCHECK)				"/glftpd/bin/bnc-check.pl"
+set binary(INCOMPLETE)				"/glftpd/bin/incomplete-list.sh"
 set binary(DF)						"/bin/df"
+# This is needed for autodetection of glversion. If you unset this, use_glftpd2
+# MUST be set to YES or NO :)
+set binary(GLFTPD)					"/glftpd/bin/glftpd"
 
 # Definition of hd devices (for freespace) Syntax is "disk sections".
-# 'sections' is purely for cosmeic uses (output)
+# 'sections' is purely for cosmetic uses (output)
 set device(0)						"/dev/hda1 ISO"
 set device(1)						"/dev/hdc1 MP3"
 

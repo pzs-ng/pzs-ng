@@ -16,17 +16,30 @@ if {[catch {source [file dirname [info script]]/dZSbconf.tcl} tmperror]} {
 	die
 }
 
-if {![ info exists use_glftpd2]} {
-	putlog "dZSbot: you did not thouroughly edit your [file dirname [info script]]/dZSbconf.tcl file. Try again."
-	die
-}
-
 foreach bin [array names binary] { 
 	if {![file executable $binary($bin)]} {
 		putlog "dZSbot: Wrong path/missing bin for $bin - Please fix."
 		set dzerror "1"
 	}
 }
+
+if {![info exists binary(GLFTPD)] && ![info exists use_glftpd2]} {
+	putlog "dZSbot: you did not thouroughly edit your [file dirname [info script]]/dZSbconf.tcl file. Try again."
+	die
+}
+
+if {![info exists use_glftpd2]} {
+	set glversion [exec "strings $binary(GLFTPD)|grep -i '^glftpd '|cut -f1 -d.|tr A-Z a-z"]
+	if {$glversion == "glftpd 1"} {
+		use_glftpd2="NO"
+	} elseif {$glversion == "glftpd 2"} {
+		use_glftpd2="YES"
+	} else {
+		putlog "dZSbot: autodetecting glftpd-version failed. Set use_glftpd in [file dirname [info script]]/dZSbconf.tcl manually."
+	}
+}
+	
+
 
 #################################################################################
 # SOME IMPORTANT GLOBAL VARIABLES                                               #
@@ -72,9 +85,11 @@ bind pub	-|-	[set cmdpre]gwpd	stats_group_gpwd
 bind pub	-|-	[set cmdpre]gpad	stats_group_gpad
 bind pub	-|-	[set cmdpre]help	help
 
-bind join	-|-	*			welcome_msg
+bind join	-|-	*					welcome_msg
 
-bind msg	-|-	!invite			invite
+bind msg	-|-	!invite				invite
+
+bind evnt	-|-	rehash				pre_rehash
 
 if {$bindnopre == "YES"} { 
 	bind pub    -|- !who		who
@@ -829,6 +844,21 @@ proc help {nick uhost hand chan arg} {
 		puthelp "PRIVMSG $nick :$line"
 	}
 	puthelp "PRIVMSG $nick : Valid sections are: $sections"
+}
+#################################################################################
+
+
+#################################################################################
+# DO STUFF BEFORE REHASH                                                        #
+#################################################################################
+proc pre_rehash {type} {
+	global use_glftpd2
+	# Prevents people uncommenting use_glftpd2 and .rehashing, thinking it'll
+	# autodetect. (It wouldn't have.)
+	unset use_glftpd2
+	# Should we perhaps unset all the other config vars here too? (to prevent
+	# similar stuff as above, and also preventing thing to work after .rehash,
+	# but not after .restart, rather crashing on .rehash)
 }
 #################################################################################
 
