@@ -2927,35 +2927,32 @@ done
 
 
 
-os=unknown
-static=no
-case $(uname -s) in
-    [Ll][Ii][Nn][Uu][Xx])
-		os=linux
-		static=no
-        ;;
-    *[bB][sS][dD]*)
-		os=bsd
-		echo "$as_me:$LINENO: result: NOTICE: BSD flavour detected, linking statically." >&5
-echo "${ECHO_T}NOTICE: BSD flavour detected, linking statically." >&6
-		static=yes
-        ;;
-    SsUuNnOoSs)
-		os=sunos
-		static=no
-        ;;
+#os=unknown
+#static=no
+#case $(uname -s) in
+#    [[Ll][Ii][Nn][Uu][Xx]])
+#		os=linux
+#		static=no
+#        ;;
+#    [*[bB][sS][dD]*])
+#		os=bsd
+#		AC_MSG_RESULT([NOTICE: BSD flavour detected, linking statically.])
+#		static=yes
+#        ;;
+#    [Ss][Uu][Nn][Oo][Ss])
+#		os=sunos
+#		static=no
+#        ;;
+#
+#esac
 
-esac
+#if test "$os" = "unknown" ; then
+# AC_MSG_ERROR(Couldn't identify OS, quitting!)
+#fi
 
-if test "$os" = "unknown" ; then
- { { echo "$as_me:$LINENO: error: Couldn't identify OS" >&5
-echo "$as_me: error: Couldn't identify OS" >&2;}
-   { (exit quitting!); exit quitting!; }; }
-fi
-
-if test "$static" = "yes" ; then
- STATIC="-static"
-else
+#if test "$static" = "yes" ; then
+# STATIC="-static"
+#else
  # Check whether --enable-static or --disable-static was given.
 if test "${enable_static+set}" = set; then
   enableval="$enable_static"
@@ -2964,13 +2961,13 @@ else
   STATIC=""
 fi;
  if test "$static" = "yes" ; then
-  echo "$as_me:$LINENO: result: NOTICE: linking statically due to --enable-static" >&5
-echo "${ECHO_T}NOTICE: linking statically due to --enable-static" >&6
+  echo "$as_me:$LINENO: result: NOTICE: linking statically (--enable-static)." >&5
+echo "${ECHO_T}NOTICE: linking statically (--enable-static)." >&6
  else
   echo "$as_me:$LINENO: result: NOTICE: linking dynamically." >&5
 echo "${ECHO_T}NOTICE: linking dynamically." >&6
  fi
-fi
+#fi
 
 
 
