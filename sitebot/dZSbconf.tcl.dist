@@ -236,7 +236,7 @@ set hidenuke						"UNKNOWN"
 set variables(PRE)			"%pf %releasename %pregroup %section %files %mbytes %cds %who %user %g_name %tagline"
 set variables(INVITE)		"%u_ircnick %u_name %g_name"
 set variables(REQUEST)		"%releasename %u_name %g_name %u_tagline"
-set variables(REQFILLED)	"%releasename %u_name %g_name %u_tagline %u_name_requester"
+set variables(REQFILLED)	"%releasename %u_name %g_name %u_tagline %u_requester"
 
 # Using psxc-imdb, setting TRIGGER to "IMDBVAR" and LOGFORMAT to "SPECIAL" will allow you use format the output in the bot.
 set variables(IMDBVAR)	"%pf %imdbdirname %imdburl %imdbtitle %imdbgenre %imdbrating %imdbcountry %imdblanguage %imdbcertification %imdbruntime %imdbdirector %imdbbusinessdata %imdbpremiereinfo %imdblimitedinfo %imdbvotes %imdbscore %imdbname %imdbyear %imdbnumscreens %imdbislimited %imdbcastleadname %imdbcastleadchar %imdbtagline %imdbplot \[%imdbbar\] %imdbcasting %imdbcommentshort %imdbdestination"
