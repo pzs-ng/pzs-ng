@@ -297,7 +297,7 @@ move_progress_bar(unsigned char delete, struct VARS *raceI)
 {
 	char           *bar;
 	char	       *delbar = 0;
-	int		n;
+	int		n, m = 0;
 	regex_t		preg;
 	regmatch_t	pmatch[1];
 
@@ -317,12 +317,16 @@ move_progress_bar(unsigned char delete, struct VARS *raceI)
 					d_log("Found progress bar (%s), removing\n", dirlist[n]->d_name);
 					remove(dirlist[n]->d_name);
 					*dirlist[n]->d_name = 0;
-					return;
+					m = 1;
+//					return;
 				}
 			}
 			//regfree(&preg);
 		}
-		d_log("Progress bar could not be deleted, not found!\n");
+		if (m)
+			return;
+		else
+			d_log("Progress bar could not be deleted, not found!\n");
 	} else {
 		if (!raceI->total.files)
 			return;
@@ -330,15 +334,25 @@ move_progress_bar(unsigned char delete, struct VARS *raceI)
 		while (n--) {
 			if (regexec(&preg, dirlist[n]->d_name, 1, pmatch, 0) == 0) {
 				if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[n])) {
-					d_log("Found progress bar (%s), renaming (to %s)\n", dirlist[n]->d_name, bar);
-					rename(dirlist[n]->d_name, bar);
-					return;
+					if (!m) {
+						d_log("Found progress bar (%s), renaming (to %s)\n", dirlist[n]->d_name, bar);
+						rename(dirlist[n]->d_name, bar);
+						m = 1;
+	//					return;
+					} else {
+						d_log("Found (extra) progress bar (%s), removing\n", dirlist[n]->d_name);
+						remove(dirlist[n]->d_name);
+						*dirlist[n]->d_name = 0;
+						m = 2;
+					}
 				}
 			}
 			//regfree(&preg);
 		}
-		d_log("Progress bar could not be moved, creating a new one now!\n");
-		createstatusbar(bar);
+		if (!m) {
+			d_log("Progress bar could not be moved, creating a new one now!\n");
+			createstatusbar(bar);
+		}
 	}
 	regfree(&preg);
 }
