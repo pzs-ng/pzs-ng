@@ -41,6 +41,9 @@ set binary(PING)        "/bin/ping"
 #set binary(PING)       "/sbin/ping" ;# FreeBSD
 set binary(UPTIME)      "/usr/bin/uptime"
 
+# Enable dZSbot debug mode, useful for tracking down announce problems.
+set debugmode           "FALSE"
+
 # This is needed for autodetection of glversion. If you unset this, use_glftpd2
 # MUST be set to TRUE or FALSE.
 set binary(GLFTPD)      "/glftpd/bin/glftpd"

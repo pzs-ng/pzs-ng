@@ -17,6 +17,7 @@
 
 # Some Very Important Settings #
 ################################
+set debugmode               "TRUE"
 set cmdpre                  "!ng"
 set sitename                "pzs-ng"
 set mainchan                "#pzs-ng"

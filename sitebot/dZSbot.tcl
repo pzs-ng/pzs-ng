@@ -34,6 +34,12 @@ if {[catch {source $scriptpath/dZSbot.conf} error]} {
 # Important Global Variables                                                    #
 #################################################################################
 
+proc ng_debug {text} {
+	if {[istrue $::debugmode]} {
+		putlog "dZSbot debug: $text"
+	}
+}
+
 set dzerror 0; set mpath ""
 set defaultsection "DEFAULT"
 set nuke(LASTDIR) ""
@@ -205,18 +211,20 @@ proc denycheck {release} {
 	global denypost
 	foreach deny $denypost {
 		if {[string match $deny $release]} {
-			putlog "dZSbot: Post denied \"$release\" ($deny)."
+			ng_debug "Announce skipped, \"$release\" matched \"$deny\" (denypost)."
 			return 1
 		}
 	}
 	return 0
 }
 
-proc eventcheck {section msgtype} {
+proc eventcheck {section event} {
 	global disabletypes
-	if {[info exists disabletypes($section)]} {
-		foreach deny $disabletypes($section) {
-			if {[string match $deny $msgtype]} {return 1}
+	if {![info exists disabletypes($section)]} {return 0}
+	foreach deny $disabletypes($section) {
+		if {[string match $deny $event]} {
+			ng_debug "Announce skipped, \"$event\" is disabled in \"disabletypes($section)\"."
+			return 1
 		}
 	}
 	return 0
@@ -228,12 +236,12 @@ proc eventhandler {type event argv} {
 	if {![info exists $varname]} {return 1}
 	foreach script [set $varname] {
 		if {[catch {set retval [eval $script $event $argv]} error]} {
-			putlog "dZSbot error: Error evaluating the script \"$script\" for $varname ($error)."
+			putlog "dZSbot error: Error evaluating the script \"$script\" for \"$varname\" ($error)."
 		} elseif {[isfalse $retval]} {
-			#putlog "dZSbot: The script \"$script\" for $varname returned false."
+			ng_debug "The script \"$script\" for \"$varname\" returned false."
 			return 0
 		} elseif {![istrue $retval]} {
-			putlog "dZSbot warning: The script \"$script\" for $varname must return a boolean value (0/FALSE or 1/TRUE)."
+			putlog "dZSbot warning: The script \"$script\" for \"$varname\" must return a boolean value (0/FALSE or 1/TRUE)."
 		}
 	}
 	return 1
@@ -288,10 +296,14 @@ proc readlog {} {
 	foreach {type event line} $lines {
 		## Login and sysop log specific parsing.
 		if {$type == 1 && ![parselogin $line event line]} {
-			putlog "dZSbot error: Unknown login.log line: $line"; continue
+			putlog "dZSbot error: Unknown login.log line: $line"
+			continue
 		} elseif {$type == 2 && ![parsesysop $line event line]} {
-			set event "SYSOP"; set line [list $line]
+			set event "SYSOP"
+			set line [list $line]
 		}
+		ng_debug "Received event: $event (log: $type)."
+
 		## Check that the log line is a valid Tcl list.
 		if {[catch {llength $line} error]} {
 			putlog "dZSbot error: Invalid log line (not a tcl list): $line"
@@ -308,11 +320,11 @@ proc readlog {} {
 			set section [getsectionname $path]
 
 			# Replace messages with custom messages
-			foreach rep [array names msgreplace] {
-				set rep [split $msgreplace($rep) ":"]
-				if {[string equal $event [lindex $rep 0]]} {
-					if {[string match -nocase [lindex $rep 1] $path]} {
-						set event [lindex $rep 2]
+			foreach {name value} [array get msgreplace] {
+				set value [split $value ":"]
+				if {[string equal $event [lindex $value 0]]} {
+					if {[string match -nocase [lindex $value 1] $path]} {
+						set event [lindex $value 2]
 					}
 				}
 			}
@@ -324,8 +336,10 @@ proc readlog {} {
 		}
 
 		## If a pre-event script returns false, skip the announce.
-		if {![eventhandler precommand $event [list $section $line]] || \
-			([info exists disable($event)] && $disable($event) == 1)} {continue}
+		if {![eventhandler precommand $event [list $section $line]] || ([info exists disable($event)] && $disable($event) == 1)} {
+			ng_debug "Announce skipped, \"$event\" is disabled or a pre-command script returned false."
+			continue
+		}
 
 		if {![info exists variables($event)]} {
 			putlog "dZSbot error: \"variables($event)\" not defined in the config, type becomes \"$defaultsection\"."
@@ -707,11 +721,12 @@ proc trimtail {strsrc strrm} {
 # Send Messages                                                                 #
 #################################################################################
 
-proc sndall {msgtype section text} {
+proc sndall {event section text} {
 	global chanlist redirect
 
-	if {[info exists redirect($msgtype)]} {
-		set channels $redirect($msgtype)
+	if {[info exists redirect($event)]} {
+		set channels $redirect($event)
+		ng_debug "Redirecting the \"$event\" event to \"$channels\"."
 	} elseif {[info exists chanlist($section)]} {
 		set channels $chanlist($section)
 	} else {
@@ -775,17 +790,27 @@ proc rightscheck {rights user group flags} {
 	return $retval
 }
 
+proc ng_invitechan {nick chan} {
+	if {![validchan $chan] || ![botonchan $chan]} {
+		putlog "dZSbot error: Unable to invite \"$nick\" to \"$chan\", I'm not in the channel."
+	} elseif {![botisop $chan]} {
+		putlog "dZSbot error: Unable to invite \"$nick\" to \"$chan\", I'm not opped."
+	} else {
+		putquick "INVITE $nick $chan"
+	}
+}
+
 proc ng_inviteuser {nick user group flags} {
 	global invite_channels privchannel
 	if {![eventhandler precommand INVITEUSER [list $nick $user $group $flags]]} {return}
 
 	## Invite the user to the defined channels.
 	foreach chan $invite_channels {
-		putquick "INVITE $nick $chan"
+		ng_invitechan $nick $chan
 	}
 	foreach {chan rights} [array get privchannel] {
 		if {[rightscheck $rights $user $group $flags]} {
-			putquick "INVITE $nick $chan"
+			ng_invitechan $nick $chan
 		}
 	}
 
@@ -1085,11 +1110,11 @@ proc ng_free {nick uhost hand chan arg} {
 	}
 
 	if {$totalSize} {
-    	set percFree [format "%.1f" [expr (double($totalFree) / double($totalSize)) * 100]]
-    	set percUsed [format "%.1f" [expr (double($totalUsed) / double($totalSize)) * 100]]
-    } else {
-        set percFree 0.0; set percUsed 0.0
-    }
+		set percFree [format "%.1f" [expr (double($totalFree) / double($totalSize)) * 100]]
+		set percUsed [format "%.1f" [expr (double($totalUsed) / double($totalSize)) * 100]]
+	} else {
+		set percFree 0.0; set percUsed 0.0
+	}
 	set totalFree [format_kb $totalFree]
 	set totalUsed [format_kb $totalUsed]
 	set totalSize [format_kb $totalSize]
