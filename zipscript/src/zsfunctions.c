@@ -20,13 +20,15 @@ struct USER	**user;
 struct GROUP	**group;
 
 void d_log(char *fmt, ...) {
-	if (fmt == NULL)
-		return;
 #if ( debug_mode == TRUE )
 	time_t		timenow;
 	FILE		*file;
-	va_list	ap;
+	va_list		ap;
+#endif
 
+	if (fmt == NULL)
+		return;
+#if ( debug_mode == TRUE )
 	va_start(ap, fmt);
 	timenow = time(NULL);
 
