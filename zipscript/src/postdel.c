@@ -150,7 +150,7 @@ get_filetype(char *ext)
 		return 0;
 	if (!memcmp(ext, "nfo", 4))
 		return 2;
-	if (!strcomp(ignored_types, ext))
+	if (!strcomp(ignored_types, ext) || !strcomp(allowed_types, ext))
 		return 3;
 
 	return 255;

@@ -219,10 +219,11 @@ allowed_types <STRING>
 	Default: "jpg,cue,m3u,mpg,avi,nfo,txt"
 
 ignored_types <STRING>
-	Files found with an extension listed in this variable is ignored from
-	the sfv. The list is comma-separated. Defining a file with no extension
-	can be done by starting the list with a comma.
-	Default: ",diz,jpg,cue,m3u,nfo,sfv,debug"
+	Files found with an extension listed in this variable are denied on
+	upload, and ignored on rescan/postdel/etc. The list is comma-separated.
+	Defining a file with no extension can be done by starting the list
+	with a comma.
+	Default: ",diz,debug,message,imdb"
 
 debug_mode <TRUE|FALSE>
 	If something seems weird/doesn't work, you should debug. Setting this
