@@ -592,7 +592,7 @@ proc speed_convert {value section} {
 proc basicreplace {rstring section} {
 	global sitename
 
-	set output [themereplace $rstring $section]
+	set output $rstring
 	set output [replacevar $output "%sitename" $sitename]
 	set output [replacevar $output "%bold" "\002"]
 	set output [replacevar $output "%uline" "\037"]
@@ -647,12 +647,12 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 	set vars $variables($type)
 
 	if {![string compare [lindex $announce($type) 0] "random"] && [string is alnum -strict [lindex $announce($type) 1]] == 1} {
-		set output $random($msgtype\-[rand [lindex [themereplace $announce($type) $section] 1]])
+		set output $random($msgtype\-[rand [lindex $announce($type) 1]])
 	} else {
-		set output [themereplace $announce($type) $section]
+		set output $announce($type)
 	}
 
-	set output "$theme(PREFIX)$output"
+	set output [themereplace "$theme(PREFIX)$output" $section]
 	if {![string compare $section $defaultsection] && [llength [array names "theme_fakes" "$type"]] > 0} { set section $theme_fakes($type) }
 	set output [basicreplace $output $section]
 	set cnt 0
@@ -788,19 +788,19 @@ proc speed {nick uhost hand chan args} {
 
 	set line ""
 	if { $disable(ALTWHO) == 0 } {
-		set output "$theme(PREFIX)[themereplace $announce(SPEEDERROR) "none"]"
+		set output "[themereplace "$theme(PREFIX)$announce(SPEEDERROR)" "none"]"
 		foreach line [split [exec $binary(WHO) --raw [lindex $args 0]] "\n"] {
 			set action [lindex $line 4]
 			if {$action == "DN"} {
-				set output "$theme(PREFIX)[themereplace $announce(SPEEDDN) "none"]"
+				set output "[themereplace "$theme(PREFIX)$announce(SPEEDDN)" "none"]"
 				set output [replacevar $output "%dnspeed" [speed_convert [lindex $line 5] "none"]]
 				set output [replacevar $output "%dnpercent" [lindex $line 9]]
 			} elseif {$action == "UP"} {
-				set output "$theme(PREFIX)[themereplace $announce(SPEEDUP) "none"]"
+				set output "[themereplace "$theme(PREFIX)$announce(SPEEDUP)" "none"]"
 				set output [replacevar $output "%upspeed" [speed_convert [lindex $line 5] "none"]]
 				set output [replacevar $output "%uppercent" [lindex $line 9]]
 			} elseif {$action == "ID"} {
-				set output "$theme(PREFIX)[themereplace $announce(SPEEDID) "none"]"
+				set output "[themereplace "$theme(PREFIX)$announce(SPEEDID)" "none"]"
 				set output [replacevar $output "%idletime" [lindex $line 5]]
 			}
 			set output [replacevar $output "%u_name" [lindex $line 2]]
@@ -812,7 +812,7 @@ proc speed {nick uhost hand chan args} {
 			sndone $chan $output
 		}
 	} else {
-		set base_output "$theme(PREFIX)[themereplace $announce(DEFAULT) "none"]"
+		set base_output "[themereplace "$theme(PREFIX)$announce(DEFAULT)" "none"]"
 		foreach line [split [exec $binary(WHO) [lindex $args 0]] "\n"] {
 			set output [replacevar $base_output "%msg" $line]
 			set output [basicreplace $output "SPEED"]
@@ -821,8 +821,8 @@ proc speed {nick uhost hand chan args} {
 	}
 
 	if {$line == ""} {
-		set output "$theme(PREFIX)[themereplace $announce(SPEEDERROR) "none"]"
-#		set output "$theme(PREFIX)[themereplace $announce(DEFAULT) "none"]"
+		set output "[themereplace "$theme(PREFIX)$announce(SPEEDERROR)" "none"]"
+#		set output "[themereplace "$theme(PREFIX)$announce(DEFAULT)" "none"]"
 		set output [replacevar $output "%msg" "User not online."]
 		set output [basicreplace $output "SPEED"]
 		sndone $chan $output
@@ -843,7 +843,7 @@ proc bandwidth {nick uhost hand chan args} {
 			return 0
 		}
 	}
-	set output "$theme(PREFIX)[themereplace $announce(BW) "none"]"
+	set output "[themereplace "$theme(PREFIX)$announce(BW)" "none"]"
 	set data [exec $binary(WHO) --nbw]
 	set output [replacevar $output "%uploads" [lindex $data 0]]
 	set output [replacevar $output "%downloads" [lindex $data 2]]
@@ -869,7 +869,7 @@ proc ng_bwup { nick uhost hand chan args} {
 			return 0
 		}
 	}
-	set output "$theme(PREFIX)[themereplace $announce(BWUP) "none"]"
+	set output "[themereplace "$theme(PREFIX)$announce(BWUP)" "none"]"
 	set raw [exec $binary(WHO) --nbw]
 	set upper [format "%.1f" [expr 100 * ([lindex $raw 1] / $speed(INCOMING))]]
 	set dnper [format "%.1f" [expr 100 * ([lindex $raw 3] / $speed(OUTGOING))]]
@@ -907,7 +907,7 @@ proc ng_uploaders {nick uhost hand chan args} {
 			return 0
 		}
 	}
-	set output "$theme(PREFIX)[themereplace $announce(UPLOAD) "none"]"
+	set output "[themereplace "$theme(PREFIX)$announce(UPLOAD)" "none"]"
 	set output [basicreplace "$output" "UPLOAD"]
 	sndone $chan $output
 
@@ -932,7 +932,7 @@ proc ng_uploaders {nick uhost hand chan args} {
 						set filename [lindex $line 8]
 						set progress [lindex $line 9]
 						set per [format "%.2f%%" [expr double($uspeed) * 100 / double($speed(INCOMING))]]
-						set output [replacevar "$theme(PREFIX)[themereplace $announce(USER) "none"]" "%u_name" $user]
+						set output [replacevar "[themereplace "$theme(PREFIX)$announce(USER)" "none"]" "%u_name" $user]
 						set output [replacevar $output "%g_name" $group]
 						set output [replacevar $output "%fper" $progress]
 						set output [replacevar $output "%uspeed" [speed_convert $uspeed "none"]]
@@ -951,7 +951,7 @@ proc ng_uploaders {nick uhost hand chan args} {
 	}
 	set per [format "%.1f" [expr double($total) * 100 / double($speed(INCOMING)) ]]
 
-	set output [replacevar "$theme(PREFIX)[themereplace $announce(TOTUPDN) "none"]" "%type" "Uploaders:"]
+	set output [replacevar "[themereplace "$theme(PREFIX)$announce(TOTUPDN)" "none"]" "%type" "Uploaders:"]
 	set output [replacevar $output "%count" $count]
 	set output [replacevar $output "%total" [speed_convert $total "none"]]
 	set output [replacevar $output "%per" $per]
@@ -972,7 +972,7 @@ proc ng_bwdn { nick uhost hand chan args} {
 			return 0
 		}
 	}
-	set output "$theme(PREFIX)[themereplace $announce(BWDN) "none"]"
+	set output "[themereplace "$theme(PREFIX)$announce(BWDN)" "none"]"
 	set raw [exec $binary(WHO) --nbw]
 	set upper [format "%.1f" [expr 100 * ([lindex $raw 1] / $speed(INCOMING))]]
 	set dnper [format "%.1f" [expr 100 * ([lindex $raw 3] / $speed(OUTGOING))]]
@@ -1010,7 +1010,7 @@ proc ng_leechers {nick uhost hand chan args} {
 			return 0
 		}
 	}
-	set output "$theme(PREFIX)[themereplace $announce(LEECH) "none"]"
+	set output "[themereplace "$theme(PREFIX)$announce(LEECH)" "none"]"
 	set output [basicreplace "$output" "LEECH"]
 	sndone $chan $output
 
@@ -1035,7 +1035,7 @@ proc ng_leechers {nick uhost hand chan args} {
 						set filename [lindex $line 8]
 						set per [format "%.2f%%" [expr double($uspeed) * 100 / double($speed(OUTGOING))]]
 						set fper [lindex $line 9]
-						set output [replacevar "$theme(PREFIX)[themereplace $announce(USER) "none"]" "%u_name" $user]
+						set output [replacevar "[themereplace "$theme(PREFIX)$announce(USER)" "none"]" "%u_name" $user]
 						set output [replacevar $output "%g_name" $group]
 						set output [replacevar $output "%fper"	$fper]
 						set output [replacevar $output "%uspeed" [speed_convert $uspeed "none"]]
@@ -1054,7 +1054,7 @@ proc ng_leechers {nick uhost hand chan args} {
 	}
 	set per [format "%.1f" [expr double($total) * 100 / double($speed(OUTGOING)) ]]
 
-	set output [replacevar "$theme(PREFIX)[themereplace $announce(TOTUPDN) "none"]" "%type" "Leechers:"]
+	set output [replacevar "[themereplace "$theme(PREFIX)$announce(TOTUPDN)" "none"]" "%type" "Leechers:"]
 	set output [replacevar $output "%count" $count]
 	set output [replacevar $output "%total" [speed_convert $total "none"]]
 	set output [replacevar $output "%per" $per]
@@ -1075,7 +1075,7 @@ proc ng_idlers { nick uhost hand chan args} {
 			return 0
 		}
 	}
-	set output "$theme(PREFIX)[themereplace $announce(IDLE) "none"]"
+	set output "[themereplace "$theme(PREFIX)$announce(IDLE)" "none"]"
 	set output [basicreplace "$output" "IDLE"]
 	sndone $chan $output
 
@@ -1103,7 +1103,7 @@ proc ng_idlers { nick uhost hand chan args} {
 						set since [lindex $line 7]
 
 						if { $idletime > $minidletime } {
-							set output [replacevar "$theme(PREFIX)[themereplace $announce(USERIDLE) "none"]" "%u_name" $user]
+							set output [replacevar "[themereplace "$theme(PREFIX)$announce(USERIDLE)" "none"]" "%u_name" $user]
 							set output [replacevar $output "%g_name" $group]
 							set output [replacevar $output "%idletime" $idletime]
 							set output [replacevar $output "%tagline" $tagline]
@@ -1117,7 +1117,7 @@ proc ng_idlers { nick uhost hand chan args} {
 			}
 		}
 	}
-	set output [replacevar "$theme(PREFIX)[themereplace $announce(TOTIDLE) "none"]" "%count" $count]
+	set output [replacevar "[themereplace "$theme(PREFIX)$announce(TOTIDLE)" "none"]" "%count" $count]
 	set output [basicreplace $output "IDLE"]
 	sndone $chan $output
 }
@@ -1134,7 +1134,7 @@ proc ng_bandwidth {nick uhost hand chan args} {
 			return 0
 		}
 	}
-	set output "$theme(PREFIX)[themereplace $announce(BW) "none"]"
+	set output "[themereplace "$theme(PREFIX)$announce(BW)" "none"]"
 	set raw [exec $binary(WHO) --nbw]
 	set upper [format "%.0f" [expr [lindex $raw 1] * 100 / $speed(INCOMING)]]
 	set dnper [format "%.0f" [expr [lindex $raw 3] *100 / $speed(OUTGOING)]]
@@ -1224,7 +1224,7 @@ proc invite {nick host hand arg} {
 
 
 		if {![string compare $result "MATCH"]} {
-			set output "$theme(PREFIX)[themereplace $announce(MSGINVITE) "none"]"
+			set output "[themereplace "$theme(PREFIX)$announce(MSGINVITE)" "none"]"
 			foreach channel $invite_channels { puthelp "INVITE $nick $channel" }
 			foreach line [split [exec $binary(CAT) $userfile] "\n"] {
 				if {![string compare [lindex $line 0] "GROUP"]} {
@@ -1233,7 +1233,7 @@ proc invite {nick host hand arg} {
 				}
 			}
 		} else {
-			set output "$theme(PREFIX)[themereplace $announce(BADMSGINVITE) "none"]"
+			set output "[themereplace "$theme(PREFIX)$announce(BADMSGINVITE)" "none"]"
 		}
 
 		if {!$disable(MSGINVITE)} {
@@ -1306,7 +1306,7 @@ proc show_free {nick uhost hand chan arg} {
 
 	set o 0
 	while {$o < [expr $i + 1]} {
-		set output "$theme(PREFIX)[themereplace $announce(FREE) "none"]"
+		set output "[themereplace "$theme(PREFIX)$announce(FREE)" "none"]"
 		set output [replacevar $output "%total" "${totalgb}"]
 		set output [replacevar $output "%used" "${usedgb}"]
 		set output [replacevar $output "%free" "${freegb}"]
@@ -1354,7 +1354,7 @@ proc launchnuke2 {type path section sargs dargs} {
 	}
 	set relname [string range $relname 1 end]
 
-	set output "$theme(PREFIX)[themereplace $announce($nuke(TYPE)) "none"]"
+	set output "[themereplace "$theme(PREFIX)$announce($nuke(TYPE))" "none"]"
 	set output [replacevar $output "%nuker" $nuke(NUKER)]
 	set output [replacevar $output "%nukees" $nuke(NUKEE)]
 	set output [replacevar $output "%type" $nuke(TYPE)]
@@ -1419,7 +1419,7 @@ proc launchnuke {} {
 	}
 	set relname [string range $relname 1 end]
 
-	set output "$theme(PREFIX)[themereplace $announce($nuke(TYPE)) "none"]"
+	set output "[themereplace "$theme(PREFIX)$announce($nuke(TYPE))" "none"]"
 	set output [replacevar $output "%nuker" $nuke(NUKER)]
 	set output [replacevar $output "%nukees" $nuke(NUKEE)]
 	set output [replacevar $output "%type" $nuke(TYPE)]
