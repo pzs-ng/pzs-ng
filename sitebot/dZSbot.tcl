@@ -98,9 +98,9 @@ if {$bindnopre == "YES"} {
 	bind pub    -|- !who		who
 	bind pub    -|- !speed		speed
 	bind pub    -|- !bw		ng_bandwidth
-	bind pub    -|- !bwdn		ng_bwup
+	bind pub    -|- !bwdn		ng_bwdn
 	bind pub	-|- !uploaders	ng_uploaders
-	bind pub    -|- !bwup		ng_bwdn
+	bind pub    -|- !bwup		ng_bwup
 	bind pub    -|- !leechers	ng_leechers
 	bind pub	-|- !idlers		ng_idlers
 	bind pub    -|- !bnc		ng_bnc_check
@@ -130,7 +130,7 @@ if {$bindnopre != "YES"} {
 	catch { unbind pub    -|- !speed	speed }
 	catch { unbind pub    -|- !bw		ng_bandwidth }
 	catch { unbind pub    -|- !bwup		ng_bwup }
-	catch { unbind pub    -|- !bwup     ng_uploaders }
+	catch { unbind pub    -|- !uploaders	ng_uploaders }
 	catch { unbind pub    -|- !bwdn     ng_bwdn }
 	catch { unbind pub    -|- !leechers	ng_leechers }
 	catch { unbind pub    -|- !idlers	ng_idlers }
@@ -430,9 +430,9 @@ proc bandwidth {nick uhost hand chan args} {
 proc ng_bwup { nick uhost hand chan args} { global binary announce speed
 	set output $announce(BWUP)
 	set raw [exec $binary(BW)]
-	set upper [format "%.0f" [expr 100 * ([lindex $raw 1] / $speed(INCOMING)])]
-	set dnper [format "%.0f" [expr 100 * ([lindex $raw 3] / $speed(OUTGOING)])]
-	set totalper [format "%.0f" [expr 100 * ([lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING) )])]
+	set upper [format "%.1f" [expr 100 * ([lindex $raw 1] / $speed(INCOMING))]]
+	set dnper [format "%.1f" [expr 100 * ([lindex $raw 3] / $speed(OUTGOING))]]
+	set totalper [format "%.0f" [expr 100 * ([lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING)))]]
 
 	set output [replacevar $output "%uploads" [lindex $raw 0]]
 	set output [replacevar $output "%upspeed" [lindex $raw 1]]
@@ -446,7 +446,7 @@ proc ng_bwup { nick uhost hand chan args} { global binary announce speed
 
 	set output [replacevar $output "%uppercent" $upper]
 	set output [replacevar $output "%dnpercent" $dnper]
-	set output [replacevar $output "%totalpercent" $totalper]
+#	set output [replacevar $output "%totalpercent" $totalper]
 
 	set output [basicreplace "$output" "BW"]
 
@@ -462,25 +462,40 @@ proc ng_uploaders { nick uhost hand chan args} { global binary announce speed
 	set output [basicreplace "$output" "UPLOAD"]
 	putserv "PRIVMSG $chan :$output "
 
-	set raw [exec $binary(SITEWHO) | grep -v "Dn:" | grep  -e "Up:"]
+	set raw [exec $binary(WHO)]
 	
+	set getsecond 0
 	set count 0
 	set total 0.0
 	foreach line [split $raw "\n"] {
-		set user [lindex $line 1]
-		set group [lindex $line 2]
-		set uspeed [replacevar [lindex $line 5] "KBs" ""]
-		set per [format "%.2f" [expr double($uspeed) * 100 / double($speed(INCOMING))]]
+		if {(![string match "*Dn:*" $line]) && ([string match "*Up:*" $line])} {
+			set user [lindex $line 1]
+			set group [lindex $line 2]
+			set uspeed [replacevar [lindex $line 5] "KBs" ""]
+			set per [format "%.2f" [expr double($uspeed) * 100 / double($speed(INCOMING))]]
 		
-		set output [replacevar $announce(USER) "%user" $user]
-		set output [replacevar $output "%group" $group]
-		set output [replacevar $output "%uspeed" $uspeed]
-		set output [replacevar $output "%per" $per]
-		set output [basicreplace "$output" "UPLOAD"]
-		set count [expr $count+1]
-		set total [expr $total+$uspeed]
-
-		putserv "PRIVMSG $chan :$output"
+			set output [replacevar $announce(USER) "%user" $user]
+			set output [replacevar $output "%group" $group]
+			set output [replacevar $output "%fper" "??"]
+			set output [replacevar $output "%uspeed" $uspeed]
+			set output [replacevar $output "%per" $per]
+			set output [basicreplace "$output" "UPLOAD"]
+			set getsecond 1
+			incr count
+			set total [expr $total+$uspeed]
+		} else {
+			if { $getsecond == 1 } {
+				set tagline [lindex $line 1]
+				set since [lindex $line 4]
+				set filename [lindex $line 7]
+				
+				set output [replacevar $output "%tagline" $tagline]
+				set output [replacevar $output "%since" $since]
+				set output [replacevar $output "%filename" $filename]
+				putserv "PRIVMSG $chan :$output"
+				set getsecond 0
+			}
+		}
 	}
 	set per [format "%.1f" [expr double($total) * 100 / double($speed(INCOMING)) ]]
 	
@@ -502,7 +517,7 @@ proc ng_bwdn { nick uhost hand chan args} { global binary announce speed
 	set raw [exec $binary(BW)]
 	set upper [format "%.0f" [expr [lindex $raw 1] / $speed(INCOMING)]]
 	set dnper [format "%.0f" [expr [lindex $raw 3] / $speed(OUTGOING)]]
-	set totalper [format "%.0f" [expr [lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING) )]]
+	set totalper [format "%.0f" [expr [lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING))]]
 
 	set output [replacevar $output "%uploads" [lindex $raw 0]]
 	set output [replacevar $output "%upspeed" [lindex $raw 1]]
@@ -532,26 +547,41 @@ proc ng_leechers { nick uhost hand chan args} { global binary announce speed
 	set output [basicreplace "$output" "LEECH"]
 	putserv "PRIVMSG $chan :$output "
 	
-	set raw [exec $binary(SITEWHO) | grep -v "Up:" | grep  -e "Dn:" ]
+	set raw [exec $binary(WHO)]
+	set getsecond 0
 	set count 0
 	set total 0.0
 	foreach line [split $raw "\n"] {
-		set user [lindex $line 1]
-		set group [lindex $line 2]
-		set uspeed [replacevar [lindex $line 5] "KBs" ""]
-		
-		set per [format "%.2f" [expr double($uspeed) * 100 / double($speed(OUTGOING))]]
-		
-		set output [replacevar $announce(USER) "%user" $user]
-		set output [replacevar $output "%group" $group]
-		set output [replacevar $output "%uspeed" $uspeed]
-		set output [replacevar $output "%per" $per]
-		set output [basicreplace "$output" "LEECH"]
-		set count [expr $count+1]
-		set total [expr $total+$uspeed]
-		
+		if {(![string match "*Up:*" $line]) && ([string match "*Dn:*" $line])} {
+			set user [lindex $line 1]
+			set group [lindex $line 2]
+			set uspeed [replacevar [lindex $line 5] "KBs" ""]
+			set fper [expr 6.67*[string length [lindex $line 9]]]
+			
+			set per [format "%.2f" [expr double($uspeed) * 100 / double($speed(OUTGOING))]]
+			
+			set output [replacevar $announce(USER) "%user" $user]
+			set output [replacevar $output "%group" $group]
+			set output [replacevar $output "%fper"	$fper]
+			set output [replacevar $output "%uspeed" $uspeed]
+			set output [replacevar $output "%per" $per]
+			set output [basicreplace "$output" "LEECH"]
+			incr count
+			set total [expr $total+$uspeed]
+			set getsecond 1
+		} else {
+			if { $getsecond == 1 } {
+				set tagline [lindex $line 1]
+				set since [lindex $line 4]
+				set filename [lindex $line 7]
 
-		putserv "PRIVMSG $chan :$output"
+				set output [replacevar $output "%tagline" $tagline]
+				set output [replacevar $output "%since" $since]
+				set output [replacevar $output "%filename" $filename]
+				putserv "PRIVMSG $chan :$output"
+				set getsecond 0
+			}
+		}
 	}
 	set per [format "%.1f" [expr double($total) * 100 / double($speed(OUTGOING)) ]]
 	
@@ -573,26 +603,27 @@ proc ng_idlers { nick uhost hand chan args} { global binary announce speed minid
 	set output [basicreplace "$output" "IDLE"]
 	putserv "PRIVMSG $chan :$output "
 
-	set raw [exec $binary(SITEWHO) | grep -v "Up:" | grep -e "Idle:"]
+	set raw [exec $binary(WHO)]
 	set count 0
 	set total 0.0
 	foreach line [split $raw "\n"] {
-		set user [lindex $line 1]
-		set group [lindex $line 2]
-		set rawtime [lindex $line 5]
-		set hours [lindex [split $rawtime ":"] 0]
-		set minutes [lindex [split $rawtime ":"] 1]
-		set seconds [lindex [split $rawtime ":"] 2]
-		set idletime [expr ($hours*60+$minutes)*60+$seconds]
+		if {(![string match "*Up:*" $line]) && ([string match "*Idle:*" $line])} {
+			set user [lindex $line 1]
+			set group [lindex $line 2]
+			set rawtime [lindex $line 5]
+			set hours [lindex [split $rawtime ":"] 0]
+			set minutes [lindex [split $rawtime ":"] 1]
+			set seconds [lindex [split $rawtime ":"] 2]
+			set idletime [expr ($hours*60+$minutes)*60+$seconds]
 
-		if { $idletime > $minidletime } {
-			set output [replacevar $announce(USERIDLE) "%user" $user]
-			set output [replacevar $output "%group" $group]
-			set output [replacevar $output "%idletime" $idletime]
-			set output [basicreplace "$output" "IDLE"]
-			set count [expr $count+1]
-
-		putserv "PRIVMSG $chan :$output"
+			if { $idletime > $minidletime } {
+				set output [replacevar $announce(USERIDLE) "%user" $user]
+				set output [replacevar $output "%group" $group]
+				set output [replacevar $output "%idletime" $idletime]
+				set output [basicreplace "$output" "IDLE"]
+				set count [expr $count+1]
+				putserv "PRIVMSG $chan :$output"
+			}
 		}
 	}
 	set output [replacevar $announce(TOTIDLE) "%count" $count]

@@ -25,5 +25,5 @@ announce.TOTUPDN	= "-%type: %bold%count%bold@%bold%total%boldKB/sec (%bold%per%b
 announce.IDLE		= "Idlers:"
 announce.TOTIDLE	= "-Idlers: There are currently %bold%count%bold scum-suckers wasting race slots"
 announce.USERIDLE	= "--%bold%user%bold%group @ %idletimes"
-announce.USER		= "--%bold%user%bold%group @ %bold%uspeed%boldkb/sec (%bold%per%bold %)"
+announce.USER		= "--%bold%user%bold%group - %bold%filename%bold (%bold%fper%bold% done) @ %bold%uspeed%boldKB/sec (%bold%per%bold% usage)"
 announce.DEFAULT 	= "- %msg"
