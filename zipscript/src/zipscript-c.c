@@ -543,9 +543,31 @@ int main( int argc, char **argv ) {
 #if ( exclude_non_sfv_dirs == TRUE )
 				if ( raceI.misc.write_log == TRUE ) {
 #endif
-#if ( audio_genre_check == TRUE )
+#if ( audio_banned_genre_check == TRUE )
 					if ( strcomp(banned_genres, raceI.audio.id3_genre)) {
 						d_log("File is from banned genre\n");
+						sprintf(raceI.misc.error_msg, BANNED_GENRE, raceI.audio.id3_genre);
+						if ( audio_genre_warn == TRUE ) {
+							if ( userI[raceI.user.pos]->files == 1 ) {
+								d_log("warn on - logging to logfile\n");
+								char * error_msg;
+								int write_log = raceI.misc.write_log;
+								raceI.misc.write_log = 1;
+								error_msg = convert(&raceI,userI,groupI,audio_genre_warn_msg);
+								writelog(error_msg,"BADGENRE");
+								raceI.misc.write_log = write_log;
+								} else {
+								d_log("warn on - have already logged to logfile\n");
+								}
+							} else {
+							exit_value = 2;
+							}
+						break;
+						}
+#endif
+#if ( audio_allowed_genre_check == TRUE )
+					if ( ! strcomp(allowed_genres, raceI.audio.id3_genre)) {
+						d_log("File is not in allowed genre\n");
 						sprintf(raceI.misc.error_msg, BANNED_GENRE, raceI.audio.id3_genre);
 						if ( audio_genre_warn == TRUE ) {
 							if ( userI[raceI.user.pos]->files == 1 ) {
