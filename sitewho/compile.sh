@@ -20,7 +20,6 @@ if [ $? -gt 0 ] ; then
  exit 2
 fi
 echo " [OK]"
-
-echo "File "
+echo ""
 echo "Check README, if you want to learn how this works!"
 echo ""
