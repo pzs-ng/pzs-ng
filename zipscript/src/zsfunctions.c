@@ -224,8 +224,8 @@ void move_progress_bar(unsigned char delete, struct VARS *raceI) {
 		    return;
 		}
 	    }
-	    regfree(&preg);
 	}
+	regfree(&preg);
 	d_log("Progress bar could not be deleted, not found!\n");
     } else {
 	if (!raceI->total.files) return;
@@ -238,11 +238,10 @@ void move_progress_bar(unsigned char delete, struct VARS *raceI) {
 		    return;
 		}
 	    }
-	    regfree(&preg);
 	}
 	d_log("Progress bar could not be moved, creating a new one now!\n");
 	createstatusbar(bar);
-	m_free(bar);
+	regfree(&preg);
     }
 }
 
