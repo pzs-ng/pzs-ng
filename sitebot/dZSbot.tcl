@@ -208,7 +208,7 @@ proc to_mb {str} {
 proc basicreplace {rstring section} {
     global sitename theme
 
-	regsub -all "%c(\\d){(\[^}\])(!?\\)}" $rstring "\003$theme(COLOR\\1)\\2\003"
+	regsub -all "%c(\\d)\{(\[^\}\]+)(!?\\)\}" $rstring "\003$theme(COLOR\\1)\\2\003"
 	
     set output [replacevar $rstring "%sitename" $sitename]
     set output [replacevar $output "%bold" "\002"]
