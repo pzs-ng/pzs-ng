@@ -229,7 +229,7 @@
 
 /* Get list of competitors (all racers excluding current user) - stored in %R cookie */
 #define get_competitor_list     TRUE
-#define racersmsg               "\"%u(%g)\"" /* Put in %R cookie */
+#define racersmsg               "%u(%g)" /* Put in %R cookie */
 
 
 /* Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 & mpeg2.5 + layer1 & 2 can be added if needed */
@@ -246,7 +246,7 @@
 #define audio_norace_complete   "\"%r\" \"%.0m\" \"%f\" \"%.0A\" \"%d\" \"%u\" \"%g\" \"%l\" \"%L\""
 
 /* Video files - supports mpeg1/mpeg2 and various avi formats */
-#define video_race              "%U %R %r %.0S"
+#define video_race              "%U \"%R\" %r %.0S"
 #define video_sfv               "%r %f"
 #define video_update            "%U %G %.1e"
 #define video_halfway           "%r %C0 %c0"
@@ -266,7 +266,7 @@
 #define rar_norace_complete     "%r %.0m %f %.0A %d %u %g %l %L"
 
 /* Rest of the stuff inside sfv */
-#define other_race              "%U %R %r %.0S"
+#define other_race              "%U \"%R\" %r %.0S"
 #define other_sfv               "%r %f"
 #define other_update            "%U %G %.1e"
 #define other_halfway           "%r %C0 %c0"
@@ -276,7 +276,7 @@
 #define other_norace_complete   "%r %.0m %f %.0A %d %u %g %l %L"
 
 /* Zipped files */
-#define zip_race                "%U %R %r %.0S"
+#define zip_race                "%U \"%R\" %r %.0S"
 #define zip_update              "%U %G %.1e %f"
 #define zip_halfway             "%r %C0 %c0"
 #define zip_newleader           "%C0 %r"
