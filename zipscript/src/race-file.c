@@ -97,35 +97,21 @@ delete_sfv_file(struct LOCATIONS *locations)
 
 /*
  * Modified	: 02.19.2002 Author	: Dark0n3
- * 
+ *		: 06.02.2005 by		: js
  * Description	: Creates directory where all race information will be
  * stored.
  */
 void 
 maketempdir(struct LOCATIONS *locations)
 {
-	unsigned int	size;
-	char           *fullpath, *path_p, *end_p;
+	char		full_path[PATH_MAX];
 
+	snprintf(full_path, PATH_MAX, "%s/%s", storage, locations->path);
 
-	size = sizeof(storage) + locations->length_path;
-	fullpath = m_alloc(size);
-	memcpy(fullpath, storage, sizeof(storage));
-
-	path_p = fullpath + sizeof(storage) - 1;
-	memcpy(path_p, locations->path, locations->length_path + 1);
-
-	for (end_p = fullpath + size; path_p < end_p; path_p++) {
-		switch (*path_p) {
-		case '/':
-		case 0:
-			*path_p = 0;
-			mkdir(fullpath, 0777);
-			*path_p = '/';
-			break;
-		}
+	if (mkdir(full_path, 0777) == -1) {
+		d_log("Couldn't create temporary path %s: %s\n", full_path, strerror(errno));
+		exit(EXIT_SUCCESS);
 	}
-	m_free(fullpath);
 }
 
 /*
