@@ -264,8 +264,8 @@ int main () {
 
  umask(0666 & 000);
 
- userI    = malloc( sizeof( int ) * 30 );
- groupI   = malloc( sizeof( int ) * 30 );
+ userI    = malloc( sizeof( struct USERINFO * ) * 30 );
+ groupI   = malloc( sizeof( struct GROUPINFO * ) * 30 );
 
  raceI.misc.slowest_user[0] = 30000;
 
