@@ -136,14 +136,13 @@ void read_user_info() {
 
 
 unsigned char get_filetype(char *ext) {
+	if (!memcmp(ext, "zip", 4)) return 0;
+	if (!memcmp(ext, "sfv", 4)) return 1;
+	if (!memcmp(ext, "nfo", 4)) return 2;
+	if (!strcomp(ignored_types, ext)) return 3;
+	if ( strcomp(allowed_types, ext)) return 4;
 
- if ( ! memcmp(ext, "zip", 4)) return 0;
- if ( ! memcmp(ext, "sfv", 4)) return 1;
- if ( ! memcmp(ext, "nfo", 4)) return 2;
- if ( ! strcomp(ignored_types, ext)) return 3;
- if ( strcomp(allowed_types, ext) ) return 4;
-
- return 255;
+	return 255;
 }
 
 
@@ -301,18 +300,17 @@ int main( int argc, char **argv ) {
 
 		if ( (raceI.misc.write_log = matchpath(zip_dirs, locations.path)) ) {
 			d_log("Directory matched with zip_dirs\n");
-			raceI.misc.write_log = 1 - matchpath(group_dirs, locations.path); 
-			} else if (matchpath(sfv_dirs, locations.path)) {
+		} else if (matchpath(sfv_dirs, locations.path)) {
 			d_log("Directory matched with sfv_dirs\n");
 			no_check = FALSE;
 			break;
-			}
+		}
 
 		if ( ! fileexists("file_id.diz") ) {
 			d_log("file_id.diz does not exist, trying to extract it from %s\n", raceI.file.name);
 			sprintf(target, "/bin/unzip -qqjnCL %s file_id.diz", raceI.file.name);
 			execute(target);
-			}
+		}
 
 		d_log("Reading diskcount from diz\n");
 		raceI.total.files = read_diz("file_id.diz");
@@ -419,18 +417,18 @@ int main( int argc, char **argv ) {
 			}
 		halfway_msg = newleader_msg = race_msg = update_msg = NULL;
 
-		raceI.misc.write_log = (matchpath(sfv_dirs, locations.path) > 0 ? 1 - matchpath(group_dirs, locations.path) : 0);
+		raceI.misc.write_log = matchpath(sfv_dirs, locations.path);
 		if ( raceI.total.files_missing > 0 ) {
 			if ( sfv_msg != NULL ) {
 				d_log("Writing SFV message to %s\n", log);
 				writelog(convert(&raceI, userI, groupI, sfv_msg), "SFV");
-				}
-			} else {
+			}
+		} else {
 			if ( raceI.misc.release_type == 3 ) {
 				d_log("Reading audio info for completebar\n");
 				get_mpeg_audio_info(findfileext(".mp3"), &raceI.audio);
-				}
 			}
+		}
 		break;
 	case 2:
 		/* NFO */
@@ -489,7 +487,7 @@ int main( int argc, char **argv ) {
 #endif
 			}
 
-		raceI.misc.write_log = matchpath(sfv_dirs, locations.path) > 0 ? 1 - matchpath(group_dirs, locations.path) : 0;
+		raceI.misc.write_log = matchpath(sfv_dirs, locations.path);
 
 		d_log("Removing missing indicator\n");
 		sprintf(target, "%s-missing", raceI.file.name);
