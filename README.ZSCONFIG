@@ -963,5 +963,16 @@ disable_other_norace_complete <TRUE|FALSE>
 	announce.
 	Default: FALSE
 
+short_sitename <STRING>
+	Insert here the name of your site, short format. This will be used on
+	progressbars, completebars etc. This can be used in a cookie (%Z).
+	Default: "dS"
+
+KEY <IPCKEY>
+	You can define glftpd's ipckey with this argument. This is only used
+	in ng-bw, since the rest of the bins either does not access the shared
+	memory of glftpd, or uses a separate config for it (like sitewho).
+	Default: "0x0000DEAD"
+
 --END
 

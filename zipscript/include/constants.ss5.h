@@ -19,7 +19,7 @@
 #define MAXIMUM_FILES_IN_RELEASE	1024
 
 #ifndef O_SYNC
-# define O_SYNC O_FSYNC
+#define O_SYNC O_FSYNC
 #endif
 
 #define video_announce_norace_complete_type	"COMPLETE"
@@ -74,14 +74,19 @@
 #define group_info		"SS/%g/%.1m/%f/%.1p/%.0s"
 
 /* Special reformat cookies */
-#define fastestfile		"{%u} {%g} {%.3F}" /* Put in %l cookie */
-#define slowestfile		"{%u} {%g} {%.3S}" /* Put in %L cookie */
-#define racersplit		" " /* Put between racers in the %R cookie - !!MUST BE ONLY ONE (1) CHAR!! */
-#define racersmsg		"%u/%g" /* Put in %R cookie */
-#define audio_vbr		"VBR %i %I" /* Put in %j cookie */
-#define audio_cbr		"CBR"    /* Put in %j cookie */
+#define fastestfile		"{%u} {%g} {%.3F}"	/* Put in %l cookie */
+#define slowestfile		"{%u} {%g} {%.3S}"	/* Put in %L cookie */
+#define racersplit		" "	/* Put between racers in the %R
+					 * cookie - !!MUST BE ONLY ONE (1)
+					 * CHAR!! */
+#define racersmsg		"%u/%g"	/* Put in %R cookie */
+#define audio_vbr		"VBR %i %I"	/* Put in %j cookie */
+#define audio_cbr		"CBR"	/* Put in %j cookie */
 
-/* Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 & mpeg2.5 + layer1 & 2 can be added if needed */
+/*
+ * Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 &
+ * mpeg2.5 + layer1 & 2 can be added if needed
+ */
 #define audio_race		"%U %G %.0S {%R}"
 #define audio_sfv		"%f"
 #define audio_update		"{%.1e} {%w} {%Y} {%X} {%j}"
@@ -153,4 +158,3 @@ enum ReleaseTypes {
 };
 
 #endif
-

@@ -22,7 +22,7 @@
 #define MAXIMUM_FILES_IN_RELEASE	1024
 
 #ifndef O_SYNC
-# define O_SYNC O_FSYNC
+#define O_SYNC O_FSYNC
 #endif
 
 #define video_announce_norace_complete_type	"COMPLETE_VIDEO"
@@ -72,26 +72,31 @@
 #define loser			"dummy_loser"
 
 #ifdef _WITH_NOFORMAT
- #define user_top		"{%n} {%u} {%g} {%.1m} {%f} {%.1p} {%.0s} {%D} {%W} {%M} {%A}"
- #define user_info		"{%u} {%g} {%.1m} {%f} {%.1p} {%.0s}"
- #define group_top		"{%n} {%g} {%.1m} {%f} {%.1p} {%.0s}"
- #define group_info		"{%g} {%.1m} {%f} {%.1p} {%.0s}"
+#define user_top		"{%n} {%u} {%g} {%.1m} {%f} {%.1p} {%.0s} {%D} {%W} {%M} {%A}"
+#define user_info		"{%u} {%g} {%.1m} {%f} {%.1p} {%.0s}"
+#define group_top		"{%n} {%g} {%.1m} {%f} {%.1p} {%.0s}"
+#define group_info		"{%g} {%.1m} {%f} {%.1p} {%.0s}"
 #else
- #define user_top		"{%n} {%-9u} {%-9g} {%5.1m} {%2f} {%5.1p} {%5.0s} {%2D} {%2W} {%2M} {%2A}"
- #define user_info		"{%u} {%g} {%.1m} {%f} {%.1p} {%.0s}"
- #define group_top		"{%n} {%-9g} {%.1m} {%f} {%.1p} {%5.0s}"
- #define group_info		"{%g} {%.1m} {%-2f} {%.1p} {%.0s}"
+#define user_top		"{%n} {%-9u} {%-9g} {%5.1m} {%2f} {%5.1p} {%5.0s} {%2D} {%2W} {%2M} {%2A}"
+#define user_info		"{%u} {%g} {%.1m} {%f} {%.1p} {%.0s}"
+#define group_top		"{%n} {%-9g} {%.1m} {%f} {%.1p} {%5.0s}"
+#define group_info		"{%g} {%.1m} {%-2f} {%.1p} {%.0s}"
 #endif
 
 /* Special reformat cookies */
-#define fastestfile		"{%u} {%g} {%.3F}" /* Put in %l cookie */
-#define slowestfile		"{%u} {%g} {%.3S}" /* Put in %L cookie */
-#define racersplit		" " /* Put between racers in the %R cookie - !!MUST BE ONLY ONE (1) CHAR!! */
-#define racersmsg		"%u/%g" /* Put in %R cookie */
-#define audio_vbr		"{%X} {%z} {%Q} {VBR} {%I}" /* Put in %j cookie */
-#define audio_cbr		"{%X} {%z} {%Q} {CBR}"    /* Put in %j cookie */
+#define fastestfile		"{%u} {%g} {%.3F}"	/* Put in %l cookie */
+#define slowestfile		"{%u} {%g} {%.3S}"	/* Put in %L cookie */
+#define racersplit		" "	/* Put between racers in the %R
+					 * cookie - !!MUST BE ONLY ONE (1)
+					 * CHAR!! */
+#define racersmsg		"%u/%g"	/* Put in %R cookie */
+#define audio_vbr		"{%X} {%z} {%Q} {VBR} {%I}"	/* Put in %j cookie */
+#define audio_cbr		"{%X} {%z} {%Q} {CBR}"	/* Put in %j cookie */
 
-/* Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 & mpeg2.5 + layer1 & 2 can be added if needed */
+/*
+ * Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 &
+ * mpeg2.5 + layer1 & 2 can be added if needed
+ */
 #if ( disable_audio_race == FALSE )
 #define audio_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M}"
 #else
@@ -318,4 +323,3 @@ enum ReleaseTypes {
 };
 
 #endif
-

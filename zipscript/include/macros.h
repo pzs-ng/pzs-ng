@@ -2,52 +2,51 @@
 #define _MACROS_H_
 
 #if HAVE_DIRENT_H
-# include <dirent.h>
-# define NAMLEN(dirent) strlen((dirent)->d_name)
+#include <dirent.h>
+#define NAMLEN(dirent) strlen((dirent)->d_name)
 #else
-# define dirent direct
-# define NAMLEN(dirent) (dirent)->d_namlen
-# if HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif
-# if HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif
-# if HAVE_NDIR_H
-#  include <ndir.h>
-# else
-#  error "No dirent header, quitting."
-# endif
+#define dirent direct
+#define NAMLEN(dirent) (dirent)->d_namlen
+#if HAVE_SYS_NDIR_H
+#include <sys/ndir.h>
+#endif
+#if HAVE_SYS_DIR_H
+#include <sys/dir.h>
+#endif
+#if HAVE_NDIR_H
+#include <ndir.h>
+#else
+#error "No dirent header, quitting."
+#endif
 #endif
 
 /* General */
 #if ( incompleteislink == 1 )
-# if ( userellink == 1 )
-#  define create_incomplete() symlink(raceI.misc.release_name, locations.incomplete)
-#  define create_incomplete_nfo() symlink(raceI.misc.release_name, locations.nfo_incomplete)
-# else
-#  define create_incomplete() symlink(locations.path, locations.incomplete)
-#  define create_incomplete_nfo() symlink(locations.path, locations.nfo_incomplete)
-# endif
+#if ( userellink == 1 )
+#define create_incomplete() symlink(raceI.misc.release_name, locations.incomplete)
+#define create_incomplete_nfo() symlink(raceI.misc.release_name, locations.nfo_incomplete)
 #else
-# define create_incomplete() createzerofile(locations.incomplete)
-# define create_incomplete_nfo() createzerofile(locations.nfo_incomplete)
+#define create_incomplete() symlink(locations.path, locations.incomplete)
+#define create_incomplete_nfo() symlink(locations.path, locations.nfo_incomplete)
+#endif
+#else
+#define create_incomplete() createzerofile(locations.incomplete)
+#define create_incomplete_nfo() createzerofile(locations.nfo_incomplete)
 #endif
 
 /* No race */
 #if ( announce_norace == 1 )
-# define CHOOSE(a,b,c)	raceI.total.users > 1 ? b : c;
+#define CHOOSE(a,b,c)	raceI.total.users > 1 ? b : c;
 #else
-# define CHOOSE(a,b,c)	b;
+#define CHOOSE(a,b,c)	b;
 #endif
 
 #ifndef alloca
-# define m_alloc(x) malloc(x)
-# define m_free(p) free(p)
+#define m_alloc(x) malloc(x)
+#define m_free(p) free(p)
 #else
-# define m_alloc(x) alloca(x)
-# define m_free(p)
+#define m_alloc(x) alloca(x)
+#define m_free(p)
 #endif
 
 #endif
-
