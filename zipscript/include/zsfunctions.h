@@ -38,6 +38,10 @@
 #include "constants.h"
 #endif
 
+#if ( debug_mode == TRUE )
+#include <stdarg.h>
+#endif
+
 #define createzerofile(filename) fclose(fopen(filename, "a+"))
 
 /* Creates status bar file */
@@ -51,16 +55,34 @@
 #define createstatusbar(bardata)
 #endif
 
-extern struct USERINFO **userI;
+/*
+ * Remove the portion of PARAM matched by PATTERN according to OP, where OP
+ * can have one of 4 values: RP_LONG_LEFT    remove longest matching portion
+ * at start of PARAM RP_SHORT_LEFT   remove shortest matching portion at
+ * start of PARAM RP_LONG_RIGHT   remove longest matching portion at end of
+ * PARAM RP_SHORT_RIGHT  remove shortest matching portion at end of PARAM
+ */
+
+#define RP_LONG_LEFT    1
+#define RP_SHORT_LEFT   2
+#define RP_LONG_RIGHT   3
+#define RP_SHORT_RIGHT  4
+
+struct GROUP {
+	char           *name;
+	gid_t		id;
+};
+
+struct USER {
+	char           *name;
+	uid_t		id;
+};
+
+/*extern struct USERINFO **userI;
 extern struct GROUPINFO **groupI;
-extern struct VARS raceI;
+extern struct VARS raceI;*/
 extern struct dirent **dirlist;
 extern unsigned int direntries;
-
-
-#if ( debug_mode == TRUE )
-#include <stdarg.h>
-#endif
 
 extern void	d_log(char *,...);
 
@@ -69,9 +91,7 @@ extern char    *findfileext(char *);
 extern char    *findfileextparent(char *);
 extern int	findfileextcount(char *);
 extern unsigned int hexstrtodec(unsigned char *);
-#if defined(__linux__)
-extern int	selector(const struct dirent *);
-#elif defined(__NetBSD__)
+#if defined(__linux__) || defined(__NetBSD__)
 extern int	selector(const struct dirent *);
 #else
 extern int	selector(struct dirent *);
@@ -85,7 +105,7 @@ extern void	unlink_missing(char *);
 extern char	israr(char *);
 extern char	isvideo(char *);
 extern void	buffer_progress_bar(struct VARS *);
-extern void	move_progress_bar(unsigned char, struct VARS *);
+extern void	move_progress_bar(unsigned char, struct VARS *, struct USERINFO **, struct GROUPINFO **);
 extern short	findfile(char *);
 extern char    *findfilename(char *);
 extern void	removedotfiles();
@@ -96,8 +116,8 @@ extern short	strcomp(char *, char *);
 extern short	subcomp(char *);
 extern short	fileexists(char *);
 extern void	createlink(char *, char *, char *, char *);
-extern void	readsfv_ffile(char *, off_t);
-extern void	get_rar_info(char *);
+extern void	readsfv_ffile(struct VARS *);
+extern void	get_rar_info(struct VARS *);
 extern int	execute(char *);
 extern char    *abs2rel(const char *, const char *, char *, const size_t);
 extern char    *get_g_name(int);
@@ -106,4 +126,16 @@ extern int	buffer_groups(char *, int);
 extern int	buffer_users(char *, int);
 extern unsigned long sfv_compare_size(char *, unsigned long);
 extern void	mark_as_bad(char *);
+
+/* split from zsipscript-c.c */
+extern void writelog(GLOBAL *, char *, char *);
+extern char **buffer_paths(GLOBAL *, char **, int *, int);
+extern void remove_nfo_indicator(GLOBAL *);
+extern void getrelname(GLOBAL *);
+extern unsigned char get_filetype(GLOBAL *, char *);
+
+#if ( audio_group_sort == TRUE )
+extern char *remove_pattern(char *, char *, int);
+#endif
+
 #endif

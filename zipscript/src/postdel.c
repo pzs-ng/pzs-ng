@@ -24,9 +24,9 @@
 
 #include "postdel.h"
 
-struct USERINFO **userI;
+/*struct USERINFO **userI;
 struct GROUPINFO **groupI;
-struct VARS	raceI;
+struct VARS	raceI;*/
 
 int 
 main(int argc, char **argv)
@@ -42,7 +42,8 @@ main(int argc, char **argv)
 	unsigned char	empty_dir = 0;
 	unsigned char	incomplete = 0;
 	
-	struct LOCATIONS locations;
+	/*struct LOCATIONS &g.l;*/
+	GLOBAL g;
 
 	if (argc == 1) {
 		d_log("no param specified\n");
@@ -95,65 +96,71 @@ main(int argc, char **argv)
 	umask(0666 & 000);
 
 	d_log("Clearing arrays\n");
-	bzero(&raceI.total, sizeof(struct race_total));
-	raceI.misc.slowest_user[0] = 30000;
-	raceI.misc.fastest_user[0] = 0;
+	//bzero(&g.v.total, sizeof(struct race_total));
+	bzero(&g.v.total, sizeof(struct race_total));
+	//g.v.misc.slowest_user[0] = 30000;
+	//g.v.misc.fastest_user[0] = 0;
+	g.v.misc.slowest_user[0] = 30000;
+	g.v.misc.fastest_user[0] = 0;
 
 	/* YARR; THE PAIN OF MAGIC NUMBERS! */
-	d_log("Copying env/predefined username to raceI. (%s)\n", env_user);
-	strncpy(raceI.user.name, env_user, 24);
-	raceI.user.name[23] = 0;
-	d_log("Copying env/predefined groupname to raceI. (%s)\n", env_group);
-	strncpy(raceI.user.group, env_group, 24);
-	raceI.user.group[23] = 0;
+	d_log("Copying env/predefined username to g.v. (%s)\n", env_user);
+	strncpy(g.v.user.name, env_user, 24);
+	/*strncpy(g.v.user.name, env_user, 24);
+	g.v.user.name[23] = 0;*/
+	
+	d_log("Copying env/predefined groupname to g.v. (%s)\n", env_group);
+	strncpy(g.v.user.group, env_group, 24);
+	g.v.user.group[23] = 0;
 
 	d_log("File to remove is: %s\n", fname);
 
-	if (!*raceI.user.group)
-		memcpy(raceI.user.group, "NoGroup", 8);
+	if (!*g.v.user.group)
+		memcpy(g.v.user.group, "NoGroup", 8);
 
 	d_log("Allocating memory for variables\n");
-	userI = malloc(sizeof(struct USERINFO *) * 30);
-	memset(userI, 0, sizeof(struct USERINFO *) * 30);
-	groupI = malloc(sizeof(struct GROUPINFO *) * 30);
-	memset(groupI, 0, sizeof(struct GROUPINFO *) * 30);
 
-	locations.path = malloc(PATH_MAX);
-	//raceI.misc.release_name = malloc(PATH_MAX);
-	getcwd(locations.path, PATH_MAX);
+	g.ui = malloc(sizeof(struct USERINFO *) * 30);
+	memset(g.ui, 0, sizeof(struct USERINFO *) * 30);
+	g.gi = malloc(sizeof(struct GROUPINFO *) * 30);
+	memset(g.gi, 0, sizeof(struct GROUPINFO *) * 30);
 
-	if (matchpath(nocheck_dirs, locations.path) || (!matchpath(zip_dirs, locations.path) && !matchpath(sfv_dirs, locations.path) & !matchpath(group_dirs, locations.path))) {
+	//g.l.path = malloc(PATH_MAX);
+	//g.v.misc.release_name = malloc(PATH_MAX);
+	getcwd(g.l.path, PATH_MAX);
+
+	if (matchpath(nocheck_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) & !matchpath(group_dirs, g.l.path))) {
 		d_log("Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
 		d_log("Freeing memory, and exiting\n");
-		free(userI);
-		free(groupI);
-		free(locations.path);
+		free(g.ui);
+		free(g.gi);
+		free(g.l.path);
 		return 0;
 	}
-	locations.race = malloc(n = strlen(locations.path) + 10 + sizeof(storage));
-	locations.sfv = malloc(n);
-	locations.leader = malloc(n);
+	g.l.race = malloc(n = strlen(g.l.path) + 10 + sizeof(storage));
+	g.l.sfv = malloc(n);
+	g.l.leader = malloc(n);
 	target = malloc(4096);
 
 	if (getenv("SECTION") == NULL) {
-		sprintf(raceI.sectionname, "DEFAULT");
+		sprintf(g.v.sectionname, "DEFAULT");
 	} else {
-		snprintf(raceI.sectionname, 127, getenv("SECTION"));
+		snprintf(g.v.sectionname, 127, getenv("SECTION"));
 	}
 
-	d_log("Copying data locations into memory\n");
-	raceI.file.name = fname;
-	sprintf(locations.sfv, storage "/%s/sfvdata", locations.path);
-	sprintf(locations.leader, storage "/%s/leader", locations.path);
-	sprintf(locations.race, storage "/%s/racedata", locations.path);
+	d_log("Copying data &g.l into memory\n");
+	g.v.file.name = fname;
+	sprintf(g.l.sfv, storage "/%s/sfvdata", g.l.path);
+	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
+	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
 
 	d_log("Caching release name\n");
-	getrelname(&locations);
-	d_log("DEBUG 0: incomplete: '%s', path: '%s'\n", locations.incomplete, locations.path);
+	getrelname(&g);
+	d_log("DEBUG 0: incomplete: '%s', path: '%s'\n", g.l.incomplete, g.l.path);
 
 	d_log("Parsing file extension from filename...\n");
 
-	for (temp_p = name_p = raceI.file.name; *name_p != 0; name_p++) {
+	for (temp_p = name_p = g.v.file.name; *name_p != 0; name_p++) {
 		if (*name_p == '.')
 			temp_p = name_p;
 	}
@@ -172,26 +179,26 @@ main(int argc, char **argv)
 	memcpy(fileext, temp_p, name_p - temp_p);
 	strtolower(fileext);
 
-	switch (get_filetype(&locations, fileext)) {
+	switch (get_filetype_postdel(&g, fileext)) {
 	case 0:
 		d_log("File type is: ZIP\n");
-		if (matchpath(zip_dirs, locations.path)) {
-			if (matchpath(group_dirs, locations.path)) {
-				raceI.misc.write_log = 0;
+		if (matchpath(zip_dirs, g.l.path)) {
+			if (matchpath(group_dirs, g.l.path)) {
+				g.v.misc.write_log = 0;
 			} else {
-				raceI.misc.write_log = 1;
+				g.v.misc.write_log = 1;
 			}
-		} else if (matchpath(sfv_dirs, locations.path) && strict_path_match) {
-			if (matchpath(group_dirs, locations.path)) {
-				raceI.misc.write_log = 0;
+		} else if (matchpath(sfv_dirs, g.l.path) && strict_path_match) {
+			if (matchpath(group_dirs, g.l.path)) {
+				g.v.misc.write_log = 0;
 			} else {
 				d_log("Directory matched with sfv_dirs\n");
 				break;
 			}
 		}
-/*		if ((raceI.misc.write_log = matchpath(zip_dirs, locations.path)))) {
-			raceI.misc.write_log = 1 - matchpath(group_dirs, locations.path);
-		} else if (matchpath(sfv_dirs, locations.path)) {
+/*		if ((g.v.misc.write_log = matchpath(zip_dirs, g.l.path)))) {
+			g.v.misc.write_log = 1 - matchpath(group_dirs, g.l.path);
+		} else if (matchpath(sfv_dirs, g.l.path)) {
 			d_log("Directory did not match with zip_dirs\n");
 			break;
 		}
@@ -206,32 +213,33 @@ main(int argc, char **argv)
 			}
 		}
 		d_log("Reading diskcount from diz\n");
-		raceI.total.files = read_diz("file_id.diz");
-		if (raceI.total.files == 0) {
+		g.v.total.files = read_diz("file_id.diz");
+		if (g.v.total.files == 0) {
 			d_log("Could not get diskcount from diz\n");
-			raceI.total.files = 1;
+			g.v.total.files = 1;
+			
 		}
-		raceI.total.files_missing = raceI.total.files;
+		g.v.total.files_missing = g.v.total.files;
 
 		d_log("Reading race data from file to memory\n");
-		readrace_file(&locations, &raceI, userI, groupI);
+		readrace_file(&g.l, &g.v, g.ui, g.gi);
 
 		d_log("Caching progress bar\n");
-		buffer_progress_bar(&raceI);
+		buffer_progress_bar(&g.v);
 
 		d_log("Removing old complete bar, if any\n");
 		removecomplete();
-		if (raceI.total.files_missing < 0) {
-			raceI.total.files -= raceI.total.files_missing;
-			raceI.total.files_missing = 0;
+		if (g.v.total.files_missing < 0) {
+			g.v.total.files -= g.v.total.files_missing;
+			g.v.total.files_missing = 0;
 		}
-		if (!raceI.total.files_missing) {
+		if (!g.v.total.files_missing) {
 			d_log("Creating complete bar\n");
-			createstatusbar(convert(&raceI, userI, groupI, zip_completebar));
-		} else if (raceI.total.files_missing < raceI.total.files) {
-			if (raceI.total.files_missing == 1) {
+			createstatusbar(convert(&g.v, g.ui, g.gi, zip_completebar));
+		} else if (g.v.total.files_missing < g.v.total.files) {
+			if (g.v.total.files_missing == 1) {
 				d_log("Writing INCOMPLETE to %s\n", log);
-				writelog(&locations, convert(&raceI, userI, groupI, incompletemsg), general_incomplete_type);
+				writelog(&g, convert(&g.v, g.ui, g.gi, incompletemsg), general_incomplete_type);
 			}
 			incomplete = 1;
 		} else {
@@ -240,51 +248,51 @@ main(int argc, char **argv)
 		break;
 	case 1:
 		d_log("Reading file count from SFV\n");
-		readsfv_file(&locations, &raceI, 0);
+		readsfv_file(&g.l, &g.v, 0);
 
-		if (fileexists(locations.race)) {
+		if (fileexists(g.l.race)) {
 			d_log("Reading race data from file to memory\n");
-			readrace_file(&locations, &raceI, userI, groupI);
+			readrace_file(&g.l, &g.v, g.ui, g.gi);
 		}
 		d_log("Caching progress bar\n");
-		buffer_progress_bar(&raceI);
-		if (raceI.total.files_missing == raceI.total.files) {
+		buffer_progress_bar(&g.v);
+		if (g.v.total.files_missing == g.v.total.files) {
 			empty_dir = 1;
 		}
 		break;
 	case 3:
 		d_log("Removing old complete bar, if any\n");
 		removecomplete();
-		raceI.misc.write_log = matchpath(sfv_dirs, locations.path) > 0 ? 1 - matchpath(group_dirs, locations.path) : 0;
+		g.v.misc.write_log = matchpath(sfv_dirs, g.l.path) > 0 ? 1 - matchpath(group_dirs, g.l.path) : 0;
 
-		if (fileexists(locations.race)) {
+		if (fileexists(g.l.race)) {
 			d_log("Reading race data from file to memory\n");
-			readrace_file(&locations, &raceI, userI, groupI);
+			readrace_file(&g.l, &g.v, g.ui, g.gi);
 		}
-		if (fileexists(locations.sfv)) {
+		if (fileexists(g.l.sfv)) {
 #if ( create_missing_files == TRUE )
 #if ( sfv_cleanup == TRUE )
 #if ( sfv_cleanup_lowercase == TRUE )
-			strtolower(raceI.file.name);
+			strtolower(g.v.file.name);
 #endif
 #endif
-			create_missing(raceI.file.name, name_p - raceI.file.name - 1);
+			create_missing(g.v.file.name, name_p - g.v.file.name - 1);
 #endif
 			d_log("Reading file count from SFV\n");
-			readsfv_file(&locations, &raceI, 0);
+			readsfv_file(&g.l, &g.v, 0);
 
 			d_log("Caching progress bar\n");
-			buffer_progress_bar(&raceI);
+			buffer_progress_bar(&g.v);
 		}
-		if (raceI.total.files_missing < raceI.total.files) {
-			if (raceI.total.files_missing == 1) {
+		if (g.v.total.files_missing < g.v.total.files) {
+			if (g.v.total.files_missing == 1) {
 				d_log("Writing INCOMPLETE to %s\n", log);
-				writelog(&locations, convert(&raceI, userI, groupI, incompletemsg), general_incomplete_type);
+				writelog(&g, convert(&g.v, g.ui, g.gi, incompletemsg), general_incomplete_type);
 			}
 			incomplete = 1;
 		} else {
 			d_log("Removing old race data\n");
-			unlink(locations.race);
+			unlink(g.l.race);
 			if (findfileext(".sfv") == NULL) {
 				empty_dir = 1;
 			} else {
@@ -297,14 +305,14 @@ main(int argc, char **argv)
 	case 255:
 //		break;
 	case 2:
-		if (!fileexists(locations.race)) {
+		if (!fileexists(g.l.race)) {
 			empty_dir = 1;
 		} else {
 			d_log("Reading race data from file to memory\n");
-			readrace_file(&locations, &raceI, userI, groupI);
+			readrace_file(&g.l, &g.v, g.ui, g.gi);
 			d_log("Caching progress bar\n");
-			buffer_progress_bar(&raceI);
-			if (raceI.total.files_missing == raceI.total.files) {
+			buffer_progress_bar(&g.v);
+			if (g.v.total.files_missing == g.v.total.files) {
 				empty_dir = 1;
 			}
 		}
@@ -314,67 +322,67 @@ main(int argc, char **argv)
 	if (empty_dir == 1) {
 		d_log("Removing all files and directories created by zipscript\n");
 		removecomplete();
-		if (fileexists(locations.sfv))
-			delete_sfv_file(&locations);
-		if (locations.nfo_incomplete)
-			unlink(locations.nfo_incomplete);
-		if (locations.incomplete)
-			unlink(locations.incomplete);
+		if (fileexists(g.l.sfv))
+			delete_sfv_file(&g.l);
+		if (g.l.nfo_incomplete)
+			unlink(g.l.nfo_incomplete);
+		if (g.l.incomplete)
+			unlink(g.l.incomplete);
 //		if (fileexists("file_id.diz"))
 			unlink("file_id.diz");
-//		if (fileexists(locations.sfv))
-			unlink(locations.sfv);
-//		if (fileexists(locations.race))
-			unlink(locations.race);
-//		if (fileexists(locations.leader))
-			unlink(locations.leader);
-		move_progress_bar(1, &raceI);
+//		if (fileexists(g.l.sfv))
+			unlink(g.l.sfv);
+//		if (fileexists(g.l.race))
+			unlink(g.l.race);
+//		if (fileexists(g.l.leader))
+			unlink(g.l.leader);
+		move_progress_bar(1, &g.v, g.ui, g.gi);
 #if (remove_dot_files_on_delete == TRUE)
 		removedotfiles();
 #endif
 	}
-	if (incomplete == 1 && raceI.total.files > 0) {
+	if (incomplete == 1 && g.v.total.files > 0) {
 
-		getrelname(&locations);
-		if (locations.nfo_incomplete) {
+		getrelname(&g);
+		if (g.l.nfo_incomplete) {
 			if (findfileext(".nfo")) {
 				d_log("Removing missing-nfo indicator (if any)\n");
-				remove_nfo_indicator(&locations);
-			} else if (matchpath(check_for_missing_nfo_dirs, locations.path) && (!matchpath(group_dirs, locations.path) || create_incomplete_links_in_group_dirs)) {
-				if (!locations.in_cd_dir) {
-					d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
+				remove_nfo_indicator(&g);
+			} else if (matchpath(check_for_missing_nfo_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
+				if (!g.l.in_cd_dir) {
+					d_log("Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 					create_incomplete_nfo();
 				} else {
 					rescanparent(2);
 					if (findfileextparent(".nfo")) {
 						d_log("Removing missing-nfo indicator (if any)\n");
-						remove_nfo_indicator(&locations);
+						remove_nfo_indicator(&g);
 					} else {
-						d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
+						d_log("Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
 					}
 					rescanparent(1);
 				}
 			}
 		}
-		if (!matchpath(group_dirs, locations.path) || create_incomplete_links_in_group_dirs) {
+		if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
 			d_log("Creating incomplete indicator\n");
-			d_log("   incomplete: '%s', path: '%s'\n", locations.incomplete, locations.path);
+			d_log("   incomplete: '%s', path: '%s'\n", g.l.incomplete, g.l.path);
 			create_incomplete();
 		}
 		d_log("Moving progress bar\n");
-		move_progress_bar(0, &raceI);
+		move_progress_bar(0, &g.v, g.ui, g.gi);
 	}
 	d_log("Releasing memory\n");
 	rescandir(1);
-	updatestats_free(raceI, userI, groupI);
+	updatestats_free(g.v, g.ui, g.gi);
 	free(fileext);
 	free(target);
-	//free(raceI.misc.release_name);
-	free(locations.path);
-	free(locations.race);
-	free(locations.sfv);
-	free(locations.leader);
+	//free(g.v.misc.release_name);
+	free(g.l.path);
+	free(g.l.race);
+	free(g.l.sfv);
+	free(g.l.leader);
 
 	d_log("Exit\n");
 
@@ -384,15 +392,15 @@ main(int argc, char **argv)
 	return 0;
 }
 
-void 
-writelog(struct LOCATIONS *locations, char *msg, char *status)
+/*void 
+writelog(GLOBAL *g, char *msg, char *status)
 {
 	FILE           *glfile;
 	char           *date;
 	char           *line, *newline;
 	time_t		timenow;
 
-	if (raceI.misc.write_log == TRUE && !matchpath(group_dirs, locations->path)) {
+	if (g->v.misc.write_log == TRUE && !matchpath(group_dirs, g->l.path)) {
 		timenow = time(NULL);
 		date = ctime(&timenow);
 		if (!(glfile = fopen(log, "a+"))) {
@@ -403,96 +411,54 @@ writelog(struct LOCATIONS *locations, char *msg, char *status)
 		while (1) {
 			switch (*newline++) {
 			case 0:
-				fprintf(glfile, "%.24s %s: \"%s\" %s\n", date, status, locations->path, line);
+				fprintf(glfile, "%.24s %s: \"%s\" %s\n", date, status, g->l.path, line);
 				fclose(glfile);
 				return;
 			case '\n':
-				fprintf(glfile, "%.24s %s: \"%s\" %.*s\n", date, status, locations->path, (int)(newline - line - 1), line);
+				fprintf(glfile, "%.24s %s: \"%s\" %.*s\n", date, status, g->l.path, (int)(newline - line - 1), line);
 				line = newline;
 				break;
 			}
 		}
 	}
-}
-
-char **
-buffer_paths(struct LOCATIONS *locations, char **path, int *k, int len)
-{
-	int		cnt, n = 0;
-
-	path = malloc(sizeof(char *)*2);
-
-	for (cnt = len; *k && cnt; cnt--) {
-		if (locations->path[cnt] == '/') {
-			(*k)--;
-			path[*k] = malloc(n + 1);
-			strncpy(path[*k], locations->path + cnt + 1, n);
-			path[*k][n] = 0;
-			n = 0;
-		} else {
-			n++;
-		}
-	}
-	
-	return path;
-}
+}*/
 
 /*
  * GET NAME OF MULTICD RELEASE (CDx/D[Ii]S[CK]x/DVDx) (SYMLINK LOCATION +
  * INCOMPLETE FILENAME)
  */
-void 
-getrelname(struct LOCATIONS *locations)
+/*void 
+getrelname(GLOBAL *g)
 {
 	int		k = 2;
 	char		**path = 0;
 
-	path = buffer_paths(locations, path, &k, strlen(locations->path));
+	path = buffer_paths(g, path, &k, strlen(g->l.path));
 
 	if (subcomp(path[1])) {
-		sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
-		locations->incomplete = c_incomplete(incomplete_cd_indicator, path, &raceI);
-		locations->nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &raceI);
-		locations->in_cd_dir = 1;
+		sprintf(g->v.misc.release_name, "%s/%s", path[0], path[1]);
+		g->l.incomplete = c_incomplete(incomplete_cd_indicator, path, &g->v);
+		g->l.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &g->v);
+		g->l.in_cd_dir = 1;
 	} else {
-		sprintf(raceI.misc.release_name, "%s", path[1]);
-		locations->incomplete = c_incomplete(incomplete_indicator, path, &raceI);
-		locations->nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &raceI);
-		locations->in_cd_dir = 0;
+		sprintf(g->v.misc.release_name, "%s", path[1]);
+		g->l.incomplete = c_incomplete(incomplete_indicator, path, &g->v);
+		g->l.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &g->v);
+		g->l.in_cd_dir = 0;
 	}
 
 	if (k < 2)
 		free(path[1]);
 	if (k == 0)
 		free(path[0]);
-}
-
-void 
-remove_nfo_indicator(struct LOCATIONS *locations)
-{
-	int		k = 2;
-	char		**path = 0;
-
-	path = buffer_paths(locations, path, &k, (strlen(locations->path)-1));
-
-	locations->nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &raceI);
-	if (locations->nfo_incomplete)
-		unlink(locations->nfo_incomplete);
-	locations->nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &raceI);
-	if (locations->nfo_incomplete)
-		unlink(locations->nfo_incomplete);
-	if (k < 2)
-		free(path[1]);
-	if (k == 0)
-		free(path[0]);
-}
+}*/
 
 unsigned char 
-get_filetype(struct LOCATIONS *locations, char *ext)
+get_filetype_postdel(GLOBAL *g, char *ext)
 {
 	if (!memcmp(ext, "sfv", 4))
 		return 1;
-	if (!clear_file_file(locations, raceI.file.name))
+	if (!clear_file_file(&g->l, g->v.file.name))
 		return 4;
 	if (!memcmp(ext, "zip", 4))
 		return 0;

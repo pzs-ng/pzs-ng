@@ -1,4 +1,5 @@
 #include <errno.h>
+#include <fnmatch.h>
 #include "zsfunctions.h"
 
 #ifdef _WITH_SS5
@@ -8,16 +9,6 @@
 #endif
 
 #include "convert.h"
-
-struct GROUP {
-	char           *name;
-	gid_t		id;
-};
-
-struct USER {
-	char           *name;
-	uid_t		id;
-};
 
 struct dirent **dirlist;
 struct dirent **dirlistp;
@@ -356,7 +347,7 @@ buffer_progress_bar(struct VARS *raceI)
  * Modified: 01.16.2002
  */
 void 
-move_progress_bar(unsigned char delete, struct VARS *raceI)
+move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI)
 {
 	char           *bar;
 	char	       *delbar = 0;
@@ -683,18 +674,18 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 
 
 void 
-readsfv_ffile(char *filename, off_t buf_bytes)
+readsfv_ffile(struct VARS *raceI)
 {
 	int		fd, line_start = 0, index_start, ext_start, n;
 	char           *buf, *fname;
 
-	fd = open(filename, O_RDONLY);
-	buf = m_alloc(buf_bytes + 2);
-	read(fd, buf, buf_bytes);
+	fd = open(raceI->file.name, O_RDONLY);
+	buf = m_alloc(raceI->file.size + 2);
+	read(fd, buf, raceI->file.size);
 	close(fd);
 
-	for (n = 0; n <= buf_bytes; n++) {
-		if (buf[n] == '\n' || n == buf_bytes) {
+	for (n = 0; n <= raceI->file.size; n++) {
+		if (buf[n] == '\n' || n == raceI->file.size) {
 			index_start = n - line_start;
 			if (buf[line_start] != ';') {
 				while (buf[index_start + line_start] != ' ' && index_start--);
@@ -718,10 +709,10 @@ readsfv_ffile(char *filename, off_t buf_bytes)
 						ext_start++;
 					}
 					index_start++;
-					raceI.total.files++;
+					raceI->total.files++;
 					if (!strcomp(ignored_types, fname + ext_start)) {
 						if (findfile(fname)) {
-							raceI.total.files_missing--;
+							raceI->total.files_missing--;
 						}
 					}
 				}
@@ -729,21 +720,21 @@ readsfv_ffile(char *filename, off_t buf_bytes)
 			line_start = n + 1;
 		}
 	}
-	raceI.total.files_missing = raceI.total.files + raceI.total.files_missing;
+	raceI->total.files_missing = raceI->total.files + raceI->total.files_missing;
 	m_free(buf);
 }
 
 void 
-get_rar_info(char *filename)
+get_rar_info(struct VARS *raceI)
 {
 	FILE           *file;
 
-	if ((file = fopen(filename, "r"))) {
+	if ((file = fopen(raceI->file.name, "r"))) {
 		fseek(file, 45, SEEK_CUR);
-		fread(&raceI.file.compression_method, 1, 1, file);
+		fread(&raceI->file.compression_method, 1, 1, file);
 //		d_log("DEBUG: raceI.file.compression_method : %d\n", raceI.file.compression_method);
-		if ( ! (( 47 < raceI.file.compression_method ) && ( raceI.file.compression_method < 54 )) )
-			raceI.file.compression_method = 88;
+		if ( ! (( 47 < raceI->file.compression_method ) && ( raceI->file.compression_method < 54 )) )
+			raceI->file.compression_method = 88;
 		fclose(file);
 	}
 }
@@ -1150,3 +1141,211 @@ mark_as_bad(char *filename)
 #endif
 	d_log("File (%s) marked as bad.\n", filename);
 }
+
+void 
+writelog(GLOBAL *g, char *msg, char *status)
+{
+	FILE           *glfile;
+	char           *date;
+	char           *line, *newline;
+	time_t		timenow;
+
+	if (g->v.misc.write_log == TRUE && !matchpath(group_dirs, g->l.path)) {
+		timenow = time(NULL);
+		date = ctime(&timenow);
+		if (!(glfile = fopen(log, "a+"))) {
+			d_log("Unable to open %s for read/write (append) - NO RACEINFO WILL BE WRITTEN!\n", log);
+			return;
+		}
+		line = newline = msg;
+		while (1) {
+			switch (*newline++) {
+			case 0:
+				fprintf(glfile, "%.24s %s: \"%s\" %s\n", date, status, g->l.path, line);
+				fclose(glfile);
+				return;
+			case '\n':
+				fprintf(glfile, "%.24s %s: \"%s\" %.*s\n", date, status, g->l.path, (int)(newline - line - 1), line);
+				line = newline;
+				break;
+			}
+		}
+	}
+}
+
+char **
+buffer_paths(GLOBAL *g, char **path, int *k, int len)
+{
+	int		cnt, n = 0;
+
+	path = malloc(sizeof(char *)*2);
+
+	for (cnt = len; *k && cnt; cnt--) {
+		if (g->l.path[cnt] == '/') {
+			(*k)--;
+			path[*k] = malloc(n + 1);
+			strncpy(path[*k], g->l.path + cnt + 1, n);
+			path[*k][n] = 0;
+			n = 0;
+		} else {
+			n++;
+		}
+	}
+	
+	return path;
+}
+
+void 
+remove_nfo_indicator(GLOBAL *g)
+{
+	int		k = 2;
+	char		**path = 0;
+
+	path = buffer_paths(g, path, &k, (strlen(g->l.path)-1));
+
+	g->l.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &g->v);
+	if (g->l.nfo_incomplete)
+		unlink(g->l.nfo_incomplete);
+	g->l.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &g->v);
+	if (g->l.nfo_incomplete)
+		unlink(g->l.nfo_incomplete);
+	if (k < 2)
+		free(path[1]);
+	if (k == 0)
+		free(path[0]);
+}
+
+void 
+getrelname(GLOBAL *g)
+{
+	int		l[2], n = 0, k = 2;
+	char		**path = 0;
+
+	/*char           *path[2];
+	*for (cnt = g->l.length_path - 1; k && cnt; cnt--) {
+		if (g->l.path[cnt] == '/') {
+			k--;
+			l[k] = n;
+			path[k] = malloc(n + 1);
+			strncpy(path[k], g->l.path + cnt + 1, n);
+			path[k][n] = 0;
+			n = 0;
+		} else
+			n++;
+	}*/
+
+	path = buffer_paths(g, path, &k, (strlen(g->l.path)-1));
+
+d_log("DEBUG: result of subdir-test: %d\n", subcomp(path[1]));
+	if (subcomp(path[1])) {
+		g->l.link_source = malloc(n = (g->l.length_path - l[1]));
+		sprintf(g->v.misc.release_name, "%s/%s", path[0], path[1]);
+		sprintf(g->l.link_source, "%.*s", n - 1, g->l.path);
+		g->l.link_target = path[0];
+		g->l.incomplete = c_incomplete(incomplete_cd_indicator, path, &g->v);
+		g->l.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &g->v);
+		g->l.in_cd_dir = 1;
+		if (k < 2)
+			free(path[1]);
+	} else {
+		g->l.link_source = malloc(g->l.length_path + 1);
+		strlcpy(g->l.link_source, g->l.path, g->l.length_path + 1);
+		sprintf(g->v.misc.release_name, "%s", path[1]);
+		g->l.link_target = path[1];
+		g->l.incomplete = c_incomplete(incomplete_indicator, path, &g->v);
+		g->l.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &g->v);
+		g->l.in_cd_dir = 0;
+		if (k == 0)
+			free(path[0]);
+	}
+}
+
+unsigned char 
+get_filetype(GLOBAL *g, char *ext)
+{
+	if (!strcasecmp(ext, "zip"))
+		return 0;
+	if (!strcasecmp(ext, "sfv"))
+		return 1;
+	if (!strcasecmp(ext, "nfo"))
+		return 2;
+	if (strcomp(allowed_types, ext) && !matchpath(allowed_types_exemption_dirs, g->l.path))
+		return 4;
+	if (!strcomp(ignored_types, ext))
+		return 3;
+
+	return 255;
+}
+
+#if ( audio_group_sort == TRUE )
+char    *
+remove_pattern(param, pattern, op)
+	char           *param, *pattern;
+	int		op;
+{
+	register int	len;
+	register char  *end;
+	register char  *p, *ret, c;
+
+	if (param == NULL || *param == '\0')
+		return (param);
+	if (pattern == NULL || *pattern == '\0')	/* minor optimization */
+		return (param);
+
+	len = strlen(param);
+	end = param + len;
+
+	switch (op) {
+	case RP_LONG_LEFT:	/* remove longest match at start */
+		for (p = end; p >= param; p--) {
+			c = *p;
+			*p = '\0';
+			if ((fnmatch(pattern, param, 0)) != FNM_NOMATCH) {
+				*p = c;
+				return (p);
+			}
+			*p = c;
+		}
+		break;
+
+	case RP_SHORT_LEFT:	/* remove shortest match at start */
+		for (p = param; p <= end; p++) {
+			c = *p;
+			*p = '\0';
+			if (fnmatch(pattern, param, 0) != FNM_NOMATCH) {
+				*p = c;
+				return (p);
+			}
+			*p = c;
+		}
+		break;
+
+
+	case RP_LONG_RIGHT:	/* remove longest match at end */
+		for (p = param; p <= end; p++) {
+			if (fnmatch(pattern, param, 0) != FNM_NOMATCH) {
+				c = *p;
+				*p = '\0';
+				ret = param;
+				*p = c;
+				return (ret);
+			}
+		}
+		break;
+
+	case RP_SHORT_RIGHT:	/* remove shortest match at end */
+		for (p = end; p >= param; p--) {
+			if (fnmatch(pattern, param, 0) != FNM_NOMATCH) {
+				c = *p;
+				*p = '\0';
+				ret = param;
+				*p = c;
+				return (ret);
+			}
+		}
+		break;
+	}
+	return (param);		/* no match, return original string */
+}
+#endif
+

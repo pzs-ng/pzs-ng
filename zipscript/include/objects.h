@@ -145,10 +145,19 @@ struct LOCATIONS {
 	char           *race;
 	char           *link_target;
 	char           *link_source;
-	char           *path;
+	char            path[PATH_MAX];
 	unsigned int	length_path;
 	unsigned int	length_zipdatadir;
 	unsigned int	in_cd_dir;
 };
+
+/* passing this around is a lot easier than passing
+ * a lot of other shit around */
+typedef struct {
+	struct USERINFO		**ui;
+	struct GROUPINFO	**gi;
+	struct VARS		v;
+	struct LOCATIONS	l;
+} GLOBAL; /* reconsider this name */
 
 #endif

@@ -18,17 +18,17 @@
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
 
-struct USERINFO **userI;
-struct GROUPINFO **groupI;
-struct VARS	raceI;
-struct LOCATIONS locations;
+/*struct USERINFO **g.ui;
+struct GROUPINFO **g.gi;
+struct VARS	g.v;
+struct LOCATIONS g.l;*/
 
 
 char		error_msg [80], output[2048], output2[1024];
 short int	varelease = 2,	/* Various Artists release */
 		ERROR_CODE = 0;
 
-void 
+/*void 
 getrelname(char *directory)
 {
 	int		cnt       , l, n = 0, k = 2;
@@ -48,17 +48,17 @@ getrelname(char *directory)
 
 	if (subcomp(directoryarray[1])) {
 		//n = strlen(directoryarray[0]);
-		//raceI.misc.release_name = malloc(n + 21);
-		sprintf(raceI.misc.release_name, "%s/%s", directoryarray[0], directoryarray[1]);
+		//g.v.misc.release_name = malloc(n + 21);
+		sprintf(g.v.misc.release_name, "%s/%s", directoryarray[0], directoryarray[1]);
 		//if (k < 2)
 		//	free(directoryarray[1]);
 	} else {
-		//raceI.misc.release_name = malloc(l + 12);
-		sprintf(raceI.misc.release_name, "%s", directoryarray[1]);
+		//g.v.misc.release_name = malloc(l + 12);
+		sprintf(g.v.misc.release_name, "%s", directoryarray[1]);
 		//if (k == 0)
 		//	free(directoryarray[0]);
 	}
-}
+}*/
 
 /*
  * CORE CODE - NOT MUCH HERE - JUST CALLS FUNCTIONS IN RIGHT ORDER & SET FEW
@@ -67,72 +67,73 @@ getrelname(char *directory)
 int 
 main(int argc, char **argv)
 {
-	int		n;
+	int		n=0;
+	GLOBAL		g;
 
 	if (argc == 1) {
 		printf("Usage: %s <path>\n", argv[0]);
 		exit(EXIT_SUCCESS);
 	}
-	locations.path = malloc(n = strlen(argv[1]) + 1);
-	locations.race = malloc(n += 10 + strlen(storage));
-	locations.sfv = malloc(n + 10);
+	/*g.l.path = malloc(n = strlen(argv[1]) + 1);*/
+	g.l.race = malloc(n += 10 + strlen(storage));
+	g.l.sfv = malloc(n + 10);
 
-	userI = malloc(sizeof(struct USERINFO *) * 30);
-	memset(userI, 0, sizeof(struct USERINFO *) * 30);
-	groupI = malloc(sizeof(struct GROUPINFO *) * 30);
-	memset(groupI, 0, sizeof(struct GROUPINFO *) * 30);
+	g.ui = malloc(sizeof(struct USERINFO *) * 30);
+	memset(g.ui, 0, sizeof(struct USERINFO *) * 30);
+	g.gi = malloc(sizeof(struct GROUPINFO *) * 30);
+	memset(g.gi, 0, sizeof(struct GROUPINFO *) * 30);
 
-	raceI.misc.slowest_user[0] = 30000;
-	raceI.misc.fastest_user[0] =
-		raceI.total.speed =
-		raceI.total.files_missing =
-		raceI.total.files =
-		raceI.total.size =
-		raceI.total.users =
-		raceI.total.groups = 0;
-	raceI.file.name = ".";
+	g.v.misc.slowest_user[0] = 30000;
+	g.v.misc.fastest_user[0] =
+		g.v.total.speed =
+		g.v.total.files_missing =
+		g.v.total.files =
+		g.v.total.size =
+		g.v.total.users =
+		g.v.total.groups = 0;
+	g.v.file.name = ".";
 
-	strcpy(locations.path, argv[1]);
+	strcpy(g.l.path, argv[1]);
 
-	n = strlen(locations.path);
-	if (locations.path[n] == '/') {
-		locations.path[n] = 0;
+	n = strlen(g.l.path);
+	if (g.l.path[n] == '/') {
+		g.l.path[n] = 0;
 	}
-	if (chdir(locations.path))
+	if (chdir(g.l.path))
 		goto END;
 
-	getrelname(locations.path);
+	getrelname(&g);
 
-	sprintf(locations.race, storage "/%s/racedata", argv[1]);
-	if (!fileexists(locations.race))
+	sprintf(g.l.race, storage "/%s/racedata", argv[1]);
+	if (!fileexists(g.l.race))
 		goto END;
 
-	readrace_file(&locations, &raceI, userI, groupI);
-	sprintf(locations.sfv, storage "/%s/sfvdata", argv[1]);
+	readrace_file(&g.l, &g.v, g.ui, g.gi);
+	sprintf(g.l.sfv, storage "/%s/sfvdata", argv[1]);
 
-	if (!fileexists(locations.sfv)) {
-		if (fileexists(locations.sfv)) {
-			raceI.total.files = read_diz("file_id.diz");
-			raceI.total.files_missing += raceI.total.files;
+	if (!fileexists(g.l.sfv)) {
+		if (fileexists(g.l.sfv)) {
+			g.v.total.files = read_diz("file_id.diz");
+			g.v.total.files_missing += g.v.total.files;
 		} else {
-			raceI.total.files -= raceI.total.files_missing;
-			raceI.total.files_missing = 0;
+			g.v.total.files -= g.v.total.files_missing;
+			g.v.total.files_missing = 0;
 		}
 	} else {
-		readsfv_file(&locations, &raceI, 0);
+		readsfv_file(&g.l, &g.v, 0);
 	}
 
-	sortstats(&raceI, userI, groupI);
-	if (!raceI.total.users)
+	sortstats(&g.v, g.ui, g.gi);
+	if (!g.v.total.users)
 		goto END;
 
-	printf("%s\n", convert(&raceI, userI, groupI, stats_line));
+	printf("%s\n", convert(&g.v, g.ui, g.gi, stats_line));
 
 END:
-	free(locations.path);
-	free(locations.race);
-	//free(raceI.misc.release_name);
-	free(locations.sfv);
+	//free(g.l.path);
+	free(g.l.race);
+	//free(g.v.misc.release_name);
+	free(g.l.sfv);
 
 	exit(EXIT_SUCCESS);
 }

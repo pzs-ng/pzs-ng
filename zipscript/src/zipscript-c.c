@@ -46,221 +46,16 @@
 #include "strsep.h"
 #endif
 
-/*
- * Remove the portion of PARAM matched by PATTERN according to OP, where OP
- * can have one of 4 values: RP_LONG_LEFT    remove longest matching portion
- * at start of PARAM RP_SHORT_LEFT   remove shortest matching portion at
- * start of PARAM RP_LONG_RIGHT   remove longest matching portion at end of
- * PARAM RP_SHORT_RIGHT  remove shortest matching portion at end of PARAM
- */
-
-#define RP_LONG_LEFT    1
-#define RP_SHORT_LEFT   2
-#define RP_LONG_RIGHT   3
-#define RP_SHORT_RIGHT  4
-
 struct ONLINE  *online;
-struct USERINFO **userI;
-struct GROUPINFO **groupI;
-struct VARS	raceI;
-struct LOCATIONS locations;
-
-void 
-writelog(char *msg, char *status)
-{
-	FILE           *glfile;
-	char           *date;
-	char           *line, *newline;
-	time_t		timenow;
-
-	if (raceI.misc.write_log == TRUE && !matchpath(group_dirs, locations.path)) {
-		timenow = time(NULL);
-		date = ctime(&timenow);
-		if (!(glfile = fopen(log, "a+"))) {
-			d_log("Unable to open %s for read/write (append) - NO RACEINFO WILL BE WRITTEN!\n", log);
-			return;
-		}
-		line = newline = msg;
-		while (1) {
-			switch (*newline++) {
-			case 0:
-				fprintf(glfile, "%.24s %s: \"%s\" %s\n", date, status, locations.path, line);
-				fclose(glfile);
-				return;
-			case '\n':
-				fprintf(glfile, "%.24s %s: \"%s\" %.*s\n", date, status, locations.path, (int)(newline - line - 1), line);
-				line = newline;
-				break;
-			}
-		}
-	}
-}
-
-
-void 
-remove_nfo_indicator(char *directory)
-{
-	int		cnt       , l[2], n = 0, k = 2;
-	char           *path[2];
-
-	for (cnt = locations.length_path - 1; k && cnt; cnt--) {
-		if (directory[cnt] == '/') {
-			k--;
-			l[k] = n;
-			path[k] = malloc(n + 1);
-			strncpy(path[k], directory + cnt + 1, n);
-			path[k][n] = 0;
-			n = 0;
-		} else
-			n++;
-	}
-	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &raceI);
-	if (fileexists(locations.nfo_incomplete))
-		unlink(locations.nfo_incomplete);
-	locations.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &raceI);
-	if (fileexists(locations.nfo_incomplete))
-		unlink(locations.nfo_incomplete);
-	if (k < 2)
-		free(path[1]);
-	if (k == 0)
-		free(path[0]);
-}
-
-
-void 
-getrelname(char *directory)
-{
-	int		cnt       , l[2], n = 0, k = 2;
-	char           *path[2];
-
-	for (cnt = locations.length_path - 1; k && cnt; cnt--) {
-		if (directory[cnt] == '/') {
-			k--;
-			l[k] = n;
-			path[k] = malloc(n + 1);
-			strncpy(path[k], directory + cnt + 1, n);
-			path[k][n] = 0;
-			n = 0;
-		} else
-			n++;
-	}
-
-d_log("DEBUG: result of subdir-test: %d\n", subcomp(path[1]));
-	if (subcomp(path[1])) {
-		locations.link_source = malloc(n = (locations.length_path - l[1]));
-		sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
-		sprintf(locations.link_source, "%.*s", n - 1, locations.path);
-		locations.link_target = path[0];
-		locations.incomplete = c_incomplete(incomplete_cd_indicator, path, &raceI);
-		locations.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &raceI);
-		locations.in_cd_dir = 1;
-		if (k < 2)
-			free(path[1]);
-	} else {
-		locations.link_source = malloc(locations.length_path + 1);
-		strlcpy(locations.link_source, locations.path, locations.length_path + 1);
-		sprintf(raceI.misc.release_name, "%s", path[1]);
-		locations.link_target = path[1];
-		locations.incomplete = c_incomplete(incomplete_indicator, path, &raceI);
-		locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &raceI);
-		locations.in_cd_dir = 0;
-		if (k == 0)
-			free(path[0]);
-	}
-}
-
-unsigned char 
-get_filetype(char *ext)
-{
-	if (!strcasecmp(ext, "zip"))
-		return 0;
-	if (!strcasecmp(ext, "sfv"))
-		return 1;
-	if (!strcasecmp(ext, "nfo"))
-		return 2;
-	if (strcomp(allowed_types, ext) && !matchpath(allowed_types_exemption_dirs, locations.path))
-		return 4;
-	if (!strcomp(ignored_types, ext))
-		return 3;
-
-	return 255;
-}
-
-#if ( audio_group_sort == TRUE )
-static char    *
-remove_pattern(param, pattern, op)
-	char           *param, *pattern;
-	int		op;
-{
-	register int	len;
-	register char  *end;
-	register char  *p, *ret, c;
-
-	if (param == NULL || *param == '\0')
-		return (param);
-	if (pattern == NULL || *pattern == '\0')	/* minor optimization */
-		return (param);
-
-	len = strlen(param);
-	end = param + len;
-
-	switch (op) {
-	case RP_LONG_LEFT:	/* remove longest match at start */
-		for (p = end; p >= param; p--) {
-			c = *p;
-			*p = '\0';
-			if ((fnmatch(pattern, param, 0)) != FNM_NOMATCH) {
-				*p = c;
-				return (p);
-			}
-			*p = c;
-		}
-		break;
-
-	case RP_SHORT_LEFT:	/* remove shortest match at start */
-		for (p = param; p <= end; p++) {
-			c = *p;
-			*p = '\0';
-			if (fnmatch(pattern, param, 0) != FNM_NOMATCH) {
-				*p = c;
-				return (p);
-			}
-			*p = c;
-		}
-		break;
-
-
-	case RP_LONG_RIGHT:	/* remove longest match at end */
-		for (p = param; p <= end; p++) {
-			if (fnmatch(pattern, param, 0) != FNM_NOMATCH) {
-				c = *p;
-				*p = '\0';
-				ret = param;
-				*p = c;
-				return (ret);
-			}
-		}
-		break;
-
-	case RP_SHORT_RIGHT:	/* remove shortest match at end */
-		for (p = end; p >= param; p--) {
-			if (fnmatch(pattern, param, 0) != FNM_NOMATCH) {
-				c = *p;
-				*p = '\0';
-				ret = param;
-				*p = c;
-				return (ret);
-			}
-		}
-		break;
-	}
-	return (param);		/* no match, return original string */
-}
-#endif
+/*struct USERINFO **g.ui;
+struct GROUPINFO **g.gi;
+struct VARS	g.v;
+struct LOCATIONS g.l.*/
 
 int 
 main(int argc, char **argv)
 {
+	GLOBAL		g; /* this motherfucker owns */
 	char           *fileext, *name_p, *temp_p = NULL, *temp_p_free = NULL;
 	char           *target = 0;
 	char	       *ext = 0;
@@ -297,14 +92,14 @@ main(int argc, char **argv)
 #endif
 	struct stat	fileinfo;
 
-#if ( debug_mode == TRUE && debug_announce == TRUE)
-	printf("PZS-NG: Running in debug mode.\n");
-#endif
-
 #if ( benchmark_mode == TRUE )
 	struct timeval	bstart, bstop;
 	d_log("Reading time for benchmark\n");
 	gettimeofday(&bstart, (struct timezone *)0);
+#endif
+
+#if ( debug_mode == TRUE && debug_announce == TRUE)
+	printf("PZS-NG: Running in debug mode.\n");
 #endif
 
 	/*
@@ -327,58 +122,58 @@ main(int argc, char **argv)
 		exit(1);
 	}
 	d_log("Clearing arrays\n");
-	bzero(&raceI.total, sizeof(struct race_total));
-	raceI.misc.slowest_user[0] = 30000;
-	raceI.misc.fastest_user[0] =
-		raceI.misc.release_type = RTYPE_NULL;
+	bzero(&g.v.total, sizeof(struct race_total));
+	g.v.misc.slowest_user[0] = 30000;
+	g.v.misc.fastest_user[0] =
+		g.v.misc.release_type = RTYPE_NULL;
 
-	/* gettimeofday(&raceI.transfer_stop, (struct timezone *)0 ); */
+	/* gettimeofday(&g.v.transfer_stop, (struct timezone *)0 ); */
 
-	raceI.file.name = argv[1];
-	locations.path = argv[2];
-	strncpy(raceI.misc.current_path, locations.path, PATH_MAX);
-	d_log("Changing directory to %s\n", locations.path);
-	chdir(locations.path);
+	g.v.file.name = argv[1];
+	strncpy(g.l.path, argv[2], PATH_MAX);
+	strncpy(g.v.misc.current_path, g.l.path, PATH_MAX);
+	d_log("Changing directory to %s\n", g.l.path);
+	chdir(g.l.path);
 
 	d_log("Reading data from environment variables\n");
 	if ((getenv("USER") == NULL) || (getenv("GROUP") == NULL) || (getenv("TAGLINE") == NULL) || (getenv("SPEED") ==NULL) || (getenv("SECTION") == NULL)) {
 		d_log("We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE, $SECTION and $SPEED\n");
 		/*
-		 * strcpy(raceI.user.name, "Unknown");
-		 * strcpy(raceI.user.group, "NoGroup");
+		 * strcpy(g.v.user.name, "Unknown");
+		 * strcpy(g.v.user.group, "NoGroup");
 		 */
 
 		gnum = buffer_groups(GROUPFILE, 0);
 		unum = buffer_users(PASSWDFILE, 0);
 		fileinfo.st_uid = geteuid();
 		fileinfo.st_gid = getegid();
-		strlcpy(raceI.user.name, get_u_name(fileinfo.st_uid), 24);
-		strlcpy(raceI.user.group, get_g_name(fileinfo.st_gid), 24);
-		memcpy(raceI.user.tagline, "No Tagline Set", 15);
-		raceI.file.speed = 2005;
-		raceI.section = 0;
-		sprintf(raceI.sectionname, "DEFAULT");
+		strlcpy(g.v.user.name, get_u_name(fileinfo.st_uid), 24);
+		strlcpy(g.v.user.group, get_g_name(fileinfo.st_gid), 24);
+		memcpy(g.v.user.tagline, "No Tagline Set", 15);
+		g.v.file.speed = 2005;
+		g.v.section = 0;
+		sprintf(g.v.sectionname, "DEFAULT");
 	} else {
 		gnum = buffer_groups(GROUPFILE, 0);
 		unum = buffer_users(PASSWDFILE, 0);
-		sprintf(raceI.user.name, getenv("USER"));
-		sprintf(raceI.user.group, getenv("GROUP"));
-		if (!strlen(raceI.user.group))
-			memcpy(raceI.user.group, "NoGroup", 8);
-		sprintf(raceI.user.tagline, getenv("TAGLINE"));
-		if (!strlen(raceI.user.tagline))
-			memcpy(raceI.user.tagline, "No Tagline Set", 15);
-		raceI.file.speed = (unsigned int)strtol(getenv("SPEED"), NULL, 0);
-		if (!raceI.file.speed)
-			raceI.file.speed = 1;
+		sprintf(g.v.user.name, getenv("USER"));
+		sprintf(g.v.user.group, getenv("GROUP"));
+		if (!strlen(g.v.user.group))
+			memcpy(g.v.user.group, "NoGroup", 8);
+		sprintf(g.v.user.tagline, getenv("TAGLINE"));
+		if (!strlen(g.v.user.tagline))
+			memcpy(g.v.user.tagline, "No Tagline Set", 15);
+		g.v.file.speed = (unsigned int)strtol(getenv("SPEED"), NULL, 0);
+		if (!g.v.file.speed)
+			g.v.file.speed = 1;
 
-		d_log("User: %s - Group: %s - Speed: %d (%s)\n", raceI.user.name, raceI.user.group, raceI.file.speed, getenv("SPEED"));
+		d_log("User: %s - Group: %s - Speed: %d (%s)\n", g.v.user.name, g.v.user.group, g.v.file.speed, getenv("SPEED"));
 #if (debug_announce == TRUE)
-		printf("DEBUG: Speed: %dkb/s (%skb/s)\n",  raceI.file.speed, getenv("SPEED"));
+		printf("DEBUG: Speed: %dkb/s (%skb/s)\n",  g.v.file.speed, getenv("SPEED"));
 #endif
 
 		d_log("Reading section from env (%s)\n", getenv("SECTION"));
-		snprintf(raceI.sectionname, 127, getenv("SECTION"));
+		snprintf(g.v.sectionname, 127, getenv("SECTION"));
 		temp_p_free = temp_p = strdup((const char *)gl_sections);	/* temp_p_free is needed since temp_p is modified by strsep */
 		if ((temp_p) == NULL) {
 			d_log("Can't allocate memory for sections\n");
@@ -386,7 +181,7 @@ main(int argc, char **argv)
 			n = 0;
 			while (temp_p) {
 				if (!strcmp(strsep(&temp_p, " "), getenv("SECTION"))) {
-					raceI.section = (unsigned char)n;
+					g.v.section = (unsigned char)n;
 					break;
 				} else
 					n++;
@@ -394,52 +189,52 @@ main(int argc, char **argv)
 			free(temp_p_free);
 		}
 	}
-	raceI.file.speed *= 1024;
+	g.v.file.speed *= 1024;
 
-	d_log("Checking the file size of %s\n", raceI.file.name);
-	if (stat(raceI.file.name, &fileinfo)) {
+	d_log("Checking the file size of %s\n", g.v.file.name);
+	if (stat(g.v.file.name, &fileinfo)) {
 		d_log("Failed to stat file: %s\n", strerror(errno));
-		raceI.file.size = 0;
-		raceI.total.stop_time = 0;
+		g.v.file.size = 0;
+		g.v.total.stop_time = 0;
 	} else {
-		raceI.file.size = fileinfo.st_size;
-		d_log("File size was: %d\n", raceI.file.size);
-		raceI.total.stop_time = fileinfo.st_mtime;
+		g.v.file.size = fileinfo.st_size;
+		d_log("File size was: %d\n", g.v.file.size);
+		g.v.total.stop_time = fileinfo.st_mtime;
 	}
 
 	d_log("Setting race times\n");
-	if (raceI.file.size != 0)
-		raceI.total.start_time = raceI.total.stop_time - ((unsigned int)(raceI.file.size) / raceI.file.speed);
+	if (g.v.file.size != 0)
+		g.v.total.start_time = g.v.total.stop_time - ((unsigned int)(g.v.file.size) / g.v.file.speed);
 	else
-		raceI.total.start_time = raceI.total.stop_time > (raceI.total.stop_time - 1) ? raceI.total.stop_time : (raceI.total.stop_time -1);
-	if ((int)(raceI.total.stop_time - raceI.total.start_time) < 1)
-		raceI.total.stop_time = raceI.total.start_time + 1;
+		g.v.total.start_time = g.v.total.stop_time > (g.v.total.stop_time - 1) ? g.v.total.stop_time : (g.v.total.stop_time -1);
+	if ((int)(g.v.total.stop_time - g.v.total.start_time) < 1)
+		g.v.total.stop_time = g.v.total.start_time + 1;
 
-	n = (locations.length_path = strlen(locations.path)) + 1;
+	n = (g.l.length_path = strlen(g.l.path)) + 1;
 
 	d_log("Allocating memory for variables\n");
-	locations.race = m_alloc(n += 10 + (locations.length_zipdatadir = sizeof(storage) - 1));
-	locations.sfv = m_alloc(n);
-	locations.leader = m_alloc(n);
-	locations.link_target = m_alloc(n + 256);
+	g.l.race = m_alloc(n += 10 + (g.l.length_zipdatadir = sizeof(storage) - 1));
+	g.l.sfv = m_alloc(n);
+	g.l.leader = m_alloc(n);
+	g.l.link_target = m_alloc(n + 256);
 	target = m_alloc(n + 256);
-	userI = malloc(sizeof(struct USERINFO *) * 30);
-	memset(userI, 0, sizeof(struct USERINFO *) * 30);
-	groupI = malloc(sizeof(struct GROUPINFO *) * 30);
-	memset(groupI, 0, sizeof(struct GROUPINFO *) * 30);
+	g.ui = malloc(sizeof(struct USERINFO *) * 30);
+	memset(g.ui, 0, sizeof(struct USERINFO *) * 30);
+	g.gi = malloc(sizeof(struct GROUPINFO *) * 30);
+	memset(g.gi, 0, sizeof(struct GROUPINFO *) * 30);
 
-	d_log("Copying data locations into memory\n");
-	sprintf(locations.sfv, storage "/%s/sfvdata", locations.path);
-	sprintf(locations.leader, storage "/%s/leader", locations.path);
-	sprintf(locations.race, storage "/%s/racedata", locations.path);
+	d_log("Copying data g.l.into memory\n");
+	sprintf(g.l.sfv, storage "/%s/sfvdata", g.l.path);
+	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
+	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
 
 	//d_log("Creating directory to store racedata in\n");
-	//maketempdir(&locations);
+	//maketempdir(&g.l.;
 
 
 	/*
-	 * d_log("Changing directory to %s\n", locations.path);
-	 * chdir(locations.path);
+	 * d_log("Changing directory to %s\n", g.l.path);
+	 * chdir(g.l.path);
 	 */
 
 	/* Get file extension */
@@ -482,79 +277,79 @@ main(int argc, char **argv)
 	rescandir(2);
 
 	d_log("Caching release name\n");
-	getrelname(locations.path);
+	getrelname(&g);
 
 	d_log("Creating directory to store racedata in\n");
-	maketempdir(&locations);
+	maketempdir(&g.l);
 	printf(zipscript_header);
 
 	/* Hide users in group_dirs */
-	if (matchpath(group_dirs, locations.path) && (hide_group_uploaders == TRUE)) {
+	if (matchpath(group_dirs, g.l.path) && (hide_group_uploaders == TRUE)) {
 		d_log("Hiding user in group-dir:\n");
 		if (strlen(hide_gname) > 0) {
-			snprintf(raceI.user.group, 18, "%s", hide_gname);
+			snprintf(g.v.user.group, 18, "%s", hide_gname);
 			d_log("   Changing groupname\n");
 		}
 		if (strlen(hide_uname) > 0) {
-			snprintf(raceI.user.name, 18, "%s", hide_uname);
+			snprintf(g.v.user.name, 18, "%s", hide_uname);
 			d_log("   Changing username\n");
 		}
 		if (strlen(hide_uname) == 0) {
 			d_log("   Making username = groupname\n");
-			snprintf(raceI.user.name, 18, "%s", raceI.user.group);
+			snprintf(g.v.user.name, 18, "%s", g.v.user.group);
 		}
 	}
 	/* Empty file recieved */
 #if (ignore_zero_size == FALSE )
-	if (raceI.file.size == 0) {
+	if (g.v.file.size == 0) {
 		d_log("File seems to be 0\n");
-		sprintf(raceI.misc.error_msg, EMPTY_FILE);
-		write_log = raceI.misc.write_log;
-		raceI.misc.write_log = 1;
-		mark_as_bad(raceI.file.name);
-		error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+		sprintf(g.v.misc.error_msg, EMPTY_FILE);
+		write_log = g.v.misc.write_log;
+		g.v.misc.write_log = 1;
+		mark_as_bad(g.v.file.name);
+		error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 		if (exit_value < 2)
-			writelog(error_msg, bad_file_0size_type);
+			writelog(&g, error_msg, bad_file_0size_type);
 		exit_value = 2;
 	}
 #endif
 	/* No check directories */
-	if (matchpath(nocheck_dirs, locations.path) || (!matchpath(zip_dirs, locations.path) && !matchpath(sfv_dirs, locations.path) && !matchpath(group_dirs, locations.path))) {
+	if (matchpath(nocheck_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
 		d_log("Directory matched with nocheck_dirs, or is not among sfv/zip/group dirs\n");
 		d_log("  - nocheck_dirs: '%s'\n", nocheck_dirs);
 		d_log("  - zip_dirs    : '%s'\n", zip_dirs);
 		d_log("  - sfv_dirs    : '%s'\n", sfv_dirs);
 		d_log("  - group_dirs  : '%s'\n", group_dirs);
-		d_log("  - current path: '%s'\n", locations.path);
+		d_log("  - current path: '%s'\n", g.l.path);
 		no_check = TRUE;
 	} else {
 		/* Process file */
-		switch (get_filetype(fileext)) {
+		switch (get_filetype(&g, fileext)) {
 		case 0:	/* ZIP CHECK */
 			d_log("File type is: ZIP\n");
 			d_log("Testing file integrity with %s\n", unzip_bin);
 			if (!fileexists(unzip_bin)) {
 				d_log("ERROR! Not able to check zip-files - %s does not exists!\n", unzip_bin);
-				sprintf(raceI.misc.error_msg, BAD_ZIP);
-				mark_as_bad(raceI.file.name);
-				write_log = raceI.misc.write_log;
-				raceI.misc.write_log = 1;
-				error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+				sprintf(g.v.misc.error_msg, BAD_ZIP);
+				mark_as_bad(g.v.file.name);
+				write_log = g.v.misc.write_log;
+				g.v.misc.write_log = 1;
+				error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 				if (exit_value < 2)
-					writelog(error_msg, bad_file_zip_type);
+					writelog(&g, error_msg, bad_file_zip_type);
 				exit_value = 2;
 				break;
 			} else {
-				sprintf(target, "%s -qqt \"%s\"", unzip_bin, raceI.file.name);
+				sprintf(target, "%s -qqt \"%s\"", unzip_bin, g.v.file.name);
 				if (execute(target) != 0) {
 					d_log("Integrity check failed (#%d): %s\n", errno, strerror(errno));
-					sprintf(raceI.misc.error_msg, BAD_ZIP);
-					mark_as_bad(raceI.file.name);
-					write_log = raceI.misc.write_log;
-					raceI.misc.write_log = 1;
-					error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+					sprintf(g.v.misc.error_msg, BAD_ZIP);
+					mark_as_bad(g.v.file.name);
+					write_log = g.v.misc.write_log;
+					g.v.misc.write_log = 1;
+					error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 					if (exit_value < 2)
-						writelog(error_msg, bad_file_zip_type);
+						writelog(&g, error_msg, bad_file_zip_type);
 					exit_value = 2;
 					break;
 				}
@@ -562,27 +357,27 @@ main(int argc, char **argv)
 			d_log("Integrity ok\n");
 			printf(zipscript_zip_ok);
 
-			if ((matchpath(zip_dirs, locations.path)) || (matchpath(group_dirs, locations.path))  ) {
-				raceI.misc.write_log = 1;
+			if ((matchpath(zip_dirs, g.l.path)) || (matchpath(group_dirs, g.l.path))  ) {
+				g.v.misc.write_log = 1;
 				d_log("Directory matched with zip_dirs/group_dirs\n");
 			} else {
 				d_log("WARNING! Directory did not match with zip_dirs/group_dirs\n");
 				if (strict_path_match == TRUE) {
 					d_log("Strict mode on - exiting\n");
-					sprintf(raceI.misc.error_msg, UNKNOWN_FILE, fileext);
-					mark_as_bad(raceI.file.name);
-					write_log = raceI.misc.write_log;
-					raceI.misc.write_log = 1;
-					error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+					sprintf(g.v.misc.error_msg, UNKNOWN_FILE, fileext);
+					mark_as_bad(g.v.file.name);
+					write_log = g.v.misc.write_log;
+					g.v.misc.write_log = 1;
+					error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 					if (exit_value < 2)
-						writelog(error_msg, bad_file_wrongdir_type);
+						writelog(&g, error_msg, bad_file_wrongdir_type);
 					exit_value = 2;
 					break;
 				}
 			}
 			if (!fileexists("file_id.diz")) {
-				d_log("file_id.diz does not exist, trying to extract it from %s\n", raceI.file.name);
-				sprintf(target, "%s -qqjnCLL %s file_id.diz", unzip_bin, raceI.file.name);
+				d_log("file_id.diz does not exist, trying to extract it from %s\n", g.v.file.name);
+				sprintf(target, "%s -qqjnCLL %s file_id.diz", unzip_bin, g.v.file.name);
 				if (execute(target) != 0) {
 					d_log("No file_id.diz found (#%d): %s\n", errno, strerror(errno));
 				} else {
@@ -592,29 +387,29 @@ main(int argc, char **argv)
 				}
 			}
 			d_log("Reading diskcount from diz:\n");
-			raceI.total.files = read_diz("file_id.diz");
-			d_log("   Expecting %d files.\n", raceI.total.files);
+			g.v.total.files = read_diz("file_id.diz");
+			d_log("   Expecting %d files.\n", g.v.total.files);
 
-			if (raceI.total.files == 0) {
+			if (g.v.total.files == 0) {
 				d_log("   Could not get diskcount from diz.\n");
-				raceI.total.files = 1;
+				g.v.total.files = 1;
 				unlink("file_id.diz");
 			}
-			raceI.total.files_missing = raceI.total.files;
+			g.v.total.files_missing = g.v.total.files;
 
 			d_log("Storing new race data\n");
-			writerace_file(&locations, &raceI, 0, F_CHECKED);
+			writerace_file(&g.l, &g.v, 0, F_CHECKED);
 			d_log("Reading race data from file to memory\n");
-			readrace_file(&locations, &raceI, userI, groupI);
-			if (raceI.total.files_missing < 0) {
+			readrace_file(&g.l, &g.v, g.ui, g.gi);
+			if (g.v.total.files_missing < 0) {
 				d_log("There seems to be more files in zip than we expected\n");
-				raceI.total.files -= raceI.total.files_missing;
-				raceI.total.files_missing = raceI.misc.write_log = 0;
+				g.v.total.files -= g.v.total.files_missing;
+				g.v.total.files_missing = g.v.misc.write_log = 0;
 			}
 			d_log("Setting message pointers\n");
 			race_msg = zip_race;
 			update_msg = zip_update;
-			halfway_msg = CHOOSE(raceI.total.users, zip_halfway, zip_norace_halfway);
+			halfway_msg = CHOOSE(g.v.total.users, zip_halfway, zip_norace_halfway);
 			newleader_msg = zip_newleader;
 
 			break;
@@ -622,81 +417,82 @@ main(int argc, char **argv)
 
 		case 1:	/* SFV CHECK */
 			d_log("File type is: SFV\n");
-			if ((matchpath(sfv_dirs, locations.path)) || (matchpath(group_dirs, locations.path))  ) {
+			if ((matchpath(sfv_dirs, g.l.path)) || (matchpath(group_dirs, g.l.path))  ) {
 				d_log("Directory matched with sfv_dirs/group_dirs\n");
 			} else {
 				d_log("WARNING! Directory did not match with sfv_dirs/group_dirs\n");
 				if (strict_path_match == TRUE) {
 					d_log("Strict mode on - exiting\n");
-					sprintf(raceI.misc.error_msg, UNKNOWN_FILE, fileext);
-					mark_as_bad(raceI.file.name);
-					write_log = raceI.misc.write_log;
-					raceI.misc.write_log = 1;
-					error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+					sprintf(g.v.misc.error_msg, UNKNOWN_FILE, fileext);
+					mark_as_bad(g.v.file.name);
+					write_log = g.v.misc.write_log;
+					g.v.misc.write_log = 1;
+					error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 					if (exit_value < 2)
-						writelog(error_msg, bad_file_wrongdir_type);
+						writelog(&g, error_msg, bad_file_wrongdir_type);
 					exit_value = 2;
 					break;
 				}
 			}
 
-			if (fileexists(locations.sfv)) {
-				if (deny_double_sfv == TRUE && findfileextcount(".sfv") > 1 && sfv_compare_size(".sfv", raceI.file.size) > 0) {
-					write_log = raceI.misc.write_log;
-					raceI.misc.write_log = 1;
-					d_log("DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", raceI.file.size));
+			if (fileexists(g.l.sfv)) {
+				if (deny_double_sfv == TRUE && findfileextcount(".sfv") > 1 && sfv_compare_size(".sfv", g.v.file.size) > 0) {
+					write_log = g.v.misc.write_log;
+					g.v.misc.write_log = 1;
+					d_log("DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g.v.file.size));
 					d_log("No double sfv allowed\n");
-					error_msg = convert(&raceI, userI, groupI, deny_double_msg);
-					writelog(error_msg, general_doublesfv_type);
-					sprintf(raceI.misc.error_msg, DOUBLE_SFV);
-					mark_as_bad(raceI.file.name);
+					error_msg = convert(&g.v, g.ui, g.gi, deny_double_msg);
+					writelog(&g, error_msg, general_doublesfv_type);
+					sprintf(g.v.misc.error_msg, DOUBLE_SFV);
+					mark_as_bad(g.v.file.name);
 					exit_value = 2;
-					raceI.misc.write_log = write_log;
+					g.v.misc.write_log = write_log;
 					break;
-				} else if (findfileextcount(".sfv") > 1 && sfv_compare_size(".sfv", raceI.file.size) > 0) {
-					d_log("DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", raceI.file.size));
+				} else if (findfileextcount(".sfv") > 1 && sfv_compare_size(".sfv", g.v.file.size) > 0) {
+					d_log("DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g.v.file.size));
 					d_log("Reading remainders of old sfv\n");
-					readsfv_file(&locations, &raceI, 1);
-					cnt = raceI.total.files - raceI.total.files_missing;
-					cnt2 = raceI.total.files;
-					raceI.total.files_missing = raceI.total.files = 0;
-					readsfv_ffile(raceI.file.name, raceI.file.size);
-					if ((raceI.total.files <= cnt2) || (raceI.total.files != (cnt + raceI.total.files_missing))) {
-						write_log = raceI.misc.write_log;
-						raceI.misc.write_log = 1;
+					readsfv_file(&g.l, &g.v, 1);
+					cnt = g.v.total.files - g.v.total.files_missing;
+					cnt2 = g.v.total.files;
+					g.v.total.files_missing = g.v.total.files = 0;
+					//readsfv_ffile(g.v.file.name, g.v.file.size, g.v);
+					readsfv_ffile(&g.v);
+					if ((g.v.total.files <= cnt2) || (g.v.total.files != (cnt + g.v.total.files_missing))) {
+						write_log = g.v.misc.write_log;
+						g.v.misc.write_log = 1;
 						d_log("Old sfv seems to match with more files than current one\n");
-						strlcpy(raceI.misc.error_msg, "SFV does not match with files!", 80);
-						error_msg = convert(&raceI, userI, groupI, deny_double_msg);
-						writelog(error_msg, general_doublesfv_type);
-						sprintf(raceI.misc.error_msg, DOUBLE_SFV);
-						mark_as_bad(raceI.file.name);
+						strlcpy(g.v.misc.error_msg, "SFV does not match with files!", 80);
+						error_msg = convert(&g.v, g.ui, g.gi, deny_double_msg);
+						writelog(&g, error_msg, general_doublesfv_type);
+						sprintf(g.v.misc.error_msg, DOUBLE_SFV);
+						mark_as_bad(g.v.file.name);
 						exit_value = 2;
-						raceI.misc.write_log = write_log;
+						g.v.misc.write_log = write_log;
 						break;
 					}
-					raceI.total.files = raceI.total.files_missing = 0;
+					g.v.total.files = g.v.total.files_missing = 0;
 				} else {
-					d_log("DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", raceI.file.size));
+					d_log("DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g.v.file.size));
 					d_log("Hmm.. Seems the old .sfv was deleted. Allowing new one.\n");
 #if (remove_sfv_data_on_delete == TRUE)
-					unlink(locations.race);
-					unlink(locations.sfv);
+					unlink(g.l.race);
+					unlink(g.l.sfv);
 #endif
 				}
 			}
 			d_log("Parsing sfv and creating sfv data\n");
-			if (copysfv_file(raceI.file.name, locations.sfv, raceI.file.size)) {
+			if (copysfv_file(g.v.file.name, g.l.sfv, g.v.file.size)) {
 				d_log("Found invalid entries in SFV.\n");
-				write_log = raceI.misc.write_log;
-				raceI.misc.write_log = 1;
-				error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+				write_log = g.v.misc.write_log;
+				g.v.misc.write_log = 1;
+				error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 				if (exit_value < 2)
-					writelog(error_msg, bad_file_sfv_type);
-				mark_as_bad(raceI.file.name);
+					writelog(&g, error_msg, bad_file_sfv_type);
+				mark_as_bad(g.v.file.name);
 				exit_value = 2;
-				sprintf(raceI.misc.error_msg, EMPTY_SFV);
-				unlink(locations.race);
-				unlink(locations.sfv);
+				sprintf(g.v.misc.error_msg, EMPTY_SFV);
+				unlink(g.l.race);
+				unlink(g.l.sfv);
 
 				rescandir(2);
 				n = direntries;
@@ -718,42 +514,42 @@ main(int argc, char **argv)
 			}
 
 #if (use_partial_on_noforce == TRUE)
-			if ( (force_sfv_first == FALSE) || matchpartialpath(noforce_sfv_first_dirs, locations.path)) {
+			if ( (force_sfv_first == FALSE) || matchpartialpath(noforce_sfv_first_dirs, g.l.path)) {
 #else
-			if ( (force_sfv_first == FALSE) || matchpath(noforce_sfv_first_dirs, locations.path)) {
+			if ( (force_sfv_first == FALSE) || matchpath(noforce_sfv_first_dirs, g.l.path)) {
 #endif
-				if (fileexists(locations.race)) {
+				if (fileexists(g.l.race)) {
 					d_log("Testing files marked as untested\n");
-					testfiles_file(&locations, &raceI, 0);
+					testfiles_file(&g.l, &g.v, 0);
 					rescandir(2);
 				}
 			}
 			d_log("Reading file count from SFV\n");
-			readsfv_file(&locations, &raceI, 0);
+			readsfv_file(&g.l, &g.v, 0);
 
-			if (raceI.total.files == 0) {
+			if (g.v.total.files == 0) {
 				d_log("SFV seems to have no files of accepted types, or has errors.\n");
-				sprintf(raceI.misc.error_msg, EMPTY_SFV);
-				mark_as_bad(raceI.file.name);
-				write_log = raceI.misc.write_log;
-				raceI.misc.write_log = 1;
-				error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+				sprintf(g.v.misc.error_msg, EMPTY_SFV);
+				mark_as_bad(g.v.file.name);
+				write_log = g.v.misc.write_log;
+				g.v.misc.write_log = 1;
+				error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 				if (exit_value < 2)
-					writelog(error_msg, bad_file_sfv_type);
+					writelog(&g, error_msg, bad_file_sfv_type);
 				exit_value = 2;
 				break;
 			}
 			printf(zipscript_sfv_ok);
-			if (fileexists(locations.race)) {
+			if (fileexists(g.l.race)) {
 				d_log("Reading race data from file to memory\n");
-				readrace_file(&locations, &raceI, userI, groupI);
+				readrace_file(&g.l, &g.v, g.ui, g.gi);
 			}
 			d_log("Making sure that release is not marked as complete\n");
 			removecomplete();
 
 			d_log("Setting message pointers\n");
 			sfv_type = general_announce_sfv_type;
-			switch (raceI.misc.release_type) {
+			switch (g.v.misc.release_type) {
 			case RTYPE_RAR:
 				sfv_msg = rar_sfv;
 				sfv_type = rar_announce_sfv_type;
@@ -773,16 +569,16 @@ main(int argc, char **argv)
 			}
 			halfway_msg = newleader_msg = race_msg = update_msg = NULL;
 
-			raceI.misc.write_log = matchpath(sfv_dirs, locations.path);
-			if (raceI.total.files_missing > 0) {
+			g.v.misc.write_log = matchpath(sfv_dirs, g.l.path);
+			if (g.v.total.files_missing > 0) {
 				if (sfv_msg != NULL) {
 					d_log("Writing SFV message to %s\n", log);
-					writelog(convert(&raceI, userI, groupI, sfv_msg), sfv_type);
+					writelog(&g, convert(&g.v, g.ui, g.gi, sfv_msg), sfv_type);
 				}
 			} else {
-				if (raceI.misc.release_type == RTYPE_AUDIO) {
+				if (g.v.misc.release_type == RTYPE_AUDIO) {
 					d_log("Reading audio info for completebar\n");
-					get_mpeg_audio_info(findfileext(".mp3"), &raceI.audio);
+					get_mpeg_audio_info(findfileext(".mp3"), &g.v.audio);
 				}
 			}
 			break;
@@ -794,25 +590,25 @@ main(int argc, char **argv)
 #if ( deny_double_nfo )
 			if (findfileextcount(".nfo") > 1) {
 				d_log("Looks like there already is a nfo uploaded. Denying this one.\n");
-				sprintf(raceI.misc.error_msg, DUPE_NFO);
-				mark_as_bad(raceI.file.name);
-				write_log = raceI.misc.write_log;
-				raceI.misc.write_log = 1;
-				error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+				sprintf(g.v.misc.error_msg, DUPE_NFO);
+				mark_as_bad(g.v.file.name);
+				write_log = g.v.misc.write_log;
+				g.v.misc.write_log = 1;
+				error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 				if (exit_value < 2)
-					writelog(error_msg, bad_file_nfo_type);
+					writelog(&g, error_msg, bad_file_nfo_type);
 				exit_value = 2;
 				break;
 			}
 #endif
-			writerace_file(&locations, &raceI, 0, F_NFO);
+			writerace_file(&g.l, &g.v, 0, F_NFO);
 
 #if ( enable_nfo_script )
 			if (!fileexists(nfo_script)) {
 				d_log("Could not execute nfo_script (%s) - file does not exists\n", nfo_script);
 			} else {
 				d_log("Executing nfo script (%s)\n", nfo_script);
-				sprintf(target, nfo_script " \"%s\"", raceI.file.name);
+				sprintf(target, nfo_script " \"%s\"", g.v.file.name);
 				/* if ( execute_old(target) != 0 ) { */
 				if (execute(target) != 0) {
 					d_log("Failed to execute nfo_script: %s\n", strerror(errno));
@@ -829,11 +625,11 @@ main(int argc, char **argv)
 			d_log("Converting crc (%s) from string to integer\n", argv[3]);
 			crc = hexstrtodec((unsigned char *)argv[3]);
 			if (crc == 0) {
-				d_log("We did not get crc from ftp daemon, calculating crc for %s now.\n", raceI.file.name);
-				crc = calc_crc32(raceI.file.name);
+				d_log("We did not get crc from ftp daemon, calculating crc for %s now.\n", g.v.file.name);
+				crc = calc_crc32(g.v.file.name);
 			}
-			if (fileexists(locations.sfv)) {
-				s_crc = readsfv_file(&locations, &raceI, 0);
+			if (fileexists(g.l.sfv)) {
+				s_crc = readsfv_file(&g.l, &g.v, 0);
 				d_log("DEBUG: crc: %X - s_crc: %X\n", crc, s_crc);
 				if (s_crc != crc) {
 					if (s_crc == 0) {
@@ -844,7 +640,7 @@ main(int argc, char **argv)
 							break;
 #endif
 							d_log("Filename was not found in the SFV\n");
-							strlcpy(raceI.misc.error_msg, NOT_IN_SFV, 80);
+							strlcpy(g.v.misc.error_msg, NOT_IN_SFV, 80);
 						} else {
 							d_log("filetype is part of allowed_types.\n");
 							no_check = TRUE;
@@ -855,138 +651,138 @@ main(int argc, char **argv)
 						if (!hexstrtodec((unsigned char *)argv[3]) && allow_file_resume) {
 							d_log("Broken xfer detected - allowing file.\n");
 							no_check = TRUE;
-							write_log = raceI.misc.write_log;
-							raceI.misc.write_log = 1;
-							error_msg = convert(&raceI, userI, groupI, bad_file_msg);
-							writelog(error_msg, bad_file_crc_type);
+							write_log = g.v.misc.write_log;
+							g.v.misc.write_log = 1;
+							error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
+							writelog(&g, error_msg, bad_file_crc_type);
 							if (enable_unduper_script == TRUE) {
 								if (!fileexists(unduper_script)) {
-									d_log("Failed to undupe '%s' - '%s' does not exist.\n", raceI.file.name, unduper_script);
+									d_log("Failed to undupe '%s' - '%s' does not exist.\n", g.v.file.name, unduper_script);
 								} else {
-									sprintf(target, unduper_script " \"%s\"", raceI.file.name);
+									sprintf(target, unduper_script " \"%s\"", g.v.file.name);
 									if (execute(target) == 0) {
-										d_log("undupe of %s successful.\n", raceI.file.name);
+										d_log("undupe of %s successful.\n", g.v.file.name);
 									} else {
-										d_log("undupe of %s failed.\n", raceI.file.name);
+										d_log("undupe of %s failed.\n", g.v.file.name);
 									}
 								}
 							}
 							break;
 						}
-						strlcpy(raceI.misc.error_msg, BAD_CRC, 80);
+						strlcpy(g.v.misc.error_msg, BAD_CRC, 80);
 					}
-					mark_as_bad(raceI.file.name);
-					write_log = raceI.misc.write_log;
-					raceI.misc.write_log = 1;
-					error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+					mark_as_bad(g.v.file.name);
+					write_log = g.v.misc.write_log;
+					g.v.misc.write_log = 1;
+					error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 					if (exit_value < 2)
-						writelog(error_msg, bad_file_crc_type);
+						writelog(&g, error_msg, bad_file_crc_type);
 					exit_value = 2;
 					break;
 				}
 				printf(zipscript_SFV_ok);
 				d_log("Storing new race data\n");
-				writerace_file(&locations, &raceI, crc, F_CHECKED);
+				writerace_file(&g.l, &g.v, crc, F_CHECKED);
 			} else {
 #if ( force_sfv_first == TRUE )
 #if (use_partial_on_noforce == TRUE)
-				if (!matchpartialpath(noforce_sfv_first_dirs, locations.path) && !matchpath(zip_dirs, locations.path)) {
+				if (!matchpartialpath(noforce_sfv_first_dirs, g.l.path) && !matchpath(zip_dirs, g.l.path)) {
 #else
-				if (!matchpath(noforce_sfv_first_dirs, locations.path) && !matchpath(zip_dirs, locations.path)) {
+				if (!matchpath(noforce_sfv_first_dirs, g.l.path) && !matchpath(zip_dirs, g.l.path)) {
 #endif
 					d_log("SFV needs to be uploaded first\n");
-					strlcpy(raceI.misc.error_msg, SFV_FIRST, 80);
-					mark_as_bad(raceI.file.name);
-					write_log = raceI.misc.write_log;
-					raceI.misc.write_log = 1;
-					error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+					strlcpy(g.v.misc.error_msg, SFV_FIRST, 80);
+					mark_as_bad(g.v.file.name);
+					write_log = g.v.misc.write_log;
+					g.v.misc.write_log = 1;
+					error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 					if (exit_value < 2)
-						writelog(error_msg, bad_file_nosfv_type);
+						writelog(&g, error_msg, bad_file_nosfv_type);
 					exit_value = 2;
 					break;
 				} else {
 					d_log("path matched with noforce_sfv_first or zip_dirs - allowing file.\n");
 					printf(zipscript_SFV_skip);
 					d_log("Storing new race data\n");
-					writerace_file(&locations, &raceI, crc, F_NOTCHECKED);
+					writerace_file(&g.l, &g.v, crc, F_NOTCHECKED);
 				}
 #else
 				d_log("Could not check file yet - SFV is not present\n");
 				printf(zipscript_SFV_skip);
 				d_log("Storing new race data\n");
-				writerace_file(&locations, &raceI, crc, F_NOTCHECKED);
+				writerace_file(&g.l, &g.v, crc, F_NOTCHECKED);
 #endif
 			}
 
-			raceI.misc.write_log = matchpath(sfv_dirs, locations.path);
+			g.v.misc.write_log = matchpath(sfv_dirs, g.l.path);
 
 			d_log("Reading race data from file to memory\n");
-			readrace_file(&locations, &raceI, userI, groupI);
+			readrace_file(&g.l, &g.v, g.ui, g.gi);
 
 			d_log("Setting pointers\n");
-			if (raceI.misc.release_type == RTYPE_NULL) {
+			if (g.v.misc.release_type == RTYPE_NULL) {
 				if (israr(fileext))
-					raceI.misc.release_type = RTYPE_RAR;	/* .RAR / .R?? */
+					g.v.misc.release_type = RTYPE_RAR;	/* .RAR / .R?? */
 				else if (isvideo(fileext))
-					raceI.misc.release_type = RTYPE_VIDEO;	/* AVI/MPEG */
+					g.v.misc.release_type = RTYPE_VIDEO;	/* AVI/MPEG */
 				else if (!memcmp(fileext, "mp3", 4))
-					raceI.misc.release_type = RTYPE_AUDIO;	/* MP3 */
+					g.v.misc.release_type = RTYPE_AUDIO;	/* MP3 */
 				else
-					raceI.misc.release_type = RTYPE_OTHER;	/* OTHER FILE */
+					g.v.misc.release_type = RTYPE_OTHER;	/* OTHER FILE */
 			}
-			switch (raceI.misc.release_type) {
+			switch (g.v.misc.release_type) {
 			case RTYPE_RAR:
-				get_rar_info(raceI.file.name);
+				get_rar_info(&g.v);
 				race_msg = rar_race;
 				update_msg = rar_update;
-				halfway_msg = CHOOSE(raceI.total.users, rar_halfway, rar_norace_halfway);
+				halfway_msg = CHOOSE(g.v.total.users, rar_halfway, rar_norace_halfway);
 				newleader_msg = rar_newleader;
 				break;
 			case RTYPE_OTHER:
 				race_msg = other_race;
 				update_msg = other_update;
-				halfway_msg = CHOOSE(raceI.total.users, other_halfway, other_norace_halfway);
+				halfway_msg = CHOOSE(g.v.total.users, other_halfway, other_norace_halfway);
 				newleader_msg = other_newleader;
 				break;
 			case RTYPE_AUDIO:
 				d_log("Trying to read audio header and tags\n");
-				get_mpeg_audio_info(raceI.file.name, &raceI.audio);
+				get_mpeg_audio_info(g.v.file.name, &g.v.audio);
 #if ( exclude_non_sfv_dirs )
-				if (raceI.misc.write_log == TRUE) {
+				if (g.v.misc.write_log == TRUE) {
 #endif
-					if ((enable_mp3_script == TRUE) && (userI[raceI.user.pos]->files == 1)) {
+					if ((enable_mp3_script == TRUE) && (g.ui[g.v.user.pos]->files == 1)) {
 						if (!fileexists(mp3_script)) {
 							d_log("Could not execute mp3_script (%s) - file does not exists\n", mp3_script);
 						} else {
-							d_log("Executing mp3 script (%s %s)\n", mp3_script, convert(&raceI, userI, groupI, mp3_script_cookies));
-							sprintf(target, "%s %s", mp3_script, convert(&raceI, userI, groupI, mp3_script_cookies));
+							d_log("Executing mp3 script (%s %s)\n", mp3_script, convert(&g.v, g.ui, g.gi, mp3_script_cookies));
+							sprintf(target, "%s %s", mp3_script, convert(&g.v, g.ui, g.gi, mp3_script_cookies));
 							if (execute(target) != 0) {
 								d_log("Failed to execute mp3_script: %s\n", strerror(errno));
 							}
 						}
 					}
-					if (!matchpath(audio_nocheck_dirs, locations.path)) {
+					if (!matchpath(audio_nocheck_dirs, g.l.path)) {
 #if ( audio_banned_genre_check )
-						if (strcomp(banned_genres, raceI.audio.id3_genre)) {
+						if (strcomp(banned_genres, g.v.audio.id3_genre)) {
 							d_log("File is from banned genre\n");
-							sprintf(raceI.misc.error_msg, BANNED_GENRE, raceI.audio.id3_genre);
+							sprintf(g.v.misc.error_msg, BANNED_GENRE, g.v.audio.id3_genre);
 							if (audio_genre_warn == TRUE) {
-								if (userI[raceI.user.pos]->files == 1) {
+								if (g.ui[g.v.user.pos]->files == 1) {
 									d_log("warn on - logging to logfile\n");
-									write_log = raceI.misc.write_log;
-									raceI.misc.write_log = 1;
-									error_msg = convert(&raceI, userI, groupI, audio_genre_warn_msg);
-									writelog(error_msg, general_badgenre_type);
-									raceI.misc.write_log = write_log;
+									write_log = g.v.misc.write_log;
+									g.v.misc.write_log = 1;
+									error_msg = convert(&g.v, g.ui, g.gi, audio_genre_warn_msg);
+									writelog(&g, error_msg, general_badgenre_type);
+									g.v.misc.write_log = write_log;
 								} else
 									d_log("warn on - have already logged to logfile\n");
 							} else {
-								mark_as_bad(raceI.file.name);
-								write_log = raceI.misc.write_log;
-								raceI.misc.write_log = 1;
-								error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+								mark_as_bad(g.v.file.name);
+								write_log = g.v.misc.write_log;
+								g.v.misc.write_log = 1;
+								error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 								if (exit_value < 2)
-									writelog(error_msg, bad_file_genre_type);
+									writelog(&g, error_msg, bad_file_genre_type);
 								exit_value = 2;
 							}
 #if ( del_banned_release )
@@ -996,26 +792,26 @@ main(int argc, char **argv)
 							break;
 						}
 #elif ( audio_allowed_genre_check == TRUE )
-						if (!strcomp(allowed_genres, raceI.audio.id3_genre)) {
+						if (!strcomp(allowed_genres, g.v.audio.id3_genre)) {
 							d_log("File is not in allowed genre\n");
-							sprintf(raceI.misc.error_msg, BANNED_GENRE, raceI.audio.id3_genre);
+							sprintf(g.v.misc.error_msg, BANNED_GENRE, g.v.audio.id3_genre);
 							if (audio_genre_warn == TRUE) {
-								if (userI[raceI.user.pos]->files == 1) {
+								if (g.ui[g.v.user.pos]->files == 1) {
 									d_log("warn on - logging to logfile\n");
-									write_log = raceI.misc.write_log;
-									raceI.misc.write_log = 1;
-									error_msg = convert(&raceI, userI, groupI, audio_genre_warn_msg);
-									writelog(error_msg, general_badgenre_type);
-									raceI.misc.write_log = write_log;
+									write_log = g.v.misc.write_log;
+									g.v.misc.write_log = 1;
+									error_msg = convert(&g.v, g.ui, g.gi, audio_genre_warn_msg);
+									writelog(&g, error_msg, general_badgenre_type);
+									g.v.misc.write_log = write_log;
 								} else
 									d_log("warn on - have already logged to logfile\n");
 							} else {
-								mark_as_bad(raceI.file.name);
-								write_log = raceI.misc.write_log;
-								raceI.misc.write_log = 1;
-								error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+								mark_as_bad(g.v.file.name);
+								write_log = g.v.misc.write_log;
+								g.v.misc.write_log = 1;
+								error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 								if (exit_value < 2)
-									writelog(error_msg, bad_file_genre_type);
+									writelog(&g, error_msg, bad_file_genre_type);
 								exit_value = 2;
 							}
 #if ( del_banned_release )
@@ -1026,26 +822,26 @@ main(int argc, char **argv)
 						}
 #endif
 #if ( audio_year_check == TRUE )
-						if (!strcomp(allowed_years, raceI.audio.id3_year)) {
+						if (!strcomp(allowed_years, g.v.audio.id3_year)) {
 							d_log("File is from banned year\n");
-							sprintf(raceI.misc.error_msg, BANNED_YEAR, raceI.audio.id3_year);
+							sprintf(g.v.misc.error_msg, BANNED_YEAR, g.v.audio.id3_year);
 							if (audio_year_warn == TRUE) {
-								if (userI[raceI.user.pos]->files == 1) {
+								if (g.ui[g.v.user.pos]->files == 1) {
 									d_log("warn on - logging to logfile\n");
-									write_log = raceI.misc.write_log;
-									raceI.misc.write_log = 1;
-									error_msg = convert(&raceI, userI, groupI, audio_year_warn_msg);
-									writelog(error_msg, general_badyear_type);
-									raceI.misc.write_log = write_log;
+									write_log = g.v.misc.write_log;
+									g.v.misc.write_log = 1;
+									error_msg = convert(&g.v, g.ui, g.gi, audio_year_warn_msg);
+									writelog(&g, error_msg, general_badyear_type);
+									g.v.misc.write_log = write_log;
 								} else
 									d_log("warn on - have already logged to logfile\n");
 							} else {
-								mark_as_bad(raceI.file.name);
-								write_log = raceI.misc.write_log;
-								raceI.misc.write_log = 1;
-								error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+								mark_as_bad(g.v.file.name);
+								write_log = g.v.misc.write_log;
+								g.v.misc.write_log = 1;
+								error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 								if (exit_value < 2)
-									writelog(error_msg, bad_file_year_type);
+									writelog(&g, error_msg, bad_file_year_type);
 								exit_value = 2;
 							}
 #if ( del_banned_release )
@@ -1056,27 +852,27 @@ main(int argc, char **argv)
 						}
 #endif
 #if ( audio_cbr_check == TRUE )
-						if (raceI.audio.is_vbr == 0) {
-							if (!strcomp(allowed_constant_bitrates, raceI.audio.bitrate)) {
+						if (g.v.audio.is_vbr == 0) {
+							if (!strcomp(allowed_constant_bitrates, g.v.audio.bitrate)) {
 								d_log("File is encoded using banned bitrate\n");
-								sprintf(raceI.misc.error_msg, BANNED_BITRATE, raceI.audio.bitrate);
+								sprintf(g.v.misc.error_msg, BANNED_BITRATE, g.v.audio.bitrate);
 								if (audio_cbr_warn == TRUE) {
-									if (userI[raceI.user.pos]->files == 1) {
+									if (g.ui[g.v.user.pos]->files == 1) {
 										d_log("warn on - logging to logfile\n");
-										write_log = raceI.misc.write_log;
-										raceI.misc.write_log = 1;
-										error_msg = convert(&raceI, userI, groupI, audio_cbr_warn_msg);
-										writelog(error_msg, general_badbitrate_type);
-										raceI.misc.write_log = write_log;
+										write_log = g.v.misc.write_log;
+										g.v.misc.write_log = 1;
+										error_msg = convert(&g.v, g.ui, g.gi, audio_cbr_warn_msg);
+										writelog(&g, error_msg, general_badbitrate_type);
+										g.v.misc.write_log = write_log;
 									} else
 										d_log("warn on - have already logged to logfile\n");
 								} else {
-									mark_as_bad(raceI.file.name);
-									write_log = raceI.misc.write_log;
-									raceI.misc.write_log = 1;
-									error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+									mark_as_bad(g.v.file.name);
+									write_log = g.v.misc.write_log;
+									g.v.misc.write_log = 1;
+									error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 									if (exit_value < 2)
-										writelog(error_msg, bad_file_bitrate_type);
+										writelog(&g, error_msg, bad_file_bitrate_type);
 									exit_value = 2;
 								}
 #if ( del_banned_release )
@@ -1094,32 +890,32 @@ main(int argc, char **argv)
 #endif
 				if (realtime_mp3_info != DISABLED) {
 					d_log("Printing realtime_mp3_info.\n");
-					printf("%s", convert(&raceI, userI, groupI, realtime_mp3_info));
+					printf("%s", convert(&g.v, g.ui, g.gi, realtime_mp3_info));
 				}
 				race_msg = audio_race;
 				update_msg = audio_update;
-				halfway_msg = CHOOSE(raceI.total.users, audio_halfway, audio_norace_halfway);
+				halfway_msg = CHOOSE(g.v.total.users, audio_halfway, audio_norace_halfway);
 				newleader_msg = audio_newleader;
 				break;
 			case RTYPE_VIDEO:
 				d_log("Trying to read video header\n");
 				if (!memcmp(fileext, "avi", 3))
-					avi_video(raceI.file.name, &raceI.video);
+					avi_video(g.v.file.name, &g.v.video);
 				else
-					mpeg_video(raceI.file.name, &raceI.video);
+					mpeg_video(g.v.file.name, &g.v.video);
 				race_msg = video_race;
 				update_msg = video_update;
-				halfway_msg = CHOOSE(raceI.total.users, video_halfway, video_norace_halfway);
+				halfway_msg = CHOOSE(g.v.total.users, video_halfway, video_norace_halfway);
 				newleader_msg = video_newleader;
 				break;
 			}
 
 			if (exit_value == EXIT_SUCCESS) {
 				d_log("Removing missing indicator\n");
-				unlink_missing(raceI.file.name);
+				unlink_missing(g.v.file.name);
 
 				/*
-				sprintf(target, "%s-missing", raceI.file.name);
+				sprintf(target, "%s-missing", g.v.file.name);
 #if ( sfv_cleanup == TRUE )
 #if (sfv_cleanup_lowercase == TRUE)
 				  strtolower(target);
@@ -1141,13 +937,13 @@ main(int argc, char **argv)
 		case 255:	/* UNKNOWN - WE DELETE THESE, SINCE IT WAS
 				 * ALSO IGNORED */
 			d_log("File type: UNKNOWN [ignored in sfv]\n");
-			sprintf(raceI.misc.error_msg, UNKNOWN_FILE, fileext);
-			mark_as_bad(raceI.file.name);
-			write_log = raceI.misc.write_log;
-			raceI.misc.write_log = 1;
-			error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+			sprintf(g.v.misc.error_msg, UNKNOWN_FILE, fileext);
+			mark_as_bad(g.v.file.name);
+			write_log = g.v.misc.write_log;
+			g.v.misc.write_log = 1;
+			error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 			if (exit_value < 2)
-				writelog(error_msg, bad_file_disallowed_type);
+				writelog(&g, error_msg, bad_file_disallowed_type);
 			exit_value = 2;
 			break;
 			/* END OF UNKNOWN CHECK */
@@ -1156,19 +952,19 @@ main(int argc, char **argv)
 
 	if (no_check == TRUE) {	/* File was not checked */
 		printf(zipscript_any_ok);
-		printf("%s", convert(&raceI, userI, groupI, zipscript_footer_skip));
+		printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_skip));
 	} else if (exit_value == EXIT_SUCCESS) {	/* File was checked */
 
-		if (raceI.total.users > 0) {
+		if (g.v.total.users > 0) {
 			d_log("Sorting race stats\n");
-			sortstats(&raceI, userI, groupI);
+			sortstats(&g.v, g.ui, g.gi);
 #if ( get_user_stats == TRUE )
 			d_log("Reading day/week/month/all stats for racers\n");
-			d_log("stat section: %i\n", raceI.section);
-			get_stats(&raceI, userI);
+			d_log("stat section: %i\n", g.v.section);
+			get_stats(&g.v, g.ui);
 #endif
 			d_log("Printing on-site race info\n");
-			showstats(&raceI, userI, groupI);
+			showstats(&g.v, g.ui, g.gi);
 
 			/*
 			 * Modification by <daxxar@daxxar.com> Only write
@@ -1176,15 +972,15 @@ main(int argc, char **argv)
 			 * or only one person is racing if enable_files_ahead
 			 * :)
 			 */
-			if (!enable_files_ahead || ((raceI.total.users > 1 && userI[userI[0]->pos]->files >= (userI[userI[1]->pos]->files + newleader_files_ahead)) || raceI.total.users == 1)) {
+			if (!enable_files_ahead || ((g.v.total.users > 1 && g.ui[g.ui[0]->pos]->files >= (g.ui[g.ui[1]->pos]->files + newleader_files_ahead)) || g.v.total.users == 1)) {
 				d_log("Writing current leader to file\n");
-				read_write_leader_file(&locations, &raceI, userI[userI[0]->pos]);
+				read_write_leader_file(&g.l, &g.v, g.ui[g.ui[0]->pos]);
 			}
-			if (raceI.total.users > 1) {
-				if (userI[raceI.user.pos]->files == 1 && race_msg != NULL) {
+			if (g.v.total.users > 1) {
+				if (g.ui[g.v.user.pos]->files == 1 && race_msg != NULL) {
 					d_log("Writing RACE to %s\n", log);
 					race_type = general_announce_race_type;
-					switch (raceI.misc.release_type) {
+					switch (g.v.misc.release_type) {
 					case RTYPE_RAR:
 						race_type = rar_announce_race_type;
 						break;	/* rar */
@@ -1201,17 +997,17 @@ main(int argc, char **argv)
 						race_type = zip_announce_race_type;
 						break;	/* zip */
 					}
-					writelog(convert(&raceI, userI, groupI, race_msg), race_type);
+					writelog(&g, convert(&g.v, g.ui, g.gi, race_msg), race_type);
 				}
 				/*
 				 * Modification by <daxxar@daxxar.com>
 				 * Only announce new leader if he leads with
 				 * newleader_files_ahead files :-)
 				 */
-				if (raceI.total.files >= min_newleader_files && ((raceI.total.size * raceI.total.files) >= (min_newleader_size * 1024 * 1024)) && strcmp(raceI.misc.old_leader, userI[userI[0]->pos]->name) && newleader_msg != NULL && userI[userI[0]->pos]->files >= (userI[userI[1]->pos]->files + newleader_files_ahead)) {
+				if (g.v.total.files >= min_newleader_files && ((g.v.total.size * g.v.total.files) >= (min_newleader_size * 1024 * 1024)) && strcmp(g.v.misc.old_leader, g.ui[g.ui[0]->pos]->name) && newleader_msg != NULL && g.ui[g.ui[0]->pos]->files >= (g.ui[g.ui[1]->pos]->files + newleader_files_ahead)) {
 					d_log("Writing NEWLEADER to %s\n", log);
 					newleader_type = general_announce_newleader_type;
-					switch (raceI.misc.release_type) {
+					switch (g.v.misc.release_type) {
 					case RTYPE_RAR:
 						newleader_type = rar_announce_newleader_type;
 						break;	/* rar */
@@ -1228,14 +1024,14 @@ main(int argc, char **argv)
 						newleader_type = zip_announce_newleader_type;
 						break;	/* zip */
 					}
-					writelog(convert(&raceI, userI, groupI, newleader_msg), newleader_type);
+					writelog(&g, convert(&g.v, g.ui, g.gi, newleader_msg), newleader_type);
 				}
 			} else {
 
-				if (userI[raceI.user.pos]->files == 1 && raceI.total.files >= min_update_files && ((raceI.total.size * raceI.total.files) >= (min_update_size * 1024 * 1024)) && update_msg != NULL) {
+				if (g.ui[g.v.user.pos]->files == 1 && g.v.total.files >= min_update_files && ((g.v.total.size * g.v.total.files) >= (min_update_size * 1024 * 1024)) && update_msg != NULL) {
 					d_log("Writing UPDATE to %s\n", log);
 					update_type = general_announce_update_type;
-					switch (raceI.misc.release_type) {
+					switch (g.v.misc.release_type) {
 					case RTYPE_RAR:
 						update_type = rar_announce_update_type;
 						break;	/* rar */
@@ -1243,7 +1039,7 @@ main(int argc, char **argv)
 						update_type = other_announce_update_type;
 						break;	/* other */
 					case RTYPE_AUDIO:
-						if (raceI.audio.is_vbr == 0) {
+						if (g.v.audio.is_vbr == 0) {
 							update_type = audio_announce_cbr_update_type;
 						} else {
 							update_type = audio_announce_vbr_update_type;
@@ -1256,19 +1052,19 @@ main(int argc, char **argv)
 						update_type = zip_announce_update_type;
 						break;	/* zip */
 					}
-					writelog(convert(&raceI, userI, groupI, update_msg), update_type);
+					writelog(&g, convert(&g.v, g.ui, g.gi, update_msg), update_type);
 				}
 			}
 		}
-		if (raceI.total.files_missing > 0) {
+		if (g.v.total.files_missing > 0) {
 
 			/* Release is incomplete */
 
-			if (raceI.total.files_missing == raceI.total.files >> 1 && raceI.total.files >= min_halfway_files && ((raceI.total.size * raceI.total.files) >= (min_halfway_size * 1024 * 1024)) && halfway_msg != NULL) {
+			if (g.v.total.files_missing == g.v.total.files >> 1 && g.v.total.files >= min_halfway_files && ((g.v.total.size * g.v.total.files) >= (min_halfway_size * 1024 * 1024)) && halfway_msg != NULL) {
 				d_log("Writing HALFWAY to %s\n", log);
 				norace_halfway_type = general_announce_norace_halfway_type;
 				race_halfway_type = general_announce_race_halfway_type;
-				switch (raceI.misc.release_type) {
+				switch (g.v.misc.release_type) {
 				case RTYPE_RAR:
 					norace_halfway_type = rar_announce_norace_halfway_type;
 					race_halfway_type = rar_announce_race_halfway_type;
@@ -1290,7 +1086,7 @@ main(int argc, char **argv)
 					race_halfway_type = zip_announce_race_halfway_type;
 					break;	/* zip */
 				}
-				writelog(convert(&raceI, userI, groupI, halfway_msg), (raceI.total.users > 1 ? race_halfway_type : norace_halfway_type));
+				writelog(&g, convert(&g.v, g.ui, g.gi, halfway_msg), (g.v.total.users > 1 ? race_halfway_type : norace_halfway_type));
 			}
 			/*
 			 * It is _very_ unlikely that halfway would be
@@ -1298,90 +1094,90 @@ main(int argc, char **argv)
 			 */
 
 			d_log("Caching progress bar\n");
-			buffer_progress_bar(&raceI);
+			buffer_progress_bar(&g.v);
 
-			if (!matchpath(group_dirs, locations.path) || create_incomplete_links_in_group_dirs) {
-				d_log("Creating incomplete indicator:\n", locations.incomplete);
-				d_log("   name: '%s', incomplete: '%s', path: '%s'\n", raceI.misc.release_name, locations.incomplete, locations.path);
+			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
+				d_log("Creating incomplete indicator:\n", g.l.incomplete);
+				d_log("   name: '%s', incomplete: '%s', path: '%s'\n", g.v.misc.release_name, g.l.incomplete, g.l.path);
 				create_incomplete();
 			}
 
 			d_log("Creating/moving progress bar\n");
-			move_progress_bar(0, &raceI);
+			move_progress_bar(0, &g.v, g.ui, g.gi);
 
-			printf("%s", convert(&raceI, userI, groupI, zipscript_footer_ok));
+			printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_ok));
 
-		} else if ((raceI.total.files_missing == 0) && (raceI.total.files > 0)) {
+		} else if ((g.v.total.files_missing == 0) && (g.v.total.files > 0)) {
 
 			/* Release is complete */
 
 			d_log("Caching progress bar\n");
-			buffer_progress_bar(&raceI);
-			printf("%s", convert(&raceI, userI, groupI, zipscript_footer_ok));
+			buffer_progress_bar(&g.v);
+			printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_ok));
 
 			d_log("Setting complete pointers\n");
-			switch (raceI.misc.release_type) {
+			switch (g.v.misc.release_type) {
 			case RTYPE_NULL:
 				complete_bar = zip_completebar;
-				complete_msg = CHOOSE(raceI.total.users, zip_complete, zip_norace_complete);
-				complete_announce = CHOOSE(raceI.total.users, zip_announce_one_race_complete_type, zip_announce_norace_complete_type);
+				complete_msg = CHOOSE(g.v.total.users, zip_complete, zip_norace_complete);
+				complete_announce = CHOOSE(g.v.total.users, zip_announce_one_race_complete_type, zip_announce_norace_complete_type);
 				break;
 			case RTYPE_RAR:
 				complete_bar = rar_completebar;
-				complete_msg = CHOOSE(raceI.total.users, rar_complete, rar_norace_complete);
-				complete_announce = CHOOSE(raceI.total.users, rar_announce_one_race_complete_type, rar_announce_norace_complete_type);
+				complete_msg = CHOOSE(g.v.total.users, rar_complete, rar_norace_complete);
+				complete_announce = CHOOSE(g.v.total.users, rar_announce_one_race_complete_type, rar_announce_norace_complete_type);
 				break;
 			case RTYPE_OTHER:
 				complete_bar = other_completebar;
-				complete_msg = CHOOSE(raceI.total.users, other_complete, other_norace_complete);
-				complete_announce = CHOOSE(raceI.total.users, other_announce_one_race_complete_type, other_announce_norace_complete_type);
+				complete_msg = CHOOSE(g.v.total.users, other_complete, other_norace_complete);
+				complete_announce = CHOOSE(g.v.total.users, other_announce_one_race_complete_type, other_announce_norace_complete_type);
 				break;
 			case RTYPE_AUDIO:
 				complete_bar = audio_completebar;
-				complete_msg = CHOOSE(raceI.total.users, audio_complete, audio_norace_complete);
-				if (raceI.audio.is_vbr == 0) {
-					complete_announce = CHOOSE(raceI.total.users, audio_cbr_announce_one_race_complete_type, audio_cbr_announce_norace_complete_type);
+				complete_msg = CHOOSE(g.v.total.users, audio_complete, audio_norace_complete);
+				if (g.v.audio.is_vbr == 0) {
+					complete_announce = CHOOSE(g.v.total.users, audio_cbr_announce_one_race_complete_type, audio_cbr_announce_norace_complete_type);
 				} else {
-					complete_announce = CHOOSE(raceI.total.users, audio_vbr_announce_one_race_complete_type, audio_vbr_announce_norace_complete_type);
+					complete_announce = CHOOSE(g.v.total.users, audio_vbr_announce_one_race_complete_type, audio_vbr_announce_norace_complete_type);
 				}
 
 				d_log("Symlinking audio\n");
-				if (!strncasecmp(locations.link_target, "VA", 2) && (locations.link_target[2] == '-' || locations.link_target[2] == '_'))
-					memcpy(raceI.audio.id3_artist, "VA", 3);
+				if (!strncasecmp(g.l.link_target, "VA", 2) && (g.l.link_target[2] == '-' || g.l.link_target[2] == '_'))
+					memcpy(g.v.audio.id3_artist, "VA", 3);
 
-				if (raceI.misc.write_log == TRUE && !matchpath(group_dirs, locations.path)) {
+				if (g.v.misc.write_log == TRUE && !matchpath(group_dirs, g.l.path)) {
 #if ( audio_genre_sort == TRUE )
-					d_log("  Sorting mp3 by genre (%s)\n", raceI.audio.id3_genre);
-					createlink(audio_genre_path, raceI.audio.id3_genre, locations.link_source, locations.link_target);
+					d_log("  Sorting mp3 by genre (%s)\n", g.v.audio.id3_genre);
+					createlink(audio_genre_path, g.v.audio.id3_genre, g.l.link_source, g.l.link_target);
 #endif
 #if ( audio_artist_sort == TRUE )
 					d_log("  Sorting mp3 by artist\n");
-					if (*raceI.audio.id3_artist) {
-						d_log("    - artist: %s\n", raceI.audio.id3_artist);
-						if (memcmp(raceI.audio.id3_artist, "VA", 3)) {
+					if (*g.v.audio.id3_artist) {
+						d_log("    - artist: %s\n", g.v.audio.id3_artist);
+						if (memcmp(g.v.audio.id3_artist, "VA", 3)) {
 							temp_p = malloc(2);
-							snprintf(temp_p, 2, "%c", toupper(*raceI.audio.id3_artist));
-							createlink(audio_artist_path, temp_p, locations.link_source, locations.link_target);
+							snprintf(temp_p, 2, "%c", toupper(*g.v.audio.id3_artist));
+							createlink(audio_artist_path, temp_p, g.l.link_source, g.l.link_target);
 							free(temp_p);
 						} else {
-							createlink(audio_artist_path, "VA", locations.link_source, locations.link_target);
+							createlink(audio_artist_path, "VA", g.l.link_source, g.l.link_target);
 						}
 					}
 #endif
 #if ( audio_year_sort == TRUE )
-					d_log("  Sorting mp3 by year (%s)\n", raceI.audio.id3_year);
-					if (*raceI.audio.id3_year != 0) {
-						createlink(audio_year_path, raceI.audio.id3_year, locations.link_source, locations.link_target);
+					d_log("  Sorting mp3 by year (%s)\n", g.v.audio.id3_year);
+					if (*g.v.audio.id3_year != 0) {
+						createlink(audio_year_path, g.v.audio.id3_year, g.l.link_source, g.l.link_target);
 					}
 #endif
 #if ( audio_group_sort == TRUE )
 					d_log("  Sorting mp3 by group\n");
-					temp_p = remove_pattern(locations.link_target, "*-", RP_LONG_LEFT);
+					temp_p = remove_pattern(g.l.link_target, "*-", RP_LONG_LEFT);
 					temp_p = remove_pattern(temp_p, "_", RP_SHORT_LEFT);
 					n = strlen(temp_p);
 					if (n > 0 && n < 15) {
 						d_log("  - Valid groupname found: %s (%i)\n", temp_p, n);
-						createlink(audio_group_path, temp_p, locations.link_source, locations.link_target);
+						createlink(audio_group_path, temp_p, g.l.link_source, g.l.link_target);
 					}
 #endif
 				}
@@ -1390,34 +1186,35 @@ main(int argc, char **argv)
 					d_log("Creating m3u\n");
 					cnt = sprintf(target, findfileext(".sfv"));
 					strlcpy(target + cnt - 3, "m3u", 4);
-					create_indexfile_file(&locations, &raceI, target);
+					create_indexfile_file(&g.l, &g.v, target);
 				} else
 					d_log("Cannot create m3u, sfv is missing\n");
 #endif
 				break;
 			case RTYPE_VIDEO:
 				complete_bar = video_completebar;
-				complete_msg = CHOOSE(raceI.total.users, video_complete, video_norace_complete);
-				complete_announce = CHOOSE(raceI.total.users, video_announce_one_race_complete_type, video_announce_norace_complete_type);
+				complete_msg = CHOOSE(g.v.total.users, video_complete, video_norace_complete);
+				complete_announce = CHOOSE(g.v.total.users, video_announce_one_race_complete_type, video_announce_norace_complete_type);
 				break;
 			}
 
 			d_log("Removing old complete bar, if any\n");
 			removecomplete();
 
-			d_log("Removing incomplete indicator (%s)\n", locations.incomplete);
-			complete(&locations, &raceI, userI, groupI, complete_type);
+			d_log("Removing incomplete indicator (%s)\n", g.l.incomplete);
+			complete(&g, complete_type);
+			//complete(&g.l, &g.v, g.ui, g.gi, complete_type);
 
 			if (complete_msg != NULL) {
 				d_log("Writing COMPLETE and STATS to %s\n", log);
-				writelog(convert(&raceI, userI, groupI, complete_msg), complete_announce);
-				writetop(&raceI, userI, groupI, complete_type);
+				writelog(&g, convert(&g.v, g.ui, g.gi, complete_msg), complete_announce);
+				writetop(&g, complete_type);
 			}
 			d_log("Creating complete bar\n");
-			createstatusbar(convert(&raceI, userI, groupI, complete_bar));
+			createstatusbar(convert(&g.v, g.ui, g.gi, complete_bar));
 #if (chmod_completebar)
-			if (!matchpath(group_dirs, locations.path)) {
-				chmod(convert(&raceI, userI, groupI, complete_bar), 0222);
+			if (!matchpath(group_dirs, g.l.path)) {
+				chmod(convert(&g.v, g.ui, g.gi, complete_bar), 0222);
 			} else {
 				d_log("we are in a group_dir - will not chmod the complete bar.\n");
 			}
@@ -1429,7 +1226,7 @@ main(int argc, char **argv)
 				d_log("Could not execute complete_script (%s) - file does not exists\n", complete_script);
 			} else {
 				d_log("Executing complete script\n");
-				sprintf(target, complete_script " \"%s\"", raceI.file.name);
+				sprintf(target, complete_script " \"%s\"", g.v.file.name);
 				if (execute(target) != 0) {
 					d_log("Failed to execute complete_script: %s\n", strerror(errno));
 				} else {
@@ -1443,7 +1240,7 @@ main(int argc, char **argv)
 					d_log("Could not execute nfo_script (%s) - file does not exists\n", nfo_script);
 				} else {
 					d_log("Executing nfo script (%s)\n", nfo_script);
-					sprintf(target, nfo_script " \"%s\"", raceI.file.name);
+					sprintf(target, nfo_script " \"%s\"", g.v.file.name);
 					if (execute(target) != 0) {
 						d_log("Failed to execute nfo_script: %s\n", strerror(errno));
 					}
@@ -1451,30 +1248,30 @@ main(int argc, char **argv)
 			}
 #endif
 #endif
-			if (!matchpath(group_dirs, locations.path) || create_incomplete_links_in_group_dirs) {
+			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
 				/* Creating no-nfo link if needed. */
-				if ((locations.nfo_incomplete) && (!findfileext(".nfo")) && (matchpath(check_for_missing_nfo_dirs, locations.path)) ) {
-					if (!locations.in_cd_dir) {
-						d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
+				if ((g.l.nfo_incomplete) && (!findfileext(".nfo")) && (matchpath(check_for_missing_nfo_dirs, g.l.path)) ) {
+					if (!g.l.in_cd_dir) {
+						d_log("Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
 					} else {
 						rescanparent(2);
 						if (!findfileextparent(".nfo")) {
-							d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
+							d_log("Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
 							create_incomplete_nfo();
 						}
 						rescanparent(1);
 					}
 				}
 				/* Creating no-sample link if needed.
-				if ((locations.sample_incomplete) && (!findfileext(".nfo")) && (matchpath(check_for_missing_nfo_dirs, locations.path)) ) {
-					if (!locations.in_cd_dir) {
-						d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
+				if ((g.l.sample_incomplete) && (!findfileext(".nfo")) && (matchpath(check_for_missing_nfo_dirs, g.l.path)) ) {
+					if (!g.l.in_cd_dir) {
+						d_log("Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
 					} else {
 						rescanparent(2);
 						if (!findfileextparent(".nfo")) {
-							d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
+							d_log("Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
 							create_incomplete_nfo();
 						}
 						rescanparent(1);
@@ -1486,16 +1283,16 @@ main(int argc, char **argv)
 
 			/* Release is at unknown state */
 
-			raceI.total.files = -raceI.total.files_missing;
-			raceI.total.files_missing = 0;
-			printf("%s", convert(&raceI, userI, groupI, zipscript_footer_unknown));
+			g.v.total.files = -g.v.total.files_missing;
+			g.v.total.files_missing = 0;
+			printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_unknown));
 		}
 	} else {
 		/* File is marked to be deleted */
 
 		d_log("Logging file as bad\n");
-		writerace_file(&locations, &raceI, 0, F_BAD);
-		printf("%s", convert(&raceI, userI, groupI, zipscript_footer_error));
+		writerace_file(&g.l, &g.v, 0, F_BAD);
+		printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_error));
 	}
 #if ( enable_accept_script == TRUE )
 	if (exit_value == EXIT_SUCCESS) {
@@ -1504,7 +1301,7 @@ main(int argc, char **argv)
 			d_log("Could not execute accept_script (%s) - file does not exists\n", accept_script);
 		} else {
 			d_log("Executing accept script\n");
-			sprintf(target, accept_script " \"%s\"", raceI.file.name);
+			sprintf(target, accept_script " \"%s\"", g.v.file.name);
 			if (execute(target) != 0) {
 				d_log("Failed to execute accept_script: %s\n", strerror(errno));
 			}
@@ -1516,7 +1313,7 @@ main(int argc, char **argv)
 				d_log("Could not execute nfo_script (%s) - file does not exists\n", nfo_script);
 			} else {
 				d_log("Executing nfo script (%s)\n", nfo_script);
-				sprintf(target, nfo_script " \"%s\"", raceI.file.name);
+				sprintf(target, nfo_script " \"%s\"", g.v.file.name);
 				if (execute(target) != 0) {
 					d_log("Failed to execute nfo_script: %s\n", strerror(errno));
 				}
@@ -1527,34 +1324,34 @@ main(int argc, char **argv)
 #endif
 	rescandir(2);
 	rescanparent(2);
-	if ((findfileext(".nfo") || (findfileextparent(".nfo"))) && (locations.nfo_incomplete)) {
+	if ((findfileext(".nfo") || (findfileextparent(".nfo"))) && (g.l.nfo_incomplete)) {
 		d_log("Removing missing-nfo indicator (if any)\n");
-		remove_nfo_indicator(locations.path);
+		remove_nfo_indicator(&g);
 	}
 	rescanparent(1);
 
 #if ( del_banned_release )
 	if (deldir) {
-		move_progress_bar(1, &raceI);
-		if (locations.incomplete)
-			unlink(locations.incomplete);
-		del_releasedir(locations.path);
+		move_progress_bar(1, &g.v);
+		if (g.l.incomplete)
+			unlink(g.l.incomplete);
+		del_releasedir(g.l.path);
 	}
 #endif
 
 	d_log("Releasing memory\n");
 	buffer_groups(GROUPFILE, gnum);
 	buffer_users(PASSWDFILE, unum);
-	updatestats_free(raceI, userI, groupI);
+	updatestats_free(g.v, g.ui, g.gi);
 	rescandir(1);
-	free(locations.link_source);
-	//free(raceI.misc.release_name);
+	free(g.l.link_source);
+	//free(g.v.misc.release_name);
 	free(fileext);
 	m_free(target);
-	m_free(locations.race);
-	m_free(locations.sfv);
-	m_free(locations.leader);
-	m_free(locations.link_target);
+	m_free(g.l.race);
+	m_free(g.l.sfv);
+	m_free(g.l.leader);
+	m_free(g.l.link_target);
 
 #if ( benchmark_mode == TRUE )
 	gettimeofday(&bstop, (struct timezone *)0);

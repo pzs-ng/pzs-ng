@@ -3,10 +3,11 @@
 
 #include "objects.h"
 
-void writelog(struct LOCATIONS *, char *, char *);
-char **buffer_paths(struct LOCATIONS *, char **, int *, int);
-void getrelname(struct LOCATIONS *);
-void remove_nfo_indicator(struct LOCATIONS *);
-unsigned char get_filetype(struct LOCATIONS *, char *);
+/* COMMENT THESE */
+void writelog(GLOBAL *, char *, char *);
+char **buffer_paths(GLOBAL *, char **, int *, int);
+/*void getrelname(GLOBAL *);*/
+/*void remove_nfo_indicator(GLOBAL *);*/
+unsigned char get_filetype_postdel(GLOBAL *, char *);
 
 #endif

@@ -25,7 +25,7 @@
 #endif
 
 /* General */
-#if ( incompleteislink == 1 )
+/*#if ( incompleteislink == 1 )
 #if ( userellink == 1 )
 #define create_incomplete() symlink(raceI.misc.release_name, locations.incomplete)
 #define create_incomplete_nfo() symlink(raceI.misc.release_name, locations.nfo_incomplete)
@@ -36,11 +36,23 @@
 #else
 #define create_incomplete() createzerofile(locations.incomplete)
 #define create_incomplete_nfo() createzerofile(locations.nfo_incomplete)
+#endif**/
+#if ( incompleteislink == 1 )
+#if ( userellink == 1 )
+#define create_incomplete() symlink(g.v.misc.release_name, g.l.incomplete)
+#define create_incomplete_nfo() symlink(g.v.misc.release_name, g.l.nfo_incomplete)
+#else
+#define create_incomplete() symlink(g.l.path, g.l.incomplete)
+#define create_incomplete_nfo() symlink(g.l.path, g.l.nfo_incomplete)
+#endif
+#else
+#define create_incomplete() createzerofile(g.l.incomplete)
+#define create_incomplete_nfo() createzerofile(g.l.nfo_incomplete)
 #endif
 
 /* No race */
 #if ( announce_norace == 1 )
-#define CHOOSE(a,b,c)	raceI.total.users > 1 ? b : c;
+#define CHOOSE(a,b,c)	g.v.total.users > 1 ? b : c;
 #else
 #define CHOOSE(a,b,c)	b;
 #endif
