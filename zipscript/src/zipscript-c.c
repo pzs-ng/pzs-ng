@@ -61,7 +61,10 @@ void writelog(char *msg, char *status) {
 	if ( raceI.misc.write_log == TRUE && !matchpath(group_dirs, locations.path)) {
 		timenow = time(NULL);
 		date = ctime(&timenow);
-		glfile = fopen(log, "a+");
+		if (!(glfile = fopen(log, "a+"))) {
+			d_log("Unable to open %s for read/write (append) - NO RACEINFO WILL BE WRITTEN!\n",log);
+			return;
+		}
 
 		line = newline = msg;
 		while ( 1 ) {
