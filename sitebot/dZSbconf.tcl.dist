@@ -107,7 +107,7 @@ set chanlist(WELCOME)					"$mainchan"
 ## RUNNING POST COMMANDS
 #
 # Example:
-#  set postcommand(NEWDIR)       "imdb:check some:other:cmd"
+#  set postcommand(NEWDIR)       "imdb:check some:other:cmd {exec imdb.sh}"
 #   TYPE -------------^
 #             COMMANDS -------------^
 #
@@ -117,13 +117,8 @@ set chanlist(WELCOME)					"$mainchan"
 #  1st - message type, eg: NEWDIR
 #  2nd - section name, eg: 0DAY
 #  3rd - path to release, eg: /site/incoming/0day
-
-#set postcommand(NEWDIR)        "misc:gfaq:search"
-#set postcommand(DELDIR)        ""
-#set postcommand(NUKE)          ""
-#set postcommand(UNNUKE)        ""
-#set postcommand(DEFAULT)       ""
-#set postcommand(COMPLETE)      "misc:rominfo"
+#
+#set postcommand(NEWDIR)       "imdb:check some:other:cmd {exec imdb.sh}"
 
 # Are we disabling the announce of this stuff?
 # If its set to 1, we wont show it :)
