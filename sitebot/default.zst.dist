@@ -8,7 +8,8 @@ COLOR2		= "07"
 COLOR3		= "11"
 
 # Custom section colors. Use same section names as defined in dZSbconf.tcl.
-# IMPORTANT: You MUST define the same number of colors as there are default colors FOR EACH SECTION!
+# IMPORTANT: You MUST define the same number of colors as there are default colors for each section!
+# If you have 3 default colors above, then each section below needs exactly 3 colors.
 # Sections not defined here will use the default colors above.
 COLOR_GAMES_1	= "05"
 COLOR_GAMES_2	= "08"
