@@ -745,17 +745,14 @@ proc ng_uptime {nick uhost hand chan argv} {
 	}
 	## The linux 'uptime' pads the output with spaces, so we'll trim it.
 	regsub -all {\s+} $reply { } reply
-	if {[regexp {.+ up (.+), (.+), (.+) users?, load averages?: (.+)} $reply reply sysup time users load]} {
-		set sysup [format_duration [clock scan $sysup -base 0]]
-	} else {
-		set load "N/A"; set sysup "N/A"; set time "N/A"; set users "N/A"
+	if {![regexp {.+ up (.+), (.+) users?, load averages?: (.+)} $reply reply time users load]} {
+		set load "N/A"; set time "N/A"; set users "N/A"
 		putlog "dZSbot error: Unable to parse uptime reply \"$reply\", please report to pzs-ng developers."
 	}
 	set eggup [format_duration [expr {[clock seconds] - $uptime}]]
 
 	set output "$theme(PREFIX)$announce(UPTIME)"
 	set output [replacevar $output "%eggdrop" $eggup]
-	set output [replacevar $output "%system" $sysup]
 	set output [replacevar $output "%time" $time]
 	set output [replacevar $output "%users" $users]
 	set output [replacevar $output "%load" $load]
