@@ -269,7 +269,7 @@ void
 testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 {
 	int		fd, lret, count;
-	char		*realfile, *ext;
+	char		*realfile, *ext, target[256];
 	unsigned int	Tcrc;
 	struct stat	filestat;
 	time_t		timenow;
@@ -343,9 +343,9 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 						d_log("Failed to undupe '%s' - '%s' does not exist.\n",
 							  rd.fname, unduper_script);
 					} else {
-						//sprintf(target, unduper_script " \"%s\"", rd.fname);
-						//if (execute(target) == 0)
-						if (execute("%s%s", unduper_script, rd.fname) == 0)
+						sprintf(target, unduper_script " \"%s\"", rd.fname);
+						if (execute_old(target) == 0)
+						//if (execute("%s%s", unduper_script, rd.fname) == 0)
 							d_log("testfiles: undupe of %s successful.\n", rd.fname);
 						else
 							d_log("testfiles: undupe of %s failed.\n", rd.fname);

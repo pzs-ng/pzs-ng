@@ -985,7 +985,7 @@
 #endif
 
 #ifndef use_old_execute
-#define use_old_execute			FALSE
+#define use_old_execute			TRUE
 #endif
 
 /*
