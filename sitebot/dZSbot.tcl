@@ -499,7 +499,7 @@ proc basicreplace {rstring section} {
 #################################################################################
 # CONVERT COOKIES TO DATA                                                       #
 #################################################################################
-proc parse {msgtype msgline section} { global variables announce random mpath use_glftpd2 theme theme_fakes defaultsection pid
+proc parse {msgtype msgline section} { global variables announce random mpath use_glftpd2 theme theme_fakes defaultsection pid disable
 	set type $msgtype
 
 	if {![string compare $type "NUKE"] || ! [string compare $type "UNNUKE"]} {
@@ -516,8 +516,12 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 			putlog "dZSbot error: \"variables($type)\" not set in theme, type becomes \"DEFAULT\""
 			set type "DEFAULT"
 		} else {
-			set f_user $type
-			set type "FAILLOGIN"
+			if { $disable(FAILLOGIN) == 1 } {
+				return ""
+			} else {
+				set f_user $type
+				set type "FAILLOGIN"
+			}
 		}
 	}
 	if {![info exists announce($type)]} {
@@ -525,8 +529,12 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 			putlog "dZSbot error: \"announce($type)\" not set in theme, type becomes \"DEFAULT\""
 			set type "DEFAULT"
 		} else {
-			set f_user $type
-			set type "FAILLOGIN"
+			if { $disable(FAILLOGIN) == 1 } {
+				return ""
+			} else {
+				set f_user $type
+				set type "FAILLOGIN"
+			}
 		}
 	}
 
