@@ -85,6 +85,7 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 	
 	d_log("Reading data from sfv (%s)\n", raceI->file.name);
 	
+	raceI->total.files = 0;
 	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
 		raceI->total.files++;
 		if (!strcasecmp(raceI->file.name, sd.fname)) {

@@ -279,7 +279,7 @@ main(int argc, char **argv)
 			create_missing(g.v.file.name);
 #endif
 			d_log("Reading file count from SFV\n");
-			readsfv(g.l.path, &g.v, 0);
+			readsfv(g.l.sfv, &g.v, 0);
 
 			d_log("Caching progress bar\n");
 			buffer_progress_bar(&g.v);
