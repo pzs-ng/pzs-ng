@@ -34,9 +34,7 @@
 
 #define ignored_types			",diz,debug,message,imdb"
 
-#define debug_mode			TRUE
 #define remove_dot_files_on_delete	FALSE
-#define remove_dot_debug_on_delete	TRUE
 
 #define deny_double_sfv			FALSE
 #define force_sfv_first			FALSE
