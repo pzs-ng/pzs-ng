@@ -126,15 +126,21 @@ unsigned long hexstrtodec(unsigned char *s) {
 /*
  * dangling links
  */
-int selector (const struct dirent *d)
-{
+#ifdef __linux__
+int selector (const struct dirent *d) {
+#else
+int selector (struct dirent *d) {
+#endif
         struct stat st;
         if ((stat(d->d_name, &st) < 0)) return 0;
         return 1;
 }
 
-int selector2 (const struct dirent *d)
-{
+#ifdef __linux__
+int selector2 (const struct dirent *d) {
+#else
+int selector2 (struct dirent *d) {
+#endif
         struct stat st;
         if ((stat(d->d_name, &st) < 0) || S_ISDIR(st.st_mode)) return 0;
         return 1;
