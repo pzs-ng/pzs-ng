@@ -278,8 +278,8 @@ void removecomplete() {
 		*dirlist[n]->d_name = 0;
 	    }
 	}
-	regfree(&preg);
     }
+    regfree(&preg);
 }
 
 /*

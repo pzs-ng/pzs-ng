@@ -235,8 +235,8 @@ static char *remove_pattern (param, pattern, op)
 #endif
 
 int main( int argc, char **argv ) {
-    char		*fileext, *name_p, *temp_p;
-    char		*target;
+    char		*fileext, *name_p, *temp_p = 0;
+    char		*target = 0;
     char		*complete_msg = 0;
     char		*update_msg = 0;
     char		*race_msg = 0;
@@ -245,14 +245,14 @@ int main( int argc, char **argv ) {
     char		*newleader_msg = 0;
     char		*halfway_msg = 0;
     char		*complete_bar = 0;
-    char		*error_msg;
-    unsigned int	crc, s_crc;
+    char		*error_msg = 0;
+    unsigned int	crc, s_crc = 0;
     unsigned char	exit_value = EXIT_SUCCESS;
     unsigned char	no_check = FALSE;
     unsigned char	complete_type = 0;
     char		*complete_announce = 0;
-    int			cnt, cnt2, n;
-    int			write_log;
+    int			cnt, cnt2, n = 0;
+    int			write_log = 0;
     struct stat		fileinfo;
 
 #if ( benchmark_mode == TRUE )
@@ -302,6 +302,8 @@ int main( int argc, char **argv ) {
 
 	buffer_groups( GROUPFILE );
 	buffer_users( PASSWDFILE );
+	fileinfo.st_uid = geteuid();
+	fileinfo.st_gid = getegid();
 	strcpy(raceI.user.name, get_u_name(fileinfo.st_uid));
 	strcpy(raceI.user.group, get_g_name(fileinfo.st_gid));
 
