@@ -13,7 +13,7 @@ UNIVERSAL=race-file.o zsfunctions.o mp3info.o
 RM=rm -f
 
 RD-OBJECTS=racedebug.o
-ZS-OBJECTS=zipscript-c.o dizreader.o stats.o complete.o convert.o multimedia.o $(UNIVERSAL)
+ZS-OBJECTS=zipscript-c.o dizreader.o stats.o complete.o convert.o multimedia.o crc.o $(UNIVERSAL)
 PD-OBJECTS=postdel.o dizreader.o stats.o convert.o multimedia.o $(UNIVERSAL)
 RS-OBJECTS=racestats.o dizreader.o stats.o convert.o $(UNIVERSAL)
 CU-OBJECTS=cleanup.o

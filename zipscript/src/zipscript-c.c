@@ -21,6 +21,7 @@
 #include "dizreader.h"
 #include "stats.h"
 #include "complete.h"
+#include "crc.h"
 
 #include "../conf/zsconfig.h"
 #include "../../config.h"
@@ -463,11 +464,15 @@ int main( int argc, char **argv ) {
 		crc = hexstrtodec((unsigned char*)argv[3]);
 		if (fileexists(locations.sfv)) {
 			if ( crc == 0 ) {
-				d_log("We did not get crc from ftp daemon\n");
-				sprintf(raceI.misc.error_msg, ZERO_CRC);
-				exit_value = 2;
-				break;
-				} else if ((s_crc = readsfv_file(&locations, &raceI, 0)) != crc ) {
+				d_log("We did not get crc from ftp daemon, calculating crc now...\n");
+				crc=calc_crc32(raceI.file.name);
+//				d_log("We did not get crc from ftp daemon\n");
+//				sprintf(raceI.misc.error_msg, ZERO_CRC);
+//				exit_value = 2;
+//				break;
+				}
+//				else
+			if ((s_crc = readsfv_file(&locations, &raceI, 0)) != crc ) {
 				if ( s_crc == 0 ) {
 					d_log("Filename was not found in the SFV\n");
 					strcpy(raceI.misc.error_msg, NOT_IN_SFV);
