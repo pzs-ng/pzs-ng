@@ -881,6 +881,13 @@ buffer_users(char *passwdfile)
  * get the sum of same filetype Done by psxc 2004, Oct 6th
  */
 
+/*
+unsigned long
+sample_dir(char *dirname)
+{
+	
+ */
+
 unsigned long 
 sfv_compare_size(char *fileext, unsigned long fsize)
 {
