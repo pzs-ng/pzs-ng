@@ -3,15 +3,15 @@
 
 #include <sys/stat.h>
 
-unsigned int	readsfv_file(struct LOCATIONS *, struct VARS *, int);
-void		delete_sfv_file(struct LOCATIONS *);
-void		readrace_file(struct LOCATIONS *, struct VARS *, struct USERINFO **, struct GROUPINFO **);
-void		maketempdir(struct LOCATIONS *);
-void		read_write_leader_file(struct LOCATIONS *, struct VARS *, struct USERINFO *);
-void		testfiles_file(struct LOCATIONS *, struct VARS *, int);
-int		copysfv_file(char *, char *, off_t);
-void		create_indexfile_file(struct LOCATIONS *, struct VARS *, char *);
-short		clear_file_file(struct LOCATIONS *, char *);
-void		writerace_file(struct LOCATIONS *, struct VARS *, unsigned int, unsigned char);
+extern unsigned int readsfv_file(struct LOCATIONS *, struct VARS *, int);
+extern void delete_sfv_file(struct LOCATIONS *);
+extern void readrace_file(struct LOCATIONS *, struct VARS *, struct USERINFO **, struct GROUPINFO **);
+extern void maketempdir(char *);
+extern void read_write_leader_file(struct LOCATIONS *, struct VARS *, struct USERINFO *);
+extern void testfiles_file(struct LOCATIONS *, struct VARS *, int);
+extern int copysfv_file(char *, char *, off_t);
+extern void create_indexfile_file(struct LOCATIONS *, struct VARS *, char *);
+extern short clear_file_file(struct LOCATIONS *, char *);
+extern void writerace_file(struct LOCATIONS *, struct VARS *, unsigned int, unsigned char);
 
 #endif

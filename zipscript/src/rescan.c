@@ -98,7 +98,7 @@ main()
 	rescandir(2);		/* Rescan dir after deleting files.. */
 
 	if ((g.v.file.name = findfileext(".sfv")) != NULL) {
-		maketempdir(&g.l);
+		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
 		if (copysfv_file(g.v.file.name, g.l.sfv, fileinfo.st_size)) {
 			printf("Found invalid entries in SFV - Exiting.\n");
@@ -263,7 +263,7 @@ main()
 				move_progress_bar(0, &g.v, g.ui, g.gi);
 		}
 	} else if ((g.v.file.name = findfileext(".zip")) != NULL) {
-		maketempdir(&g.l);
+		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
 		n = direntries;
 		crc = 0;

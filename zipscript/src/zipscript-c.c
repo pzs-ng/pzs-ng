@@ -274,7 +274,7 @@ main(int argc, char **argv)
 	getrelname(&g);
 
 	d_log("Creating directory to store racedata in\n");
-	maketempdir(&g.l);
+	maketempdir(g.l.path);
 	printf(zipscript_header);
 
 	/* Hide users in group_dirs */

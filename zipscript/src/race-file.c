@@ -102,11 +102,11 @@ delete_sfv_file(struct LOCATIONS *locations)
  * stored.
  */
 void 
-maketempdir(struct LOCATIONS *locations)
+maketempdir(char *path)
 {
 	char		full_path[PATH_MAX], *p;
 
-	snprintf(full_path, PATH_MAX, "%s/%s", storage, locations->path);
+	snprintf(full_path, PATH_MAX, "%s/%s", storage, path);
 
 	/* work recursively */
 	for (p = full_path; *p; p++) {
