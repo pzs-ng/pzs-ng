@@ -569,13 +569,14 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	clear_file(path, raceI->file.name);
 
 	/* create file if it doesn't exist */
-	if ((id = open(path, O_CREAT | O_APPEND, 0666)) == -1) {
-		d_log("Failed to create %s: %s\n", path, strerror(errno));
-		exit(EXIT_FAILURE);
+	if ((id = open(path, O_CREAT | O_RDWR, 0666)) == -1) {
+		if (errno != EEXIST) {
+			d_log("Failed to create %s: %s\n", path, strerror(errno));
+			exit(EXIT_FAILURE);
+		}
 	}
-	close(id);
  
-	if (!(file = fopen(path, "r+"))) {
+	if (!(file = fdopen(id, "r+"))) {
 		d_log("Couldn't fopen racefile (%s): %s\n", path, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
