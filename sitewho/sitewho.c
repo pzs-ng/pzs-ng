@@ -28,9 +28,10 @@ long long	shmid;
 struct shmid_ds	ipcbuf;
 struct stat	filestat;
 
-char           *header, *footer, *glpath, *mpaths, *husers, *hgroups, *ipckey, *glgroup,
-               *def_ipckey = "0x0000DEAD", *def_glgroup = "/etc/group";
-int		maxusers  , showall = 0, uploads = 0, downloads = 0, onlineusers = 0;
+char           *header, *footer, *glpath, *mpaths, *husers, *hgroups, *ipckey, *glgroup, *nocase,
+               *def_ipckey = "0x0000DEAD", *def_glgroup = "/etc/group", *def_nocase = "false", 
+	       *def_husers = "", *def_hgroups = "", *def_mpaths = "", *def_glpath = "/glftpd/";
+int		maxusers = 20 , showall = 0, uploads = 0, downloads = 0, onlineusers = 0;
 double		total_dn_speed = 0, total_up_speed = 0;
 
 unsigned long 
@@ -98,14 +99,23 @@ matchpath(char *instr, char *path)
 short 
 strcomp(char *instr, char *searchstr)
 {
-	int		cnt       , pos;
+	int		cnt, pos, ncase = 0;
 	int		k = strlen(searchstr);
 	int		l = strlen(instr) + 1;
 
+	if (!strncasecmp(nocase, "true", 4))
+		ncase = 1;
+
+	if (k == 0)
+		return 0;
 	for (cnt = pos = 0; cnt < l; cnt++) {
 		if (instr[cnt] == ' ' || instr[cnt] == 0) {
-			if (k == pos && !strncmp(instr + cnt - pos, searchstr, pos - 1)) {
-				return 1;
+			if (k == pos) {
+				if (ncase == 0 && !strncmp(instr + cnt - pos, searchstr, pos - 1)) {
+					return 1;
+				} else if (ncase == 1 && !strncasecmp(instr + cnt - pos, searchstr, pos - 1)) {
+					return 1;
+				}
 			}
 			pos = 0;
 		} else {
@@ -284,7 +294,8 @@ showusers(int n, int mode, char *ucomp, char raw)
 				printf("%s|%s|%s|%s|%s\n", user[x].username, get_g_name(user[x].groupid), user[x].tagline, status, filename);
 			}
 			onlineusers++;
-		} else if (strcasecmp(ucomp, user[x].username) == 0) {
+//		} else if (!strcasecmp(ucomp, user[x].username)) {
+		} else if (!strcmp(ucomp, user[x].username)) {
 #ifdef _WITH_ALTWHO
 			if (!raw && (showall || (!noshow && !mask && !(maskchar == '*')))) {
 				if (mb_xfered)
@@ -396,6 +407,8 @@ readconfig(char *arg)
 					ipckey = tmp;
 				else if (!memcmp(buf + l_b, "grp_path", 8))
 					glgroup = tmp;
+				else if (!memcmp(buf + l_b, "case_insensitive", 16))
+					nocase = tmp;
 				else {
 					if (!memcmp(buf + l_b, "seeallflags", 11))
 						showall = compareflags(getenv("FLAGS"), tmp);
@@ -429,8 +442,8 @@ readconfig(char *arg)
 	}
 	free(buf);
 
-	if (filesize("") == 1)
-		*glpath = 0;
+//	if (filesize("") == 1)
+//		*glpath = 0;
 }
 
 /* PRINT FILE */
@@ -547,12 +560,23 @@ main(int argc, char **argv)
 	char		raw_output = 2;
 	int		user_idx = 2;
 #endif
+	int		totusers = 0;
 
 	readconfig(argv[0]);
 	if (!ipckey)
 		ipckey = def_ipckey;
 	if (!glgroup)
 		glgroup = def_glgroup;
+	if (!nocase)
+		nocase = def_nocase;
+	if (!husers)
+		husers = def_husers;
+	if (!hgroups)
+		hgroups = def_hgroups;
+	if (!mpaths)
+		mpaths = def_mpaths;
+	if (!glpath)
+		glpath = def_glpath;
 
 	buffer_groups(glgroup);
 
@@ -567,10 +591,10 @@ main(int argc, char **argv)
 	}
 	if ((shmid = shmget((key_t) strtoll(ipckey, NULL, 16), 0, 0)) == -1) {
 		if (argc == 1 || (raw_output)) {
-			if (!raw_output)
+			if (!raw_output && header)
 				show(header);
 			showtotals(raw_output);
-			if (!raw_output)
+			if (!raw_output && footer)
 				show(footer);
 		} else {
 			if (!raw_output)
@@ -589,20 +613,21 @@ main(int argc, char **argv)
 	}
 	shmctl(shmid, IPC_STAT, &ipcbuf);
 
-	if (argc == 1 && (!raw_output))
+	if (argc == 1 && (!raw_output) && header)
 		show(header);
 
+	(signed int)totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE));
 	if (raw_output < 2)
-		showusers(ipcbuf.shm_segsz / sizeof(struct ONLINE), argc - raw_output - 1, argv[user_idx], raw_output);
+		showusers((totusers > maxusers ? maxusers : totusers), argc - raw_output - 1, argv[user_idx], raw_output);
 	else if (argc == 1)
-		showusers(ipcbuf.shm_segsz / sizeof(struct ONLINE), argc - 1, argv[user_idx], raw_output);
+		showusers((totusers > maxusers ? maxusers : totusers), argc - 1, argv[user_idx], raw_output);
 	else
-		showusers(ipcbuf.shm_segsz / sizeof(struct ONLINE), argc - 2, argv[user_idx], raw_output);
+		showusers((totusers > maxusers ? maxusers : totusers), argc - 2, argv[user_idx], raw_output);
 
 
 	if (argc == 1) {
 		showtotals(raw_output);
-		if (!raw_output)
+		if (!raw_output && footer)
 			show(footer);
 	} else {
 		if (!onlineusers) {

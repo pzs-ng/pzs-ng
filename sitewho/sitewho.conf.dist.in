@@ -6,19 +6,21 @@ hiddenusers = sitebot siteop
 hiddengroups = bots siteops
 seeallflags = 1DE
 maxusers = 20
-
+case_insensitive = false
+ipc_key = 0x0000DEAD
+grp_path = /etc/group
 
 ##############
+# glrootpath = /glftpd/ ... rootpath of glftpd
+# headerfile = /ftp-data/misc/who.head ... shown before the list of users in non-raw mode.
+# footerfile = /ftp-data/misc/who.foot ... shown below the list of users in non-raw mode.
 # maskeddirectories = <directory> <directory2> ... Real actions of users in these directories are not shown
 # hiddenusers = <login> <login2> ... These users are not shown in the list
 # hiddengroups = <group> <group2> ... nor these groups
 # seeallflags = Users with these flags see everything
+# maxusers = 20 ... max users displayed on output
+# case_insensitive = <true|false> ... use case insensitive comparison when checking for hidden users/groups
+# ipc_key = "0x0000DEAD" ... ipc-key used in glftpd
+# grp_path = "/etc/group" ... (chroot'ed) path to glftpd's groupfile
 ##################################################
 
-#############
-# ipc_key and grp_path are optional
-#
-# default ipc_key value is "0x0000DEAD"
-# default grp_path value is "/etc/group"
-ipc_key = 0x0000DEAD
-grp_path = /etc/group
