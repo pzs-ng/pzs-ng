@@ -1,0 +1,19 @@
+%cmdprehelp                this msg or help with specific command
+%cmdprefree                displays free space on site
+%cmdprewho                 displays who is online and what they are doing
+%cmdprespeed <user>        displays up or dn speed of <user>
+%cmdprebw                  shows site bandwidth
+%cmdprebnc                 shows active bnc's
+%cmdpreinc                 shows incomplete releases
+%cmdpredayup <section>     shows top day uploaders
+%cmdprewkup <section>      shows top week uploaders
+%cmdpremonthup <section>   shows top month uploaders
+%cmdpreallup <section>     shows top alltime uploaders
+%cmdpredaydn <section>     shows top day downloaders
+%cmdprewkdn <section>      shows top week downloaders
+%cmdpremonthdn <section>   shows top month downloaders
+%cmdprealldn <section>     shows top alltime downloaders
+%cmdpregpwk <section>      shows top uploading groups of the week
+%cmdpregpal <section>      shows top uploading groups of alltime
+%cmdpregpad <section>      shows top downloading groups of alltime
+%cmdpregwpd <section>      shows top downloading groups of the week

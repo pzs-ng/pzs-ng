@@ -1,0 +1,261 @@
+ Project-ZS                                        http://darkone.mgclan.net/
+------------------------------------------------------------------------------
+
+	1.	General info over Project-ZS
+
+	1.1	What is Project-ZS
+	1.2	Team behind Project-ZS
+	1.3	Nothing worth reading
+
+	2.	Techincal info 
+
+	2.1	Supported operating systems
+	2.2	Supported ftp daemons
+
+	3.	Manual / Installation
+
+	3.1	Understanding how it works
+	3.2	First step, zsconfig.h
+	3.3	Almost ready, compile and copy
+	3.4	All done? glftpd.conf
+
+	4.	Contact info
+
+	4.1	Bug reports
+	4.2	Bribes & gifts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------
+
+
+
+ 1.1 What is Project-ZS?
+
+Project-ZS is an open source zipscript project. It is used as post upload file
+integrity checker. Project-ZS, also known as 'zipscript-c', is the most
+feature packed zipscript ever introduced to public and believe or not, it's 
+the fastest! While other zipscripts offer somewhat fixed style output, P-ZS is 
+fully customizable. This unique ability is done by using 'cookie'-system.
+Those few things you cannot change through config, you can change from the
+source.
+
+
+
+
+ 1.2 Team behind Project-ZS
+
+Project-ZS was originally designed by Dark0n3, but most of the ideas came from
+various siteops. Zipscript package also includes scripts from other scripters
+such as unkie and NiDO & ezboner. also, current work is done by daxxar & psxc ;)
+
+unkie		(pre_check)
+WWW:		http://unkie.mgclan.net 
+
+NiDO/ezboner	(getnfo)
+WWW:		http://www.xeptic.net/getnfo/)
+
+
+ 1.3 Read me now...
+
+I'd like to thank all the people that have been supporting me during last few
+years and who have shared late hours watching sitebot floods on various
+channels - you know who you are!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------
+
+
+
+ 2.1 Supported operating systems:
+
+ - Linux / any distro
+ - FreeBSD
+ - AIX
+
+ Note that support is only provided for FreeBSD and Linux!
+
+
+
+ 2.2 Supported ftp daemons:
+
+ - glftpd
+ + openftpd
+
+ Openftpd support is not currently implemented in the public source.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------
+
+
+
+ 3.1 Understanding how it works
+
+Zipscript is a script / program that checks file integrity after upload based
+on file type. RARs/MP3s/M2Vs etc are checked using 32bit crc which is usually
+calculated by ftp daemon, this crc is compared to crc stored in sfv. If check
+fails, file is to be deleted. ZIPs are checked using zip integrity test.
+
+Most of the zipscripts log different kinds of things while running to a log
+that sitebot script parses. This log brings sitebot to life. 'Botscript' has
+nothing to do with zipscript, so it's important to get the zipscript work
+properly before configuring the sitebot. Setting up both at the same time
+(if you dont know what you're doing) is not recomended.
+
+
+
+
+
+ 3.2 First step
+
+Good, you got this far. It proves you can set this thing up (it's as easy as
+untarring if you follow the directions). zsconfig.h is the heart of zipscript
+config, screw up here shows everywhere and makes you look lame :p 
+
+Before touching the config you might want to look COOKIES file. It contains 
+all cookies available - printing this file isnt a bad idea. Try to understand
+how they work or you will have lots of difficulties when customizing the
+output. When you think you have enough 'know how', you can open the zsconfig.h
+with your favorite text editor.
+
+zsconfig.h is located in: ./zipscript/conf/zsconfig.h
+
+
+
+
+
+ 3.2 Almost ready
+
+After you have double checked everything you need to run 'configure' and make.
+You can use 'make install', if your glftpd is located in '/glftpd'. Otherwise
+you need to copy binaries manually to your glftpd's bin dir, make your
+glftpd.log writable for everyone (chmod +666 /glftpd/ftp-data/logs/glftpd.log),
+create the zipdatadir 'mkdir -m777 /glftpd/ftp-data/zipscript' (default).
+
+binaries are located in: ./zipscript/bin/
+
+
+
+
+
+ 3.3 All done?
+
+Well almost, you have still one minor task to do. You need to make glftpd use
+the script. It's done by adding following lines to glftpd.conf
+
+calc_crc	*.[mM][pP]3 *.[zZ][iI][pP] *.[rR][aA][rR] *.[rRsS0-9][0-9][0-9]
+post_check	/bin/zipscript-c	*
+cscript		DELE	post	/bin/postdel
+
+That's it, you now have zipscript properly set up. Enjoy and make yourself
+ready for next update :)
+
+ ! Installation procedure of sitebot is documented in: ./sitebot/README !
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------
+
+
+
+ 4.1 Bug reports/Feature requests
+
+All bug reports and feature requests should be done via IRC or WWW, no email.
+Before reporting a bug, make sure it isnt caused buggy user.
+
+www: http://darkone.mgclan.net/
+irc: dark0n3 (efnet)
+
+also, you can try to contact the current "maintainer" (self-appointed;)
+
+mail: daxxar [at] mental.mine.nu
+irc:  daxxar (efnet)
+
+
+
+ 4.2 Bribes & Gifts
+
+All bribes and gifts are accepted as long as they are worth > 1euro.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<eof>

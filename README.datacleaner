@@ -1,0 +1,18 @@
+
+datacleaner:
+  datacleaner is a simple tool that recursively cleans out unused zipscript-c data.
+  (this data is stored in what you've set site_root to, in a subdir named what you've
+  set storage to, these two are defines in zsconfig.h)
+  crontabbing it to run once a day is the best option :-)
+
+  to change the effective uid:
+    there are two solutions to do this:
+     1) make the script run as the "root" user (uid 0)
+     2) chown the file to root:somegroup, chmod it +rx for somegroup, and chmod it to +s.
+
+     #2 sets the "suid" bit on the file, and makes it so that it changes uid to the owner
+     of the files UID when run. you should only make this bit set for files where you've 
+     restricted +rx rights, that is; chown to root:somegroup, and do NOT give "all" the +rx
+     rights, only the members of somegroup. this is due to security reasons, but you knew that, right?
+
+  -- daxxar

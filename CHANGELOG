@@ -1,0 +1,482 @@
+v0.7.2
+ - psxc added support for allowed_genres on mp3 releases.
+ - psxc added support for warning messages on illegal mp3 genre/year/bitrate.
+ - psxc added a iwdisb's fix to prevent coredump on cookie usage when the cookie is DISABLED.
+ - iwdisb made a patch which will show bitrate on mp3's on vbr files as well!
+ - daxxar made some changes in the autoconf file to detect os and make the appropriate changes.
+ - daxxar made an option to choose between glftpd 1 or 2.
+ - psxc added support for the old double-sfv deny patch.
+ - psxc added iono's fix for glftpd2 nuke style.
+ - daxxar fixed an ugly group dir bug.
+ - psxc added support for DVD announces.
+ - psxc removed support for adding nfo to zip (spam! begone!)
+ - psxc changed mp3-genres to match mp3info
+ - iwdisb added support for on-the-fly sfv calc.
+
+v0.7.1
+ - merged in freebsd patches by iwdisb ( http://mobilcom.dyndns.org/~iwdisb/glftpd/ )
+    this undo the previous DOUBLE-SFV patch. iwdisb had imho a better solution - check the sfv
+    uploaded and decide if it's a better one to use than the previous (transparent/silent)
+ - merged in nfo_script patch by psxc ( http://www.glftpd.at )
+ - crc.c modified by psxc ( crc table stolen from http://www.fodder.org/cksfv/ )
+    this should help people who get crc errors on large files.
+ - static compile added - needed for fbsd and obsd
+ - glftpd2 support (ONLINE struct changed in object.h).
+
+---- 20040428 - Project-ZS is now supported again. Development concentrate on support
+---- for the new glftpd2. daxxar/psxc takes responsibility, but welcome anyone who
+---- wish to contribute! :) (contact psxc or daxxar @ #glftpd / #project-zs on EFNet)
+----
+---- BELOW IS DAXXARS CHANGELOG FOR "DAXPATCH"! (merged with TNG)
+
+v0.4 daxpatch - 15th Apr. 2004
+ - fixed a error with the time-cookie (%d); it would fuck up output, *hrhr*
+ - added vbr-support (from http://zs.fatty.dk/)
+ (sorry for the lack of updates; i've lost all my sites,
+  so scripting doesn't really get as much priority as it should
+  when i havn't got any sites to script ;-)
+ 
+v0.3 daxpatch
+ - added support for 256 files in an SFV (100 before) (jeez, who needs 1024? *poke turbo* ;) 
+ - added sitewho to packaging (thanks for the idea, turbo)
+ - started working on dZSbot, (separated config from script)
+   see sitebot/CHANGELOG for all changes :)
+ - fixed typo in scripts/getnfo/imdbmessage.tml
+
+v0.2 daxpatch
+ - fixed typo in config.h ;)
+ - fixed extra space after time-cookie (%d)
+
+v0.1 daxpatch
+ - added a fixed dualsfv option (two sfvs in one releasedir is disallowed)
+   (this version allows you to delete sfv and upload another)
+ - support for 4gb+ releases
+ - limiter of "newleader spam"
+
+---- BELOW IS DARK0N3'S OFFICIAL CHANGES, ABOVE IS NEW "daxpatch" CHANGES
+---- daxpatch (c) daxxar <daxxar@mental.mine.nu> 
+
+v0.6.x
+ - bad file logging to log (0% done)
+ - require nfo to complete implemented (60% done)
+
+v0.6.1.a
+ - Fixed small bug that caused mem leak on some boxes
+
+v0.6.1
+ - mysql back (i decided to delay the mysql once again)
+ - support for multiple stats sections added (0% done)
+ - minor change in racedata file, obsoletes old files (0% done)
+
+v0.6.0 [UNSTABLE]
+ - zipscript-c.c & postdel.c redesigned & rewritten (done)
+ - tons of minor changes (increased compatability) (done)
+ - 'id3tag' message position changed (now on top, instead of bottom - looks much better :^)) (done)
+ - mpeg/avi cookies working (done)
+ - nfo extractor script added (done)
+ - zsconfig documented (done)
+ - some old unneccessary variables removed (done)
+ - sfv files are now sorted & parsed for duplicate entries (done)
+ - added 'norace' announces (those replace real announces on halfway/complete if there is no race going on) (done)
+ - complete messages may be spanned to multiple lines using '\n' as seperator (done)
+ - lots of 'variables' in zsconfig.h renamed (done)
+ - added possibility to add comments to sfv (done)
+ - better debugging mode (done)
+
+v0.5.13 [STABLE]
+ - Final 0.5 release
+
+v0.5.12(l)
+ - Fixed stats cookies
+
+v0.5.12(k)
+ - Fixed bug with stats cookies
+ - Beta of new cleanup introduced (also cleans 0byte files)
+
+v0.5.12(j)
+ - Added racedebug binary - shows what has been written into racedata file
+
+v0.5.12(i)
+ - Fixed problem caused by TYPE A transfers.
+
+v0.5.12(h)
+ - problems with files with non specified filetypes fixed (if glftpd resulted 0 as crc, file was accepted)
+
+v0.5.12(g)
+ - problems with certain sfvs fixed
+
+v0.5.12(f)
+ - %C & %c cookies now support ranges ie: %C1-5 = 2nd -> 6th, %C0- list of all racers.. etc :)
+ - getnfo script updated to the newest
+ - pre_check updated to the newest
+
+v0.5.12(e)
+ - Changed version from config ;)
+ - Fixed bug that caused all zip files to be accepted (even broken) on some systems (bsd?)
+
+v0.5.12(d)
+ - Incomplete lister working - again
+ - Added .diz to ignore list... otherwise your 0day rels will get fuxored if diz is upped :~ It's a good idea to
+   ban non zip files from zip dirs with the dupescript [bitch inc to add this option] :-)
+
+v0.5.12(c)
+ - Bugs in Makefile
+ - Bug in strtolower
+
+v0.5.12(b)
+ - Directory layout changed
+ - Added new imdb script to package
+ - Some code cleanup done
+ - Removed obsolete / broken files
+ - Mpeg/Avi cookies still not working
+
+v0.5.12(a)
+ - Added support for mpeg audio layers 1 & 2 + versions 2 & 2.5 (used to have only mpeg1 layer 3 aka mp3)
+ - Added support for mpeg video versions 1 & 2
+ - Added support for avi videos
+ - mp3.c => multimedia.c + some variable names changed
+ - Tons of new cookies
+
+v0.5.11
+ - Optimized SFV parser
+ - Added option to hide one user from NUKEES
+ - Some minor changes in few other places
+
+v0.5.10(c)
+ - Fixed rescan
+
+v0.5.10(b)
+ - Fixed crash after third uploaded file.
+
+v0.5.10(a)
+ - Still cleaning up the source + optimizing.. now ~10% faster than it was earlier :-)
+ - MySQL still broken, going to fix it soon though
+ - TODO file is back
+
+v0.5.9
+ - Tons of optimizations, only noticable on releases with many racers and many files (& very slow box :~)
+ - Code documentation begun + added to do list(s) in code, so others can participate too
+ + There's a poll on my webpage about 0.6.x please vote there + post new ideas in forums
+ ! Racefile layout changed - makes all old racefiles obsolete
+ ! MySQL broken - it will be back on 0.6.x serie
+ ! Direct your browsers to: http://darkone.mgclan.net/, old page wont be updated anymore
+
+v0.5.8
+ - 0.5.8 is considered as stable release (no bugs reported in filemode)
+ - 0.6.0 serie will have rewritten sql-tables(wiihii), proper readme(woohoo), new documented 'config file'(wow?),
+   working configurator(ehh)... and much much more (wuu-huu!!)
+ + Added DayUp/WeekUp/MonthUp and AllUp cookies (users only)
+ + Some small bugfixes that I did after releasing 0.5.7 first time (I updated 0.5.7 several times)
+ + Incomplete-lister fixed (actually bug was in racestats binary)
+ ! Please dont forget to bribe me with hardware :/
+
+v0.5.7
+ + Did some optimizations in race-file & fixed few bugs from race-mysql (report asap if you get odd -missing files)
+ + Lots of bugs fixed (rescanner & unable to complete & incomplete link in wrong place)
+
+v0.5.6
+ + Rescanner added
+
+v0.5.5
+ + m3u creator now works in filemode (& sorts files)
+
+v0.5.4
+ + Some mysql fixes
+ + Racedata file layout optimized (yea, you can del contents of zipdatadir)
+ + Added !..df to bot
+
+v0.5.3
+ + Rejected file counters
+ + Paths excluded from check through zsconfig.h
+ + SQL tables slightly changed (new field)
+ + Minor bug with zip files fixed (if filecount wasnt detected script didnt behave right)
+ + 0-byte files no longer accepted
+
+v0.5.2
+ + Bug fixes
+
+v0.5.1
+ + Few fixes
+ + Added inc's pre_check.tcl script (requires tclsh)
+
+v0.5.0
+ + Bot now writes UPDATE/RACE/... instead of MP3UPDATE/MP3RACE/... into glftpd.log
+ + Faster
+ + Code is easier to read (= optimize)
+
+v0.4.13
+ + MySQL tables now have 'better' names (wipe your mysql db if you upgrade)
+ + Some small bug fixes
+ + README updated & mysql tables defined in README.mysql
+
+v0.4.12
+ + Minor bug in mysql version of postdel fixed (read sfv wrong)
+ + Minor bug with multi cd rels 'fixed' (kinda workaround, but dont have time to patch it now)
+
+v0.4.11
+ + Everything that script outputs to user is customizable through config
+ + Minor bug in postdel fixed
+ + Script is currently very stable (lets keep it that way ;)
+
+v0.4.10
+ + Most of cookies reassigned & you need to specify accuracy/length of cookie output
+
+v0.4.9
+ + Added 'other' types for sfv checking (use for musicvidz etc)
+
+v0.4.8
+ + New cookie (%f = uploaded files)
+ + MP3 part in .message now user definable
+
+v0.4.7
+ + dizreader.c was damaged (forgot to add , when adding new entry)
+ + Much more debug messages (always run script in debug mode, before reporting bugs)
+
+v0.4.6
+ + Zipscript now creates m3u (optional)
+ + %m cookie redefined, it now shows which compression mode has been used (1 -> 5, on rars only)
+
+v0.4.5
+ + MP3's can be uploaded without sfv
+ + If release is complete (when uploading sfv last), it will be now announced on chan (as it should have been)
+
+v0.4.4
+ + Complete message almost fully customizable (only mp3 info isnt, coming in next rel)
+ + Small optimizations
+ + Oops.. error in code forced users to have mysql libraries installed (sorry)
+
+v0.4.3
+ + Rar compress ratio reader DISABLED temporarily.
+ + ^^^ this fixes ALL known problems ^^^ (crashes on mp3/zip/rar)
+
+v0.4.2
+ + Script now compares file owner uid instead of file modification time to authenticate uploader
+ ! Cleanup wasnt in makefile
+
+v0.4.1.1
+ + Makefile now even better :-) it's not good, but it's better =D
+
+v0.4.1
+ + Real makefile system under developement (try --with-mysql)
+
+v0.4.0
+ + Source format changes (.h files to .c objects)
+  - Code looks much neater
+  - Reduced compile time
+  - Variable names redefined
+  - Generall much easier to edit :]
+ + Some small optimizations (could be still a bit slower due new structure)
+
+v0.3.5
+ + Mainetance release, bug that caused probs with rars in 0.3.4 is now fixed!!!
+
+v0.3.4
+ + Dizreader no longer external program
+ + Code cleanup started again
+ !!! I'm looking for webhost with php & cgi-bin support !!!
+
+v0.3.3
+ + Precheck was fuxored (remember that it doesnt currently work in mysql mode)
+
+v0.3.2
+ + Release compression level (%) now returned to %m cookie
+ + Some SQL optimizations (& one sql related bug fixed - racedurations were fuxored) :]
+
+v0.3.1
+ + Racestats now working with sql
+ + Leader stuff now deleted properly
+ + sfvfirst no more enforced on mysql mode
+
+v0.3.0
+ + MYSQL support (currently sfvfirst is forced + racestats not modified yet) !!!
+ ! Compile with -lmysqlclient if you decide to try sql mode
+ + Functions split to seperate files
+
+v0.2.9
+ + Bah, still had bug with sfv whenever feature.. it's all good now.. :)
+
+v0.2.8
+ + SFV checking works now properly if sfv is uploaded last (used to delete last file, even if it was ok)
+ + Bug in rar detection.. sfv's that had filenames in caps didnt work
+
+v0.2.7
+ + Configurator now fully working :] Hope you find use for it...
+
+v0.2.6
+ + Started working on configurator - alpha version included :)
+
+v0.2.5
+ + Makefile instead of compile.sh
+ + Updater script, updates old config (renames, deletes & adds variables) - makes it much easier to update in future
+
+v0.2.4
+ + %R cookie fixed.
+
+v0.2.3
+ + More optimizations :] 
+   On my p2 350 + 256M I get: "Checks completed in 0.003960 seconds" on the last file with everything on (except debug)
+ + All bugs should be gone... (bugless script, wii)
+
+v0.2.2
+ + New util with the package (racestats, shows race stats from any directory)
+ + Try new bot command !msninc 
+ + Bug fixes
+
+v0.2.1
+ + More 'enabled' variables (dont touch them, if you dont understand 'em)
+ + Some optimizations :-)
+
+v0.2.0
+ + New announce, when user takes lead
+ + Config file layout changed a bit
+ + Some optimizations
+
+v0.1.8
+ + Now accepts RAR files even if sfv isnt there (edit your precheck according to it, if you want to use this function)
+
+v0.1.7
+ + Added cleaner.sh
+ + Cleanup modified (now cleans incomplete LINKS, not files)
+
+v0.1.6
+ + Pre<user/group>topmsg(s) were not working in completetypes 1&2
+ + Bug in %cn & %Cn cookies fixed
+
+v0.1.5
+ + Now compiles with BSD systems (havent tested wheter it reall works or not)
+ + Read CHANGELOG in sitebot dir for sitebot updates
+
+v0.1.4
+ + No bugs reported
+ + New package layout, will be modified a bit more soon
+ + NEW BOTSCRIPT, report all bugs asap
+
+v0.1.3
+ + Benchmark mode
+ + Debug mode
+
+v0.1.2
+ + Turned on gcc optimization
+ + Added some preprocessor tokens to make script not to compile stuff that is not used
+ + Result: Smaller + Faster :-)
+ ! SCRIPT NO LONGER SUPPORTS dShit.tcl, CHANGE TO DH'S BOTSCRIPT (or wait until I get mine done)
+
+v0.1.1
+ + Script used to scan files inside directory several times during the run, now it only scans once (caches them)
+ + One allocation was too small (could have caused segfaults on certain systems)
+ + .api file slightly modified (even easier to edit)
+
+v0.1.0
+ + Script now logs stuff in a new way (see .api file for changes) - easier to customize
+ + group/user topcount (they used to be in one variable called topcount) added
+ + Some variable names were changed + added few new variables
+ + Zero bugs reported on 0.0.19 so I decided to change MAJOR version number (0.1.0) should be _very_ stable
+ + Zipscript comes with FIXED version of darkheart's sitebot (there was minor bug which caused different sections not to work)
+ + Support dBot.tcl was dropped (dont have time to do both...)
+
+v0.0.19
+ + .race file redone (no longer readable with text editor, minor speed boost)
+ + id3-tag extracted to .message
+ + updated dizreader (better accuracy)
+
+v0.0.18
+ + Lots of bugfixes
+ + Script now can handle dvd rels.. (but isnt 3g/rel too much :/)
+
+v0.0.17
+ + %A cookie is now more accurate (used to show fixed speed, when racetime was less than 1sec)
+ + Postdel was using dizreader.sh instead of dizreader (oops)
+ + Dizreader was updated
+
+v0.0.16
+ + Ownership of files created by zipscript is now user definable.
+ + Incomplete files can be defined to be symlinks
+
+v0.0.15
+ + Config looks neater :-)
+ + Fixed bug that caused sfvfile to be named as sfvfile? (which caused bad crc errors on uploads)
+
+v0.0.14
+ + Renewed README
+ + Small fixes
+ + Speed is now 1024times more accurate :-)
+
+v0.0.13
+ + More optimizations (uses even less mem, pointers kick ass)
+ + ZIP&RAR groupdirs now included
+ + Some functions were moved to zsfunctions.h to make optimizing easier (used in zipscript & postdel)
+ ! Size of one Mb changed from 1024000b to 1048576b (Speed optimization, shifting bytes instead of dividing)
+ + README update started (better readme should be available soon, I could use help with this)
+ + Default outlook will be updated to show more of script's capabilites (Ay, need help with this too)
+ + Wii.. huge bug found.. and fixed 
+ + And more bugs fixed (genre banning, wrong racers shown)
+
+v0.0.12
+ + Postdel updated :)
+
+v0.0.11
+ ! This version is classified as BETA (lots of changes)
+ + %Cn and %cn cookies now seperated from user/grouptopmsgs
+ + Rewrote cookies system (should be a bit faster)
+ + Used dynamic memory allocation for paths etc (reduces mem usage)
+ + All cookies now work in racersmsg 
+ + Changed variablenames a bit (easier to modify)
+ + Precheck now denies upload, if file is not in sfv
+ + YkX mp3 year tag is now converted to Y00X (ie 2k1 => 2001)
+ + Postdel was not modified, some minor changes in next ver
+ + Some other things that I cant remember.. lots of small optimizations
+ ! Keep sending feedback. I cant fix anything, if I dont know where the problem is 
+ ! I've ran out of ideas.. so there wont be much changes, if you dont tell what you want
+
+v0.0.10
+ + Symlink cleanup thingie MUCH faster (in c++)
+ + Oops, exit(0); in the beggining of the code.. :D
+
+v0.0.9
+ + Various Artist releases now have seperate Artist & Genre dirs.
+
+v0.0.8
+ + .message file looks better
+ + Cookie for per transfer avg speed
+
+v0.0.7
+ + New cookies (%Cn & %cn)
+ + Halway message
+ + Few serious bugs fixed (fucked up few variables in 0.0.6)
+ + Fixed bug that made script not to read last file from sfv
+   if there was no newline char after it.
+
+v0.0.6
+ + Variable ranges were fuxored.. caused probs with some systems.. worked fine
+   on mine.. anyways, fixed now :-)
+ + .008/.009 files were not accepted.. fixed
+
+v0.0.5
+ + Cookie for grouptop
+ + 4 different types of race complete messages.
+ + Speed sometimes was negative (bug in getenv or strtol or glftpd?) Changed
+   speed variable to string from integer.
+
+v0.0.4
+ + More options
+
+v0.0.3
+ + DizReader in c++
+ + Increased accuracy of avg speed
+ + Some probs with RAR (r08&r09)
+ + Some optimization
+
+v0.0.2
+ + Average speed counter fixed
+ + Percentage counter fixed (was only shown when there was only one uploader)
+ + Some minor optimization in code (heheh, actually changed quite a lot) :D
+ + File_id.diz is only extraced once per rel, if dizreader gets diskcount
+ + SFV message was missing, doh
+ + External config file.. well kind of :p
+ + Some other minor fixes that I cant remember...
+ + If ZIP diskcount isnt in file_id.diz (or reader cant find it) script will
+   be announced as ONE file release, however racestats in directory will be
+   logged correctly and complete msg shows right filecount.
+
+v0.0.1
+ + First public release
