@@ -7,9 +7,10 @@ LIBS=@LIBS@
 all: zs bot swho
 	@(echo -e "\n\tProject-ZS-NG is now compiled!\n\tType 'make install' to install it into $(prefix).\n")
 
-install: zs
+install: all
 	cd zipscript/src ; $(MAKE) install
 	cd sitewho ; $(MAKE) install
+	cd sitebot/src ; $(MAKE) install
 
 distclean: clean
 	rm -f *~ config.cache config.log config.status config.h
@@ -20,7 +21,6 @@ distclean: clean
 	find . -name Makefile | xargs rm -f
 
 clean:
-	rm -f sitewho/sitewho
 	find . -name '*.o' | xargs rm -f
 	cd zipscript/src ; $(MAKE) clean
 	cd sitebot/src ; $(MAKE) clean

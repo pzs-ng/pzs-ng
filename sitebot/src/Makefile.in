@@ -1,9 +1,10 @@
+prefix=@GLPATH@
 CC=@CC@
-RM=rm -f
-MAKE=make
+RM=@RM@ -f
 
 CFLAGS=@CFLAGS@ -W -Wall @GLVERSION@ -I../../
 LDFLAGS=@LDFLAGS@
+INSTALL=@INSTALL@
 
 all: passchk ng-bw
 
@@ -12,6 +13,10 @@ passchk: passchk.c
 
 ng-bw: ng-bw.c
 	$(CC) $(LDFLAGS) $(CFLAGS) -o ng-bw ng-bw.c @LCRYPT@ @LCRYPTO@
+
+install: all
+	$(INSTALL) -m755 passchk $(prefix)/bin
+	$(INSTALL) -m755 ng-bw $(prefix)/bin
 
 distclean: clean
 
