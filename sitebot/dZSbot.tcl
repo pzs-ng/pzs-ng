@@ -606,36 +606,51 @@ proc basicreplace {rstring section} {
 # JUSTIFY AND PAD OUTPUT                                                        #
 #################################################################################
 proc justifyandpad {output} {
+	set startindex 0
 	while { 1==1 } {
 		set side 0
-		set i [string first "%r" $output]
+		set i [string first "%r" $output $startindex]
 		if { $i == -1 } {
+			if { $side == 0 } { set startindex 0 }
 			set side 1
-			set i [string first "%l" $output]
+			set i [string first "%l" $output $startindex]
 		}
 		if { $i != -1 } {
-			set padlength ""
-			set j [expr $i+2]
-			while {![string match [string index $output $j] "\{"]} {
-				append padlength [string index $output $j]
-				incr j
+			if {![string is integer -strict [string index $output [expr $i+2]]]} {
+				set startindex [expr $i+1]
+			} else {
+				set padlength ""
+				set j [expr $i+2]
+				while {![string match [string index $output $j] "\{"]} {
+					if {![string is integer -strict [string index $output $j]]} { break }
+					append padlength [string index $output $j]
+					incr j
+				}
+				if {![string match [string index $output $j] "\{"]} {
+					putlog "dZSbot error: Malformed padding/justification (junk character detected between %r/%l and first "{"). Check your theme file!"
+					return $output
+				}
+				set padstring ""
+				set k [expr $j+1]
+				while {![string match [string index $output $k] "\}"]} {
+					if {[string match [string index $output $k] "\{"]} {
+						putlog "dZSbot error: Malformed padding/justification (%r and %l needs to be the innermost formatting command). Check your theme file!"
+						return $output
+					}
+					append padstring [string index $output $k]
+					incr k
+				}
+				set paddedstring ""
+				set padmissing [expr $padlength-[string length $padstring]]
+				if { $side == 0 } { append paddedstring $padstring }
+				for {set x 0} {$x<$padmissing} {incr x} { append paddedstring " " }
+				if { $side == 1 } { append paddedstring $padstring }
+				set endindex [expr $k+1]
+				set newstring [string range $output 0 [expr $i-1]]
+				append newstring $paddedstring
+				append newstring [string range $output $endindex 63335]
+				set output $newstring
 			}
-			set padstring ""
-			set k [expr $j+1]
-			while {![string match [string index $output $k] "\}"]} {
-				append padstring [string index $output $k]
-				incr k
-			}
-			set paddedstring ""
-			set padmissing [expr $padlength-[string length $padstring]]
-			if { $side == 0 } { append paddedstring $padstring }
-			for {set x 0} {$x<$padmissing} {incr x} { append paddedstring " " }
-			if { $side == 1 } { append paddedstring $padstring }
-			set endindex [expr $k+1]
-			set newstring [string range $output 0 [expr $i-1]]
-			append newstring $paddedstring
-			append newstring [string range $output $endindex 63335]
-			set output $newstring
 		} else { return $output }
 	}
 }
