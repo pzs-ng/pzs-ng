@@ -11,7 +11,7 @@ INSTALL=@INSTALL@
 STRLCPY=../../lib/strl/strlcpy.o
 
 SUNOBJS=@SUNOBJS@
-UNIVERSAL=stats.o convert.o race-file.o zsfunctions.o mp3info.o ng-version.o $(SUNOBJS)
+UNIVERSAL=stats.o convert.o race-file.o zsfunctions.o mp3info.o ng-version.o $(SUNOBJS) $(STRLCPY)
 RD-OBJECTS=racedebug.o
 ZS-OBJECTS=zipscript-c.o dizreader.o complete.o multimedia.o crc.o $(UNIVERSAL)
 PD-OBJECTS=postdel.o dizreader.o multimedia.o $(UNIVERSAL)
@@ -19,7 +19,7 @@ RS-OBJECTS=racestats.o dizreader.o $(UNIVERSAL)
 CU-OBJECTS=cleanup.o
 #IL-OBJECTS=incomplete-list.o
 DC-OBJECTS=datacleaner.o
-UD-OBJECTS=ng-undupe.o
+UD-OBJECTS=ng-undupe.o $(STRLCPY)
 SC-OBJECTS=rescan.o dizreader.o complete.o crc.o multimedia.o $(UNIVERSAL)
 CH-OBJECTS=ng-chown.o
 #ZS-DEPEND=cleanup.o incomplete-list.o complete.o datacleaner.o postdel.o racestats.o rescan.o zipscript-c.o multimedia.o $(UNIVERSAL)
@@ -35,7 +35,7 @@ scandir.o:
 	$(CC) $(CFLAGS) -o scandir.o -c scandir.c
 
 zipscript-c: $(ZS-OBJECTS) $(ZS-DEPEND) $(SUNOBJS)
-	$(CC) $(CFLAGS) -o $@ $(ZS-OBJECTS) $(STRLCPY) $(SUNOBJS)
+	$(CC) $(CFLAGS) -o $@ $(ZS-OBJECTS) $(SUNOBJS)
 
 racedebug: $(RD-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(RD-OBJECTS)
@@ -53,7 +53,7 @@ datacleaner: $(DC-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(DC-OBJECTS) $(SUNOBJS)
 
 ng-undupe: $(UD-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(UD-OBJECTS) $(STRLCPY)
+	$(CC) $(CFLAGS) -o $@ $(UD-OBJECTS)
 
 ng-chown: $(CH-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(CH-OBJECTS) $(SUNOBJS)

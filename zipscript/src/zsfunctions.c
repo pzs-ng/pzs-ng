@@ -10,6 +10,8 @@
 
 #include "convert.h"
 
+#include <strl/strl.h>
+
 struct dirent **dirlist;
 struct dirent **dirlistp;
 unsigned int	direntries = 0;
