@@ -501,7 +501,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 
 			switch (*instr) {
 			case 'a':
-				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size) / raceI->total.speed);
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size / raceI->total.speed));
 				break;
 			case 'A':
 				out_p += sprintf(out_p, "%*.*f", val1, val2,

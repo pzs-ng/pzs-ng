@@ -324,7 +324,7 @@ main(int argc, char **argv)
 	chdir(locations.path);
 
 	d_log("Reading data from environment variables\n");
-	if (!(getenv("USER") && getenv("GROUP") && getenv("TAGLINE") && getenv("SPEED"))) {
+	if (!(getenv("USER") && getenv("GROUP") && getenv("TAGLINE") && getenv("SPEED") && getenv("SECTION"))) {
 		d_log("We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE, $SECTION and $SPEED\n");
 		/*
 		 * strcpy(raceI.user.name, "Unknown");
@@ -337,9 +337,8 @@ main(int argc, char **argv)
 		fileinfo.st_gid = getegid();
 		strcpy(raceI.user.name, get_u_name(fileinfo.st_uid));
 		strcpy(raceI.user.group, get_g_name(fileinfo.st_gid));
-
 		memcpy(raceI.user.tagline, "No Tagline Set", 15);
-		raceI.file.speed = 2004;
+		raceI.file.speed = 2005;
 		raceI.section = 0;
 	} else {
 		sprintf(raceI.user.name, getenv("USER"));
@@ -354,6 +353,9 @@ main(int argc, char **argv)
 			raceI.file.speed = 1;
 
 		d_log("User: %s - Group: %s - Speed: %d (%s)\n", raceI.user.name, raceI.user.group, raceI.file.speed, getenv("SPEED"));
+#if (debug_announce == TRUE)
+		printf("DEBUG: Speed: %dkb/s (%skb/s)\n",  raceI.file.speed, getenv("SPEED"));
+#endif
 
 		d_log("Reading section from env (%s)\n", getenv("SECTION"));
 		if ((temp_p = strdup(gl_sections)) == NULL) {

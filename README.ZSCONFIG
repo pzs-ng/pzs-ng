@@ -1043,11 +1043,18 @@ disable_other_norace_complete <TRUE|FALSE>
 racersmsg <STRING>
 	This is a cookie formatted string containing info of the racers. This
 	string will be used for each racer in a race.
+	This option is depricated - only edit if you know what you're doing.
 	Default: "{%u} {%g}"
 
-racersplit <CHAR>
-	This is one(!) char used to split racers in a race announce.
-	Default: " "
+racersplit <STRING>
+	This is used to split racers in a race announce.
+	This option is depricated - only edit if you know what you're doing.
+	Default: "{, }"
+
+racersplit_prior <STRING>
+	Used before any racers when listing the racers.
+	This option is depricated - only edit if you know what you're doing.
+	Default: "{ }"
 
 KEY <IPCKEY>
 	You can define glftpd's ipckey with this argument. This is only used

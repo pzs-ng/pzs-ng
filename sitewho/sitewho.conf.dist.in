@@ -7,6 +7,7 @@ hiddengroups = bots siteops
 seeallflags = 1DE
 maxusers = 20
 case_insensitive = false
+count_hidden = true
 ipc_key = 0x0000DEAD
 grp_path = /etc/group
 
@@ -20,6 +21,7 @@ grp_path = /etc/group
 # seeallflags = Users with these flags see everything
 # maxusers = 20 ... max users displayed on output
 # case_insensitive = <true|false> ... use case insensitive comparison when checking for hidden users/groups
+# count_hidden = <true|false> ... include hidden users in the count of users online.
 # ipc_key = "0x0000DEAD" ... ipc-key used in glftpd
 # grp_path = "/etc/group" ... (chroot'ed) path to glftpd's groupfile
 ##################################################

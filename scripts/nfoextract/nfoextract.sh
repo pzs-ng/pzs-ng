@@ -4,7 +4,7 @@
 #                                                    #
 # History:                                           #
 # v0.5b - changed some code which i didn't           #
-          understand the meaning of.                 #
+#         understand the meaning of.                 #
 # v0.5a - added support for a different file than    #
 #         the default .message                       #
 # v0.5 - more bugs fixed                             #

@@ -121,6 +121,7 @@ sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 	int		n;
 	int		n2;
 	int		t;
+	int		t2 = 0, t3 = 0;
 	int            *p_array;
 	char           *r_list;
 	char           *t_list;
@@ -142,7 +143,12 @@ sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 		userI[t]->pos = n;
 #if ( get_competitor_list == TRUE )
 		if ( (strncmp(raceI->user.name, userI[n]->name, strlen(raceI->user.name) < strlen(userI[n]->name) ? strlen(raceI->user.name) : strlen(userI[n]->name))) || ((strlen(raceI->user.name) != strlen(userI[n]->name)) && (!strncmp(raceI->user.name, userI[n]->name, strlen(raceI->user.name) < strlen(userI[n]->name) ? strlen(raceI->user.name) : strlen(userI[n]->name))))) {
-			r_list += sprintf(r_list, "%s%s", racersplit, convert2(raceI, userI[n], groupI, racersmsg, t));
+			if (t2 > 0) {
+				r_list += sprintf(r_list, " %s %s", racersplit, convert2(raceI, userI[n], groupI, racersmsg, t));
+			} else {
+				t2 = 1;
+				r_list += sprintf(r_list, " %s %s", racersplit_prior, convert2(raceI, userI[n], groupI, racersmsg, t));
+			}
 		} else {
 			raceI->user.pos = n;
 		}
@@ -152,7 +158,12 @@ sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 #endif
 	}
 	for (n = 1; n < raceI->total.users; n++) {
-		t_list += sprintf(t_list, "%s%s", racersplit, convert2(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
+		if (t3 > 0) {
+			t_list += sprintf(t_list, " %s %s", racersplit, convert2(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
+		} else {
+			t3 = 1;
+			t_list += sprintf(t_list, " %s %s", racersplit_prior, convert2(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
+		}
 	}
 	bzero(p_array, raceI->total.groups * sizeof(int));
 

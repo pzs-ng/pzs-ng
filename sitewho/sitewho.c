@@ -28,10 +28,13 @@ long long	shmid;
 struct shmid_ds	ipcbuf;
 struct stat	filestat;
 
-char           *header, *footer, *glpath, *mpaths, *husers, *hgroups, *ipckey, *glgroup, *nocase,
+char           *header = 0, *footer = 0, *glpath = 0, *mpaths = 0, *husers = 0, *hgroups = 0, *ipckey = 0, *glgroup = 0, *nocase = 0,
                *def_ipckey = "0x0000DEAD", *def_glgroup = "/etc/group", *def_nocase = "false", 
-	       *def_husers = "", *def_hgroups = "", *def_mpaths = "", *def_glpath = "/glftpd/";
-int		maxusers = 20 , showall = 0, uploads = 0, downloads = 0, onlineusers = 0;
+	       *def_husers = "", *def_hgroups = "", *def_mpaths = "", *def_glpath = "/glftpd/",
+	       *def_count_hidden = "true", *count_hidden, *def_header = "/ftp-data/misc/who.head",
+	       *def_footer = "/ftp-data/misc/who.foot";
+int		maxusers = 20 , showall = 0, uploads = 0, downloads = 0, onlineusers = 0,
+		chidden = 1;
 double		total_dn_speed = 0, total_up_speed = 0;
 
 unsigned long 
@@ -111,9 +114,9 @@ strcomp(char *instr, char *searchstr)
 	for (cnt = pos = 0; cnt < l; cnt++) {
 		if (instr[cnt] == ' ' || instr[cnt] == 0) {
 			if (k == pos) {
-				if (ncase == 0 && !strncmp(instr + cnt - pos, searchstr, pos - 1)) {
+				if (ncase == 0 && !strncmp(instr + cnt - pos, searchstr, pos)) {
 					return 1;
-				} else if (ncase == 1 && !strncasecmp(instr + cnt - pos, searchstr, pos - 1)) {
+				} else if (ncase == 1 && !strncasecmp(instr + cnt - pos, searchstr, pos)) {
 					return 1;
 				}
 			}
@@ -146,6 +149,9 @@ showusers(int n, int mode, char *ucomp, char raw)
 	unsigned	seconds;
 
 	gettimeofday(&tstop, (struct timezone *)0);
+
+	if (!strncasecmp(count_hidden, "false", 5))
+		chidden = 0;
 
 	for (x = 0; x < n; x++) {
 		if (!user[x].procid)
@@ -293,7 +299,10 @@ showusers(int n, int mode, char *ucomp, char raw)
 			} else if (showall || (!noshow && !mask && !(maskchar == '*'))) {
 				printf("%s|%s|%s|%s|%s\n", user[x].username, get_g_name(user[x].groupid), user[x].tagline, status, filename);
 			}
-			onlineusers++;
+			if (!noshow && !mask && !(maskchar == '*'))
+				onlineusers++;
+			else if (chidden)
+				onlineusers++;
 //		} else if (!strcasecmp(ucomp, user[x].username)) {
 		} else if (!strcmp(ucomp, user[x].username)) {
 #ifdef _WITH_ALTWHO
@@ -326,7 +335,11 @@ showusers(int n, int mode, char *ucomp, char raw)
 					printf(" - %s", status);
 			}
 #endif
-			onlineusers++;
+			if (!noshow && !mask && !(maskchar == '*'))
+				onlineusers++;
+			else if (chidden)
+				onlineusers++;
+
 		}
 		free(filename);
 	}
@@ -380,13 +393,14 @@ readconfig(char *arg)
 	cfgfile = fopen(tmp, "r");
 	free(tmp);
 	buf = malloc(filestat.st_size);
+	*buf = 0;
 	fread(buf, 1, filestat.st_size, cfgfile);
 	fclose(cfgfile);
 
 	for (n = 0; n < filestat.st_size; n++) {
 		switch (*(buf + n)) {
 		case '\n':
-			if (b_w > l_b && e_w > l_b) {
+			if (b_w > l_b && e_w > l_b && b_w > e_c) {
 				tmp = malloc(n - b_w + 1);
 				memcpy(tmp, buf + b_w, n - b_w);
 				*(tmp + n - b_w) = 0;
@@ -409,6 +423,8 @@ readconfig(char *arg)
 					glgroup = tmp;
 				else if (!memcmp(buf + l_b, "case_insensitive", 16))
 					nocase = tmp;
+				else if (!memcmp(buf + l_b, "count_hidden", 12))
+					count_hidden = tmp;
 				else {
 					if (!memcmp(buf + l_b, "seeallflags", 11))
 						showall = compareflags(getenv("FLAGS"), tmp);
@@ -452,7 +468,7 @@ show(char *filename)
 {
 	int		fd        , n;
 	char		buf       [128];
-	char           *fname;
+	char           *fname = 0;
 
 	fname = malloc(strlen(glpath) + strlen(filename) + 2);
 	sprintf(fname, "%s/%s", glpath, filename);
@@ -502,7 +518,6 @@ buffer_groups(char *groupfile)
 
 	f_name = malloc(strlen(glpath) + strlen(groupfile) + 2);
 	sprintf(f_name, "%s/%s", glpath, groupfile);
-
 	f = open(f_name, O_NONBLOCK);
 	fstat(f, &filestat);
 	f_size = filestat.st_size;
@@ -577,6 +592,12 @@ main(int argc, char **argv)
 		mpaths = def_mpaths;
 	if (!glpath)
 		glpath = def_glpath;
+	if (!count_hidden)
+		count_hidden = def_count_hidden;
+	if (!header)
+		header = def_header;
+	if (!footer)
+		footer = def_footer;
 
 	buffer_groups(glgroup);
 
@@ -591,10 +612,10 @@ main(int argc, char **argv)
 	}
 	if ((shmid = shmget((key_t) strtoll(ipckey, NULL, 16), 0, 0)) == -1) {
 		if (argc == 1 || (raw_output)) {
-			if (!raw_output && header)
+			if (!raw_output && strlen(header))
 				show(header);
 			showtotals(raw_output);
-			if (!raw_output && footer)
+			if (!raw_output && strlen(footer))
 				show(footer);
 		} else {
 			if (!raw_output)
@@ -613,7 +634,7 @@ main(int argc, char **argv)
 	}
 	shmctl(shmid, IPC_STAT, &ipcbuf);
 
-	if (argc == 1 && (!raw_output) && header)
+	if (argc == 1 && (!raw_output) && strlen(header))
 		show(header);
 
 	(signed int)totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE));
@@ -627,7 +648,7 @@ main(int argc, char **argv)
 
 	if (argc == 1) {
 		showtotals(raw_output);
-		if (!raw_output && footer)
+		if (!raw_output && strlen(footer))
 			show(footer);
 	} else {
 		if (!onlineusers) {
