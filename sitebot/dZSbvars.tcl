@@ -46,6 +46,9 @@ set variables(TAGLINE)			"%u_name %u_group %u_tagline"
 set variables(WIPE)			"%pf %u_name %g_name %u_tagline"
 set variables(WIPE-r)			"%pf %u_name %g_name %u_tagline"
 set variables(FAILLOGIN)		"%failed_nick %u_hostmask %u_ip %word1 %word2 %u_pid"
+set variables(IPNOTADDED)		"%u_hostmask %u_ip"
+set variables(BADUSERHOST)		"%u_name %u_hostmask %u_ip"
+set variables(BADPASSWD)		"%u_name %u_hostmask %u_ip"
 
 # Variables pasted from the zipscript
 set variables(DOUBLESFV)		"%pf %u_name %g_name %releasename %filename"

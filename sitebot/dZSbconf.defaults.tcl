@@ -270,6 +270,9 @@ set disable(IMDB)					0
 set disable(IMDBVAR)					0
 set disable(IMDBFIND)					0
 set disable(FAILLOGIN)					0
+set disable(IPNOTADDED)				1
+set disable(BADUSERHOST)				1
+set disable(BADPASSWD)					1
 set disable(ALTWHO)					0
 
 #########################################################

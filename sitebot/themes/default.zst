@@ -55,6 +55,9 @@ announce.TAGLINE				= "[%b{tag   }] %b{%u_name}@%g_name has changed tagline to %
 announce.WIPE					= "[%b{wipe  }][%section] %b{%relname} by %b{%u_name} of %g_name."
 announce.WIPE-r					= "[%b{wipe-r}][%section] %b{%relname} and all subdirectories by %b{%u_name} of %g_name."
 announce.FAILLOGIN				= "[%b{login }] %b{%failed_nick} failed login: %b{%word1 %word2}"
+announce.IPNOTADDED				= "[%b{login }] denied unknown connection from %b{%u_hostmask}."
+announce.BADUSERHOST				= "[%b{login }] failed login %b{%u_name} hostmask %b{%u_hostmask} not added."
+announce.BADPASSWD				= "[%b{login }] failed login %b{%u_name} wrong password."
 
 # special announces done by glftpd
 announce.NUKE					= "[%b{nuke  }][%section] %b{%relname} factor %b{%multiplier} by %b{%nuker} [reason] %b{%reason} [nukees] %b{%nukees}."

@@ -333,6 +333,19 @@ proc readlog {} {
 			set pid [string trim $pid]
 		}
 
+		# login.log hack by mcr
+		# fake a msgtype for each of the known login.log messages
+		#
+		if {[lrange $line 7 14] == "connection refused: ident@ip not added to any users."} {
+			set line [linsert $line 5 "IPNOTADDED:"]
+		}
+		if {[lrange $line 8 9] == "Bad user@host."} {
+			set line [linsert $line 5 "BADUSERHOST:"]
+		}
+		if {[lrange $line 8 9] == "Login failure."} {
+			set line [linsert $line 5 "BADPASSWD:"]
+		}
+
 		# If we cannot detect a msgtype - default to DEBUG: and insert that into the list ($line).
 		if {[string first ":" [lindex $line 5]] < 0} {
 		    if {[string first "@" [lindex $line 5]] < 0} {
