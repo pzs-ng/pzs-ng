@@ -127,7 +127,7 @@ mpeg_video(char *f, struct video *video)
 
 	video->height = height;
 	video->width = width;
-	video->fps = (unsigned char *)fps_s[fps > 8 ? 0 : fps];
+	video->fps = fps_s[fps > 8 ? 0 : fps];
 
 	close(fd);
 }
@@ -153,11 +153,11 @@ avi_video(char *f, struct video *video)
 			memcpy(&video->width, buf + 32, 4);
 			memcpy(&video->height, buf + 36, 4);
 			sprintf(fps_t, "%i", 1000000 / fps);
-			video->fps = (unsigned char *)fps_t;
+			video->fps = fps_t;
 		} else {
 			video->height = 0;
 			video->width = 0;
-			video->fps = (unsigned char *)fps_s[0];
+			video->fps = fps_s[0];
 		}
 	}
 	close(fd);

@@ -668,7 +668,7 @@ main(int argc, char **argv)
 			d_log("zipscript-c: File type is: ANY\n");
 
 			d_log("zipscript-c: Converting crc (%s) from string to integer\n", argv[3]);
-			crc = hexstrtodec((unsigned char *)argv[3]);
+			crc = hexstrtodec(argv[3]);
 			if (crc == 0) {
 				d_log("zipscript-c: We did not get crc from ftp daemon, calculating crc for %s now.\n", g.v.file.name);
 				crc = calc_crc32(g.v.file.name);
@@ -701,7 +701,7 @@ main(int argc, char **argv)
 						}
 					} else {
 						d_log("zipscript-c: CRC-32 check failed\n");
-						if (!hexstrtodec((unsigned char *)argv[3]) && allow_file_resume) {
+						if (!hexstrtodec(argv[3]) && allow_file_resume) {
 							d_log("zipscript-c: Broken xfer detected - allowing file.\n");
 							no_check = TRUE;
 							write_log = g.v.misc.write_log;

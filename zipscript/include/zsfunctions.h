@@ -103,7 +103,7 @@ extern char    *findfileext_old_parent(char *);
 /* mkay? */
 
 extern int	findfileextcount(DIR *, char *);
-extern unsigned int hexstrtodec(unsigned char *);
+extern unsigned int hexstrtodec(char *);
 #if defined(__linux__) || defined(__NetBSD__)
 extern int	selector(const struct dirent *);
 #else

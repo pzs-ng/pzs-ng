@@ -151,7 +151,7 @@ findfileextcount(DIR *dir, char *fileext)
  *         Revision: r1219
  */
 unsigned int 
-hexstrtodec(unsigned char *s)
+hexstrtodec(char *s)
 {
 	unsigned int	n = 0;
 	unsigned char	r;
@@ -465,8 +465,10 @@ removecomplete()
 	DIR		*dir;
 	struct dirent	*dp;
 
-	if (message_file_name)
+#ifdef message_file_name
 		unlink(message_file_name);
+#endif
+	
 	mydelbar = convert5(del_completebar);
 	d_log("removecomplete: del_completebar: %s\n", mydelbar);
 	regcomp(&preg, mydelbar, REG_NEWLINE | REG_EXTENDED);
@@ -1173,4 +1175,3 @@ remove_pattern(param, pattern, op)
 	return (param);		/* no match, return original string */
 }
 #endif
-
