@@ -883,7 +883,7 @@ verify_racedata(const char *path)
  * Not yet fully functional, but we're getting there.
  * progtype == a code for what program calls the lock is found in constants.h
  * force_lock == int used to suggest/force a lock on the file.
- *		set to 1 to suggest a lock, >1 to force a lock.
+ *		set to 1 to suggest a lock,2 to force a lock, 3 to put in queue.
  */
 
 int
@@ -911,6 +911,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 		hd.data_qcurrent = 0;
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
+		d_log("create_lock: lock set.\n");
 		return 0;
 	} else {
 		read(fd, &hd, sizeof(HEADDATA));
@@ -922,8 +923,8 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 					d_log("create_lock: Data is already locked - putting you in queue.\n");
 					hd.data_queue++;
 					raceI->data_queue = hd.data_queue;
-				} else 
-					d_log("create_lock: Data is already locked.\n");
+				} // else
+					// d_log("create_lock: Data is already locked.\n");
 				lseek(fd, 0L, SEEK_SET);
 				write(fd, &hd, sizeof(HEADDATA));
 				close(fd);
@@ -931,12 +932,12 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 			}
 		}
 		if (!hd.data_in_use) {
-			if (force_lock == 3 && queue) {
+			if (force_lock == 3 && hd.data_queue) {
 				d_log("create_lock: Data is already locked - putting you in queue.\n");
 				hd.data_queue++;
 				raceI->data_queue = hd.data_queue;
 			} else if (hd.data_queue && queue != hd.data_qcurrent && force_lock != 2) {
-				d_log("create_lock: You are still queued - please wait.\n");
+				// d_log("create_lock: You are still queued - please wait.\n");
 				lseek(fd, 0L, SEEK_SET);
 				write(fd, &hd, sizeof(HEADDATA));
 				close(fd);
@@ -961,6 +962,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 		close(fd);
 		raceI->data_in_use = progtype;
 		raceI->data_type = 0;
+		d_log("create_lock: lock set.\n");
 		return 0;
 	}
 }
@@ -986,7 +988,7 @@ remove_lock(struct VARS *raceI)
 		hd.data_qcurrent++;
 	if (hd.data_queue <= hd.data_qcurrent)
 		hd.data_queue = hd.data_qcurrent = 0;
-d_log("queue: %d - qcurrent: %d\n", hd.data_queue, hd.data_qcurrent);
+	d_log("remove_lock: queue: %d/%d\n", hd.data_qcurrent, hd.data_queue);
 	lseek(fd, 0L, SEEK_SET);
 	write(fd, &hd, sizeof(HEADDATA));
 	close(fd);
