@@ -219,16 +219,16 @@ int main( int argc, char **argv ) {
     int			write_log;
     struct stat		fileinfo;
 
-/* Adding version-number to head if .debug message
-   15.09.2004 - psxc
- */
-   d_log("Project-ZS Next Generation (pzs-ng) v%s debug log.\n", VERSION);
-
 #if ( benchmark_mode == TRUE )
     struct timeval bstart, bstop;
     d_log("Reading time for benchmark\n");
     gettimeofday(&bstart, (struct timezone *)0 );
 #endif
+
+/* Adding version-number to head if .debug message
+   15.09.2004 - psxc
+ */
+   d_log("Project-ZS Next Generation (pzs-ng) v%s debug log.\n", VERSION);
 
     umask(0666 & 000);
 
