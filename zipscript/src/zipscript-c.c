@@ -616,7 +616,7 @@ main(int argc, char **argv)
 			if (findfileextcount(dir, ".nfo") > 1) {
 				d_log("zipscript-c: Looks like there already is a nfo uploaded. Denying this one.\n");
 				sprintf(g.v.misc.error_msg, DUPE_NFO);
-				mark_as_bad(g.v.file.name);
+				//mark_as_bad(g.v.file.name);
 				write_log = g.v.misc.write_log;
 				g.v.misc.write_log = 1;
 				error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
@@ -626,7 +626,7 @@ main(int argc, char **argv)
 				break;
 			}
 #endif
-			writerace(g.l.race, &g.v, 0, F_NFO);
+			//writerace(g.l.race, &g.v, 0, F_NFO);
 
 #if ( enable_nfo_script )
 			if (!fileexists(nfo_script)) {
