@@ -536,7 +536,7 @@ proc from_mb {str} {
 #################################################################################
 # CONVERT SPEED UNIT TO A CUSTOMIZED UNIT                                       #
 #################################################################################
-proc speed_convert {value} {
+proc speed_convert {value section} {
 
 	global speedmeasure speedthreshold theme
 
@@ -580,7 +580,7 @@ proc speed_convert {value} {
 
 	}
 
-	return "[format "%.1f" $value]$type"
+	return [themereplace "[format "%.1f" $value]$type" $section]
 
 }
 #################################################################################
@@ -695,7 +695,7 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 			foreach value $values {
 				if { $cnt2 == 0 } { append output2 "[themereplace $announce(${type}_LOOP${loop}) $section]" }
 				if { [string match "*speed" [lindex $vari $cnt2]] } {
-					set output2 [replacevar $output2 "[lindex $vari $cnt2]" [speed_convert $value]]
+					set output2 [replacevar $output2 "[lindex $vari $cnt2]" [speed_convert $value $section]]
 				} else {
 					set output2 [replacevar $output2 "[lindex $vari $cnt2]" $value]
 				}
@@ -713,7 +713,7 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 			set loop [expr $loop + 1]
 		} else {
 			if { [string match "*speed" $vari] } {
-				set output [replacevar $output $vari [speed_convert [lindex $msgline $cnt]]]
+				set output [replacevar $output $vari [speed_convert [lindex $msgline $cnt] $section]]
 			} else {
 				set output [replacevar $output $vari [lindex $msgline $cnt]]
 			}
@@ -793,11 +793,11 @@ proc speed {nick uhost hand chan args} {
 			set action [lindex $line 4]
 			if {$action == "DN"} {
 				set output "$theme(PREFIX)[themereplace $announce(SPEEDDN) "none"]"
-				set output [replacevar $output "%dnspeed" [speed_convert [lindex $line 5]]]
+				set output [replacevar $output "%dnspeed" [speed_convert [lindex $line 5] "none"]]
 				set output [replacevar $output "%dnpercent" [lindex $line 9]]
 			} elseif {$action == "UP"} {
 				set output "$theme(PREFIX)[themereplace $announce(SPEEDUP) "none"]"
-				set output [replacevar $output "%upspeed" [speed_convert [lindex $line 5]]]
+				set output [replacevar $output "%upspeed" [speed_convert [lindex $line 5] "none"]]
 				set output [replacevar $output "%uppercent" [lindex $line 9]]
 			} elseif {$action == "ID"} {
 				set output "$theme(PREFIX)[themereplace $announce(SPEEDID) "none"]"
@@ -848,9 +848,9 @@ proc bandwidth {nick uhost hand chan args} {
 	set output [replacevar $output "%uploads" [lindex $data 0]]
 	set output [replacevar $output "%downloads" [lindex $data 2]]
 	set output [replacevar $output "%transfers" [lindex $data 4]]
-	set output [replacevar $output "%upspeed" [speed_convert [lindex $data 1]]]
-	set output [replacevar $output "%dnspeed" [speed_convert [lindex $data 3]]]
-	set output [replacevar $output "%totalspeed" [speed_convert [lindex $data 5]]]
+	set output [replacevar $output "%upspeed" [speed_convert [lindex $data 1] "none"]]
+	set output [replacevar $output "%dnspeed" [speed_convert [lindex $data 3] "none"]]
+	set output [replacevar $output "%totalspeed" [speed_convert [lindex $data 5] "none"]]
 	set output [basicreplace "$output" "BW"]
 
 	sndone $chan $output
@@ -876,11 +876,11 @@ proc ng_bwup { nick uhost hand chan args} {
 	set totalper [format "%.0f" [expr 100 * ([lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING)))]]
 
 	set output [replacevar $output "%uploads" [lindex $raw 0]]
-	set output [replacevar $output "%upspeed" [speed_convert [lindex $raw 1]]]
+	set output [replacevar $output "%upspeed" [speed_convert [lindex $raw 1] "none"]]
 	set output [replacevar $output "%downloads" [lindex $raw 2]]
-	set output [replacevar $output "%dnspeed" [speed_convert [lindex $raw 3]]]
+	set output [replacevar $output "%dnspeed" [speed_convert [lindex $raw 3] "none"]]
 	set output [replacevar $output "%transfers" [lindex $raw 4]]
-	set output [replacevar $output "%totalspeed" [speed_convert [lindex $raw 5]]]
+	set output [replacevar $output "%totalspeed" [speed_convert [lindex $raw 5] "none"]]
 	set output [replacevar $output "%idlers" [lindex $raw 6]]
 	set output [replacevar $output "%active" [lindex $raw 7]]
 	set output [replacevar $output "%totallogins" [lindex $raw 8]]
@@ -935,7 +935,7 @@ proc ng_uploaders {nick uhost hand chan args} {
 						set output [replacevar "$theme(PREFIX)[themereplace $announce(USER) "none"]" "%u_name" $user]
 						set output [replacevar $output "%g_name" $group]
 						set output [replacevar $output "%fper" $progress]
-						set output [replacevar $output "%uspeed" [speed_convert $uspeed]]
+						set output [replacevar $output "%uspeed" [speed_convert $uspeed "none"]]
 						set output [replacevar $output "%per" $per]
 						set output [replacevar $output "%tagline" $tagline]
 						set output [replacevar $output "%since" $since]
@@ -953,7 +953,7 @@ proc ng_uploaders {nick uhost hand chan args} {
 
 	set output [replacevar "$theme(PREFIX)[themereplace $announce(TOTUPDN) "none"]" "%type" "Uploaders:"]
 	set output [replacevar $output "%count" $count]
-	set output [replacevar $output "%total" [speed_convert $total]]
+	set output [replacevar $output "%total" [speed_convert $total "none"]]
 	set output [replacevar $output "%per" $per]
 	set output [basicreplace $output "UPLOAD"]
 
@@ -979,11 +979,11 @@ proc ng_bwdn { nick uhost hand chan args} {
 	set totalper [format "%.0f" [expr [lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING))]]
 
 	set output [replacevar $output "%uploads" [lindex $raw 0]]
-	set output [replacevar $output "%upspeed" [speed_convert [lindex $raw 1]]]
+	set output [replacevar $output "%upspeed" [speed_convert [lindex $raw 1] "none"]]
 	set output [replacevar $output "%downloads" [lindex $raw 2]]
-	set output [replacevar $output "%dnspeed" [speed_convert [lindex $raw 3]]]
+	set output [replacevar $output "%dnspeed" [speed_convert [lindex $raw 3] "none"]]
 	set output [replacevar $output "%transfers" [lindex $raw 4]]
-	set output [replacevar $output "%totalspeed" [speed_convert [lindex $raw 5]]]
+	set output [replacevar $output "%totalspeed" [speed_convert [lindex $raw 5] "none"]]
 	set output [replacevar $output "%idlers" [lindex $raw 6]]
 	set output [replacevar $output "%active" [lindex $raw 7]]
 	set output [replacevar $output "%totallogins" [lindex $raw 8]]
@@ -1038,7 +1038,7 @@ proc ng_leechers {nick uhost hand chan args} {
 						set output [replacevar "$theme(PREFIX)[themereplace $announce(USER) "none"]" "%u_name" $user]
 						set output [replacevar $output "%g_name" $group]
 						set output [replacevar $output "%fper"	$fper]
-						set output [replacevar $output "%uspeed" [speed_convert $uspeed]]
+						set output [replacevar $output "%uspeed" [speed_convert $uspeed "none"]]
 						set output [replacevar $output "%per" $per]
 						set output [replacevar $output "%tagline" $tagline]
 						set output [replacevar $output "%since" $since]
@@ -1056,7 +1056,7 @@ proc ng_leechers {nick uhost hand chan args} {
 
 	set output [replacevar "$theme(PREFIX)[themereplace $announce(TOTUPDN) "none"]" "%type" "Leechers:"]
 	set output [replacevar $output "%count" $count]
-	set output [replacevar $output "%total" [speed_convert $total]]
+	set output [replacevar $output "%total" [speed_convert $total "none"]]
 	set output [replacevar $output "%per" $per]
 	set output [basicreplace "$output" "LEECH"]
 
@@ -1140,9 +1140,9 @@ proc ng_bandwidth {nick uhost hand chan args} {
 	set dnper [format "%.0f" [expr [lindex $raw 3] *100 / $speed(OUTGOING)]]
 	set totalper [format "%.0f" [expr [lindex $raw 5] * 100 / ( $speed(INCOMING) + $speed(OUTGOING) )]]
 	
-	set up [speed_convert [lindex $raw 1]]
-	set dn [speed_convert [lindex $raw 3]]
-	set totalspeed [speed_convert [lindex $raw 5]]
+	set up [speed_convert [lindex $raw 1] "none"]
+	set dn [speed_convert [lindex $raw 3] "none"]
+	set totalspeed [speed_convert [lindex $raw 5] "none"]
 
 	set output [replacevar $output "%uploads" [lindex $raw 0]]
 	set output [replacevar $output "%upspeed" $up]
