@@ -816,19 +816,21 @@ proc format_speed {value section} {
 #################################################################################
 # Display Box Uptime                                                            #
 #################################################################################
-tproc ng_uptime {nick uhost hand chan argv} {
+proc ng_uptime {nick uhost hand chan argv} {
     global announce binary theme uptime
-
-    set eggup [format_duration [expr {[clock seconds] - $uptime}]]
-    set load "N/A"; set sysup "N/A"; set time "N/A"; set users "N/A"
 
     if {[catch {exec $binary(UPTIME)} reply]} {
         putlog "dZSbot error: Unable to execute uptime ($reply)."
-    } elseif {[regexp {.+ up (.+), (.+), (.+) users?, load averages?: (.+)} $reply reply sysup time users load]} {
+    }
+    ## Linux pads some of the output with spaces, so we'll trim it.
+    regsub -all {\s+} $reply { } reply
+    if {[regexp {.+ up (.+), (.+), (.+) users?, load averages?: (.+)} $reply reply sysup time users load]} {
         set sysup [format_duration [clock scan $sysup -base 0]]
     } else {
+        set load "N/A"; set sysup "N/A"; set time "N/A"; set users "N/A"
         putlog "dZSbot error: Unable to parse uptime reply \"$reply\", please report to pzs-ng developers."
     }
+    set eggup [format_duration [expr {[clock seconds] - $uptime}]]
 
     set output "$theme(PREFIX)$announce(UPTIME)"
 	set output [replacevar $output "%eggdrop" $eggup]
