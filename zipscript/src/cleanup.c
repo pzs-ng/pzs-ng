@@ -199,7 +199,8 @@ incomplete_cleanup(char *path, int setfree)
 				for (i = 0; i < 4; i++)
 					if (regexec(&preg[i], dp->d_name, 1, pmatch, 0) == 0)
 						if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dp))
-							checklink(path, dp->d_name, setfree);
+							if (checklink(path, dp->d_name, setfree))
+								break;
 
 			closedir(dir);
 		
@@ -217,22 +218,27 @@ incomplete_cleanup(char *path, int setfree)
 	regfree(&preg[3]);
 }
 
-void 
+int 
 checklink(char *path, char *link_, int setfree)
 {
-	int		size;
+	int		size, retval;
 	static char	temp[PATH_MAX];
 	struct stat	fileinfo;
 					
 	size = readlink(link_, temp, PATH_MAX);
 	temp[size] = '\0';
+	retval = 0;
 	if (stat(link_, &fileinfo)) {
 		if (setfree) {
 			unlink(link_);
 			printf("Broken symbolic link \"%s\" removed.\n", temp);
+			retval = 1;
 		}
-	} else
+	} else {
 		printf("Incomplete release: \"%s%s\".\n", path, temp);
+		retval = 1;
+	}
+	return retval;
 }
 
 void 
