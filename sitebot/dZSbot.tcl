@@ -1,11 +1,11 @@
 #################################################################################
-# Code part only, main config is moved to dZSbconf.tcl :)						#
-#			 THIS MEANS THAT YOU ARENT SUPPOSED TO EDIT THIS FILE				#
-#						FOR CONFIGURATION PURPOSES!								#
+# Code part only, main config is moved to dZSbconf.tcl :)                       #
+# THIS MEANS THAT YOU ARENT SUPPOSED TO EDIT THIS FILE                          #
+# FOR CONFIGURATION PURPOSES!                                                   #
 #################################################################################
 
 #################################################################################
-# READING THE CONFIG (and NOT being a cryptic bitch;)							#
+# READING THE CONFIG (and NOT being a cryptic bitch ;)                          #
 #################################################################################
 set dver "0.0.4"
 set dzerror "0"
@@ -29,7 +29,7 @@ foreach bin [array names binary] {
 }
 
 #################################################################################
-# SOME IMPORTANT GLOBAL VARIABLES												#
+# SOME IMPORTANT GLOBAL VARIABLES                                               #
 #################################################################################
 
 set lastoct [file size $location(GLLOG)]
@@ -42,96 +42,98 @@ set variables(UNNUKE) ""
 set mpath ""
 
 #################################################################################
-# SET BINDINGS																	#
+# SET BINDINGS                                                                  #
 #################################################################################
 
-# Where?   Flags    What?       Proc to call
-bind pub    -|- [set cmdpre]who			who
-bind pub    -|- [set cmdpre]speed		speed
-bind pub    -|- [set cmdpre]bw			ng_bandwidth
-bind pub	-|-	[set cmdpre]bwup		ng_leechers
-bind pub    -|- [set cmdpre]bwdn		ng_uploaders
-bind pub    -|- [set cmdpre]bnc			ng_bnc_check
-bind pub    -|- [set cmdpre]free		show_free
+# Where?	Flags	What?			Proc to call
+bind pub	-|-	[set cmdpre]who		who
+bind pub	-|-	[set cmdpre]speed	speed
+bind pub	-|-	[set cmdpre]bw		ng_bandwidth
+bind pub	-|-	[set cmdpre]bwup	ng_leechers
+bind pub	-|-	[set cmdpre]bwdn	ng_uploaders
+bind pub	-|-	[set cmdpre]bnc		ng_bnc_check
+bind pub	-|-	[set cmdpre]free	show_free
 
-bind pub    -|- [set cmdpre]dayup		stats_user_dayup
-bind pub    -|- [set cmdpre]wkup		stats_user_wkup
-bind pub    -|- [set cmdpre]monthup		stats_user_monthup
-bind pub    -|- [set cmdpre]allup		stats_user_allup
+bind pub	-|-	[set cmdpre]dayup	stats_user_dayup
+bind pub	-|-	[set cmdpre]wkup	stats_user_wkup
+bind pub	-|-	[set cmdpre]monthup	stats_user_monthup
+bind pub	-|-	[set cmdpre]allup	stats_user_allup
 
-bind pub    -|- [set cmdpre]daydn		stats_user_daydn
-bind pub    -|- [set cmdpre]wkdn		stats_user_wkdn
-bind pub    -|- [set cmdpre]monthdn		stats_user_monthdn
-bind pub    -|- [set cmdpre]alldn		stats_user_alldn
+bind pub	-|-	[set cmdpre]daydn	stats_user_daydn
+bind pub	-|-	[set cmdpre]wkdn	stats_user_wkdn
+bind pub	-|-	[set cmdpre]monthdn	stats_user_monthdn
+bind pub	-|-	[set cmdpre]alldn	stats_user_alldn
 
-bind pub    -|- [set cmdpre]gpwk		stats_group_gpwk
-bind pub    -|- [set cmdpre]gpal		stats_group_gpal
-bind pub    -|- [set cmdpre]inc			show_incompletes
+bind pub	-|-	[set cmdpre]gpwk	stats_group_gpwk
+bind pub	-|-	[set cmdpre]gpal	stats_group_gpal
+bind pub	-|-	[set cmdpre]inc		show_incompletes
 
-bind pub    -|- [set cmdpre]gwpd		stats_group_gpwd
-bind pub    -|- [set cmdpre]gpad		stats_group_gpad
-bind pub    -|- [set cmdpre]help		help
+bind pub	-|-	[set cmdpre]gwpd	stats_group_gpwd
+bind pub	-|-	[set cmdpre]gpad	stats_group_gpad
+bind pub	-|-	[set cmdpre]help	help
 
-bind join   -|- *                   welcome_msg
+bind join	-|-	*			welcome_msg
 
-bind msg    -|- !invite             invite
+bind msg	-|-	!invite			invite
 
 if {$bindnopre == "YES"} { 
-bind pub    -|- !who		who
-bind pub    -|- !speed		speed
-bind pub    -|- !bw			ng_bandwidth
-bind pub    -|- !bwdn		ng_leechers
-bind pub    -|- !bwup		ng_uploaders
-bind pub    -|- !bnc		ng_bnc_check
-bind pub    -|- !free		show_free
+	bind pub    -|- !who		who
+	bind pub    -|- !speed		speed
+	bind pub    -|- !bw		ng_bandwidth
+	bind pub    -|- !bwdn		ng_leechers
+	bind pub    -|- !bwup		ng_uploaders
+	bind pub    -|- !bnc		ng_bnc_check
+	bind pub    -|- !free		show_free
 
-bind pub    -|- !dayup		stats_user_dayup
-bind pub    -|- !wkup		stats_user_wkup
-bind pub    -|- !monthup	stats_user_monthup
-bind pub    -|- !allup		stats_user_allup
+	bind pub    -|- !dayup		stats_user_dayup
+	bind pub    -|- !wkup		stats_user_wkup
+	bind pub    -|- !monthup	stats_user_monthup
+	bind pub    -|- !allup		stats_user_allup
 
-bind pub    -|- !daydn		stats_user_daydn
-bind pub    -|- !wkdn		stats_user_wkdn
-bind pub    -|- !monthdn	stats_user_monthdn
-bind pub    -|- !alldn		stats_user_alldn
+	bind pub    -|- !daydn		stats_user_daydn
+	bind pub    -|- !wkdn		stats_user_wkdn
+	bind pub    -|- !monthdn	stats_user_monthdn
+	bind pub    -|- !alldn		stats_user_alldn
 
-bind pub    -|- !gpwk		stats_group_gpwk
-bind pub    -|- !gpal		stats_group_gpal
-bind pub    -|- !inc		show_incompletes
+	bind pub    -|- !gpwk		stats_group_gpwk
+	bind pub    -|- !gpal		stats_group_gpal
+	bind pub    -|- !inc		show_incompletes
 
-bind pub    -|- !gwpd		stats_group_gpwd
-bind pub    -|- !gpad		stats_group_gpad
-bind pub    -|- !help		help
+	bind pub    -|- !gwpd		stats_group_gpwd
+	bind pub    -|- !gpad		stats_group_gpad
+	bind pub    -|- !help		help
 }
+
 if {$bindnopre != "YES"} {
-catch { unbind pub    -|- !who			who }
-catch { unbind pub    -|- !speed		speed }
-catch { unbind pub    -|- !bw			ng_bandwidth }
-catch { unbind pub    -|- !bwdn			ng_leechers }
-catch { unbind pub    -|- !bwup			ng_uploaders }
-catch { unbind pub    -|- !bnc			ng_bnc_check }
-catch { unbind pub    -|- !free			show_free }
+	catch { unbind pub    -|- !who		who }
+	catch { unbind pub    -|- !speed	speed }
+	catch { unbind pub    -|- !bw		ng_bandwidth }
+	catch { unbind pub    -|- !bwdn		ng_leechers }
+	catch { unbind pub    -|- !bwup		ng_uploaders }
+	catch { unbind pub    -|- !bnc		ng_bnc_check }
+	catch { unbind pub    -|- !free		show_free }
 
-catch { unbind pub    -|- !dayup		stats_user_dayup }
-catch { unbind pub    -|- !wkup			stats_user_wkup }
-catch { unbind pub    -|- !monthup		stats_user_monthup }
-catch { unbind pub    -|- !allup		stats_user_allup }
+	catch { unbind pub    -|- !dayup	stats_user_dayup }
+	catch { unbind pub    -|- !wkup		stats_user_wkup }
+	catch { unbind pub    -|- !monthup	stats_user_monthup }
+	catch { unbind pub    -|- !allup	stats_user_allup }
 
-catch { unbind pub    -|- !daydn		stats_user_daydn }
-catch { unbind pub    -|- !wkdn			stats_user_wkdn }
-catch { unbind pub    -|- !monthdn		stats_user_monthdn }
-catch { unbind pub    -|- !alldn		stats_user_alldn }
+	catch { unbind pub    -|- !daydn	stats_user_daydn }
+	catch { unbind pub    -|- !wkdn		stats_user_wkdn }
+	catch { unbind pub    -|- !monthdn	stats_user_monthdn }
+	catch { unbind pub    -|- !alldn	stats_user_alldn }
 
-catch { unbind pub    -|- !gpwk			stats_group_gpwk }
-catch { unbind pub    -|- !gpal			stats_group_gpal }
-catch { unbind pub    -|- !inc			show_incompletes }
+	catch { unbind pub    -|- !gpwk		stats_group_gpwk }
+	catch { unbind pub    -|- !gpal		stats_group_gpal }
+	catch { unbind pub    -|- !inc		show_incompletes }
 
-catch { unbind pub    -|- !gwpd			stats_group_gpwd }
-catch { unbind pub    -|- !gpad			stats_group_gpad }
-catch { unbind pub    -|- !help			help }
+	catch { unbind pub    -|- !gwpd		stats_group_gpwd }
+	catch { unbind pub    -|- !gpad		stats_group_gpad }
+	catch { unbind pub    -|- !help		help }
 }
+
 #################################################################################
-# MAIN LOOP - PARSES DATA FROM GLFTPD.LOG										#
+# MAIN LOOP - PARSES DATA FROM GLFTPD.LOG                                       #
 #################################################################################
 proc readlog {} {
 	global location lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2
@@ -195,7 +197,7 @@ proc readlog {} {
 
 
 #################################################################################
-# GET SECTION NAME (BASED ON PATH)												#
+# GET SECTION NAME (BASED ON PATH)                                              #
 #################################################################################
 proc getsection {cpath msgtype} {
 	global sections msgtypes paths type defaultsection mpath
@@ -213,10 +215,8 @@ proc getsection {cpath msgtype} {
 #################################################################################
 
 
-
-
 #################################################################################
-# REPLACE WHAT WITH WITHWHAT													#
+# REPLACE WHAT WITH WITHWHAT                                                    #
 #################################################################################
 proc replacevar {rstring what withwhat} {
 	global zeroconvert
@@ -239,9 +239,8 @@ proc replacevar {rstring what withwhat} {
 #################################################################################
 
 
-
 #################################################################################
-# CONVERT ANYTHING>MB TO MEGABYTES												#
+# CONVERT ANYTHING>MB TO MEGABYTES                                              #
 #################################################################################
 proc to_mb {str} {
 	set type [string index $str end]
@@ -258,9 +257,8 @@ proc to_mb {str} {
 #################################################################################
 
 
-
 #################################################################################
-# CONVERT BASIC COOKIES TO DATA													#
+# CONVERT BASIC COOKIES TO DATA                                                 #
 #################################################################################
 proc basicreplace {rstring section} {
 	global sitename
@@ -275,9 +273,8 @@ proc basicreplace {rstring section} {
 #################################################################################
 
 
-
 #################################################################################
-# CONVERT COOKIES TO DATA														#
+# CONVERT COOKIES TO DATA                                                       #
 #################################################################################
 proc parse {msgtype msgline section} {
 	global variables announce random mpath use_glftpd2 theme theme_fakes defaultsection
@@ -339,10 +336,8 @@ proc parse {msgtype msgline section} {
 #################################################################################
 
 
-
-
 #################################################################################
-# SEND TO ALL CHANNELS LISTED													#
+# SEND TO ALL CHANNELS LISTED                                                   #
 #################################################################################
 proc sndall {section args} {
 	global chanlist splitter
@@ -355,9 +350,8 @@ proc sndall {section args} {
 #################################################################################
 
 
-
 #################################################################################
-# POST WHO INFO																	#
+# POST WHO INFO                                                                 #
 #################################################################################
 proc who {nick uhost hand chan args} {
 	global binary
@@ -372,10 +366,8 @@ proc who {nick uhost hand chan args} {
 #################################################################################
 
 
-
-
 #################################################################################
-# POST SPEED																	#
+# POST SPEED                                                                    #
 #################################################################################
 proc speed {nick uhost hand chan args} {
 	global binary announce
@@ -388,10 +380,8 @@ proc speed {nick uhost hand chan args} {
 #################################################################################
 
 
-
-
 #################################################################################
-# POST BANDWIDTH																#
+# POST BANDWIDTH                                                                #
 #################################################################################
 proc bandwidth {nick uhost hand chan args} {
 	global binary announce
@@ -411,9 +401,8 @@ proc bandwidth {nick uhost hand chan args} {
 #################################################################################
 
 
-
 #################################################################################
-# uploaders BANDWIDTH															#
+# uploaders BANDWIDTH                                                           #
 #################################################################################
 proc ng_uploaders { nick uhost hand chan args} { global binary announce speed
 	set output $announce(BWUP)
@@ -440,9 +429,11 @@ proc ng_uploaders { nick uhost hand chan args} { global binary announce speed
 
 	putserv "PRIVMSG $chan :$output"
 }
+################################################################################
+
 
 #################################################################################
-# leechers BANDWIDTH															#
+# downloaders BANDWIDTH                                                         #
 #################################################################################
 proc ng_leechers { nick uhost hand chan args} { global binary announce speed
 	set output $announce(BWDN)
@@ -469,9 +460,11 @@ proc ng_leechers { nick uhost hand chan args} { global binary announce speed
 
 	putserv "PRIVMSG $chan :$output"
 }
+################################################################################
+
 
 #################################################################################
-# UPDATED BANDWIDTH																#
+# UPDATED BANDWIDTH                                                             #
 #################################################################################
 proc ng_bandwidth {nick uhost hand chan args} { global binary announce speed
 
@@ -503,10 +496,8 @@ proc ng_bandwidth {nick uhost hand chan args} { global binary announce speed
 ################################################################################
 
 
-
-
 #################################################################################
-# POST STATS																	#
+# POST STATS                                                                    #
 #################################################################################
 proc showstats {nick type time section} {
 	global binary statsection
@@ -541,9 +532,8 @@ proc showstats {nick type time section} {
 #################################################################################
 
 
-
 #################################################################################
-# INVITE CHECK																	#
+# INVITE CHECK                                                                  #
 #################################################################################
 proc invite {nick host hand arg} {
 	global location binary chanlist announce
@@ -584,7 +574,7 @@ proc invite {nick host hand arg} {
 
 
 #################################################################################
-# SHOW FREE SPACE																#
+# SHOW FREE SPACE                                                               #
 #################################################################################
 proc show_free {nick uhost hand chan arg} {
 	global binary announce device
@@ -620,7 +610,7 @@ proc show_free {nick uhost hand chan arg} {
 
 
 #################################################################################
-# LAUNCH A NUKE (GL2.0)															#
+# LAUNCH A NUKE (GL2.0)                                                         #
 #################################################################################
 proc launchnuke2 {type path section sargs dargs} { global nuke hidenuke announce sitename
 	set nuke(TYPE) $type
@@ -655,9 +645,8 @@ proc launchnuke2 {type path section sargs dargs} { global nuke hidenuke announce
 #################################################################################
 
 
-
 #################################################################################
-# UPDATE NUKE BUFFER (GL1.0)													#
+# UPDATE NUKE BUFFER (GL1.0)                                                    #
 #################################################################################
 proc fuelnuke {type path section args} {global nuke
 	global hidenuke
@@ -686,10 +675,8 @@ proc fuelnuke {type path section args} {global nuke
 #################################################################################
 
 
-
-
 #################################################################################
-# FLUSH NUKE BUFFER  (GL1.0)													#
+# FLUSH NUKE BUFFER  (GL1.0)                                                    #
 #################################################################################
 proc launchnuke {} {
 	global nuke sitename announce theme
@@ -715,8 +702,9 @@ proc launchnuke {} {
 }
 #################################################################################
 
+
 #################################################################################
-# CHECK IF RELEASE SHOULD NOT BE ANNOUNCED										#
+# CHECK IF RELEASE SHOULD NOT BE ANNOUNCED                                      #
 #################################################################################
 proc denycheck {release} {
 	global denypost
@@ -728,9 +716,8 @@ proc denycheck {release} {
 #################################################################################
 
 
-
 #################################################################################
-# SHOW INCOMPLETE LIST															#
+# SHOW INCOMPLETE LIST                                                          #
 #################################################################################
 proc show_incompletes { nick uhost hand chan arg } {
 	global sitename binary
@@ -742,10 +729,11 @@ proc show_incompletes { nick uhost hand chan arg } {
 		puthelp "PRIVMSG $nick :$line\003$newline($line)"
 	}
 }
+#################################################################################
 
 
 #################################################################################
-# SHOW WELCOME MSG																#
+# SHOW WELCOME MSG                                                              #
 #################################################################################
 proc welcome_msg { nick uhost hand chan } {
 	global announce disable chanlist sitename cmdpre
@@ -762,9 +750,11 @@ proc welcome_msg { nick uhost hand chan } {
 		}
 	}
 }
+#################################################################################
+
 
 #################################################################################
-# SHOW BNC LIST																	#
+# SHOW BNC LIST                                                                 #
 #################################################################################
 proc bnc {nick uhost hand chan arg} {
 	global bnc sitename binary
@@ -779,9 +769,8 @@ proc bnc {nick uhost hand chan arg} {
 #################################################################################
 
 
-
 #################################################################################
-# CHECK BOUNCER STATUSES														#
+# CHECK BOUNCER STATUSES                                                        #
 #################################################################################
 proc ng_bnc_check { nick host hand arg } { global bnc sitename binary errorCode
 	putquick "NOTICE $nick :Checking bouncer(s) status..."
@@ -792,9 +781,8 @@ proc ng_bnc_check { nick host hand arg } { global bnc sitename binary errorCode
 #################################################################################
 
 
-
 #################################################################################
-# CHOOSE STATS PARAMETERS														#
+# CHOOSE STATS PARAMETERS                                                       #
 #################################################################################
 proc stats_user_dayup {nick uhost hand chan args} { showstats "$nick" "-u" "-t" "[lindex $args 0]" }
 proc stats_user_daydn {nick uhost hand chan args} { showstats "$nick" "-d" "-t" "[lindex $args 0]" }
@@ -816,9 +804,8 @@ proc stats_group_gpad {nick uhost hand chan args} { showstats "$nick" "-d" "-A" 
 #################################################################################
 
 
-
 #################################################################################
-#									Help Section								#
+# Help Section                                                                  #
 #################################################################################
 proc help {nick uhost hand chan arg} {
 	global sections cmdpre dver
@@ -845,9 +832,8 @@ proc help {nick uhost hand chan arg} {
 #################################################################################
 
 
-
 #################################################################################
-# LOAD A THEME FILE																#
+# LOAD A THEME FILE                                                             #
 #################################################################################
 proc loadtheme {file} {
 	global theme announce
@@ -891,9 +877,8 @@ proc loadtheme {file} {
 #################################################################################
 
 
-
 #################################################################################
-# REPLACES THEMERELATED STUFF IN A GIVEN STRING									#
+# REPLACES THEMERELATED STUFF IN A GIVEN STRING                                 #
 #################################################################################
 proc themereplace {rstring} {
 	global theme
@@ -908,7 +893,6 @@ proc themereplace {rstring} {
 	return [subst $rstring]
 }
 #################################################################################
-
 
 
 if {[info exists dZStimer]} {
@@ -933,5 +917,3 @@ if { $dzerror == "0" } {
 	putlog "dZSbot had errors. Please check log and fix."
 	die
 }
-
-
