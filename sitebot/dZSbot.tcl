@@ -1360,14 +1360,14 @@ proc ng_idlers {nick uhost hand chan argv} {
 		if {[string equal "USER" [lindex $line 0]] && [string equal "ID" [lindex $line 4]]} {
 			set user  [lindex $line 2]
 			set group [lindex $line 3]
-			set idletime [format_duration [lindex $line 5]]
+			set idletime [lindex $line 5]
 			set tagline [lindex $line 6]
 			set since [lindex $line 7]
 
 			if {$idletime > $minidletime} {
 				set output [replacevar "$theme(PREFIX)$announce(USERIDLE)" "%u_name" $user]
 				set output [replacevar $output "%g_name" $group]
-				set output [replacevar $output "%idletime" $idletime]
+				set output [replacevar $output "%idletime" [format_duration $idletime]]
 				set output [replacevar $output "%tagline" $tagline]
 				set output [replacevar $output "%since" $since]
 				set output [basicreplace $output "IDLE"]
