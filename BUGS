@@ -1,0 +1,23 @@
+Here's the list of known bugs. devs - please update often!
+
+*******************************************************************************
+
+R.DATE      : Report Date - this is the date the bug was reported (d/m/y)
+STA         : Status - [ ] = not fixed/looked at
+                     - [x] = fixed
+                     - [/] = modification done, unknown status
+                     - [?] = looked at, but unable to reproduce bug
+                     - [-] = cancelled
+REV.FIX     : Revision the bug was corrected/edited 
+DESCRIPTION : Short description of bug
+
+*******************************************************************************
+
+
+
+R.DATE | STA | REV.FIX | DESCRIPTION
+-------|-----|---------|-------------------------------------------------------
+210704 | [ ] | [     ] | compile fails on OpenBSD (could not find libcrypt)
+210704 | [x] | [r 435] | music.by.* is broken
+
+
