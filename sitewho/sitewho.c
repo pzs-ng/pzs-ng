@@ -122,7 +122,7 @@ void showusers(int n, int mode, char *ucomp) {
 	    maskchar = ' ';
 	    mask = noshow = 0;
 
-	    if (strcomp(husers, user[x].username) != 0) {
+	    if ((strcmp(husers, "") !=0 ) && (strcomp(husers, user[x].username) != 0)) {
 		if ( showall ) {
 		    maskchar = '*';
 		} else {
