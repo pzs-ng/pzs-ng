@@ -92,6 +92,16 @@ set disable(BADBITRATE)		0
 set disable(BADGENRE)		0
 set disable(BADMSGINVITE)	0
 set disable(BADYEAR)		0
+set disable(BAD_FILE_CRC)	0
+set disable(BAD_FILE_0SIZE)	0
+set disable(BAD_FILE_ZIP)	0
+set disable(BAD_FILE_WRONGDIR)	0
+set disable(BAD_FILE_SFV)	0
+set disable(BAD_FILE_NOSFV)	0
+set disable(BAD_FILE_GENRE)	1
+set disable(BAD_FILE_YEAR)	1
+set disable(BAD_FILE_BITRATE)	1
+set disable(BAD_FILE_DISALLOWED)	0
 set disable(DEBUG)		1
 set disable(DEFAULT)		1
 set disable(DELDIR)		0
@@ -101,7 +111,6 @@ set disable(TIMEOUT)		1
 set disable(TAGLINE)		1
 set disable(WIPE)		0
 set disable(WIPE-r)		0
-set disable(BAD)		0
 set disable(FAILLOGIN)		0
 set disable(IPNOTADDED)		1
 set disable(BADUSERHOST)	1
