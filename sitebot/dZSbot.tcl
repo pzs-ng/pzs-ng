@@ -524,7 +524,7 @@ proc from_mb {str} {
 	
 	set unit 1
 	while {$str >= 1000} {
-		set str [expr $str / 1000.0]
+		set str [expr $str / 1000.00]
 		incr unit
 	}
 
@@ -543,7 +543,7 @@ proc speed_convert {value section} {
 	switch -exact -- [string tolower $speedmeasure] {
 
 		"mb"		{
-					set value [expr $value / 1024.0]
+					set value [expr $value / 1024.00]
 					set type $theme(MB)
 				}
 		"kbit"		{
@@ -551,12 +551,12 @@ proc speed_convert {value section} {
 					set type $theme(KBIT)
 				}
 		"mbit"		{
-					set value [expr $value * 8 / 1000.0]
+					set value [expr $value * 8 / 1000.00]
 					set type $theme(MBIT)
 				}
 		"autobit"	{
 					if {$value > $speedthreshold} {
-						set value [expr $value * 8 / 1000.0]
+						set value [expr $value * 8 / 1000.00]
 						set type $theme(MBIT)
 					} else {
 						set value [expr $value * 8]
@@ -565,7 +565,7 @@ proc speed_convert {value section} {
 				}
 		"autobyte"	{
 					if {$value > $speedthreshold} {
-						set value [expr $value / 1024.0]
+						set value [expr $value / 1024.00]
 						set type $theme(MB)
 					} else {
 						set type $theme(KB)
