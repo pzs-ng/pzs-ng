@@ -3,7 +3,7 @@
 #include <sys/types.h>
 #include <limits.h>
 
-#include "../include/race-file.h"
+#include "race-file.h"
 
 int main(int argc, char **argv)
 {

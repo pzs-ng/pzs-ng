@@ -47,3 +47,6 @@ libs:
 	@(echo -e "\n\033[1;37mCompiling the additional libraries\033[0m")
 	cd lib/ ; $(MAKE) all
 
+utils:
+	@(echo -e "\n\033[1;37mCompiling the extra utilities\033[0m")
+	cd zipscript/utils ; $(MAKE) all

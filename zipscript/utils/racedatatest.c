@@ -1,12 +1,9 @@
-#define _FILE_OFFSET_BITS = 64
-#define _LARGEFILE_SOURCE
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <limits.h>
 
-#include "../include/race-file.h"
+#include "race-file.h"
 
 int main(int argc, char **argv)
 {

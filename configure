@@ -4759,7 +4759,7 @@ fi
 #	exit 1
 #fi
 
-                                                                      ac_config_files="$ac_config_files Makefile zipscript/src/Makefile sitebot/src/Makefile sitewho/Makefile sitewho/sitewho.conf lib/Makefile lib/strl/Makefile"
+                                                                                ac_config_files="$ac_config_files Makefile zipscript/src/Makefile zipscript/utils/Makefile sitebot/src/Makefile sitewho/Makefile sitewho/sitewho.conf lib/Makefile lib/strl/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -5286,6 +5286,7 @@ do
   # Handling of arguments.
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "zipscript/src/Makefile" ) CONFIG_FILES="$CONFIG_FILES zipscript/src/Makefile" ;;
+  "zipscript/utils/Makefile" ) CONFIG_FILES="$CONFIG_FILES zipscript/utils/Makefile" ;;
   "sitebot/src/Makefile" ) CONFIG_FILES="$CONFIG_FILES sitebot/src/Makefile" ;;
   "sitewho/Makefile" ) CONFIG_FILES="$CONFIG_FILES sitewho/Makefile" ;;
   "sitewho/sitewho.conf" ) CONFIG_FILES="$CONFIG_FILES sitewho/sitewho.conf" ;;

@@ -173,7 +173,7 @@ AC_SUBST(M32)
 #	exit 1
 #fi
 
-AC_OUTPUT(Makefile zipscript/src/Makefile sitebot/src/Makefile sitewho/Makefile sitewho/sitewho.conf lib/Makefile lib/strl/Makefile)
+AC_OUTPUT(Makefile zipscript/src/Makefile zipscript/utils/Makefile sitebot/src/Makefile sitewho/Makefile sitewho/sitewho.conf lib/Makefile lib/strl/Makefile)
 
 ! [[ -f zipscript/conf/zsconfig.h ]] && cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h
 

@@ -1,0 +1,12 @@
+CC=@CC@
+MAKE=@MAKE@
+
+CFLAGS=@CFLAGS@ -W -Wall -I../include/
+
+all: racedatatest sfvdatatest
+
+racedatatest: racedatatest.c
+	$(CC) $(CFLAGS) racedatatest.c -o $@
+	
+sfvdatatest: sfvdatatest.c
+	$(CC) $(CFLAGS) sfvdatatest.c -o $@
