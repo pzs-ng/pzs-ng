@@ -4,12 +4,12 @@
 #include "objects.h"
 
 int main (int argc, char **argv) {
- unsigned long	*fsize;
- unsigned long	*uspeed;
- unsigned long	*startsec;
- unsigned long	*startusec;
- unsigned long	*crc;
- unsigned char  buf[49 + 5 * sizeof(long)];
+ unsigned int	*fsize;
+ unsigned int	*uspeed;
+ unsigned int	*startsec;
+ unsigned int	*startusec;
+ unsigned int	*crc;
+ unsigned char  buf[49 + 5 * sizeof(int)];
  char		*status = 0;
  char		*fname;
  char		*p_buf;
@@ -42,15 +42,13 @@ int main (int argc, char **argv) {
 	files++;
 
 	p_buf= (char *)(buf + 1);
-	crc		= (unsigned long *)p_buf;		p_buf += sizeof(unsigned long);
+	crc		= (unsigned int *)p_buf;		p_buf += sizeof(unsigned int);
 	uname	= p_buf;						p_buf += 24;
 	ugroup	= p_buf;						p_buf += 24;
-	fsize	= (unsigned long *)p_buf;		p_buf += sizeof(unsigned long);
-	uspeed	= (unsigned long *)p_buf;		p_buf += sizeof(unsigned long);
-/*	startsec = (long *)&p_buf;	p_buf += sizeof(long); -- original */
-	startsec = (unsigned long *)p_buf;		p_buf += sizeof(unsigned long);
-/*	startusec = (long *)&p_buf; -- original */
-	startusec = (unsigned long *)p_buf;
+	fsize	= (unsigned int *)p_buf;		p_buf += sizeof(unsigned int);
+	uspeed	= (unsigned int *)p_buf;		p_buf += sizeof(unsigned int);
+	startsec = (unsigned int *)p_buf;		p_buf += sizeof(unsigned int);
+	startusec = (unsigned int *)p_buf;
 
 	switch ( *buf ) {
 		case F_NOTCHECKED:

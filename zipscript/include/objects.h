@@ -65,7 +65,7 @@ struct current_user {
 
 struct current_file {
  char				*name;
- long				speed;
+ int				speed;
  unsigned long long		size;
  char				compression_method;
 };

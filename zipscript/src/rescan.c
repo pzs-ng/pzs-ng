@@ -113,7 +113,7 @@ void buffer_groups(char *groupfile) {
  char   *f_buf,
         *g_name;
  gid_t	g_id;
- long   f, n, m,
+ int   f, n, m,
         f_size,
         g_n_size,
         l_start = 0;
@@ -164,7 +164,7 @@ void buffer_users(char *passwdfile) {
  char   *f_buf,
         *u_name;
  uid_t  u_id;
- long   f, n, m, l,
+ int   f, n, m, l,
         f_size,
         u_n_size,
         l_start = 0;
@@ -232,7 +232,7 @@ int main () {
  char	*ext,
 	exec[ 4096 ],
 	*complete_bar = 0;
- unsigned long crc;
+ unsigned int crc;
  
  uid_t	f_uid;
  gid_t	f_gid;

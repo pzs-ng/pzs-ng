@@ -9,13 +9,13 @@ char	ttime		[40],
 	output2		[1024],
 	output 		[2048];
 
-/* char *hms(long secs)
+/* char *hms(int secs)
 *
 * Converts source integer to bolded time string.
 *
 */
-char* hms(long secs) {
- long	hours = 0,
+char* hms(int secs) {
+ int	hours = 0,
 	mins = 0,
 	tmp = 0;
  

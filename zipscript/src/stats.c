@@ -15,10 +15,10 @@
 #include "../conf/zsconfig.h"
 
 struct	userdata	{
-	long	allup_bytes;
-	long	monthup_bytes;
-	long	wkup_bytes;
-	long	dayup_bytes;
+	int	allup_bytes;
+	int	monthup_bytes;
+	int	wkup_bytes;
+	int	dayup_bytes;
 	short	name;
 };
 
@@ -31,7 +31,7 @@ struct	userdata	{
  * Description: Updates existing entries in userI and groupI or creates new, if old doesnt exist
  *
  */
-void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *usern, char *group, unsigned long filesize, long speed, long startsec, long startusec) {
+void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *usern, char *group, unsigned int filesize, int speed, int startsec, int startusec) {
  int		u_no = -1;
  int		g_no = -1;
  int		n;
@@ -206,7 +206,7 @@ void get_stats(struct VARS *raceI, struct USERINFO **userI) {
  struct stat		fileinfo;
 
  users = scandir(gl_userfiles, &userlist, 0, 0);
- user = m_alloc(users * sizeof(long));
+ user = m_alloc(users * sizeof(int));
  shift = 0;
 
 	/* User stats reader */

@@ -70,8 +70,8 @@ int findfileextcount(char *fileext) {
 /*
  * Modified: 01.16.2002
  */
-unsigned long hexstrtodec(unsigned char *s) {
- unsigned long  n = 0;
+unsigned int hexstrtodec(unsigned char *s) {
+ unsigned int  n = 0;
  unsigned char  r;
 
  while ( 1 ) {
@@ -400,7 +400,7 @@ void createlink(char *factor1, char *factor2, char *source, char *ltarget) {
 
 
 
-void readsfv_ffile(char *filename, long buf_bytes ) {
+void readsfv_ffile(char *filename, int buf_bytes ) {
  int    fd,
         line_start = 0,
         index_start,

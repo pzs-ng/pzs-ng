@@ -42,7 +42,7 @@
 #define NUM_SAMPLES 4
 
 typedef struct {
-  unsigned long	sync;
+  unsigned int	sync;
   unsigned int	version;
   unsigned int	layer;
   unsigned int	crc;
@@ -94,5 +94,5 @@ char *unpad(char *string);
 int header_frequency(mp3header *h);
 char *header_emphasis(mp3header *h);
 char *header_mode(mp3header *h);
-int get_first_header(mp3info *mp3, long startpos);
+int get_first_header(mp3info *mp3, int startpos);
 int get_next_header(mp3info *mp3);

@@ -22,10 +22,10 @@
  * Description	: Reads crc for current file from preparsed sfv file.
  *
  */
-unsigned long readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount) {
+unsigned int readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount) {
  char		*fname;
- unsigned long	crc = 0;
- unsigned long	t_crc;
+ unsigned int	crc = 0;
+ unsigned int	t_crc;
  FILE		*sfvfile;
  unsigned	len;
  
@@ -35,7 +35,7 @@ unsigned long readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int 
  while ( fread(&len, sizeof(unsigned), 1, sfvfile) == 1 ) {
 	fname = m_alloc(len);
 	fread(fname, 1, len, sfvfile);
-	fread(&t_crc, sizeof(unsigned long), 1, sfvfile);
+	fread(&t_crc, sizeof(unsigned int), 1, sfvfile);
 	raceI->total.files++;
 	if (! strcasecmp(raceI->file.name, fname)) {
 		crc = t_crc;
@@ -69,7 +69,7 @@ void delete_sfv_file(struct LOCATIONS *locations) {
  while ( fread(&len, sizeof(unsigned), 1, sfvfile) == 1 ) {
 	fname = m_alloc(len + 8);
 	fread(fname, 1, len, sfvfile);
-	fseek(sfvfile, sizeof(unsigned long), SEEK_CUR);
+	fseek(sfvfile, sizeof(unsigned int), SEEK_CUR);
 	memcpy(fname + len - 1, "-missing", 9);
 	unlink(fname);
 	m_free(fname);
@@ -88,12 +88,12 @@ void delete_sfv_file(struct LOCATIONS *locations) {
  *
  */
 void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI) {
- unsigned long	fsize;
- unsigned long	uspeed;
- unsigned long	startsec;
- unsigned long	startusec;
+ unsigned int	fsize;
+ unsigned int	uspeed;
+ unsigned int	startsec;
+ unsigned int	startusec;
  unsigned char	*p_buf;
- unsigned char	buf[49 + 5 * sizeof(long)];
+ unsigned char	buf[49 + 5 * sizeof(int)];
  unsigned	len;
  FILE		*file;
  char		*uname;
@@ -107,13 +107,13 @@ void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERI
 	fseek(file, len, SEEK_CUR);
 	fread(buf, 1, sizeof(buf), file);
 
-	p_buf = buf + 1 + sizeof(long);
+	p_buf = buf + 1 + sizeof(int);
 	uname = (char*)p_buf;				p_buf += 24;
 	ugroup = (char*)p_buf;				p_buf += 24;
-	memcpy(&fsize, p_buf, sizeof(long));	p_buf += sizeof(long);
-	memcpy(&uspeed, p_buf, sizeof(long));	p_buf += sizeof(long);
-	memcpy(&startsec, p_buf, sizeof(long));	p_buf += sizeof(long);
-	memcpy(&startusec, p_buf, sizeof(long));
+	memcpy(&fsize, p_buf, sizeof(int));	p_buf += sizeof(int);
+	memcpy(&uspeed, p_buf, sizeof(int));	p_buf += sizeof(int);
+	memcpy(&startsec, p_buf, sizeof(int));	p_buf += sizeof(int);
+	memcpy(&startusec, p_buf, sizeof(int));
 
 	switch (*buf) {
 		case F_NOTCHECKED:
@@ -208,7 +208,7 @@ void testfiles_file(struct LOCATIONS *locations, struct VARS *raceI) {
  unsigned char	status;
  FILE		*file;
  char		*fname, *realfile, *target;
- unsigned long	Tcrc, crc;
+ unsigned int	Tcrc, crc;
 
  target = m_alloc(256);
 
@@ -219,7 +219,7 @@ void testfiles_file(struct LOCATIONS *locations, struct VARS *raceI) {
 		fname = m_alloc(len);
 		fread(fname, 1, len, file);
 		fread(&status, 1, 1, file);
-		fread(&crc, sizeof(unsigned long), 1, file);
+		fread(&crc, sizeof(unsigned int), 1, file);
 
 		if ( status == F_NOTCHECKED ) {
 			raceI->file.name = fname;
@@ -244,9 +244,9 @@ void testfiles_file(struct LOCATIONS *locations, struct VARS *raceI) {
 				}
 			}
 
-		fseek(file, -1 - sizeof(unsigned long), SEEK_CUR);
+		fseek(file, -1 - sizeof(unsigned int), SEEK_CUR);
 		fwrite(&status, 1, 1, file);
-		fseek(file, 48 + 5 * sizeof(long), SEEK_CUR);
+		fseek(file, 48 + 5 * sizeof(int), SEEK_CUR);
 		m_free(fname);
 		}
 
@@ -270,7 +270,7 @@ void testfiles_file(struct LOCATIONS *locations, struct VARS *raceI) {
  * Todo		: Add dupefile remover.
  *
  */
-void copysfv_file(char *source, char *target, long buf_bytes) {
+void copysfv_file(char *source, char *target, int buf_bytes) {
  int		fd;
  char		*buf;
  char		*line;
@@ -285,7 +285,7 @@ void copysfv_file(char *source, char *target, long buf_bytes) {
  unsigned	others	= 0;
  int		len	= 0;
  short		n	= 0;
- unsigned long	t_crc;
+ unsigned int	t_crc;
 #if ( sfv_dupecheck == TRUE )
  char		*fname[256]; /* Semi-gay. We limit @ 256, which is better than 100 anyways */
  unsigned	files 	= 0;
@@ -357,7 +357,7 @@ void copysfv_file(char *source, char *target, long buf_bytes) {
 #endif
 				write(fd, &len, sizeof(int));
 				write(fd, line, len);
-				write(fd, &t_crc, sizeof(unsigned long));
+				write(fd, &t_crc, sizeof(unsigned int));
 				}
 			}
 		}
@@ -429,7 +429,7 @@ void create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char
 		} else {
 		m_free(t);
 		}
-	fseek(r, 48 + 5 * sizeof(long), SEEK_CUR);
+	fseek(r, 48 + 5 * sizeof(int), SEEK_CUR);
  	}
  fclose(r);
 
@@ -499,7 +499,7 @@ short clear_file_file(struct LOCATIONS *locations, char *f) {
 			fwrite(&status, 1, 1, file);
 			}
 
-		fseek(file, 48 + 5 * sizeof(long), SEEK_CUR);
+		fseek(file, 48 + 5 * sizeof(int), SEEK_CUR);
 		m_free(fname);
 		}
 	fclose(file);
@@ -517,7 +517,7 @@ short clear_file_file(struct LOCATIONS *locations, char *f) {
  * Description	: Writes stuff into race file.
  * 
  */
-void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned long crc, unsigned char status) {
+void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned int crc, unsigned char status) {
  FILE			*file;
  unsigned		len;
  unsigned		sz;
@@ -529,19 +529,19 @@ void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned lo
  file = fopen(locations->race, "a+");
 
  len = strlen(raceI->file.name) + 1;
- sz = len + 49 + 5 * sizeof(long) + sizeof(int);
+ sz = len + 49 + 5 * sizeof(int) + sizeof(int);
  p_buf = buf = m_alloc(sz);
 
  memcpy(p_buf, &len, sizeof(int));				p_buf += sizeof(int);
  memcpy(p_buf, raceI->file.name, len);				p_buf += len;
  *p_buf++ = status;
- memcpy(p_buf, &crc, sizeof(long));				p_buf += sizeof(long);
+ memcpy(p_buf, &crc, sizeof(int));				p_buf += sizeof(int);
  memcpy(p_buf, raceI->user.name, 24);				p_buf += 24;
  memcpy(p_buf, raceI->user.group, 24);				p_buf += 24;
- memcpy(p_buf, &raceI->file.size, sizeof(long));		p_buf += sizeof(long);
- memcpy(p_buf, &raceI->file.speed, sizeof(long));		p_buf += sizeof(long);
- memcpy(p_buf, &raceI->transfer_start.tv_sec, sizeof(long));	p_buf += sizeof(long);
- memcpy(p_buf, &raceI->transfer_start.tv_usec, sizeof(long));
+ memcpy(p_buf, &raceI->file.size, sizeof(int));		p_buf += sizeof(int);
+ memcpy(p_buf, &raceI->file.speed, sizeof(int));		p_buf += sizeof(int);
+ memcpy(p_buf, &raceI->transfer_start.tv_sec, sizeof(int));	p_buf += sizeof(int);
+ memcpy(p_buf, &raceI->transfer_start.tv_usec, sizeof(int));
 
  fwrite(buf, 1, sz, file);
  fclose(file);

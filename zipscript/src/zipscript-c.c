@@ -225,7 +225,7 @@ int main( int argc, char **argv ) {
  char		*halfway_msg = 0;
  char		*complete_bar = 0;
  char		*error_msg;
- unsigned long	crc, s_crc;
+ unsigned int	crc, s_crc;
  unsigned char	exit_value = 0;
  unsigned char	no_check = FALSE;
  unsigned char	complete_type = 0;

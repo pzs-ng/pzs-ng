@@ -59,11 +59,11 @@ char *emphasis_text[] = {
   "none", "50/15 microsecs", "reserved", "CCITT J 17"
 };
 
-int get_first_header(mp3info *mp3, long startpos) 
+int get_first_header(mp3info *mp3, int startpos) 
 {
   int k, l=0,c;
   mp3header h, h2;
-  long valid_start=0;
+  int valid_start=0;
 
   fseek(mp3->file,startpos,SEEK_SET);
   while (1) {

@@ -52,7 +52,7 @@ extern void d_log(char *, ...);
 extern void create_missing(char *, short);
 extern char * findfileext(char *);
 extern int findfileextcount(char *);
-extern unsigned long hexstrtodec(unsigned char *);
+extern unsigned int hexstrtodec(unsigned char *);
 #ifdef __linux__
 extern int selector (const struct dirent *);
 extern int selector2 (const struct dirent *);
@@ -74,7 +74,7 @@ extern short matchpath(char *, char *);
 extern short strcomp(char *, char *);
 extern short fileexists(char *);
 extern void createlink(char *, char *, char *, char *);
-extern void readsfv_ffile(char *, long buf_bytes);
+extern void readsfv_ffile(char *, int buf_bytes);
 extern void get_rar_info(char *);
 extern int execute(char *);
 
