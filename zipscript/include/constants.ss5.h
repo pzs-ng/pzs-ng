@@ -63,8 +63,8 @@
 #define pre_stats		"UserTop: "
 #define between_stats		"GroupTop: "
 #define post_stats		DISABLED
-#define winner			DISABLED
-#define loser			DISABLED
+#define winner			"Winner: "
+#define loser			"Loser: "
 
 #define user_top		"%n/%u/%g/%.1m/%f/%.1p/%.0s"
 #define user_info		"%u/%g/%.1m/%f/%.1p/%.0s"
