@@ -218,7 +218,7 @@ main()
 				m++;
 			ext += m;
 			/* printf("ext: %s\n",ext); */
-			if (!strcomp(ignored_types, ext) && strcmp(dirlist[n]->d_name + l - 8, "-missing")) {
+			if (!strcomp(ignored_types, ext) && strcmp(dirlist[n]->d_name + l - 8, "-missing") && strncmp(dirlist[n]->d_name, ".", 1)) {
 				stat(dirlist[n]->d_name, &fileinfo);
 				f_uid = fileinfo.st_uid;
 				f_gid = fileinfo.st_gid;
