@@ -695,7 +695,9 @@ main(int argc, char **argv)
 				crc = calc_crc32(raceI.file.name);
 			}
 			if (fileexists(locations.sfv)) {
-				if ((s_crc = readsfv_file(&locations, &raceI, 0)) != crc) {
+				s_crc = readsfv_file(&locations, &raceI, 0);
+				d_log("DEBUG: crc: %d - s_crc: %d\n", crc, s_crc);
+				if (s_crc != crc) {
 					if (s_crc == 0) {
 						d_log("Filename was not found in the SFV\n");
 						strcpy(raceI.misc.error_msg, NOT_IN_SFV);
