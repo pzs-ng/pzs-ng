@@ -288,7 +288,7 @@ main(int argc, char **argv)
 
 	cleanup(cleanupdirs, setfree, startdir);
 
-	if (argc < 2) {
+	if (argc < 2 || always_scan_audio_syms == TRUE) {
 
 #if ( audio_genre_sort == TRUE )
 		scandirectory((char *)audio_genre_path, setfree);

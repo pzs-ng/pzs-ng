@@ -196,6 +196,13 @@ cleanupdirs <PATHS>
 	take dirs in date-format.
 	Default: "/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 
+always_scan_audio_syms <TRUE|FALSE>
+	On cleanup symlinks are removed. However, if cleanup is used as a
+	cscript, only current dir will be checked. You can make sure to
+	clean up broken audio-symlinks as well, by setting this variable to
+	TRUE. Because audio archives can get huge, this is not on by default.
+	Default: FALSE
+
 write_complete_message_in_group_dirs <TRUE|FALSE>
 	Should a .message file be created in the group-dirs?
 	Default: TRUE

@@ -189,6 +189,9 @@
 #ifndef cleanupdirs
 #define cleanupdirs		"/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 #endif
+#ifndef always_scan_audio_syms
+#define always_scan_audio_syms	FALSE
+#endif
 
 /*
  * Write .message file on complete in group_dirs?
