@@ -287,10 +287,10 @@ cscript		SITE[:space:]WIPE	post	/bin/cleanup
 site_cmd	RESCAN			EXEC	/bin/rescan
 custom-rescan	!8	*
 
-The first two will remove dead symlinks. The last two will allow you to
-rescan a dir. This comes in handy in places the zipscript isn't invoked
-by default, when you have dirs you wish to check filled before you added
-the zipscript, and a lot of other occations.
+The first two will remove dead symlinks. The last two will allow you (and all
+users except anon users) to rescan a dir. This comes in handy in places the
+zipscript isn't invoked by default, when you have dirs you wish to check filled
+before you added the zipscript, and a lot of other occations.
 Forget to add this and you will hit yourself hard quite a few times. ;)
 
 

@@ -28,9 +28,9 @@
 
 #define incompleteislink		1
 
-#define allowed_types			"jpg,cue,m3u,mpg,avi,nfo,txt"
+#define allowed_types			"jpg,cue,m3u,mpg,mpeg,avi,txt,mov,vob"
 
-#define ignored_types			",diz,jpg,cue,m3u,nfo,sfv,debug"
+#define ignored_types			",diz,debug,message,imdb"
 
 #define debug_mode			TRUE
 #define remove_dot_files_on_delete	FALSE

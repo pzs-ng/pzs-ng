@@ -129,7 +129,7 @@ allowed_types_exemption_dirs <PATHS>
 	In allowed_types we define filetypes that are allowed on site w/o
 	any checks. Define here paths where these filetypes should be checked
 	*if* an sfv is uploaded.
-	Defaults: "/site/incoming/musicvideos/"
+	Default: "/site/incoming/musicvideos/"
 
 check_for_missing_nfo_dirs <PATHS>
 	Normally each release has a .nfo included. It has info about the
@@ -227,7 +227,7 @@ program_gid <NUMBER>
 allowed_types <STRING>
 	This variable holds a comma-separated list of extensions. All files
 	with any of these extensions are allowed and not checked.
-	Default: "jpg,cue,m3u,mpg,avi,nfo,txt"
+	Default: "jpg,cue,m3u,mpg,mpeg,avi,txt,mov,vob"
 
 ignored_types <STRING>
 	Files found with an extension listed in this variable are denied on

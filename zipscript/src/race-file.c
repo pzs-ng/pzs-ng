@@ -312,7 +312,7 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
 				if (*fext == '.')
 					fext++;
 				*crc++ = 0;
-				if (!strcomp(ignored_types, fext) && !strcomp(allowed_types, fext) && (t_crc = hexstrtodec((unsigned char *)crc)) > 0) {
+				if (!strcomp(ignored_types, fext) && !strcomp(allowed_types, fext) && strcasecmp("sfv", fext) && strcasecmp("nfo", fext) && (t_crc = hexstrtodec((unsigned char *)crc)) > 0) {
 					len = crc - line;
 #if ( sfv_dupecheck == TRUE )
 					exists = 0;
