@@ -1,3 +1,14 @@
+v0.0.4
+ - fixed gl2.0 compatability (NUKE/UNNUKE)
+ - removed cryptic errors, added readable ones
+ - various fixes on incomplete-list.sh, weektop.sh, invite.sh
+
+---- 20040428 - Project-ZS is now supported again. Development concentrate on support
+---- for the new glftpd2. daxxar/psxc takes responsibility, but welcome anyone who
+---- wish to contribute! :) (contact psxc or daxxar @ #glftpd / #project-zs on EFNet)
+----
+---- BELOW IS DAXXARS CHANGELOG FOR "DAXPATCH"! (merged with TNG)
+
 v0.0.3 daxpatch
  - separated config from the main file, most editing is now done in dZSbconf.tcl
    (you still use "source scripts/dZSbot.tcl" in eggdropconfig)
