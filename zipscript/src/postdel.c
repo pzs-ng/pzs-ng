@@ -91,8 +91,8 @@ void getrelname(char *directory) {
 	sprintf(raceI.misc.release_name, "%s", path[1]);
 	locations.incomplete = c_incomplete(incomplete_indicator, path);
 	}
- free(path[1]);
- free(path[0]);
+ if (k < 2) free(path[1]);
+ if (k == 0) free(path[0]);
 }
 
 

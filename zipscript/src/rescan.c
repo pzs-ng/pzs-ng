@@ -94,7 +94,6 @@ void getrelname(char *directory) {
   locations.link_source[k] = 0;
   locations.link_target = path[0];
   locations.incomplete = c_incomplete( incomplete_cd_indicator, path );
-  free(path[1]);
  } else {
   raceI.misc.release_name    = malloc( l + 10 );
   locations.link_source = malloc( locations.length_path + 1 );
@@ -102,10 +101,10 @@ void getrelname(char *directory) {
   sprintf(raceI.misc.release_name, "%s", path[1]);
   locations.link_target = path[1];
   locations.incomplete = c_incomplete( incomplete_indicator, path );
-  if (k == 0) free(path[0]);
  }
+ if (k < 2) free(path[1]);
+ if (k == 0) free(path[0]);
 }
-
 
 
 
