@@ -1156,7 +1156,7 @@ main(int argc, char **argv)
 			showstats(&raceI, userI, groupI);
 
 			/*
-			 * Modification by <daxxar@mental.mine.nu> Only write
+			 * Modification by <daxxar@daxxar.com> Only write
 			 * new leader if he leads with newleader_files_ahead
 			 * or only one person is racing if enable_files_ahead
 			 * :)
@@ -1189,7 +1189,7 @@ main(int argc, char **argv)
 					writelog(convert(&raceI, userI, groupI, race_msg), race_type);
 				}
 				/*
-				 * Modification by <daxxar@mental.mine.nu>
+				 * Modification by <daxxar@daxxar.com>
 				 * Only announce new leader if he leads with
 				 * newleader_files_ahead files :-)
 				 */

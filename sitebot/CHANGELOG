@@ -23,7 +23,7 @@ v0.0.3 daxpatch
  - small mod to top.tcl to make it kill extra timers;)
 
 ---- BELOW IS DARK0N3'S OFFICIAL CHANGES, ABOVE IS NEW "DaxPatch" CHANGES
----- daxpatch (c) daxxar <daxxar@mental.mine.nu> 
+---- daxpatch (c) daxxar <daxxar@daxxar.com> 
 
 v0.0.2
  - passchk now bsd compatible :)
