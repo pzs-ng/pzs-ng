@@ -1,0 +1,13 @@
+1. Installation
+
+
+
+#################################################################
+ 1. Installation
+#################################################################
+
+ 1. Modify config file
+ 2. Run compile.sh
+ 3. Copy footer & header files
+ 4. Copy binary file somewhere & put .conf file in same location
+ 5. Done
