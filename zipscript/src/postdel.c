@@ -88,7 +88,7 @@ getrelname(char *directory)
 	    (!strncasecmp(path[1], "SUB", 3) && l[1] <= 4) ||
 	    (!strncasecmp(path[1], "SUBTITLES", 9) && l[1] <= 9) ||
 	    (!strncasecmp(path[1], "VOBSUB", 6) && l[1] <= 7)) {
-		raceI.misc.release_name = malloc(l[0] + 18);
+//		raceI.misc.release_name = malloc(l[0] + 18);
 		sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
 		locations.incomplete = c_incomplete(incomplete_cd_indicator, path);
 		locations.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path);
@@ -98,7 +98,7 @@ getrelname(char *directory)
 		if (k == 0)
 			free(path[0]);
 	} else {
-		raceI.misc.release_name = malloc(l[1] + 10);
+//		raceI.misc.release_name = malloc(l[1] + 10);
 		sprintf(raceI.misc.release_name, "%s", path[1]);
 		locations.incomplete = c_incomplete(incomplete_indicator, path);
 		locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
@@ -243,6 +243,7 @@ main(int argc, char **argv)
 	memset(groupI, 0, sizeof(struct GROUPINFO *) * 30);
 
 	locations.path = malloc(PATH_MAX);
+	raceI.misc.release_name = malloc(PATH_MAX);
 	getcwd(locations.path, PATH_MAX);
 
 	if (matchpath(nocheck_dirs, locations.path) || (!matchpath(zip_dirs, locations.path) && !matchpath(sfv_dirs, locations.path) & !matchpath(group_dirs, locations.path))) {
@@ -266,6 +267,7 @@ main(int argc, char **argv)
 
 	d_log("Caching release name\n");
 	getrelname(locations.path);
+	d_log("DEBUG 0: incomplete: '%s', path: '%s'\n", locations.incomplete, locations.path);
 
 	d_log("Parsing file extension from filename...\n");
 
@@ -424,6 +426,10 @@ main(int argc, char **argv)
 #endif
 	}
 	if (incomplete == 1 && raceI.total.files > 0) {
+
+		d_log("DEBUG 1: incomplete: '%s', path: '%s'\n", locations.incomplete, locations.path);
+		getrelname(locations.path);
+		d_log("DEBUG 2: incomplete: '%s', path: '%s'\n", locations.incomplete, locations.path);
 		if (locations.nfo_incomplete) {
 			if (findfileext(".nfo")) {
 				d_log("Removing missing-nfo indicator (if any)\n");
@@ -445,7 +451,7 @@ main(int argc, char **argv)
 			}
 		}
 		d_log("Creating incomplete indicator\n");
-		d_log("   name: '%s', incomplete: '%s', path: '%s'\n", raceI.misc.release_name, locations.incomplete, locations.path);
+		d_log("   incomplete: '%s', path: '%s'\n", locations.incomplete, locations.path);
 		create_incomplete();
 		d_log("Moving progress bar\n");
 		move_progress_bar(0, &raceI);
