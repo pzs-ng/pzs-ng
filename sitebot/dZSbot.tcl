@@ -72,6 +72,7 @@ bind pub	-|- 	[set cmdpre]leechers	ng_leechers
 bind pub	-|- 	[set cmdpre]downloaders	ng_leechers
 bind pub	-|- 	[set cmdpre]down	ng_leechers
 bind pub	-|-	[set cmdpre]idlers	ng_idlers
+bind pub	-|-	[set cmdpre]idle	ng_idlers
 bind pub	-|-	[set cmdpre]bnc		ng_bnc_check
 bind pub	-|-	[set cmdpre]free	show_free
 bind pub	-|-	[set cmdpre]df		show_free
@@ -112,6 +113,7 @@ if {$bindnopre == "YES"} {
 	bind pub	-|- !downloaders	ng_leechers
 	bind pub	-|- !down		ng_leechers
 	bind pub	-|- !idlers		ng_idlers
+	bind pub	-|- !idle		ng_idlers
 	bind pub	-|- !bnc		ng_bnc_check
 	bind pub	-|- !free		show_free
 	bind pub	-|- !df			show_free
@@ -150,6 +152,7 @@ if {$bindnopre != "YES"} {
 	catch { unbind pub    -|- !downloaders	ng_leechers }
 	catch { unbind pub    -|- !down		ng_leechers }
 	catch { unbind pub    -|- !idlers	ng_idlers }
+	catch { unbind pub    -|- !idle		ng_idlers }
 	catch { unbind pub    -|- !bnc		ng_bnc_check }
 	catch { unbind pub    -|- !free		show_free }
 	catch { unbind pub    -|- !df		show_free }
@@ -203,17 +206,17 @@ proc readlog {} {
 		set section [getsection $path $msgtype]
 		if {[denycheck "$path"] == 0} {
 			if {[string compare "$section" "$defaultsection"]} {
-				if {$disable($msgtype) == 0 || $disable(DEFAULT) == 0} {
-				if {[info exists variables($msgtype)]} {
+				if {[info exists variables($msgtype)] && $disable($msgtype) == 0} {
 					set echoline [parse $msgtype [lrange $line 6 end] $section]
 					sndall $section $echoline
 					postcmd $msgtype $section $path
 				} else {
-					set echoline [parse DEFAULT [lrange $line 6 end] $section]
-					sndall $section $echoline
-					postcmd $msgtype $section $path
+					if {$disable(DEFAULT) == 0} {
+						set echoline [parse DEFAULT [lrange $line 6 end] $section]
+						sndall $section $echoline
+						postcmd $msgtype $section $path
+					}
 				}
-			}
 			} else {
 				if {[lsearch -glob $msgtypes(DEFAULT) $msgtype] != -1} {
 					if {$disable($msgtype) == 0} {
@@ -470,8 +473,8 @@ proc bandwidth {nick uhost hand chan args} {
 #################################################################################
 # uploaders BANDWIDTH                                                           #
 #################################################################################
-proc ng_bwup { nick uhost hand chan args} { global binary announce speed
-	set output $announce(BWUP)
+proc ng_bwup { nick uhost hand chan args} { global binary announce speed theme
+	set output "$theme(PREFIX)$announce(BWUP)"
 	set raw [exec $binary(BW)]
 	set upper [format "%.1f" [expr 100 * ([lindex $raw 1] / $speed(INCOMING))]]
 	set dnper [format "%.1f" [expr 100 * ([lindex $raw 3] / $speed(OUTGOING))]]
@@ -519,7 +522,7 @@ proc ng_uploaders {nick uhost hand chan args} {
 			set uspeed [replacevar [lindex $line 5] "KBs" ""]
 			set per [format "%.2f" [expr double($uspeed) * 100 / double($speed(INCOMING))]]
 		
-			set output [replacevar $announce(USER) "%user" $user]
+			set output [replacevar "$theme(PREFIX)$announce(USER)" "%user" $user]
 			set output [replacevar $output "%group" $group]
 			set output [replacevar $output "%fper" "??"]
 			set output [replacevar $output "%uspeed" $uspeed]
@@ -544,7 +547,7 @@ proc ng_uploaders {nick uhost hand chan args} {
 	}
 	set per [format "%.1f" [expr double($total) * 100 / double($speed(INCOMING)) ]]
 	
-	set output [replacevar $announce(TOTUPDN) "%type" "Uploaders:"]
+	set output [replacevar "$theme(PREFIX)$announce(TOTUPDN)" "%type" "Uploaders:"]
 	set output [replacevar $output "%count" $count]
 	set output [replacevar $output "%total" $total]
 	set output [replacevar $output "%per" $per]
@@ -557,8 +560,8 @@ proc ng_uploaders {nick uhost hand chan args} {
 #################################################################################
 # downloaders BANDWIDTH                                                         #
 #################################################################################
-proc ng_bwdn { nick uhost hand chan args} { global binary announce speed
-	set output $announce(BWDN)
+proc ng_bwdn { nick uhost hand chan args} { global binary announce speed theme
+	set output "$theme(PREFIX)$announce(BWDN)"
 	set raw [exec $binary(BW)]
 	set upper [format "%.0f" [expr [lindex $raw 1] / $speed(INCOMING)]]
 	set dnper [format "%.0f" [expr [lindex $raw 3] / $speed(OUTGOING)]]
@@ -578,7 +581,7 @@ proc ng_bwdn { nick uhost hand chan args} { global binary announce speed
 	set output [replacevar $output "%dnpercent" $dnper]
 	set output [replacevar $output "%totalpercent" $totalper]
 
-	set output [basicreplace "$output" "BW"]
+	set output [basicreplace "$theme(PREFIX)$output" "BW"]
 
 	putserv "PRIVMSG $chan :$output"
 }
@@ -607,7 +610,7 @@ proc ng_leechers {nick uhost hand chan args} {
 			
 			set per [format "%.2f" [expr double($uspeed) * 100 / double($speed(OUTGOING))]]
 			
-			set output [replacevar $announce(USER) "%user" $user]
+			set output [replacevar "$theme(PREFIX)$announce(USER)" "%user" $user]
 			set output [replacevar $output "%group" $group]
 			set output [replacevar $output "%fper"	$fper]
 			set output [replacevar $output "%uspeed" $uspeed]
@@ -632,7 +635,7 @@ proc ng_leechers {nick uhost hand chan args} {
 	}
 	set per [format "%.1f" [expr double($total) * 100 / double($speed(OUTGOING)) ]]
 	
-	set output [replacevar $announce(TOTUPDN) "%type" "Leechers"]
+	set output [replacevar "$theme(PREFIX)$announce(TOTUPDN)" "%type" "Leechers"]
 	set output [replacevar $output "%count" $count]
 	set output [replacevar $output "%total" $total]
 	set output [replacevar $output "%per" $per]
@@ -645,8 +648,8 @@ proc ng_leechers {nick uhost hand chan args} {
 #################################################################################
 # ng_idlers - Origional by Celerex - Mod/Merge by themolester                   #
 #################################################################################
-proc ng_idlers { nick uhost hand chan args} { global binary announce speed minidletime
-	set output $announce(IDLE)
+proc ng_idlers { nick uhost hand chan args} { global binary announce speed minidletime theme
+	set output "$theme(PREFIX)$announce(IDLE)"
 	set output [basicreplace "$output" "IDLE"]
 	putserv "PRIVMSG $chan :$output "
 
@@ -664,7 +667,7 @@ proc ng_idlers { nick uhost hand chan args} { global binary announce speed minid
 			set idletime [expr ($hours*60+$minutes)*60+$seconds]
 
 			if { $idletime > $minidletime } {
-				set output [replacevar $announce(USERIDLE) "%user" $user]
+				set output [replacevar "$theme(PREFIX)$announce(USERIDLE)" "%user" $user]
 				set output [replacevar $output "%group" $group]
 				set output [replacevar $output "%idletime" $idletime]
 				set output [basicreplace "$output" "IDLE"]
@@ -673,7 +676,7 @@ proc ng_idlers { nick uhost hand chan args} { global binary announce speed minid
 			}
 		}
 	}
-	set output [replacevar $announce(TOTIDLE) "%count" $count]
+	set output [replacevar "$theme(PREFIX)$announce(TOTIDLE)" "%count" $count]
 	set output [basicreplace $output "IDLE"]
 	putserv "PRIVMSG $chan :$output "
 }
