@@ -38,6 +38,8 @@ set bnc(USER)						"bncuser"
 set bnc(PASS)						"bncpass"
 # Number of seconds to wait before giving up on connecting to the BNCs
 set bnc(TIMEOUT)					"10"
+# Ping the bnc for a secondary latency check (requires userland ping application)
+set bnc(PING)						"FALSE"
 
 # Your sites bandwidth - used for % of bandwidth used calculations in !bw
 set speed(INCOMING)					"12500"
@@ -64,9 +66,8 @@ set binary(WHO)						"/glftpd/bin/sitewho"
 set binary(BW)						"/glftpd/bin/ng-bandwidth"
 set binary(STATS)					"/glftpd/bin/stats"
 set binary(PASSCHK)					"/glftpd/bin/passchk"
+set binary(PING)					"/bin/ping"
 set binary(NCFTPLS)					"/usr/local/bin/ncftpls"
-set binary(BNCTEST)					"/glftpd/bin/bnctest.sh"
-set binary(BNCCHECK)				"/glftpd/bin/bnc-check.pl"
 set binary(INCOMPLETE)				"/glftpd/bin/incomplete-list.sh"
 set binary(DF)						"/bin/df"
 # This is needed for autodetection of glversion. If you unset this, use_glftpd2

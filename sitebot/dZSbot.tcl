@@ -929,29 +929,37 @@ proc welcome_msg { nick uhost hand chan } {
 
 
 #################################################################################
-# SHOW BNC LIST                                                                 #
-#################################################################################
-proc bnc {nick uhost hand chan arg} {
-	global bnc sitename binary
-	putquick "NOTICE $nick : list of bnc's for $sitename"
-	foreach eachbnc $bnc(LIST) {
-		if {$eachbnc == ""} {continue}
-		set ipport [split $eachbnc ":"]
-		set status [exec $binary(BNCTEST) "$binary(NCFTPLS)" "$bnc(USER)" "$bnc(PASS)" "[lindex $ipport 1]" "$bnc(TIMEOUT)" "[lindex $ipport 0]"]
-		puthelp "NOTICE $nick : $eachbnc - $status"
-	}
-}
-#################################################################################
-
-
-#################################################################################
 # CHECK BOUNCER STATUSES                                                        #
 #################################################################################
-proc ng_bnc_check {nick uhost hand chan arg} {
-	global bnc sitename binary errorCode
+proc ng_bnc_check {nick uhost hand chan arg} {global bnc binary
 	putquick "NOTICE $nick :Checking bouncer(s) status..."
-	foreach line [split [exec $binary(BNCCHECK) $binary(NCFTPLS) $bnc(USER) $bnc(PASS) $bnc(TIMEOUT) $bnc(LIST)] "\n"] {
-		putquick "NOTICE $nick :$line"
+	set count 1
+	foreach i $bnc(LIST) {
+		set i [split $i ":"]
+		set loc [lindex $i 0]
+		set ip [lindex $i 1]
+		set port [lindex $i 2]
+		set dur [expr [lindex [time {set exitlevel [catch {exec $binary(NCFTPLS) -P $port -u $bnc(USER) -p $bnc(PASS) -t $bnc(TIMEOUT) -r 0 ftp://$ip 2>@ stdout} raw]}] 0]/1000]
+		if { $bnc(PING) == "TRUE" } {set ping ", ping: [format %.1f [lindex [split [lindex [lindex [split [ exec $binary(PING) -c1 $ip ] \"\n\"] 1] 6] \"=\"] 1]]ms"} else {set ping ""}
+		
+		if { $exitlevel == 0 } {
+			putquick "NOTICE $nick :$count. .$loc - $ip:$port - UP (login: [format %.0f $dur]ms$ping)"
+		} else {
+			switch -glob $raw {
+				"*username was not accepted for login.*" {set error "Bad Username"}
+				"*username and/or password was not accepted for login.*" {set error "Couldn't login"}
+				"*Connection refused.*" {set error "Connection Refused"}
+				"*try again later: Connection timed out.*" {set error "Connection Timed Out"}
+				"*timed out while waiting for server response.*" {set error "No response"}
+				"*Remote host has closed the connection.*" {set error "Connection Lost"}
+				"*unknown host.*" {set error "Unknown Host?"}
+				default { set error "Unhandled Error Type?" ; putlog "DEBUG: dZSbot.tcl bnc check unhandled error type \"$raw\" please report to project-zs-ng developers" }
+			}
+			putquick "NOTICE $nick :$count. .$loc - $ip:$port - DOWN ($error)"
+		}
+		set error ""
+		set raw ""
+		incr count
 	}
 }
 #################################################################################
