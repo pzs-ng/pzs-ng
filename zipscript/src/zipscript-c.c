@@ -161,7 +161,6 @@ main(int argc, char **argv)
 		if (!g.v.file.speed)
 			g.v.file.speed = 1;
 
-		d_log("User: %s - Group: %s - Speed: %d (%s)\n", g.v.user.name, g.v.user.group, g.v.file.speed, getenv("SPEED"));
 #if (debug_announce == TRUE)
 		printf("DEBUG: Speed: %dkb/s (%skb/s)\n",  g.v.file.speed, getenv("SPEED"));
 #endif

@@ -159,11 +159,8 @@ read_write_leader_file(struct LOCATIONS *locations, struct VARS *raceI, struct U
 void 
 testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 {
-	int		len;
-	unsigned char	status;
 	FILE		*file;
-	char		*fname, *realfile, target[256], *ext;
-	//unsigned int	Tcrc, crc;
+	char		*realfile, target[256], *ext;
 	uint32_t	Tcrc;
 	int		m= 0, l = 0;
 	struct stat	filestat;
@@ -454,19 +451,12 @@ create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char *f)
 {
 	FILE		*r;
 	int		l, n, m, c;
-	//int		*pos;
 	int		pos[raceI->total.files],
 			t_pos[raceI->total.files];
-	unsigned char	s;
-	char		*t;
-	//char		**fname;
 	char		fname[raceI->total.files][PATH_MAX];
 	
 	RACEDATA	rd;
 
-	/*pos = m_alloc(sizeof(int) * raceI->total.files);
-	t_pos = m_alloc(sizeof(int) * raceI->total.files);
-	fname = m_alloc(sizeof(char *) * raceI->total.files);*/
 	if (!(r = fopen(locations->race, "r"))) {
 		d_log("Couldn't fopen %s: %s\n", locations->race, strerror(errno));
 		exit(EXIT_FAILURE);
@@ -483,23 +473,7 @@ create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char *f)
 	}
 	fclose(r);
 
-	/*while (fread(&l, sizeof(int), 1, r) == 1) {
-		t = m_alloc(l);
-		fread(t, 1, l, r);
-		fread(&s, 1, 1, r);
-		if (s == F_CHECKED) {
-			fname[c] = t;
-			t_pos[c] = 0;
-			c++;
-		} else {
-			m_free(t);
-		}
-		fseek(r, 48 + 5 * sizeof(int), SEEK_CUR);
-	}
-	fclose(r);*/
-
 	/* Sort with cache */
-
 	for (n = 0; n < c; n++) {
 		m = t_pos[n];
 		for (l = n + 1; l < c; l++) {
@@ -513,22 +487,13 @@ create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char *f)
 	}
 
 	/* Write to file and free memory */
-
 	if ((r = fopen(f, "w"))) {
 		for (n = 0; n < c; n++) {
 			m = pos[n];
 			fprintf(r, "%s\n", fname[m]);
-			//m_free(fname[m]);
 		}
 		fclose(r);
-	}// else {
-		//for (n = 0; n < c; n++)
-		//	m_free(fname[n]);
-	//}
-
-	/*m_free(fname);
-	m_free(t_pos);
-	m_free(pos);*/
+	}
 }
 
 /*
@@ -539,10 +504,9 @@ create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char *f)
 short int 
 clear_file_file(struct LOCATIONS *locations, char *f)
 {
-	int		len, n = 0;
-	unsigned char	status;
+	int		n = 0;
 	FILE           *file;
-	char           *fname;
+
 	RACEDATA	rd;
 
 	if ((file = fopen(locations->race, "r+"))) {
@@ -558,29 +522,6 @@ clear_file_file(struct LOCATIONS *locations, char *f)
 	}
 
 	return n;
-	
-	/*if ((file = fopen(locations->race, "r+"))) {
-		n = 0;
-		while (fread(&len, sizeof(int), 1, file) == 1) {
-			fname = m_alloc(len);
-			fread(fname, 1, len, file);
-			fread(&status, 1, 1, file);
-
-			if ((status == F_CHECKED || status == F_NOTCHECKED || status == F_NFO) &&
-			     !memcmp(f, fname, len)) {
-				status = F_DELETED;
-				n++;
-				fseek(file, -1, SEEK_CUR);
-				fwrite(&status, 1, 1, file);
-			}
-			fseek(file, 48 + 5 * sizeof(int), SEEK_CUR);
-			m_free(fname);
-		}
-		fclose(file);
-		if (n)
-			return 1;
-	}
-	return 0;*/
 }
 
 /*
@@ -591,15 +532,7 @@ clear_file_file(struct LOCATIONS *locations, char *f)
 void 
 readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI)
 {
-	off_t		fsize;
-	unsigned int	uspeed;
-	unsigned int	start_time;
-	unsigned char  *p_buf;
-	unsigned char	buf[1 + 2 * 24 + 3 * sizeof(int) + sizeof(off_t)];
-	unsigned int	len;
 	FILE           *file;
-	char           *uname;
-	char           *ugroup;
 
 	RACEDATA	rd;
 
@@ -622,40 +555,6 @@ readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
 		}
 		fclose(file);
 	}
-
-	/*if (!(file = fopen(locations->race, "r"))) {
-		return;
-	}
-	while (fread(&len, sizeof(int), 1, file) == 1) {
-		fseek(file, len, SEEK_CUR);
-		fread(buf, 1, sizeof(buf), file);
-
-		p_buf = buf + 1 + sizeof(int);
-		uname = (char *)p_buf;
-		p_buf += 24;
-		ugroup = (char *)p_buf;
-		p_buf += 24;
-		memcpy(&fsize, p_buf, sizeof(off_t));
-		p_buf += sizeof(off_t);
-		memcpy(&uspeed, p_buf, sizeof(int));
-		p_buf += sizeof(int);
-		memcpy(&start_time, p_buf, sizeof(int));
-
-		switch (*buf) {
-		case F_NOTCHECKED:
-		case F_CHECKED:
-			updatestats(raceI, userI, groupI, uname, ugroup, (off_t) fsize, (unsigned int)uspeed, (unsigned int)start_time);
-			break;
-		case F_BAD:
-			raceI->total.files_bad++;
-			raceI->total.bad_size += fsize;
-			break;
-		case F_NFO:
-			raceI->total.nfo_present = 1;
-			break;
-		}
-	}
-	fclose(file);*/
 }
 
 /*
@@ -666,11 +565,7 @@ readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
 void 
 writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned int crc, unsigned char status)
 {
-	FILE           *file;
-	unsigned int	len;
-	unsigned int	sz;
-	unsigned char  *buf;
-	unsigned char  *p_buf;
+	FILE		*file;
 
 	RACEDATA	rd;
 
@@ -695,28 +590,4 @@ writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned int crc
 	fwrite(&rd, 1, sizeof(RACEDATA), file);
 	
 	fclose(file);
-	/*len = strlen(raceI->file.name) + 1;
-	sz = len + 1 + 2 * 24 + 4 * sizeof(int) + sizeof(off_t);
-	p_buf = buf = m_alloc(sz);
-
-	memcpy(p_buf, &len, sizeof(int));
-	p_buf += sizeof(int);
-	memcpy(p_buf, raceI->file.name, len);
-	p_buf += len;
-	*p_buf++ = status;
-	memcpy(p_buf, &crc, sizeof(int));
-	p_buf += sizeof(int);
-	memcpy(p_buf, raceI->user.name, 24);
-	p_buf += 24;
-	memcpy(p_buf, raceI->user.group, 24);
-	p_buf += 24;
-	memcpy(p_buf, &raceI->file.size, sizeof(off_t));
-	p_buf += sizeof(off_t);
-	memcpy(p_buf, &raceI->file.speed, sizeof(int));
-	p_buf += sizeof(int);
-	memcpy(p_buf, &raceI->total.start_time, sizeof(int));
-
-	fwrite(buf, 1, sz, file);
-	fclose(file);
-	m_free(buf);*/
 }
