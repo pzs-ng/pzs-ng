@@ -10,20 +10,20 @@
 set dver "0.0.4"
 set dzerror "0"
 set pid 0
-set tclroot [file dirname [info script]]
+set scriptpath [file dirname [info script]]
 putlog "Launching dZSBot (v$dver) for zipscript-c..."
 
-if {[catch {source [file dirname [info script]]/dZSbconf.defaults.tcl} tmperror]} {
+if {[catch {source $scriptpath/dZSbconf.defaults.tcl} tmperror]} {
 	putlog "dZSbot: dZSbconf.defaults.tcl not found or has errors. Cannot continue."
 	putlog "dZSbot: See FAQ for possible solutions/debugging options."
 	die
 }
-if {[catch {source [file dirname [info script]]/dZSbconf.tcl} tmperror]} {
+if {[catch {source $scriptpath/dZSbconf.tcl} tmperror]} {
 	putlog "dZSbot: dZSbconf.tcl not found or has errors. Continuing with defaults only!"
 	putlog "dZSbot: See FAQ/README for possible solutions/debugging options."
 	putlog "dZSbot: If this is your first install - do; cp dZSbconf.dist.tcl dZSbconf.tcl."
 }
-if {[catch {source [file dirname [info script]]/dZSbvars.tcl} tmperror]} {
+if {[catch {source $scriptpath/dZSbvars.tcl} tmperror]} {
 	putlog "dZSbot: dZSbvars.tcl not found or has errors. Cannot continue."
 	putlog "dZSbot: See FAQ for possible solutions/debugging options."
 	die
@@ -77,7 +77,7 @@ if { $countlog == 0 } {
 
 
 if {![info exists use_glftpd2] || ($use_glftpd2 == "AUTO" && ![info exists binary(GLFTPD)])} {
-	putlog "dZSbot: you did not thouroughly edit your [file dirname [info script]]/dZSbconf.tcl file. Try again."
+	putlog "dZSbot: you did not thouroughly edit your $scriptpath/dZSbconf.tcl file. Try again."
 	die
 }
 
@@ -90,7 +90,7 @@ if {$use_glftpd2 == "AUTO"} {
 		putlog "dZSbot: detected $glversion, running in standard mode."
 		set use_glftpd2 "YES"
 	} else {
-		putlog "dZSbot: autodetecting glftpd-version failed. Set use_glftpd in [file dirname [info script]]/dZSbconf.tcl manually."
+		putlog "dZSbot: autodetecting glftpd-version failed. Set use_glftpd in $scriptpath/dZSbconf.tcl manually."
 	}
 }
 
@@ -159,88 +159,88 @@ bind pub -|- [set cmdpre]gwpd    stats_group_gpwd
 bind join -|- *           welcome_msg
 
 if {$bindnopre == "YES"} {
-    bind pub -|- !who         who
-    bind pub -|- !speed       speed
-    bind pub -|- !bw          ng_bandwidth
-    bind pub -|- !bwdn        ng_bwdn
-    bind pub -|- !uploaders   ng_uploaders
-    bind pub -|- !up          ng_uploaders
-    bind pub -|- !bwup        ng_bwup
-    bind pub -|- !leechers    ng_leechers
-    bind pub -|- !downloaders ng_leechers
-    bind pub -|- !down        ng_leechers
-    bind pub -|- !dn          ng_leechers
-    bind pub -|- !idlers      ng_idlers
-    bind pub -|- !idle        ng_idlers
-    bind pub -|- !bnc         ng_bnc_check
-    bind pub -|- !free        show_free
-    bind pub -|- !df          show_free
-    bind pub -|- !inc         show_incompletes
-    bind pub -|- !incomplete  show_incompletes
-    bind pub -|- !incompletes show_incompletes
-    bind pub -|- !help        help
+	bind pub -|- !who         who
+	bind pub -|- !speed       speed
+	bind pub -|- !bw          ng_bandwidth
+	bind pub -|- !bwdn        ng_bwdn
+	bind pub -|- !uploaders   ng_uploaders
+	bind pub -|- !up          ng_uploaders
+	bind pub -|- !bwup        ng_bwup
+	bind pub -|- !leechers    ng_leechers
+	bind pub -|- !downloaders ng_leechers
+	bind pub -|- !down        ng_leechers
+	bind pub -|- !dn          ng_leechers
+	bind pub -|- !idlers      ng_idlers
+	bind pub -|- !idle        ng_idlers
+	bind pub -|- !bnc         ng_bnc_check
+	bind pub -|- !free        show_free
+	bind pub -|- !df          show_free
+	bind pub -|- !inc         show_incompletes
+	bind pub -|- !incomplete  show_incompletes
+	bind pub -|- !incompletes show_incompletes
+	bind pub -|- !help        help
 
-    bind pub -|- !dupe        ng_search
-    bind pub -|- !new         ng_new
-    bind pub -|- !nukes       ng_nukes
-    bind pub -|- !search      ng_search
-    bind pub -|- !unnukes     ng_unnukes
+	bind pub -|- !dupe        ng_search
+	bind pub -|- !new         ng_new
+	bind pub -|- !nukes       ng_nukes
+	bind pub -|- !search      ng_search
+	bind pub -|- !unnukes     ng_unnukes
 
-    bind pub -|- !alldn       stats_user_alldn
-    bind pub -|- !allup       stats_user_allup
-    bind pub -|- !daydn       stats_user_daydn
-    bind pub -|- !dayup       stats_user_dayup
-    bind pub -|- !monthdn     stats_user_monthdn
-    bind pub -|- !monthup     stats_user_monthup
-    bind pub -|- !wkdn        stats_user_wkdn
-    bind pub -|- !wkup        stats_user_wkup
+	bind pub -|- !alldn       stats_user_alldn
+	bind pub -|- !allup       stats_user_allup
+	bind pub -|- !daydn       stats_user_daydn
+	bind pub -|- !dayup       stats_user_dayup
+	bind pub -|- !monthdn     stats_user_monthdn
+	bind pub -|- !monthup     stats_user_monthup
+	bind pub -|- !wkdn        stats_user_wkdn
+	bind pub -|- !wkup        stats_user_wkup
 
-    bind pub -|- !gpad        stats_group_gpad
-    bind pub -|- !gpal        stats_group_gpal
-    bind pub -|- !gpwk        stats_group_gpwk
-    bind pub -|- !gwpd        stats_group_gpwd
+	bind pub -|- !gpad        stats_group_gpad
+	bind pub -|- !gpal        stats_group_gpal
+	bind pub -|- !gpwk        stats_group_gpwk
+	bind pub -|- !gwpd        stats_group_gpwd
 
 } elseif {![string equal "!" $cmdpre]} {
-    catch {unbind pub -|- !who      who}
-    catch {unbind pub -|- !speed    speed}
-    catch {unbind pub -|- !bw       ng_bandwidth}
-    catch {unbind pub -|- !bwup     ng_bwup}
-    catch {unbind pub -|- !uploaders    ng_uploaders}
-    catch {unbind pub -|- !up       ng_uploaders}
-    catch {unbind pub -|- !bwdn     ng_bwdn}
-    catch {unbind pub -|- !leechers ng_leechers}
-    catch {unbind pub -|- !downloaders  ng_leechers}
-    catch {unbind pub -|- !down     ng_leechers}
-    catch {unbind pub -|- !dn       ng_leechers}
-    catch {unbind pub -|- !idlers   ng_idlers}
-    catch {unbind pub -|- !idle     ng_idlers}
-    catch {unbind pub -|- !bnc      ng_bnc_check}
-    catch {unbind pub -|- !free     show_free}
-    catch {unbind pub -|- !df       show_free}
-    catch {unbind pub -|- !inc      show_incompletes}
-    catch {unbind pub -|- !incomplete   show_incompletes}
-    catch {unbind pub -|- !incompletes  show_incompletes}
-    catch {unbind pub -|- !help     help}
+	catch {unbind pub -|- !who         who}
+	catch {unbind pub -|- !speed       speed}
+	catch {unbind pub -|- !bw          ng_bandwidth}
+	catch {unbind pub -|- !bwup        ng_bwup}
+	catch {unbind pub -|- !uploaders   ng_uploaders}
+	catch {unbind pub -|- !up          ng_uploaders}
+	catch {unbind pub -|- !bwdn        ng_bwdn}
+	catch {unbind pub -|- !leechers    ng_leechers}
+	catch {unbind pub -|- !downloaders ng_leechers}
+	catch {unbind pub -|- !down        ng_leechers}
+	catch {unbind pub -|- !dn          ng_leechers}
+	catch {unbind pub -|- !idlers      ng_idlers}
+	catch {unbind pub -|- !idle        ng_idlers}
+	catch {unbind pub -|- !bnc         ng_bnc_check}
+	catch {unbind pub -|- !free        show_free}
+	catch {unbind pub -|- !df          show_free}
+	catch {unbind pub -|- !inc         show_incompletes}
+	catch {unbind pub -|- !incomplete  show_incompletes}
+	catch {unbind pub -|- !incompletes show_incompletes}
+	catch {unbind pub -|- !help        help}
 
-    catch {unbind pub -|- !dupe     ng_search}
-    catch {unbind pub -|- !new      ng_new}
-    catch {unbind pub -|- !nukes    ng_nukes}
-    catch {unbind pub -|- !search   ng_search}
-    catch {unbind pub -|- !unnukes  ng_unnukes}
+	catch {unbind pub -|- !dupe     ng_search}
+	catch {unbind pub -|- !new      ng_new}
+	catch {unbind pub -|- !nukes    ng_nukes}
+	catch {unbind pub -|- !search   ng_search}
+	catch {unbind pub -|- !unnukes  ng_unnukes}
 
-    catch {unbind pub -|- !alldn    stats_user_alldn}
-    catch {unbind pub -|- !allup    stats_user_allup}
-    catch {unbind pub -|- !daydn    stats_user_daydn}
-    catch {unbind pub -|- !dayup    stats_user_dayup}
-    catch {unbind pub -|- !monthdn  stats_user_monthdn}
-    catch {unbind pub -|- !monthup  stats_user_monthup}
-    catch {unbind pub -|- !wkdn     stats_user_wkdn}
-    catch {unbind pub -|- !wkup     stats_user_wkup}
+	catch {unbind pub -|- !alldn    stats_user_alldn}
+	catch {unbind pub -|- !allup    stats_user_allup}
+	catch {unbind pub -|- !daydn    stats_user_daydn}
+	catch {unbind pub -|- !dayup    stats_user_dayup}
+	catch {unbind pub -|- !monthdn  stats_user_monthdn}
+	catch {unbind pub -|- !monthup  stats_user_monthup}
+	catch {unbind pub -|- !wkdn     stats_user_wkdn}
+	catch {unbind pub -|- !wkup     stats_user_wkup}
 
-    catch {unbind pub -|- !gpad     stats_group_gpad}
-    catch {unbind pub -|- !gpal     stats_group_gpal}
-    catch {unbind pub -|- !gpwk     stats_group_gpwk}
-    catch {unbind pub -|- !gwpd     stats_group_gpwd}
+	catch {unbind pub -|- !gpad     stats_group_gpad}
+	catch {unbind pub -|- !gpal     stats_group_gpal}
+	catch {unbind pub -|- !gpwk     stats_group_gpwk}
+	catch {unbind pub -|- !gwpd     stats_group_gpwd}
 }
 
 ## Some 'constants'
@@ -321,8 +321,8 @@ proc readlog {} {
 		# (We remove the element if it's [*], since it's PID)
 		# (I store it in $pid so we can add a cookie for that later (or?))
 		set pid 0
-		if {[regexp {\[([0-9\ ]+)\]} "$line" dud pid]} {
-			regsub "\\\[$pid\\\] " "$line" "" line
+		if {[regexp {\[([0-9\ ]+)\]} $line dud pid]} {
+			regsub "\\\[$pid\\\] " $line "" line
 			set pid [string trim $pid]
 		}
 
@@ -341,18 +341,18 @@ proc readlog {} {
 
 		# If we cannot detect a msgtype - default to DEBUG: and insert that into the list ($line).
 		if {[string first ":" [lindex $line 5]] < 0} {
-		    if {[string first "@" [lindex $line 5]] < 0} {
+			if {[string first "@" [lindex $line 5]] < 0} {
 			set msgtype "DEBUG"
 			if {[llength $line] < 5} {
-			    set line [lappend $line "dummy debug"]
+				set line [lappend $line "dummy debug"]
 			} else {
-			    set line [linsert $line 5 "DEBUG:"]
+				set line [linsert $line 5 "DEBUG:"]
 			}
-		    } else {
+			} else {
 			set msgtype [string trim [lindex $line 5] "@"]
- 		    }
+			}
 		} else {
-		    set msgtype [string trim [lindex $line 5] ":"]
+			set msgtype [string trim [lindex $line 5] ":"]
 		}
 
 		# Catch regular as generated DEBUG lines.
@@ -371,7 +371,7 @@ proc readlog {} {
 		set path [lindex $line 6]
 
 		# Invite users to public and private channels
-		if {![string compare $msgtype "INVITE"]} {
+		if {[string equal $msgtype "INVITE"]} {
 			set ircnick [lindex $line 6]
 			set nick [lindex $line 7]
 			set group [lindex $line 8]
@@ -379,12 +379,12 @@ proc readlog {} {
 			if {[info exists privchannel]} {
 				foreach privchan [array names privchannel] {
 					foreach privgroup $privgroups($privchan) {
-						if {![string compare $group $privgroup]} {
+						if {[string equal $group $privgroup]} {
 							foreach channel $privchannel($privchan) { puthelp "INVITE $ircnick $channel" }
 						}
 					}
 					foreach privuser $privusers($privchan) {
-						if {![string compare $nick $privuser]} {
+						if {[string equal $nick $privuser]} {
 							foreach channel $privchannel($privchan) { puthelp "INVITE $ircnick $channel" }
 						}
 					}
@@ -397,15 +397,15 @@ proc readlog {} {
 		# Replace messages with custom messages
 		foreach rep [array names msgreplace] {
 			set rep [split $msgreplace($rep) ":"]
-			if {![string compare $msgtype [lindex $rep 0]]} {
+			if {[string equal $msgtype [lindex $rep 0]]} {
 				if {[string match -nocase [lindex $rep 1] $path]} {
 					set msgtype [lindex $rep 2]
 				}
 			}
 		}
 
-		if {[denycheck "$path"] == 0 && $msgtype != "DISABLED"} {
-			if {[string compare "$section" "$defaultsection"]} {
+		if {[denycheck $path] == 0 && $msgtype != "DISABLED"} {
+			if {![string equal $section $defaultsection]} {
 				if {[info exists variables($msgtype)] && $disable($msgtype) == 0} {
 					set echoline [parse $msgtype [lrange $line 6 end] $section]
 					sndall $section $echoline
@@ -425,7 +425,7 @@ proc readlog {} {
 					if {$disable($msgtype) == 0} {
 						set echoline [parse $msgtype [lrange $line 6 end] "DEFAULT"]
 						if { [info exists chanlist($msgtype)] } {
-							sndall "$msgtype" $echoline
+							sndall $msgtype $echoline
 						} else {
 							sndall "DEFAULT" $echoline
 						}
@@ -493,7 +493,7 @@ proc getsection {cpath msgtype} {
 		}
 
 		foreach path $paths($section) {
-			if {[string match $path $cpath] == 1 && [string first $msgtype $msgtypes($type($section))] != -1} {
+			if {[string match $path $cpath] && [string first $msgtype $msgtypes($type($section))] != -1} {
 				set mpath $path
 				return $section
 			}
@@ -628,15 +628,13 @@ proc trimtail {strsrc strrm} {
 #################################################################################
 # CONVERT BASIC COOKIES TO DATA                                                 #
 #################################################################################
-proc basicreplace {rstring section} {
+proc basicreplace {string section} {
 	global sitename
-
-	set output $rstring
-	set output [replacevar $output "%sitename" $sitename]
-	set output [replacevar $output "%bold" "\002"]
-	set output [replacevar $output "%uline" "\037"]
-	set output [replacevar $output "%section" $section]
-	return "$output"
+	set string [replacevar $string "%sitename" $sitename]
+	set string [replacevar $string "%bold" \002]
+	set string [replacevar $string "%uline" \037]
+	set string [replacevar $string "%section" $section]
+	return $string
 }
 #################################################################################
 
@@ -645,10 +643,10 @@ proc basicreplace {rstring section} {
 # CONVERT COOKIES TO DATA                                                       #
 #################################################################################
 proc parse {msgtype msgline section} {
-    global variables announce random mpath use_glftpd2 theme theme_fakes defaultsection pid disable sitename
+	global variables announce random mpath use_glftpd2 theme theme_fakes defaultsection pid disable sitename
 	set type $msgtype
 
-	if {![string compare $type "NUKE"] || ! [string compare $type "UNNUKE"]} {
+	if {[string equal $type "NUKE"] || [string equal $type "UNNUKE"]} {
 		if { $use_glftpd2 != "YES" } {
 			fuelnuke $type [lindex $msgline 0] $section $msgline
 		} else {
@@ -686,18 +684,18 @@ proc parse {msgtype msgline section} {
 
 	set vars $variables($type)
 
-	if {![string compare [lindex $announce($type) 0] "random"] && [string is alnum -strict [lindex $announce($type) 1]] == 1} {
+	if {[string equal [lindex $announce($type) 0] "random"] && [string is alnum -strict [lindex $announce($type) 1]]} {
 		set output $random($msgtype\-[rand [lindex $announce($type) 1]])
 	} else {
 		set output $announce($type)
 	}
 
 	set output "$theme(PREFIX)$output"
-	if {![string compare $section $defaultsection] && [llength [array names "theme_fakes" "$type"]] > 0} { set section $theme_fakes($type) }
+	if {[string equal $section $defaultsection] && [llength [array names "theme_fakes" $type]] > 0} { set section $theme_fakes($type) }
 	set output [basicreplace $output $section]
 	set cnt 0
 
-	if {[ string compare [lindex $vars 0] "%pf" ] == 0} {
+	if {[string equal "%pf" [lindex $vars 0]]} {
 		set split [split [lindex $msgline 0] "/"]
 		set ll [llength $split]
 
@@ -715,7 +713,7 @@ proc parse {msgtype msgline section} {
 		set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
 		set vars [string range $vars 4 end]
 		set cnt 1
-	} elseif {[ string compare [lindex $vars 0] "%failed_nick" ] == 0 && $pid != 0} {
+	} elseif {[string equal "%failed_nick" [lindex $vars 0]] && $pid != 0} {
 		set output [replacevar $output "%failed_nick" $f_user ]
 		set vars [string range $vars 13 end]
 		set ip1 [lindex $msgline 1]
@@ -1137,10 +1135,10 @@ proc ng_unnukes {nick uhost hand chan argv} {
 #################################################################################
 # SEND TO ALL CHANNELS LISTED                                                   #
 #################################################################################
-proc sndall {section args} {
+proc sndall {section text} {
 	global chanlist splitter
 	foreach chan $chanlist($section) {
-		foreach line [split [lindex $args 0] $splitter(CHAR)] {
+		foreach line [split $text $splitter(CHAR)] {
 			putquick "PRIVMSG $chan :$line"
 		}
 	}
@@ -1151,9 +1149,9 @@ proc sndall {section args} {
 #################################################################################
 # SEND TO ONE CHANNEL                                                           #
 #################################################################################
-proc sndone {chan args} {
+proc sndone {chan text} {
 	global splitter
-	foreach line [split [lindex $args 0] $splitter(CHAR)] {
+	foreach line [split $text $splitter(CHAR)] {
 		putquick "PRIVMSG $chan :[themereplace $line "none"]"
 	}
 }
@@ -1163,7 +1161,7 @@ proc sndone {chan args} {
 #################################################################################
 # POST WHO INFO                                                                 #
 #################################################################################
-proc who {nick uhost hand chan args} {
+proc who {nick uhost hand chan argv} {
 	global binary
 	if {![checkchan $nick $chan]} {return}
 
@@ -1181,14 +1179,14 @@ proc who {nick uhost hand chan args} {
 #################################################################################
 # POST SPEED                                                                    #
 #################################################################################
-proc speed {nick uhost hand chan args} {
+proc speed {nick uhost hand chan argv} {
 	global binary announce theme disable
 	if {![checkchan $nick $chan]} {return}
 
 	set line ""
 	if { $disable(ALTWHO) == 0 } {
 		set output "$theme(PREFIX)$announce(SPEEDERROR)"
-		foreach line [split [exec $binary(WHO) --raw [lindex $args 0]] "\n"] {
+		foreach line [split [exec $binary(WHO) --raw [lindex $argv 0]] "\n"] {
 			set action [lindex $line 4]
 			if {$action == "DN"} {
 				set output "$theme(PREFIX)$announce(SPEEDDN)"
@@ -1212,7 +1210,7 @@ proc speed {nick uhost hand chan args} {
 		}
 	} else {
 		set base_output "$theme(PREFIX)$announce(DEFAULT)"
-		foreach line [split [exec $binary(WHO) [lindex $args 0]] "\n"] {
+		foreach line [split [exec $binary(WHO) [lindex $argv 0]] "\n"] {
 			set output [replacevar $base_output "%msg" $line]
 			set output [basicreplace $output "SPEED"]
 			sndone $chan $output
@@ -1221,12 +1219,10 @@ proc speed {nick uhost hand chan args} {
 
 	if {$line == ""} {
 		set output "$theme(PREFIX)$announce(SPEEDERROR)"
-#		set output "[themereplace "$theme(PREFIX)$announce(DEFAULT)" "none"]"
 		set output [replacevar $output "%msg" "User not online."]
 		set output [basicreplace $output "SPEED"]
 		sndone $chan $output
 	}
-
 }
 #################################################################################
 
@@ -1234,7 +1230,7 @@ proc speed {nick uhost hand chan args} {
 #################################################################################
 # uploaders BANDWIDTH                                                           #
 #################################################################################
-proc ng_bwup { nick uhost hand chan args} {
+proc ng_bwup { nick uhost hand chan argv} {
 	global binary announce speed theme
 	if {![checkchan $nick $chan]} {return}
 
@@ -1259,7 +1255,7 @@ proc ng_bwup { nick uhost hand chan args} {
 	set output [replacevar $output "%dnpercent" $dnper]
 #	set output [replacevar $output "%totalpercent" $totalper]
 
-	set output [basicreplace "$output" "BW"]
+	set output [basicreplace $output "BW"]
 	sndone $chan $output
 }
 ################################################################################
@@ -1267,12 +1263,12 @@ proc ng_bwup { nick uhost hand chan args} {
 #################################################################################
 # ng_uploaders - Origional by Celerex - Mod/Merge by themolester                #
 #################################################################################
-proc ng_uploaders {nick uhost hand chan args} {
+proc ng_uploaders {nick uhost hand chan argv} {
 	global binary announce speed theme
 	if {![checkchan $nick $chan]} {return}
 
 	set output "$theme(PREFIX)$announce(UPLOAD)"
-	set output [basicreplace "$output" "UPLOAD"]
+	set output [basicreplace $output "UPLOAD"]
 	sndone $chan $output
 
 	set raw [exec $binary(WHO) "--raw"]
@@ -1304,7 +1300,7 @@ proc ng_uploaders {nick uhost hand chan args} {
 						set output [replacevar $output "%tagline" $tagline]
 						set output [replacevar $output "%since" $since]
 						set output [replacevar $output "%filename" $filename]
-						set output [basicreplace "$output" "UPLOAD"]
+						set output [basicreplace $output "UPLOAD"]
 						sndone $chan $output
 						incr count
 						set total [expr $total+$uspeed]
@@ -1328,7 +1324,7 @@ proc ng_uploaders {nick uhost hand chan args} {
 #################################################################################
 # downloaders BANDWIDTH                                                         #
 #################################################################################
-proc ng_bwdn { nick uhost hand chan args} {
+proc ng_bwdn { nick uhost hand chan argv} {
 	global binary announce speed theme
 	if {![checkchan $nick $chan]} {return}
 
@@ -1353,7 +1349,7 @@ proc ng_bwdn { nick uhost hand chan args} {
 	set output [replacevar $output "%dnpercent" $dnper]
 	set output [replacevar $output "%totalpercent" $totalper]
 
-	set output [basicreplace "$output" "BW"]
+	set output [basicreplace $output "BW"]
 	sndone $chan $output
 }
 ################################################################################
@@ -1361,12 +1357,12 @@ proc ng_bwdn { nick uhost hand chan args} {
 #################################################################################
 # ng_leechers - Origional by Celerex - Mod/Merge by themolester                 #
 #################################################################################
-proc ng_leechers {nick uhost hand chan args} {
+proc ng_leechers {nick uhost hand chan argv} {
 	global binary announce speed theme
 	if {![checkchan $nick $chan]} {return}
 
 	set output "$theme(PREFIX)$announce(LEECH)"
-	set output [basicreplace "$output" "LEECH"]
+	set output [basicreplace $output "LEECH"]
 	sndone $chan $output
 
 	set raw [exec $binary(WHO) "--raw"]
@@ -1398,7 +1394,7 @@ proc ng_leechers {nick uhost hand chan args} {
 						set output [replacevar $output "%tagline" $tagline]
 						set output [replacevar $output "%since" $since]
 						set output [replacevar $output "%filename" $filename]
-						set output [basicreplace "$output" "LEECH"]
+						set output [basicreplace $output "LEECH"]
 						sndone $chan $output
 						incr count
 						set total [expr $total+$uspeed]
@@ -1414,7 +1410,7 @@ proc ng_leechers {nick uhost hand chan args} {
 	set output [replacevar $output "%total" [speed_convert $total "none"]]
 	set output [replacevar $output "%per" $per]
 
-	set output [basicreplace "$output" "LEECH"]
+	set output [basicreplace $output "LEECH"]
 	sndone $chan $output
 }
 #################################################################################
@@ -1422,12 +1418,12 @@ proc ng_leechers {nick uhost hand chan args} {
 #################################################################################
 # ng_idlers - Origional by Celerex - Mod/Merge by themolester                   #
 #################################################################################
-proc ng_idlers { nick uhost hand chan args} {
+proc ng_idlers { nick uhost hand chan argv} {
 	global binary announce speed minidletime theme
 	if {![checkchan $nick $chan]} {return}
 
 	set output "$theme(PREFIX)$announce(IDLE)"
-	set output [basicreplace "$output" "IDLE"]
+	set output [basicreplace $output "IDLE"]
 	sndone $chan $output
 
 	set raw [exec $binary(WHO) "--raw"]
@@ -1459,7 +1455,7 @@ proc ng_idlers { nick uhost hand chan args} {
 							set output [replacevar $output "%idletime" $idletime]
 							set output [replacevar $output "%tagline" $tagline]
 							set output [replacevar $output "%since" $since]
-							set output [basicreplace "$output" "IDLE"]
+							set output [basicreplace $output "IDLE"]
 							sndone $chan $output
 							incr count
 						}
@@ -1477,7 +1473,7 @@ proc ng_idlers { nick uhost hand chan args} {
 #################################################################################
 # UPDATED BANDWIDTH                                                             #
 #################################################################################
-proc ng_bandwidth {nick uhost hand chan args} {
+proc ng_bandwidth {nick uhost hand chan argv} {
 	global binary announce speed theme speedmeasure speedthreshold
 	if {![checkchan $nick $chan]} {return}
 
@@ -1506,7 +1502,7 @@ proc ng_bandwidth {nick uhost hand chan args} {
 	set output [replacevar $output "%dnpercent" $dnper]
 	set output [replacevar $output "%totalpercent" $totalper]
 
-	set output [basicreplace "$output" "BW"]
+	set output [basicreplace $output "BW"]
 	sndone $chan $output
 }
 ################################################################################
@@ -1524,16 +1520,15 @@ proc showstats {chan nick type time section} {
 		set error 1
 		set sections ""
 		foreach sectnumb [array names statsection] {
-			if {![string compare [string tolower $statsection($sectnumb)] [string tolower $section]]} {
+			if {[string equal -nocase $statsection($sectnumb) $section]} {
 				set sect $sectnumb
 				set error 0
 				break
-			} else { append sections "$statsection($sectnumb) " }
+			}
+			lappend sections $statsection($sectnumb)
 		}
-		if {$error == 1} {
-			puthelp "PRIVMSG $nick :Invalid section."
-			puthelp "PRIVMSG $nick :Valid sections are: \002$sections\002"
-			puthelp "PRIVMSG $nick : "
+		if {$error} {
+			puthelp "PRIVMSG $nick :Invalid section, sections: \002[join [lsort -ascii $sections] {, }]\002"
 			return
 		}
 	}
@@ -1564,11 +1559,11 @@ proc invite {nick host hand arg} {
 		set userfile $location(USERS)$username
 
 
-		if {![string compare $result "MATCH"]} {
+		if {[string equal $result "MATCH"]} {
 			set output "$theme(PREFIX)$announce(MSGINVITE)"
 			foreach channel $invite_channels { puthelp "INVITE $nick $channel" }
 			foreach line [split [exec $binary(CAT) $userfile] "\n"] {
-				if {![string compare [lindex $line 0] "GROUP"]} {
+				if {[string equal [lindex $line 0] "GROUP"]} {
 					set group [lrange $line 1 end]
 					break
 				}
@@ -1599,25 +1594,25 @@ proc show_free {nick uhost hand chan arg} {
 
 	set devices(0) ""; set free 0.0; set used 0.0
 	set total 0.0; set num 0; set perc 0.0
-	array set "tmpdev" [array get "device"]
+	array set tmpdev [array get device]
 
 	set i 0
 	foreach line [split [exec $binary(DF) "-Ph"] "\n"] {
-		regsub -all {,} $line {.} line
-		foreach dev [array names "tmpdev"] {
-			if {[string match [lindex $line 0] [lindex $tmpdev($dev) 0]] == 1} {
+		set line [string map {, .} $line]
+		foreach dev [array names tmpdev] {
+			if {[string match [lindex $line 0] [lindex $tmpdev($dev) 0]]} {
 				set dev_total [to_mb [lindex $line 1]]
 				set dev_used [to_mb [lindex $line 2]]
 				set dev_free [to_mb [lindex $line 3]]
-				set dev_percent [format "%.1f" "[expr (double($dev_used)/double($dev_total)) * 100]"]
+				set dev_percent [format "%.1f" [expr (double($dev_used)/double($dev_total)) * 100]]
 				set tmp [replacevar $announce(FREE-DEV) "%total" [from_mb $dev_total]]
 				set tmp [replacevar $tmp "%used" [from_mb $dev_used]]
 				set tmp [replacevar $tmp "%free" [from_mb $dev_free]]
-				set tmp [replacevar $tmp "%percentage" "$dev_percent"]
+				set tmp [replacevar $tmp "%percentage" $dev_percent]
 				set tmp [replacevar $tmp "%section" [lrange $device($dev) 1 end]]
 
 				if {[info exists dev_max_length] && $dev_max_length &&
-				    [expr [string length $devices($i)] + [string length $tmp]] > $dev_max_length} {
+					[expr [string length $devices($i)] + [string length $tmp]] > $dev_max_length} {
 					incr i
 					set devices($i) ""
 				}
@@ -1628,11 +1623,11 @@ proc show_free {nick uhost hand chan arg} {
 				set free [expr $free + double($dev_free)];
 				set perc [expr $perc + double($dev_percent)]
 				incr num
-				array unset "tmpdev" $dev
+				unset tmpdev($dev)
 			}
 		}
 	}
-	if {[llength [array names "tmpdev"]]} {
+	if {[llength [array names tmpdev]]} {
 		foreach {id dev} [array get tmpdev] { append tmpstr "$dev " }
 		putlog "dZSbot warning: The following devices had no matching \"df -Ph\" entry: $tmpstr"
 	}
@@ -1644,9 +1639,9 @@ proc show_free {nick uhost hand chan arg} {
 	set o 0
 	while {$o < [expr $i + 1]} {
 		set output "$theme(PREFIX)$announce(FREE)"
-		set output [replacevar $output "%total" "${totalgb}"]
-		set output [replacevar $output "%used" "${usedgb}"]
-		set output [replacevar $output "%free" "${freegb}"]
+		set output [replacevar $output "%total" $totalgb]
+		set output [replacevar $output "%used" $usedgb]
+		set output [replacevar $output "%free" $freegb]
 		set output [replacevar $output "%percentage" [expr round($perc/$num)]]
 		set output [replacevar $output "%devices" $devices($o)]
 		set output [basicreplace $output "FREE"]
@@ -1660,24 +1655,24 @@ proc show_free {nick uhost hand chan arg} {
 #################################################################################
 # LAUNCH A NUKE (GL2.0)                                                         #
 #################################################################################
-proc launchnuke2 {type path section sargs dargs} {
+proc launchnuke2 {type path section info nukees} {
 	global nuke hidenuke announce sitename theme mpath
 
 	set nuke(TYPE) $type
 	set nuke(PATH) $path
 	set nuke(SECTION) $section
-	set nuke(NUKER) [lindex $sargs 0]
-	set nuke(MULT) [lindex $sargs 1]
-	set nuke(REASON) [lindex $sargs 2]
+	set nuke(NUKER) [lindex $info 0]
+	set nuke(MULT) [lindex $info 1]
+	set nuke(REASON) [lindex $info 2]
 	set nuke(NUKEE) {}
 
-	foreach entry $dargs {
+	foreach entry $nukees {
 		if {[lsearch -exact $hidenuke [lindex $entry 0]] == -1} {
 			set mb [format "%.1f" [expr [lindex $entry 1] / 1024]]
-			set nukee "$announce(NUKEES)"
+			set nukee $announce(NUKEES)
 			set nukee [replacevar $nukee "%u_name" [lindex $entry 0]]
 			set nukee [replacevar $nukee "%size" $mb]
-			append nuke(NUKEE) "$nukee" "$theme(SPLITTER)"
+			append nuke(NUKEE) $nukee $theme(SPLITTER)
 		}
 	}
 
@@ -1712,24 +1707,23 @@ proc launchnuke2 {type path section sargs dargs} {
 #################################################################################
 # UPDATE NUKE BUFFER (GL1.0)                                                    #
 #################################################################################
-proc fuelnuke {type path section args} {global nuke
-	global hidenuke
+proc fuelnuke {type path section line} {
+	global nuke hidenuke
 
-	set args [lindex $args 0]
 	if {$type == $nuke(LASTTYPE) && $path == $nuke(LASTDIR) && $nuke(SHOWN) == 0} {
-		if {[lsearch -exact $hidenuke [lindex $args 2]] == -1} {
-			append nuke(NUKEE) "\002[lindex $args 2]\002 (\002[lindex [lindex $args 3] 1]\002MB), "
+		if {[lsearch -exact $hidenuke [lindex $line 2]] == -1} {
+			append nuke(NUKEE) "\002[lindex $line 2]\002 (\002[lindex [lindex $line 3] 1]\002MB), "
 		}
 	} else {
 		launchnuke
-		if {[lsearch -exact $hidenuke [lindex $args 2]] == -1} {
+		if {[lsearch -exact $hidenuke [lindex $line 2]] == -1} {
 			set nuke(TYPE) $type
 			set nuke(PATH) $path
 			set nuke(SECTION) $section
-			set nuke(NUKER) [lindex $args 1]
-			set nuke(NUKEE) "\002[lindex $args 2]\002 (\002[lindex [lindex $args 3] 1]\002MB) "
-			set nuke(MULT) [lindex [lindex $args 3] 0]
-			set nuke(REASON) [lindex $args 4]
+			set nuke(NUKER) [lindex $line 1]
+			set nuke(NUKEE) "\002[lindex $line 2]\002 (\002[lindex [lindex $line 3] 1]\002MB) "
+			set nuke(MULT) [lindex [lindex $line 3] 0]
+			set nuke(REASON) [lindex $line 4]
 			set nuke(SHOWN) 0
 		}
 	}
@@ -1782,7 +1776,7 @@ proc launchnuke {} {
 proc denycheck {release} {
 	global denypost
 	foreach deny $denypost {
-		if {[string match $deny $release] == 1} { return 1 }
+		if {[string match $deny $release]} {return 1}
 	}
 	return 0
 }
@@ -1814,8 +1808,8 @@ proc welcome_msg { nick uhost hand chan } {
 
 	if {$disable(WELCOME) == 0} {
 		foreach c_chan $chanlist(WELCOME) {
-			if {[string match -nocase $c_chan $chan] == 1} {
-				set output "$announce(WELCOME)"
+			if {[string match -nocase $c_chan $chan]} {
+				set output $announce(WELCOME)
 				set output [replacevar $output "%bold" "\002"]
 				set output [replacevar $output "%ircnick" $nick]
 				set output [replacevar $output "%sitename" $sitename]
@@ -1870,7 +1864,10 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 				"*timed out while waiting for server response.*" {set error "No response"}
 				"*Remote host has closed the connection.*" {set error "Connection Lost"}
 				"*unknown host.*" {set error "Unknown Host?"}
-				default { set error "Unhandled Error Type?" ; putlog "DEBUG: dZSbot.tcl bnc check unhandled error type \"$raw\", please report to project-zs-ng developers." }
+				default {
+					set error "Unhandled Error Type?"
+					putlog "DEBUG: dZSbot.tcl bnc check unhandled error type \"$raw\", please report to project-zs-ng developers."
+				}
 			}
 			putquick "NOTICE $nick :$count. .$loc - $ip:$port - DOWN ($error)"
 		}
@@ -1884,23 +1881,23 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 #################################################################################
 # CHOOSE STATS PARAMETERS                                                       #
 #################################################################################
-proc stats_user_dayup {nick uhost hand chan args} { showstats "$chan" "$nick" "-u" "-t" "[lindex $args 0]" }
-proc stats_user_daydn {nick uhost hand chan args} { showstats "$chan" "$nick" "-d" "-t" "[lindex $args 0]" }
+proc stats_user_dayup {nick uhost hand chan argv} { showstats $chan $nick "-u" "-t" $argv }
+proc stats_user_daydn {nick uhost hand chan argv} { showstats $chan $nick "-d" "-t" $argv }
 #################################################################################
-proc stats_user_wkup {nick uhost hand chan args} { showstats "$chan" "$nick" "-u" "-w" "[lindex $args 0]" }
-proc stats_user_wkdn {nick uhost hand chan args} { showstats "$chan" "$nick" "-d" "-w" "[lindex $args 0]" }
+proc stats_user_wkup {nick uhost hand chan argv} { showstats $chan $nick "-u" "-w" $argv }
+proc stats_user_wkdn {nick uhost hand chan argv} { showstats $chan $nick "-d" "-w" $argv }
 #################################################################################
-proc stats_user_monthup {nick uhost hand chan args} { showstats "$chan" "$nick" "-u" "-m" "[lindex $args 0]" }
-proc stats_user_monthdn {nick uhost hand chan args} { showstats "$chan" "$nick" "-d" "-m" "[lindex $args 0]" }
+proc stats_user_monthup {nick uhost hand chan argv} { showstats $chan $nick "-u" "-m" $argv }
+proc stats_user_monthdn {nick uhost hand chan argv} { showstats $chan $nick "-d" "-m" $argv }
 #################################################################################
-proc stats_user_allup {nick uhost hand chan args} { showstats "$chan" "$nick" "-u" "-a" "[lindex $args 0]" }
-proc stats_user_alldn {nick uhost hand chan args} { showstats "$chan" "$nick" "-d" "-a" "[lindex $args 0]" }
+proc stats_user_allup {nick uhost hand chan argv} { showstats $chan $nick "-u" "-a" $argv }
+proc stats_user_alldn {nick uhost hand chan argv} { showstats $chan $nick "-d" "-a" $argv }
 #################################################################################
-proc stats_group_gpwk {nick uhost hand chan args} { showstats "$chan" "$nick" "-u" "-W" "[lindex $args 0]" }
-proc stats_group_gpwd {nick uhost hand chan args} { showstats "$chan" "$nick" "-d" "-W" "[lindex $args 0]" }
+proc stats_group_gpwk {nick uhost hand chan argv} { showstats $chan $nick "-u" "-W" $argv }
+proc stats_group_gpwd {nick uhost hand chan argv} { showstats $chan $nick "-d" "-W" $argv }
 #################################################################################
-proc stats_group_gpal {nick uhost hand chan args} { showstats "$chan" "$nick" "-u" "-A" "[lindex $args 0]" }
-proc stats_group_gpad {nick uhost hand chan args} { showstats "$chan" "$nick" "-d" "-A" "[lindex $args 0]" }
+proc stats_group_gpal {nick uhost hand chan argv} { showstats $chan $nick "-u" "-A" $argv }
+proc stats_group_gpad {nick uhost hand chan argv} { showstats $chan $nick "-d" "-A" $argv }
 #################################################################################
 
 
@@ -1908,10 +1905,10 @@ proc stats_group_gpad {nick uhost hand chan args} { showstats "$chan" "$nick" "-
 # Help Section                                                                  #
 #################################################################################
 proc help {nick uhost hand chan arg} {
-	global sections cmdpre dver tclroot
+	global sections cmdpre dver scriptpath
 	if {![checkchan $nick $chan]} {return}
 
-	set file "$tclroot/dZSbot.help"
+	set file "$scriptpath/dZSbot.help"
 	if {![file readable $file]} {
 		puthelp "PRIVMSG $nick : File dZSbot.help is missing, please check install"
 		puthelp "PRIVMSG $nick : (file should reside in same dir as dZSbot.tcl)"
@@ -1926,7 +1923,7 @@ proc help {nick uhost hand chan arg} {
 	set helpdb [read $helpfile]
 	close $helpfile
 	foreach line [split $helpdb "\n"] {
-		regsub -all "%cmdpre" "$line" "$cmdpre" line
+		set line [string map [list "%cmdpre" $cmdpre] $line]
 		puthelp "PRIVMSG $nick :$line"
 	}
 	puthelp "PRIVMSG $nick : Valid sections are: $sections"
@@ -1938,16 +1935,18 @@ proc help {nick uhost hand chan arg} {
 # LOAD A THEME FILE                                                             #
 #################################################################################
 proc loadtheme {file} {
-	global theme announce theme_fakes
+	global announce scriptpath theme theme_fakes
 	unset announce
 	set announce(THEMEFILE) $file
 
-	if {[string index $file 0] != "/"} { set file "[file dirname [info script]]/$file" }
-	putlog "Theme loaded: $file"
+	if {[string index $file 0] != "/"} {
+		set file "$scriptpath/$file"
+	}
 	if {![file readable $file]} {
 		putlog "dZSbot: themefile is not readable or does not exist. ($file)"
 		return 0
 	}
+	putlog "Loading theme: $file"
 
 	set fh [open $file]
 	set content [split [read -nonewline $fh] "\n"]
@@ -2096,8 +2095,8 @@ proc dprint {arg1 {arg2 0}} {
 #################################################################################
 
 if {[info exists enable_irc_invite]} {
-	if {[string compare -nocase $enable_irc_invite "YES"] == 0} {
-		bind msg	-|-	!invite			invite
+	if {[string equal -nocase $enable_irc_invite "YES"]} {
+		bind msg -|- !invite invite
 	}
 } else { dprint DEBUG_WARN "Could not find variable 'enable_irc_invite', pretending it's set to \"NO\"." }
 
