@@ -86,9 +86,24 @@
 #define check_for_missing_nfo_dirs	"/site/incoming/games/ /site/incoming/apps/"
 #endif
 
+/*
+ * Normally rar files are allowed in zip dirs and vice versa. Setting the
+ * strict mode on refuses any such mismatch.
+ */
 #ifndef strict_path_match
-#define strict_path_match	FALSE
+#define strict_path_match		FALSE
 #endif
+
+/*
+ * If files are removed from a location, and reupped again, in the same place,
+ * the zipscript will probably announce complete messages after each file.
+ * Setting the following to TRUE hinders this, but may have other consequences
+ * which is why it's set to FALSE as default.
+ */
+#ifndef remove_sfv_data_on_delete
+#define remove_sfv_data_on_delete	FALSE
+#endif
+
 /*
  * Certain files are needed to change uid/gid to real names. All paths are
  * chroot'ed. GROUPFILE - /path/name of glftpd's group file PASSWDFILE -

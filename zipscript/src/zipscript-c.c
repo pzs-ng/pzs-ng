@@ -604,6 +604,10 @@ main(int argc, char **argv)
 				} else {
 					d_log("DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", raceI.file.size));
 					d_log("Hmm.. Seems the old .sfv was deleted. Allowing new one.\n");
+#if (remove_sfv_data_on_delete == TRUE)
+					unlink(locations.race);
+					unlink(locations.sfv);
+#endif
 				}
 			}
 			d_log("Parsing sfv and creating sfv data\n");
