@@ -31,7 +31,6 @@ set binary(PING)		"/bin/ping"
 #set binary(PING)		"/sbin/ping"
 set device(0)			"/dev/da0s1f MP3"
 set device(1)			"/dev/ad0s1e ISO"
-set invite_channels		$chanlist(INVITE)
 set disable(TRIGINALLCHAN)	0
 set splitter(CHAR)		"|"
 set announce(THEMEFILE)		"themes/default.zst"
@@ -60,3 +59,4 @@ set chanlist(MV)		"$mainchan"
 set chanlist(DEFAULT)		"$mainchan"
 set chanlist(INVITE)		"$mainchan"
 set chanlist(WELCOME)		"$mainchan"
+set invite_channels		$chanlist(INVITE)
