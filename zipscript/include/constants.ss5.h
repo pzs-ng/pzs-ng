@@ -199,7 +199,7 @@
 
 /* Output of postdel binary */
 #define incompletemsg		"%U/%G/%r"
-#define bad_file_msg		"%r/%U/%G/%f"
+#define bad_file_msg		"%r/%U/%G/%n"
 
 
 enum ReleaseTypes {
