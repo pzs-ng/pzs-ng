@@ -9,6 +9,25 @@
 ## M4sh Initialization.  ##
 ## --------------------- ##
 
+## Test to make sure ppl really want to run a the new unstable
+if test -e UNSTABLE ; then
+  echo "Compiling UNSTABLE version of PZS-NG"
+else
+ echo "The current version of pzs-ng is no longer recommended used"
+ echo "on live sites. This version should only be used on dedicated"
+ echo "test-servers. pzs-ng V1 is moved to a different branch - please"
+ echo "consider using that one instead."
+ echo "This current version will be broken at times - changes in the"
+ echo "zipscript will render the bot useless, and the bot itself will"
+ echo "be radically changed."
+ echo ""
+ echo "If you still wish to compile this version, create a file named"
+ echo "UNSTABLE in the current dir."
+ echo "->    touch UNSTABLE"
+ echo ""
+ exit 0
+fi
+
 # Be Bourne compatible
 if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
   emulate sh
