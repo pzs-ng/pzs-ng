@@ -1034,6 +1034,9 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 	HEADDATA	hd;
 	struct stat	sb;
 
+	if (!strlen(raceI->lock.headpath))
+		return -1;
+
 	if ((fd = open(raceI->lock.headpath, O_RDWR, 0666)) == -1) {
 		d_log("update_lock: open(%s): %s\n", raceI->lock.headpath, strerror(errno));
 		exit(EXIT_FAILURE);
