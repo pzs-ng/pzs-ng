@@ -264,18 +264,18 @@ int main( int argc, char **argv ) {
  //gettimeofday(&raceI.transfer_stop, (struct timezone *)0 );
 
  d_log("Reading data from environment variables\n");
- if ( (temp_p=getenv("USER")) == NULL ) memcpy(raceI.user.name, "glftpd", 7);
- else sprintf(raceI.user.name, temp_p);
- if ( (temp_p=getenv("GROUP")) == NULL ) memcpy(raceI.user.group, "NoGroup", 8);
- else sprintf(raceI.user.group, temp_p);
- if ( (temp_p=getenv("TAGLINE")) == NULL ) memcpy(raceI.user.tagline, "No Tagline Set", 15);
- else sprintf(raceI.user.tagline, temp_p);
-// raceI.file.speed=strtol(getenv("SPEED"),NULL,0);
- if ( (temp_p=getenv("SPEED")) == NULL ) raceI.file.speed=2004;
- else {
-	raceI.file.speed=atoi(temp_p);
-	if (raceI.file.speed==0) raceI.file.speed=1;
+ if (!(getenv("USER") && getenv("GROUP") && getenv("TAGLINE") && getenv("SPEED"))) {
+	memcpy(raceI.user.name, "glftpd", 7);
+	memcpy(raceI.user.group, "NoGroup", 8);
+	memcpy(raceI.user.tagline, "No Tagline Set", 15);
+	raceI.file.speed=2004;
+  } else {
+	sprintf(raceI.user.name, getenv("USER"));
+	sprintf(raceI.user.group, getenv("GROUP"));
+	sprintf(raceI.user.tagline, getenv("TAGLINE"));
+	raceI.file.speed=strtol(getenv("SPEED"),NULL,0);
  }
+ if (!raceI.file.speed) raceI.file.speed=1;
  raceI.file.speed*=1024;
 
  raceI.file.name=argv[1];
