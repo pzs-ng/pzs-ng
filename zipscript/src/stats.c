@@ -38,6 +38,7 @@ updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **grou
 	int		g_no = -1;
 	int		n;
 //	double		speedD = filesize * 1024. / speed;
+	double		speedD = filesize * speed;
 
 	for (n = 0; n < raceI->total.users; n++) {
 		if (strncmp(userI[n]->name, usern, 24) == 0) {
@@ -87,9 +88,9 @@ updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **grou
 	groupI[g_no]->bytes += filesize;
 	raceI->total.size += filesize;
 
-	userI[u_no]->speed += speed;
-	groupI[g_no]->speed += speed;
-	raceI->total.speed += speed;
+	userI[u_no]->speed += speedD;
+	groupI[g_no]->speed += speedD;
+	raceI->total.speed += speedD;
 
 	userI[u_no]->files++;
 	groupI[g_no]->files++;
