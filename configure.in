@@ -132,7 +132,6 @@ AC_SUBST(PASSCHK)
 AC_SUBST(MAKE)
 AC_SUBST(M32)
 
-! [[ -f zipscript/conf/zsconfig.h ]] && cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h
 
 #if [[ "`ls zipscript/conf/zsconfig.h`" == "" ]]; then
 #	cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h  /dev/null 2>&1
@@ -142,6 +141,9 @@ AC_SUBST(M32)
 #fi
 
 AC_OUTPUT(Makefile zipscript/src/Makefile sitebot/src/Makefile sitewho/Makefile sitewho/sitewho.conf.dist)
+
+! [[ -f zipscript/conf/zsconfig.h ]] && cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h
+! [[ -f sitewho/sitewho.conf ]] && cp -i sitewho/sitewho.conf.dist sitewho/sitewho.conf
 
 if [[ "$PASSCHK" == "" ]]; then
 AC_MSG_RESULT(
