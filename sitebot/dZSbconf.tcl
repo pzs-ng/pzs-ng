@@ -16,8 +16,8 @@ set use_glftpd2				"YES"
 
 # What types of messages are counted as the different types of output
 # (for disabling etc)
-set msgtypes(RACE)			"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV UPDATE HALFWAY NEWLEADER COMPLETE STATS BADGENRE BADYEAR BADBITRATE"
-set msgtypes(DEFAULT)		"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT WIPE WIPE-r"
+set msgtypes(RACE)			"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV UPDATE HALFWAY NEWLEADER COMPLETE STATS BADGENRE BADYEAR BADBITRATE WIPE WIPE-r"
+set msgtypes(DEFAULT)		"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT"
 
 # Sitename is for the %sitename-cookie in announces :)
 set sitename				"pzs-ng"

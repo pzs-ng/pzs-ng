@@ -15,5 +15,8 @@ announce.UNNUKE			= "+ %path/%bold%release%bold was %ulineunnuked %mult%ulinex b
 announce.INVITE			= "+ %bold%user%bold@%group invited himself as %bold%ircnick%bold"
 announce.MSGINVITE		= "+ %bold%user%bold@%group invited himself as %bold%ircnick%bold"
 announce.BADMSGINVITE	= "- %bold%ircnick%bold (%host) tried to invite himself with invalid login!"
-announce.WELCOME		= "Welcome to pzs-ng's sitechan. Type !pnhelp for help."
+announce.WELCOME		= "Welcome to %bold%sitename%bold's sitechan. Type %bold%cmdprehelp%bold for help."
+announce.WIPE                   = "- Directory Wiped: %path/%c3{%release} by %bold%user%bold@%group"
+announce.WIPE-r                 = "- Directory Wiped: %path/%c3{%release} and all subdirectories by %bold%user%bold@%group"
 announce.DEFAULT		= "- %msg"
+
