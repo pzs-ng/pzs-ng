@@ -1392,6 +1392,7 @@ main(int argc, char **argv)
 							d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
 							create_incomplete_nfo();
 						}
+						temprescanparent(1);
 					}
 				}
 				/* Creating no-sample link if needed.
@@ -1405,6 +1406,7 @@ main(int argc, char **argv)
 							d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
 							create_incomplete_nfo();
 						}
+						temprescanparent(1);
 					}
 				}
 				*/
@@ -1450,6 +1452,7 @@ main(int argc, char **argv)
 		d_log("Removing missing-nfo indicator (if any)\n");
 		remove_nfo_indicator(locations.path);
 	}
+	temprescanparent(1);
 
 #if ( del_banned_release )
 	if (deldir) {
@@ -1465,8 +1468,6 @@ main(int argc, char **argv)
 	buffer_users(PASSWDFILE, unum);
 	updatestats_free(raceI, userI, groupI);
 	temprescandir(1);
-	temprescanparent(1);
-
 	free(locations.link_source);
 	free(raceI.misc.release_name);
 	free(fileext);

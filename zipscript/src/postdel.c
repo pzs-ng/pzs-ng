@@ -16,6 +16,7 @@
 #include "macros.h"
 #include "convert.h"
 #include "dizreader.h"
+#include "stats.h"
 #include "ng-version.h"
 
 #include "../conf/zsconfig.h"
@@ -478,6 +479,7 @@ main(int argc, char **argv)
 						d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
 						create_incomplete_nfo();
 					}
+				temprescanparent(1);
 				}
 			}
 		}
@@ -490,6 +492,8 @@ main(int argc, char **argv)
 		move_progress_bar(0, &raceI);
 	}
 	d_log("Releasing memory\n");
+	temprescandir(1);
+	updatestats_free(raceI, userI, groupI);
 	free(fileext);
 	free(target);
 	free(raceI.misc.release_name);
@@ -498,8 +502,6 @@ main(int argc, char **argv)
 	free(locations.race);
 	free(locations.sfv);
 	free(locations.leader);
-	free(userI);
-	free(groupI);
 
 	d_log("Exit\n");
 

@@ -329,6 +329,7 @@ main()
 						d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
 						create_incomplete_nfo();
 					}
+					temprescanparent(1);
 				}
 			}
 		}
@@ -455,6 +456,7 @@ main()
 						d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
 						create_incomplete_nfo();
 					}
+					temprescanparent(1);
 				}
 			}
 		}
@@ -469,7 +471,6 @@ main()
 
 	d_log("Freeing memory.\n");
 	temprescandir(1);	/* We need to rescan again */
-	temprescanparent(1);	/* We need to rescan again */
 	updatestats_free(raceI, userI, groupI);
 	free(locations.path);
 	free(locations.race);
