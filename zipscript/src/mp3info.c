@@ -375,7 +375,7 @@ get_mp3_info(char *f, struct audio *audio)
 	fclose(mp3.file);
 	if (mp3.vbr)
 		sprintf(audio->bitrate, "%.0f", (mp3.vbr_average));
-	audio->is_vbr = mp3.vbr;
+//	audio->is_vbr = mp3.vbr;
 //	return mp3.vbr_average;
 }
 

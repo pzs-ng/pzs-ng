@@ -80,4 +80,10 @@ A: You need the dev version of openssl. One of the following should work - if no
    b) - emerge openssl-devel
    c) - rpm -U openssl-devel (or something)
 
+Q: (COMPILING) make: *** No rule to make target `distclean'. - Moo?
+-------------------------------------------------------------------
+A: Ignore it. It's good that you follow UPGRADING, but failure on distclean can
+   be safely ignored. It usually happen when you dowload a new .tgz, copy over
+   your config, and run 'make distclean' - the error actually signify that there
+   is nothing to clean, which is good. :)
 
