@@ -47,13 +47,15 @@ main(int argc, char **argv)
 	unsigned char	empty_dir = 0;
 	unsigned char	incomplete = 0;
 	
-	/*struct LOCATIONS &g.l;*/
-	GLOBAL g;
+	GLOBAL		g;
+	
+	DIR		*dir, *parent;
 
 	if (argc == 1) {
 		d_log("no param specified\n");
 		return 0;
 	}
+
 	if (strlen(argv[1]) < 6 || strncmp(argv[1], "DELE ", 5)) {
 		printf("pzs-ng postdel script.\n");
 		printf(" - this is supposed to be run from glftpd.\n");

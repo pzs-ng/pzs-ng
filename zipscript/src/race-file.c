@@ -247,7 +247,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	struct stat	filestat;
 
 	RACEDATA	rd;
-	
+
 	if ((file = fopen(locations->race, "r+"))) {
 		realfile = raceI->file.name;
 		if (rstatus)
@@ -303,9 +303,9 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 						}
 					}
 				}
+				fseek(file, -sizeof(RACEDATA), SEEK_CUR);
+				fwrite(&rd, sizeof(RACEDATA), 1, file);
 			}
-			//fseek(file, -sizeof(RACEDATA), SEEK_CUR);
-			fwrite(&rd, sizeof(RACEDATA), 1, file);
 		}
 
 		strlcpy(raceI->file.name, realfile, strlen(realfile));

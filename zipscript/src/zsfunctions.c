@@ -1185,8 +1185,8 @@ mark_as_bad(char *filename)
 		createzerofile(filename);
 		chmod(newname, 0644);
 	}
-#endif
 	d_log("File (%s) marked as bad.\n", filename);
+#endif
 }
 
 void 

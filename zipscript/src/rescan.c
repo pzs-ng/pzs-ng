@@ -138,6 +138,7 @@ main()
 			return 0;
 		}
 		g.v.total.start_time = 0;
+		rewinddir(dir);
 		while ((dp = readdir(dir))) {
 			m = l = strlen(dp->d_name);
 
@@ -151,6 +152,10 @@ main()
 				strncmp(dp->d_name, ".", 1)) {
 				
 				stat(dp->d_name, &fileinfo);
+
+				if (S_ISDIR(fileinfo.st_mode))
+					continue;
+
 				f_uid = fileinfo.st_uid;
 				f_gid = fileinfo.st_gid;
 
@@ -161,10 +166,12 @@ main()
 				g.v.file.size = fileinfo.st_size;
 
 				temp_time = fileinfo.st_mtime;
+				
 				if (g.v.total.start_time == 0)
 					g.v.total.start_time = temp_time;
 				else
 					g.v.total.start_time = (g.v.total.start_time < temp_time ? g.v.total.start_time : temp_time);
+				
 				g.v.total.stop_time = (temp_time > g.v.total.stop_time ? temp_time : g.v.total.stop_time);
 
 				/* Hide users in group_dirs */
