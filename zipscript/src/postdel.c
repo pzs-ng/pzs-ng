@@ -24,10 +24,6 @@
 
 #include "postdel.h"
 
-/*struct USERINFO **userI;
-struct GROUPINFO **groupI;
-struct VARS	raceI;*/
-
 int 
 main(int argc, char **argv)
 {
@@ -378,7 +374,6 @@ main(int argc, char **argv)
 	updatestats_free(g.v, g.ui, g.gi);
 	free(fileext);
 	free(target);
-	//free(g.v.misc.release_name);
 	free(g.l.path);
 	free(g.l.race);
 	free(g.l.sfv);
@@ -391,67 +386,6 @@ main(int argc, char **argv)
 
 	return 0;
 }
-
-/*void 
-writelog(GLOBAL *g, char *msg, char *status)
-{
-	FILE           *glfile;
-	char           *date;
-	char           *line, *newline;
-	time_t		timenow;
-
-	if (g->v.misc.write_log == TRUE && !matchpath(group_dirs, g->l.path)) {
-		timenow = time(NULL);
-		date = ctime(&timenow);
-		if (!(glfile = fopen(log, "a+"))) {
-			d_log("Unable to open %s for read/write (append) - NO RACEINFO WILL BE WRITTEN!\n", log);
-			return;
-		}
-		line = newline = msg;
-		while (1) {
-			switch (*newline++) {
-			case 0:
-				fprintf(glfile, "%.24s %s: \"%s\" %s\n", date, status, g->l.path, line);
-				fclose(glfile);
-				return;
-			case '\n':
-				fprintf(glfile, "%.24s %s: \"%s\" %.*s\n", date, status, g->l.path, (int)(newline - line - 1), line);
-				line = newline;
-				break;
-			}
-		}
-	}
-}*/
-
-/*
- * GET NAME OF MULTICD RELEASE (CDx/D[Ii]S[CK]x/DVDx) (SYMLINK LOCATION +
- * INCOMPLETE FILENAME)
- */
-/*void 
-getrelname(GLOBAL *g)
-{
-	int		k = 2;
-	char		**path = 0;
-
-	path = buffer_paths(g, path, &k, strlen(g->l.path));
-
-	if (subcomp(path[1])) {
-		sprintf(g->v.misc.release_name, "%s/%s", path[0], path[1]);
-		g->l.incomplete = c_incomplete(incomplete_cd_indicator, path, &g->v);
-		g->l.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &g->v);
-		g->l.in_cd_dir = 1;
-	} else {
-		sprintf(g->v.misc.release_name, "%s", path[1]);
-		g->l.incomplete = c_incomplete(incomplete_indicator, path, &g->v);
-		g->l.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &g->v);
-		g->l.in_cd_dir = 0;
-	}
-
-	if (k < 2)
-		free(path[1]);
-	if (k == 0)
-		free(path[0]);
-}*/
 
 unsigned char 
 get_filetype_postdel(GLOBAL *g, char *ext)

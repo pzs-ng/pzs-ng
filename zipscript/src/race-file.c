@@ -167,19 +167,11 @@ testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 
 	RACEDATA	rd;
 	
-	//target = m_alloc(256);
-	
 	if ((file = fopen(locations->race, "r+"))) {
 		realfile = raceI->file.name;
 		if (rstatus)
 			printf("\n");
 		while ((fread(&rd, 1, sizeof(RACEDATA), file))) {
-		//while (fread(&len, sizeof(int), 1, file) == 1) {
-
-			/*fname = m_alloc(len);
-			fread(fname, 1, len, file);
-			fread(&status, 1, 1, file);
-			fread(&crc, sizeof(int), 1, file);*/
 
 			/* what does this do? */
 			m = l = strlen(realfile);
@@ -238,10 +230,6 @@ testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 					}
 				}
 			}
-			//fseek(file, -1 - sizeof(int), SEEK_CUR);
-			//fwrite(&status, 1, 1, file);
-			//fseek(file, 48 + 5 * sizeof(int), SEEK_CUR);
-			//m_free(fname);
 			fseek(file, -sizeof(RACEDATA), SEEK_CUR);
 			fwrite(&rd, 1, sizeof(RACEDATA), file);
 		}
