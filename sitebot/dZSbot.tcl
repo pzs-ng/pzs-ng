@@ -206,49 +206,50 @@ if {$bindnopre == "YES"} {
 	bind pub	-|- !unnukes		ng_unnukes
 
 } else {
-	catch { unbind pub    -|- !who		who }
-	catch { unbind pub    -|- !speed	speed }
-	catch { unbind pub    -|- !bw		ng_bandwidth }
-	catch { unbind pub    -|- !bwup		ng_bwup }
-	catch { unbind pub    -|- !uploaders	ng_uploaders }
-	catch { unbind pub    -|- !up		ng_uploaders }
-	catch { unbind pub    -|- !bwdn		ng_bwdn }
-	catch { unbind pub    -|- !leechers	ng_leechers }
-	catch { unbind pub    -|- !downloaders	ng_leechers }
-	catch { unbind pub    -|- !down		ng_leechers }
-	catch { unbind pub    -|- !dn		ng_leechers }
-	catch { unbind pub    -|- !idlers	ng_idlers }
-	catch { unbind pub    -|- !idle		ng_idlers }
-	catch { unbind pub    -|- !bnc		ng_bnc_check }
-	catch { unbind pub    -|- !free		show_free }
-	catch { unbind pub    -|- !df		show_free }
-	catch { unbind pub    -|- !dayup	stats_user_dayup }
-	catch { unbind pub    -|- !wkup		stats_user_wkup }
-	catch { unbind pub    -|- !monthup	stats_user_monthup }
-	catch { unbind pub    -|- !allup	stats_user_allup }
+	if { "[set cmdpre]" != "!" } {
+		catch { unbind pub    -|- !who		who }
+		catch { unbind pub    -|- !speed	speed }
+		catch { unbind pub    -|- !bw		ng_bandwidth }
+		catch { unbind pub    -|- !bwup		ng_bwup }
+		catch { unbind pub    -|- !uploaders	ng_uploaders }
+		catch { unbind pub    -|- !up		ng_uploaders }
+		catch { unbind pub    -|- !bwdn		ng_bwdn }
+		catch { unbind pub    -|- !leechers	ng_leechers }
+		catch { unbind pub    -|- !downloaders	ng_leechers }
+		catch { unbind pub    -|- !down		ng_leechers }
+		catch { unbind pub    -|- !dn		ng_leechers }
+		catch { unbind pub    -|- !idlers	ng_idlers }
+		catch { unbind pub    -|- !idle		ng_idlers }
+		catch { unbind pub    -|- !bnc		ng_bnc_check }
+		catch { unbind pub    -|- !free		show_free }
+		catch { unbind pub    -|- !df		show_free }
+		catch { unbind pub    -|- !dayup	stats_user_dayup }
+		catch { unbind pub    -|- !wkup		stats_user_wkup }
+		catch { unbind pub    -|- !monthup	stats_user_monthup }
+		catch { unbind pub    -|- !allup	stats_user_allup }
 
-	catch { unbind pub    -|- !daydn	stats_user_daydn }
-	catch { unbind pub    -|- !wkdn		stats_user_wkdn }
-	catch { unbind pub    -|- !monthdn	stats_user_monthdn }
-	catch { unbind pub    -|- !alldn	stats_user_alldn }
+		catch { unbind pub    -|- !daydn	stats_user_daydn }
+		catch { unbind pub    -|- !wkdn		stats_user_wkdn }
+		catch { unbind pub    -|- !monthdn	stats_user_monthdn }
+		catch { unbind pub    -|- !alldn	stats_user_alldn }
 
-	catch { unbind pub    -|- !gpwk		stats_group_gpwk }
-	catch { unbind pub    -|- !gpal		stats_group_gpal }
-	catch { unbind pub    -|- !inc		show_incompletes }
-	catch { unbind pub    -|- !incomplete	show_incompletes }
-	catch { unbind pub    -|- !incompletes	show_incompletes }
-
-	catch { unbind pub    -|- !gwpd		stats_group_gpwd }
-	catch { unbind pub    -|- !gpad		stats_group_gpad }
-	catch { unbind pub    -|- !help		help }
-
-	catch { unbind pub    -|- !dupe		ng_search}
-	catch { unbind pub    -|- !new		ng_new}
-	catch { unbind pub    -|- !nukes	ng_nukes}
-	catch { unbind pub    -|- !search	ng_search}
-	catch { unbind pub    -|- !unnukes	ng_unnukes}
-}
-
+		catch { unbind pub    -|- !gpwk		stats_group_gpwk }
+		catch { unbind pub    -|- !gpal		stats_group_gpal }
+		catch { unbind pub    -|- !inc		show_incompletes }
+		catch { unbind pub    -|- !incomplete	show_incompletes }
+		catch { unbind pub    -|- !incompletes	show_incompletes }
+	
+		catch { unbind pub    -|- !gwpd		stats_group_gpwd }
+		catch { unbind pub    -|- !gpad		stats_group_gpad }
+		catch { unbind pub    -|- !help		help }
+	
+		catch { unbind pub    -|- !dupe		ng_search}
+		catch { unbind pub    -|- !new		ng_new}
+		catch { unbind pub    -|- !nukes	ng_nukes}
+		catch { unbind pub    -|- !search	ng_search}
+		catch { unbind pub    -|- !unnukes	ng_unnukes}
+	}
+}	
 ## Some 'constants'
 proc DEFAULT_LEVEL {{string 0}} {
 	if {$string} { return [DEBUG_INFO 1];
