@@ -212,8 +212,10 @@ main(int argc, char **argv)
 
 	if (fileexists(fname)) {
 		d_log("File (%s) still exists\n", fname);
-		if ((strcmp(fname, "debug")) && (remove_dot_debug_on_delete == TRUE))
+#if (remove_dot_debug_on_delete == TRUE)
+		if (strcmp(fname, "debug"))
 			unlink(fname);
+#endif
 		return 0;
 	}
 	umask(0666 & 000);
@@ -414,6 +416,9 @@ main(int argc, char **argv)
 		if (fileexists(locations.leader))
 			unlink(locations.leader);
 		move_progress_bar(1, &raceI);
+#if (remove_dot_files_on_delete == TRUE)
+		removedotfiles();
+#endif
 	}
 	if (incomplete == 1 && raceI.total.files > 0) {
 		if (locations.nfo_incomplete) {

@@ -360,6 +360,18 @@ findfile(char *filename)
 	return 0;
 }
 
+void
+removedotfiles()
+{
+	int		n = direntries;
+
+	while (n--) {
+		if ((!strncasecmp(dirlist[n]->d_name, ".", 1)) && (strlen(dirlist[n]->d_name) > 2)) {
+			unlink(dirlist[n]->d_name);
+		}
+	}
+}
+
 char           *
 findfilename(char *filename)
 {

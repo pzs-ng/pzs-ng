@@ -238,6 +238,13 @@ remove_dot_debug_on_delete <TRUE|FALSE>
 	the wipe-command to be able to do this.
 	Default: TRUE
 
+remove_dot_files_on_delete <TRUE|FALSE>
+	If your site hides hidden files (files starting with a dot (''.''),
+	your users may have problems deleting dirs completely. Setting this
+	option to TRUE will remove all hidden files, when all other files of
+	the release is deleted.
+	Default: FALSE
+
 unzip_bin <PATH>
 	This is the location of the unzip binary needed to verify zip-releases.
 	Default: "/bin/unzip"

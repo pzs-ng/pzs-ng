@@ -83,6 +83,7 @@ extern void	buffer_progress_bar(struct VARS *);
 extern void	move_progress_bar(unsigned char, struct VARS *);
 extern short	findfile(char *);
 extern char    *findfilename(char *);
+extern void	removedotfiles();
 extern void	removecomplete();
 extern short	matchpath(char *, char *);
 extern short	strcomp(char *, char *);

@@ -235,7 +235,13 @@
 #define remove_dot_debug_on_delete	TRUE
 #endif
 
-
+/*
+ * Set this to TRUE if you'd like to remove all hidden files (files starting
+ * with a dot (''.'')) when you remove all files of the release.
+ */
+#ifndef remove_dot_files_on_delete
+#define remove_dot_files_on_delete	FALSE
+#endif
 /*
  * ZIP Settings ============
  */
