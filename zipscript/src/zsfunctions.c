@@ -455,6 +455,8 @@ matchpath(char *instr, char *path)
 {
 	int		pos = 0;
 
+	if ( strlen(instr) < 2 || strlen(path) < 2 )
+		return 0;
 	do {
 		switch (*instr) {
 		case 0:
@@ -482,6 +484,9 @@ strcomp(char *instr, char *searchstr)
 
 	k = strlen(searchstr);
 
+	if ( strlen(instr) == 0 || k == 0 )
+		return 0;
+
 	do {
 		switch (*instr) {
 		case 0:
@@ -504,6 +509,9 @@ matchpartialpath(char *instr, char *path)
 {
 	int	pos = 0;
 	char   *partstring = 0;
+
+	if ( strlen(instr) < 2 || strlen(path) < 2 )
+		return 0;
 
 	partstring = malloc(strlen(path + 2));
 	sprintf(partstring, "%s/", path);
@@ -537,6 +545,9 @@ subcomp(char *directory)
 	int	m = strlen(subdir_list);
 	int	pos = 0, l = 0, n = 0, j = 0;
 	char	tstring[m];
+
+	if ( k < 2 )
+		return 0;
 
 	do {
 		switch (subdir_list[l]) {
