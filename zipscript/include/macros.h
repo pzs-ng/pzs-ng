@@ -1,3 +1,6 @@
+#ifndef _MACROS_H_
+#define _MACROS_H_
+
 /* FreeBSD */
 #ifdef __FreeBSD__
 #define D_NAMLEN(d)	((d)->d_namlen)
@@ -35,3 +38,6 @@
 # define m_alloc(x) alloca(x)
 # define m_free(p)
 #endif
+
+#endif
+

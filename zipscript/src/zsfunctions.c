@@ -2,8 +2,9 @@
 #include "../include/constants.h"
 
 struct dirent	**dirlist;
-unsigned	direntries = 0;
+unsigned int direntries = 0;
 
+extern char* convert(struct VARS *, struct USERINFO **, struct GROUPINFO **, char *);
 
 #if ( debug_mode == TRUE )
 void d_log(char *fmt, ...) {

@@ -1,17 +1,27 @@
 #ifndef _ZSFUNCTIONS_H_
 #define _ZSFUNCTIONS_H_
 
-#include <sys/wait.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <regex.h>
+#include <dirent.h>
+#include <time.h>
+#include <string.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
+#include <sys/time.h>
 #ifndef PATH_MAX
 # define _LIMITS_H_
 # include <sys/syslimits.h>
 #endif
 
 #include "objects.h"
+#include "macros.h"
+#include "constants.h"
 
 #define createzerofile(filename) fclose(fopen(filename, "a+"))
 
@@ -25,6 +35,12 @@
 #if ( status_bar_type == 2 )
 # define createstatusbar(bardata)
 #endif
+
+extern struct USERINFO  **userI;
+extern struct GROUPINFO **groupI;
+extern struct VARS      raceI;
+extern struct dirent	**dirlist;
+extern unsigned int     direntries;
 
 
 #if ( debug_mode == TRUE )
@@ -64,4 +80,6 @@ extern void createlink(char *, char *, char *, char *);
 extern void readsfv_ffile(char *, long buf_bytes);
 extern void get_rar_info(char *);
 extern int execute(char *);
+
+#endif
 

@@ -10,6 +10,7 @@
 #include "../conf/zsconfig.h"
 #include "../include/objects.h"
 #include "../include/macros.h"
+#include "../include/zsfunctions.h"
 #include "../../config.h"
 
 #define GROUPFILE "/etc/group"
@@ -31,11 +32,11 @@ int	groups = 0,
 
 static struct USER	**user;
 static struct GROUP	**group;
-static struct USERINFO  **userI;
-static struct GROUPINFO **groupI;
-static struct VARS      raceI;
-static struct LOCATIONS locations;
-static struct stat      fileinfo;
+struct USERINFO  **userI;
+struct GROUPINFO **groupI;
+struct VARS      raceI;
+struct LOCATIONS locations;
+struct stat      fileinfo;
 
 extern char	*c_incomplete(char *instr, char **path);
 
@@ -62,7 +63,6 @@ extern void get_mpeg_audio_info(char *f, struct audio *audio);
 extern unsigned long calc_crc32( char *f );
 extern void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, int completetype );
 
-#include "zsfunctions.h"
 
 #define data_exists(paths, datalocation) fileexists(datalocation)
 #define file_set_race   sprintf

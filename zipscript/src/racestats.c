@@ -10,12 +10,13 @@
 #include "../conf/zsconfig.h"
 #include "../include/objects.h"
 #include "../include/macros.h"
+#include "../include/zsfunctions.h"
 #include "../../config.h"
 
-static struct USERINFO  **userI;
-static struct GROUPINFO **groupI;
-static struct VARS      raceI;
-static struct LOCATIONS locations;
+struct USERINFO  **userI;
+struct GROUPINFO **groupI;
+struct VARS      raceI;
+struct LOCATIONS locations;
 
 extern void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI,
                         char *usern, char *group, long filesize, long speed, long startsec, long startusec);
@@ -29,7 +30,6 @@ extern void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struc
 // from dizreader.c - let's move to headers later.
 extern int read_diz(char *);
 
-#include "zsfunctions.h"
 
 #define data_exists(paths, datalocation) fileexists(datalocation)
 #define file_set_race   sprintf

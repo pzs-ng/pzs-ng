@@ -1,11 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
-#include <time.h>
 #include <fcntl.h>
-#include <dirent.h>
-#include <sys/time.h>
-#include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/stat.h>
@@ -14,13 +9,19 @@
 #include "../include/macros.h"
 #include "../include/constants.h"
 #include "../include/errors.h"
+#include "../include/zsfunctions.h"
 #include "../../config.h"
 
-static struct ONLINE	*online;
+/*static struct ONLINE	*online;
 static struct USERINFO  **userI;
 static struct GROUPINFO **groupI;
 static struct VARS      raceI;
-static struct LOCATIONS locations;
+static struct LOCATIONS locations;*/
+struct ONLINE	*online;
+struct USERINFO  **userI;
+struct GROUPINFO **groupI;
+struct VARS      raceI;
+struct LOCATIONS locations;
 
 extern	void	get_stats(struct VARS *raceI, struct USERINFO **userI);
 
@@ -65,7 +66,6 @@ extern	void	read_write_leader_file(struct LOCATIONS *locations, struct VARS *rac
 # define testfiles			testfiles_file
 # define read_write_leader		read_write_leader_file
 # define create_indexfile(l,r,f) 	create_indexfile_file(l,r,f)
-#include "zsfunctions.h"
 
 
 /*

@@ -13,12 +13,13 @@
 #include "../conf/zsconfig.h"
 #include "../include/objects.h"
 #include "../include/macros.h"
+#include "../include/zsfunctions.h"
 #include "../../config.h"
 
-static struct USERINFO  **userI;
-static struct GROUPINFO **groupI;
-static struct VARS      raceI;
-static struct LOCATIONS locations;
+struct USERINFO  **userI;
+struct GROUPINFO **groupI;
+struct VARS      raceI;
+struct LOCATIONS locations;
 
 extern char	*c_incomplete(char *instr, char **path);
 
@@ -35,7 +36,6 @@ extern int read_diz(char *);
 extern void delete_sfv_file(struct LOCATIONS *locations);
 
 
-#include "zsfunctions.h"
  
 #define data_exists(paths, datalocation) fileexists(datalocation)
 #define file_set_race	 sprintf
