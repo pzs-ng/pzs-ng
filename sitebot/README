@@ -77,9 +77,7 @@
  (Re)start your eggdrop!
  
  Upgrading:
- To upgrade, you should only need to copy dZSbot.tcl, dZSbvars.tcl, dZSbot.help.
- Always check the changelog to be sure you have all possible settings reflected
- in your installed dZSbconf.tcl.
+ see the UPDATING file.
 
  Files "*.zst" is theme files and was introduced with pzs-ng and heavily
  extended in beta3. You can change them to your liking but it is suggested
