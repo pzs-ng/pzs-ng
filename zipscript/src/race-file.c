@@ -243,8 +243,8 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
 #endif
 #if ( sfv_cleanup == TRUE && sfv_error == FALSE )
     int		fd_new	= open(".tmpsfv", O_CREAT|O_TRUNC|O_WRONLY, 0644);
-    if ( fd_new < 0 ) {
-        d_log("Failed to create temporary sfv file (%d) - setting cleanup of sfv to false and tries to continue. (error: %s)\n", fd_new, strerror(errno));
+	if (fd_new == -1) {
+		d_log("Failed to create temporary sfv file (%d) - setting cleanup of sfv to false and tries to continue. (error: %s)\n", fd_new, strerror(errno));
 		sfv_error = TRUE;
     }
 
@@ -258,9 +258,8 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
 
 #endif
 
-    fd = open(source, O_RDONLY);
-    if (!fd) {
-        d_log("Failed to open %s: %s\n", source, strerror(errno));
+	if ((fd = open(source, O_RDONLY)) == -1) {
+		d_log("Failed to open %s: %s\n", source, strerror(errno));
 		exit(EXIT_FAILURE);
     }
     buf = m_alloc(buf_bytes);
@@ -268,8 +267,7 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
     close(fd);
     eof = buf + buf_bytes;
 
-    fd = open(target, O_CREAT|O_TRUNC|O_WRONLY, 0666);
-    if (!fd) {
+	if ((fd = open(target, O_CREAT|O_TRUNC|O_WRONLY, 0666)) == -1) {
         d_log("Failed to create %s: %s\n", target, strerror(errno));
 		exit(EXIT_FAILURE);
     }
