@@ -73,6 +73,34 @@ void writelog(char *msg, char *status) {
 	}
 }
 
+void remove_nfo_indicator(char *directory) {
+	int	cnt,
+	l[2],
+	n = 0,
+	k = 2;
+	char	*path[2];
+
+	for ( cnt = locations.length_path - 1 ; k && cnt ; cnt-- ) {
+		if ( directory[cnt] == '/' ) {
+			k--;
+			l[k] = n;
+			path[k] = malloc(n + 1);
+			strncpy(path[k], directory + cnt + 1, n);
+			path[k][n] = 0;
+			n = 0;
+		} else n++;
+	}
+	d_log("Removing nfo-missing indicator.\n");
+	locations.incompletenfo = c_incomplete(incomplete_indicator, path);
+	unlink(locations.incompletenfo);
+	if (k < 2)
+		free(path[1]);
+	if (k == 0)
+		free(path[0]);
+	
+
+}
+
 void getrelname(char *directory) {
 	int	cnt,
 	l[2],
@@ -545,7 +573,10 @@ int main( int argc, char **argv ) {
 		d_log("File type is: NFO\n");
 		writerace_file(&locations, &raceI, 0, F_NFO);
 
-		d_log("Here I should've removed the missing nfo-indicator.\n");
+		d_log("Here I should've removed the missing nfo-indicator....\n" );
+		remove_nfo_indicator(locations.path);
+//		target = i_incomplete(incomplete_indicator, nfopointer);
+//		d_log("Here I should've removed the missing nfo-indicator %s.\n", target );
 
 		if ( enable_nfo_script == TRUE )
 		{
