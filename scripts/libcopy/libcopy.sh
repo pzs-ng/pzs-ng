@@ -101,7 +101,9 @@ mywhich() {
   unset binname; for p in `echo $PATH | tr -s ':' '\n'`; do test -x $p/$bin && { binname=$p/$bin; break; }; done;
 }
 
-clear 2>/dev/null
+if [ -z "$1" ]; then
+  clear 2>/dev/null
+fi
 echo -e "\n"'\033[1;31m'"LibCopy v$version"'\033[0m'"\n\nUsing glroot: $glroot\n\nMaking sure all bins are present:"
 for bin in $needed_bins; do
   echo -n "$bin:"
