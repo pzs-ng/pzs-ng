@@ -161,8 +161,10 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			uploads++;
 			if (!raw)
 				sprintf(status, "Up: %7.1fKBs", speed);
-			else
+			else if (raw == 1)
 				sprintf(status, "\"UP\" \"%.1f\"", speed);
+			else
+				sprintf(status, "upld|%.1f", speed);
 
 		} else if ((!strncasecmp (user[x].status, "RETR ", 5) && user[x].bytes_xfer) && mask == 0 ) {
 			m = strplen(user[x].status) - 5;
@@ -191,8 +193,10 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			downloads++;
 			if (!raw)
 				sprintf(status, "Dn: %7.1fKBs", speed);
-			else
+			else if (raw == 1)
 				sprintf(status, "\"DN\" \"%.1f\"", speed);
+			else
+				sprintf(status, "dnld|%.1f", speed);
 		} else {
 			pct = *bar = *filename = hours = minutes = 0;
 			seconds = tstop.tv_sec - user[x].tstart.tv_sec;
@@ -200,8 +204,10 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			while (seconds >= 60) { minutes++; seconds -= 60; }
 			if (!raw)
 				sprintf(status, "Idle: %02d:%02d:%02d", hours, minutes, seconds);
-			else
+			else if (raw == 1)
 				sprintf(status, "\"ID\" \"%02d:%02d:%02d\"", hours, minutes, seconds);
+			else
+				sprintf(status, "idle|%02d:%02d:%02d", hours, minutes, seconds);
 		}
 
 		hours = minutes = 0;
@@ -215,22 +221,28 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 				printf("|%1c%-16.16s/%-10.10s | %-15s | %3.0f%%: %-15.15s |\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, pct, bar);
 				printf("| %-27.27s | since %8.8s  | file: %-15.15s |\n", user[x].tagline, online, filename);
 				printf("+-----------------------------------------------------------------------+\n");
-			} else {
+			} else if (raw == 1) {
 				/* Maskeduser / Username / GroupName / Status / TagLine / Online / Filename */
 				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\" \"%.1f\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename, pct);
+			} else {
+				printf("%s|%s|%s|%s|%s\n",user[x].username,get_g_name(user[x].groupid),user[x].tagline,status,filename);
 			}
 			onlineusers++;
 		} else if (strcasecmp(ucomp, user[x].username) == 0) {
 			if (!onlineusers) {
 				if (!raw)
 					printf("\002%s\002 - %s", user[x].username, status);
-				else
+				else if (raw == 1)
 					printf("\"USER\" \"%s\" %s", user[x].username, status);
+				else
+					printf("\002%s\002 - %s", user[x].username, status);
 			} else {
 				if (!raw)
 					printf(" - %s", status);
-				else
+				else if (raw == 1)
 					printf("\"USER\" \"\" %s", status);
+				else
+					printf(" - %s", status);
 			}
 			onlineusers++;
 		}
@@ -361,14 +373,16 @@ void show(char *filename) {
 
 /* SHOW TOTALS */
 void showtotals(char raw) {
-	if (raw) {
+	if (!raw) {
+		printf("| Up: %3i / %7.1fkbs | Dn: %3i / %7.1fkbs | Total: %3i / %7.1fkbs |\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed );
+		printf("| Currently %2i of %2i users are online...                                |\n", onlineusers, maxusers);
+	} else if (raw == 1) {
 		/* UpUsers / UpSpeed / DnUsers / DnSpeed / TotalUsers / TotalSpeed */
 		printf("\"STATS\" \"%i\" \"%.1f\" \"%i\" \"%.1f\" \"%i\" \"%.1f\"\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed );
 	} else {
-		printf("| Up: %3i / %7.1fkbs | Dn: %3i / %7.1fkbs | Total: %3i / %7.1fkbs |\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed );
-		printf("| Currently %2i of %2i users are online...                                |\n", onlineusers, maxusers);
+		/* upld | UpUsers | UpSpeed | dnld | DnUsers |DnSpeed | total | TotalUsers | TotalSpeed | online | OnlineUsers | MaxUsers */
+		printf("upld|%3i|%7.1f|dnld|%3i|%7.1f|total%3i|%7.1f|online|%2i|%2i\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed, onlineusers, maxusers);
 	}
-
 }
 
 /* Buffer groups file */
@@ -427,8 +441,15 @@ void buffer_groups(char *groupfile) {
 
 /* CORE CODE */
 int main (int argc, char **argv) {
-	int user_idx = 1;
+
+#ifndef _WITH_SS5
 	char raw_output = 0;
+	int user_idx = 1;
+#else
+	char raw_output = 2;
+	int user_idx = 2;
+#endif
+
 	readconfig(argv[0]);
 	if (!ipckey)
 		ipckey = def_ipckey;
@@ -437,15 +458,18 @@ int main (int argc, char **argv) {
 
 	buffer_groups(glgroup);
 
-	if (argc > 1 && strlen(argv[1]) == strlen("--raw")) {
+	if (argc > 1 && strlen(argv[1]) == 5) {
 		if (!strcasecmp(argv[1], "--raw")) {
 			user_idx = 2;
 			raw_output = 1;
+		} else if (!strcasecmp(argv[1], "--ss5")) {
+			user_idx = 2;
+			raw_output = 2;
 		}
 	}
 
 	if ((shmid = shmget((key_t)strtol(ipckey, NULL, 16), 0, 0)) == -1) {
-		if (argc == 1 || (argc == 2 && raw_output)) {
+		if (argc == 1 || (raw_output)) {
 			if (!raw_output)
 				show(header);
 			showtotals(raw_output);
@@ -470,12 +494,18 @@ int main (int argc, char **argv) {
 
 	shmctl(shmid, IPC_STAT, &ipcbuf);
 
-	if (argc == 1)
+	if (argc == 1 && (!raw_output))
 		show(header);
 
-	showusers(ipcbuf.shm_segsz / sizeof(struct ONLINE), argc - raw_output - 1, argv[user_idx], raw_output);
+	if (raw_output < 2)
+		showusers(ipcbuf.shm_segsz / sizeof(struct ONLINE), argc - raw_output - 1, argv[user_idx], raw_output);
+	else if (argc == 1)
+		showusers(ipcbuf.shm_segsz / sizeof(struct ONLINE), argc - 1, argv[user_idx], raw_output);
+	else
+		showusers(ipcbuf.shm_segsz / sizeof(struct ONLINE), argc - 2, argv[user_idx], raw_output);
 
-	if (argc == 1 || (argc == 2 && raw_output)) {
+
+	if (argc == 1 || (raw_output)) {
 		showtotals(raw_output);
 		if (!raw_output)
 			show(footer);
