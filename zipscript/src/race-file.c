@@ -276,7 +276,7 @@ read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
 void 
 testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 {
-	int		fd;
+	int		fd, lret, count;
 	char		*realfile, target[256], *ext;
 	unsigned int	Tcrc;
 	struct stat	filestat;
@@ -298,8 +298,11 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	if (rstatus)
 		printf("\n");
 
+	count = 0;
 	while ((read(fd, &rd, sizeof(RACEDATA)))) {
 
+
+		d_log("testfiles:  Checking: %s\n", rd.fname);
 		ext = find_last_of(realfile, ".");
 		if (*ext == '.')
 			ext++;
@@ -353,11 +356,15 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 				remove_from_race(locations->race, rd.fname);
 				xlock(&fl, fd);
 			} else {
-				lseek(fd, -sizeof(RACEDATA), SEEK_CUR);
+				if ((lret = lseek(fd, sizeof(RACEDATA) * count, SEEK_SET)) == -1) {
+					d_log("testfiles: lseek: %s\n", strerror(errno));
+					exit(EXIT_FAILURE);
+				}
 				write(fd, &rd, sizeof(RACEDATA));
 				unlink_missing(rd.fname);
 			}
 		}
+		count++;
 	}
 	strlcpy(raceI->file.name, realfile, strlen(realfile)+1);
 	raceI->total.files = raceI->total.files_missing = 0;
@@ -682,12 +689,16 @@ clear_file(const char *path, char *f)
 void 
 readrace(const char *path, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI)
 {
-	int		fd;
+	int		fd, rlength = 0;
 
 	RACEDATA	rd;
 
 	if ((fd = open(path, O_RDONLY)) != -1) {
-		while (read(fd, &rd, sizeof(RACEDATA))) {
+		while ((rlength = read(fd, &rd, sizeof(RACEDATA)))) {
+			if (rlength != sizeof(RACEDATA)) {
+				d_log("readrace: Agh! racedata seems to be broken!\n");
+				exit(EXIT_FAILURE);
+			}
 			switch (rd.status) {
 				case F_NOTCHECKED:
 				case F_CHECKED:
