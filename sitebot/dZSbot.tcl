@@ -1146,13 +1146,13 @@ proc show_free {nick uhost hand chan arg} {
 		}
 	}
 	if {[llength [array names "tmpdev"]]} {
-		putlog "dZSbot error: The following devices had no matching \"df -Phx\" entry: [join [array names tmpdev]]"
-		return
+		foreach id dev [array get tmpdev] { append tmpstr "$dev " }
+		putlog "dZSbot warning: The following devices had no matching \"df -Ph\" entry: $tmpstr"
 	}
 
 	set totalgb [format "%.1f" [expr $total / 1000]]
-        set usedgb [format "%.1f" [expr $used / 1000]]
-        set freegb [format "%.1f" [expr $free / 1000]]
+	set usedgb [format "%.1f" [expr $used / 1000]]
+	set freegb [format "%.1f" [expr $free / 1000]]
 	set output [replacevar $output "%total" "${totalgb}GB"]
 	set output [replacevar $output "%used" "${usedgb}GB"]
 	set output [replacevar $output "%free" "${freegb}GB"]
