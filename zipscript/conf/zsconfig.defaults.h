@@ -307,10 +307,10 @@
 	#define allowed_years                   "2000,2001,2002,2003,2004,2005"
 #endif
 #ifndef banned_genres
-	#define banned_genres                   "Christian Rap"
+	#define banned_genres                   "Christian Rap,Christian Gangsta Rap,Contemporary Christian,Christian Rock"
 #endif
 #ifndef allowed_genres
-	#define allowed_genres                  "Rock"
+	#define allowed_genres                  "Top 40,Pop Funk,Rock,Pop"
 #endif
 
 /* Audio related symlinks - set to TRUE if you wish to sort/symlink releases, or FALSE if not.
