@@ -351,7 +351,7 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 		set output $announce($type)
 	}
 
-	set output "$theme(PREFIX) $output"
+	set output "$theme(PREFIX)$output"
 	if {![string compare $section $defaultsection] && [llength [array names "theme_fakes" "$type"]] > 0} { set section $theme_fakes($type) }
 	set output [basicreplace $output $section]
 	set cnt 0
@@ -423,7 +423,7 @@ proc who {nick uhost hand chan args} {
 proc speed {nick uhost hand chan args} {
 	global binary announce theme
 
-	set output "$theme(PREFIX) $announce(DEFAULT)"
+	set output "$theme(PREFIX)$announce(DEFAULT)"
 	set output [replacevar $output "%msg" [exec $binary(WHO) [lindex $args 0]]]
 	set output [basicreplace $output "SPEED"]
 	putserv "PRIVMSG $chan :$output "
@@ -437,7 +437,7 @@ proc speed {nick uhost hand chan args} {
 proc bandwidth {nick uhost hand chan args} {
 	global binary announce theme
 
-	set output "$theme(PREFIX) $announce(BW)"
+	set output "$theme(PREFIX)$announce(BW)"
 	set data [exec $binary(BW)]
 	set output [replacevar $output "%uploads" [lindex $data 0]]
 	set output [replacevar $output "%downloads" [lindex $data 2]]
@@ -488,7 +488,7 @@ proc ng_bwup { nick uhost hand chan args} { global binary announce speed
 proc ng_uploaders {nick uhost hand chan args} {
 	global binary announce speed theme
 	
-	set output "$theme(PREFIX) $announce(UPLOAD)"
+	set output "$theme(PREFIX)$announce(UPLOAD)"
 	set output [basicreplace "$output" "UPLOAD"]
 	putserv "PRIVMSG $chan :$output "
 
@@ -575,7 +575,7 @@ proc ng_bwdn { nick uhost hand chan args} { global binary announce speed
 proc ng_leechers {nick uhost hand chan args} {
 	global binary announce speed theme
 
-	set output "$theme(PREFIX) $announce(LEECH)"
+	set output "$theme(PREFIX)$announce(LEECH)"
 	set output [basicreplace "$output" "LEECH"]
 	putserv "PRIVMSG $chan :$output "
 	
@@ -670,7 +670,7 @@ proc ng_idlers { nick uhost hand chan args} { global binary announce speed minid
 proc ng_bandwidth {nick uhost hand chan args} {
 	global binary announce speed theme
 
-	set output "$theme(PREFIX) $announce(BW)"
+	set output "$theme(PREFIX)$announce(BW)"
 	set raw [exec $binary(BW)]
 	set upper [format "%.0f" [expr [lindex $raw 1] / $speed(INCOMING)]]
 	set dnper [format "%.0f" [expr [lindex $raw 3] / $speed(OUTGOING)]]
@@ -750,7 +750,7 @@ proc invite {nick host hand arg} {
 
 
 		if {![string compare $result "MATCH"]} {
-			set output "$theme(PREFIX) $announce(MSGINVITE)"
+			set output "$theme(PREFIX)$announce(MSGINVITE)"
 			foreach channel $chanlist(INVITE) { puthelp "INVITE $nick $channel" }
 			foreach line [split [exec $binary(CAT) $userfile] "\n"] {
 				if {![string compare [lindex $line 0] "GROUP"]} {
@@ -759,7 +759,7 @@ proc invite {nick host hand arg} {
 				}
 			}
 		} else {
-			set output "$theme(PREFIX) $announce(BADMSGINVITE)" 
+			set output "$theme(PREFIX)$announce(BADMSGINVITE)" 
 		}
 
 		set output [replacevar $output "%ircnick" $nick]
@@ -779,7 +779,7 @@ proc invite {nick host hand arg} {
 proc show_free {nick uhost hand chan arg} {
 	global binary announce device theme
 
-	set output "$theme(PREFIX) $announce(FREE)"
+	set output "$theme(PREFIX)$announce(FREE)"
 	set devices ""; set free 0; set used 0
 	set total 0; set num 0; set perc 0
 	foreach line [split [exec $binary(DF) "-Ph"] "\n"] {
@@ -832,7 +832,7 @@ proc launchnuke2 {type path section sargs dargs} {
 	set split [split $nuke(PATH) "/"]
 	set ll [llength $split]
 
-	set output "$theme(PREFIX) $announce($nuke(TYPE))" 
+	set output "$theme(PREFIX)$announce($nuke(TYPE))" 
 	set output [replacevar $output "%nuker" $nuke(NUKER)]
 	set output [replacevar $output "%nukees" $nuke(NUKEE)]
 	set output [replacevar $output "%type" $nuke(TYPE)]
@@ -888,7 +888,7 @@ proc launchnuke {} {
 	set split [split $nuke(PATH) "/"]
 	set ll [llength $split]
 
-	set output "$theme(PREFIX) $announce($nuke(TYPE))"
+	set output "$theme(PREFIX)$announce($nuke(TYPE))"
 	set output [replacevar $output "%nuker" $nuke(NUKER)]
 	set output [replacevar $output "%nukees" $nuke(NUKEE)]
 	set output [replacevar $output "%type" $nuke(TYPE)]

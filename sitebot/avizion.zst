@@ -1,7 +1,7 @@
 COLOR1 = "04"
 COLOR2 = "07"
 COLOR3 = "11"
-PREFIX = "%bold%sitename%bold ::"
+PREFIX = "%bold%sitename%bold :: "
 fakesection.INVITE = "iNViTE"
 
 announce.NEWDIR		        = "[%boldnew   %bold][%section] %bold%relname%bold by %bold%user%bold of %group"
