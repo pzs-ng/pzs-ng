@@ -263,7 +263,6 @@ int main( int argc, char **argv ) {
 
  //gettimeofday(&raceI.transfer_stop, (struct timezone *)0 );
 
-puts("b");
  d_log("Reading data from environment variables\n");
  if ( (temp_p=getenv("USER")) == NULL ) memcpy(raceI.user.name, "glftpd", 7);
  else sprintf(raceI.user.name, temp_p);
