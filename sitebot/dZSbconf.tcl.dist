@@ -246,7 +246,7 @@ set variables(COMPLETE_RACE_AUDIO)	"%pf %rel %mbytes %files %avgspd %len %usrs %
 
 set variables(INCOMPLETE)	"%pf %user %group %rel"
 set variables(STAT_USERS_HEAD)	"%pf %dummy"
-set variables(STAT_USERS)	"%pf %pos %user %group %mbytes %files %pct %spd"
+set variables(STAT_USERS)	"%pf %pos %user %group %mbytes %files %pct %spd %wkup"
 set variables(STAT_GROUPS_HEAD)	"%pf %dummy"
 set variables(STAT_GROUPS)	"%pf %pos %group %mbytes %files %pct %spd"
 set variables(STAT_POST)	"%pf %dummy"
