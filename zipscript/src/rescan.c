@@ -183,8 +183,8 @@ int main () {
     removecomplete();
     unlink( locations.race );
     unlink( locations.sfv );
-    rescandir(); /* Rescan dir after deleting files.. */
     printf("Rescanning files...\n");
+    rescandir(); /* Rescan dir after deleting files.. */
 
     if ( (raceI.file.name = findfileext(".sfv")) != NULL) {
 	maketempdir(&locations);
@@ -234,20 +234,20 @@ int main () {
 	}
 	printf("\n\n");
 	testfiles_file( &locations, &raceI );
-	rescandir(); /* We need to rescan again */
+//	rescandir(); /* We need to rescan again */
 	readsfv_file( &locations, &raceI, 0 );
 	readrace_file( &locations, &raceI, userI, groupI );
 	sortstats( &raceI, userI, groupI );
 	buffer_progress_bar( &raceI );
-	if (show_missing_nfo) {
-		if (findfileext(".nfo")) {
-			d_log("Removing missing-nfo indicator (if any)\n");
-			remove_nfo_indicator(locations.path);
-		} else {
-			d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
-			create_incomplete_nfo();
-		}
+#if (show_missing_nfo)
+	if (findfileext(".nfo")) {
+		d_log("Removing missing-nfo indicator (if any)\n");
+		remove_nfo_indicator(locations.path);
+	} else {
+		d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
+		create_incomplete_nfo();
 	}
+#endif
 	if (raceI.misc.release_type == RTYPE_AUDIO)
 		get_mpeg_audio_info(findfileext(".mp3"), &raceI.audio);
 
