@@ -115,13 +115,13 @@ main(void)
 			exit(EXIT_FAILURE);
 		}
 		l = g.v.data_incrementor;
-		for ( k = 0; k <= 20; k++) {
-			d_log("rescan: sleeping for 1 second before trying to get a lock (queue: %d).\n", g.v.data_queue);
-			sleep(1);
+		for ( k = 0; k <= max_seconds_wait_for_lock * 10; k++) {
+			d_log("rescan: sleeping for .1 second before trying to get a lock (queue: %d).\n", g.v.data_queue);
+			usleep(100);
 			if (!create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0, g.v.data_queue))
 				break;
 		}
-		if (k >= max_seconds_wait_for_lock) {
+		if (k >= max_seconds_wait_for_lock * 10) {
 			if (l == g.v.data_incrementor) {
 				d_log("rescan: Failed to get lock. Forcing unlock.\n");
 				if (create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 2, g.v.data_queue)) {

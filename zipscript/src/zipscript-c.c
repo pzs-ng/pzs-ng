@@ -292,14 +292,14 @@ main(int argc, char **argv)
 			d_log("zipscript-c: Detected rescan running - will try to make it quit.\n");
 			update_lock(&g.v, 0, 0);
 		}
-		for ( m = 0; m <= 20; m++) {
-			d_log("zipscript-c: sleeping for 1 second before trying to get a lock.\n");
-			sleep(1);
+		for ( m = 0; m <= max_seconds_wait_for_lock * 10; m++) {
+			d_log("zipscript-c: sleeping for .1 second before trying to get a lock.\n");
+			usleep(100);
 			if (!create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0, g.v.data_queue))
 				break;
 			
 		}
-		if (m >= max_seconds_wait_for_lock) {
+		if (m >= max_seconds_wait_for_lock * 10) {
 			d_log("zipscript-c: Failed to get lock. Forcing unlock.\n");
 			if (create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 2, g.v.data_queue)) {
 				d_log("zipscript-c: Failed to force a lock. No choice but to exit.\n");
