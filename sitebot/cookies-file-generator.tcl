@@ -19,7 +19,6 @@ foreach var [lsort -ascii [array names "variables"]] {
 	puts "# $var:"
 	set vars [split $variables($var)]
 	regsub -all {[{}]} $vars "" vars
-	set vars [lsort -ascii $vars]
 	while {[llength $vars]} {
 		set str [lindex $vars 0]
 		set vars [lreplace $vars 0 0]
