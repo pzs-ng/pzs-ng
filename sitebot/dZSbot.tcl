@@ -48,7 +48,6 @@ if {![info exists invite_channels] && [info exists chanlist(INVITE)]} {
 }
 
 
-
 #################################################################################
 # SOME IMPORTANT GLOBAL VARIABLES                                               #
 #################################################################################
@@ -62,6 +61,7 @@ set nuke(SHOWN) 1
 set variables(NUKE)   ""
 set variables(UNNUKE) ""
 set mpath ""
+set debuglevel [DEBUG_INFO]
 
 #################################################################################
 # SET BINDINGS                                                                  #
@@ -185,6 +185,31 @@ if {$bindnopre != "YES"} {
 	catch { unbind pub    -|- !gpad		stats_group_gpad }
 	catch { unbind pub    -|- !help		help }
 }
+
+## Some 'constants'
+proc DEFAULT_LEVEL {{string 0}} {
+	if {$string} { return [DEBUG_INFO 1];
+	} else { return [DEBUG_INFO]; }
+}
+
+proc DEBUG_INFO {{string 0}} {
+	if {$string} { return "D/iNFO";
+	} else { return 2; }
+}
+proc DEBUG_WARN {{string 0}} {
+	if {$string} { return "D/WARNiNG";
+	} else { return 1; }
+}
+proc DEBUG_ERROR {{string 0}} {
+	if {$string} { return "D/ERROR";
+	} else { return 0; }
+}
+proc DEBUG_FATAL {{string 0}} {
+	if {$string} { return "D/FATAL";
+	} else { return 0; }
+}
+
+
 
 #################################################################################
 # MAIN LOOP - PARSES DATA FROM GLFTPD.LOG                                       #
@@ -1191,6 +1216,7 @@ proc help {nick uhost hand chan arg} {
 proc loadtheme {file} {
 	global theme announce theme_fakes
 	unset announce
+	set announce(THEMEFILE) $file
 
 	if {[string index $file 0] != "/"} { set file "[file dirname [info script]]/$file" }
 	putlog "Theme loaded: $file"
@@ -1249,23 +1275,94 @@ proc themereplace {rstring} {
 #################################################################################
 
 
+#################################################################################
+# OUTPUTS STUFF TO IRC / DCC CHAT IF DEBUG MODE ON :)                           #
+#################################################################################
+proc dprint {arg1 {arg2 0}} {
+	global disable announce chanlist debuglevel
+	
+	if {$arg2 != 0} {
+		set level $arg1
+		set string $arg2
+	} else {
+		set level "DEFAULT_LEVEL"
+		set string $arg1
+	}
+
+	set level_str [$level "1"]
+	set level     [$level]
+	
+	if {[llength [array names "disable" "DEBUG"]] == 0} { 
+		putlog "dZSbot error: disable(DEBUG) not set, defaulting to 0."
+		set disable(DEBUG) 0
+	}
+	if {[llength [array names "disable" "DEBUG_DCC"]] == 0} {
+		putlog "dZSbot error: disable(DEBUG_DCC) not set, defaulting to 0."
+		set disable(DEBUG_DCC) 0
+	}
+	
+	if {$disable(DEBUG) && $disable(DEBUG_DCC)} { return; }
+	if {$debuglevel < $level} { return; }
+
+	if {!$disable(DEBUG_DCC)} {
+		if {[llength [array names "announce" "DEBUG_DCC"]] > 0} {
+			set outp [basicreplace $announce(DEBUG_DCC) $level_str]
+			putlog "dZSbot debug: $outp"
+		} else {
+			putlog "dZSbot debug: \[$section\] $txt"
+		}
+	}
+
+	if {!$disable(DEBUG)} {
+		set chans $chanlist(DEFAULT)
+		set outp $announce(DEFAULT)
+		if {[llength [array names "chanlist" "DEBUG"]] > 0} { set chans $chanlist(DEBUG) }
+		if {[llength [array names "announce" "DEBUG"]] > 0} { set outp $announce(DEBUG) }
+		set outp [basicreplace $outp $level_str]
+		foreach chan $chans { putquick "PRIVMSG $chan :$outp" }
+	}
+}
+#################################################################################
+
+
 if {[info exists dZStimer]} {
 	if {[catch {killutimer $dZStimer} err]} {
-		putlog "dZSbot.tcl: WARNING!"
-		putlog "dZSbot.tcl: killutimer failed ($err)"
-		putlog "dZSbot.tcl: You should .restart the bot to be safe."
+		putlog "dZSbot error: WARNING!"
+		putlog "dZSbot error: killutimer failed ($err)"
+		putlog "dZSbot error: You should .restart the bot to be safe."
 	}
 }
 set dZStimer [utimer 1 "readlog"]
 
+if {![array exists chanlist] || [llength [array names "chanlist" "DEFAULT"]] == 0} {
+	putlog "dZSbot error: no entry in chanlist set, or chanlist(DEFAULT) not set."
+	set dzerror 1
+}
+if {![array exists announce] || [llength [array names "announce" "DEFAULT"]] == 0} {
+	putlog "dZSbot error: no entry in announce set, or announce(DEFAULT) not set."
+	putlog "dZSbot error: setting announce(DEFAULT) to '\[DEFAULT\] %msg'."
+	set announce(DEFAULT) "\[DEFAULT\] %msg"
+}
+if {![array exists variables] || [llength [array names "variables" "DEFAULT"]] == 0} {
+	putlog "dZSbot error: no entry in variables set, or variables(DEFAULT) not set."
+	putlog "dZSbot error: setting variables(DEFAULT) to '%pf %msg'."
+	set variables(DEFAULT) "%pf %msg"
+}
+if {![array exists disable] || [llength [array names "disable" "DEFAULT"]] == 0} {
+	putlog "dZSbot error: no entry in disable set, or disable(DEFAULT) not set."
+	putlog "dZSbot error: setting disable(DEFAULT) to '0."
+	set disable(DEFAULT) "0"
+}
+
 if {![loadtheme $announce(THEMEFILE)]} {
 	if {[loadtheme "default.zst.dist"]} {
-		putlog "dZSbot: Couldn't load theme '$announce(THEMEFILE)', loaded 'default.zst.dist' instead!"
+		putlog "dZSbot error: Couldn't load theme '$announce(THEMEFILE)', loaded 'default.zst.dist' instead!"
 	} else {
-		putlog "dZSbot: Couldn't load theme '$announce(THEMEFILE)' and not 'default.zst.dist' either. Cannot continue!"
+		putlog "dZSbot error: Couldn't load theme '$announce(THEMEFILE)' and not 'default.zst.dist' either. Cannot continue!"
 		set dzerror 1
 	}
 }
+
 
 if { $dzerror == "0" } {
 	putlog "dZSbot loaded ok!"
