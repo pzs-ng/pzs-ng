@@ -510,7 +510,8 @@ main(int argc, char **argv)
 		raceI.misc.write_log = 1;
 		mark_as_bad(raceI.file.name);
 		error_msg = convert(&raceI, userI, groupI, bad_file_msg);
-		writelog(error_msg, bad_file_0size_type);
+		if (exit_value < 2)
+			writelog(error_msg, bad_file_0size_type);
 		exit_value = 2;
 	}
 #endif
@@ -532,7 +533,8 @@ main(int argc, char **argv)
 				write_log = raceI.misc.write_log;
 				raceI.misc.write_log = 1;
 				error_msg = convert(&raceI, userI, groupI, bad_file_msg);
-				writelog(error_msg, bad_file_zip_type);
+				if (exit_value < 2)
+					writelog(error_msg, bad_file_zip_type);
 				exit_value = 2;
 				break;
 			}
@@ -551,7 +553,8 @@ main(int argc, char **argv)
 					write_log = raceI.misc.write_log;
 					raceI.misc.write_log = 1;
 					error_msg = convert(&raceI, userI, groupI, bad_file_msg);
-					writelog(error_msg, bad_file_wrongdir_type);
+					if (exit_value < 2)
+						writelog(error_msg, bad_file_wrongdir_type);
 					exit_value = 2;
 					break;
 				}
@@ -606,7 +609,8 @@ main(int argc, char **argv)
 					write_log = raceI.misc.write_log;
 					raceI.misc.write_log = 1;
 					error_msg = convert(&raceI, userI, groupI, bad_file_msg);
-					writelog(error_msg, bad_file_wrongdir_type);
+					if (exit_value < 2)
+						writelog(error_msg, bad_file_wrongdir_type);
 					exit_value = 2;
 					break;
 				}
@@ -662,7 +666,8 @@ main(int argc, char **argv)
 				write_log = raceI.misc.write_log;
 				raceI.misc.write_log = 1;
 				error_msg = convert(&raceI, userI, groupI, bad_file_msg);
-				writelog(error_msg, bad_file_sfv_type);
+				if (exit_value < 2)
+					writelog(error_msg, bad_file_sfv_type);
 				mark_as_bad(raceI.file.name);
 				exit_value = 2;
 				sprintf(raceI.misc.error_msg, EMPTY_SFV);
@@ -709,7 +714,8 @@ main(int argc, char **argv)
 				write_log = raceI.misc.write_log;
 				raceI.misc.write_log = 1;
 				error_msg = convert(&raceI, userI, groupI, bad_file_msg);
-				writelog(error_msg, bad_file_sfv_type);
+				if (exit_value < 2)
+					writelog(error_msg, bad_file_sfv_type);
 				exit_value = 2;
 				break;
 			}
@@ -810,7 +816,8 @@ main(int argc, char **argv)
 					write_log = raceI.misc.write_log;
 					raceI.misc.write_log = 1;
 					error_msg = convert(&raceI, userI, groupI, bad_file_msg);
-					writelog(error_msg, bad_file_crc_type);
+					if (exit_value < 2)
+						writelog(error_msg, bad_file_crc_type);
 					exit_value = 2;
 					break;
 				}
@@ -830,7 +837,8 @@ main(int argc, char **argv)
 					write_log = raceI.misc.write_log;
 					raceI.misc.write_log = 1;
 					error_msg = convert(&raceI, userI, groupI, bad_file_msg);
-					writelog(error_msg, bad_file_nosfv_type);
+					if (exit_value < 2)
+						writelog(error_msg, bad_file_nosfv_type);
 					exit_value = 2;
 					break;
 				} else {
@@ -910,7 +918,8 @@ main(int argc, char **argv)
 								write_log = raceI.misc.write_log;
 								raceI.misc.write_log = 1;
 								error_msg = convert(&raceI, userI, groupI, bad_file_msg);
-								writelog(error_msg, bad_file_genre_type);
+								if (exit_value < 2)
+									writelog(error_msg, bad_file_genre_type);
 								exit_value = 2;
 							}
 #if ( del_banned_release )
@@ -938,7 +947,8 @@ main(int argc, char **argv)
 								write_log = raceI.misc.write_log;
 								raceI.misc.write_log = 1;
 								error_msg = convert(&raceI, userI, groupI, bad_file_msg);
-								writelog(error_msg, bad_file_genre_type);
+								if (exit_value < 2)
+									writelog(error_msg, bad_file_genre_type);
 								exit_value = 2;
 							}
 #if ( del_banned_release )
@@ -967,7 +977,8 @@ main(int argc, char **argv)
 								write_log = raceI.misc.write_log;
 								raceI.misc.write_log = 1;
 								error_msg = convert(&raceI, userI, groupI, bad_file_msg);
-								writelog(error_msg, bad_file_year_type);
+								if (exit_value < 2)
+									writelog(error_msg, bad_file_year_type);
 								exit_value = 2;
 							}
 #if ( del_banned_release )
@@ -997,7 +1008,8 @@ main(int argc, char **argv)
 									write_log = raceI.misc.write_log;
 									raceI.misc.write_log = 1;
 									error_msg = convert(&raceI, userI, groupI, bad_file_msg);
-									writelog(error_msg, bad_file_bitrate_type);
+									if (exit_value < 2)
+										writelog(error_msg, bad_file_bitrate_type);
 									exit_value = 2;
 								}
 #if ( del_banned_release )
@@ -1067,7 +1079,8 @@ main(int argc, char **argv)
 			write_log = raceI.misc.write_log;
 			raceI.misc.write_log = 1;
 			error_msg = convert(&raceI, userI, groupI, bad_file_msg);
-			writelog(error_msg, bad_file_disallowed_type);
+			if (exit_value < 2)
+				writelog(error_msg, bad_file_disallowed_type);
 			exit_value = 2;
 			break;
 			/* END OF UNKNOWN CHECK */
