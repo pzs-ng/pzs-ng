@@ -106,13 +106,13 @@ set speedthreshold		1024
 set minidletime			"30"
 
 # What sections are we announcing for? (Remeber to define path and type below)
-set sections			"TEST GAMES APPS MP3 0DAY MV"
+#set sections			"TEST GAMES APPS MP3 0DAY MV"
 
 # The sections we allow checking of stats on, remember that the number in
 # parantheses must be the same as the number of the section in glftpd config =)
-set statsection(0)		"MP3"
-set statsection(1)		"0DAY"
-set statsection(2)		"ISO"
+set statsection(0)		"DEFAULT"
+#set statsection(1)		"0DAY"
+#set statsection(2)		"ISO"
 
 # These are the binaries the script will use. They are usually best left
 # as their default values :) (btw, check that they all are where they should
@@ -142,8 +142,8 @@ set search_chars		3
 
 # Definition of hd devices (for freespace) Syntax is "disk sections".
 # 'sections' is purely for cosmetic uses (output)
-set device(0)			"/dev/da0s1f MP3"
-set device(1)			"/dev/ad0s1e ISO"
+set device(0)			"/dev/ad0s1f MP3"
+#set device(1)			"/dev/ad0s1e ISO"
 # Max length of devices before splitting to new line (note: you need to take
 # the rest of the announce(FREE) into account yourself) Also, it'll output
 # total on all lines, if you have multiple. Set it to 0 to disable.
@@ -151,28 +151,28 @@ set dev_max_length		300
 
 # Set up paths for all the sections (wildcards) and their
 # types. Types are to decide if things get shown or not ;)
-set paths(TEST)			"/site/test/*"
-set type(TEST)			"RACE"
-set paths(GAMES)		"/site/incoming/games/*"
-set type(GAMES)			"RACE"
-set paths(APPS)			"/site/incoming/apps/*"
-set type(APPS)			"RACE"
-set paths(MP3)			"/site/incoming/mp3/*"
-set type(MP3)			"RACE"
-set paths(0DAY)			"/site/incoming/0day/*"
-set type(0DAY)			"RACE"
-set paths(MV)			"/site/incoming/musicvideos/*"
-set type(MV)			"RACE"
+#set paths(TEST)			"/site/test/*"
+#set type(TEST)			"RACE"
+#set paths(GAMES)		"/site/incoming/games/*"
+#set type(GAMES)			"RACE"
+#set paths(APPS)			"/site/incoming/apps/*"
+#set type(APPS)			"RACE"
+#set paths(MP3)			"/site/incoming/mp3/*"
+#set type(MP3)			"RACE"
+#set paths(0DAY)			"/site/incoming/0day/*"
+#set type(0DAY)			"RACE"
+#set paths(MV)			"/site/incoming/musicvideos/*"
+#set type(MV)			"RACE"
 
 # Which channels we announce the different things to.
 # Space separated lists, you can have more than one channel :)
 set mainchan						"#pzs-ng"
-set chanlist(TEST)					"$mainchan"
-set chanlist(GAMES)					"$mainchan"
-set chanlist(APPS)					"$mainchan"
-set chanlist(MP3)					"$mainchan"
-set chanlist(0DAY)					"$mainchan"
-set chanlist(MV)					"$mainchan"
+#set chanlist(TEST)					"$mainchan"
+#set chanlist(GAMES)					"$mainchan"
+#set chanlist(APPS)					"$mainchan"
+#set chanlist(MP3)					"$mainchan"
+#set chanlist(0DAY)					"$mainchan"
+#set chanlist(MV)					"$mainchan"
 set chanlist(DEFAULT)					"$mainchan"
 set chanlist(INVITE)					"$mainchan"
 set chanlist(WELCOME)					"$mainchan"
