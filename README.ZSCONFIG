@@ -277,6 +277,12 @@ strict_sfv_check <TRUE|FALSE>
 	a valid crc code.
 	Default: FALSE
 
+mark_file_as_bad <TRUE|FALSE>
+	Normally files marked as bad are deleted. You can change this by setting
+	the following value to TRUE - instead of the file being deleted, it will
+	be renamed <filename>.bad. Bad files are ignored on rescan.
+	Default: FALSE
+
 debug_mode <TRUE|FALSE>
 	If something seems weird/doesn't work, you should debug. Setting this
 	variable to TRUE will turn on debugging. A file named .debug will be

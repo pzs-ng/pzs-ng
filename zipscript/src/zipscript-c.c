@@ -482,6 +482,7 @@ main(int argc, char **argv)
 	if (raceI.file.size == 0) {
 		d_log("File seems to be 0\n");
 		sprintf(raceI.misc.error_msg, EMPTY_FILE);
+		mark_as_bad(raceI.file.name);
 		exit_value = 2;
 	}
 #endif
@@ -499,6 +500,7 @@ main(int argc, char **argv)
 			if (execute(target) != 0) {
 				d_log("Integrity check failed: %s\n", strerror(errno));
 				sprintf(raceI.misc.error_msg, BAD_ZIP);
+				mark_as_bad(raceI.file.name);
 				exit_value = 2;
 				break;
 			}
@@ -513,6 +515,7 @@ main(int argc, char **argv)
 				if (strict_path_match == TRUE) {
 					d_log("Strict mode on - exiting\n");
 					sprintf(raceI.misc.error_msg, UNKNOWN_FILE, fileext);
+					mark_as_bad(raceI.file.name);
 					exit_value = 2;
 					break;
 				}
@@ -563,6 +566,7 @@ main(int argc, char **argv)
 				if (strict_path_match == TRUE) {
 					d_log("Strict mode on - exiting\n");
 					sprintf(raceI.misc.error_msg, UNKNOWN_FILE, fileext);
+					mark_as_bad(raceI.file.name);
 					exit_value = 2;
 					break;
 				}
@@ -577,6 +581,7 @@ main(int argc, char **argv)
 					error_msg = convert(&raceI, userI, groupI, deny_double_msg);
 					writelog(error_msg, general_doublesfv_type);
 					sprintf(raceI.misc.error_msg, DOUBLE_SFV);
+					mark_as_bad(raceI.file.name);
 					exit_value = 2;
 					raceI.misc.write_log = write_log;
 					break;
@@ -596,6 +601,7 @@ main(int argc, char **argv)
 						error_msg = convert(&raceI, userI, groupI, deny_double_msg);
 						writelog(error_msg, general_doublesfv_type);
 						sprintf(raceI.misc.error_msg, DOUBLE_SFV);
+						mark_as_bad(raceI.file.name);
 						exit_value = 2;
 						raceI.misc.write_log = write_log;
 						break;
@@ -612,7 +618,8 @@ main(int argc, char **argv)
 			}
 			d_log("Parsing sfv and creating sfv data\n");
 			if (copysfv_file(raceI.file.name, locations.sfv, raceI.file.size)) {
-				d_log("Found invalid entries in SFV - Logging as bad.\n");
+				d_log("Found invalid entries in SFV.\n");
+				mark_as_bad(raceI.file.name);
 				exit_value = 2;
 				sprintf(raceI.misc.error_msg, EMPTY_SFV);
 				unlink(locations.race);
@@ -654,6 +661,7 @@ main(int argc, char **argv)
 			if (raceI.total.files == 0) {
 				d_log("SFV seems to have no files of accepted types, or has errors.\n");
 				sprintf(raceI.misc.error_msg, EMPTY_SFV);
+				mark_as_bad(raceI.file.name);
 				exit_value = 2;
 				break;
 			}
@@ -750,6 +758,7 @@ main(int argc, char **argv)
 						d_log("CRC-32 check failed\n");
 						strcpy(raceI.misc.error_msg, BAD_CRC);
 					}
+					mark_as_bad(raceI.file.name);
 					exit_value = 2;
 					break;
 				}
@@ -765,6 +774,7 @@ main(int argc, char **argv)
 #endif
 					d_log("SFV needs to be uploaded first\n");
 					strcpy(raceI.misc.error_msg, SFV_FIRST);
+					mark_as_bad(raceI.file.name);
 					exit_value = 2;
 					break;
 				} else {
@@ -839,8 +849,10 @@ main(int argc, char **argv)
 									raceI.misc.write_log = write_log;
 								} else
 									d_log("warn on - have already logged to logfile\n");
-							} else
+							} else {
+								mark_as_bad(raceI.file.name);
 								exit_value = 2;
+							}
 							break;
 						}
 #elif ( audio_allowed_genre_check == TRUE )
@@ -857,8 +869,10 @@ main(int argc, char **argv)
 									raceI.misc.write_log = write_log;
 								} else
 									d_log("warn on - have already logged to logfile\n");
-							} else
+							} else {
+								mark_as_bad(raceI.file.name);
 								exit_value = 2;
+							}
 							break;
 						}
 #endif
@@ -876,8 +890,10 @@ main(int argc, char **argv)
 									raceI.misc.write_log = write_log;
 								} else
 									d_log("warn on - have already logged to logfile\n");
-							} else
+							} else {
+								mark_as_bad(raceI.file.name);
 								exit_value = 2;
+							}
 							break;
 						}
 #endif
@@ -896,8 +912,10 @@ main(int argc, char **argv)
 										raceI.misc.write_log = write_log;
 									} else
 										d_log("warn on - have already logged to logfile\n");
-								} else
+								} else {
+									mark_as_bad(raceI.file.name);
 									exit_value = 2;
+								}
 								break;
 							}
 						}
@@ -956,8 +974,8 @@ main(int argc, char **argv)
 		case 255:	/* UNKNOWN - WE DELETE THESE, SINCE IT WAS
 				 * ALSO IGNORED */
 			d_log("File type: UNKNOWN [ignored in sfv]\n");
-
 			sprintf(raceI.misc.error_msg, UNKNOWN_FILE, fileext);
+			mark_as_bad(raceI.file.name);
 			exit_value = 2;
 			break;
 			/* END OF UNKNOWN CHECK */

@@ -244,7 +244,7 @@ main()
 			else
 				m++;
 			ext += m;
-			if (!strcomp(ignored_types, ext) && (!(strcomp(allowed_types, ext) && !matchpath(allowed_types_exemption_dirs, locations.path))) && strcasecmp("sfv", ext) && strcasecmp("nfo", ext) && strcmp(dirlist[n]->d_name + l - 8, "-missing") && strncmp(dirlist[n]->d_name, ".", 1)) {
+			if (!strcomp(ignored_types, ext) && (!(strcomp(allowed_types, ext) && !matchpath(allowed_types_exemption_dirs, locations.path))) && strcasecmp("sfv", ext) && strcasecmp("nfo", ext) && strcasecmp("bad", ext) && strcmp(dirlist[n]->d_name + l - 8, "-missing") && strncmp(dirlist[n]->d_name, ".", 1)) {
 				stat(dirlist[n]->d_name, &fileinfo);
 				f_uid = fileinfo.st_uid;
 				f_gid = fileinfo.st_gid;

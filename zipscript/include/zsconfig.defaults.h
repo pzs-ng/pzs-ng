@@ -108,6 +108,15 @@
 #endif
 
 /*
+ * Normally files marked as bad are deleted. You can change this by setting the
+ * following value to TRUE - instead of the file being deleted, it will be renamed
+ * <filename>.bad. Bad files are ignored on rescan.
+ */
+#ifndef mark_file_as_bad
+#define mark_file_as_bad		FALSE
+#endif
+
+/*
  * Certain files are needed to change uid/gid to real names. All paths are
  * chroot'ed. GROUPFILE - /path/name of glftpd's group file PASSWDFILE -
  * /path/name of glftpd's passwd file

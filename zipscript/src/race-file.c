@@ -211,6 +211,7 @@ testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 				} else if ((crc != 0) && (Tcrc != crc) && (strcomp(allowed_types, ext) && !matchpath(allowed_types_exemption_dirs, locations->path))) {
 					status = F_IGNORED;
 				} else {
+					mark_as_bad(fname);
 					if (fname)
 						unlink(fname);
 					status = F_BAD;

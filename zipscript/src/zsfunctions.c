@@ -1050,3 +1050,22 @@ sfv_compare_size(char *fileext, unsigned long fsize)
 		l = 0;
 	return l;
 }
+
+void
+mark_as_bad(char *filename)
+{
+
+#if (mark_file_as_bad == TRUE)
+	char    *newname = 0;
+
+	newname=malloc(strlen(filename) + 4);
+	sprintf(newname, "%s.bad", filename);
+	if (rename(filename, newname)) {
+		d_log("Error - failed to rename %s to %s.\n", filename, newname);
+	} else {
+		createzerofile(filename);
+	}
+	free(newname);
+#endif
+	d_log("File (%s) marked as bad.\n", filename);
+}

@@ -101,4 +101,5 @@ extern char    *get_u_name(int);
 extern void	buffer_groups(char *);
 extern void	buffer_users(char *);
 extern unsigned long sfv_compare_size(char *, unsigned long);
+extern void	mark_as_bad(char *);
 #endif
