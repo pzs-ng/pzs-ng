@@ -1193,7 +1193,7 @@ main(int argc, char **argv)
 				 * Only announce new leader if he leads with
 				 * newleader_files_ahead files :-)
 				 */
-				if (raceI.total.files >= min_newleader_files && strcmp(raceI.misc.old_leader, userI[userI[0]->pos]->name) && newleader_msg != NULL && userI[userI[0]->pos]->files >= (userI[userI[1]->pos]->files + newleader_files_ahead)) {
+				if (raceI.total.files >= min_newleader_files && ((raceI.total.size * raceI.total.files) >= (min_newleader_size * 1024 * 1024)) && strcmp(raceI.misc.old_leader, userI[userI[0]->pos]->name) && newleader_msg != NULL && userI[userI[0]->pos]->files >= (userI[userI[1]->pos]->files + newleader_files_ahead)) {
 					d_log("Writing NEWLEADER to %s\n", log);
 					newleader_type = general_announce_newleader_type;
 					switch (raceI.misc.release_type) {
@@ -1217,7 +1217,7 @@ main(int argc, char **argv)
 				}
 			} else {
 
-				if (userI[raceI.user.pos]->files == 1 && raceI.total.files >= min_update_files && update_msg != NULL) {
+				if (userI[raceI.user.pos]->files == 1 && raceI.total.files >= min_update_files && ((raceI.total.size * raceI.total.files) >= (min_update_size * 1024 * 1024)) && update_msg != NULL) {
 					d_log("Writing UPDATE to %s\n", log);
 					update_type = general_announce_update_type;
 					switch (raceI.misc.release_type) {
@@ -1249,7 +1249,7 @@ main(int argc, char **argv)
 
 			/* Release is incomplete */
 
-			if (raceI.total.files_missing == raceI.total.files >> 1 && raceI.total.files >= min_halfway_files && halfway_msg != NULL) {
+			if (raceI.total.files_missing == raceI.total.files >> 1 && raceI.total.files >= min_halfway_files && ((raceI.total.size * raceI.total.files) >= (min_halfway_size * 1024 * 1024)) && halfway_msg != NULL) {
 				d_log("Writing HALFWAY to %s\n", log);
 				norace_halfway_type = general_announce_norace_halfway_type;
 				race_halfway_type = general_announce_race_halfway_type;

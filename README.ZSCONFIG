@@ -533,8 +533,23 @@ min_update_files <NUMBER>
 	Default: 1
 
 min_halfway_files <NUMBER>
-	Define here the minimum number of files in the RELEASE to announce an
+	Define here the minimum number of files in the RELEASE to announce a
 	halfway message.
+	Default: 10
+
+min_newleader_size <NUMBER>
+	Define here the minimum estimated total size (in MB) of RELEASE to
+	announce a new leader in a race.
+	Default: 10
+
+min_update_size <NUMBER>
+	Define here the minimum estimated total size (in MB) of RELEASE to
+	announce an update message.
+	Default: 1
+
+min_halfway_size <NUMBER>
+	Define here the minimum estimated total size (in MB) of RELEASE to
+	announce a halfway message.
 	Default: 10
 	
 max_users_in_top <NUMBER>

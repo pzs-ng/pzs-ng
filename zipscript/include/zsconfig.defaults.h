@@ -548,6 +548,21 @@
 #endif
 
 /*
+ * If minium is not reached - announcement will be disabled. The number
+ * entered represents the minimum number of (estimated) MB in the release.
+ */
+#ifndef min_newleader_size
+#define min_newleader_size	10
+#endif
+#ifndef min_update_size
+#define min_update_size		1
+#endif
+#ifndef min_halfway_size
+#define min_halfway_size	10
+#endif
+
+
+/*
  * Limit number of users/groups to display in stats.
  */
 #ifndef max_users_in_top
