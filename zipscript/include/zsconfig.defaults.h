@@ -858,3 +858,8 @@
 #ifndef disable_zip_norace_complete
 #define disable_zip_norace_complete	FALSE
 #endif
+
+#ifndef KEY
+#define KEY				0x0000DEAD
+#endif
+

@@ -1,7 +1,3 @@
-#ifndef KEY
-  #define KEY		0x0000DEAD
-#endif
-
 #ifndef USE_GLFTPD2
 struct ONLINE {
 	char		tagline   [64];	/* The users tagline */

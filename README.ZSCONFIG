@@ -977,7 +977,8 @@ KEY <IPCKEY>
 	You can define glftpd's ipckey with this argument. This is only used
 	in ng-bw, since the rest of the bins either does not access the shared
 	memory of glftpd, or uses a separate config for it (like sitewho).
-	Default: "0x0000DEAD"
+	Please note that the IPCKEY is a number - so no "" around it!
+	Default: 0x0000DEAD
 
 --END
 

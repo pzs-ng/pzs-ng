@@ -1,5 +1,5 @@
 /*
- * Displays currnet bandwidth over glftpd by iono (with some code coming from
+ * Displays current bandwidth over glftpd by iono (with some code coming from
  * the original sitewho)
  * 
  * Uses the format: "UploadThreads IncomingTraffic DownloadThreads
@@ -20,6 +20,7 @@
 #include <sys/shm.h>
 #include "structonline.h"
 #include "../../zipscript/conf/zsconfig.h"
+#include "zsconfig.defaults.h"
 
 /* You shouldn't need to modify below here */
 
@@ -38,7 +39,7 @@ main()
 	int		retv;
 	int		shmid;
 
-	if ((shmid = shmget(KEY, 0, 0)) == -1) {
+	if ((shmid = shmget((long long)KEY, 0, 0)) == -1) {
 		printf("0 0.0 0 0.0 0 0.0 0 0 0\n");
 		exit(0);
 	}
