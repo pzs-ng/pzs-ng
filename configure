@@ -3076,19 +3076,19 @@ if test "${with_mysql+set}" = set; then
 fi;
 
 
-if test x$CFGLIBS = x ; then
+if test "x$CFGLIBS" = "x" ; then
  echo "$as_me:$LINENO: result: NOTICE: Could not find curses. Configurator will not be compiled." >&5
 echo "${ECHO_T}NOTICE: Could not find curses. Configurator will not be compiled." >&6
  CFGLIBS=""
 fi
 
-if test $want_mysql = no ; then
+if test "$want_mysql" = "no" ; then
  echo "$as_me:$LINENO: result: NOTICE: mysql support disabled. " >&5
 echo "${ECHO_T}NOTICE: mysql support disabled. " >&6
  ZSLIBS=""
  ZSTYPE="race-file.o"
 else
- if test "x$ZSLIBS" = x ; then
+ if test "x$ZSLIBS" = "x" ; then
   { { echo "$as_me:$LINENO: error: could not find mysqlclient library. Use file logging instead!" >&5
 echo "$as_me: error: could not find mysqlclient library. Use file logging instead!" >&2;}
    { (exit 1); exit 1; }; }
@@ -3112,7 +3112,7 @@ case $(uname -s) in
 		os=linux
 		static=no
         ;;
-    *[Bb][Ss][Dd]*)
+    *[bB][sS][dD]*)
 		os=bsd
 		echo "$as_me:$LINENO: result: NOTICE: BSD flavour detected, linking statically." >&5
 echo "${ECHO_T}NOTICE: BSD flavour detected, linking statically." >&6
@@ -3136,7 +3136,7 @@ if test "${enable_static+set}" = set; then
 else
   STATIC=""
 fi;
- if test $static = yes ; then
+ if test "$static" = "yes" ; then
   echo "$as_me:$LINENO: result: NOTICE: linking statically due to --enable-static" >&5
 echo "${ECHO_T}NOTICE: linking statically due to --enable-static" >&6
  else

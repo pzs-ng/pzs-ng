@@ -29,17 +29,17 @@ AC_ARG_WITH(mysql,
 
 dnl features
 
-if test x$CFGLIBS = x ; then
+if test "x$CFGLIBS" = "x" ; then
  AC_MSG_RESULT(NOTICE: Could not find curses. Configurator will not be compiled.)
  CFGLIBS=""
 fi
 
-if test $want_mysql = no ; then
+if test "$want_mysql" = "no" ; then
  AC_MSG_RESULT(NOTICE: mysql support disabled. )
  ZSLIBS=""
  ZSTYPE="race-file.o"
 else
- if test "x$ZSLIBS" = x ; then
+ if test "x$ZSLIBS" = "x" ; then
   AC_MSG_ERROR(could not find mysqlclient library. Use file logging instead!)
   ZSTYPE="race-file.o"
  else
@@ -54,26 +54,26 @@ dnl OS :)
 os=unknown
 static=no
 case $(uname -s) in
-    Linux)
+    [[Ll][Ii][Nn][Uu][Xx]])
 		os=linux
 		static=no
         ;;
-    *[bB][sS][dD]*)
+    [*[bB][sS][dD]*])
 		os=bsd
 		AC_MSG_RESULT([NOTICE: BSD flavour detected, linking statically.])
 		static=yes
         ;;
 esac
 
-if test $os = unknown ; then
+if test "$os" = "unknown" ; then
  AC_MSG_ERROR(Couldn't identify OS, quitting!)
 fi
 
-if test $static = yes ; then
+if test "$static" = "yes" ; then
  STATIC="-static"
 else
  AC_ARG_ENABLE(static, enable static linking of zs-c, STATIC="-static"; static=yes, STATIC="")
- if test $static = yes ; then
+ if test "$static" = "yes" ; then
   AC_MSG_RESULT([NOTICE: linking statically due to --enable-static])
  else
   AC_MSG_RESULT([NOTICE: linking dynamically.])
