@@ -435,8 +435,8 @@ int main( int argc, char **argv ) {
     }
 
     /* No check directories */
-    if ( matchpath(nocheck_dirs, locations.path) ) {
-	d_log("Directory matched with nocheck_dirs\n");
+    if ( matchpath(nocheck_dirs, locations.path) || (!matchpath(zip_dirs, locations.path) && !matchpath(sfv_dirs, locations.path) & !matchpath(group_dirs, locations.path)) ) {
+	d_log("Directory matched with nocheck_dirs, or is not among sfv/zip/group dirs\n");
 	no_check = TRUE;
     } else {
 	/* Process file */
