@@ -99,7 +99,7 @@ short strcomp(char *instr, char *searchstr) {
 void showusers(int n, int mode, char *ucomp, char raw) {
 	char	    status[20];
 	char	    online[20];
-	char	    *filename;
+	char	    *filename = 0;
 	char	    realfile[512];
 	char	    bar[20];
 	struct timeval  tstop;
@@ -161,11 +161,11 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 				sprintf(status, "\"UP\" \"%.1f\"", speed);
 		} else if ((!strncasecmp (user[x].status, "RETR ", 5) && user[x].bytes_xfer) && mask == 0 ) {
 			m = strplen(user[x].status) - 5;
+			filename = malloc(m) + 1;
 
 			for (i = sprintf(realfile, "%s", user[x].currentdir); realfile[i] != '/' && i > 0; i--);
 			sprintf(realfile + i + 1, "%.*s", m, user[x].status + 5);
 
-			filename = malloc(m) + 1;
 			if (m < 15 || raw)
 				sprintf(filename, "%.*s", m, user[x].status + 5);
 			else

@@ -384,7 +384,6 @@ int main( int argc, char **argv ) {
     free(locations.leader);
     free(userI);
     free(groupI);
-    m_free(direntries);
 
     if ((empty_dir == 1) && (fileexists(".debug")) && (remove_dot_debug_on_delete == TRUE)) 
 		unlink(".debug");
