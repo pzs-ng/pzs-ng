@@ -139,6 +139,10 @@ main(int argc, char **argv)
 		free(g.gi);
 		free(g.l.path);
 		return 0;
+
+		if ((fileexists(".debug")) && (remove_dot_debug_on_delete == TRUE))
+			unlink(".debug");
+
 	}
 	g.l.race = malloc(n = strlen(g.l.path) + 10 + sizeof(storage));
 	g.l.sfv = malloc(n);
