@@ -81,7 +81,7 @@
 
 /* Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 & mpeg2.5 + layer1 & 2 can be added if needed */
 #define audio_race		"{%U} {%G} {%R} {%r} {%.0S}"
-#define audio_sfv		"{%r} {%f}"
+#define audio_sfv		"{%r} {%f} {%U} {%G}"
 #define audio_update		"{%U} {%G} {%f} {%.0S} {%w} {%Y} %j"
 #define audio_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
 #define audio_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
@@ -91,7 +91,7 @@
 
 /* Video files - supports mpeg1/mpeg2 and various avi formats */
 #define video_race		"{%U} {%G} {%R} {%r} {%.0S}"
-#define video_sfv		"{%r} {%f}"
+#define video_sfv		"{%r} {%f} {%U} {%G}"
 #define video_update		"{%U} {%G} {%f} {%.0S} {%.1e}"
 #define video_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
 #define video_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
@@ -101,7 +101,7 @@
 
 /* RAR - allows usage of compression mode cookie (%Z) for rarred releases */
 #define rar_race		"{%U} {%G} {%R} {%r} {%.0S}"
-#define rar_sfv			"{%r} {%f}"
+#define rar_sfv			"{%r} {%f} {%U} {%G}"
 #define rar_update		"{%U} {%G} {%f} {%.0S} {%.1e}"
 #define rar_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
 #define rar_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
@@ -112,7 +112,7 @@
 
 /* Rest of the stuff inside sfv */
 #define other_race		"{%U} {%G} {%R} {%r} {%.0S}"
-#define other_sfv		"{%r} {%f}"
+#define other_sfv		"{%r} {%f} {%U} {%G}"
 #define other_update		"{%U} {%G} {%f} {%.0S} {%.1e}"
 #define other_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
 #define other_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
