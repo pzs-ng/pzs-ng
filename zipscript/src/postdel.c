@@ -83,7 +83,7 @@ void getrelname(char *directory) {
    	raceI.misc.release_name = malloc( l[0] + 18 );
 	sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
 	locations.incomplete = c_incomplete(incomplete_cd_indicator, path);
-	locations.nfo_incomplete = c_incomplete(incomplete_nfo_indicator, path);
+	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
 	if (k < 2) free(path[1]);
     } else {
 	raceI.misc.release_name = malloc( l[1] + 10 );
