@@ -22,6 +22,14 @@ typedef struct {
 	char		fname[NAME_MAX];
 } SFVDATA;
 
+/* this is special bits we put in the head of both files */
+typedef struct {
+	short int	data_version;
+	short int	data_type;
+	short int	data_in_use;
+	short int	data_incrementor;
+} HEADDATA;
+
 extern unsigned int readsfv(const char *, struct VARS *, int);
 extern void update_sfvdata(const char *, const unsigned int);
 extern void sfvdata_to_sfv(const char *, const char *);
@@ -36,5 +44,7 @@ extern short clear_file(const char *, char *);
 extern void writerace(const char *, struct VARS *, unsigned int, unsigned char);
 extern void remove_from_race(const char *, const char *);
 extern int verify_racedata(const char *);
+extern int create_lock(const char *, short int, short int);
+extern void remove_lock(const char *);
 
 #endif

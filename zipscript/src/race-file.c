@@ -135,7 +135,6 @@ void
 update_sfvdata(const char *path, const unsigned int crc)
 {
 	int		fd;
-	struct flock	fl;
 	
 	SFVDATA		sd;
 
@@ -144,8 +143,6 @@ update_sfvdata(const char *path, const unsigned int crc)
 		return;
 	}
 
-	xlock(&fl, fd, F_WRLCK | F_RDLCK);
-	
 	sd.crc32 = crc;
 	
 	lseek(fd, sizeof(short int) * 2, SEEK_CUR);
@@ -160,8 +157,6 @@ update_sfvdata(const char *path, const unsigned int crc)
 	lseek(fd, -sizeof(SFVDATA), SEEK_CUR);
 	write(fd, &sd, sizeof(SFVDATA));
 	
-	xunlock(&fl, fd);
-	
 	close(fd);
 }
 
@@ -171,7 +166,6 @@ sfvdata_to_sfv(const char *source, const char *dest)
 {
 	int		infd, outfd;
 	char		crctmp[8];
-	struct flock	fl;
 	
 	SFVDATA		sd;
 
@@ -185,9 +179,6 @@ sfvdata_to_sfv(const char *source, const char *dest)
 		return;
 	}
 
-	xlock(&fl, infd, F_RDLCK);
-	xlock(&fl, outfd, F_WRLCK);
-	
 	lseek(infd, sizeof(short int) * 2, SEEK_CUR);
 
 	while (read(infd, &sd, sizeof(SFVDATA))) {
@@ -204,9 +195,6 @@ sfvdata_to_sfv(const char *source, const char *dest)
 
 	}
 	
-	xunlock(&fl, infd);
-	xunlock(&fl, outfd);
-
 	close(infd);
 	close(outfd);
 
@@ -254,15 +242,13 @@ void
 read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
 {
 	int		fd;
-	struct flock	fl;
-	struct stat		sb;
+	struct stat	sb;
 
 	if ((fd = open(path, O_CREAT | O_RDWR, 0666)) == -1) {
 		d_log("read_write_leader: open(%s): %s\n", path, strerror(errno));
 		return;
 	}
 	
-	xlock(&fl, fd, F_WRLCK | F_RDLCK);
 	fstat(fd, &sb);
 
 	if (sb.st_size == 0) {
@@ -274,7 +260,6 @@ read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
 
 	write(fd, userI->name, 24);
 	
-	xunlock(&fl, fd);
 	close(fd);
 }
 
@@ -292,7 +277,6 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	char		*realfile, target[256], *ext;
 	unsigned int	Tcrc;
 	struct stat	filestat;
-	struct flock	fl;
 
 	RACEDATA	rd;
 
@@ -303,7 +287,6 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 		}
 	}
 	
-	xlock(&fl, fd, F_WRLCK | F_RDLCK);
 
 	realfile = raceI->file.name;
 
@@ -365,9 +348,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 				}
 			}
 			if (rd.status == F_BAD) {
-				xunlock(&fl, fd);
 				remove_from_race(locations->race, rd.fname);
-				xlock(&fl, fd, F_WRLCK | F_RDLCK);
 			} else {
 				if ((lret = lseek(fd, sizeof(RACEDATA) * count, SEEK_SET)) == -1) {
 					d_log("testfiles: lseek: %s\n", strerror(errno));
@@ -381,7 +362,6 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	}
 	strlcpy(raceI->file.name, realfile, strlen(realfile)+1);
 	raceI->total.files = raceI->total.files_missing = 0;
-	xunlock(&fl, fd);
 	close(fd);
 }
 
@@ -407,8 +387,6 @@ copysfv(const char *source, const char *target)
 
 	SFVDATA		sd;
 
-	struct flock	fl;
-	
 #if ( sfv_dupecheck == TRUE )
 	int		skip = 0;
 	SFVDATA		tempsd;
@@ -420,8 +398,6 @@ copysfv(const char *source, const char *target)
 	
 	if ((tmpfd = open(".tmpsfv", O_CREAT | O_TRUNC | O_RDWR, 0644)) == -1)
 		d_log("copysfv: open(.tmpsfv): %s\n", strerror(errno));
-	else
-		xlock(&fl, tmpfd, F_WRLCK | F_RDLCK);
 #endif
 
 	if ((infd = open(source, O_RDONLY)) == -1) {
@@ -434,9 +410,6 @@ copysfv(const char *source, const char *target)
 		exit(EXIT_FAILURE);
 	}
 	
-	xlock(&fl, infd, F_RDLCK);
-	xlock(&fl, outfd, F_WRLCK | F_RDLCK);
-
 	video = music = rars = others = type = 0;
 
 	dir = opendir(".");
@@ -601,11 +574,9 @@ copysfv(const char *source, const char *target)
 #if ( sfv_cleanup == FALSE )
 END:
 #endif
-	xunlock(&fl, infd);
 	close(infd);
 #if ( sfv_cleanup == TRUE )
 	if (tmpfd != -1) {
-		xunlock(&fl, tmpfd);
 		close(tmpfd);
 		unlink(source);
 		rename(".tmpsfv", source);
@@ -615,7 +586,6 @@ END:
 	closedir(dir);
 	lseek(outfd, sizeof(short int), SEEK_SET);
 	write(outfd, &type, sizeof(short int));
-	xunlock(&fl, outfd);
 	close(outfd);
 	
 	return retval;
@@ -754,7 +724,6 @@ void
 writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char status)
 {
 	int		fd;
-	struct flock	fl;
 
 	RACEDATA	rd;
 
@@ -766,8 +735,6 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 		}
 	}
 
-	xlock(&fl, fd, F_WRLCK | F_RDLCK);
-	
 	/* find an existing entry that we will overwrite */
 	while (read(fd, &rd, sizeof(RACEDATA))) {
 		if (strncmp(rd.fname, raceI->file.name, NAME_MAX) == 0) {
@@ -789,8 +756,6 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 
 	write(fd, &rd, sizeof(RACEDATA));
 	
-	xunlock(&fl, fd);
-
 	close(fd);
 }
 
@@ -799,7 +764,6 @@ void
 remove_from_race(const char *path, const char *f)
 {
 	int		fd, i, max;
-	struct flock	fl;
 	
 	RACEDATA	rd, *tmprd = 0;
 	
@@ -825,13 +789,10 @@ remove_from_race(const char *path, const char *f)
 		return;
 	}
 	
-	xlock(&fl, fd, F_WRLCK);
-	
 	max = i;
 	for (i = 0; i < max; i++)
 		write(fd, &tmprd[i], sizeof(RACEDATA));
 	
-	xunlock(&fl, fd);
 	close(fd);
 
 	if (tmprd)
@@ -842,7 +803,6 @@ int
 verify_racedata(const char *path)
 {
 	int		fd, i, max;
-	struct flock	fl;
 	
 	RACEDATA	rd, *tmprd = 0;
 	
@@ -853,7 +813,6 @@ verify_racedata(const char *path)
 	
 	for (i = 0; (read(fd, &rd, sizeof(RACEDATA)));) {
 		if (fileexists(rd.fname)) {
-			//write(tmpfd, &rd, sizeof(RACEDATA));
 			tmprd = realloc(tmprd, sizeof(RACEDATA)*(i+1));
 			memcpy(&tmprd[i], &rd, sizeof(RACEDATA));
 			i++;
@@ -872,20 +831,93 @@ verify_racedata(const char *path)
 		return 0;
 	}
 	
-	xlock(&fl, fd, F_WRLCK);
-	
 	max = i;
 	for (i = 0; i < max; i++)
 		write(fd, &tmprd[i], sizeof(RACEDATA));
 	
-	xunlock(&fl, fd);
 	close(fd);
-	
-//	xunlock(&fl, fd);
 
 	if (tmprd)
 		free(tmprd);
 
 	return 1;
+}
+
+/* Locking mechanism and version control.
+ * Not yet fully functional, but we're getting there.
+ * progtype == a code for what program calls the lock:
+ *		 2 = zipscript-c
+ *		 4 = postdel
+ *		 8 = cleanup
+ *		16 = datacleaner
+ *		32 = rescan
+ * force_lock == int used to suggest/force a lock on the file.
+ *		set to 1 to suggest a lock, >1 to force a lock.
+ */
+
+int
+create_lock(const char *path, short int progtype, short int force_lock)
+{
+	int		fd;
+	HEADDATA	hd;
+	struct stat	sb;
+
+	if ((fd = open(path, O_CREAT | O_RDWR, 0666)) == -1) {
+		d_log("create_lock: open(%s): %s\n", path, strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+
+	fstat(fd, &sb);
+
+	if (sb.st_size == 0) {
+		hd.data_version = sfv_version;
+		hd.data_type = 0;
+		hd.data_in_use = progtype;
+		hd.data_incrementor = 1;
+		write(fd, &hd, sizeof(HEADDATA));
+		close(fd);
+	} else {
+		read(fd, &hd, sizeof(HEADDATA));
+		if (hd.data_in_use && (force_lock > 1)) {
+			d_log("create_lock: Unlock forced.\n");
+		} else {
+			d_log("create_lock: Data is already locked.\n");
+			close(fd);
+			return 1;
+		}
+		if (force_lock == 1) {
+			d_log("create_lock: Unlock suggested.\n");
+			hd.data_incrementor = 0;
+		} else {
+			hd.data_incrementor = 1;
+			hd.data_in_use = progtype;
+		}
+		lseek(fd, 0L, SEEK_SET);
+		write(fd, &hd, sizeof(HEADDATA));
+		close(fd);
+	}
+	return 0;
+}
+
+/* Remove the lock
+ */
+
+void
+remove_lock(const char *path)
+{
+	int		fd;
+	HEADDATA	hd;
+
+	if ((fd = open(path, O_CREAT | O_RDWR, 0666)) == -1) {
+		d_log("remove_lock: open(%s): %s\n", path, strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+
+	read(fd, &hd, sizeof(HEADDATA));
+	hd.data_in_use = 0;
+	hd.data_incrementor = 0;
+	lseek(fd, 0L, SEEK_SET);
+	write(fd, &hd, sizeof(HEADDATA));
+	close(fd);
 }
 
