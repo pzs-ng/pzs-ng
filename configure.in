@@ -65,6 +65,11 @@ case $(uname -s) in
 		AC_MSG_RESULT([NOTICE: BSD flavour detected, linking statically.])
 		static=yes
         ;;
+    [Ss][Uu][Nn][Oo][Ss])
+		os=sunos
+		static=no
+        ;;
+
 esac
 
 if test "$os" = "unknown" ; then
