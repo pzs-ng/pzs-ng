@@ -56,7 +56,7 @@ PZS-NG should compile fine on the following platforms:
 on AMD64 for instance, but have limited ability to test on this platform
 since none of the devs currently owns one.
 
-Only the i386 platforms is tested, but feel free to let us know if you
+Only the i386 platform is tested, but feel free to let us know if you
 try it on anything else. :)
 
 

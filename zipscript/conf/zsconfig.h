@@ -183,7 +183,7 @@
  * (reduces "spam" in channel)
  */
 #define enable_files_ahead	TRUE
-#define newleader_files_ahead	2 
+#define newleader_files_ahead	2
 
 /* If minium is not reached - announcement will be disabled. The number entered represents
  * the minimum number of files in the release.
@@ -226,7 +226,7 @@
 
 #define user_top		"%n. %B%u%B/%-10g [%.1mM/%fF/%.1p%%/%.0sKB/s]"
 #define user_info		"%B%u%B/%g [%.1mM/%fF/%.1p%%/%.0sKB/s]"
-#define group_top		"%n. %B%g%B [%.1mM/%fF/%.1p%%/%.0sKB/s]"		
+#define group_top		"%n. %B%g%B [%.1mM/%fF/%.1p%%/%.0sKB/s]"
 #define group_info		"%B%g%B [%.1mM/%fF/%.1p%%/%.0sKB/s]"
 #define fastestfile		"Fastest upload by %B%u%B/%g at %B%.3F%BKB/S."		/* Put in %l cookie */
 #define slowestfile		"Slowest upload by %B%u%B/%g at %B%.3S%BKB/S."		/* Put in %L cookie */
@@ -297,7 +297,7 @@
 
 
 /*
- *	Output variables used on site (.message file) 
+ *	Output variables used on site (.message file)
  *	=============================================
  */
 
@@ -419,4 +419,3 @@
 /* Output of postdel binary
  */
 #define incompletemsg		"%B%U%B/%G deletes file from %B%r%B. Release is now %Bincomplete%B!"
-

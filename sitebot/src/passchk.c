@@ -66,14 +66,13 @@ struct passwd* fgetpwent(FILE *fp) {
 /* see http://lists.jammed.com/secprog/2002/11/0008.html for info */
 #define HLEN (20)               /*Using SHA-1 */
 
-int pbkdf2(const unsigned char *pw, unsigned int pwlen, char *salt,
-           unsigned long long saltlen, unsigned int ic,
-           unsigned char *dk, unsigned long long dklen)
+int pbkdf2(const unsigned char *pw, unsigned int pwlen,
+	unsigned int ic, unsigned char *dk, unsigned long long dklen)
 {
     unsigned long l, r, i, j;
     unsigned char txt[4], hash[HLEN * 2], tmp[HLEN], *p =
         dk, *lhix, *hix, *swap;
-    short k;
+    unsigned short k;
     int outlen;
 
     if (dklen > ((((unsigned long long) 1) << 32) - 1) * HLEN) {
@@ -128,12 +127,12 @@ int pbkdf2(const unsigned char *pw, unsigned int pwlen, char *salt,
     return 0;
 }
 
-int pw_encrypt(const unsigned char *pwd, char *digest, char *seed) {
+int pw_encrypt(const unsigned char *pwd, char *digest) {
         unsigned char md[SHA_DIGEST_LENGTH];
         int mdlen=SHA_DIGEST_LENGTH, i;
 
         //see pbe.c for info, 100x multihash
-        pbkdf2(pwd, strlen(pwd), seed, strlen(seed), 100, md, SHA_DIGEST_LENGTH);
+        pbkdf2(pwd, strlen(pwd), 100, md, SHA_DIGEST_LENGTH);
 
         for(i = 0; i < mdlen; i++) {
                 sprintf(digest, "%02x", md[i]);
@@ -151,7 +150,6 @@ int main(int argc, char *argv[]) {
 
 #ifdef use_glftpd2
 	char crypted[SHA_DIGEST_LENGTH * 2 + 1];
-	char *salt;
 #else
 	char *crypted;
 	char salt[2];
@@ -170,8 +168,7 @@ int main(int argc, char *argv[]) {
 		if (strcmp(buf->pw_name, argv[1]))
 			continue;
 #ifdef use_glftpd2
-		salt = buf->pw_gecos;
-		pw_encrypt(argv[2], crypted, salt);
+		pw_encrypt(argv[2], crypted);
 #else
 		strncpy(salt, buf->pw_passwd, 2);
 		crypted = crypt(argv[2], salt);
@@ -187,4 +184,3 @@ int main(int argc, char *argv[]) {
 	printf("No such user in passwd file!\n");
 	return 0;	
 }
-	
