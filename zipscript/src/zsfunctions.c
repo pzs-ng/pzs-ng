@@ -207,7 +207,7 @@ void buffer_progress_bar(struct VARS *raceI) {
 /*
  * Modified: 01.16.2002
  */
-void move_progress_bar(short int delete, struct VARS *raceI) {
+void move_progress_bar(unsigned char delete, struct VARS *raceI) {
 	char		*bar;
 	int			n;
 	regex_t		preg;
