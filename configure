@@ -845,6 +845,7 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-ss5            compiles the zipscript for use with SiteStat 5
   --enable-format         compiles the zipscript to format the output
+  --enable-expert         expert mode - uses full config
   --disable-altwho        compiles the sitewho to not use an alternative
                           output on single user who lookups
   --enable-static         enable static linking of zs-c
@@ -4668,6 +4669,15 @@ if test "${enable_format+set}" = set; then
   NOFORMAT=""
 fi;
 
+# Check whether --enable-expert or --disable-expert was given.
+if test "${enable_expert+set}" = set; then
+  enableval="$enable_expert"
+
+	! [ -f zipscript/conf/zsconfig.h ] && cp -i zipscript/conf/zsconfig.h.complete zipscript/conf/zsconfig.h
+
+
+fi;
+
 ALTWHO="-D_WITH_ALTWHO"
 # Check whether --enable-altwho or --disable-altwho was given.
 if test "${enable_altwho+set}" = set; then
@@ -5903,13 +5913,15 @@ fi
 
 echo "$as_me:$LINENO: result: $( echo )
 The makefiles are now configured. Next up you need to edit
-zipscript/conf/zsconfig.h to fit your needs.
+zipscript/conf/zsconfig.h to fit your needs. Please see
+README.ZSCONFIG for a complete list of options.
 
 Then type 'make' to compile it.
 " >&5
 echo "${ECHO_T}$( echo )
 The makefiles are now configured. Next up you need to edit
-zipscript/conf/zsconfig.h to fit your needs.
+zipscript/conf/zsconfig.h to fit your needs. Please see
+README.ZSCONFIG for a complete list of options.
 
 Then type 'make' to compile it.
 " >&6

@@ -113,7 +113,13 @@ dnl noformat
 NOFORMAT="-D_WITH_NOFORMAT"
 AC_ARG_ENABLE(format, AS_HELP_STRING([--enable-format], [compiles the zipscript to format the output]), NOFORMAT="")
 
-dnl noformat
+dnl expert
+AC_ARG_ENABLE(expert, AS_HELP_STRING([--enable-expert], [expert mode - uses full config]), [
+	! [[ -f zipscript/conf/zsconfig.h ]] && cp -i zipscript/conf/zsconfig.h.complete zipscript/conf/zsconfig.h
+	]
+)
+
+dnl altwho
 ALTWHO="-D_WITH_ALTWHO"
 AC_ARG_ENABLE(altwho, AS_HELP_STRING([--disable-altwho], [compiles the sitewho to not use an alternative output on single user who lookups]), ALTWHO="")
 
@@ -195,7 +201,8 @@ fi
 AC_MSG_RESULT(
 $( echo )
 The makefiles are now configured. Next up you need to edit
-zipscript/conf/zsconfig.h to fit your needs.
+zipscript/conf/zsconfig.h to fit your needs. Please see
+README.ZSCONFIG for a complete list of options.
 
 Then type 'make' to compile it.
 )
