@@ -73,7 +73,8 @@ audio_nocheck_dirs <PATHS>
 	years etc. Audio-files found in paths defined in this variable will
 	not be checked against these defines, thus allowing them. Dirs are
 	separated by a space character.
-	
+	Default: "/site/groups/ /site/incoming/requests/"
+
 rescan_nocheck_dirs_allowed <TRUE|FALSE>
 	If you need to check a dir placed in a nocheck_dirs area, you must
 	set this variable to TRUE. Setting this to FALSE will render the rescan

@@ -1,10 +1,8 @@
 /* zsconfig.h - ZipScript-C config file
  *
  * This file only contains overrides of the defaults.
- * Please see zsconfig.defaults.h for a complete list
+ * Please see README.ZSCONFIG for a complete list
  * of all settings.
- * If you need to change something, place the define in
- * this file - do not edit the zsconfig.defaults.h!
  *
  * Please do not change settings you don not understand!
  *
