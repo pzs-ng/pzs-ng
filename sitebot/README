@@ -1,0 +1,51 @@
+                       This script is part of: 
+    Dark0n3's C++ ZipScript - the most advanced public zipscript ever!
+                http://kotisivu.raketti.net/darkone/
+
+--------------------------------------------------------------------------------
+ INDEX
+--------------------------------------------------------------------------------
+ 
+ 1. Installation
+
+ 1-1 Configuration
+ 1-2 Compiling with gcc
+ 1-3 Using with eggdrop 
+ 1-4 Cryptic errors
+
+
+
+--------------------------------------------------------------------------------
+ 1-1 Configuration
+--------------------------------------------------------------------------------
+ Edit dZSbconf.tcl ... nothing else :)
+
+
+--------------------------------------------------------------------------------
+ 1-2 Compiling with gcc
+--------------------------------------------------------------------------------
+ Change dir to extra, run 'make all'.. keep your fingers crossed... done
+ Now copy these files to /glftpd/bin/:
+ bnctest.sh - if you want a functioning bnc tester :)
+ incomplete-list.sh - if you want a functioning !inc-trigger
+ passchk - if you want a functioning !invite
+ (the rest are for additional features that are not directly linked to
+  this script, like invite.sh is for a "site invite" command etc, read
+  comments in scripts to find out more)
+
+
+--------------------------------------------------------------------------------
+ 1-3 Using with eggdrop
+--------------------------------------------------------------------------------
+ Just load it with other scripts and you're done. Remeber to
+ put the dZSbconf.tcl in the same dir as the script.
+
+
+--------------------------------------------------------------------------------
+ 1-4 Cryptic errors
+--------------------------------------------------------------------------------
+ "You didn't sacrifice a lamb like you were told, did you?"
+  - read 1-3, you need to put dZSbconf.tcl in the proper location! ;)
+ "Blood has been spilled this night. (<something>)"
+  - the binary specified in 'set binary(<something>)' does not exist or is not
+    executable by the eggdrop.

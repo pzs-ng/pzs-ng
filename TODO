@@ -1,0 +1,20 @@
+TODO list for 0.6.x
+
+* MySQL
+ + Redesign tables (work in process)
+ + Add examples
+
+* Configurator
+ + Complete rewrite => menu based system
+
+TODO list for 0.x.x
+
+* Cookies
+ + Current path
+
+* Other
+ + Add openftpd compatability file
+ + Support for multiple sections (stats cookies)
+ + Redesign zsconfig.h
+ - Free all mallocated variables?
+ - Built-in zip-integrity tester 

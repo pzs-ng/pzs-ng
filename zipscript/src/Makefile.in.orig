@@ -1,0 +1,61 @@
+prefix=@prefix@
+bindir=@bindir@
+mandir=@mandir@
+datadir=@datadir@
+binpath=../bin
+
+CC=@CC@
+CFLAGS=-O2
+LDFLAGS=@LDFLAGS@
+ZSLIBS=@ZSLIBS@
+ZSTYPE=@ZSTYPE@
+RM=rm -f
+
+RD-OBJECTS=racedebug.o
+ZS-OBJECTS=zipscript-c.o dizreader.o stats.o complete.o convert.o multimedia.o $(ZSTYPE)
+PD-OBJECTS=postdel.o dizreader.o stats.o convert.o multimedia.o $(ZSTYPE)
+RS-OBJECTS=racestats.o dizreader.o stats.o convert.o $(ZSTYPE)
+CU-OBJECTS=cleanup.o
+DC-OBJECTS=datacleaner.o
+SC-OBJECTS=rescan.o dizreader.o stats.o convert.o complete.o crc.o multimedia.o $(ZSTYPE)
+ZS-DEPEND=cleanup.o complete.o convert.o datacleaner.o postdel.o racestats.o rescan.o stats.o zipscript-c.o multimedia.o $(ZSTYPE)
+
+all: zipscript-c postdel racestats cleanup datacleaner rescan racedebug
+	@(ls -lA $(binpath))
+
+$(ZS-DEPEND): ../conf/zsconfig.h
+
+zipscript-c: $(ZS-OBJECTS) $(ZS-DEPEND)
+	     $(CC) $(LDFLAGS) $(ZS-OBJECTS) -o $(binpath)/$@ $(ZSLIBS)
+
+racedebug: $(RD-OBJECTS)
+	   $(CC) $(LDFLAGS) $(RD-OBJECTS) -o $(binpath)/$@
+
+postdel: $(PD-OBJECTS)
+	 $(CC) $(LDFLAGS) $(PD-OBJECTS) -o $(binpath)/$@ $(ZSLIBS)
+
+racestats: $(RS-OBJECTS)
+	   $(CC) $(LDFLAGS) $(RS-OBJECTS) -o $(binpath)/$@ $(ZSLIBS)
+
+cleanup: $(CU-OBJECTS)
+	 $(CC) $(LDFLAGS) $(CU-OBJECTS) -o $(binpath)/$@
+
+datacleaner: $(DC-OBJECTS)
+	     $(CC) $(LDFLAGS) $(DC-OBJECTS) -o $(binpath)/$@
+
+rescan: $(SC-OBJECTS)
+	$(CC) $(LDFLAGS) $(SC-OBJECTS) -o $(binpath)/$@ $(ZSLIBS)
+
+install:
+	if [ ! -e "/glftpd/ftp-data/zipscript/" ] ; then mkdir "/glftpd/ftp-data/zipscript/" ; fi
+	chmod 666 /glftpd/ftp-data/logs/glftpd.log
+	chmod 777 /glftpd/ftp-data/zipscript/
+	cp -f $(binpath)/zipscript-c /glftpd/bin/
+	cp -f $(binpath)/postdel /glftpd/bin/
+	cp -f $(binpath)/racestats /glftpd/bin/
+	cp -f $(binpath)/cleanup /glftpd/bin/
+	cp -f $(binpath)/datacleaner /glftpd/bin/
+	cp -f $(binpath)/rescan /glftpd/bin/
+
+clean:
+	@$(RM) *.o $(binpath)/zipscript-c $(binpath)/postdel $(binpath)/racestats $(binpath)/cleanup $(binpath)/datacleaner $(binpath)/rescan $(binpath)/racedebug Makefile
