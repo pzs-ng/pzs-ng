@@ -698,7 +698,7 @@ main(int argc, char **argv)
 				if (s_crc == 0 && errno == 1) {
 					d_log("zipscript-c: CRC in SFV is 0 - trying to calculate it from the file\n");
 					s_crc = calc_crc32(g.v.file.name);
-					update_sfvdata(g.v.file.name, s_crc);
+					update_sfvdata(g.l.sfv, g.v.file.name, s_crc);
 				}
 #endif
 				d_log("zipscript-c: DEBUG: crc: %X - s_crc: %X\n", crc, s_crc);

@@ -127,7 +127,7 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 }
 
 void
-update_sfvdata(const char *path, const unsigned int crc)
+update_sfvdata(const char *path, const char *fname, const unsigned int crc)
 {
 	int		fd, count;
 	
@@ -141,7 +141,7 @@ update_sfvdata(const char *path, const unsigned int crc)
 	sd.crc32 = crc;
 	count = 0;
 	while (read(fd, &sd, sizeof(SFVDATA))) {
-		if (strcasecmp(path, sd.fname) == 0) {
+		if (strcasecmp(fname, sd.fname) == 0) {
 			sd.crc32 = crc;
 			break;
 		}
