@@ -1,4 +1,5 @@
 source dZSbconf.tcl.dist
+source dZSbvars.tcl.dist
 
 
 puts "Quickreference of cookies:"
@@ -14,7 +15,9 @@ foreach var [lsort -ascii [array names "variables"]] {
 		set variables($var) [lreplace $variables($var) 0 0]
 	}
 	puts "# $var:"
-	set vars [lsort -ascii [split $variables($var)]]
+	set vars [split $variables($var)]
+	regsub -all {[{}]} $vars "" vars
+	set vars [lsort -ascii $vars]
 	while {[llength $vars]} {
 		set str [lindex $vars 0]
 		set vars [lreplace $vars 0 0]
