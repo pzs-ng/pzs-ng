@@ -155,7 +155,7 @@
 #define audio_banned_genre_check	TRUE
 #define audio_allowed_genre_check	TRUE
 #define audio_genre_warn		TRUE
-#define audio_genre_warn_msg		"%B%U%B/%G has started an illegal upload %r (genre: %x). Naughty boy!"
+#define audio_genre_warn_msg		"%B%U%B/%G has started an illegal upload %r (genre: %w). Naughty boy!"
 
 /* Create m3u file on release complete for audio release?
  */
