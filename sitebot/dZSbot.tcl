@@ -1103,7 +1103,10 @@ proc launchnuke2 {type path section sargs dargs} {
 
 	foreach entry $dargs {
 		set mb [format "%.1f" [expr [lindex $entry 1] / 1024]]
-		append nuke(NUKEE) "\002[lindex $entry 0]\002 (\002$mb\002MB), "
+		set nukee "$announce(NUKEES)"
+		set nukee [replacevar $nukee "%u_name" [lindex $entry 0]]
+		set nukee [replacevar $nukee "%size" $mb]
+		append nuke(NUKEE) "$nukee"
 	}
 
 	set nuke(NUKEE) [string trim $nuke(NUKEE) ", "]
