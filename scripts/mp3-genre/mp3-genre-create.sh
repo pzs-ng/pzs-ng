@@ -200,7 +200,7 @@ for genre in $mp3genres; do
   if [ -z "`grep -e "^$genre:" $groupfile`" ]; then
     gid=`tail -n 1 $groupfile | cut -d ':' -f 3`
     let gid=gid+100
-    echo "$genre:genre:$gid:MP3-GENRE" >> $groupfile
+    echo "$genre:$genre:$gid:MP3-GENRE" >> $groupfile
     echo "Adding genre '$genre' with gid '$gid'"
   fi
 done
