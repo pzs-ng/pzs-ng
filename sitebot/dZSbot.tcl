@@ -647,9 +647,9 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 	set vars $variables($type)
 
 	if {![string compare [lindex $announce($type) 0] "random"] && [string is alnum -strict [lindex $announce($type) 1]] == 1} {
-		set output $random($msgtype\-[rand [lindex [themereplace $announce($type) "none"] 1]])
+		set output $random($msgtype\-[rand [lindex [themereplace $announce($type) $section] 1]])
 	} else {
-		set output [themereplace $announce($type) "none"]
+		set output [themereplace $announce($type) $section]
 	}
 
 	set output "$theme(PREFIX)$output"
@@ -693,7 +693,7 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 			set values [lindex $msgline $cnt]
 			set output2 ""
 			foreach value $values {
-				if { $cnt2 == 0 } { append output2 "[themereplace $announce(${type}_LOOP${loop}) "none"]" }
+				if { $cnt2 == 0 } { append output2 "[themereplace $announce(${type}_LOOP${loop}) $section]" }
 				if { [string match "*speed" [lindex $vari $cnt2]] } {
 					set output2 [replacevar $output2 "[lindex $vari $cnt2]" [speed_convert $value]]
 				} else {
