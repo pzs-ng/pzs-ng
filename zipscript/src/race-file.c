@@ -1055,7 +1055,7 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 	}
 	if (hd.data_pid != getpid()) {
 		d_log("update_lock: Oops! Race condition - another process has the lock.\n");
-		hd.data_queue--;
+		hd.data_queue = raceI->data_queue - 1;
 		lseek(fd, 0L, SEEK_SET);
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
