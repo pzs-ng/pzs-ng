@@ -1,24 +1,25 @@
 #!/bin/bash
 #################################################################################
-# Script made from scratch for use by project-zs-ng admins by themolester.		#
-# however it will most likely be beneficial to people while modifying any     #
-# sitebot.
-# If you feel like improving this script feel free, but please send me/us back#
-# a modified copy, or diffs so that everybody benefits						  #
-# 																			  #
-# www.glftpd.com															  #
-# www.glftpd.at																  #
-###############################################################################
-#																			  #
-#  ChangeLog																  #
-#																			  #
-###############################################################################
-#																			  #
-# Version 0.1: 																  #
-#	Created script. then redesigned from scratch cutting filesize in half,    #
-#   causing the script to execute much quicker (not that its not fast enough) #
-#																			  #
-###############################################################################
+# Script made from scratch for use by project-zs-ng admins by themolester.	#
+# however it will most likely be beneficial to people while modifying any	#
+# sitebot.									#
+# If you feel like improving this script feel free, but please send me/us back	#
+# a modified copy, or diffs so that everybody benefits				#
+#										#
+# www.glftpd.com								#
+# www.glftpd.at									#
+#################################################################################
+#										#
+#  ChangeLog									#
+#										#
+#################################################################################
+#										#
+#										#
+# Version 0.1:									#
+#	Created script. then redesigned from scratch cutting filesize in half,	#
+#   causing the script to execute much quicker (not that its not fast enough)	#
+#										#
+#################################################################################
 if [ ! -r $gllog ] ; then
 	echo "error: can not read >$gllog<"
 	die
