@@ -26,6 +26,7 @@
 #define zip_dirs	"/site/incoming/0day/"
 #define sfv_dirs	"/site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/requests/"
 #define nocheck_dirs	"/site/private/"
+#define audio_nocheck	"/site/groups/ /site/incoming/requests/"
 
 /* Directories for cleanup to check for broken incomplete files
  * Use same % values as with date
@@ -137,10 +138,6 @@
 #define allowed_years			"2000,2001,2002,2003,2004"
 #define banned_genres			"Christian Rap,R&B"
 #define allowed_genres			"Rock"
-
-/* Some dirs may be exluded from checks of bitrate, years, genres.
- */
-#define no_audio_check_dirs		"/site/groups/ /site/incoming/requests/"
 
 /* Audio related symlinks - set to TRUE if you wish to sort/symlink releases, or FALSE if not.
  */

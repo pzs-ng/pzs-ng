@@ -50,7 +50,6 @@ status  who       what
                    support for cleanup in yesterday's dir.
  [ ]               make zs-c send info in cookie format instf. formatting the output in zsconfig.h, and make the bot
                    pick it up and format it.
- [ ]               make an option to turn off (mp3-)checks in certain dirs (group/requests), like bitrate check etc.
  [ ]               include as much of the extra scripts for the bot into the bot (maybe add support for modules?)
  [ ]               req by tomb0y - change STATS in complete.c to USERSTATS and GROUPSTATS for diff. output.
 

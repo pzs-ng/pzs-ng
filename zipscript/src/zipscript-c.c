@@ -354,7 +354,7 @@ int main( int argc, char **argv ) {
 	}
 
 	/* Hide users in group_dirs */
-if ( matchpath(group_dirs, locations.path ) && ( hide_group_uploaders == TRUE )) {
+ if ( matchpath(group_dirs, locations.path ) && ( hide_group_uploaders == TRUE )) {
 	d_log("Hiding user in group-dir\n");
 	sprintf(raceI.user.name, raceI.user.group);
 	}
@@ -387,7 +387,7 @@ if ( matchpath(group_dirs, locations.path ) && ( hide_group_uploaders == TRUE ))
 			d_log("Directory matched with zip_dirs\n");
 		} else if (matchpath(sfv_dirs, locations.path)) {
 			d_log("Directory matched with sfv_dirs\n");
-			no_check = FALSE;
+/*			no_check = FALSE; */
 			break;
 		}
 
@@ -629,7 +629,7 @@ if ( matchpath(group_dirs, locations.path ) && ( hide_group_uploaders == TRUE ))
 					}
 
 
-						if ( ! matchpath(no_audio_check_dirs, locations.path) ) {
+						if ( ! matchpath(audio_nocheck, locations.path) ) {
 #if ( audio_banned_genre_check == TRUE )
 					if ( strcomp(banned_genres, raceI.audio.id3_genre)) {
 						d_log("File is from banned genre\n");

@@ -22,10 +22,11 @@
 /* On default, announcing is disabled everywhere, use zip/sfv paths to enable annouces and private paths to disable.
  * Don't be lazy! Be specific! And remember - pathnames are case sensitive.
  */
-#define group_dirs	"/site/groups/ /site/incoming/mp3/.groups/"
+#define group_dirs	"/site/groups/"
 #define zip_dirs	"/site/incoming/0day/"
 #define sfv_dirs	"/site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/requests/"
 #define nocheck_dirs	"/site/private/"
+#define audio_nocheck	"/site/groups/ /site/incoming/requests/"
 
 /* Directories for cleanup to check for broken incomplete files
  * Use same % values as with date
@@ -138,10 +139,6 @@
 #define banned_genres			"Christian Rap,R&B"
 #define allowed_genres			"Rock"
 
-/* Some dirs may be exluded from checks of bitrate, years, genres.
- */
-#define no_audio_check_dirs		"/site/groups/ /site/incoming/requests/"
-
 /* Audio related symlinks - set to TRUE if you wish to sort/symlink releases, or FALSE if not.
  */
 #define audio_genre_sort		TRUE
@@ -241,8 +238,7 @@
 #define audio_cbr		"Encoded @ %XKbps CBR in %zHz %Q."		/* Put in %j cookie */
 
 #define audio_race		"%B%U%B is racing [ %R ] on %B%r%B @ %B%.0S%BkB/s."
-#define audio_sfv		DISABLED
-//#define audio_sfv		"Got SFV for %B%r%B. Expecting %B%f%BF."
+#define audio_sfv		"Got SFV for %B%r%B. Expecting %B%f%BF."
 #define audio_update		"Got MP3 info for %B%r%B. Expecting %B%f%BF of %B%w%B from %B%Y%B. %j"
 #define audio_halfway		"%B%r%B is in halfway. Leading uploader is %C0. Leading group is %c0."
 #define audio_newleader		"%C0 takes the lead in %B%r%B!"
