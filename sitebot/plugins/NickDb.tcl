@@ -55,6 +55,7 @@ namespace eval ::ngBot::NickDb {
     variable filePath   [file join [file dirname [info script]] "Nicks.db"]
     variable scriptName [namespace current]::InviteEvent
     bind evnt -|- prerehash [namespace current]::DeInit
+    bind nick -|- "*" [namespace current]::NickChange
 }
 
 interp alias {} IsTrue {} string is true -strict
@@ -117,6 +118,7 @@ proc ::ngBot::NickDb::DeInit {args} {
     }
 
     catch {unbind evnt -|- prerehash [namespace current]::DeInit}
+    catch {unbind nick -|- "*" [namespace current]::NickChange}
 
     namespace delete [namespace current]
     return
@@ -158,6 +160,16 @@ proc ::ngBot::NickDb::InviteEvent {event ircUser ftpUser ftpGroup ftpFlags} {
     db eval {INSERT OR REPLACE INTO UserNames (time,ircUser,ftpUser) values($time,$ircUser,$ftpUser)}
 
     return 1
+}
+
+####
+# NickDb::NickChange
+#
+# Update the ircNick column when a user changes their nickname.
+#
+proc ::ngBot::NickDb::NickChange {nick host handle channel newNick} {
+    db eval {UPDATE UserNames SET ircUser=$newNick WHERE ircUser=$nick}
+    return
 }
 
 ####
