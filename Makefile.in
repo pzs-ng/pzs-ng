@@ -20,11 +20,8 @@ distclean: clean
 	find . -name Makefile | xargs rm -f
 
 clean:
-<<<<<<< .working
 	rm -f sitewho/sitewho
-=======
 	find . -name '*.o' | xargs rm -f
->>>>>>> .merge-right.r571
 	cd zipscript/src ; $(MAKE) clean
 	cd sitebot/src ; $(MAKE) clean
 	cd sitewho ; $(MAKE) clean
