@@ -63,6 +63,8 @@ char * replace_cookies(char *s) {
 			case '%': *pos++ = '%';
 			}
 		break;
+	case '(':
+	case ')':
 	case '[':
 	case ']':
 		pos += sprintf(pos, "\\%c", *s);
