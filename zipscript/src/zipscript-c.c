@@ -36,6 +36,7 @@
 #include "stats.h"
 #include "complete.h"
 #include "crc.h"
+#include "ng-version.c"
 
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
@@ -299,7 +300,7 @@ main(int argc, char **argv)
 	/*
 	 * Adding version-number to head if .debug message 15.09.2004 - psxc
 	 */
-	d_log("Project-ZS Next Generation (pzs-ng) v%s debug log.\n", VERSION);
+	d_log("Project-ZS Next Generation (pzs-ng) v%s debug log.\n", ng_version());
 
 	umask(0666 & 000);
 
@@ -312,7 +313,7 @@ main(int argc, char **argv)
 
 	if (argc != 4) {
 		d_log("Wrong number of arguments used\n");
-		printf(" - - PZS-NG ZipScript-C v" VERSION " - - dark0n3 (c) 2001 - 2004 - -\n\nUsage: %s <filename> <path> <crc>\n\n", argv[0]);
+		printf(" - - PZS-NG ZipScript-C v%s - - dark0n3 (c) 2001 - 2004 - -\n\nUsage: %s <filename> <path> <crc>\n\n", ng_version(), argv[0]);
 		exit(1);
 	}
 	d_log("Clearing arrays\n");

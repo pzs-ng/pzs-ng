@@ -17,6 +17,7 @@
 #include "stats.h"
 #include "complete.h"
 #include "crc.h"
+#include "ng-version.h"
 
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
@@ -146,7 +147,7 @@ main()
 
 	umask(0666 & 000);
 
-	d_log("PZS-NG (rescan) v%s debug log.\n", VERSION);
+	d_log("PZS-NG (rescan) v%s debug log.\n", ng_version());
 	d_log("Allocating memory for variables\n");
 	userI = malloc(sizeof(struct USERINFO *) * 30);
 	memset(userI, 0, sizeof(struct USERINFO *) * 30);

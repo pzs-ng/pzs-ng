@@ -6,7 +6,7 @@ bindir=$(prefix)/bin
 CC=@CC@
 CFLAGS=@CFLAGS@ -W -Wall @STATIC@ @NOFORMAT@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE @DEFS@ -I../include/ -I../../ -I../../lib/
 LDFLAGS=@LDFLAGS@
-UNIVERSAL=stats.o convert.o race-file.o zsfunctions.o mp3info.o
+UNIVERSAL=stats.o convert.o race-file.o zsfunctions.o mp3info.o ng-version.o
 RM=@RM@ -f
 INSTALL=@INSTALL@
 STRLCPY=../../lib/strl/strlcpy.o

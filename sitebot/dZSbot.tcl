@@ -39,14 +39,14 @@ foreach bin [array names binary] {
 ## READ LOGFILES
 set countlog 0
 foreach log [array names glftpdlog] {
-    if {![file exists $glftpdlog($log)]} {
-	putlog "dZSbot: Could not find log file $glftpdlog($log)."
-	set dzerror "1"
-	unset glftpdlog($log)
-    } else {
-	set countlog [expr $countlog + 1]
-	set lastoct($log) [file size $glftpdlog($log)]
-    }
+	if {![file exists $glftpdlog($log)]} {
+		putlog "dZSbot: Could not find log file $glftpdlog($log)."
+		set dzerror "1"
+		unset glftpdlog($log)
+	} else {
+		set countlog [expr $countlog + 1]
+		set lastoct($log) [file size $glftpdlog($log)]
+	}
 }
 if { $countlog == 0 } {
 	putlog "dZSbot: WARNING! No gl logfiles found!"
@@ -57,14 +57,14 @@ if { $countlog == 0 } {
 
 set countlog 0
 foreach login [array names loginlog] {
-    if {![file exists $loginlog($login)]} {
-	putlog "dZSbot: Could not find log file $loginlog($login)."
-	set dzerror "1"
-	unset loginlog($login)
-    } else {
-	set countlog [expr $countlog + 1]
-	set loglastoct($login) [file size $loginlog($login)]
-    }
+	if {![file exists $loginlog($login)]} {
+		putlog "dZSbot: Could not find log file $loginlog($login)."
+		set dzerror "1"
+		unset loginlog($login)
+	} else {
+		set countlog [expr $countlog + 1]
+		set loglastoct($login) [file size $loginlog($login)]
+	}
 }
 if { $countlog == 0 } {
 	putlog "dZSbot: WARNING! No login logfiles found!"
@@ -285,39 +285,39 @@ proc readlog {} {
 	set lines ""
 
 	foreach log [array names glftpdlog] {
-	    if {$lastoct($log) < [file size $glftpdlog($log)]} {
-		if {![catch {set of [open $glftpdlog($log) r]} ]} {
-			seek $of $lastoct($log)
-			while {![eof $of]} {
-				set line [gets $of]
-				if {$line == ""} { continue; }
-				lappend lines $line
+		if {$lastoct($log) < [file size $glftpdlog($log)]} {
+			if {![catch {set of [open $glftpdlog($log) r]} ]} {
+				seek $of $lastoct($log)
+				while {![eof $of]} {
+					set line [gets $of]
+					if {$line == ""} { continue; }
+					lappend lines $line
+				}
+				close $of
+			} else {
+				putlog "dZSbot error: Could not open GLLOG: $glftpdlog($log)"
+				return 0
 			}
-			close $of
-		} else {
-			putlog "dZSbot error: Could not open GLLOG: $glftpdlog($log)"
-			return 0
 		}
-	    }
-	    set lastoct($log) [file size $glftpdlog($log)]
+		set lastoct($log) [file size $glftpdlog($log)]
 	}
 
 	foreach login [array names loginlog] {
-	    if {$loglastoct($login) < [file size $loginlog($login)]} {
-		if {![catch {set of [open $loginlog($login) r]} ]} {
-			seek $of $loglastoct($login)
-			while {![eof $of]} {
-				set line [gets $of]
-				if {$line == ""} { continue; }
-				lappend lines $line
+		if {$loglastoct($login) < [file size $loginlog($login)]} {
+			if {![catch {set of [open $loginlog($login) r]} ]} {
+				seek $of $loglastoct($login)
+				while {![eof $of]} {
+					set line [gets $of]
+					if {$line == ""} { continue; }
+					lappend lines $line
+				}
+				close $of
+			} else {
+				putlog "dZSbot error: Could not open LOGINLOG: $loginlog($login)"
+				return 0
 			}
-			close $of
-		} else {
-			putlog "dZSbot error: Could not open LOGINLOG: $loginlog($login)"
-			return 0
 		}
-	    }
-	    set loglastoct($login) [file size $loginlog($login)]
+		set loglastoct($login) [file size $loginlog($login)]
 	}
 
 	foreach line $lines {
@@ -1207,7 +1207,7 @@ proc speed {nick uhost hand chan args} {
 		set output [replacevar $output "%msg" "User not online."]
 		set output [basicreplace $output "SPEED"]
 		sndone $chan $output
-        }
+	}
 
 }
 #################################################################################
@@ -1625,7 +1625,7 @@ proc invite {nick host hand arg} {
 			set output [basicreplace $output "INVITE"]
 			sndall "DEFAULT" $output
 		}
-    }
+	}
 }
 #################################################################################
 
@@ -1897,11 +1897,11 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 		set port [lindex $i 2]
 	
 		if { $bnc(PING) == "TRUE" } {
-		    if {[catch { set data [exec $binary(PING) -c1 $ip]} error]} { 
+			if {[catch { set data [exec $binary(PING) -c1 $ip]} error]} { 
 				putquick "NOTICE $nick :$count. .$loc - $ip:$port - DOWN (Can't ping host)"
 				continue
-		    }
-		    set ping ", ping: [format %.1f [lindex [split [lindex [lindex [split $data \"\n\"] 1] 6] \"=\"] 1]]ms"
+			}
+			set ping ", ping: [format %.1f [lindex [split [lindex [lindex [split $data \"\n\"] 1] 6] \"=\"] 1]]ms"
 		} else { set ping "" }
 
 		set dur [clock clicks -milliseconds]
@@ -2041,14 +2041,14 @@ proc loadtheme {file} {
 proc themereplace_startup {rstring} {
 	global theme
 
-        # We replace %b{string} and %u{string} with their bolded and underlined equivilants ;)
-        while {[regexp {(%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\})} $rstring]} {
-                regsub -all {%b\{([^\{\}]+)\}} $rstring {\\002\1\\002} rstring
-                regsub -all {%u\{([^\{\}]+)\}} $rstring {\\037\1\\037} rstring
-        }
+	# We replace %b{string} and %u{string} with their bolded and underlined equivilants ;)
+	while {[regexp {(%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\})} $rstring]} {
+		regsub -all {%b\{([^\{\}]+)\}} $rstring {\\002\1\\002} rstring
+		regsub -all {%u\{([^\{\}]+)\}} $rstring {\\037\1\\037} rstring
+	}
 
-        regsub -all {\003(\d)(?!\d)} $rstring {\\0030\1} rstring
-        return [subst -nocommands $rstring]
+	regsub -all {\003(\d)(?!\d)} $rstring {\\0030\1} rstring
+	return [subst -nocommands $rstring]
 }
 
 #################################################################################
