@@ -244,7 +244,7 @@ int main () {
 	if (findfileext(".nfo")) {
 		d_log("Removing missing-nfo indicator (if any)\n");
 		remove_nfo_indicator(locations.path);
-	} else {
+	} else if ( matchpath( no_nfo_dirs, locations.path )) {
 		d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
 		create_incomplete_nfo();
 	}
@@ -344,7 +344,7 @@ int main () {
 		if (findfileext(".nfo")) {
 			d_log("Removing missing-nfo indicator (if any)\n");
 			remove_nfo_indicator(locations.path);
-		} else {
+		} else if ( matchpath( no_nfo_dirs, locations.path )) {
 			d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
 			create_incomplete_nfo();
 		}

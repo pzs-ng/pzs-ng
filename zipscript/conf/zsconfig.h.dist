@@ -36,6 +36,7 @@
  * nocheck_dirs - paths where no checking of files occur at all. (All paths are checked by default)
  * audio_nocheck_dirs - paths where mp3 files are not checked for genre, bitrate etc.
  * allowed_types_exemption_dirs - paths where certain files are not checked/denied if no sfv-file is uploaded.
+ * no_nfo_dirs - these dirs will be checked for missing nfo's after a release is complete.
  */
 #define group_dirs                      "/site/groups/"
 #define zip_dirs                        "/site/test/ /site/incoming/0day/"
@@ -43,6 +44,7 @@
 #define nocheck_dirs                    "/site/private/"
 #define audio_nocheck_dirs              "/site/groups/ /site/incoming/requests/"
 #define allowed_types_exemption_dirs    "/site/incoming/musicvideos/"
+#define no_nfo_dirs			"/site/incoming/games/ /site/incoming/apps/"
 
 /* Certain files are needed to change uid/gid to real names.
  * All paths are chroot'ed.

@@ -369,7 +369,7 @@ int main( int argc, char **argv ) {
     }
 
     if ( incomplete == 1 && raceI.total.files > 0 ) {
-		if ((show_missing_nfo) && (!findfileext(".nfo"))) {
+		if ((show_missing_nfo) && (!findfileext(".nfo")) && (matchpath(no_nfo_dirs, locations.path))) {
 		    create_incomplete_nfo();
 		} else if (locations.nfo_incomplete) {
 			unlink(locations.nfo_incomplete);
