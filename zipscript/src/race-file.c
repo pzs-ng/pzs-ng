@@ -229,6 +229,9 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
 #endif
 #if ( sfv_cleanup == TRUE )
     int		fd_new	= open(".tmpsfv", O_CREAT|O_TRUNC|O_WRONLY, 0644);
+    if ( fd_new != NULL ) {
+        d_log("Failed to create temporary sfv file.\n");
+    }
 
     if ( sfv_comment != NULL ) {
 	write(fd_new, sfv_comment, sizeof(sfv_comment) - 1);
@@ -236,12 +239,18 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
 #endif
 
     fd = open(source, O_RDONLY);
+    if ( fd == NULL ) {
+        d_log("Failed to open %s.\n", source);
+    }
     buf = m_alloc(buf_bytes);
     read(fd, buf, buf_bytes);
     close(fd);
     eof = buf + buf_bytes;
 
     fd = open(target, O_CREAT|O_TRUNC|O_WRONLY, 0666);
+    if ( fd == NULL ) {
+        d_log("Failed to create %s.\n", target);
+    }
     write(fd, &n, sizeof(short int));
 
     for ( newline = buf ; newline < eof ; newline++ ) {
