@@ -29,6 +29,7 @@ struct GROUPINFO {
 
 
 #if ( for_glftpd2 == FALSE )
+#warn "Objects.h in gl1 compatability mode. (see zsconfig.h for setting)"
 struct ONLINE {
  char				tagline[64];	/* The users tagline */
  char   			username[24];	/* The username of the user */
@@ -37,8 +38,8 @@ struct ONLINE {
  char				currentdir[256];/* The users current dir (fullpath) */
  long				groupid;	/* The groupid of the users primary group */
  time_t				login_time;	/* The login time since the epoch (man 2 time) */
- struct timeval			tstart;		/* Replacement for last_update. */
- unsigned long			bytes_xfer;	/* Bytes transferred this far. */
+ struct timeval		tstart;		/* Replacement for last_update. */
+ unsigned long		bytes_xfer;	/* Bytes transferred this far. */
  pid_t				procid;		/* The processor id of the process */
 };
 #else
