@@ -119,8 +119,7 @@ main(int argc, char **argv)
 	d_log("zipscript-c: Clearing arrays\n");
 	bzero(&g.v.total, sizeof(struct race_total));
 	g.v.misc.slowest_user[0] = 30000;
-	g.v.misc.fastest_user[0] =
-		g.v.misc.release_type = RTYPE_NULL;
+	g.v.misc.fastest_user[0] = g.v.misc.release_type = RTYPE_NULL;
 
 	/* gettimeofday(&g.v.transfer_stop, (struct timezone *)0 ); */
 
@@ -614,6 +613,11 @@ main(int argc, char **argv)
 				sfv_msg = video_sfv;
 				sfv_type = video_announce_sfv_type;
 				break;
+			default :
+				sfv_msg = rar_sfv;
+				sfv_type = rar_announce_sfv_type;
+				d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (1:%d)\n", g.v.misc.release_type);
+				break;
 			}
 
 			if (!sfv_msg)
@@ -972,6 +976,14 @@ main(int argc, char **argv)
 				halfway_msg = CHOOSE(g.v.total.users, video_halfway, video_norace_halfway);
 				newleader_msg = video_newleader;
 				break;
+			default:
+				get_rar_info(&g.v);
+				race_msg = rar_race;
+				update_msg = rar_update;
+				halfway_msg = CHOOSE(g.v.total.users, rar_halfway, rar_norace_halfway);
+				newleader_msg = rar_newleader;
+				d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (2:%d)\n", g.v.misc.release_type);
+				break;
 			}
 
 			if (!race_msg)
@@ -1063,6 +1075,10 @@ main(int argc, char **argv)
 					case RTYPE_NULL:
 						race_type = zip_announce_race_type;
 						break;	/* zip */
+					default:
+						race_type = rar_announce_race_type;
+						d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (3:%d)\n", g.v.misc.release_type);
+						break;	/* rar */
 					}
 
 					if (!race_type)
@@ -1095,6 +1111,10 @@ main(int argc, char **argv)
 					case RTYPE_NULL:
 						newleader_type = zip_announce_newleader_type;
 						break;	/* zip */
+					default:
+						newleader_type = rar_announce_newleader_type;
+						d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (4:%d)\n", g.v.misc.release_type);
+						break;	/* rar */
 					}
 
 					if (!newleader_type)
@@ -1127,6 +1147,10 @@ main(int argc, char **argv)
 					case RTYPE_NULL:
 						update_type = zip_announce_update_type;
 						break;	/* zip */
+					default:
+						update_type = rar_announce_update_type;
+						d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (5:%d)\n", g.v.misc.release_type);
+						break;	/* rar */
 					}
 					if (!update_type)
 						d_log("zipscript-c.c: Something's messed up - update_type not set!\n");
@@ -1164,6 +1188,11 @@ main(int argc, char **argv)
 					norace_halfway_type = zip_announce_norace_halfway_type;
 					race_halfway_type = zip_announce_race_halfway_type;
 					break;	/* zip */
+				default:
+					norace_halfway_type = rar_announce_norace_halfway_type;
+					race_halfway_type = rar_announce_race_halfway_type;
+					d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (6:%d)\n", g.v.misc.release_type);
+					break;	/* rar */
 				}
 
 				if (!race_halfway_type)
@@ -1278,6 +1307,12 @@ main(int argc, char **argv)
 				complete_bar = video_completebar;
 				complete_msg = CHOOSE(g.v.total.users, video_complete, video_norace_complete);
 				complete_announce = CHOOSE(g.v.total.users, video_announce_race_complete_type, video_announce_norace_complete_type);
+				break;
+			default:
+				complete_bar = rar_completebar;
+				complete_msg = CHOOSE(g.v.total.users, rar_complete, rar_norace_complete);
+				complete_announce = CHOOSE(g.v.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
+				d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (7:%d)\n", g.v.misc.release_type);
 				break;
 			}
 
