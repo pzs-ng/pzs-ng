@@ -1076,9 +1076,12 @@ proc show_free {nick uhost hand chan arg} {
 		putlog "dZSbot error: following devices had no matching \"df -Phx\" entry: [join [array names tmpdev]]"
 		return
 	}
-	set output [replacevar $output "%total" $total]
-	set output [replacevar $output "%used" $used]
-	set output [replacevar $output "%free" $free]
+	set totalgb [format "%.1f" [expr $total / 1000]]
+        set usedgb [format "%.1f" [expr $used / 1000]]
+        set freegb [format "%.1f" [expr $free / 1000]]
+	set output [replacevar $output "%total" "${totalgb}GB"]
+	set output [replacevar $output "%used" "${usedgb}GB"]
+	set output [replacevar $output "%free" "${freegb}GB"]
 	set output [replacevar $output "%percentage" [expr round($perc/$num)]]
 	set output [replacevar $output "%devices" $devices]
 	set output [basicreplace $output "FREE"]

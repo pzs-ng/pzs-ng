@@ -97,6 +97,6 @@ announce.MSGINVITE	        = "[%b{invite}] %b{%u_name} of %g_name invited himsel
 announce.BADMSGINVITE	        = "[%b{%c1{badinv}}] %b{%u_ircnick} (%u_host) tried to invite himself with invalid login!"
 announce.WELCOME	        = "Welcome to %b{%sitename}'s sitechan. Type %cmdprehelp for help."
 
-announce.FREE		        = "[%b{space }] %devices"
-announce.FREE-DEV	        = "%section :: %b{%free} of %b{%total} (used %percentage%)."
+announce.FREE		        = "[%b{space }] %devices[Totals: %b{%free} of %b{%total} (used %percentage%)]."
+announce.FREE-DEV	        = "%section: %b{%free} of %b{%total} (used %percentage%) :: "
 
