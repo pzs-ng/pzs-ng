@@ -115,46 +115,52 @@ set mpath ""
 # SET BINDINGS                                                                  #
 #################################################################################
 
+bind join -|- * welcome_msg
+bind dcc n errorinfo errorinfo
+proc errorinfo {args} {
+	foreach line [split $::errorInfo \n] {putlog $line}
+}
+
 proc bindcommands {cmdpre} {
-    bind pub -|- [set cmdpre]bnc         ng_bnc_check
-    bind pub -|- [set cmdpre]bw          ng_bandwidth
-    bind pub -|- [set cmdpre]bwdn        ng_bwdn
-    bind pub -|- [set cmdpre]bwup        ng_bwup
-    bind pub -|- [set cmdpre]df          show_free
-    bind pub -|- [set cmdpre]free        show_free
-    bind pub -|- [set cmdpre]dn          ng_leechers
-    bind pub -|- [set cmdpre]down        ng_leechers
-    bind pub -|- [set cmdpre]downloaders ng_leechers
-    bind pub -|- [set cmdpre]leechers    ng_leechers
-    bind pub -|- [set cmdpre]dupe        ng_search
-    bind pub -|- [set cmdpre]help        help
-    bind pub -|- [set cmdpre]idle        ng_idlers
-    bind pub -|- [set cmdpre]idlers      ng_idlers
-    bind pub -|- [set cmdpre]inc         show_incompletes
-    bind pub -|- [set cmdpre]incomplete  show_incompletes
-    bind pub -|- [set cmdpre]incompletes show_incompletes
-    bind pub -|- [set cmdpre]new         ng_new
-    bind pub -|- [set cmdpre]nukes       ng_nukes
-    bind pub -|- [set cmdpre]search      ng_search
-    bind pub -|- [set cmdpre]speed       speed
-    bind pub -|- [set cmdpre]unnukes     ng_unnukes
-    bind pub -|- [set cmdpre]up          ng_uploaders
-    bind pub -|- [set cmdpre]uploaders   ng_uploaders
-    bind pub -|- [set cmdpre]who         who
+	bind pub -|- [set cmdpre]bnc         ng_bnc_check
+	bind pub -|- [set cmdpre]bw          ng_bandwidth
+	bind pub -|- [set cmdpre]bwdn        ng_bwdn
+	bind pub -|- [set cmdpre]bwup        ng_bwup
+	bind pub -|- [set cmdpre]df          show_free
+	bind pub -|- [set cmdpre]free        show_free
+	bind pub -|- [set cmdpre]dn          ng_leechers
+	bind pub -|- [set cmdpre]down        ng_leechers
+	bind pub -|- [set cmdpre]downloaders ng_leechers
+	bind pub -|- [set cmdpre]leechers    ng_leechers
+	bind pub -|- [set cmdpre]dupe        ng_search
+	bind pub -|- [set cmdpre]help        help
+	bind pub -|- [set cmdpre]idle        ng_idlers
+	bind pub -|- [set cmdpre]idlers      ng_idlers
+	bind pub -|- [set cmdpre]inc         show_incompletes
+	bind pub -|- [set cmdpre]incomplete  show_incompletes
+	bind pub -|- [set cmdpre]incompletes show_incompletes
+	bind pub -|- [set cmdpre]new         ng_new
+	bind pub -|- [set cmdpre]nukes       ng_nukes
+	bind pub -|- [set cmdpre]search      ng_search
+	bind pub -|- [set cmdpre]speed       speed
+	bind pub -|- [set cmdpre]unnukes     ng_unnukes
+	bind pub -|- [set cmdpre]up          ng_uploaders
+	bind pub -|- [set cmdpre]uploaders   ng_uploaders
+	bind pub -|- [set cmdpre]who         who
 
-    bind pub -|- [set cmdpre]gpad    [list showstats "-d" "-A"]
-    bind pub -|- [set cmdpre]gpal    [list showstats "-u" "-A"]
-    bind pub -|- [set cmdpre]gpwk    [list showstats "-d" "-W"]
-    bind pub -|- [set cmdpre]gwpd    [list showstats "-u" "-W"]
+	bind pub -|- [set cmdpre]gpad    [list showstats "-d" "-A"]
+	bind pub -|- [set cmdpre]gpal    [list showstats "-u" "-A"]
+	bind pub -|- [set cmdpre]gpwk    [list showstats "-d" "-W"]
+	bind pub -|- [set cmdpre]gwpd    [list showstats "-u" "-W"]
 
-    bind pub -|- [set cmdpre]alldn   [list showstats "-d" "-a"]
-    bind pub -|- [set cmdpre]allup   [list showstats "-u" "-a"]
-    bind pub -|- [set cmdpre]daydn   [list showstats "-d" "-t"]
-    bind pub -|- [set cmdpre]dayup   [list showstats "-u" "-t"]
-    bind pub -|- [set cmdpre]monthdn [list showstats "-d" "-m"]
-    bind pub -|- [set cmdpre]monthup [list showstats "-u" "-m"]
-    bind pub -|- [set cmdpre]wkdn    [list showstats "-d" "-w"]
-    bind pub -|- [set cmdpre]wkup    [list showstats "-u" "-w"]
+	bind pub -|- [set cmdpre]alldn   [list showstats "-d" "-a"]
+	bind pub -|- [set cmdpre]allup   [list showstats "-u" "-a"]
+	bind pub -|- [set cmdpre]daydn   [list showstats "-d" "-t"]
+	bind pub -|- [set cmdpre]dayup   [list showstats "-u" "-t"]
+	bind pub -|- [set cmdpre]monthdn [list showstats "-d" "-m"]
+	bind pub -|- [set cmdpre]monthup [list showstats "-u" "-m"]
+	bind pub -|- [set cmdpre]wkdn    [list showstats "-d" "-w"]
+	bind pub -|- [set cmdpre]wkup    [list showstats "-u" "-w"]
 }
 
 if {[string equal -nocase "YES" $bindnopre]} {
@@ -202,8 +208,6 @@ if {[string equal -nocase "YES" $bindnopre]} {
 
 ## Bind the user defined command prefix.
 bindcommands $cmdpre
-bind join -|- * welcome_msg
-
 
 ## Some 'constants'
 proc DEFAULT_LEVEL {{string 0}} {
