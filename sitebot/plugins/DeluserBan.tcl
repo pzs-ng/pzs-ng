@@ -105,6 +105,7 @@ proc ::ngBot::DeluserBan::LogEvent {event section logData} {
     set ircUser [GetIrcUser $ftpUser]
     if {[string equal "" $ircUser]} {
         putlog "\[ngBot\] DeluserBan :: Unable to retrieve the IRC user for \"$ftpUser\", you will have to kick them manually."
+        return 1
     }
 
     set reason [string map [list %(user) $ftpSiteop] $message]
