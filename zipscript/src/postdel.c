@@ -308,7 +308,7 @@ main(int argc, char **argv)
 			temp_p = findfileext(".zip");
 			if (temp_p != NULL) {
 				d_log("file_id.diz does not exist, trying to extract it from %s\n", temp_p);
-				sprintf(target, "%s -qqjnCL %s file_id.diz", unzip_bin, temp_p);
+				sprintf(target, "%s -qqjnCLL %s file_id.diz", unzip_bin, temp_p);
 				execute(target);
 				chmod("file_id.diz", 0666);
 			}

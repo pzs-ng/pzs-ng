@@ -358,7 +358,7 @@ main()
 				raceI.total.start_time = 0;
 
 				if (!fileexists("file_id.diz")) {
-					sprintf(exec, "%s -qqjnCL %s file_id.diz > file_id.diz", unzip_bin, raceI.file.name);
+					sprintf(exec, "%s -qqjnCLL %s file_id.diz", unzip_bin, raceI.file.name);
 					execute(exec);
 					chmod("file_id.diz", 0666);
 				}

@@ -518,17 +518,18 @@ main(int argc, char **argv)
 			}
 			if (!fileexists("file_id.diz")) {
 				d_log("file_id.diz does not exist, trying to extract it from %s\n", raceI.file.name);
-				sprintf(target, "%s -qqjnCL %s file_id.diz", unzip_bin, raceI.file.name);
+				sprintf(target, "%s -qqjnCLL %s file_id.diz", unzip_bin, raceI.file.name);
 				if (execute(target) != 0) {
 					d_log("No file_id.diz found: %s\n", strerror(errno));
 				}
 				chmod("file_id.diz", 0666);
 			}
-			d_log("Reading diskcount from diz\n");
+			d_log("Reading diskcount from diz:\n");
 			raceI.total.files = read_diz("file_id.diz");
+			d_log("   Expecting %d files.\n", raceI.total.files);
 
 			if (raceI.total.files == 0) {
-				d_log("Could not get diskcount from diz\n");
+				d_log("   Could not get diskcount from diz.\n");
 				raceI.total.files = 1;
 				unlink("file_id.diz");
 			}
