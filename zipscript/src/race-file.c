@@ -461,7 +461,7 @@ copysfv(const char *source, const char *target)
 				ptr++;
 			
 			ptr -= i;
-			if (i != 8) {
+			if (i > 8 || i < 6) {
 				/* we didn't get an 8 digit crc number */
 #if (sfv_cleanup == TRUE)
 				/* do stuff  */
@@ -491,11 +491,16 @@ copysfv(const char *source, const char *target)
 		}
 
 		/* we assume what's left is a filename */
+		if (*fbuf == ' ' || *fbuf == '\t') {
+			d_log("entry in sfv is starting with a SPACE of TAB char. Logging file file as bad.\n");
+			retval = 1;
+			break;
+			}
 		if (strlen(fbuf) > 0 && strlen(fbuf) < NAME_MAX-9 ) {
 			strlcpy(sd.fname, fbuf, NAME_MAX-9);
 
-			if (sd.fname != find_last_of(sd.fname, "/") || *sd.fname == '/') {
-				d_log("copysfv: found '/' in sfv - logging file as bad.\n");
+			if (sd.fname != find_last_of(sd.fname, "\t/") || *sd.fname == '/') {
+				d_log("copysfv: found '/' or TAB in sfv - logging file as bad.\n");
 				retval = 1;
 				break;
 			}
