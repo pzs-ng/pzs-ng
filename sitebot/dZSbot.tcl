@@ -741,9 +741,13 @@ proc help {nick uhost hand chan arg} {
 #################################################################################
 proc loadtheme {file} {
 	global theme
-	set ret 1
 
 	if {[string index $file 0] != "/"} { set file "[file dirname [info script]]/$file" }
+	if {![file readable $file]} {
+		putlog "dZSbot: themefile is not readable or does not exist. ($file)"
+		return 0
+	}
+	
 	set fh [open $file]
 	set content [split [read -nonewline $fh] "\n"]
 	close $fh
@@ -763,6 +767,7 @@ proc loadtheme {file} {
 	foreach name [array names theme] { set theme($name) [themereplace $theme($name)] }
 	foreach name [array names theme_fakes] { set theme_fakes($name) [themereplace $theme_fakes($name)] }
 
+	set ret 1
 	set required "PREFIX"
 	foreach req [split $required " "] {
 		if {[lsearch -exact [array names theme] $req] == -1} {
