@@ -868,7 +868,7 @@ proc loadtheme {file} {
 				set theme_fakes($setting) $value
 			} elseif {[regexp -nocase -- {announce\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
 				set announcetmp($setting) $value
-			} elseif {[regexp -nocase -- {(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+			} elseif {[regexp -nocase -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
 				set theme($setting) $value
 			}
 		}
