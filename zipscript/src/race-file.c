@@ -305,12 +305,8 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 					}
 				}
 			}
-			if (fseek(file, sizeof(RACEDATA) * filenum, SEEK_SET) == -1) {
-				d_log("Error - failed to seek in racefile - %s\n", strerror(errno));
-				break;
-			}
+			fseek(file, sizeof(RACEDATA), SEEK_SET);
 			fwrite(&rd, sizeof(RACEDATA), 1, file);
-			filenum++;
 		}
 
 		strlcpy(raceI->file.name, realfile, strlen(realfile));
