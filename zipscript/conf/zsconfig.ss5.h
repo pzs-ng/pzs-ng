@@ -455,8 +455,8 @@
 #define get_competitor_list	TRUE
 #define racersmsg		"%u/%g"
 
-#define audio_vbr		"%w %Y VBR %i %I"
-#define audio_cbr		"%w %Y %X"
+#define audio_vbr		"VBR %i %I"
+#define audio_cbr		"CBR"
 
 #define audio_race		"%U %G %.0S {%R}"
 #define audio_sfv		"%f"
