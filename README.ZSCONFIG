@@ -1071,6 +1071,7 @@ racersplit_prior <STRING>
 chmod_completebar <TRUE|FALSE>
 	When TRUE, the permissions on the file/dir is changed to 0222. This is
 	to prevent it from being transfered on download/fxp.
+	Note that this will not happen in group-dirs.
 	Default: FALSE
 
 mark_empty_dirs_as_incomplete_on_rescan <TRUE|FALSE>

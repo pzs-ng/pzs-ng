@@ -358,7 +358,9 @@ main()
 			complete(&locations, &raceI, userI, groupI, complete_type);
 			createstatusbar(convert(&raceI, userI, groupI, complete_bar));
 #if (chmod_completebar)
-			chmod(convert(&raceI, userI, groupI, complete_bar), 0222);
+			if (!matchpath(group_dirs, locations.path)) {
+				chmod(convert(&raceI, userI, groupI, complete_bar), 0222);
+			}
 #endif
 		} else {
 			if (!matchpath(group_dirs, locations.path) || create_incomplete_links_in_group_dirs) {
@@ -425,7 +427,9 @@ main()
 			complete(&locations, &raceI, userI, groupI, complete_type);
 			createstatusbar(convert(&raceI, userI, groupI, zip_completebar));
 #if (chmod_completebar)
-			chmod(convert(&raceI, userI, groupI, zip_completebar), 0222);
+			if (!matchpath(group_dirs, locations.path)) {
+				chmod(convert(&raceI, userI, groupI, zip_completebar), 0222);
+			}
 #endif
 
 		} else {

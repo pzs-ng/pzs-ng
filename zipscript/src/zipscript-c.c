@@ -1335,7 +1335,11 @@ main(int argc, char **argv)
 			d_log("Creating complete bar\n");
 			createstatusbar(convert(&raceI, userI, groupI, complete_bar));
 #if (chmod_completebar)
-			chmod(convert(&raceI, userI, groupI, complete_bar), 0222);
+			if (!matchpath(group_dirs, locations.path)) {
+				chmod(convert(&raceI, userI, groupI, complete_bar), 0222);
+			} else {
+				d_log("we are in a group_dir - will not chmod the complete bar.\n");
+			}
 #endif
 
 #if ( enable_complete_script == TRUE )
