@@ -12,7 +12,11 @@ ipc_key = 0x0000DEAD
 grp_path = /etc/group
 idle_barrier = 30
 
-##############
+##################################################################################################################
+#
+# CONFIG OPTIONS
+################
+#
 # glrootpath = /glftpd/ ... rootpath of glftpd
 # headerfile = /ftp-data/misc/who.head ... shown before the list of users in non-raw mode.
 # footerfile = /ftp-data/misc/who.foot ... shown below the list of users in non-raw mode.
@@ -22,10 +26,19 @@ idle_barrier = 30
 # seeallflags = Users with these flags see everything
 # maxusers = 20 ... max users displayed on output
 # case_insensitive = <true|false> ... use case insensitive comparison when checking for hidden users/groups
-# count_hidden = <true|false> ... include hidden users in the count of users online.
-# ipc_key = "0x0000DEAD" ... ipc-key used in glftpd
-# grp_path = "/etc/group" ... (chroot'ed) path to glftpd's groupfile
+# count_hidden = <true|false> ... set to 'true' to count hidden users when displaying the total stats.
+# ipc_key = 0x0000DEAD ... ipc-key used in glftpd
+# grp_path = /etc/group ... (chroot'ed) path to glftpd's groupfile
 # idle_barrier = 30 ... when a user has been idle for more than this number, he is considered an idler. if less,
-                          he is considered a browser.
-##################################################
+#                       he is considered a browser.
+#
+# Sitewho takes several args:
+# ./sitewho <username> - show user
+# ./sitewho - show all users
+# ./sitewho --raw - show all users, display in raw format
+# ./sitewho --ss5 - show all users, display in ss5 format
+# ./sitewho --nbw - show total stats for all users
+# ./sitewho --raw <username> - show username, display in raw format
+# ./sitewho --ss5 <username> - show username, display in ss5 format
+#################################################################################################################
 
