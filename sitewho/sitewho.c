@@ -596,7 +596,7 @@ main(int argc, char **argv)
 		showusers(ipcbuf.shm_segsz / sizeof(struct ONLINE), argc - 2, argv[user_idx], raw_output);
 
 
-	if (argc == 1 || (raw_output)) {
+	if (argc == 1) {
 		showtotals(raw_output);
 		if (!raw_output)
 			show(footer);
@@ -608,8 +608,9 @@ main(int argc, char **argv)
 				printf("\"ERROR\" \"User %s not online.\"\n", argv[user_idx]);
 		}
 #ifndef _WITH_ALTWHO
-		else
+		else if (!raw_output) {
 			printf("\n");
+		}
 #endif
 	}
 
