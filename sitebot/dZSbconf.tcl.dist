@@ -1,10 +1,10 @@
-#########################################################
-# This script is part of zipscript-c made by dark0n3    #
-# Modified by (c) daxxar <daxxar@mental.mine.nu>        #
-# This is configuration for dZSbot.tcl                  #
-#########################################################
-# BASIC CONFIG                                          #
-#########################################################
+#############################################################
+# Project Zipscript Next Generation - Sitebot Configuration #
+#                (originally by Dark0n3)                    #
+# This is configuration for dZSbot.tcl                      #
+#############################################################
+# BASIC CONFIG                                              #
+#############################################################
 # Locations of all the usual files, change is usually only required
 # if you have another glroot than /glftpd/ =)
 set location(GLLOG)		"/glftpd/ftp-data/logs/glftpd.log"
@@ -12,7 +12,7 @@ set location(PASSWD)		"/glftpd/etc/passwd"
 set location(USERS)		"/glftpd/ftp-data/users/"
 
 # Should the bot die if a binary is missing - or just output that something is wrong?
-set die_on_error		NO
+set die_on_error		"NO"
 
 # Are you using glftpd2? Default setting ("AUTO") should be safe,
 # enables autodetection (if binary(GLFTPD) is set correctly)
@@ -28,7 +28,7 @@ set msgtypes(DEFAULT) 		"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT REQUEST REQF
 # Sitename is for the %sitename-cookie in announces :)
 set sitename			"pzs-ng"
 # Prefix on commands (f. x. !pnfree if cmdpre is !pn, !free if cmdpre is !, etc)
-# bindnopre does not replace the cmd pre command, it meirly adds a second 
+# bindnopre does not replace the cmd pre command, it meirly adds a second
 # trigger option. example: you can set cmdpre to !pn but if bindnopre is set to # "YES" then the sitebot will respond to !pnbnc and also !bnc useful for rings.
 set cmdpre			"!pn"
 set bindnopre			"YES"
@@ -59,7 +59,7 @@ set minidletime			"30"
 # What sections are we announcing for? (Remeber to define path and type below)
 set sections			"TEST GAMES APPS MP3 0DAY MV"
 
-# The sections we allow checking of stats on, remember that the number in 
+# The sections we allow checking of stats on, remember that the number in
 # parantheses must be the same as the number of the section in glftpd config =)
 set statsection(0)		"MP3"
 set statsection(1)		"0DAY"
@@ -173,7 +173,7 @@ set disable(WIPE-r)					0
 #########################################################
 
 # Space separated list of wildcards that we match against
-# paths to see if we announce it or not =) 
+# paths to see if we announce it or not =)
 # REMEMBER: This is CaSe SeNsItIvE.
 set denypost						""
 
@@ -218,7 +218,7 @@ set variables(BADBITRATE)	"%pf %user %group %bitrate"
 set variables(BADGENRE)		"%pf %user %group %genre"
 set variables(BADYEAR)		"%pf %user %group %year"
 set variables(RACE)		"%pf %user %group %against %rel %spd"
-set variables(SFV)		"%pf %rel %files %user %group" 
+set variables(SFV)		"%pf %rel %files %user %group"
 set variables(UPDATE)		"%pf %user %group %files %spd %mbytes"
 set variables(UPDATE)		"%pf %user %group %files %spd %mbytes"
 set variables(UPDATE_RAR)	"%pf %user %group %files %spd %mbytes"
@@ -293,4 +293,3 @@ set announce(THEMEFILE)				"avizion.zst"
 # Stats for each device (Replaces %devices in announce(FREE) for each device), here you can use
 # %free, %total and %used :)
 # 2004-08-16: Layout of "FREE" has been moved to THEMEFILE. (avizion)
-

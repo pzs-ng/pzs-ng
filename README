@@ -12,6 +12,11 @@ others, to check the integrity of the files uploaded, and make sure a
 Of course, this is not the only thing done by this zipscript ;). Read on to
 find out why this zipscript is considered the best of the bunch by most.
 
+Find us on the web:
+
+http://www.pzs-ng.com
+http://bugs.pzs-ng.com
+
 
 History:
 --------
@@ -114,7 +119,7 @@ features beyond simple file checking. Here's a list of a few things it can do:
 
 Along with the included sitebot (more on this later) we can pass this
 information on to an IRC channel, which in turn will make the site
-seem alive, and help traders/couriers in their work. Using a bot also has
+seem alive, and help couriers in their work. Using a bot also has
 a high fun-factor :)
 
 
@@ -338,6 +343,4 @@ that it's working and have found its way into your channel.
 <mental note - add something about editing sitebot/src/structonline.h if
 the user uses a different ipc key than default>
 
-<SOMEONE PLEASE FILL IN STUFF HERE>
-
-....
+For details on the sitebot please read the file "sitebot/README".
