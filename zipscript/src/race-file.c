@@ -72,7 +72,6 @@ unsigned int
 readsfv(const char *path, struct VARS *raceI, int getfcount)
 {
 	int		insfv = 0;
-	short int	l_sfv_version = 0, v_sfv_version = sfv_version;
 	unsigned int	crc = 0;
 	FILE		*sfvfile;
 	DIR		*dir;
@@ -90,18 +89,8 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 		exit(EXIT_FAILURE);
 	}
 
-	/* check version of the sfvdata */
-	fread(&l_sfv_version, sizeof(short int), 1, sfvfile);
-	if (l_sfv_version != v_sfv_version) {
-		d_log("sfvdata out of date - removing.\n");
-		fclose(sfvfile);
-		unlink(path);
-		return 0;
-	}
+	raceI->misc.release_type = raceI->data_type;
 
-	/* release_type is stored in the beginning of sfvdata */
-	fread(&raceI->misc.release_type, sizeof(short int), 1, sfvfile);
-	
 	d_log("readsfv: Reading data from sfv for (%s)\n", raceI->file.name);
 	
 	dir = opendir(".");
@@ -151,8 +140,6 @@ update_sfvdata(const char *path, const unsigned int crc)
 
 	sd.crc32 = crc;
 	
-	lseek(fd, sizeof(short int) * 2, SEEK_CUR);
-
 	while (read(fd, &sd, sizeof(SFVDATA))) {
 		if (strcasecmp(path, sd.fname) == 0) {
 			sd.crc32 = crc;
@@ -184,8 +171,6 @@ sfvdata_to_sfv(const char *source, const char *dest)
 		d_log("sfvdata_to_sfv: Failed to open (.tmpsfv): %s\n", strerror(errno));
 		return;
 	}
-
-	lseek(infd, sizeof(short int) * 2, SEEK_CUR);
 
 	while (read(infd, &sd, sizeof(SFVDATA))) {
 		
@@ -225,9 +210,6 @@ delete_sfv(const char *path)
 		exit(EXIT_FAILURE);
 	}
 	
-	/* jump past release_type */
-	fseek(sfvfile, sizeof(short int) * 2, SEEK_CUR);
-
 	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
 		snprintf(missing_fname, NAME_MAX, "%s-missing", sd.fname);
 		if ((f = findfilename(missing_fname, f)))
@@ -392,10 +374,10 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
  * Totally rewritten by js on 08.02.2005
  */
 int
-copysfv(const char *source, const char *target)
+copysfv(const char *source, const char *target, struct VARS *raceI)
 {
 	int		infd, outfd, i, retval = 0;
-	short int	music, rars, video, others, type, l_sfv_version = sfv_version;
+	short int	music, rars, video, others, type;
 	
 	char		*ptr, fbuf[2048];
 	FILE		*insfv;
@@ -431,9 +413,12 @@ copysfv(const char *source, const char *target)
 
 	dir = opendir(".");
 
-	write(outfd, &l_sfv_version, sizeof(short int));
-	write(outfd, &type, sizeof(short int));
-	
+	if (!update_lock(raceI, 1, 0)) {
+		d_log("copysfv: Lock is suggested removed. Will comply and exit\n");
+		remove_lock(raceI);
+		exit(EXIT_FAILURE);
+	}
+
 	insfv = fdopen(infd, "r");
 	while ((fgets(fbuf, sizeof(fbuf), insfv))) {
 		
@@ -527,8 +512,6 @@ copysfv(const char *source, const char *target)
 			if (!strcomp(ignored_types, ptr)) {
 
 #if ( sfv_dupecheck == TRUE )
-				lseek(outfd, sizeof(short int)*2, SEEK_SET);
-				
 				/* read from sfvdata - no parsing */
 				skip = 0;
 				while (read(outfd, &tempsd, sizeof(SFVDATA)))
@@ -601,9 +584,12 @@ END:
 #endif
 	
 	closedir(dir);
-	lseek(outfd, sizeof(short int), SEEK_SET);
-	write(outfd, &type, sizeof(short int));
 	close(outfd);
+	if (!update_lock(raceI, 1, type)) {
+		d_log("copysfv: Lock is suggested removed. Will comply and exit\n");
+		remove_lock(raceI);
+		exit(EXIT_FAILURE);
+	}
 	
 	return retval;
 }
@@ -852,7 +838,7 @@ verify_racedata(const char *path)
 			tmprd = realloc(tmprd, sizeof(RACEDATA)*(i+1));
 			memcpy(&tmprd[i], &rd, sizeof(RACEDATA));
 			i++;
-		} else {
+		} else if (rd.fname) {
 			d_log("verify_racedata: Oops! %s is missing - removing from racedata\n", rd.fname);
 			create_missing(rd.fname);
 		}
@@ -907,6 +893,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 		hd.data_type = 0;
 		hd.data_in_use = progtype;
 		hd.data_incrementor = 1;
+		hd.data_queue = 0;
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
 	} else {
@@ -916,7 +903,11 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 				d_log("create_lock: Unlock forced.\n");
 			} else {
 				d_log("create_lock: Data is already locked.\n");
+				hd.data_queue++;
+				lseek(fd, 0L, SEEK_SET);
+				write(fd, &hd, sizeof(HEADDATA));
 				close(fd);
+				raceI->data_queue = hd.data_queue;
 				return hd.data_in_use;
 			}
 		}
@@ -932,6 +923,8 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 			close(fd);
 			return 1;
 		}
+		if (hd.data_queue)
+			hd.data_queue--;
 		lseek(fd, 0L, SEEK_SET);
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
@@ -979,13 +972,17 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 		d_log("update_lock: open(%s): %s\n", raceI->headpath, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-
 	read(fd, &hd, sizeof(HEADDATA));
+
+	if (hd.data_version != sfv_version) {
+		d_log("create_lock: version of datafile mismatch. Stopping and suggesting a cleanup.\n");
+		close(fd);
+		return 1;
+	}
 	if ((hd.data_in_use != raceI->data_in_use) && counter) {
 		d_log("update_lock: Lock not active or progtype mismatch - no choice but to exit.\n");
 		exit(EXIT_FAILURE);
 	}
-
 	if (((counter) && (hd.data_incrementor < raceI->data_incrementor)) || !hd.data_incrementor) {
 		d_log("update_lock: Lock suggested removed by a different process.\n");
 		retval = 0;

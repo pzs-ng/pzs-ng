@@ -34,7 +34,7 @@
 int 
 main(void)
 {
-	int		n, m, l, complete_type = 0, gnum = 0, unum = 0;
+	int		k, n, m, l, complete_type = 0, gnum = 0, unum = 0;
 	char           *ext, exec[4096], *complete_bar = 0, *inc_point[2];
 	unsigned int	crc;
 	struct stat	fileinfo;
@@ -104,9 +104,22 @@ main(void)
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
 
 	d_log("rescan: Locking release\n");
-	if (create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0)) {
+	if ((k = create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0))) {
 		d_log("rescan: Failed to lock release.\n");
-		exit(EXIT_FAILURE);
+		if (k == 1) {
+			d_log("rescan: version mismatch. Exiting.\n");
+			exit(EXIT_FAILURE);
+		}
+		for ( k = 0; k <= 20; k++) {
+			d_log("rescan: sleeping for 1 second before trying to get a lock.\n");
+			sleep(1);
+			if (!create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0))
+				break;
+		}
+		if (k >= max_seconds_wait_for_lock) {
+			d_log("rescan: Failed to get lock. Will not force unlock.\n");
+			exit(EXIT_FAILURE);
+		}
 	}
 
 	move_progress_bar(1, &g.v, g.ui, g.gi);
@@ -126,7 +139,7 @@ main(void)
 		strlcpy(g.v.file.name, findfileext(dir, ".sfv"), NAME_MAX);
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
-		if (copysfv(g.v.file.name, g.l.sfv)) {
+		if (copysfv(g.v.file.name, g.l.sfv, &g.v)) {
 			printf("Found invalid entries in SFV - Exiting.\n");
 
 			while ((dp = readdir(dir))) {

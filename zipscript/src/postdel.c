@@ -44,7 +44,7 @@ main(int argc, char **argv)
 	char		*env_user;
 	char		*env_group;
 	char	        *inc_point[2];
-	int		n;
+	int		n, m;
 	unsigned char	empty_dir = 0;
 	unsigned char	incomplete = 0;
 	
@@ -100,9 +100,29 @@ main(int argc, char **argv)
 	parent = opendir("..");
 
 	d_log("postdel: Locking release\n");
-	if (create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0)) {
+	if ((m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0))) {
 		d_log("postdel: Failed to lock release.\n");
-		exit(EXIT_FAILURE);
+		if (m == 1) {
+			d_log("postdel: version mismatch. Exiting.\n");
+			exit(EXIT_FAILURE);
+		}
+		if (m == PROGTYPE_RESCAN) {
+			d_log("postdel: Detected rescan running - will try to make it quit.\n");
+			update_lock(&g.v, 0, 0);
+		}
+		for ( m = 0; m <= 20; m++) {
+			d_log("postdel: sleeping for 1 second before trying to get a lock.\n");
+			sleep(1);
+			if (!create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0))
+				break;
+		}
+		if (m >= max_seconds_wait_for_lock) {
+			d_log("postdel: Failed to get lock. Forcing unlock.\n");
+			if (create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 2)) {
+				d_log("postdel: Failed to force a lock. No choice but to exit.\n");
+				exit(EXIT_FAILURE);
+			}
+		}
 	}
 
 	if (fileexists(fname)) {

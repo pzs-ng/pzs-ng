@@ -1123,6 +1123,17 @@ mark_empty_dirs_as_incomplete_on_rescan <TRUE|FALSE>
 	dirs that are rescanned will then be marked as incomplete
 	Default: FALSE
 
+max_seconds_wait_for_lock <NUMBER>
+	This number representents the maximum number of seconds a process will
+	wait for a lock on release. Usually only a second or two will actually
+	be used, since the only program using time by default is rescan, and it
+	has a low priority, which the other processes will provide a signal to
+	quit.
+	Anyway, not something you should worry too much about, unless your site
+	usually holds files in the 100MB area on a slow/busy server that're
+	rescanned on a regular basis.
+	Default: 20
+
 allow_uid_change_in_ng_chown <TRUE|FALSE>
 	ng-chown is a binary that changes the uid/gid of files dirs. In
 	order for it to work you have to enable a few things. This variable

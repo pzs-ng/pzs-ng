@@ -81,7 +81,7 @@ main(int argc, char **argv)
 	unsigned char	complete_type = 0;
 #endif
 	char           *complete_announce = 0;
-	int		cnt, cnt2, n = 0;
+	int		cnt, cnt2, n = 0, m = 0;
 	int		write_log = 0;
 	long		loc;
 #if ( enable_complete_script || enable_accept_script )
@@ -281,19 +281,23 @@ main(int argc, char **argv)
 	maketempdir(g.l.path);
 
 	d_log("zipscript-c: Locking release\n");
-	if ((crc = create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0))) {
+	if ((m = create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0))) {
 		d_log("zipscript-c: Failed to lock release.\n");
-		if (crc == PROGTYPE_RESCAN) {
+		if (m == 1) {
+			d_log("zipscript-c: version mismatch. Exiting.\n");
+			exit(EXIT_FAILURE);
+		}
+		if (m == PROGTYPE_RESCAN) {
 			d_log("zipscript-c: Detected rescan running - will try to make it quit.\n");
 			update_lock(&g.v, 0, 0);
 		}
-		for ( crc = 0; crc <= 20; crc ++) {
+		for ( m = 0; m <= 20; m++) {
 			d_log("zipscript-c: sleeping for 1 second before trying to get a lock.\n");
 			sleep(1);
 			if (!create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0))
 				break;
 		}
-		if (crc >= 20) {
+		if (m >= max_seconds_wait_for_lock) {
 			d_log("zipscript-c: Failed to get lock. Forcing unlock.\n");
 			if (create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 2)) {
 				d_log("zipscript-c: Failed to force a lock. No choice but to exit.\n");
@@ -521,7 +525,7 @@ main(int argc, char **argv)
 				}
 			}
 			d_log("zipscript-c: Parsing sfv and creating sfv data\n");
-			if (copysfv(g.v.file.name, g.l.sfv)) {
+			if (copysfv(g.v.file.name, g.l.sfv, &g.v)) {
 				d_log("zipscript-c: Found invalid entries in SFV.\n");
 				write_log = g.v.misc.write_log;
 				g.v.misc.write_log = 1;

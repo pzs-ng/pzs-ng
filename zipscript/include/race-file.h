@@ -24,10 +24,11 @@ typedef struct {
 
 /* this is what we put in a special 'head' file for version control, lock etc */
 typedef struct {
-	short int	data_version;
-	short int	data_type;
-	short int	data_in_use;
-	short int	data_incrementor;
+	short int	data_version;		// version control.
+	short int	data_type;		// type of release.
+	short int	data_in_use;		// which program currently holds the lock.
+	short int	data_incrementor;	// a check to see if nothing else wants the lock.
+	short int	data_queue;		// position in queue.
 } HEADDATA;
 
 extern unsigned int readsfv(const char *, struct VARS *, int);
@@ -38,7 +39,7 @@ extern void readrace(const char *, struct VARS *, struct USERINFO **, struct GRO
 extern void maketempdir(char *);
 extern void read_write_leader(const char *, struct VARS *, struct USERINFO *);
 extern void testfiles(struct LOCATIONS *, struct VARS *, int);
-extern int copysfv(const char *, const char *);
+extern int copysfv(const char *, const char *, struct VARS *);
 extern void create_indexfile(const char *, struct VARS *, char *);
 extern short clear_file(const char *, char *);
 extern void writerace(const char *, struct VARS *, unsigned int, unsigned char);

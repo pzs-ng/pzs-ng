@@ -977,6 +977,10 @@
 #define mark_empty_dirs_as_incomplete_on_rescan	FALSE
 #endif
 
+#ifndef max_seconds_wait_for_lock
+#define max_seconds_wait_for_lock	20
+#endif
+
 /*
  * Some setting used in ng-chown
  * -----------------------------
