@@ -87,8 +87,14 @@ extern unsigned int direntries;
 extern void	d_log(char *,...);
 
 extern void	create_missing(char *);
-extern char    *findfileext(char *);
-extern char    *findfileextparent(char *);
+extern char    *findfileext(DIR *, char *);
+extern char    *findfileextparent(DIR *, char *);
+
+/* replace these with the ones above everywhere */
+extern char    *findfileext_old_(char *);
+extern char    *findfileext_old_parent(char *);
+/* mkay? */
+
 extern int	findfileextcount(char *);
 extern unsigned int hexstrtodec(unsigned char *);
 #if defined(__linux__) || defined(__NetBSD__)

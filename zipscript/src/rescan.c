@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 
 #include "zsfunctions.h"
+#include "helpfunctions.h"
 #include "race-file.h"
 #include "objects.h"
 #include "macros.h"
@@ -42,6 +43,9 @@ main()
 	uid_t		f_uid;
 	gid_t		f_gid;
 	double		temp_time = 0;
+
+	DIR		*dir, *parent;
+	struct dirent	*dp;
 
 	GLOBAL		g;
 
@@ -94,7 +98,7 @@ main()
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
 
-	rescandir(2);
+	//rescandir(2);
 	move_progress_bar(1, &g.v, g.ui, g.gi);
 	if (g.l.incomplete)
 		unlink(g.l.incomplete);
@@ -104,63 +108,55 @@ main()
 	if (g.l.sfv)
 		unlink(g.l.sfv);
 	printf("Rescanning files...\n");
-	rescandir(2);		/* Rescan dir after deleting files.. */
 	
-	if (findfileext(".sfv")) {
-		strlcpy(g.v.file.name, findfileext(".sfv"), PATH_MAX);
+	dir = opendir(".");
+	parent = opendir("..");
+
+	if (findfileext(dir, ".sfv")) {
+		strlcpy(g.v.file.name, findfileext(dir, ".sfv"), PATH_MAX);
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
 		if (copysfv(g.v.file.name, g.l.sfv)) {
 			printf("Found invalid entries in SFV - Exiting.\n");
 
-			rescandir(2);
-			n = direntries;
-			while (n--) {
-				m = l = strlen(dirlist[n]->d_name);
-				ext = dirlist[n]->d_name;
-				while (ext[m] != '-' && m > 0)
-					m--;
-				if (ext[m] != '-')
-					m = l;
-				else
-					m++;
-				ext += m;
-				if (!strncmp(ext, "missing", 7))
-					unlink(dirlist[n]->d_name);
+			while ((dp = readdir(dir))) {
+				m = l = strlen(dp->d_name);
+				ext = find_last_of(dp->d_name, "-");
+				if (!strncmp(ext, "-missing", 8))
+					unlink(dp->d_name);
 			}
 
 			d_log("Freeing memory, and exiting\n");
 			unlink(g.l.sfv);
 			unlink(g.l.race);
-//			unlink(g.v.file.name);
 			free(g.ui);
 			free(g.gi);
-			free(g.l.path);
 			free(g.l.race);
 			free(g.l.sfv);
 			free(g.l.leader);
+			
 			return 0;
 		}
-		n = direntries;
 		g.v.total.start_time = 0;
-		while (n--) {
-			m = l = strlen(dirlist[n]->d_name);
-			ext = dirlist[n]->d_name;
-			while (ext[m] != '.' && m > 0)
-				m--;
-			if (ext[m] != '.')
-				m = l;
-			else
-				m++;
-			ext += m;
-			if (!strcomp(ignored_types, ext) && (!(strcomp(allowed_types, ext) && !matchpath(allowed_types_exemption_dirs, g.l.path))) && strcasecmp("sfv", ext) && strcasecmp("nfo", ext) && strcasecmp("bad", ext) && strcmp(dirlist[n]->d_name + l - 8, "-missing") && strncmp(dirlist[n]->d_name, ".", 1)) {
-				stat(dirlist[n]->d_name, &fileinfo);
+		while ((dp = readdir(dir))) {
+			m = l = strlen(dp->d_name);
+
+			ext = find_last_of(dp->d_name, ".");
+			if (*ext == '.')
+				ext++;
+
+			if (!strcomp(ignored_types, ext) && (!(strcomp(allowed_types, ext) &&
+				!matchpath(allowed_types_exemption_dirs, g.l.path))) && strcasecmp("sfv", ext) &&
+				strcasecmp("nfo", ext) && strcasecmp("bad", ext) && strcmp(dp->d_name + l - 8, "-missing") &&
+				strncmp(dp->d_name, ".", 1)) {
+				
+				stat(dp->d_name, &fileinfo);
 				f_uid = fileinfo.st_uid;
 				f_gid = fileinfo.st_gid;
 
 				strcpy(g.v.user.name, get_u_name(f_uid));
 				strcpy(g.v.user.group, get_g_name(f_gid));
-				strlcpy(g.v.file.name, dirlist[n]->d_name, PATH_MAX);
+				strlcpy(g.v.file.name, dp->d_name, PATH_MAX);
 				g.v.file.speed = 2005 * 1024;
 				g.v.file.size = fileinfo.st_size;
 
@@ -188,14 +184,14 @@ main()
 					}
 				}
 
-				crc = calc_crc32(dirlist[n]->d_name);
+				crc = calc_crc32(dp->d_name);
 				if (!S_ISDIR(fileinfo.st_mode)) {
 					if (g.v.file.name)
 						unlink_missing(g.v.file.name);
 					if (l > 44) {
-						printf("\nFile: %s %.8x", dirlist[n]->d_name + l - 44, crc);
+						printf("\nFile: %s %.8x", dp->d_name + l - 44, crc);
 					} else {
-						printf("\nFile: %-44s %.8x", dirlist[n]->d_name, crc);
+						printf("\nFile: %-44s %.8x", dp->d_name, crc);
 					}
 				}
 				if(fflush(stdout))
@@ -207,15 +203,14 @@ main()
 		testfiles(&g.l, &g.v, 1);
 		printf("\n");
 
-		rescandir(2);	/* We need to rescan again */
-
+		//rescandir(2);	/* We need to rescan again */
 		readsfv(g.l.sfv, &g.v, 0);
 		readrace(g.l.race, &g.v, g.ui, g.gi);
 		sortstats(&g.v, g.ui, g.gi);
 		buffer_progress_bar(&g.v);
 
 		if (g.l.nfo_incomplete) {
-			if (findfileext(".nfo")) {
+			if (findfileext(dir, ".nfo")) {
 				d_log("Removing missing-nfo indicator (if any)\n");
 				remove_nfo_indicator(&g);
 			} else if (matchpath(check_for_missing_nfo_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
@@ -223,20 +218,18 @@ main()
 					d_log("Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 					create_incomplete_nfo();
 				} else {
-					rescanparent(2);
-					if (findfileextparent(".nfo")) {
+					if (findfileextparent(parent, ".nfo")) {
 						d_log("Removing missing-nfo indicator (if any)\n");
 						remove_nfo_indicator(&g);
 					} else {
 						d_log("Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
 					}
-					rescanparent(1);
 				}
 			}
 		}
 		if (g.v.misc.release_type == RTYPE_AUDIO)
-			get_mpeg_audio_info(findfileext(".mp3"), &g.v.audio);
+			get_mpeg_audio_info(findfileext(dir, ".mp3"), &g.v.audio);
 
 		if ((g.v.total.files_missing == 0) & (g.v.total.files > 0)) {
 			switch (g.v.misc.release_type) {
@@ -249,7 +242,7 @@ main()
 			case RTYPE_AUDIO:
 				complete_bar = audio_completebar;
 #if ( enabled_create_m3u )
-				n = sprintf(exec, findfileext(".sfv"));
+				n = sprintf(exec, findfileext(dir, ".sfv"));
 				strcpy(exec + n - 3, "m3u");
 				create_indexfile(&g.l, &g.v, exec);
 #endif
@@ -272,30 +265,28 @@ main()
 			}
 				move_progress_bar(0, &g.v, g.ui, g.gi);
 		}
-	} else if (findfileext(".zip")) {
-		strlcpy(g.v.file.name, findfileext(".zip"), PATH_MAX);
+	} else if (findfileext(dir, ".zip")) {
+		strlcpy(g.v.file.name, findfileext(dir, ".zip"), PATH_MAX);
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
-		n = direntries;
+		//n = direntries;
 		crc = 0;
-		while (n--) {
-			m = l = strlen(dirlist[n]->d_name);
-			ext = dirlist[n]->d_name;
-			while (ext[m] != '.' && m > 0)
-				m--;
-			if (ext[m] != '.')
-				m = l;
-			else
-				m++;
-			ext += m;
+		rewinddir(dir);
+		while ((dp = readdir(dir))) {
+			m = l = strlen(dp->d_name);
+			
+			ext = find_last_of(dp->d_name, ".");
+			if (*ext == '.')
+				ext++;
+
 			if (!strcasecmp(ext, "zip")) {
-				stat(dirlist[n]->d_name, &fileinfo);
+				stat(dp->d_name, &fileinfo);
 				f_uid = fileinfo.st_uid;
 				f_gid = fileinfo.st_gid;
 
 				strcpy(g.v.user.name, get_u_name(f_uid));
 				strcpy(g.v.user.group, get_g_name(f_gid));
-				strlcpy(g.v.file.name, dirlist[n]->d_name, PATH_MAX);
+				strlcpy(g.v.file.name, dp->d_name, PATH_MAX);
 				g.v.file.speed = 2005 * 1024;
 				g.v.file.size = fileinfo.st_size;
 				g.v.total.start_time = 0;
@@ -306,7 +297,7 @@ main()
 						d_log("No file_id.diz found (#%d): %s\n", errno, strerror(errno));
 					} else {
 						if ((f_id = findfile("file_id.diz.bad")))
-							unlink(dirlist[f_id]->d_name);
+							unlink(dp->d_name);
 						chmod("file_id.diz", 0666);
 					}
 				}
@@ -350,7 +341,7 @@ main()
 				move_progress_bar(0, &g.v, g.ui, g.gi);
 		}
 		if (g.l.nfo_incomplete) {
-			if (findfileext(".nfo")) {
+			if (findfileext(dir, ".nfo")) {
 				d_log("Removing missing-nfo indicator (if any)\n");
 				remove_nfo_indicator(&g);
 			} else if (matchpath(check_for_missing_nfo_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
@@ -358,15 +349,13 @@ main()
 					d_log("Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 					create_incomplete_nfo();
 				} else {
-					rescanparent(2);
-					if (findfileextparent(".nfo")) {
+					if (findfileextparent(parent, ".nfo")) {
 						d_log("Removing missing-nfo indicator (if any)\n");
 						remove_nfo_indicator(&g);
 					} else {
 						d_log("Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
 					}
-					rescanparent(1);
 				}
 			}
 		}
@@ -380,7 +369,9 @@ main()
 	printf("  Total : %i\n", (int)g.v.total.files);
 
 	d_log("Freeing memory.\n");
-	rescandir(1);
+	closedir(dir);
+	closedir(parent);
+	//rescandir(1);
 	updatestats_free(g.v, g.ui, g.gi);
 	free(g.l.race);
 	free(g.l.sfv);

@@ -18,6 +18,7 @@
 # include "strl/strl.h"
 #endif
 
+#include "helpfunctions.h"
 #include "zsfunctions.h"
 #include "race-file.h"
 #include "objects.h"
@@ -50,6 +51,9 @@ int
 main(int argc, char **argv)
 {
 	GLOBAL		g; /* this motherfucker owns */
+	DIR		*dir, *parent;
+	struct dirent	*dp;
+	
 	char           *fileext, *name_p, *temp_p = NULL, *temp_p_free = NULL;
 	char           *target = 0;
 	char	       *ext = 0;
@@ -235,12 +239,13 @@ main(int argc, char **argv)
 	/* Get file extension */
 
 	d_log("Parsing file extension from filename... (%s)\n", argv[1]);
-	for (temp_p = name_p = argv[1]; *name_p != 0; name_p++) {
+	/*for (temp_p = name_p = argv[1]; *name_p != 0; name_p++) {
 		if (*name_p == '.') {
 			temp_p = name_p;
 		}
-	}
-
+	}*/
+	
+	name_p = temp_p = find_last_of(argv[1], ".");
 	if (*temp_p != '.') {
 		d_log("Got: no extension\n");
 		temp_p = name_p;
@@ -269,7 +274,7 @@ main(int argc, char **argv)
 #endif
 #endif
 	d_log("Reading directory structure\n");
-	rescandir(2);
+	//rescandir(2);
 
 	d_log("Caching release name\n");
 	getrelname(&g);
@@ -573,7 +578,7 @@ main(int argc, char **argv)
 			} else {
 				if (g.v.misc.release_type == RTYPE_AUDIO) {
 					d_log("Reading audio info for completebar\n");
-					get_mpeg_audio_info(findfileext(".mp3"), &g.v.audio);
+					get_mpeg_audio_info(findfileext_old_(".mp3"), &g.v.audio);
 				}
 			}
 			break;
@@ -1185,9 +1190,9 @@ main(int argc, char **argv)
 #endif
 				}
 #if ( create_m3u == TRUE )
-				if (findfileext(".sfv")) {
+				if (findfileext_old_(".sfv")) {
 					d_log("Creating m3u\n");
-					cnt = sprintf(target, findfileext(".sfv"));
+					cnt = sprintf(target, findfileext_old_(".sfv"));
 					strlcpy(target + cnt - 3, "m3u", 4);
 					create_indexfile(g.l.race, &g.v, target);
 				} else
@@ -1224,7 +1229,7 @@ main(int argc, char **argv)
 #endif
 
 #if ( enable_complete_script == TRUE )
-			nfofound = (int)findfileext(".nfo");
+			nfofound = (int)findfileext_old_(".nfo");
 			if (!fileexists(complete_script)) {
 				d_log("Could not execute complete_script (%s) - file does not exists\n", complete_script);
 			} else {
@@ -1238,7 +1243,7 @@ main(int argc, char **argv)
 			}
 
 #if ( enable_nfo_script == TRUE )
-			if (!nfofound && findfileext(".nfo")) {
+			if (!nfofound && findfileext_old_(".nfo")) {
 				if (!fileexists(nfo_script)) {
 					d_log("Could not execute nfo_script (%s) - file does not exists\n", nfo_script);
 				} else {
@@ -1253,13 +1258,13 @@ main(int argc, char **argv)
 #endif
 			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
 				/* Creating no-nfo link if needed. */
-				if ((g.l.nfo_incomplete) && (!findfileext(".nfo")) && (matchpath(check_for_missing_nfo_dirs, g.l.path)) ) {
+				if ((g.l.nfo_incomplete) && (!findfileext_old_(".nfo")) && (matchpath(check_for_missing_nfo_dirs, g.l.path)) ) {
 					if (!g.l.in_cd_dir) {
 						d_log("Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
 					} else {
 						rescanparent(2);
-						if (!findfileextparent(".nfo")) {
+						if (!findfileext_old_parent(".nfo")) {
 							d_log("Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
 							create_incomplete_nfo();
 						}
@@ -1267,13 +1272,13 @@ main(int argc, char **argv)
 					}
 				}
 				/* Creating no-sample link if needed.
-				if ((g.l.sample_incomplete) && (!findfileext(".nfo")) && (matchpath(check_for_missing_nfo_dirs, g.l.path)) ) {
+				if ((g.l.sample_incomplete) && (!findfileext_old_(".nfo")) && (matchpath(check_for_missing_nfo_dirs, g.l.path)) ) {
 					if (!g.l.in_cd_dir) {
 						d_log("Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
 					} else {
 						rescanparent(2);
-						if (!findfileextparent(".nfo")) {
+						if (!findfileext_old_parent(".nfo")) {
 							d_log("Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
 							create_incomplete_nfo();
 						}
@@ -1299,7 +1304,7 @@ main(int argc, char **argv)
 	}
 #if ( enable_accept_script == TRUE )
 	if (exit_value == EXIT_SUCCESS) {
-		nfofound = (int)findfileext(".nfo");
+		nfofound = (int)findfileext_old_(".nfo");
 		if (!fileexists(accept_script)) {
 			d_log("Could not execute accept_script (%s) - file does not exists\n", accept_script);
 		} else {
@@ -1311,7 +1316,7 @@ main(int argc, char **argv)
 		}
 #if ( enable_nfo_script == TRUE )
 		rescandir(2);
-		if (!nfofound && findfileext(".nfo")) {
+		if (!nfofound && findfileext_old_(".nfo")) {
 			if (!fileexists(nfo_script)) {
 				d_log("Could not execute nfo_script (%s) - file does not exists\n", nfo_script);
 			} else {
@@ -1327,7 +1332,7 @@ main(int argc, char **argv)
 #endif
 	rescandir(2);
 	rescanparent(2);
-	if ((findfileext(".nfo") || (findfileextparent(".nfo"))) && (g.l.nfo_incomplete)) {
+	if ((findfileext_old_(".nfo") || (findfileext_old_parent(".nfo"))) && (g.l.nfo_incomplete)) {
 		d_log("Removing missing-nfo indicator (if any)\n");
 		remove_nfo_indicator(&g);
 	}

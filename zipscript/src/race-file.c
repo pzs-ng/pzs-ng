@@ -93,8 +93,9 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 			d_log("DEBUG: crc read from sfv-file %s : %X\n", sd.fname, sd.crc32);
 			crc = sd.crc32;
 		}
-		if (getfcount && findfile(sd.fname))
+		if (getfcount && findfile(sd.fname)) {
 			raceI->total.files_missing--;
+		}
 	}
 	
 	fclose(sfvfile);
@@ -118,6 +119,7 @@ update_sfvdata(const char *path, const unsigned int crc)
 
 	sd.crc32 = crc;
 	
+	fseek(sfvfile, sizeof(short int), SEEK_CUR);
 	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
 		if (strcasecmp(path, sd.fname) == 0) {
 			sd.crc32 = crc;
@@ -149,6 +151,7 @@ sfvdata_to_sfv(const char *source, const char *dest)
 		return;
 	}
 
+	fseek(insfv, sizeof(short int), SEEK_CUR);
 	while (fread(&sd, sizeof(SFVDATA), 1, insfv)) {
 		
 		sprintf(crctmp, "%.8x", sd.crc32);
@@ -240,7 +243,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	FILE		*file;
 	char		*realfile, target[256], *ext;
 	unsigned int	Tcrc;
-	int		m = 0, l = 0;
+	//int		m = 0, l = 0;
 	struct stat	filestat;
 
 	RACEDATA	rd;
@@ -249,18 +252,11 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 		realfile = raceI->file.name;
 		if (rstatus)
 			printf("\n");
-		while ((fread(&rd, 1, sizeof(RACEDATA), file))) {
+		while ((fread(&rd, sizeof(RACEDATA), 1, file))) {
 
-			/* what does this do? */
-			m = l = strlen(realfile);
-			ext = realfile;
-			while (ext[m] != '.' && m > 0)
-				m--;
-			if (ext[m] != '.')
-				m = l;
-			else
-				m++;
-			ext += m;
+			ext = find_last_of(realfile, ".");
+			if (*ext == '.')
+				ext++;
 
 			if (rd.status == F_NOTCHECKED) {
 				strlcpy(raceI->file.name, rd.fname, PATH_MAX);
@@ -308,8 +304,8 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 					}
 				}
 			}
-			fseek(file, -sizeof(RACEDATA), SEEK_CUR);
-			fwrite(&rd, 1, sizeof(RACEDATA), file);
+			//fseek(file, -sizeof(RACEDATA), SEEK_CUR);
+			fwrite(&rd, sizeof(RACEDATA), 1, file);
 		}
 
 		strlcpy(raceI->file.name, realfile, strlen(realfile));
@@ -546,7 +542,7 @@ create_indexfile(const char *path, struct VARS *raceI, char *f)
 
 	/* Read filenames from race file */
 	c = 0;
-	while ((fread(&rd, 1, sizeof(RACEDATA), r))) {
+	while ((fread(&rd, sizeof(RACEDATA), 1, r))) {
 		if (rd.status == F_CHECKED) {
 			strlcpy(fname[c], rd.fname, PATH_MAX);
 			t_pos[c] = 0;
@@ -591,11 +587,11 @@ clear_file(const char *path, char *f)
 	RACEDATA	rd;
 
 	if ((file = fopen(path, "r+"))) {
-		while (fread(&rd, 1, sizeof(RACEDATA), file)) {
+		while (fread(&rd, sizeof(RACEDATA), 1, file)) {
 			if (strncmp(rd.fname, f, PATH_MAX) == 0) {
 				rd.status = F_DELETED;
 				fseek(file, -sizeof(RACEDATA), SEEK_CUR);
-				fwrite(&rd, 1, sizeof(RACEDATA), file);
+				fwrite(&rd, sizeof(RACEDATA), 1, file);
 				n++;
 			}
 		}
@@ -609,6 +605,7 @@ clear_file(const char *path, char *f)
  * Modified	: 02.19.2002 Author	: Dark0n3
  * 
  * Description	: Reads current race statistics from fixed format file.
+ * 				: "path" is the location of a racedata file.
  */
 void 
 readrace(const char *path, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI)
@@ -618,7 +615,7 @@ readrace(const char *path, struct VARS *raceI, struct USERINFO **userI, struct G
 	RACEDATA	rd;
 
 	if ((file = fopen(path, "r"))) {
-		while (fread(&rd, 1, sizeof(RACEDATA), file)) {
+		while (fread(&rd, sizeof(RACEDATA), 1, file)) {
 			switch (rd.status) {
 				case F_NOTCHECKED:
 				case F_CHECKED:
@@ -667,7 +664,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	}
 
 	/* find an existing entry that we will overwrite */
-	while (fread(&rd, 1, sizeof(RACEDATA), file)) {
+	while (fread(&rd, sizeof(RACEDATA), 1, file)) {
 		if (strncmp(rd.fname, raceI->file.name, PATH_MAX) == 0) {
 			fseek(file, -sizeof(RACEDATA), SEEK_CUR);
 			break;
@@ -685,7 +682,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	rd.speed = raceI->file.speed;
 	rd.start_time = raceI->total.start_time;
 
-	fwrite(&rd, 1, sizeof(RACEDATA), file);
+	fwrite(&rd, sizeof(RACEDATA), 1, file);
 	
 	fclose(file);
 }

@@ -81,18 +81,21 @@ create_missing(char *f)
  * Last Modified by: d1
  *         Revision: r1 (2002.01.16)
  */
-char           *
-findfileext(char *fileext)
+char *
+findfileext(DIR *dir, char *fileext)
 {
 	int		n, k;
+	static struct dirent *dp;
 
-	n = direntries;
-	while (n--) {
-		if ((k = NAMLEN(dirlist[n])) < 4)
+	rewinddir(dir);
+	while ((dp = readdir(dir))) {
+		if ((k = NAMLEN(dp)) < 4)
 			continue;
-		if (strcasecmp(dirlist[n]->d_name + k - 4, fileext) == 0)
-			return dirlist[n]->d_name;
+		if (strcasecmp(dp->d_name + k - 4, fileext) == 0) {
+			return dp->d_name;
+		}
 	}
+
 	return NULL;
 }
 
@@ -102,19 +105,51 @@ findfileext(char *fileext)
  *         Revision: ?? (2004.10.06)
  */
 char           *
-findfileextparent(char *fileext)
+findfileextparent(DIR *dir, char *fileext)
 {
 	int		n         , k;
+	struct dirent	*dp;
 
-	n = direntriesp;
-	while (n--) {
-		if ((k = NAMLEN(dirlistp[n])) < 4)
+	rewinddir(dir);
+	while ((dp = readdir(dir))) {
+		if ((k = NAMLEN(dp)) < 4)
 			continue;
-		if (strcasecmp(dirlistp[n]->d_name + k - 4, fileext) == 0) {
-			return dirlistp[n]->d_name;
+		if (strcasecmp(dp->d_name + k - 4, fileext) == 0) {
+			return dp->d_name;
 		}
 	}
 	return NULL;
+}
+
+char           *
+findfileext_old_(char *fileext) 
+{
+    int     n, k;
+
+    n = direntries;
+    while (n--) {
+        if ((k = NAMLEN(dirlist[n])) < 4)
+            continue;
+        if (strcasecmp(dirlist[n]->d_name + k - 4, fileext) == 0)
+            return dirlist[n]->d_name;
+    }
+    return NULL;
+}
+
+char           *
+findfileext_old_parent(char *fileext)
+{
+    int     n         , k;
+
+    n = direntriesp;
+    while (n--) {
+        if ((k = NAMLEN(dirlistp[n])) < 4)
+            continue;
+        if (strcasecmp(dirlistp[n]->d_name + k - 4, fileext) == 0) {
+            return dirlistp[n]->d_name;
+        }
+    }
+    return NULL;
 }
 
 /*
@@ -352,52 +387,57 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 {
 	char           *bar;
 	char	       *delbar = 0;
-	int		n, m = 0;
+	int			m = 0;
 	regex_t		preg;
 	regmatch_t	pmatch[1];
+
+	DIR		*dir;
+	struct dirent *dp;
 
 	delbar = convert5(del_progressmeter);
 	d_log("del_progressmeter: %s\n", delbar);
 	d_log("raceI->total.files: %i\n", raceI->total.files);
 	d_log("raceI->total.files_missing: %i\n", raceI->total.files_missing);
 	regcomp(&preg, delbar, REG_NEWLINE | REG_EXTENDED);
-	/* workaround if progressbar was changed while zs-c is running */
-	rescandir(2);
 
-	n = direntries;
+	dir = opendir(".");
 
 	if (delete) {
-		while (n--) {
-			if (regexec(&preg, dirlist[n]->d_name, 1, pmatch, 0) == 0) {
-				if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[n])) {
-					d_log("Found progress bar (%s), removing\n", dirlist[n]->d_name);
-					remove(dirlist[n]->d_name);
-					*dirlist[n]->d_name = 0;
+		while ((dp = readdir(dir))) {
+			if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
+				if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dp)) {
+					d_log("Found progress bar (%s), removing\n", dp->d_name);
+					remove(dp->d_name);
+					*dp->d_name = 0;
 					m = 1;
 				}
 			}
 		}
 		if (m) {
 			regfree(&preg);
+			closedir(dir);
 			return;
 		} else {
 			d_log("Progress bar could not be deleted, not found!\n");
 		}
 	} else {
-		if (!raceI->total.files)
+		if (!raceI->total.files) {
+			closedir(dir);
 			return;
+		}
+		
 		bar = convert(raceI, userI, groupI, progressmeter);
-		while (n--) {
-			if (regexec(&preg, dirlist[n]->d_name, 1, pmatch, 0) == 0) {
-				if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[n])) {
+		while ((dp = readdir(dir))) {
+			if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
+				if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dp)) {
 					if (!m) {
-						d_log("Found progress bar (%s), renaming (to %s)\n", dirlist[n]->d_name, bar);
-						rename(dirlist[n]->d_name, bar);
+						d_log("Found progress bar (%s), renaming (to %s)\n", dp->d_name, bar);
+						rename(dp->d_name, bar);
 						m = 1;
 					} else {
-						d_log("Found (extra) progress bar (%s), removing\n", dirlist[n]->d_name);
-						remove(dirlist[n]->d_name);
-						*dirlist[n]->d_name = 0;
+						d_log("Found (extra) progress bar (%s), removing\n", dp->d_name);
+						remove(dp->d_name);
+						*dp->d_name = 0;
 						m = 2;
 					}
 				}
@@ -408,6 +448,7 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 			createstatusbar(bar);
 		}
 	}
+	closedir(dir);
 	regfree(&preg);
 }
 
@@ -467,24 +508,28 @@ void
 removecomplete()
 {
 	char	       *mydelbar = 0;
-	int		n;
 	regex_t		preg;
 	regmatch_t	pmatch[1];
+
+	DIR		*dir;
+	struct dirent	*dp;
 
 	if (message_file_name)
 		unlink(message_file_name);
 	mydelbar = convert5(del_completebar);
 	d_log("del_completebar: %s\n", mydelbar);
 	regcomp(&preg, mydelbar, REG_NEWLINE | REG_EXTENDED);
-	n = direntries;
-	while (n--) {
-		if (regexec(&preg, dirlist[n]->d_name, 1, pmatch, 0) == 0) {
-			if ((int)pmatch[0].rm_so == 0 && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[n])) {
-				remove(dirlist[n]->d_name);
-				*dirlist[n]->d_name = 0;
+	
+	dir = opendir(".");
+	while ((dp = readdir(dir))) {
+		if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
+			if ((int)pmatch[0].rm_so == 0 && (int)pmatch[0].rm_eo == (int)NAMLEN(dp)) {
+				remove(dp->d_name);
+				*dp->d_name = 0;
 			}
 		}
 	}
+	closedir(dir);
 	regfree(&preg);
 }
 
@@ -735,7 +780,6 @@ get_rar_info(struct VARS *raceI)
 	if ((file = fopen(raceI->file.name, "r"))) {
 		fseek(file, 45, SEEK_CUR);
 		fread(&raceI->file.compression_method, 1, 1, file);
-//		d_log("DEBUG: raceI.file.compression_method : %d\n", raceI.file.compression_method);
 		if ( ! (( 47 < raceI->file.compression_method ) && ( raceI->file.compression_method < 54 )) )
 			raceI->file.compression_method = 88;
 		fclose(file);
