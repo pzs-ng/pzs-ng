@@ -352,29 +352,32 @@
 #define del_completebar		"\\[dS] - \\( .*F - COMPLETE.*) - \\[dS]"
 
 
-#define zipscript_header	".----=== ZipScript-C ===--,d1'--=== (C) 2004 ===---.\n"
-#define zipscript_sfv_ok	"| + SFV-file: oK!                                  |\n"
-#define zipscript_any_ok	"| + File: ok!                                      |\n"
-#define zipscript_SFV_ok	"| + CRC-Check: oK!                                 |\n"
-#define zipscript_SFV_skip	"| + CRC-Check: SKIPPED!                            |\n"
-#define zipscript_zip_ok	"| + ZiP integrity: oK!                             |\n"
-#define realtime_mp3_info	"+-=[ID3tag]=------------------------===------------+\n" \
+#define zipscript_header	 ".----=== ZipScript-C ===--,d1'--=== (C) 2004 ===---.\n"
+#define zipscript_sfv_ok	 "| + SFV-file: oK!                                  |\n"
+#define zipscript_any_ok	 "| + File: ok!                                      |\n"
+#define zipscript_SFV_ok	 "| + CRC-Check: oK!                                 |\n"
+#define zipscript_SFV_skip	 "| + CRC-Check: SKIPPED!                            |\n"
+#define zipscript_zip_ok	 "| + ZiP integrity: oK!                             |\n"
+#define realtime_mp3_info	 "+-=[ID3tag]=------------------------===------------+\n" \
     "| Title  : %-39y |\n" \
 "| Artist : %-39x |\n" \
 "| Album  : %-39W |\n" \
 "| Genre  : %-39w |\n" \
 "| Year   : %-39Y |\n"
-#define realtime_user_header	    "+-=[UserTop]=-------------------===----------------+\n"
-#define realtime_user_body	    "| %2n. %-17u %8.1mmB %2fF %7.0skB/s |\n"
-#define realtime_user_footer	    ""
-#define realtime_group_header	    "+-=[GroupTop]=--------------------===--------------+\n"
-#define realtime_group_body	    "| %2n. %-17g %8.1mmB %2fF %7.0skB/s |\n"
-#define realtime_group_footer	    ""
-#define zipscript_footer_unknown    "`-[ - NO - SFV - ]------------------------[%2F/??]--'\n"
-#define zipscript_footer_ok	    "`-[%V]------------------------[%2F/%-2f]--'\n"
-#define zipscript_footer_error	    "| - %-46v |\n" \
+#define realtime_user_header	 "+-=[UserTop]=-------------------===----------------+\n"
+#define realtime_user_body	 "| %2n. %-17u %8.1mmB %2fF %7.0skB/s |\n"
+#define realtime_user_footer	 ""
+#define realtime_group_header	 "+-=[GroupTop]=--------------------===--------------+\n"
+#define realtime_group_body	 "| %2n. %-17g %8.1mmB %2fF %7.0skB/s |\n"
+#define realtime_group_footer	 ""
+#define zipscript_footer_unknown "`-[ - NO - SFV - ]------------------------[%2F/??]--'\n"
+#define zipscript_footer_ok	 "`-[%V]------------------------[%2F/%-2f]--'\n"
+#define zipscript_footer_error	 "| - %-46v |\n" \
     "`-----------------------------------========-------'\n"
-#define zipscript_footer_skip	    "`--------------------------------=====-------------'\n"
+#define zipscript_footer_skip	 "`--------------------------------=====-------------'\n"
+
+#define sfv_comment		 "; sfv raped by zipscript-c on the mighty ,dS'\r\n" \
+    "; \r\n"
 
 /* How Indicators look
 */

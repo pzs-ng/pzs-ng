@@ -1,4 +1,3 @@
-#include <errno.h>
 #include "zsfunctions.h"
 #include "constants.h"
 #include "convert.h"
@@ -428,53 +427,56 @@ void get_rar_info(char *filename) {
  *
  * Description: Executes extern program and returns return value
  *
- * check execute_old for the... old version
+ * Modified by js on 08.08.2004 to handle " and ' in arguments
+ *
  */
 int execute(char *s) {
-	int n;
+    int n, args=-1, test=0;
+    char *command, **argv;
 
-	if ((n = system(s)) == -1)
-		d_log("%s\n", errno);
+    command = malloc(sizeof(char));
+    argv = malloc(sizeof(char *));
 
-	return n;
-	
-}
+    while (1) {
 
-int execute_old(char *s) {
- int    n;
- int	args = 0;
- char	*argv[128]; /* Noone uses this many args anyways */
+	if (*s == '\"') test = 1;
+	else if (*s == '\'') test = 2;
+	else if ((*s == '\"' && test == 1) || (*s == '\'' && test == 2)) test = 0;
 
- argv[0] = s;
- while ( 1 ) {
-	if ( *s == ' ' ) {
-		*s = 0;
-		args++;
-		argv[args] = s + 1;
-		} else if ( *s == 0 ) {
-		args++;
-		argv[args] = NULL;
-		break;
-		}
+	if (*s == ' ' && test == 0) {
+	    *s = 0;
+	    args++;
+	    if (args == 0) {
+		command = malloc(sizeof(char)*strlen(s+1));
+		strcpy(command, s+1);
+	    } else {
+		realloc(argv, (sizeof(char *)*args));
+		argv[args-1] = s + 1;
+	    }
+	} else if (*s == 0) {
+	    args++;
+	    realloc(argv, (sizeof(char *)*args));
+	    argv[args] = NULL;
+	    break;
+	}
 	s++;
-	}
 
- switch ( fork() ) {
+    }
+
+    switch (fork()) {
 	case 0: 
-		close(1);
-		close(2);
-		n = execv(argv[0], argv);
-		exit(0);
-		break;
+	    close(1);
+	    close(2);
+	    n = execv(command, argv);
+	    exit(0);
+	    break;
 	default:
-		wait(&n);
-		break;
-	}
+	    wait(&n);
+	    break;
+    }
 
- return n >> 8;
+    return n >> 8;
 }
-
-
 
 /*
  * Copyright (c) 1997 Shigio Yamaguchi. All rights reserved.

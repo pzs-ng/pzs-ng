@@ -8,93 +8,95 @@
 # Locations of all the usual files, change is usually only required
 # if you have another glroot than /glftpd/ =)
  
-set location(GLLOG)					"/glftpd/ftp-data/logs/glftpd.log"
-set location(PASSWD)				"/glftpd/etc/passwd"
-set location(USERS)					"/glftpd/ftp-data/users/"
+set location(GLLOG)		"/glftpd/ftp-data/logs/glftpd.log"
+set location(PASSWD)		"/glftpd/etc/passwd"
+set location(USERS)		"/glftpd/ftp-data/users/"
 
 # Are you using glftpd2? Default setting ("AUTO") should be safe,
 # enables autodetection (if binary(GLFTPD) is set correctly)
 # To override autodetection (or if it just doesn't work), you can set
 # it to "YES" or "NO".
-set use_glftpd2					"AUTO"
+set use_glftpd2 		"AUTO"
 
 # What types of messages are counted as the different types of output
 # (for disabling etc)
-set msgtypes(RACE)					"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV DOUBLESFV UPDATE HALFWAY NEWLEADER COMPLETE STATS BADGENRE BADYEAR BADBITRATE WIPE WIPE-r"
-set msgtypes(DEFAULT)				"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT"
+set msgtypes(RACE) 		"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV DOUBLESFV UPDATE UPDATE_RAR UPDATE_OTHER UPDATE_AUDIO UPDATE_VIDEO HALFWAY NEWLEADER COMPLETE STAT_USERS_HEAD STAT_USERS STAT_GROUPS_HEAD STAT_GROUPS STAT_POST BADGENRE BADYEAR BADBITRATE WIPE WIPE-r"
+set msgtypes(DEFAULT) 		"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT REQUEST REQFILLED"
 
 # Sitename is for the %sitename-cookie in announces :)
-set sitename						"pzs-ng"
+set sitename			"pzs-ng"
 # Prefix on commands (f. x. !pnfree if cmdpre is !pn, !free if cmdpre is !, etc)
 # bindnopre does not replace the cmd pre command, it meirly adds a second 
 # trigger option. example: you can set cmdpre to !pn but if bindnopre is set to # "YES" then the sitebot will respond to !pnbnc and also !bnc useful for rings.
-set cmdpre							"!pn"
-set bindnopre						"YES"
+set cmdpre			"!pn"
+set bindnopre			"YES"
 # List of bnc's (used for BNC-testing with the <prefix>bnc command in channel)
 # Format: countrycode:hostname:port (space seperated)
-set bnc(LIST)						"uk:msn.test1.com:123 de:msn.test2.com:345 se:msn.test3.com:567"
+set bnc(LIST)			"uk:msn.test1.com:123 de:msn.test2.com:345 se:msn.test3.com:567"
 # Username and password to use for testing bncs (must exist with this box's ip added)
-set bnc(USER)						"bncuser"
-set bnc(PASS)						"bncpass"
+set bnc(USER)			"bncuser"
+set bnc(PASS)			"bncpass"
 # Number of seconds to wait before giving up on connecting to the BNCs
-set bnc(TIMEOUT)					"10"
-# Ping the bnc for a secondary latency check (requires userland ping application)
-set bnc(PING)						"FALSE"
+set bnc(TIMEOUT)		"10"
 
 # Your sites bandwidth - used for % of bandwidth used calculations in !bw
-set speed(INCOMING)					"12500"
-set speed(OUTGOING)					"12500"
+set speed(INCOMING)		"12500"
+set speed(OUTGOING)		"12500"
 
 # During !idlers what is the minimum amount of seconds for a user to be shown as "idle"
 # set to 0 to show all users who are not currently upload/downloading (may be a lot)
-set minidletime						"30"
+set minidletime			"30"
 
 # What sections are we announcing for? (Remeber to define path and type below)
-set sections						"GAMES APPS MP3 0DAY MV"
+set sections			"TEST GAMES APPS MP3 0DAY MV"
 
 # The sections we allow checking of stats on, remember that the number in 
 # parantheses must be the same as the number of the section in glftpd config =)
-set statsection(0)					"MP3"
-set statsection(1)					"0DAY"
-set statsection(2)					"ISO"
+set statsection(0)		"MP3"
+set statsection(1)		"0DAY"
+set statsection(2)		"ISO"
 
 # These are the binaries the script will use. They are usually best left
 # as their default values :) (btw, check that they all are where they should
 # and chmodded to eXecutable :) (chmod 755 <file>)
-set binary(CAT)						"/glftpd/bin/cat"
-set binary(WHO)						"/glftpd/bin/sitewho"
-set binary(BW)						"/glftpd/bin/ng-bw"
-set binary(STATS)					"/glftpd/bin/stats"
-set binary(PASSCHK)					"/glftpd/bin/passchk"
-set binary(PING)					"/bin/ping"
-set binary(NCFTPLS)					"/usr/local/bin/ncftpls"
-set binary(INCOMPLETE)				"/glftpd/bin/incomplete-list.sh"
-set binary(DF)						"/bin/df"
+set binary(CAT)			"/glftpd/bin/cat"
+set binary(WHO)			"/glftpd/bin/sitewho"
+set binary(BW)			"/glftpd/bin/ng-bandwidth"
+set binary(STATS)		"/glftpd/bin/stats"
+set binary(PASSCHK)		"/glftpd/bin/passchk"
+set binary(NCFTPLS)		"/usr/local/bin/ncftpls"
+set binary(BNCTEST)		"/glftpd/bin/bnctest.sh"
+set binary(BNCCHECK)		"/glftpd/bin/bnc-check.pl"
+set binary(INCOMPLETE)		"/glftpd/bin/incomplete-list.sh"
+set binary(DF)			"/bin/df"
 # This is needed for autodetection of glversion. If you unset this, use_glftpd2
 # MUST be set to YES or NO :)
-set binary(GLFTPD)					"/glftpd/bin/glftpd"
+set binary(GLFTPD)		"/glftpd/bin/glftpd"
 
 # Definition of hd devices (for freespace) Syntax is "disk sections".
 # 'sections' is purely for cosmetic uses (output)
-set device(0)						"/dev/hda1 ISO"
-set device(1)						"/dev/hdc1 MP3"
+set device(0)			"/dev/da0s1f MP3"
+set device(1)			"/dev/ad0s1e ISO"
 
 # Set up paths for all the sections (wildcards) and their
 # types. Types are to decide if things get shown or not ;)
-set paths(GAMES)					"/site/incoming/games/*"
-set type(GAMES)						"RACE"
-set paths(APPS)						"/site/incoming/apps/*"
-set type(APPS)						"RACE"
-set paths(MP3)						"/site/incoming/mp3/*"
-set type(MP3)						"RACE"
-set paths(0DAY)						"/site/incoming/0day/*"
-set type(0DAY)						"RACE"
-set paths(MV)						"/site/incoming/musicvideos/*"
-set type(MV)						"RACE"
+set paths(TEST)			"/site/test/*"
+set type(TEST)		"RACE"
+set paths(GAMES)		"/site/incoming/games/*"
+set type(GAMES)		"RACE"
+set paths(APPS)			"/site/incoming/apps/*"
+set type(APPS)		"RACE"
+set paths(MP3)			"/site/incoming/mp3/*"
+set type(MP3)		"RACE"
+set paths(0DAY)			"/site/incoming/0day/*"
+set type(0DAY)		"RACE"
+set paths(MV)			"/site/incoming/musicvideos/*"
+set type(MV)		"RACE"
 
 # Which channels we announce the different things to.
 # Space separated lists, you can have more than one channel :)
 set mainchan						"#pzs-ng"
+set chanlist(TEST)					"$mainchan"
 set chanlist(GAMES)					"$mainchan"
 set chanlist(APPS)					"$mainchan"
 set chanlist(MP3)					"$mainchan"
@@ -104,58 +106,52 @@ set chanlist(DEFAULT)					"$mainchan"
 set chanlist(INVITE)					"$mainchan"
 set chanlist(WELCOME)					"$mainchan"
 
-## RUNNING POST COMMANDS
-#
-# Example:
-#  set postcommand(NEWDIR)       "imdb:check some:other:cmd {exec imdb.sh}"
-#   TYPE -------------^
-#             COMMANDS -------------^
-#
-# Notes:
-#  Any process you list here must be waiting to accept 3 parameter
-#
-#  1st - message type, eg: NEWDIR
-#  2nd - section name, eg: 0DAY
-#  3rd - path to release, eg: /site/incoming/0day
-#
-#set postcommand(NEWDIR)              "imdb:check some:other:cmd 
-#set postcommand(NEWDIR)              "{exec {/some long/freaking annoying. path that doesnt conform/imdb.sh}}"
-
 # Are we disabling the announce of this stuff?
 # If its set to 1, we wont show it :)
-set disable(NEWDIR)					0
-set disable(DELDIR)					0
-set disable(PRE)					0
-set disable(INVITE)					0
-set disable(NUKE)					0
-set disable(UNNUKE)					0
-set disable(MSGINVITE)					0
-set disable(BADMSGINVITE)				0
-set disable(LOGIN)					1 
-set disable(LOGOUT)					1
-set disable(INCOMPLETE)					0
-set disable(RACE)					0
-set disable(SFV)					0
-set disable(DOUBLESFV)				0
-set disable(UPDATE)					0
-set disable(HALFWAY)					0
-set disable(NEWLEADER)					0
-set disable(COMPLETE)					0
-set disable(STATS)					0
-set disable(BADGENRE)					0
-set disable(BADYEAR)					0
 set disable(BADBITRATE)					0
+set disable(BADGENRE)					0
+set disable(BADMSGINVITE)				0
+set disable(BADYEAR)					0
+set disable(COMPLETE)					0
+set disable(DEFAULT)					0
+set disable(DELDIR)					0
+set disable(DOUBLESFV)					0
+set disable(HALFWAY)					0
+set disable(INCOMPLETE)					0
+set disable(INVITE)					0
+set disable(LOGIN)					1
+set disable(LOGOUT)					1
+set disable(MSGINVITE)					0
+set disable(NEWDIR)					0
+set disable(NEWLEADER)					0
+set disable(NUKE)					0
+set disable(PRE)					0
+set disable(RACE)					0
+set disable(REQUEST)					0
+set disable(REQFILLED)					0
+set disable(SFV)					0
+set disable(STAT_USERS_HEAD)				0
+set disable(STAT_USERS)					0
+set disable(STAT_GROUPS_HEAD)				0
+set disable(STAT_GROUPS)				0
+set disable(STAT_POST)					0
+set disable(UNNUKE)					0
+set disable(UPDATE)					0
+set disable(UPDATE_RAR)					0
+set disable(UPDATE_OTHER)				0
+set disable(UPDATE_AUDIO)				0
+set disable(UPDATE_VIDEO)				0
 set disable(WELCOME)					0
-set disable(DEFAULT)					1
 set disable(WIPE)					0
 set disable(WIPE-r)					0
+
 #########################################################
 # ADVANCED CONFIG, EDIT CAREFULLY                       #
 #########################################################
 
 # Space separated list of wildcards that we match against
 # paths to see if we announce it or not =) 
-set denypost						"*Complete* *COMPLETE*"
+set denypost						""
 # Do not show it if this user gets nuked
 set hidenuke						"UNKNOWN"
 
@@ -181,31 +177,48 @@ set hidenuke						"UNKNOWN"
 #  %reason  = nuke reason
 #  %nukee   = ppl that got nuked
 
-set variables(NEWDIR)				"%pf %user %group %tagline"
-set variables(DELDIR)				"%pf %user %group %tagline"
-set variables(LOGIN)				"%hostmask %ip %user %group %tagline"
-set variables(LOGOUT)				"%hostmask %ip %user %group %tagline"
-set variables(INVITE)				"%ircnick %user %group"
-set variables(BADGENRE)				"%pf %msg"
-set variables(BADYEAR)				"%pf %msg"
-set variables(BADBITRATE)			"%pf %msg"
-set variables(WIPE)				"%pf %user %group %tagline"
-set variables(WIPE-r)				"%pf %user %group %tagline"
-set variables(DEFAULT)				"%pf %msg"
+set variables(BADBITRATE)	"%pf %user %group %bitrate"
+set variables(BADGENRE)		"%pf %user %group %genre"
+set variables(BADYEAR)		"%pf %user %group %year"
+set variables(COMPLETE)		"%pf %rel %mbytes %files %avgspd %len %usrs %grps %s_usr %s_grp %s_spd %f_usr %f_grp %f_spd"
+set variables(DEFAULT)		"%pf %msg"
+set variables(DELDIR)		"%pf %user %group %tagline"
+set variables(HALFWAY)		"%pf %rel %user %group %u_mb %u_files %u_pct %u_spd %g_name %g_mb %g_files %g_pct %g_spd"
+set variables(INCOMPLETE)	"%pf %user %group %rel"
+set variables(INVITE)		"%ircnick %user %group"
+set variables(LOGIN)		"%hostmask %ip %user %group %tagline"
+set variables(LOGOUT)		"%hostmask %ip %user %group %tagline"
+set variables(NEWDIR)		"%pf %user %group %tagline"
+set variables(NEWLEADER)	"%pf %user %group %mbytes %files %pct %spd %rel"
+set variables(PRE)		"%pf %rel %pregroup %section %files %mbytes %cds %who %user %group %tagline"
+set variables(RACE)		"%pf %user %group %against %rel %spd"
+set variables(REQUEST)		"%rl %user %group %tagline"
+set variables(REQFILLED)	"%rl %user %group %tagline %requester"
+set variables(SFV)		"%pf %rel %files" 
+set variables(STAT_USERS_HEAD)	"%pf %dummy"
+set variables(STAT_USERS)	"%pf %pos %user %group %mbytes %files %pct %spd"
+set variables(STAT_GROUPS_HEAD)	"%pf %dummy"
+set variables(STAT_GROUPS)	"%pf %pos %group %mbytes %files %pct %spd"
+set variables(STAT_POST)	"%pf %dummy"
+set variables(UPDATE)		"%pf %user %group %mbytes %files"
+set variables(UPDATE_RAR)	"%pf %user %group %mbytes"
+set variables(UPDATE_OTHER)	"%pf %user %group %mbytes"
+set variables(UPDATE_AUDIO)	"%pf %user %group %genre %year %bitrate %sampling %mode %audio"
+set variables(UPDATE_VIDEO)	"%pf %user %group %mbytes"
+set variables(WIPE)		"%pf %user %group %tagline"
+set variables(WIPE-r)		"%pf %user %group %tagline"
+
 ## Converts empty or zero variable to something else if defined
 #
 # Example:
 #  set zeroconvert(%user) "NoOne"
-
 set zeroconvert(%user)				"NoOne"
 set zeroconvert(%group) 			"NoGroup"
 
 ## Splits output line to smaller pieces
 #
 # To disable set it to "\n"
-
 set splitter(CHAR)				"|"
-
 
 ## RANDOMIZING OUTPUT
 #
@@ -222,12 +235,12 @@ set splitter(CHAR)				"|"
 #             # OF IDS ---------^
 
 # Announces are now set in announce(THEMEFILE). they can still be set here like you're used to, but it's deprecated.
-set announce(THEMEFILE)				"default.zst"
+set announce(THEMEFILE)				"avizion.zst"
 
 # In this announce you can use %free, %total and %used for the free/total/used sum of all disks
 # and you can use %devices. Each device specified (see above (set device(0) etc)) will be inserted
 # with stats as specified in announce(FREE-DEV) (see below)
-set announce(FREE)				"-%sitename- \[FREE\] - %devices"
+#
 # Stats for each device (Replaces %devices in announce(FREE) for each device), here you can use
 # %free, %total and %used :)
-set announce(FREE-DEV)				"%bold%free%bold of %bold%total%bold (used %percentage%) "
+# 2004-08-16: Layout of "FREE" has been moved to THEMEFILE. (avizion)

@@ -23,7 +23,7 @@ if [[ $(uname -s) != "OpenBSD" ]]; then
 	AC_CHECK_LIB(crypt, crypt, LCRYPT="-lcrypt", AC_MSG_ERROR([[Couldn't find libcrypt, quitting!]]))
 fi
 
-AC_CHECK_LIB(crypto, HMAC, LCRYPTO="-lcrypto", AC_MSG_ERROR([[Couldn't find libcrypto, quitting! Install SSL dev package and try again.]]))
+AC_CHECK_LIB(crypto, HMAC, LCRYPTO="-lcrypto", AC_MSG_ERROR([[Couldn't find libcrypto, quitting!]]))
 
 dnl Checks for header files.
 AC_HEADER_TIME
@@ -69,7 +69,8 @@ dnl OS :)
 #fi
 
 dnl Static linking :)
-AC_ARG_ENABLE(static, AS_HELP_STRING([--enable-static], [enable static linking of zs-c]), CFLAGS="$CFLAGS -static"; static="yes")
+AC_ARG_ENABLE(static, AS_HELP_STRING([--enable-static], [enable static linking of zs-c]), 
+              STATIC="-static"; static="yes", STATIC="")
 if test "$static" = "yes" ; then
   AC_MSG_RESULT([NOTICE: linking statically (--enable-static).])
 else

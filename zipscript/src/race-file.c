@@ -30,12 +30,9 @@ unsigned int readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int g
     FILE		*sfvfile;
     unsigned int	len;
 
-    if ( (sfvfile = fopen(locations->sfv, "r")) == NULL ) {
-      d_log("Failed to open sfv.\n");
-      return 0;
-    }
+    if ( (sfvfile = fopen(locations->sfv, "r")) == NULL ) return 0;
+
     fread( &raceI->misc.release_type, sizeof(short int), 1, sfvfile);
-	d_log("Reading data from sfv (%s)\n", raceI->file.name);
     while ( fread(&len, sizeof(int), 1, sfvfile) == 1 ) {
 	fname = m_alloc(len);
 	fread(fname, 1, len, sfvfile);
@@ -47,8 +44,6 @@ unsigned int readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int g
 	if (getfcount && findfile(fname)) {
 	    raceI->total.files_missing--;
 	}
-
-	d_log("Storing data on %s - CRC: %u - T_CRC: %u.\n", fname, crc, t_crc);
 	m_free(fname);
     }
     fclose(sfvfile);
@@ -67,10 +62,7 @@ void delete_sfv_file(struct LOCATIONS *locations) {
     FILE		*sfvfile;
     unsigned int	len;
 
-    if ((sfvfile = fopen(locations->sfv, "r")) == NULL) {
-	d_log("Couldn't fopen %s.\n", locations->sfv);
-	exit(EXIT_FAILURE);
-    }
+    if ((sfvfile = fopen(locations->sfv, "r")) == NULL) { d_log("Couldn't fopen %s.\n", locations->sfv); exit(EXIT_FAILURE); }
     /*sfvfile = fopen(locations->sfv, "r");*/
 
     fseek(sfvfile, sizeof(short int), SEEK_CUR);
@@ -133,10 +125,7 @@ void read_write_leader_file(struct LOCATIONS *locations, struct VARS *raceI, str
 	fwrite(userI->name, 1, 24, file);
     } else {
 	*raceI->misc.old_leader = 0;
-	if ((file = fopen( locations->leader, "w+" )) == NULL) { 
-		d_log("Couldn't write to %s.\n", locations->leader);
-		exit(EXIT_FAILURE);
-	}
+	if ((file = fopen( locations->leader, "w+" )) == NULL) { d_log("Couldn't write to %s.\n", locations->leader); exit(EXIT_FAILURE); }
 	fwrite(userI->name, 1, 24, file);
     }
     fclose(file);
@@ -225,48 +214,29 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
     unsigned int	music	= 0;
     unsigned int	rars	= 0;
     unsigned int	others	= 0;
-    int			len	= 0;
-    short int		n	= 0;
+    int		len	= 0;
+    short int	n	= 0;
     unsigned int	t_crc;
-    int		sfv_error	= FALSE;
-
 #if ( sfv_dupecheck == TRUE )
     char		*fname[256]; /* Semi-gay. We limit @ 256, which is better than 100 anyways */
     unsigned int	files 	= 0;
     unsigned char	exists;
 #endif
-#if ( sfv_cleanup == TRUE && sfv_error == FALSE )
+#if ( sfv_cleanup == TRUE )
     int		fd_new	= open(".tmpsfv", O_CREAT|O_TRUNC|O_WRONLY, 0644);
-    if ( fd_new != NULL ) {
-        d_log("Failed to create temporary sfv file - setting cleanup of sfv to false and tries to continue.\n");
-	sfv_error = TRUE;
-    }
-
-/* 15.09.2004 - Removing/Hiding the feature of adding comments to .sfv files
- *            - psxc
 
     if ( sfv_comment != NULL ) {
 	write(fd_new, sfv_comment, sizeof(sfv_comment) - 1);
     }
- */
-
 #endif
 
     fd = open(source, O_RDONLY);
-    if ( fd == NULL ) {
-        d_log("Failed to open %s.\n", source);
-	exit(EXIT_FAILURE);
-    }
     buf = m_alloc(buf_bytes);
     read(fd, buf, buf_bytes);
     close(fd);
     eof = buf + buf_bytes;
 
     fd = open(target, O_CREAT|O_TRUNC|O_WRONLY, 0666);
-    if ( fd == NULL ) {
-        d_log("Failed to create %s.\n", target);
-	exit(EXIT_FAILURE);
-    }
     write(fd, &n, sizeof(short int));
 
     for ( newline = buf ; newline < eof ; newline++ ) {
@@ -296,7 +266,7 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
 
 		    fname[files++] = line;
 #endif
-#if ( sfv_cleanup == TRUE && sfv_error == FALSE )
+#if ( sfv_cleanup == TRUE )
 		    write(fd_new, line, len - 1);
 		    write(fd_new, " ", 1);
 		    write(fd_new, crc, 8);
@@ -343,7 +313,7 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
     write(fd, &n, sizeof(short int));
     close(fd);
 
-#if ( sfv_cleanup == TRUE && sfv_error == FALSE )
+#if ( sfv_cleanup == TRUE )
     unlink(source);
     rename(".tmpsfv", source);
     close(fd_new);
@@ -370,10 +340,7 @@ void create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char
     pos = m_alloc(sizeof(int) * raceI->total.files);
     t_pos = m_alloc(sizeof(int) * raceI->total.files);
     fname = m_alloc(sizeof(char*) * raceI->total.files);
-    if ((r = fopen( locations->race, "r" )) == NULL) {
-	d_log("Couldn't fopen %s.\n", locations->race);
-	exit(EXIT_FAILURE);
-	}
+    if ((r = fopen( locations->race, "r" )) == NULL) { d_log("Couldn't fopen %s.\n", locations->race); exit(EXIT_FAILURE); }
     /*r = fopen( locations->race, "r" );*/
     c = 0;
 

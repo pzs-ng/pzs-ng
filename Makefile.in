@@ -20,6 +20,7 @@ distclean: clean
 	find . -name Makefile | xargs rm -f
 
 clean:
+	rm -f sitewho/sitewho
 	find . -name '*.o' | xargs rm -f
 	cd zipscript/src ; $(MAKE) clean
 	cd sitebot/src ; $(MAKE) clean

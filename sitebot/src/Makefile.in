@@ -2,18 +2,13 @@ CC=@CC@
 RM=rm -f
 MAKE=make
 
-CFLAGS=@CFLAGS@ -W -Wall @GLVERSION@ -I../../
-LDFLAGS=@LDFLAGS@
+CFLAGS=@CFLAGS@ -W -Wall @LCRYPT@ @LCRYPTO@ @GLVERSION@ -I../../
 
-all: passchk ng-bw
-
-passchk: passchk.c
-	$(CC) $(LDFLAGS) $(CFLAGS) -o passchk passchk.c @LCRYPT@ @LCRYPTO@
-
-ng-bw: ng-bw.c
-	$(CC) $(LDFLAGS) $(CFLAGS) -o ng-bw ng-bw.c @LCRYPT@ @LCRYPTO@
+all: passchk.c ng-bw.c
+	$(CC) $(CFLAGS) -o passchk passchk.c
+	$(CC) $(CFLAGS) -o ng-bandwidth ng-bw.c
 
 distclean: clean
 
 clean:
-	$(RM) ng-bw passchk
+	$(RM) ng-bandwidth passchk

@@ -27,17 +27,30 @@ struct GROUPINFO **groupI;
 struct VARS      raceI;
 struct LOCATIONS locations;
 
-/* WRITE TO GLFTPD LOG */
 void writelog(char *msg, char *status) {
     FILE   *glfile;
     char   *date;
+    char   *line, *newline;
     time_t timenow;
 
-    if ( raceI.misc.write_log ) {
-	timenow = time( NULL );
+    if ( raceI.misc.write_log == TRUE && !matchpath(group_dirs, locations.path)) {
+	timenow = time(NULL);
 	date = ctime(&timenow);
-	fprintf(glfile = fopen(log, "a+"), "%.24s %s: \"%s\" \"%s\"\n", date, status, locations.path, msg);
-	fclose(glfile);
+	glfile = fopen(log, "a+");
+
+	line = newline = msg;
+	while ( 1 ) {
+	    switch ( *newline++ ) {
+		case 0:
+		    fprintf(glfile, "%.24s %s: \"%s\" %s\n", date, status, locations.path, line);
+		    fclose(glfile);
+		    return;
+		case '\n':
+		    fprintf(glfile, "%.24s %s: \"%s\" %.*s\n", date, status, locations.path, (int)(newline - line - 1), line);
+		    line = newline;
+		    break;
+	    }
+	}
     }
 }
 
@@ -60,10 +73,8 @@ void getrelname(char *directory) {
     if (( ! strncasecmp(path[1], "CD"  , 2) && l[1] <= 4 ) ||
 	    ( ! strncasecmp(path[1], "DISC", 4) && l[1] <= 6 ) ||
 	    ( ! strncasecmp(path[1], "DISK", 4) && l[1] <= 6 ) ||
-	    ( ! strncasecmp(path[1], "DVD" , 3) && l[1] <= 5 ) ||
-            ( ! strncasecmp(path[1], "SUB" , 3) && l[1] <= 4 ) ||
-            ( ! strncasecmp(path[1], "SUBTITLES" , 9) && l[1] <= 9 )) {
- 	raceI.misc.release_name = malloc(l[0] + 18);
+	    ( ! strncasecmp(path[1], "DVD" , 3) && l[1] <= 5 )) {
+	raceI.misc.release_name = malloc(l[0] + 18);
 	locations.link_source = malloc(n = (locations.length_path - l[1]));
 	sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
 	sprintf(locations.link_source, "%.*s", n - 1, locations.path);
@@ -107,7 +118,7 @@ int main () {
 
     bzero(&raceI.total, sizeof(struct race_total));
     raceI.misc.fastest_user[0] =
-	raceI.misc.release_type = 0;    
+	raceI.misc.release_type = 0;
 
     locations.path = malloc( PATH_MAX );
     getcwd( locations.path, PATH_MAX );

@@ -65,9 +65,9 @@ bind pub	-|-	[set cmdpre]who		who
 bind pub	-|-	[set cmdpre]speed	speed
 bind pub	-|-	[set cmdpre]bw		ng_bandwidth
 bind pub	-|-	[set cmdpre]bwup	ng_bwup
-bind pub    -|- [set cmdpre]uploaders	ng_uploaders
+bind pub    	-|- 	[set cmdpre]uploaders	ng_uploaders
 bind pub	-|-	[set cmdpre]bwdn	ng_bwdn
-bind pub	-|- [set cmdpre]leechers	ng_leechers
+bind pub	-|- 	[set cmdpre]leechers	ng_leechers
 bind pub	-|-	[set cmdpre]idlers	ng_idlers
 bind pub	-|-	[set cmdpre]bnc		ng_bnc_check
 bind pub	-|-	[set cmdpre]free	show_free
@@ -91,40 +91,40 @@ bind pub	-|-	[set cmdpre]gwpd	stats_group_gpwd
 bind pub	-|-	[set cmdpre]gpad	stats_group_gpad
 bind pub	-|-	[set cmdpre]help	help
 
-bind join	-|-	*					welcome_msg
+bind join	-|-	*			welcome_msg
 
-bind msg	-|-	!invite				invite
+bind msg	-|-	!invite			invite
 
 if {$bindnopre == "YES"} { 
-	bind pub    -|- !who		who
-	bind pub    -|- !speed		speed
-	bind pub    -|- !bw			ng_bandwidth
-	bind pub    -|- !bwdn		ng_bwdn
-	bind pub	-|- !uploaders	ng_uploaders
-	bind pub    -|- !bwup		ng_bwup
-	bind pub    -|- !leechers	ng_leechers
+	bind pub	-|- !who		who
+	bind pub	-|- !speed		speed
+	bind pub	-|- !bw			ng_bandwidth
+	bind pub	-|- !bwdn		ng_bwdn
+	bind pub	-|- !uploaders		ng_uploaders
+	bind pub	-|- !bwup		ng_bwup
+	bind pub	-|- !leechers		ng_leechers
 	bind pub	-|- !idlers		ng_idlers
-	bind pub    -|- !bnc		ng_bnc_check
-	bind pub    -|- !free		show_free
+	bind pub	-|- !bnc		ng_bnc_check
+	bind pub	-|- !free		show_free
 	bind pub	-|- !df			show_free
 
-	bind pub    -|- !dayup		stats_user_dayup
-	bind pub    -|- !wkup		stats_user_wkup
-	bind pub    -|- !monthup	stats_user_monthup
-	bind pub    -|- !allup		stats_user_allup
+	bind pub	-|- !dayup		stats_user_dayup
+	bind pub	-|- !wkup		stats_user_wkup
+	bind pub	-|- !monthup		stats_user_monthup
+	bind pub	-|- !allup		stats_user_allup
 
-	bind pub    -|- !daydn		stats_user_daydn
-	bind pub    -|- !wkdn		stats_user_wkdn
-	bind pub    -|- !monthdn	stats_user_monthdn
-	bind pub    -|- !alldn		stats_user_alldn
+	bind pub	-|- !daydn		stats_user_daydn
+	bind pub	-|- !wkdn		stats_user_wkdn
+	bind pub	-|- !monthdn		stats_user_monthdn
+	bind pub	-|- !alldn		stats_user_alldn
 
-	bind pub    -|- !gpwk		stats_group_gpwk
-	bind pub    -|- !gpal		stats_group_gpal
-	bind pub    -|- !inc		show_incompletes
+	bind pub	-|- !gpwk		stats_group_gpwk
+	bind pub	-|- !gpal		stats_group_gpal
+	bind pub	-|- !inc		show_incompletes
 
-	bind pub    -|- !gwpd		stats_group_gpwd
-	bind pub    -|- !gpad		stats_group_gpad
-	bind pub    -|- !help		help
+	bind pub	-|- !gwpd		stats_group_gpwd
+	bind pub	-|- !gpad		stats_group_gpad
+	bind pub	-|- !help		help
 }
 
 if {$bindnopre != "YES"} {
@@ -133,7 +133,7 @@ if {$bindnopre != "YES"} {
 	catch { unbind pub    -|- !bw		ng_bandwidth }
 	catch { unbind pub    -|- !bwup		ng_bwup }
 	catch { unbind pub    -|- !uploaders	ng_uploaders }
-	catch { unbind pub    -|- !bwdn     ng_bwdn }
+	catch { unbind pub    -|- !bwdn		ng_bwdn }
 	catch { unbind pub    -|- !leechers	ng_leechers }
 	catch { unbind pub    -|- !idlers	ng_idlers }
 	catch { unbind pub    -|- !bnc		ng_bnc_check }
@@ -191,11 +191,9 @@ proc readlog {} {
 				if {[info exists variables($msgtype)]} {
 					set echoline [parse $msgtype [lrange $line 6 end] $section]
 					sndall $section $echoline
-					postcmd $msgtype $section $path
 				} else {
 					set echoline [parse DEFAULT [lrange $line 6 end] $section]
 					sndall $section $echoline
-					postcmd $msgtype $section $path
 				}
 			}
 			} else {
@@ -203,13 +201,11 @@ proc readlog {} {
 					if {$disable($msgtype) == 0} {
 						set echoline [parse $msgtype [lrange $line 6 end] "DEFAULT"]
 						sndall "DEFAULT" $echoline
-						postcmd $msgtype "DEFAULT" $path
 					}
 				} else {
 					if {$disable(DEFAULT) == 0} {
 						set echoline [parse $msgtype [lrange $line 6 end] "DEFAULT"]
 						sndall "DEFAULT" $echoline
-						postcmd $msgtype "DEFAULT" $path
 					}
 				}
 			}
@@ -225,28 +221,6 @@ proc readlog {} {
 }
 #################################################################################
 
-#################################################################################
-# POST COMMAND                                                                  #
-#################################################################################
-proc postcmd {msgtype section path} {
-	global postcommand
-
-	if {[info exists postcommand($msgtype)]} {
-		foreach cmd $postcommand($msgtype) {
-			if {[lindex $cmd 0] == "exec"} { set cmd [lindex $cmd 1] ; set isexec 1}
-			if {[info exists isexec]} {
-				if {[catch {exec $cmd $msgtype $section $path} result] != 0} {
-					putlog "dZSbot error: exec \"$cmd\" caused an error - \"$result\""
-					unset isexec 
-				}
-			} else {
-				if {[catch {$cmd $msgtype $section $path} result] != 0} {
-					putlog "dZSbot error: \"$cmd\" caused an error - \"$result\""
-				}
-			}
-		}
-	}
-}
 
 #################################################################################
 # GET SECTION NAME (BASED ON PATH)                                              #
@@ -955,37 +929,29 @@ proc welcome_msg { nick uhost hand chan } {
 
 
 #################################################################################
+# SHOW BNC LIST                                                                 #
+#################################################################################
+proc bnc {nick uhost hand chan arg} {
+	global bnc sitename binary
+	putquick "NOTICE $nick : list of bnc's for $sitename"
+	foreach eachbnc $bnc(LIST) {
+		if {$eachbnc == ""} {continue}
+		set ipport [split $eachbnc ":"]
+		set status [exec $binary(BNCTEST) "$binary(NCFTPLS)" "$bnc(USER)" "$bnc(PASS)" "[lindex $ipport 1]" "$bnc(TIMEOUT)" "[lindex $ipport 0]"]
+		puthelp "NOTICE $nick : $eachbnc - $status"
+	}
+}
+#################################################################################
+
+
+#################################################################################
 # CHECK BOUNCER STATUSES                                                        #
 #################################################################################
-proc ng_bnc_check {nick uhost hand chan arg} {global bnc binary
+proc ng_bnc_check {nick uhost hand chan arg} {
+	global bnc sitename binary errorCode
 	putquick "NOTICE $nick :Checking bouncer(s) status..."
-	set count 1
-	foreach i $bnc(LIST) {
-		set i [split $i ":"]
-		set loc [lindex $i 0]
-		set ip [lindex $i 1]
-		set port [lindex $i 2]
-		set dur [expr [lindex [time {set exitlevel [catch {exec $binary(NCFTPLS) -P $port -u $bnc(USER) -p $bnc(PASS) -t $bnc(TIMEOUT) -r 0 ftp://$ip 2>@ stdout} raw]}] 0]/1000]
-		if { $bnc(PING) == "TRUE" } {set ping ", ping: [format %.1f [lindex [split [lindex [lindex [split [ exec $binary(PING) -c1 $ip ] \"\n\"] 1] 6] \"=\"] 1]]ms"} else {set ping ""}
-		
-		if { $exitlevel == 0 } {
-			putquick "NOTICE $nick :$count. .$loc - $ip:$port - UP (login: [format %.0f $dur]ms$ping)"
-		} else {
-			switch -glob $raw {
-				"*username was not accepted for login.*" {set error "Bad Username"}
-				"*username and/or password was not accepted for login.*" {set error "Couldn't login"}
-				"*Connection refused.*" {set error "Connection Refused"}
-				"*try again later: Connection timed out.*" {set error "Connection Timed Out"}
-				"*timed out while waiting for server response.*" {set error "No response"}
-				"*Remote host has closed the connection.*" {set error "Connection Lost"}
-				"*unknown host.*" {set error "Unknown Host?"}
-				default { set error "Unhandled Error Type?" ; putlog "DEBUG: dZSbot.tcl bnc check unhandled error type \"$raw\" please report to project-zs-ng developers" }
-			}
-			putquick "NOTICE $nick :$count. .$loc - $ip:$port - DOWN ($error)"
-		}
-		set error ""
-		set raw ""
-		incr count
+	foreach line [split [exec $binary(BNCCHECK) $binary(NCFTPLS) $bnc(USER) $bnc(PASS) $bnc(TIMEOUT) $bnc(LIST)] "\n"] {
+		putquick "NOTICE $nick :$line"
 	}
 }
 #################################################################################
