@@ -43,7 +43,7 @@ char* findfileext(char *fileext) {
  
  n = direntries;
  while(n--) {
-	if ((k = D_NAMLEN(dirlist[n])) < 4 ) continue;
+	if ((k = NAMLEN(dirlist[n])) < 4 ) continue;
   	if ( strcasecmp(dirlist[n]->d_name + k - 4, fileext) == 0 ) return dirlist[n]->d_name;
 	}
  return NULL;
@@ -59,7 +59,7 @@ int findfileextcount(char *fileext) {
  
  n = direntries;
  while(n--) {
-	if ((k = D_NAMLEN(dirlist[n])) < 4 ) continue;
+	if ((k = NAMLEN(dirlist[n])) < 4 ) continue;
   	if ( strcasecmp(dirlist[n]->d_name + k - 4, fileext) == 0 ) c++;
 	}
  return c;
@@ -94,7 +94,9 @@ unsigned int hexstrtodec(unsigned char *s) {
 /*
  * dangling links
  */
-#ifdef __linux__
+#if defined(__linux__)
+int selector (const struct dirent *d) {
+#elif defined(__NetBSD__)
 int selector (const struct dirent *d) {
 #else
 int selector (struct dirent *d) {
@@ -104,7 +106,9 @@ int selector (struct dirent *d) {
         return 1;
 }
 
-#ifdef __linux__
+#if defined(__linux__)
+int selector2 (const struct dirent *d) {
+#elif defined(__NetBSD__)
 int selector2 (const struct dirent *d) {
 #else
 int selector2 (struct dirent *d) {
@@ -125,6 +129,16 @@ void rescandir() {
 		}
 	free(dirlist);
 	}
+/*
+     int
+     scandir(const char *dirname, struct dirent ***namelist,
+             int (*select)(const struct dirent *),
+             int (*compar)(const void *, const void *));
+
+     int
+     alphasort(const void *d1, const void *d2);
+*/
+
  direntries = scandir(".", &dirlist, selector, 0);
 }
 
@@ -221,7 +235,7 @@ void move_progress_bar(short int delete, struct VARS *raceI) {
  if ( delete ) {
 	while(n--) {
 		if ( regexec( &preg, dirlist[n]->d_name, 1, pmatch, 0) == 0 ) {
-			if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)D_NAMLEN(dirlist[n]) ) {
+			if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[n]) ) {
 				remove(dirlist[n]->d_name);
 				*dirlist[n]->d_name = 0;
 				return;
@@ -233,7 +247,7 @@ void move_progress_bar(short int delete, struct VARS *raceI) {
 	bar = convert(raceI, userI, groupI, progressmeter);
 	while(n--) {
 		if ( regexec( &preg, dirlist[n]->d_name, 1, pmatch, 0) == 0 ) {
-			if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)D_NAMLEN(dirlist[n]) ) {
+			if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[n]) ) {
 				 rename(dirlist[n]->d_name, bar);
 				return;
 				}
@@ -274,7 +288,7 @@ void removecomplete() {
  n = direntries;
  while(n--) {
 	if(regexec(&preg, dirlist[n]->d_name, 1, pmatch, 0 ) == 0) {
-		if ((int)pmatch[0].rm_so == 0 && (int)pmatch[0].rm_eo == (int)D_NAMLEN(dirlist[n])) {
+		if ((int)pmatch[0].rm_so == 0 && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[n])) {
 			remove(dirlist[n]->d_name);
 			*dirlist[n]->d_name = 0;
 			}

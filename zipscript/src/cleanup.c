@@ -11,25 +11,6 @@
 
 #include <config.h>
 
-#if HAVE_DIRENT_H
-# include <dirent.h>
-# define NAMLEN(dirent) strlen((dirent)->d_name)
-#else
-# define dirent direct
-# define NAMLEN(dirent) (dirent)->d_namlen
-# if HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif
-# if HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif
-# if HAVE_NDIR_H
-#  include <ndir.h>
-# else
-#  error "No dirent header, quitting."
-# endif
-#endif
-
 #include "objects.h"
 #include "macros.h"
 #include "../conf/zsconfig.h"
@@ -232,7 +213,7 @@ void incomplete_cleanup(char *path) {
 			/* Multi CD */
 
 	                if ( regexec(&preg[0], dirlist[entries]->d_name, 1, pmatch, 0) == 0 ) {
-				if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)D_NAMLEN(dirlist[entries]) ) {
+				if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries]) ) {
 					if ( stat(multi_name(dirlist[entries]->d_name), &fileinfo) != 0 ) {
 						unlink(dirlist[entries]->d_name);
 						}
@@ -243,7 +224,7 @@ void incomplete_cleanup(char *path) {
 			/* Normal */
 
 	                if ( regexec(&preg[1], dirlist[entries]->d_name, 1, pmatch, 0) == 0 ) {
-				if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)D_NAMLEN(dirlist[entries]) ) {
+				if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries]) ) {
 					if ( stat(single_name(dirlist[entries]->d_name), &fileinfo) != 0 ) {
 						unlink(dirlist[entries]->d_name);
 						}

@@ -22,30 +22,6 @@
 
 #include <config.h>
 
-#if HAVE_DIRENT_H
-# include <dirent.h>
-# ifndef NAMLEN
-#  define NAMLEN(dirent) strlen((dirent)->d_name)
-# endif
-#else
-# define dirent direct
-# ifndef NAMLEN
-#  define NAMLEN(dirent) (dirent)->d_namlen
-# endif
-# if HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif
-# if HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif
-# if HAVE_NDIR_H
-#  include <ndir.h>
-# else
-#  error "No dirent header, quitting."
-# endif
-#endif
-
-
 #include "objects.h"
 #include "macros.h"
 #include "constants.h"
@@ -80,7 +56,10 @@ extern void create_missing(char *, short);
 extern char * findfileext(char *);
 extern int findfileextcount(char *);
 extern unsigned int hexstrtodec(unsigned char *);
-#ifdef __linux__
+#if defined(__linux__)
+extern int selector (const struct dirent *);
+extern int selector2 (const struct dirent *);
+#elif defined(__NetBSD__)
 extern int selector (const struct dirent *);
 extern int selector2 (const struct dirent *);
 #else

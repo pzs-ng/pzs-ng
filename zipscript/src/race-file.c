@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <config.h>
+
 #include "objects.h"
 #include "macros.h"
 #include "constants.h"

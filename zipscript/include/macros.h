@@ -1,21 +1,24 @@
 #ifndef _MACROS_H_
 #define _MACROS_H_
 
-/* FreeBSD */
-#ifdef __FreeBSD__
-#define D_NAMLEN(d)	((d)->d_namlen)
+#if HAVE_DIRENT_H
+# include <dirent.h>
+# define NAMLEN(dirent) strlen((dirent)->d_name)
+#else
+# define dirent direct
+# define NAMLEN(dirent) (dirent)->d_namlen
+# if HAVE_SYS_NDIR_H
+#  include <sys/ndir.h>
+# endif
+# if HAVE_SYS_DIR_H
+#  include <sys/dir.h>
+# endif
+# if HAVE_NDIR_H
+#  include <ndir.h>
+# else
+#  error "No dirent header, quitting."
+# endif
 #endif
-
-/* OpenBSD */
-#ifdef __OpenBSD__
-#define D_NAMLEN(d)	((d)->d_namlen)
-#endif
-
-/* Linux */
-#ifdef __linux__
-#define D_NAMLEN(d)	_D_EXACT_NAMLEN(d)
-#endif
-
 
 /* General */
 #if ( incompleteislink == 1 )
