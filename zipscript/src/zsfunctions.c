@@ -138,7 +138,7 @@ findfileextcount(char *fileext)
 	while (n--) {
 		if ((fnamelen = NAMLEN(dirlist[n])) < 4)
 			continue;
-		if (strcasecmp((dirlist[n]->d_name + fnamelen - 4), fileext) == 0)
+		if (!strcasecmp((dirlist[n]->d_name + fnamelen - 4), fileext))
 			c++;
 	}
 	return c;
@@ -239,6 +239,11 @@ rescanparent(int usefree)
 }
 
 
+/*
+ * del_releasedir - remove all files in current dir.
+ * Last modified by: psxc
+ *         Revision: ??
+ */
 void 
 del_releasedir(char *relname)
 {
@@ -253,7 +258,9 @@ del_releasedir(char *relname)
 
 
 /*
- * Modified: 01.16.2002
+ * strtolower - make a string all lowercase
+ * Last modified by: d1
+ *         Revision: ?? (2002.01.16)
  */
 void 
 strtolower(char *s)
@@ -262,23 +269,33 @@ strtolower(char *s)
 		s++;
 }
 
+/*
+ * unlink_missing - remove <filename>-missing and <filename>.bad
+ * Last modified by: psxc
+ *         Revision: r1221
+ */
 void 
 unlink_missing(char *s)
 {
-	char           *t, *u, *v;
+	static char	t[PATH_MAX];
+	int		n = 0;
 
-	t = u = v = malloc(strlen(s) + 9);
-	sprintf(t, "%s-missing", s);
-	if (t)
-		unlink(t);
-	v = findfilename(t);
-	if (v)
-		unlink(v);
-	free(t);
+	snprintf(t, PATH_MAX, "%s-missing", s);
+	unlink(t);
+	if ((n = findfile(t))) {
+		unlink(dirlist[n]->d_name);
+	}
+	snprintf(t, PATH_MAX, "%s.bad", s);
+	unlink(t);
+	if ((n = findfile(t))) {
+		unlink(dirlist[n]->d_name);
+	}
 }
 
 /*
- * Modified: 01.16.2002
+ * israr - define a file as rar.
+ * Last modified by: d1
+ *         Revision: ?? (2002.01.16)
  */
 char 
 israr(char *fileext)
@@ -418,9 +435,10 @@ findfile(char *filename)
 #else
 		if (!strcmp(dirlist[n]->d_name, filename)) {
 #endif
-			return 1;
+			return n;
 		}
 	}
+d_log("\nfilename='%s'\n", filename);
 	return 0;
 }
 
