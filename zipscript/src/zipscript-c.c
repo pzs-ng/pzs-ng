@@ -1076,7 +1076,7 @@ main(int argc, char **argv)
 				 * Only announce new leader if he leads with
 				 * newleader_files_ahead files :-)
 				 */
-				if (g.v.total.files >= min_newleader_files && ((g.v.total.size * g.v.total.files) >= (min_newleader_size * 1024 * 1024)) && strcmp(g.v.misc.old_leader, g.ui[g.ui[0]->pos]->name) && newleader_msg != NULL && g.ui[g.ui[0]->pos]->files >= (g.ui[g.ui[1]->pos]->files + newleader_files_ahead)) {
+				if (g.v.total.files >= min_newleader_files && ((g.v.total.size * g.v.total.files) >= (min_newleader_size * 1024 * 1024)) && strcmp(g.v.misc.old_leader, g.ui[g.ui[0]->pos]->name) && newleader_msg != NULL && g.ui[g.ui[0]->pos]->files >= (g.ui[g.ui[1]->pos]->files + newleader_files_ahead) && g.v.total.files_missing) {
 					d_log("zipscript-c: Writing NEWLEADER to %s\n", log);
 					newleader_type = general_announce_newleader_type;
 					switch (g.v.misc.release_type) {
