@@ -32,6 +32,7 @@ void d_log(char *fmt, ...) {
 	vfprintf(file, fmt, ap);
 	fclose(file);
 	}
+ chmod(".debug",0666);
 }
 #else 
 void __inline__ d_log(char *fmt, ...) {  }

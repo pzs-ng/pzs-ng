@@ -29,6 +29,9 @@
 #define nocheck_dirs	"/site/private/"
 #define audio_nocheck	"/site/groups/ /site/incoming/requests/"
 
+#define GROUPFILE	"/etc/group"
+#define PASSWDFILE	"/etc/passwd"
+
 /* Directories for cleanup to check for broken incomplete files
  * Use same % values as with date
  */
@@ -74,7 +77,7 @@
 /* These file types are ignored from sfv
  * NOTE: , at the beginning ignores all files without extensions
  */
-#define ignored_types		",diz,jpg,cue,m3u,nfo,sfv"
+#define ignored_types		",diz,jpg,cue,m3u,nfo,sfv,debug"
 
 /* Special modes
  */
