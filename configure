@@ -3761,9 +3761,7 @@ if test `eval echo '${'$as_ac_Header'}'` = yes; then
 _ACEOF
 
 else
-  { { echo "$as_me:$LINENO: error: Couldn't find required header, quitting!" >&5
-echo "$as_me: error: Couldn't find required header, quitting!" >&2;}
-   { (exit 1); exit 1; }; }
+  PASSCHK=""
 fi
 
 done
@@ -5168,8 +5166,10 @@ fi
 
 
 if [ "$PASSCHK" == "" ]; then
-	echo "$as_me:$LINENO: result: $( echo )libcrypt(o)/OpenSSL not found. Not building passchk" >&5
-echo "${ECHO_T}$( echo )libcrypt(o)/OpenSSL not found. Not building passchk" >&6
+echo "$as_me:$LINENO: result: $( echo )
+libcrypt/OpenSSL not found. Not building passchk" >&5
+echo "${ECHO_T}$( echo )
+libcrypt/OpenSSL not found. Not building passchk" >&6
 fi
 
 echo "$as_me:$LINENO: result: $( echo )

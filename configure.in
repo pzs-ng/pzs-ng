@@ -34,7 +34,7 @@ AC_HEADER_TIME
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_CHECK_HEADERS(paths.h pwd.h regex.h fnmatch.h fcntl.h errno.h, , AC_MSG_ERROR([[Couldn't find required header, quitting!]]))
-AC_CHECK_HEADERS(openssl/evp.h openssl/hmac.h openssl/sha.h, , AC_MSG_ERROR([[Couldn't find required header, quitting!]]))
+AC_CHECK_HEADERS(openssl/evp.h openssl/hmac.h openssl/sha.h, , PASSCHK="")
 AC_CHECK_HEADERS(sys/ipc.h sys/param.h sys/shm.h sys/time.h sys/uio.h sys/wait.h, , AC_MSG_ERROR([[Couldn't find required header, quitting!]]))
 
 dnl Checks for typedefs, structures, and compiler characteristics.
@@ -135,8 +135,7 @@ AC_OUTPUT(Makefile zipscript/src/Makefile sitebot/src/Makefile sitewho/Makefile)
 if [[ "$PASSCHK" == "" ]]; then
 AC_MSG_RESULT(
 $( echo )
-libcrypt/OpenSSL not found. Not building passchk
-)
+libcrypt/OpenSSL not found. Not building passchk)
 fi
 
 AC_MSG_RESULT(
