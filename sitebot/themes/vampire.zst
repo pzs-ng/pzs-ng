@@ -207,8 +207,8 @@ announce.SPEEDDN				= "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} 
 announce.SPEEDID				= "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{has been idle for} %c3{%idletime}%c1{.}"
 announce.SPEEDERROR				= "%b{BANDWiDTH%c1{:}} %c1{The requested user is not online now.}"
 announce.WELCOME				= "%c1{Welcome to} %c2{%b{%sitename}}%c1{'s sitechan. Type} %c3{%cmdprehelp} %c1{for help.}"
-announce.FREE					= "%b{FREE SPACE%c1{:}} %devices%c1{[}%c3{%b{%free}} %c1{of} %c3{%total} %c1{free in total (used %c3{%percentage%}%c1{)]}}"
-announce.FREE-DEV				= "%c1{(}%b{%c3{%section}} %c1{has} %c3{%b{%free}} %c1{of} %c3{%total} %c1{free - used} %c3{%percentage%}%c1{)} %c1{-} "
+announce.FREE					= "%b{FREE SPACE%c1{:}} %devices%c1{[}%c3{%b{%free}} %c1{of} %c3{%total} %c1{free in total (used %c3{%perc_used%}%c1{)]}}"
+announce.FREE-DEV				= "%c1{(}%b{%c3{%section}} %c1{has} %c3{%b{%free}} %c1{of} %c3{%total} %c1{free - used} %c3{%perc_used%}%c1{)} %c1{-} "
 announce.UPTIME					= "%b{UPTiME%c1{:}} %c2{system:} %c3{%b{%users}} %c1{user(s) - online for} %c3{%b{%time}} %c1{- load of} %c3{%b{%load}} %c1{-} %c2{sitebot:} %c3{%eggdrop}%c1{.}"
 
 ## IRC Command: !new
