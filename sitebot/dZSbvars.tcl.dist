@@ -41,6 +41,7 @@ set variables(NEWDIR)		"%pf %u_name %g_name %u_tagline"
 set variables(DELDIR)		"%pf %u_name %g_name %u_tagline"
 set variables(LOGIN)		"%u_hostmask %u_ip %dummy %u_name %g_name %u_tagline %u_pid"
 set variables(LOGOUT)		"%u_hostmask %u_ip %u_name %g_name %u_tagline"
+set variables(TIMEOUT)		"%u_name %u_hostmask %dummy1 %dummy2 %dummy3 %dummy4 %dummy5 %u_idletime %dummy6"
 set variables(WIPE)		"%pf %u_name %g_name %u_tagline"
 set variables(WIPE-r)		"%pf %u_name %g_name %u_tagline"
 
