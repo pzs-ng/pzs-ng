@@ -34,7 +34,7 @@
 int 
 main(void)
 {
-	int		k, n, m, l, complete_type = 0, gnum = 0, unum = 0;
+	int		k, n, m, l, gnum = 0, unum = 0;
 	char           *ext, exec[4096], *complete_bar = 0, *inc_point[2];
 	unsigned int	crc;
 	struct stat	fileinfo;
@@ -316,7 +316,7 @@ main(void)
 				break;
 			}
 			g.v.misc.write_log = 0;
-			complete(&g, complete_type);
+			complete(&g);
 
 			createstatusbar(convert(&g.v, g.ui, g.gi, complete_bar));
 #if (chmod_completebar)
@@ -394,7 +394,7 @@ main(void)
 		buffer_progress_bar(&g.v);
 		if (g.v.total.files_missing == 0) {
 			g.v.misc.write_log = 0;
-			complete(&g, complete_type);
+			complete(&g);
 			createstatusbar(convert(&g.v, g.ui, g.gi, zip_completebar));
 #if (chmod_completebar)
 			if (!matchpath(group_dirs, g.l.path)) {

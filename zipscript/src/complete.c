@@ -22,7 +22,7 @@
  * 
  */
 void 
-complete(GLOBAL *g, int completetype)
+complete(GLOBAL *g)
 {
 	int		cnt       , pos;
 	char           *user_p, *group_p;
@@ -100,7 +100,7 @@ complete(GLOBAL *g, int completetype)
 	user_p = g->v.misc.top_messages[0];
 	group_p = g->v.misc.top_messages[1];
 
-	if (g->v.misc.write_log && completetype == 0) {
+	if (g->v.misc.write_log) {
 		if (user_top != NULL) {
 #if ( show_stats_from_pos2_only )
 			for (cnt = 1; cnt < max_users_in_top && cnt < g->v.total.users; cnt++)
@@ -120,37 +120,3 @@ complete(GLOBAL *g, int completetype)
 	}
 }
 
-/*
- * Modified     : 01.27.2002 Author       : Dark0n3
- * 
- * Description  : Writes toplists to glftpd.log
- */
-void 
-writetop(GLOBAL *g, int completetype)
-{
-	int		cnt = 0;
-	char		templine [FILE_MAX];
-	char	       *buffer = 0;
-
-	if (completetype == 1) {
-		if (user_top != NULL) {
-			buffer = templine;
-			for (cnt = 0; cnt < max_users_in_top && cnt < g->v.total.users; cnt++) {
-				buffer += sprintf(buffer, "%s ", convert2(&g->v, g->ui[g->ui[cnt]->pos], g->gi, user_top, cnt));
-			}
-			*buffer -= '\0';
-			writelog(g, templine, stat_users_type);
-		}
-		if (group_top != NULL) {
-			buffer = templine;
-			for (cnt = 0; cnt < max_groups_in_top && cnt < g->v.total.groups; cnt++) {
-				buffer += sprintf(buffer, "%s ", convert3(&g->v, g->gi[g->gi[cnt]->pos], group_top, cnt));
-			}
-			*buffer -= '\0';
-			writelog(g, templine, stat_groups_type);
-		}
-		if (post_stats != NULL) {
-			writelog(g, convert(&g->v, g->ui, g->gi, post_stats), stat_post_type);
-		}
-	}
-}

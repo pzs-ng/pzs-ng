@@ -14,11 +14,7 @@
 #include "objects.h"
 #include "macros.h"
 
-#ifdef _WITH_SS5
-#include "constants.ss5.h"
-#else
 #include "constants.h"
-#endif
 
 #include "stats.h"
 #include "zsfunctions.h"

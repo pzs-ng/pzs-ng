@@ -3,6 +3,5 @@
 
 /*void complete(struct LOCATIONS *, struct VARS *, struct USERINFO **, struct GROUPINFO **, int);*/
 /*extern void writetop(struct VARS *, struct USERINFO **, struct GROUPINFO **, int);*/
-extern void complete(GLOBAL *, int);
-extern void writetop(GLOBAL *, int);
+extern void complete(GLOBAL *);
 #endif

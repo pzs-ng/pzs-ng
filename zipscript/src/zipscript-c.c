@@ -24,11 +24,7 @@
 #include "objects.h"
 #include "macros.h"
 
-#ifdef _WITH_SS5
-#include "constants.ss5.h"
-#else
 #include "constants.h"
-#endif
 
 #include "errors.h"
 #include "multimedia.h"
@@ -75,11 +71,6 @@ main(int argc, char **argv)
 	char	       *race_halfway_type = 0;
 	char	       *norace_halfway_type = 0;
 	char	       *inc_point[2];
-#ifdef _WITH_SS5
-	unsigned char	complete_type = 1;
-#else
-	unsigned char	complete_type = 0;
-#endif
 	char           *complete_announce = 0;
 	int		cnt, cnt2, n = 0, m = 0;
 	int		write_log = 0;
@@ -1192,25 +1183,25 @@ main(int argc, char **argv)
 			case RTYPE_NULL:
 				complete_bar = zip_completebar;
 				complete_msg = CHOOSE(g.v.total.users, zip_complete, zip_norace_complete);
-				complete_announce = CHOOSE(g.v.total.users, zip_announce_one_race_complete_type, zip_announce_norace_complete_type);
+				complete_announce = CHOOSE(g.v.total.users, zip_announce_race_complete_type, zip_announce_norace_complete_type);
 				break;
 			case RTYPE_RAR:
 				complete_bar = rar_completebar;
 				complete_msg = CHOOSE(g.v.total.users, rar_complete, rar_norace_complete);
-				complete_announce = CHOOSE(g.v.total.users, rar_announce_one_race_complete_type, rar_announce_norace_complete_type);
+				complete_announce = CHOOSE(g.v.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
 				break;
 			case RTYPE_OTHER:
 				complete_bar = other_completebar;
 				complete_msg = CHOOSE(g.v.total.users, other_complete, other_norace_complete);
-				complete_announce = CHOOSE(g.v.total.users, other_announce_one_race_complete_type, other_announce_norace_complete_type);
+				complete_announce = CHOOSE(g.v.total.users, other_announce_race_complete_type, other_announce_norace_complete_type);
 				break;
 			case RTYPE_AUDIO:
 				complete_bar = audio_completebar;
 				complete_msg = CHOOSE(g.v.total.users, audio_complete, audio_norace_complete);
 				if (g.v.audio.is_vbr == 0) {
-					complete_announce = CHOOSE(g.v.total.users, audio_cbr_announce_one_race_complete_type, audio_cbr_announce_norace_complete_type);
+					complete_announce = CHOOSE(g.v.total.users, audio_cbr_announce_race_complete_type, audio_cbr_announce_norace_complete_type);
 				} else {
-					complete_announce = CHOOSE(g.v.total.users, audio_vbr_announce_one_race_complete_type, audio_vbr_announce_norace_complete_type);
+					complete_announce = CHOOSE(g.v.total.users, audio_vbr_announce_race_complete_type, audio_vbr_announce_norace_complete_type);
 				}
 
 				d_log("zipscript-c: Symlinking audio\n");
@@ -1266,7 +1257,7 @@ main(int argc, char **argv)
 			case RTYPE_VIDEO:
 				complete_bar = video_completebar;
 				complete_msg = CHOOSE(g.v.total.users, video_complete, video_norace_complete);
-				complete_announce = CHOOSE(g.v.total.users, video_announce_one_race_complete_type, video_announce_norace_complete_type);
+				complete_announce = CHOOSE(g.v.total.users, video_announce_race_complete_type, video_announce_norace_complete_type);
 				break;
 			}
 
@@ -1274,13 +1265,11 @@ main(int argc, char **argv)
 			removecomplete();
 
 			d_log("zipscript-c: Removing incomplete indicator (%s)\n", g.l.incomplete);
-			complete(&g, complete_type);
-			//complete(&g.l, &g.v, g.ui, g.gi, complete_type);
+			complete(&g);
 
 			if (complete_msg != NULL) {
 				d_log("zipscript-c: Writing COMPLETE and STATS to %s\n", log);
 				writelog(&g, convert(&g.v, g.ui, g.gi, complete_msg), complete_announce);
-				writetop(&g, complete_type);
 			}
 			d_log("zipscript-c: Creating complete bar\n");
 			createstatusbar(convert(&g.v, g.ui, g.gi, complete_bar));
@@ -1392,8 +1381,7 @@ main(int argc, char **argv)
 		move_progress_bar(1, &g.v, g.ui, g.gi);
 		if (g.l.incomplete)
 			unlink(g.l.incomplete);
-		closedir(dir);
-		dir = opendir(".");
+		rewinddir(dir);
 		del_releasedir(dir, g.l.path);
 	}
 #endif

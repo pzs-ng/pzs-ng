@@ -4,11 +4,7 @@
 
 #include "abs2rel.h"
 
-#ifdef _WITH_SS5
-#include "constants.ss5.h"
-#else
 #include "constants.h"
-#endif
 
 #include "convert.h"
 
