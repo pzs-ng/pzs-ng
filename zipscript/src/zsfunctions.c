@@ -13,6 +13,7 @@
 #include "convert.h"
 
 #include <strl/strl.h>
+#include <stdarg.h>
 
 /*struct dirent **dirlist;
 struct dirent **dirlistp;

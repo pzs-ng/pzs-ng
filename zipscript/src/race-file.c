@@ -269,7 +269,7 @@ void
 testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 {
 	int		fd, lret, count;
-	char		*realfile, target[256], *ext;
+	char		*realfile, *ext;
 	unsigned int	Tcrc;
 	struct stat	filestat;
 	time_t		timenow;
