@@ -18,6 +18,9 @@
 # Changes
 ###############################################################
 
+r1487: Tcl v8.4 or newer is required.
+- Lazy siteops running older versions will have to update Tcl.
+
 r1483: Random announcements were moved to the theme file.
 - Check the default.zst theme file for an example.
 

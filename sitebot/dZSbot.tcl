@@ -13,7 +13,7 @@ putlog "Launching dZSbot for project-zs-ng..."
 set scriptpath [file dirname [info script]]
 
 if {[catch {package require Tcl 8.4} error]} {
-	die "dZSbot error: You must be using Tcl v8.4, or newer with dZSbot."
+	die "dZSbot error: You must be using Tcl v8.4, or newer, with dZSbot."
 }
 if {[catch {source $scriptpath/dZSbot.conf.defaults} error]} {
 	putlog "dZSbot error: Unable to load dZSbot.conf.defaults ($error), cannot continue."
@@ -371,16 +371,16 @@ proc parselogin {line eventvar datavar} {
 proc parsesysop {line eventvar datavar} {
 	upvar $eventvar event $datavar newdata
 	set patterns [list \
-		ADDUSER  {^'(.+)' added user '(.+)'\.$} \
-		GADDUSER {^'(.+)' added user '(.+)' to group '(.+)'\.$} \
-		CHGRPADD {^'(.+)': successfully added to '(.+)' by (.+)$} \
-		CHGRPDEL {^'(.+)': successfully removed from '(.+)' by (.+)$} \
-		ADDIP    {^'(.+)' added ip '(.+)' to '(.+)'$} \
-		DELIP    {^'(.+)' .*removed ip '(.+)' from '(.+)'$} \
-		READDED  {^'(.+)' readded '(.+)'\.$} \
-		DELUSER  {^'(.+)' deleted user '(.+)'\.$} \
-		PURGED   {^'(.+)' purged '(.+)'$} \
-		KILLED   {^'(.+)' killed PID (\d+) \((.+)\)\.$} \
+		ADDUSER  {^'(\S+)' added user '(\S+)'\.$} \
+		GADDUSER {^'(\S+)' added user '(\S+)' to group '(\S+)'\.$} \
+		CHGRPADD {^'(\S+)': successfully added to '(\S+)' by (\S+)$} \
+		CHGRPDEL {^'(\S+)': successfully removed from '(\S+)' by (\S+)$} \
+		ADDIP    {^'(\S+)' added ip '(\S+)' to '(\S+)'$} \
+		DELIP    {^'(\S+)' .*removed ip '(\S+)' from '(\S+)'$} \
+		READDED  {^'(\S+)' readded '(\S+)'\.$} \
+		DELUSER  {^'(\S+)' deleted user '(\S+)'\.$} \
+		PURGED   {^'(\S+)' purged '(\S+)'$} \
+		KILLED   {^'(\S+)' killed PID (\d+) \((\S+)\)\.$} \
 	]
 	foreach {event pattern} $patterns {
 		if {[llength [set data [regexp -inline -- $pattern $line]]]} {
@@ -396,7 +396,7 @@ proc ng_random {event rndvar} {
 	global random
 
 	## Select a random announce theme
-	set eventlist [array names random -exact "${event}-*"]
+	set eventlist [array names random "${event}-*"]
 	if {[set items [llength $eventlist]]} {
 		set rndevent [lindex $eventlist [rand $items]]
 		return 1
