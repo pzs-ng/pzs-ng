@@ -38,9 +38,10 @@ status  who       what
  [ ]               add support for hiding affill uploads (in both output to channel and the .message. Should also
                    consider the 'anonymity' setting above.)
  [ ]               add support for showing when racers joined the, eh, race in the .message.
- [ ]               make it possible to change the name of the .message file.
+ [ ]     js        make it possible to change the name of the .message file.
  [x]     js        change how mp3-links are created from absolute paths to relative paths.
  [x]     iwdisb    look over shmem use - does the zipscript need to access it?
+ [x]     psxc      add support for unduping bad files after sfv upload
 
 status   description
  [ ]     not done 
