@@ -31,7 +31,7 @@ struct	userdata	{
  * Description: Updates existing entries in userI and groupI or creates new, if old doesnt exist
  *
  */
-void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *usern, char *group, unsigned int filesize, int speed, int mtime) {
+void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *usern, char *group, off_t filesize, unsigned int speed, unsigned int mtime) {
  int		u_no = -1;
  int		g_no = -1;
  int		n;
