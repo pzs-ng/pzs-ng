@@ -53,8 +53,9 @@ rescan: $(SC-OBJECTS)
 
 install:
 	if [ ! -e "$(prefix)$(storage)" ]; then mkdir -p "$(prefix)$(storage)"; fi
-	chown 777 $(prefix)$(storage)
-	if [ -e $(prefix)$(datapath)/logs/glftpd.log ]; then chown 666 $(prefix)$(datapath)/logs/glftpd.log; fi
+	chown 0:0 $(prefix)$(storage)
+	chmod 4777 $(prefix)$(storage)
+	if [ -e $(prefix)$(datapath)/logs/glftpd.log ]; then chmod 666 $(prefix)$(datapath)/logs/glftpd.log; fi
 	if [ -e $(bindir) ]; then cp -f zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chown $(bindir)/; fi
 
 distclean: clean

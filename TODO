@@ -9,30 +9,30 @@ status  who       what
  [x]     daxxar    add theme-support to dZSbot.tcl, so that it reads an external theme file. (theme/skin)
                    - does it need more features? more testing atleast.
 				   - can you easily crash the eggie with malformed themes?
- [?]     psxc      add option to use average/median on vbr mp3's?
+ [!]     psxc      add option to use average/median on vbr mp3's?
                    - would there be any benefit from this? Scrap it?
  [?]     pending   check the mp3 patch - does it check all files (YES)? can we save this info and use it later?
                    - would there be any benefit from this? Scrap it?
  [!]     psxc      add a cleaner script/bin for the zipscript dir in ftp-data - to run in crontab
                    - not needed
- [/]     daxxar    zipscript reports wrong sample rate (48khz instf 44.1khz etc) - why? mp3info reports correctly.
+ [x]     daxxar    zipscript reports wrong sample rate (48khz instf 44.1khz etc) - why? mp3info reports correctly.
  [/]     all       write documentation for different things (especially dZSbot (comments?))
  [ ]               make a good-looking default theme for the zs. ask some 'fan/supporter' to do it?
  [ ]     daxxar    make a config-file format that is parsed to .h, instead of people editing .h :-)
- [ ]               hybrid_types, are allowed if no sfv, will be checked against sfv if there is one.
+ [x]               hybrid_types, are allowed if no sfv, will be checked against sfv if there is one.
  [x]     iwdisb    fix a coredump when the user is killed/kicked on upload.
  [ ]               use mp3info as much as possible to get mp3 info.
- [ ]     psxc      add anonymity support - chown files/dirs as they are uploaded to a "special" user (will only
+ [/]     psxc      add anonymity support - chown files/dirs as they are uploaded to a "special" user (will only
                    work if zs-c is +s)
  [ ]     freezy3k  fix solaris compatibility.
  [x]     psxc      fix bug(?) in Sort.By.Artist (not confirmed - Joeed reported this from r140 - fails to compile)
- [ ]               ignore setting in allowed.bitrates if mp3 is vbr
+ [x]               ignore setting in allowed.bitrates if mp3 is vbr
  [ ]               fix the %U cookie in message_group_footer (should be "user/group", not "user")
  [ ]               compare the list of files stored in .rar to what's in the .sfv --> channel message if they differ.
  [x]     psxc      fix mysterious bug - upload of sfv fails if old data is in ftp-data/zipscript (unconfirmed) -
                    running datacleaner fixes the problem... maybe check race-file.c (readsfv_file())
  [x]     iwdisb    calc crc on the fly if glftpd does not pass crc
- [/]     iwdisb    group and albumname sort in mp3
+ [x]     iwdisb    group and albumname sort in mp3
  [ ]     psxc      add support to change the gid of the releasedir based on genre. need a script to initiate the
                    glftpd groupfile too (create groups based on genre names), if we are to include it.
  [/]               add support for hiding affill uploads (in both output to channel and the .message. Should also
