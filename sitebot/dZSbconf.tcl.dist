@@ -151,13 +151,18 @@ set chanlist(WELCOME)					"$mainchan"
 # to the channels it announces invites to, but you can change that)
 set invite_channels					$chanlist(INVITE)
 
-# Separate staff channel
-# Only the users primary group is checked when deciding who to invite.
-# If you have users with other groups as primary then you need to list
-# them in staffchan(USERS).
-#set staffchan(CHANNELS)				"#pzs-ng_staff"
-#set staffchan(GROUPS)					"SiTEOPS STAFF"
-#set staffchan(USERS)					"someuser1 someuser2"
+# Separate private/staff channel(s). For each channel you can define which
+# groups and/or users should be invited. Please note that the code only looks at
+# a users primary group when checking if he/she should be invited to a specific
+# channel. If you have a STAFF member whose primary group is something else,
+# then you need to list that user separately in the privusers list for the
+# channel.
+#set privchannel(STAFF)					"#pzs-ng_staff"
+#set privgroups(STAFF)					"SiTEOPS STAFF"
+#set privusers(STAFF)					"someuser1 someuser2"
+#set privchannel(TECH)					"#pzs-ng_tech"
+#set privgroups(TECH)					"STAFF"
+#set privusers(TECH)					"someuser3 someuser4"
 
 # Set to 0 to allow trigger commands in all channels bot is in,
 # or set to 1 if you want the triggers to only work in $mainchan

@@ -255,7 +255,7 @@ set debuglevel [DEBUG_INFO]
 
 proc readlog {} {
 
-	global location glftpdlog loginlog lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2 invite_channels loglastoct pid msgreplace staffchan
+	global location glftpdlog loginlog lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2 invite_channels loglastoct pid msgreplace privchannel privgroups privusers
 
 	set dZStimer [utimer 1 "readlog"]
 	set lines ""
@@ -333,20 +333,23 @@ proc readlog {} {
 
 		set path [lindex $line 6]
 
+		# Invite users to public and private channel
 		if {![string compare $msgtype "INVITE"]} {
 			set ircnick [lindex $line 6]
 			set nick [lindex $line 7]
 			set group [lindex $line 8]
 			foreach channel $invite_channels { puthelp "INVITE $ircnick $channel" }
-			if {[info exists staffchan]} {
-				foreach staffgroup $staffchan(GROUPS) {
-					if {![string compare $group $staffgroup]} {
-						foreach channel $staffchan(CHANNELS) { puthelp "INVITE $ircnick $channel" }
+			if {[info exists privchannel]} {
+				foreach privchan [array names privchannel] {
+					foreach privgroup $privgroups($privchan) {
+						if {![string compare $group $privgroup]} {
+							foreach channel $privchannel($privchan) { puthelp "INVITE $ircnick $channel" }
+						}
 					}
-				}
-				foreach staffuser $staffchan(USERS) {
-					if {![string compare $nick $staffuser]} {
-						foreach channel $staffchan(CHANNELS) { puthelp "INVITE $ircnick $channel" }
+					foreach privuser $privusers($privchan) {
+						if {![string compare $nick $privuser]} {
+							foreach channel $privchannel($privchan) { puthelp "INVITE $ircnick $channel" }
+						}
 					}
 				}
 			}
