@@ -4,9 +4,6 @@ prefix=@prefix@
 CFLAGS=-Wall -g
 CC=@CC@
 LIBS=@LIBS@
-ZSLIBS=@ZSLIBS@
-CFGLIBS=@CFGLIBS@
-ZSTYPE=@ZSTYPE@
 
 all: zs
 

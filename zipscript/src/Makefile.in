@@ -8,7 +8,6 @@ CC=@CC@
 #CFLAGS=-O2 @STATIC@ -Wall -pedantic -I../include/
 CFLAGS=-W -Wall -O2 @STATIC@ -g -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I../include
 LDFLAGS=@LDFLAGS@
-ZSLIBS=@ZSLIBS@
 UNIVERSAL=race-file.o zsfunctions.o mp3info.o
 RM=rm -f
 
@@ -28,16 +27,16 @@ all: racedebug zipscript-c postdel racestats cleanup datacleaner rescan pzsng-un
 $(ZS-DEPEND): ../conf/zsconfig.h
 
 zipscript-c: $(ZS-OBJECTS) $(ZS-DEPEND)
-	     $(CC) $(LDFLAGS) $(ZS-OBJECTS) -o $(binpath)/$@ $(ZSLIBS)
+	     $(CC) $(LDFLAGS) $(ZS-OBJECTS) -o $(binpath)/$@
 
 racedebug: $(RD-OBJECTS)
 	   $(CC) $(LDFLAGS) $(RD-OBJECTS) -o $(binpath)/$@
 
 postdel: $(PD-OBJECTS)
-	 $(CC) $(LDFLAGS) $(PD-OBJECTS) -o $(binpath)/$@ $(ZSLIBS)
+	 $(CC) $(LDFLAGS) $(PD-OBJECTS) -o $(binpath)/$@
 
 racestats: $(RS-OBJECTS)
-	   $(CC) $(LDFLAGS) $(RS-OBJECTS) -o $(binpath)/$@ $(ZSLIBS)
+	   $(CC) $(LDFLAGS) $(RS-OBJECTS) -o $(binpath)/$@
 
 cleanup: $(CU-OBJECTS)
 	 $(CC) $(LDFLAGS) $(CU-OBJECTS) -o $(binpath)/$@
@@ -49,7 +48,7 @@ pzsng-undupe: $(UD-OBJECTS)
 	      $(CC) $(LDFLAGS) $(UD-OBJECTS) -o $(binpath)/$@
 
 rescan: $(SC-OBJECTS)
-	$(CC) $(LDFLAGS) $(SC-OBJECTS) -o $(binpath)/$@ $(ZSLIBS)
+	$(CC) $(LDFLAGS) $(SC-OBJECTS) -o $(binpath)/$@
 
 install:
 	if [ ! -e "$(rootpath)$(datapath)/zipscript/" ]; then mkdir "$(rootpath)$(datapath)/zipscript/"; else $(RM) -r "$(rootpath)$(datapath)/zipscript/"*; fi
