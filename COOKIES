@@ -23,6 +23,7 @@
  %a  = average speed per transfer (kb/sec)
  %A  = average speed (kb/sec)
  %d  = race length (so far)
+ %$  = estimated time left of race
 #
 #### Current User
 #
