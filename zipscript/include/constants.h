@@ -108,12 +108,12 @@
 #define audio_sfv		DISABLED
 #endif
 #if ( disable_audio_update == FALSE )
-#define audio_update		"{%U} {%G} {%f} {%.0S} {%w} {%Y} %j {%n} {%r}"
+#define audio_update		"{%U} {%G} {%f} {%.0S} {%w} {%Y} %j {%n} {%r} {%x} {%W} {%y} {%h} {%q}"
 #else
 #define audio_update		DISABLED
 #endif
 #if ( disable_audio_halfway == FALSE )
-#define audio_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define audio_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%M} {%n} {%u} {%g} {%U} {%G} {%R} {%f}"
 #else
 #define audio_halfway		DISABLED
 #endif
@@ -128,7 +128,7 @@
 #define audio_complete		DISABLED
 #endif
 #if ( disable_audio_norace_halfway == FALSE )
-#define audio_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define audio_norace_halfway	"{%r} {%U} {%G} {%.0m} {%f} {%.1p} {%.0A} {%M}"
 #else
 #define audio_norace_halfway	DISABLED
 #endif
@@ -155,7 +155,7 @@
 #define video_update		DISABLED
 #endif
 #if ( disable_video_halfway == FALSE )
-#define video_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define video_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%M} {%n} {%u} {%g} {%U} {%G} {%R} {%f}"
 #else
 #define video_halfway		DISABLED
 #endif
@@ -170,7 +170,7 @@
 #define video_complete		DISABLED
 #endif
 #if ( disable_video_norace_halfway == FALSE )
-#define video_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define video_norace_halfway	"{%r} {%U} {%G} {%.0m} {%f} {%.1p} {%.0A} {%M}"
 #else
 #define video_norace_halfway	DISABLED
 #endif
@@ -197,7 +197,7 @@
 #define rar_update		DISABLED
 #endif
 #if ( disable_rar_halfway == FALSE )
-#define rar_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define rar_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%M} {%n} {%u} {%g} {%U} {%G} {%R} {%f}"
 #else
 #define rar_halfway		DISABLED
 #endif
@@ -212,7 +212,7 @@
 #define rar_complete		DISABLED
 #endif
 #if ( disable_rar_norace_halfway == FALSE )
-#define rar_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define rar_norace_halfway	"{%r} {%U} {%G} {%.0m} {%f} {%.1p} {%.0A} {%M}"
 #else
 #define rar_norace_halfway	DISABLED
 #endif
@@ -239,7 +239,7 @@
 #define other_update		DISABLED
 #endif
 #if ( disable_other_halfway == FALSE )
-#define other_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define other_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%M} {%n} {%u} {%g} {%U} {%G} {%R} {%f}"
 #else
 #define other_halfway		DISABLED
 #endif
@@ -254,7 +254,7 @@
 #define other_complete		DISABLED
 #endif
 #if ( disable_other_norace_halfway == FALSE )
-#define other_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define other_norace_halfway	"{%r} {%U} {%G} {%.0m} {%f} {%.1p} {%.0A} {%M}"
 #else
 #define other_norace_halfway	DISABLED
 #endif
@@ -276,7 +276,7 @@
 #define zip_update		DISABLED
 #endif
 #if ( disable_zip_halfway == FALSE )
-#define zip_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define zip_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%M} {%n} {%u} {%g} {%U} {%G} {%R} {%f}"
 #else
 #define zip_halfway		DISABLED
 #endif
@@ -291,7 +291,7 @@
 #define zip_complete		DISABLED
 #endif
 #if ( disable_zip_norace_halfway == FALSE )
-#define zip_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define zip_norace_halfway	"{%r} {%U} {%G} {%.0m} {%f} {%.1p} {%.0A} {%M}"
 #else
 #define zip_norace_halfway	DISABLED
 #endif
