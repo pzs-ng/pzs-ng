@@ -35,27 +35,27 @@ void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
 	    d_log("Couldn't fopen %s\n", message_file_name); exit(EXIT_FAILURE);
 	}
 
-      if ((matchpath(group_dirs, locations->path)) && (custom_group_dirs_complete_message)) {
-	fprintf(msgfile, "%s", convert( raceI, userI, groupI, custom_group_dirs_complete_message));
-      } else {
-	fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_header));
-	fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_user_header));
-	for ( cnt = 0 ; cnt < raceI->total.users ; cnt++ ) {
-	    pos = userI[cnt]->pos;
-	    fprintf(msgfile, "%s", convert2(raceI, userI[pos], groupI, message_user_body, cnt));
-	}
-	fprintf(msgfile, "%s", convert(raceI, userI, groupI, message_user_footer));
-	fprintf(msgfile, "%s", convert(raceI, userI, groupI, message_group_header));
-	for ( cnt = 0 ; cnt < raceI->total.groups ; cnt++ ) {
-	    pos = groupI[cnt]->pos;
-	    fprintf(msgfile, "%s", convert3(raceI, groupI[pos], message_group_body, cnt));
-	}
-	fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_group_footer));
+	if ((matchpath(group_dirs, locations->path)) && (custom_group_dirs_complete_message)) {
+	    fprintf(msgfile, "%s", convert( raceI, userI, groupI, custom_group_dirs_complete_message));
+	} else {
+	    fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_header));
+	    fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_user_header));
+	    for ( cnt = 0 ; cnt < raceI->total.users ; cnt++ ) {
+		pos = userI[cnt]->pos;
+		fprintf(msgfile, "%s", convert2(raceI, userI[pos], groupI, message_user_body, cnt));
+	    }
+	    fprintf(msgfile, "%s", convert(raceI, userI, groupI, message_user_footer));
+	    fprintf(msgfile, "%s", convert(raceI, userI, groupI, message_group_header));
+	    for ( cnt = 0 ; cnt < raceI->total.groups ; cnt++ ) {
+		pos = groupI[cnt]->pos;
+		fprintf(msgfile, "%s", convert3(raceI, groupI[pos], message_group_body, cnt));
+	    }
+	    fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_group_footer));
 
-	if ( raceI->misc.release_type == 3 ) fprintf(msgfile, convert( raceI, userI, groupI, message_mp3));
+	    if ( raceI->misc.release_type == 3 ) fprintf(msgfile, convert( raceI, userI, groupI, message_mp3));
 
-	fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_footer));
-      }
+	    fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_footer));
+	}
 	fclose(msgfile);
     }
 #endif

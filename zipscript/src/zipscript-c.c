@@ -255,7 +255,7 @@ int main( int argc, char **argv ) {
     if (!(getenv("USER") && getenv("GROUP") && getenv("TAGLINE") && getenv("SPEED"))) {
 	d_log("We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE, $SECTION and $SPEED\n");
 	/*strcpy(raceI.user.name, "Unknown");
-	strcpy(raceI.user.group, "NoGroup");*/
+	  strcpy(raceI.user.group, "NoGroup");*/
 
 	buffer_groups( GROUPFILE );
 	buffer_users( PASSWDFILE );

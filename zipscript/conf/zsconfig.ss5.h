@@ -36,6 +36,9 @@
 /* Directories for cleanup to check for broken incomplete files
  * Use same % values as with date
  */
+#define check_today		TRUE
+#define check_yesterday		TRUE
+
 #define cleanupdirs	"/site/incoming/games/ /site/incoming/apps/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 
 /* Do not write .message file on complete in group_dirs

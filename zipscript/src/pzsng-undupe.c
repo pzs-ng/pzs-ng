@@ -61,9 +61,9 @@ int main (int argc, char *argv[]) {
     fclose(fp);
     fclose(fp2);
 
-/* Time to put back the remainder of the dupefile. Instead of renaming the file */
-/* as was done before, we stream the content back - this is a workaround for a  */
-/* world writable logs directory...                                             */
+    /* Time to put back the remainder of the dupefile. Instead of renaming the file */
+    /* as was done before, we stream the content back - this is a workaround for a  */
+    /* world writable logs directory...                                             */
 
     if((fp = fopen(data2, "r+b")) == NULL) {
 	printf("FATAL ERROR: Unable to open tempfile (%s)\n", data2);
@@ -86,8 +86,8 @@ int main (int argc, char *argv[]) {
 
     chmod(dupefile,0666);
     if ( unlink(data2) > 0 ) {
-      printf("FATAL ERROR: Unable to delete tempfile (%s)\n", data2);
-      return 1;
+	printf("FATAL ERROR: Unable to delete tempfile (%s)\n", data2);
+	return 1;
     }
     return 0;
 }

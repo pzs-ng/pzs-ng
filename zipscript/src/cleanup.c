@@ -27,13 +27,17 @@ time_t     tnow;
 void scandirectory(char *directoryname) {
     struct dirent **namelist, **namelist2;
     int m, n, fd;
+    printf("[%s]\n", directoryname);
     if ( chdir(directoryname) != -1 ) {
 	if ((n = scandir(".", &namelist, 0, 0)) > 0)        
 	    while(n--) if ( namelist[n]->d_name[0] != '.' ) {  
 		chdir(namelist[n]->d_name);
 		if ((m = scandir(".", &namelist2, 0, 0)) > 0) while (m--) if ( namelist2[m]->d_name[0] != '.' ) {
 		    if ( (fd = open(namelist2[m]->d_name, O_NDELAY, 0777)) != -1 ) close(fd);
-		    else unlink(namelist2[m]->d_name);
+		    else {
+			unlink(namelist2[m]->d_name);
+			printf("Broken symbolic link \"%s\" removed.\n", namelist2[m]->d_name);
+		    }
 		}
 		chdir("..");
 		rmdir(namelist[n]->d_name);
@@ -190,6 +194,8 @@ void incomplete_cleanup(char *path) {
 
     free(temp);
 
+    printf("[%s]\n", path);
+
     if ( chdir(path) != -1 ) {
 	if ((entries = scandir(".", &dirlist, 0, 0)) != -1 ) {
 	    while ( entries-- ) {
@@ -197,9 +203,11 @@ void incomplete_cleanup(char *path) {
 		/* Multi CD */
 		if ( regexec(&preg[0], dirlist[entries]->d_name, 1, pmatch, 0) == 0 ) {
 		    if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries]) ) {
-			if ( stat(multi_name(dirlist[entries]->d_name), &fileinfo) != 0 ) {
+			temp=multi_name(dirlist[entries]->d_name);
+			if ( stat(temp, &fileinfo) != 0 ) {
 			    unlink(dirlist[entries]->d_name);
-			}
+			    printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
+			} else printf("Incomplete release \"%s\".\n", temp);
 			continue;
 		    }
 		}
@@ -207,9 +215,11 @@ void incomplete_cleanup(char *path) {
 		/* Normal */
 		if ( regexec(&preg[1], dirlist[entries]->d_name, 1, pmatch, 0) == 0 ) {
 		    if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries]) ) {
-			if ( stat(single_name(dirlist[entries]->d_name), &fileinfo) != 0 ) {
+			temp=single_name(dirlist[entries]->d_name);
+			if ( stat(temp, &fileinfo) != 0 ) {
 			    unlink(dirlist[entries]->d_name);
-			}
+			    printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
+			} else printf("Incomplete release \"%s\".\n", temp);
 			continue;
 		    }
 		}
@@ -223,10 +233,23 @@ void incomplete_cleanup(char *path) {
 }
 
 void cleanup(char *pathlist) {
-    char	*data, *path, *newentry, *entry;
+    char *data_today, *data_yesterday, *path, *newentry, *entry;
 
-    data = malloc(PATH_MAX);
-    path = malloc(PATH_MAX);
+    path                = malloc(PATH_MAX);
+    data_today          = malloc(PATH_MAX);
+    data_yesterday      = malloc(PATH_MAX);
+
+    struct tm *time_today, *time_yesterday;
+    time_today=malloc(sizeof(struct tm));
+    time_yesterday=malloc(sizeof(struct tm));
+
+    time_t     t_today, t_yesterday;
+
+    t_today = time( NULL );
+    time_today = localtime_r( &t_today, time_today );
+
+    t_yesterday = time( NULL ) - (60 * 60 * 24); /* 86400 seconds back == 1 day */
+    time_yesterday = localtime_r( &t_yesterday, time_yesterday );
 
     newentry = pathlist;
 
@@ -234,9 +257,15 @@ void cleanup(char *pathlist) {
 	for ( entry = newentry ; *newentry != ' ' && *newentry != 0 ; newentry++ );
 
 	sprintf(path, "%.*s", (int)(newentry - entry), entry);
-	strftime(data, PATH_MAX, path, timenow);
+	strftime(data_today, PATH_MAX, path, time_today);
+	strftime(data_yesterday, PATH_MAX, path, time_yesterday);
 
-	incomplete_cleanup(data);
+
+	if (strcmp(data_today, data_yesterday) != NULL) {
+	    if ( check_yesterday == TRUE ) incomplete_cleanup(data_yesterday);
+	    if ( check_today == TRUE ) incomplete_cleanup(data_today);
+	} else 
+	    incomplete_cleanup(data_today);
 
 	if ( *newentry == 0 ) {
 	    break;
@@ -244,13 +273,15 @@ void cleanup(char *pathlist) {
 	newentry++;
     }
 
-    free(data);
+    free(data_today);
+    free(data_yesterday);
     free(path);
 }
 
 int main(void) {
-    tnow = time( NULL );
-    timenow = localtime( &tnow ); 
+
+    if ( cleanupdirs[0] )
+	cleanup(cleanupdirs);
 
 #if ( audio_genre_sort == TRUE )
     scandirectory((char *)audio_genre_path);
@@ -268,7 +299,5 @@ int main(void) {
     scandirectory((char *)audio_group_path);
 #endif
 
-    if ( cleanupdirs[0] )
-	cleanup(cleanupdirs);
     exit(EXIT_SUCCESS);
 }

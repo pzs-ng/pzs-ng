@@ -6,19 +6,20 @@ bindir=$(prefix)/bin
 CC=@CC@
 CFLAGS=@CFLAGS@ -W -Wall @STATIC@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I../include/ -I../../
 LDFLAGS=@LDFLAGS@
-UNIVERSAL=race-file.o zsfunctions.o mp3info.o
+UNIVERSAL=stats.o convert.o race-file.o zsfunctions.o mp3info.o
 RM=rm -f
 
 RD-OBJECTS=racedebug.o
-ZS-OBJECTS=zipscript-c.o dizreader.o stats.o complete.o convert.o multimedia.o crc.o $(UNIVERSAL)
-PD-OBJECTS=postdel.o dizreader.o stats.o convert.o multimedia.o $(UNIVERSAL)
-RS-OBJECTS=racestats.o dizreader.o stats.o convert.o $(UNIVERSAL)
+ZS-OBJECTS=zipscript-c.o dizreader.o complete.o multimedia.o crc.o $(UNIVERSAL)
+PD-OBJECTS=postdel.o dizreader.o multimedia.o $(UNIVERSAL)
+RS-OBJECTS=racestats.o dizreader.o $(UNIVERSAL)
 CU-OBJECTS=cleanup.o
+IL-OBJECTS=incomplete-list.o
 DC-OBJECTS=datacleaner.o
 UD-OBJECTS=pzsng-undupe.o
-SC-OBJECTS=rescan.o dizreader.o stats.o convert.o complete.o crc.o multimedia.o $(UNIVERSAL)
+SC-OBJECTS=rescan.o dizreader.o complete.o crc.o multimedia.o $(UNIVERSAL)
 CH-OBJECTS=ng-chown.o
-ZS-DEPEND=cleanup.o complete.o convert.o datacleaner.o postdel.o racestats.o rescan.o stats.o zipscript-c.o multimedia.o $(UNIVERSAL)
+ZS-DEPEND=cleanup.o incomplete-list.o complete.o datacleaner.o postdel.o racestats.o rescan.o zipscript-c.o multimedia.o $(UNIVERSAL)
 
 all: pzsng-undupe racedebug zipscript-c postdel racestats cleanup datacleaner rescan ng-chown
 
