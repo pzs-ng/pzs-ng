@@ -1,11 +1,11 @@
 #################################################################################
-# Code part only, main config is moved to dZSbconf.tcl :)                       #
+# Code part only, main config is moved to dZSbconf.tcl                          #
 # THIS MEANS THAT YOU ARENT SUPPOSED TO EDIT THIS FILE                          #
 # FOR CONFIGURATION PURPOSES!                                                   #
 #################################################################################
 
 #################################################################################
-# READING THE CONFIG (and NOT being a cryptic bitch ;)                          #
+# Read The Config                                                               #
 #################################################################################
 set dver "0.0.4"
 set dzerror "0"
@@ -39,7 +39,6 @@ foreach bin [array names binary] {
 	}
 }
 
-## READ LOGFILES
 set countlog 0
 foreach log [array names glftpdlog] {
 	if {![file exists $glftpdlog($log)]} {
@@ -99,7 +98,7 @@ if {![info exists invite_channels] && [info exists chanlist(INVITE)]} {
 }
 
 #################################################################################
-# SOME IMPORTANT GLOBAL VARIABLES                                               #
+# Important Global Variables                                                    #
 #################################################################################
 
 set defaultsection "DEFAULT"
@@ -111,7 +110,7 @@ set variables(UNNUKE) ""
 set mpath ""
 
 #################################################################################
-# SET BINDINGS                                                                  #
+# Set Bindings                                                                  #
 #################################################################################
 
 bind join -|- * welcome_msg
@@ -234,11 +233,35 @@ proc DEBUG_FATAL {{string 0}} {
 set debuglevel [DEBUG_INFO]
 
 #################################################################################
-# MAIN LOOP - PARSES DATA FROM GLFTPD.LOG                                       #
-# Modified: 2004-11-18 by Zenuka
+# Check if the release should not be announced                                  #
+#################################################################################
+proc denycheck {release} {
+	global denypost
+	foreach deny $denypost {
+		if {[string match $deny $release]} {
+			putlog "dZSbot: post denied - $release"
+			return 1
+		}
+	}
+	return 0
+}
+
+proc typecheck {section msgtype} {
+	global disabletypes
+	if {[info exists disabletypes($section)]} {
+		foreach deny $disabletypes($section) {
+			if {[string match $deny $msgtype]} {return 1}
+		}
+	}
+	return 0
+}
+
+#################################################################################
+# Main loop - Parses data from logs.                                            #
 #################################################################################
 proc readlog {} {
-	global location glftpdlog loginlog lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2 invite_channels loglastoct pid msgreplace privchannel privgroups privusers max_log_change
+	global dZStimer defaultsection glftpdlog invite_channels lastoct loginlog loglastoct max_log_change pid use_glftpd2
+	global chanlist disable variables msgreplace msgtypes privchannel privgroups privusers
 
 	set dZStimer [utimer 1 "readlog"]
 	set lines ""
@@ -248,9 +271,9 @@ proc readlog {} {
 			if {![catch {set of [open $glftpdlog($log) r]} ]} {
 				seek $of $lastoct($log)
 				while {![eof $of]} {
-					set line [gets $of]
-					if {$line == ""} { continue; }
-					lappend lines $line
+					if {[set line [gets $of]] != ""} {
+						lappend lines $line
+					}
 				}
 				close $of
 			} else {
@@ -266,9 +289,9 @@ proc readlog {} {
 			if {![catch {set of [open $loginlog($login) r]} ]} {
 				seek $of $loglastoct($login)
 				while {![eof $of]} {
-					set line [gets $of]
-					if {$line == ""} { continue; }
-					lappend lines $line
+					if {[set line [gets $of]] != ""} {
+						lappend lines $line
+					}
 				}
 				close $of
 			} else {
@@ -338,80 +361,94 @@ proc readlog {} {
 			set ircnick [lindex $line 6]
 			set nick [lindex $line 7]
 			set group [lindex $line 8]
-			foreach channel $invite_channels { puthelp "INVITE $ircnick $channel" }
-			if {[info exists privchannel]} {
-				foreach privchan [array names privchannel] {
-					foreach privgroup $privgroups($privchan) {
-						if {[string equal $group $privgroup]} {
-							foreach channel $privchannel($privchan) { puthelp "INVITE $ircnick $channel" }
-						}
+			foreach channel $invite_channels {puthelp "INVITE $ircnick $channel"}
+
+			foreach privchan [array names privchannel] {
+				foreach privgroup $privgroups($privchan) {
+					if {[string equal $group $privgroup]} {
+						foreach channel $privchannel($privchan) {puthelp "INVITE $ircnick $channel"}
 					}
-					foreach privuser $privusers($privchan) {
-						if {[string equal $nick $privuser]} {
-							foreach channel $privchannel($privchan) { puthelp "INVITE $ircnick $channel" }
-						}
+				}
+				foreach privuser $privusers($privchan) {
+					if {[string equal $nick $privuser]} {
+						foreach channel $privchannel($privchan) {puthelp "INVITE $ircnick $channel"}
 					}
 				}
 			}
 		}
 
-		set section [getsection $path $msgtype]
+		if {[lsearch -exact $msgtypes(SECTION) $msgtype] != -1} {
+			if {[denycheck $path]} {continue}
+			set section [getsectionname $path]
 
-		# Replace messages with custom messages
-		foreach rep [array names msgreplace] {
-			set rep [split $msgreplace($rep) ":"]
-			if {[string equal $msgtype [lindex $rep 0]]} {
-				if {[string match -nocase [lindex $rep 1] $path]} {
-					set msgtype [lindex $rep 2]
-				}
-			}
-		}
-
-		if {[denycheck $path] == 0 && $msgtype != "DISABLED"} {
-			if {![string equal $section $defaultsection]} {
-				if {[info exists variables($msgtype)] && $disable($msgtype) == 0} {
-					set echoline [parse $msgtype [lrange $line 6 end] $section]
-					sndall $section $echoline
-					postcmd $msgtype $section $path
-				} else {
-					if {![info exists variables($msgtype)] && $pid == 0} {
-						putlog "dZSbot error: \"variables($msgtype)\" not set in config, type becomes \"DEFAULT\""
-					}
-					if {![info exists variables($msgtype)] && $disable(DEFAULT) == 0 && $pid == 0} {
-						set echoline [parse DEFAULT [lrange $line 6 end] $section]
-						sndall $section $echoline
-						postcmd $msgtype $section $path
-					}
-				}
-			} else {
-				if {[lsearch -glob $msgtypes(DEFAULT) $msgtype] != -1} {
-					if {$disable($msgtype) == 0} {
-						set echoline [parse $msgtype [lrange $line 6 end] "DEFAULT"]
-						if { [info exists chanlist($msgtype)] } {
-							sndall $msgtype $echoline
-						} else {
-							sndall "DEFAULT" $echoline
-						}
-						postcmd $msgtype "DEFAULT" $path
-					}
-				} else {
-					if {$disable(DEFAULT) == 0} {
-						set echoline [parse $msgtype [lrange $line 6 end] "DEFAULT"]
-						sndall "DEFAULT" $echoline
-						postcmd $msgtype "DEFAULT" $path
-					} else {
-						if {![info exists variables($msgtype)] && $pid > 0} {
-							set echoline [parse $msgtype [lrange $line 6 end] $section]
-							sndall $section $echoline
-							postcmd $msgtype $section $path
-						}
+			# Replace messages with custom messages
+			foreach rep [array names msgreplace] {
+				set rep [split $msgreplace($rep) ":"]
+				if {[string equal $msgtype [lindex $rep 0]]} {
+					if {[string match -nocase [lindex $rep 1] $path]} {
+						set msgtype [lindex $rep 2]
 					}
 				}
 			}
+		} elseif {[lsearch -exact $msgtypes(DEFAULT) $msgtype] != -1} {
+			set section $defaultsection
+		} else {
+			putlog "dZSbot error: undefined message type \"$msgtype\"."; continue
 		}
+		if {![info exists variables($msgtype)]} {
+			putlog "dZSbot error: \"variables($msgtype)\" not defined in the config, type becomes \"DEFAULT\"."
+			set msgtype "DEFAULT"
+		}
+		if {([info exists disable($msgtype)] && $disable($msgtype) != 1) && ![typecheck $section $msgtype]} {
+			sndall $msgtype $section [parse $msgtype [lrange $line 6 end] $section]
+			postcmd $msgtype $section $path
+		}
+
+#		if {[denycheck $path] == 0 && $msgtype != "DISABLED"} {
+#			if {![string equal $section $defaultsection]} {
+#				if {[info exists variables($msgtype)] && $disable($msgtype) == 0} {
+#					set echoline [parse $msgtype [lrange $line 6 end] $section]
+#					sndall $section $echoline
+#					postcmd $msgtype $section $path
+#				} else {
+#					if {![info exists variables($msgtype)] && $pid == 0} {
+#						putlog "dZSbot error: \"variables($msgtype)\" not set in config, type becomes \"DEFAULT\""
+#					}
+#					if {![info exists variables($msgtype)] && $disable(DEFAULT) == 0 && $pid == 0} {
+#						set echoline [parse DEFAULT [lrange $line 6 end] $section]
+#						sndall $section $echoline
+#						postcmd $msgtype $section $path
+#					}
+#				}
+#			} else {
+#				if {[lsearch -glob $msgtypes(DEFAULT) $msgtype] != -1} {
+#					if {$disable($msgtype) == 0} {
+#						set echoline [parse $msgtype [lrange $line 6 end] "DEFAULT"]
+#						if { [info exists chanlist($msgtype)] } {
+#							sndall $msgtype $echoline
+#						} else {
+#							sndall "DEFAULT" $echoline
+#						}
+#						postcmd $msgtype "DEFAULT" $path
+#					}
+#				} else {
+#					if {$disable(DEFAULT) == 0} {
+#						set echoline [parse $msgtype [lrange $line 6 end] "DEFAULT"]
+#						sndall "DEFAULT" $echoline
+#						postcmd $msgtype "DEFAULT" $path
+#					} else {
+#						if {![info exists variables($msgtype)] && $pid > 0} {
+#							set echoline [parse $msgtype [lrange $line 6 end] $section]
+#							sndall $section $echoline
+#							postcmd $msgtype $section $path
+#						}
+#					}
+#				}
+#			}
+#		}
 	}
 
-	if {$use_glftpd2 != "YES"} {
+	if {[string equal -nocase "YES" $use_glftpd2]} {
 		launchnuke
 	}
 
@@ -419,7 +456,7 @@ proc readlog {} {
 }
 
 #################################################################################
-# POST COMMAND                                                                  #
+# Post Command                                                                  #
 #################################################################################
 proc postcmd {msgtype section path} {
 	global postcommand
@@ -442,25 +479,29 @@ proc postcmd {msgtype section path} {
 }
 
 #################################################################################
-# GET SECTION NAME (BASED ON PATH)                                              #
+# Get Section Name                                                              #
 #################################################################################
-proc getsection {cpath msgtype} {
-	global sections msgtypes paths type defaultsection mpath
+proc getsectionname {checkpath} {
+	global defaultsection mpath msgtypes paths sections
+	set bestmatch 0
+	set returnval $defaultsection
 
 	foreach section $sections {
-		if {![llength [array names paths $section]]} {
-			putlog "dZSbot error: \"paths($section)\" not set in config, section becomes \"$defaultsection\""
+		if {![info exists paths($section)]} {
+			putlog "dZSbot error: \"paths($section)\" is not defined in the config."
 			continue
 		}
 
 		foreach path $paths($section) {
-			if {[string match $path $cpath] && [string first $msgtype $msgtypes($type($section))] != -1} {
+			## Compare the path length of the previous match (best match wins)
+			if {[string match $path $checkpath] && [set pathlen [string length $path]] > $bestmatch} {
 				set mpath $path
-				return $section
+				set bestmatch $pathlen
+				set returnval $section
 			}
 		}
 	}
-	return $defaultsection
+	return $returnval
 }
 
 #################################################################################
@@ -636,8 +677,8 @@ proc parse {msgtype msgline section} {
 	}
 
 	set output "$theme(PREFIX)$output"
-	if {[string equal $section $defaultsection] && [llength [array names theme_fakes $type]] > 0} {
-	    set section $theme_fakes($type)
+	if {[string equal $section $defaultsection] && [info exists theme_fakes($type)]} {
+		set section $theme_fakes($type)
 	}
 	set output [basicreplace $output $section]
 	set cnt 0
@@ -672,7 +713,7 @@ proc parse {msgtype msgline section} {
 	set loop 1
 
 	foreach vari $vars {
-		if { [llength $vari] > 1 } {
+		if {[llength $vari] > 1} {
 			set cnt2 0
 			set cnt3 1
 			set values [lindex $msgline $cnt]
@@ -697,7 +738,7 @@ proc parse {msgtype msgline section} {
 			set output [replacevar $output "%loop$loop" $output2]
 			set loop [expr $loop + 1]
 		} else {
-			if { [string match "*speed" $vari] } {
+			if {[string match "*speed" $vari]} {
 				set output [replacevar $output $vari [speed_convert [lindex $msgline $cnt] $section]]
 			} else {
 				set output [replacevar $output $vari [lindex $msgline $cnt]]
@@ -706,8 +747,7 @@ proc parse {msgtype msgline section} {
 		set cnt [expr $cnt + 1]
 	}
 
-	set output [themereplace $output $section]
-	return $output
+	return [themereplace $output $section]
 }
 
 #################################################################################
@@ -1060,9 +1100,19 @@ proc ng_unnukes {nick uhost hand chan argv} {
 #################################################################################
 # SEND TO ALL CHANNELS LISTED                                                   #
 #################################################################################
-proc sndall {section text} {
-	global chanlist splitter
-	foreach chan $chanlist($section) {
+proc sndall {msgtype section text} {
+	global chanlist splitter redirect
+
+	if {[info exists redirect($msgtype)]} {
+		set channels $redirect($msgtype)
+	} elseif {[info exists chanlist($section)]} {
+		set channels $chanlist($section)
+	} else {
+		putlog "dZSbot error: \"chanlist($section)\" not defined in the config."
+		return
+	}
+
+	foreach chan $channels {
 		foreach line [split $text $splitter(CHAR)] {
 			putquick "PRIVMSG $chan :$line"
 		}
@@ -1191,7 +1241,7 @@ proc ng_uploaders {nick uhost hand chan argv} {
 	set count 0; set total 0.0
 
 	foreach line [split $raw "\n"] {
-	    if {[string equal "USER" [lindex $line 0]] && [string equal "UP" [lindex $line 4]]} {
+		if {[string equal "USER" [lindex $line 0]] && [string equal "UP" [lindex $line 4]]} {
 			set user  [lindex $line 2]
 			set group [lindex $line 3]
 			set uspeed [replacevar [lindex $line 5] "KB/s" ""]
@@ -1272,7 +1322,7 @@ proc ng_leechers {nick uhost hand chan argv} {
 	set count 0; set total 0.0
 
 	foreach line [split $raw "\n"] {
-	    if {[string equal "USER" [lindex $line 0]] && [string equal "DN" [lindex $line 4]]} {
+		if {[string equal "USER" [lindex $line 0]] && [string equal "DN" [lindex $line 4]]} {
 			set user  [lindex $line 2]
 			set group [lindex $line 3]
 			set uspeed [replacevar [lindex $line 5] "KB/s" ""]
@@ -1321,7 +1371,7 @@ proc ng_idlers {nick uhost hand chan argv} {
 	set count 0; set total 0.0
 
 	foreach line [split $raw "\n"] {
-	    if {[string equal "USER" [lindex $line 0]] && [string equal "ID" [lindex $line 4]]} {
+		if {[string equal "USER" [lindex $line 0]] && [string equal "ID" [lindex $line 4]]} {
 			set user  [lindex $line 2]
 			set group [lindex $line 3]
 
@@ -1434,13 +1484,13 @@ proc invite {nick host hand arg} {
 		set result [exec $binary(PASSCHK) $username $password $location(PASSWD)]
 		set group ""
 
-		set userfile $location(USERS)$username
+		set userfile "$location(USERS)$username"
 
 		if {[string equal $result "MATCH"]} {
 			set output "$theme(PREFIX)$announce(MSGINVITE)"
-			foreach channel $invite_channels { puthelp "INVITE $nick $channel" }
+			foreach channel $invite_channels {puthelp "INVITE $nick $channel"}
 			foreach line [split [exec $binary(CAT) $userfile] "\n"] {
-				if {[string equal [lindex $line 0] "GROUP"]} {
+				if {[string equal -length 5 $line "GROUP"]} {
 					set group [lrange $line 1 end]
 					break
 				}
@@ -1449,13 +1499,13 @@ proc invite {nick host hand arg} {
 			set output "$theme(PREFIX)$announce(BADMSGINVITE)"
 		}
 
-		if {!$disable(MSGINVITE)} {
+		if {$disable(MSGINVITE) != 1} {
 			set output [replacevar $output "%u_ircnick" $nick]
 			set output [replacevar $output "%u_name" $username]
 			set output [replacevar $output "%u_host" $host]
 			set output [replacevar $output "%g_name" $group]
 			set output [themereplace [basicreplace $output "INVITE"] "none"]
-			sndall "DEFAULT" $output
+			sndall "MSGINVITE" "DEFAULT" $output
 		}
 	}
 }
@@ -1512,7 +1562,7 @@ proc show_free {nick uhost hand chan arg} {
 	set freegb [from_mb $free]
 
 	set o 0
-	while {$o < [expr $i + 1]} {
+	while {$o < $i + 1} {
 		set output "$theme(PREFIX)$announce(FREE)"
 		set output [replacevar $output "%total" $totalgb]
 		set output [replacevar $output "%used" $usedgb]
@@ -1572,7 +1622,7 @@ proc launchnuke2 {type path section info nukees} {
 	set output [replacevar $output "%reldir" [lindex $split [expr $ll -1]]]
 	set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
 	set output [themereplace [basicreplace $output $nuke(TYPE)] "none"]
-	sndall $nuke(SECTION) $output
+	sndall $nuke(TYPE) $nuke(SECTION) $output
 }
 
 #################################################################################
@@ -1632,20 +1682,9 @@ proc launchnuke {} {
 	set output [replacevar $output "%reldir" [lindex $split [expr $ll -1]]]
 	set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
 	set output [themereplace [basicreplace $output $nuke(TYPE)] "none"]
-	sndall $nuke(SECTION) $output
+	sndall $nuke(TYPE) $nuke(SECTION) $output
 
 	set nuke(SHOWN) 1
-}
-
-#################################################################################
-# CHECK IF RELEASE SHOULD NOT BE ANNOUNCED                                      #
-#################################################################################
-proc denycheck {release} {
-	global denypost
-	foreach deny $denypost {
-		if {[string match $deny $release]} {return 1}
-	}
-	return 0
 }
 
 #################################################################################

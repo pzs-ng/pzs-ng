@@ -206,7 +206,3 @@ announce.NUKES_NONE				= "%c1{No nukes found!}"
 announce.UNNUKES				= "%b{UNNUKES%c1{:}} %c1{-}%c2{%section}%c1{- Latest unnukes:}"
 announce.UNNUKES_BODY				= "%c2{%num}%c1{.-} %c3{%b{%reldir}} %c1{was unnuked factor} %c3{%b{x%multiplier}} %c1{by} %c3{%b{%unnuker}} %c1{[reason]} %c3{%b{%reason}} %c1{(Unnuke date was} %c3{%date}%c1{).}"
 announce.UNNUKES_NONE				= "%c1{No unnukes found!}"
-
-# Don't edit/remove this line
-announce.DISABLED				= ""
-

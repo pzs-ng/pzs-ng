@@ -8,7 +8,7 @@
  # Maintainer comments:
  # credit to glftpd developers and pzs-ng developers for making this possible -maziah
  # best with black background
- 
+
 COLOR1 = "12" # light blue
 COLOR2 = "05" # red
 COLOR3 = "12" # light blue
@@ -109,7 +109,7 @@ announce.HALFWAY_NORACE_OTHER			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is
 announce.HALFWAY_NORACE_VIDEO			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is the first to reach the halfway point at %b{%uline-%relname-}%uline raceway."
 announce.HALFWAY_NORACE_AUDIO			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is the first to reach the halfway point at %b{%uline-%relname-}%uline raceway."
 announce.HALFWAY_RACE_RAR			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is the first to reach the halfway point at %b{%uline-%relname-}%uline raceway."
-announce.HALFWAY_RACE_ZIP			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is the first to reach the halfway point at %b{%uline-%relname-}%uline raceway." 
+announce.HALFWAY_RACE_ZIP			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is the first to reach the halfway point at %b{%uline-%relname-}%uline raceway."
 announce.HALFWAY_RACE_OTHER			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is the first to reach the halfway point at %b{%uline-%relname-}%uline raceway."
 announce.HALFWAY_RACE_VIDEO			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is the first to reach the halfway point at %b{%uline-%relname-}%uline raceway."
 announce.HALFWAY_RACE_AUDIO			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is the first to reach the halfway point at %b{%uline-%relname-}%uline raceway."
@@ -173,7 +173,3 @@ announce.BADMSGINVITE	        		= "[%b{%c1{badinv}}] %b{%u_ircnick} (%u_host) tr
 #announce.NEWDISC				= "[%b{disc  }][%section] %b{%relname} by %b{%u_name} of %g_name."
 #announce.SUBTITLES				= "[%b{subs  }][%section] %b{%relname} by %b{%u_name} of %g_name."
 #announce.COVERS 				= "[%b{covers}][%section] %b{%relname} by %b{%u_name} of %g_name."
-
-# Don't edit/remove this line
-announce.DISABLED				= ""
-
