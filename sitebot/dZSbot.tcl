@@ -1330,7 +1330,13 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 		set dur [clock clicks -milliseconds]
 		set exitlevel [catch {exec $binary(NCFTPLS) -P $port -u $bnc(USER) -p $bnc(PASS) -t $bnc(TIMEOUT) -r 0 ftp://$ip 2>@ stdout} raw]
 		set dur [expr [clock clicks -milliseconds] - $dur]
-		if { $bnc(PING) == "TRUE" } {set ping ", ping: [format %.1f [lindex [split [lindex [lindex [split [ exec $binary(PING) -c1 $ip ] \"\n\"] 1] 6] \"=\"] 1]]ms"} else {set ping ""}
+		if { $bnc(PING) == "TRUE" } {
+		    if {[catch { set data [exec $binary(PING) -c1 $ip]} error]} { 
+				putquick "NOTICE $nick :$count. .$loc - $ip:$port - DOWN (Can't ping host)"
+				continue
+		    }
+		    set ping ", ping: [format %.1f [lindex [split [lindex [lindex [split $data \"\n\"] 1] 6] \"=\"] 1]]ms"
+		} else { set ping "" }
 
 		if { $exitlevel == 0 } {
 			putquick "NOTICE $nick :$count. .$loc - $ip:$port - UP (login: [format %.0f $dur]ms$ping)"
