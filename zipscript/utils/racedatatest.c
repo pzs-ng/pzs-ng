@@ -24,7 +24,7 @@ int main(int argc, char **argv)
 		printf("File:   %s\n", rd.fname);
 		printf("CRC32:  %.8x\n", rd.crc32);
 		printf("Size:   %llu\n", rd.size);
-		printf("Time:   %i\n", rd.start_time);
+		printf("Time:   %i\n", (int)rd.start_time);
 		printf("Status: %u\n", rd.status);
 		printf("Uname:  %s\n", rd.uname);
 		printf("Group:  %s\n", rd.group);
