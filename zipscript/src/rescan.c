@@ -145,14 +145,21 @@ main(void)
 			if (*ext == '.')
 				ext++;
 
-			if (!strcomp(ignored_types, ext) && (!(strcomp(allowed_types, ext) &&
-				!matchpath(allowed_types_exemption_dirs, g.l.path))) && strcasecmp("sfv", ext) &&
-				strcasecmp("nfo", ext) && strcasecmp("bad", ext) && strcmp(dp->d_name + l - 8, "-missing") &&
-				strncmp(dp->d_name, ".", 1)) {
+			if (
+				!strcomp(ignored_types, ext) &&
+				(!(strcomp(allowed_types, ext) && !matchpath(allowed_types_exemption_dirs, g.l.path))) &&
+				strcasecmp("sfv", ext) &&
+				strcasecmp("nfo", ext) &&
+				strcasecmp("bad", ext) &&
+				strcmp(dp->d_name + l - 8, "-missing") &&
+				strncmp(dp->d_name, ".", 1)
+				) {
 				
 				stat(dp->d_name, &fileinfo);
 
 				if (S_ISDIR(fileinfo.st_mode))
+					continue;
+				if (ignore_zero_sized_on_rescan && !fileinfo.st_size)
 					continue;
 
 				f_uid = fileinfo.st_uid;

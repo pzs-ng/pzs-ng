@@ -946,7 +946,7 @@ sfv_compare_size(char *fileext, unsigned long fsize)
 void
 mark_as_bad(char *filename)
 {
-#if (mark_file_as_bad == TRUE)
+#if (mark_file_as_bad)
 	char	newname[PATH_MAX];
 
 	if (!fileexists(filename)) {

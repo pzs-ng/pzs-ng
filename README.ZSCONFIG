@@ -347,6 +347,13 @@ ignore_zero_size <TRUE|FALSE>
 	option makes it possible to allow such files.
 	Default: FALSE
 
+ignore_zero_size_on_rescan <TRUE|FALSE>
+	Sometimes a release is approved, which usually is not according to
+	site rules. One of the ways to approve a dir is to create a 0-sized
+	file in the dir, with the word APPROVED or ALLOWED somewhere.
+	This setting will ignore all zero-sized files on rescan.
+	Default: FALSE
+
 remove_dot_debug_on_delete <TRUE|FALSE>
 	If you have debug mode on, users may or may not be able to see the
 	hidden files in the dir, and glftpd may be set up to deny the user
@@ -686,7 +693,7 @@ other_completebar <STRING>
 del_completebar <STRING>
 	This setting is what the zipscript will search for (and delete) when
 	it updates the complete bar.
-	Default: "\\[.*] - \\( .*F - COMPLETE.*) - \\[.*]"
+	Default: "^\\[.*] - \\( .*F - COMPLETE.*) - \\[.*]$"
 
 zipscript_header <STRING>
 	When files are uploaded, some output is shown to the racer uploading.
@@ -823,7 +830,7 @@ del_progressmeter <STRING>
 	On upload a complete-bar is created after each file, to show how
 	complete the release is. Put here what to search for when updating
 	that bar - the file(s) matching this will be deleted.
-	Default: "\\[.*] - .*%% Complete - \\[.*]"
+	Default: "^\\[.*] - .*%% Complete - \\[.*]$"
 
 charbar_missing <CHAR>
 	The progressbar consist of two chars, which together marks the progress

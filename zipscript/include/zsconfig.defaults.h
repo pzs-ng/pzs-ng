@@ -311,6 +311,8 @@
  * benchmark_mode - output to the user uploading how long it took to run the
  * zipscript.
  * ignore_zero_size - will allow (seemingly) zero sized file uploads.
+ * ignore_zero_size_on_rescan - will ignore (seemingly) zero sized files on
+ * rescan (to be used with *allowed/approved* type files).
  */
 #ifndef debug_mode
 #define debug_mode		TRUE
@@ -326,6 +328,9 @@
 #endif
 #ifndef ignore_zero_size
 #define ignore_zero_size	FALSE
+#endif
+#ifndef ignore_zero_sized_on_rescan
+#define ignore_zero_sized_on_rescan	FALSE
 #endif
 
 /*
