@@ -1389,11 +1389,13 @@ proc launchnuke2 {type path section sargs dargs} {
 	set nuke(NUKEE) {}
 
 	foreach entry $dargs {
-		set mb [format "%.1f" [expr [lindex $entry 1] / 1024]]
-		set nukee "[themereplace $announce(NUKEES) "none"]"
-		set nukee [replacevar $nukee "%u_name" [lindex $entry 0]]
-		set nukee [replacevar $nukee "%size" $mb]
-		append nuke(NUKEE) "$nukee" "$theme(SPLITTER)"
+		if {[lindex $entry 0] != $hidenuke} {
+			set mb [format "%.1f" [expr [lindex $entry 1] / 1024]]
+			set nukee "[themereplace $announce(NUKEES) "none"]"
+			set nukee [replacevar $nukee "%u_name" [lindex $entry 0]]
+			set nukee [replacevar $nukee "%size" $mb]
+			append nuke(NUKEE) "$nukee" "$theme(SPLITTER)"
+		}
 	}
 
 	set nuke(NUKEE) [string trim $nuke(NUKEE) "$theme(SPLITTER)"]
