@@ -419,7 +419,7 @@ main(int argc, char **argv)
 			}
 			if (!fileexists("file_id.diz")) {
 				d_log("zipscript-c: file_id.diz does not exist, trying to extract it from %s\n", g.v.file.name);
-				sprintf(target, "%s -qqjnCLL \"%s\" file_id.diz", unzip_bin, g.v.file.name);
+				sprintf(target, "%s -qqjnCLL \"%s\" file_id.diz 2>/dev/null", unzip_bin, g.v.file.name);
 				if (execute(target) != 0)
 					d_log("zipscript-c: No file_id.diz found (#%d): %s\n", errno, strerror(errno));
 				else {
