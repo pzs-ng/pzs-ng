@@ -64,9 +64,9 @@ set binary(WHO)			"/glftpd/bin/sitewho"
 set binary(BW)			"/glftpd/bin/ng-bw"
 set binary(STATS)		"/glftpd/bin/stats"
 set binary(PASSCHK)		"/glftpd/bin/passchk"
+set binary(INCOMPLETE)		"/glftpd/bin/incomplete-list.sh"
 set binary(PING)		"/bin/ping"
 set binary(NCFTPLS)		"/usr/local/bin/ncftpls"
-set binary(INCOMPLETE)		"/glftpd/bin/incomplete-list.sh"
 set binary(DF)			"/bin/df"
 # This is needed for autodetection of glversion. If you unset this, use_glftpd2
 # MUST be set to YES or NO :)
@@ -175,37 +175,44 @@ set hidenuke						"UNKNOWN"
 #  %mult    = nuke multiplier
 #  %reason  = nuke reason
 #  %nukee   = ppl that got nuked
+#
+# PLEASE! DO NOT CHANGE THESE VALUES IF YOU DO NOT KNOW WHAT THEY DO! IT *WILL* BREAK THE BOT!
 
+# Variables pasted from glftpd
+set variables(DEFAULT)		"%pf %msg"
+set variables(NEWDIR)		"%pf %user %group %tagline"
+set variables(DELDIR)		"%pf %user %group %tagline"
+set variables(LOGIN)		"%hostmask %ip %user %group %tagline"
+set variables(LOGOUT)		"%hostmask %ip %user %group %tagline"
+set variables(WIPE)		"%pf %user %group %tagline"
+set variables(WIPE-r)		"%pf %user %group %tagline"
+
+# Variables pasted from the zipscript
 set variables(BADBITRATE)	"%pf %user %group %bitrate"
 set variables(BADGENRE)		"%pf %user %group %genre"
 set variables(BADYEAR)		"%pf %user %group %year"
-set variables(COMPLETE)		"%pf %rel %mbytes %files %avgspd %len %usrs %grps %s_usr %s_grp %s_spd %f_usr %f_grp %f_spd"
-set variables(DEFAULT)		"%pf %msg"
-set variables(DELDIR)		"%pf %user %group %tagline"
-set variables(HALFWAY)		"%pf %rel %user %group %u_mb %u_files %u_pct %u_spd %g_name %g_mb %g_files %g_pct %g_spd"
-set variables(INCOMPLETE)	"%pf %user %group %rel"
-set variables(INVITE)		"%ircnick %user %group"
-set variables(LOGIN)		"%hostmask %ip %user %group %tagline"
-set variables(LOGOUT)		"%hostmask %ip %user %group %tagline"
-set variables(NEWDIR)		"%pf %user %group %tagline"
-set variables(NEWLEADER)	"%pf %user %group %mbytes %files %pct %spd %rel"
-set variables(PRE)		"%pf %rel %pregroup %section %files %mbytes %cds %who %user %group %tagline"
 set variables(RACE)		"%pf %user %group %against %rel %spd"
-set variables(REQUEST)		"%rl %user %group %tagline"
-set variables(REQFILLED)	"%rl %user %group %tagline %requester"
 set variables(SFV)		"%pf %rel %files" 
+set variables(UPDATE)		"%pf %user %group %spd %files %mbytes"
+set variables(UPDATE_RAR)	"%pf %user %group %spd %files %mbytes"
+set variables(UPDATE_OTHER)	"%pf %user %group %spd %files %mbytes"
+Uet variables(UPDATE_VIDEO)	"%pf %user %group %spd %files %mbytes"
+sset variables(UPDATE_AUDIO)	"%pf %user %group %spd %files %genre %year %bitrate %sampling %mode %audio"
+set variables(HALFWAY)		"%pf %rel %user %group %u_mb %u_files %u_pct %u_spd %missing_files"
+set variables(NEWLEADER)	"%pf %user %group %spd %race_length %files_uploaded %len %mb_uploaded %rel"
+set variables(COMPLETE)		"%pf %rel %mbytes %files %avgspd %len %usrs %grps %s_usr %s_grp %s_spd %f_usr %f_grp %f_spd %w_usr %w_grp %special"
+set variables(INCOMPLETE)	"%pf %user %group %rel"
 set variables(STAT_USERS_HEAD)	"%pf %dummy"
 set variables(STAT_USERS)	"%pf %pos %user %group %mbytes %files %pct %spd"
 set variables(STAT_GROUPS_HEAD)	"%pf %dummy"
 set variables(STAT_GROUPS)	"%pf %pos %group %mbytes %files %pct %spd"
 set variables(STAT_POST)	"%pf %dummy"
-set variables(UPDATE)		"%pf %user %group %mbytes %files"
-set variables(UPDATE_RAR)	"%pf %user %group %mbytes"
-set variables(UPDATE_OTHER)	"%pf %user %group %mbytes"
-set variables(UPDATE_AUDIO)	"%pf %user %group %genre %year %bitrate %sampling %mode %audio"
-set variables(UPDATE_VIDEO)	"%pf %user %group %mbytes"
-set variables(WIPE)		"%pf %user %group %tagline"
-set variables(WIPE-r)		"%pf %user %group %tagline"
+
+# Variables pasted from 3rd party apps
+set variables(PRE)		"%pf %rel %pregroup %section %files %mbytes %cds %who %user %group %tagline"
+set variables(INVITE)		"%ircnick %user %group"
+set variables(REQUEST)		"%rl %user %group %tagline"
+set variables(REQFILLED)	"%rl %user %group %tagline %requester"
 
 ## Converts empty or zero variable to something else if defined
 #
