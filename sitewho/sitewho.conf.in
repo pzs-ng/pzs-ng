@@ -12,6 +12,7 @@ ipc_key = 0x0000DEAD
 grp_path = /etc/group
 idle_barrier = 30
 speed_threshold = 1024
+debug = 0
 
 ##################################################################################################################
 #
@@ -33,6 +34,7 @@ speed_threshold = 1024
 # idle_barrier = 30 ... when a user has been idle for more than this number, he is considered an idler. if less,
 #                       he is considered a browser.
 # speed_threshold = 1024 ... threshold (in KB/s) for changing between KB/s and MB/s in the output.
+# debug = 0|1 ... if set to 1 debug output is shown. Should not be used unless needed.
 #
 # Sitewho takes several args:
 # ./sitewho <username> - show user

@@ -109,10 +109,11 @@ matchpath(char *instr, char *path)
 	k = strlen(instr) + 1;
 	for (cnt = pos = 0; cnt < k; cnt++) {
 		if (instr[cnt] == ' ' || instr[cnt] == 0) {
-			if (ncase == 0 && !strncmp(instr + cnt - pos, path, pos) && pos > 1)
+			if (ncase == 0 && !strncmp(instr + cnt - pos, path, pos - 1) && pos) {
 				return 1;
-			else if (ncase == 1 && !strncasecmp(instr + cnt - pos, path, pos) && pos > 1)
+			} else if (ncase == 1 && !strncasecmp(instr + cnt - pos, path, pos - 1) && pos) {
 				return 1;
+			}
 			pos = 0;
 		} else
 			pos++;
@@ -135,10 +136,11 @@ strcomp(char *instr, char *searchstr)
 	for (cnt = pos = 0; cnt < l; cnt++) {
 		if (instr[cnt] == ' ' || instr[cnt] == 0) {
 			if (k == pos) {
-				if (ncase == 0 && !strncmp(instr + cnt - pos, searchstr, pos))
+				if (ncase == 0 && !strncmp(instr + cnt - pos, searchstr, pos)) {
 					return 1;
-				else if (ncase == 1 && !strncasecmp(instr + cnt - pos, searchstr, pos))
+				} else if (ncase == 1 && !strncasecmp(instr + cnt - pos, searchstr, pos)) {
 					return 1;
+				}
 			}
 			pos = 0;
 		} else {
