@@ -61,6 +61,9 @@
  * check_today - check today's dir for stale links.
  * check_yesterday - check yesterday's dir for stale links.
  * cleanupdirs - paths to be checked for broken links - these are not recursive.
+ *               This has also effect on the incomplete-list.sh script added in
+ *               the archive. If you use this on your bot, make sure to fill in
+ *               correct paths.
  */
 #define check_today             TRUE
 #define check_yesterday         TRUE
@@ -69,10 +72,15 @@
 
 /* Should a missing-nfo pointer be put instead of the normal
  * incomplete-pointer if nfo's are missing after release is complete?
+ * Also see "incomplete_base_nfo_indicator" and "incomplete_nfo_indicator" (below)
  */
 #define show_missing_nfo	TRUE
 
 /* Should we also show missing nfo's in cd/dvd/etc dirs?
+ * 99 percent of times you wish to put this to FALSE. Setting this to TRUE
+ * will make a pointer to the actual cd-directory, instead of the base/main
+ * directory of a multi-cd release.
+ * Also see "incomplete_cd_nfo_indicator" (below)
  */
 #define show_missing_nfo_in_cd	FALSE
 
