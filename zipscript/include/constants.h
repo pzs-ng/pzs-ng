@@ -123,7 +123,7 @@
 #define audio_newleader		DISABLED
 #endif
 #if ( disable_audio_complete == FALSE )
-#define audio_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0 {%n} {%t} {%T}"
+#define audio_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0 {%n} %t %T"
 #else
 #define audio_complete		DISABLED
 #endif
@@ -165,7 +165,7 @@
 #define video_newleader		DISABLED
 #endif
 #if ( disable_video_complete == FALSE )
-#define video_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0 {%n} {%t} {%T}"
+#define video_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0 {%n} %t %T"
 #else
 #define video_complete		DISABLED
 #endif
@@ -207,7 +207,7 @@
 #define rar_newleader		DISABLED
 #endif
 #if ( disable_rar_complete == FALSE )
-#define rar_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0 {%n} {%t} {%T}"
+#define rar_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0 {%n} %t %T"
 #else
 #define rar_complete		DISABLED
 #endif
@@ -249,7 +249,7 @@
 #define other_newleader		DISABLED
 #endif
 #if ( disable_other_complete == FALSE )
-#define other_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0 {%n} {%t} {%T}"
+#define other_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0 {%n} %t %T"
 #else
 #define other_complete		DISABLED
 #endif
@@ -286,7 +286,7 @@
 #define zip_newleader		DISABLED
 #endif
 #if ( disable_zip_complete == FALSE )
-#define zip_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0 {%n} {%t} {%T}"
+#define zip_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0 {%n} %t %T"
 #else
 #define zip_complete		DISABLED
 #endif
