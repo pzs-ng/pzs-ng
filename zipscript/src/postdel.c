@@ -444,7 +444,7 @@ main(int argc, char **argv)
 			if (findfileext(".nfo")) {
 				d_log("Removing missing-nfo indicator (if any)\n");
 				remove_nfo_indicator(locations.path);
-			} else if (matchpath(check_for_missing_nfo_dirs, locations.path)) {
+			} else if (matchpath(check_for_missing_nfo_dirs, locations.path) && (!matchpath(group_dirs, locations.path) || create_incomplete_links_in_group_dirs)) {
 				if (!locations.in_cd_dir) {
 					d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
 					create_incomplete_nfo();
@@ -460,9 +460,11 @@ main(int argc, char **argv)
 				}
 			}
 		}
-		d_log("Creating incomplete indicator\n");
-		d_log("   incomplete: '%s', path: '%s'\n", locations.incomplete, locations.path);
-		create_incomplete();
+		if (!matchpath(group_dirs, locations.path) || create_incomplete_links_in_group_dirs) {
+			d_log("Creating incomplete indicator\n");
+			d_log("   incomplete: '%s', path: '%s'\n", locations.incomplete, locations.path);
+			create_incomplete();
+		}
 		d_log("Moving progress bar\n");
 		move_progress_bar(0, &raceI);
 	}

@@ -88,7 +88,9 @@
 #ifndef check_for_missing_nfo_dirs
 #define check_for_missing_nfo_dirs	"/site/incoming/games/ /site/incoming/apps/"
 #endif
-
+#ifndef create_incomplete_links_in_group_dirs
+#define create_incomplete_links_in_group_dirs	TRUE
+#endif
 /*
  * Normally rar files are allowed in zip dirs and vice versa. Setting the
  * strict mode on refuses any such mismatch.

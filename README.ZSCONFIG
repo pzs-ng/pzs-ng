@@ -165,6 +165,12 @@ check_for_missing_nfo_dirs <PATHS>
 	dirs with a space character.
 	Default: "/site/incoming/games/ /site/incoming/apps/"
 
+create_incomplete_links_in_group_dirs <TRUE|FALSE>
+	Should incomplete indicators be created in groupdirs? With the default
+	settings this should be no problem, but if you change the location of
+	the links, it may very well be.
+	Default: TRUE
+
 GROUPFILE <PATH>
 	This is the location of glftpd's groupfile.
 	Default: "/etc/group"

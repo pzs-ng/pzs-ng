@@ -1204,9 +1204,11 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 			d_log("Caching progress bar\n");
 			buffer_progress_bar(&raceI);
 
-			d_log("Creating incomplete indicator:\n", locations.incomplete);
-			d_log("   name: '%s', incomplete: '%s', path: '%s'\n", raceI.misc.release_name, locations.incomplete, locations.path);
-			create_incomplete();
+			if (!matchpath(group_dirs, locations.path) || create_incomplete_links_in_group_dirs) {
+				d_log("Creating incomplete indicator:\n", locations.incomplete);
+				d_log("   name: '%s', incomplete: '%s', path: '%s'\n", raceI.misc.release_name, locations.incomplete, locations.path);
+				create_incomplete();
+			}
 
 			d_log("Creating/moving progress bar\n");
 			move_progress_bar(0, &raceI);
@@ -1251,7 +1253,7 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 				if (!strncasecmp(locations.link_target, "VA", 2) && (locations.link_target[2] == '-' || locations.link_target[2] == '_'))
 					memcpy(raceI.audio.id3_artist, "VA", 3);
 
-				if (raceI.misc.write_log == TRUE) {
+				if (raceI.misc.write_log == TRUE && !matchpath(group_dirs, locations.path)) {
 #if ( audio_genre_sort == TRUE )
 					d_log("Sorting mp3 by genre\n");
 					createlink(audio_genre_path, raceI.audio.id3_genre, locations.link_source, locations.link_target);
@@ -1339,35 +1341,35 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 			}
 #endif
 #endif
-			/* Creating no-nfo link if needed. */
-			if ((locations.nfo_incomplete) && (!findfileext(".nfo")) && (matchpath(check_for_missing_nfo_dirs, locations.path)) ) {
-				if (!locations.in_cd_dir) {
-					d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
-					create_incomplete_nfo();
-				} else {
-					rescanparent();
-					if (!findfileextparent(".nfo")) {
-						d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
+			if (!matchpath(group_dirs, locations.path) || create_incomplete_links_in_group_dirs) {
+				/* Creating no-nfo link if needed. */
+				if ((locations.nfo_incomplete) && (!findfileext(".nfo")) && (matchpath(check_for_missing_nfo_dirs, locations.path)) ) {
+					if (!locations.in_cd_dir) {
+						d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
 						create_incomplete_nfo();
+					} else {
+						rescanparent();
+						if (!findfileextparent(".nfo")) {
+							d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
+							create_incomplete_nfo();
+						}
 					}
 				}
-			}
-
-			/* Creating no-sample link if needed.
-			if ((locations.sample_incomplete) && (!findfileext(".nfo")) && (matchpath(check_for_missing_nfo_dirs, locations.path)) ) {
-				if (!locations.in_cd_dir) {
-					d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
-					create_incomplete_nfo();
-				} else {
-					rescanparent();
-					if (!findfileextparent(".nfo")) {
-						d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
+				/* Creating no-sample link if needed.
+				if ((locations.sample_incomplete) && (!findfileext(".nfo")) && (matchpath(check_for_missing_nfo_dirs, locations.path)) ) {
+					if (!locations.in_cd_dir) {
+						d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
 						create_incomplete_nfo();
+					} else {
+						rescanparent();
+						if (!findfileextparent(".nfo")) {
+							d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
+							create_incomplete_nfo();
+						}
 					}
 				}
+				*/
 			}
-			*/
-
 		} else {
 
 			/* Release is at unknown state */

@@ -307,7 +307,7 @@ main()
 			if (findfileext(".nfo")) {
 				d_log("Removing missing-nfo indicator (if any)\n");
 				remove_nfo_indicator(locations.path);
-			} else if (matchpath(check_for_missing_nfo_dirs, locations.path)) {
+			} else if (matchpath(check_for_missing_nfo_dirs, locations.path) && (!matchpath(group_dirs, locations.path) || create_incomplete_links_in_group_dirs)) {
 				if (!locations.in_cd_dir) {
 					d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
 					create_incomplete_nfo();
@@ -352,8 +352,10 @@ main()
 			chmod(convert(&raceI, userI, groupI, complete_bar), 0222);
 #endif
 		} else {
-			create_incomplete();
-			move_progress_bar(0, &raceI);
+			if (!matchpath(group_dirs, locations.path) || create_incomplete_links_in_group_dirs) {
+				create_incomplete();
+			}
+				move_progress_bar(0, &raceI);
 		}
 	} else if ((raceI.file.name = findfileext(".zip")) != NULL) {
 		maketempdir(&locations);
@@ -418,14 +420,16 @@ main()
 #endif
 
 		} else {
-			create_incomplete();
-			move_progress_bar(0, &raceI);
+			if (!matchpath(group_dirs, locations.path) || create_incomplete_links_in_group_dirs) {
+				create_incomplete();
+			}
+				move_progress_bar(0, &raceI);
 		}
 		if (locations.nfo_incomplete) {
 			if (findfileext(".nfo")) {
 				d_log("Removing missing-nfo indicator (if any)\n");
 				remove_nfo_indicator(locations.path);
-			} else if (matchpath(check_for_missing_nfo_dirs, locations.path)) {
+			} else if (matchpath(check_for_missing_nfo_dirs, locations.path) && (!matchpath(group_dirs, locations.path) || create_incomplete_links_in_group_dirs)) {
 				if (!locations.in_cd_dir) {
 					d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
 					create_incomplete_nfo();
