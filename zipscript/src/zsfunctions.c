@@ -720,3 +720,30 @@ void buffer_users(char *passwdfile) {
     close( f );
     free( f_buf );
 }
+
+/* get the sum of same filetype
+ * Done by psxc 2004, Oct 6th
+ */
+
+unsigned long sfv_compare_size(char *fileext, unsigned long fsize) {
+	int		n, k = 0;
+	unsigned long	l = 0;
+//	char		*filestat;
+	struct stat	filestat;
+
+	n = direntries;
+	while(n--) {
+		if ((k = NAMLEN(dirlist[n])) < 4 )
+			continue;
+		if (strcasecmp(dirlist[n]->d_name + k - 4, fileext) == 0) {
+			if (stat(dirlist[n]->d_name, &filestat) != 0)
+				filestat.st_size = 1;
+			l = l + filestat.st_size;
+			continue;
+		}
+    }
+	if (!(l = l - fsize) > 0)
+		l = 0;
+	return l;
+}
+

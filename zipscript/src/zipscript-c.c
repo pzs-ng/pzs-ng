@@ -493,9 +493,10 @@ int main( int argc, char **argv ) {
 	    case 1: /* SFV CHECK */
 		d_log("File type is: SFV\n");
 		if ( fileexists(locations.sfv) ) {
-		    if (deny_double_sfv == TRUE && findfileextcount(".sfv") > 1 ) {
+		    if (deny_double_sfv == TRUE && findfileextcount(".sfv") > 1 && sfv_compare_size(".sfv", raceI.file.size) > 0) {
 			write_log = raceI.misc.write_log;
 			raceI.misc.write_log = 1;
+d_log("DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", raceI.file.size));
 			d_log("No double sfv allowed\n");
 			error_msg = convert(&raceI,userI,groupI,deny_double_msg);
 			writelog(error_msg, general_doublesfv_type);
@@ -503,7 +504,8 @@ int main( int argc, char **argv ) {
 			exit_value = 2;
 			raceI.misc.write_log = write_log;
 			break;
-		    } else if ( findfileextcount(".sfv") > 1 ) {
+		    } else if ( findfileextcount(".sfv") > 1 && sfv_compare_size(".sfv", raceI.file.size) > 0) {
+d_log("DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", raceI.file.size));
 			d_log("Reading remainders of old sfv\n");
 			readsfv_file(&locations, &raceI, 1);
 			cnt = raceI.total.files - raceI.total.files_missing;
