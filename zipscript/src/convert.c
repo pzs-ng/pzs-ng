@@ -6,16 +6,16 @@
 #include "../conf/zsconfig.h"
 #include "zsconfig.defaults.h"
 
-char		ttime     [40], output2[1024], output[2048];
+char	output2[1024], output[2048];
 
 /*
- * char *hms(int secs)
+ * char *hms(char *ttime, int secs)
  * 
  * Converts source integer to bolded time string.
  * 
  */
-char           *
-hms(int secs)
+char *
+hms(char *ttime, int secs)
 {
 	int		hours = 0,	mins = 0, tmp = 0;
 
@@ -34,6 +34,7 @@ hms(int secs)
 		tmp += sprintf(ttime + tmp, "%im", (int)mins);
 	if (secs || !tmp)
 		tmp += sprintf(ttime + tmp, "%is", (int)secs);
+	
 	return ttime;
 }
 
@@ -459,11 +460,11 @@ convert5(char *instr)
 char           *
 convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *instr)
 {
-	int		val1      , val2, n;
-	int		from      , to, reverse;
-	char           *out_p;
-	char           *m;
-	char		ctrl      [10];
+	int		val1, val2, n;
+	int		from, to, reverse;
+	char		*out_p;
+	char		*m;
+	char		ttime[40], ctrl[10];
 
 	out_p = output;
 
@@ -596,11 +597,11 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				instr--;
 				break;
 			case 'd':
-				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)hms(raceI->total.stop_time - raceI->total.start_time));
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)hms(ttime, raceI->total.stop_time - raceI->total.start_time));
 				break;
 			case '$':
 				out_p += sprintf(out_p, "%*.*s", val1, val2,
-						 (char *)hms(((((raceI->total.stop_time - raceI->total.start_time) + (raceI->total.files - raceI->total.files_missing)) / (raceI->total.files - raceI->total.files_missing)) * raceI->total.files) - (raceI->total.stop_time - raceI->total.start_time)));
+						 (char *)hms(ttime, ((((raceI->total.stop_time - raceI->total.start_time) + (raceI->total.files - raceI->total.files_missing)) / (raceI->total.files - raceI->total.files_missing)) * raceI->total.files) - (raceI->total.stop_time - raceI->total.start_time)));
 				break;
 			case 'e':
 				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->file.size * raceI->total.files >> 10) / 1024.));
