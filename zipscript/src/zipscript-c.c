@@ -282,8 +282,11 @@ main(int argc, char **argv)
 	char           *complete_announce = 0;
 	int		cnt, cnt2, n = 0;
 	int		write_log = 0;
-#if ( enable_complete_script == TRUE || enable_accept_script == TRUE )
+#if ( enable_complete_script || enable_accept_script )
 	int		nfofound = 0;
+#endif
+#if ( del_banned_release )
+	int		deldir = 0;
 #endif
 	struct stat	fileinfo;
 
@@ -865,7 +868,7 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 			case RTYPE_AUDIO:
 				d_log("Trying to read audio header and tags\n");
 				get_mpeg_audio_info(raceI.file.name, &raceI.audio);
-#if ( exclude_non_sfv_dirs == TRUE )
+#if ( exclude_non_sfv_dirs )
 				if (raceI.misc.write_log == TRUE) {
 #endif
 					if ((enable_mp3_script == TRUE) && (userI[raceI.user.pos]->files == 1)) {
@@ -876,7 +879,7 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 						}
 					}
 					if (!matchpath(audio_nocheck_dirs, locations.path)) {
-#if ( audio_banned_genre_check == TRUE )
+#if ( audio_banned_genre_check )
 						if (strcomp(banned_genres, raceI.audio.id3_genre)) {
 							d_log("File is from banned genre\n");
 							sprintf(raceI.misc.error_msg, BANNED_GENRE, raceI.audio.id3_genre);
@@ -897,6 +900,9 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 								error_msg = convert(&raceI, userI, groupI, bad_file_msg);
 								writelog(error_msg, bad_file_msg_type);
 								exit_value = 2;
+#if ( del_banned_release )
+								deldir = 1;
+#endif
 							}
 							break;
 						}
@@ -921,6 +927,9 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 								error_msg = convert(&raceI, userI, groupI, bad_file_msg);
 								writelog(error_msg, bad_file_msg_type);
 								exit_value = 2;
+#if ( del_banned_release )
+								deldir = 1;
+#endif
 							}
 							break;
 						}
@@ -946,6 +955,9 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 								error_msg = convert(&raceI, userI, groupI, bad_file_msg);
 								writelog(error_msg, bad_file_msg_type);
 								exit_value = 2;
+#if ( del_banned_release )
+								deldir = 1;
+#endif
 							}
 							break;
 						}
@@ -972,6 +984,9 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 									error_msg = convert(&raceI, userI, groupI, bad_file_msg);
 									writelog(error_msg, bad_file_msg_type);
 									exit_value = 2;
+#if ( del_banned_release )
+									deldir = 1;
+#endif
 								}
 								break;
 							}
@@ -1395,6 +1410,12 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 		remove_nfo_indicator(locations.path);
 	}
 
+#if ( del_banned_release )
+	if (deldir) {
+		del_releasedir(locations.path);
+	}
+#endif
+
 	d_log("Releasing memory\n");
 	free(locations.link_source);
 	free(raceI.misc.release_name);
@@ -1427,7 +1448,6 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 		d_log("Sleeping for %d seconds.\n", sleep_on_bad);
 	}
 #endif
-
 	d_log("Exit\n");
 	return exit_value;
 }

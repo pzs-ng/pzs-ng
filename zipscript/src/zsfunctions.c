@@ -219,6 +219,19 @@ rescanparent()
 	direntriesp = scandir("..", &dirlistp, 0, 0);
 }
 
+void 
+del_releasedir(char *relname)
+{
+	int	fnum = direntries;
+	if (fnum > 0) {
+		while (fnum--) {
+			unlink(dirlist[fnum]->d_name);
+		}
+	rmdir(relname);
+	}
+}
+
+
 /*
  * Modified: 01.16.2002
  */

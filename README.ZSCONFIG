@@ -487,6 +487,14 @@ audio_genre_warn <TRUE|FALSE>
 	TRUE if yes.
 	Default: TRUE
 	
+del_banned_release <TRUE|FALSE>
+	If you want to make absolutely sure the banned release does not take up
+	more bandwith or space than necessary, you can choose to completely
+	remove the releasedir. This is *NOT* recommended, however. If you
+	somehow allow files to be uploaded in, say, /site, and a person uploads
+	a banned mp3-file here, imagine what will happen?
+	Default: FALSE
+
 create_m3u <TRUE|FALSE>
 	If you wish to create .m3u files on complete mp3-releases, set this to
 	TRUE.
