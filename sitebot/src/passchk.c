@@ -16,10 +16,16 @@
 
 extern char    *crypt(const char *key, const char *salt);
 
+struct passwd *fgetpwent(FILE *);
+int pbkdf2(const unsigned char *, unsigned int, unsigned int, unsigned char *, unsigned long long);
+int pw_encrypt(const unsigned char *, char *);
+int pw_encrypt_new(const unsigned char *, unsigned char *, char *);
+
 #define SHA_SALT_LEN 4
 
 #ifndef  __USE_SVID
 struct passwd	pwd;
+
 struct passwd  *
 fgetpwent(FILE * fp)
 {
@@ -130,13 +136,13 @@ pbkdf2(const unsigned char *pw, unsigned int pwlen,
 }
 
 int
-pw_encrypt(const unsigned char *pwd, char *digest)
+pw_encrypt(const unsigned char *pw_pwd, char *digest)
 {
 	unsigned char	md[SHA_DIGEST_LENGTH];
 	int		mdlen = SHA_DIGEST_LENGTH, i;
 
 	/* see pbe.c for info, 100x multihash */
-	pbkdf2(pwd, strlen((char *)pwd), 100, md, SHA_DIGEST_LENGTH);
+	pbkdf2(pw_pwd, strlen((char *)pw_pwd), 100, md, SHA_DIGEST_LENGTH);
 
 	for (i = 0; i < mdlen; i++) {
 		sprintf(digest, "%02x", md[i]);
@@ -148,7 +154,7 @@ pw_encrypt(const unsigned char *pwd, char *digest)
 }
 
 int
-pw_encrypt_new(const unsigned char *pwd, unsigned char *encryp, char *digest)
+pw_encrypt_new(const unsigned char *pw_pwd, unsigned char *encryp, char *digest)
 {
 	unsigned char	hexconvert[3];
 	unsigned char  *salt;
@@ -170,7 +176,7 @@ pw_encrypt_new(const unsigned char *pwd, unsigned char *encryp, char *digest)
 		real_salt[i] = strtol(hexconvert, NULL, 16);
 	}
 
-	PKCS5_PBKDF2_HMAC_SHA1(pwd, strlen(pwd), real_salt, SHA_SALT_LEN, 100,
+	PKCS5_PBKDF2_HMAC_SHA1(pw_pwd, strlen(pw_pwd), real_salt, SHA_SALT_LEN, 100,
 			       mdlen, md);
 
 	*digest = '$';

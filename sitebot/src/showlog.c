@@ -294,11 +294,13 @@ void show_newdirs(const char *pattern)
 			/* Format: status|uptime|uploader|group|files|kilobytes|dirname */
 #ifndef USE_GLFTPD2
 			printf("%d|%u|%d|%d|%d|%ld|",
-#else
-			printf("%d|%u|%d|%d|%d|%lld|",
-#endif
 				buffer.status, (unsigned int)buffer.uptime, buffer.uploader, buffer.group,
 				buffer.files, buffer.bytes/1024);
+#else
+			printf("%d|%u|%d|%d|%d|%lld|",
+				buffer.status, (unsigned int)buffer.uptime, buffer.uploader, buffer.group,
+				buffer.files, buffer.bytes/1024);
+#endif
 			puts(buffer.dirname);
 			i++;
     	}

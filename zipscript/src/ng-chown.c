@@ -46,22 +46,81 @@
 #include "../conf/zsconfig.h"
 #include "zsconfig.defaults.h"
 
-struct dirent **dirlist;
+#include "ng-chown.h"
+
+struct dirent	**dirlist;
 unsigned int	direntries, n = 0;
 
-
-#if defined(__linux__)
 int 
+main(int argc, char *argv[])
+{
+	int	my_result = 1, new_user = 0,
+		new_group = 0, user_flag = 0,
+		group_flag = 0, files_flag = 0,
+		dir_flag = 0;
+
+	char	my_path[PATH_MAX];
+
+	if (argc != 10) {
+		printf("%s - Error: Wrong number of args given. (%d)\n", argv[0], argc);
+		printf("%s - Syntax: %s <uid> <gid> <uid_flag> <gid_flag> <files_flag> <dir/file_flag> <user name> <group name> <name of dir/file>\n", argv[0], argv[0]);
+		return 1;
+	}
+	
+	new_user = atoi(argv[1]);	/* uid of user */
+	new_group = atoi(argv[2]);	/* gid of user */
+	
+	if (allow_uid_change_in_ng_chown)
+		user_flag = atoi(argv[3]);	/* change the uid of the files/dir if > 0      */
+
+	if (allow_gid_change_in_ng_chown)
+		group_flag = atoi(argv[4]);	/* change the gid of the files/dir if > 0      */
+
+	if (allow_files_chown_in_ng_chown)
+		files_flag = atoi(argv[5]);	/* make changes on the files in the dir if > 0 */
+		
+	if (allow_dir_chown_in_ng_chown)
+		dir_flag = atoi(argv[6]);	/* make changes on the dir itself if > 0       */
+
+	if ((new_user == 0) && (new_group == 0)) {
+		if (strlen(argv[7]) < 25)
+			new_user = (int)get_gluid(PASSWDFILE, argv[7]);
+		if (strlen(argv[8]) < 25)
+			new_group = (int)get_glgid(GROUPFILE, argv[8]);
+	}
+	
+	if ((strlen(argv[9]) < PATH_MAX) && (new_user < 65536) && (new_group < 65535)) {
+		sprintf(my_path, "%s", argv[9]);
+	} else {
+		printf("%s - Error in argument(s)\n", argv[0]);
+		return 1;
+	}
+
+	my_result = myscan(my_result, new_user, new_group, user_flag, group_flag, files_flag, dir_flag, my_path, argv[0]);
+	
+	if (my_result == 0) {
+		if ((new_user > 0) || (new_group > 0)) {
+			setuid(0);
+			setgid(0);
+			my_result = myscan(my_result, new_user, new_group, user_flag, group_flag, files_flag, dir_flag, my_path, argv[0]);
+		}
+	}
+	
+	return my_result;
+}
+
+int 
+#if defined(__linux__)
 selector3(const struct dirent *d)
 #elif defined(__NetBSD__)
-	int		selector3  (const struct dirent *d)
+selector3(const struct dirent *d)
 #else
-int 
 selector3(struct dirent *d)
 #endif
 {
-	struct stat	st;
-	if ((stat(d->d_name, &st) < 0) || S_ISDIR(st.st_mode))
+	struct stat st;
+	if ((stat(d->d_name, &st) < 0) ||
+	    S_ISDIR(st.st_mode))
 		return 0;
 	return 1;
 }
@@ -158,18 +217,18 @@ get_gluid(char *passwdfile, char *user_name)
 	char	       *u_name = 0;
 	uid_t		u_id = 0;
 	off_t		f_size;
-	int		f, n, m, l, l_start = 0;
+	int		f, i, m, l, l_start = 0;
 	struct stat	fileinfo;
 
 #if (change_spaces_to_underscore_in_ng_chown)
 	char	       *u_modname = 0;
 
 	u_modname = malloc(strlen(user_name) * sizeof(char) + 1);
-	for (n = 0; n < ((int)strlen(user_name) + 1); n++) {
-		if (user_name[n] == ' ')
-			sprintf(u_modname + n, "_");
+	for (i = 0; i < ((int)strlen(user_name) + 1); i++) {
+		if (user_name[i] == ' ')
+			sprintf(u_modname + i, "_");
 		else
-			memcpy(u_modname + n, user_name + n, 1);
+			memcpy(u_modname + i, user_name + i, 1);
 	}
 #endif
 
@@ -179,16 +238,16 @@ get_gluid(char *passwdfile, char *user_name)
 	f_buf = malloc(f_size);
 	read(f, f_buf, f_size);
 
-	for (n = 0; n < f_size; n++) {
-		if (f_buf[n] == '\n' || n == f_size) {
-			f_buf[n] = 0;
+	for (i = 0; i < f_size; i++) {
+		if (f_buf[i] == '\n' || i == f_size) {
+			f_buf[i] = 0;
 			m = l_start;
-			while (f_buf[m] != ':' && m < n)
+			while (f_buf[m] != ':' && m < i)
 				m++;
 			if (m != l_start) {
 				f_buf[m] = 0;
 				u_name = f_buf + l_start;
-				m = n;
+				m = i;
 				for (l = 0; l < 4; l++) {
 					while (f_buf[m] != ':' && m > l_start)
 						m--;
@@ -197,15 +256,15 @@ get_gluid(char *passwdfile, char *user_name)
 				while (f_buf[m] != ':' && m > l_start)
 					m--;
 #if (change_spaces_to_underscore_in_ng_chown)
-				if ((m != n) && (strlen(u_name) == strlen(user_name)) && !strcmp(u_name, u_modname)){
+				if ((m != i) && (strlen(u_name) == strlen(user_name)) && !strcmp(u_name, u_modname)){
 #else
-				if ((m != n) && (strlen(u_name) == strlen(user_name)) && !strcmp(u_name, user_name)){
+				if ((m != i) && (strlen(u_name) == strlen(user_name)) && !strcmp(u_name, user_name)){
 #endif
 					u_id = atoi(f_buf + m + 1);
 					break;
 				}
 			}
-			l_start = n + 1;
+			l_start = i + 1;
 		}
 	}
 	close(f);
@@ -223,18 +282,18 @@ get_glgid(char *groupfile, char *group_name)
 	char	       *g_name = 0;
 	gid_t		g_id = 0;
 	off_t		f_size;
-	int		f, n, m, l_start = 0;
+	int		f, i, m, l_start = 0;
 	struct stat	fileinfo;
 
 #if (change_spaces_to_underscore_in_ng_chown)
 	char	       *g_modname = 0;
 
 	g_modname = malloc(strlen(group_name) * sizeof(char) + 1);
-	for (n = 0; n < ((int)strlen(group_name) + 1); n++) {
-		if (group_name[n] == ' ')
-			sprintf(g_modname + n, "_");
+	for (i = 0; i < ((int)strlen(group_name) + 1); i++) {
+		if (group_name[i] == ' ')
+			sprintf(g_modname + i, "_");
 		else
-			memcpy(g_modname + n, group_name + n, 1);
+			memcpy(g_modname + i, group_name + i, 1);
 	}
 #endif
 
@@ -244,31 +303,31 @@ get_glgid(char *groupfile, char *group_name)
 	f_buf = malloc(f_size);
 	read(f, f_buf, f_size);
 
-	for (n = 0; n < f_size; n++) {
-		if (f_buf[n] == '\n' || n == f_size) {
-			f_buf[n] = 0;
+	for (i = 0; i < f_size; i++) {
+		if (f_buf[i] == '\n' || i == f_size) {
+			f_buf[i] = 0;
 			m = l_start;
-			while (f_buf[m] != ':' && m < n)
+			while (f_buf[m] != ':' && m < i)
 				m++;
 			if (m != l_start) {
 				f_buf[m] = 0;
 				g_name = f_buf + l_start;
-				m = n;
+				m = i;
 				while (f_buf[m] != ':' && m > l_start)
 					m--;
 				f_buf[m] = 0;
 				while (f_buf[m] != ':' && m > l_start)
 					m--;
 #if (change_spaces_to_underscore_in_ng_chown)
-				if ((m != n) && (strlen(g_name) == strlen(group_name)) && !strcmp(g_name, g_modname)){
+				if ((m != i) && (strlen(g_name) == strlen(group_name)) && !strcmp(g_name, g_modname)){
 #else
-				if ((m != n) && (strlen(g_name) == strlen(group_name)) && !strcmp(g_name, group_name)){
+				if ((m != i) && (strlen(g_name) == strlen(group_name)) && !strcmp(g_name, group_name)){
 #endif
 					g_id = atoi(f_buf + m + 1);
 					break;
 				}
 			}
-			l_start = n + 1;
+			l_start = i + 1;
 		}
 	}
 
@@ -278,63 +337,5 @@ get_glgid(char *groupfile, char *group_name)
 	free(g_modname);
 #endif
 	return g_id;
-}
-
-
-int 
-main(int argc, char *argv[])
-{
-	int		my_result = 1;
-	int		new_user = 0;
-	int		new_group = 0;
-	int		user_flag = 0;
-	int		group_flag = 0;
-	int		files_flag = 0;
-	int		dir_flag = 0;
-	char		my_path   [PATH_MAX];
-
-	if (argc != 10) {
-		printf("%s - Error: Wrong number of args given. (%d)\n", argv[0], argc);
-		printf("%s - Syntax: %s <uid> <gid> <uid_flag> <gid_flag> <files_flag> <dir/file_flag> <user name> <group name> <name of dir/file>\n", argv[0], argv[0]);
-		return 1;
-	}
-	new_user = atoi(argv[1]);	/* uid of user */
-	new_group = atoi(argv[2]);	/* gid of user */
-	if (allow_uid_change_in_ng_chown) {
-		user_flag = atoi(argv[3]);	/* change the uid of the files/dir if > 0      */
-	}
-	if (allow_gid_change_in_ng_chown) {
-		group_flag = atoi(argv[4]);	/* change the gid of the files/dir if > 0      */
-	}
-	if (allow_files_chown_in_ng_chown) {
-		files_flag = atoi(argv[5]);	/* make changes on the files in the dir if > 0 */
-	}
-	if (allow_dir_chown_in_ng_chown) {
-		dir_flag = atoi(argv[6]);	/* make changes on the dir itself if > 0       */
-	}
-	if ((new_user == 0) && (new_group == 0)) {
-		if (strlen(argv[7]) < 25) {
-			new_user = (int)get_gluid(PASSWDFILE, argv[7]);
-		}
-		if (strlen(argv[8]) < 25) {
-			new_group = (int)get_glgid(GROUPFILE, argv[8]);
-		}
-	}
-	if ((strlen(argv[9]) < PATH_MAX) && (new_user < 65536) && (new_group < 65535)) {
-		sprintf(my_path, "%s", argv[9]);
-	} else {
-		printf("%s - Error in argument(s)\n", argv[0]);
-		return 1;
-	}
-
-	my_result = myscan(my_result, new_user, new_group, user_flag, group_flag, files_flag, dir_flag, my_path, argv[0]);
-	if (my_result == 0) {
-		if ((new_user > 0) || (new_group > 0)) {
-			setuid(0);
-			setgid(0);
-			my_result = myscan(my_result, new_user, new_group, user_flag, group_flag, files_flag, dir_flag, my_path, argv[0]);
-		}
-	}
-	return my_result;
 }
 

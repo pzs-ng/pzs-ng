@@ -14,10 +14,7 @@
 #include "../../zipscript/conf/zsconfig.h"
 #include "zsconfig.defaults.h"
 
-struct GROUP {
-	char           *name;
-	gid_t		id;
-};
+#include "sitewho.h"
 
 int		debug = 0;
 int		groups = 0, GROUPS = 0;
@@ -37,6 +34,144 @@ char           *header = 0, *footer = 0, *glpath = 0, *mpaths = 0, *husers = 0, 
 int		maxusers = 20 , showall = 0, uploads = 0, downloads = 0, onlineusers = 0, browsers = 0, idlers = 0, chidden = 1,
 		idle_barrier = -1, def_idle_barrier = 30, threshold = -1, def_threshold = 1024;
 double		total_dn_speed = 0, total_up_speed = 0;
+
+/* CORE CODE */
+int 
+main(int argc, char **argv)
+{
+
+#ifndef _WITH_SS5
+	char		raw_output = 0;
+	int		user_idx = 1;
+#else
+	char		raw_output = 2;
+	int		user_idx = 2;
+#endif
+	int		totusers = 0;
+	int		gnum = 0;
+
+	readconfig(argv[0]);
+	if (!ipckey)
+		ipckey = def_ipckey;
+	if (!glgroup)
+		glgroup = def_glgroup;
+	if (!nocase)
+		nocase = def_nocase;
+	if (!husers)
+		husers = def_husers;
+	if (!hgroups)
+		hgroups = def_hgroups;
+	if (!mpaths)
+		mpaths = def_mpaths;
+	if (!glpath)
+		glpath = def_glpath;
+	if (!count_hidden)
+		count_hidden = def_count_hidden;
+	if (!header)
+		header = def_header;
+	if (!footer)
+		footer = def_footer;
+	if (idle_barrier < 0)
+		idle_barrier = def_idle_barrier;
+	if (threshold < 1)
+		threshold = def_threshold;
+
+	gnum = buffer_groups(glgroup, 0);
+
+	if (argc > 1 && strlen(argv[1]) == 5) {
+		if (!strcasecmp(argv[1], "--raw")) {
+			user_idx = 2;
+			raw_output = 1;
+		} else if (!strcasecmp(argv[1], "--ss5")) {
+			user_idx = 2;
+			raw_output = 2;
+		} else if (!strcasecmp(argv[1], "--nbw")) {
+			user_idx = 2;
+			raw_output = 3;
+		}
+	}
+	if ((shmid = shmget((key_t) strtoll(ipckey, NULL, 16), 0, 0)) == -1) {
+		if (argc == 1 || (raw_output)) {
+			if (!raw_output && strlen(header))
+				show(header);
+			showtotals(raw_output);
+			if (!raw_output && strlen(footer))
+				show(footer);
+		} else {
+			if (!raw_output)
+				printf("\002%s\002 is not online\n", argv[user_idx]);
+			else
+				printf("\"ERROR\" \"User %s not online.\"\n", argv[user_idx]);
+		}
+		exit(0);
+	}
+	if ((user = (struct ONLINE *)shmat(shmid, NULL, SHM_RDONLY)) == (struct ONLINE *)-1) {
+		if (!raw_output)
+			printf("Error!: (SHMAT) failed...");
+		else
+			printf("\"ERROR\" \"SHMAT Failed.\"\n");
+		exit(1);
+	}
+
+	if (shmctl(shmid, IPC_STAT, &ipcbuf) == -1) {
+		perror("shmctl");
+		exit(EXIT_FAILURE);
+	}
+
+	if (argc == 1 && (!raw_output) && strlen(header))
+		show(header);
+
+	(signed int)totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE));
+	if (raw_output < 2)
+		showusers((totusers > maxusers ? maxusers : totusers), argc - raw_output - 1, argv[user_idx], raw_output);
+	else if (argc == 1)
+		showusers((totusers > maxusers ? maxusers : totusers), argc - 1, argv[user_idx], raw_output);
+	else if (raw_output == 3)
+		showusers((totusers > maxusers ? maxusers : totusers), argc - 2, argv[user_idx], raw_output);
+	else
+		showusers((totusers > maxusers ? maxusers : totusers), 0, argv[user_idx], raw_output);
+
+
+	if (argc == 1 || raw_output == 3) {
+		showtotals(raw_output);
+		if (!raw_output && strlen(footer))
+			show(footer);
+	} else {
+		if (!onlineusers) {
+			if (!raw_output)
+				printf("\002%s\002 is not online\n", argv[user_idx]);
+			else
+				printf("\"ERROR\" \"User %s not online.\"\n", argv[user_idx]);
+		}
+#ifndef _WITH_ALTWHO
+		else if (!raw_output) {
+			printf("\n");
+		}
+#endif
+	}
+	buffer_groups(glgroup, gnum);
+	if (footer != def_footer)
+		free(footer);
+	if (header != def_header)
+		free(header);
+	if (mpaths != def_mpaths)
+		free(mpaths);
+	if (husers != def_husers)
+		free(husers);
+	if (hgroups != def_hgroups)
+		free(hgroups);
+	if (glpath != def_glpath)
+		free(glpath);
+	if (ipckey != def_ipckey)
+		free(ipckey);
+	if (glgroup != def_glgroup)
+		free(glgroup);
+	if (nocase != def_nocase)
+		free(nocase);
+	if (count_hidden != def_count_hidden)
+		free(count_hidden);
+	return 0;
+}
 
 int
 check_path(char *filename)
@@ -657,140 +792,3 @@ buffer_groups(char *groupfile, int setfree)
 	return groups;
 }
 
-/* CORE CODE */
-int 
-main(int argc, char **argv)
-{
-
-#ifndef _WITH_SS5
-	char		raw_output = 0;
-	int		user_idx = 1;
-#else
-	char		raw_output = 2;
-	int		user_idx = 2;
-#endif
-	int		totusers = 0;
-	int		gnum = 0;
-
-	readconfig(argv[0]);
-	if (!ipckey)
-		ipckey = def_ipckey;
-	if (!glgroup)
-		glgroup = def_glgroup;
-	if (!nocase)
-		nocase = def_nocase;
-	if (!husers)
-		husers = def_husers;
-	if (!hgroups)
-		hgroups = def_hgroups;
-	if (!mpaths)
-		mpaths = def_mpaths;
-	if (!glpath)
-		glpath = def_glpath;
-	if (!count_hidden)
-		count_hidden = def_count_hidden;
-	if (!header)
-		header = def_header;
-	if (!footer)
-		footer = def_footer;
-	if (idle_barrier < 0)
-		idle_barrier = def_idle_barrier;
-	if (threshold < 1)
-		threshold = def_threshold;
-
-	gnum = buffer_groups(glgroup, 0);
-
-	if (argc > 1 && strlen(argv[1]) == 5) {
-		if (!strcasecmp(argv[1], "--raw")) {
-			user_idx = 2;
-			raw_output = 1;
-		} else if (!strcasecmp(argv[1], "--ss5")) {
-			user_idx = 2;
-			raw_output = 2;
-		} else if (!strcasecmp(argv[1], "--nbw")) {
-			user_idx = 2;
-			raw_output = 3;
-		}
-	}
-	if ((shmid = shmget((key_t) strtoll(ipckey, NULL, 16), 0, 0)) == -1) {
-		if (argc == 1 || (raw_output)) {
-			if (!raw_output && strlen(header))
-				show(header);
-			showtotals(raw_output);
-			if (!raw_output && strlen(footer))
-				show(footer);
-		} else {
-			if (!raw_output)
-				printf("\002%s\002 is not online\n", argv[user_idx]);
-			else
-				printf("\"ERROR\" \"User %s not online.\"\n", argv[user_idx]);
-		}
-		exit(0);
-	}
-	if ((user = (struct ONLINE *)shmat(shmid, NULL, SHM_RDONLY)) == (struct ONLINE *)-1) {
-		if (!raw_output)
-			printf("Error!: (SHMAT) failed...");
-		else
-			printf("\"ERROR\" \"SHMAT Failed.\"\n");
-		exit(1);
-	}
-
-	if (shmctl(shmid, IPC_STAT, &ipcbuf) == -1) {
-		perror("shmctl");
-		exit(EXIT_FAILURE);
-	}
-
-	if (argc == 1 && (!raw_output) && strlen(header))
-		show(header);
-
-	(signed int)totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE));
-	if (raw_output < 2)
-		showusers((totusers > maxusers ? maxusers : totusers), argc - raw_output - 1, argv[user_idx], raw_output);
-	else if (argc == 1)
-		showusers((totusers > maxusers ? maxusers : totusers), argc - 1, argv[user_idx], raw_output);
-	else if (raw_output == 3)
-		showusers((totusers > maxusers ? maxusers : totusers), argc - 2, argv[user_idx], raw_output);
-	else
-		showusers((totusers > maxusers ? maxusers : totusers), 0, argv[user_idx], raw_output);
-
-
-	if (argc == 1 || raw_output == 3) {
-		showtotals(raw_output);
-		if (!raw_output && strlen(footer))
-			show(footer);
-	} else {
-		if (!onlineusers) {
-			if (!raw_output)
-				printf("\002%s\002 is not online\n", argv[user_idx]);
-			else
-				printf("\"ERROR\" \"User %s not online.\"\n", argv[user_idx]);
-		}
-#ifndef _WITH_ALTWHO
-		else if (!raw_output) {
-			printf("\n");
-		}
-#endif
-	}
-	buffer_groups(glgroup, gnum);
-	if (footer != def_footer)
-		free(footer);
-	if (header != def_header)
-		free(header);
-	if (mpaths != def_mpaths)
-		free(mpaths);
-	if (husers != def_husers)
-		free(husers);
-	if (hgroups != def_hgroups)
-		free(hgroups);
-	if (glpath != def_glpath)
-		free(glpath);
-	if (ipckey != def_ipckey)
-		free(ipckey);
-	if (glgroup != def_glgroup)
-		free(glgroup);
-	if (nocase != def_nocase)
-		free(nocase);
-	if (count_hidden != def_count_hidden)
-		free(count_hidden);
-	return 0;
-}
