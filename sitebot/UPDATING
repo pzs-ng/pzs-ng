@@ -11,6 +11,9 @@
 - For an explanation of newly added config file options, refer
   to dZSbot.conf.defaults (all options are explained in this file).
 
+- Always replace the following files when upgrading:
+  dZSbot.tcl, dZSbot.conf.defaults, dZSbot.conf.dist and dZSbot.vars.
+
 
 # Changes
 ###############################################################
@@ -35,20 +38,19 @@ r1337: Added some missing types to msgtypes(DEFAULT).
 - Add BADPASSWD, BADUSERHOST, and IPNOTADDED to msgtypes(DEFAULT).
 
 r1335: Added an example of "denypost" to the config.
-- Add denypost to your dZSbconf.tcl (or dZSbot.conf on newer versions).
+- Add "denypost" to your dZSbconf.tcl (or dZSbot.conf on newer revisions).
 
 r1331: Theming can be used in the help file.
 - Replace dZSbot.help with the newer one.
 
 r1328: Renamed a cookie and changed speed formatting.
 - The %uspeed cookie was renamed to %speed in "announce.USER".
-- Change the follow values in your theme file (.zst).
+- Change the following values in your theme file (.zst):
 KB = "KB/s"
 MB = "MB/s"
 KBIT = "Kbit/s"
 MBIT = "Mbit/s"
-
-To:
+- To:
 KB = "%b{%value}KB/s"
 MB = "%b{%value}MB/s"
 KBIT = "%b{%value}Kbit/s"
