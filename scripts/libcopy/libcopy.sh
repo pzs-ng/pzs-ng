@@ -2,13 +2,13 @@
 
 ###############################################################################
 #
-# LIBCOPY
-#########
+# LIBCOPY v1.0 by psxc
+######################
 #
 # This small script (ripped from glinstall.sh ;) will copy libs used by files
 # in glftpd's bin dir.
 # The script should be run after the zipscript is installed.
-# You can also use this script any time there is changes in your bin dir, or
+# You should also use this script any time there is changes in your bin dir, or
 # you upgrade your system.
 #
 ###############################################################################
@@ -16,10 +16,15 @@
 # a list of possible paths to glroot
 possible_glroot_paths="/glftpd /jail/glftpd /usr/glftpd /usr/jail/glftpd /usr/local/glftpd /usr/local/jail/glftpd /$HOME/glftpd /glftpd/glftpd /opt/glftpd"
 
+# bins needed for pzs-ng to run
+needed_bins="unzip zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown"
+
 #
 ###################################
 # CODEPART - PLEASE DO NOT CHANGE #
 ###################################
+
+version="1.0 (pzs-ng version)"
 
 # Set system type
 case $(uname -s) in
@@ -91,7 +96,29 @@ lddsequence() {
     fi
 }
 
-echo -e "\nLibCopy\n\nUsing glroot: $glroot\nCopying required shared library files:"
+# homemade 'which' command by js
+mywhich() {
+  unset binname; for p in `echo $PATH | tr -s ':' '\n'`; do test -x $p/$bin && { binname=$p/$bin; break; }; done;
+}
+
+clear 2>/dev/null
+echo -e "\n"'\033[1;31m'"LibCopy v$version"'\033[0m'"\n\nUsing glroot: $glroot\n\nMaking sure all bins are present:"
+for bin in $needed_bins; do
+  echo -n "$bin:"
+  if [ ! -e $glroot/bin/$bin ]; then
+    mywhich
+    if [ ! -z $binname ]; then
+      cp $binname $glroot/bin/
+      echo -n "COPIED  "
+    else
+      echo -en '\033[1;31mNOT FOUND!!!  \033[0m'
+    fi
+  else
+   echo -n "OK  "
+  fi
+done
+
+echo -e "\n\nCopying required shared library files:"
 echo -n "" > "$glroot/etc/ld.so.conf"
 case $os in
     openbsd)
