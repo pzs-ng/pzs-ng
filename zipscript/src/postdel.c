@@ -110,15 +110,41 @@ unsigned char get_filetype(char *ext) {
 
 int main( int argc, char **argv ) {
     char		*fileext, *name_p, *temp_p;
-    char		*target;
+    char		*target, *fname;
+	char		*env_user, *env_group;
     int			n;
     unsigned char	empty_dir = 0;
     unsigned char	incomplete = 0;
 
     if (argc == 1) {
-	d_log("no param\n");
-	return 0;
+		d_log("no param specified\n");
+		return 0;
     }
+
+	if (strlen(argv[1]) < 6 || strncmp(argv[1], "DELE ", 5)) {
+		printf("pzs-ng postdel script.\n");
+		printf(" - this is supposed to be run from glftpd.\n");
+		printf(" - if you wish to run it yourself from chroot, \n");
+		printf(" - use /bin/postdel \"DELE <filename>\"\n");
+		printf(" - thank you. (rememeber the quotes!)\n");
+		return 0;
+	}
+
+    d_log("Reading user name from env\n");
+	env_user = getenv("USER");
+	if (env_user == NULL) {
+		d_log("Could not find environment variable 'USER', setting value to 'Nobody'\n");
+		env_user = "Nobody";
+	}
+    d_log("Reading group name from env\n");
+	env_group = getenv("GROUP");
+	if (env_group == NULL) {
+		d_log("Could not find environment variable 'GROUP', setting value to 'NoGroup'\n");
+		env_group = "NoGroup";
+	}
+		
+
+	fname = argv[1] + 5; /* This way we simply skip the required 'DELE'-part of the argument (so we get filename) */
 
 #if ( program_uid > 0 )
     d_log("Trying to change effective gid\n");
@@ -130,9 +156,9 @@ int main( int argc, char **argv ) {
     d_log("Reading directory structure\n");
     rescandir();
 
-    if ( fileexists(argv[1] + 5) ) {
-	d_log("File still exists\n");
-	return 0;
+    if (fileexists(fname)) {
+		d_log("File still exists\n");
+		return 0;
     }
 
     umask(0666 & 000);
@@ -142,15 +168,15 @@ int main( int argc, char **argv ) {
     raceI.misc.slowest_user[0] = 30000;
     raceI.misc.fastest_user[0] = 0;
 
-    d_log("Reading user name from env (%s)\n", getenv("USER"));
-    strncpy(raceI.user.name, getenv("USER"), 25);
-    d_log("Reading group name from env (%s)\n", getenv("GROUP"));
-    strncpy(raceI.user.group, getenv("GROUP"), 25);
-    d_log("File to remove is: %s\n", argv[1]);
+	d_log("Copying env/predefined username to raceI. (%s)\n", env_user);
+    strncpy(raceI.user.name, env_user, 25);
+	d_log("Copying env/predefined groupname to raceI. (%s)\n", env_group);
+    strncpy(raceI.user.group, env_group, 25);
 
-    if ( ! *raceI.user.group ) {
-	memcpy(raceI.user.group, "NoGroup", 8);
-    }
+    d_log("File to remove is: %s\n", fname);
+
+    if (! *raceI.user.group)
+		memcpy(raceI.user.group, "NoGroup", 8);
 
     d_log("Allocating memory for variables\n");
     userI	= malloc(sizeof(struct USERINFO *) * 30);
@@ -164,7 +190,7 @@ int main( int argc, char **argv ) {
     target = malloc(4096);
 
     d_log("Copying data locations into memory\n");
-    raceI.file.name = argv[1] + 5;
+    raceI.file.name = fname;
     sprintf(locations.sfv, storage "/%s/sfvdata", locations.path);
     sprintf(locations.leader, storage "/%s/leader", locations.path);
     sprintf(locations.race, storage "/%s/racedata", locations.path);
@@ -175,17 +201,16 @@ int main( int argc, char **argv ) {
     d_log("Parsing file extension from filename...\n");
 
     for ( temp_p = name_p = raceI.file.name; *name_p != 0 ; name_p++ ) {
-	if ( *name_p == '.' ) {
-	    temp_p = name_p;
-	}
+		if ( *name_p == '.' )
+		    temp_p = name_p;
     }
 
     if ( *temp_p != '.' ) {
-	d_log("Got: no extension\n");
-	temp_p = name_p;
+		d_log("Got: no extension\n");
+		temp_p = name_p;
     } else {
-	d_log("Got: %s\n", temp_p);
-	temp_p++;
+		d_log("Got: %s\n", temp_p);
+		temp_p++;
     }
     name_p++;
 
@@ -198,26 +223,26 @@ int main( int argc, char **argv ) {
 	case 0:
 	    d_log("File type is: ZIP\n");
 	    if ((raceI.misc.write_log = matchpath(zip_dirs, locations.path))) {
-		raceI.misc.write_log = 1 - matchpath(group_dirs, locations.path);
+			raceI.misc.write_log = 1 - matchpath(group_dirs, locations.path);
 	    } else if (matchpath(sfv_dirs, locations.path)) {
-		d_log("Directory matched with sfv_dirs\n");
-		break;
+			d_log("Directory matched with sfv_dirs\n");
+			break;
 	    }
 	    if ( ! fileexists("file_id.diz") ) {
-		temp_p = findfileext(".zip");
-		if ( temp_p != NULL ) {
-		    d_log("file_id.diz does not exist, trying to extract it from %s\n", temp_p);
-		    sprintf(target, "/bin/unzip -qqjnCL %s file_id.diz", temp_p);
-		    execute(target);
-		    chmod("file_id.diz",0666);
-		}
+			temp_p = findfileext(".zip");
+			if ( temp_p != NULL ) {
+			    d_log("file_id.diz does not exist, trying to extract it from %s\n", temp_p);
+			    sprintf(target, "/bin/unzip -qqjnCL %s file_id.diz", temp_p);
+			    execute(target);
+			    chmod("file_id.diz",0666);
+			}
 	    }
 
 	    d_log("Reading diskcount from diz\n");
 	    raceI.total.files = read_diz("file_id.diz");
 	    if ( raceI.total.files == 0 ) {
-		d_log("Could not get diskcount from diz\n");
-		raceI.total.files = 1;
+			d_log("Could not get diskcount from diz\n");
+			raceI.total.files = 1;
 	    }
 	    raceI.total.files_missing = raceI.total.files;
 
@@ -230,20 +255,20 @@ int main( int argc, char **argv ) {
 	    d_log("Removing old complete bar, if any\n");
 	    removecomplete();
 	    if ( raceI.total.files_missing < 0 ) {
-		raceI.total.files -= raceI.total.files_missing;
-		raceI.total.files_missing = 0;
+			raceI.total.files -= raceI.total.files_missing;
+			raceI.total.files_missing = 0;
 	    }
 	    if ( ! raceI.total.files_missing ) {
-		d_log("Creating complete bar\n");
-		createstatusbar(convert(&raceI, userI, groupI, zip_completebar) );
+			d_log("Creating complete bar\n");
+			createstatusbar(convert(&raceI, userI, groupI, zip_completebar) );
 	    } else if ( raceI.total.files_missing < raceI.total.files ) {
-		if ( raceI.total.files_missing == 1 ) {
-		    d_log("Writing INCOMPLETE to %s\n", log);
-		    writelog(convert(&raceI, userI, groupI, incompletemsg), general_incomplete_type);
-		}
-		incomplete = 1;
+			if ( raceI.total.files_missing == 1 ) {
+			    d_log("Writing INCOMPLETE to %s\n", log);
+			    writelog(convert(&raceI, userI, groupI, incompletemsg), general_incomplete_type);
+			}
+			incomplete = 1;
 	    } else {
-		empty_dir = 1;
+			empty_dir = 1;
 	    }
 	    break;
 	case 1:
@@ -251,14 +276,14 @@ int main( int argc, char **argv ) {
 	    readsfv_file(&locations, &raceI, 0);
 
 	    if ( fileexists(locations.race) ) {
-		d_log("Reading race data from file to memory\n");
-		readrace_file(&locations, &raceI, userI, groupI);
+			d_log("Reading race data from file to memory\n");
+			readrace_file(&locations, &raceI, userI, groupI);
 	    }
 
 	    d_log("Caching progress bar\n");
 	    buffer_progress_bar(&raceI);
 	    if (raceI.total.files_missing == raceI.total.files) {
-		empty_dir = 1;
+			empty_dir = 1;
 	    }
 	    break;
 	case 2:
@@ -269,36 +294,36 @@ int main( int argc, char **argv ) {
 	    raceI.misc.write_log = matchpath(sfv_dirs, locations.path) > 0 ? 1 - matchpath(group_dirs, locations.path) : 0;
 
 	    if ( fileexists(locations.race) ) {
-		d_log("Reading race data from file to memory\n");
-		readrace_file(&locations, &raceI, userI, groupI);
+			d_log("Reading race data from file to memory\n");
+			readrace_file(&locations, &raceI, userI, groupI);
 	    }
 
 	    if ( fileexists(locations.sfv) ) {
 #if ( create_missing_files == TRUE )
-		strtolower(raceI.file.name);
-		create_missing(raceI.file.name, name_p - raceI.file.name - 1);
+			strtolower(raceI.file.name);
+			create_missing(raceI.file.name, name_p - raceI.file.name - 1);
 #endif
-		d_log("Reading file count from SFV\n");
-		readsfv_file(&locations, &raceI, 0);
+			d_log("Reading file count from SFV\n");
+			readsfv_file(&locations, &raceI, 0);
 
-		d_log("Caching progress bar\n");
-		buffer_progress_bar(&raceI);
+			d_log("Caching progress bar\n");
+			buffer_progress_bar(&raceI);
 	    }
 
 	    if ( raceI.total.files_missing < raceI.total.files ) {
-		if ( raceI.total.files_missing == 1 ) {
-		    d_log("Writing INCOMPLETE to %s\n", log);
-		    writelog(convert(&raceI, userI, groupI, incompletemsg), general_incomplete_type);
-		}
-		incomplete = 1;
+			if ( raceI.total.files_missing == 1 ) {
+			    d_log("Writing INCOMPLETE to %s\n", log);
+			    writelog(convert(&raceI, userI, groupI, incompletemsg), general_incomplete_type);
+			}
+			incomplete = 1;
 	    } else {
-		d_log("Removing old race data\n");
-		unlink(locations.race);
-		if ( findfileext(".sfv") == NULL ) {
-		    empty_dir = 1;
-		} else {
-		    incomplete = 1;
-		}
+			d_log("Removing old race data\n");
+			unlink(locations.race);
+			if ( findfileext(".sfv") == NULL ) {
+			    empty_dir = 1;
+			} else {
+			    incomplete = 1;
+			}
 	    }
 	    break;
 	case 4:
@@ -308,42 +333,35 @@ int main( int argc, char **argv ) {
     }
 
     if ( empty_dir == 1 ) {
-	d_log("Removing all files and directories created by zipscript\n");
-	removecomplete();
-	if ( fileexists(locations.sfv)) {
-	    delete_sfv_file(&locations);
-	}
-	if ( fileexists(locations.nfo_incomplete)) {
-		unlink(locations.nfo_incomplete);
-	}
-	if ( fileexists(locations.incomplete)) {
-		unlink(locations.incomplete);
-	}
-	if ( fileexists("file_id.diz")) {
-		unlink("file_id.diz");
-	}
-	if ( fileexists(locations.sfv)) {
-		unlink(locations.sfv);
-	}
-	if ( fileexists(locations.race)) {
-		unlink(locations.race);
-	}
-	if ( fileexists(locations.leader)) {
-		unlink(locations.leader);
-	}
-	move_progress_bar(1, &raceI);
+		d_log("Removing all files and directories created by zipscript\n");
+		removecomplete();
+		if ( fileexists(locations.sfv))
+		    delete_sfv_file(&locations);
+		if ( fileexists(locations.nfo_incomplete))
+			unlink(locations.nfo_incomplete);
+		if ( fileexists(locations.incomplete))
+			unlink(locations.incomplete);
+		if ( fileexists("file_id.diz"))
+			unlink("file_id.diz");
+		if ( fileexists(locations.sfv))
+			unlink(locations.sfv);
+		if ( fileexists(locations.race))
+			unlink(locations.race);
+		if ( fileexists(locations.leader))
+			unlink(locations.leader);
+		move_progress_bar(1, &raceI);
     }
 
     if ( incomplete == 1 && raceI.total.files > 0 ) {
-	if ((show_missing_nfo) && (!findfileext(".nfo"))) {
-	    create_incomplete_nfo();
-	} else if (locations.nfo_incomplete) {
-		unlink(locations.nfo_incomplete);
-	}
-	d_log("Creating incomplete indicator\n");
-	create_incomplete();
-	d_log("Moving progress bar\n");
-	move_progress_bar(0, &raceI);
+		if ((show_missing_nfo) && (!findfileext(".nfo"))) {
+		    create_incomplete_nfo();
+		} else if (locations.nfo_incomplete) {
+			unlink(locations.nfo_incomplete);
+		}
+		d_log("Creating incomplete indicator\n");
+		create_incomplete();
+		d_log("Moving progress bar\n");
+		move_progress_bar(0, &raceI);
     }
 
     d_log("Releasing memory\n");
@@ -355,9 +373,10 @@ int main( int argc, char **argv ) {
     free(locations.sfv);
     free(locations.leader);
 
+    if ((empty_dir == 1) && (fileexists(".debug")) && (remove_dot_debug_on_delete == TRUE)) 
+		unlink(".debug");
+
     d_log("Exit\n");
-    if ((empty_dir == 1) && (fileexists(".debug")) && (remove_dot_debug_on_delete == TRUE)) {
-	unlink(".debug");
-    }
+	
     return 0;
 }
