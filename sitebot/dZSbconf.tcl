@@ -20,7 +20,7 @@ set location(USERS)					"/glftpd/ftp-data/users/"
 
 # What types of messages are counted as the different types of output
 # (for disabling etc)
-set msgtypes(RACE)					"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV UPDATE HALFWAY NEWLEADER COMPLETE STATS BADGENRE BADYEAR BADBITRATE WIPE WIPE-r VIDEO_INFO"
+set msgtypes(RACE)					"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV UPDATE HALFWAY NEWLEADER COMPLETE STATS BADGENRE BADYEAR BADBITRATE WIPE WIPE-r"
 set msgtypes(DEFAULT)				"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT"
 
 # Sitename is for the %sitename-cookie in announces :)
@@ -62,7 +62,7 @@ set binary(STATS)					"/glftpd/bin/stats"
 set binary(PASSCHK)					"/glftpd/bin/passchk"
 set binary(NCFTPLS)					"/usr/local/bin/ncftpls"
 set binary(BNCTEST)					"/glftpd/bin/bnctest.sh"
-set binary(BNCCHECK)				"/glftpd/bin/bnc-check-alternative.pl"
+set binary(BNCCHECK)				"/glftpd/bin/bnc-check.pl"
 set binary(INCOMPLETE)				"/glftpd/bin/incomplete-list.sh"
 set binary(DF)						"/bin/df"
 # This is needed for autodetection of glversion. If you unset this, use_glftpd2
@@ -98,7 +98,6 @@ set chanlist(MV)					"$mainchan"
 set chanlist(DEFAULT)					"$mainchan"
 set chanlist(INVITE)					"$mainchan"
 set chanlist(WELCOME)					"$mainchan"
-set chanlist(VIDEO_INFO)				"$mainchan"
 
 # Are we disabling the announce of this stuff?
 # If its set to 1, we wont show it :)
@@ -127,7 +126,6 @@ set disable(WELCOME)					0
 set disable(DEFAULT)					1
 set disable(WIPE)					0
 set disable(WIPE-r)					0
-set disable(VIDEO_INFO)					0
 #########################################################
 # ADVANCED CONFIG, EDIT CAREFULLY                       #
 #########################################################
@@ -170,7 +168,6 @@ set variables(BADYEAR)				"%pf %msg"
 set variables(BADBITRATE)			"%pf %msg"
 set variables(WIPE)				"%pf %user %group %tagline"
 set variables(WIPE-r)				"%pf %user %group %tagline"
-set variables(VIDEO_INFO)			"%pf %program_stream_type %program_avg_bit_rate %video_mpeg_type %video_frame_rate %video_horizontal_size %video_vertical_size %video_aspect_ratio %audio_mpeg_type %audio_bitrate %audio_sampling_frequency %audio_mode"
 set variables(DEFAULT)				"%pf %msg"
 ## Converts empty or zero variable to something else if defined
 #

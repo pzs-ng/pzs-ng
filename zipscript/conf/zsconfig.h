@@ -72,12 +72,12 @@
 #define program_gid		200
 
 /* These file types are allowed without any checks */
-#define allowed_types		"jpg,cue,m3u,avi,mpg,txt,ncd,nfo,exe,vob,m2p"
+#define allowed_types		"jpg,cue,m3u,avi,mpg"
 
 /* These file types are ignored from sfv
  * NOTE: , at the beginning ignores all files without extensions
  */
-#define ignored_types		",diz,jpg,cue,m3u,nfo,sfv,debug,txt,avi,ncd,exe,vob"
+#define ignored_types		",diz,jpg,cue,m3u,nfo,sfv,debug"
 
 /* Special modes */
 #define debug_mode		TRUE
@@ -391,23 +391,3 @@
 
 /* Output of postdel binary */
 #define incompletemsg		"%B%U%B/%G deletes file from %B%r%B. Release is now %Bincomplete%B!"
-
-/* VIDEO INFO SETTINGS
-*/
-
-/* Put extracted info to stdout. */
-#define video_info_verbose
-
-/* Enable appending of extracted info to LOG_FILE. */
-#define video_info_write_log
-
-/* Enable creation of a file OR dir that is named according to the extracted
- * info. Only one of these can be set. */
-/* #define video_info_file */
-#define video_info_make_dir
-
-/* Enable appending of extracted info to a .message file */
-#define video_info_write_message
-
-/* Increase this value to increase the width of the .message file. */
-#define video_info_padding 14 /* Keep above 13. */    

@@ -1,4 +1,6 @@
 v0.7.2 (aka beta2 of pzs-ng (r511))
+ - added (and removed) support for video_info (buggy code)
+v0.7.2 (aka beta2 of pzs-ng (r511))
  - The default storage path changed.
  - Compile now works under nbsd/obsd.
  - The double-sfv is fixed.
