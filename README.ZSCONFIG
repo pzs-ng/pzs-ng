@@ -309,7 +309,7 @@ sfv_cleanup_crlf <TRUE|FALSE>
 	If sfv_cleanup is set to TRUE, this option defines if you use windows
 	or *nix version of linefeeds. The recommended option is to leave this
 	to TRUE, using windows style (<cr><lf>).
-	Default; TRUE
+	Default: TRUE
 
 deny_double_sfv <TRUE|FALSE>
 	With sfv releases, there should be only one sfv file allowed. This can

@@ -37,12 +37,13 @@ readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount)
 	unsigned int	crc = 0;
 	unsigned int	t_crc = 0;
 	FILE           *sfvfile;
-	unsigned int	len;
+	unsigned int	len = 0;
 
 	if (!(sfvfile = fopen(locations->sfv, "r"))) {
 		d_log("Failed to open sfv (%s): %s\n", locations->sfv, strerror(errno));
 		return 0;
 	}
+
 	fread(&raceI->misc.release_type, sizeof(short int), 1, sfvfile);
 	d_log("Reading data from sfv (%s)\n", raceI->file.name);
 	while (fread(&len, sizeof(int), 1, sfvfile) == 1) {
@@ -312,7 +313,7 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
 				if (*fext == '.')
 					fext++;
 				*crc++ = 0;
-				if (!strcomp(ignored_types, fext) && !strcomp(allowed_types, fext) && strcasecmp("sfv", fext) && strcasecmp("nfo", fext) && (t_crc = hexstrtodec((unsigned char *)crc)) > 0) {
+				if (!strcomp(ignored_types, fext) && strcasecmp("sfv", fext) && strcasecmp("nfo", fext) && (t_crc = hexstrtodec((unsigned char *)crc)) > 0) {
 					len = crc - line;
 #if ( sfv_dupecheck == TRUE )
 					exists = 0;
@@ -328,7 +329,9 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
 					}
 					fname[files++] = line;
 #endif
-d_log("DEBUG: file in sfv - %s (%s)\n", line,crc);
+
+					d_log("DEBUG: file in sfv - %s (%s)\n", line,crc);
+
 #if ( sfv_cleanup == TRUE && sfv_error == FALSE )
 					write(fd_new, line, len - 1);
 					write(fd_new, " ", 1);

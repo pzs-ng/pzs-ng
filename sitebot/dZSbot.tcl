@@ -15,10 +15,12 @@ putlog "Launching dZSBot (v$dver) for zipscript-c..."
 
 if {[catch {source [file dirname [info script]]/dZSbconf.tcl} tmperror]} {
 	putlog "dZSbot: dZSbconf.tcl not found or has errors. Cannot continue."
+	putlog "dZSbot: See FAQ for possible solutions/debugging options."
 	die
 }
 if {[catch {source [file dirname [info script]]/dZSbvars.tcl} tmperror]} {
 	putlog "dZSbot: dZSbvars.tcl not found or has errors. Cannot continue."
+	putlog "dZSbot: See FAQ for possible solutions/debugging options."
 	die
 }
 
