@@ -550,7 +550,7 @@
 #define min_newleader_files	1
 #endif
 #ifndef min_update_files
-#define min_update_files	1
+#define min_update_files	2
 #endif
 #ifndef min_halfway_files
 #define min_halfway_files	10

@@ -549,7 +549,7 @@ min_newleader_files <NUMBER>
 min_update_files <NUMBER>
 	Define here the minimum number of files in the RELEASE to announce an
 	update message.
-	Default: 1
+	Default: 2
 
 min_halfway_files <NUMBER>
 	Define here the minimum number of files in the RELEASE to announce a
