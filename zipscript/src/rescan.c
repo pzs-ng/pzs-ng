@@ -162,6 +162,17 @@ int main () {
     locations.path = malloc( PATH_MAX );
     getcwd( locations.path, PATH_MAX );
 
+    if ( matchpath(nocheck_dirs, locations.path) || (!matchpath(zip_dirs, locations.path) && !matchpath(sfv_dirs, locations.path) & 
+!matchpath(group_dirs, locations.path)) ) {
+	d_log("Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
+	d_log("Freeing memory, and exiting\n");
+	free(userI);
+	free(groupI);
+	free(locations.path);
+	return 0;
+    }
+
+
     raceI.misc.slowest_user[0] = 30000;
 
     bzero(&raceI.total, sizeof(struct race_total));

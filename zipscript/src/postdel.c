@@ -230,6 +230,16 @@ int main( int argc, char **argv ) {
 
     locations.path = malloc(PATH_MAX);
     getcwd(locations.path, PATH_MAX);
+
+    if ( matchpath(nocheck_dirs, locations.path) || (!matchpath(zip_dirs, locations.path) && !matchpath(sfv_dirs, locations.path) & !matchpath(group_dirs, locations.path)) ) {
+	d_log("Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
+	d_log("Freeing memory, and exiting\n");
+	free(userI);
+	free(groupI);
+	free(locations.path);
+	return 0;
+    }
+
     locations.race = malloc(n = strlen(locations.path) + 10 + sizeof(storage));
     locations.sfv = malloc(n);
     locations.leader = malloc(n);
