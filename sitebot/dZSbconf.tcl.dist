@@ -38,6 +38,20 @@ set use_glftpd2 		"AUTO"
 set msgtypes(RACE) 		"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE_RAR RACE_ZIP RACE_OTHER RACE_VIDEO RACE_AUDIO SFV_RAR SFV_OTHER SFV_VIDEO SFV_AUDIO DOUBLESFV UPDATE_RAR UPDATE_OTHER UPDATE_VBR UPDATE_CBR UPDATE_VIDEO UPDATE_ZIP HALFWAY_RACE_RAR HALFWAY_RACE_ZIP HALFWAY_RACE_OTHER HALFWAY_RACE_VIDEO HALFWAY_RACE_AUDIO HALFWAY_NORACE_RAR HALFWAY_NORACE_ZIP HALFWAY_NORACE_OTHER HALFWAY_NORACE_VIDEO HALFWAY_NORACE_AUDIO NEWLEADER_RAR NEWLEADER_ZIP NEWLEADER_OTHER NEWLEADER_VIDEO NEWLEADER_AUDIO COMPLETE_RAR COMPLETE_ZIP COMPLETE_AUDIO_CBR COMPLETE_AUDIO_VBR COMPLETE_OTHER COMPLETE_VIDEO COMPLETE_STAT_RACE_RAR COMPLETE_STAT_RACE_ZIP COMPLETE_STAT_RACE_AUDIO_CBR COMPLETE_STAT_RACE_AUDIO_VBR COMPLETE_STAT_RACE_OTHER COMPLETE_STAT_RACE_VIDEO BADGENRE BADYEAR BADBITRATE WIPE WIPE-r IMDB IMDBVAR"
 set msgtypes(DEFAULT) 		"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT REQUEST REQFILLED IMDBFIND DEBUG TIMEOUT TAGLINE"
 
+# This allows you to customize your annoncements depending on the path where
+# the action is taking place. The string matching is done using the TCL
+# construct "string match -nocase", so it is case insensitive by default.
+# Remember to create an announce for your custom message in the theme file!
+# Format: "original message type:string to look for in path:new message type"
+#set msgreplace(0)		"NEWDIR:*/sample:SAMPLE"
+#set msgreplace(1)		"NEWDIR:*/cd?:NEWCD"
+#set msgreplace(2)		"NEWDIR:*/disc?:NEWDISC"
+#set msgreplace(3)		"NEWDIR:*/disk?:NEWDISC"
+#set msgreplace(4)		"NEWDIR:*/subs:SUBTITLES"
+#set msgreplace(5)		"NEWDIR:*/vobsub:SUBTITLES"
+#set msgreplace(6)		"NEWDIR:*/cover:COVERS"
+#set msgreplace(7)		"NEWDIR:*/covers:COVERS"
+
 # Sitename is for the %sitename-cookie in announces :)
 set sitename			"pzs-ng"
 # Prefix on commands (f. x. !pnfree if cmdpre is !pn, !free if cmdpre is !, etc)
@@ -136,6 +150,19 @@ set chanlist(WELCOME)					"$mainchan"
 # Which channels we invite nicks to. (per default it invites
 # to the channels it announces invites to, but you can change that)
 set invite_channels					$chanlist(INVITE)
+
+# Separate staff channel
+# Only the users primary group is checked when deciding who to invite.
+# If you have users with other groups as primary then you need to list
+# them in staffchan(USERS).
+#set staffchan(CHANNELS)				"#pzs-ng_staff"
+#set staffchan(GROUPS)					"SiTEOPS STAFF"
+#set staffchan(USERS)					"someuser1 someuser2"
+
+# Always print invite information in this channel, no matter what the settings
+# are elsewhere. Useful if you want to move invite announcements to a private
+# channel.
+#set invitemessageoverride(CHANNELS)			"#pzs-ng_staff"
 
 # Set to 0 to allow trigger commands in all channels bot is in,
 # or set to 1 if you want the triggers to only work in $mainchan

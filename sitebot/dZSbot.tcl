@@ -255,7 +255,7 @@ set debuglevel [DEBUG_INFO]
 
 proc readlog {} {
 
-	global location glftpdlog loginlog lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2 invite_channels loglastoct pid
+	global location glftpdlog loginlog lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2 invite_channels loglastoct pid msgreplace staffchan invitemessageoverride
 
 	set dZStimer [utimer 1 "readlog"]
 	set lines ""
@@ -332,12 +332,43 @@ proc readlog {} {
 		}
 
 		set path [lindex $line 6]
+
 		if {![string compare $msgtype "INVITE"]} {
-			set nick [lindex $line 6]
-			foreach channel $invite_channels { puthelp "INVITE $nick $channel" }
+			set ircnick [lindex $line 6]
+			set nick [lindex $line 7]
+			set group [lindex $line 8]
+			foreach channel $invite_channels { puthelp "INVITE $ircnick $channel" }
+			if {[info exists staffchan]} {
+				foreach staffgroup $staffchan(GROUPS) {
+					if {![string compare $group $staffgroup]} {
+						foreach channel $staffchan(CHANNELS) { puthelp "INVITE $ircnick $channel" }
+					}
+				}
+				foreach staffuser $staffchan(USERS) {
+					if {![string compare $nick $staffuser]} {
+						foreach channel $staffchan(CHANNELS) { puthelp "INVITE $ircnick $channel" }
+					}
+				}
+			}
+			if {[info exists invitemessageoverride]} {
+				foreach msgchan $invitemessageoverride(CHANNELS) {
+					putquick "PRIVMSG $msgchan :\[INVITE\] $nick/$group invited himself as $ircnick from site"
+				}
+			}
 		}
 
 		set section [getsection $path $msgtype]
+
+		# Replace messages with custom messages
+		foreach rep [array names msgreplace] {
+			set rep [split $msgreplace($rep) ":"]
+			if {![string compare $msgtype [lindex $rep 0]]} {
+				if {[string match -nocase [lindex $rep 1] $path]} {
+					set msgtype [lindex $rep 2]
+				}
+			}
+		}
+
 		if {[denycheck "$path"] == 0} {
 			if {[string compare "$section" "$defaultsection"]} {
 				if {[info exists variables($msgtype)] && $disable($msgtype) == 0} {
@@ -1643,6 +1674,20 @@ if {![array exists disable] || [llength [array names "disable" "DEFAULT"]] == 0}
 	putlog "dZSbot error: no entry in disable set, or disable(DEFAULT) not set."
 	putlog "dZSbot error: setting disable(DEFAULT) to '0."
 	set disable(DEFAULT) "0"
+}
+
+# Hook up variables and announce definitions for the message replacing code
+# New message should have identical variables definition as old message
+# New announce set to old announce if not found in theme file (and output a
+# warning message).
+foreach rep [array names "msgreplace"] {
+	set rep [split $msgreplace($rep) ":"]
+	set variables([lindex $rep 2]) $variables([lindex $rep 0])
+	set disable([lindex $rep 2]) 0
+	if {![info exists announce([lindex $rep 2])]} {
+		set announce([lindex $rep 2]) $announce([lindex $rep 0])
+		putlog "dZSbot warning: Custom message [lindex $rep 2] defined, but no announce definition found. Using same announce as [lindex $rep 0] for now. Please edit the theme file!"
+	}
 }
 
 if { $dzerror == "0" } {
