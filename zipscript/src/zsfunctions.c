@@ -123,37 +123,6 @@ findfileextparent(DIR *dir, char *fileext)
 	return NULL;
 }
 
-/*char           *
-findfileext_old_(char *fileext) 
-{
-    int     n, k;
-
-    n = direntries;
-    while (n--) {
-        if ((k = NAMLEN(dirlist[n])) < 4)
-            continue;
-        if (strcasecmp(dirlist[n]->d_name + k - 4, fileext) == 0)
-            return dirlist[n]->d_name;
-    }
-    return NULL;
-}
-
-char           *
-findfileext_old_parent(char *fileext)
-{
-    int     n         , k;
-
-    n = direntriesp;
-    while (n--) {
-        if ((k = NAMLEN(dirlistp[n])) < 4)
-            continue;
-        if (strcasecmp(dirlistp[n]->d_name + k - 4, fileext) == 0) {
-            return dirlistp[n]->d_name;
-        }
-    }
-    return NULL;
-}*/
-
 /*
  * findfilextcount - count files with given extension
  * Last Modified by: daxxar
@@ -229,46 +198,6 @@ selector(struct dirent *d)
 		return 0;
 	return 1;
 }
-
-/*
- * rescandir - extract/store the dirlist for current dir
- * Last modified by: psxc
- *         Revision: r1220
- */
-
-/*void 
-rescandir(int usefree)
-{
-	if (direntries > 0 && usefree) {
-		while (direntries--) {
-			free(dirlist[direntries]);
-		}
-		free(dirlist);
-	}
-	if (usefree != 1) {
-		direntries = scandir(".", &dirlist, selector, 0);
-	}
-}*/
-
-/*
- * rescanparent - extract/store the dirlist for parent dir
- * Last modified by: psxc
- *         Revision: r1220
- */
-/*void 
-rescanparent(int usefree)
-{
-	if (direntriesp > 0 && usefree) {
-		while (direntriesp--) {
-			free(dirlistp[direntriesp]);
-		}
-		free(dirlistp);
-	}
-	if (usefree != 1) {
-		direntriesp = scandir("..", &dirlistp, 0, 0);
-	}
-}*/
-
 
 /*
  * del_releasedir - remove all files in current dir.
@@ -727,7 +656,6 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 
 	mkdir(org, 0777);
 
-	//printf("\n%s\n%s\n\n", source, target);
 #if ( userellink == 1 )
 	abs2rel(source, org, result, MAXPATHLEN);
 #endif
@@ -818,7 +746,6 @@ get_rar_info(struct VARS *raceI)
  * 
  * Description: Executes extern program and returns return value
  * 
- * check execute_old for the... old version
  */
 int 
 execute(char *s)
@@ -826,47 +753,11 @@ execute(char *s)
 	int		n;
 
 	if ((n = system(s)) == -1)
-		d_log("%s\n", strerror(errno));
+		d_log("execute: system(%s): %s\n", s, strerror(errno));
 
 	return n;
 
 }
-
-/*int 
-execute_old(char *s)
-{
-	int		n;
-	int		args = 0;
-	char           *argv[128];	// Noone uses this many args anyways
-
-	argv[0] = s;
-	while (1) {
-		if (*s == ' ') {
-			*s = 0;
-			args++;
-			argv[args] = s + 1;
-		} else if (*s == 0) {
-			args++;
-			argv[args] = NULL;
-			break;
-		}
-		s++;
-	}
-
-	switch (fork()) {
-	case 0:
-		close(1);
-		close(2);
-		n = execv(argv[0], argv);
-		exit(0);
-		break;
-	default:
-		wait(&n);
-		break;
-	}
-
-	return n >> 8;
-}*/
 
 char           *
 get_g_name(int gid)
@@ -1020,44 +911,6 @@ buffer_users(char *passwdfile, int setfree)
 	free(f_buf);
 	return(num_users);
 }
-
-/*
- * get the sum of same filetype Done by psxc 2004, Oct 6th
- */
-
-/*
-unsigned long
-sample_dir(char *dirname)
-{
-	int		n, k = 0;
-	unsigned long	l = 0;
-	struct stat	filestat;
-
-	n = direntries;
-	while (n--) {
-		if (samplecmp(dirlist[n]->d_name, sampledirs)) {
-			
-			continue;
-		} else
-			continue;
-
-
-
-		if ((k = NAMLEN(dirlist[n])) < 4)
-			continue;
-		if (strcasecmp(dirlist[n]->d_name + k - 4, fileext) == 0) {
-			if (stat(dirlist[n]->d_name, &filestat) != 0)
-				filestat.st_size = 1;
-			l = l + filestat.st_size;
-			continue;
-		}
-	}
-	if (!(l = l - fsize) > 0)
-		l = 0;
-	return l;
-}
-	
- */
 
 unsigned long 
 sfv_compare_size(char *fileext, unsigned long fsize)
