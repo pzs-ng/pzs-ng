@@ -68,10 +68,17 @@
 #define winner			"dummy_winner"
 #define loser			"dummy_loser"
 
-#define user_top		"{%n} {%-9u} {%-9g} {%5.1m} {%2f} {%5.1p} {%5.0s} {%2D} {%2W} {%2M} {%2A}"
-#define user_info		"{%u} {%g} {%.1m} {%f} {%.1p} {%.0s}"
-#define group_top		"{%n} {%-9g} {%.1m} {%f} {%.1p} {%5.0s}"
-#define group_info		"{%g} {%.1m} {%-2f} {%.1p} {%.0s}"
+#ifdef WITH_NOFORMAT
+ #define user_top		"{%n} {%u} {%g} {%.1m} {%f} {%.1p} {%.0s} {%D} {%W} {%M} {%A}"
+ #define user_info		"{%u} {%g} {%.1m} {%f} {%.1p} {%.0s}"
+ #define group_top		"{%n} {%g} {%.1m} {%f} {%.1p} {%.0s}"
+ #define group_info		"{%g} {%.1m} {%f} {%.1p} {%.0s}"
+#else
+ #define user_top		"{%n} {%-9u} {%-9g} {%5.1m} {%2f} {%5.1p} {%5.0s} {%2D} {%2W} {%2M} {%2A}"
+ #define user_info		"{%u} {%g} {%.1m} {%f} {%.1p} {%.0s}"
+ #define group_top		"{%n} {%-9g} {%.1m} {%f} {%.1p} {%5.0s}"
+ #define group_info		"{%g} {%.1m} {%-2f} {%.1p} {%.0s}"
+#endif
 
 /* Special reformat cookies */
 #define fastestfile		"{%u} {%g} {%.3F}" /* Put in %l cookie */

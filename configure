@@ -843,6 +843,7 @@ Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-ss5            compiles the zipscript for use with SiteStat 5
+  --enable-noformat       compiles the zipscript to not format the output
   --enable-static         enable static linking of zs-c
   --enable-gl1            disable autodetect of glversion, and compile bot
                           binaries for glftpd1
@@ -4061,6 +4062,12 @@ esac
 if test "${enable_ss5+set}" = set; then
   enableval="$enable_ss5"
   CFLAGS="$CFLAGS -D_WITH_SS5"
+fi;
+
+# Check whether --enable-noformat or --disable-noformat was given.
+if test "${enable_noformat+set}" = set; then
+  enableval="$enable_noformat"
+  CFLAGS="$CFLAGS -D_WITH_NOFORMAT"
 fi;
 
 # Check whether --enable-static or --disable-static was given.
