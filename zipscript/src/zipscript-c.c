@@ -272,6 +272,7 @@ int main( int argc, char **argv ) {
   } else {
 	sprintf(raceI.user.name, getenv("USER"));
 	sprintf(raceI.user.group, getenv("GROUP"));
+        if (strlen(raceI.user.group)==0) memcpy(raceI.user.group, "NoGroup", 8);
 	sprintf(raceI.user.tagline, getenv("TAGLINE"));
 	raceI.file.speed=strtol(getenv("SPEED"),NULL,0);
  }
