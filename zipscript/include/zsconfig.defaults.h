@@ -363,6 +363,13 @@
  */
 
 /*
+ * Calculate CRC for a filename without CRC in its SFV
+ */
+#ifndef sfv_calc_single_fname
+#define				FALSE
+#endif
+
+/*
  * Removes duplicate entries and comments from the sfv - some lame zipscripts
  * seem to add duplicate entries :p
  */
