@@ -1,0 +1,65 @@
+###############################################################
+# Updating dZSbot Between Revisions                           #
+###############################################################
+
+# Notes
+###############################################################
+
+- Refer to themes/default.zst for theme changes, this theme
+  file will always be kept up-to-date.
+
+- For an explanation of newly added config file options, refer
+  to dZSbot.conf.defaults (all options are explained in this file).
+
+
+# Changes
+###############################################################
+
+r1374: Added an !uptime command
+- Add "announce.UPTIME" to your theme file (.zst).
+
+r1351: Added a secure bnc option (for AUTH TLS).
+- Add "bnc(SECURE)" to your dZSbot.conf.
+
+r1350: Rewrote !bnc command.
+- Add "announce.BNC,BNC_PING,BNC_UP,BNC_DOWN" to your theme file (.zst).
+- cURL is used instead of ncftpls, be sure to install a recent version of cURL.
+- Remove "binary(NCFTPLS)" from your config and add "binary(CURL)".
+
+r1374: Renamed dZSbot config files.
+- Renamed dZSbconf.tcl to dZSbot.conf.
+- Renamed dZSbvars.tcl to dZSbot.vars.
+- Renamed dZSbconf.defaults.tcl to dZSbot.conf.defaults.
+
+r1337: Added some missing types to msgtypes(DEFAULT).
+- Add BADPASSWD, BADUSERHOST, and IPNOTADDED to msgtypes(DEFAULT).
+
+r1335: Added an example of "denypost" to the config.
+- Add denypost to your dZSbconf.tcl (or dZSbot.conf on newer versions).
+
+r1331: Theming can be used in the help file.
+- Replace dZSbot.help with the newer one.
+
+r1328: Renamed a cookie and changed speed formatting.
+- The %uspeed cookie was renamed to %speed in "announce.USER".
+- Change the follow values in your theme file (.zst).
+KB = "KB/s"
+MB = "MB/s"
+KBIT = "Kbit/s"
+MBIT = "Mbit/s"
+
+To:
+KB = "%b{%value}KB/s"
+MB = "%b{%value}MB/s"
+KBIT = "%b{%value}Kbit/s"
+MBIT = "%b{%value}Mbit/s"
+
+r1314: The %idletime cookie is now formatted by the bot.
+- Change "%b{%idletime} seconds" (or similar) to "%idletime" in your theme file (.zst).
+- This cookie is used in "announce.USERIDLE" and "announce.SPEEDID".
+
+r1311: Section announce changes.
+- Renamed config option "msgtypes(RACE)" to "msgtypes(SECTION)".
+- Removed type(<section-name>) "RACE" config options (no longer needed).
+- New options to redirect and disable announces: disabletypes() and redirect().
+  Check the dZSbconf.defaults.tcl for details on these new options.

@@ -21,11 +21,7 @@ Okay, now that that is clear, here's the general process:
 6.  If you're upgrading from -1277 to +1277, you need to
     rm -rf ftp-data/psz-ng/*
 
-7. If you're upgrading from -1346 to +1346, you need to
-    mv dZSbconf.tcl dZSbot.conf
-    rm dZSbconf.defaults.tcl # Renamed to dZSbot.conf.defaults
-	rm dZSbvars.tcl          # Renamed to dZSbot.vars
-   (make sure you run it from the sitebot scripts dir)
+7. Refer to sitebot/UPDATING when updating the sitebot.
 
 
 That's it! You've upgraded.
