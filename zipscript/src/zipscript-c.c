@@ -271,6 +271,7 @@ int main( int argc, char **argv ) {
  sprintf(raceI.user.tagline, getenv("TAGLINE"));
  raceI.file.speed=atoi(getenv("SPEED"));
  if (raceI.file.speed==0) raceI.file.speed=1;
+ raceI.file.speed*=1024;
 /*      raceI.transfer_start.tv_sec = 0;
         raceI.transfer_start.tv_usec = 0;*/
 

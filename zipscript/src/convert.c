@@ -414,7 +414,7 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 		case 'O': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->total.bad_size >> 10) / 1024.)); break;
 		case 'p': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->total.files - raceI->total.files_missing) * 100. / raceI->total.files)); break;
 		case 'P': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.bad_size / 1024.)); break;
-		case 'S': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->file.speed)); break; //kbps
+		case 'S': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->file.speed / 1024. )); break; //kbps
 		case 'r': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.release_name); break;
 		case 'R': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.racer_list + 1); break;
 		case 't': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.top_messages[1] + 1); break;
