@@ -2,7 +2,7 @@ prefix=@GLPATH@
 CC=@CC@
 RM=@RM@ -f
 
-CFLAGS=@CFLAGS@ -W -Wall @GLVERSION@ -I../../
+CFLAGS=@CFLAGS@ -W -Wall @GLVERSION@ -I../../ -I../../zipscript/include/
 LDFLAGS=@LDFLAGS@
 INSTALL=@INSTALL@
 
