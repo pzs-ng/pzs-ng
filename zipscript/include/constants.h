@@ -222,7 +222,7 @@
 
 /* RAR - allows usage of compression mode cookie (%J) for rarred releases */
 #if ( disable_rar_race == FALSE )
-#define rar_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%K} {%B} {%J}"
+#define rar_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%K} {%B} {%J} {%$}"
 #else
 #define rar_race		DISABLED
 #endif
@@ -232,17 +232,17 @@
 #define rar_sfv			DISABLED
 #endif
 #if ( disable_rar_update == FALSE )
-#define rar_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r} {%K} {%J}"
+#define rar_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r} {%K} {%J} {%$}"
 #else
 #define rar_update		DISABLED
 #endif
 #if ( disable_rar_halfway == FALSE )
-#define rar_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%B} {%J}"
+#define rar_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%B} {%J} {%$}"
 #else
 #define rar_halfway		DISABLED
 #endif
 #if ( disable_rar_newleader == FALSE )
-#define rar_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%K} {%R} {%J}"
+#define rar_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%K} {%R} {%J} {%$}"
 #else
 #define rar_newleader		DISABLED
 #endif
@@ -252,7 +252,7 @@
 #define rar_complete		DISABLED
 #endif
 #if ( disable_rar_norace_halfway == FALSE )
-#define rar_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%K} {%J}"
+#define rar_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%K} {%J} {%$}"
 #else
 #define rar_norace_halfway	DISABLED
 #endif
