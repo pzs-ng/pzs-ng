@@ -34,7 +34,7 @@ char           *header = 0, *footer = 0, *glpath = 0, *mpaths = 0, *husers = 0, 
 	       *def_count_hidden = "true", *count_hidden, *def_header = "/ftp-data/misc/who.head",
 	       *def_footer = "/ftp-data/misc/who.foot";
 int		maxusers = 20 , showall = 0, uploads = 0, downloads = 0, onlineusers = 0, browsers = 0, idlers = 0, chidden = 1,
-		idle_barrier = -1, def_idle_barrier = 30;
+		idle_barrier = -1, def_idle_barrier = 30, threshold = -1, def_threshold = 1024;
 double		total_dn_speed = 0, total_up_speed = 0;
 
 int
@@ -219,9 +219,9 @@ showusers(int n, int mode, char *ucomp, char raw)
 
 				strcpy(bar, "?->");
 				if (!raw)
-					if (speed > 1024) {
+					if (speed > threshold) {
 						speed = (speed / 1024.0);
-						sprintf(status, "Up: %7.2fKB/s", speed);
+						sprintf(status, "Up: %7.2fMB/s", speed);
 					} else {
 						sprintf(status, "Up: %7.0fKB/s", speed);
 					}
@@ -274,9 +274,9 @@ showusers(int n, int mode, char *ucomp, char raw)
 					sprintf(filename, "%.15s", user[x].status + m - 10);
 
 				if (!raw)
-					if (speed > 1024) {
+					if (speed > threshold) {
 						speed = (speed / 1024.0);
-						sprintf(status, "Dn: %7.2fKB/s", speed);
+						sprintf(status, "Dn: %7.2fMB/s", speed);
 					} else {
 						sprintf(status, "Dn: %7.0fKB/s", speed);
 					}
@@ -477,6 +477,8 @@ readconfig(char *arg)
 						maxusers = atoi(tmp);
 					else if (!memcmp(buf + l_b, "idle_barrier", 8))
 						idle_barrier = atoi(tmp);
+					else if (!memcmp(buf + l_b, "speed_threshold", 8))
+						threshold = atoi(tmp);
 					free(tmp);
 				}
 			}
@@ -542,7 +544,7 @@ void
 showtotals(char raw)
 {
 	if (!raw) {
-		if ((total_up_speed > 1024) || (total_dn_speed > 1024)) {
+		if ((total_up_speed > threshold) || (total_dn_speed > threshold)) {
 			total_up_speed = (total_up_speed / 1024);
 			total_dn_speed = (total_dn_speed / 1024);
 			printf("| Up: %2i / %7.2fMB/s | Dn: %2i / %7.2fKB/s | Total: %2i / %7.2fMB/s |\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed);
@@ -666,6 +668,8 @@ main(int argc, char **argv)
 		footer = def_footer;
 	if (idle_barrier < 0)
 		idle_barrier = def_idle_barrier;
+	if (threshold < 1)
+		threshold = def_threshold;
 
 	buffer_groups(glgroup);
 
