@@ -41,6 +41,7 @@ AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_CHECK_HEADERS(pwd.h regex.h fnmatch.h fcntl.h errno.h, , AC_MSG_ERROR([[Couldn't find required header, quitting!]]))
 AC_CHECK_HEADERS(sys/ipc.h sys/param.h sys/shm.h sys/time.h sys/uio.h sys/wait.h, , AC_MSG_ERROR([[Couldn't find required header, quitting!]]))
+AC_CHECK_HEADERS(hsregex.h, CFLAGS="$CFLAGS -DUSE_HSREGEX")
 
 dnl Checks for library functions.
 AC_CHECK_FUNC(strlcpy, [AC_DEFINE(HAVE_STRLCPY, 1, [Define to 1 if you have the strlcpy() function available])])
