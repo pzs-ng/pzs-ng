@@ -297,7 +297,7 @@ void readconfig(char *arg) {
 				else if ( !memcmp(buf + l_b, "footerfile", 10) ) footer = tmp;
 				else if ( !memcmp(buf + l_b, "maskeddirectories", 17) ) mpaths = tmp;
 				else if ( !memcmp(buf + l_b, "hiddenusers", 11) ) husers = tmp;
-				else if ( !memcmp(buf + l_b, "rootpath", 8) ) glpath = tmp;
+				else if ( !memcmp(buf + l_b, "glrootpath", 10) ) glpath = tmp;
 				else if ( !memcmp(buf + l_b, "ipc_key", 7) ) ipckey = tmp;
 				else if ( !memcmp(buf + l_b, "grp_path", 8) ) glgroup = tmp;
 				else {
