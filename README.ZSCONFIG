@@ -246,11 +246,18 @@ ignored_types <STRING>
 	with a comma.
 	Default: ",diz,debug,message,imdb"
 
+allow_files_not_in_sfv <TRUE|FALSE>
+	Should we allow files uploaded that is not in the sfv? This is only
+	valid on upload (not rescan etc), and is normally not used. Please
+	note that this is a override option - you may be not like everything
+	this option allows on your site...
+	Default: FALSE
+
 debug_mode <TRUE|FALSE>
 	If something seems weird/doesn't work, you should debug. Setting this
 	variable to TRUE will turn on debugging. A file named .debug will be
 	created, normally in the same dir as the upload-dir.
-	Default: False
+	Default: FALSE
 
 debug_altlog <TRUE|FALSE>
 	If debug is on, you can choose wether you wish to have the .debug file

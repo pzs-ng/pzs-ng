@@ -699,6 +699,11 @@ main(int argc, char **argv)
 				if (s_crc != crc) {
 					if (s_crc == 0) {
 						if (!strcomp(allowed_types, fileext)) {
+#if (allow_files_not_in_sfv == TRUE)
+							d_log("Filename was not found in the SFV, but allowing anyway\n");
+							no_check = TRUE;
+							break;
+#endif
 							d_log("Filename was not found in the SFV\n");
 							strcpy(raceI.misc.error_msg, NOT_IN_SFV);
 						} else {

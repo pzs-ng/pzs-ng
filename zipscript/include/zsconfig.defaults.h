@@ -225,6 +225,14 @@
 #endif
 
 /*
+ * Should we allow files uploaded that is not in the sfv? This is only valid
+ * on upload (not rescan etc), and is normally not used.
+ */
+#ifndef allow_files_not_in_sfv
+#define allow_files_not_in_sfv	FALSE
+#endif
+
+/*
  * Special modes debug_mode - create .debug files in releasedirs.
  * debug_altlog - put all .debug files in the mirror stored in the storage
  * variable. Not reccommended with first use, as not all debug info will make
