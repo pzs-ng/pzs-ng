@@ -1,8 +1,6 @@
-/* remeber, you have to COMMENT OUT or #undef use_glftpd2 to disable it, #defining it to FALSE doesn't work */
-#define use_glftpd2	TRUE
 #define KEY		0x0000DEAD
 
-#ifndef use_glftpd2
+#ifndef USE_GLFTPD2
 struct ONLINE {
  char                           tagline[64];    /* The users tagline */
  char                           username[24];   /* The username of the user */

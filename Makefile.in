@@ -1,17 +1,17 @@
-prefix=@prefix@
+prefix=@GLPATH@
 
 CFLAGS=-Wall -g
 CC=@CC@
 LIBS=@LIBS@
 
 all: zs
-	@(echo -e "\n\tProject-ZS-NG is now compiled!\n\tType 'make install' to install it into @prefix@.\n")
+	@(echo -e "\n\tProject-ZS-NG is now compiled!\n\tType 'make install' to install it into $(prefix).\n")
 
 install: zs
 	cd zipscript/src ; $(MAKE) install
 
 distclean: clean
-	rm -f *~ Makefile config.cache config.log config.status config.h
+	rm -f *~ Makefile config.cache config.log config.status config.h sitewho/compile.sh
 	rm -rf autom4te.cache/
 	cd zipscript/src ; $(MAKE) distclean
 	cd sitebot/src ; $(MAKE) distclean
@@ -27,4 +27,4 @@ zs:
 	cd zipscript/src ; $(MAKE) all
 
 bot:
-	cd sitebot/src ; ${MAKE} all
+	cd sitebot/src ; $(MAKE) all

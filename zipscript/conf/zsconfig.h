@@ -19,7 +19,7 @@
 #define gl_userfiles	"/ftp-data/users/"
 #define dupepath	"/ftp-data/logs/dupefile"
 
-/* On default, announcing is disabled everywhere, use zip/sfv paths to enable annouces and private paths to disable.
+/* Per default, announcing is disabled everywhere, use zip/sfv paths to enable announces and private paths to disable.
  * Don't be lazy! Be specific! And remember - pathnames are case sensitive.
  */
 #define group_dirs			"/site/groups/"

@@ -1,4 +1,4 @@
-prefix=@prefix@
+prefix=@GLPATH@
 datapath=/ftp-data
 storage=/tmp/zipscript
 bindir=$(prefix)/bin
