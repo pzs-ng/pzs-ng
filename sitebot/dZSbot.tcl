@@ -1002,7 +1002,7 @@ proc launchnuke2 {type path section sargs dargs} {
 	set output [replacevar $output "%multiplier" $nuke(MULT)]
 	set output [replacevar $output "%reason" $nuke(REASON)]
 	set output [replacevar $output "%section" $nuke(SECTION)]
-	set output [replacevar $output "%release" [lindex $split [expr $ll -1]]]
+	set output [replacevar $output "%reldir" [lindex $split [expr $ll -1]]]
 	set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
 	set output [basicreplace $output $nuke(TYPE)]
 	sndall $nuke(SECTION) $output
@@ -1058,7 +1058,7 @@ proc launchnuke {} {
 	set output [replacevar $output "%multiplier" $nuke(MULT)]
 	set output [replacevar $output "%reason" $nuke(REASON)]
 	set output [replacevar $output "%section" $nuke(SECTION)]
-	set output [replacevar $output "%release" [lindex $split [expr $ll -1]]]
+	set output [replacevar $output "%reldir" [lindex $split [expr $ll -1]]]
 	set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
 	set output [basicreplace $output $nuke(TYPE)]
 	sndall $nuke(SECTION) $output
