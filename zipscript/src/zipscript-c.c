@@ -360,7 +360,7 @@ int main( int argc, char **argv ) {
     locations.race   = m_alloc(n += 10 + (locations.length_zipdatadir = sizeof(storage) - 1));
     locations.sfv    = m_alloc(n);
     locations.leader = m_alloc(n);
-
+    locations.link_target = m_alloc(n + 256);
     target = m_alloc(n + 256);
     userI  = malloc(sizeof(struct USERINFO *) * 30);
     memset(userI, 0, sizeof(struct USERINFO *) * 30);
@@ -1067,14 +1067,19 @@ d_log("DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", raceI.file.size))
     d_log("Releasing memory\n");
     free(locations.link_source);
     free(raceI.misc.release_name);
-    m_free(target);
     free(fileext);
+    m_free(target);
     m_free(locations.race);
     m_free(locations.sfv);
     m_free(locations.leader);
     m_free(locations.link_target);
-    m_free(locations.incomplete);
-    m_free(locations.nfo_incomplete);
+
+/* The following two variables should be free'd - but for now i don't
+ * know how to free them w/o breaking other stuff. Please see stats.c
+ * line 57, 73 and 222.
+ *    free(groupI);
+ *    free(userI);
+ */
 
 #if ( benchmark_mode == TRUE )
     gettimeofday(&bstop, (struct timezone *)0);
@@ -1084,3 +1089,4 @@ d_log("DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", raceI.file.size))
     d_log("Exit\n");
     return exit_value;
 }
+
