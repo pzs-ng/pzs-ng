@@ -214,7 +214,7 @@
  * files without extensions
  */
 #ifndef ignored_types
-#define ignored_types		",diz,debug,message,imdb""
+#define ignored_types		",diz,debug,message,imdb"
 #endif
 
 /*
