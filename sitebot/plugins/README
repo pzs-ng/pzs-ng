@@ -1,5 +1,5 @@
 ###############################################################
-# dZSbot Plugins                                              #
+# dZSbot Plug-ins                                             #
 ###############################################################
 
 # Usage
@@ -51,7 +51,7 @@ Example:
 - More to come...
 
 
-# Plugins
+# Plug-ins
 ###############################################################
 
 NickDb.tcl      - Keeps track of IRC nick names and their FTP user names.

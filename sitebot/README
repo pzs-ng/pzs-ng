@@ -5,176 +5,182 @@
 --------------------------------------------------------------------------------
  INDEX
 --------------------------------------------------------------------------------
- 
- 1. Installation
 
- 1-1 Configuration
- 1-2 Compiling
- 1-3 Using with eggdrop 
+ 1. Installation
+  a) Configuration
+  b) Compiling
+  c) Loading the sitebot
 
  2. Themes
-
- 2-1 Installation
- 2-2 Bundled themes
- 2-3 Special settings in the theme
- 2-4 Customizing
- 2-5 Submit your theme?
+  a) Installation
+  b) Bundled themes
+  c) Special theme settings
+  d) Customizing
+  e) Submit your theme
 
  3. Resources
- 
- 3-1 Links
+  a) Links
+  b) Bugs, comments and suggestions
 
 --------------------------------------------------------------------------------
  1. Installation
 --------------------------------------------------------------------------------
- 1-1 Configuration
---------------------------------------------------------------------------------
- Copy necessary files to your bot's script dir:
-   mkdir -p /path/to/egg/scripts/pzs-ng/themes
-   cp dZSb* /path/to/egg/scripts/pzs-ng/
-   cp themes/*.zst /path/to/egg/scripts/pzs-ng/themes/
- On new install (not upgrade):
-   mv dZSbot.conf.dist /path/to/egg/scripts/pzs-ng/dZSbot.conf
-
- Edit dZSbot.conf to match your setup, and enter the name of a theme (.zst)
- you wish to use.
- Edit the theme you wish to use to match your setup, or make your own.
-
---------------------------------------------------------------------------------
- 1-2 Compiling
---------------------------------------------------------------------------------
- Directory "src" contains ng-bw(not used) and passchk. These are compiled from
- root makefile. Anyhow - you can always compile these seperately by issuing
- "make" and "make install" inside this dir.
- 
- passchk: Used for !invite to validate passwd (requires openssl header files)
- 
- Directory "extra" contains helper scripts for use with the sitebot.
- 
- fakelog.sh:         Use this to simulate log entries.
- incomplete-list.sh: The bot can show a list of incompletes for each section
-                     defined in the actual script. (remember to edit sections)
- invite.sh:          This is used with custom command "site invite".
-                     Add the following to glftpd.conf:
-                     site_cmd        INVITE  EXEC    /bin/invite.sh
-                     custom-invite   !8 *
- weektop.sh:         Use at will :)
- top.tcl:            Load this in your eggdrop.conf like:
-                     source scripts/top.tcl (edit #chan first)
-                     
- Directory "ngplugins" contains plugins for the bot in development.
- This dir is not an active part of pzs-ng (yet).
- 
-
---------------------------------------------------------------------------------
- 1-3 Using with eggdrop
+  a) Configuration
 --------------------------------------------------------------------------------
 
- Load the sitebot like any other script. Add this to eggdrop.conf:
- 
- source scripts/pzs-ng/dZSbot.tcl
+ - Copy the necessary files to your Eggdrop's directory:
+  mkdir -p /path/to/eggdrop/pzs-ng/themes
+  cp dZSbot.* /path/to/eggdrop/pzs-ng/
+  cp -R plugins themes /path/to/eggdrop/pzs-ng/themes/
 
- (Re)start your eggdrop!
- 
- Upgrading:
- see the UPDATING file.
+ - On a new install (not upgrade):
+  mv dZSbot.conf.dist /path/to/eggdrop/pzs-ng/dZSbot.conf
 
- Files "*.zst" is theme files and was introduced with pzs-ng and heavily
- extended in beta3. You can change them to your liking but it is suggested
- that you simply make a copy of the bundled themes if you want to change
- anything. Read more about themes in the chapter "Themes" in this file.
- 
+ - Edit the configuration file (dZSbot.conf) to your liking.
+
+--------------------------------------------------------------------------------
+  b) Compiling
+--------------------------------------------------------------------------------
+
+ - The "src" directory contains helper scripts used by dZSbot. These binaries compiled
+ from root makefile. However, you can always compile them separately by issuing
+ "make" and "make install" inside this the directory.
+
+ glwho            - An experimental glftpd who extension for Tcl.
+
+ passchk          - Used by !invite to authenticate users (requires OpenSSL headers).
+
+ showlog          - Displays the latest entries in the dirlog and nukelog for
+                    external scripts (used by dZSbot for !new/!search/!nukes/!unnukes).
+
+ - The "extra" directory contains helper scripts to be used with the sitebot.
+
+ fakelog.sh       - Use this to simulate log entries.
+
+ incomplete-list.sh The bot can show a list of incompletes for each section
+                    defined in the actual script. (remember to edit sections)
+
+ invite.sh        - This is used with custom command "site invite".
+                    Add the following to glftpd.conf:
+                    site_cmd        INVITE  EXEC    /bin/invite.sh
+                    custom-invite   !8 *
+
+ top.tcl          - Display the weekly top uploaders.
+                    Add the following to eggdrop.conf:
+                    source scripts/top.tcl
+
+ - The "plugins" directory contains useful plug-ins for dZSbot. Refer to
+ plugins/README for more information.
+
+--------------------------------------------------------------------------------
+  c) Loading the sitebot
+--------------------------------------------------------------------------------
+
+ - Eggdrop must be linked against Tcl v8.4 (or newer). dZSbot uses certain
+ functions which are not present in previous versions of Tcl.
+
+ - Load dZSbot as you would load any Eggdrop script, by adding the following line
+ to your eggdrop.conf:
+ source pzs-ng/dZSbot.tcl
+
+ - Rehash or restart your Eggdrop for the changes to take effect.
+
+ - When updating dZSbot to a newer revision, refer to the sitebot/UPDATING file.
 
 --------------------------------------------------------------------------------
  2. Themes
 --------------------------------------------------------------------------------
- 2-1 Installation
+  a) Installation
 --------------------------------------------------------------------------------
- To install a theme - all you need to do is edit dZSbot.conf and change a line:
+
+ - To install a theme - all you need to do is edit dZSbot.conf and change a line:
  set announce(THEMEFILE) "yourtheme.zst"
 
- dZSbot is looking for the theme in its own path by default. However - you can
- supply a full path if this is preferred for whatever obscure reason :)
-
-
---------------------------------------------------------------------------------
- 2-2 Bundled themes
---------------------------------------------------------------------------------
- The following themes are bundled with pzs-ng:
-
- default.zst:	Previously known as avizion.zst which was made to test the
-		new way of using themes and to show "all" possible outputs.
-		Use this as a reference when making your own themes.
-
- vampire.zst:	juanker's colorful theme.
-
- nfs.zst:	maziah's even more colorful theme, based on the movie/game.
-
- psxc.zst:	psxc's go at a theme - minimalistic.
-
- dakrer.zst:	dakrer's theme. Similar to default.zst but with less output
-		and a (small) splash of colours. See theme for additional info.
+ - dZSbot will look for the theme in its own path by default. However, you may
+ specify the full path if you prefer.
 
 --------------------------------------------------------------------------------
- 2-3 Special settings in the theme
+  b) Bundled themes
 --------------------------------------------------------------------------------
-Some settings in the theme may seem odd. One thing in particular is the *_LOOP#
-variables seen in the script. I'll try to explain:
-Some variables pasted from the zipscript is repeated for each racer in a race.
-To make output from that, we have to loop thru the vars, formatting and printing
-them. To do that we use the %loop# variable in the theme, which will be replaced
-with the corresponding _LOOP# variable.
+
+ - The following themes are bundled with pzs-ng:
+
+ default.zst - This is not an attractive theme, nor is it meant to be. This
+               theme should be used a reference when creating a new theme or
+               updating your existing one.
+
+ dakrer.zst  - Similar to default.zst but with less output and a (small) splash of
+               colors. See theme for additional info. Created and maintained by dakrer.
+
+ vampire.zst - juanker's colorful theme.
+
+ nfs.zst     - Based on the "Need for Speed" game, created by maziah.
+
+ psxc.zst    - A minimalistic, yet effective theme, created by psxc.
 
 --------------------------------------------------------------------------------
- 2-4 Customizing
+  c) Special theme settings
 --------------------------------------------------------------------------------
- Feel free to edit and customize any of the bundled themes, but it is advised
- for you to make a copy first. Maybe do "cp default.zst mytheme.zst" before
- raping the theme to suit your needs.
 
- Using colours is fairly simple in dZSbot now. Simply define a new colour like:
+ - Some theme settings may seem unusual, one in particular is the *_LOOP# variables
+ seen in the script.
+
+ - Some announce events format the output for several users; like the nukees during
+ NUKE and UNNUKE, and the user top when a race completes.
+
+ - In order to customize such an announce, we have to format each user or group
+ individually. This is accomplished through the %loop# variables in the theme,
+ which will be replaced with the corresponding _LOOP# theme.
+
+--------------------------------------------------------------------------------
+  d) Customizing
+--------------------------------------------------------------------------------
+
+ - Feel free to edit and customize any of the bundled themes, but it is advised
+ to create a copy of it first. For example: "cp default.zst mytheme.zst"
+
+ - Using colors is fairly simple in dZSbot. Simply define a color in the theme:
 
  COLOR1 = "04"
  ..
  COLOR4 = "07"
 
- Then use it on the .zst file like:
+ - The color can be referenced in the theme file by doing:
 
- announce.SOMETHING = "[%c4{%section}] %c2{Something happend} in %c1{%pf}"
+ announce.SOMETHING = "[%c4{%section}] %c2{Something happened} in %c1{%pf}"
 
- Colour table for use in TCL:
+ - Color table:
 
- 00 white                 08 yellow
- 01 black                 09 light green
- 02 blue                  10 cyan
- 03 green                 11 light cyan
- 04 light red             12 light blue
- 05 red                   13 light magenta
- 06 magenta (purple)      14 gray
- 07 orange (dark yellow)  15 light gray
+ 00 - White                 08 - Yellow
+ 01 - Black                 09 - Light green
+ 02 - Blue                  10 - Cyan
+ 03 - Green                 11 - Light cyan
+ 04 - Light red             12 - Light blue
+ 05 - Red                   13 - Light magenta
+ 06 - Magenta (purple)      14 - Gray
+ 07 - Orange (dark yellow)  15 - Light gray
 
- NOTE: dZSbot does only support 9 colours max per theme.
+ - NOTE: dZSbot only supports 9 user defined colors per theme.
 
+ - Starting with beta4 of pzs-ng, you can define custom colors for each section.
+ To use this feature, this you must define colors in the theme for the specific
+ section. The section name must be the exact same as the one defined in dZSbot.conf,
+ and you must define the same number of section colors as in your default scheme.
 
- Starting with beta4 of pzs-ng you can now also have a custom color scheme for
- each section. To enable this you only need to define colors in the theme for
- the specific section. You must use the same exact section name as you do in
- dZSbot.conf, and you must define the same number of colors as in your default
- scheme in each of the custom schemes.
-
- If you have 3 default colors (COLOR1, COLOR2 and COLOR3), then if you want a
- custom color scheme for your GAMES section you need to add the following to
+ - If you have 4 default colors (COLOR1, COLOR2, COLOR3, and COLOR4), then if you
+ want a custom color scheme for your GAMES section you need to add the following to
  your theme file:
- COLOR_GAMES_1 = "xx"
- COLOR_GAMES_2 = "yy"
- COLOR_GAMES_3 = "zz"
 
+ COLOR_GAMES_1 = "ww"
+ COLOR_GAMES_2 = "xx"
+ COLOR_GAMES_3 = "yy"
+ COLOR_GAMES_4 = "zz"
 
- Another new addition to pzs-ng beta4 is the ability to add padding/jystifying
+ - Another new addition to pzs-ng beta4 is the ability to add padding/justifying
  control codes to the theme. You can select left or right justification, and the
  number of spaces to pad the string to. %r = right-justified text, %l = left-
- justified text, %m = centered text. Example:
- 
+ justified text, %m = centered text.
+
  In theme                         Output
  --------                         ------
  XtestX                           XtestX
@@ -183,24 +189,29 @@ with the corresponding _LOOP# variable.
  X%m9{test}X                      X  test   X
 
 --------------------------------------------------------------------------------
- 2-5 Submit your theme?
--------------------------------------------------------------------------------- 
- Did you make your own theme - and is it ready for the public?
+  e) Submit your theme
+--------------------------------------------------------------------------------
 
- We dare you to submit it to the project... in the spirit of open source :)
+ If you created your own theme and wish to share it with the public, please submit it.
 
- Upload via FTP on ftp://pzs-ng.ftpd.gl/pub/upload/themes/
- Upload via HTTP on http://bugs.pzs-ng.com
-
+ Upload via FTP  - ftp://pzs-ng.ftpd.gl/pub/upload/themes/
+ Upload via HTTP - http://bugs.pzs-ng.com
 
 --------------------------------------------------------------------------------
- 3. Ressources
+ 3. Resources
 --------------------------------------------------------------------------------
- 3-1 Links
+  a) Links
 --------------------------------------------------------------------------------
- http://www.tcl.tk/                    Main page for TCL
- http://www.scriptics.com/             General TCL page
- http://www.eggheads.org/              Main page for eggdrop
- http://www.egghelp.org/               Addons for eggdrop
- http://mircryption.sourceforge.net/   FiSH encryption
- http://www.pzs-ng.com/                Main page for pzs-ng.
+
+ http://www.pzs-ng.com                 Main page for pzs-ng
+ http://www.tcl.tk                     Main page for Tcl
+ http://www.eggheads.org               Main page for Eggdrop
+ http://www.egghelp.org                Add-ons for Eggdrop
+ http://mircryption.sourceforge.net    FiSH encryption
+
+--------------------------------------------------------------------------------
+  b) Bugs, comments and suggestions
+--------------------------------------------------------------------------------
+
+ Bug tracker: http://bugs.pzs-ng.com
+ IRC channel: #pzs-ng on the EFnet network
