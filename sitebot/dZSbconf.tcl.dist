@@ -22,8 +22,8 @@ set use_glftpd2 		"AUTO"
 
 # What types of messages are counted as the different types of output
 # (for disabling etc)
-set msgtypes(RACE) 		"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV DOUBLESFV UPDATE UPDATE_RAR UPDATE_OTHER UPDATE_VBR UPDATE_CBR UPDATE_VIDEO UPDATE_ZIP HALFWAY NEWLEADER COMPLETE COMPLETE_RAR COMPLETE_ZIP COMPLETE_AUDIO COMPLETE_OTHER COMPLETE_VIDEO COMPLETE_RACE COMPLETE_RACE_RAR COMPLETE_RACE_ZIP COMPLETE_RACE_AUDIO COMPLETE_RACE_OTHER COMPLETE_RACE_VIDEO STAT_USERS_HEAD STAT_USERS STAT_GROUPS_HEAD STAT_GROUPS STAT_POST BADGENRE BADYEAR BADBITRATE WIPE WIPE-r"
-set msgtypes(DEFAULT) 		"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT REQUEST REQFILLED"
+set msgtypes(RACE) 		"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV DOUBLESFV UPDATE UPDATE_RAR UPDATE_OTHER UPDATE_VBR UPDATE_CBR UPDATE_VIDEO UPDATE_ZIP HALFWAY NEWLEADER COMPLETE COMPLETE_RAR COMPLETE_ZIP COMPLETE_AUDIO COMPLETE_OTHER COMPLETE_VIDEO COMPLETE_RACE COMPLETE_RACE_RAR COMPLETE_RACE_ZIP COMPLETE_RACE_AUDIO COMPLETE_RACE_OTHER COMPLETE_RACE_VIDEO STAT_USERS_HEAD STAT_USERS STAT_GROUPS_HEAD STAT_GROUPS STAT_POST BADGENRE BADYEAR BADBITRATE WIPE WIPE-r IMDB IMDBVAR"
+set msgtypes(DEFAULT) 		"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT REQUEST REQFILLED IMDBFIND"
 
 # Sitename is for the %sitename-cookie in announces :)
 set sitename			"pzs-ng"
@@ -167,6 +167,9 @@ set disable(UPDATE_ZIP)					0
 set disable(WELCOME)					0
 set disable(WIPE)					0
 set disable(WIPE-r)					0
+set disable(IMDB)					0
+set disable(IMDBVAR)					0
+set disable(IMDBFIND)					0
 
 #########################################################
 # ADVANCED CONFIG, EDIT CAREFULLY                       #
@@ -257,12 +260,49 @@ set variables(INVITE)		"%ircnick %user %group"
 set variables(REQUEST)		"%rl %user %group %tagline"
 set variables(REQFILLED)	"%rl %user %group %tagline %requester"
 
+# Using psxc-imdb, setting TRIGGER to "IMDBVAR" and LOGFORMAT to "SPECIAL" will allow you use format the output in the bot.
+set variables(IMDBVAR)	"%pf %imdbdirname %imdburl %imdbtitle %imdbgenre %imdbrating %imdbcountry %imdblanguage %imdbcertification %imdbruntime %imdbdirector %imdbbusinessdata %imdbpremiereinfo %imdblimitedinfo %imdbvotes %imdbscore %imdbname %imdbyear %imdbnumscreens %imdbislimited %imdbcastleadname %imdbcastleadchar %imdbtagline %imdbplot \[%imdbbar\] %imdbcasting %imdbcommentshort %imdbdestination"
+
+# Using psxc-imdb setting TRIGGER to "IMDB" and LOGFORMAT to "" or "MYOWN" will allow a pre-formatted output
+set variables(IMDB)		"%pf %msg"
+
+# Using psxc-imdb setting FINDTRIGGER to "IMDBFIND" and LOGFORMAT to "" or "MYOWN" will allow a pre-formatted output.
+set variables(IMDBFIND)		"%pf %msg"
+
 ## Converts empty or zero variable to something else if defined
 #
 # Example:
 #  set zeroconvert(%user) "NoOne"
 set zeroconvert(%user)				"NoOne"
 set zeroconvert(%group) 			"NoGroup"
+
+# IMDB variables
+set zeroconvert(%imdbdirname)		"N/A"
+set zeroconvert(%imdburl)		"N/A"
+set zeroconvert(%imdbtitle)		"N/A"
+set zeroconvert(%imdbgenre)		"N/A"
+set zeroconvert(%imdbrating)		"N/A"
+set zeroconvert(%imdbcountry)		"N/A"
+set zeroconvert(%imdblanguage)		"N/A"
+set zeroconvert(%imdbcertification)	"N/A"
+set zeroconvert(%imdbruntime)		"N/A"
+set zeroconvert(%imdbdirector)		"N/A"
+set zeroconvert(%imdbbusinessdata)	"N/A"
+set zeroconvert(%imdbpremiereinfo)	"N/A"
+set zeroconvert(%imdblimitedinfo)	"N/A"
+set zeroconvert(%imdbvotes)		"Less than 5"
+set zeroconvert(%imdbscore)		"0"
+set zeroconvert(%imdbname)		"N/A"
+set zeroconvert(%imdbyear)		"N/A"
+set zeroconvert(%imdbnumscreens)	"N/A"
+set zeroconvert(%imdbislimited)		"No idea."
+set zeroconvert(%imdbcastleadname)	"Uknown"
+set zeroconvert(%imdbcastleadchar)	"Uknown"
+set zeroconvert(%imdbtagline)		"No info found."
+set zeroconvert(%imdbplot)		"No info found."
+set zeroconvert(%imdbbar)		"\[..........\]"
+set zeroconvert(%imdbcasting)		"N/A"
+set zeroconvert(%imdbcommentshort)	"N/A"
 
 ## Splits output line to smaller pieces
 #

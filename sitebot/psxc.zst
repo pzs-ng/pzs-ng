@@ -70,5 +70,7 @@ announce.STAT_USERS	        = "[%boldstats %bold][%c3{%section}] %pos %bold%user
 announce.STAT_GROUPS_HEAD	= "[%boldstats %bold][%c3{%section}] Groups hall of fame"
 announce.STAT_GROUPS	        = "[%boldstats %bold][%c3{%section}] %pos %bold%group%bold :: %bold%files%boldf :: %bold%mbytes%boldmb :: %bold%pct%bold% :: %bold%spd%boldkb/s"
 announce.STAT_POST		= "[%boldstats %bold][%c3{%section}] Race for %bold%relname%bold is over"
-
 announce.PRE		        = "[%bold%c2{pre}   %bold][%c3{%section}] %bold%rel%bold by %bold%pregroup%bold in %bold%files%bold files (%bold%mbytes%boldmb)"
+announce.IMDBVAR		= "[%bold%c2{imdb}  %bold][%c3{%section}] %bold%imdbname%bold (%imdburl), a %imdbdirector movie which scored %bold%imdbscore of 10%bold (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %bold%imdbnumscreens screens%bold on the opening weekend.|%c1{%sitename} :: [%bold%c2{imdb}  %bold][%c3{%section}] %bold%imdbname%bold plot summary: %imdbplot %imdbbar"
+announce.IMDB			= "[%bold%c2{imdb}  %bold][%c3{%section}] %msg"
+

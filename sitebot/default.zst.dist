@@ -72,3 +72,6 @@ announce.STAT_GROUPS	        = "[%boldstats %bold][%section] %pos %bold%group%bo
 announce.STAT_POST		= "[%boldstats %bold][%section] Race for %bold%relname%bold is over, lasted %len seconds. (%usrs racer(s), %grps group(s))"
 
 announce.PRE		        = "[%bold%c1{pre}   %bold][%section] %bold%rel%bold by %bold%pregroup%bold in %bold%files%bold files (%bold%mbytes%boldmb)"
+announce.IMDBVAR		= "[%boldimdb  %bold][%section] %bold%imdbname%bold (%imdburl), a %imdbdirector movie which scored %bold%imdbscore of 10%bold (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %bold%imdbnumscreens screens%bold on the opening weekend.|%bold%sitename%bold :: [%boldimdb  %bold][%section] %bold%imdbname%bold plot summary: %imdbplot %imdbbar"
+announce.IMDB			= "[%boldimdb  %bold][%section] %msg"
+
