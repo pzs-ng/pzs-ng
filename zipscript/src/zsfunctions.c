@@ -804,9 +804,11 @@ execute_old(char *s)
 /*
  * abs2rel: convert an absolute path name into relative.
  * 
- * i)	path	absolute path i)	base	base directory (must be
- * absolute path) o)	result	result buffer i)	size	size of
- * result buffer r)		!= NULL: relative path == NULL: error
+ * i)	path	absolute path
+ * i)	base	base directory (must be absolute path)
+ * o)	result	result buffer
+ * i)	size	size of result buffer
+ * r)		!= NULL: relative path == NULL: error
  */
 char           *
 abs2rel(path, base, result, size)
@@ -905,8 +907,8 @@ get_u_name(int uid)
 }
 
 /* Buffer groups file */
-void 
-buffer_groups(char *groupfile)
+int 
+buffer_groups(char *groupfile, int setfree)
 {
 	char           *f_buf, *g_name;
 	gid_t		g_id;
@@ -914,6 +916,15 @@ buffer_groups(char *groupfile)
 	int		f         , n, m, g_n_size, l_start = 0;
 	int		GROUPS = 0;
 	struct stat	fileinfo;
+
+	if (setfree != 0) {
+		for (n = 0; n < setfree; n++) {
+			free(group[n]->name);
+			free(group[n]);
+		}
+		free(group);
+		return 0;
+	}
 
 	f = open(groupfile, O_NONBLOCK);
 
@@ -958,11 +969,12 @@ buffer_groups(char *groupfile)
 
 	close(f);
 	free(f_buf);
+	return num_groups;
 }
 
 /* Buffer users file */
-void 
-buffer_users(char *passwdfile)
+int
+buffer_users(char *passwdfile, int setfree)
 {
 	char           *f_buf, *u_name;
 	uid_t		u_id;
@@ -970,6 +982,15 @@ buffer_users(char *passwdfile)
 	int		f         , n, m, l, u_n_size, l_start = 0;
 	int		USERS = 0;
 	struct stat	fileinfo;
+
+	if (setfree != 0) {
+		for (n = 0; n < setfree; n++) {
+			free(user[n]->name);
+			free(user[n]);
+		}
+		free(user);
+		return 0;
+	}
 
 	f = open(passwdfile, O_NONBLOCK);
 	fstat(f, &fileinfo);
@@ -1015,6 +1036,7 @@ buffer_users(char *passwdfile)
 
 	close(f);
 	free(f_buf);
+	return(num_users);
 }
 
 /*

@@ -275,7 +275,7 @@ main(int argc, char **argv)
 	char           *halfway_msg = 0;
 	char           *complete_bar = 0;
 	char           *error_msg = 0;
-	unsigned int	crc, s_crc = 0;
+	unsigned int	crc, gnum = 0, unum = 0, s_crc = 0;
 	unsigned char	exit_value = EXIT_SUCCESS;
 	unsigned char	no_check = FALSE;
 	char	       *sfv_type = 0;
@@ -350,8 +350,8 @@ main(int argc, char **argv)
 		 * strcpy(raceI.user.group, "NoGroup");
 		 */
 
-		buffer_groups(GROUPFILE);
-		buffer_users(PASSWDFILE);
+		gnum = buffer_groups(GROUPFILE, 0);
+		unum = buffer_users(PASSWDFILE, 0);
 		fileinfo.st_uid = geteuid();
 		fileinfo.st_gid = getegid();
 		strlcpy(raceI.user.name, get_u_name(fileinfo.st_uid), 24);
@@ -392,6 +392,7 @@ main(int argc, char **argv)
 				} else
 					n++;
 			}
+			free(temp_p);
 		}
 	}
 	raceI.file.speed *= 1024;
@@ -1456,6 +1457,8 @@ main(int argc, char **argv)
 #endif
 
 	d_log("Releasing memory\n");
+	buffer_groups(GROUPFILE, gnum);
+	buffer_users(PASSWDFILE, unum);
 	free(locations.link_source);
 	free(raceI.misc.release_name);
 	free(fileext);
@@ -1465,12 +1468,7 @@ main(int argc, char **argv)
 	m_free(locations.sfv);
 	m_free(locations.leader);
 	m_free(locations.link_target);
-
-	/*
-	 * The following two variables should be free'd - but for now i don't
-	 * know how to free them w/o breaking other stuff. Please see stats.c
-	 * line 57, 73 and 222. free(groupI); free(userI);
-	 */
+	updatestats_free(raceI, userI, groupI);
 
 #if ( benchmark_mode == TRUE )
 	gettimeofday(&bstop, (struct timezone *)0);

@@ -131,7 +131,7 @@ getrelname(char *directory)
 int 
 main()
 {
-	int		n         , m, l, complete_type = 0;
+	int		n, m, l, complete_type = 0, gnum = 0, unum = 0;
 	char           *ext, exec[4096], *complete_bar = 0;
 	unsigned int	crc;
 	struct stat	fileinfo;
@@ -186,8 +186,8 @@ main()
 	locations.length_zipdatadir = sizeof(storage);
 
 	getrelname(locations.path);
-	buffer_groups(GROUPFILE);
-	buffer_users(PASSWDFILE);
+	gnum = buffer_groups(GROUPFILE, 0);
+	unum = buffer_users(PASSWDFILE, 0);
 
 	sprintf(locations.sfv, storage "/%s/sfvdata", locations.path);
 	sprintf(locations.leader, storage "/%s/leader", locations.path);
@@ -305,7 +305,7 @@ main()
 		testfiles_file(&locations, &raceI, 1);
 		printf("\n");
 //
-		temprescandir( 0 );	/* We need to rescan again */
+//		temprescandir(0);	/* We need to rescan again */
 //
 		readsfv_file(&locations, &raceI, 0);
 		readrace_file(&locations, &raceI, userI, groupI);
@@ -468,7 +468,8 @@ main()
 	printf("  Total : %i\n", (int)raceI.total.files);
 
 	d_log("Freeing memory.\n");
-	temprescandir( 1 );	/* We need to rescan again */
+	temprescandir(1);	/* We need to rescan again */
+	updatestats_free(raceI, userI, groupI);
 	free(locations.path);
 	free(locations.race);
 	free(locations.sfv);
@@ -476,8 +477,10 @@ main()
 	free(raceI.sectionname);
 	free(raceI.misc.release_name);
 	free(locations.link_source);
-	free(userI);
-	free(groupI);
+	buffer_groups(GROUPFILE, gnum);
+	buffer_users(PASSWDFILE, unum);
+//	free(userI);
+//	free(groupI);
 
 	exit(0);
 }

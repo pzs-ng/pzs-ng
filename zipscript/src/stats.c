@@ -34,6 +34,22 @@ struct userdata {
  * Description: Updates existing entries in userI and groupI or creates new, if
  * old doesnt exist
  */
+void
+updatestats_free(struct VARS raceI, struct USERINFO **userI, struct GROUPINFO **groupI) {
+	int n = 0;
+
+	for (n = 0; n < raceI.total.users; n++) {
+	if (userI[n])
+		free(userI[n]);
+	}
+	free(userI);
+	for (n = 0; n < raceI.total.groups; n++) {
+	if (groupI[n])
+		free(groupI[n]);
+	}
+	free(groupI);
+}
+
 void 
 updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *usern, char *group, off_t filesize, unsigned int speed, unsigned int start_time)
 {
