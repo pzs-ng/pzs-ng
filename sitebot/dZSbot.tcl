@@ -1146,7 +1146,7 @@ proc show_free {nick uhost hand chan arg} {
 		}
 	}
 	if {[llength [array names "tmpdev"]]} {
-		foreach dev [array get tmpdev] { append tmpstr "$dev " }
+		foreach {id dev} [array get tmpdev] { append tmpstr "$dev " }
 		putlog "dZSbot warning: The following devices had no matching \"df -Ph\" entry: $tmpstr"
 	}
 
