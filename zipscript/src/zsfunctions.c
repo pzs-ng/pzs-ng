@@ -619,18 +619,10 @@ subcomp(char *directory)
 short int 
 fileexists(char *f)
 {
-	int	temp_p = 0;
-
-	temp_p = open(f, O_RDONLY);
-	if (temp_p == -1)
-		return 0;
-	close(temp_p);
-	return 1;
-
-/*	if (close(open(f, O_RDONLY)) == -1)
+	if (access(f, 0444) == -1)
 		return 0;
 	return 1;
-*/
+
 }
 
 /* Create symbolic link */

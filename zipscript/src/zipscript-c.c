@@ -395,7 +395,8 @@ main(int argc, char **argv)
 				} else
 					n++;
 			}
-			free(temp_p);
+//			free(temp_p);
+//			FOR SOME REASON FREING THIS SEEMS TO GIVE COREDUMPS!
 		}
 	}
 	raceI.file.speed *= 1024;
@@ -403,12 +404,15 @@ main(int argc, char **argv)
 	d_log("Checking the file size of %s\n", raceI.file.name);
 	if (stat(raceI.file.name, &fileinfo)) {
 		d_log("Failed to stat file: %s\n", strerror(errno));
+		raceI.file.size = 0;
+		raceI.total.stop_time = 0;
+	} else {
+		raceI.file.size = fileinfo.st_size;
+		d_log("File size was: %d\n", raceI.file.size);
+		raceI.total.stop_time = fileinfo.st_mtime;
 	}
-	raceI.file.size = fileinfo.st_size;
-	d_log("File size was: %d\n", raceI.file.size);
 
 	d_log("Setting race times\n");
-	raceI.total.stop_time = fileinfo.st_mtime;
 	if (raceI.file.size != 0)
 		raceI.total.start_time = raceI.total.stop_time - ((unsigned int)(raceI.file.size) / raceI.file.speed);
 	else
