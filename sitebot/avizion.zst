@@ -33,11 +33,11 @@ announce.BADYEAR		= [%boldnotice%bold] %bold%user%bold of %group is violating ru
 
 announce.SFV		        = "[%boldsfv   %bold][%section] %bold%relname%bold expects %bold%files%bold file(s)"
 
-announce.UPDATE	        	= "[%boldupdate%bold][%section] %bold%relname%bold got first file from %bold%user%bold of %group. Now expecting %bold%mbytes%boldmb in %bold%files%bold file(s)"
-announce.UPDATE_RAR	        = "[%boldupdate%bold][%section] %bold%relname%bold got first file from %bold%user%bold of %group. Now expecting %bold%mbytes%boldmb"
-announce.UPDATE_OTHER	        = "[%boldupdate%bold][%section] %bold%relname%bold got first file from %bold%user%bold of %group. Now expecting %bold%mbytes%boldmb"
-announce.UPDATE_AUDIO	        = "[%boldupdate%bold][%section] %bold%relname%bold got first file from %bold%user%bold of %group. Get ready for some %bold%genre%bold from %bold%year%bold at %bold%sampling%boldHz in %mode %bold%bitrate%boldkbps (%audio)"
-announce.UPDATE_VIDEO	        = "[%boldupdate%bold][%section] %bold%relname%bold got first file from %bold%user%bold of %group. Now expecting %bold%mbytes%boldmb"
+announce.UPDATE	        	= "[%boldupdate%bold][%section] %bold%relname%bold got first file from %bold%user%bold of %group at %bold%spd%boldkbs. Now expecting %bold%mbytes%boldmb in %bold%files%bold file(s)"
+announce.UPDATE_RAR	        = "[%boldupdate%bold][%section] %bold%relname%bold got first file from %bold%user%bold of %group at %bold%spd%boldkbs. Now expecting %bold%mbytes%boldmb"
+announce.UPDATE_OTHER	        = "[%boldupdate%bold][%section] %bold%relname%bold got first file from %bold%user%bold of %group at %bold%spd%boldkbs. Now expecting %bold%mbytes%boldmb"
+announce.UPDATE_AUDIO	        = "[%boldupdate%bold][%section] %bold%relname%bold got first file from %bold%user%bold of %group at %bold%spd%boldkbs. Get ready for some %bold%genre%bold from %bold%year%bold at %bold%sampling%boldHz in %mode %bold%bitrate%boldkbps (%audio)"
+announce.UPDATE_VIDEO	        = "[%boldupdate%bold][%section] %bold%relname%bold got first file from %bold%user%bold of %group at %bold%spd%boldkbs. Now expecting %bold%mbytes%boldmb"
 
 announce.COMPLETE	        = "[%bolddone  %bold][%section] %bold%relname%bold in %bold%files%bold files (%bold%mbytes%boldmb) was completed in %bold%len%bold (avg. %bold%avgspd%boldkb/s) by %bold%usrs%bold user(s) in %bold%grps%bold group(s)"
 announce.INCOMPLETE		= "[%boldd0h!  %bold][%section] %bold%relname%bold is now incomplete thanks to %bold%user%bold of %bold%group%bold"
