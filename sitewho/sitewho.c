@@ -256,6 +256,20 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			}
 			onlineusers++;
 		} else if (strcasecmp(ucomp, user[x].username) == 0) {
+#ifdef _WITH_ALTWHO
+			if (!raw) {
+				if (mb_xfered)
+					printf("%s : %1c%s/%s has xfered %.1fMB of %s and has been online for %8.8s.\n", status, maskchar, user[x].username, get_g_name(user[x].groupid), mb_xfered, filename, online);
+				else if (strcmp(filename, ""))
+				printf("%s : %1c%s/%s has xfered %.0f%% of %s and has been online for %8.8s.\n", status, maskchar, user[x].username, get_g_name(user[x].groupid), pct, filename, online);
+				else
+				printf("%s : %1c%s/%s has been online for %8.8s.\n", status, maskchar, user[x].username, get_g_name(user[x].groupid), online);
+			} else if (raw == 1) {
+				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\" \"%.1f%s\" \"%s\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename, ( pct >= 0 ? pct : mb_xfered ), ( pct >= 0 ? "%" : "MB" ), user[x].currentdir );
+			} else {
+				printf("%s|%s|%s|%s|%s\n",user[x].username,get_g_name(user[x].groupid),user[x].tagline,status,filename);
+			}
+#else
 			if (!onlineusers) {
 				if (!raw)
 					printf("\002%s\002 - %s", user[x].username, status);
@@ -271,6 +285,7 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 				else
 					printf(" - %s", status);
 			}
+#endif
 			onlineusers++;
 		}
 		free(filename);
@@ -542,8 +557,11 @@ int main (int argc, char **argv) {
 				printf("\002%s\002 is not online\n", argv[user_idx]);
 			else
 				printf("\"ERROR\" \"User %s not online.\"\n", argv[user_idx]);
-		} else
+		}
+#ifndef _WITH_ALTWHO
+		  else
 			printf("\n");
+#endif
 	}
 
 	return 0;
