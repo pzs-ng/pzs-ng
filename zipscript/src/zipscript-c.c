@@ -47,70 +47,74 @@ struct VARS      raceI;
 struct LOCATIONS locations;
 
 void writelog(char *msg, char *status) {
-    FILE   *glfile;
-    char   *date;
-    char   *line, *newline;
-    time_t timenow;
+	FILE   *glfile;
+	char   *date;
+	char   *line, *newline;
+	time_t timenow;
 
-    if ( raceI.misc.write_log == TRUE && !matchpath(group_dirs, locations.path)) {
-	timenow = time(NULL);
-	date = ctime(&timenow);
-	glfile = fopen(log, "a+");
+	if ( raceI.misc.write_log == TRUE && !matchpath(group_dirs, locations.path)) {
+		timenow = time(NULL);
+		date = ctime(&timenow);
+		glfile = fopen(log, "a+");
 
-	line = newline = msg;
-	while ( 1 ) {
-	    switch ( *newline++ ) {
-		case 0:
-		    fprintf(glfile, "%.24s %s: \"%s\" %s\n", date, status, locations.path, line);
-		    fclose(glfile);
-		    return;
-		case '\n':
-		    fprintf(glfile, "%.24s %s: \"%s\" %.*s\n", date, status, locations.path, (int)(newline - line - 1), line);
-		    line = newline;
-		    break;
-	    }
+		line = newline = msg;
+		while ( 1 ) {
+			switch ( *newline++ ) {
+			case 0:
+				fprintf(glfile, "%.24s %s: \"%s\" %s\n", date, status, locations.path, line);
+				fclose(glfile);
+				return;
+			case '\n':
+				fprintf(glfile, "%.24s %s: \"%s\" %.*s\n", date, status, locations.path, (int)(newline - line - 1), line);
+				line = newline;
+				break;
+			}
+		}
 	}
-    }
 }
 
 void getrelname(char *directory) {
-    int	cnt,
+	int	cnt,
 	l[2],
 	n = 0,
 	k = 2;
-    char	*path[2];
+	char	*path[2];
 
-    for ( cnt = locations.length_path - 1 ; k && cnt ; cnt-- ) if ( directory[cnt] == '/' ) {
-	k--;
-	l[k] = n;
-	path[k] = malloc(n + 1);
-	strncpy(path[k], directory + cnt + 1, n);
-	path[k][n] = 0;
-	n = 0;
-    } else n++;
+	for ( cnt = locations.length_path - 1 ; k && cnt ; cnt-- ) {
+		if ( directory[cnt] == '/' ) {
+			k--;
+			l[k] = n;
+			path[k] = malloc(n + 1);
+			strncpy(path[k], directory + cnt + 1, n);
+			path[k][n] = 0;
+			n = 0;
+		} else n++;
+	}
 
-    if (( ! strncasecmp(path[1], "CD"  , 2) && l[1] <= 4 ) ||
-	    ( ! strncasecmp(path[1], "DISC", 4) && l[1] <= 6 ) ||
-	    ( ! strncasecmp(path[1], "DISK", 4) && l[1] <= 6 ) ||
-	    ( ! strncasecmp(path[1], "DVD" , 3) && l[1] <= 5 ) ||
-	    ( ! strncasecmp(path[1], "SUB" , 3) && l[1] <= 4 ) ||
-	    ( ! strncasecmp(path[1], "SUBTITLES" , 9) && l[1] <= 9 )) {
-	raceI.misc.release_name = malloc(l[0] + 18);
-	locations.link_source = malloc(n = (locations.length_path - l[1]));
-	sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
-	sprintf(locations.link_source, "%.*s", n - 1, locations.path);
-	locations.link_target = path[0];
-	locations.incomplete = c_incomplete(incomplete_cd_indicator, path);
-	if (k < 2) free(path[1]);
-    } else {
-	raceI.misc.release_name = malloc(l[1] + 10);
-	locations.link_source	= malloc(locations.length_path + 1);
-	strcpy(locations.link_source, locations.path);
-	sprintf(raceI.misc.release_name, "%s", path[1]);
-	locations.link_target = path[1];
-	locations.incomplete = c_incomplete(incomplete_indicator, path);
-	if (k == 0) free(path[0]);
-    }
+	if (( ! strncasecmp(path[1], "CD"  , 2) && l[1] <= 4 ) ||
+		( ! strncasecmp(path[1], "DISC", 4) && l[1] <= 6 ) ||
+		( ! strncasecmp(path[1], "DISK", 4) && l[1] <= 6 ) ||
+		( ! strncasecmp(path[1], "DVD" , 3) && l[1] <= 5 ) ||
+		( ! strncasecmp(path[1], "SUB" , 3) && l[1] <= 4 ) ||
+		( ! strncasecmp(path[1], "SUBTITLES" , 9) && l[1] <= 9 )) {
+		raceI.misc.release_name = malloc(l[0] + 18);
+		locations.link_source = malloc(n = (locations.length_path - l[1]));
+		sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
+		sprintf(locations.link_source, "%.*s", n - 1, locations.path);
+		locations.link_target = path[0];
+		locations.incomplete = c_incomplete(incomplete_cd_indicator, path);
+		if (k < 2)
+			free(path[1]);
+	} else {
+		raceI.misc.release_name = malloc(l[1] + 10);
+		locations.link_source	= malloc(locations.length_path + 1);
+		strcpy(locations.link_source, locations.path);
+		sprintf(raceI.misc.release_name, "%s", path[1]);
+		locations.link_target = path[1];
+		locations.incomplete = c_incomplete(incomplete_indicator, path);
+		if (k == 0)
+			free(path[0]);
+	}
 }
 
 unsigned char get_filetype(char *ext) {
@@ -249,7 +253,7 @@ int main( int argc, char **argv ) {
     bzero(&raceI.total, sizeof(struct race_total));
     raceI.misc.slowest_user[0] = 30000;
     raceI.misc.fastest_user[0] =
-	raceI.misc.release_type = 0;
+	raceI.misc.release_type = RTYPE_NULL;
 
     /*gettimeofday(&raceI.transfer_stop, (struct timezone *)0 );*/
 
@@ -498,32 +502,32 @@ int main( int argc, char **argv ) {
 		removecomplete();
 
 		d_log("Setting message pointers\n");
-		switch( raceI.misc.release_type ) {
-		    case 1:
-			sfv_msg = rar_sfv;
-			break;
-		    case 2:
-			sfv_msg = other_sfv;
-			break;
-		    case 3:
-			sfv_msg = audio_sfv;
-			break;
-		    case 4:
-			sfv_msg = video_sfv;
-			break;
+		switch ( raceI.misc.release_type ) {
+		    case RTYPE_RAR:
+				sfv_msg = rar_sfv;
+				break;
+		    case RTYPE_OTHER:
+				sfv_msg = other_sfv;
+				break;
+		    case RTYPE_AUDIO:
+				sfv_msg = audio_sfv;
+				break;
+		    case RTYPE_VIDEO:
+				sfv_msg = video_sfv;
+				break;
 		}
 		halfway_msg = newleader_msg = race_msg = update_msg = NULL;
 
 		raceI.misc.write_log = matchpath(sfv_dirs, locations.path);
 		if ( raceI.total.files_missing > 0 ) {
 		    if ( sfv_msg != NULL ) {
-			d_log("Writing SFV message to %s\n", log);
-			writelog(convert(&raceI, userI, groupI, sfv_msg), "SFV");
+				d_log("Writing SFV message to %s\n", log);
+				writelog(convert(&raceI, userI, groupI, sfv_msg), "SFV");
 		    }
 		} else {
-		    if ( raceI.misc.release_type == 3 ) {
-			d_log("Reading audio info for completebar\n");
-			get_mpeg_audio_info(findfileext(".mp3"), &raceI.audio);
+		    if (raceI.misc.release_type == RTYPE_AUDIO) {
+				d_log("Reading audio info for completebar\n");
+				get_mpeg_audio_info(findfileext(".mp3"), &raceI.audio);
 		    }
 		}
 		break;
@@ -591,154 +595,144 @@ int main( int argc, char **argv ) {
 		readrace_file(&locations, &raceI, userI, groupI);
 
 		d_log("Setting pointers\n");
-		if ( raceI.misc.release_type == 0 ) {
-		    if ( israr(fileext)) { /* RAR */
-			raceI.misc.release_type = 1;
-		    } else if ( isvideo(fileext)) { /* AVI/MPEG */
-			raceI.misc.release_type = 4;
-		    } else if ( ! memcmp(fileext, "mp3", 4)) { /* MP3 */
-			raceI.misc.release_type = 3;
-		    } else { /* OTHER */
-			raceI.misc.release_type = 2;
-		    }
+		if ( raceI.misc.release_type == RTYPE_NULL ) {
+		    if (israr(fileext))
+				raceI.misc.release_type = RTYPE_RAR; /* .RAR / .R?? */
+		    else if (isvideo(fileext))
+				raceI.misc.release_type = RTYPE_VIDEO; /* AVI/MPEG */
+		    else if (!memcmp(fileext, "mp3", 4))
+				raceI.misc.release_type = RTYPE_AUDIO; /* MP3 */
+		    else
+				raceI.misc.release_type = RTYPE_OTHER; /* OTHER FILE */
 		}
 
 		switch ( raceI.misc.release_type ) {
-		    case 1:
-			get_rar_info(raceI.file.name);
-			race_msg = rar_race;
-			update_msg = rar_update;
-			halfway_msg = CHOOSE(raceI.total.users, rar_halfway, rar_norace_halfway);
-			newleader_msg = rar_newleader;
-			break;
-		    case 2:
-			race_msg = other_race;
-			update_msg = other_update;
-			halfway_msg = CHOOSE(raceI.total.users, other_halfway, other_norace_halfway);
-			newleader_msg = other_newleader;
-			break;
-		    case 3:
-			d_log("Trying to read audio header and tags\n");
-			get_mpeg_audio_info(raceI.file.name, &raceI.audio);
+		    case RTYPE_RAR:
+				get_rar_info(raceI.file.name);
+				race_msg = rar_race;
+				update_msg = rar_update;
+				halfway_msg = CHOOSE(raceI.total.users, rar_halfway, rar_norace_halfway);
+				newleader_msg = rar_newleader;
+				break;
+		    case RTYPE_OTHER:
+				race_msg = other_race;
+				update_msg = other_update;
+				halfway_msg = CHOOSE(raceI.total.users, other_halfway, other_norace_halfway);
+				newleader_msg = other_newleader;
+				break;
+		    case RTYPE_AUDIO:
+				d_log("Trying to read audio header and tags\n");
+				get_mpeg_audio_info(raceI.file.name, &raceI.audio);
 #if ( exclude_non_sfv_dirs == TRUE )
-			if ( raceI.misc.write_log == TRUE ) {
+	if ( raceI.misc.write_log == TRUE ) {
 #endif
 			    if (( enable_mp3_script == TRUE ) && ( userI[raceI.user.pos]->files == 1 )) {
-				d_log("Executing mp3 script\n");
-				sprintf(target, mp3_script " \"%s\" %s", raceI.file.name, convert(&raceI,userI,groupI,mp3_script_cookies));
-				execute(target);
+					d_log("Executing mp3 script\n");
+					sprintf(target, mp3_script " \"%s\" %s", raceI.file.name, convert(&raceI,userI,groupI,mp3_script_cookies));
+					execute(target);
 			    }
 
 			    if ( ! matchpath(audio_nocheck_dirs, locations.path) ) {
 #if ( audio_banned_genre_check == TRUE )
-				if ( strcomp(banned_genres, raceI.audio.id3_genre)) {
-				    d_log("File is from banned genre\n");
-				    sprintf(raceI.misc.error_msg, BANNED_GENRE, raceI.audio.id3_genre);
-				    if ( audio_genre_warn == TRUE ) {
-					if ( userI[raceI.user.pos]->files == 1 ) {
-					    d_log("warn on - logging to logfile\n");
-					    write_log = raceI.misc.write_log;
-					    raceI.misc.write_log = 1;
-					    error_msg = convert(&raceI,userI,groupI,audio_genre_warn_msg);
-					    writelog(error_msg, "BADGENRE");
-					    raceI.misc.write_log = write_log;
-					} else {
-					    d_log("warn on - have already logged to logfile\n");
+					if ( strcomp(banned_genres, raceI.audio.id3_genre)) {
+					    d_log("File is from banned genre\n");
+					    sprintf(raceI.misc.error_msg, BANNED_GENRE, raceI.audio.id3_genre);
+					    if ( audio_genre_warn == TRUE ) {
+							if ( userI[raceI.user.pos]->files == 1 ) {
+								d_log("warn on - logging to logfile\n");
+								write_log = raceI.misc.write_log;
+								raceI.misc.write_log = 1;
+								error_msg = convert(&raceI,userI,groupI,audio_genre_warn_msg);
+								writelog(error_msg, "BADGENRE");
+								raceI.misc.write_log = write_log;
+							} else
+							    d_log("warn on - have already logged to logfile\n");
+						} else
+							exit_value = 2;
+						break;
 					}
-				    } else {
-					exit_value = 2;
-				    }
-				    break;
-				}
 #elif ( audio_allowed_genre_check == TRUE )
 				if ( ! strcomp(allowed_genres, raceI.audio.id3_genre)) {
-				    d_log("File is not in allowed genre\n");
-				    sprintf(raceI.misc.error_msg, BANNED_GENRE, raceI.audio.id3_genre);
-				    if ( audio_genre_warn == TRUE ) {
-					if ( userI[raceI.user.pos]->files == 1 ) {
-					    d_log("warn on - logging to logfile\n");
-					    write_log = raceI.misc.write_log;
-					    raceI.misc.write_log = 1;
-					    error_msg = convert(&raceI,userI,groupI,audio_genre_warn_msg);
-					    writelog(error_msg, "BADGENRE");
-					    raceI.misc.write_log = write_log;
-					} else {
-					    d_log("warn on - have already logged to logfile\n");
+					d_log("File is not in allowed genre\n");
+					sprintf(raceI.misc.error_msg, BANNED_GENRE, raceI.audio.id3_genre);
+					if ( audio_genre_warn == TRUE ) {
+						if ( userI[raceI.user.pos]->files == 1 ) {
+							d_log("warn on - logging to logfile\n");
+							write_log = raceI.misc.write_log;
+							raceI.misc.write_log = 1;
+							error_msg = convert(&raceI,userI,groupI,audio_genre_warn_msg);
+							writelog(error_msg, "BADGENRE");
+							raceI.misc.write_log = write_log;
+						} else
+						d_log("warn on - have already logged to logfile\n");
+						} else
+							exit_value = 2;
 					}
-				    } else {
-					exit_value = 2;
-				    }
-				    break;
+					break;
 				}
 #endif
 #if ( audio_year_check == TRUE )
 				if ( ! strcomp(allowed_years, raceI.audio.id3_year)) {
-				    d_log("File is from banned year\n");
-				    sprintf(raceI.misc.error_msg, BANNED_YEAR, raceI.audio.id3_year);
-				    if ( audio_year_warn == TRUE ) {
-					if ( userI[raceI.user.pos]->files == 1 ) {
-					    d_log("warn on - logging to logfile\n");
-					    write_log = raceI.misc.write_log;
-					    raceI.misc.write_log = 1;
-					    error_msg = convert(&raceI,userI,groupI,audio_year_warn_msg);
-					    writelog(error_msg, "BADYEAR");
-					    raceI.misc.write_log = write_log;
-					} else {
-					    d_log("warn on - have already logged to logfile\n");
-					}
-				    } else {
-					exit_value = 2;
-				    }
-				    break;
+					d_log("File is from banned year\n");
+					sprintf(raceI.misc.error_msg, BANNED_YEAR, raceI.audio.id3_year);
+					if ( audio_year_warn == TRUE ) {
+						if ( userI[raceI.user.pos]->files == 1 ) {
+							d_log("warn on - logging to logfile\n");
+							write_log = raceI.misc.write_log;
+							raceI.misc.write_log = 1;
+							error_msg = convert(&raceI,userI,groupI,audio_year_warn_msg);
+							writelog(error_msg, "BADYEAR");
+							raceI.misc.write_log = write_log;
+						} else
+							d_log("warn on - have already logged to logfile\n");
+					} else
+						exit_value = 2;
+					break;
 				}
 #endif
 #if ( audio_cbr_check == TRUE )
 				if (raceI.audio.is_vbr == 0) {
-				    if ( ! strcomp(allowed_constant_bitrates, raceI.audio.bitrate)) {
-					d_log("File is encoded using banned bitrate\n");
-					sprintf(raceI.misc.error_msg, BANNED_BITRATE, raceI.audio.bitrate);
-					if ( audio_cbr_warn == TRUE ) {
-					    if ( userI[raceI.user.pos]->files == 1 ) {
-						d_log("warn on - logging to logfile\n");
-						write_log = raceI.misc.write_log;
-						raceI.misc.write_log = 1;
-						error_msg = convert(&raceI,userI,groupI,audio_cbr_warn_msg);
-						writelog(error_msg, "BADBITRATE");
-						raceI.misc.write_log = write_log;
-					    } else {
-						d_log("warn on - have already logged to logfile\n");
-					    }
-					} else {
-					    exit_value = 2;
+					if ( ! strcomp(allowed_constant_bitrates, raceI.audio.bitrate)) {
+						d_log("File is encoded using banned bitrate\n");
+						sprintf(raceI.misc.error_msg, BANNED_BITRATE, raceI.audio.bitrate);
+						if ( audio_cbr_warn == TRUE ) {
+							if ( userI[raceI.user.pos]->files == 1 ) {
+								d_log("warn on - logging to logfile\n");
+								write_log = raceI.misc.write_log;
+								raceI.misc.write_log = 1;
+								error_msg = convert(&raceI,userI,groupI,audio_cbr_warn_msg);
+								writelog(error_msg, "BADBITRATE");
+								raceI.misc.write_log = write_log;
+							} else
+								d_log("warn on - have already logged to logfile\n");
+						} else
+							exit_value = 2;
+						break;
 					}
-					break;
-				    }
 				}
 #endif
-			    } else {
-				d_log("user is in a no audio check dir - skipping checks.\n");
-			    }
+				} else
+					d_log("user is in a no audio check dir - skipping checks.\n");
 #if ( exclude_non_sfv_dirs == TRUE )
-			}
+	}
 #endif
-			printf(convert(&raceI, userI, groupI, realtime_mp3_info));
-			race_msg = audio_race;
-			update_msg = audio_update;
-			halfway_msg = CHOOSE(raceI.total.users, audio_halfway, audio_norace_halfway);
-			newleader_msg = audio_newleader;
-			break;
-		    case 4:
-			d_log("Trying to read video header\n");
-			if ( ! memcmp(fileext, "avi", 3 )) {
-			    avi_video(raceI.file.name, &raceI.video);
-			} else {
-			    mpeg_video(raceI.file.name, &raceI.video);
-			}
-			race_msg = video_race;
-			update_msg = video_update;
-			halfway_msg = CHOOSE(raceI.total.users, video_halfway, video_norace_halfway);
-			newleader_msg = video_newleader;
-			break;
+				printf(convert(&raceI, userI, groupI, realtime_mp3_info));
+				race_msg = audio_race;
+				update_msg = audio_update;
+				halfway_msg = CHOOSE(raceI.total.users, audio_halfway, audio_norace_halfway);
+				newleader_msg = audio_newleader;
+				break;
+		    case RTYPE_VIDEO:
+				d_log("Trying to read video header\n");
+				if (!memcmp(fileext, "avi", 3))
+				    avi_video(raceI.file.name, &raceI.video);
+				else
+				    mpeg_video(raceI.file.name, &raceI.video);
+				race_msg = video_race;
+				update_msg = video_update;
+				halfway_msg = CHOOSE(raceI.total.users, video_halfway, video_norace_halfway);
+				newleader_msg = video_newleader;
+				break;
 		}
 
 		if ( exit_value == EXIT_SUCCESS ) {
@@ -810,10 +804,10 @@ int main( int argc, char **argv ) {
 			d_log("Writing UPDATE to %s\n", log);
 			update_type = "UPDATE";
 			switch( raceI.misc.release_type ) {
-				case 1: update_type = "UPDATE_RAR";   break; /* rar */
-				case 2: update_type = "UPDATE_OTHER"; break; /* other */
-				case 3: update_type = "UPDATE_AUDIO"; break; /* audio */
-				case 4: update_type = "UPDATE_VIDEO"; break; /* video */
+				case RTYPE_RAR: update_type = "UPDATE_RAR";   break; /* rar */
+				case RTYPE_OTHER: update_type = "UPDATE_OTHER"; break; /* other */
+				case RTYPE_AUDIO: update_type = "UPDATE_AUDIO"; break; /* audio */
+				case RTYPE_VIDEO: update_type = "UPDATE_VIDEO"; break; /* video */
 			}
 			writelog(convert(&raceI, userI, groupI, update_msg), update_type );
 		}
@@ -852,31 +846,30 @@ int main( int argc, char **argv ) {
 
 	    d_log("Setting complete pointers\n");
 	    switch ( raceI.misc.release_type ) {
-		case 0:
+		case RTYPE_NULL:
 		    complete_bar = zip_completebar;
 		    complete_msg = CHOOSE(raceI.total.users, zip_complete, zip_norace_complete);
 		    complete_type = CHOOSE(raceI.total.users, zip_complete_type, zip_norace_complete_type);
 		    break;
-		case 1:
+		case RTYPE_RAR:
 		    complete_bar = rar_completebar;
 		    complete_msg = CHOOSE(raceI.total.users, rar_complete, rar_norace_complete);
 		    complete_type = CHOOSE(raceI.total.users, rar_complete_type, rar_norace_complete_type);
 		    break;
-		case 2:
+		case RTYPE_OTHER:
 		    complete_bar = other_completebar;
 		    complete_msg = CHOOSE(raceI.total.users, other_complete, other_norace_complete);
 		    complete_type = CHOOSE(raceI.total.users, other_complete_type, other_norace_complete_type);
 		    break;
-		case 3:
+		case RTYPE_AUDIO:
 		    complete_bar = audio_completebar;
 		    complete_msg = CHOOSE(raceI.total.users, audio_complete, audio_norace_complete);
 		    complete_type = CHOOSE(raceI.total.users, audio_complete_type, audio_norace_complete_type);
 
 
 		    d_log("Symlinking audio\n");
-		    if ( ! strncasecmp(locations.link_target, "VA", 2) && (locations.link_target[2] == '-' || locations.link_target[2] =='_')) {
-			memcpy(raceI.audio.id3_artist, "VA", 3);
-		    }
+		    if ( ! strncasecmp(locations.link_target, "VA", 2) && (locations.link_target[2] == '-' || locations.link_target[2] =='_'))
+				memcpy(raceI.audio.id3_artist, "VA", 3);
 
 		    if ( raceI.misc.write_log == TRUE ) {
 #if ( audio_genre_sort == TRUE )
@@ -922,7 +915,7 @@ int main( int argc, char **argv ) {
 		    } else d_log("Cannot create m3u, sfv is missing\n");
 #endif
 		    break;
-		case 4:
+		case RTYPE_VIDEO:
 		    complete_bar = video_completebar;
 		    complete_msg = CHOOSE(raceI.total.users, video_complete, video_norace_complete);
 		    complete_type = CHOOSE(raceI.total.users, video_complete_type, video_norace_complete_type);

@@ -100,5 +100,14 @@
 /* Output of postdel binary */
 #define incompletemsg		"{%U} {%G} {%r}"
 
+enum ReleaseTypes {
+	RTYPE_NULL = 0,
+	RTYPE_RAR = 1,
+	RTYPE_OTHER = 2,
+	RTYPE_AUDIO = 3,
+	RTYPE_VIDEO = 4,
+	RTYPE_INVALID,
+};
+
 #endif
 

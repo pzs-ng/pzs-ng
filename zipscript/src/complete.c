@@ -54,7 +54,7 @@ void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
 		    }
 		    fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_group_footer));
 
-		    if (raceI->misc.release_type == 3)
+		    if (raceI->misc.release_type == RTYPE_AUDIO)
 				fprintf(msgfile, convert( raceI, userI, groupI, message_mp3));
 
 		    fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_footer));

@@ -119,8 +119,8 @@ int main () {
     raceI.misc.slowest_user[0] = 30000;
 
     bzero(&raceI.total, sizeof(struct race_total));
-    raceI.misc.fastest_user[0] =
-	raceI.misc.release_type = 0;
+    raceI.misc.fastest_user[0] = 0;
+	raceI.misc.release_type = RTYPE_NULL;
 
     locations.path = malloc( PATH_MAX );
     getcwd( locations.path, PATH_MAX );
@@ -194,38 +194,38 @@ int main () {
 	readrace_file( &locations, &raceI, userI, groupI );
 	sortstats( &raceI, userI, groupI );
 	buffer_progress_bar( &raceI );
-	if ( raceI.misc.release_type == 3 ) get_mpeg_audio_info(findfileext(".mp3"), &raceI.audio);
+	if (raceI.misc.release_type == RTYPE_AUDIO)
+		get_mpeg_audio_info(findfileext(".mp3"), &raceI.audio);
 
 	if ( (raceI.total.files_missing == 0) & (raceI.total.files > 0) ) {
-	    switch ( raceI.misc.release_type ) {
-		case 1:
-		    complete_type = rar_complete_type;
-		    complete_bar  = rar_completebar;
-		    break;
-		case 2:
-		    complete_type = other_complete_type;
-		    complete_bar  = other_completebar;
-		    break;
-		case 3:
-		    complete_type = audio_complete_type;
-		    complete_bar  = audio_completebar;
+		switch ( raceI.misc.release_type ) {
+			case RTYPE_RAR:
+				complete_type = rar_complete_type;
+				complete_bar  = rar_completebar;
+				break;
+			case RTYPE_OTHER:
+				complete_type = other_complete_type;
+				complete_bar  = other_completebar;
+				break;
+			case RTYPE_AUDIO:
+				complete_type = audio_complete_type;
+				complete_bar  = audio_completebar;
 #if ( enabled_create_m3u )
-		    n = sprintf(exec, findfileext(".sfv"));
-		    strcpy(exec + n - 3, "m3u");
-		    create_indexfile_file(&locations, &raceI, exec);
+				n = sprintf(exec, findfileext(".sfv"));
+				strcpy(exec + n - 3, "m3u");
+				create_indexfile_file(&locations, &raceI, exec);
 #endif
-		    break;
-	        case 4:
-		  complete_type = video_complete_type;
-		  complete_bar  = video_completebar;
-		  break;
-
-	    }
-	    complete( &locations, &raceI, userI, groupI, complete_type );
-	    createstatusbar( convert(&raceI, userI, groupI, complete_bar) );
+			    break;
+	        case RTYPE_VIDEO:
+				complete_type = video_complete_type;
+				complete_bar  = video_completebar;
+				break;
+		}
+		complete( &locations, &raceI, userI, groupI, complete_type );
+		createstatusbar( convert(&raceI, userI, groupI, complete_bar) );
 	} else {
-	    create_incomplete();
-	    move_progress_bar(0, &raceI);
+		create_incomplete();
+		move_progress_bar(0, &raceI);
 	}
     } else if ( (raceI.file.name = findfileext(".zip")) != NULL) {
 	maketempdir(&locations);
