@@ -87,7 +87,7 @@ convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, 
 					out_p += sprintf(out_p, "\\002");
 					break;
 				case 'K':
-					out_p += sprintf(out_p, "\\003");
+					out_p += sprintf(out_p, "%s", raceI->user.tagline);
 					break;
 				case 'F':
 					out_p += sprintf(out_p, "%*i", val1, (unsigned int)raceI->misc.fastest_user[0]);
@@ -211,7 +211,7 @@ convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short int gr
 				out_p += sprintf(out_p, "\\002");
 				break;
 			case 'K':
-				out_p += sprintf(out_p, "\\003");
+				out_p += sprintf(out_p, "%s", raceI->user.tagline);
 				break;
 			case 'n':
 				out_p += sprintf(out_p, "%*i", val1, (int)grouppos + 1);
@@ -514,7 +514,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				out_p += sprintf(out_p, "\\002");
 				break;
 			case 'K':
-				out_p += sprintf(out_p, "\\003");
+				out_p += sprintf(out_p, "%s", raceI->user.tagline);
 				break;
 			case 'c':
 				from = to = reverse = 0;
