@@ -34,7 +34,7 @@
    cp dZSb* /path/to/egg/scripts/pzs-ng/
    cp themes/*.zst /path/to/egg/scripts/pzs-ng/themes/
  On new install (not upgrade):
-   mv dZSbconf.tcl.dist /path/to/egg/scripts/pzs-ng/dZSbconf.tcl
+   mv dZSbconf.dist.tcl /path/to/egg/scripts/pzs-ng/dZSbconf.tcl
 
  Edit dZSbconf.tcl to match your setup, and enter the name of a theme (.zst)
  you wish to use.

@@ -8,7 +8,14 @@ A: Several possible reasons. The most probable is missing libs. Make sure you
    need, do 'ldd /glftpd/bin/zipscript-c' - you'll get a list of libs it uses.
    Add '/glftpd' in front of all paths in the list given, and make sure you have
    them all, in the location listed.
+   A script named libcopy.sh should help with this.
+
 A: Check perms on the binary - it needs +x.
+
+A: Try to run the zipscript chroot'ed.
+     chroot /glftpd /bin/bash
+     cd /site/some/path
+     /bin/zipscript-c name-of-a.rar $PWD 0
 
 Q: (ZIPSCRIPT/BOT) The speed seems all wrong!
 ---------------------------------------------
