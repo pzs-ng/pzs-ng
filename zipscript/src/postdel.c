@@ -149,7 +149,7 @@ main(int argc, char **argv)
 	}
 
 	d_log("Copying data &g.l into memory\n");
-	g.v.file.name = fname;
+	strlcpy(g.v.file.name, fname, PATH_MAX);
 	sprintf(g.l.sfv, storage "/%s/sfvdata", g.l.path);
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);

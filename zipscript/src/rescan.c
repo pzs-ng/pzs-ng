@@ -96,8 +96,8 @@ main()
 		unlink(g.l.sfv);
 	printf("Rescanning files...\n");
 	rescandir(2);		/* Rescan dir after deleting files.. */
-
-	if ((g.v.file.name = findfileext(".sfv")) != NULL) {
+	
+	if ((strlcpy(g.v.file.name, findfileext(".sfv"), PATH_MAX)) > 0) {
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
 		if (copysfv_file(g.v.file.name, g.l.sfv, fileinfo.st_size)) {
@@ -150,7 +150,7 @@ main()
 
 				strcpy(g.v.user.name, get_u_name(f_uid));
 				strcpy(g.v.user.group, get_g_name(f_gid));
-				g.v.file.name = dirlist[n]->d_name;
+				strlcpy(g.v.file.name, dirlist[n]->d_name, PATH_MAX);
 				g.v.file.speed = 2005 * 1024;
 				g.v.file.size = fileinfo.st_size;
 
@@ -262,7 +262,7 @@ main()
 			}
 				move_progress_bar(0, &g.v, g.ui, g.gi);
 		}
-	} else if ((g.v.file.name = findfileext(".zip")) != NULL) {
+	} else if ((strlcpy(g.v.file.name, findfileext(".zip"), PATH_MAX)) > 0) {
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
 		n = direntries;
@@ -284,7 +284,7 @@ main()
 
 				strcpy(g.v.user.name, get_u_name(f_uid));
 				strcpy(g.v.user.group, get_g_name(f_gid));
-				g.v.file.name = dirlist[n]->d_name;
+				strlcpy(g.v.file.name, dirlist[n]->d_name, PATH_MAX);
 				g.v.file.speed = 2005 * 1024;
 				g.v.file.size = fileinfo.st_size;
 				g.v.total.start_time = 0;

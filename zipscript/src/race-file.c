@@ -246,7 +246,7 @@ testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 			fwrite(&rd, 1, sizeof(RACEDATA), file);
 		}
 
-		raceI->file.name = realfile;
+		strlcpy(raceI->file.name, realfile, strlen(realfile));
 		raceI->total.files = raceI->total.files_missing = 0;
 		fclose(file);
 	}

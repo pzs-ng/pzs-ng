@@ -123,9 +123,9 @@ main(int argc, char **argv)
 
 	/* gettimeofday(&g.v.transfer_stop, (struct timezone *)0 ); */
 
-	g.v.file.name = argv[1];
-	strncpy(g.l.path, argv[2], PATH_MAX);
-	strncpy(g.v.misc.current_path, g.l.path, PATH_MAX);
+	strlcpy(g.v.file.name, argv[1], PATH_MAX);
+	strlcpy(g.l.path, argv[2], PATH_MAX);
+	strlcpy(g.v.misc.current_path, g.l.path, PATH_MAX);
 	d_log("Changing directory to %s\n", g.l.path);
 	chdir(g.l.path);
 

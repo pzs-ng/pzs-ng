@@ -91,7 +91,7 @@ struct current_user {
 };
 
 struct current_file {
-	char           *name;
+	char		name[PATH_MAX];
 	unsigned int	speed;
 	off_t		size;
 	char		compression_method;

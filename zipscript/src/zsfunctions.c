@@ -84,7 +84,7 @@ create_missing(char *f)
 char           *
 findfileext(char *fileext)
 {
-	int		n         , k;
+	int		n, k;
 
 	n = direntries;
 	while (n--) {

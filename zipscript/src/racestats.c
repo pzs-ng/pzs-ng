@@ -45,7 +45,9 @@ main(int argc, char **argv)
 		g.v.total.size =
 		g.v.total.users =
 		g.v.total.groups = 0;
-	g.v.file.name = ".";
+
+	g.v.file.name[0] = '.';
+	g.v.file.name[1] = 0;
 
 	strcpy(g.l.path, argv[1]);
 
