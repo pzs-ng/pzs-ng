@@ -627,7 +627,7 @@ proc justifyandpad {output} {
 					incr j
 				}
 				if {![string match [string index $output $j] "\{"]} {
-					putlog "dZSbot error: Malformed padding/justification (junk character detected between %r/%l and first "{"). Check your theme file!"
+					putlog "dZSbot error: Malformed padding/justification (junk character detected between %r/%l and first "\{"). Check your theme file!"
 					return $output
 				}
 				set padstring ""
