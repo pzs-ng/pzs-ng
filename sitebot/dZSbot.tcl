@@ -816,7 +816,7 @@ proc format_speed {value section} {
 #################################################################################
 # Display Box Uptime                                                            #
 #################################################################################
-proc ng_uptime {nick uhost hand chan argv} {
+tproc ng_uptime {nick uhost hand chan argv} {
     global announce binary theme uptime
 
     set eggup [format_duration [expr {[clock seconds] - $uptime}]]
@@ -1845,7 +1845,7 @@ proc themereplace_startup {rstring} {
 		regsub -all {%u\{([^\{\}]+)\}} $rstring {\\037\1\\037} rstring
 	}
 
-	return [subst -nocommands -novariables $rstring]
+	return [subst -nocommands $rstring]
 }
 
 #################################################################################
@@ -1892,7 +1892,7 @@ proc themereplace {targetString section} {
 		}
 	}
 
-	return [subst -nocommands -novariables $targetString]
+	return [subst -nocommands $targetString]
 }
 
 #################################################################################
