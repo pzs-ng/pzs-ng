@@ -158,6 +158,7 @@ char israr(char *fileext) {
 }
 
 
+
 /*
  * Created    : 02.20.2002
  * Author     : dark0n3
@@ -220,30 +221,30 @@ void move_progress_bar(unsigned char delete, struct VARS *raceI) {
 	n = direntries;
 
 	if (delete) {
-		d_log("Removing progress bar\n");
 		while (n--) {
 			if ( regexec( &preg, dirlist[n]->d_name, 1, pmatch, 0) == 0 ) {
 				if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[n]) ) {
-					d_log("Found progress bar (%s), removing.", dirlist[n]->d_name);
+					d_log("Found progress bar (%s), removing\n", dirlist[n]->d_name);
 					remove(dirlist[n]->d_name);
 					*dirlist[n]->d_name = 0;
 					return;
 				}
 			}
 		}
+		d_log("Progress bar could not be deleted, not found!\n");
 	} else {
-		d_log("Moving (updating) progress bar\n");
 		if (!raceI->total.files) return;
 		bar = convert(raceI, userI, groupI, progressmeter);
 		while (n--) {
 			if (regexec( &preg, dirlist[n]->d_name, 1, pmatch, 0) == 0) {
 				if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[n])) {
-					d_log("Found progress bar (%s), renaming (to %s).", dirlist[n]->d_name, bar);
+					d_log("Found progress bar (%s), renaming (to %s)\n", dirlist[n]->d_name, bar);
 					rename(dirlist[n]->d_name, bar);
 					return;
 				}
 			}
 		}
+		d_log("Progress bar could not be moved, creating a new one now!\n");
 		createstatusbar(bar);
 	}
 }
@@ -289,13 +290,12 @@ void removecomplete() {
 
 
 
-
 /*
  * Modified: 01.16.2002
  */
 short int matchpath(char *instr, char *path) {
  int    pos = 0;
- 
+
  do {
 	switch ( *instr ) {
 		case 0:

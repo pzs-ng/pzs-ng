@@ -676,7 +676,7 @@ int main( int argc, char **argv ) {
 
 #endif
 #if ( audio_year_check == TRUE )
-					if ( ! strcomp(allowed_years, raceI.audio.id3_year)) { 
+					if ( ! strcomp(allowed_years, raceI.audio.id3_year)) {
 						d_log("File is from banned year\n");
 						sprintf(raceI.misc.error_msg, BANNED_YEAR, raceI.audio.id3_year);
 						if ( audio_year_warn == TRUE ) {
@@ -696,16 +696,17 @@ int main( int argc, char **argv ) {
 						break;
 					        }
 #endif
-#if ( audio_bitrate_check == TRUE ) 
-					if ( ! strcomp(allowed_bitrates, raceI.audio.bitrate)) {
+#if ( audio_cbr_check == TRUE )
+				if (raceI.audio.is_vbr == 0) {
+					if ( ! strcomp(allowed_constant_bitrates, raceI.audio.bitrate)) {
 						d_log("File is encoded using banned bitrate\n");
 						sprintf(raceI.misc.error_msg, BANNED_BITRATE, raceI.audio.bitrate);
-						if ( audio_bitrate_warn == TRUE ) {
+						if ( audio_cbr_warn == TRUE ) {
 							if ( userI[raceI.user.pos]->files == 1 ) {
 								d_log("warn on - logging to logfile\n");
 								write_log = raceI.misc.write_log;
 								raceI.misc.write_log = 1;
-								error_msg = convert(&raceI,userI,groupI,audio_bitrate_warn_msg);
+								error_msg = convert(&raceI,userI,groupI,audio_cbr_warn_msg);
 								writelog(error_msg, "BADBITRATE");
 								raceI.misc.write_log = write_log;
 								} else {
@@ -716,9 +717,10 @@ int main( int argc, char **argv ) {
 							}
 						break;
 						}
+				}
 #endif
 						} else {
-					d_log("user is in a no audio check dir - skipping checks.\n");
+							d_log("user is in a no audio check dir - skipping checks.\n");
 						}
 #if ( exclude_non_sfv_dirs == TRUE )
 					}

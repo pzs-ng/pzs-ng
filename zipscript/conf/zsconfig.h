@@ -138,7 +138,7 @@
 /* It is a good idea to prevent crap from filling your hds.
  * Ignore these settings if you do not plan to restrict your uploads.
  */
-#define allowed_bitrates		"160,192"
+#define allowed_constant_bitrates	"160,192"
 #define allowed_years			"2000,2001,2002,2003,2004"
 #define banned_genres			"Christian Rap,R&B"
 #define allowed_genres			"Rock"
@@ -155,9 +155,9 @@
  * to your glftpd.log.
  * Bitrate checking is useless on VBR encoded mp3 files, so it's recommended you leave this FALSE.
  */
-#define	audio_bitrate_check		FALSE
-#define audio_bitrate_warn		TRUE
-#define audio_bitrate_warn_msg		"%B%U%B/%G has started an illegal upload %B%r%B (bitrate: %Wkbps). Naughty boy!"
+#define	audio_cbr_check			FALSE
+#define audio_cbr_warn			TRUE
+#define audio_cbr_warn_msg		"%B%U%B/%G has started an illegal upload %B%r%B (bitrate: %Wkbps). Naughty boy!"
 #define audio_year_check		TRUE
 #define audio_year_warn			TRUE
 #define audio_year_warn_msg		"%B%U%B/%G has started an illegal upload %B%r%B (year: %Y). Naughty boy!"
