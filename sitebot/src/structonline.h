@@ -1,6 +1,6 @@
 /* remeber, you have to COMMENT OUT or #undef use_glftpd2 to disable it, #defining it to FALSE doesn't work */
 #define use_glftpd2	TRUE
-#define KEY		0x000DEAD
+#define KEY		0x0000DEAD
 
 #ifndef use_glftpd2
 struct ONLINE {
@@ -31,4 +31,3 @@ struct ONLINE {
  pid_t                  procid;                 /* The processor id of the process */
 };
 #endif
-
