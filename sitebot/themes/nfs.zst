@@ -1,0 +1,175 @@
+ #####################################################
+ #              Name: nfs.zst                        #
+ #        Maintainer: maziah                         #
+ # First appeared in: pzs-ng beta4                   #
+ #       Tested with: r1033                          #
+ #                                                   #
+ #####################################################
+ # Maintainer comments:
+ # credit to glftpd developers and pzs-ng developers for making this possible -maziah
+ # best with black background
+ 
+COLOR1 = "12" # light blue
+COLOR2 = "05" # red
+COLOR3 = "12" # light blue
+COLOR4 = "10" # cyan
+COLOR5 = "09" # light green
+COLOR6 = "03" # green
+COLOR7 = "08" # yellow
+COLOR8 = "15" # light grey
+COLOR9 = "11" # light cyan
+PREFIX = ""
+SPLITTER = ", "
+fakesection.INVITE = "iNViTE"
+
+# output done by glftpd
+announce.DEBUG	 				= "[%b{debug }] %msg"
+announce.DEFAULT 				= "[%b{info  }] %msg"
+announce.NEWDIR				        = "%b{%c4{-NEW-}} %b{driver}  %b{%u_name}@%b{%u_tagline} sponsored by %b{%g_name} is first off the starting line at %b{%c3{-%section-}}, racing for %uline%b{-%relname-}"
+announce.DELDIR				        = "%b{%c2{-DELETE-}} %b{driver} %b{%u_name}@%b{%u_tagline} lost control and crashed into %b{%uline-%relname-}%uline at %b{%c3{-%section-}} circuit."
+announce.LOGIN					= "%b{%c5{-LOGIN}} %b{%u_name}@%g_name has arrived at raceday!"
+announce.LOGOUT					= "%b{%c5{-LOGOUT-}} %b{%u_name}@%g_name has been throw out of the venue!"
+announce.TIMEOUT				= "%b{%c5{-LOGOUT-}} %b{%u_name} spent %b{%u_idletime}s in the pits after deciding to retire from the race."
+announce.TAGLINE				= "%b{%c9{-TAGLINE-}} %b{%u_name}@%g_name sprays the new hip logo %b{%u_tagline}on his dope ride."
+announce.WIPE				        = "%b{%c2{-WIPE-}} %uline%b{-%relname-}%uline was removed from the circuit."
+announce.WIPE-r				        = "%b{%c2{-WIPE-}} %uline%b{-%relname-}%uline was removed from the circuit."
+announce.FAILLOGIN				= "%b{%c5{-INTRUDER-}} %b{%failed_nick} tried to sabotage the raceway but security threw him out %b{%word1 %word2}"
+
+# special announces done by glftpd
+announce.NUKE					= "%b{%c5{-NUKE-}} after much decision at %b{%c3{%section}} the officials have decided to penalise %b{%nukees} by a factor of %b{%multiplier}  for trying to smuggle in %b{%relname}."
+announce.UNNUKE					= "[%b{unnuke}][%section] %b{%relname} factor %b{%multiplier} by %b{%nuker} [reason] %b{%reason} [nukees] %b{%nukees}."
+announce.NUKEES					= "%b{%u_name} %b{(}%b{%size}NZD fined%b{)}"
+
+# special output done by the zipscript
+announce.DOUBLESFV				= "[%b{notice}] %b{%u_name} of %g_name tried to upload a dupe sfv."
+announce.BADBITRATE				= "[%b{notice}] %b{%u_name} of %g_name is violating rules by uploading shit with bitrate %b{%bitrate}kbps."
+announce.BADGENRE				= "[%b{notice}] %b{%u_name} of %g_name is violating rules by uploading %b{%genre}."
+announce.BADYEAR				= "[%b{notice}] %b{%u_name} of %g_name is violating rules by uploading shit from %b{%year}."
+
+# some special loop variables - these format the racers and stats for each racer in the corresponding output.
+announce.RACE_ZIP_LOOP1				= "%b{%a_name}/%a_gname"
+announce.RACE_ZIP_LOOP2				= "%b{%r_name}/%r_gname"
+announce.RACE_RAR_LOOP1				= "%b{%a_name}/%a_gname"
+announce.RACE_RAR_LOOP2				= "%b{%r_name}/%r_gname"
+announce.RACE_OTHER_LOOP1			= "%b{%a_name}/%a_gname"
+announce.RACE_OTHER_LOOP2			= "%b{%r_name}/%r_gname"
+announce.RACE_VIDEO_LOOP1			= "%b{%a_name}/%a_gname"
+announce.RACE_VIDEO_LOOP2			= "%b{%r_name}/%r_gname"
+announce.RACE_AUDIO_LOOP1			= "%b{%a_name}/%a_gname"
+announce.RACE_AUDIO_LOOP2			= "%b{%r_name}/%r_gname"
+announce.HALFWAY_RACE_RAR_LOOP1			= "%b{%r_name}/%r_gname"
+announce.HALFWAY_RACE_ZIP_LOOP1			= "%b{%r_name}/%r_gname"
+announce.HALFWAY_RACE_OTHER_LOOP1		= "%b{%r_name}/%a_gname"
+announce.HALFWAY_RACE_VIDEO_LOOP1		= "%b{%r_name}/%a_gname"
+announce.HALFWAY_RACE_AUDIO_LOOP1		= "%b{%r_name}/%a_gname"
+announce.NEWLEADER_RAR_LOOP1			= "%b{%a_name}/%a_gname"
+announce.NEWLEADER_ZIP_LOOP1			= "%b{%a_name}/%a_gname"
+announce.NEWLEADER_OTHER_LOOP1			= "%b{%a_name}/%a_gname"
+announce.NEWLEADER_VIDEO_LOOP1			= "%b{%a_name}/%a_gname"
+announce.NEWLEADER_AUDIO_LOOP1			= "%b{%a_name}/%a_gname"
+announce.COMPLETE_STAT_RACE_RAR_LOOP1		= "%b{%r_name}/%r_gname"
+announce.COMPLETE_STAT_RACE_RAR_LOOP2		= "|%b{%c3{-FINISHLINE-}} %b{%g_racer_name}  %b{%g_racer_files}laps /  %b{%g_racer_mbytes}kilometers /  %b{%g_racer_percent}% /  %b{%g_racer_avgspeed}mph"
+announce.COMPLETE_STAT_RACE_RAR_LOOP3		= "|%b{%c3{-FINISHLINE-}} %b{%u_racer_name}@%b{%g_racer_name /  %u_racer_files}laps /  %b{%u_racer_mbytes}kilometers /  %b{%u_racer_percent}% /  %b{%u_racer_avgspeed}mph"
+announce.COMPLETE_STAT_RACE_ZIP_LOOP1		= "%b{%r_name}/%r_gname"
+announce.COMPLETE_STAT_RACE_ZIP_LOOP2		= "|%b{%c3{-FINISHLINE-}} %b{%g_racer_name}  %b{%g_racer_files}laps /  %b{%g_racer_mbytes}kilometers /  %b{%g_racer_percent}% /  %b{%g_racer_avgspeed}mph"
+announce.COMPLETE_STAT_RACE_ZIP_LOOP3		= "|%b{%c3{-FINISHLINE-}} %b{%u_racer_name}@%b{%g_racer_name /  %u_racer_files}laps /  %b{%u_racer_mbytes}kilometers /  %b{%u_racer_percent}% /  %b{%u_racer_avgspeed}mph"
+announce.COMPLETE_STAT_RACE_OTHER_LOOP1		= "%b{%r_name}/%r_gname"
+announce.COMPLETE_STAT_RACE_OTHER_LOOP2		= "|%b{%c3{-FINISHLINE-}} %b{%g_racer_name}  %b{%g_racer_files}laps /  %b{%g_racer_mbytes}kilometers /  %b{%g_racer_percent}% /  %b{%g_racer_avgspeed}mph"
+announce.COMPLETE_STAT_RACE_OTHER_LOOP3		= "|%b{%c3{-FINISHLINE-}} %b{%u_racer_name}@%b{%g_racer_name /  %u_racer_files}laps /  %b{%u_racer_mbytes}kilometers /  %b{%u_racer_percent}% /  %b{%u_racer_avgspeed}mph"
+announce.COMPLETE_STAT_RACE_VIDEO_LOOP1		= "%b{%r_name}/%r_gname"
+announce.COMPLETE_STAT_RACE_VIDEO_LOOP2		= "|%b{%c3{-FINISHLINE-}} %b{%g_racer_name}  %b{%g_racer_files}laps /  %b{%g_racer_mbytes}kilometers /  %b{%g_racer_percent}% /  %b{%g_racer_avgspeed}mph"
+announce.COMPLETE_STAT_RACE_VIDEO_LOOP3		= "|%b{%c3{-FINISHLINE-}} %b{%u_racer_name}@%b{%g_racer_name /  %u_racer_files}laps /  %b{%u_racer_mbytes}kilometers /  %b{%u_racer_percent}% /  %b{%u_racer_avgspeed}mph"
+announce.COMPLETE_STAT_RACE_AUDIO_CBR_LOOP1	= "%b{%r_name}/%r_gname"
+announce.COMPLETE_STAT_RACE_AUDIO_CBR_LOOP2	= "|%b{%c3{-FINISHLINE-}} %b{%g_racer_name}  %b{%g_racer_files}laps /  %b{%g_racer_mbytes}kilometers /  %b{%g_racer_percent}% /  %b{%g_racer_avgspeed}mph"
+announce.COMPLETE_STAT_RACE_AUDIO_CBR_LOOP3	= "|%b{%c3{-FINISHLINE-}} %b{%u_racer_name}@%b{%g_racer_name /  %u_racer_files}laps /  %b{%u_racer_mbytes}kilometers /  %b{%u_racer_percent}% /  %b{%u_racer_avgspeed}mph"
+announce.COMPLETE_STAT_RACE_AUDIO_VBR_LOOP1	= "%b{%r_name}/%r_gname"
+announce.COMPLETE_STAT_RACE_AUDIO_VBR_LOOP2	= "|%b{%c3{-FINISHLINE-}} %b{%g_racer_name}  %b{%g_racer_files}laps /  %b{%g_racer_mbytes}kilometers /  %b{%g_racer_percent}% /  %b{%g_racer_avgspeed}mph"
+announce.COMPLETE_STAT_RACE_AUDIO_VBR_LOOP3	= "|%b{%c3{-FINISHLINE-}} %b{%u_racer_name}@%b{%g_racer_name /  %u_racer_files}laps /  %b{%u_racer_mbytes}kilometers /  %b{%u_racer_percent}% /  %b{%u_racer_avgspeed}mph"
+
+# standard announces done by the zipscript
+announce.RACE_ZIP				= "%b{%c7{-RACE-}} %b{%u_name}@%b{%g_name} joined the race at %b{%uline-%relname-}%uline raceway going %b{%u_speed}mph. I hope you have NOS to catch the rest of the pack!!"
+announce.RACE_RAR				= "%b{%c7{-RACE-}} %b{%u_name}@%b{%g_name} joined the race at %b{%uline-%relname-}%uline raceway going %b{%u_speed}mph. I hope you have NOS to catch the rest of the pack!!"
+announce.RACE_OTHER				= "%b{%c7{-RACE-}} %b{%u_name}@%b{%g_name} joined the race at %b{%uline-%relname-}%uline raceway going %b{%u_speed}mph. I hope you have NOS to catch the rest of the pack!!"
+announce.RACE_VIDEO				= "%b{%c7{-RACE-}} %b{%u_name}@%b{%g_name} joined the race at %b{%uline-%relname-}%uline raceway going %b{%u_speed}mph. I hope you have NOS to catch the rest of the pack!!"
+announce.RACE_AUDIO				= "%b{%c7{-RACE-}} %b{%u_name}@%b{%g_name} joined the race at %b{%uline-%relname-}%uline raceway going %b{%u_speed}mph. I hope you have NOS to catch the rest of the pack!!"
+announce.SFV_RAR				= "%b{%c7{-SFV-}} %b{%u_name}@%b{%g_name} was the first on the grid at %b{%uline-%relname-}%uline with a total race length of %b{%t_filecount} laps."
+announce.SFV_OTHER				= "%b{%c7{-SFV-}} %b{%u_name}@%b{%g_name} was the first on the grid at %b{%uline-%relname-}%uline with a total race length of %b{%t_filecount} laps."
+announce.SFV_VIDEO				= "%b{%c7{-SFV-}} %b{%u_name}@%b{%g_name} was the first on the grid at %b{%uline-%relname-}%uline with a total race length of %b{%t_filecount} laps."
+announce.SFV_AUDIO				= "%b{%c7{-SFV-}} %b{%u_name}@%b{%g_name} was the first on the grid at %b{%uline-%relname-}%uline with a total race length of %b{%t_filecount} laps."
+announce.UPDATE_RAR				= "%b{%c6{-UPDATE-}} %b{%u_name}@%b{%g_name} leads lap 1 going into %b{%uline-%relname-}%uline at a blistering %b{%u_speed}mph. Race length %b{%t_mbytes}kilometers in %b{%t_files} laps."
+announce.UPDATE_ZIP				= "%b{%c6{-UPDATE-}} %b{%u_name}@%b{%g_name} leads lap 1 going into %b{%uline-%relname-}%uline at a blistering %b{%u_speed}mph. Race length %b{%t_mbytes}kilometers in %b{%t_files} laps."
+announce.UPDATE_OTHER				= "%b{%c6{-UPDATE-}} %b{%u_name}@%b{%g_name} leads lap 1 going into %b%uline-%relname-%b%uline at a blistering %b%u_speed%bmph. Race length %b%t_mbytes%bkilometers in %b%t_files%b laps."
+announce.UPDATE_VIDEO				= "%b{%c6{-UPDATE-}} %b{%u_name}@%b{%g_name} leads lap 1 going into %b%uline-%relname-%b%uline at a blistering %b%u_speed%bmph. Race length %b%t_mbytes%bkilometers in %b%t_files%b laps."
+announce.UPDATE_CBR				= "%b{%c6{-UPDATE-}} %relname%b got first file from %b{%u_name} of %b{%group} at %b{%u_speed}kbs. Get ready for some %b{%genre} from %b{%year} at %b{%sampling}Hz in %b{%mode} %b{%bitrate}kbps %b(%audio)"
+announce.UPDATE_VBR				= "%b{%c6{-UPDATE-}} %relname%b got first file from %b{%u_name}@%b{%g_name} at %b{%u_speed}kbs. Get ready for some %b{%genre} from %b{%year} at %b{%sampling}Hz in %b{%mode} %b{%bitrate}kbps %b{(%audio %a_stream)}"
+announce.HALFWAY_NORACE_RAR			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is the first to reach the halfway point at %b{%uline-%relname-}%uline raceway."
+announce.HALFWAY_NORACE_ZIP			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is the first to reach the halfway point at %b{%uline-%relname-}%uline raceway."
+announce.HALFWAY_NORACE_OTHER			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is the first to reach the halfway point at %b{%uline-%relname-}%uline raceway."
+announce.HALFWAY_NORACE_VIDEO			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is the first to reach the halfway point at %b{%uline-%relname-}%uline raceway."
+announce.HALFWAY_NORACE_AUDIO			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is the first to reach the halfway point at %b{%uline-%relname-}%uline raceway."
+announce.HALFWAY_RACE_RAR			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is the first to reach the halfway point at %b{%uline-%relname-}%uline raceway."
+announce.HALFWAY_RACE_ZIP			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is the first to reach the halfway point at %b{%uline-%relname-}%uline raceway." 
+announce.HALFWAY_RACE_OTHER			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is the first to reach the halfway point at %b{%uline-%relname-}%uline raceway."
+announce.HALFWAY_RACE_VIDEO			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is the first to reach the halfway point at %b{%uline-%relname-}%uline raceway."
+announce.HALFWAY_RACE_AUDIO			= "%b{%c8{-HALFWAY-}} %b{%u_name}@%b{%g_name} is the first to reach the halfway point at %b{%uline-%relname-}%uline raceway."
+announce.NEWLEADER_RAR				= "%b{%c8{-NEWLEADER-}} %b{%u_leader_mbytes} kilometers through the race,  %b{%u_leader_name} zooms past the pack at %b{%u_leader_avgspeed}mph leaving %b{%loop1} in his dust..."
+announce.NEWLEADER_ZIP				= "%b{%c8{-NEWLEADER-}} %b{%u_leader_mbytes} kilometers through the race,  %b{%u_leader_name} zooms past the pack at %b{%u_leader_avgspeed}mph leaving %b{%loop1} in his dust..."
+announce.NEWLEADER_OTHER			= "%b{%c8{-NEWLEADER-}} %b{%u_leader_mbytes} kilometers through the race,  %b{%u_leader_name} zooms past the pack at %b{%u_leader_avgspeed}mph leaving %b{%loop1} in his dust..."
+announce.NEWLEADER_VIDEO			= "%b{%c8{-NEWLEADER-}} %b{%u_leader_mbytes} kilometers through the race,  %b{%u_leader_name} zooms past the pack at %b{%u_leader_avgspeed}mph leaving %b{%loop1} in his dust..."
+announce.NEWLEADER_AUDIO			= "%b{%c8{-NEWLEADER-}} %b{%u_leader_mbytes} kilometers through the race,  %b{%u_leader_name} zooms past the pack at %b{%u_leader_avgspeed}mph leaving %b{%loop1} in his dust..."
+announce.COMPLETE_RAR				= "%b{%c7{-COMPLETE-}} %b{%u_winner_name}@%b{%g_winner_name} took the checkered flag at %b{%uline-%relname-}%uline raceway. The race was %b{%t_files} laps, %b{(%t_mbytes} kilometers%b{)} and took %b{%t_duration}. The average speed in this race was %b{%t_avgspeed}mph."
+announce.COMPLETE_ZIP				= "%b{%c7{-COMPLETE-}} %b{%u_winner_name}@%b{%g_winner_name} took the checkered flag at %b{%uline-%relname-}%uline raceway. The race was %b{%t_files} laps, %b{(%t_mbytes kilometers%b{)}and took %b{%t_duration}. The average speed in this race was %b{%t_avgspeed}mph."
+announce.COMPLETE_OTHER				= "%b{%c7{-COMPLETE-}} %b{%u_winner_name}@%b{%g_winner_name} took the checkered flag at %b{%uline-%relname-}%uline raceway. The race was %b%t_files%b laps, (%b%t_mbytes%bkilometers) and took %b%t_duration%b. The average speed in this race was %b%t_avgspeed%bmph."
+announce.COMPLETE_VIDEO				= "%b{%c7{-COMPLETE-}} %b{%u_winner_name}@%b{%g_winner_name} took the checkered flag at %b{%uline-%relname-}%uline raceway. The race was %b%t_files%b laps, (%b%t_mbytes%bkilometers) and took %b%t_duration%b. The average speed in this race was %b%t_avgspeed%bmph."
+announce.COMPLETE_AUDIO_CBR			= "%b{%c7{-COMPLETE-}} %b{%u_winner_name}@%b{%g_winner_name} took the checkered flag at %b{%uline-%relname-}%uline raceway. The race was %b%t_files%b laps, (%b%t_mbytes%bkilometers) and took %b%t_duration%b. The average speed in this race was %b%t_avgspeed%bmph."
+announce.COMPLETE_AUDIO_VBR			= "%b{%c3{-COMPLETE-}} All racers have crossed the finish line at %b{%uline-%relname-}%uline raceway. Thankyou for attending. The race was %b{%t_files} laps, %b{(%t_mbytes}kilometers%b{)} and took %b{%t_duration}. The average speed in this race was %b{%t_avgspeed}mph."
+announce.COMPLETE_STAT_RACE_RAR			= "%b{%c7{-COMPLETE-}} %b{%u_winner_name}@%b{%g_winner_name} took the checkered flag at %b{%uline-%relname-}%uline raceway. The race was %b{%t_files} laps, %b{(%t_mbytes}kilometers%b{)} and took %b{%t_duration}. The average speed in this race was %b{%t_avgspeed}mph.|%b{%c3{-FINISHLINE-}} drivers hall of fame:%loop3|%b{%c3{-FINISHLINE-}} sponsors hall of fame:%loop2"
+announce.COMPLETE_STAT_RACE_ZIP			= "%b{%c7{-COMPLETE-}} %b{%u_winner_name}@%b{%g_winner_name} took the checkered flag at %b{%uline-%relname-}%uline raceway. The race was %b{%t_files} laps, (%b{%t_mbytes}kilometers) and took %b{%t_duration}. The average speed in this race was %b{%t_avgspeed}mph.|%b{%c3{-FINISHLINE-}}drivers hall of fame:%loop3|%b{%c3{-FINISHLINE-}} sponsors hall of fame:%loop2"
+announce.COMPLETE_STAT_RACE_OTHER		= "%b{%c7{-COMPLETE-}} %b{%u_winner_name}@%b{%g_winner_name} took the checkered flag at %b{%uline-%relname-}%uline raceway. The race was %b{%t_files} laps, %b{(%t_mbytes}kilometers%b{)} and took %b{%t_duration}. The average speed in this race was %b{%t_avgspd}mph.|%b{%c3{-FINISHLINE-}} drivers hall of fame:%loop3|%b{%c3{-FINISHLINE-}} sponsors hall of fame:%loop2"
+announce.COMPLETE_STAT_RACE_VIDEO		= "%b{%c7{-COMPLETE-}} %b{%u_winner_name}@%b{%g_winner_name} took the checkered flag at %b{%uline-%relname-}%uline raceway. The race was %b{%t_files} laps, %b{(%t_mbytes}kilometers) and took %b{%t_duration}. The average speed in this race was %b{%t_avgspd}mph.|%b{%c3{-FINISHLINE-}} drivers hall of fame:%loop3|%b%c3{-FINISHLINE-}%b sponsors hall of fame:%loop2"
+announce.COMPLETE_STAT_RACE_AUDIO_CBR		= "%b{%c7{-COMPLETE-}} %b{%u_winner_name}@%b{%g_winner_name} took the checkered flag at %b{%uline-%relname-}%uline raceway. The race was %b{%t_files} laps, %b{(%t_mbytes}kilometers) and took %b{%t_duration}. The average speed in this race was %b{%t_avgspd}mph.|%b{%c3{-FINISHLINE-}} drivers hall of fame:%loop3|%b%c3{-FINISHLINE-}%b sponsors hall of fame:%loop2"
+announce.COMPLETE_STAT_RACE_AUDIO_VBR		= "%b{%c7{-COMPLETE-}} %b{%u_winner_name}@%b{%g_winner_name} took the checkered flag at %b{%uline-%relname-}%uline raceway. The race was %b{%t_files} laps, %b{(%t_mbytes}kilometers) and took %b{%t_duration}. The average speed in this race was %b{%t_avgspd}mph.|%b{%c3{-FINISHLINE-}} drivers hall of fame:%loop3|%b%c3{-FINISHLINE-}%b sponsors hall of fame:%loop2"
+
+# Announce done by the postdel binary
+announce.INCOMPLETE		= "%b%c7{-INCOMPLETE-}%u_name%b@%b%g_name%b is tampering with %b%uline-%relname-%b%uline raceway."
+
+# 3rd party addons - take note that these variables should possibly be changed in order to work with your setup/3rd party app.
+announce.PRE					= "[%b{%c1{pre}   }][%section] %b{%relname} by %b{%pregroup} in %b{%files} files (%b{%mbytes}MB)."
+announce.INVITE					= "[%b{invite}] %b{%u_name} of %g_name invited himself as %b{%u_ircnick}."
+announce.REQUEST				= "[%b{req   }] %b{%u_name} of %g_name requests %b{%releasename}."
+announce.REQFILLED				= "[%b{filled}] %b{%u_name} of %g_name just filled %b{%releasename} for %b{%u_requester}."
+
+# internal announces
+announce.LEECH			= "%b{%c5{-BANDWIDTH-}} %b{OBSTICLE}:"
+announce.UPLOAD			= "%b{%c5{-BANDWIDTH-}} %b{RACERS}:"
+announce.IDLE			= "%b{%c5{-BANDWIDTH-}} %b{PEOPLE IN THE STANDS}:"
+announce.BW		        = "%b{%c5{-BANDWIDTH-}} %b{%uploads} racers on the track going at %b{%upspeed}mph with %b{%downloads} litres of oil on the track, slowing the racers down by %b{%dnspeed}mph per lap. %b{%transfers} total racers on the circuit going at a combined speed of %b{%totalspeed}mph.  %b{%active} total pitmen and %b{%idlers} spectators. %b{%totallogins} people at todays raceday!"
+announce.BWUP		        = "%b{%c5{-BANDWIDTH-}} %b{%upload}s racers going at a combined speed of %b{%upspeed}mph"
+announce.BWDN		        = "%b{%c5{-BANDWIDTH-}} %b{%downloads} litres of oil on the track, slowing the racers down by %b{%dnspeed}mph"
+announce.TOTUPDN		= "%b{%c5{-BANDWIDTH-}} %b{%type %count} at %b{%total}mph %b{(%per}%%b{)}."
+announce.TOTIDLE		= "%b{%c5{-BANDWIDTH-}} there are  %b%count%b people spectating."
+announce.USERIDLE		= "%b{%c5{-BANDWIDTH-}} spectator %b{%user} has been watching the race for %b{%idletime}s."
+announce.USER			= "%b{%c5{-BANDWIDTH-}} %b{%u_name}@%b{%g_name} on %b{%filename} %b{(%fper} done%b{)} at %b{%uspeed}mph %b{(%per} usage%b{)}"
+announce.SPEEDUP		= "%b{%c5{-BANDWIDTH-}} %u_name%b{@}%b{%g_name}%b is uploading %b{%f_name} at %b{%upspeed}mph (%uppercent)."
+announce.SPEEDDN		= "%b{%c5{-BANDWIDTH-}} %u_name%b{@}%b{%g_name}%b is downloading %b{%f_name} at %b{%dnspeed}mph (%dnpercent)."
+announce.SPEEDID		= "%b{%c5{-BANDWIDTH-}} %u_name%b{@}%b{%g_name}%b has been idle for %b{%idletime}."
+announce.SPEEDERROR		= "%b{%c5{-BANDWIDTH-}} Nope, try again. Found noone by that name on site."
+announce.WELCOME				= "Welcome to %b{%sitename}'s sitechan. Type %cmdprehelp for help."
+announce.FREE		        = "%b{%c2{%section}} %devices"
+announce.FREE-DEV	        = "%b{%c3{%section}} - %b{%free} of %b{%total} (used %percentage%) "
+
+
+# 3rd party imdb announce - example for psxc-imdb
+announce.IMDBVAR		= "%b{%c6{-IMDB-}} %b{%c3{-%section-}} - %b{%imdbname} %b{(%imdburl)}, a %b{%imdbdirector} movie which scored %b{%imdbscore} of %b{10} %b{(%imdbvotes people voted%b{)}. It premiered in %b{%imdbpremiereinfo}, with %b{%imdbnumscreens} screens on the opening weekend.|%b{%c4{-IMDB-}} [%b{%c2{IMDB}] [%b{%c3{%section}] %b{%imdbname} plot summary: {%imdbplot %imdbbar}"
+announce.IMDB		      	= "%b{%c6{-IMDB-}} %b{%c3{-%section-}} - %b{%imdbname} %b{(%imdburl)}, a %b{%imdbdirector} movie which scored %b{%imdbscore} of %b{10} %b{(%imdbvotes} people voted%b{)}. It premiered in %b{%imdbpremiereinfo}, with %b{%imdbnumscreens} screens on the opening weekend.|%b{%c6{-IMDB-}} %b{%c3{-%section-}} - %b{%imdbname} plot summary: {%imdbplot %imdbbar}"
+announce.FIND			= "%b{%c6{-IMDB-}} %b\[IMDB\]%b - %msg"
+announce.MSGINVITE	        		= "[%b{invite}] %b{%u_name} of %g_name invited himself as %b{%u_ircnick}."
+announce.BADMSGINVITE	        		= "[%b{%c1{badinv}}] %b{%u_ircnick} (%u_host) tried to invite himself with invalid login!"
+
+# Example of custom announces (see dZSbconf.tcl for info on how to enable)
+#announce.SAMPLE 				= "[%b{sample}][%section] %b{%relname} by %b{%u_name} of %g_name."
+#announce.NEWCD					= "[%b{cd    }][%section] %b{%relname} by %b{%u_name} of %g_name."
+#announce.NEWDISC				= "[%b{disc  }][%section] %b{%relname} by %b{%u_name} of %g_name."
+#announce.SUBTITLES				= "[%b{subs  }][%section] %b{%relname} by %b{%u_name} of %g_name."
+#announce.COVERS 				= "[%b{covers}][%section] %b{%relname} by %b{%u_name} of %g_name."
+
