@@ -208,9 +208,10 @@ proc to_mb {str} {
 proc basicreplace {rstring section} {
     global sitename theme
 
-	regsub -all "%c(\\d)\{(\[^\}\]+)(!?\\)\}" $rstring "\003$theme(COLOR\\1)\\2\003"
+	regsub -all {%c\((\d)\)\{([^\}]+)\}} $rstring {\003$theme(COLOR\1)\2\003} output
 	
-    set output [replacevar $rstring "%sitename" $sitename]
+	set output [subst $output]
+    set output [replacevar $output "%sitename" $sitename]
     set output [replacevar $output "%bold" "\002"]
     set output [replacevar $output "%uline" "\037"]
     set output [replacevar $output "%section" $section]
@@ -744,16 +745,16 @@ proc loadtheme {file} {
 	set content [split [read -nonewline $fh] "\n"]
 	foreach line $content {
 		if {![regexp -nocase -- "^#" $line]} {
-			if {[regexp -nocase -- "fakesection\.(\\S+)\\s*=\\s*(\[\'\"\])(.+)\\2" $line dud setting quote value]} {
+			if {[regexp -nocase -- {fakesection\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
 				set setting [string toupper $setting]
-				regsub -all "%c(\\d)\{(\[^\}\]+)\}" $value "\003\\1\\2\003" value
-				regsub -all "\003(\\d)(?!\\d)" $value "\0030\\1" value
-				set theme_fakes($setting) $value
-			} elseif {[regexp -nocase -- "(\\S+)\\s*=\\s*(\[\'\"\])(.+)\\2" $line dud setting quote value]} {
+				regsub -all {%c\((\d)\)\{([^\}]+)\}} $value {\\003\1\2\\003} value
+				regsub -all {\003(\d)(?!\d)} $value {\\0030\1} value
+				set theme_fakes($setting) [subst $value]
+			} elseif {[regexp -nocase -- {(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
 				set setting [string toupper $setting]
-				regsub -all "%c(\\d)\{(\[^\}\]+)\}" $value "\003\\1\\2\003" value
-				regsub -all "\003(\\d)(?!\\d)" $value "\0030\\1" value
-				set theme($setting) $value
+				regsub -all {%c\((\d)\)\{([^\}]+)\}} $value {\\003\1\2\\003} value
+				regsub -all {\003(\d)(?!\d)} $value {\\0030\1} value
+				set theme($setting) [subst $value}
 			}
 		}
 	}

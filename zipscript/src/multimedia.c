@@ -233,24 +233,20 @@ void get_mpeg_audio_info(char *f, struct audio *audio) {
   fd = open(f, O_RDONLY);
   
   n = 2;
-  while ( read(fd, header + 2 - n, n) == n ) {
-    if ( *header == 255 ) {
-      n = 2;
-      if (*(header + 1) >= 224) {
-	n = 0;
-	break;
-      } else {
-	n = 2;
-      }
-    } else {
-      if (*(header + 1) == 255 ) {
-	*header = *(header + 1);
-	n = 1;
-      } else {
-	n = 2;
-      }
-    }
-  };
+  while (read(fd, header + 2 - n, n) == n) {
+	if ( *header == 255 ) {
+		n = 2;
+		if (*(header + 1) >= 224) {
+			n = 0;
+			break;
+		} else { n = 2; }
+	} else {
+		if (*(header + 1) == 255 ) {
+			*header = *(header + 1);
+			n = 1;
+		} else { n = 2; }
+	}
+  }
   
   /* mp3 header:
    * AAAAAAAA AAABBCCD EEEEFFGH IIJJKLMM
