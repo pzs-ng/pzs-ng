@@ -228,7 +228,7 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 		if ( mode == 0 ) {
 			if (!raw) {
 				if (mb_xfered)
-					printf("|%1c%-16.16s/%-10.10s | %-15s | Uploaded: %9.1fMb |\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, mb_xfered);
+					printf("|%1c%-16.16s/%-10.10s | %-15s | XFER: %13.1fMB |\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, mb_xfered);
 				else
 					printf("|%1c%-16.16s/%-10.10s | %-15s | %3.0f%%: %-15.15s |\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, pct, bar);
 
