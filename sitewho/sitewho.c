@@ -131,7 +131,7 @@ void showusers(int n, int mode, char *ucomp) {
 	    }
 
 	    if ( noshow == 0 ) {
-		if ( maskchar == ' ' && matchpath(mpaths, user[x].currentdir) != 0) {
+		if ( (strcmp(mpaths, "") !=0 ) &&  ( maskchar == ' ' && matchpath(mpaths, user[x].currentdir) != 0) ) {
 		    if ( showall ) {
 			maskchar = '*';
 		    } else {
