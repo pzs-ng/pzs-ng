@@ -18,6 +18,7 @@ status  who       what
  [ ]     daxxar    hybrid_types, are allowed if no sfv, will be checked against sfv if there is one.
  [ ]               fix a coredump when the user is killed/kicked on upload.
  [ ]               use mp3info as much as possible to get mp3 info.
+ [ ]               zipscript reports wrong sample rate (48khz instf 44.1khz etc) - why? mp3info reports correctly.
 
 status   description
  [ ]     not done 
