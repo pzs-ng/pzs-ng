@@ -13,7 +13,7 @@ interp alias {} isfalse {} string is false -strict
 set dzerror 0; set pid 0
 set scriptpath [file dirname [info script]]
 
-putlog "Launching dZSBot for project-zs-ng..."
+putlog "Launching dZSbot for project-zs-ng..."
 
 if {[catch {source $scriptpath/dZSbconf.defaults.tcl} error]} {
 	putlog "dZSbot error: Unable to load dZSbconf.defaults.tcl ($error), cannot continue."
