@@ -278,6 +278,8 @@ main(int argc, char **argv)
 		if (fileexists(g.l.race)) {
 			d_log("Reading race data from file to memory\n");
 			readrace(g.l.race, &g.v, g.ui, g.gi);
+		} else {
+			empty_dir = 1;
 		}
 		if (fileexists(g.l.sfv)) {
 #if ( create_missing_files == TRUE )
@@ -312,8 +314,12 @@ main(int argc, char **argv)
 		remove_from_race(g.l.race, g.v.file.name);
 		break;
 	case 4:
+		if (!fileexists(g.l.race))
+			empty_dir = 1;
 		break;
 	case 255:
+		if (!fileexists(g.l.race))
+			empty_dir = 1;
 		break;
 	case 2:
 		if (!fileexists(g.l.race)) {
