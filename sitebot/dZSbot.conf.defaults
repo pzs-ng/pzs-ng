@@ -28,8 +28,7 @@ set max_log_change          3000
 
 # These are the binaries the script will use. They are usually best left
 # as their default values (btw, check that they all are where they should
-# and chmodded to eXecutable (chmod 755 <file>).
-set binary(CAT)         "/glftpd/bin/cat"
+# and chmodded to executable (chmod 755 <file>).
 set binary(INCOMPLETE)  "/glftpd/bin/incomplete-list.sh"
 set binary(PASSCHK)     "/glftpd/bin/passchk"
 set binary(SHOWLOG)     "/glftpd/bin/showlog"
@@ -200,7 +199,7 @@ set announce(THEMEFILE) "themes/default.zst"
 # Announce types, "SECTION" types are path oriented (COMPLETE: /site/MP3/...),
 # and "REGULAR" types are regular event based announces.
 set msgtypes(SECTION)   "IMDB IMDBVAR PRE NEWDIR DELDIR NUKE UNNUKE WIPE WIPE-r BAD_FILE_0SIZE BAD_FILE_BITRATE BAD_FILE_CRC BAD_FILE_DISALLOWED BAD_FILE_DUPENFO BAD_FILE_GENRE BAD_FILE_NOSFV BAD_FILE_SFV BAD_FILE_WRONGDIR BAD_FILE_YEAR BAD_FILE_ZIP BADBITRATE BADGENRE BADYEAR COMPLETE_AUDIO_CBR COMPLETE_AUDIO_VBR COMPLETE_OTHER COMPLETE_RAR COMPLETE_VIDEO COMPLETE_ZIP COMPLETE_STAT_RACE_AUDIO_CBR COMPLETE_STAT_RACE_AUDIO_VBR COMPLETE_STAT_RACE_OTHER COMPLETE_STAT_RACE_RAR COMPLETE_STAT_RACE_VIDEO COMPLETE_STAT_RACE_ZIP DOUBLESFV HALFWAY_NORACE_AUDIO HALFWAY_NORACE_OTHER HALFWAY_NORACE_RAR HALFWAY_NORACE_VIDEO HALFWAY_NORACE_ZIP HALFWAY_RACE_AUDIO HALFWAY_RACE_OTHER HALFWAY_RACE_RAR HALFWAY_RACE_VIDEO HALFWAY_RACE_ZIP INCOMPLETE NEWLEADER_AUDIO NEWLEADER_OTHER NEWLEADER_RAR NEWLEADER_VIDEO NEWLEADER_ZIP RACE_AUDIO RACE_OTHER RACE_RAR RACE_VIDEO RACE_ZIP SFV_AUDIO SFV_OTHER SFV_RAR SFV_VIDEO UPDATE_CBR UPDATE_OTHER UPDATE_RAR UPDATE_VBR UPDATE_VIDEO UPDATE_ZIP"
-set msgtypes(DEFAULT)   "BADMSGINVITE BADPASSWD BADUSERHOST DEBUG IMDBFIND IMDBFINDVAR INVITE IPNOTADDED LOGIN LOGOUT MSGINVITE REQFILLED REQUEST TAGLINE TIMEOUT"
+set msgtypes(DEFAULT)   "BADHOSTMASK BADMSGINVITE BADPASSWORD BANNEDHOST DELETED IMDBFIND IMDBFINDVAR INVITE IPNOTADDED LOGIN LOGOUT  MSGINVITE REQFILLED REQUEST TAGLINE TIMEOUT"
 
 # Redirect messages to the defined channels.
 #set redirect(LOGIN)    "#pzs-ng #ng-staff"
@@ -233,18 +232,19 @@ set disable(TRIGINALLCHAN)              0
 
 ## script announcements
 set disable(ALTWHO)                         0
-set disable(DEBUG)                          1
+set disable(BADMSGINVITE)                   0
 set disable(INVITE)                         0
 set disable(MSGINVITE)                      0
 set disable(WELCOME)                        0
 
 ## login announcements
-set disable(BADMSGINVITE)                   0
-set disable(BADPASSWD)                      1
-set disable(BADUSERHOST)                    1
-set disable(FAILLOGIN)                      0
 set disable(LOGIN)                          1
 set disable(LOGOUT)                         1
+set disable(BADHOSTMASK)                    1
+set disable(BADPASSWORD)                    1
+set disable(BANNEDHOST)                     1
+set disable(DELETED)                        1
+set disable(IPNOTADDED)                     1
 set disable(TAGLINE)                        1
 set disable(TIMEOUT)                        1
 

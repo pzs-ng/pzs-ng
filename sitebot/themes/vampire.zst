@@ -28,7 +28,6 @@ MBIT		= "%b{%value}%c1{Mbit/s}"
 fakesection.INVITE = "iNViTE"
 
 # output done by glftpd
-announce.DEBUG					= "%b{DEBUG%c1{:}} %c1{%msg}"
 announce.DEFAULT				= "%b{iNFO%c1{:}} %c1{%msg}"
 announce.NEWDIR					= "%b{NEW RELEASE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{by} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{[}%c3{%u_tagline}%c1{].}"
 announce.DELDIR					= "%b{DELETE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{has been deleted by} %c3{%b{%u_name}} %c1{/} %c3{%g_name}%c1{.}"

@@ -30,7 +30,7 @@ if {[catch {source $scriptpath/dZSbot.vars} error]} {
 # Important Global Variables                                                    #
 #################################################################################
 
-set dzerror 0; set mpath ""; set pid 0
+set dzerror 0; set mpath ""
 set defaultsection "DEFAULT"
 set nuke(LASTDIR) ""
 set nuke(LASTTYPE) ""
@@ -161,7 +161,7 @@ proc denycheck {release} {
 	return 0
 }
 
-proc typecheck {section msgtype} {
+proc eventcheck {section msgtype} {
 	global disabletypes
 	if {[info exists disabletypes($section)]} {
 		foreach deny $disabletypes($section) {
@@ -175,183 +175,127 @@ proc typecheck {section msgtype} {
 # Main loop - Parses data from logs.                                            #
 #################################################################################
 proc readlog {} {
-	global dZStimer defaultsection glftpdlog glversion invite_channels lastoct loginlog loglastoct max_log_change pid
-	global chanlist disable variables msgreplace msgtypes privchannel privgroups privusers
-
-	set dZStimer [utimer 1 "readlog"]
+	global chanlist dZStimer defaultsection disable glversion lastread loglist max_log_change msgreplace msgtypes variables
 	set lines ""
+	set dZStimer [utimer 1 "readlog"]
 
-	foreach log [array names glftpdlog] {
-		if {$lastoct($log) < [file size $glftpdlog($log)] && [expr [file size $glftpdlog($log)] - $lastoct($log) - $max_log_change] < 0} {
-			if {![catch {set of [open $glftpdlog($log) r]} error]} {
-				seek $of $lastoct($log)
-				while {![eof $of]} {
-					if {[set line [gets $of]] != ""} {
-						lappend lines $line
+	foreach {logtype logid logpath} $loglist {
+		## The regex pattern to use for the logfile
+		switch -glob -- $logtype {
+			0 {set regex {^.+ (\S+): (.+)$}}
+			1 {set regex {^.* \[.*\] (\S+): (.+)$}}
+			default {putlog "dZSbot error: Internal error, unknown log type ($logtype)."; continue}
+		}
+		## Read the log data
+		set logsize [file size $logpath]
+		if {$lastread($logid) < $logsize && ($logsize - $lastread($logid) - $max_log_change) < 0} {
+			if {![catch {set handle [open $logpath r]} error]} {
+				seek $handle $lastread($logid)
+				while {![eof $handle]} {
+					if {[gets $handle line] < 1} {continue}
+					## Remove the date and time from the log line.
+					if {[regexp $regex $line result event line]} {
+						lappend lines $logtype $event $line
+					} else {
+						putlog "dZSbot warning: Invalid log line \"$line\""
 					}
 				}
-				close $of
+				close $handle
 			} else {
-				putlog "dZSbot error: Unable to open log file \"$glftpdlog($log)\" ($error)."
-				return 0
+				putlog "dZSbot error: Unable to open log file \"$logpath\" ($error)."
 			}
 		}
-		set lastoct($log) [file size $glftpdlog($log)]
+		set lastread($logid) [file size $logpath]
 	}
 
-	foreach login [array names loginlog] {
-		if {$loglastoct($login) < [file size $loginlog($login)] && [expr [file size $loginlog($login)] - $loglastoct($login) - $max_log_change] < 0} {
-			if {![catch {set of [open $loginlog($login) r]} error]} {
-				seek $of $loglastoct($login)
-				while {![eof $of]} {
-					if {[set line [gets $of]] != ""} {
-						lappend lines $line
-					}
-				}
-				close $of
-			} else {
-				putlog "dZSbot error: Unable to open log file \"$loginlog($login)\" ($error)."
-				return 0
-			}
-		}
-		set loglastoct($login) [file size $loginlog($login)]
-	}
+	foreach {type event line} $lines {
+		putlog "DATA: type=$type event=\{$event\} line=\{$line\}"
 
-	foreach line $lines {
-		# Slightly hackish /daxxar
-		# (We remove the element if it's [*], since it's PID)
-		# (I store it in $pid so we can add a cookie for that later (or?))
-		set pid 0
-		if {[regexp {\[([0-9\ ]+)\]} $line dud pid]} {
-			regsub "\\\[$pid\\\] " $line "" line
-			set pid [string trim $pid]
-		}
-
-		# login.log hack by mcr
-		# fake a msgtype for each of the known login.log messages
-		#
-		if {[lrange $line 7 14] == "connection refused: ident@ip not added to any users."} {
-			set line [linsert $line 5 "IPNOTADDED:"]
-		}
-		if {[lrange $line 8 9] == "Bad user@host."} {
-		set line [linsert $line 5 "BADUSERHOST:"]
-		}
-		if {[lrange $line 8 9] == "Login failure."} {
-			set line [linsert $line 5 "BADPASSWD:"]
-		}
-
-		# If we cannot detect a msgtype - default to DEBUG: and insert that into the list ($line).
-		if {[string first ":" [lindex $line 5]] < 0} {
-			if {[string first "@" [lindex $line 5]] < 0} {
-				set msgtype "DEBUG"
-				if {[llength $line] < 5} {
-					set line [lappend $line "dummy debug"]
-				} else {
-					set line [linsert $line 5 "DEBUG:"]
-				}
-			} else {
-				set msgtype [string trim [lindex $line 5] "@"]
-			}
-		} else {
-			set msgtype [string trim [lindex $line 5] ":"]
-		}
-
-		# Catch regular as generated DEBUG lines.
-		if {$msgtype == "DEBUG"} {
-			# Now gather all list items after item 5 into one item compounded by {}
-			set tmp_begin [lrange $line 0 5]
-			set tmp [list [lrange $line 6 end]]
-			set line "$tmp_begin $tmp"
-		}
-
-		# Since PID is kinda special, we append this _after_ the above compound list item is generated.
-		if {$pid > 0} {
-			set line "$line $pid"
-		}
-
-		# Invite users to public and private channels
-		if {[string equal $msgtype "INVITE"]} {
-			set ircnick [lindex $line 6]
-			set nick [lindex $line 7]
-			set group [lindex $line 8]
-			foreach channel $invite_channels {puthelp "INVITE $ircnick $channel"}
-
-			foreach privchan [array names privchannel] {
-				if {[info exists privgroups($privchan)]} {
-					foreach privgroup $privgroups($privchan) {
-						if {[string equal $group $privgroup]} {
-							foreach channel $privchannel($privchan) {puthelp "INVITE $ircnick $channel"}
-						}
-					}
-				}
-				if {[info exists privusers($privchan)]} {
-					foreach privuser $privusers($privchan) {
-						if {[string equal $nick $privuser]} {
-							foreach channel $privchannel($privchan) {puthelp "INVITE $ircnick $channel"}
-						}
-					}
-				}
+		## Parse the login.log errors into announce types. This is quite hack'ish,
+		## but it's the easiest way since the login.log file lacks consistency.
+		if {$type == 1 && [regexp {(.+@.+) \((.+)\): (.+)} $line output hostmask ip error]} {
+			## The "event" variable contains the user name.
+			set line [list $event $hostmask $ip]
+			switch -exact -- $error {
+				"Bad user@host."           {set event "BADHOSTMASK"}
+				"Banned user@host."        {set event "BANNEDHOST"}
+				"Deleted."                 {set event "DELETED"}
+				"Login failure."           {set event "BADPASSWORD"}
+				"connection refused: ident@ip not added to any users." {set event "HOSTNOTADDED"}
+				default {putlog "dZSbot error: Internal error, unknown login error ($error)."; continue}
 			}
 		}
 
-		set path [lindex $line 6]
+		## Invite users to public and private channels.
+		if {[string equal $event "INVITE"]} {
+			eval invitechans [lrange $line 0 2]
+		}
 
-		if {[lsearch -exact $msgtypes(SECTION) $msgtype] != -1} {
+		if {[lsearch -exact $msgtypes(SECTION) $event] != -1} {
+			set path [lindex $line 0]
 			if {[denycheck $path]} {continue}
 			set section [getsectionname $path]
 
 			# Replace messages with custom messages
 			foreach rep [array names msgreplace] {
 				set rep [split $msgreplace($rep) ":"]
-				if {[string equal $msgtype [lindex $rep 0]]} {
+				if {[string equal $event [lindex $rep 0]]} {
 					if {[string match -nocase [lindex $rep 1] $path]} {
-						set msgtype [lindex $rep 2]
+						set event [lindex $rep 2]
 					}
 				}
 			}
-		} elseif {[lsearch -exact $msgtypes(DEFAULT) $msgtype] != -1} {
+		} elseif {[lsearch -exact $msgtypes(DEFAULT) $event] != -1} {
 			set section $defaultsection
 		} else {
-			putlog "dZSbot error: Undefined message type \"$msgtype\", check \"msgtypes(SECTION)\" and \"msgtypes(DEFAULT)\" in the config."; continue
+			putlog "dZSbot error: Undefined message type \"$event\", check \"msgtypes(SECTION)\" and \"msgtypes(DEFAULT)\" in the config."; continue
 		}
-		if {![info exists variables($msgtype)]} {
-			putlog "dZSbot error: \"variables($msgtype)\" not defined in the config, type becomes \"DEFAULT\"."
-			set msgtype "DEFAULT"
+		if {![info exists variables($event)]} {
+			putlog "dZSbot error: \"variables($event)\" not defined in the config, type becomes \"DEFAULT\"."
+			set event "DEFAULT"
 		}
-		if {([info exists disable($msgtype)] && $disable($msgtype) != 1) && ![typecheck $section $msgtype]} {
-			sndall $msgtype $section [parse $msgtype [lrange $line 6 end] $section]
-			postcmd $msgtype $section $path
+		if {([info exists disable($event)] && $disable($event) != 1) && ![eventcheck $section $event]} {
+			## TODO:
+			## - add a script handler for post/pre event scripts
+			## - add precmd(event) pre=before announce / post=after announce
+			## - if the precmd script returns FALSE (0) we skip the announce
+			##if {![precmd $event $section $line]} {continue}
+
+			sndall $event $section [parse $event $section $line]
+
+			##TODO:
+			## - move postcmd to use the script handler
+			#postcmd $event $section $line
 		}
 	}
-
 	if {$glversion == 1} {
 		launchnuke
 	}
-
 	return 0
 }
 
 #################################################################################
 # Post Command                                                                  #
 #################################################################################
-proc postcmd {msgtype section path} {
-	global postcommand
-
-	if {[info exists postcommand($msgtype)]} {
-		foreach cmd $postcommand($msgtype) {
-			if {[string equal -length 5 "exec " $cmd]} {
-				set cmd [string range $cmd 5 end]
-				if {[catch {exec $cmd $msgtype $section $path} error]} {
-					putlog "dZSbot error: Unable to execute post command \"$cmd\" ($error)."
-				}
-			} else {
-				if {[catch {$cmd $msgtype $section $path} error]} {
-					putlog "dZSbot error: Unable to evaluate post command \"$cmd\" ($error)."
-				}
-			}
-		}
-	}
-}
+## TODO: trash this garbage and add a more generic handler (?)
+#proc postcmd {msgtype section path} {
+#	global postcommand
+#
+#	if {[info exists postcommand($msgtype)]} {
+#		foreach cmd $postcommand($msgtype) {
+#			if {[string equal -length 5 "exec " $cmd]} {
+#				set cmd [string range $cmd 5 end]
+#				if {[catch {exec $cmd $msgtype $section $path} error]} {
+#					putlog "dZSbot error: Unable to execute post command \"$cmd\" ($error)."
+#				}
+#			} else {
+#				if {[catch {$cmd $msgtype $section $path} error]} {
+#					putlog "dZSbot error: Unable to evaluate post command \"$cmd\" ($error)."
+#				}
+#			}
+#		}
+#	}
+#}
 
 #################################################################################
 # Get Section Name                                                              #
@@ -441,110 +385,83 @@ proc trimtail {strsrc strrm} {
 #################################################################################
 # CONVERT BASIC COOKIES TO DATA                                                 #
 #################################################################################
-proc basicreplace {string section} {
+proc basicreplace {message section} {
 	global cmdpre sitename
 	return [string map [list "%cmdpre" $cmdpre "%section" $section\
-		"%sitename" $sitename "%bold" \002 "%uline" \037 "%color" \003] $string]
+		"%sitename" $sitename "%bold" \002 "%uline" \037 "%color" \003] $message]
+}
+
+#################################################################################
+# Path Filter                                                                   #
+#################################################################################
+proc replacepath {message basepath path} {
+	set path [split $path "/"]
+	set pathitems [llength $path]
+	set basepath [split $basepath "/"]
+	set baseitems [llength $basepath]
+	set relname [join [lrange $path [expr {$baseitems - 1}] end] "/"]
+
+	set message [replacevar $message "%relname" $relname]
+	set message [replacevar $message "%reldir" [lindex $path [expr {$pathitems - 1}]]]
+	set message [replacevar $message "%path" [lindex $path [expr {$pathitems - 2}]]]
+	return $message
 }
 
 #################################################################################
 # CONVERT COOKIES TO DATA                                                       #
 #################################################################################
-proc parse {msgtype msgline section} {
-	global announce defaultsection disable mpath pid random sitename theme theme_fakes glversion variables
-	set type $msgtype
+proc parse {event section line} {
+	global announce defaultsection disable glversion mpath random sitename theme theme_fakes variables
 
-	if {[string equal $type "NUKE"] || [string equal $type "UNNUKE"]} {
+	if {[string equal $event "NUKE"] || [string equal $event "UNNUKE"]} {
 		if {$glversion == 1} {
-			fuelnuke $type [lindex $msgline 0] $section $msgline
+			fuelnuke $event [lindex $line 0] $section $line
 		} elseif {$glversion == 2} {
-			launchnuke2 $type [lindex $msgline 0] $section [lrange $msgline 1 3] [lrange $msgline 4 end]
+			launchnuke2 $event [lindex $line 0] $section [lrange $line 1 3] [lrange $line 4 end]
 		} else {
 			putlog "dZSbot error: Internal error, unknown glftpd version ($glversion)."
 		}
 		return ""
 	}
 
-	if {![info exists variables($type)]} {
-		if {$pid == 0} {
-			putlog "dZSbot error: \"variables($type)\" not set in theme, type becomes \"DEFAULT\""
-			set type "DEFAULT"
-		} else {
-			if {$disable(FAILLOGIN) == 1} {
-				return ""
-			} else {
-				set f_user $type
-				set type "FAILLOGIN"
-			}
-		}
+	if {![info exists announce($event)]} {
+		putlog "dZSbot error: \"announce($event)\" not set in theme, event becomes \"DEFAULT\""
+		set event "DEFAULT"
 	}
-	if {![info exists announce($type)]} {
-		if {$pid == 0} {
-			putlog "dZSbot error: \"announce($type)\" not set in theme, type becomes \"DEFAULT\""
-			set type "DEFAULT"
-		} else {
-			if {$disable(FAILLOGIN) == 1} {
-				return ""
-			} else {
-				set f_user $type
-				set type "FAILLOGIN"
-			}
-		}
-	}
+	set vars $variables($event)
 
-	set vars $variables($type)
-
-	if {[string equal [lindex $announce($type) 0] "random"] && [string is alnum -strict [lindex $announce($type) 1]]} {
-		set output $random($msgtype\-[rand [lindex $announce($type) 1]])
+	## Random announce messages
+	if {[string equal "random" [lindex $announce($event) 0]] && [string is digit -strict [lindex $announce($event) 1]]} {
+		set output $random(${event}-[rand [lindex $announce($event) 1]])
 	} else {
-		set output $announce($type)
+		set output $announce($event)
 	}
 
 	set output "$theme(PREFIX)$output"
-	if {[string equal $section $defaultsection] && [info exists theme_fakes($type)]} {
-		set section $theme_fakes($type)
+	if {[string equal $section $defaultsection] && [info exists theme_fakes($event)]} {
+		set section $theme_fakes($event)
 	}
 	set output [basicreplace $output $section]
 	set cnt 0
 
+	## Path filter parsing
 	if {[string equal "%pf" [lindex $vars 0]]} {
-		set split [split [lindex $msgline 0] "/"]
-		set ll [llength $split]
-
-		set split2 [split $mpath "/"]
-		set sl [llength $split2]
-
-		set temp [lrange $split [expr $sl - 1] end]
-		set relname ""
-		foreach part $temp {
-			set relname $relname/$part
-		}
-		set temp [string range $relname 1 end]
-		set output [replacevar $output "%relname" $temp]
-		set output [replacevar $output "%reldir" [lindex $split [expr $ll -1]]]
-		set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
-		set vars [string range $vars 4 end]
-		set cnt 1
-	} elseif {[string equal "%failed_nick" [lindex $vars 0]] && $pid != 0} {
-		set output [replacevar $output "%failed_nick" $f_user ]
-		set vars [string range $vars 13 end]
-		set ip1 [lindex $msgline 1]
-		set ip2 [string range $ip1 1 [expr [string length $ip1] - 3]]
-		set msgline [replacevar $msgline $ip1 $ip2]
-		set cnt 0
+		set output [replacepath $output $mpath [lindex $line 0]]
+		set vars [lreplace $vars 0 0]
+		incr cnt
 	}
 
+	## Replace variables and format the %loop cookies
 	set loop 1
-
 	foreach vari $vars {
 		if {[llength $vari] > 1} {
 			set cnt2 0
 			set cnt3 1
-			set values [lindex $msgline $cnt]
+			set values [lindex $line $cnt]
 			set output2 ""
 			foreach value $values {
 				if {$cnt2 == 0} {
-					append output2 "$announce(${type}_LOOP${loop})"
+					append output2 "$announce(${event}_LOOP${loop})"
 				}
 				if {[string match "*speed" [lindex $vari $cnt2]]} {
 					set output2 [replacevar $output2 "[lindex $vari $cnt2]" [format_speed $value $section]]
@@ -565,14 +482,13 @@ proc parse {msgtype msgline section} {
 			incr loop
 		} else {
 			if {[string match "*speed" $vari]} {
-				set output [replacevar $output $vari [format_speed [lindex $msgline $cnt] $section]]
+				set output [replacevar $output $vari [format_speed [lindex $line $cnt] $section]]
 			} else {
-				set output [replacevar $output $vari [lindex $msgline $cnt]]
+				set output [replacevar $output $vari [lindex $line $cnt]]
 			}
 		}
 		incr cnt
 	}
-
 	return [themereplace $output $section]
 }
 
@@ -1352,29 +1268,61 @@ proc showstats {type time nick uhost hand chan argv} {
 	return
 }
 
+
 #################################################################################
-# INVITE CHECK                                                                  #
+# Invite User                                                                   #
 #################################################################################
-proc invite {nick host hand arg} {
+proc invitechans {nick user group} {
+	global invite_channels privchannel privgroups privusers
+	foreach chan $invite_channels {puthelp "INVITE $nick $chan"}
+	foreach {type chanlist} [array get privchannel] {
+		if {[info exists privusers($type)]} {
+			foreach privuser $privusers($type) {
+				if {[string equal $user $privuser]} {
+					foreach chan $chanlist {puthelp "INVITE $nick $chan"}
+				}
+			}
+		}
+		if {[info exists privgroups($type)]} {
+			foreach privgroup $privgroups($type) {
+				if {[string equal $group $privgroup]} {
+					foreach chan $chanlist {puthelp "INVITE $nick $chan"}
+				}
+			}
+		}
+	}
+	return
+}
+
+#################################################################################
+# Invite Check                                                                  #
+#################################################################################
+proc invite {nick host hand argv} {
 	global location binary chanlist announce theme invite_channels disable
 
-	if {[llength $arg] == 2} {
-		set username [lindex $arg 0]
-		set password [lindex $arg 1]
-		set result [exec $binary(PASSCHK) $username $password $location(PASSWD)]
+	if {[llength $argv] > 1} {
+		set user [lindex $argv 0]
+		set pass [lindex $argv 1]
+		set result [exec $binary(PASSCHK) $user $pass $location(PASSWD)]
 		set group ""
 
-		set userfile "$location(USERS)$username"
+		set ufile
 
 		if {[string equal $result "MATCH"]} {
 			set output "$theme(PREFIX)$announce(MSGINVITE)"
-			foreach channel $invite_channels {puthelp "INVITE $nick $channel"}
-			foreach line [split [exec $binary(CAT) $userfile] "\n"] {
-				if {[string equal -length 5 $line "GROUP"]} {
-					set group [lindex $line 1]
-					break
+			## Check the user file for the user's group.
+			if {![catch {set handle [open "$location(USERS)/$user" r]} error]} {
+				set data [read $handle]
+				close $handle
+				foreach line [split $data "\n"] {
+					if {[string equal -length 6 $line "GROUP "]} {
+						set group [lindex $line 1]; break
+					}
 				}
+			} else {
+				putlog "dZSbot error: Unable to open user file for \"$user\" ($error)."
 			}
+			invitechans $nick $user $group
 		} else {
 			set output "$theme(PREFIX)$announce(BADMSGINVITE)"
 		}
@@ -1461,7 +1409,6 @@ proc show_free {nick uhost hand chan arg} {
 #################################################################################
 proc launchnuke2 {type path section info nukees} {
 	global nuke hidenuke announce sitename theme mpath
-
 	set nuke(TYPE) $type
 	set nuke(PATH) $path
 	set nuke(SECTION) $section
@@ -1479,19 +1426,7 @@ proc launchnuke2 {type path section info nukees} {
 			append nuke(NUKEE) $nukee $theme(SPLITTER)
 		}
 	}
-
 	set nuke(NUKEE) [trimtail $nuke(NUKEE) $theme(SPLITTER)]
-	set split [split $nuke(PATH) "/"]
-	set ll [llength $split]
-	set split2 [split $mpath "/"]
-	set sl [llength $split2]
-	set temp [lrange $split [expr $sl - 1] end]
-	set relname ""
-	foreach part $temp {
-		set relname $relname/$part
-	}
-	set relname [string range $relname 1 end]
-
 	set output "$theme(PREFIX)$announce($nuke(TYPE))"
 	set output [replacevar $output "%nuker" $nuke(NUKER)]
 	set output [replacevar $output "%nukees" $nuke(NUKEE)]
@@ -1499,10 +1434,7 @@ proc launchnuke2 {type path section info nukees} {
 	set output [replacevar $output "%multiplier" $nuke(MULT)]
 	set output [replacevar $output "%reason" $nuke(REASON)]
 	set output [replacevar $output "%section" $nuke(SECTION)]
-	set output [replacevar $output "%relname" $relname]
-	set output [replacevar $output "%reldir" [lindex $split [expr $ll -1]]]
-	set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
-	set output [themereplace [basicreplace $output $nuke(TYPE)] "none"]
+	set output [replacepath $output $mpath $nuke(PATH)]
 	sndall $nuke(TYPE) $nuke(SECTION) $output
 }
 
@@ -1510,7 +1442,7 @@ proc launchnuke2 {type path section info nukees} {
 # UPDATE NUKE BUFFER (GL1.0)                                                    #
 #################################################################################
 proc fuelnuke {type path section line} {
-	global nuke hidenuke
+	global hidenuke nuke
 
 	if {$type == $nuke(LASTTYPE) && $path == $nuke(LASTDIR) && $nuke(SHOWN) == 0} {
 		if {[lsearch -exact $hidenuke [lindex $line 2]] == -1} {
@@ -1537,20 +1469,9 @@ proc fuelnuke {type path section line} {
 # FLUSH NUKE BUFFER  (GL1.0)                                                    #
 #################################################################################
 proc launchnuke {} {
-	global nuke sitename announce theme mpath
+	global announce mpath nuke theme
 	if {$nuke(SHOWN) == 1} {return 0}
 	set nuke(NUKEE) [trimtail $nuke(NUKEE) $theme(SPLITTER)]
-
-	set split [split $nuke(PATH) "/"]
-	set ll [llength $split]
-	set split2 [split $mpath "/"]
-	set sl [llength $split2]
-	set temp [lrange $split [expr $sl - 1] end]
-	set relname ""
-	foreach part $temp {
-		set relname $relname/$part
-	}
-	set relname [string range $relname 1 end]
 
 	set output "$theme(PREFIX)$announce($nuke(TYPE))"
 	set output [replacevar $output "%nuker" $nuke(NUKER)]
@@ -1559,12 +1480,9 @@ proc launchnuke {} {
 	set output [replacevar $output "%multiplier" $nuke(MULT)]
 	set output [replacevar $output "%reason" $nuke(REASON)]
 	set output [replacevar $output "%section" $nuke(SECTION)]
+	set output [replacepath $output $mpath $nuke(PATH)]
 	set output [replacevar $output "%relname" $relname]
-	set output [replacevar $output "%reldir" [lindex $split [expr $ll -1]]]
-	set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
-	set output [themereplace [basicreplace $output $nuke(TYPE)] "none"]
 	sndall $nuke(TYPE) $nuke(SECTION) $output
-
 	set nuke(SHOWN) 1
 }
 
@@ -1711,7 +1629,7 @@ proc help {nick uhost hand chan arg} {
 # LOAD A THEME FILE                                                             #
 #################################################################################
 proc loadtheme {file} {
-	global announce scriptpath theme theme_fakes
+	global announce scriptpath theme theme_fakes variables
 	unset announce
 	set announce(THEMEFILE) $file
 
@@ -1744,10 +1662,16 @@ proc loadtheme {file} {
 	foreach name [array names theme_fakes] {set theme_fakes($name) [themereplace_startup $theme_fakes($name)]}
 	foreach name [array names announcetmp] {set announce($name) [themereplace_startup $announcetmp($name)]}
 
+	## Sanity checks
 	foreach type {COLOR1 COLOR2 COLOR3 PREFIX KB KBIT MB MBIT} {
 		if {[lsearch -exact [array names theme] $type] == -1} {
 			putlog "dZSbot error: Missing required theme setting \"$type\", failing."
 			return 0
+		}
+	}
+	foreach type [concat [array names variables] NUKE UNNUKE NUKEES] {
+		if {[lsearch -exact [array names announce] $type] == -1} {
+			putlog "dZSbot warning: Missing announce setting \"announce.$type\" in the theme file."
 		}
 	}
 	return 1
@@ -1818,59 +1742,55 @@ proc themereplace {targetString section} {
 # START UP STUFF                                                                #
 #################################################################################
 
-foreach entry [array names binary] {
+## Check binary and file locations
+foreach {filename filepath} [array get binary] {
 	if {![istrue $bnc(ENABLED)]} {
-		if {[string equal "CURL" $entry]} {continue}
-		if {[string equal "PING" $entry] && ![istrue $bnc(PING)]} {continue}
+		if {[string equal "CURL" $filename]} {continue}
+		if {[string equal "PING" $filename] && ![istrue $bnc(PING)]} {continue}
 	}
-	if {![file executable $binary($entry)]} {
-		putlog "dZSbot error: Invalid path/permissions for $entry - please fix."
+	if {![file executable $filepath]} {
+		putlog "dZSbot error: Invalid path/permissions for $filename ($filepath)."
 		set dzerror 1
 	}
 }
 
-foreach entry [array names location] {
-	if {![file exists $location($entry)]} {
-		putlog "dZSbot error: Invalid path for $entry - please fix."
+foreach {filename filepath} [array get location] {
+	if {![file exists $filepath]} {
+		putlog "dZSbot error: Invalid path for for $filename ($filepath)."
 		set dzerror 1
 	}
 }
 
-set logcount 0
-foreach entry [array names glftpdlog] {
-	if {![file exists $glftpdlog($entry)]} {
-		putlog "dZSbot error: Could not find log file $glftpdlog($entry)."
+## Logs to parse
+set logid 0
+set loglist "" ;# A list of logs in the following format: <type> <id> <path>
+foreach {filename filepath} [array get glftpdlog] {
+	if {![file readable $filepath]} {
+		putlog "dZSbot error: Unable to read the glftpd log \"$filepath\"."
 		set dzerror 1
-		unset glftpdlog($entry)
 	} else {
-		incr logcount
-		set lastoct($entry) [file size $glftpdlog($entry)]
+		lappend loglist 0 [incr logid] $filepath
+		set lastread($logid) [file size $filepath]
 	}
 }
-if {!$logcount} {
-	putlog "dZSbot error: No gl logfiles found!"
+
+foreach {filename filepath} [array get loginlog] {
+	if {![file readable $filepath]} {
+		set dzerror 1
+		putlog "dZSbot error: Unable to read the login log \"$filepath\"."
+	} else {
+		lappend loglist 1 [incr logid] $filepath
+		set lastread($logid) [file size $filepath]
+	}
+}
+if {!$logid} {
+	putlog "dZSbot error: No logs found!"
 	set dzerror 1
 } else {
-	putlog "dZSbot: Number of gl logfiles found: $logcount"
+	putlog "dZSbot: Number of logs found: $logcount"
 }
 
-set logcount 0
-foreach entry [array names loginlog] {
-	if {![file exists $loginlog($entry)]} {
-		putlog "dZSbot: Could not find log file $loginlog($entry)."
-		set dzerror 1
-		unset loginlog($entry)
-	} else {
-		incr logcount
-		set loglastoct($entry) [file size $loginlog($entry)]
-	}
-}
-if {!$logcount} {
-	putlog "dZSbot warning: No login logfiles found!"
-} else {
-	putlog "dZSbot: Number of login logfiles found: $logcount"
-}
-
+## Detect glftpd version
 if {[string equal -nocase "AUTO" $use_glftpd2]} {
 	if {![info exists binary(GLFTPD)]} {
 		die "dZSbot: you did not thoroughly edit the $scriptpath/dZSbot.conf file (hint: binary(GLFTPD))."
@@ -1891,6 +1811,7 @@ if {[string equal -nocase "AUTO" $use_glftpd2]} {
 	putlog "dZSbot: glftpd version defined as: $glversion."
 }
 
+## Invite checks
 if {![info exists invite_channels] && [info exists chanlist(INVITE)]} {
 	putlog "dZSbot warning: No \"invite_channels\" defined in the config, setting to \"$chanlist(INVITE)\" (chanlist(INVITE))"
 	set invite_channels $chanlist(INVITE)
@@ -1900,16 +1821,9 @@ if {[istrue $enable_irc_invite]} {
 	bind msg -|- !invite invite
 }
 
-if {[info exists dZStimer]} {
-	if {[catch {killutimer $dZStimer} error]} {
-		putlog "dZSbot warning: Unable to kill log timer ($error)."
-		putlog "dZSbot warning: You should .restart the bot to be safe."
-	}
-}
-set dZStimer [utimer 1 "readlog"]
-
+## Load the theme file
 if {![loadtheme $announce(THEMEFILE)]} {
-	if {[loadtheme "default.zst"]} {
+	if {[loadtheme "themes/default.zst"]} {
 		putlog "dZSbot warning: Unable to load theme $announce(THEMEFILE), loaded default.zst instead."
 	} else {
 		putlog "dZSbot error: Unable to load the themes $announce(THEMEFILE) and default.zst."
@@ -1917,6 +1831,14 @@ if {![loadtheme $announce(THEMEFILE)]} {
 	}
 }
 
+## Start the log timer
+if {[info exists dZStimer] && [catch {killutimer $dZStimer} error]} {
+	putlog "dZSbot warning: Unable to kill log timer ($error)."
+	putlog "dZSbot warning: You should .restart the bot to be safe."
+}
+set dZStimer [utimer 1 readlog]
+
+## Default channels and variables
 if {![array exists chanlist] || ![info exists chanlist(DEFAULT)]} {
 	putlog "dZSbot error: No entry in chanlist set, or \"chanlist(DEFAULT)\" not set."
 	set dzerror 1

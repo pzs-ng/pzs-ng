@@ -34,7 +34,6 @@ MBIT		= "%b{%value}Mbit/s"
 fakesection.INVITE = "iNViTE"
 
 # output done by glftpd
-announce.DEBUG	 				= "%c1{%b{(Debug)}} %msg"
 announce.DEFAULT 				= "%c1{%b{(%section)}} %msg"
 announce.NEWDIR					= "%c1{%b{(New Race)}} @ %c1{%b{(%section)}} %b{%relname} (started by %b{%u_name})"
 announce.DELDIR					= "%c1{%b{(Deleted)}} %b{%relname} @ %c1{%b{(%section)}} by %b{%u_name}"
@@ -176,7 +175,7 @@ announce.SPEEDERROR				= "%c3{%b{(Error)}} Nope, try again. Found noone by that 
 announce.WELCOME				= "Welcome to %b{%sitename}'s sitechan. Type %cmdprehelp for help."
 announce.FREE					= "%c1{%b{(Space)}} %devicesTotals: %b{%free} of %b{%total} (used %percentage%)."
 announce.FREE-DEV				= "%c1{%b{%section:}} %b{%free} of %b{%total} (used %percentage%) :: "
-announce.UPTIME                 = "[%b{Uptime}] System: %system, %b{%users} user(s), %time, load: %load Eggdrop: %eggdrop"
+announce.UPTIME                 = "[%b{Uptime}] System: %time, %b{%users} user(s), load: %load Eggdrop: %eggdrop"
 
 # 3rd party imdb announce - example for psxc-imdb
 announce.IMDBVAR				= "%c1{%b{(%section)}} %b{%imdbname} (%imdburl), a %imdbdirector movie which scored %b{%imdbscore of 10} (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.|%c1{%b{(%section)}} %b{%imdbname} plot summary: %imdbplot \%imdbbar\"

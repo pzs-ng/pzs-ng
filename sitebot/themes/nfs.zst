@@ -27,7 +27,6 @@ MBIT		= "%b{%value}Mbit/s"
 fakesection.INVITE = "iNViTE"
 
 # output done by glftpd
-announce.DEBUG	 				= "[%b{debug }] %msg"
 announce.DEFAULT 				= "[%b{info  }] %msg"
 announce.NEWDIR				        = "%b{%c4{-NEW-}} %b{driver}  %b{%u_name}@%b{%u_tagline} sponsored by %b{%g_name} is first off the starting line at %b{%c3{-%section-}}, racing for %uline%b{-%relname-}"
 announce.DELDIR				        = "%b{%c2{-DELETE-}} %b{driver} %b{%u_name}@%b{%u_tagline} lost control and crashed into %b{%uline-%relname-}%uline at %b{%c3{-%section-}} circuit."
@@ -168,7 +167,7 @@ announce.SPEEDERROR		= "%b{%c5{-BANDWIDTH-}} Nope, try again. Found noone by tha
 announce.WELCOME		= "Welcome to %b{%sitename}'s sitechan. Type %cmdprehelp for help."
 announce.FREE		    = "%b{%c2{%section}} %devices"
 announce.FREE-DEV	    = "%b{%c3{%section}} - %b{%free} of %b{%total} (used %percentage%) "
-announce.UPTIME         = "%b{%c5{-UPTIME-}} System: %system, %b{%users} user(s), %time, load: %load Eggdrop: %eggdrop"
+announce.UPTIME         = "%b{%c5{-UPTIME-}} System: %time, %b{%users} user(s), load: %load Eggdrop: %eggdrop"
 
 # 3rd party imdb announce - example for psxc-imdb
 announce.IMDBVAR		= "%b{%c6{-IMDB-}} %b{%c3{-%section-}} - %b{%imdbname} %b{(%imdburl)}, a %b{%imdbdirector} movie which scored %b{%imdbscore} of %b{10} %b{(%imdbvotes people voted%b{)}. It premiered in %b{%imdbpremiereinfo}, with %b{%imdbnumscreens} screens on the opening weekend.|%b{%c4{-IMDB-}} [%b{%c2{IMDB}] [%b{%c3{%section}] %b{%imdbname} plot summary: {%imdbplot %imdbbar}"

@@ -11,10 +11,10 @@ Quickreference of cookies:
 # BADGENRE:
 %g_name, %genre, %u_name
 
-# BADPASSWD:
+# BADHOSTMASK:
 %u_hostmask, %u_ip, %u_name
 
-# BADUSERHOST:
+# BADPASSWD:
 %u_hostmask, %u_ip, %u_name
 
 # BADYEAR:
@@ -30,6 +30,9 @@ Quickreference of cookies:
 %filename, %g_name, %releasename, %u_name
 
 # BAD_FILE_DISALLOWED:
+%filename, %g_name, %releasename, %u_name
+
+# BAD_FILE_DUPENFO:
 %filename, %g_name, %releasename, %u_name
 
 # BAD_FILE_GENRE:
@@ -49,6 +52,9 @@ Quickreference of cookies:
 
 # BAD_FILE_ZIP:
 %filename, %g_name, %releasename, %u_name
+
+# BANNEDHOST:
+%u_hostmask, %u_ip, %u_name
 
 # COMPLETE_AUDIO_CBR:
 %album, %artist, %audio, %bitrate, %codec, %filename, %g_name, %g_racer_avgspeed
@@ -159,20 +165,17 @@ Quickreference of cookies:
 %u_racer_files, %u_racer_mbytes, %u_racer_monthup, %u_racer_name, %u_racer_percent
 %u_racer_position, %u_racer_wkup, %u_tagline
 
-# DEBUG:
-%msg, %u_pid
-
 # DEFAULT:
 %msg
 
 # DELDIR:
 %g_name, %u_name, %u_tagline
 
+# DELETED:
+%u_hostmask, %u_ip, %u_name
+
 # DOUBLESFV:
 %filename, %g_name, %releasename, %u_name
-
-# FAILLOGIN:
-%failed_nick, %u_hostmask, %u_ip, %u_pid, %word1, %word2
 
 # HALFWAY_NORACE_AUDIO:
 %filename, %g_count, %g_leader_avgspeed, %g_leader_files, %g_leader_mbytes, %g_leader_name
@@ -271,10 +274,10 @@ Quickreference of cookies:
 %g_name, %u_ircnick, %u_name
 
 # IPNOTADDED:
-%u_hostmask, %u_ip
+%u_hostmask, %u_ip, %u_name
 
 # LOGIN:
-%dummy, %g_name, %u_hostmask, %u_ip, %u_name, %u_pid, %u_tagline
+%dummy, %g_name, %u_hostmask, %u_ip, %u_name, %u_tagline
 
 # LOGOUT:
 %g_name, %u_hostmask, %u_ip, %u_name, %u_tagline

@@ -18,6 +18,13 @@
 # Changes
 ###############################################################
 
+r1418: Failed login theme changes and removed the cat binary.
+- Theme file (.zst) changes:
+Renamed: BADUSERHOST -> BADHOSTMASK and BADPASSWD -> BADPASSWORD.
+    New: BAD_FILE_DUPENFO, BANNEDHOST, and DELETED.
+Removed: DEBUG and FAILLOGIN.
+- Remove "binary(CAT)" from your config, it is no longer needed.
+
 r1386: The %system cookie was removed from uptime.
 - Remove the %system cookie from "announce.UPTIME" in your theme file (.zst).
 
@@ -46,7 +53,7 @@ r1335: Added an example of "denypost" to the config.
 r1331: Theming can be used in the help file.
 - Replace dZSbot.help with the newer one.
 
-r1328: Renamed a cookie and changed speed formatting.
+r1328: Renamed a USER cookie and changed speed formatting.
 - The %uspeed cookie was renamed to %speed in "announce.USER".
 - Change the following values in your theme file (.zst):
 KB = "KB/s"
@@ -65,6 +72,6 @@ r1314: The %idletime cookie is now formatted by the bot.
 
 r1311: Section announce changes.
 - Renamed config option "msgtypes(RACE)" to "msgtypes(SECTION)".
-- Removed type(<section-name>) "RACE" config options (no longer needed).
+- Remove all type(<section-name>) config options, they're no longer needed.
 - New options to redirect and disable announces: disabletypes() and redirect().
   Check the dZSbconf.defaults.tcl for details on these new options.
