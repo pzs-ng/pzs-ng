@@ -1,7 +1,9 @@
 /* Table changed apr. 27th, 2004 - ripped from cksfv */
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 
 unsigned int	crc32_table[256] = {
 	0x00000000, 0x77073096, 0xee0e612c, 0x990951ba,
@@ -73,26 +75,28 @@ unsigned int	crc32_table[256] = {
 unsigned int 
 calc_crc32(char *f)
 {
-	FILE           *in;
-	unsigned char  *buf;
+	FILE		*in;
+	//unsigned char  *buf;
+	char		buf[32768];
 	unsigned int	crc;
-	size_t		i      , j;
+	size_t		i, j;
 	int		k;
 
 	if (!(in = fopen(f, "rb"))) {
-		printf("\nOops! Cannot fopen %s. (Maybe a dir? - check perms)\n", f);
+		fprintf(stderr, "Error opening %s: %s\n", f, strerror(errno));
 		return 0;
 //		exit(2);
 	}
-	buf = malloc(32766);
+	//buf = malloc(32766);
 	crc = 0xFFFFFFFF;
-	while ((i = fread(buf, 1, 32766, in)) > 0) {
+	//while ((i = fread(buf, 1, 32766, in)) > 0) {
+	while ((i = fread(buf, 1, sizeof(buf), in)) > 0) {
 		for (j = 0; j < i; j++) {
 			k = (crc ^ buf[j]) & 0x000000FFL;
 			crc = ((crc >> 8) & 0x00FFFFFFL) ^ crc32_table[k];
 		}
 	}
 	fclose(in);
-	free(buf);
+	//free(buf);
 	return ~crc;
 }
