@@ -590,6 +590,8 @@ clear_file(const char *path, char *f)
 
 	RACEDATA	rd;
 
+	printf("%s\n%s\n", path, f);
+
 	if ((file = fopen(path, "r+"))) {
 		while (fread(&rd, sizeof(RACEDATA), 1, file)) {
 			if (strncmp(rd.fname, f, PATH_MAX) == 0) {
@@ -652,7 +654,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 
 	RACEDATA	rd;
 
-	clear_file(path, raceI->file.name);
+	//clear_file(path, raceI->file.name);
 
 	/* create file if it doesn't exist */
 	if ((id = open(path, O_CREAT | O_RDWR, 0666)) == -1) {
@@ -690,4 +692,40 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	
 	fclose(file);
 }
+
+/* remove file entry from racedata file */
+void
+remove_from_race(const char *path, const char *f)
+{
+	char		tmppath[PATH_MAX];
+	FILE		*file, *tmp;
+	
+	RACEDATA	rd;
+
+	if (!(file = fopen(path, "r+"))) {
+		d_log("Couldn't fopen racefile (%s): %s\n", path, strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+	
+	sprintf(tmppath, "%s/rd.%s.tmp", storage, f);
+
+	if (!(tmp = fopen(tmppath, "w"))) {
+		d_log("Couldn't fopen racefile (%s): %s\n", tmppath, strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+
+	while ((fread(&rd, sizeof(RACEDATA), 1, file)))
+		if (strcmp(rd.fname, f) != 0)
+			fwrite(&rd, sizeof(RACEDATA), 1, tmp);
+	
+	fclose(file);
+	fclose(tmp);
+
+	if (rename(tmppath, path) == -1) {
+		d_log("Failed rename of '%s' to '%s': %s", tmppath, path, strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+
+}
+
 

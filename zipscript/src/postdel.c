@@ -249,7 +249,7 @@ main(int argc, char **argv)
 			empty_dir = 1;
 		}
 		break;
-	case 1:
+	case 1: /* SFV */
 		d_log("Reading file count from sfvdata\n");
 		readsfv(g.l.sfv, &g.v, 0);
 
@@ -265,8 +265,12 @@ main(int argc, char **argv)
 		}
 		d_log("SFV was removed - removing progressbar/completebar and -missing pointers.\n");
 		removecomplete();
-		if (fileexists(g.l.sfv))
+
+		if (fileexists(g.l.sfv)) {
 			delete_sfv(g.l.sfv);
+			unlink(g.l.sfv);	
+		}
+
 		if (g.l.nfo_incomplete)
 			unlink(g.l.nfo_incomplete);
 		if (g.l.incomplete)
@@ -312,6 +316,7 @@ main(int argc, char **argv)
 				incomplete = 1;
 			}
 		}
+		remove_from_race(g.l.race, g.v.file.name);
 		break;
 	case 4:
 //		break;
