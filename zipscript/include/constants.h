@@ -60,12 +60,12 @@
 /* Special reformat cookies */
 #define fastestfile		"{%u} {%g} {%.3F}" /* Put in %l cookie */
 #define slowestfile		"{%u} {%g} {%.3S}" /* Put in %L cookie */
-#define racersmsg		"{%u(%g)}" /* Put in %R cookie */
+#define racersmsg		"%u(%g)" /* Put in %R cookie */
 #define audio_vbr		"{%X} {%z} {%Q} {VBR} {%I}" /* Put in %j cookie */
 #define audio_cbr		"{%X} {%z} {%Q} {CBR}"    /* Put in %j cookie */
 
 /* Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 & mpeg2.5 + layer1 & 2 can be added if needed */
-#define audio_race		"{%U} {%G} %R {%r} {%.0S}"
+#define audio_race		"{%U} {%G} {%R} {%r} {%.0S}"
 #define audio_sfv		"{%r} {%f}"
 #define audio_update		"{%U} {%G} {%f} {%.0S} {%w} {%Y} %j"
 #define audio_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
@@ -75,7 +75,7 @@
 #define audio_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G}"
 
 /* Video files - supports mpeg1/mpeg2 and various avi formats */
-#define video_race		"{%U} {%G} %R {%r} {%.0S}"
+#define video_race		"{%U} {%G} {%R} {%r} {%.0S}"
 #define video_sfv		"{%r} {%f}"
 #define video_update		"{%U} {%G} {%f} {%.0S} {%.1e}"
 #define video_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
@@ -85,7 +85,7 @@
 #define video_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G}"
 
 /* RAR - allows usage of compression mode cookie (%Z) for rarred releases */
-#define rar_race		"{%U} {%G} %R {%r} {%.0S}"
+#define rar_race		"{%U} {%G} {%R} {%r} {%.0S}"
 #define rar_sfv			"{%r} {%f}"
 #define rar_update		"{%U} {%G} {%f} {%.0S} {%.1e}"
 #define rar_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
@@ -96,7 +96,7 @@
 
 
 /* Rest of the stuff inside sfv */
-#define other_race		"{%U} {%G} %R {%r} {%.0S}"
+#define other_race		"{%U} {%G} {%R} {%r} {%.0S}"
 #define other_sfv		"{%r} {%f}"
 #define other_update		"{%U} {%G} {%f} {%.0S} {%.1e}"
 #define other_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
@@ -106,7 +106,7 @@
 #define other_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g}"
 
 /* Zipped files */
-#define zip_race		"{%U} {%G} %R {%r} {%.0S}"
+#define zip_race		"{%U} {%G} {%R} {%r} {%.0S}"
 #define zip_update		"{%U} {%G} {%f} {%.0S} {%.1e}"
 #define zip_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
 #define zip_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
