@@ -5,6 +5,12 @@ Quickreference of cookies:
 ## Read %g_ as 'Group'
 ## Read %t_ as 'Total'
 
+# ADDIP:
+%u_ip, %u_name, %u_siteop
+
+# ADDUSER:
+%u_name, %u_siteop
+
 # BADBITRATE:
 %bitrate, %g_name, %u_name
 
@@ -14,7 +20,7 @@ Quickreference of cookies:
 # BADHOSTMASK:
 %u_hostmask, %u_ip, %u_name
 
-# BADPASSWD:
+# BADPASSWORD:
 %u_hostmask, %u_ip, %u_name
 
 # BADYEAR:
@@ -55,6 +61,12 @@ Quickreference of cookies:
 
 # BANNEDHOST:
 %u_hostmask, %u_ip, %u_name
+
+# CHGRPADD:
+%g_name, %u_name, %u_siteop
+
+# CHGRPDEL:
+%g_name, %u_name, %u_siteop
 
 # COMPLETE_AUDIO_CBR:
 %album, %artist, %audio, %bitrate, %codec, %filename, %g_name, %g_racer_avgspeed
@@ -174,8 +186,17 @@ Quickreference of cookies:
 # DELETED:
 %u_hostmask, %u_ip, %u_name
 
+# DELIP:
+%u_ip, %u_name, %u_siteop
+
+# DELUSER:
+%u_name, %u_siteop
+
 # DOUBLESFV:
 %filename, %g_name, %releasename, %u_name
+
+# GADDUSER:
+%g_name, %u_name, %u_siteop
 
 # HALFWAY_NORACE_AUDIO:
 %filename, %g_count, %g_leader_avgspeed, %g_leader_files, %g_leader_mbytes, %g_leader_name
@@ -253,13 +274,6 @@ Quickreference of cookies:
 # IMDBFIND:
 %msg
 
-# IMDBFINDVAR:
-%imdbbar, %imdbbusinessdata, %imdbcasting, %imdbcastleadchar, %imdbcastleadname, %imdbcertification
-%imdbcommentshort, %imdbcountry, %imdbdestination, %imdbdirector, %imdbdirname, %imdbgenre
-%imdbislimited, %imdblanguage, %imdblimitedinfo, %imdbname, %imdbnumscreens, %imdbplot
-%imdbpremiereinfo, %imdbrating, %imdbruntime, %imdbscore, %imdbtagline, %imdbtitle
-%imdburl, %imdbvotes, %imdbyear
-
 # IMDBVAR:
 %imdbbar, %imdbbusinessdata, %imdbcasting, %imdbcastleadchar, %imdbcastleadname, %imdbcertification
 %imdbcommentshort, %imdbcountry, %imdbdestination, %imdbdirector, %imdbdirname, %imdbgenre
@@ -274,7 +288,7 @@ Quickreference of cookies:
 %g_name, %u_ircnick, %u_name
 
 # IPNOTADDED:
-%u_hostmask, %u_ip, %u_name
+%u_hostmask, %u_ip
 
 # LOGIN:
 %dummy, %g_name, %u_hostmask, %u_ip, %u_name, %u_tagline
@@ -324,6 +338,9 @@ Quickreference of cookies:
 %cds, %files, %g_name, %mbytes, %pregroup, %releasename, %section, %tagline, %user
 %who
 
+# PURGED:
+%u_name, %u_siteop
+
 # RACE_AUDIO:
 %a_gname %releasename, %a_name, %filename, %g_count, %g_name, %missing_files, %r_gname %t_timeleft
 %r_name, %t_duration, %t_files, %t_percent, %t_upfiles, %u_count, %u_name, %u_speed
@@ -349,6 +366,9 @@ Quickreference of cookies:
 %r_name, %t_duration, %t_files, %t_percent, %t_upfiles, %u_count, %u_name, %u_speed
 %u_tagline
 
+# READDED:
+%u_name, %u_siteop
+
 # REQFILLED:
 %g_name, %releasename, %u_name, %u_requester, %u_tagline
 
@@ -366,6 +386,9 @@ Quickreference of cookies:
 
 # SFV_VIDEO:
 %g_name, %releasename, %t_filecount, %u_name, %u_tagline
+
+# SYSOP:
+%msg
 
 # TAGLINE:
 %u_group, %u_name, %u_tagline

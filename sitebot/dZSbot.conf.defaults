@@ -18,13 +18,14 @@ set location(USERS)     "/glftpd/ftp-data/users/"
 set location(GLCONF)    "/etc/glftpd.conf"
 set location(GROUP)     "/glftpd/etc/group"
 
-# Multiple Log Files
-# If you wish to read several logfiles, uncomment/add and change path/name(s).
-#set glftpdlog(GL1)     "/glftpd/ftp-data/logs/glftpd.log"
-#set loginlog(LOGIN1)   "/glftpd/ftp-data/logs/login.log"
-#set glftpdlog(GL2)     "/glftpd/ftp-data/logs.ext/glftpd.log"
-#set loginlog(LOGIN2)   "/glftpd/ftp-data/logs.ext/login.log"
-set max_log_change      3000
+# Log Files - If you wish to read several logfiles, uncomment/add and change the following.
+#set glftpdlog(NORMAL)      "$glroot/ftp-data/logs/glftpd.log"
+#set loginlog(NORMAL)       "$glroot/ftp-data/logs/login.log"
+#set sysoplog(NORMAL)       "$glroot/ftp-data/logs/sysop.log"
+#set glftpdlog(EXTERNAL)    "$glroot/ftp-data/logs/glftpd.log"
+#set loginlog(EXTERNAL)     "$glroot/ftp-data/logs/login.log"
+#set sysoplog(EXTERNAL)     "$glroot/ftp-data/logs/sysop.log"
+set max_log_change          2048
 
 # These are the binaries the script will use. They are usually best left
 # as their default values (btw, check that they all are where they should
@@ -208,7 +209,7 @@ set announce(THEMEFILE) "themes/default.zst"
 # Announce types, "SECTION" types are path oriented (COMPLETE: /site/MP3/...),
 # and "REGULAR" types are regular event based announces.
 set msgtypes(SECTION)   "IMDB IMDBVAR PRE NEWDIR DELDIR NUKE UNNUKE WIPE WIPE-r BAD_FILE_0SIZE BAD_FILE_BITRATE BAD_FILE_CRC BAD_FILE_DISALLOWED BAD_FILE_DUPENFO BAD_FILE_GENRE BAD_FILE_NOSFV BAD_FILE_SFV BAD_FILE_WRONGDIR BAD_FILE_YEAR BAD_FILE_ZIP BADBITRATE BADGENRE BADYEAR COMPLETE_AUDIO_CBR COMPLETE_AUDIO_VBR COMPLETE_OTHER COMPLETE_RAR COMPLETE_VIDEO COMPLETE_ZIP COMPLETE_STAT_RACE_AUDIO_CBR COMPLETE_STAT_RACE_AUDIO_VBR COMPLETE_STAT_RACE_OTHER COMPLETE_STAT_RACE_RAR COMPLETE_STAT_RACE_VIDEO COMPLETE_STAT_RACE_ZIP DOUBLESFV HALFWAY_NORACE_AUDIO HALFWAY_NORACE_OTHER HALFWAY_NORACE_RAR HALFWAY_NORACE_VIDEO HALFWAY_NORACE_ZIP HALFWAY_RACE_AUDIO HALFWAY_RACE_OTHER HALFWAY_RACE_RAR HALFWAY_RACE_VIDEO HALFWAY_RACE_ZIP INCOMPLETE NEWLEADER_AUDIO NEWLEADER_OTHER NEWLEADER_RAR NEWLEADER_VIDEO NEWLEADER_ZIP RACE_AUDIO RACE_OTHER RACE_RAR RACE_VIDEO RACE_ZIP SFV_AUDIO SFV_OTHER SFV_RAR SFV_VIDEO UPDATE_CBR UPDATE_OTHER UPDATE_RAR UPDATE_VBR UPDATE_VIDEO UPDATE_ZIP"
-set msgtypes(DEFAULT)   "BADHOSTMASK BADMSGINVITE BADPASSWORD BANNEDHOST DELETED IMDBFIND INVITE IPNOTADDED LOGIN LOGOUT  MSGINVITE REQFILLED REQUEST TAGLINE TIMEOUT"
+set msgtypes(DEFAULT)   "ADDUSER GADDUSER CHGRPADD CHGRPDEL ADDIP DELIP  READDED DELUSER PURGED SYSOP BADHOSTMASK BADMSGINVITE BADPASSWORD BANNEDHOST DELETED LOGIN LOGOUT IPNOTADDED TIMEOUT IMDBFIND INVITE MSGINVITE REQFILLED REQUEST TAGLINE"
 
 # Redirect events to the defined channels.
 #set redirect(LOGIN)    "#pzs-ng #ng-staff"
@@ -234,12 +235,12 @@ set msgtypes(DEFAULT)   "BADHOSTMASK BADMSGINVITE BADPASSWORD BANNEDHOST DELETED
 
 # Set to 0 to allow trigger commands in all channels bot is in,
 # or set to 1 if you want the triggers to only work in $mainchan
-set disable(TRIGINALLCHAN)              0
+set disable(TRIGINALLCHAN)                  0
 
 # Are we disabling the announce of this stuff?
 # If its set to 1, we wont show it.
 
-## script announcements
+## Script announcements
 set disable(ALTWHO)                         0
 set disable(BADMSGINVITE)                   0
 set disable(DEFAULT)                        0
@@ -247,7 +248,7 @@ set disable(INVITE)                         0
 set disable(MSGINVITE)                      0
 set disable(WELCOME)                        0
 
-## login announcements
+## Login announcements
 set disable(LOGIN)                          1
 set disable(LOGOUT)                         1
 set disable(BADHOSTMASK)                    1
@@ -258,7 +259,19 @@ set disable(IPNOTADDED)                     1
 set disable(TAGLINE)                        1
 set disable(TIMEOUT)                        1
 
-## glftpd announcements
+## Sysop announcements
+set disable(ADDUSER)                        1
+set disable(GADDUSER)                       1
+set disable(CHGRPADD)                       1
+set disable(CHGRPDEL)                       1
+set disable(ADDIP)                          1
+set disable(DELIP)                          1
+set disable(READDED)                        1
+set disable(DELUSER)                        1
+set disable(PURGED)                         1
+set disable(SYSOP)                          1
+
+## glFTPd announcements
 set disable(DELDIR)                         0
 set disable(NEWDIR)                         0
 set disable(NUKE)                           0
@@ -268,14 +281,14 @@ set disable(REQUEST)                        0
 set disable(WIPE)                           0
 set disable(WIPE-r)                         0
 
-## 3rd party announcements
+## Third party announcements
 set disable(IMDB)                           0
 set disable(IMDBFIND)                       0
 set disable(IMDBVAR)                        0
 set disable(IPNOTADDED)                     1
 set disable(PRE)                            0
 
-## zipscript announcements
+## Zipscript announcements
 set disable(BAD_FILE_0SIZE)                 0
 set disable(BAD_FILE_BITRATE)               1
 set disable(BAD_FILE_CRC)                   0
@@ -347,72 +360,17 @@ set denypost    ""
 # Do not show these users if they get nuked (multiple entries allowed)
 set hidenuke    "UNKNOWN"
 
-## Defining variables for announce
-#
-# Example:
-#  set variables(PRE) "%pf %user %group %pregroup %files %mbytes"
-#  set announce(PRE)  "-%sitename- \[%section\] %user@%group launches new %pregroup-pre called %release (%mbytesM in %filesF)"
-#
-# Special variables:
-#  %pf       = path filter, must be the first parameter and contain full path of the release, it defines:
-#   %reldir  = Last directory in path ( /site/xxx/marissa-exxtasy/cd1 => cd1 )
-#   %path    = Second last directory in path ( /site/xxx/marissa-exxtasy/cd1 => marissa-exxtasy )
-#   %relname = all directories after those defined in paths
-#              ( paths(ISO) = "/site/xxx/" does: /site/xxx/marissa-exxtasy/cd1 => marissa-exxtasy/cd1 )
-#
-#  %bold    = bolds text
-#  %uline   = underlines text
-#  %section = current section name
-#
-#  %nuker   = name of nuker
-#  %multiplier = nuke multiplier
-#  %reason  = nuke reason
-#  %nukee   = ppl that got nuked
-#
-
-## Converts empty or zero variable to something else if defined
-#
-# Example:
-#  set zeroconvert(%user) "NoOne"
-
-# IMDB variables
-set zeroconvert(%imdbdirname)       "N/A"
-set zeroconvert(%imdburl)           "N/A"
-set zeroconvert(%imdbtitle)         "N/A"
-set zeroconvert(%imdbgenre)         "N/A"
-set zeroconvert(%imdbrating)        "N/A"
-set zeroconvert(%imdbcountry)       "N/A"
-set zeroconvert(%imdblanguage)      "N/A"
-set zeroconvert(%imdbcertification) "N/A"
-set zeroconvert(%imdbruntime)       "N/A"
-set zeroconvert(%imdbdirector)      "N/A"
-set zeroconvert(%imdbbusinessdata)  "N/A"
-set zeroconvert(%imdbpremiereinfo)  "N/A"
-set zeroconvert(%imdblimitedinfo)   "N/A"
-set zeroconvert(%imdbvotes)         "Less than 5"
-set zeroconvert(%imdbscore)         "0"
-set zeroconvert(%imdbname)          "N/A"
-set zeroconvert(%imdbyear)          "N/A"
-set zeroconvert(%imdbnumscreens)    "N/A"
-set zeroconvert(%imdbislimited)     "No idea."
-set zeroconvert(%imdbcastleadname)  "Uknown"
-set zeroconvert(%imdbcastleadchar)  "Uknown"
-set zeroconvert(%imdbtagline)       "No info found."
-set zeroconvert(%imdbplot)          "No info found."
-set zeroconvert(%imdbbar)           ".........."
-set zeroconvert(%imdbcasting)       "N/A"
-set zeroconvert(%imdbcommentshort)  "N/A"
-
 ## RANDOMIZING OUTPUT
 #
 # Example:
-#  set random(NEWDIR-0)       "-%sitename- \[%section\] + %user@%group creates a directory called %release"
-#  set random(NEWDIR-1)       "-%sitename- \[%section\] + %user@%group makes a directory called %release"
-#  set random(NEWDIR-2)       "-%sitename- \[%section\] + %user@%group does mkdir %release"
-#   TYPE --------^   ^
-#         ID --------^
-#
 #  set announce(NEWDIR) "random 3"
-#   TYPE ---------^        ^    ^
-#         RANDOM ----------^    ^
-#             # OF IDS ---------^
+#   TYPE ---------'        |    |
+#         RANDOM ----------'    |
+#             # OF IDS ---------'
+#
+#  set random(NEWDIR-0)       "-%sitename- \[%section\] + %u_name@%g_name creates a directory called %relname"
+#  set random(NEWDIR-1)       "-%sitename- \[%section\] + %u_name@%g_name makes a directory called %relname"
+#  set random(NEWDIR-2)       "-%sitename- \[%section\] + %u_name@%g_name does mkdir %relname"
+#   TYPE --------'   |
+#         ID --------'
+#

@@ -29,8 +29,9 @@ set location(GROUP)         "$glroot/etc/group"
 set location(PASSWD)        "$glroot/etc/passwd"
 set location(USERS)         "$glroot/ftp-data/users/"
 set location(GLCONF)        "/etc/glftpd.conf"
-set glftpdlog(GL1)          "$glroot/ftp-data/logs/glftpd.log"
-set loginlog(LOGIN1)        "$glroot/ftp-data/logs/login.log"
+set glftpdlog(NORMAL)       "$glroot/ftp-data/logs/glftpd.log"
+set loginlog(NORMAL)        "$glroot/ftp-data/logs/login.log"
+set sysoplog(NORMAL)        "$glroot/ftp-data/logs/sysop.log"
 set binary(GLFTPD)          "$glroot/bin/glftpd"
 set binary(INCOMPLETE)      "$glroot/bin/incomplete-list.sh"
 set binary(PASSCHK)         "$glroot/bin/passchk"
@@ -97,7 +98,7 @@ set disable(INVITE)                  0
 set disable(MSGINVITE)               0
 set disable(WELCOME)                 0
 
-## login announcements
+## Login announcements
 set disable(LOGIN)                   1
 set disable(LOGOUT)                  1
 set disable(BADHOSTMASK)             1
@@ -108,7 +109,19 @@ set disable(IPNOTADDED)              1
 set disable(TAGLINE)                 1
 set disable(TIMEOUT)                 1
 
-## glftpd announcements
+## Sysop announcements
+set disable(ADDUSER)                 1
+set disable(GADDUSER)                1
+set disable(CHGRPADD)                1
+set disable(CHGRPDEL)                1
+set disable(ADDIP)                   1
+set disable(DELIP)                   1
+set disable(READDED)                 1
+set disable(DELUSER)                 1
+set disable(PURGED)                  1
+set disable(SYSOP)                   1
+
+## glFTPd announcements
 set disable(DELDIR)                  0
 set disable(NEWDIR)                  0
 set disable(NUKE)                    0

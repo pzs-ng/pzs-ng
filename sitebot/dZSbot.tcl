@@ -151,6 +151,7 @@ bindcommands $cmdpre
 #################################################################################
 # Log Parsing for glFTPd and Login Logs                                         #
 #################################################################################
+
 proc denycheck {release} {
 	global denypost
 	foreach deny $denypost {
@@ -172,16 +173,36 @@ proc eventcheck {section msgtype} {
 	return 0
 }
 
+proc eventhandler {type event section line} {
+	global $type
+	set varname "$type\($event)"
+	if {![info exists $varname]} {return 1}
+	foreach script [set $varname] {
+		if {[catch {set retval [$script $event $section $line]} error]} {
+			putlog "dZSbot error: Error evaluating the script \"$script\" for $varname ($error)."
+		} elseif {[isfalse $retval]} {
+			return 0
+		} elseif {![istrue $retval]} {
+			putlog "dZSbot warning: The script \"$script\" for $varname must return a boolean value (0/FALSE or 1/TRUE)."
+		}
+	}
+	return 1
+}
+
 proc readlog {} {
 	global chanlist dZStimer defaultsection disable glversion lastread loglist max_log_change msgreplace msgtypes variables
 	set lines ""
 	set dZStimer [utimer 1 "readlog"]
 
 	foreach {logtype logid logpath} $loglist {
+		if {![file readable $logpath]} {
+			putlog "dZSbot error: Unable to read log file \"$logpath\"."
+			continue
+		}
 		## The regex pattern to use for the logfile
-		switch -glob -- $logtype {
-			0 {set regex {^.+ (\S+): (.+)$}}
-			1 {set regex {^.* \[.*\] (\S+): (.+)$}}
+		switch -exact -- $logtype {
+			0 {set regex {^.+ \d+:\d+:\d+ \d{4} (\S+): (.+)}}
+			1 - 2 {set regex {^.+ \d+:\d+:\d+ \d{4} \[(.+)\] (.+)}}
 			default {putlog "dZSbot error: Internal error, unknown log type ($logtype)."; continue}
 		}
 		## Read the log data
@@ -195,7 +216,7 @@ proc readlog {} {
 					if {[regexp $regex $line result event line]} {
 						lappend lines $logtype $event $line
 					} else {
-						putlog "dZSbot warning: Invalid log line \"$line\""
+						putlog "dZSbot warning: Invalid log line \"$line\"."
 					}
 				}
 				close $handle
@@ -207,22 +228,14 @@ proc readlog {} {
 	}
 
 	foreach {type event line} $lines {
-		#putlog "DATA: type=$type event=\{$event\} line=\{$line\}"
+		putlog "DATA: type=$type event=\{$event\} line=\{$line\}"
 
-		## Parse the failed login errors into announce types. This is quite hack'ish,
-		## but it's the easiest way since the login.log file lacks consistency.
-		if {$type == 1 && [regexp {(.+@.+) \((.+)\): (.+)} $line output hostmask ip error]} {
-			## The "event" variable contains the user name.
-			set line [list $event $hostmask $ip]
-			switch -exact -- $error {
-				"Bad user@host."           {set event "BADHOSTMASK"}
-				"Banned user@host."        {set event "BANNEDHOST"}
-				"Deleted."                 {set event "DELETED"}
-				"Login failure."           {set event "BADPASSWORD"}
-				"connection refused: ident@ip not added to any users." {set event "HOSTNOTADDED"}
-				default {putlog "dZSbot error: Internal error, unknown login error ($error)."; continue}
-			}
-		}
+		## Login and sysop log specific parsing.
+		if {$type == 1 && ![parselogin $line event line]} {
+		    putlog "dZSbot error: Unknown login entry \"$line\"."; continue
+		} elseif {$type == 2 && ![parsesysop $line event line]} {
+            set event "SYSOP"; set line [list $line]
+	    }
 
 		## Invite users to public and private channels.
 		if {[string equal $event "INVITE"]} {
@@ -248,34 +261,72 @@ proc readlog {} {
 		} else {
 			putlog "dZSbot error: Undefined message type \"$event\", check \"msgtypes(SECTION)\" and \"msgtypes(DEFAULT)\" in the config."; continue
 		}
+		## If a script event returns false, skip the announce.
+		if {![eventhandler precommand $event $section $line]} {
+			putlog "dZSbot: A script for precommand($event) returned false, skipping announce."
+			continue
+		}
 		if {![info exists variables($event)]} {
 			putlog "dZSbot error: \"variables($event)\" not defined in the config, type becomes \"DEFAULT\"."
 			set event "DEFAULT"
 		}
 		if {([info exists disable($event)] && $disable($event) != 1) && ![eventcheck $section $event]} {
-			## TODO (neoxed):
-			## - add a script handler for post/pre event scripts
-			## - add precmd(event) pre=before announce / post=after announce
-			## - if the precmd script returns FALSE (0) we skip the announce
-			##if {![precmd $event $section $line]} {continue}
-
-			sndall $event $section [parse $event $section $line]
-
-			##TODO (neoxed):
-			## - move postcmd to use the script handler
-			#postcmd $event $section $line
+			sndall $event $section [ng_format $event $section $line]
+			eventhandler postcommand $event $section $line
 		}
 	}
 	if {$glversion == 1} {
 		launchnuke
 	}
-	return 0
+	return
 }
 
-proc parse {event section line} {
+proc parselogin {line eventvar datavar} {
+    upvar $eventvar event $datavar data
+    if {[regexp {^(.+@.+) \((.+)\): connection refused: .+$} $line result hostmask ip]} {
+        set event "IPNOTADDED"
+        set data [list $hostmask $ip]
+    } elseif {[regexp {^(\S+): (.+@.+) \((.+)\): (.+)} $line result user hostmask ip error]} {
+		switch -exact -- $error {
+			"Bad user@host."    {set event "BADHOSTMASK"}
+			"Banned user@host." {set event "BANNEDHOST"}
+			"Deleted."          {set event "DELETED"}
+			"Login failure."    {set event "BADPASSWORD"}
+			default {return 0}
+		}
+        set data [list $user $hostmask $ip]
+    } elseif {![regexp {^(\S+): (.+)$} $line result event data]} {
+        return 0
+    }
+    return 1
+}
+
+proc parsesysop {line eventvar datavar} {
+    upvar $eventvar event $datavar newdata
+    set patterns [list \
+        ADDUSER  {^'(.+)' added user '(.+)'\.$} \
+        GADDUSER {^'(.+)' added user '(.+)' to group '(.+)'\.$} \
+        CHGRPADD {^'(.+)': successfully added to '(.+)' by (.+)$} \
+        CHGRPDEL {^'(.+)': successfully removed from '(.+)' by (.+)$} \
+        ADDIP    {^'(.+)' added ip '(.+)' to '(.+)'$} \
+        DELIP    {^'(.+)' .*removed ip '(.+)' from '(.+)'$} \
+        READDED  {^'(.+)' readded '(.+)'\.$} \
+        DELUSER  {^'(.+)' deleted user '(.+)'\.$} \
+        PURGED   {^'(.+)' purged '(.+)'$} \
+    ]
+    foreach {event pattern} $patterns {
+        if {[llength [set data [regexp -inline -- $pattern $line]]]} {
+            set newdata [lrange $data 1 end]
+            return 1
+        }
+    }
+    return 0
+}
+
+proc ng_format {event section line} {
 	global announce defaultsection disable glversion mpath random sitename theme theme_fakes variables
 
-	#putlog "PARSE: event=\{$event\} section=\{$section\} line=\{$line\}"
+	putlog "FORMAT: event=\{$event\} section=\{$section\} line=\{$line\}"
 
 	if {[string equal $event "NUKE"] || [string equal $event "UNNUKE"]} {
 		if {$glversion == 1} {
@@ -355,27 +406,6 @@ proc parse {event section line} {
 	}
 	return $output
 }
-
-## TODO (neoxed): trash this garbage and add a more generic handler (?)
-
-#proc postcmd {msgtype section path} {
-#	global postcommand
-#
-#	if {[info exists postcommand($msgtype)]} {
-#		foreach cmd $postcommand($msgtype) {
-#			if {[string equal -length 5 "exec " $cmd]} {
-#				set cmd [string range $cmd 5 end]
-#				if {[catch {exec $cmd $msgtype $section $path} error]} {
-#					putlog "dZSbot error: Unable to execute post command \"$cmd\" ($error)."
-#				}
-#			} else {
-#				if {[catch {$cmd $msgtype $section $path} error]} {
-#					putlog "dZSbot error: Unable to evaluate post command \"$cmd\" ($error)."
-#				}
-#			}
-#		}
-#	}
-#}
 
 #################################################################################
 # Nuke and Unnuke Handlers                                                      #
@@ -633,7 +663,7 @@ proc sndall {msgtype section text} {
 		return
 	}
 	foreach chan $channels {
-	    sndone $chan $text $section
+		sndone $chan $text $section
 	}
 }
 
@@ -868,6 +898,7 @@ proc ng_bnc {nick uhost hand chan arg} {
 					6 {set error "couldn't resolve host"}
 					7 {set error "connection refused"}
 					9 - 10 {set error "couldn't login"}
+					28 {set error "timed out"}
 					default {putlog "dZSbot error: Unknown curl exit code \"$code\", please report to pzs-ng developers."}
 				}
 			} else {
@@ -1670,25 +1701,16 @@ foreach {filename filepath} [array get location] {
 }
 
 ## Logs to parse
-set logid 0
-set loglist "" ;# A list of logs in the following format: <type> <id> <path>
-foreach {filename filepath} [array get glftpdlog] {
-	if {![file readable $filepath]} {
-		putlog "dZSbot error: Unable to read the glftpd log \"$filepath\"."
-		set dzerror 1
-	} else {
-		lappend loglist 0 [incr logid] $filepath
-		set lastread($logid) [file size $filepath]
-	}
-}
-
-foreach {filename filepath} [array get loginlog] {
-	if {![file readable $filepath]} {
-		set dzerror 1
-		putlog "dZSbot error: Unable to read the login log \"$filepath\"."
-	} else {
-		lappend loglist 1 [incr logid] $filepath
-		set lastread($logid) [file size $filepath]
+set logid 0; set loglist ""
+foreach {varname logtype} {glftpdlog 0 loginlog 1 sysoplog 2} {
+	foreach {filename filepath} [array get $varname] {
+		if {![file readable $filepath]} {
+			putlog "dZSbot error: Unable to read the log file \"$filepath\"."
+			set dzerror 1
+		} else {
+			lappend loglist $logtype [incr logid] [file normalize $filepath]
+			set lastread($logid) [file size $filepath]
+		}
 	}
 }
 if {!$logid} {

@@ -41,8 +41,10 @@ KBIT        = "%b{%value}Kbit/s"
 MBIT        = "%b{%value}Mbit/s"
 fakesection.INVITE = "iNViTE"
 
-# announces by glftpd
+## Default announce
 announce.DEFAULT                = "[%b{info  }] %msg"
+
+## Login announcements
 announce.LOGIN                  = "[%b{login }] %b{%u_name}@%g_name has logged in."
 announce.LOGOUT                 = "[%b{logout}] %b{%u_name}@%g_name has logged out."
 announce.BADHOSTMASK            = "[%b{login }] %b{%u_name} could not login, hostmask %b{%u_hostmask} is not added."
@@ -53,7 +55,19 @@ announce.IPNOTADDED             = "[%b{login }] denied unknown connection from %
 announce.TAGLINE                = "[%b{tag   }] %b{%u_name}@%g_name has changed tagline to %b{%u_tagline}."
 announce.TIMEOUT                = "[%b{logout}] %b{%u_name} has timed out after %b{%u_idletime}s."
 
-# special announces by glftpd
+## Sysop announcements (only important announces are themed)
+announce.ADDUSER                = "[%b{sysop}] %b{%u_siteop} added user %b{%u_name}."
+announce.GADDUSER               = "[%b{sysop}] %b{%u_siteop} added user %b{%u_name} to group %b{%g_name}."
+announce.CHGRPADD               = "[%b{sysop}] %b{%u_siteop} added %b{%u_name} to group %b{%g_name}."
+announce.CHGRPDEL               = "[%b{sysop}] %b{%u_siteop} removed %b{%u_name} from group %b{%g_name}."
+announce.ADDIP                  = "[%b{sysop}] %b{%u_siteop} added ip %b{%u_ip} to %b{%u_name}."
+announce.DELIP                  = "[%b{sysop}] %b{%u_siteop} removed ip %b{%u_ip} from %b{%u_name}."
+announce.READDED                = "[%b{sysop}] %b{%u_siteop} readded %b{%u_name}."
+announce.DELUSER                = "[%b{sysop}] %b{%u_siteop} deleted %b{%u_name}."
+announce.PURGED                 = "[%b{sysop}] %b{%u_siteop} purged %b{%u_name}."
+announce.SYSOP                  = "[%b{sysop}] %msg"
+
+## glFTPd announcements
 announce.NEWDIR                 = "[%b{new   }][%section] %b{%relname} by %b{%u_name} of %g_name."
 announce.DELDIR                 = "[%b{delete}][%section] %b{%relname} by %b{%u_name} of %g_name."
 announce.NUKE                   = "[%b{nuke  }][%section] %b{%relname} factor %b{%multiplier} by %b{%nuker} [reason] %b{%reason} [nukees] %nukees."
@@ -62,7 +76,7 @@ announce.NUKEES                 = "%b{%u_name} (%b{%size}MB)"
 announce.WIPE                   = "[%b{wipe  }][%section] %b{%relname} by %b{%u_name} of %g_name."
 announce.WIPE-r                 = "[%b{wipe-r}][%section] %b{%relname} and all subdirectories by %b{%u_name} of %g_name."
 
-# special output by the zipscript
+## Special zipscript announcements
 announce.DOUBLESFV              = "[%b{notice}] %b{%u_name} of %g_name tried to upload a dupe sfv."
 announce.BADBITRATE             = "[%b{notice}] %b{%u_name} of %g_name is violating rules by uploading shit with bitrate %b{%bitrate}kbps."
 announce.BADGENRE               = "[%b{notice}] %b{%u_name} of %g_name is violating rules by uploading %b{%genre}."
@@ -79,7 +93,7 @@ announce.BAD_FILE_WRONGDIR      = "[%b{notice}] %b{%u_name} of %g_name uploaded 
 announce.BAD_FILE_YEAR          = "[%b{notice}] %b{%u_name} of %g_name uploaded a bad file (banned year) in %b{%releasename}."
 announce.BAD_FILE_ZIP           = "[%b{notice}] %b{%u_name} of %g_name uploaded a bad file (zip integrity failed) in %b{%releasename}."
 
-# some special loop variables - these format the racers and stats for each racer in the corresponding output.
+## Loop variables, these format the racers and stats
 announce.RACE_AUDIO_LOOP1                   = "%b{%a_name}/%a_gname%splitter"
 announce.RACE_AUDIO_LOOP2                   = "%b{%r_name}/%r_gname%splitter"
 announce.RACE_OTHER_LOOP1                   = "%b{%a_name}/%a_gname%splitter"
@@ -121,7 +135,7 @@ announce.COMPLETE_STAT_RACE_ZIP_LOOP1       = "%b{%r_name}/%r_gname%splitter"
 announce.COMPLETE_STAT_RACE_ZIP_LOOP2       = "|%b{%sitename} :: [%b{stats }][%section] %g_racer_position %b{%g_racer_name} :: %b{%g_racer_files}f :: %b{%g_racer_mbytes}MB :: %b{%g_racer_percent}% :: %g_racer_avgspeed"
 announce.COMPLETE_STAT_RACE_ZIP_LOOP3       = "|%b{%sitename} :: [%b{stats }][%section] %u_racer_position %b{%u_racer_name} of %g_racer_name :: %b{%u_racer_files}f :: %b{%u_racer_mbytes}MB :: %b{%u_racer_percent}% :: %u_racer_avgspeed :: wkup %b{%u_racer_wkup}"
 
-# standard announces done by the zipscript
+## Standard zipscript announcements
 announce.RACE_AUDIO                     = "[%b{racer }][%section] %b{%reldir} :: %b{%u_name} is racing %loop1 at %u_speed."
 announce.RACE_OTHER                     = "[%b{racer }][%section] %b{%relname} :: %b{%u_name} is racing %loop1 at %u_speed."
 announce.RACE_RAR                       = "[%b{racer }][%section] %b{%relname} :: %b{%u_name} is racing %loop1 at %u_speed."
@@ -165,29 +179,36 @@ announce.COMPLETE_STAT_RACE_RAR         = "[%b{done  }][%section] %b{%relname} w
 announce.COMPLETE_STAT_RACE_VIDEO       = "[%b{done  }][%section] %b{%relname} with %b{%t_files} files (%b{%t_mbytes}MB) was completed in %b{%t_duration} (avg. %t_avgspeed) by %b{%u_count} user(s) in %b{%g_count} group(s).|%b{%sitename} :: [%b{stats }][%section] Users hall of fame:%loop3|%b{%sitename} :: [%b{stats }][%section] Groups hall of fame:%loop2"
 announce.COMPLETE_STAT_RACE_ZIP         = "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}MB) was completed in %b{%t_duration} (avg. %t_avgspeed) by %b{%u_count} user(s) in %b{%g_count} group(s).|%b{%sitename} :: [%b{stats }][%section] Users hall of fame:%loop3|%b{%sitename} :: [%b{stats }][%section] Groups hall of fame:%loop2"
 
-# Announce done by the postdel binary
+## Postdel announce
 announce.INCOMPLETE             = "[%b{d0h!  }][%section] %b{%releasename} is now incomplete thanks to %b{%u_name} of %b{%g_name}."
 
-# 3rd party scripts
+## Custom announcements (see dZSbot.defaults.conf for info on how to enable)
+#announce.COVERS                = "[%b{covers}][%section] %b{%relname} by %b{%u_name} of %g_name."
+#announce.NEWCD                 = "[%b{cd    }][%section] %b{%relname} by %b{%u_name} of %g_name."
+#announce.NEWDISC               = "[%b{disc  }][%section] %b{%relname} by %b{%u_name} of %g_name."
+#announce.SAMPLE                = "[%b{sample}][%section] %b{%relname} by %b{%u_name} of %g_name."
+#announce.SUBTITLES             = "[%b{subs  }][%section] %b{%relname} by %b{%u_name} of %g_name."
+
+## Third party scripts
 announce.IMDB                   = "%msg"
 announce.IMDBFIND               = "%msg"
 announce.IMDBVAR                = "[%b{imdb  }][%section] %b{%imdbname} (%imdburl), a %imdbdirector movie which scored %b{%imdbscore of 10} (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.|%b{%sitename} :: [%b{imdb  }][%section] %b{%imdbname} plot summary: %imdbplot \[%imdbbar\]"
 announce.PRE                    = "[%b{%c1{pre}   }][%section] %b{%relname} by %b{%pregroup} in %b{%files} files (%b{%mbytes}MB)."
 
-# bouncer status
-announce.BNC                    = "Checking bouncer status..."
-announce.BNC_PING               = "%b{-} %num. %desc at %ip:%port is %b{DOWN} (can't ping host)"
-announce.BNC_ONLINE             = "%b{-} %num. %desc at %ip:%port is %b{UP} (login: %b{%response}ms ping: %b{%ping}ms)"
-announce.BNC_OFFLINE            = "%b{-} %num. %desc at %ip:%port is %b{DOWN} (%error)"
-
-# miscellaneous announces
+## Miscellaneous announcements
 announce.BADMSGINVITE           = "[%b{%c1{badinv}}] %b{%u_ircnick} (%u_host) tried to invite himself with invalid login!"
 announce.INVITE                 = "[%b{invite}] %b{%u_name} of %g_name invited himself as %b{%u_ircnick}."
 announce.MSGINVITE              = "[%b{invite}] %b{%u_name} of %g_name invited himself as %b{%u_ircnick}."
 announce.REQFILLED              = "[%b{filled}] %b{%u_name} of %g_name just filled %b{%releasename} for %b{%u_requester}."
 announce.REQUEST                = "[%b{req   }] %b{%u_name} of %g_name requests %b{%releasename}."
 
-# internal announces
+## Bouncer status
+announce.BNC                    = "Checking bouncer status..."
+announce.BNC_PING               = "%b{-} %num. %desc at %ip:%port is %b{DOWN} (can't ping host)"
+announce.BNC_ONLINE             = "%b{-} %num. %desc at %ip:%port is %b{UP} (login: %b{%response}ms ping: %b{%ping}ms)"
+announce.BNC_OFFLINE            = "%b{-} %num. %desc at %ip:%port is %b{DOWN} (%error)"
+
+## IRC Commands
 announce.LEECH                  = "[%b{bwinfo}] Current leechers:"
 announce.UPLOAD                 = "[%b{bwinfo}] Current uploaders:"
 announce.IDLE                   = "[%b{bwinfo}] Current idlers:"
@@ -207,26 +228,22 @@ announce.FREE                   = "[%b{space }] %devices[Totals: %b{%free} of %b
 announce.FREE-DEV               = "%section: %b{%free} of %b{%total} (used %percentage%) :: "
 announce.UPTIME                 = "[%b{uptime}] System: %time, %b{%users} user(s), load: %load Eggdrop: %eggdrop"
 
-# Example of custom announces (see dZSbot.conf for info on how to enable)
-#announce.COVERS                = "[%b{covers}][%section] %b{%relname} by %b{%u_name} of %g_name."
-#announce.NEWCD                 = "[%b{cd    }][%section] %b{%relname} by %b{%u_name} of %g_name."
-#announce.NEWDISC               = "[%b{disc  }][%section] %b{%relname} by %b{%u_name} of %g_name."
-#announce.SAMPLE                = "[%b{sample}][%section] %b{%relname} by %b{%u_name} of %g_name."
-#announce.SUBTITLES             = "[%b{subs  }][%section] %b{%relname} by %b{%u_name} of %g_name."
-
-# Entries for commands done by neoxed (!new/!search/!nukes/!unnukes)
+## IRC Command: !new
 announce.NEW                    = "%b{(NEW)} Latest Releases In: %b{%section}"
 announce.NEW_BODY               = "%b{-} %num. %path/%b{%reldir} by %b{%u_name}/%g_name (%b{%files}F/%b{%mbytes}MB/%age)"
 announce.NEW_NONE               = "%b{-} No releases found."
 
+## IRC Command: !dupe/!search
 announce.SEARCH                 = "%b{(SEARCH)} Searching for: %pattern"
 announce.SEARCH_BODY            = "%b{-} %num. %path/%b{%reldir} (%b{%files}F/%b{%mbytes}MB/%age)"
 announce.SEARCH_NONE            = "%b{-} No matching results found."
 
+## IRC Command: !nukes
 announce.NUKES                  = "%b{(NUKES)} Latest Nukes In: %b{%section}"
 announce.NUKES_BODY             = "%b{-} %num. %date %b{%reldir} was nuked %b{%multiplier}x by %b{%nuker}. Reason: %b{%reason}"
 announce.NUKES_NONE             = "%b{-} No nukes found."
 
+## IRC Command: !unnukes
 announce.UNNUKES                = "%b{(UNNUKES)} Latest Unnukes In: %b{%section}"
 announce.UNNUKES_BODY           = "%b{-} %num. %date %b{%reldir} was unnuked %b{%multiplier}x by %b{%unnuker}. Reason: %b{%reason}"
 announce.UNNUKES_NONE           = "%b{-} No unnukes found."
