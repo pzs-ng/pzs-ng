@@ -29,7 +29,7 @@ then
 	if [ -n "$use_autoconf" ]
 	then
 		echo -n "Running $use_autoconf "
-		$use_autoconf
+		$use_autoconf > autogen.log 2>&1
 		
 		if [ $? -eq 0 ]; then
 			echo "[OK]"
