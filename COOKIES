@@ -131,6 +131,9 @@ NOTE: With cookies you can (and in some cases you need to) define accuracy (or s
 #
  %0  = "/site/incoming/release/cd1" => release 
  %1  = "/site/incoming/release/cd1" => cd1
+ %2  = name of current section, or DEFAULT if not found.
+ %%  = %-sign
+
 
 ###### sitename
 #

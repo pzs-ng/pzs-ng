@@ -759,7 +759,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 /* Converts cookies in incomplete indicators */
 char		i_buf     [FILE_MAX];
 char           *
-c_incomplete(char *instr, char **path)
+c_incomplete(char *instr, char **path, struct VARS *raceI)
 {
 	char           *buf_p;
 
@@ -768,6 +768,9 @@ c_incomplete(char *instr, char **path)
 		if (*instr == '%') {
 			instr++;
 			switch (*instr) {
+			case '2':
+				buf_p += sprintf(buf_p, "%s", raceI->sectionname);
+				break;
 			case '1':
 				buf_p += sprintf(buf_p, "%s", path[0]);
 				break;
@@ -788,7 +791,7 @@ c_incomplete(char *instr, char **path)
 /* Converts cookies in nfo-incomplete indicators */
 char		j_buf     [FILE_MAX];
 char           *
-i_incomplete(char *instr, char **path)
+i_incomplete(char *instr, char **path, struct VARS *raceI)
 {
 	char           *buf_p;
 
@@ -797,6 +800,9 @@ i_incomplete(char *instr, char **path)
 		if (*instr == '%') {
 			instr++;
 			switch (*instr) {
+			case '2':
+				buf_p += sprintf(buf_p, "%s", raceI->sectionname);
+				break;
 			case '1':
 				buf_p += sprintf(buf_p, "%s", path[0]);
 				break;

@@ -109,10 +109,10 @@ remove_nfo_indicator(char *directory)
 		} else
 			n++;
 	}
-	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
+	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &raceI);
 	if (fileexists(locations.nfo_incomplete))
 		unlink(locations.nfo_incomplete);
-	locations.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path);
+	locations.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &raceI);
 	if (fileexists(locations.nfo_incomplete))
 		unlink(locations.nfo_incomplete);
 	if (k < 2)
@@ -147,8 +147,8 @@ d_log("DEBUG: result of subdir-test: %d\n", subcomp(path[1]));
 		sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
 		sprintf(locations.link_source, "%.*s", n - 1, locations.path);
 		locations.link_target = path[0];
-		locations.incomplete = c_incomplete(incomplete_cd_indicator, path);
-		locations.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path);
+		locations.incomplete = c_incomplete(incomplete_cd_indicator, path, &raceI);
+		locations.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &raceI);
 		locations.in_cd_dir = 1;
 		if (k < 2)
 			free(path[1]);
@@ -158,8 +158,8 @@ d_log("DEBUG: result of subdir-test: %d\n", subcomp(path[1]));
 		strlcpy(locations.link_source, locations.path, locations.length_path + 1);
 		sprintf(raceI.misc.release_name, "%s", path[1]);
 		locations.link_target = path[1];
-		locations.incomplete = c_incomplete(incomplete_indicator, path);
-		locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
+		locations.incomplete = c_incomplete(incomplete_indicator, path, &raceI);
+		locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &raceI);
 		locations.in_cd_dir = 0;
 	}
 	if (k == 0)
@@ -350,6 +350,8 @@ main(int argc, char **argv)
 		memcpy(raceI.user.tagline, "No Tagline Set", 15);
 		raceI.file.speed = 2005;
 		raceI.section = 0;
+		raceI.sectionname = malloc(8 * sizeof(char));
+		sprintf(raceI.sectionname, "DEFAULT");
 	} else {
 		sprintf(raceI.user.name, getenv("USER"));
 		sprintf(raceI.user.group, getenv("GROUP"));
@@ -368,6 +370,8 @@ main(int argc, char **argv)
 #endif
 
 		d_log("Reading section from env (%s)\n", getenv("SECTION"));
+		raceI.sectionname = malloc(strlen(getenv("SECTION")) * sizeof(char));
+		sprintf(raceI.sectionname, getenv("SECTION"));
 		if ((temp_p = strdup(gl_sections)) == NULL) {
 			d_log("Can't allocate memory for sections\n");
 		} else {
@@ -1425,6 +1429,7 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 	free(locations.link_source);
 	free(raceI.misc.release_name);
 	free(fileext);
+	free(raceI.sectionname);
 	m_free(target);
 	m_free(locations.race);
 	m_free(locations.sfv);

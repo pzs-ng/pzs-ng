@@ -7,7 +7,7 @@ char           *convert2(struct VARS *, struct USERINFO *, struct GROUPINFO **, 
 char           *convert3(struct VARS *, struct GROUPINFO *, char *, short);
 char           *convert4(struct VARS *, char *);
 char           *convert5(char *);
-char           *c_incomplete(char *, char **);
-char           *i_incomplete(char *, char **);
+char           *c_incomplete(char *, char **, struct VARS *);
+char           *i_incomplete(char *, char **, struct VARS *);
 
 #endif
