@@ -144,7 +144,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 		maskchar = ' ';
 		mask = noshow = 0;
 
-		if (strcomp(husers, user[x].username) != 0) {
+		if (strcomp(husers, user[x].username)) {
 			if (showall)
 				maskchar = '*';
 			else
@@ -265,7 +265,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 		sprintf(online, "%02d:%02d:%02d", hours, minutes, seconds);
 
 		if (mode == 0) {
-			if (!raw && (showall || (!mask && !(maskchar == '*')))) {
+			if (!raw && (showall || (!noshow && !mask && !(maskchar == '*')))) {
 				if (mb_xfered)
 					printf("|%1c%-16.16s/%-10.10s | %-15s | XFER: %13.1fMB |\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, mb_xfered);
 				else
@@ -273,45 +273,45 @@ showusers(int n, int mode, char *ucomp, char raw)
 
 				printf("| %-27.27s | since %8.8s  | file: %-15.15s |\n", user[x].tagline, online, filename);
 				printf("+-----------------------------------------------------------------------+\n");
-			} else if (raw == 1 && (showall || (!mask && !(maskchar == '*')))) {
+			} else if (raw == 1 && (showall || (!noshow && !mask && !(maskchar == '*')))) {
 				/*
 				 * Maskeduser / Username / GroupName / Status
 				 * / TagLine / Online / Filename / Part
 				 * up/down-loaded / Current dir
 				 */
 				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\" \"%.1f%s\" \"%s\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename, (pct >= 0 ? pct : mb_xfered), (pct >= 0 ? "%" : "MB"), user[x].currentdir);
-			} else if (showall || (!mask && !(maskchar == '*'))) {
+			} else if (showall || (!noshow && !mask && !(maskchar == '*'))) {
 				printf("%s|%s|%s|%s|%s\n", user[x].username, get_g_name(user[x].groupid), user[x].tagline, status, filename);
 			}
 			onlineusers++;
 		} else if (strcasecmp(ucomp, user[x].username) == 0) {
 #ifdef _WITH_ALTWHO
-			if (!raw && (showall || (!mask && !(maskchar == '*')))) {
+			if (!raw && (showall || (!noshow && !mask && !(maskchar == '*')))) {
 				if (mb_xfered)
 					printf("%s : %1c%s/%s has xfered %.1fMB of %s and has been online for %8.8s.\n", status, maskchar, user[x].username, get_g_name(user[x].groupid), mb_xfered, filename, online);
 				else if (strcmp(filename, ""))
 					printf("%s : %1c%s/%s has xfered %.0f%% of %s and has been online for %8.8s.\n", status, maskchar, user[x].username, get_g_name(user[x].groupid), pct, filename, online);
 				else
 					printf("%s : %1c%s/%s has been online for %8.8s.\n", status, maskchar, user[x].username, get_g_name(user[x].groupid), online);
-			} else if (raw == 1 && (showall || (!mask && !(maskchar == '*')))) {
+			} else if (raw == 1 && (showall || (!noshow && !mask && !(maskchar == '*')))) {
 				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\" \"%.1f%s\" \"%s\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename, (pct >= 0 ? pct : mb_xfered), (pct >= 0 ? "%" : "MB"), user[x].currentdir);
-			} else if (showall || (!mask && !(maskchar == '*'))) {
+			} else if (showall || (!noshow && !mask && !(maskchar == '*'))) {
 				printf("%s|%s|%s|%s|%s\n", user[x].username, get_g_name(user[x].groupid), user[x].tagline, status, filename);
 			}
 #else
 			if (!onlineusers) {
-				if (!raw && (showall || (!mask && !(maskchar == '*'))))
+				if (!raw && (showall || (!noshow && !mask && !(maskchar == '*'))))
 					printf("\002%s\002 - %s", user[x].username, status);
-				else if (raw == 1 && (showall || (!mask && !(maskchar == '*'))))
+				else if (raw == 1 && (showall || (!noshow && !mask && !(maskchar == '*'))))
 					printf("\"USER\" \"%s\" %s", user[x].username, status);
-				else if (showall || (!mask && !(maskchar == '*')))
+				else if (showall || (!noshow && !mask && !(maskchar == '*')))
 					printf("\002%s\002 - %s", user[x].username, status);
 			} else {
-				if (!raw && (showall || (!mask && !(maskchar == '*'))))
+				if (!raw && (showall || (!noshow && !mask && !(maskchar == '*'))))
 					printf(" - %s", status);
-				else if (raw == 1 && (showall || (!mask && !(maskchar == '*'))))
+				else if (raw == 1 && (showall || (!noshow && !mask && !(maskchar == '*'))))
 					printf("\"USER\" \"\" %s", status);
-				else if (showall || (!mask && !(maskchar == '*')))
+				else if (showall || (!noshow && !mask && !(maskchar == '*')))
 					printf(" - %s", status);
 			}
 #endif
