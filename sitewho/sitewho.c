@@ -49,7 +49,7 @@ unsigned long filesize(char *filename) {
     return filestat.st_size;
 }
 
-char* get_g_name(int gid) {
+char* get_g_name(unsigned int gid) {
     int	n;
 
     for ( n = 0 ; n < groups ; n++ ) if ( group[n]->id == gid ) return group[n]->name;
@@ -215,7 +215,7 @@ void showusers(int n, int mode, char *ucomp) {
 
 /* COMPARE USERFLAGS ON CHECKFLAGS */
 short compareflags(char *flags, char *checkflags) {
-    int  n1 = 0,
+    unsigned int  n1 = 0,
 	 n2 = 0;
     char *userflags;
 
