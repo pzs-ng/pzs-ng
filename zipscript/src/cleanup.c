@@ -34,26 +34,33 @@ scandirectory(char *directoryname, int setfree)
 	int		m         , n, fd;
 	printf("[%s]\n", directoryname);
 	if (chdir(directoryname) != -1) {
-		if ((n = scandir(".", &namelist, 0, 0)) > 0)
-			while (n--)
+		if ((n = scandir(".", &namelist, 0, 0)) > 0) {
+			while (n--) {
 				if (namelist[n]->d_name[0] != '.') {
 					chdir(namelist[n]->d_name);
-					if ((m = scandir(".", &namelist2, 0, 0)) > 0)
-						while (m--)
+					if ((m = scandir(".", &namelist2, 0, 0)) > 0) {
+						while (m--) {
 							if (namelist2[m]->d_name[0] != '.') {
-								if ((fd = open(namelist2[m]->d_name, O_NDELAY, 0777)) != -1)
+								if ((fd = open(namelist2[m]->d_name, O_NDELAY, 0777)) != -1) {
 									close(fd);
-								else if (setfree) {
+								} else if (setfree) {
 									unlink(namelist2[m]->d_name);
 									printf("Broken symbolic link \"%s\" removed.\n", namelist2[m]->d_name);
 								}
 							}
+						free(namelist2[m]);
+						}
 					free(namelist2);
+					}
 					chdir("..");
-					if (setfree)
+					if (setfree) {
 						rmdir(namelist[n]->d_name);
+					}
 				}
+			free(namelist[n]);
+			}
 		free(namelist);
+		}
 	}
 }
 
@@ -399,10 +406,9 @@ incomplete_cleanup(char *path, int setfree)
 						} else
 							printf("Incomplete release: \"%s%s\".\n", path, temp);
 						free(temp);
-						continue;
+//						continue;
 					}
-				}
-				if (regexec(&preg[2], dirlist[entries]->d_name, 1, pmatch, 0) == 0) {
+				} else if (regexec(&preg[2], dirlist[entries]->d_name, 1, pmatch, 0) == 0) {
 					if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries])) {
 						temp = multi_nfo_name(dirlist[entries]->d_name);
 						if (stat(temp, &fileinfo) != 0) {
@@ -412,11 +418,10 @@ incomplete_cleanup(char *path, int setfree)
 							}
 						}
 						free(temp);
-						continue;
+//						continue;
 					}
-				}
 				/* Normal */
-				if (regexec(&preg[1], dirlist[entries]->d_name, 1, pmatch, 0) == 0) {
+				} else	if (regexec(&preg[1], dirlist[entries]->d_name, 1, pmatch, 0) == 0) {
 					if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries])) {
 						temp = single_name(dirlist[entries]->d_name);
 						if (stat(temp, &fileinfo) != 0) {
@@ -427,10 +432,9 @@ incomplete_cleanup(char *path, int setfree)
 						} else
 							printf("Incomplete release: \"%s%s\".\n", path, temp);
 						free(temp);
-						continue;
+//						continue;
 					}
-				}
-				if (regexec(&preg[3], dirlist[entries]->d_name, 1, pmatch, 0) == 0) {
+				} else if (regexec(&preg[3], dirlist[entries]->d_name, 1, pmatch, 0) == 0) {
 					if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries])) {
 						temp = single_nfo_name(dirlist[entries]->d_name);
 						if (stat(temp, &fileinfo) != 0) {
@@ -440,7 +444,7 @@ incomplete_cleanup(char *path, int setfree)
 							}
 						}
 						free(temp);
-						continue;
+//						continue;
 					}
 				}
 				free(dirlist[entries]);
