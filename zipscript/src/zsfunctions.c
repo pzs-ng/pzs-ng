@@ -34,11 +34,11 @@ d_log(char *fmt,...)
 	time_t		timenow;
 	FILE           *file;
 	va_list		ap;
-	char		debugname[] = ".debug";
+	static char	debugname[] = ".debug";
 #if ( debug_altlog == TRUE )
 	//char           *debugpath = 0;
-	char		debugpath[PATH_MAX];
-	char		debugname[PATH_MAX];
+	static char	debugpath[PATH_MAX];
+	static char	debugname[PATH_MAX];
 #endif
 #endif
 
@@ -74,13 +74,14 @@ d_log(char *fmt,...)
 void 
 create_missing(char *f, short int l)
 {
-	char           *fname;
+	//char           *fname;
+	char		fname[l+9];
 
-	fname = m_alloc(l + 9);
+	//fname = m_alloc(l + 9);
 	memcpy(fname, f, l);
 	memcpy(fname + l, "-missing", 9);
 	createzerofile(fname);
-	m_free(fname);
+	//m_free(fname);
 }
 
 /*
