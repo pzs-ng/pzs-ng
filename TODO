@@ -19,6 +19,8 @@ status  who       what
  [ ]               fix a coredump when the user is killed/kicked on upload.
  [ ]               use mp3info as much as possible to get mp3 info.
  [ ]               zipscript reports wrong sample rate (48khz instf 44.1khz etc) - why? mp3info reports correctly.
+ [ ]               add anonymity support - chown files/dirs as they are uploaded to a "special" user (will only
+                   work if zs-c is +s)
 
 status   description
  [ ]     not done 
