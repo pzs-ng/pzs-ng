@@ -8,7 +8,7 @@ mp3-release, by adding the following in your zsconfig.h:
 
 #define enable_mp3_script               TRUE
 #define mp3_script                      "/bin/ng-chown"
-#define mp3_script_cookies              "0 0 0 1 1 1 - \"%w\" \"%?\""
+#define mp3_script_cookies              "0 0 0 1 0 1 - \"%w\" \"%?\""
 #define allow_gid_change_in_ng_chown    TRUE
 #define allow_dir_chown_in_ng_chown     TRUE
 
@@ -27,8 +27,8 @@ For those wanting an explanation of the cookies/variables passed:
   0      - gid set to 0 - this disable the gid setting.
   0      - do not change uid of files/dirs. We only wants to change group.
   1      - change gid of the file/dirs.
-  1      - change ownership of files.
-  1      - change ownership of dir.
+  0      - do not change ownership of files in a dir we specify.
+  1      - change ownership of dir/file we specify.
   -      - disable user name lookup.
   \"%w\" - genre name used as group-name. This will be used since gid = 0
            earlier. We use quotes since the name may have space chars.

@@ -748,17 +748,16 @@
 #endif
 
 /*
- * Enable/disable mp3 script (run only once, after first mp3-file is
- * uploaded)
+ * Enable/disable mp3 script (run only once, after first mp3-file is uploaded)
  */
 #ifndef enable_mp3_script
 #define enable_mp3_script	FALSE
 #endif
 #ifndef mp3_script
-#define mp3_script		"/bin/mp3-genres.sh"
+#define mp3_script		"/bin/ng-chown"
 #endif
 #ifndef mp3_script_cookies
-#define mp3_script_cookies	"\"%w\" \"%W\" \"%x\" \"%X\" \"%y\" \"%Y\" \"%z\" \"%h\" \"%q\" \"%Q\" \"%j\" \"%i\" \"%I\""
+#define mp3_script_cookies	"0 0 0 1 0 1 - \"%w\" \"%?\""
 #endif
 
 /*
