@@ -4,12 +4,12 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h>
+#include <sys/types.h>
 #include <regex.h>
 #include <time.h>
 #include <string.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/time.h>
