@@ -31,6 +31,7 @@ status  who       what
  [ ]               compare the list of files stored in .rar to what's in the .sfv --> channel message if they differ.
  [ ]               fix mysterious bug - upload of sfv fails if old data is in ftp-data/zipscript (unconfirmed) -
                    running datacleaner fixes the problem... maybe check race-file.c (readsfv_file())
+ [x]     iwdisb    calc crc on the fly if glftpd does not pass crc
 
 status   description
  [ ]     not done 
