@@ -1,0 +1,24 @@
+## ##
+# # # 
+#   # akefile for dark0n3's zipscript-c/sitebot
+#   #
+#   #
+
+CC = gcc
+RM = rm -f
+MAKE = make
+
+CCFLAGS = -Wall @STATIC@ -lcrypt -lcrypto -O2
+CFFLAGS = -Wall @STATIC@ -O2
+
+all:	clean bin
+
+bin:	
+		${CC} ${CCFLAGS} -o passchk passchk.c
+		${CC} ${CFFLAGS} -o ng-bandwidth ng-bw.c
+
+distclean: clean
+	@$(RM) Makefile
+
+clean:	
+	@$(RM) ng-bandwidth passchk
