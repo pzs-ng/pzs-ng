@@ -162,7 +162,6 @@ read_write_leader_file(struct LOCATIONS *locations, struct VARS *raceI, struct U
  * Description	: Goes through all untested files and compares crc of file
  * with one that is reported in sfv.
  * 
- * Todo		: Add unduper
  */
 void 
 testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
@@ -227,11 +226,15 @@ testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 
 					d_log("marking %s bad.\n", fname);
 					if (enable_unduper_script == TRUE) {
-						sprintf(target, unduper_script " \"%s\"", fname);
-						if (execute(target) == 0) {
-							d_log("undupe of %s successful.\n", fname);
+						if (!fileexists(unduper_script)) {
+							d_log("Failed to undupe '%s' - '%s' does not exist.\n", fname, unduper_script);
 						} else {
-							d_log("undupe of %s failed.\n", fname);
+							sprintf(target, unduper_script " \"%s\"", fname);
+							if (execute(target) == 0) {
+								d_log("undupe of %s successful.\n", fname);
+							} else {
+								d_log("undupe of %s failed.\n", fname);
+							}
 						}
 					}
 				}
