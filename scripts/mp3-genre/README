@@ -1,0 +1,23 @@
+pzs-ng allows you to change the uid/gid of files/dirs with a bin called ng-chown.
+By default this binary is disabled in all aspects.
+You may use it to change the groupname in a dirlisting to match the genre of a
+mp3-release, by adding the following in your zsconfig.h:
+
+#define enable_complete_script          TRUE
+#define complete_script                 "/bin/nfoextract.sh"
+#define enable_mp3_script               TRUE
+#define mp3_script                      "/bin/ng-chown"
+#define mp3_script_cookies              "0 0 0 1 1 1 - \"%w\" ."
+#define allow_gid_change_in_ng_chown    TRUE
+#define allow_dir_chown_in_ng_chown     TRUE
+
+Please copy/paste the exact lines above. This will enable the mp3-script, and
+make ng-chown able to modify the group id of the releasedir.
+
+You must also chmod +s ng-chown:
+   chmod +s /glftpd/bin/ng-chown
+
+Last, you'll have to add the genres into glftpd's groupfile. This is what the
+script named mp3-genre-create.sh does. Just run it and it will modify the group
+file (after creating a backup).
+

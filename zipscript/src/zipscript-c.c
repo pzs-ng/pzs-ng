@@ -313,7 +313,7 @@ main(int argc, char **argv)
 
 	if (argc != 4) {
 		d_log("Wrong number of arguments used\n");
-		printf(" - - PZS-NG ZipScript-C v%s - - dark0n3 (c) 2001 - 2004 - -\n\nUsage: %s <filename> <path> <crc>\n\n", ng_version(), argv[0]);
+		printf(" - - PZS-NG ZipScript-C v%s - -\n\nUsage: %s <filename> <path> <crc>\n\n", ng_version(), argv[0]);
 		exit(1);
 	}
 	d_log("Clearing arrays\n");
@@ -868,8 +868,8 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 				if (raceI.misc.write_log == TRUE) {
 #endif
 					if ((enable_mp3_script == TRUE) && (userI[raceI.user.pos]->files == 1)) {
-						d_log("Executing mp3 script\n");
-						sprintf(target, mp3_script " \"%s\" %s", raceI.file.name, convert(&raceI, userI, groupI, mp3_script_cookies));
+						d_log("Executing mp3 script (%s %s)\n", mp3_script, convert(&raceI, userI, groupI, mp3_script_cookies));
+						sprintf(target, "%s %s", mp3_script, convert(&raceI, userI, groupI, mp3_script_cookies));
 						if (execute(target) != 0) {
 							d_log("Failed to execute mp3_script: %s\n", strerror(errno));
 						}

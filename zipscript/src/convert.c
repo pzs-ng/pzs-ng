@@ -6,6 +6,16 @@
 #include "../conf/zsconfig.h"
 #include "zsconfig.defaults.h"
 
+#ifndef PATH_MAX
+ #define _LIMITS_H_
+ #ifdef _SunOS_
+  #include <syslimits.h>
+ #else
+  #include <sys/syslimits.h>
+ #endif
+#endif
+
+
 char		ttime     [40], output2[1024], output[2048];
 
 /*
@@ -464,7 +474,10 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 	char           *out_p;
 	char           *m;
 	char		ctrl      [10];
+	char	       *cwdbuf;
 
+	cwdbuf = malloc(PATH_MAX);
+	getcwd(cwdbuf, PATH_MAX);
 	out_p = output;
 
 	for (; *instr; instr++)
@@ -746,10 +759,14 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 			case '%':
 				*out_p++ = *instr;
 				break;
+			case '?':
+				out_p += sprintf(out_p, "%*s", val1, cwdbuf);
+				break;
 			}
 		} else
 			*out_p++ = *instr;
 	*out_p = 0;
+	free(cwdbuf);
 	return output;
 }
 

@@ -629,7 +629,7 @@
 #define del_completebar		"\\[.*] - \\( .*F - COMPLETE.*) - \\[.*]"
 #endif
 #ifndef zipscript_header
-#define zipscript_header	".-== PZS-NG Zipscript-C ==--,d1'--== (C) 2004 ==---.\n"
+#define zipscript_header	".-== PZS-NG Zipscript-C ==--,d1'--== (C) 2005 ==---.\n"
 #endif
 #ifndef zipscript_sfv_ok
 #define zipscript_sfv_ok	"| + SFV-file: oK!                                  |\n"
@@ -907,5 +907,32 @@
 #endif
 #ifndef charbar_filled
 #define charbar_filled			"#"
+#endif
+
+/*
+ * Some setting used in ng-chown
+ * -----------------------------
+ *
+ */
+
+/* Should we allow the binary to change the uid of files/dirs?
+ */
+#ifndef allow_uid_change_in_ng_chown
+#define allow_uid_change_in_ng_chown	FALSE
+#endif
+/* Should we allow the binary to change the gid of files/dirs?
+ */
+#ifndef allow_gid_change_in_ng_chown
+#define allow_gid_change_in_ng_chown	FALSE
+#endif
+/* Should we allow the binary to chown the files in a dir?
+ */
+#ifndef allow_files_chown_in_ng_chown
+#define allow_files_chown_in_ng_chown	FALSE
+#endif
+/* Should we allow the binary to chown the dir/file itself?
+ */
+#ifndef allow_dir_chown_in_ng_chown
+#define allow_dir_chown_in_ng_chown	FALSE
 #endif
 

@@ -251,7 +251,7 @@ main()
 				strcpy(raceI.user.name, get_u_name(f_uid));
 				strcpy(raceI.user.group, get_g_name(f_gid));
 				raceI.file.name = dirlist[n]->d_name;
-				raceI.file.speed = 2004 * 1024;
+				raceI.file.speed = 2005 * 1024;
 				raceI.file.size = fileinfo.st_size;
 
 				temp_time = fileinfo.st_mtime;
@@ -375,7 +375,7 @@ main()
 				strcpy(raceI.user.name, get_u_name(f_uid));
 				strcpy(raceI.user.group, get_g_name(f_gid));
 				raceI.file.name = dirlist[n]->d_name;
-				raceI.file.speed = 2004 * 1024;
+				raceI.file.speed = 2005 * 1024;
 				raceI.file.size = fileinfo.st_size;
 				raceI.total.start_time = 0;
 

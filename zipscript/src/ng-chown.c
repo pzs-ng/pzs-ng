@@ -1,34 +1,24 @@
-/************************************************************************************************/
-/* */
-/* NG-CHOWN v0.1 (c) 2004 Team pzs-ng                                                           */
-/* */
-/* This util will cange the uid or gid of the dir/file passed as argument, or                   */
-/* dir and all files inside, or just the files inside the dir. Uhm.. anyway,                    */
-/* here's how you use it:                                                                       */
-/* */
-/*
- * ng-chown <uid> <gid> <uid_flag> <gid_flag> <files_flag> <dir/file_flag>
- * <name of dir/file>
- */
-/* */
-/* <uid> == user id (number between 1 and 65535)                                                */
-/* <gid> == group id (number between 1 and 65535)                                               */
-/* <uid_flag> == if set to 1, the uid of the file/dir will be modified                          */
-/* <gid_flag> == if set to 1, the gid of the file/dir will be modified                          */
-/*
- * <files_flag> == if set to 1, the files in the dir <name of dir/file> will
- * be modified
- */
-/*
- * <dir/file_flag> == if set to 1, the dir/file <name of dir/file> will be
- * modified
- */
-/*
- * <name of dir/file> == name of the file dir to which the changes is to be
- * applied
- */
-/* */
-/************************************************************************************************/
+/****************************************************************************************************************/
+/*                                                                                                              */
+/* NG-CHOWN v0.1 (c) 2004 Team pzs-ng                                                                           */
+/*                                                                                                              */
+/* This util will cange the uid or gid of the dir/file passed as argument, or                                   */
+/* dir and all files inside, or just the files inside the dir. Uhm.. anyway,                                    */
+/* here's how you use it:                                                                                       */
+/*                                                                                                              */
+/* ng-chown <uid> <gid> <uid_flag> <gid_flag> <files_flag> <dir/file_flag> <u_name> <g_name> <name of dir/file> */
+/*                                                                                                              */
+/* <uid> == user id (number between 1 and 65535)                                                                */
+/* <gid> == group id (number between 1 and 65535)                                                               */
+/* <uid_flag> == if set to 1, the uid of the file/dir will be modified                                          */
+/* <gid_flag> == if set to 1, the gid of the file/dir will be modified                                          */
+/* <files_flag> == if set to 1, the files in the dir <name of dir/file> will be modified                        */
+/* <dir/file_flag> == if set to 1, the dir/file <name of dir/file> will be modified                             */
+/* <u_name> == name of user - only used if uid=0 *and* gid=0 - use '-' to disable                               */
+/* <g_name> == name of group - only used if uid=0 *and* gid=0 - use '-' to disable                              */
+/* <name of dir/file> == name of the file dir to which the changes is to be applied                             */
+/*                                                                                                              */
+/****************************************************************************************************************/
 
 #include <sys/types.h>
 #include <dirent.h>
@@ -37,6 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <fcntl.h>
 
 #ifndef PATH_MAX
  #define _LIMITS_H_
@@ -47,8 +38,9 @@
  #endif
 #endif
 
+#include "objects.h"
 #include "../conf/zsconfig.h"
-#include "../include/zsconfig.defaults.h"
+#include "zsconfig.defaults.h"
 
 struct dirent **dirlist;
 unsigned int	direntries, n = 0;
@@ -106,7 +98,6 @@ myscandir(char *my_path, char *my_name)
 		return 0;
 	} else {
 		printf("%s - Error: Unable to chdir to %s\n", my_name, my_path);
-		printf("%s - Syntax: %s <uid> <gid> <uid_flag> <gid_flag> <files_flag> <dir/file_flag> <name of dir/file>\n", my_name, my_name);
 		return 1;
 	}
 }
@@ -124,11 +115,11 @@ myscan(int my_result, int new_user, int new_group, int user_flag, int group_flag
 		new_group = -1;
 	}
 	if (files_flag == 1) {
-		if (myscandir(my_path, my_name) == 0) {
+		if (!myscandir(my_path, my_name)) {
 			n = direntries;
 			while (n--) {
-				my_total += access(dirlist[n]->d_name, R_OK);
-				chown(dirlist[n]->d_name, new_user, new_user);
+				my_total += close(open(dirlist[n]->d_name, O_NONBLOCK));
+				chown(dirlist[n]->d_name, new_user, new_group);
 			}
 			if ((my_result == 0) && (dir_flag == 1)) {
 				chown(my_path, new_user, new_group);
@@ -139,53 +130,156 @@ myscan(int my_result, int new_user, int new_group, int user_flag, int group_flag
 		}
 	} else {
 		if (dir_flag == 1) {
-			my_result = access(my_path, R_OK);
+			my_result = close(open(my_path, O_NONBLOCK));
 			if (my_result == 0) {
 				chown(my_path, new_user, new_group);
 			} else {
 				printf("%s - Error: Unable to read file %s\n", my_name, my_path);
-				printf("%s - Syntax: %s <uid> <gid> <uid_flag> <gid_flag> <files_flag> <dir/file_flag> <name of dir/file>\n", my_name, my_name);
 			}
 		}
 		return my_result;
 	}
 }
 
+uid_t
+get_gluid(char *passwdfile, char *user_name)
+{
+	char	       *f_buf = 0;
+	char	       *u_name = 0;
+	uid_t		u_id = 0;
+	off_t		f_size;
+	int		f, n, m, l, l_start = 0;
+	struct stat	fileinfo;
+
+	f = open(passwdfile, O_NONBLOCK);
+	fstat(f, &fileinfo);
+	f_size = fileinfo.st_size;
+	f_buf = malloc(f_size);
+	read(f, f_buf, f_size);
+
+	for (n = 0; n < f_size; n++) {
+		if (f_buf[n] == '\n' || n == f_size) {
+			f_buf[n] = 0;
+			m = l_start;
+			while (f_buf[m] != ':' && m < n)
+				m++;
+			if (m != l_start) {
+				f_buf[m] = 0;
+				u_name = f_buf + l_start;
+				m = n;
+				for (l = 0; l < 4; l++) {
+					while (f_buf[m] != ':' && m > l_start)
+						m--;
+					f_buf[m] = 0;
+				}
+				while (f_buf[m] != ':' && m > l_start)
+					m--;
+				if ((m != n) && (strlen(u_name) == strlen(user_name)) && !strcmp(u_name, user_name)){
+					u_id = atoi(f_buf + m + 1);
+					break;
+				}
+			}
+			l_start = n + 1;
+		}
+	}
+	close(f);
+	free(f_buf);
+	return u_id;
+}
+
+gid_t
+get_glgid(char *groupfile, char *group_name)
+{
+	char	       *f_buf = 0;
+	char	       *g_name = 0;
+	gid_t		g_id = 0;
+	off_t		f_size;
+	int		f, n, m, l_start = 0;
+	struct stat	fileinfo;
+
+	f = open(groupfile, O_NONBLOCK);
+
+	fstat(f, &fileinfo);
+	f_size = fileinfo.st_size;
+	f_buf = malloc(f_size);
+	read(f, f_buf, f_size);
+
+	for (n = 0; n < f_size; n++) {
+		if (f_buf[n] == '\n' || n == f_size) {
+			f_buf[n] = 0;
+			m = l_start;
+			while (f_buf[m] != ':' && m < n)
+				m++;
+			if (m != l_start) {
+				f_buf[m] = 0;
+				g_name = f_buf + l_start;
+				m = n;
+				while (f_buf[m] != ':' && m > l_start)
+					m--;
+				f_buf[m] = 0;
+				while (f_buf[m] != ':' && m > l_start)
+					m--;
+				if ((m != n) && (strlen(g_name) == strlen(group_name)) && !strcmp(g_name, group_name)){
+					g_id = atoi(f_buf + m + 1);
+					break;
+				}
+			}
+			l_start = n + 1;
+		}
+	}
+
+	close(f);
+	free(f_buf);
+	return g_id;
+}
+
+
 int 
 main(int argc, char *argv[])
 {
 	int		my_result = 1;
-	int		new_user;
-	int		new_group;
-	int		user_flag;
-	int		group_flag;
-	int		files_flag;
-	int		dir_flag;
+	int		new_user = 0;
+	int		new_group = 0;
+	int		user_flag = 0;
+	int		group_flag = 0;
+	int		files_flag = 0;
+	int		dir_flag = 0;
 	char		my_path   [PATH_MAX];
 
-	if (argc != 8) {
-		printf("%s - Error: Wrong number of args given.\n", argv[0]);
-		printf("%s - Syntax: %s <uid> <gid> <uid_flag> <gid_flag> <files_flag> <dir/file_flag> <name of dir/file>\n", argv[0], argv[0]);
+	if (argc != 10) {
+		printf("%s - Error: Wrong number of args given. (%d)\n", argv[0], argc);
+		printf("%s - Syntax: %s <uid> <gid> <uid_flag> <gid_flag> <files_flag> <dir/file_flag> <user name> <group name> <name of dir/file>\n", argv[0], argv[0]);
 		return 1;
 	}
 	new_user = atoi(argv[1]);	/* uid of user */
 	new_group = atoi(argv[2]);	/* gid of user */
-	user_flag = atoi(argv[3]);	/* change the uid of the files/dir if
-					 * >0      */
-	group_flag = atoi(argv[4]);	/* change the gid of the files/dir if
-					 * >0      */
-	files_flag = atoi(argv[5]);	/* make changes on the files in the
-					 * dir if >0 */
-	dir_flag = atoi(argv[6]);	/* make changes on the dir itself if
-					 * >0       */
-
-	if ((strlen(argv[7]) < PATH_MAX) && (new_user < 65536) && (new_group < 65535)) {
-		sprintf(my_path, "%s", argv[7]);
+	if (allow_uid_change_in_ng_chown) {
+		user_flag = atoi(argv[3]);	/* change the uid of the files/dir if > 0      */
+	}
+	if (allow_gid_change_in_ng_chown) {
+		group_flag = atoi(argv[4]);	/* change the gid of the files/dir if > 0      */
+	}
+	if (allow_files_chown_in_ng_chown) {
+		files_flag = atoi(argv[5]);	/* make changes on the files in the dir if > 0 */
+	}
+	if (allow_dir_chown_in_ng_chown) {
+		dir_flag = atoi(argv[6]);	/* make changes on the dir itself if > 0       */
+	}
+	if ((new_user == 0) && (new_group == 0)) {
+		if (strlen(argv[7]) < 25) {
+			new_user = (int)get_gluid(PASSWDFILE, argv[7]);
+		}
+		if (strlen(argv[8]) < 25) {
+			new_group = (int)get_glgid(GROUPFILE, argv[8]);
+		}
+	}
+	if ((strlen(argv[9]) < PATH_MAX) && (new_user < 65536) && (new_group < 65535)) {
+		sprintf(my_path, "%s", argv[9]);
 	} else {
 		printf("%s - Error in argument(s)\n", argv[0]);
-		printf("%s - Syntax: %s <uid> <gid> <uid_flag> <gid_flag> <files_flag> <dir/file_flag> <name of dir/file>\n", argv[0], argv[0]);
 		return 1;
 	}
+
 	my_result = myscan(my_result, new_user, new_group, user_flag, group_flag, files_flag, dir_flag, my_path, argv[0]);
 	if (my_result == 0) {
 		if ((new_user > 0) || (new_group > 0)) {
@@ -196,3 +290,4 @@ main(int argc, char *argv[])
 	}
 	return my_result;
 }
+
