@@ -39,7 +39,7 @@ bold=""
 #############################
 
 # grab sections from the sitebot's conf instead
-if [ -z $section ]; then
+if [ -z "$sections" ]; then
  sections=`grep "^set paths(" $botconf | sed 's/^set paths(\(.*\)) \"\(.*\)\*\"/\1:\2/'`
 fi;
 
