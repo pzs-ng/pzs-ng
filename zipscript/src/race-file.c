@@ -553,17 +553,30 @@ readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
 void 
 writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned int crc, unsigned char status)
 {
+	int		id;
 	FILE		*file;
 
 	RACEDATA	rd;
 
 	clear_file_file(locations, raceI->file.name);
 
-	if (!(file = fopen(locations->race, "a+"))) {
+	/* create file if it doesn't exist */
+	id = open(locations->race, O_CREAT);
+	close(id);
+	
+	if (!(file = fopen(locations->race, "r+"))) {
 		d_log("Couldn't fopen racefile (%s): %s\n", locations->race, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	
+
+	/* find an existing entry that we will overwrite */
+	while (fread(&rd, 1, sizeof(RACEDATA), file)) {
+		if (strncmp(rd.fname, raceI->file.name, PATH_MAX) == 0) {
+			fseek(file, -sizeof(RACEDATA), SEEK_CUR);
+			break;
+		}
+	}
+			
 	rd.status = status;
 	rd.crc32 = crc;
 	
