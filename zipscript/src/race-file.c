@@ -244,6 +244,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	char		*realfile, target[256], *ext;
 	unsigned int	Tcrc;
 	//int		m = 0, l = 0;
+	int		filenum = 0;
 	struct stat	filestat;
 
 	RACEDATA	rd;
@@ -303,9 +304,13 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 						}
 					}
 				}
-				fseek(file, -sizeof(RACEDATA), SEEK_CUR);
-				fwrite(&rd, sizeof(RACEDATA), 1, file);
 			}
+			if (fseek(file, sizeof(RACEDATA) * filenum, SEEK_SET) == -1) {
+				d_log("Error - failed to seek in racefile - %s\n", strerror(errno));
+				break;
+			}
+			fwrite(&rd, sizeof(RACEDATA), 1, file);
+			filenum++;
 		}
 
 		strlcpy(raceI->file.name, realfile, strlen(realfile));
