@@ -811,7 +811,7 @@ main(int argc, char **argv)
 			d_log("Converting crc (%s) from string to integer\n", argv[3]);
 			crc = hexstrtodec((unsigned char *)argv[3]);
 			if (crc == 0) {
-				d_log("We did not get crc from ftp daemon, calculating crc now...\n");
+				d_log("We did not get crc from ftp daemon, calculating crc for %s now.\n", raceI.file.name);
 				crc = calc_crc32(raceI.file.name);
 			}
 			if (fileexists(locations.sfv)) {

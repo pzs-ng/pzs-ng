@@ -619,7 +619,7 @@ subcomp(char *directory)
 short int 
 fileexists(char *f)
 {
-	if (access(f, 0444) == -1)
+	if (access(f, R_OK) == -1)
 		return 0;
 	return 1;
 
