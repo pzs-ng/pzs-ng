@@ -39,10 +39,12 @@ void scandirectory(char *directoryname, int setfree) {
 			printf("Broken symbolic link \"%s\" removed.\n", namelist2[m]->d_name);
 		    }
 		}
+		free(namelist2);
 		chdir("..");
 		if (setfree)
 			rmdir(namelist[n]->d_name);
 	    }
+	free(namelist);
     }
 }
 
