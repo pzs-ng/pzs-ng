@@ -745,28 +745,30 @@ verify_racedata(const char *path)
 	RACEDATA	rd;
 
 	if (!(file = fopen(path, "r+"))) {
-		d_log("Couldn't fopen racefile (%s): %s\n", path, strerror(errno));
+		d_log("  Couldn't fopen racefile (%s): %s\n", path, strerror(errno));
 		return 0;
 	}
 	
 	sprintf(tmppath, "%s/rd.verifydata.tmp", storage);
 
 	if (!(tmp = fopen(tmppath, "w"))) {
-		d_log("Couldn't fopen racefile (%s): %s\n", tmppath, strerror(errno));
+		d_log("  Couldn't fopen racefile (%s): %s\n", tmppath, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
 	while ((fread(&rd, sizeof(RACEDATA), 1, file))) {
 		if (fileexists(rd.fname))
 			fwrite(&rd, sizeof(RACEDATA), 1, tmp);
-		else
+		else {
+			d_log("  Oops! %s is missing - removing from racedata\n", rd.fname);
 			create_missing(rd.fname);
+		}
 	}
 	fclose(file);
 	fclose(tmp);
 
 	if (rename(tmppath, path) == -1) {
-		d_log("Failed rename of '%s' to '%s': %s", tmppath, path, strerror(errno));
+		d_log("  Failed rename of '%s' to '%s': %s", tmppath, path, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 	return 1;
