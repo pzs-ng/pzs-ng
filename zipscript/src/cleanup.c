@@ -23,6 +23,10 @@
  #endif
 #endif
 
+#ifdef _SunOS_
+#include "scandir.h"
+#endif
+
 struct tm      *timenow;
 time_t		tnow;
 

@@ -23,6 +23,10 @@ int		zd_length;
  #endif
 #endif
 
+#ifdef _SunOS_
+#include "scandir.h"
+#endif
+
 void 
 remove_dir_loop(char *path)
 {

@@ -12,6 +12,11 @@
 #include "convert.h"
 #include "zsfunctions.h"
 
+#ifdef _SunOS_
+#include "scandir.h"
+/*#include "sc.h"*/
+#endif
+
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
 

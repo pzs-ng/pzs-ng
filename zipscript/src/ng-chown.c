@@ -38,6 +38,10 @@
  #endif
 #endif
 
+#ifdef _SunOS_
+#include "scandir.h"
+#endif
+
 #include "objects.h"
 #include "../conf/zsconfig.h"
 #include "zsconfig.defaults.h"

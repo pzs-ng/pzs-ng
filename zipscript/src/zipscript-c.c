@@ -41,6 +41,11 @@
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
 
+#ifdef _SunOS_
+#include "scandir.h"
+#include "strsep.h"
+#endif
+
 /*
  * Remove the portion of PARAM matched by PATTERN according to OP, where OP
  * can have one of 4 values: RP_LONG_LEFT    remove longest matching portion

@@ -6,11 +6,12 @@ bindir=$(prefix)/bin
 CC=@CC@
 CFLAGS=@CFLAGS@ -W -Wall @STATIC@ @NOFORMAT@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE @DEFS@ -I../include/ -I../../ -I../../lib/
 LDFLAGS=@LDFLAGS@
-UNIVERSAL=stats.o convert.o race-file.o zsfunctions.o mp3info.o ng-version.o
 RM=@RM@ -f
 INSTALL=@INSTALL@
 STRLCPY=../../lib/strl/strlcpy.o
 
+SUNOBJS=@SUNOBJS@
+UNIVERSAL=stats.o convert.o race-file.o zsfunctions.o mp3info.o ng-version.o $(SUNOBJS)
 RD-OBJECTS=racedebug.o
 ZS-OBJECTS=zipscript-c.o dizreader.o complete.o multimedia.o crc.o $(UNIVERSAL)
 PD-OBJECTS=postdel.o dizreader.o multimedia.o $(UNIVERSAL)
@@ -28,8 +29,13 @@ all: ng-undupe racedebug zipscript-c postdel racestats cleanup datacleaner resca
 
 $(ZS-DEPEND): ../conf/zsconfig.h
 
-zipscript-c: $(ZS-OBJECTS) $(ZS-DEPEND)
-	$(CC) $(CFLAGS) -o $@ $(ZS-OBJECTS) $(STRLCPY)
+strsep.o:
+	$(CC) $(CFLAGS) -o strsep.o -c strsep.c
+scandir.o:
+	$(CC) $(CFLAGS) -o scandir.o -c scandir.c
+
+zipscript-c: $(ZS-OBJECTS) $(ZS-DEPEND) $(SUNOBJS)
+	$(CC) $(CFLAGS) -o $@ $(ZS-OBJECTS) $(STRLCPY) $(SUNOBJS)
 
 racedebug: $(RD-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(RD-OBJECTS)
@@ -41,16 +47,16 @@ racestats: $(RS-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(RS-OBJECTS)
 
 cleanup: $(CU-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(CU-OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(CU-OBJECTS) $(SUNOBJS)
 
 datacleaner: $(DC-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(DC-OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(DC-OBJECTS) $(SUNOBJS)
 
 ng-undupe: $(UD-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(UD-OBJECTS) $(STRLCPY)
 
 ng-chown: $(CH-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(CH-OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(CH-OBJECTS) $(SUNOBJS)
 
 rescan: $(SC-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(SC-OBJECTS)

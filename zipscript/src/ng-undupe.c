@@ -45,7 +45,7 @@ main(int argc, char *argv[])
 	strlcpy(dupefile, dupepath, 1024);
 	strlcpy(dupename, argv[1], 1024);
 
-	sprintf(data2, "%s/dupefile.%d", storage, getuid());
+	sprintf(data2, "%s/dupefile.%d", storage, (int)getuid());
 
 	if (!(fp = fopen(dupefile, "r+b"))) {
 		printf("FATAL ERROR: Unable to open dupefile (%s)\n", dupefile);
