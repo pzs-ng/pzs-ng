@@ -49,10 +49,11 @@ readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount)
 		fname = m_alloc(len);
 		fread(fname, 1, len, sfvfile);
 		fread(&t_crc, sizeof(unsigned int), 1, sfvfile);
-		d_log("DEBUG: crc read from sfv-file %s : %X\n", fname, t_crc);
 		raceI->total.files++;
-		if (!strcasecmp(raceI->file.name, fname))
+		if (!strcasecmp(raceI->file.name, fname)) {
+			d_log("DEBUG: crc read from sfv-file %s : %X\n", fname, t_crc);
 			crc = t_crc;
+		}
 		if (getfcount && findfile(fname))
 			raceI->total.files_missing--;
 		m_free(fname);

@@ -938,7 +938,6 @@ main(int argc, char **argv)
 				d_log("Writing current leader to file\n");
 				read_write_leader_file(&locations, &raceI, userI[userI[0]->pos]);
 			}
-d_log("DEBUG: raceI.total.users=%d - files=%d, race_msg=%s\n", raceI.total.users, userI[raceI.total.users-1]->files, race_msg);
 			if (raceI.total.users > 1) {
 				if (userI[raceI.user.pos]->files == 1 && race_msg != NULL) {
 					d_log("Writing RACE to %s\n", log);

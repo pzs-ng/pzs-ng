@@ -53,7 +53,7 @@ d_log(char *fmt,...)
 	sprintf(debugname, "%s/%s/.debug", storage, debugpath);
 	free(debugpath);
 #else
-	debugname = malloc(PATH_MAX);
+	debugname = malloc(strlen(".debug") + 2);
 	sprintf(debugname, ".debug");
 #endif
 
