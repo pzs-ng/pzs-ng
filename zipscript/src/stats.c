@@ -102,6 +102,7 @@ void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO *
  * Author     : Dark0n3
  *
  * Description: Sorts userI and groupI
+ * Modified by psxc 09.25.2004 - nasty bug
  */
 void sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI) {
     int	    n;
@@ -155,20 +156,20 @@ void showstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **g
     int	cnt;
 
 #if ( show_user_info == TRUE )
-    printf(convert(raceI, userI, groupI, realtime_user_header));
+    printf("%s", convert(raceI, userI, groupI, realtime_user_header));
 
     for ( cnt = 0 ; cnt < raceI->total.users ; cnt++ ) {
-	printf(convert2(raceI, userI[userI[cnt]->pos], groupI, realtime_user_body, cnt));
+	printf("%s", convert2(raceI, userI[userI[cnt]->pos], groupI, realtime_user_body, cnt));
     }
-    printf(convert(raceI, userI, groupI, realtime_user_footer));
+    printf("%s", convert(raceI, userI, groupI, realtime_user_footer));
 #endif
 #if ( show_group_info == TRUE )
-    printf(convert(raceI, userI, groupI, realtime_group_header));
+    printf("%s", convert(raceI, userI, groupI, realtime_group_header));
 
     for ( cnt = 0 ; cnt < raceI->total.groups ; cnt++ ) {
-	printf(convert3(raceI, groupI[groupI[cnt]->pos], realtime_group_body, cnt));
+	printf("%s", convert3(raceI, groupI[groupI[cnt]->pos], realtime_group_body, cnt));
     }
-    printf( convert(raceI, userI, groupI, realtime_group_footer) );
+    printf("%s", convert(raceI, userI, groupI, realtime_group_footer) );
 #endif
 }
 
@@ -299,3 +300,4 @@ void get_stats(struct VARS *raceI, struct USERINFO **userI) {
     for ( n = 0 ; n < users ; n++ ) m_free(user[n]);
     m_free(user);
 }
+

@@ -469,7 +469,8 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 
 		      /* Other */
 
-	    case 'Z': *out_p++ = raceI->file.compression_method; break;
+	    case 'Z': *out_p += raceI->file.compression_method; break;
+//	    case '%': out_p += sprintf(out_p, "%%%%"); break;
 	    case '%': *out_p++ = *instr;
 	}
     } else *out_p++ = *instr;

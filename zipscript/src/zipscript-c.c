@@ -752,7 +752,7 @@ int main( int argc, char **argv ) {
 #if ( exclude_non_sfv_dirs == TRUE )
 	}
 #endif
-				printf(convert(&raceI, userI, groupI, realtime_mp3_info));
+				printf("%s", convert(&raceI, userI, groupI, realtime_mp3_info));
 				race_msg = audio_race;
 				update_msg = audio_update;
 				halfway_msg = CHOOSE(raceI.total.users, audio_halfway, audio_norace_halfway);
@@ -799,7 +799,7 @@ int main( int argc, char **argv ) {
 
     if ( no_check == TRUE ) { /* File was not checked */
 	printf(zipscript_any_ok);
-	printf(convert(&raceI, userI, groupI, zipscript_footer_skip));
+	printf("%s", convert(&raceI, userI, groupI, zipscript_footer_skip));
     } else if ( exit_value == EXIT_SUCCESS ) { /* File was checked */
 
 	if ( raceI.total.users > 0 ) {
@@ -882,7 +882,7 @@ int main( int argc, char **argv ) {
 	    d_log("Creating/moving progress bar\n");
 	    move_progress_bar(0, &raceI);
 
-	    printf(convert(&raceI, userI, groupI, zipscript_footer_ok));
+	    printf("%s", convert(&raceI, userI, groupI, zipscript_footer_ok));
 
 	} else if (( raceI.total.files_missing == 0 ) && ( raceI.total.files > 0 )) {
 
@@ -890,7 +890,7 @@ int main( int argc, char **argv ) {
 
 	    d_log("Caching progress bar\n");
 	    buffer_progress_bar(&raceI);
-	    printf(convert(&raceI, userI, groupI, zipscript_footer_ok));
+	    printf("%s", convert(&raceI, userI, groupI, zipscript_footer_ok));
 
 	    d_log("Setting complete pointers\n");
 	    switch ( raceI.misc.release_type ) {
@@ -1000,14 +1000,14 @@ int main( int argc, char **argv ) {
 
 	    raceI.total.files = -raceI.total.files_missing;
 	    raceI.total.files_missing = 0;
-	    printf(convert(&raceI, userI, groupI, zipscript_footer_unknown));
+	    printf("%s", convert(&raceI, userI, groupI, zipscript_footer_unknown));
 	}
     } else {
 	/* File is marked to be deleted */
 
 	d_log("Logging file as bad\n");
 	writerace_file(&locations, &raceI, 0, F_BAD);
-	printf(convert(&raceI, userI, groupI, zipscript_footer_error));
+	printf("%s", convert(&raceI, userI, groupI, zipscript_footer_error));
     }
 #if ( enable_accept_script == TRUE )
     if ( exit_value == EXIT_SUCCESS ) {
