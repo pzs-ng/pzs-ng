@@ -37,7 +37,7 @@
  * Description	: Reads crc for current file from preparsed sfv file.
  */
 unsigned int 
-readsfv(struct LOCATIONS *locations, struct VARS *raceI, int getfcount)
+readsfv(const char *path, struct VARS *raceI, int getfcount)
 {
 	char           *fname;
 	unsigned int	crc = 0;
@@ -45,8 +45,8 @@ readsfv(struct LOCATIONS *locations, struct VARS *raceI, int getfcount)
 	FILE           *sfvfile;
 	unsigned int	len = 0;
 
-	if (!(sfvfile = fopen(locations->sfv, "r"))) {
-		d_log("Failed to open sfv (%s): %s\n", locations->sfv, strerror(errno));
+	if (!(sfvfile = fopen(path, "r"))) {
+		d_log("Failed to open sfv (%s): %s\n", path, strerror(errno));
 		return 0;
 	}
 
@@ -76,14 +76,14 @@ readsfv(struct LOCATIONS *locations, struct VARS *raceI, int getfcount)
  * Description	: Deletes all -missing files with preparsed sfv.
  */
 void 
-delete_sfv(struct LOCATIONS *locations)
+delete_sfv(const char *path)
 {
-	char           *fname, *fnname;
-	FILE           *sfvfile;
+	char		*fname, *fnname;
+	FILE		*sfvfile;
 	unsigned int	len;
 
-	if (!(sfvfile = fopen(locations->sfv, "r"))) {
-		d_log("Couldn't fopen %s: %s\n", locations->sfv, strerror(errno));
+	if (!(sfvfile = fopen(path, "r"))) {
+		d_log("Couldn't fopen %s: %s\n", path, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 	fseek(sfvfile, sizeof(short int), SEEK_CUR);
@@ -138,18 +138,18 @@ maketempdir(char *path)
  * Todo		: Make this unneccessary (write info to another file)
  */
 void 
-read_write_leader(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *userI)
+read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
 {
 	FILE           *file;
 
-	if ((file = fopen(locations->leader, "r+"))) {
+	if ((file = fopen(path, "r+"))) {
 		fread(&raceI->misc.old_leader, 1, 24, file);
 		rewind(file);
 		fwrite(userI->name, 1, 24, file);
 	} else {
 		*raceI->misc.old_leader = 0;
-		if (!(file = fopen(locations->leader, "w+"))) {
-			d_log("Couldn't write to %s: %s\n", locations->leader, strerror(errno));
+		if (!(file = fopen(path, "w+"))) {
+			d_log("Couldn't write to %s: %s\n", path, strerror(errno));
 			exit(EXIT_FAILURE);
 		}
 		fwrite(userI->name, 1, 24, file);
@@ -194,7 +194,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 
 			if (rd.status == F_NOTCHECKED) {
 				strlcpy(raceI->file.name, rd.fname, PATH_MAX);
-				Tcrc = readsfv(locations, raceI, 0);
+				Tcrc = readsfv(locations->sfv, raceI, 0);
 				stat(rd.fname, &filestat);
 				if (S_ISDIR(filestat.st_mode)) {
 					rd.status = F_IGNORED;
@@ -443,7 +443,7 @@ copysfv(char *source, char *target, off_t buf_bytes)
  * alphabetical order.
  */
 void 
-create_indexfile(struct LOCATIONS *locations, struct VARS *raceI, char *f)
+create_indexfile(const char *path, struct VARS *raceI, char *f)
 {
 	FILE		*r;
 	int		l, n, m, c;
@@ -453,8 +453,8 @@ create_indexfile(struct LOCATIONS *locations, struct VARS *raceI, char *f)
 	
 	RACEDATA	rd;
 
-	if (!(r = fopen(locations->race, "r"))) {
-		d_log("Couldn't fopen %s: %s\n", locations->race, strerror(errno));
+	if (!(r = fopen(path, "r"))) {
+		d_log("Couldn't fopen %s: %s\n", path, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
@@ -498,14 +498,14 @@ create_indexfile(struct LOCATIONS *locations, struct VARS *raceI, char *f)
  * Description	: Marks file as deleted.
  */
 short int 
-clear_file(struct LOCATIONS *locations, char *f)
+clear_file(const char *path, char *f)
 {
 	int		n = 0;
 	FILE           *file;
 
 	RACEDATA	rd;
 
-	if ((file = fopen(locations->race, "r+"))) {
+	if ((file = fopen(path, "r+"))) {
 		while (fread(&rd, 1, sizeof(RACEDATA), file)) {
 			if (strncmp(rd.fname, f, PATH_MAX) == 0) {
 				rd.status = F_DELETED;
@@ -526,13 +526,13 @@ clear_file(struct LOCATIONS *locations, char *f)
  * Description	: Reads current race statistics from fixed format file.
  */
 void 
-readrace(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI)
+readrace(const char *path, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI)
 {
 	FILE           *file;
 
 	RACEDATA	rd;
 
-	if ((file = fopen(locations->race, "r"))) {
+	if ((file = fopen(path, "r"))) {
 		while (fread(&rd, 1, sizeof(RACEDATA), file)) {
 			switch (rd.status) {
 				case F_NOTCHECKED:
@@ -559,21 +559,21 @@ readrace(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **user
  * Description	: Writes stuff into race file.
  */
 void 
-writerace(struct LOCATIONS *locations, struct VARS *raceI, unsigned int crc, unsigned char status)
+writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char status)
 {
 	int		id;
 	FILE		*file;
 
 	RACEDATA	rd;
 
-	clear_file(locations, raceI->file.name);
+	clear_file(path, raceI->file.name);
 
 	/* create file if it doesn't exist */
-	id = open(locations->race, O_CREAT);
+	id = open(path, O_CREAT);
 	close(id);
 	
-	if (!(file = fopen(locations->race, "r+"))) {
-		d_log("Couldn't fopen racefile (%s): %s\n", locations->race, strerror(errno));
+	if (!(file = fopen(path, "r+"))) {
+		d_log("Couldn't fopen racefile (%s): %s\n", path, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 

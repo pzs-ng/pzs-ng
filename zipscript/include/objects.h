@@ -172,4 +172,11 @@ typedef struct {
 			group[24];
 } RACEDATA;
 
+/* this is put in sfvdata files */
+typedef struct {
+	unsigned int	crc32;
+	char		fname[PATH_MAX];
+} SFVDATA;
+
+
 #endif

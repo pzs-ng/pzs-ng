@@ -226,7 +226,7 @@ main(int argc, char **argv)
 		g.v.total.files_missing = g.v.total.files;
 
 		d_log("Reading race data from file to memory\n");
-		readrace(&g.l, &g.v, g.ui, g.gi);
+		readrace(g.l.race, &g.v, g.ui, g.gi);
 
 		d_log("Caching progress bar\n");
 		buffer_progress_bar(&g.v);
@@ -252,11 +252,11 @@ main(int argc, char **argv)
 		break;
 	case 1:
 		d_log("Reading file count from SFV\n");
-		readsfv(&g.l, &g.v, 0);
+		readsfv(g.l.sfv, &g.v, 0);
 
 		if (fileexists(g.l.race)) {
 			d_log("Reading race data from file to memory\n");
-			readrace(&g.l, &g.v, g.ui, g.gi);
+			readrace(g.l.race, &g.v, g.ui, g.gi);
 		}
 		d_log("Caching progress bar\n");
 		buffer_progress_bar(&g.v);
@@ -271,7 +271,7 @@ main(int argc, char **argv)
 
 		if (fileexists(g.l.race)) {
 			d_log("Reading race data from file to memory\n");
-			readrace(&g.l, &g.v, g.ui, g.gi);
+			readrace(g.l.race, &g.v, g.ui, g.gi);
 		}
 		if (fileexists(g.l.sfv)) {
 #if ( create_missing_files == TRUE )
@@ -283,7 +283,7 @@ main(int argc, char **argv)
 			create_missing(g.v.file.name);
 #endif
 			d_log("Reading file count from SFV\n");
-			readsfv(&g.l, &g.v, 0);
+			readsfv(g.l.path, &g.v, 0);
 
 			d_log("Caching progress bar\n");
 			buffer_progress_bar(&g.v);
@@ -313,7 +313,7 @@ main(int argc, char **argv)
 			empty_dir = 1;
 		} else {
 			d_log("Reading race data from file to memory\n");
-			readrace(&g.l, &g.v, g.ui, g.gi);
+			readrace(g.l.race, &g.v, g.ui, g.gi);
 			d_log("Caching progress bar\n");
 			buffer_progress_bar(&g.v);
 			if (g.v.total.files_missing == g.v.total.files) {
@@ -327,7 +327,7 @@ main(int argc, char **argv)
 		d_log("Removing all files and directories created by zipscript\n");
 		removecomplete();
 		if (fileexists(g.l.sfv))
-			delete_sfv(&g.l);
+			delete_sfv(g.l.path);
 		if (g.l.nfo_incomplete)
 			unlink(g.l.nfo_incomplete);
 		if (g.l.incomplete)
@@ -400,7 +400,7 @@ get_filetype_postdel(GLOBAL *g, char *ext)
 {
 	if (!memcmp(ext, "sfv", 4))
 		return 1;
-	if (!clear_file(&g->l, g->v.file.name))
+	if (!clear_file(g->l.race, g->v.file.name))
 		return 4;
 	if (!memcmp(ext, "zip", 4))
 		return 0;

@@ -199,7 +199,7 @@ main()
 				}
 				if(fflush(stdout))
 					d_log("ERROR: %s\n", strerror(errno));
-				writerace(&g.l, &g.v, crc, F_NOTCHECKED);
+				writerace(g.l.race, &g.v, crc, F_NOTCHECKED);
 			}
 		}
 		printf("\n");
@@ -208,8 +208,8 @@ main()
 //
 //		temprescandir(0);	/* We need to rescan again */
 //
-		readsfv(&g.l, &g.v, 0);
-		readrace(&g.l, &g.v, g.ui, g.gi);
+		readsfv(g.l.sfv, &g.v, 0);
+		readrace(g.l.race, &g.v, g.ui, g.gi);
 		sortstats(&g.v, g.ui, g.gi);
 		buffer_progress_bar(&g.v);
 
@@ -310,9 +310,9 @@ main()
 				}
 				sprintf(exec, "%s -qqt %s &> /dev/null", unzip_bin, g.v.file.name);
 				if (system(exec) == 0) {
-					writerace(&g.l, &g.v, crc, F_CHECKED);
+					writerace(g.l.race, &g.v, crc, F_CHECKED);
 				} else {
-					writerace(&g.l, &g.v, crc, F_BAD);
+					writerace(g.l.race, &g.v, crc, F_BAD);
 					if (g.v.file.name)
 						unlink(g.v.file.name);
 				}
@@ -324,7 +324,7 @@ main()
 			unlink("file_id.diz");
 		}
 		g.v.total.files_missing = g.v.total.files;
-		readrace(&g.l, &g.v, g.ui, g.gi);
+		readrace(g.l.race, &g.v, g.ui, g.gi);
 		sortstats(&g.v, g.ui, g.gi);
 		if (g.v.total.files_missing < 0) {
 			g.v.total.files -= g.v.total.files_missing;
