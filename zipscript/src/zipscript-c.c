@@ -122,7 +122,7 @@ unsigned char get_filetype(char *ext) {
 }
 
     static char *
-remove_pattern (param, pattern, op)
+    remove_pattern (param, pattern, op)
     char *param, *pattern;
     int op;
 {
@@ -890,6 +890,10 @@ int main( int argc, char **argv ) {
 			    d_log("Valid groupname found: %s (%i)\n", temp_p, n);
 			    createlink(audio_group_path, temp_p, locations.link_source, locations.link_target);
 			}
+#endif
+/* hack. remove a warning if audio_group_sort is false... somone do something better here! ;) */
+#if ( audio_group_sort == FALSE )
+			temp_p=remove_pattern(locations.link_target,"*-",RP_LONG_LEFT);
 #endif
 		    }
 #if ( create_m3u == TRUE )
