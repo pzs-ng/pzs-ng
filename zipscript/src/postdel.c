@@ -300,12 +300,27 @@ main(int argc, char **argv)
 	switch (get_filetype(fileext)) {
 	case 0:
 		d_log("File type is: ZIP\n");
-		if ((raceI.misc.write_log = matchpath(zip_dirs, locations.path))) {
+		if (matchpath(zip_dirs, locations.path)) {
+			if (matchpath(group_dirs, locations.path)) {
+				raceI.misc.write_log = 0;
+			} else {
+				raceI.misc.write_log = 1;
+			}
+		} else if (matchpath(sfv_dirs, locations.path) && strict_path_match) {
+			if (matchpath(group_dirs, locations.path)) {
+				raceI.misc.write_log = 0;
+			} else {
+				d_log("Directory matched with sfv_dirs\n");
+				break;
+			}
+		}
+/*		if ((raceI.misc.write_log = matchpath(zip_dirs, locations.path)))) {
 			raceI.misc.write_log = 1 - matchpath(group_dirs, locations.path);
 		} else if (matchpath(sfv_dirs, locations.path)) {
-			d_log("Directory matched with sfv_dirs\n");
+			d_log("Directory did not match with zip_dirs\n");
 			break;
 		}
+*/
 		if (!fileexists("file_id.diz")) {
 			temp_p = findfileext(".zip");
 			if (temp_p != NULL) {

@@ -343,7 +343,7 @@ main(int argc, char **argv)
 	chdir(locations.path);
 
 	d_log("Reading data from environment variables\n");
-	if ((getenv("USER") != NULL) && (getenv("GROUP") != NULL) && (getenv("TAGLINE") != NULL) && (getenv("SPEED") !=NULL) && (getenv("SECTION") != NULL)) {
+	if ((getenv("USER") == NULL) || (getenv("GROUP") == NULL) || (getenv("TAGLINE") == NULL) || (getenv("SPEED") ==NULL) || (getenv("SECTION") == NULL)) {
 		d_log("We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE, $SECTION and $SPEED\n");
 		/*
 		 * strcpy(raceI.user.name, "Unknown");
