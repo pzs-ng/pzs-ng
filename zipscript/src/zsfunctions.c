@@ -1072,8 +1072,8 @@ mark_as_bad(char *filename)
 #if (mark_file_as_bad == TRUE)
 	char    *newname = 0;
 
-	if (!fclose(fopen(filename, "r")) {
-		d_log("Failed to open file (is it a directory?)\n");
+	if (!fclose(fopen(filename, "r"))) {
+		d_log("Debug: Failed to open file \"%s\"\n", filename);
 		return;
 	}
 	newname=malloc(strlen(filename) + 4);
