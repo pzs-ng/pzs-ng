@@ -158,6 +158,12 @@ main(void)
 			if (*ext == '.')
 				ext++;
 
+			if (!update_lock(&g.v, 1, 0)) {
+				d_log("rescan: Another process wants the lock - will comply and remove lock, then exit.\n");
+				remove_lock(&g.v);
+				exit(EXIT_FAILURE);
+			}
+
 			if (
 				!strcomp(ignored_types, ext) &&
 				(!(strcomp(allowed_types, ext) && !matchpath(allowed_types_exemption_dirs, g.l.path))) &&

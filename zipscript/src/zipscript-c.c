@@ -281,9 +281,25 @@ main(int argc, char **argv)
 	maketempdir(g.l.path);
 
 	d_log("zipscript-c: Locking release\n");
-	if (create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0)) {
+	if ((crc = create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0))) {
 		d_log("zipscript-c: Failed to lock release.\n");
-		exit(EXIT_FAILURE);
+		if (crc == PROGTYPE_RESCAN) {
+			d_log("zipscript-c: Detected rescan running - will try to make it quit.\n");
+			update_lock(&g.v, 0, 0);
+		}
+		for ( crc = 0; crc <= 20; crc ++) {
+			d_log("zipscript-c: sleeping for 1 second before trying to get a lock.\n");
+			sleep(1);
+			if (!create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0))
+				break;
+		}
+		if (crc >= 20) {
+			d_log("zipscript-c: Failed to get lock. Forcing unlock.\n");
+			if (create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 2)) {
+				d_log("zipscript-c: Failed to force a lock. No choice but to exit.\n");
+				exit(EXIT_FAILURE);
+			}
+		}
 	}
 
 	printf(zipscript_header);
