@@ -54,6 +54,12 @@
  */
 #define incompleteislink	1
 
+/* Defines symbolic link type
+ * 0 = absolute symlink
+ * 1 = relative symlink
+ */
+#define userellink		1
+
 
 /* If file has suid bit set, program changes uid and gid to these (0 leaves option uncompiled)
  */
@@ -319,10 +325,10 @@
 
 #define message_mp3 		"\n\n                            I D 3 - T A G\n" \
 				"+--------------------------------------------------------------------+\n" \
-				"   Artist: %x\n" \
-				"   Album : %W\n" \
-				"   Genre : %-34w Rate: %Xkbit/sec\n" \
-				"   Tracks: %-34f Year: %Y\n" \
+				"  Artist : %x\n" \
+				"  Album  : %W\n" \
+				"  Genre  : %-34w Rate  : %Xkbit/sec\n" \
+				"  Tracks : %-34f Year  : %Y\n" \
 				"  Encoder: %-34i Preset: %I\n" \
 				"+--------------------------------------------------------------------+\n"
 #define message_footer		""

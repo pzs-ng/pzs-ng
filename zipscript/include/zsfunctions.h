@@ -9,10 +9,12 @@
 #include <time.h>
 #include <string.h>
 #include <fcntl.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <sys/param.h>
 #include <unistd.h>
 #ifndef PATH_MAX
 # define _LIMITS_H_
@@ -77,6 +79,7 @@ extern void createlink(char *, char *, char *, char *);
 extern void readsfv_ffile(char *, off_t buf_bytes);
 extern void get_rar_info(char *);
 extern int execute(char *);
+extern void symlink_rel(char *, char *);
+extern char *abs2rel(const char *, const char *, char *, const size_t);
 
 #endif
-

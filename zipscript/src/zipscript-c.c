@@ -290,7 +290,8 @@ int main( int argc, char **argv ) {
  raceI.file.size=fileinfo.st_size;
  raceI.total.stop_time=fileinfo.st_mtime;
  raceI.total.start_time=fileinfo.st_mtime-((unsigned int)(raceI.file.size)/raceI.file.speed);
-
+ if ((int)(raceI.total.stop_time - raceI.total.start_time) < 1)
+  raceI.total.stop_time = raceI.total.start_time + 1;
 
  n = (locations.length_path = strlen(locations.path = argv[2])) + 1;
 

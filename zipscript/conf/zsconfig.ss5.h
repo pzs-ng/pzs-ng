@@ -318,10 +318,10 @@
 
 #define message_mp3 		"\n\n                            I D 3 - T A G\n" \
 				"+--------------------------------------------------------------------+\n" \
-				"   Artist: %x\n" \
-				"   Album : %W\n" \
-				"   Genre : %-34w Rate: %Xkbit/sec\n" \
-				"   Tracks: %-34f Year: %Y\n" \
+				"  Artist : %x\n" \
+				"  Album  : %W\n" \
+				"  Genre  : %-34w Rate  : %Xkbit/sec\n" \
+				"  Tracks : %-34f Year  : %Y\n" \
 				"  Encoder: %-34i Preset: %I\n" \
 				"+--------------------------------------------------------------------+\n"
 #define message_footer		""
