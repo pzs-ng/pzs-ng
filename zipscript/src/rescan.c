@@ -469,6 +469,7 @@ main()
 
 	d_log("Freeing memory.\n");
 	temprescandir(1);	/* We need to rescan again */
+	temprescanparent(1);	/* We need to rescan again */
 	updatestats_free(raceI, userI, groupI);
 	free(locations.path);
 	free(locations.race);

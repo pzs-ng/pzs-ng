@@ -166,6 +166,7 @@ d_log("DEBUG: result of subdir-test: %d\n", subcomp(path[1]));
 		locations.incomplete = c_incomplete(incomplete_indicator, path, &raceI);
 		locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &raceI);
 		locations.in_cd_dir = 0;
+		free(path[1]);
 	}
 	if (k == 0)
 		free(path[0]);
@@ -362,6 +363,8 @@ main(int argc, char **argv)
 		raceI.sectionname = malloc(8 * sizeof(char));
 		sprintf(raceI.sectionname, "DEFAULT");
 	} else {
+		gnum = buffer_groups(GROUPFILE, 0);
+		unum = buffer_users(PASSWDFILE, 0);
 		sprintf(raceI.user.name, getenv("USER"));
 		sprintf(raceI.user.group, getenv("GROUP"));
 		if (strlen(raceI.user.group) == 0)
@@ -381,12 +384,13 @@ main(int argc, char **argv)
 		d_log("Reading section from env (%s)\n", getenv("SECTION"));
 		raceI.sectionname = malloc(sizeof(getenv("SECTION")) * sizeof(char));
 		sprintf(raceI.sectionname, getenv("SECTION"));
-		if ((temp_p = strdup(gl_sections)) == NULL) {
+		temp_p = strdup(gl_sections);
+		if ((temp_p) == NULL) {
 			d_log("Can't allocate memory for sections\n");
 		} else {
 			n = 0;
 			while (temp_p) {
-				if (strcmp(strsep(&temp_p, " "), getenv("SECTION")) == 0) {
+				if (!strcmp(strsep(&temp_p, " "), getenv("SECTION"))) {
 					raceI.section = (unsigned char)n;
 					break;
 				} else
@@ -1459,6 +1463,10 @@ main(int argc, char **argv)
 	d_log("Releasing memory\n");
 	buffer_groups(GROUPFILE, gnum);
 	buffer_users(PASSWDFILE, unum);
+	updatestats_free(raceI, userI, groupI);
+	temprescandir(1);
+	temprescanparent(1);
+
 	free(locations.link_source);
 	free(raceI.misc.release_name);
 	free(fileext);
@@ -1468,7 +1476,6 @@ main(int argc, char **argv)
 	m_free(locations.sfv);
 	m_free(locations.leader);
 	m_free(locations.link_target);
-	updatestats_free(raceI, userI, groupI);
 
 #if ( benchmark_mode == TRUE )
 	gettimeofday(&bstop, (struct timezone *)0);

@@ -220,6 +220,20 @@ rescanparent()
 }
 
 void 
+temprescanparent(int usefree)
+{
+	if (direntriesp > 0 && usefree) {
+		while (direntriesp--) {
+			free(dirlistp[direntriesp]);
+		}
+		free(dirlistp);
+	} else {
+		direntriesp = scandir("..", &dirlistp, 0, 0);
+	}
+}
+
+
+void 
 del_releasedir(char *relname)
 {
 	int	fnum = direntries;
@@ -344,15 +358,15 @@ move_progress_bar(unsigned char delete, struct VARS *raceI)
 					remove(dirlist[n]->d_name);
 					*dirlist[n]->d_name = 0;
 					m = 1;
-//					return;
 				}
 			}
-			//regfree(&preg);
 		}
-		if (m)
+		if (m) {
+			regfree(&preg);
 			return;
-		else
+		} else {
 			d_log("Progress bar could not be deleted, not found!\n");
+		}
 	} else {
 		if (!raceI->total.files)
 			return;
@@ -364,7 +378,6 @@ move_progress_bar(unsigned char delete, struct VARS *raceI)
 						d_log("Found progress bar (%s), renaming (to %s)\n", dirlist[n]->d_name, bar);
 						rename(dirlist[n]->d_name, bar);
 						m = 1;
-	//					return;
 					} else {
 						d_log("Found (extra) progress bar (%s), removing\n", dirlist[n]->d_name);
 						remove(dirlist[n]->d_name);
@@ -373,7 +386,6 @@ move_progress_bar(unsigned char delete, struct VARS *raceI)
 					}
 				}
 			}
-			//regfree(&preg);
 		}
 		if (!m) {
 			d_log("Progress bar could not be moved, creating a new one now!\n");
@@ -526,8 +538,13 @@ matchpartialpath(char *instr, char *path)
 	if ( strlen(instr) < 2 || strlen(path) < 2 )
 		return 0;
 
-	partstring = malloc(strlen(path + 2));
+	if ((partstring = malloc((strlen(path) + 2) * sizeof(char))) == NULL) {
+		d_log("Failed to allocate memory (partstring)\n");
+		return 0;
+	}
+d_log("path: '%s'\n", path);
 	sprintf(partstring, "%s/", path);
+d_log("partstring: '%s'\n", path);
 	do {
 		switch (*instr) {
 		case 0:
