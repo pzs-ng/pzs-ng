@@ -252,7 +252,7 @@ void cleanup(char *pathlist) {
  while ( 1 ) {
 	for ( entry = newentry ; *newentry != ' ' && *newentry != 0 ; newentry++ );
 	
-	sprintf(path, "%.*s", newentry - entry, entry);
+	sprintf(path, "%.*s", (int)(newentry - entry), entry);
 	strftime(data, PATH_MAX, path, timenow);
 
 	incomplete_cleanup(data);

@@ -55,7 +55,7 @@ char* convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **gr
 				if (*instr == '-' && isdigit(*(instr + 1))) instr += 2;
 				while (isdigit(*instr)) instr++;
 				if ( m != instr ) {
-					sprintf(ctrl, "%.*s", instr - m, m);
+					sprintf(ctrl, "%.*s", (int)(instr - m), m);
 					val1 = atoi(ctrl);
 				} else 
 					val1 = 0;
@@ -65,7 +65,7 @@ char* convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **gr
 					if (*instr == '-' && isdigit(*(instr + 1))) instr += 2;
 					while (isdigit(*instr)) instr++;
 					if ( m != instr ) {
-						sprintf(ctrl, "%.*s", instr - m, m);
+						sprintf(ctrl, "%.*s", (int)(instr - m), m);
 						val2 = atoi(ctrl);
 					} else
 						val2 = 0;
@@ -127,7 +127,7 @@ char* convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short 
 	if (*instr == '-' && isdigit(*(instr + 1))) instr += 2;
 	while (isdigit(*instr)) instr++;
 	if ( m != instr ) {
-		sprintf(ctrl, "%.*s", instr - m, m);
+		sprintf(ctrl, "%.*s", (int)(instr - m), m);
 		val1 = atoi(ctrl);
 		} else {
 		val1 = 0;
@@ -139,7 +139,7 @@ char* convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short 
 		if (*instr == '-' && isdigit(*(instr + 1))) instr += 2;
 		while (isdigit(*instr)) instr++;
 		if ( m != instr ) {
-			sprintf(ctrl, "%.*s", instr - m, m);
+			sprintf(ctrl, "%.*s", (int)(instr - m), m);
 			val2 = atoi(ctrl);
 			} else {
 			val2 = 0;
@@ -180,7 +180,7 @@ char* convert_obsolete(struct VARS *raceI, char *instr) {
         if (*instr == '-' && isdigit(*(instr + 1))) instr += 2;
         while (isdigit(*instr)) instr++;
         if ( m != instr ) {
-                sprintf(ctrl, "%.*s", instr - m, m);
+                sprintf(ctrl, "%.*s", (int)(instr - m), m);
                 val1 = atoi(ctrl);
                 } else {
                 val1 = 0;
@@ -192,7 +192,7 @@ char* convert_obsolete(struct VARS *raceI, char *instr) {
                 if (*instr == '-' && isdigit(*(instr + 1))) instr += 2;
                 while (isdigit(*instr)) instr++;
                 if ( m != instr ) {
-                        sprintf(ctrl, "%.*s", instr - m, m);
+                        sprintf(ctrl, "%.*s", (int)(instr - m), m);
                         val2 = atoi(ctrl);
                         } else {
                         val2 = 0;
@@ -283,7 +283,7 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 	if (*instr == '-' && isdigit(*(instr + 1))) instr += 2;
 	while (isdigit(*instr)) instr++;
 	if ( m != instr ) {
-		sprintf(ctrl, "%.*s", instr - m, m);
+		sprintf(ctrl, "%.*s", (int)(instr - m), m);
 		val1 = atoi(ctrl);
 		} else {
 		val1 = 0;
@@ -295,7 +295,7 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 		if (*instr == '-' && isdigit(*(instr + 1))) instr += 2;
 		while (isdigit(*instr)) instr++;
 		if ( m != instr ) {
-			sprintf(ctrl, "%.*s", instr - m, m);
+			sprintf(ctrl, "%.*s", (int)(instr - m), m);
 			val2 = atoi(ctrl);
 			} else {
 			val2 = 0;
@@ -449,7 +449,7 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 
 		case 'D': out_p += sprintf(out_p, "%*i", val1, raceI->video.width); break;
 		case 'E': out_p += sprintf(out_p, "%*i", val1, raceI->video.height); break;
-		case 'H': out_p += sprintf(out_p, "%*i", val1, (int)raceI->video.fps); break;
+		case 'H': out_p += sprintf(out_p, "%*s", val1, raceI->video.fps); break;
 
 		/* Other */
 
