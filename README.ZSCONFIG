@@ -511,6 +511,23 @@ get_competitor_list <TRUE|FALSE>
 	excluding the current user into a special cookie.
 	Default: TRUE
 
+get_user_stats <TRUE|FALSE>
+	If this is set to true, the zipscript will try to fetch stats from the
+	racers userfiles.
+	Default: TRUE
+
+show_user_info <TRUE|FALSE>
+	If you wish to print stat info after a file is uploaded to the racer,
+	set this to true. It will display racers (usernames) and stats on the
+	current race in the client's ftp program.
+	Default: TRUE
+	
+show_group_info <TRUE|FALSE>
+	If you wish to print stat info after a file is uploaded to the racer,
+	set this to true. It will display racers (groupnames) and stats on the
+	current race in the client's ftp program.
+	Default: TRUE
+
 write_complete_message <TRUE|FALSE>
 	Should a file be created in the releasedir, containing race-info etc?
 	Default: TRUE

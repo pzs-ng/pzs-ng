@@ -503,6 +503,17 @@
 #define get_competitor_list	TRUE
 #endif
 
+#ifndef get_user_stats
+#define get_user_stats		TRUE
+#endif
+
+#ifndef show_user_info
+#define show_user_info		TRUE
+#endif
+#ifndef show_group_info
+#define show_group_info		TRUE
+#endif
+
 
 /*
  * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! !! Below

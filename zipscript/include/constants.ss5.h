@@ -136,12 +136,6 @@
 #define zip_norace_halfway	"{%C0} {%c0}"
 #define zip_norace_complete	"{%U} {%G} {%.0m} {%d} {%.0A}"
 
-/* Get user day/week/month/allup position */
-#define get_user_stats		TRUE
-
-#define show_user_info		TRUE
-#define show_group_info		TRUE
-
 /* Output of racestats binary */
 #define stats_line		"%r/%F/%f%/%u/%g/%C0"
 
