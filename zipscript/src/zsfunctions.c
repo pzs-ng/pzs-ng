@@ -214,6 +214,9 @@ void move_progress_bar(unsigned char delete, struct VARS *raceI) {
 	regmatch_t	pmatch[ 1 ];
 
 	regcomp(&preg, del_progressmeter, REG_NEWLINE|REG_EXTENDED);
+	/* workaround if progressbar was changed while zs-c is running */
+	rescandir();
+
 	n = direntries;
 
 	if (delete) {
