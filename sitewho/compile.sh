@@ -24,10 +24,10 @@ if [ "`id -u`" -eq 0 ]; then
 	 eval $v=$(grep "^$v" $conf | awk {'print $3'})
 	done
 
-	cp -f ${headerfile##*/} $glrootpath$headerfile
-	cp -f ${footerfile##*/} $glrootpath$footerfile
+	[ ! -e $glrootpath$headerfile ] && cp -f ${headerfile##*/} $glrootpath$headerfile
+	[ ! -e $glrootpath$footerfile ] && cp -f ${footerfile##*/} $glrootpath$footerfile
 	for f in ${file%.c} $conf bandwidth.sh; do
-	 cp $f $glrootpath/bin/
+	 [ ! -e $glrootpath/bin/$f ] && cp $f $glrootpath/bin/
 	done
 fi
 
