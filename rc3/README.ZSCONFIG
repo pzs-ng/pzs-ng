@@ -658,32 +658,32 @@ message_footer <STRING|DISABLED>
 	file.
 	Default: ""
 
-video_completebar <STRING>
+video_completebar <STRING|DISABLED>
 	When a release is complete, a 'complete bar' will be created. Define
 	here how it should look like on video releases.
 	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 
-audio_completebar <STRING>
+audio_completebar <STRING|DISABLED>
 	When a release is complete, a 'complete bar' will be created. Define
 	here how it should look like on audio releases.
 	Default: "[%Z] - ( %.0mM %fF - COMPLETE - %w %Y ) - [%Z]"
 
-rar_completebar <STRING>
+rar_completebar <STRING|DISABLED>
 	When a release is complete, a 'complete bar' will be created. Define
 	here how it should look like on rar releases.
 	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 
-zip_completebar <STRING>
+zip_completebar <STRING|DISABLED>
 	When a release is complete, a 'complete bar' will be created. Define
 	here how it should look like on zip releases.
 	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 
-other_completebar <STRING>
+other_completebar <STRING|DISABLED>
 	When a release is complete, a 'complete bar' will be created. Define
 	here how it should look like on other releases.
 	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 
-del_completebar <STRING>
+del_completebar <STRING|DISABLED>
 	This setting is what the zipscript will search for (and delete) when
 	it updates the complete bar.
 	Default: "^\\[.*] - \\( .*F - COMPLETE.*) - \\[.*]$"

@@ -600,9 +600,10 @@ main(int argc, char **argv)
 				d_log("zipscript-c: Reading race data from file to memory\n");
 				readrace(g.l.race, &g.v, g.ui, g.gi);
 			}
-			d_log("zipscript-c: Making sure that release is not marked as complete\n");
-			removecomplete();
-
+			if (del_completebar) {
+				d_log("zipscript-c: Making sure that release is not marked as complete\n");
+				removecomplete();
+			}
 			d_log("zipscript-c: Setting message pointers\n");
 			sfv_type = general_announce_sfv_type;
 			switch (g.v.misc.release_type) {
@@ -748,6 +749,20 @@ main(int argc, char **argv)
 					exit_value = 2;
 					break;
 				}
+#if (sfv_cleanup == TRUE && sfv_cleanup_lowercase == TRUE)
+				if (check_dupefile(dir, g.v.file.name)) {
+					d_log("zipscript-c: dupe detected - same file, different case already exists.\n");
+					strlcpy(g.v.misc.error_msg, DOUBLE_SFV, 80);
+					mark_as_bad(g.v.file.name);
+					write_log = g.v.misc.write_log;
+					g.v.misc.write_log = 1;
+					error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
+					if (exit_value < 2)
+						writelog(&g, error_msg, bad_file_crc_type);
+					exit_value = 2;
+					break;
+				}
+#endif
 				printf(zipscript_SFV_ok);
 				d_log("zipscript-c: Storing new race data\n");
 				writerace(g.l.race, &g.v, crc, F_CHECKED);
@@ -1325,11 +1340,10 @@ main(int argc, char **argv)
 				break;
 			}
 
-			if (!complete_bar)
-				d_log("zipscript-c.c: Something's messed up - complete_bar not set!\n");
-
-			d_log("zipscript-c: Removing old complete bar, if any\n");
-			removecomplete();
+			if (complete_bar) {
+				d_log("zipscript-c: Removing old complete bar, if any\n");
+				removecomplete();
+			}
 
 			d_log("zipscript-c: Removing incomplete indicator (%s)\n", g.l.incomplete);
 			complete(&g, complete_type);
@@ -1340,15 +1354,17 @@ main(int argc, char **argv)
 				writelog(&g, convert(&g.v, g.ui, g.gi, complete_msg), complete_announce);
 				writetop(&g, complete_type);
 			}
-			d_log("zipscript-c: Creating complete bar\n");
-			createstatusbar(convert(&g.v, g.ui, g.gi, complete_bar));
+			if (complete_bar) {
+				d_log("zipscript-c: Creating complete bar\n");
+				createstatusbar(convert(&g.v, g.ui, g.gi, complete_bar));
 #if (chmod_completebar)
-			if (!matchpath(group_dirs, g.l.path)) {
-				chmod(convert(&g.v, g.ui, g.gi, complete_bar), 0222);
-			} else {
-				d_log("zipscript-c: we are in a group_dir - will not chmod the complete bar.\n");
-			}
+				if (!matchpath(group_dirs, g.l.path)) {
+					chmod(convert(&g.v, g.ui, g.gi, complete_bar), 0222);
+				} else {
+					d_log("zipscript-c: we are in a group_dir - will not chmod the complete bar.\n");
+				}
 #endif
+			}
 
 #if ( enable_complete_script == TRUE )
 			nfofound = (int)findfileext(dir, ".nfo");
