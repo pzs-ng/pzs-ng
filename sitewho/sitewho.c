@@ -103,7 +103,7 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 	char	    realfile[512];
 	char	    bar[20];
 	struct timeval  tstop;
-	double	    speed;
+	double	    speed, pct = 0;
 	int		    mask;
 	int		    noshow;
 	int		    maskchar;
@@ -117,7 +117,7 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 	for (x = 0; x < n; x++) {
 		if (!user[x].procid)
 			continue;
-			
+
 		maskchar = ' ';
 		mask = noshow = 0;
 
@@ -163,6 +163,7 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 				sprintf(status, "Up: %7.1fKBs", speed);
 			else
 				sprintf(status, "\"UP\" \"%.1f\"", speed);
+
 		} else if ((!strncasecmp (user[x].status, "RETR ", 5) && user[x].bytes_xfer) && mask == 0 ) {
 			m = strplen(user[x].status) - 5;
 
@@ -174,6 +175,7 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			else
 				sprintf(filename, "%.15s", user[x].status + m - 10);
 
+			pct = ( user[x].bytes_xfer * 1. / filesize(realfile) ) * 100;
 			i = 15 * user[x].bytes_xfer * 1. / filesize(realfile);
 			i = (i > 15 ? 15 : i);
 
@@ -192,7 +194,7 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			else
 				sprintf(status, "\"DN\" \"%.1f\"", speed);
 		} else {
-			*bar = *filename = hours = minutes = 0;
+			pct = *bar = *filename = hours = minutes = 0;
 			seconds = tstop.tv_sec - user[x].tstart.tv_sec;
 			while (seconds >= 3600) { hours++; seconds -= 3600; }
 			while (seconds >= 60) { minutes++; seconds -= 60; }
@@ -210,12 +212,12 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 
 		if ( mode == 0 ) {
 			if (!raw) {
-				printf("|%1c%-16.16s/%-10.10s | %-15s | %%   : %-15.15s |\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, bar);
+				printf("|%1c%-16.16s/%-10.10s | %-15s | %3.0f%%: %-15.15s |\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, pct, bar);
 				printf("| %-27.27s | since %8.8s  | file: %-15.15s |\n", user[x].tagline, online, filename);
 				printf("+-----------------------------------------------------------------------+\n");
 			} else {
 				/* Maskeduser / Username / GroupName / Status / TagLine / Online / Filename */
-				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename);
+				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\" \"%.1f\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename, pct);
 			}
 			onlineusers++;
 		} else if (strcasecmp(ucomp, user[x].username) == 0) {

@@ -21,11 +21,11 @@ announce.WIPE		        = "[%boldwipe  %bold][%section] %bold%release%bold by %bo
 announce.WIPE-r		        = "[%boldwipe-r%bold][%section] %bold%release%bold and all subdirectories by %bold%user%bold of %group"
 announce.LEECH			= "[%boldbwinfo%bold] Current leechers:"
 announce.UPLOAD			= "[%boldbwinfo%bold] Current uploaders:"
-announce.TOTUPDN		= "[%boldbwinfo%bold] %type :: %bold%count%bold at %bold%total%boldKB/sec (%bold%per%bold%)"
+announce.TOTUPDN		= "[%boldbwinfo%bold] %type %bold%count%bold at %bold%total%boldKB/sec (%bold%per%bold%)"
 announce.IDLE			= "[%boldbwinfo%bold] Current idlers:"
 announce.TOTIDLE		= "[%boldbwinfo%bold] Currently %bold%count%bold users idle!"
-announce.USERIDLE		= "[%boldbwinfo%bold] %bold%user%bold%group at %bold%idletime%bolds"
-announce.USER			= "[%boldbwinfo%bold] %bold%user%bold%group on %bold%filename%bold (%bold%fper%bold% done) at %bold%uspeed%boldKB/sec (%bold%per%bold% usage)"
+announce.USERIDLE		= "[%boldbwinfo%bold] %bold%user%bold of %group at %bold%idletime%bolds"
+announce.USER			= "[%boldbwinfo%bold] %bold%user%bold of %group on %bold%filename%bold (%bold%fper%bold% done) at %bold%uspeed%boldKB/sec (%bold%per%bold% usage)"
 
 announce.DEFAULT 	        = "[%boldinfo  %bold] %msg"
 
