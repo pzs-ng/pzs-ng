@@ -401,6 +401,12 @@
 #define enable_complete_script	FALSE
 #define complete_script		"/bin/nfo_copy.sh"
 
+/* Enable/disable mp3 script (run only once, after first mp3-file is uploaded)
+ */
+#define enable_mp3_script	TRUE
+#define mp3_script		"/bin/mp3-test.sh"
+
+
 /* Enable/disable unduper script (runs if sfv is uploaded after files, and files
                                   are marked as bad and deleted)
  */

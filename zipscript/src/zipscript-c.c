@@ -639,6 +639,14 @@ if ( matchpath(group_dirs, locations.path ) && ( hide_group_uploaders == TRUE ))
 #if ( exclude_non_sfv_dirs == TRUE )
 				if ( raceI.misc.write_log == TRUE ) {
 #endif
+
+					if (( enable_mp3_script == TRUE ) && ( userI[raceI.user.pos]->files == 1 )) {
+					        d_log("Executing mp3 script\n");
+					        sprintf(target, mp3_script " %s", raceI.file.name);
+					        execute(target);
+					}
+
+
 						if ( ! matchpath(no_audio_check_dirs, locations.path) ) {
 #if ( audio_banned_genre_check == TRUE )
 					if ( strcomp(banned_genres, raceI.audio.id3_genre)) {
