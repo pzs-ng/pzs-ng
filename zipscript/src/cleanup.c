@@ -67,33 +67,31 @@ void replace_cookies(char *s, char *pos) {
 	default:
 	    *pos++ = *s;
     }
-    *pos = 0;
-
 }
 
 /*
  * Name of release (Multi CD)
  */
-void multi_name(char *s, char *q, char *retval) {
+void multi_name(char *s, char *q) {
     int	begin_multi[2], end_multi, n;
-    char 	*p, *r = 0;
+    char 	*p, *t, *r = 0;
 
     end_multi = 0;
 
-    retval = q;
+    t = incomplete_cd_indicator;
 
-    while ( *retval == '.' || *retval == '/' ) retval++;
-    p = retval;
+    while ( *t == '.' || *t == '/' ) t++;
+    p = t;
 
-    for ( n = 0 ; *retval ; retval++ ) if ( *retval == '%' && *(retval + 1) == '0' ) {
+    for ( n = 0 ; *t ; t++ ) if ( *t == '%' && *(t+1) == '0' ) {
 	begin_multi[0] = n;
 	break;
     } else {
 	n++;
     }
 
-    retval = p;
-    for ( n = 0 ; *retval ; retval++ ) if ( *retval == '%' && *(retval + 1) == '1' ) {
+    t = p;
+    for ( n = 0 ; *t ; t++ ) if ( *t == '%' && *(t+1) == '1' ) {
 	begin_multi[1] = n;
 	break;
     } else {
@@ -101,45 +99,50 @@ void multi_name(char *s, char *q, char *retval) {
     }
 
     if ( begin_multi[0] < begin_multi[1] ) {
-	for ( retval = p + begin_multi[1] + 2; *retval ; retval++ ) end_multi++;
+	for ( t = p + begin_multi[1] + 2; *t ; t++ ) end_multi++;
 
 	p = malloc(6);
 	s += begin_multi[0];
 	s += sprintf(p, "%.*s", tolower(*s) == 'd' ? 5 : 3,  s);
 
 	s += begin_multi[1] - begin_multi[0] - 2;
-	sprintf(retval, "%.*s/%s", n - end_multi, s, p);
+	t = malloc((n = strlen(s)) + 7);
+	sprintf(t, "%.*s/%s", n - end_multi, s, p);
     } else {
-	for ( retval = p + begin_multi[0] + 2; *retval ; retval++ ) end_multi++;
+	for ( t = p + begin_multi[0] + 2; *t ; t++ ) end_multi++;
 
 	s += begin_multi[1];
 	n = strlen(s) - end_multi;
 
-	retval = s + n - 3;
+	t = s + n - 3;
 	p = malloc(6);
-	if ( tolower(*retval) == 'c' ) {
-	    sprintf(p, "%s", retval);
+	if ( tolower(*t) == 'c' ) {
+	    sprintf(p, "%s", t);
 	} else {
 	    r--;
-	    sprintf(p, "%s", retval);
+	    sprintf(p, "%s", t);
 	}
-	n = retval - s - (begin_multi[0] - begin_multi[1] - 2);
+	n = t - s - (begin_multi[0] - begin_multi[1] - 2);
+	t = malloc(n + 7);
 	sprintf(r, "%.*s/%s", n, s, p);
     }
 
+    q = t;
     free(p);
+    free(t);
+//    return t;
 }
 
 /*
  * Name of release (Common)
  */
-void single_name(char *s, char *inc, char *retval) {
+void single_name(char *s, char *q) {
     int	begin_single, end_single, size;
     char	*t;
 
     begin_single = end_single = 0;
 
-    t = inc;
+    t = incomplete_indicator;
 
     while ( *t == '.' || *t == '/' ) t++;
 
@@ -157,29 +160,33 @@ void single_name(char *s, char *inc, char *retval) {
     }
 
     size = strlen(s) - begin_single - end_single + 1;
-    sprintf(retval, "%.*s", size - 1, s + begin_single);
+
+    t = malloc(size);
+    sprintf(t, "%.*s", size - 1, s + begin_single);
+
+    q = t;
+    free(t);
+//    return(t);
 }
 
-void incomplete_cleanup(char *path, char *cd_inc, char *inc) {
+void incomplete_cleanup(char *path) {
     struct dirent	**dirlist;
     struct stat		fileinfo;
     int			entries;
     regex_t		preg[2];   
     regmatch_t		pmatch[1];
-    char		*temp;
+    char		*temp, *locator2;
     char		*locator;
 
     temp = malloc(PATH_MAX);
-    *temp = 0;
-    locator = malloc(PATH_MAX);
-    *locator = 0;
+    locator = locator2 = malloc(PATH_MAX);
 
-    sprintf(temp, "%s", cd_inc);
-    replace_cookies(temp, locator);
+    sprintf(temp, "%s", incomplete_cd_indicator);
+    replace_cookies(temp, locator2);
     regcomp(&preg[0], locator, REG_NEWLINE|REG_EXTENDED);
 
-    sprintf(temp, "%s", inc);
-    replace_cookies(temp, locator);
+    sprintf(temp, "%s", incomplete_indicator);
+    replace_cookies(temp, locator2);
     regcomp(&preg[1], locator, REG_NEWLINE|REG_EXTENDED);
 
     printf("[%s]\n", path);
@@ -191,7 +198,7 @@ void incomplete_cleanup(char *path, char *cd_inc, char *inc) {
 		/* Multi CD */
 		if ( regexec(&preg[0], dirlist[entries]->d_name, 1, pmatch, 0) == 0 ) {
 		    if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries]) ) {
-			multi_name(dirlist[entries]->d_name, cd_inc, temp);
+			multi_name(dirlist[entries]->d_name, temp);
 			if ( stat(temp, &fileinfo) != 0 ) {
 			    unlink(dirlist[entries]->d_name);
 			    printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
@@ -203,7 +210,7 @@ void incomplete_cleanup(char *path, char *cd_inc, char *inc) {
 		/* Normal */
 		if ( regexec(&preg[1], dirlist[entries]->d_name, 1, pmatch, 0) == 0 ) {
 		    if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries]) ) {
-			single_name(dirlist[entries]->d_name, inc, temp);
+			single_name(dirlist[entries]->d_name, temp);
 			if ( stat(temp, &fileinfo) != 0 ) {
 			    unlink(dirlist[entries]->d_name);
 			    printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
@@ -211,19 +218,19 @@ void incomplete_cleanup(char *path, char *cd_inc, char *inc) {
 			continue;
 		    }
 		}
-		free(dirlist[entries]);
+//		free(&dirlist[entries]);
 	    }
+//    free(&dirlist);
 	} else {
 	    fprintf(stderr, "Unable to scandir(%s)\n", path);
 	}
-        free(dirlist);
     } else {
 	fprintf(stderr, "Unable to chdir(%s)\n", path);
     }
+    free(locator);
+    free(temp);
     regfree(&preg[0]);
     regfree(&preg[1]);
-    free(temp);
-    free(locator);
 }
 
 void cleanup(char *pathlist) {
@@ -257,18 +264,10 @@ void cleanup(char *pathlist) {
 
 
 		if (strcmp(data_today, data_yesterday)) {
-		    if ( check_yesterday == TRUE ) {
-			incomplete_cleanup(data_yesterday, incomplete_cd_indicator, incomplete_indicator);
-			incomplete_cleanup(data_yesterday, incomplete_cd_nfo_indicator, incomplete_nfo_indicator);
-		    }
-		    if ( check_today == TRUE ) {
-			incomplete_cleanup(data_today, incomplete_cd_indicator, incomplete_indicator);
-			incomplete_cleanup(data_today, incomplete_cd_nfo_indicator, incomplete_nfo_indicator);
-		    }
-		} else {
-		    incomplete_cleanup(data_today, incomplete_cd_indicator, incomplete_indicator);
-		    incomplete_cleanup(data_today, incomplete_cd_nfo_indicator, incomplete_nfo_indicator);
-		}
+		    if ( check_yesterday == TRUE ) incomplete_cleanup(data_yesterday);
+		    if ( check_today == TRUE ) incomplete_cleanup(data_today);
+		} else 
+		    incomplete_cleanup(data_today);
 
 		if (!*newentry)
 		    break;
