@@ -1,0 +1,90 @@
+#####################################################################
+# ngBot                                                             #
+#####################################################################
+
+    ngBot, will basically be a rewrite of dZSbot. However, ngBot won't
+make it into ProjectZS-NG v1.0, since we are currently working on
+getting dZSbot stable, and rewriting it is certainly a step in the
+opposite direction.
+
+
+# Features
+#####################################################################
+
+- A text-based configuration file, parsed at startup. dZSbot currently
+  uses Tcl's set command for the majority of the configuration, which
+  has proven to be error prone for inexperienced users.
+
+- The bot will be in its own namespace (::ngBot), to avoid conflicts
+  with other scripts loaded on the Eggdrop.
+
+- The section announce/config system will undergo a large rewrite. I'm
+  not sure what this rewrite will include, but rest assured there will
+  be significant changes.
+
+- Theming hopefully will not change much, but don't hold me to this.
+  (I tend to change my mind. :P)
+
+- There will be a set of coding guidelines that all developers are
+  expected to adhere to. After all, organization is the first step
+  towards quality code. :)
+
+- This is just a preliminary guide, once I began work on ngBot, I will
+  update this list.
+
+
+# Coding Guidelines
+#####################################################################
+- Function names should be representative of their purpose and must
+  be in Pascal case.
+
+- Variable names should be representative of their value and must
+  be Camel case.
+
+- All functions should have a 'blurb' above them, explaining their purpose.
+  This makes it easier for future developers and users to hack at the code.
+  Had this been a C/C++ project, I would have included the parameters and
+  return value in the description. :P
+
+- Functions should be no longer than, say, 50 lines of code (not including
+  comments), unless it's completely necessary. This practice helps avoid
+  long, messy, and chaotic procedures, that could have been simplified
+  into a few procedures.
+
+- The tab size must be set to 4, and spaces are to be used in place of
+  tab characters. This allows any user to have the same experience while
+  viewing the code.
+
+- Comments explaining the code should begin with a double-hash character.
+
+- When commenting code, a single hash character is fine.
+
+Example:
+
+##
+## - GetValueList
+##
+## Create an 'array set' compatible list:
+## array set values [GetValueList $inputValues]
+##
+proc GetValueList {inputValues} {
+    set index 0
+    set valueList ""
+    ## Create the list of values.
+    foreach value $inputValues {
+        lappend valueList $index $value
+        incr index
+    }
+#   set valueList ""
+#   for {set index 0} {$index < [llength $inputValues]} {incr index} {
+#       lappend valueList $index [lindex $inputValues $index]
+#   }
+    return $valueList
+}
+
+
+# Questions, Comments, and/or Suggestions?
+#####################################################################
+
+IRC  : neoxed on EFnet (#pzs-ng)
+Email: neoxed@gmail.com
