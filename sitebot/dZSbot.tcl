@@ -125,7 +125,7 @@ proc readlog {} {
 
     close $of
     set lastoct [file size $location(GLLOG)]
-    launchnuke
+#    launchnuke
     return 0
 }
 #################################################################################
@@ -224,7 +224,8 @@ proc parse {msgtype msgline section} {
     set type $msgtype
 
     if {![string compare $type "NUKE"] || ! [string compare $type "UNNUKE"]} {
-        fuelnuke $type [lindex $msgline 0] $section $msgline
+#        fuelnuke $type [lindex $msgline 0] $section $msgline
+	fuelnuke2 $type [lindex $msgline 0] $section [lrange $msgline 1 3] [lrange $msgline 4 end]
         return ""
     }
 
@@ -463,6 +464,43 @@ proc show_free {nick uhost hand chan arg} {
 }
 #################################################################################
 
+
+#################################################################################
+# UPDATE NUKE BUFFER (GL2.0)                                                    #
+#################################################################################
+proc fuelnuke2 {type path section sargs dargs} { global nuke hidenuke announce sitename
+
+ set nuke(TYPE) $type
+ set nuke(PATH) $path
+ set nuke(SECTION) $section
+ set nuke(NUKER) [lindex $sargs 0]
+ set nuke(MULT) [lindex $sargs 1]
+ set nuke(REASON) [lindex $sargs 2]
+ set nuke(NUKEE) {}
+
+ foreach entry $dargs {
+  set mb [format "%.1f" [expr [lindex $entry 1] / 1024]]
+  append nuke(NUKEE) "\002[lindex $entry 0]\002 (\002$mb\002MB), "
+ }
+
+ set nuke(NUKEE) [string trim $nuke(NUKEE) ", "]
+ set split [split $nuke(PATH) "/"]
+ set ll [llength $split]
+
+ set output $announce($nuke(TYPE))
+ set output [replacevar $output "%nuker" $nuke(NUKER)]
+ set output [replacevar $output "%nukees" $nuke(NUKEE)]
+ set output [replacevar $output "%type" $nuke(TYPE)]
+ set output [replacevar $output "%mult" $nuke(MULT)]
+ set output [replacevar $output "%reason" $nuke(REASON)]
+ set output [replacevar $output "%section" $nuke(SECTION)]
+ set output [replacevar $output "%release" [lindex $split [expr $ll -1]]]
+ set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
+ set output [basicreplace $output $nuke(TYPE)]
+ sndall $nuke(SECTION) $output
+
+}
+#################################################################################
 
 
 
