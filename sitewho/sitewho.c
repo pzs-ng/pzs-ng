@@ -396,9 +396,9 @@ void showtotals(char raw) {
 	} else if (raw == 1) {
 		/* UpUsers / UpSpeed / DnUsers / DnSpeed / TotalUsers / TotalSpeed */
 		printf("\"STATS\" \"%i\" \"%.1f\" \"%i\" \"%.1f\" \"%i\" \"%.1f\"\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed );
-	} else {
+/*	} else { */
 		/* upld | UpUsers | UpSpeed | dnld | DnUsers |DnSpeed | total | TotalUsers | TotalSpeed | online | OnlineUsers | MaxUsers */
-		printf("upld|%3i|%7.1f|dnld|%3i|%7.1f|total%3i|%7.1f|online|%2i|%2i\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed, onlineusers, maxusers);
+/*		printf("upld|%3i|%7.1f|dnld|%3i|%7.1f|total%3i|%7.1f|online|%2i|%2i\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed, onlineusers, maxusers); */
 	}
 }
 
