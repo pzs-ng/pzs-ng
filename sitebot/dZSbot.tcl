@@ -648,7 +648,7 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 			}
 			set output2 [replacevar $output2 "%section" $section]
 			set output2 [replacevar $output2 "%sitename" $sitename]
- 			set output [replacevar $output "%loop$loop" $output2]
+			set output [replacevar $output "%loop$loop" $output2]
 			set loop [expr $loop + 1]
 		}
 		set output [replacevar $output $vari [lindex $msgline $cnt]]
@@ -669,6 +669,18 @@ proc sndall {section args} {
 		foreach line [split [lindex $args 0] $splitter(CHAR)] {
 		putquick "PRIVMSG $chan :$line"
 		}
+	}
+}
+#################################################################################
+
+
+#################################################################################
+# SEND TO ONE CHANNEL                                                           #
+#################################################################################
+proc sndone {chan args} {
+	global splitter
+	foreach line [split [lindex $args 0] $splitter(CHAR)] {
+		putquick "PRIVMSG $chan :$line"
 	}
 }
 #################################################################################
@@ -731,14 +743,14 @@ proc speed {nick uhost hand chan args} {
 			set output [replacevar $output "%dnpercent" [lindex $line 9]]
 			set output [replacevar $output "%uppercent" [lindex $line 9]]
 			set output [basicreplace $output "SPEED"]
-			putserv "PRIVMSG $chan :$output"
+			sndone $chan $output
 		}
 	} else {
 		set base_output "$theme(PREFIX)$announce(DEFAULT)"
 		foreach line [split [exec $binary(WHO) [lindex $args 0]] "\n"] {
 			set output [replacevar $base_output "%msg" $line]
 			set output [basicreplace $output "SPEED"]
-			putserv "PRIVMSG $chan :$output"
+			sndone $chan $output
 		}
 	}
 
@@ -747,7 +759,7 @@ proc speed {nick uhost hand chan args} {
 #		set output "$theme(PREFIX)$announce(DEFAULT)"
 		set output [replacevar $output "%msg" "User not online."]
 		set output [basicreplace $output "SPEED"]
-		putserv "PRIVMSG $chan :$output"
+		sndone $chan $output
         }
 
 }
@@ -775,7 +787,7 @@ proc bandwidth {nick uhost hand chan args} {
 	set output [replacevar $output "%totalspeed" [lindex $data 5]]
 	set output [basicreplace "$output" "BW"]
 
-	putserv "PRIVMSG $chan :$output "
+	sndone $chan $output
 }
 #################################################################################
 
@@ -813,7 +825,7 @@ proc ng_bwup { nick uhost hand chan args} {
 
 	set output [basicreplace "$output" "BW"]
 
-	putserv "PRIVMSG $chan :$output"
+	sndone $chan $output
 }
 ################################################################################
 
@@ -830,7 +842,7 @@ proc ng_uploaders {nick uhost hand chan args} {
 	}
 	set output "$theme(PREFIX)$announce(UPLOAD)"
 	set output [basicreplace "$output" "UPLOAD"]
-	putserv "PRIVMSG $chan :$output "
+	sndone $chan $output
 
 	set raw [exec $binary(WHO) "--raw"]
 
@@ -862,7 +874,7 @@ proc ng_uploaders {nick uhost hand chan args} {
 						set output [replacevar $output "%since" $since]
 						set output [replacevar $output "%filename" $filename]
 						set output [basicreplace "$output" "UPLOAD"]
-						putserv "PRIVMSG $chan :$output"
+						sndone $chan $output
 						incr count
 						set total [expr $total+$uspeed]
 					}
@@ -878,7 +890,7 @@ proc ng_uploaders {nick uhost hand chan args} {
 	set output [replacevar $output "%per" $per]
 	set output [basicreplace $output "UPLOAD"]
 
-	putserv "PRIVMSG $chan :$output "
+	sndone $chan $output
 }
 #################################################################################
 
@@ -915,7 +927,7 @@ proc ng_bwdn { nick uhost hand chan args} {
 
 	set output [basicreplace "$output" "BW"]
 
-	putserv "PRIVMSG $chan :$output"
+	sndone $chan $output
 }
 ################################################################################
 
@@ -932,7 +944,7 @@ proc ng_leechers {nick uhost hand chan args} {
 	}
 	set output "$theme(PREFIX)$announce(LEECH)"
 	set output [basicreplace "$output" "LEECH"]
-	putserv "PRIVMSG $chan :$output "
+	sndone $chan $output
 
 	set raw [exec $binary(WHO) "--raw"]
 
@@ -964,7 +976,7 @@ proc ng_leechers {nick uhost hand chan args} {
 						set output [replacevar $output "%since" $since]
 						set output [replacevar $output "%filename" $filename]
 						set output [basicreplace "$output" "LEECH"]
-						putserv "PRIVMSG $chan :$output"
+						sndone $chan $output
 						incr count
 						set total [expr $total+$uspeed]
 					}
@@ -980,7 +992,7 @@ proc ng_leechers {nick uhost hand chan args} {
 	set output [replacevar $output "%per" $per]
 	set output [basicreplace "$output" "LEECH"]
 
-	putserv "PRIVMSG $chan :$output "
+	sndone $chan $output
 }
 #################################################################################
 
@@ -997,7 +1009,7 @@ proc ng_idlers { nick uhost hand chan args} {
 	}
 	set output "$theme(PREFIX)$announce(IDLE)"
 	set output [basicreplace "$output" "IDLE"]
-	putserv "PRIVMSG $chan :$output "
+	sndone $chan $output
 
 	set raw [exec $binary(WHO) "--raw"]
 	set count 0
@@ -1029,7 +1041,7 @@ proc ng_idlers { nick uhost hand chan args} {
 							set output [replacevar $output "%tagline" $tagline]
 							set output [replacevar $output "%since" $since]
 							set output [basicreplace "$output" "IDLE"]
-							putserv "PRIVMSG $chan :$output"
+							sndone $chan $output
 							incr count
 						}
 					}
@@ -1039,7 +1051,7 @@ proc ng_idlers { nick uhost hand chan args} {
 	}
 	set output [replacevar "$theme(PREFIX)$announce(TOTIDLE)" "%count" $count]
 	set output [basicreplace $output "IDLE"]
-	putserv "PRIVMSG $chan :$output "
+	sndone $chan $output
 }
 #################################################################################
 
@@ -1076,7 +1088,7 @@ proc ng_bandwidth {nick uhost hand chan args} {
 
 	set output [basicreplace "$output" "BW"]
 
-	putserv "PRIVMSG $chan :$output"
+	sndone $chan $output
 
 }
 ################################################################################
@@ -1228,7 +1240,7 @@ proc show_free {nick uhost hand chan arg} {
 		set output [replacevar $output "%percentage" [expr round($perc/$num)]]
 		set output [replacevar $output "%devices" $devices($o)]
 		set output [basicreplace $output "FREE"]
-		putserv "PRIVMSG $chan :$output"
+		sndone $chan $output
 		incr o
 	}
 }
