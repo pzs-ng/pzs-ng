@@ -793,21 +793,21 @@ proc speed {nick uhost hand chan args} {
 			set action [lindex $line 4]
 			if {$action == "DN"} {
 				set output "$theme(PREFIX)$announce(SPEEDDN)"
+				set output [replacevar $output "%dnspeed" [speed_convert [lindex $line 5]]]
+				set output [replacevar $output "%dnpercent" [lindex $line 9]]
 			} elseif {$action == "UP"} {
 				set output "$theme(PREFIX)$announce(SPEEDUP)"
+				set output [replacevar $output "%upspeed" [speed_convert [lindex $line 5]]]
+				set output [replacevar $output "%uppercent" [lindex $line 9]]
 			} elseif {$action == "ID"} {
 				set output "$theme(PREFIX)$announce(SPEEDID)"
+				set output [replacevar $output "%idletime" [lindex $line 5]]
 			}
 			set output [replacevar $output "%u_name" [lindex $line 2]]
 			set output [replacevar $output "%g_name" [lindex $line 3]]
-			set output [replacevar $output "%upspeed" [speed_convert [lindex $line 5]]]
-			set output [replacevar $output "%dnspeed" [speed_convert [lindex $line 5]]]
-			set output [replacevar $output "%idletime" [lindex $line 5]]
 			set output [replacevar $output "%tagline" [lindex $line 6]]
 			set output [replacevar $output "%timeonline" [lindex $line 7]]
 			set output [replacevar $output "%f_name" [lindex $line 8]]
-			set output [replacevar $output "%dnpercent" [lindex $line 9]]
-			set output [replacevar $output "%uppercent" [lindex $line 9]]
 			set output [basicreplace $output "SPEED"]
 			sndone $chan $output
 		}
