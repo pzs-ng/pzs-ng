@@ -82,9 +82,8 @@ set chanlist(MP3)           $mainchan
 set chanlist(MV)            $mainchan
 set chanlist(DEFAULT)       $mainchan
 set chanlist(WELCOME)       $mainchan
-set statsection(0)          "ISO"
-set statsection(1)          "0DAY"
-set statsection(2)          "MP3"
+set statsection(0)          "DEFAULT"
+set statsection(1)          "PRE"
 
 ######################
 # Invite             #
