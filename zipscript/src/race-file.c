@@ -739,7 +739,7 @@ readrace(const char *path, struct VARS *raceI, struct USERINFO **userI, struct G
 void 
 writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char status)
 {
-	int		fd;
+	int		fd, count, ret;
 
 	RACEDATA	rd;
 
@@ -758,11 +758,17 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	}
 
 	/* find an existing entry that we will overwrite */
-	while (read(fd, &rd, sizeof(RACEDATA))) {
+	count = 0;
+	while ((ret = read(fd, &rd, sizeof(RACEDATA)))) {
+		if (ret == -1) {
+			d_log("writerace: read(%s): %s\n", path, strerror(errno));
+			exit(EXIT_FAILURE);
+		}
 		if (strncmp(rd.fname, raceI->file.name, NAME_MAX) == 0) {
-			lseek(fd, -sizeof(RACEDATA), SEEK_CUR);
+			lseek(fd, sizeof(RACEDATA) * count, SEEK_SET);
 			break;
 		}
+		count++;
 	}
 
 	rd.status = status;
@@ -824,7 +830,7 @@ remove_from_race(const char *path, const char *f)
 int
 verify_racedata(const char *path)
 {
-	int		fd, i, max;
+	int		fd, i, ret, max;
 	
 	RACEDATA	rd, *tmprd = 0;
 	
@@ -833,13 +839,13 @@ verify_racedata(const char *path)
 		return 0;
 	}
 	
-	for (i = 0; (read(fd, &rd, sizeof(RACEDATA)));) {
+	for (i = 0; (ret = read(fd, &rd, sizeof(RACEDATA)));) {
 		if (fileexists(rd.fname)) {
 			tmprd = realloc(tmprd, sizeof(RACEDATA)*(i+1));
 			memcpy(&tmprd[i], &rd, sizeof(RACEDATA));
 			i++;
 		} else if (rd.fname) {
-			d_log("verify_racedata: Oops! %s is missing - removing from racedata\n", rd.fname);
+			d_log("verify_racedata: Oops! %s is missing - removing from racedata (ret=%d)\n", rd.fname, ret);
 			create_missing(rd.fname);
 		}
 	}
@@ -931,6 +937,8 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 	}
 	raceI->data_in_use = hd.data_in_use;
 	raceI->data_incrementor = hd.data_incrementor;
+	raceI->data_type = hd.data_type;
+	raceI->data_queue = hd.data_queue;
 	return 0;
 }
 
