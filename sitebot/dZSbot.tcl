@@ -619,9 +619,12 @@ proc speed {nick uhost hand chan args} {
 		}
 	}
 
-        if {$line == ""} {
-              set output [basicreplace $output "SPEED"]
-                putserv "PRIVMSG $chan :$output"
+	if {$line == ""} {
+		set output "$theme(PREFIX)$announce(SPEEDERROR)"
+#		set output "$theme(PREFIX)$announce(DEFAULT)"
+		set output [replacevar $output "%msg" "User not online."]
+		set output [basicreplace $output "SPEED"]
+		putserv "PRIVMSG $chan :$output"
         }
 
 }
