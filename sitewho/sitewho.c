@@ -184,7 +184,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 			else
 				noshow++;
 		}
-		if (noshow == 0) {
+		if (noshow == 0 && strlen(mpaths)) {
 			if (maskchar == ' ' && matchpath(mpaths, user[x].currentdir)) {
 				if (showall)
 					maskchar = '*';
@@ -229,7 +229,6 @@ showusers(int n, int mode, char *ucomp, char raw)
 			}
 		} else if ((!strncasecmp(user[x].status, "RETR ", 5) && user[x].bytes_xfer)) {
 			mb_xfered = 0;
-			m = strplen(user[x].status) - 5;
 
 			sprintf(realfile, "%s", user[x].currentdir);
 
@@ -262,6 +261,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 				total_dn_speed += speed;
 				downloads++;
 			}
+			m = strplen(user[x].status) - 5;
 			if (!mask) {
 				if (m < 15 || raw)
 					sprintf(filename, "%.*s", m, user[x].status + 5);
