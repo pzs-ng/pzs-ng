@@ -41,16 +41,16 @@ int main (int argc, char **argv) {
 		}
 	files++;
 
-	p_buf = buf + 1;
-	crc = (long *)p_buf;		p_buf += sizeof(long);
-	uname = p_buf;			p_buf += 24;
-        ugroup = p_buf;			p_buf += 24;
-	fsize = (long *)p_buf;		p_buf += sizeof(long);
-	uspeed = (long *)p_buf;		p_buf += sizeof(long);
-//	startsec = (long *)&p_buf;	p_buf += sizeof(long); -- original
-	startsec = (long *)p_buf;	p_buf += sizeof(long);
-//	startusec = (long *)&p_buf; -- original
-	startusec = (long *)p_buf;
+	p_buf= (char *)(buf + 1);
+	crc		= (unsigned long *)p_buf;		p_buf += sizeof(unsigned long);
+	uname	= p_buf;						p_buf += 24;
+	ugroup	= p_buf;						p_buf += 24;
+	fsize	= (unsigned long *)p_buf;		p_buf += sizeof(unsigned long);
+	uspeed	= (unsigned long *)p_buf;		p_buf += sizeof(unsigned long);
+/*	startsec = (long *)&p_buf;	p_buf += sizeof(long); -- original */
+	startsec = (unsigned long *)p_buf;		p_buf += sizeof(unsigned long);
+/*	startusec = (long *)&p_buf; -- original */
+	startusec = (unsigned long *)p_buf;
 
 	switch ( *buf ) {
 		case F_NOTCHECKED:
