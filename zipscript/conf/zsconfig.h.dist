@@ -12,7 +12,9 @@
  *      ================
  */
 
-/* These should be changed to match your glftpd installation. */
+/* These should be changed to match your glftpd installation.
+   All pathnames must end with a slash ( / )
+*/
 #define log             "/ftp-data/logs/glftpd.log"
 #define storage         "/ftp-data/pzs-ng/"
 #define gl_userfiles    "/ftp-data/users/"
@@ -40,8 +42,13 @@
 
 #define cleanupdirs     "/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 
-/* Should an incomplete pointer be put instead of the incomplete-pointer if nfo's are missing after release is complete? */
+/* Should a missing-nfo incomplete pointer be put instead of the normal
+   incomplete-pointer if nfo's are missing after release is complete?
+ */
 #define show_missing_nfo	TRUE
+
+/* Should we also show missing nfo's in cd/dvd/etc dirs? */
+#define show_missing_nfo_in_cd	FALSE
 
 /* Do not write .message file on complete in group_dirs */
 #define write_complete_message_in_group_dirs    TRUE
@@ -288,6 +295,7 @@
 /* How Indicators look */
 #define incomplete_cd_indicator         "../../(incomplete)-(%0)-%1"
 #define incomplete_indicator            "../(incomplete)-%0"
+#define incomplete_cd_nfo_indicator	"../../(no-nfo)-(%0)-%1"
 #define incomplete_nfo_indicator	"../(no-nfo)-%0"
 
 #define progressmeter                   "[%V] - %3.0p%% Complete - [dS]"

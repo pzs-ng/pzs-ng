@@ -78,13 +78,13 @@ char * replace_cookies(char *s) {
 /*
  * Name of release (Multi CD)
  */
-char * multi_name(char *s) {
+char * multi_name(char *s, char *q) {
     int	begin_multi[2], end_multi, n;
     char 	*p, *t, *r = 0;
 
     end_multi = 0;
 
-    t = incomplete_cd_indicator;
+    t = q;
 
     while ( *t == '.' || *t == '/' ) t++;
     p = t;
@@ -140,13 +140,13 @@ char * multi_name(char *s) {
 /*
  * Name of release (Common)
  */
-char * single_name(char *s) {
+char * single_name(char *s, char *inc) {
     int	begin_single, end_single, size;
     char	*t;
 
     begin_single = end_single = 0;
 
-    t = incomplete_indicator;
+    t = inc;
 
     while ( *t == '.' || *t == '/' ) t++;
 
@@ -171,7 +171,7 @@ char * single_name(char *s) {
     return(t);
 }
 
-void incomplete_cleanup(char *path) {
+void incomplete_cleanup(char *path, char *cd_inc, char *inc) {
     struct dirent	**dirlist;
     struct stat		fileinfo;
     int			entries;
@@ -180,14 +180,14 @@ void incomplete_cleanup(char *path) {
     char		*temp;
     char		*locator;
 
-    temp = malloc(sizeof(incomplete_cd_indicator) > sizeof(incomplete_indicator) ? sizeof(incomplete_cd_indicator) : sizeof(incomplete_indicator));
+    temp = malloc(sizeof(cd_inc) > sizeof(inc) ? sizeof(cd_inc) : sizeof(inc));
 
-    sprintf(temp, "%s", incomplete_cd_indicator);
+    sprintf(temp, "%s", cd_inc);
     locator = replace_cookies(temp);
     regcomp(&preg[0], locator, REG_NEWLINE|REG_EXTENDED);
     free(locator);
 
-    sprintf(temp, "%s", incomplete_indicator);
+    sprintf(temp, "%s", inc);
     locator = replace_cookies(temp);
     regcomp(&preg[1], locator, REG_NEWLINE|REG_EXTENDED);
     free(locator);
@@ -203,7 +203,7 @@ void incomplete_cleanup(char *path) {
 		/* Multi CD */
 		if ( regexec(&preg[0], dirlist[entries]->d_name, 1, pmatch, 0) == 0 ) {
 		    if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries]) ) {
-			temp=multi_name(dirlist[entries]->d_name);
+			temp=multi_name(dirlist[entries]->d_name, cd_inc);
 			if ( stat(temp, &fileinfo) != 0 ) {
 			    unlink(dirlist[entries]->d_name);
 			    printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
@@ -215,7 +215,7 @@ void incomplete_cleanup(char *path) {
 		/* Normal */
 		if ( regexec(&preg[1], dirlist[entries]->d_name, 1, pmatch, 0) == 0 ) {
 		    if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries]) ) {
-			temp=single_name(dirlist[entries]->d_name);
+			temp=single_name(dirlist[entries]->d_name, inc);
 			if ( stat(temp, &fileinfo) != 0 ) {
 			    unlink(dirlist[entries]->d_name);
 			    printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
@@ -263,11 +263,18 @@ void cleanup(char *pathlist) {
 
 
 		if (strcmp(data_today, data_yesterday)) {
-		    if ( check_yesterday == TRUE ) incomplete_cleanup(data_yesterday);
-		    if ( check_today == TRUE ) incomplete_cleanup(data_today);
-		} else 
-		    incomplete_cleanup(data_today);
-
+		    if ( check_yesterday == TRUE ) {
+			incomplete_cleanup(data_yesterday, incomplete_cd_indicator, incomplete_indicator);
+			incomplete_cleanup(data_yesterday, incomplete_cd_nfo_indicator, incomplete_nfo_indicator);
+		    }
+		    if ( check_today == TRUE ) {
+			incomplete_cleanup(data_today, incomplete_cd_indicator, incomplete_indicator);
+			incomplete_cleanup(data_today, incomplete_cd_nfo_indicator, incomplete_nfo_indicator);
+		    }
+		} else {
+		    incomplete_cleanup(data_today, incomplete_cd_indicator, incomplete_indicator);
+		    incomplete_cleanup(data_today, incomplete_cd_nfo_indicator, incomplete_nfo_indicator);
+		}
 		if (!*newentry)
 		    break;
 		
