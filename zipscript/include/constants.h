@@ -67,7 +67,7 @@
 
 #define pre_stats		"dummy_pre_stats"
 #define between_stats		"dummy_between_stats"
-#define post_stats		"{%u} {%g} {%F} {%.1m} {%d} {%.0A} %C0 %c0 %L %l"
+#define post_stats		"{%u} {%g} {%F} {%.1m} {%d} {%.0A} %C0 %c0 %l %L"
 #define winner			"dummy_winner"
 #define loser			"dummy_loser"
 
