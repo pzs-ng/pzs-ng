@@ -960,6 +960,7 @@ int main( int argc, char **argv ) {
     m_free(locations.race);
     m_free(locations.sfv);
     m_free(locations.leader);
+    m_free(locations.link_target);
 
 #if ( benchmark_mode == TRUE ) 
     gettimeofday(&bstop, (struct timezone *)0);

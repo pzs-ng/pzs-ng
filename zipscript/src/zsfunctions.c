@@ -431,51 +431,51 @@ void get_rar_info(char *filename) {
  *
  */
 int execute(char *s) {
-	int n, args=-1, test=0;
-	char *command, **argv;
+    int n, args=-1, test=0;
+    char *command, **argv;
 
-	command = malloc(sizeof(char));
-	argv = malloc(sizeof(char *));
+    command = malloc(sizeof(char));
+    argv = malloc(sizeof(char *));
 
-	while (1) {
+    while (1) {
 
-		if (*s == '\"') test = 1;
-		else if (*s == '\'') test = 2;
-		else if ((*s == '\"' && test == 1) || (*s == '\'' && test == 2)) test = 0;
+	if (*s == '\"') test = 1;
+	else if (*s == '\'') test = 2;
+	else if ((*s == '\"' && test == 1) || (*s == '\'' && test == 2)) test = 0;
 
-		if (*s == ' ' && test == 0) {
-			*s = 0;
-			args++;
-			if (args == 0) {
-				command = malloc(sizeof(char)*strlen(s+1));
-				strcpy(command, s+1);
-			} else {
-				realloc(argv, (sizeof(char *)*args));
-				argv[args-1] = s + 1;
-			}
-		} else if (*s == 0) {
-			args++;
-			realloc(argv, (sizeof(char *)*args));
-			argv[args] = NULL;
-			break;
-		}
-		s++;
-
+	if (*s == ' ' && test == 0) {
+	    *s = 0;
+	    args++;
+	    if (args == 0) {
+		command = malloc(sizeof(char)*strlen(s+1));
+		strcpy(command, s+1);
+	    } else {
+		realloc(argv, (sizeof(char *)*args));
+		argv[args-1] = s + 1;
+	    }
+	} else if (*s == 0) {
+	    args++;
+	    realloc(argv, (sizeof(char *)*args));
+	    argv[args] = NULL;
+	    break;
 	}
+	s++;
 
-	switch (fork()) {
-		case 0: 
-			close(1);
-			close(2);
-			n = execv(command, argv);
-			exit(0);
-			break;
-		default:
-			wait(&n);
-			break;
-	}
+    }
 
-	return n >> 8;
+    switch (fork()) {
+	case 0: 
+	    close(1);
+	    close(2);
+	    n = execv(command, argv);
+	    exit(0);
+	    break;
+	default:
+	    wait(&n);
+	    break;
+    }
+
+    return n >> 8;
 }
 
 /*
