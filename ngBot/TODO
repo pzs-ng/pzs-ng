@@ -26,8 +26,9 @@ opposite direction.
   friends is the %c/%b{} syntax for colors and bold, respectively. Instead,
   SS5-style formatting will be used ([b], [c], [u], [o]) and [c1], [c2],
   for color definitions. Secondly, text positioning and precision will be
-  added to cookies %5.5(cookie). (I Should probably add some sort of skin
-  preview command in DCC chat.)
+  added to cookies %5.5(cookie). (I should probably add some sort of skin
+  preview command in DCC chat. (Note, we could also make a script that parses
+  .zst to .html, I started such a script for current system))
 
 - Safe handling of log data (dZSbot expects that all log data will be in
   Tcl list form, which isn't always the case).
