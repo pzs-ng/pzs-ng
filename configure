@@ -308,7 +308,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT GREP STRINGS CUT RM INSTALL CPP EGREP GLPATH GLVERSION STATIC LCRYPT LCRYPTO PASSCHK LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT GREP STRINGS CUT RM INSTALL MAKE CPP EGREP GLPATH GLVERSION STATIC LCRYPT LCRYPTO PASSCHK M32 LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -829,6 +829,9 @@ Fine tuning of the installation directories:
 _ACEOF
 
   cat <<\_ACEOF
+
+System types:
+  --build=BUILD     configure for building on BUILD [guessed]
 _ACEOF
 fi
 
@@ -1302,6 +1305,64 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
           ac_config_headers="$ac_config_headers config.h"
 
 #AC_PREFIX_DEFAULT(/glftpd/)
+
+ac_aux_dir=
+for ac_dir in $srcdir $srcdir/.. $srcdir/../..; do
+  if test -f $ac_dir/install-sh; then
+    ac_aux_dir=$ac_dir
+    ac_install_sh="$ac_aux_dir/install-sh -c"
+    break
+  elif test -f $ac_dir/install.sh; then
+    ac_aux_dir=$ac_dir
+    ac_install_sh="$ac_aux_dir/install.sh -c"
+    break
+  elif test -f $ac_dir/shtool; then
+    ac_aux_dir=$ac_dir
+    ac_install_sh="$ac_aux_dir/shtool install -c"
+    break
+  fi
+done
+if test -z "$ac_aux_dir"; then
+  { { echo "$as_me:$LINENO: error: cannot find install-sh or install.sh in $srcdir $srcdir/.. $srcdir/../.." >&5
+echo "$as_me: error: cannot find install-sh or install.sh in $srcdir $srcdir/.. $srcdir/../.." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+ac_config_guess="$SHELL $ac_aux_dir/config.guess"
+ac_config_sub="$SHELL $ac_aux_dir/config.sub"
+ac_configure="$SHELL $ac_aux_dir/configure" # This should be Cygnus configure.
+
+# Make sure we can run config.sub.
+$ac_config_sub sun4 >/dev/null 2>&1 ||
+  { { echo "$as_me:$LINENO: error: cannot run $ac_config_sub" >&5
+echo "$as_me: error: cannot run $ac_config_sub" >&2;}
+   { (exit 1); exit 1; }; }
+
+echo "$as_me:$LINENO: checking build system type" >&5
+echo $ECHO_N "checking build system type... $ECHO_C" >&6
+if test "${ac_cv_build+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_cv_build_alias=$build_alias
+test -z "$ac_cv_build_alias" &&
+  ac_cv_build_alias=`$ac_config_guess`
+test -z "$ac_cv_build_alias" &&
+  { { echo "$as_me:$LINENO: error: cannot guess build type; you must specify one" >&5
+echo "$as_me: error: cannot guess build type; you must specify one" >&2;}
+   { (exit 1); exit 1; }; }
+ac_cv_build=`$ac_config_sub $ac_cv_build_alias` ||
+  { { echo "$as_me:$LINENO: error: $ac_config_sub $ac_cv_build_alias failed" >&5
+echo "$as_me: error: $ac_config_sub $ac_cv_build_alias failed" >&2;}
+   { (exit 1); exit 1; }; }
+
+fi
+echo "$as_me:$LINENO: result: $ac_cv_build" >&5
+echo "${ECHO_T}$ac_cv_build" >&6
+build=$ac_cv_build
+build_cpu=`echo $ac_cv_build | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\1/'`
+build_vendor=`echo $ac_cv_build | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\2/'`
+build_os=`echo $ac_cv_build | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
+
+
 
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
@@ -2423,6 +2484,44 @@ fi
 if [ -z "$INSTALL" ]; then { { echo "$as_me:$LINENO: error: Couldn't find install, quitting!" >&5
 echo "$as_me: error: Couldn't find install, quitting!" >&2;}
    { (exit 1); exit 1; }; }; fi
+# Extract the first word of "make", so it can be a program name with args.
+set dummy make; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_prog_MAKE+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$MAKE"; then
+  ac_cv_prog_MAKE="$MAKE" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_MAKE="make"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+fi
+fi
+MAKE=$ac_cv_prog_MAKE
+if test -n "$MAKE"; then
+  echo "$as_me:$LINENO: result: $MAKE" >&5
+echo "${ECHO_T}$MAKE" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+if [ -z "$MAKE" ]; then { { echo "$as_me:$LINENO: error: Couldn't find make, quitting!" >&5
+echo "$as_me: error: Couldn't find make, quitting!" >&2;}
+   { (exit 1); exit 1; }; }; fi
 
 LCRYPT=""; PASSCHK=""
 if [ $(uname -s) != "OpenBSD" ]; then
@@ -2498,7 +2597,6 @@ fi
 
 fi
 
-
 #AC_CHECK_LIB(crypto, HMAC, LCRYPTO="-lcrypto", AC_MSG_ERROR([[Couldn't find libcrypto, quitting! Install SSL dev package and try again.]]))
 echo "$as_me:$LINENO: checking for HMAC in -lcrypto" >&5
 echo $ECHO_N "checking for HMAC in -lcrypto... $ECHO_C" >&6
@@ -2567,7 +2665,6 @@ echo "${ECHO_T}$ac_cv_lib_crypto_HMAC" >&6
 if test $ac_cv_lib_crypto_HMAC = yes; then
   LCRYPTO="-lcrypto"; PASSCHK="passchk"
 fi
-
 
 
 echo "$as_me:$LINENO: checking whether time.h and sys/time.h may both be included" >&5
@@ -3956,7 +4053,10 @@ done
 # AC_MSG_ERROR([Couldn't identify OS, quitting!])
 #fi
 
-#dnl sitestat5
+case $build in
+	x86_64-*) M32="-m32";;
+esac
+
 # Check whether --enable-ss5 or --disable-ss5 was given.
 if test "${enable_ss5+set}" = set; then
   enableval="$enable_ss5"
@@ -4025,6 +4125,8 @@ echo "$as_me: error: Couldn't detect glversion, please run ./configure --enable-
    { (exit 1); exit 1; }; }
   fi; fi
 fi
+
+
 
 
 
@@ -4656,6 +4758,10 @@ s,@ECHO_C@,$ECHO_C,;t t
 s,@ECHO_N@,$ECHO_N,;t t
 s,@ECHO_T@,$ECHO_T,;t t
 s,@LIBS@,$LIBS,;t t
+s,@build@,$build,;t t
+s,@build_cpu@,$build_cpu,;t t
+s,@build_vendor@,$build_vendor,;t t
+s,@build_os@,$build_os,;t t
 s,@CC@,$CC,;t t
 s,@CFLAGS@,$CFLAGS,;t t
 s,@LDFLAGS@,$LDFLAGS,;t t
@@ -4668,6 +4774,7 @@ s,@STRINGS@,$STRINGS,;t t
 s,@CUT@,$CUT,;t t
 s,@RM@,$RM,;t t
 s,@INSTALL@,$INSTALL,;t t
+s,@MAKE@,$MAKE,;t t
 s,@CPP@,$CPP,;t t
 s,@EGREP@,$EGREP,;t t
 s,@GLPATH@,$GLPATH,;t t
@@ -4676,6 +4783,7 @@ s,@STATIC@,$STATIC,;t t
 s,@LCRYPT@,$LCRYPT,;t t
 s,@LCRYPTO@,$LCRYPTO,;t t
 s,@PASSCHK@,$PASSCHK,;t t
+s,@M32@,$M32,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t
 CEOF
