@@ -771,7 +771,7 @@ proc parse {msgtype msgline section} {
 #################################################################################
 proc checkchan {nick chan} {
 	global disable lastbind mainchan
-	if {$disable(TRIGINALLCHAN) != 0 && [string equal -nocase $chan $mainchan]} {
+	if {$disable(TRIGINALLCHAN) != 0 && ![string equal -nocase $chan $mainchan]} {
 		putlog "dZSbot: \002$nick\002 tried to use \002$lastbind\002 from an invalid channel ($chan)."
 		return 0
 	}
