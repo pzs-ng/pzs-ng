@@ -24,7 +24,8 @@ set sitename                "pzs-ng"
 # Prefix on commands (f. x. !pnfree if cmdpre is !pn, !free if cmdpre is !, etc)
 set cmdpre                  "!pn"
 # List of bnc's (used for BNC-testing with the <prefix>bnc command in channel)
-set bnc(LIST)               "msn.test1.com:123 msn.test2.com:345 msn.test3.com:567"
+# Format: countrycode:hostname:port (space seperated)
+set bnc(LIST)               "uk:msn.test1.com:123 de:msn.test2.com:345 se:msn.test3.com:567"
 # Username and password to use for testing bncs (must exist with this box's ip added)
 set bnc(USER)               "bncuser"
 set bnc(PASS)               "bncpass"
@@ -50,6 +51,7 @@ set binary(STATS)           "/glftpd/bin/stats"
 set binary(PASSCHK)         "/glftpd/bin/passchk"
 set binary(NCFTPLS)         "/usr/bin/ncftpls"
 set binary(BNCTEST)         "/glftpd/bin/bnctest.sh"
+set binary(BNCCHECK)	    "/glftpd/bin/bnc-check.pl"
 set binary(INCOMPLETE)      "/glftpd/bin/incomplete-list.sh"
 set binary(DF)              "/glftpd/bin/df"
 
