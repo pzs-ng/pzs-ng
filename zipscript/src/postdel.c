@@ -426,19 +426,19 @@ main(int argc, char **argv)
 	if (incomplete == 1 && raceI.total.files > 0) {
 		if (locations.nfo_incomplete) {
 			if (findfileext(".nfo")) {
-				d_log("Removing	missing-nfo indicator (if any)\n");
+				d_log("Removing missing-nfo indicator (if any)\n");
 				remove_nfo_indicator(locations.path);
 			} else if (matchpath(check_for_missing_nfo_dirs, locations.path)) {
 				if (!locations.in_cd_dir) {
-					d_log("Creating	missing-nfo indicator %s.\n", locations.nfo_incomplete);
+					d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
 					create_incomplete_nfo();
 				} else {
 					rescanparent();
 					if (findfileextparent(".nfo")) {
-						d_log("Removing	missing-nfo indicator (if any)\n");
+						d_log("Removing missing-nfo indicator (if any)\n");
 						remove_nfo_indicator(locations.path);
 					} else {
-						d_log("Creating	missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
+						d_log("Creating missing-nfo indicator (base) %s.\n", locations.nfo_incomplete);
 						create_incomplete_nfo();
 					}
 				}
