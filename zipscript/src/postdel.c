@@ -82,11 +82,11 @@ void getrelname(char *directory) {
      ( ! strncasecmp(path[1], "DVD" , 3) && l <= 5 )) {  
 	n = strlen(path[0]);
 	raceI.misc.release_name = malloc( n + 18 );
-	sprintf(raceI.misc.release_name, "%s/\\002%s\\002", path[0], path[1]);
+	sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
  	locations.incomplete = c_incomplete(incomplete_cd_indicator, path);
 	} else {
 	raceI.misc.release_name = malloc( l + 10 );
-	sprintf(raceI.misc.release_name, "\\002%s\\002", path[1]);
+	sprintf(raceI.misc.release_name, "%s", path[1]);
 	locations.incomplete = c_incomplete(incomplete_indicator, path);
 	}
  free(path[1]);

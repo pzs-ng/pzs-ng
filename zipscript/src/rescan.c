@@ -88,7 +88,7 @@ void getrelname(char *directory) {
   n = strlen(path[0]);
   raceI.misc.release_name = malloc( n + 18 );
   locations.link_source = malloc(k = (locations.length_path - l)); k--;
-  sprintf(raceI.misc.release_name, "%s/\\002%s\\002", path[0], path[1]);
+  sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
   strncpy(locations.link_source, locations.path, k);
   locations.link_source[k] = 0;
   locations.link_target = path[0];
@@ -98,7 +98,7 @@ void getrelname(char *directory) {
   raceI.misc.release_name    = malloc( l + 10 );
   locations.link_source = malloc( locations.length_path + 1 );
   strcpy(locations.link_source, locations.path);
-  sprintf(raceI.misc.release_name, "\\002%s\\002", path[1]);
+  sprintf(raceI.misc.release_name, "%s", path[1]);
   locations.link_target = path[1];
   locations.incomplete = c_incomplete( incomplete_indicator, path );
   free(path[0]);

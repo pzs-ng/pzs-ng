@@ -55,10 +55,10 @@ void getrelname(char *directory) {
      ( ! strncasecmp(directoryarray[1], "DVD" , 3) && l <= 5 )) {
   n = strlen(directoryarray[0]);
   raceI.misc.release_name    = malloc(n + 18);
-  sprintf(raceI.misc.release_name, "%s/\\002%s\\002", directoryarray[0], directoryarray[1]); 
+  sprintf(raceI.misc.release_name, "%s/%s", directoryarray[0], directoryarray[1]); 
  } else {
   raceI.misc.release_name    = malloc(l + 12);
-  sprintf(raceI.misc.release_name, "\\002%s\\002", directoryarray[1]);
+  sprintf(raceI.misc.release_name, "%s", directoryarray[1]);
  }
  free(directoryarray[0]);
  free(directoryarray[1]);
