@@ -896,7 +896,7 @@ d_log("DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", raceI.file.size))
 
 	    if ( raceI.total.files_missing == raceI.total.files >> 1 && raceI.total.files >= min_halfway_files && halfway_msg != NULL ) {
 		d_log("Writing HALFWAY to %s\n", log);
-		writelog(convert(&raceI, userI, groupI, halfway_msg), general_halfway_type);
+		writelog(convert(&raceI, userI, groupI, halfway_msg), ( raceI.total.users > 1 ? race_halfway_type : norace_halfway_type));
 	    }
 
 	    /* It is _very_ unlikely that halfway would be announced on complete release ;) */

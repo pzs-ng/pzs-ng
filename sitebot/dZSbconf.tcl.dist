@@ -22,7 +22,7 @@ set use_glftpd2 		"AUTO"
 
 # What types of messages are counted as the different types of output
 # (for disabling etc)
-set msgtypes(RACE) 		"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV DOUBLESFV UPDATE UPDATE_RAR UPDATE_OTHER UPDATE_VBR UPDATE_CBR UPDATE_VIDEO UPDATE_ZIP HALFWAY NEWLEADER COMPLETE COMPLETE_RAR COMPLETE_ZIP COMPLETE_AUDIO COMPLETE_OTHER COMPLETE_VIDEO COMPLETE_RACE COMPLETE_RACE_RAR COMPLETE_RACE_ZIP COMPLETE_RACE_AUDIO COMPLETE_RACE_OTHER COMPLETE_RACE_VIDEO STAT_USERS_HEAD STAT_USERS STAT_GROUPS_HEAD STAT_GROUPS STAT_POST BADGENRE BADYEAR BADBITRATE WIPE WIPE-r IMDB IMDBVAR"
+set msgtypes(RACE) 		"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV DOUBLESFV UPDATE UPDATE_RAR UPDATE_OTHER UPDATE_VBR UPDATE_CBR UPDATE_VIDEO UPDATE_ZIP HALFWAY_RACE HALFWAY_NORACE NEWLEADER COMPLETE COMPLETE_RAR COMPLETE_ZIP COMPLETE_AUDIO COMPLETE_OTHER COMPLETE_VIDEO COMPLETE_RACE COMPLETE_RACE_RAR COMPLETE_RACE_ZIP COMPLETE_RACE_AUDIO COMPLETE_RACE_OTHER COMPLETE_RACE_VIDEO STAT_USERS_HEAD STAT_USERS STAT_GROUPS_HEAD STAT_GROUPS STAT_POST BADGENRE BADYEAR BADBITRATE WIPE WIPE-r IMDB IMDBVAR"
 set msgtypes(DEFAULT) 		"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT REQUEST REQFILLED IMDBFIND"
 
 # Sitename is for the %sitename-cookie in announces :)
@@ -137,7 +137,8 @@ set disable(COMPLETE_RACE_AUDIO)			0
 set disable(DEFAULT)					1
 set disable(DELDIR)					0
 set disable(DOUBLESFV)					0
-set disable(HALFWAY)					0
+set disable(HALFWAY_RACE)				0
+set disable(HALFWAY_NORACE)				0
 set disable(INCOMPLETE)					0
 set disable(INVITE)					0
 set disable(LOGIN)					1
@@ -220,36 +221,37 @@ set variables(WIPE-r)		"%pf %user %group %tagline"
 set variables(BADBITRATE)	"%pf %user %group %bitrate"
 set variables(BADGENRE)		"%pf %user %group %genre"
 set variables(BADYEAR)		"%pf %user %group %year"
-set variables(RACE)		"%pf %user %group %against %rel %spd"
+set variables(RACE)		"%pf %user %group %against %rel %spd %fname %len %pct %usrs %grps %upfiles %totfiles %missing_files"
 set variables(SFV)		"%pf %rel %files %user %group"
-set variables(UPDATE)		"%pf %user %group %files %spd %mbytes"
-set variables(UPDATE)		"%pf %user %group %files %spd %mbytes"
-set variables(UPDATE_RAR)	"%pf %user %group %files %spd %mbytes"
-set variables(UPDATE_ZIP)	"%pf %user %group %files %spd %mbytes"
-set variables(UPDATE_OTHER)	"%pf %user %group %files %spd %mbytes"
-set variables(UPDATE_VIDEO)	"%pf %user %group %files %spd %mbytes"
-set variables(UPDATE_VBR)	"%pf %user %group %files %spd %genre %year %bitrate %sampling %mode %audio %a_stream"
-set variables(UPDATE_CBR)	"%pf %user %group %files %spd %genre %year %bitrate %sampling %mode %audio"
-set variables(HALFWAY)		"%pf %rel %user %group %u_mb %u_files %u_pct %u_spd %g_name %g_mb %g_files %g_pct %g_spd %missing_files"
-set variables(NEWLEADER)	"%pf %user %group %spd %len %files %pct %mbytes %rel"
+set variables(UPDATE)		"%pf %user %group %files %spd %mbytes %fname %rel"
+set variables(UPDATE)		"%pf %user %group %files %spd %mbytes %fname %rel"
+set variables(UPDATE_RAR)	"%pf %user %group %files %spd %mbytes %fname %rel"
+set variables(UPDATE_ZIP)	"%pf %user %group %files %spd %mbytes %fname %rel"
+set variables(UPDATE_OTHER)	"%pf %user %group %files %spd %mbytes %fname %rel"
+set variables(UPDATE_VIDEO)	"%pf %user %group %files %spd %mbytes %fname %rel"
+set variables(UPDATE_VBR)	"%pf %user %group %files %spd %genre %year %bitrate %sampling %mode %audio %a_stream %fname %rel"
+set variables(UPDATE_CBR)	"%pf %user %group %files %spd %genre %year %bitrate %sampling %mode %audio %fname %rel"
+set variables(HALFWAY_RACE)	"%pf %rel %user %group %u_mb %u_files %u_pct %u_spd %g_name %g_mb %g_files %g_pct %g_spd %missing_files %fname %usrs %grps"
+set variables(HALFWAY_NORACE)	"%pf %rel %user %group %u_mb %u_files %u_pct %u_spd %g_name %g_mb %g_files %g_pct %g_spd %missing_files %fname %usrs %grps"
+set variables(NEWLEADER)	"%pf %user %group %spd %len %files %pct %mbytes %rel %usrs %grps %fname %missing_files"
 
-set variables(COMPLETE)		"%pf %rel %mbytes %files %avgspd %len %user %group"
-set variables(COMPLETE_RAR)	"%pf %rel %mbytes %files %avgspd %len %user %group"
-set variables(COMPLETE_ZIP)	"%pf %rel %mbytes %files %avgspd %len %user %group"
-set variables(COMPLETE_OTHER)	"%pf %rel %mbytes %files %avgspd %len %user %group"
-set variables(COMPLETE_VIDEO)	"%pf %rel %mbytes %files %avgspd %len %user %group"
-set variables(COMPLETE_AUDIO)	"%pf %rel %mbytes %files %avgspd %len %user %group"
+set variables(COMPLETE)		"%pf %rel %mbytes %files %avgspd %len %user %group %fname"
+set variables(COMPLETE_RAR)	"%pf %rel %mbytes %files %avgspd %len %user %group %fname"
+set variables(COMPLETE_ZIP)	"%pf %rel %mbytes %files %avgspd %len %user %group %fname"
+set variables(COMPLETE_OTHER)	"%pf %rel %mbytes %files %avgspd %len %user %group %fname"
+set variables(COMPLETE_VIDEO)	"%pf %rel %mbytes %files %avgspd %len %user %group %fname"
+set variables(COMPLETE_AUDIO)	"%pf %rel %mbytes %files %avgspd %len %user %group %fname"
 
-set variables(COMPLETE_RACE)		"%pf %rel %mbytes %files %avgspd %len %usrs %grps %s_usr %s_grp %s_spd %f_usr %f_grp %f_spd %w_usr %w_grp %u_mb %u_files %u_pct %u_spd %g_name %g_mb %g_files %g_pct %g_spd"
-set variables(COMPLETE_RACE_RAR)	"%pf %rel %mbytes %files %avgspd %len %usrs %grps %s_usr %s_grp %s_spd %f_usr %f_grp %f_spd %w_usr %w_grp %u_mb %u_files %u_pct %u_spd %g_name %g_mb %g_files %g_pct %g_spd"
-set variables(COMPLETE_RACE_ZIP)	"%pf %rel %mbytes %files %avgspd %len %usrs %grps %s_usr %s_grp %s_spd %f_usr %f_grp %f_spd %w_usr %w_grp %u_mb %u_files %u_pct %u_spd %g_name %g_mb %g_files %g_pct %g_spd"
-set variables(COMPLETE_RACE_OTHER)	"%pf %rel %mbytes %files %avgspd %len %usrs %grps %s_usr %s_grp %s_spd %f_usr %f_grp %f_spd %w_usr %w_grp %u_mb %u_files %u_pct %u_spd %g_name %g_mb %g_files %g_pct %g_spd"
-set variables(COMPLETE_RACE_VIDEO)	"%pf %rel %mbytes %files %avgspd %len %usrs %grps %s_usr %s_grp %s_spd %f_usr %f_grp %f_spd %w_usr %w_grp %u_mb %u_files %u_pct %u_spd %g_name %g_mb %g_files %g_pct %g_spd"
-set variables(COMPLETE_RACE_AUDIO)	"%pf %rel %mbytes %files %avgspd %len %usrs %grps %s_usr %s_grp %s_spd %f_usr %f_grp %f_spd %w_usr %w_grp %u_mb %u_files %u_pct %u_spd %g_name %g_mb %g_files %g_pct %g_spd"
+set variables(COMPLETE_RACE)		"%pf %rel %mbytes %files %avgspd %len %usrs %grps %s_usr %s_grp %s_spd %f_usr %f_grp %f_spd %w_usr %w_grp %u_mb %u_files %u_pct %u_spd %g_name %g_mb %g_files %g_pct %g_spd %fname"
+set variables(COMPLETE_RACE_RAR)	"%pf %rel %mbytes %files %avgspd %len %usrs %grps %s_usr %s_grp %s_spd %f_usr %f_grp %f_spd %w_usr %w_grp %u_mb %u_files %u_pct %u_spd %g_name %g_mb %g_files %g_pct %g_spd %fname"
+set variables(COMPLETE_RACE_ZIP)	"%pf %rel %mbytes %files %avgspd %len %usrs %grps %s_usr %s_grp %s_spd %f_usr %f_grp %f_spd %w_usr %w_grp %u_mb %u_files %u_pct %u_spd %g_name %g_mb %g_files %g_pct %g_spd %fname"
+set variables(COMPLETE_RACE_OTHER)	"%pf %rel %mbytes %files %avgspd %len %usrs %grps %s_usr %s_grp %s_spd %f_usr %f_grp %f_spd %w_usr %w_grp %u_mb %u_files %u_pct %u_spd %g_name %g_mb %g_files %g_pct %g_spd %fname"
+set variables(COMPLETE_RACE_VIDEO)	"%pf %rel %mbytes %files %avgspd %len %usrs %grps %s_usr %s_grp %s_spd %f_usr %f_grp %f_spd %w_usr %w_grp %u_mb %u_files %u_pct %u_spd %g_name %g_mb %g_files %g_pct %g_spd %fname"
+set variables(COMPLETE_RACE_AUDIO)	"%pf %rel %mbytes %files %avgspd %len %usrs %grps %s_usr %s_grp %s_spd %f_usr %f_grp %f_spd %w_usr %w_grp %u_mb %u_files %u_pct %u_spd %g_name %g_mb %g_files %g_pct %g_spd %fname"
 
 set variables(INCOMPLETE)	"%pf %user %group %rel"
 set variables(STAT_USERS_HEAD)	"%pf %dummy"
-set variables(STAT_USERS)	"%pf %pos %user %group %mbytes %files %pct %spd %dayup %wkup %monthup %allup"
+set variables(STAT_USERS)	"%pf %pos %user %group %mbytes %files %pct %spd %dayup %wkup %monthup %allup %f_usr %f_grp %f_spd %s_usr %s_grp %s_spd"
 set variables(STAT_GROUPS_HEAD)	"%pf %dummy"
 set variables(STAT_GROUPS)	"%pf %pos %group %mbytes %files %pct %spd"
 set variables(STAT_POST)	"%pf %usrs %grps %files %mbytes %len %spd"

@@ -8,7 +8,7 @@
 #define F_NFO			253
 #define F_DELETED		0
 #define F_CHECKED		1
-#define F_NOTCHECKED	2
+#define F_NOTCHECKED		2
 
 #define TRUE			1
 #define FALSE			0
@@ -43,6 +43,8 @@
 #define general_race_type			"RACE"
 #define general_newleader_type			"NEWLEADER"
 #define general_halfway_type			"HALFWAY"
+#define norace_halfway_type			"HALFWAY_NORACE"
+#define race_halfway_type			"HALFWAY_RACE"
 #define general_doublesfv_type			"DOUBLESFV"
 #define general_sfv_type			"SFV"
 #define general_badgenre_type			"BADGENRE"
@@ -62,7 +64,7 @@
 
 #define pre_stats		"dummy_pre_stats"
 #define between_stats		"dummy_between_stats"
-#define post_stats		"{%u} {%g} {%F} {%.1m} {%d} {%.0A}"
+#define post_stats		"{%u} {%g} {%F} {%.1m} {%d} {%.0A} %C0 ->%c0 %L %l<-"
 #define winner			"dummy_winner"
 #define loser			"dummy_loser"
 
@@ -75,59 +77,58 @@
 #define fastestfile		"{%u} {%g} {%.3F}" /* Put in %l cookie */
 #define slowestfile		"{%u} {%g} {%.3S}" /* Put in %L cookie */
 #define racersplit		" " /* Put between racers in the %R cookie - !!MUST BE ONLY ONE (1) CHAR!! */
-#define racersmsg		"%u@%g" /* Put in %R cookie */
+#define racersmsg		"%u/%g" /* Put in %R cookie */
 #define audio_vbr		"{%X} {%z} {%Q} {VBR} {%I}" /* Put in %j cookie */
 #define audio_cbr		"{%X} {%z} {%Q} {CBR}"    /* Put in %j cookie */
 
 /* Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 & mpeg2.5 + layer1 & 2 can be added if needed */
-#define audio_race		"{%U} {%G} {%R} {%r} {%.0S}"
-#define audio_sfv		"{%r} {%f} {%U} {%G}"
-#define audio_update		"{%U} {%G} {%f} {%.0S} {%w} {%Y} %j"
-#define audio_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define audio_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
-#define audio_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0"
-#define audio_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define audio_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G}"
+#define audio_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M}"
+#define audio_sfv		"{%r} {%f} {%U} {%G} {%n}"
+#define audio_update		"{%U} {%G} {%f} {%.0S} {%w} {%Y} %j {%n} {%r}"
+#define audio_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define audio_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n}"
+#define audio_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0 {%n}"
+#define audio_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define audio_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G} {%n}"
 
 /* Video files - supports mpeg1/mpeg2 and various avi formats */
-#define video_race		"{%U} {%G} {%R} {%r} {%.0S}"
-#define video_sfv		"{%r} {%f} {%U} {%G}"
-#define video_update		"{%U} {%G} {%f} {%.0S} {%.1e}"
-#define video_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define video_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
-#define video_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0"
-#define video_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define video_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G}"
+#define video_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M}"
+#define video_sfv		"{%r} {%f} {%U} {%G} {%n}"
+#define video_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r}"
+#define video_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define video_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M}"
+#define video_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0 {%n}"
+#define video_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define video_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G} {%n}"
 
 /* RAR - allows usage of compression mode cookie (%Z) for rarred releases */
-#define rar_race		"{%U} {%G} {%R} {%r} {%.0S}"
-#define rar_sfv			"{%r} {%f} {%U} {%G}"
-#define rar_update		"{%U} {%G} {%f} {%.0S} {%.1e}"
-#define rar_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define rar_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
-#define rar_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0"
-#define rar_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define rar_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G}"
-
+#define rar_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M}"
+#define rar_sfv			"{%r} {%f} {%U} {%G} {%n}"
+#define rar_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r}"
+#define rar_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define rar_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M}"
+#define rar_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0 {%n}"
+#define rar_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define rar_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G} {%n}"
 
 /* Rest of the stuff inside sfv */
-#define other_race		"{%U} {%G} {%R} {%r} {%.0S}"
-#define other_sfv		"{%r} {%f} {%U} {%G}"
-#define other_update		"{%U} {%G} {%f} {%.0S} {%.1e}"
-#define other_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define other_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
-#define other_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0"
-#define other_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define other_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G}"
+#define other_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M}"
+#define other_sfv		"{%r} {%f} {%U} {%G} {%n}"
+#define other_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r}"
+#define other_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define other_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M}"
+#define other_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0 {%n}"
+#define other_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define other_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G} {%n}"
 
 /* Zipped files */
-#define zip_race		"{%U} {%G} {%R} {%r} {%.0S}"
-#define zip_update		"{%U} {%G} {%f} {%.0S} {%.1e}"
-#define zip_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define zip_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r}"
-#define zip_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0"
-#define zip_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M}"
-#define zip_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G}"
+#define zip_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M}"
+#define zip_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r}"
+#define zip_halfway		"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define zip_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%u} {%g} {%f} {%M}"
+#define zip_complete		"{%r} {%.0m} {%f} {%.0A} {%d} {%u} {%g} %l %L %C0 %c0 {%n}"
+#define zip_norace_halfway	"{%r} %C0 %c0 {%.0m} {%f} {%.1p} {%.0A} {%M} {%n} {%u} {%g}"
+#define zip_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%d} {%U} {%G} {%n}"
 
 /* Get user day/week/month/allup position */
 #define get_user_stats		TRUE
@@ -136,7 +137,7 @@
 #define show_group_info		TRUE
 
 /* Output of racestats binary */
-#define stats_line		"{%r} {%F} {%f} {%u} {%g} %C0"
+#define stats_line		"{%r} {%F} {%f} {%u} {%g} %C0 %c0"
 
 /* Output of postdel binary */
 #define incompletemsg		"{%U} {%G} {%r}"
