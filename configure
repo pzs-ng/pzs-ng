@@ -4102,7 +4102,7 @@ echo "${ECHO_T}NOTICE: compiling bot binaries for glftpd1. (--enable-gl1)." >&6
 else
   GLVERSION="detect"
 fi;
-if [ "$GLVERSION" == "detect" ]; then
+if [ "$GLVERSION" = "" ]; then
   # Check whether --enable-gl2 or --disable-gl2 was given.
 if test "${enable_gl2+set}" = set; then
   enableval="$enable_gl2"
@@ -4122,18 +4122,18 @@ else
   GLPATH="/glftpd"
 fi;
 
-if [ "$GLVERSION" == "detect" ]; then
+if [ "$GLVERSION" = "detect" ]; then
   if [ ! -d "$GLPATH" ] || [ ! -x "${GLPATH}/bin/glftpd" ]; then
     { { echo "$as_me:$LINENO: error: Invalid glpath \"$GLPATH\". Use ./configure --with-glpath=PATH with a valid path! (or --enable-gl1/2 to disable autodetect). Quitting!" >&5
 echo "$as_me: error: Invalid glpath \"$GLPATH\". Use ./configure --with-glpath=PATH with a valid path! (or --enable-gl1/2 to disable autodetect). Quitting!" >&2;}
    { (exit 1); exit 1; }; }
   fi
   glversion="`strings $GLPATH/bin/glftpd | grep -i '^glftpd '| cut -f1 -d. | tr A-Z a-z`"
-  if [ "$glversion" == "glftpd 1" ]; then
+  if [ "$glversion" = "glftpd 1" ]; then
     GLVERSION=""
     echo "$as_me:$LINENO: result: NOTICE: detected glversion, compiling bot binaries for glftpd1." >&5
 echo "${ECHO_T}NOTICE: detected glversion, compiling bot binaries for glftpd1." >&6
-  else if [ "$glversion" == "glftpd 2" ]; then
+  else if [ "$glversion" = "glftpd 2" ]; then
       GLVERSION="-DUSE_GLFTPD2"
       echo "$as_me:$LINENO: result: NOTICE: detected glversion, compiling bot binaries for glftpd2." >&5
 echo "${ECHO_T}NOTICE: detected glversion, compiling bot binaries for glftpd2." >&6
@@ -4155,7 +4155,7 @@ fi
 
 
 
-#if [[ "`ls zipscript/conf/zsconfig.h`" == "" ]]; then
+#if [[ "`ls zipscript/conf/zsconfig.h`" = "" ]]; then
 #	cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h  /dev/null 2>&1
 #else
 #	echo "ERROR: You need zsconfig.h in the 'zipscript/conf' directory."
@@ -5296,7 +5296,7 @@ fi
 ! [ -f zipscript/conf/zsconfig.h ] && cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h
 ! [ -f sitewho/sitewho.conf ] && cp -i sitewho/sitewho.conf.dist sitewho/sitewho.conf
 
-if [ "$PASSCHK" == "" ]; then
+if [ "$PASSCHK" = "" ]; then
 echo "$as_me:$LINENO: result: $( echo )
 libcrypt/OpenSSL not found. Not building passchk" >&5
 echo "${ECHO_T}$( echo )
