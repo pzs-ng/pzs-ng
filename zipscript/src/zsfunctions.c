@@ -473,15 +473,14 @@ findfile(char *filename)
 	while (n--) {
 #if (sfv_cleanup)
 #if (sfv_cleanup_lowercase)
-		if (!strcasecmp(dirlist[n]->d_name, filename)) {
+		if (!strcasecmp(dirlist[n]->d_name, filename))
 #else
-		if (!strcmp(dirlist[n]->d_name, filename)) {
+		if (!strcmp(dirlist[n]->d_name, filename))
 #endif
 #else
-		if (!strcmp(dirlist[n]->d_name, filename)) {
+		if (!strcmp(dirlist[n]->d_name, filename))
 #endif
 			return n;
-		}
 	}
 	return 0;
 }
