@@ -725,6 +725,26 @@ c_incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI)
 			case '0':
 				buf_p += sprintf(buf_p, "%s", path[1]);
 				break;
+/* Future improvement. Should only use "static" cookies - not current speed etc, since it will be a bitch to remove old incomplete bars.
+			case 'm':
+				buf_p += sprintf(buf_p, "%.0f", (double)((raceI->total.size >> 10) / 1024.));
+				break;
+			case 'M':
+				buf_p += sprintf(buf_p, "%i", (int)raceI->total.files_missing);
+				break;
+			case 'F':
+				buf_p += sprintf(buf_p, "%i", (int)raceI->total.files - (int)raceI->total.files_missing);
+				break;
+			case 'e':
+				buf_p += sprintf(buf_p, "%.0f", (double)((raceI->file.size * raceI->total.files >> 10) / 1024.));
+				break;
+			case 'f':
+				buf_p += sprintf(buf_p, "%i", (int)raceI->total.files);
+				break;
+			case 'p':
+				buf_p += sprintf(buf_p, "%.0f", (double)((raceI->total.files - raceI->total.files_missing) * 100. / raceI->total.files));
+				break;
+*/
 			case '%':
 				*buf_p++ = '%';
 				break;
