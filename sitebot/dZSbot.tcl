@@ -10,6 +10,7 @@
 #################################################################################
 putlog "Launching dZSbot for project-zs-ng..."
 
+set dzerror 0
 set scriptpath [file dirname [info script]]
 
 if {[catch {package require Tcl 8.4} error]} {
@@ -32,6 +33,7 @@ if {[catch {source $scriptpath/dZSbot.conf} error]} {
 	} else {
 		putlog "dZSbot warning: Since this is your first install, do: cp dZSbot.conf.dist dZSbot.conf"
 	}
+	set dzerror 1
 }
 
 #################################################################################
@@ -44,7 +46,7 @@ proc ng_debug {text} {
 	}
 }
 
-set dzerror 0; set mpath ""
+set mpath ""
 set defaultsection "DEFAULT"
 set nuke(LASTDIR) ""
 set nuke(LASTTYPE) ""

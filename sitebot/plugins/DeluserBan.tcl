@@ -90,6 +90,7 @@ proc ::ngBot::DeluserBan::DeInit {args} {
 # "DELUSER" and "PURGED" announces.
 #
 proc ::ngBot::DeluserBan::LogEvent {event section logData} {
+    global botnick
     variable banUser
     variable killUser
     variable message
