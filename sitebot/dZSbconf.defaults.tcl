@@ -43,7 +43,7 @@ set use_glftpd2 		"AUTO"
 # What types of messages are counted as the different types of output
 # (for disabling etc)
 set msgtypes(RACE) 		"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE_RAR RACE_ZIP RACE_OTHER RACE_VIDEO RACE_AUDIO SFV_RAR SFV_OTHER SFV_VIDEO SFV_AUDIO DOUBLESFV UPDATE_RAR UPDATE_OTHER UPDATE_VBR UPDATE_CBR UPDATE_VIDEO UPDATE_ZIP HALFWAY_RACE_RAR HALFWAY_RACE_ZIP HALFWAY_RACE_OTHER HALFWAY_RACE_VIDEO HALFWAY_RACE_AUDIO HALFWAY_NORACE_RAR HALFWAY_NORACE_ZIP HALFWAY_NORACE_OTHER HALFWAY_NORACE_VIDEO HALFWAY_NORACE_AUDIO NEWLEADER_RAR NEWLEADER_ZIP NEWLEADER_OTHER NEWLEADER_VIDEO NEWLEADER_AUDIO COMPLETE_RAR COMPLETE_ZIP COMPLETE_AUDIO_CBR COMPLETE_AUDIO_VBR COMPLETE_OTHER COMPLETE_VIDEO COMPLETE_STAT_RACE_RAR COMPLETE_STAT_RACE_ZIP COMPLETE_STAT_RACE_AUDIO_CBR COMPLETE_STAT_RACE_AUDIO_VBR COMPLETE_STAT_RACE_OTHER COMPLETE_STAT_RACE_VIDEO BADGENRE BADYEAR BADBITRATE BAD WIPE WIPE-r IMDB IMDBVAR"
-set msgtypes(DEFAULT) 		"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT REQUEST REQFILLED IMDBFIND DEBUG TIMEOUT TAGLINE"
+set msgtypes(DEFAULT) 		"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT REQUEST REQFILLED IMDBFIND IMDBFINDVAR DEBUG TIMEOUT TAGLINE"
 
 # This allows you to customize your annoncements depending on the path where
 # the action is taking place. The string matching is done using the TCL
@@ -269,8 +269,9 @@ set disable(BAD)					0
 set disable(IMDB)					0
 set disable(IMDBVAR)					0
 set disable(IMDBFIND)					0
+set disable(IMDBFINDVAR)				0
 set disable(FAILLOGIN)					0
-set disable(IPNOTADDED)				1
+set disable(IPNOTADDED)					1
 set disable(BADUSERHOST)				1
 set disable(BADPASSWD)					1
 set disable(ALTWHO)					0
@@ -330,6 +331,9 @@ set variables(IMDBVAR)	"%pf %imdbdirname %imdburl %imdbtitle %imdbgenre %imdbrat
 
 # Using psxc-imdb setting TRIGGER to "IMDB" and LOGFORMAT to "" or "MYOWN" will allow a pre-formatted output
 set variables(IMDB)		"%pf %msg"
+
+# Using psxc-imdb, setting FIDNTRIGGER to "IMDBFINDVAR" and LOGFORMAT to "SPECIAL" will allow you use format the output in the bot.
+set variables(IMDBFINDVAR)	"%pf %imdbdirname %imdburl %imdbtitle %imdbgenre %imdbrating %imdbcountry %imdblanguage %imdbcertification %imdbruntime %imdbdirector %imdbbusinessdata %imdbpremiereinfo %imdblimitedinfo %imdbvotes %imdbscore %imdbname %imdbyear %imdbnumscreens %imdbislimited %imdbcastleadname %imdbcastleadchar %imdbtagline %imdbplot %imdbbar %imdbcasting %imdbcommentshort %imdbdestination"
 
 # Using psxc-imdb setting FINDTRIGGER to "IMDBFIND" and LOGFORMAT to "" or "MYOWN" will allow a pre-formatted output.
 set variables(IMDBFIND)		"%pf %msg"

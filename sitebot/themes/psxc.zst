@@ -75,6 +75,7 @@ announce.NEWLEADER_AUDIO_LOOP1			= "%b{%a_name}@%a_gname%splitter"
 announce.COMPLETE_STAT_RACE_RAR_LOOP1		= "%b{%r_name}@%r_gname%splitter"
 announce.COMPLETE_STAT_RACE_RAR_LOOP2		= "Not Used"
 announce.COMPLETE_STAT_RACE_RAR_LOOP3		= "%b{%u_racer_name}@%g_racer_name [%b{%u_racer_files}f/%u_racer_mbytesMB@%b{%u_racer_avgspeed}]%splitter"
+#announce.COMPLETE_STAT_RACE_RAR_LOOP3		= "|%r2{%u_racer_position} %l21{%b{%u_racer_name}/%g_racer_name} %b{%r5{%u_racer_files}} %r9{%u_racer_mbytes} %r7{%u_racer_percent%} %r9{%u_racer_avgspeed} %r4{%u_racer_wkup}"
 announce.COMPLETE_STAT_RACE_ZIP_LOOP1		= "%b{%r_name}/%r_gname%splitter"
 announce.COMPLETE_STAT_RACE_ZIP_LOOP2		= "Not Used"
 announce.COMPLETE_STAT_RACE_ZIP_LOOP3		= "%b{%u_racer_name}@%g_racer_name [%b{%u_racer_files}f/%u_racer_mbytesMB@%b{%u_racer_avgspeed}]%splitter"
@@ -164,8 +165,9 @@ announce.FREE					= "[%b{FREE  }] %devices[Totals: %b{%free} of %b{%total} (used
 announce.FREE-DEV				= "%l8{%section}: %b{%free} of %b{%total} (used %percentage%) - "
 
 # 3rd party imdb announce - example for psxc-imdb
-announce.IMDBVAR				= "[%b{IMDB  }]:[%l8{%section}] %b{%imdbname} (%imdburl), a %imdbdirector movie scoring %b{%imdbscore of 10} on imdb.com (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.|%b{%sitename} :: [%b{IMDB  }][%l8{%section}] %b{%imdbname} plot summary: %imdbplot [%imdbbar]"
+announce.IMDBVAR				= "[%b{IMDB  }]:[%l8{%section}] %b{%imdbname} (%imdburl), a %imdbdirector movie scoring %b{%imdbscore of 10} on imdb.com (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.|[%b{%sitename}]:[%b{IMDB  }]:[%l8{%section}] %b{%imdbname} plot summary: %imdbplot"
 announce.IMDB					= "%msg"
+announce.IMDBFINDVAR				= "[%b{IMDB  }]:[%imdbbar] %b{%imdbname} (%imdburl), a %imdbdirector movie scoring %b{%imdbscore of 10} on imdb.com (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.|[%b{%sitename}]:[%b{IMDB  }]:[%imdbbar] %b{%imdbname} plot summary: %imdbplot|DEBUG : business:%b{%imdbbusinessdata}"
 announce.IMDBFIND				= "%msg"
 
 announce.MSGINVITE	        		= "[%b{INVITE}] %b{%u_name}@%g_name invited himself as %b{%u_ircnick}."

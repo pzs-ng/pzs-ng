@@ -3,6 +3,8 @@ PSXC-IMDB CHANGELOG:
 
 - v2.7d - Jan. 08th, 2005 - Changed some head/tail -<number> to head/tail -n <number>
 			     thanx to Tomcsi for giving me the heads up.
+			  - pzs-ng reacts on $ signs in the output. A quick-fix is
+			     applied, until that can be fixed in the bot.
 - v2.7c - Dec. 30th, 2004 - Changed installer to work with glftpd2.
 			  - Made installer modify crontab by default.
 			  - Changed some wording in the README.
