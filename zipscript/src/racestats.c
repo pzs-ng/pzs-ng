@@ -18,52 +18,6 @@
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
 
-/*struct USERINFO **g.ui;
-struct GROUPINFO **g.gi;
-struct VARS	g.v;
-struct LOCATIONS g.l;*/
-
-
-char		error_msg [80], output[2048], output2[1024];
-short int	varelease = 2,	/* Various Artists release */
-		ERROR_CODE = 0;
-
-/*void 
-getrelname(char *directory)
-{
-	int		cnt       , l, n = 0, k = 2;
-	char		directoryarray[2][PATH_MAX];
-
-	for (cnt = strlen(directory) - 1; k && cnt; cnt--)
-		if (directory[cnt] == '/') {
-			k--;
-			//directoryarray[k] = malloc(n + 1);
-			strncpy(directoryarray[k], directory + cnt + 1, n);
-			directoryarray[k][n] = 0;
-			n = 0;
-		} else
-			n++;
-
-	l = strlen(directoryarray[1]);
-
-	if (subcomp(directoryarray[1])) {
-		//n = strlen(directoryarray[0]);
-		//g.v.misc.release_name = malloc(n + 21);
-		sprintf(g.v.misc.release_name, "%s/%s", directoryarray[0], directoryarray[1]);
-		//if (k < 2)
-		//	free(directoryarray[1]);
-	} else {
-		//g.v.misc.release_name = malloc(l + 12);
-		sprintf(g.v.misc.release_name, "%s", directoryarray[1]);
-		//if (k == 0)
-		//	free(directoryarray[0]);
-	}
-}*/
-
-/*
- * CORE CODE - NOT MUCH HERE - JUST CALLS FUNCTIONS IN RIGHT ORDER & SET FEW
- * VARIABLES
- */
 int 
 main(int argc, char **argv)
 {
@@ -74,7 +28,7 @@ main(int argc, char **argv)
 		printf("Usage: %s <path>\n", argv[0]);
 		exit(EXIT_SUCCESS);
 	}
-	/*g.l.path = malloc(n = strlen(argv[1]) + 1);*/
+
 	g.l.race = malloc(n += 10 + strlen(storage));
 	g.l.sfv = malloc(n + 10);
 
@@ -130,9 +84,7 @@ main(int argc, char **argv)
 	printf("%s\n", convert(&g.v, g.ui, g.gi, stats_line));
 
 END:
-	//free(g.l.path);
 	free(g.l.race);
-	//free(g.v.misc.release_name);
 	free(g.l.sfv);
 
 	exit(EXIT_SUCCESS);

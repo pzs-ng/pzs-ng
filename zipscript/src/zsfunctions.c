@@ -1221,19 +1221,6 @@ getrelname(GLOBAL *g)
 	int		l[2], n = 0, k = 2;
 	char		**path = 0;
 
-	/*char           *path[2];
-	*for (cnt = g->l.length_path - 1; k && cnt; cnt--) {
-		if (g->l.path[cnt] == '/') {
-			k--;
-			l[k] = n;
-			path[k] = malloc(n + 1);
-			strncpy(path[k], g->l.path + cnt + 1, n);
-			path[k][n] = 0;
-			n = 0;
-		} else
-			n++;
-	}*/
-
 	path = buffer_paths(g, path, &k, (strlen(g->l.path)-1));
 
 d_log("DEBUG: result of subdir-test: %d\n", subcomp(path[1]));
