@@ -293,12 +293,6 @@ int main( int argc, char **argv ) {
 		d_log("Integrity ok\n");
 		printf(zipscript_zip_ok);
 
-#if ( copy_files_to_zip == TRUE )
-		d_log("Copying %s to zip\n", includezip);
-		sprintf(target, "/bin/zip -ujqq %s %s", raceI.file.name, includezip);
-		execute(target);
-#endif
-
 		if ( (raceI.misc.write_log = matchpath(zip_dirs, locations.path)) ) {
 			d_log("Directory matched with zip_dirs\n");
 		} else if (matchpath(sfv_dirs, locations.path)) {

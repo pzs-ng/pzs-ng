@@ -8,6 +8,8 @@ v0.7.2
  - psxc added support for the old double-sfv deny patch.
  - psxc added iono's fix for glftpd2 nuke style.
  - daxxar fixed an ugly group dir bug.
+ - psxc added support for DVD announces.
+ - psxc removed support for adding nfo to zip (spam! begone!)
 
 v0.7.1
  - merged in freebsd patches by iwdisb ( http://mobilcom.dyndns.org/~iwdisb/glftpd/ )

@@ -131,7 +131,7 @@
  */
 #define allowed_bitrates		"160,192"
 #define allowed_years			"2000,2001,2002,2003,2004"
-#define banned_genres			"Christian Rap,R&B"
+#define banned_genres			"Christian Rap"
 #define allowed_genres			"Rock"
 
 
@@ -153,7 +153,7 @@
 #define audio_year_warn			TRUE
 #define audio_year_warn_msg		"%B%U%B/%G has started an illegal upload %r (year: %Y). Naughty boy!"
 #define audio_banned_genre_check	TRUE
-#define audio_allowed_genre_check	TRUE
+#define audio_allowed_genre_check	FALSE
 #define audio_genre_warn		TRUE
 #define audio_genre_warn_msg		"%B%U%B/%G has started an illegal upload %r (genre: %w). Naughty boy!"
 
@@ -229,7 +229,7 @@
 
 /* Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 & mpeg2.5 + layer1 & 2 can be added if needed
  */
-#define audio_vbr		"%XKbps VBR %I (%Q)"					/* Put in %j cookie */
+#define audio_vbr		"%XKbps VBR I:%I w:%w W:%W (Q:%Q) x:%x X:%X y:%y Y:%Y z:%Z h:%h q:%q Q:%Q"					/* Put in %j cookie */
 #define audio_cbr		"%XKbps CBR (%Q)"					/* Put in %j cookie */
 
 #define audio_race		"%B%U%B is racing [ %R ] on %r @ %B%.0S%BkB/s."
@@ -392,12 +392,6 @@
 #define complete_script		"/bin/nfo_copy.sh"
 #define enable_complete_script2	FALSE
 #define complete_script2	"/bin/nfo_copy2.sh"
-
-/* Copy files defined in includezip to zipped file
- */
-#define copy_files_to_zip	FALSE
-#define includezip		"/bin/zipscript-awk/ds.nfo"
-
 
 /*
  *	Other binary settings
