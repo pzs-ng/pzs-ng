@@ -265,9 +265,8 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	unsigned char	space;
 	unsigned char	args;
 	char		*p_buf = 0, *eof = 0;
-	char		t_buf[PATH_MAX], *f_buf = 0;
-	char		*arg[45]; /* Enough to hold 10 sections (noone has
-				   * more?) */
+	char		t_buf[PATH_MAX], *f_buf = 0; /* target buf, file buf */
+	char		*arg[45]; /* Enough to hold 10 sections (noone has more?) */
 	struct userdata	*user = 0;
 	struct stat	fileinfo;
 
@@ -357,6 +356,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	}
 	closedir(dir);
 
+	users = n;
 	for (m = 0; m < raceI->total.users; m++) {
 		userI[m]->dayup =
 			userI[m]->wkup =
@@ -364,7 +364,6 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 			userI[m]->allup = users;
 	}
 
-	users = n;
 	/* Sort */
 	for (n = 0; n < users; n++) {
 		if ((u1 = user[n].name) == -1)
