@@ -45,7 +45,7 @@ set mpath ""
 bind pub    -|- [set cmdpre]who     who
 bind pub    -|- [set cmdpre]speed   speed
 bind pub    -|- [set cmdpre]bw      ng_bandwidth
-bind pub    -|- [set cmdpre]bnc     bnc_check
+bind pub    -|- [set cmdpre]bnc     ng_bnc_check
 bind pub    -|- [set cmdpre]free    show_free
 
 bind pub    -|- [set cmdpre]dayup   stats_user_dayup
@@ -674,7 +674,7 @@ proc bnc {nick uhost hand chan arg} {
 #################################################################################
 # CHECK BOUNCER STATUSES							#
 #################################################################################
-proc bnc_check { nick host hand arg } { global bnc sitename binary errorCode
+proc ng_bnc_check { nick host hand arg } { global bnc sitename binary errorCode
         putquick "NOTICE $nick :Checking bouncer(s) status..."
         foreach line [split [exec $binary(BNCCHECK) $binary(NCFTPLS) $bnc(USER) $bnc(PASS) $bnc(TIMEOUT) $bnc(LIST)] "\n"]  {
                 putquick "NOTICE $nick :$line"
