@@ -851,7 +851,7 @@ proc show_free {nick uhost hand chan arg} {
 	set total 0; set num 0; set perc 0
 	array set "tmpdev" [array get "device"]
 
-	foreach line [split [exec $binary(DF) "-Phx none"] "\n"] {
+	foreach line [split [exec $binary(DF) "-Ph"] "\n"] {
 		regsub -all {,} $line {.} line
 		foreach dev [array names "tmpdev"] {
 			if {[string match [lindex $line 0] [lindex $tmpdev($dev) 0]] == 1} {
