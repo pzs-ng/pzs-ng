@@ -35,9 +35,8 @@ foreach entry [array names binary] {
 		if {[string equal "CURL" $entry]} {continue}
 		if {[string equal "PING" $entry] && ![istrue $bnc(PING)]} {continue}
 	}
-
 	if {![file executable $binary($entry)]} {
-		putlog "dZSbot error: Invalid path/missing bin for $entry - please fix."
+		putlog "dZSbot error: Invalid path/permissions for $entry - please fix."
 		set dzerror 1
 	}
 }
@@ -401,7 +400,7 @@ proc readlog {} {
 		}
 	}
 
-	if {$glversion == 2} {
+	if {$glversion == 1} {
 		launchnuke
 	}
 
