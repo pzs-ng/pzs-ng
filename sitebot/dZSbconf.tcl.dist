@@ -7,10 +7,12 @@
 #########################################################
 # Locations of all the usual files, change is usually only required
 # if you have another glroot than /glftpd/ =)
- 
 set location(GLLOG)		"/glftpd/ftp-data/logs/glftpd.log"
 set location(PASSWD)		"/glftpd/etc/passwd"
 set location(USERS)		"/glftpd/ftp-data/users/"
+
+# Should the bot die if a binary is missing - or just output that something is wrong?
+set die_on_error	YES
 
 # Are you using glftpd2? Default setting ("AUTO") should be safe,
 # enables autodetection (if binary(GLFTPD) is set correctly)

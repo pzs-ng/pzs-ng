@@ -1126,5 +1126,7 @@ if { $dzerror == "0" } {
 	putlog "dZSbot loaded ok!"
 } else {
 	putlog "dZSbot had errors. Please check log and fix."
-	die
+	if { $die_on_error == "YES" } {
+		die
+	}
 }
