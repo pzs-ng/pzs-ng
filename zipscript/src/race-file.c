@@ -109,8 +109,10 @@ maketempdir(struct LOCATIONS *locations)
 	snprintf(full_path, PATH_MAX, "%s/%s", storage, locations->path);
 
 	if (mkdir(full_path, 0777) == -1) {
-		d_log("Couldn't create temporary path %s: %s\n", full_path, strerror(errno));
-		exit(EXIT_FAILURE);
+		if (errno != EEXIST) {
+			d_log("Couldn't create temporary path %s: %s\n", full_path, strerror(errno));
+			exit(EXIT_FAILURE);
+		}
 	}
 }
 
