@@ -350,7 +350,7 @@ main(int argc, char **argv)
 		move_progress_bar(1, &g.v, g.ui, g.gi);
 		
 #if (remove_dot_files_on_delete == TRUE)
-		removedotfiles();
+		removedotfiles(dir);
 #endif
 
 	}
