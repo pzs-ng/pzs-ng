@@ -811,7 +811,8 @@ if ( matchpath(group_dirs, locations.path ) && ( hide_group_uploaders == TRUE ))
 		buffer_progress_bar(&raceI);
 
 		d_log("Creating incomplete indicator\n");
-		create_incomplete();
+/*		d_log("new: ln -s %s %s\n", raceI.misc.release_name, locations.incomplete);*/
+/*		create_incomplete();*/
 
 		d_log("Creating/moving progress bar\n");
 		move_progress_bar(0, &raceI);

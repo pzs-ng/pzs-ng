@@ -16,16 +16,13 @@
 #define D_NAMLEN(d)	_D_EXACT_NAMLEN(d)
 #endif
 
-/* Symlink type */
-/*#if ( userellink == 1 )
-# define create_symlink symlink_rel
-#else
-# define create_symlink symlink
-#endif*/
+
+/* absolute symlinks - obsolete*/
+/*symlink(locations.path, locations.incomplete)*/
 
 /* General */
 #if ( incompleteislink == 1 )
-# define create_incomplete() symlink(locations.path, locations.incomplete)
+# define create_incomplete() symlink(raceI.misc.release_name, locations.incomplete);
 #else
 # define create_incomplete() createzerofile(locations.incomplete)
 #endif

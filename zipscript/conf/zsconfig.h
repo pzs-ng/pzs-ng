@@ -54,12 +54,6 @@
  */
 #define incompleteislink	1
 
-/* Defines symbolic link type
- * 0 = absolute symlink
- * 1 = relative symlink
- */
-#define userellink		1
-
 
 /* If file has suid bit set, program changes uid and gid to these (0 leaves option uncompiled)
  */
