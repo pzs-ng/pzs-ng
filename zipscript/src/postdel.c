@@ -274,6 +274,7 @@ int main( int argc, char **argv ) {
 
 		if ( fileexists(locations.sfv) ) {
 #if ( create_missing_files == TRUE )
+			strtolower(raceI.file.name);
 			create_missing(raceI.file.name, name_p - raceI.file.name - 1);
 #endif
 			d_log("Reading file count from SFV\n");
