@@ -31,9 +31,8 @@
 # include "strl/strl.h"
 #endif
 
-
 int 
-main()
+main(void)
 {
 	int		n, m, l, complete_type = 0, gnum = 0, unum = 0, f_id = 0;
 	char           *ext, exec[4096], *complete_bar = 0;
@@ -248,7 +247,7 @@ main()
 				break;
 			case RTYPE_AUDIO:
 				complete_bar = audio_completebar;
-#if ( enabled_create_m3u )
+#if ( create_m3u == TRUE )
 				n = sprintf(exec, findfileext(dir, ".sfv"));
 				strcpy(exec + n - 3, "m3u");
 				create_indexfile(&g.l, &g.v, exec);

@@ -26,6 +26,64 @@
 #include "scandir.h"
 #endif
 
+#include "datacleaner.h"
+
+int 
+main(int argc, char **argv)
+{
+	int		zd_length;
+	char		st[PATH_MAX];
+	char		*wd;
+	DIR		*od;
+
+	zd_length = strlen(storage);
+
+	if (argc == 1) {
+		check_dir_loop(storage, zd_length);
+	} else {
+		if ((zd_length + 1 + strlen(argv[1])) < PATH_MAX) {
+			if ( !strncmp(argv[1], "RMD ", 4)) {
+				/* script is called as a cscript for RMD */
+				if (!strncmp(argv[1] + 4, "/", 1)) {
+					/* client uses full path to dir */
+					sprintf(st, storage "/%s/%s", sitepath_dir, argv[1] + 4);
+				} else {
+					/* client give only name of dir */
+					if (( wd = getcwd(NULL, PATH_MAX)) == NULL) {
+						exit (2);
+					} else {
+						sprintf(st, storage "/%s/%s", wd, argv[1] + 4);
+						free(wd);
+					}
+				}
+			} else if ( !strncmp(argv[1], "/", 1)) {
+				/* script is called with an argument from (chroot) shell */
+				sprintf(st, storage "/%s", argv[1]);
+				printf("Checking dir: %s\n", st);
+			} else {
+				/* script is called with bad args - scanning current dirs */
+				if (( wd = getcwd(NULL, PATH_MAX)) == NULL) {
+						exit (2);
+				} else {
+					sprintf(st, storage "/%s", wd);
+					free(wd);
+				}
+			}
+		}
+		/* check subdirs */
+		check_dir_loop(st, zd_length);
+
+		/* check current dir */
+		if (( od = opendir(st + zd_length)) == NULL) {
+			remove_dir_loop(st);
+			rmdir(st);
+		} else {
+			closedir(od);
+		}
+	}
+	return 0;
+}
+
 void 
 remove_dir_loop(char *path)
 {
@@ -89,58 +147,3 @@ check_dir_loop(char *path, int zd_length)
 	closedir(dir1);
 }
 
-int 
-main(int argc, char **argv)
-{
-	int		zd_length;
-	char		st[PATH_MAX];
-	char		*wd;
-	DIR		*od;
-
-	zd_length = strlen(storage);
-
-	if (argc == 1) {
-		check_dir_loop(storage, zd_length);
-	} else {
-		if ((zd_length + 1 + strlen(argv[1])) < PATH_MAX) {
-			if ( !strncmp(argv[1], "RMD ", 4)) {
-				/* script is called as a cscript for RMD */
-				if (!strncmp(argv[1] + 4, "/", 1)) {
-					/* client uses full path to dir */
-					sprintf(st, storage "/%s/%s", sitepath_dir, argv[1] + 4);
-				} else {
-					/* client give only name of dir */
-					if (( wd = getcwd(NULL, PATH_MAX)) == NULL) {
-						exit (2);
-					} else {
-						sprintf(st, storage "/%s/%s", wd, argv[1] + 4);
-						free(wd);
-					}
-				}
-			} else if ( !strncmp(argv[1], "/", 1)) {
-				/* script is called with an argument from (chroot) shell */
-				sprintf(st, storage "/%s", argv[1]);
-				printf("Checking dir: %s\n", st);
-			} else {
-				/* script is called with bad args - scanning current dirs */
-				if (( wd = getcwd(NULL, PATH_MAX)) == NULL) {
-						exit (2);
-				} else {
-					sprintf(st, storage "/%s", wd);
-					free(wd);
-				}
-			}
-		}
-		/* check subdirs */
-		check_dir_loop(st, zd_length);
-
-		/* check current dir */
-		if (( od = opendir(st + zd_length)) == NULL) {
-			remove_dir_loop(st);
-			rmdir(st);
-		} else {
-			closedir(od);
-		}
-	}
-	return 0;
-}
