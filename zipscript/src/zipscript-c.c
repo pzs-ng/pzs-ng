@@ -518,10 +518,11 @@ main(int argc, char **argv)
 			}
 
 #if (use_partial_on_noforce == TRUE)
-			if ( (force_sfv_first == FALSE) || matchpartialpath(noforce_sfv_first_dirs, g.l.path)) {
+			if ( (force_sfv_first == FALSE) || matchpartialpath(noforce_sfv_first_dirs, g.l.path))
 #else
-			if ( (force_sfv_first == FALSE) || matchpath(noforce_sfv_first_dirs, g.l.path)) {
+			if ( (force_sfv_first == FALSE) || matchpath(noforce_sfv_first_dirs, g.l.path))
 #endif
+			{
 				if (fileexists(g.l.race)) {
 					d_log("Testing files marked as untested\n");
 					testfiles(&g.l, &g.v, 0);
@@ -1303,7 +1304,9 @@ main(int argc, char **argv)
 		/* File is marked to be deleted */
 
 		d_log("Logging file as bad\n");
-		writerace(g.l.race, &g.v, 0, F_BAD);
+		remove_from_race(g.l.race, g.v.file.name);
+		//writerace(g.l.race, &g.v, 0, F_BAD);
+
 		printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_error));
 	}
 #if ( enable_accept_script == TRUE )

@@ -712,13 +712,13 @@ remove_from_race(const char *path, const char *f)
 
 	if (!(file = fopen(path, "r+"))) {
 		d_log("Couldn't fopen racefile (%s): %s\n", path, strerror(errno));
-		exit(EXIT_FAILURE);
+		return;
 	}
 	
 	sprintf(tmppath, "%s/rd.%s.tmp", storage, f);
 
 	if (!(tmp = fopen(tmppath, "w"))) {
-		d_log("Couldn't fopen racefile (%s): %s\n", tmppath, strerror(errno));
+		d_log("Couldn't fopen temp racefile (%s): %s\n", tmppath, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
