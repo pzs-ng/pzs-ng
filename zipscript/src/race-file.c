@@ -358,7 +358,7 @@ void create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char
 
  pos = m_alloc(sizeof(int) * raceI->total.files);
  t_pos = m_alloc(sizeof(int) * raceI->total.files);
- fname = m_alloc(sizeof(int) * raceI->total.files);
+ fname = m_alloc(sizeof(char*) * raceI->total.files);
  if ((r = fopen( locations->race, "r" )) == NULL) { d_log("Couldn't fopen %s.\n", locations->race); exit(EXIT_FAILURE); }
  /*r = fopen( locations->race, "r" );*/
  c = 0;
