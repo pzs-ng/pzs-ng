@@ -46,7 +46,7 @@ void writelog(char *msg, char *status) {
  char   *line, *newline;
  time_t timenow;
 
- if ( raceI.misc.write_log == TRUE ) {
+ if ( raceI.misc.write_log == TRUE && !matchpath(group_dirs, locations.path)) {
 	timenow = time(NULL);
 	date = ctime(&timenow);
 	glfile = fopen(log, "a+");
@@ -419,7 +419,7 @@ int main( int argc, char **argv ) {
 			}
 		halfway_msg = newleader_msg = race_msg = update_msg = NULL;
 
-		raceI.misc.write_log = matchpath(sfv_dirs, locations.path) > 0 ? 1 - matchpath(group_dirs, locations.path) : 0;
+		raceI.misc.write_log = (matchpath(sfv_dirs, locations.path) > 0 ? 1 - matchpath(group_dirs, locations.path) : 0);
 		if ( raceI.total.files_missing > 0 ) {
 			if ( sfv_msg != NULL ) {
 				d_log("Writing SFV message to %s\n", log);
