@@ -745,58 +745,6 @@ get_rar_info(struct VARS *raceI)
 	}
 }
 
-/* New execute function which takes stdarg type arguments.
- * This function is still a bit primitive because it can only
- * handle the format '%s' right now, and the format argument has
- * to consist of contiguous %s's, nothing else.
- */
-int
-execute(char *fmt, ...)
-{
-	int args = 0, status;
-	char **cmdv = 0;
-	va_list ap;
-	pid_t pid;
-
-	va_start(ap, fmt);
-	
-	while (*fmt) {
-		switch (*fmt++) {
-			/* add more types here maybe, or use another approach? */
-			case 's':
-				cmdv = realloc(cmdv, sizeof(char *)*(args+1));
-				cmdv[args] = va_arg(ap, char *);
-				args++;
-				break;
-		}
-	}
-
-	va_end(ap);
-
-	/* argument vectors has to be null terminated */
-	cmdv = realloc(cmdv, sizeof(char *)*(args+1));
-	cmdv[args] = 0;
-
-	switch ((pid = fork())) {
-		case -1:
-			d_log("execute: fork(): %s\n", strerror(errno));
-			break;
-		case 0:
-			close(STDOUT_FILENO);
-			close(STDERR_FILENO);
-			execv(cmdv[0], cmdv);
-			d_log("execute: execvp(%s): %s\n", cmdv[0], strerror(errno));
-			exit(1);
-		default:
-			waitpid(pid, &status, WUNTRACED);
-			break;
-	}
-
-	free(cmdv);
-
-	return WEXITSTATUS(status);
-}
-
 /*
  * Modified   : 27.02.2005 Author     : js
  * 
@@ -804,42 +752,13 @@ execute(char *fmt, ...)
  * 
  */
 int 
-execute_old(char *s)
+execute(char *s)
 {
-	int		status = 0, i = 0;
-	pid_t	pid;
-	char	*cmdv[52]; /* 52 arguments */
+	int	i = 0;
 
-#if (use_old_execute)
 	if ((i = system(s)) == -1)
 		d_log("execute (old): %s\n", strerror(errno));
 	return i;
-#endif
-
-	bzero(cmdv, sizeof(char *)*52);
-
-	/* TODO: make this understand quoted strings */
-	cmdv[i] = strtok(s, " \t");
-	for (i++; (i < 52) && (cmdv[i] = strtok(NULL, " \t")); i++);
-
-	switch ((pid = fork())) {
-		case -1:
-			d_log("execute: fork(): %s\n", strerror(errno));
-			return -1;
-			break;
-		case 0:
-			close(STDOUT_FILENO);
-			close(STDERR_FILENO);
-			execvp(cmdv[0], cmdv);
-			d_log("execute: execvp(%s): %s\n", cmdv[0], strerror(errno));
-			exit(-1);
-			break;
-		default:
-			waitpid(pid, &status, WUNTRACED);
-			break;
-	}
-
-	return WEXITSTATUS(status);
 }
 
 char           *

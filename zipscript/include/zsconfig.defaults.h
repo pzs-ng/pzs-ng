@@ -984,10 +984,6 @@
 #define lock_optimize			1
 #endif
 
-#ifndef use_old_execute
-#define use_old_execute			TRUE
-#endif
-
 /*
  * Some setting used in ng-chown
  * -----------------------------
