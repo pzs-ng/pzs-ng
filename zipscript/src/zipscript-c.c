@@ -153,7 +153,7 @@ unsigned char get_filetype(char *ext) {
 
 int main( int argc, char **argv ) {
  char		*fileext, *name_p, *temp_p;
- char		*target, *chr;
+ char		*target;
  char		*complete_msg = 0;
  char		*update_msg = 0;
  char		*race_msg = 0;
