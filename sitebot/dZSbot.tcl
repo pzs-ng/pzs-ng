@@ -282,13 +282,13 @@ set debuglevel [DEBUG_INFO]
 
 proc readlog {} {
 
-	global location glftpdlog loginlog lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2 invite_channels loglastoct pid msgreplace privchannel privgroups privusers
+	global location glftpdlog loginlog lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2 invite_channels loglastoct pid msgreplace privchannel privgroups privusers max_log_change
 
 	set dZStimer [utimer 1 "readlog"]
 	set lines ""
 
 	foreach log [array names glftpdlog] {
-		if {$lastoct($log) < [file size $glftpdlog($log)]} {
+		if {$lastoct($log) < [file size $glftpdlog($log)] && [expr [file size $glftpdlog($log)] - $lastoct($log) - $max_log_change] < 0} {
 			if {![catch {set of [open $glftpdlog($log) r]} ]} {
 				seek $of $lastoct($log)
 				while {![eof $of]} {
@@ -306,7 +306,7 @@ proc readlog {} {
 	}
 
 	foreach login [array names loginlog] {
-		if {$loglastoct($login) < [file size $loginlog($login)]} {
+		if {$loglastoct($login) < [file size $loginlog($login)] && [expr [file size $loginlog($login)] - $loglastoct($login) - $max_log_change] < 0} {
 			if {![catch {set of [open $loginlog($login) r]} ]} {
 				seek $of $loglastoct($login)
 				while {![eof $of]} {

@@ -80,7 +80,7 @@ calc_crc32(char *f)
 	int		k;
 
 	if (!(in = fopen(f, "rb"))) {
-		printf("\nOops! Cannot fopen %s. (Maybe a dir?)\n", f);
+		printf("\nOops! Cannot fopen %s. (Maybe a dir? - check perms)\n", f);
 		return 0;
 //		exit(2);
 	}

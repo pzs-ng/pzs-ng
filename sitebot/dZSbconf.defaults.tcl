@@ -24,6 +24,7 @@ set glftpdlog(GLLOG01)		"/glftpd/ftp-data/logs/glftpd.log"
 #set glftpdlog(GLLOG02)		"/glftpd/ftp-data/logs.ext/glftpd.log"
 set loginlog(LOGINLOG01)	"/glftpd/ftp-data/logs/login.log"
 #set loginlog(LOGINLOG02)	"/glftpd/ftp-data/logs.ext/login.log"
+set max_log_change		3000
 
 # Should the bot die if a binary is missing - or just output that something is wrong?
 set die_on_error		"NO"
