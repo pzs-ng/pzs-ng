@@ -430,15 +430,23 @@ main(int argc, char **argv)
 	}
 	name_p++;
 
+#if ( sfv_cleanup == TRUE )
+	d_log("sfv_cleanup: ON\n");
 #if ( sfv_cleanup_lowercase == TRUE )
 	d_log("Copying (lowercased version of) extension to memory\n");
 #else
 	d_log("Copying (unchanged version of) extension to memory\n");
 #endif
+#else
+	d_log("sfv_cleanup: OFF\n");
+	d_log("Copying (unchanged version of) extension to memory\n");
+#endif
 	fileext = malloc(name_p - temp_p);
 	memcpy(fileext, temp_p, name_p - temp_p);
+#if ( sfv_cleanup == TRUE )
 #if ( sfv_cleanup_lowercase == TRUE )
 	strtolower(fileext);
+#endif
 #endif
 	d_log("Reading directory structure\n");
 	rescandir();
@@ -871,9 +879,11 @@ main(int argc, char **argv)
 
 				/*
 				sprintf(target, "%s-missing", raceI.file.name);
-				#if (sfv_cleanup_lowercase == TRUE)
+#if ( sfv_cleanup == TRUE )
+#if (sfv_cleanup_lowercase == TRUE)
 				  strtolower(target);
-				#endif
+#endif
+#endif
 				if (target)
 					unlink(target);
 				*/

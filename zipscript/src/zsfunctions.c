@@ -352,7 +352,15 @@ findfile(char *filename)
 	int		n = direntries;
 
 	while (n--) {
+#if (sfv_cleanup == TRUE)
+#if (sfv_cleanup_lowercase == TRUE)
 		if (!strcasecmp(dirlist[n]->d_name, filename)) {
+#else
+		if (!strcmp(dirlist[n]->d_name, filename)) {
+#endif
+#else
+		if (!strcmp(dirlist[n]->d_name, filename)) {
+#endif
 			return 1;
 		}
 	}
@@ -540,8 +548,12 @@ readsfv_ffile(char *filename, off_t buf_bytes)
 					buf[index_start + line_start] = 0;
 					fname = buf + line_start;
 					ext_start = index_start;
+#if (sfv_cleanup == TRUE)
 #if (sfv_cleanup_lowercase == TRUE)
 					while ((fname[ext_start] = tolower(fname[ext_start])) != '.' && ext_start > 0)
+#else
+					while (fname[ext_start] != '.' && ext_start > 0)
+#endif
 #else
 					while (fname[ext_start] != '.' && ext_start > 0)
 #endif
