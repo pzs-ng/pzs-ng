@@ -486,7 +486,7 @@
 	#define message_user_header     "\n                           U S E R T O P\n" \
 	    "+--------------------------------------------------------------------+\n"
 #endif
-#ifndef message_user_nody
+#ifndef message_user_body
 	#define message_user_body       "%3n %-34U %7.1mM %3fF %5.1p%% %5.0sKBs\n"
 #endif
 #ifndef message_user_footer

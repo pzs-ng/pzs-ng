@@ -23,7 +23,7 @@
 #include "zsfunctions.h"
 
 #include "../conf/zsconfig.h"
-#include "../conf/zsconfig.defaults.h"
+#include "../include/zsconfig.defaults.h"
 
 /*
  * Modified	: 01.16.2002

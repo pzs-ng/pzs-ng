@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include "objects.h"
 #include "../conf/zsconfig.h"
-#include "../conf/zsconfig.defaults.h"
+#include "../include/zsconfig.defaults.h"
 
 char	ttime		[40],
 	output2		[1024],

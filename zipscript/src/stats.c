@@ -14,7 +14,7 @@
 #include "convert.h"
 
 #include "../conf/zsconfig.h"
-#include "../conf/zsconfig.defaults.h"
+#include "../include/zsconfig.defaults.h"
 
 struct	userdata	{
     int	allup_bytes;

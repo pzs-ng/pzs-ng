@@ -30,7 +30,7 @@
 #include <sys/syslimits.h>
 #endif
 #include "../conf/zsconfig.h"
-#include "../conf/zsconfig.defaults.h"
+#include "../include/zsconfig.defaults.h"
 
 struct dirent   **dirlist;
 unsigned int direntries,n = 0;

@@ -32,7 +32,7 @@
 #include "crc.h"
 
 #include "../conf/zsconfig.h"
-#include "../conf/zsconfig.defaults.h"
+#include "../include/zsconfig.defaults.h"
 
 /* Remove the portion of PARAM matched by PATTERN according to OP, where OP
  * can have one of 4 values:

@@ -9,7 +9,7 @@
 #include "convert.h"
 
 #include "../conf/zsconfig.h"
-#include "../conf/zsconfig.defaults.h"
+#include "../include/zsconfig.defaults.h"
 
 extern void writelog(char *, char *);
 

@@ -1,5 +1,5 @@
 #include "../conf/zsconfig.h"
-#include "../conf/zsconfig.defaults.h"
+#include "../include/zsconfig.defaults.h"
 
 #ifndef __CONSTANTS_H_
 #define __CONSTANTS_H_
