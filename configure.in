@@ -90,6 +90,9 @@ case $host in
 		CFLAGS="$CFLAGS -D_SunOS_"
 		SUNOBJS="strsep.o scandir.o"
 		;;
+	*bsd*)	
+		CFLAGS="$CFLAGS -D_BSD_"
+		;;
 esac
 #fi
 

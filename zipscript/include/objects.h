@@ -13,10 +13,13 @@
 
 #ifndef PATH_MAX
  #define _LIMITS_H_
- #ifdef _SunOS_
+ #if defined(_SunOS_)
   #include <syslimits.h>
- #else
+ #elif defined(_BSD_)
   #include <sys/syslimits.h>
+ #else
+  #include <limits.h>
+  #include <syslimits.h>
  #endif
 #endif
 
