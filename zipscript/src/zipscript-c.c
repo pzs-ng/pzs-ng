@@ -548,12 +548,17 @@ int main( int argc, char **argv ) {
 						d_log("File is from banned genre\n");
 						sprintf(raceI.misc.error_msg, BANNED_GENRE, raceI.audio.id3_genre);
 						if ( audio_genre_warn == TRUE ) {
-							char * error_msg;
-							int write_log = raceI.misc.write_log;
-							raceI.misc.write_log = 1;
-							error_msg = convert(&raceI,userI,groupI,audio_genre_warn_msg);
-							writelog(error_msg,"BADGENRE");
-							raceI.misc.write_log = write_log;
+							if ( userI[raceI.user.pos]->files == 1 ) {
+								d_log("warn on - logging to logfile\n");
+								char * error_msg;
+								int write_log = raceI.misc.write_log;
+								raceI.misc.write_log = 1;
+								error_msg = convert(&raceI,userI,groupI,audio_genre_warn_msg);
+								writelog(error_msg,"BADGENRE");
+								raceI.misc.write_log = write_log;
+								} else {
+								d_log("warn on - have already logged to logfile\n");
+								}
 							} else {
 							exit_value = 2;
 							}
@@ -566,12 +571,17 @@ int main( int argc, char **argv ) {
 						d_log("File is from banned year\n");
 						sprintf(raceI.misc.error_msg, BANNED_YEAR, raceI.audio.id3_year);
 						if ( audio_year_warn == TRUE ) {
-							char * error_msg;
-							int write_log = raceI.misc.write_log;
-							raceI.misc.write_log = 1;
-							error_msg = convert(&raceI,userI,groupI,audio_year_warn_msg);
-							writelog(error_msg,"BADYEAR");
-							raceI.misc.write_log = write_log;
+							if ( userI[raceI.user.pos]->files == 1 ) {
+								d_log("warn on - logging to logfile\n");
+								char * error_msg;
+								int write_log = raceI.misc.write_log;
+								raceI.misc.write_log = 1;
+								error_msg = convert(&raceI,userI,groupI,audio_year_warn_msg);
+								writelog(error_msg,"BADYEAR");
+								raceI.misc.write_log = write_log;
+								} else {
+								d_log("warn on - have already logged to logfile\n");
+								}
 							} else {
 							exit_value = 2;
 							}
@@ -583,12 +593,17 @@ int main( int argc, char **argv ) {
 						d_log("File is encoded using banned bitrate\n");
 						sprintf(raceI.misc.error_msg, BANNED_BITRATE, raceI.audio.bitrate);
 						if ( audio_bitrate_warn == TRUE ) {
-							char * error_msg;
-							int write_log = raceI.misc.write_log;
-							raceI.misc.write_log = 1;
-							error_msg = convert(&raceI,userI,groupI,audio_bitrate_warn_msg);
-							writelog(error_msg,"BADBITRATE");
-							raceI.misc.write_log = write_log;
+							if ( userI[raceI.user.pos]->files == 1 ) {
+								d_log("warn on - logging to logfile\n");
+								char * error_msg;
+								int write_log = raceI.misc.write_log;
+								raceI.misc.write_log = 1;
+								error_msg = convert(&raceI,userI,groupI,audio_bitrate_warn_msg);
+								writelog(error_msg,"BADBITRATE");
+								raceI.misc.write_log = write_log;
+								} else {
+								d_log("warn on - have already logged to logfile\n");
+								}
 							} else {
 							exit_value = 2;
 							}

@@ -31,12 +31,39 @@
 #define audio_artist_path	"/site/incoming/music.by.artist/"
 #define audio_year_path		"/site/incoming/music.by.year/"
 
+/* Audio related sym links
+ */
+
+#define audio_genre_sort	FALSE
+#define audio_year_sort		FALSE
+#define audio_artist_sort	FALSE
+
 /* It is a good idea to prevent crap from filling your hds - you can disable these restrictions in the advanced portion of config
  */
 
 #define allowed_bitrates	"160,192,VBR"
 #define allowed_years		"2000,2001,2002,2003,2004"
 #define banned_genres		"Christian Rap,R&B"
+
+/* Audio related checks for quality/type
+   If warn is true, any banned files will not be deleted, but instead a warning message will be logged
+   to your glftpd.log.
+ */
+
+#define	audio_bitrate_check	TRUE
+#define audio_bitrate_warn	TRUE
+#define audio_bitrate_warn_msg	"%B%U%B/%G has started an illegal upload %r (bitrate: %Wkbps). Naughty boy!"
+#define audio_year_check	TRUE
+#define audio_year_warn		TRUE
+#define audio_year_warn_msg	"%B%U%B/%G has started an illegal upload %r (year: %Y). Naughty boy!"
+#define audio_genre_check	TRUE
+#define audio_genre_warn	TRUE
+#define audio_genre_warn_msg	"%B%U%B/%G has started an illegal upload %r (genre: %x). Naughty boy!"
+
+/* Create m3u file on release complete for audio release
+ */
+
+#define create_m3u		TRUE
 
 /* Creates a zero-byte file for every non-existing file defined in sfv
  */
@@ -59,16 +86,6 @@
 
 #define deny_double_sfv		FALSE
 #define deny_double_msg		"User %B%U%B/%G uploaded a second (dupe) SFV in %r (%n). Naughty boy!"
-
-/* Create m3u file on release complete for audio release
- */
-
-#define create_m3u		TRUE
-
-/* Enable/disable norace announces (will be used instead of normal announces, if there is only one user in race)
- */
-
-#define	announce_norace		TRUE
 
 /* If minium is not reached - announcement will be disabled
  */
@@ -101,6 +118,11 @@
  */
 
 #define incompleteislink	1
+
+/* Enable/disable norace announces (will be used instead of normal announces, if there is only one user in race)
+ */
+
+#define	announce_norace		TRUE
 
 /* Defines how stats are written into log
  * 0 = complete msg only
@@ -313,30 +335,10 @@
 /* Disabling all of non-used functions is recomended, it leaves option uncompiled.
  */
 
-
-/* Audio related checks for quality/type
- */
-
-#define	audio_bitrate_check	FALSE
-#define audio_bitrate_warn	TRUE
-#define audio_bitrate_warn_msg	"User %B%U%B/%G uploaded an illegal file (bitrate) file in %r. Naughty boy!"
-#define audio_year_check	FALSE
-#define audio_year_warn		TRUE
-#define audio_year_warn_msg	"User %B%U%B/%G uploaded an illegal file (year) in %r. Naughty boy!"
-#define audio_genre_check	FALSE
-#define audio_genre_warn	TRUE
-#define audio_genre_warn_msg	"User %B%U%B/%G uploaded an illegal file (genre) in %r. Naughty boy!"
-/* Audio related sym links
- */
-
-#define audio_genre_sort	FALSE
-#define audio_year_sort		FALSE
-#define audio_artist_sort	FALSE
-
 /* Special modes
  */
 
-#define debug_mode			TRUE
+#define debug_mode		FALSE
 #define benchmark_mode		TRUE
 
 /* Force sfv to be uploaded first, before accepting any files
@@ -355,7 +357,7 @@
 #define enable_accept_script	FALSE
 #define accept_script		"/bin/imdb_parse.sh"
 #define enable_accept_script2	FALSE
-#define accept_script2		"/bin/imdb_parse.sh"
+#define accept_script2		"/bin/imdb_parse2.sh"
 
 /* Enable/disable nfo script (only run on .nfo files)
  */
@@ -370,7 +372,6 @@
 
 #define enable_complete_script	FALSE
 #define complete_script		"/bin/nfo_copy.sh"
-
 #define enable_complete_script2	FALSE
 #define complete_script2	"/bin/nfo_copy2.sh"
 
