@@ -125,12 +125,12 @@ announce.COMPLETE_OTHER				= "[%b{DONE  }]:[%c3{%l8{%section}}] %b{%relname} (%b
 announce.COMPLETE_VIDEO				= "[%b{DONE  }]:[%c3{%l8{%section}}] %b{%relname} (%b{%t_files}f/%b{%t_mbytes}MB@%b{%r_avgspeed}) completed by %b{%u_name}/%g_name in %b{%t_duration}."
 announce.COMPLETE_AUDIO_CBR			= "[%b{DONE  }]:[%c3{%l8{%section}}] %b{%reldir} (%b{%t_files}f/%b{%t_mbytes}MB@%b{%r_avgspeed}) completed by %b{%u_name}/%g_name in %b{%t_duration}."
 announce.COMPLETE_AUDIO_VBR			= "[%b{DONE  }]:[%c3{%l8{%section}}] %b{%reldir} (%b{%t_files}f/%b{%t_mbytes}MB@%b{%r_avgspeed}) completed by %b{%u_name}/%g_name in %b{%t_duration}."
-announce.COMPLETE_STAT_RACE_RAR			= "[%b{DONE  }]:[%c3{%l8{%section}}] %b{%relname} (%b{%t_files}f/%b{%t_mbytes}MB@%b{%r_avgspeed}) completed in %b{%t_duration} by %loop3."
-announce.COMPLETE_STAT_RACE_ZIP			= "[%b{DONE  }]:[%c3{%l8{%section}}] %b{%reldir} (%b{%t_files}f/%b{%t_mbytes}MB@%b{%r_avgspeed}) completed in %b{%t_duration} by %loop3."
-announce.COMPLETE_STAT_RACE_OTHER		= "[%b{DONE  }]:[%c3{%l8{%section}}] %b{%relname} (%b{%t_files}f/%b{%t_mbytes}MB@%b{%r_avgspeed}) completed in %b{%t_duration} by %loop3."
-announce.COMPLETE_STAT_RACE_VIDEO		= "[%b{DONE  }]:[%c3{%l8{%section}}] %b{%relname} (%b{%t_files}f/%b{%t_mbytes}MB@%b{%r_avgspeed}) completed in %b{%t_duration} by %loop3."
-announce.COMPLETE_STAT_RACE_AUDIO_CBR		= "[%b{DONE  }]:[%c3{%l8{%section}}] %b{%reldir} (%b{%t_files}f/%b{%t_mbytes}MB@%b{%r_avgspeed}) completed in %b{%t_duration} by %loop3."
-announce.COMPLETE_STAT_RACE_AUDIO_VBR		= "[%b{DONE  }]:[%c3{%l8{%section}}] %b{%reldir} (%b{%t_files}f/%b{%t_mbytes}MB@%b{%r_avgspeed}) completed in %b{%t_duration} by %loop3."
+announce.COMPLETE_STAT_RACE_RAR			= "[%b{DONE  }]:[%c3{%l8{%section}}] %b{%relname} (%b{%t_files}f/%b{%t_mbytes}MB@%b{%t_avgspeed}) completed in %b{%t_duration} by %loop3."
+announce.COMPLETE_STAT_RACE_ZIP			= "[%b{DONE  }]:[%c3{%l8{%section}}] %b{%reldir} (%b{%t_files}f/%b{%t_mbytes}MB@%b{%t_avgspeed}) completed in %b{%t_duration} by %loop3."
+announce.COMPLETE_STAT_RACE_OTHER		= "[%b{DONE  }]:[%c3{%l8{%section}}] %b{%relname} (%b{%t_files}f/%b{%t_mbytes}MB@%b{%t_avgspeed}) completed in %b{%t_duration} by %loop3."
+announce.COMPLETE_STAT_RACE_VIDEO		= "[%b{DONE  }]:[%c3{%l8{%section}}] %b{%relname} (%b{%t_files}f/%b{%t_mbytes}MB@%b{%t_avgspeed}) completed in %b{%t_duration} by %loop3."
+announce.COMPLETE_STAT_RACE_AUDIO_CBR		= "[%b{DONE  }]:[%c3{%l8{%section}}] %b{%reldir} (%b{%t_files}f/%b{%t_mbytes}MB@%b{%t_avgspeed}) completed in %b{%t_duration} by %loop3."
+announce.COMPLETE_STAT_RACE_AUDIO_VBR		= "[%b{DONE  }]:[%c3{%l8{%section}}] %b{%reldir} (%b{%t_files}f/%b{%t_mbytes}MB@%b{%t_avgspeed}) completed in %b{%t_duration} by %loop3."
 
 # Announce done by the postdel binary
 announce.INCOMPLETE				= "[%b{%c1{DEL}   }]:[%c3{%l8{%section}}] %b{%releasename} is now incomplete thanks to %b{%u_name}@%g_name."
