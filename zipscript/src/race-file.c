@@ -494,6 +494,12 @@ copysfv(const char *source, const char *target)
 		if (strlen(fbuf) > 0) {
 			strlcpy(sd.fname, fbuf, PATH_MAX);
 
+			if (sd.fname != find_last_of(sd.fname, "/") || *sd.fname == '/') {
+				d_log("copysfv: found '/' in sfv - logging file as bad.\n");
+				retval = 1;
+				break;
+			}
+
 #if (sfv_calc_single_fname == TRUE)
 			/* TODO */
 			/* calculate file's crc if it exists */
