@@ -31,8 +31,10 @@ if {[catch {source $scriptpath/dZSbot.vars} error]} {
 }
 
 foreach entry [array names binary] {
-	if {$entry == "NCFTPLS" && ![istrue $bnc(ENABLED)]} {continue}
-	if {$entry == "PING" && (![istrue $bnc(ENABLED)] || ![istrue $bnc(PING)])} {continue}
+	if {![istrue $bnc(ENABLED)]} {
+		if {[string equal "CURL" $entry]} {continue}
+		if {[string equal "PING" $entry] && ![istrue $bnc(PING)]} {continue}
+	}
 
 	if {![file executable $binary($entry)]} {
 		putlog "dZSbot error: Invalid path/missing bin for $entry - please fix."
@@ -1645,7 +1647,7 @@ proc show_incompletes {nick uhost hand chan arg } {
 #################################################################################
 proc welcome_msg {nick uhost hand chan } {
 	global announce disable chanlist sitename cmdpre
-	if {$disable(WELCOME) == 1} {return}
+	if {$disable(WELCOME) == 1 || [isbotnick $nick]} {return}
 
 	foreach c_chan $chanlist(WELCOME) {
 		if {[string match -nocase $c_chan $chan]} {
@@ -1661,55 +1663,78 @@ proc welcome_msg {nick uhost hand chan } {
 # CHECK BOUNCER STATUSES                                                        #
 #################################################################################
 proc ng_bnc_check {nick uhost hand chan arg} {
-	global binary bnc
+	global announce binary bnc errorCode theme
 	checkchan $nick $chan
-
-	# We should probably just not bind at all, but this is easier.
-	# (It's easier since we won't have to deal with unbinding etc)
 	if {![istrue $bnc(ENABLED)]} {return}
 
-	putquick "NOTICE $nick :Checking bouncer(s) status..."
-	set count 0
-	foreach i $bnc(LIST) {
-		incr count
-		set i [split $i ":"]
-		set loc [lindex $i 0]
-		set ip [lindex $i 1]
-		set port [lindex $i 2]
+	set output "$theme(PREFIX)$announce(BNC)"
+	sndone $nick [basicreplace $output "BNC"]
+
+	set num 0
+	foreach entry $bnc(LIST) {
+		set entrysplit [split $entry ":"]
+		if {[llength $entrysplit] != 4} {
+			putlog "dZSbot error: Invalid bouncer line \"$entry\" (check bnc(LIST))."
+			continue
+		}
+		incr num; set ping "N/A"
+		foreach {desc secure ip port} $entrysplit {break}
 
 		if {[istrue $bnc(PING)]} {
-			if {[catch {set data [exec $binary(PING) -c1 $ip]} error]} {
-			    putlog "dZSbot warning: Unable to ping $ip ($error)."
-				putquick "NOTICE $nick :$count. .$loc - $ip:$port - DOWN (Can't ping host)"
+			if {[catch {exec $binary(PING) -c 1 -t $bnc(TIMEOUT) $ip} reply]} {
+				set output "$theme(PREFIX)$announce(BNC_PING)"
+				set output [replacevar $output "%num" $num]
+				set output [replacevar $output "%desc" $desc]
+				set output [replacevar $output "%ip" $ip]
+				set output [replacevar $output "%port" $port]
+				sndone $nick [basicreplace $output "BNC"]
 				continue
 			}
-			set ping ", ping: [format %.1f [lindex [split [lindex [lindex [split $data \"\n\"] 1] 6] \"=\"] 1]]ms"
-		} else { set ping "" }
-
-		set dur [clock clicks -milliseconds]
-		set exitlevel [catch {exec $binary(NCFTPLS) -P $port -u $bnc(USER) -p $bnc(PASS) -t $bnc(TIMEOUT) -r 0 ftp://$ip 2>@ stdout} raw]
-		set dur [expr [clock clicks -milliseconds] - $dur]
-
-		if {$exitlevel == 0} {
-			putquick "NOTICE $nick :$count. .$loc - $ip:$port - UP (login: [format %.0f $dur]ms$ping)"
-		} else {
-			switch -glob -- $raw {
-				"*username was not accepted for login.*" {set error "Bad Username"}
-				"*username and/or password was not accepted for login.*" {set error "Couldn't login"}
-				"*Connection refused.*" {set error "Connection Refused"}
-				"*try again later: Connection timed out.*" {set error "Connection Timed Out"}
-				"*timed out while waiting for server response.*" {set error "No response"}
-				"*Remote host has closed the connection.*" {set error "Connection Lost"}
-				"*unknown host.*" {set error "Unknown Host?"}
-				default {
-					set error "Unknown Error"
-					putlog "dZSbot error: Unknown bnc check error \"$raw\", please report to pzs-ng developers."
-				}
+			set reply [lindex [split $reply "\n"] 1]
+			if {[regexp {.+time=(\S+) ms} $reply reply ping]} {
+				set ping [format "%.1f" $ping]
+			} else {
+				putlog "dZSbot error: Unable to parse ping reply \"$reply\", please report to pzs-ng developers."
 			}
-			putquick "NOTICE $nick :$count. .$loc - $ip:$port - DOWN ($error)"
 		}
-		set error ""
-		set raw ""
+
+		set response [clock clicks -milliseconds]
+		if {[istrue $secure]} {
+			set status [catch {exec $binary(CURL) --connect-timeout $bnc(TIMEOUT) --ftp-ssl --insecure -u $bnc(USER):$bnc(PASS) ftp://$ip:$port 2>@stdout} reply]
+		} else {
+			set status [catch {exec $binary(CURL) --connect-timeout $bnc(TIMEOUT) -u $bnc(USER):$bnc(PASS) ftp://$ip:$port 2>@stdout} reply]
+		}
+		set response [expr {[clock clicks -milliseconds] - $response}]
+
+		if {!$status} {
+			set output "$theme(PREFIX)$announce(BNC_ONLINE)"
+			set output [replacevar $output "%ping" $ping]
+			set output [replacevar $output "%response" $response]
+		} else {
+			set error "unknown error"
+			## Check curl's exit code (stored in errorCode).
+			if {[string equal "CHILDSTATUS" [lindex $errorCode 0]]} {
+				set code [lindex $errorCode 2]
+				switch -exact -- $code {
+					6 {set error "couldn't resolve host"}
+					7 {set error "connection refused"}
+					9 - 10 {set error "couldn't login"}
+					default {putlog "dZSbot error: Unknown curl exit code \"$code\", please report to pzs-ng developers."}
+				}
+			} else {
+				## If the first item in errorCode is not CHILDSTATUS, it means
+				## that Tcl was unable to execute the binary.
+				putlog "dZSbot error: Unable to execute curl ($reply)."
+			}
+			set output "$theme(PREFIX)$announce(BNC_OFFLINE)"
+			set output [replacevar $output "%error" $error]
+		}
+
+		set output [replacevar $output "%num" $num]
+		set output [replacevar $output "%desc" $desc]
+		set output [replacevar $output "%ip" $ip]
+		set output [replacevar $output "%port" $port]
+		sndone $nick [basicreplace $output "BNC"]
 	}
 }
 

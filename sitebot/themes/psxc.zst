@@ -154,6 +154,12 @@ announce.INVITE					= "[%b{INVITE}] %b{%u_name}@%g_name invited himself as %b{%u
 announce.REQUEST				= "[%b{REQ   }] %b{%u_name}@%g_name requests %b{%releasename}."
 announce.REQFILLED				= "[%b{FILLED}] %b{%u_name}@%g_name filled %b{%releasename} for %b{%u_requester}."
 
+# bouncer status
+announce.BNC					= "Checking bouncer status..."
+announce.BNC_PING				= "%b{-} %num. %desc at %ip:%port is %b{DOWN} (can't ping host)"
+announce.BNC_ONLINE				= "%b{-} %num. %desc at %ip:%port is %b{UP} (login: %b{%response}ms ping: %b{%ping}ms)"
+announce.BNC_OFFLINE			= "%b{-} %num. %desc at %ip:%port is %b{DOWN} (%error)"
+
 # internal announces
 announce.LEECH					= "[%b{BW    }] Leechers:"
 announce.UPLOAD					= "[%b{BW    }] Uploaders:"

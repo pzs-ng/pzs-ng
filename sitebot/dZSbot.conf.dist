@@ -38,22 +38,26 @@ set binary(PASSCHK)         "$glroot/bin/passchk"
 set binary(SHOWLOG)         "$glroot/bin/showlog"
 set binary(STATS)           "$glroot/bin/stats"
 set binary(WHO)             "$glroot/bin/sitewho"
+set binary(CURL)            "/usr/local/bin/curl"
 set binary(DF)              "/bin/df"
-set binary(NCFTPLS)         "/usr/local/bin/ncftpls"
 set binary(PING)            "/bin/ping"
 
 # Important Settings #
 ######################
 set bindnopre               "TRUE"
 set disable(TRIGINALLCHAN)  0
-set bnc(ENABLED)            "FALSE"
-set bnc(LIST)               "uk:msn.test1.com:123 de:msn.test2.com:345 se:msn.test3.com:567"
-set bnc(USER)               "bncuser"
-set bnc(PASS)               "bncpass"
 set speed(INCOMING)         12500
 set speed(OUTGOING)         12500
 set device(0)               "/dev/da0s1f MP3"
 set device(1)               "/dev/ad0s1e ISO"
+
+# Bouncers #
+############
+set bnc(ENABLED)            "FALSE"
+set bnc(PING)               "TRUE"
+set bnc(LIST)               "Canada:TRUE:bnc.host.ca:123 Germany:TRUE:bnc.host.de:456 Sweden:TRUE:bnc.host.se:789"
+set bnc(USER)               "bncuser"
+set bnc(PASS)               "bncpass"
 
 # Your Sections #
 #################

@@ -154,6 +154,12 @@ announce.INVITE					= "%b{iNViTE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1
 announce.REQUEST				= "%b{REQUEST%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{requests} %c3{%b{%releasename}}%c1{.}"
 announce.REQFILLED				= "%b{FiLLED%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{just filled} %c3{%b{%releasename}} %c1{for} %c3{%b{%u_requester}}%c1{.}"
 
+# bouncer status
+announce.BNC					= "Checking bouncer status..."
+announce.BNC_PING				= "%b{-} %num. %desc at %ip:%port is %b{DOWN} (can't ping host)"
+announce.BNC_ONLINE				= "%b{-} %num. %desc at %ip:%port is %b{UP} (login: %b{%response}ms ping: %b{%ping}ms)"
+announce.BNC_OFFLINE			= "%b{-} %num. %desc at %ip:%port is %b{DOWN} (%error)"
+
 # internal announces
 announce.LEECH					= "%b{BANDWiDTH%c1{:}} %c1{Current leechers:}"
 announce.UPLOAD					= "%b{BANDWiDTH%c1{:}} %c1{Current uploaders:}"

@@ -35,11 +35,10 @@ set binary(PASSCHK)     "/glftpd/bin/passchk"
 set binary(SHOWLOG)     "/glftpd/bin/showlog"
 set binary(STATS)       "/glftpd/bin/stats"
 set binary(WHO)         "/glftpd/bin/sitewho"
-set binary(PING)        "/bin/ping"
-# ping in freebsd is in sbin
-#set binary(PING)       "/sbin/ping"
-set binary(NCFTPLS)     "/usr/local/bin/ncftpls"
+set binary(CURL)        "/usr/local/bin/curl"
 set binary(DF)          "/bin/df"
+set binary(PING)        "/bin/ping"
+#set binary(PING)       "/sbin/ping" ;# FreeBSD
 
 # This is needed for autodetection of glversion. If you unset this, use_glftpd2
 # MUST be set to TRUE or FALSE.
@@ -111,21 +110,20 @@ set dev_max_length      300
 # BOUNCERS                                                  #
 #############################################################
 
-# Allow people to check bnc-status using !bnc/!PREFIXbnc. In some / many cases,
-# this is not needed. It will also disable check of binary(NCFTPLS).
-# You can set it to "TRUE" or "FALSE".
+# Allow people to check bnc-status using !bnc. In some / many cases,
+# this is not needed. It will also disable check of binary(CURL).
 set bnc(ENABLED)        "TRUE"
 
-# List of bnc's (used for BNC-testing with the <prefix>bnc command in channel)
-# Format: countrycode:hostname:port (space seperated)
-set bnc(LIST)           "uk:msn.test1.com:123 de:msn.test2.com:345 se:msn.test3.com:567"
+# List of bouncers to check for the !bnc command.
+# Format: description:use tls:hhostname:port
+set bnc(LIST)           "Canada:TRUE:bnc.host.ca:123 Germany:TRUE:bnc.host.de:456 Sweden:TRUE:bnc.host.se:789"
 
 # Username and password to use for testing bncs (must exist with this box's ip added)
 set bnc(USER)           "bncuser"
 set bnc(PASS)           "bncpass"
 
 # Number of seconds to wait before giving up on connecting to the BNCs (Note that SSL takes extra time)
-set bnc(TIMEOUT)        "20"
+set bnc(TIMEOUT)        20
 
 # Should we make a ping test too? TRUE/FALSE
 set bnc(PING)           "TRUE"
