@@ -1273,7 +1273,7 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 				if (findfileext(".sfv")) {
 					d_log("Creating m3u\n");
 					cnt = sprintf(target, findfileext(".sfv"));
-					strlcpy(target + cnt - 3, "m3u", 3);
+					strlcpy(target + cnt - 3, "m3u", 4);
 					create_indexfile_file(&locations, &raceI, target);
 				} else
 					d_log("Cannot create m3u, sfv is missing\n");
