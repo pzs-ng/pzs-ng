@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include "mp3info.h"
-#include "../include/objects.h"
+#include "objects.h"
 
 #define WHITESPACE_STR  " \f\n\r\t\v"
 

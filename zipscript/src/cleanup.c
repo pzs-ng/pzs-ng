@@ -9,8 +9,9 @@
 #include <regex.h>
 #include <time.h>
 #include <unistd.h>
-#include "../include/objects.h"
-#include "../include/macros.h"
+
+#include "objects.h"
+#include "macros.h"
 #include "../conf/zsconfig.h"
 
 #ifndef PATH_MAX

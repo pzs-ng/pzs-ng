@@ -1,5 +1,5 @@
-#include "../include/zsfunctions.h"
-#include "../include/constants.h"
+#include "zsfunctions.h"
+#include "constants.h"
 
 struct dirent	**dirlist;
 unsigned int direntries = 0;

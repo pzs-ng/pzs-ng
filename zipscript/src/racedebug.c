@@ -1,7 +1,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../include/objects.h"
+#include "objects.h"
 
 int main (int argc, char **argv) {
  unsigned long	*fsize;

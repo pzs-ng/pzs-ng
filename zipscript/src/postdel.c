@@ -10,10 +10,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include "objects.h"
+#include "macros.h"
+#include "zsfunctions.h"
 #include "../conf/zsconfig.h"
-#include "../include/objects.h"
-#include "../include/macros.h"
-#include "../include/zsfunctions.h"
 #include "../../config.h"
 
 struct USERINFO  **userI;

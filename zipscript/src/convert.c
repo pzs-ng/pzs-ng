@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <ctype.h>
+#include "objects.h"
 #include "../conf/zsconfig.h"
-#include "../include/objects.h"
 
 char	ttime		[40],
 	output2		[1024],

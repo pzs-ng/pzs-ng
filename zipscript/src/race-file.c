@@ -6,9 +6,9 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../include/objects.h"
-#include "../include/macros.h"
-#include "../include/constants.h"
+#include "objects.h"
+#include "macros.h"
+#include "constants.h"
 #include "../conf/zsconfig.h"
 
 extern char*		findfile(char *filename);

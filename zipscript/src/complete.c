@@ -1,7 +1,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/objects.h"
+#include "objects.h"
 #include "../conf/zsconfig.h"
 
 extern char * convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, char *instr, short userpos);

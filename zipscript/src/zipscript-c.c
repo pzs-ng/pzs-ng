@@ -4,12 +4,12 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/stat.h>
+#include "objects.h"
+#include "macros.h"
+#include "constants.h"
+#include "errors.h"
+#include "zsfunctions.h"
 #include "../conf/zsconfig.h"
-#include "../include/objects.h"
-#include "../include/macros.h"
-#include "../include/constants.h"
-#include "../include/errors.h"
-#include "../include/zsfunctions.h"
 #include "../../config.h"
 
 /*static struct ONLINE	*online;

@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <dirent.h>
-#include "../include/objects.h"
+#include "objects.h"
 #include "../conf/zsconfig.h"
 
 struct stat	entry_stat;
