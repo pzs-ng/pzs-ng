@@ -515,6 +515,8 @@ void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned lo
 
  clear_file_file(locations, raceI->file.name);
 
+ //if (!(file = fopen(locations->race, "a+"))) {
+printf("debug: %s\n",locations->race);
  file = fopen(locations->race, "a+");
 
  len = strlen(raceI->file.name) + 1;

@@ -60,7 +60,7 @@ void writelog(char *msg, char *status) {
 				fclose(glfile);
 				return;
 			case '\n':
-				fprintf(glfile, "%.24s %s: \"%s\" \"%.*s\"\n", date, status, locations.path, newline - line - 1, line);
+				fprintf(glfile, "%.24s %s: \"%s\" \"%.*s\"\n", date, status, locations.path, (int)(newline - line - 1), line);
 				line = newline;
 				break;
 			}

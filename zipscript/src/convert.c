@@ -224,7 +224,7 @@ char* convert4(struct VARS *raceI, char *instr) {
         if (*instr == '-' && isdigit(*(instr + 1))) instr += 2;
         while (isdigit(*instr)) instr++;
         if ( m != instr ) {
-                sprintf(ctrl, "%.*s", instr - m, m);
+                sprintf(ctrl, "%.*s", (int)(instr - m), m);
                 val1 = atoi(ctrl);
                 } else {
                 val1 = 0;
@@ -235,7 +235,7 @@ char* convert4(struct VARS *raceI, char *instr) {
                 if (*instr == '-' && isdigit(*(instr + 1))) instr += 2;
                 while (isdigit(*instr)) instr++;
                 if ( m != instr ) {
-                        sprintf(ctrl, "%.*s", instr - m, m);
+                        sprintf(ctrl, "%.*s", (int)(instr - m), m);
                         val2 = atoi(ctrl);
                         } else {
                         val2 = 0;
