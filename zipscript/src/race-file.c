@@ -104,16 +104,21 @@ delete_sfv_file(struct LOCATIONS *locations)
 void 
 maketempdir(struct LOCATIONS *locations)
 {
-	char		full_path[PATH_MAX];
+	char		full_path[PATH_MAX], *p;
 
 	snprintf(full_path, PATH_MAX, "%s/%s", storage, locations->path);
 
-	if (mkdir(full_path, 0777) == -1) {
-		if (errno != EEXIST) {
-			d_log("Couldn't create temporary path %s: %s\n", full_path, strerror(errno));
-			exit(EXIT_FAILURE);
+	/* work recursively */
+	for (p = full_path; *p; p++) {
+		if (*p == '/') {
+			*p = '\0';
+			mkdir(full_path, 0777);
+			*p = '/';
 		}
 	}
+
+	/* the final entry */
+	mkdir(full_path, 0777);
 }
 
 /*
