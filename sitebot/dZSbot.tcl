@@ -1120,7 +1120,7 @@ proc themereplace {rstring} {
 	regsub -all {%u\{([^\}]+)\}} $rstring {\\037\1\\037} rstring
 
 	regsub -all {\003(\d)(?!\d)} $rstring {\\0030\1} rstring
-	return [subst -nocommands -novariables $rstring]
+	return [subst -nocommands $rstring]
 }
 #################################################################################
 
