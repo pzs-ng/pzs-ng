@@ -5,7 +5,11 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <sys/types.h>
-#include <regex.h>
+#if defined(USE_HSREGEX)
+ #include "hsregex.h"
+#else
+ #include <regex.h>
+#endif
 #include <time.h>
 #include <string.h>
 #include <fcntl.h>
