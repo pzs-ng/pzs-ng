@@ -6,8 +6,8 @@ CFLAGS=@CFLAGS@ -W -Wall @GLVERSION@ -I../../ -I../../zipscript/include/
 LDFLAGS=@LDFLAGS@
 INSTALL=@INSTALL@
 
-targets=ng-bw @PASSCHK@
-install_targets=ng-bw-install @PASSCHK2@
+targets=@PASSCHK@
+install_targets=@PASSCHK2@
 
 all: $(targets)
 
