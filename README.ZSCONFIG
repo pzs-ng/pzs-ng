@@ -465,61 +465,61 @@ announce_norace <TRUE|FALSE>
 zip_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
-	etc.
+	etc. on separate lines.
 	Default: 0
 
 zip_norace_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
-	etc.
+	etc. on separate lines.
 	Default: 0
 
 rar_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
-	etc.
+	etc. on separate lines.
 	Default: 1
 
 rar_norace_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
-	etc.
+	etc. on separate lines.
 	Default: 0
 
 audio_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
-	etc.
+	etc. on separate lines.
 	Default: 1
 
 audio_norace_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
-	etc.
+	etc. on separate lines.
 	Default: 0
 
 video_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
-	etc.
+	etc. on separate lines.
 	Default: 1
 
 video_norace_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
-	etc.
+	etc. on separate lines.
 	Default: 0
 
 other_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
-	etc.
+	etc. on separate lines.
 	Default: 1
 
 other_norace_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
-	etc.
+	etc. on separate lines.
 	Default: 0
 
 get_competitor_list <TRUE|FALSE>

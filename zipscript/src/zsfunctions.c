@@ -223,9 +223,11 @@ unlink_missing(char *s)
 
 	t = u = v = malloc(strlen(s) + 9);
 	sprintf(t, "%s-missing", s);
-	unlink(t);
+	if (t)
+		unlink(t);
 	v = findfilename(t);
-	unlink(v);
+	if (v)
+		unlink(v);
 	free(t);
 }
 
@@ -393,7 +395,8 @@ removecomplete()
 	regex_t		preg;
 	regmatch_t	pmatch[1];
 
-	unlink(message_file_name);
+	if (message_file_name)
+		unlink(message_file_name);
 	mydelbar = convert5(del_completebar);
 	d_log("del_completebar: %s\n", mydelbar);
 	regcomp(&preg, mydelbar, REG_NEWLINE | REG_EXTENDED);

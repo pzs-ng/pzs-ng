@@ -869,7 +869,8 @@ main(int argc, char **argv)
 				#if (sfv_cleanup_lowercase == TRUE)
 				  strtolower(target);
 				#endif
-				unlink(target);
+				if (target)
+					unlink(target);
 				*/
 			}
 			break;

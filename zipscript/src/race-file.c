@@ -84,9 +84,11 @@ delete_sfv_file(struct LOCATIONS *locations)
 		fread(fname, 1, len, sfvfile);
 		fseek(sfvfile, sizeof(int), SEEK_CUR);
 		memcpy(fname + len - 1, "-missing", 9);
-		unlink(fname);
+		if (fname)
+			unlink(fname);
 		fnname = findfilename(fname);
-		unlink(fnname);
+		if (fnname)
+			unlink(fnname);
 		m_free(fname);
 	}
 	fclose(sfvfile);
@@ -189,7 +191,8 @@ testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 				if (crc != 0 && Tcrc == crc) {
 					status = F_CHECKED;
 				} else {
-					unlink(fname);
+					if (fname)
+						unlink(fname);
 #if ( create_missing_files )
 					if (Tcrc != 0)
 						create_missing(fname, len - 1);
@@ -372,7 +375,8 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
 	close(fd);
 
 #if ( sfv_cleanup == TRUE && sfv_error == FALSE )
-	unlink(source);
+	if (source)
+		unlink(source);
 	rename(".tmpsfv", source);
 	close(fd_new);
 #endif

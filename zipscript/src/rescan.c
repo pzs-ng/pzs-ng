@@ -194,10 +194,13 @@ main()
 
 	rescandir();
 	move_progress_bar(1, &raceI);
-	unlink(locations.incomplete);
+	if (locations.incomplete)
+		unlink(locations.incomplete);
 	removecomplete();
-	unlink(locations.race);
-	unlink(locations.sfv);
+	if (locations.race)
+		unlink(locations.race);
+	if (locations.sfv)
+		unlink(locations.sfv);
 	printf("Rescanning files...\n");
 	rescandir();		/* Rescan dir after deleting files.. */
 
@@ -253,7 +256,8 @@ main()
 					}
 				}
 
-				unlink_missing(raceI.file.name);
+				if (raceI.file.name)
+					unlink_missing(raceI.file.name);
 				if (l > 44) {
 					printf("\nFile: %s", dirlist[n]->d_name + l - 44);
 				} else {
@@ -363,7 +367,8 @@ main()
 					writerace_file(&locations, &raceI, crc, F_CHECKED);
 				} else {
 					writerace_file(&locations, &raceI, crc, F_BAD);
-					unlink(raceI.file.name);
+					if (raceI.file.name)
+						unlink(raceI.file.name);
 				}
 			}
 		}
