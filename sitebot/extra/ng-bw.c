@@ -12,6 +12,8 @@
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <string.h> 
+#include <time.h>
+#include <sys/time.h>
 #include <sys/types.h> 
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -36,6 +38,9 @@ struct USER {
 };
 
 static int numUsers = 0; static struct USER *users; static struct shmid_ds ipcbuf;
+
+/* Implicit declarations are *BAD*! */
+int OutputData(void); 
 
 int main() {
 	
@@ -85,11 +90,10 @@ static double calcTime(int uid) {
 
 int OutputData() {
 
-	int i, j, action;
-	double speed;
-	char filename[255], cmd[255], primgrp[255];
-	int u_xfers, d_xfers, a_users, i_users;
-	double u_speed, d_speed;
+	int i;
+	char cmd[255];
+	int u_xfers = 0, d_xfers = 0, a_users = 0, i_users = 0;
+	double u_speed = 0, d_speed = 0;
 
 	for (i = 0; i < numUsers; i++) {
 		/* Ignore connections which have not finished logging in yet */
