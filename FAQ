@@ -25,3 +25,10 @@ Q: (ZIPSCRIPT) I have a drive mounted as SMBFS/VFAT/NTFS - stuff no workie!
 ---------------------------------------------------------------------------
 A: Don't expect stuff to work on such mounts - there are limits in the
    filesystems, like chars that doesn't work, symlinks may not work, etc.
+
+Q: (BOT) f00-pre doesn't work!
+------------------------------
+A: In dZSbconf.tcl there's a 'set variables(PRE)' line. Either change this to
+   match your foo setup, or change the announce in foo's config to:
+   group.DEFAULT.announce=PRE: "%P/%R" "%R" "%G" "%D" "%F" "%S" "%C" "%W" "%U" "%g" "%T"
+

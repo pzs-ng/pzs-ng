@@ -26,6 +26,8 @@
 # v2.5c Now logs data in debug-mode.
 # v2.7  Added support for output destination
 #        (user or channel)
+# v2.7c imdb.com changed url-style. Changed script
+#        to match.
 ##################################################
 
 ########
@@ -68,12 +70,16 @@ LIGHTGREY="15"
 COLOROFF=""
 
 # Word before text output
-PREWORD="$BOLD""IMDB :""$BOLD"
+PREWORD="$BOLD""IMDB:""$BOLD"
 #PREWORD="${BOLD}${RED}[${BLUE}HUBBA-BUBBA${RED}]${COLOROFF} :${BOLD}"
 
 # Verbose mode. Default is on ("").
 VERBOSE=""
 #VERBOSE="OFF"
+
+# OBS! Please - turn off DEBUG! It should only be used if you have problems
+#      Having DEBUG on may cause problems!
+
 
 # END OF CONFIG
 ###############

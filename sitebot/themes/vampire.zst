@@ -169,8 +169,8 @@ announce.BADMSGINVITE				= "%b{BAD iNViTE%c1{:}} %c3{%b{%u_ircnick}} %c1{(}%c3{%
 
 # 3rd party imdb announces (psxc-imdb)
 announce.IMDBVAR				= "%b{iMDB%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%imdbname}} %c1{ ( }%c3{%u{%imdburl}}%c1{ ), a }%c3{%imdbdirector} %c1{movie which scored} %c3{%b{%imdbscore}} %c1{of} %c3{10} %c1{(}%c3{%imdbvotes} %c1{people voted). It premiered in} %c3{%imdbpremiereinfo}%c1{, with} %c3{%b{%imdbnumscreens}} %c1{screens on the opening weekend.}|%c1{[}%c2{%b{%sitename}}%c1{]} %b{iMDB%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%imdbname}} %c1{has the following plot summary: '}%c3{%imdbplot}%c1{'. Rating: [}%c2{%imdbbar}%c1{].}"
-announce.IMDB					= "%b{iMDB%c1{:}} %c1{-}%c2{%section}%c1{-} %c1{%msg}"
-announce.IMDBFIND				= "%b{iMDB%c1{:}} %c1{-}%c2{%section}%c1{-} %c1{%msg}"
+announce.IMDB					= "%c1{%msg}"
+announce.IMDBFIND				= "%c1{%msg}"
 
 # 3rd party scripts announces - other
 announce.TURGEN					= "%c1{%msg}"

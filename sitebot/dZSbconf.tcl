@@ -296,7 +296,7 @@ set hidenuke						"UNKNOWN"
 # Variables pasted from the zipscript		<- moved to dZSbvars.tcl
 # Variables pasted from 3rd party apps		<- moved to dZSbvars.tcl
 
-set variables(PRE)			"%pf %releasename %pregroup %section %files %mbytes %cds %who %user %g_name %tagline"
+set variables(PRE)		"%pf %releasename %pregroup %section %files %mbytes %cds %who %user %g_name %tagline"
 set variables(INVITE)		"%u_ircnick %u_name %g_name"
 set variables(REQUEST)		"%releasename %u_name %g_name %u_tagline"
 set variables(REQFILLED)	"%releasename %u_name %g_name %u_tagline %u_requester"

@@ -182,8 +182,8 @@ announce.FREE-DEV				= "%section: %b{%free} of %b{%total} (used %percentage%) ::
 
 # 3rd party imdb announce - example for psxc-imdb
 announce.IMDBVAR				= "[%b{imdb  }][%section] %b{%imdbname} (%imdburl), a %imdbdirector movie which scored %b{%imdbscore of 10} (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.|%b{%sitename} :: [%b{imdb  }][%section] %b{%imdbname} plot summary: %imdbplot \[%imdbbar\]"
-announce.IMDB					= "[%b{imdb  }][%section] %msg"
-announce.IMDBFIND				= "[%b{imdb  }][%section] %msg"
+announce.IMDB					= "%msg"
+announce.IMDBFIND				= "%msg"
 announce.MSGINVITE	        		= "[%b{invite}] %b{%u_name} of %g_name invited himself as %b{%u_ircnick}."
 announce.BADMSGINVITE	        		= "[%b{%c1{badinv}}] %b{%u_ircnick} (%u_host) tried to invite himself with invalid login!"
 
