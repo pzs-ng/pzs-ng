@@ -942,12 +942,12 @@ proc ng_new {nick uhost hand chan argv} {
 		set path [lrange [file split [string trim [file dirname $dirname] "/"]] 1 end]
 		set output [replacevar $output "%path" [join $path "/"]]
 		set output [replacevar $output "%reldir" [file tail $dirname]]
-		sndone $nick [themereplace [basicreplace $output "NEW"] "none"]
+		sndone $nick [basicreplace $output "NEW"]
 	}
 
 	if {!$num} {
 		set output "$theme(PREFIX)$announce(NEW_NONE)"
-		sndone $nick [themereplace [basicreplace $output "NEW"] "none"]
+		sndone $nick [basicreplace $output "NEW"]
 	}
 }
 #################################################################################
@@ -1003,12 +1003,12 @@ proc ng_search {nick uhost hand chan argv} {
 		set path [lrange [file split [string trim [file dirname $dirname] "/"]] 1 end]
 		set output [replacevar $output "%path" [join $path "/"]]
 		set output [replacevar $output "%reldir" [file tail $dirname]]
-		sndone $nick [themereplace [basicreplace $output "SEARCH"] "none"]
+		sndone $nick [basicreplace $output "SEARCH"]
 	}
 
 	if {!$num} {
 		set output "$theme(PREFIX)$announce(SEARCH_NONE)"
-		sndone $nick [themereplace [basicreplace $output "SEARCH"] "none"]
+		sndone $nick [basicreplace $output "SEARCH"]
 	}
 }
 #################################################################################
@@ -1059,12 +1059,12 @@ proc ng_nukes {nick uhost hand chan argv} {
 		set path [lrange [file split [string trim [file dirname $dirname] "/"]] 1 end]
 		set output [replacevar $output "%path" [join $path "/"]]
 		set output [replacevar $output "%reldir" [file tail $dirname]]
-		sndone $nick [themereplace [basicreplace $output "NUKES"] "none"]
+		sndone $nick [basicreplace $output "NUKES"]
 	}
 
 	if {!$num} {
 		set output "$theme(PREFIX)$announce(NUKES_NONE)"
-		sndone $nick [themereplace [basicreplace $output "NUKES"] "none"]
+		sndone $nick [basicreplace $output "NUKES"]
 	}
 }
 #################################################################################
@@ -1116,12 +1116,12 @@ proc ng_unnukes {nick uhost hand chan argv} {
 		set path [lrange [file split [string trim [file dirname $dirname] "/"]] 1 end]
 		set output [replacevar $output "%path" [join $path "/"]]
 		set output [replacevar $output "%reldir" [file tail $dirname]]
-		sndone $nick [themereplace [basicreplace $output "UNNUKES"] "none"]
+		sndone $nick [basicreplace $output "UNNUKES"]
 	}
 
 	if {!$num} {
 		set output "$theme(PREFIX)$announce(UNNUKES_NONE)"
-		sndone $nick [themereplace [basicreplace $output "UNNUKES"] "none"]
+		sndone $nick [basicreplace $output "UNNUKES"]
 	}
 }
 #################################################################################
@@ -1147,7 +1147,7 @@ proc sndall {section args} {
 proc sndone {chan args} {
 	global splitter
 	foreach line [split [lindex $args 0] $splitter(CHAR)] {
-		putquick "PRIVMSG $chan :$line"
+		putquick "PRIVMSG $chan :[themereplace $line "none"]"
 	}
 }
 #################################################################################
@@ -1209,14 +1209,14 @@ proc speed {nick uhost hand chan args} {
 			set output [replacevar $output "%tagline" [lindex $line 6]]
 			set output [replacevar $output "%timeonline" [lindex $line 7]]
 			set output [replacevar $output "%f_name" [lindex $line 8]]
-			set output [themereplace [basicreplace $output "SPEED"] "none"]
+			set output [basicreplace $output "SPEED"]
 			sndone $chan $output
 		}
 	} else {
 		set base_output "$theme(PREFIX)$announce(DEFAULT)"
 		foreach line [split [exec $binary(WHO) [lindex $args 0]] "\n"] {
 			set output [replacevar $base_output "%msg" $line]
-			set output [themereplace [basicreplace $output "SPEED"] "none"]
+			set output [basicreplace $output "SPEED"]
 			sndone $chan $output
 		}
 	}
@@ -1225,7 +1225,7 @@ proc speed {nick uhost hand chan args} {
 		set output "$theme(PREFIX)$announce(SPEEDERROR)"
 #		set output "[themereplace "$theme(PREFIX)$announce(DEFAULT)" "none"]"
 		set output [replacevar $output "%msg" "User not online."]
-		set output [themereplace [basicreplace $output "SPEED"] "none"]
+		set output [basicreplace $output "SPEED"]
 		sndone $chan $output
 	}
 
@@ -1252,7 +1252,7 @@ proc bandwidth {nick uhost hand chan args} {
 	set output [replacevar $output "%upspeed" [speed_convert [lindex $data 1] "none"]]
 	set output [replacevar $output "%dnspeed" [speed_convert [lindex $data 3] "none"]]
 	set output [replacevar $output "%totalspeed" [speed_convert [lindex $data 5] "none"]]
-	set output [themereplace [basicreplace "$output" "BW"] "none"]
+	set output [basicreplace "$output" "BW"]
 
 	sndone $chan $output
 }
@@ -1291,7 +1291,7 @@ proc ng_bwup { nick uhost hand chan args} {
 	set output [replacevar $output "%dnpercent" $dnper]
 #	set output [replacevar $output "%totalpercent" $totalper]
 
-	set output [themereplace [basicreplace "$output" "BW"] "none"]
+	set output [basicreplace "$output" "BW"]
 
 	sndone $chan $output
 }
@@ -1356,7 +1356,7 @@ proc ng_uploaders {nick uhost hand chan args} {
 	set output [replacevar $output "%count" $count]
 	set output [replacevar $output "%total" [speed_convert $total "none"]]
 	set output [replacevar $output "%per" $per]
-	set output [themereplace [basicreplace $output "UPLOAD"] "none"]
+	set output [basicreplace $output "UPLOAD"]
 
 	sndone $chan $output
 }
@@ -1394,7 +1394,7 @@ proc ng_bwdn { nick uhost hand chan args} {
 	set output [replacevar $output "%dnpercent" $dnper]
 	set output [replacevar $output "%totalpercent" $totalper]
 
-	set output [themereplace [basicreplace "$output" "BW"] "none"]
+	set output [basicreplace "$output" "BW"]
 
 	sndone $chan $output
 }
@@ -1459,7 +1459,7 @@ proc ng_leechers {nick uhost hand chan args} {
 	set output [replacevar $output "%count" $count]
 	set output [replacevar $output "%total" [speed_convert $total "none"]]
 	set output [replacevar $output "%per" $per]
-	set output [themereplace [basicreplace "$output" "LEECH"] "none"]
+	set output [basicreplace "$output" "LEECH"]
 
 	sndone $chan $output
 }
@@ -1519,7 +1519,7 @@ proc ng_idlers { nick uhost hand chan args} {
 		}
 	}
 	set output [replacevar "$theme(PREFIX)$announce(TOTIDLE)" "%count" $count]
-	set output [themereplace [basicreplace $output "IDLE"] "none"]
+	set output [basicreplace $output "IDLE"]
 	sndone $chan $output
 }
 #################################################################################
@@ -1713,7 +1713,7 @@ proc show_free {nick uhost hand chan arg} {
 		set output [replacevar $output "%free" "${freegb}"]
 		set output [replacevar $output "%percentage" [expr round($perc/$num)]]
 		set output [replacevar $output "%devices" $devices($o)]
-		set output [themereplace [basicreplace $output "FREE"] "none"]
+		set output [basicreplace $output "FREE"]
 		sndone $chan $output
 		incr o
 	}
