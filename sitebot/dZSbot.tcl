@@ -1325,7 +1325,7 @@ proc showstats {type time nick uhost hand chan argv} {
 	checkchan $nick $chan
 
 	set sect 0
-	set section [lindex $argv 1]
+	set section [lindex $argv 0]
 	if {[string length $section] != 0} {
 		set error 1
 		set sections ""
