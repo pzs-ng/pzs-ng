@@ -25,21 +25,11 @@ struct VARS      raceI;
 struct LOCATIONS locations;
 
 
-#define data_exists(paths, datalocation) fileexists(datalocation)
-#define file_set_race   sprintf
-#define file_set_sfv    sprintf
-
-#define readsfv        readsfv_file
-#define readrace       readrace_file
-
-
 char      error_msg  [80],
           output     [2048],   
           output2    [1024];
 short     varelease  = 2,       // Various Artists release
           ERROR_CODE = 0;
-
-
 
 void getrelname(char *directory) {
  int cnt,
@@ -116,14 +106,14 @@ int main( int argc, char **argv ) {
 
    getrelname(locations.path);
 
-   file_set_race(locations.race, site_root storage "/%s/racedata", argv[1]);
-   if ( ! data_exists(&locations, locations.race) ) goto END;
+   sprintf(locations.race, site_root storage "/%s/racedata", argv[1]);
+   if ( ! fileexists(locations.race) ) goto END;
 
-   readrace(&locations, &raceI, userI, groupI);
-   file_set_sfv(locations.sfv, site_root storage "/%s/sfvdata", argv[1]);
+   readrace_file(&locations, &raceI, userI, groupI);
+   sprintf(locations.sfv, site_root storage "/%s/sfvdata", argv[1]);
 
-   if ( ! data_exists(&locations, locations.sfv) ) {
-    if ( data_exists(&locations, locations.sfv) ) {
+   if ( ! fileexists(locations.sfv) ) {
+    if ( fileexists(locations.sfv) ) {
      raceI.total.files = read_diz("file_id.diz");
      raceI.total.files_missing += raceI.total.files;
     } else {
@@ -131,7 +121,7 @@ int main( int argc, char **argv ) {
      raceI.total.files_missing = 0;
     }
    } else {
-    readsfv(&locations, &raceI, 0 );
+    readsfv_file(&locations, &raceI, 0 );
    }
 
    sortstats(&raceI, userI, groupI);

@@ -26,19 +26,6 @@ struct GROUPINFO **groupI;
 struct VARS      raceI;
 struct LOCATIONS locations;
 
-#define data_exists(paths, datalocation) fileexists(datalocation)
-#define file_set_race	 sprintf
-#define file_set_sfv	 sprintf
-#define file_set_leader sprintf
-
-#define remove_data	unlink
-#define readsfv	readsfv_file
-#define readrace	readrace_file
-#define delete_sfv	delete_sfv_file
-#define read_write_leader read_write_leader_file
-#define clear_file	clear_file_file
-
-
 void writelog(char *msg, char *status) {
  FILE   *glfile;
  char   *date;
@@ -109,7 +96,7 @@ void getrelname(char *directory) {
 unsigned char get_filetype(char *ext) {
 
  if ( ! memcmp(ext, "sfv", 4)) return 1;
- if ( ! clear_file(&locations, raceI.file.name)) return 4;
+ if ( ! clear_file_file(&locations, raceI.file.name)) return 4;
  if ( ! memcmp(ext, "zip", 4)) return 0;
  if ( ! memcmp(ext, "nfo", 4)) return 2;
  if ( ! strcomp(ignored_types, ext)) return 3;
@@ -176,9 +163,9 @@ int main( int argc, char **argv ) {
 
  d_log("Copying data locations into memory\n");
  raceI.file.name = argv[1] + 5;
- file_set_sfv(locations.sfv, storage "/%s/sfvdata", locations.path);
- file_set_leader(locations.leader, storage "/%s/leader", locations.path);
- file_set_race(locations.race, storage "/%s/racedata", locations.path);
+ sprintf(locations.sfv, storage "/%s/sfvdata", locations.path);
+ sprintf(locations.leader, storage "/%s/leader", locations.path);
+ sprintf(locations.race, storage "/%s/racedata", locations.path);
 
  d_log("Caching release name\n");
  getrelname(locations.path);
@@ -232,7 +219,7 @@ int main( int argc, char **argv ) {
 		raceI.total.files_missing = raceI.total.files;
 
 		d_log("Reading race data from file to memory\n");
-		readrace(&locations, &raceI, userI, groupI);
+		readrace_file(&locations, &raceI, userI, groupI);
 
 		d_log("Caching progress bar\n");
 		buffer_progress_bar(&raceI);
@@ -258,11 +245,11 @@ int main( int argc, char **argv ) {
 		break;
 	case 1:
 		d_log("Reading file count from SFV\n");
-		readsfv(&locations, &raceI, 0);
+		readsfv_file(&locations, &raceI, 0);
 
-		if ( data_exists(&locations, locations.race) ) {
+		if ( fileexists(locations.race) ) {
 			d_log("Reading race data from file to memory\n");
-			readrace(&locations, &raceI, userI, groupI);
+			readrace_file(&locations, &raceI, userI, groupI);
 			}
 
 		d_log("Caching progress bar\n");
@@ -278,17 +265,17 @@ int main( int argc, char **argv ) {
 		removecomplete();
 		raceI.misc.write_log = matchpath(sfv_dirs, locations.path) > 0 ? 1 - matchpath(group_dirs, locations.path) : 0;
 
-		if ( data_exists(&locations, locations.race) ) {
+		if ( fileexists(locations.race) ) {
 			d_log("Reading race data from file to memory\n");
-			readrace(&locations, &raceI, userI, groupI);
+			readrace_file(&locations, &raceI, userI, groupI);
 			}
 
-		if ( data_exists(&locations, locations.sfv) ) {
+		if ( fileexists(locations.sfv) ) {
 #if ( create_missing_files == TRUE )
 			create_missing(raceI.file.name, name_p - raceI.file.name - 1);
 #endif
 			d_log("Reading file count from SFV\n");
-			readsfv(&locations, &raceI, 0);
+			readsfv_file(&locations, &raceI, 0);
 
 			d_log("Caching progress bar\n");
 			buffer_progress_bar(&raceI);
@@ -302,7 +289,7 @@ int main( int argc, char **argv ) {
 			incomplete = 1;
 			} else {
 			d_log("Removing old race data\n");
-			remove_data(locations.race);
+			unlink(locations.race);
 			if ( findfileext(".sfv") == NULL ) {
 				empty_dir = 1;
 				} else {
@@ -320,14 +307,14 @@ int main( int argc, char **argv ) {
  if ( empty_dir == 1 ) {
 	d_log("Removing all files and directories created by zipscript\n");
 	removecomplete();
-	if ( data_exists(&locations, locations.sfv)) {
-		delete_sfv(&locations);
+	if ( fileexists(locations.sfv)) {
+		delete_sfv_file(&locations);
 		}
 	unlink(locations.incomplete);
 	unlink("file_id.diz"); 
-	remove_data(locations.sfv);
-	remove_data(locations.race); 
-	remove_data(locations.leader); 
+	unlink(locations.sfv);
+	unlink(locations.race); 
+	unlink(locations.leader); 
 	move_progress_bar(1, &raceI);
 	}
 

@@ -47,18 +47,6 @@ struct VARS      raceI;
 struct LOCATIONS locations;
 struct stat      fileinfo;
 
-#define data_exists(paths, datalocation) fileexists(datalocation)
-#define file_set_race   sprintf
-#define file_set_sfv    sprintf
-#define file_set_leader sprintf
-#define remove_data     unlink
-
-#define readsfv           readsfv_file
-#define writerace         writerace_file
-#define copysfv(a,b,c,d)  copysfv_file(b,c,d)
-#define readrace          readrace_file
-#define testfiles         testfiles_file
-#define create_indexfile(l,r,f)  create_indexfile_file(l,r,f)
 
 /* WRITE TO GLFTPD LOG */
 void writelog(char *msg, char *status) {
@@ -277,9 +265,9 @@ int main () {
  buffer_groups( GROUPFILE );
  buffer_users( PASSWDFILE );
 
- file_set_sfv(locations.sfv, storage "/%s/sfvdata", locations.path);
- file_set_leader(locations.leader, storage "/%s/leader", locations.path);
- file_set_race(locations.race, storage "/%s/racedata", locations.path);
+ sprintf(locations.sfv, storage "/%s/sfvdata", locations.path);
+ sprintf(locations.leader, storage "/%s/leader", locations.path);
+ sprintf(locations.race, storage "/%s/racedata", locations.path);
 
  
 
@@ -287,15 +275,15 @@ int main () {
  move_progress_bar( 1, &raceI );
  unlink( locations.incomplete );
  removecomplete();
- remove_data( locations.race );
- remove_data( locations.sfv );
+ unlink( locations.race );
+ unlink( locations.sfv );
  rescandir2(); // Rescan dir after deleting files..
  printf("Rescanning files...\n");
 
  if ( (raceI.file.name = findfileext(".sfv")) != NULL) {
 	 maketempdir(&locations);
 	 stat(raceI.file.name, &fileinfo);
-	 copysfv( &locations, raceI.file.name, locations.sfv, fileinfo.st_size );
+	 copysfv_file( raceI.file.name, locations.sfv, fileinfo.st_size );
 	 n = direntries;
 	 while ( n-- ) {
 		 m = l = strlen(dirlist[n]->d_name);
@@ -328,14 +316,14 @@ int main () {
 				}
 			 fflush(stdout);
 			 crc = calc_crc32( dirlist[n]->d_name );
-			 writerace(&locations, &raceI, crc, F_NOTCHECKED);
+			 writerace_file(&locations, &raceI, crc, F_NOTCHECKED);
 			}
 		}
 	 printf("\n\n");
-	 testfiles( &locations, &raceI );
+	 testfiles_file( &locations, &raceI );
 	 rescandir(); // We need to rescan again
-	 readsfv( &locations, &raceI, 0 );
-	 readrace( &locations, &raceI, userI, groupI );
+	 readsfv_file( &locations, &raceI, 0 );
+	 readrace_file( &locations, &raceI, userI, groupI );
 	 sortstats( &raceI, userI, groupI );
 	 buffer_progress_bar( &raceI );
 	 if ( raceI.misc.release_type == 3 ) get_mpeg_audio_info(findfileext(".mp3"), &raceI.audio);
@@ -356,7 +344,7 @@ int main () {
 #if ( enabled_create_m3u )
 				 n = sprintf(exec, findfileext(".sfv"));
 				 strcpy(exec + n - 3, "m3u");
-				 create_indexfile(&locations, &raceI, exec);
+				 create_indexfile_file(&locations, &raceI, exec);
 #endif
 				break;
 			}
@@ -397,9 +385,9 @@ int main () {
 
 			 sprintf(exec, "/bin/unzip -qqt %s &> /dev/null", raceI.file.name);
 			 if ( system(exec) == 0 ) {
-				 writerace(&locations, &raceI, crc, F_CHECKED);
+				 writerace_file(&locations, &raceI, crc, F_CHECKED);
 				} else {
-				 writerace(&locations, &raceI, crc, F_BAD);
+				 writerace_file(&locations, &raceI, crc, F_BAD);
 				 unlink( raceI.file.name );
 				}
 			}
@@ -410,7 +398,7 @@ int main () {
 		 unlink("file_id.diz");
 		}
 	 raceI.total.files_missing = raceI.total.files;
-	 readrace(&locations, &raceI, userI, groupI);
+	 readrace_file(&locations, &raceI, userI, groupI);
 	 sortstats(&raceI, userI, groupI);
 	 if ( raceI.total.files_missing < 0 ) {
 		 raceI.total.files -= raceI.total.files_missing;

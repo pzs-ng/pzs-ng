@@ -31,20 +31,6 @@ struct GROUPINFO **groupI;
 struct VARS      raceI;
 struct LOCATIONS locations;
 
-# define data_exists(paths, datalocation) fileexists(datalocation)
-# define file_set_race		sprintf
-# define file_set_sfv		sprintf
-# define file_set_leader	sprintf
-
-# define readsfv			readsfv_file
-# define writerace			writerace_file
-# define copysfv(a,b,c,d)		copysfv_file(b,c,d)
-# define readrace			readrace_file
-# define testfiles			testfiles_file
-# define read_write_leader		read_write_leader_file
-# define create_indexfile(l,r,f) 	create_indexfile_file(l,r,f)
-
-
 /*
  * 
  *
@@ -230,9 +216,9 @@ int main( int argc, char **argv ) {
  groupI = malloc(sizeof(struct GROUPINFO *) * 30);
 
  d_log("Copying data locations into memory\n");
- file_set_sfv(locations.sfv, storage "/%s/sfvdata", locations.path);
- file_set_leader(locations.leader, storage "/%s/leader", locations.path);
- file_set_race(locations.race, storage "/%s/racedata", locations.path);
+ sprintf(locations.sfv, storage "/%s/sfvdata", locations.path);
+ sprintf(locations.leader, storage "/%s/leader", locations.path);
+ sprintf(locations.race, storage "/%s/racedata", locations.path);
 
  d_log("Changing directory to %s\n", locations.path);
  chdir(locations.path);
@@ -334,9 +320,9 @@ int main( int argc, char **argv ) {
 		raceI.total.files_missing = raceI.total.files;
 
 		d_log("Storing new race data\n");
-		writerace(&locations, &raceI, 0, F_CHECKED);
+		writerace_file(&locations, &raceI, 0, F_CHECKED);
 		d_log("Reading race data from file to memory\n");
-		readrace(&locations, &raceI, userI, groupI);
+		readrace_file(&locations, &raceI, userI, groupI);
 		if ( raceI.total.files_missing < 0 ) {
 			d_log("There seems to be more files in zip than we expected\n");
 			raceI.total.files -= raceI.total.files_missing;
@@ -355,7 +341,7 @@ int main( int argc, char **argv ) {
 
 	case 1:	/* SFV */
 		d_log("File type is: SFV\n");
-		if ( data_exists(&locations, locations.sfv) ) {
+		if ( fileexists(locations.sfv) ) {
 			if (deny_double_sfv == TRUE && findfileextcount(".sfv") > 1 ) {
 				char * error_msg;
 				int write_log = raceI.misc.write_log;
@@ -369,7 +355,7 @@ int main( int argc, char **argv ) {
 				break;
 			} else {
 				d_log("Reading remainders of old sfv\n");
-				readsfv(&locations, &raceI, 1);
+				readsfv_file(&locations, &raceI, 1);
 				cnt = raceI.total.files - raceI.total.files_missing;
 				raceI.total.files_missing = raceI.total.files = 0;
 				readsfv_ffile(raceI.file.name, raceI.file.size);
@@ -383,17 +369,17 @@ int main( int argc, char **argv ) {
 			}
 		 }
 		d_log("Parsing sfv and creating sfv data\n");
-		copysfv(&locations, raceI.file.name, locations.sfv, raceI.file.size);
+		copysfv_file(raceI.file.name, locations.sfv, raceI.file.size);
 
 #if ( force_sfv_first == FALSE )
-		if (data_exists(&locations, locations.race)) {
+		if (fileexists(locations.race)) {
 			d_log("Testing files marked as untested\n");
-			testfiles(&locations, &raceI);
+			testfiles_file(&locations, &raceI);
 			rescandir();
 			}
 #endif
 		d_log("Reading file count from SFV\n");
-		readsfv(&locations, &raceI, 0);
+		readsfv_file(&locations, &raceI, 0);
 
 		if ( raceI.total.files == 0 ) {
 			d_log("SFV seems to have no files of accepted types\n");
@@ -403,9 +389,9 @@ int main( int argc, char **argv ) {
 			}
 
 		printf(zipscript_sfv_ok);
-		if ( data_exists(&locations, locations.race) ) {
+		if (fileexists(locations.race)) {
 			d_log("Reading race data from file to memory\n");
-			readrace(&locations, &raceI, userI, groupI);
+			readrace_file(&locations, &raceI, userI, groupI);
 			}
 
 		d_log("Making sure that release is not marked as complete\n");
@@ -445,7 +431,7 @@ int main( int argc, char **argv ) {
 		/* NFO */
 		no_check = TRUE;
 		d_log("File type is: NFO\n");
-		writerace(&locations, &raceI, 0, F_NFO);
+		writerace_file(&locations, &raceI, 0, F_NFO);
 
 		if ( enable_nfo_script == TRUE )
 			{
@@ -464,13 +450,13 @@ int main( int argc, char **argv ) {
 
 		d_log("Converting crc from string to integer\n");
 		crc = hexstrtodec(argv[3]);
-		if ( data_exists(&locations, locations.sfv) ) {
+		if (fileexists(locations.sfv)) {
 			if ( crc == 0 ) {
 				d_log("We did not get crc from ftp daemon\n");
 				sprintf(raceI.misc.error_msg, ZERO_CRC);
 				exit_value = 2;
 				break;
-				} else if ((s_crc = readsfv(&locations, &raceI, 0)) != crc ) {
+				} else if ((s_crc = readsfv_file(&locations, &raceI, 0)) != crc ) {
 				if ( s_crc == 0 ) {
 					d_log("Filename was not found in the SFV\n");
 					strcpy(raceI.misc.error_msg, NOT_IN_SFV);
@@ -483,7 +469,7 @@ int main( int argc, char **argv ) {
 				}
 			printf(zipscript_SFV_ok);
 			d_log("Storing new race data\n");
-			writerace(&locations, &raceI, crc, F_CHECKED);
+			writerace_file(&locations, &raceI, crc, F_CHECKED);
 			} else {
 #if ( force_sfv_first == TRUE )
 			d_log("SFV needs to be uploaded first\n");
@@ -494,7 +480,7 @@ int main( int argc, char **argv ) {
 			d_log("Could not check file yet - SFV is not present\n");
 			printf(zipscript_SFV_skip);
 			d_log("Storing new race data\n");
-			writerace(&locations, &raceI, crc, F_NOTCHECKED);
+			writerace_file(&locations, &raceI, crc, F_NOTCHECKED);
 #endif
 			}
 
@@ -506,7 +492,7 @@ int main( int argc, char **argv ) {
 		unlink(target);
 
 		d_log("Reading race data from file to memory\n");
-		readrace(&locations, &raceI, userI, groupI);
+		readrace_file(&locations, &raceI, userI, groupI);
 
 		d_log("Setting pointers\n");
 		if ( raceI.misc.release_type == 0 ) {
@@ -628,7 +614,7 @@ int main( int argc, char **argv ) {
 		*/
 		if ( !enable_files_ahead || ((raceI.total.users > 1 && userI[userI[0]->pos]->files >= (userI[userI[1]->pos]->files + newleader_files_ahead)) || raceI.total.users == 1) ) {
 			d_log("Writing current leader to file\n");
-			read_write_leader(&locations, &raceI, userI[userI[0]->pos]);
+			read_write_leader_file(&locations, &raceI, userI[userI[0]->pos]);
 		}
 		
 		if ( raceI.total.users > 1 ) {
@@ -732,7 +718,7 @@ int main( int argc, char **argv ) {
 #if ( create_m3u == TRUE ) 
 				cnt = sprintf(target, findfileext(".sfv"));
 				strcpy(target + cnt - 3, "m3u");
-				create_indexfile(&locations, &raceI, target);
+				create_indexfile_file(&locations, &raceI, target);
 #endif
 				break;
 			case 4:
@@ -773,7 +759,7 @@ int main( int argc, char **argv ) {
 			/* File is marked to be deleted */
 
 	d_log("Logging file as bad\n");
-	writerace(&locations, &raceI, 0, F_BAD);
+	writerace_file(&locations, &raceI, 0, F_BAD);
 	printf(convert(&raceI, userI, groupI, zipscript_footer_error));
 	}
 
