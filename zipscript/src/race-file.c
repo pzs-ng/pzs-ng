@@ -323,7 +323,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 			if (rd.status != F_BAD)
 				unlink_missing(rd.fname);
 		}
-		strlcpy(raceI->file.name, realfile, strlen(realfile));
+		strlcpy(raceI->file.name, realfile, strlen(realfile)+1);
 		raceI->total.files = raceI->total.files_missing = 0;
 		fclose(file);
 	}
@@ -546,7 +546,7 @@ END:
  * alphabetical order.
  */
 void 
-create_indexfile(const char *path, struct VARS *raceI, char *f)
+create_indexfile(const char *racefile, struct VARS *raceI, char *f)
 {
 	FILE		*r;
 	int		l, n, m, c;
@@ -556,8 +556,8 @@ create_indexfile(const char *path, struct VARS *raceI, char *f)
 	
 	RACEDATA	rd;
 
-	if (!(r = fopen(path, "r"))) {
-		d_log("Couldn't fopen %s: %s\n", path, strerror(errno));
+	if (!(r = fopen(racefile, "r"))) {
+		d_log("Couldn't fopen %s: %s\n", racefile, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
@@ -606,8 +606,6 @@ clear_file(const char *path, char *f)
 	FILE           *file;
 
 	RACEDATA	rd;
-
-	printf("%s\n%s\n", path, f);
 
 	if ((file = fopen(path, "r+"))) {
 		while (fread(&rd, sizeof(RACEDATA), 1, file)) {

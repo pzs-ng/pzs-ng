@@ -249,7 +249,7 @@ main(void)
 #if ( create_m3u == TRUE )
 				n = sprintf(exec, findfileext(dir, ".sfv"));
 				strcpy(exec + n - 3, "m3u");
-				create_indexfile(g.v.file.name, &g.v, exec);
+				create_indexfile(g.l.race, &g.v, exec);
 #endif
 				break;
 			case RTYPE_VIDEO:
@@ -383,8 +383,6 @@ main(void)
 	free(g.l.race);
 	free(g.l.sfv);
 	free(g.l.leader);
-	//free(g.v.misc.release_name);
-	//free(g.l.link_source);
 	buffer_groups(GROUPFILE, gnum);
 	buffer_users(PASSWDFILE, unum);
 
