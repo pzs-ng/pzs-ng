@@ -94,7 +94,17 @@
 #define stat_groups_head_type				"STATS"
 #define stat_groups_type				"STATS"
 #define stat_post_type					"STATS"
-#define bad_file_msg_type				"BAD"
+//#define bad_file_msg_type				"BAD"
+#define	bad_file_crc_type				"BAD_FILE_CRC"
+#define	bad_file_0size_type				"BAD_FILE_0SIZE"
+#define	bad_file_zip_type				"BAD_FILE_ZIP"
+#define	bad_file_wrongdir_type				"BAD_FILE_WRONGDIR"
+#define	bad_file_sfv_type				"BAD_FILE_SFV"
+#define	bad_file_nosfv_type				"BAD_FILE_NOSFV"
+#define	bad_file_genre_type				"BAD_FILE_GENRE"
+#define	bad_file_year_type				"BAD_FILE_YEAR"	
+#define	bad_file_bitrate_type				"BAD_FILE_BITRATE"
+#define	bad_file_disallowed_type			"BAD_FILE_DISALLOWED"
 
 #define deny_double_msg		"{%U} {%G} {%r} {%n}"
 #define audio_cbr_warn_msg	"{%U} {%G} {%X}"
@@ -185,7 +195,7 @@
 
 /* Output of postdel binary */
 #define incompletemsg		"%U/%G/%r"
-#define bad_file_msg		"%r/%U/%G"
+#define bad_file_msg		"%r/%U/%G/%f"
 
 
 enum ReleaseTypes {

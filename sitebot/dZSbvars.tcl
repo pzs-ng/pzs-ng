@@ -98,7 +98,16 @@ set variables(COMPLETE_STAT_RACE_VIDEO)	"%pf %releasename %t_mbytes %t_files %t_
 set variables(COMPLETE_STAT_RACE_AUDIO_CBR)	"%pf %releasename %t_mbytes %t_files %t_avgspeed %r_avgspeed %t_duration %u_count %g_count %genre %year %bitrate %sampling %mode %audio %artist %album %title %codec %layer %u_slowest_name %u_slowest_gname %u_slowest_speed %u_fastest_name %u_fastest_gname %u_fastest_speed %u_winner_name %u_winner_gname %u_winner_mbytes %u_winner_files %u_winner_percent %u_winner_avgspeed %g_winner_name %g_winner_mbytes %g_winner_files %g_winner_percent %g_winner_avgspeed %filename {%r_name %r_gname} {%g_racer_position %g_racer_name %g_racer_mbytes %g_racer_files %g_racer_percent %g_racer_avgspeed} {%u_racer_position %u_racer_name %g_racer_name %u_racer_mbytes %u_racer_files %u_racer_percent %u_racer_avgspeed %u_racer_dayup %u_racer_wkup %u_racer_monthup %u_racer_allup}"
 set variables(COMPLETE_STAT_RACE_AUDIO_VBR)	"%pf %releasename %t_mbytes %t_files %t_avgspeed %r_avgspeed %t_duration %u_count %g_count %genre %year %bitrate %sampling %mode %audio %a_stream %a_version %artist %album %title %codec %layer %u_slowest_name %u_slowest_gname %u_slowest_speed %u_fastest_name %u_fastest_gname %u_fastest_speed %u_winner_name %u_winner_gname %u_winner_mbytes %u_winner_files %u_winner_percent %u_winner_avgspeed %g_winner_name %g_winner_mbytes %g_winner_files %g_winner_percent %g_winner_avgspeed %filename {%r_name %r_gname} {%g_racer_position %g_racer_name %g_racer_mbytes %g_racer_files %g_racer_percent %g_racer_avgspeed} {%u_racer_position %u_racer_name %g_racer_name %u_racer_mbytes %u_racer_files %u_racer_percent %u_racer_avgspeed %u_racer_dayup %u_racer_wkup %u_racer_monthup %u_racer_allup}"
 set variables(INCOMPLETE)		"%pf %u_name %g_name %releasename"
-set variables(BAD)			"%pf %releasename %u_name %g_name"
+set variables(BAD_FILE_CRC)		"%pf %releasename %u_name %g_name %filename"
+set variables(BAD_FILE_0SIZE)		"%pf %releasename %u_name %g_name %filename"
+set variables(BAD_FILE_ZIP)		"%pf %releasename %u_name %g_name %filename"
+set variables(BAD_FILE_WRONGDIR)	"%pf %releasename %u_name %g_name %filename"
+set variables(BAD_FILE_SFV)		"%pf %releasename %u_name %g_name %filename"
+set variables(BAD_FILE_NOSFV)		"%pf %releasename %u_name %g_name %filename"
+set variables(BAD_FILE_GENRE)		"%pf %releasename %u_name %g_name %filename"
+set variables(BAD_FILE_YEAR)		"%pf %releasename %u_name %g_name %filename"
+set variables(BAD_FILE_BITRATE)		"%pf %releasename %u_name %g_name %filename"
+set variables(BAD_FILE_DISALLOWED)	"%pf %releasename %u_name %g_name %filename"
 
 ## Converts empty or zero variable to something else if defined
 #
