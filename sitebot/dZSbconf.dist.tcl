@@ -23,12 +23,12 @@ set cmdpre                  "!pn"
 set announce(THEMEFILE)     "themes/default.zst"
 set mainchan                "#pzs-ng"
 
-# some bins and paths - edit to match your config/os #
+# Some Bins and Paths - Edit to match your config/OS #
 ######################################################
+set location(GROUP)         "$glroot/etc/group"
 set location(PASSWD)        "$glroot/etc/passwd"
 set location(USERS)         "$glroot/ftp-data/users/"
 set location(GLCONF)        "/etc/glftpd.conf"
-set location(GROUP)         "$glroot/etc/group"
 set glftpdlog(GLLOG01)      "$glroot/ftp-data/logs/glftpd.log"
 set loginlog(LOGINLOG01)    "$glroot/ftp-data/logs/login.log"
 set binary(CAT)             "$glroot/bin/cat"
@@ -42,7 +42,7 @@ set binary(DF)              "/bin/df"
 set binary(NCFTPLS)         "/usr/local/bin/ncftpls"
 set binary(PING)            "/bin/ping"
 
-# important settings #
+# Important Settings #
 ######################
 set bindnopre               "TRUE"
 set disable(TRIGINALLCHAN)  0
@@ -50,13 +50,14 @@ set bnc(ENABLED)            "FALSE"
 set bnc(LIST)               "uk:msn.test1.com:123 de:msn.test2.com:345 se:msn.test3.com:567"
 set bnc(USER)               "bncuser"
 set bnc(PASS)               "bncpass"
-set speed(INCOMING)         "12500"
-set speed(OUTGOING)         "12500"
+set speed(INCOMING)         12500
+set speed(OUTGOING)         12500
 set device(0)               "/dev/da0s1f MP3"
 set device(1)               "/dev/ad0s1e ISO"
 
-# Your sections #
+# Your Sections #
 #################
+set denypost                "/site/groups/* /site/private/*"
 set sections                "0DAY APPS GAMES MP3 MV"
 set paths(0DAY)             "/site/incoming/0day/*"
 set paths(APPS)             "/site/incoming/apps/*"
@@ -70,9 +71,9 @@ set chanlist(MP3)           $mainchan
 set chanlist(MV)            $mainchan
 set chanlist(DEFAULT)       $mainchan
 set chanlist(WELCOME)       $mainchan
-set statsection(0)          "MP3"
+set statsection(0)          "ISO"
 set statsection(1)          "0DAY"
-set statsection(2)          "ISO"
+set statsection(2)          "MP3"
 
 # Invite #
 ##########

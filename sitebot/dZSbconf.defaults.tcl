@@ -141,6 +141,7 @@ set statsection(0)      "DEFAULT"
 #set statsection(2)     "ISO"
 
 # What sections are we announcing for?
+set sections            ""
 #set sections           "0DAY APPS GAMES MP3 MV"
 
 # Set up paths for all the sections (wildcards).
@@ -319,10 +320,10 @@ set disable(ALTWHO)                     0
 # Space separated list of wildcards that we match against
 # paths to see if we announce it or not.
 # REMEMBER: This is CaSe SeNsItIvE.
-set denypost                        ""
+set denypost    ""
 
 # Do not show these users if they get nuked (multiple entries allowed)
-set hidenuke                        "UNKNOWN"
+set hidenuke    "UNKNOWN"
 
 ## Defining variables for announce
 #

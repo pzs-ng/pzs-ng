@@ -229,7 +229,7 @@ proc denycheck {release} {
 	global denypost
 	foreach deny $denypost {
 		if {[string match $deny $release]} {
-			putlog "dZSbot: Post denied - $release"
+			putlog "dZSbot: Post denied \"$release\" ($deny)."
 			return 1
 		}
 	}
@@ -344,8 +344,6 @@ proc readlog {} {
 			set line "$line $pid"
 		}
 
-		set path [lindex $line 6]
-
 		# Invite users to public and private channels
 		if {[string equal $msgtype "INVITE"]} {
 			set ircnick [lindex $line 6]
@@ -370,6 +368,8 @@ proc readlog {} {
 				}
 			}
 		}
+
+		set path [lindex $line 6]
 
 		if {[lsearch -exact $msgtypes(SECTION) $msgtype] != -1} {
 			if {[denycheck $path]} {continue}
@@ -414,8 +414,8 @@ proc postcmd {msgtype section path} {
 
 	if {[info exists postcommand($msgtype)]} {
 		foreach cmd $postcommand($msgtype) {
-			if {[string equal "exec" [lindex $cmd 0]]} {
-				set cmd [lindex $cmd 1]
+			if {[string equal -length 5 "exec " $cmd]} {
+				set cmd [string range $cmd 5 end]
 				if {[catch {exec $cmd $msgtype $section $path} error]} {
 					putlog "dZSbot error: Unable to execute post command \"$cmd\" ($error)."
 				}
