@@ -5,7 +5,7 @@ datadir=@datadir@
 binpath=../bin
 
 CC=@CC@
-CFLAGS=-O2 -static
+CFLAGS=-O2 @STATIC@
 LDFLAGS=@LDFLAGS@
 ZSLIBS=@ZSLIBS@
 ZSTYPE=@ZSTYPE@
