@@ -612,29 +612,6 @@ proc basicreplace {rstring section} {
 
 
 #################################################################################
-# JUSTIFY AND PAD OUTPUT                                                        #
-#################################################################################
-proc justifyandpad {targetString} {
-	while {[regexp {%([lrm])(\d\d?)\{([^\{\}]+)\}} $targetString matchString padOp padLength padString]} {
-		if {[string length $padString] >= $padLength} {
-			set paddedString $padString
-		} elseif {$padOp == "l"} {
-			set paddedString [format "%-*s" $padLength $padString]	
-		} elseif {$padOp == "r"} {
-			set paddedString [format "%*s" $padLength $padString]	
-		} elseif {$padOp == "m"} {
-			set paddedString [format "%*s%s" [expr ($padLength - [string length $padString]) / 2] "" $padString]
-			set paddedString [format "%-*s" $padLength $paddedString]
-		}
-
-		set targetString [string map [list $matchString $paddedString] $targetString]
-	}
-
-	return $targetString
-}
-
-
-#################################################################################
 # CONVERT COOKIES TO DATA                                                       #
 #################################################################################
 proc parse {msgtype msgline section} { global variables announce random mpath use_glftpd2 theme theme_fakes defaultsection pid disable sitename
@@ -2072,12 +2049,14 @@ proc themereplace_startup {rstring} {
 #################################################################################
 # REPLACES THEMERELATED STUFF IN A GIVEN STRING, DYNAMIC REPLACE FOR RUNTIME    #
 #################################################################################
-proc themereplace {rstring section} {
+proc themereplace {targetString section} {
 	global theme
 
 	# We replace %cX{string}, %b{string} and %u{string} with their coloured, bolded and underlined equivilants ;)
+	# We also do the justification and padding that is required for %r / %l / %m to work.
 	# bold and underline replacement should not be needed here...
 	while {[regexp {(%c(\d)\{([^\{\}]+)\}|%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\}|%([lrm])(\d\d?)\{([^\{\}]+)\})} $targetString matchString dud padOp padLength padString]} {
+		# Check if any innermost %r/%l/%m are present. :-)
 		while {[regexp {%([lrm])(\d\d?)\{([^\{\}]+)\}} $targetString matchString padOp padLength padString]} {
 			if {[string length $padString] >= $padLength} {
 				set paddedString $padString
@@ -2093,8 +2072,8 @@ proc themereplace {rstring section} {
 
 		set targetString [string map [list $matchString $paddedString] $targetString]
 	
-		set tmpstr [format "COLOR_%s_1" $section]
-		if {[lsearch -exact [array names theme] $tmpstr] != -1} {
+		set colorString [format "COLOR_%s_1" $section]
+		if {[lsearch -exact [array names theme] $colorString] != -1} {
 			regsub -all {%c(\d)\{([^\{\}]+)\}} $targetString {\\003$theme([format "COLOR_%s_" $section]\1)\2\\003} targetString
 		} else {
 			regsub -all {%c(\d)\{([^\{\}]+)\}} $targetString {\\003$theme(COLOR\1)\2\\003} targetString
