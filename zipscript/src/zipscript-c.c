@@ -831,6 +831,16 @@ main(int argc, char **argv)
 						}
 					} else {
 						d_log("CRC-32 check failed\n");
+						if (!hexstrtodec((unsigned char *)argv[3]) && allow_file_resume) {
+							d_log("Broken xfer detected - allowing file.\n");
+							no_check = TRUE;
+							write_log = raceI.misc.write_log;
+							raceI.misc.write_log = 1;
+							error_msg = convert(&raceI, userI, groupI, bad_file_msg);
+							if (exit_value < 2)
+								writelog(error_msg, bad_file_crc_type);
+							break;
+						}
 						strlcpy(raceI.misc.error_msg, BAD_CRC, 80);
 					}
 					mark_as_bad(raceI.file.name);

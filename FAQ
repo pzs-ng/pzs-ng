@@ -72,5 +72,12 @@ Q: (BOT) I can't get the !bnc command to work!
 A: If you enforce ssl on your box, make sure the bnc user is exempted from
    that rule. Check glftpd.docs for more info.
 
+Q: (COMPILING) I'm getting 'libcrypt/OpenSSL not found. Not building passchk' - How to fix?
+-------------------------------------------------------------------------------------------
+A: You need the dev version of openssl. One of the following should work - if not,
+   you need to install it manually.
+   a) - apt-get install libssl-dev
+   b) - emerge openssl-devel
+   c) - rpm -U openssl-devel (or something)
 
 

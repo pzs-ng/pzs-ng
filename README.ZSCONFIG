@@ -289,6 +289,11 @@ mark_file_as_bad <TRUE|FALSE>
 	be renamed <filename>.bad. Bad files are ignored on rescan.
 	Default: FALSE
 
+allow_file_resume <TRUE|FALSE>
+	Broken transfers may be a problem on some sites. Glftpd2 and pzs-ng
+	allow you to resume such files by setting this to TRUE.
+	Default: FALSE
+
 sleep_on_bad <NUMBER>
 	Whenever a bad file is encountered, you can add a delay for the user
 	between 1 and 1000 seconds. Put the number of seconds glftpd should

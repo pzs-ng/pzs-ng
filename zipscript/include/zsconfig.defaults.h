@@ -125,6 +125,14 @@
 #endif
 
 /*
+ * Broken transfers may be a problem on some sites. Glftpd2 and pzs-ng allow you
+ * to resume such files by setting this to TRUE.
+ */
+#ifndef allow_file_resume
+#define allow_file_resume		FALSE
+#endif
+
+/*
  * Whenever a bad file is encountered, you can add a delay for the user between
  * 1 and 1000 seconds. Put the number of seconds glftpd should sleep. Setting
  * this to 0 ( or >1000) will disable this feature.

@@ -1124,7 +1124,7 @@ mark_as_bad(char *filename)
 #if (mark_file_as_bad == TRUE)
 	char    *newname = 0;
 
-	if (!fclose(fopen(filename, "r"))) {
+	if (!fileexists(filename)) {
 		d_log("Debug: Failed to open file \"%s\"\n", filename);
 		return;
 	}
