@@ -9,7 +9,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <ctype.h>
-#include "../sitebot/src/structonline.h"
+#include "structonline.h"
 
 struct GROUP {
 	char		*name;
