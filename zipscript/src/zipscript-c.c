@@ -292,9 +292,9 @@ int main( int argc, char **argv ) {
     /*gettimeofday(&raceI.transfer_stop, (struct timezone *)0 );*/
 
     raceI.file.name=argv[1];
-    d_log("Checking the file size of %s\n", raceI.file.name);
-    stat(raceI.file.name, &fileinfo);
-    raceI.file.size=fileinfo.st_size;
+    locations.path = argv[2];
+    d_log("Changing directory to %s\n", locations.path);
+    chdir(locations.path);
 
     d_log("Reading data from environment variables\n");
     if (!(getenv("USER") && getenv("GROUP") && getenv("TAGLINE") && getenv("SPEED"))) {
@@ -334,13 +334,18 @@ int main( int argc, char **argv ) {
     }
     raceI.file.speed *= 1024;
 
+    d_log("Checking the file size of %s\n", raceI.file.name);
+    stat(raceI.file.name, &fileinfo);
+    raceI.file.size=fileinfo.st_size;
+    d_log("File size was: %d\n",raceI.file.size);
+
     d_log("Setting race times\n");
     raceI.total.stop_time=fileinfo.st_mtime;
     raceI.total.start_time=raceI.total.stop_time-((unsigned int)(raceI.file.size)/raceI.file.speed);
     if ((int)(raceI.total.stop_time - raceI.total.start_time) < 1)
 	raceI.total.stop_time = raceI.total.start_time + 1;
 
-    n = (locations.length_path = strlen(locations.path = argv[2])) + 1;
+    n = (locations.length_path = strlen(locations.path)) + 1;
 
     d_log("Allocating memory for variables\n");
     locations.race   = m_alloc(n += 10 + (locations.length_zipdatadir = sizeof(storage) - 1));
@@ -356,13 +361,13 @@ int main( int argc, char **argv ) {
     sprintf(locations.leader, storage "/%s/leader", locations.path);
     sprintf(locations.race, storage "/%s/racedata", locations.path);
 
-    d_log("Changing directory to %s\n", locations.path);
+/*    d_log("Changing directory to %s\n", locations.path);
     chdir(locations.path);
-
+*/
 
     /* Get file extension */
 
-    d_log("Parsing file extension from filename...\n");
+    d_log("Parsing file extension from filename... (%s)\n", argv[1]);
     for ( temp_p = name_p = argv[1]; *name_p != 0 ; name_p++ ) {
 	if ( *name_p == '.' ) {
 	    temp_p = name_p;
