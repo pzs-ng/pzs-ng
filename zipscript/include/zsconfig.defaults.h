@@ -70,6 +70,9 @@
 #ifndef nocheck_dirs
 #define nocheck_dirs			"/site/private/"
 #endif
+#ifndef noforce_sfv_first_dirs
+#define noforce_sfv_first_dirs		"/site/incoming/requests/"
+#endif
 #ifndef rescan_nocheck_dirs_allowed
 #define rescan_nocheck_dirs_allowed	TRUE
 #endif

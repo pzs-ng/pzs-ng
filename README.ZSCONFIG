@@ -74,6 +74,13 @@ nocheck_dirs <PATHS>
 	by a space character.
 	Default: "/site/private/"
 
+noforce_sfv_first_dirs <PATHS>
+	The option 'force_sfv_first' forces sfv to be uploaded first in a
+	release. In some dirs, this may not be desiarable. To the rescue come
+	this option, which allow you to enter dirs that will be excluded from
+	the force.
+	Default: "/site/incoming/requests/"
+
 audio_nocheck_dirs <PATHS>
 	Audio-files can be checked against a list of allowed/denied genres,
 	years etc. Audio-files found in paths defined in this variable will
