@@ -12,6 +12,7 @@
 #include "objects.h"
 #include "macros.h"
 #include "convert.h"
+#include "zsfunctions.h"
 
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
@@ -168,20 +169,38 @@ showstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 	int		cnt;
 
 #if ( show_user_info == TRUE )
-	printf("%s", convert(raceI, userI, groupI, realtime_user_header));
-
-	for (cnt = 0; cnt < raceI->total.users; cnt++) {
-		printf("%s", convert2(raceI, userI[userI[cnt]->pos], groupI, realtime_user_body, cnt));
+	d_log("Showing realtime user stats ...\n");
+	if (realtime_user_header != DISABLED) {
+		d_log("  - printing realtime_user_header ...\n");
+		printf("%s", convert(raceI, userI, groupI, realtime_user_header));
 	}
-	printf("%s", convert(raceI, userI, groupI, realtime_user_footer));
+	if (realtime_user_body != DISABLED) {
+		d_log("  - printing realtime_user_body ...\n");
+		for (cnt = 0; cnt < raceI->total.users; cnt++) {
+			printf("%s", convert2(raceI, userI[userI[cnt]->pos], groupI, realtime_user_body, cnt));
+		}
+	}
+	if (realtime_user_footer != DISABLED) {
+		d_log("  - printing realtime_user_footer ...\n");
+		printf("%s", convert(raceI, userI, groupI, realtime_user_footer));
+	}
 #endif
 #if ( show_group_info == TRUE )
-	printf("%s", convert(raceI, userI, groupI, realtime_group_header));
-
-	for (cnt = 0; cnt < raceI->total.groups; cnt++) {
-		printf("%s", convert3(raceI, groupI[groupI[cnt]->pos], realtime_group_body, cnt));
+	d_log("Showing realtime user stats ...\n");
+	if (realtime_group_header != DISABLED) {
+		d_log("  - printing realtime_group_header ...\n");
+		printf("%s", convert(raceI, userI, groupI, realtime_group_header));
 	}
-	printf("%s", convert(raceI, userI, groupI, realtime_group_footer));
+	if (realtime_group_body != DISABLED) {
+		d_log("  - printing realtime_group_body ...\n");
+		for (cnt = 0; cnt < raceI->total.groups; cnt++) {
+			printf("%s", convert3(raceI, groupI[groupI[cnt]->pos], realtime_group_body, cnt));
+		}
+	}
+	if (realtime_group_footer != DISABLED) {
+		d_log("  - printing realtime_group_footer ...\n");
+		printf("%s", convert(raceI, userI, groupI, realtime_group_footer));
+	}
 #endif
 }
 

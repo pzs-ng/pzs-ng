@@ -791,7 +791,10 @@ main(int argc, char **argv)
 #if ( exclude_non_sfv_dirs == TRUE )
 				}
 #endif
-				printf("%s", convert(&raceI, userI, groupI, realtime_mp3_info));
+				if (realtime_mp3_info != DISABLED) {
+					d_log("Printing realtime_mp3_info.\n");
+					printf("%s", convert(&raceI, userI, groupI, realtime_mp3_info));
+				}
 				race_msg = audio_race;
 				update_msg = audio_update;
 				halfway_msg = CHOOSE(raceI.total.users, audio_halfway, audio_norace_halfway);
