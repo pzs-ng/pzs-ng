@@ -13,7 +13,7 @@ echo ""
 echo "Installing...";
 conf="${file%.c}.conf"
 for v in rootpath headerfile footerfile; do
- eval $v=$(grep "^$v" $conf | cut -d'=' -f2 | sed 's/^ \+//g')
+ eval $v=$(grep "^$v" $conf | awk {'print $3'})
 done
 
 cp -f ${headerfile##*/} $rootpath$headerfile
