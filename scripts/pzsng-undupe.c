@@ -7,17 +7,9 @@
  ** Modded for use with pzs-ng - psxc 2004-07-14
  **/
 
-#include <strings.h>
 #include <stdio.h>
-#include <sys/time.h>
-#include <errno.h>
-#include <sys/file.h>
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <dirent.h>
 #include <string.h>
-#include <time.h>
-#include <stdlib.h>
 
 #define DUPEFILE "/ftp-data/logs/dupefile"
 
