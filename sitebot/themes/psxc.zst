@@ -182,7 +182,7 @@ announce.IMDBFIND				= "%msg"
 announce.MSGINVITE	        		= "[%b{INVITE}] %b{%u_name}@%g_name invited himself as %b{%u_ircnick}."
 announce.BADMSGINVITE	        		= "[%b{%c1{INVITE}}] %b{%u_ircnick} (%u_host) tried to invite himself with an invalid login!"
 
-# Example of custom announces (see dZSbconf.tcl for info on how to enable)
+# Example of custom announces (see dZSbot.conf for info on how to enable)
 announce.SAMPLE					= "[%b{SAMPLE}]:[%c3{%l8{%section}}] %b{%relname} by %b{%u_name}@%g_name."
 announce.NEWCD					= "[%b{NEWCD }]:[%c3{%l8{%section}}] %b{%relname} by %b{%u_name}@%g_name."
 announce.NEWDISC				= "[%b{NEWCD }]:[%c3{%l8{%section}}] %b{%relname} by %b{%u_name}@%g_name."

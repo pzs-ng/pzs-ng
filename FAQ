@@ -24,9 +24,9 @@ A: This is actually a glftpd bug. You'll see the same speed in the client's
    fixed, nag on the glftpd devs, or wait for glftpd 2.1, which may have this
    fixed.
 
-Q: (BOT) dZSbot: dZSbconf.tcl not found or has errors. Cannot continue.
+Q: (BOT) dZSbot: dZSbot.conf not found or has errors. Cannot continue.
 -----------------------------------------------------------------------
-A: try 'tclsh dZSbconf.tcl' from shell and check what it says.
+A: try 'tclsh dZSbot.conf' from shell and check what it says.
 
 Q: (ZIPSCRIPT) I have a drive mounted as SMBFS/VFAT/NTFS - stuff no workie!
 ---------------------------------------------------------------------------
@@ -35,7 +35,7 @@ A: Don't expect stuff to work on such mounts - there are limits in the
 
 Q: (BOT) f00-pre doesn't work!
 ------------------------------
-A: In dZSbconf.tcl there's a 'set variables(PRE)' line. Either change this to
+A: In dZSbot.conf there's a 'set variables(PRE)' line. Either change this to
    match your foo setup, or change the announce in foo's config to:
    group.DEFAULT.announce=PRE: "%PP/%R" "%R" "%G" "%D" "%F" "%S" "%C" "%W" "%U" "%g" "%T"
 

@@ -34,9 +34,9 @@
    cp dZSb* /path/to/egg/scripts/pzs-ng/
    cp themes/*.zst /path/to/egg/scripts/pzs-ng/themes/
  On new install (not upgrade):
-   mv dZSbconf.dist.tcl /path/to/egg/scripts/pzs-ng/dZSbconf.tcl
+   mv dZSbot.conf.dist /path/to/egg/scripts/pzs-ng/dZSbot.conf
 
- Edit dZSbconf.tcl to match your setup, and enter the name of a theme (.zst)
+ Edit dZSbot.conf to match your setup, and enter the name of a theme (.zst)
  you wish to use.
  Edit the theme you wish to use to match your setup, or make your own.
 
@@ -90,7 +90,7 @@
 --------------------------------------------------------------------------------
  2-1 Installation
 --------------------------------------------------------------------------------
- To install a theme - all you need to do is edit dZSbconf.tcl and change a line:
+ To install a theme - all you need to do is edit dZSbot.conf and change a line:
  set announce(THEMEFILE) "yourtheme.zst"
 
  dZSbot is looking for the theme in its own path by default. However - you can
@@ -156,7 +156,7 @@ with the corresponding _LOOP# variable.
  Starting with beta4 of pzs-ng you can now also have a custom color scheme for
  each section. To enable this you only need to define colors in the theme for
  the specific section. You must use the same exact section name as you do in
- dZSbconf.tcl, and you must define the same number of colors as in your default
+ dZSbot.conf, and you must define the same number of colors as in your default
  scheme in each of the custom schemes.
 
  If you have 3 default colors (COLOR1, COLOR2 and COLOR3), then if you want a

@@ -1,5 +1,5 @@
 #################################################################################
-# Code part only, main config is moved to dZSbconf.tcl                          #
+# Code part only, main config is moved to dZSbot.conf                           #
 # THIS MEANS THAT YOU ARENT SUPPOSED TO EDIT THIS FILE                          #
 # FOR CONFIGURATION PURPOSES!                                                   #
 #################################################################################
@@ -15,17 +15,17 @@ set scriptpath [file dirname [info script]]
 
 putlog "Launching dZSbot for project-zs-ng..."
 
-if {[catch {source $scriptpath/dZSbconf.defaults.tcl} error]} {
-	putlog "dZSbot error: Unable to load dZSbconf.defaults.tcl ($error), cannot continue."
+if {[catch {source $scriptpath/dZSbot.conf.defaults} error]} {
+	putlog "dZSbot error: Unable to load dZSbot.conf.defaults ($error), cannot continue."
 	putlog "dZSbot error: See FAQ for possible solutions/debugging options."
 	die
 }
-if {[catch {source $scriptpath/dZSbconf.tcl} error]} {
-	putlog "dZSbot warning: Unable to load dZSbconf.tcl ($error), using defaults."
-	putlog "dZSbot warning: If this is your first install, do: cp dZSbconf.dist.tcl dZSbconf.tcl"
+if {[catch {source $scriptpath/dZSbot.conf} error]} {
+	putlog "dZSbot warning: Unable to load dZSbot.conf ($error), using defaults."
+	putlog "dZSbot warning: If this is your first install, do: cp dZSbot.conf.dist dZSbot.conf"
 }
-if {[catch {source $scriptpath/dZSbvars.tcl} error]} {
-	putlog "dZSbot error: Unable to load dZSbvars.tcl ($error), cannot continue."
+if {[catch {source $scriptpath/dZSbot.vars} error]} {
+	putlog "dZSbot error: Unable to load dZSbot.vars ($error), cannot continue."
 	putlog "dZSbot error: See FAQ for possible solutions/debugging options."
 	die
 }
@@ -84,7 +84,7 @@ if {!$logcount} {
 
 if {[string equal -nocase "AUTO" $use_glftpd2]} {
 	if {![info exists binary(GLFTPD)]} {
-		die "dZSbot: you did not thoroughly edit the $scriptpath/dZSbconf.tcl file (hint: binary(GLFTPD))."
+		die "dZSbot: you did not thoroughly edit the $scriptpath/dZSbot.conf file (hint: binary(GLFTPD))."
 	}
 	set glversion [exec strings $binary(GLFTPD) | grep -i "^glftpd " | cut -f1 -d. | tr A-Z a-z]
 
@@ -95,7 +95,7 @@ if {[string equal -nocase "AUTO" $use_glftpd2]} {
 		putlog "dZSbot: Detected $glversion, running in standard mode."
 		set glversion 2
 	} else {
-		die "dZSbot: Autodetecting glftpd-version failed. Set \"use_glftpd2\" in $scriptpath/dZSbconf.tcl manually."
+		die "dZSbot: Autodetecting glftpd-version failed. Set \"use_glftpd2\" in $scriptpath/dZSbot.conf manually."
 	}
 } else {
 	set glversion [expr [istrue $use_glftpd2] ? 2 : 1]

@@ -24,7 +24,7 @@ COLOR1		= "04"
 COLOR2		= "07"
 COLOR3		= "11"
 
-# Custom section colors. Use same section names as defined in dZSbconf.tcl.
+# Custom section colors. Use same section names as defined in dZSbot.conf.
 # IMPORTANT: You MUST define the same number of colors as there are default colors for each section!
 # If you have 3 default colors above, then each section below needs exactly 3 colors.
 # Sections not defined here will use the default colors above.
@@ -199,7 +199,7 @@ announce.IMDBFIND				= "%msg"
 announce.MSGINVITE	        		= "[%b{invite}] %b{%u_name} of %g_name invited himself as %b{%u_ircnick}."
 announce.BADMSGINVITE	        		= "[%b{%c1{badinv}}] %b{%u_ircnick} (%u_host) tried to invite himself with invalid login!"
 
-# Example of custom announces (see dZSbconf.tcl for info on how to enable)
+# Example of custom announces (see dZSbot.conf for info on how to enable)
 #announce.SAMPLE 				= "[%b{sample}][%section] %b{%relname} by %b{%u_name} of %g_name."
 #announce.NEWCD					= "[%b{cd    }][%section] %b{%relname} by %b{%u_name} of %g_name."
 #announce.NEWDISC				= "[%b{disc  }][%section] %b{%relname} by %b{%u_name} of %g_name."

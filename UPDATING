@@ -3,7 +3,7 @@ UPDATING BETWEEN VERSIONS/REVISIONS
 
 There seems to be much confusion about updating. The general idea is as follows:
 
-Keep zsconfig.h and dZSBconf.tcl
+Keep zsconfig.h and dZSbot.conf
 
 These are your config files. There is no need to redo the config files each time
 you update your zipscript/bot. I'll say again: THERE IS NO NEED TO REDO THE
@@ -21,12 +21,19 @@ Okay, now that that is clear, here's the general process:
 6.  If you're upgrading from -1277 to +1277, you need to
     rm -rf ftp-data/psz-ng/*
 
+7. If you're upgrading from -1346 to +1346, you need to
+    mv dZSbconf.tcl dZSbot.conf
+    rm dZSbconf.defaults.tcl # Renamed to dZSbot.conf.defaults
+	rm dZSbvars.tcl          # Renamed to dZSbot.vars
+   (make sure you run it from the sitebot scripts dir)
+
+
 That's it! You've upgraded.
 Any new additions/changes to either the sitebot or the zipscript is used with
 default values - your bot/zipscript will not break.
 
 In case you're wondering about step 4 above - no, it will not overwrite your
-config - there is no dZSBconf.tcl in the archive. The above cp command is
+config - there is no dZSbot.conf in the archive. The above cp command is
 quite safe to use.
 
 Themes - these will be updated from time to time. Themes in general should
@@ -47,8 +54,8 @@ zsconfig.h:	The option 'del_progressmeter' has changed. Make sure you have
 		split in two, 'cleanupdirs' and 'cleanupdirs_dated'.
 		Changed in: r1273
 
-dZSBconf.tcl	A dZSBconf.defaults.tcl first appeared in r1120 - if your bot
+dZSbot.conf		A dZSbot.conf.defaults first appeared in r1120 - if your bot
 		is older than this, it is recommended to update all, including
-		dZSBconf.tcl
+		dZSbot.conf
 
 

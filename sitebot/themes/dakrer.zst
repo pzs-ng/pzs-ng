@@ -27,7 +27,7 @@
 # #define max_groups_in_top               1
 #
 # This theme have custom announces for samples/subs/covers/cds/discs, please
-# uncomment the msgreplace example code in dZSbconf.tcl to enable them!
+# uncomment the msgreplace example code in dZSbot.conf to enable them!
 #
 # By default this theme does not use a prefix (usually the sitename). If you use
 # this theme in a channel where other sites also announce (like a site ring) you
