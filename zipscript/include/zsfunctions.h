@@ -3,7 +3,6 @@
 
 #include <stdlib.h>
 #include <ctype.h>
-#include <unistd.h>
 #include <stdio.h>
 #include <regex.h>
 #include <dirent.h>
@@ -14,6 +13,7 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <unistd.h>
 #ifndef PATH_MAX
 # define _LIMITS_H_
 # include <sys/syslimits.h>
@@ -74,7 +74,7 @@ extern short matchpath(char *, char *);
 extern short strcomp(char *, char *);
 extern short fileexists(char *);
 extern void createlink(char *, char *, char *, char *);
-extern void readsfv_ffile(char *, int buf_bytes);
+extern void readsfv_ffile(char *, off_t buf_bytes);
 extern void get_rar_info(char *);
 extern int execute(char *);
 

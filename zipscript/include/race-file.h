@@ -13,4 +13,3 @@ short clear_file_file(struct LOCATIONS *, char *);
 void writerace_file(struct LOCATIONS *, struct VARS *, unsigned int, unsigned char);
 
 #endif
-

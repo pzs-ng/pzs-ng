@@ -286,11 +286,9 @@ int main( int argc, char **argv ) {
  stat(raceI.file.name, &fileinfo);
  raceI.file.size=fileinfo.st_size;
  /* Store mtime */
- raceI.transfer_stop.tv_sec=fileinfo.st_mtime;
- raceI.transfer_stop.tv_usec=0;
+ raceI.file.mtime=fileinfo.st_mtime;
  /* Store upload duration/start time */
- raceI.transfer_start.tv_sec=raceI.transfer_stop.tv_sec-(raceI.file.size/raceI.file.speed);
- raceI.transfer_start.tv_usec=0;
+// raceI.transfer_start.tv_sec=raceI.transfer_stop.tv_sec-((unsigned int)(raceI.file.size)/raceI.file.speed);
 
 
 

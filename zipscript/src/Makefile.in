@@ -48,7 +48,7 @@ rescan: $(SC-OBJECTS)
 	$(CC) $(LDFLAGS) $(SC-OBJECTS) -o $(binpath)/$@ $(ZSLIBS)
 
 install:
-	if [ ! -e "$(rootpath)$(datapath)/zipscript/" ] ; then mkdir "$(rootpath)$(datapath)/zipscript/" ; fi
+	if [ ! -e "$(rootpath)$(datapath)/zipscript/" ]; then mkdir "$(rootpath)$(datapath)/zipscript/"; else $(RM) -r "$(rootpath)$(datapath)/zipscript/"*; fi
 	chmod 666 $(rootpath)$(datapath)/logs/glftpd.log
 	chmod 777 $(rootpath)$(datapath)/zipscript/
 #	strip $(binpath)/*

@@ -31,7 +31,7 @@ struct	userdata	{
  * Description: Updates existing entries in userI and groupI or creates new, if old doesnt exist
  *
  */
-void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *usern, char *group, unsigned int filesize, int speed, int startsec, int startusec) {
+void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *usern, char *group, unsigned int filesize, int speed, int mtime) {
  int		u_no = -1;
  int		g_no = -1;
  int		n;
@@ -47,8 +47,7 @@ void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO *
 
  if ( u_no == -1 ) {
 	if ( ! raceI->total.users ) {
-		raceI->transfer_start.tv_sec = startsec;
-		raceI->transfer_start.tv_usec = startusec;
+		raceI->file.mtime = mtime;
 		}
 	u_no = raceI->total.users++;
 	userI[u_no] = malloc(sizeof(struct USERINFO));

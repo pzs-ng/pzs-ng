@@ -3,11 +3,15 @@
 
 #include <sys/time.h>
 #include "constants.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include "../conf/zsconfig.h"
 
 struct USERINFO {
  char				name[24];	/* Username */
- unsigned long long		bytes;		/* Bytes uploaded */
+ off_t				bytes;		/* Bytes uploaded */
  double				speed;		/* Time spent uploading (secs) */
  unsigned char			files;		/* Files uploaded */
  unsigned char			pos;		/* User position */
@@ -23,7 +27,7 @@ struct USERINFO {
 
 struct GROUPINFO {
  char				name[24];	/* Groupname */
- unsigned long long		bytes;		/* Bytes uploaded */
+ off_t				bytes;		/* Bytes uploaded */
  double				speed;		/* Time spent uploading (secs) */
  unsigned char			files;		/* Files uploaded */
  unsigned char			pos;		/* Group position */
@@ -65,9 +69,10 @@ struct current_user {
 
 struct current_file {
  char				*name;
- int				speed;
- unsigned long long		size;
+ unsigned int			speed;
+ off_t				size;
  char				compression_method;
+ unsigned int			mtime;
 };
 
 
@@ -79,8 +84,8 @@ struct race_total {
  unsigned char			files_bad;
  unsigned char			nfo_present;
  double				speed;
- unsigned long long		size;
- unsigned long long		bad_size;
+ off_t				size;
+ off_t				bad_size;
 };
 
 
@@ -100,8 +105,6 @@ struct misc {
 
 
 struct VARS {
- struct	timeval			transfer_start;
- struct	timeval			transfer_stop;
  struct	current_user		user;
  struct current_file		file;
  struct race_total		total;

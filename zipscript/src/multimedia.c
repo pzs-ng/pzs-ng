@@ -99,11 +99,11 @@ void mpeg_video(char *f, struct video *video) {
   int		fd;
   unsigned char	header[] = { 0, 0, 1, 179 };
   unsigned char	buf[8];
-  short		width = 0;
-  short		height = 0;
+  short	int	width = 0;
+  short	int	height = 0;
   unsigned char	aspect_ratio;
   unsigned char	fps = 0;
-  short		t = 0;
+  short	int	t = 0;
   
   fd = open(f, O_RDONLY);
   
@@ -217,16 +217,16 @@ void get_mpeg_audio_info(char *f, struct audio *audio) {
   unsigned char	t_bitrate;
   unsigned char	t_samplingrate;
   unsigned char	channelmode;
-  short		bitrate = 0;
-  short		br_v1_l3[]  = { 0, 32, 40, 48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, 0 };
-  short		br_v1_l2[]  = { 0, 32, 48, 56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, 384, 0 };
-  short		br_v1_l1[]  = { 0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, 0 };
-  short		br_v2_l1[]  = { 0, 32, 48, 56,  64,  80,  96, 112, 128, 144, 160, 176, 192, 224, 256, 0 };
-  short		br_v2_l23[] = { 0,  8, 16, 24,  32,  40,  48,  56,  64,  80,  96, 112, 128, 144, 160, 0 };
-  unsigned	samplingrate = 0;
-  unsigned	sr_v1[] = { 44100, 48000, 32000, 0 };
-  unsigned	sr_v2[] = { 22050, 24000, 16000, 0 };
-  unsigned	sr_v25[] = { 11025, 12000, 8000, 0 };
+  short	int	bitrate = 0;
+  short	int	br_v1_l3[]  = { 0, 32, 40, 48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, 0 };
+  short	int	br_v1_l2[]  = { 0, 32, 48, 56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, 384, 0 };
+  short	int	br_v1_l1[]  = { 0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, 0 };
+  short	int	br_v2_l1[]  = { 0, 32, 48, 56,  64,  80,  96, 112, 128, 144, 160, 176, 192, 224, 256, 0 };
+  short	int	br_v2_l23[] = { 0,  8, 16, 24,  32,  40,  48,  56,  64,  80,  96, 112, 128, 144, 160, 0 };
+  unsigned int	samplingrate = 0;
+  unsigned int	sr_v1[] = { 44100, 48000, 32000, 0 };
+  unsigned int	sr_v2[] = { 22050, 24000, 16000, 0 };
+  unsigned int	sr_v25[] = { 11025, 12000, 8000, 0 };
   int           vbr_offset = 0;
   int           t1;
 

@@ -319,7 +319,7 @@
 
 #define video_completebar	"[dS] - ( %.0mM %fF - COMPLETE ) - [dS]"
 #define audio_completebar	"[dS] - ( %.0mM %fF - COMPLETE - %w %Y ) - [dS]"
-#define rar_completebar		"[dS] - ( %.0mM %fF - COMPLETE ) - [dS] a:%a A:%A s:%s S:%S"
+#define rar_completebar		"[dS] - ( %.0mM %fF - COMPLETE ) - [dS]"
 #define other_completebar	"[dS] - ( %.0mM %fF - COMPLETE ) - [dS]"
 #define zip_completebar		"[dS] - ( %.0mM %fF - COMPLETE ) - [dS]"
 #define del_completebar		"\\[dS] - \\( .*F - COMPLETE.*) - \\[dS]"

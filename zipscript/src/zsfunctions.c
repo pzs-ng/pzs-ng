@@ -24,7 +24,7 @@ void d_log(char *fmt, ...) {
 void __inline__ d_log(char *fmt, ...) {  }
 #endif
 
-void create_missing(char *f, short l) {
+void create_missing(char *f, short int l) {
  char	*fname;
  
  fname = m_alloc(l + 9);
@@ -209,7 +209,7 @@ void buffer_progress_bar(struct VARS *raceI) {
 /*
  * Modified: 01.16.2002
  */
-void move_progress_bar(short delete, struct VARS *raceI) {
+void move_progress_bar(short int delete, struct VARS *raceI) {
  char 		*bar;
  int		n;
  regex_t        preg;
@@ -248,7 +248,7 @@ void move_progress_bar(short delete, struct VARS *raceI) {
 /*
  * Modified: Unknown
  */
-short findfile(char *filename) {
+short int findfile(char *filename) {
  int	n = direntries;
 
  while( n-- ) {
@@ -288,7 +288,7 @@ void removecomplete() {
 /*
  * Modified: 01.16.2002
  */
-short matchpath(char *instr, char *path) {
+short int matchpath(char *instr, char *path) {
  int    pos = 0;
  
  do {
@@ -313,7 +313,7 @@ short matchpath(char *instr, char *path) {
 /*
  * Modified: 01.16.2002
  */
-short strcomp(char *instr, char *searchstr) {
+short int strcomp(char *instr, char *searchstr) {
  int	pos = 0,
 	k;
 
@@ -339,7 +339,7 @@ short strcomp(char *instr, char *searchstr) {
 
 
 /* Checks if file exists */
-short fileexists(char *f) {
+short int fileexists(char *f) {
  if ( close(open(f, O_RDONLY)) == -1 ) return 0;
  return 1;
 }
@@ -400,7 +400,7 @@ void createlink(char *factor1, char *factor2, char *source, char *ltarget) {
 
 
 
-void readsfv_ffile(char *filename, int buf_bytes ) {
+void readsfv_ffile(char *filename, off_t buf_bytes ) {
  int    fd,
         line_start = 0,
         index_start,

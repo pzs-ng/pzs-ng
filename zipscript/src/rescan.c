@@ -55,7 +55,7 @@ void writelog(char *msg, char *status) {
  time_t timenow;
 
  if ( raceI.misc.write_log ) {
-	 timenow = time( NULL );
+	timenow = time( NULL );
 	date = ctime(&timenow);
 	fprintf(glfile = fopen(log, "a+"), "%.24s %s: \"%s\" \"%s\"\n", date, status, locations.path, msg);
 	fclose(glfile);
@@ -114,14 +114,14 @@ void buffer_groups(char *groupfile) {
         *g_name;
  gid_t	g_id;
  int   f, n, m,
-        f_size,
+ 	f_size, /* should be off_t */
         g_n_size,
         l_start = 0;
  int	GROUPS = 0;
  
  f = open( groupfile, O_NONBLOCK );
  fstat( f, &fileinfo );
- f_size = fileinfo.st_size;
+ f_size = (int)fileinfo.st_size;
  f_buf  = malloc( f_size );
  read( f, f_buf, f_size );
  
@@ -164,15 +164,15 @@ void buffer_users(char *passwdfile) {
  char   *f_buf,
         *u_name;
  uid_t  u_id;
- int   f, n, m, l,
-        f_size,
+ int	f, n, m, l,
+        f_size, /* should be off_t */
         u_n_size,
         l_start = 0;
  int	USERS = 0;
  
  f = open( passwdfile, O_NONBLOCK );
  fstat( f, &fileinfo );
- f_size = fileinfo.st_size;
+ f_size = (int)fileinfo.st_size;
  f_buf  = malloc( f_size );
  read( f, f_buf, f_size );
  
@@ -303,9 +303,8 @@ int main () {
 			 strcpy(raceI.user.group, get_g_name(f_gid));
 			 raceI.file.name = dirlist[n]->d_name;
 			 raceI.file.speed = 2004 * 1024;
-			 raceI.transfer_start.tv_sec = 0;
-			 raceI.transfer_start.tv_usec = 0;
 			 raceI.file.size = fileinfo.st_size;
+			 raceI.file.mtime = 0;
 
 			 sprintf(exec, "%s-missing", raceI.file.name);
 			 strtolower(exec);
@@ -376,9 +375,8 @@ int main () {
 			 strcpy(raceI.user.group, get_g_name(f_gid));
 			 raceI.file.name = dirlist[n]->d_name;
 			 raceI.file.speed = 2004 * 1024;
-			 raceI.transfer_start.tv_sec = 0;
-			 raceI.transfer_start.tv_usec = 0;
 			 raceI.file.size = fileinfo.st_size;
+			 raceI.file.mtime = 0;
 
 			 if ( ! fileexists("file_id.diz") ) {
 				sprintf(exec, "/bin/unzip -qqjnCL %s file_id.diz > file_id.diz", raceI.file.name);

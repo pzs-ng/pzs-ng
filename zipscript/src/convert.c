@@ -28,9 +28,9 @@ char* hms(int secs) {
 	 secs -= 60; 
 	}
 
- if ( hours ) tmp = sprintf(ttime, "\\002%i\\002h ", (int)hours);
- if ( mins ) tmp += sprintf(ttime + tmp, "\\002%i\\002m ", (int)mins);
- if ( secs || ! tmp ) tmp += sprintf(ttime + tmp, "\\002%i\\002s ", (int)secs);
+ if ( hours ) tmp = sprintf(ttime, "\\002%i\\002h", (int)hours);
+ if ( mins ) tmp += sprintf(ttime + tmp, "\\002%i\\002m", (int)mins);
+ if ( secs || ! tmp ) tmp += sprintf(ttime + tmp, "\\002%i\\002s", (int)secs);
  return ttime;
 }
 
@@ -39,8 +39,8 @@ char* hms(int secs) {
 /*
  * Modified: 01.16.2002
  */
-char* convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, char *instr, short userpos) {
-	int	 val1;
+char* convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, char *instr, short int userpos) {
+	int  val1;
  	int  val2;
  	char *out_p;
  	char *m;
@@ -113,7 +113,7 @@ char* convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **gr
 /*
  * Modified: 01.16.2002
  */
-char* convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short grouppos) {
+char* convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short int grouppos) {
  int    val1;
  int	val2;
  char   *out_p;
@@ -305,8 +305,11 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 		}
 
 	 switch ( *instr ) {
-		case 'a': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size / raceI->total.speed)); break;
-		case 'A': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size / ((raceI->transfer_stop.tv_sec - raceI->transfer_start.tv_sec) + (raceI->transfer_stop.tv_usec - raceI->transfer_start.tv_usec) / 1000000.) / 1024)); break;
+		case 'a': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size) / raceI->total.speed); break;
+		case 'A': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size) / (raceI->file.speed/1024.)); break;
+
+//		case 'A': out_p += sprintf(out_p, "%f", (double)((raceI->transfer_stop.tv_sec - 
+//raceI->transfer_start.tv_sec))); break;
 		case 'b': out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.size); break;
 		case 'B': out_p += sprintf(out_p, "\\002"); break;
 		case 'c':
@@ -397,7 +400,10 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 				}
 			instr--;
 			break;
-		case 'd': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)hms(raceI->transfer_stop.tv_sec - raceI->transfer_start.tv_sec)); break;
+//		case 'd': out_p += sprintf(out_p, "%*.*s", val1, val2, 
+		case 'd': out_p += sprintf(out_p, "%*.*s", val1, val2, 
+(char *)hms((int)(0.5+((double)raceI->file.size/raceI->file.speed)))); break;
+//(char *)hms((int)(raceI->file.size)/raceI->file.speed)); break;
 		case 'e': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->file.size * raceI->total.files >> 10) / 1024.)); break;
 		case 'f': out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.files); break;
 		case 'F': out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.files - raceI->total.files_missing); break;

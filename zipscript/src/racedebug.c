@@ -1,10 +1,14 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include "objects.h"
 
 int main (int argc, char **argv) {
- unsigned int	*fsize;
+ off_t		*fsize;
  unsigned int	*uspeed;
  unsigned int	*startsec;
  unsigned int	*startusec;
@@ -42,12 +46,12 @@ int main (int argc, char **argv) {
 	files++;
 
 	p_buf= (char *)(buf + 1);
-	crc		= (unsigned int *)p_buf;		p_buf += sizeof(unsigned int);
+	crc		= (unsigned int *)p_buf;		p_buf += sizeof(int);
 	uname	= p_buf;						p_buf += 24;
 	ugroup	= p_buf;						p_buf += 24;
-	fsize	= (unsigned int *)p_buf;		p_buf += sizeof(unsigned int);
-	uspeed	= (unsigned int *)p_buf;		p_buf += sizeof(unsigned int);
-	startsec = (unsigned int *)p_buf;		p_buf += sizeof(unsigned int);
+	fsize	= (off_t *)p_buf;		p_buf += sizeof(off_t);
+	uspeed	= (unsigned int *)p_buf;		p_buf += sizeof(int);
+	startsec = (unsigned int *)p_buf;		p_buf += sizeof(int);
 	startusec = (unsigned int *)p_buf;
 
 	switch ( *buf ) {
