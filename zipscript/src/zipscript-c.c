@@ -10,6 +10,14 @@
 #include <sys/shm.h>
 #include <sys/stat.h>
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#ifndef HAVE_STRLCPY
+# include "strl/strl.h"
+#endif
+
 #include "zsfunctions.h"
 #include "race-file.h"
 #include "objects.h"
@@ -146,7 +154,7 @@ d_log("DEBUG: result of subdir-test: %d\n", subcomp(path[1]));
 	} else {
 		raceI.misc.release_name = malloc(l[1] + 10);
 		locations.link_source = malloc(locations.length_path + 1);
-		strcpy(locations.link_source, locations.path);
+		strlcpy(locations.link_source, locations.path, locations.length_path + 1);
 		sprintf(raceI.misc.release_name, "%s", path[1]);
 		locations.link_target = path[1];
 		locations.incomplete = c_incomplete(incomplete_indicator, path);
@@ -332,8 +340,8 @@ main(int argc, char **argv)
 		buffer_users(PASSWDFILE);
 		fileinfo.st_uid = geteuid();
 		fileinfo.st_gid = getegid();
-		strcpy(raceI.user.name, get_u_name(fileinfo.st_uid));
-		strcpy(raceI.user.group, get_g_name(fileinfo.st_gid));
+		strlcpy(raceI.user.name, get_u_name(fileinfo.st_uid), 24);
+		strlcpy(raceI.user.group, get_g_name(fileinfo.st_gid), 24);
 		memcpy(raceI.user.tagline, "No Tagline Set", 15);
 		raceI.file.speed = 2005;
 		raceI.section = 0;
@@ -611,7 +619,7 @@ main(int argc, char **argv)
 						write_log = raceI.misc.write_log;
 						raceI.misc.write_log = 1;
 						d_log("Old sfv seems to match with more files than current one\n");
-						strcpy(raceI.misc.error_msg, "SFV does not match with files!");
+						strlcpy(raceI.misc.error_msg, "SFV does not match with files!", 80);
 						error_msg = convert(&raceI, userI, groupI, deny_double_msg);
 						writelog(error_msg, general_doublesfv_type);
 						sprintf(raceI.misc.error_msg, DOUBLE_SFV);
@@ -770,7 +778,7 @@ main(int argc, char **argv)
 							break;
 #endif
 							d_log("Filename was not found in the SFV\n");
-							strcpy(raceI.misc.error_msg, NOT_IN_SFV);
+							strlcpy(raceI.misc.error_msg, NOT_IN_SFV, 80);
 						} else {
 							d_log("filetype is part of allowed_types.\n");
 							no_check = TRUE;
@@ -778,7 +786,7 @@ main(int argc, char **argv)
 						}
 					} else {
 						d_log("CRC-32 check failed\n");
-						strcpy(raceI.misc.error_msg, BAD_CRC);
+						strlcpy(raceI.misc.error_msg, BAD_CRC, 80);
 					}
 					mark_as_bad(raceI.file.name);
 					write_log = raceI.misc.write_log;
@@ -800,7 +808,7 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 				if (!matchpath(noforce_sfv_first_dirs, locations.path) && !matchpath(zip_dirs, locations.path)) {
 #endif
 					d_log("SFV needs to be uploaded first\n");
-					strcpy(raceI.misc.error_msg, SFV_FIRST);
+					strlcpy(raceI.misc.error_msg, SFV_FIRST, 80);
 					mark_as_bad(raceI.file.name);
 					write_log = raceI.misc.write_log;
 					raceI.misc.write_log = 1;
@@ -1265,7 +1273,7 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 				if (findfileext(".sfv")) {
 					d_log("Creating m3u\n");
 					cnt = sprintf(target, findfileext(".sfv"));
-					strcpy(target + cnt - 3, "m3u");
+					strlcpy(target + cnt - 3, "m3u", 3);
 					create_indexfile_file(&locations, &raceI, target);
 				} else
 					d_log("Cannot create m3u, sfv is missing\n");

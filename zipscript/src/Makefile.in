@@ -34,7 +34,7 @@ all: ng-undupe racedebug zipscript-c postdel racestats cleanup datacleaner resca
 $(ZS-DEPEND): ../conf/zsconfig.h
 
 zipscript-c: $(ZS-OBJECTS) $(ZS-DEPEND)
-	$(CC) $(CFLAGS) -o $@ $(ZS-OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(ZS-OBJECTS) $(STRLCPY)
 
 racedebug: $(RD-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(RD-OBJECTS)
