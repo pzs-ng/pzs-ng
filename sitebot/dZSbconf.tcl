@@ -20,9 +20,9 @@ set msgtypes(RACE)          "NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV U
 set msgtypes(DEFAULT)       "MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT"
 
 # Sitename is for the %sitename-cookie in announces :)
-set sitename                "dS"
-# Prefix on commands (f. x. !dsfree if cmdpre is !ds, !free if cmdpre is !, etc)
-set cmdpre                  "!ds"
+set sitename                "pzs-ng"
+# Prefix on commands (f. x. !pnfree if cmdpre is !pn, !free if cmdpre is !, etc)
+set cmdpre                  "!pn"
 # List of bnc's (used for BNC-testing with the <prefix>bnc command in channel)
 set bnc(LIST)               "msn.test1.com:123 msn.test2.com:345 msn.test3.com:567"
 # Username and password to use for testing bncs (must exist with this box's ip added)
@@ -172,18 +172,20 @@ set splitter(CHAR) "\n"
 #         RANDOM ----------^    ^
 #             # OF IDS ---------^
 
-set announce(NEWDIR)        "-%sitename- \[%section\] + New Release: %path/%bold%release%bold (%relname) by %bold%user%bold@%group"
-set announce(DELDIR)        "-%sitename- \[%section\] - Directory deleted: %path/%bold%release%bold by %bold%user%bold@%group"
-set announce(BW)            "-%sitename- \[%section\] - %bold%uploads%bold uploads @ %bold%upspeed%boldkb/sec - %bold%downloads%bold downloads @ %bold%dnspeed%bold kb/sec - total: %bold%transfers%bold transfers @ %bold%totalspeed%boldkb/sec"
-set announce(LOGIN)         "-%sitename- \[LOGIN\] + %bold%user%bold@%group has logged in"
-set announce(LOGOUT)        "-%sitename- \[LOGOUT\] - %bold%user%bold@%group has logged out"
-set announce(NUKE)          "-%sitename- \[%section\] + %path/%bold%release%bold was %ulinenuked %mult%ulinex by %bold%nuker%bold - reason: %reason - nukees: %nukees"
-set announce(UNNUKE)        "-%sitename- \[%section\] + %path/%bold%release%bold was %ulineunnuked %mult%ulinex by %bold%nuker%bold - reason: %reason - nukees: %nukees"
-set announce(INVITE)        "-%sitename- \[INVITE\] + %bold%user%bold@%group invited himself as %bold%ircnick%bold"
-set announce(MSGINVITE)     "-%sitename- \[INVITE\] + %bold%user%bold@%group invited himself as %bold%ircnick%bold"
-set announce(BADMSGINVITE)  "-%sitename- \[INTRUDER\] - %bold%ircnick%bold (%host) tried to invite himself with invalid login!"
-set announce(WELCOME)       "Welcome to dS's sitechan. Type !dshelp for help."
-set announce(DEFAULT)       "-%sitename- \[%section\] - %msg"
+set announce(THEMEFILE)		"default.zst"
+
+set announce(NEWDIR)        "+ New Release: %path/%bold%release%bold (%relname) by %bold%user%bold@%group"
+set announce(DELDIR)        "- Directory deleted: %path/%bold%release%bold by %bold%user%bold@%group"
+set announce(BW)            "- %bold%uploads%bold uploads @ %bold%upspeed%boldkb/sec - %bold%downloads%bold downloads @ %bold%dnspeed%bold kb/sec - total: %bold%transfers%bold transfers @ %bold%totalspeed%boldkb/sec"
+set announce(LOGIN)         "+ %bold%user%bold@%group has logged in"
+set announce(LOGOUT)        "- %bold%user%bold@%group has logged out"
+set announce(NUKE)          "+ %path/%bold%release%bold was %ulinenuked %mult%ulinex by %bold%nuker%bold - reason: %reason - nukees: %nukees"
+set announce(UNNUKE)        "+ %path/%bold%release%bold was %ulineunnuked %mult%ulinex by %bold%nuker%bold - reason: %reason - nukees: %nukees"
+set announce(INVITE)        "+ %bold%user%bold@%group invited himself as %bold%ircnick%bold"
+set announce(MSGINVITE)     "+ %bold%user%bold@%group invited himself as %bold%ircnick%bold"
+set announce(BADMSGINVITE)  "- %bold%ircnick%bold (%host) tried to invite himself with invalid login!"
+set announce(WELCOME)       "Welcome to pzs-ng's sitechan. Type !pnhelp for help."
+set announce(DEFAULT)       "- %msg"
 
 # In this announce you can use %free, %total and %used for the free/total/used sum of all disks
 # and you can use %devices. Each device specified (see above (set device(0) etc)) will be inserted

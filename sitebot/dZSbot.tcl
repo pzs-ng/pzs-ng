@@ -7,7 +7,7 @@
 #################################################################################
 # READING THE CONFIG (and NOT being a cryptic bitch;)                           #
 #################################################################################
-set dver "0.0.3"
+set dver "0.0.4"
 set dzerror "0"
 
 putlog "Launching dZSBot (v$dver) for zipscript-c..."
@@ -20,7 +20,7 @@ if {[catch {source [file dirname [info script]]/dZSbconf.tcl} tmperror]} {
 foreach bin [array names binary] { 
     if {![file executable $binary($bin)]} {
         putlog "dZSbot: Wrong path/missing bin for $bin - Please fix."
-	set dzerror "1"
+		set dzerror "1"
     }
 }
 
@@ -206,8 +206,10 @@ proc to_mb {str} {
 # CONVERT BASIC COOKIES TO DATA                                                 #
 #################################################################################
 proc basicreplace {rstring section} {
-    global sitename
+    global sitename theme
 
+	regsub -all "%c(\\d){(\[^}\])(!?\\)}" $rstring "\003$theme(COLOR\\1)\\2\003"
+	
     set output [replacevar $rstring "%sitename" $sitename]
     set output [replacevar $output "%bold" "\002"]
     set output [replacevar $output "%uline" "\037"]
@@ -223,16 +225,16 @@ proc basicreplace {rstring section} {
 # CONVERT COOKIES TO DATA                                                       #
 #################################################################################
 proc parse {msgtype msgline section} {
-    global variables announce random mpath use_glftpd2
+    global variables announce random mpath use_glftpd2 theme theme_fakes defaultsection
 
     set type $msgtype
 
     if {![string compare $type "NUKE"] || ! [string compare $type "UNNUKE"]} {
-	if { $use_glftpd2 != "YES" } {
-	        fuelnuke $type [lindex $msgline 0] $section $msgline
-	} else {
-		fuelnuke2 $type [lindex $msgline 0] $section [lrange $msgline 1 3] [lrange $msgline 4 end]
-	}
+		if { $use_glftpd2 != "YES" } {
+			fuelnuke $type [lindex $msgline 0] $section $msgline
+		} else {
+			launchnuke2 $type [lindex $msgline 0] $section [lrange $msgline 1 3] [lrange $msgline 4 end]
+		}
         return ""
     }
 
@@ -240,12 +242,14 @@ proc parse {msgtype msgline section} {
 
     set vars $variables($type)
 
-    if {![string compare [lindex $announce($type) 0] "random"] && [string is alnum -strict [lindex $announce($type) 1]] == 1} {
-        set output $random($msgtype\-[rand [lindex $announce($type) 1]])
-    } else {
-        set output $announce($type)
-    }
+	if {![string compare [lindex $announce($type) 0] "random"] && [string is alnum -strict [lindex $announce($type) 1]] == 1} {
+		set output $random($msgtype\-[rand [lindex $announce($type) 1]])
+	} else {
+		set output $announce($type)
+	}
 
+	set output $theme(PREFIX)$output
+	if {![string compare $section $defaultsection] && [llength [array names "theme_fakes" "$type"]] > 0} { set section $theme_fakes($type) }
     set output [basicreplace $output $section]
     set cnt 0
 
@@ -473,10 +477,9 @@ proc show_free {nick uhost hand chan arg} {
 
 
 #################################################################################
-# UPDATE NUKE BUFFER (GL2.0)                                                    #
+# LAUNCH A NUKE (GL2.0)                                                         #
 #################################################################################
-proc fuelnuke2 {type path section sargs dargs} { global nuke hidenuke announce sitename
-
+proc launchnuke2 {type path section sargs dargs} { global nuke hidenuke announce sitename
  set nuke(TYPE) $type
  set nuke(PATH) $path
  set nuke(SECTION) $section
@@ -512,7 +515,7 @@ proc fuelnuke2 {type path section sargs dargs} { global nuke hidenuke announce s
 
 
 #################################################################################
-# UPDATE NUKE BUFFER                                                            #
+# UPDATE NUKE BUFFER (GL1.0)                                                    #
 #################################################################################
 proc fuelnuke {type path section args} {global nuke
     global hidenuke
@@ -544,7 +547,7 @@ proc fuelnuke {type path section args} {global nuke
 
 
 #################################################################################
-# FLUSH NUKE BUFFER                                                             #
+# FLUSH NUKE BUFFER  (GL1.0)                                                    #
 #################################################################################
 proc launchnuke {} {
     global nuke sitename announce
@@ -683,6 +686,34 @@ proc help {nick uhost hand chan arg} {
 }
 #################################################################################
 
+#################################################################################
+# LOAD A THEME FILE                                                             #
+#################################################################################
+proc loadtheme {file} {
+	global theme
+	set fh [open $file]
+	set content [split [read -nonewline $fh] "\n"]
+	foreach line $content {
+		if {![regexp -nocase -- "^#" $line]} {
+			if {[regexp -nocase -- "fakesection\.(\\S+)\\s*=\\s*(\[\'\"\])(.+)\\2" $line dud setting quote value]} {
+				set setting [string toupper $setting]
+				regsub -all "%c(\\d)\{(\[^\}\]+)\}" $value "\003\\1\\2\003" value
+				regsub -all "\003(\\d)(?!\\d)" $value "\0030\\1" value
+				set theme_fakes($setting) $value
+			} elseif {[regexp -nocase -- "(\\S+)\\s*=\\s*(\[\'\"\])(.+)\\2" $line dud setting quote value]} {
+				set setting [string toupper $setting]
+				regsub -all "%c(\\d)\{(\[^\}\]+)\}" $value "\003\\1\\2\003" value
+				regsub -all "\003(\\d)(?!\\d)" $value "\0030\\1" value
+				set theme($setting) $value
+			}
+		}
+	}
+	close $fh
+	return 1
+}	
+
+#################################################################################
+
 if {[info exists dZStimer]} {
     if {[catch {killutimer $dZStimer} err]} {
         putlog "dZSbot.tcl: killutimer failed ($err)"
@@ -690,10 +721,20 @@ if {[info exists dZStimer]} {
 }
 set dZStimer [utimer 1 "readlog"]
 
-if { $dzerror == "0" } { putlog "dZSbot loaded ok!"
+if {![loadtheme $announce(THEMEFILE)]} {
+	if {[loadtheme "default.zst"]} {
+		putlog "dZSbot: Couldn't load theme '$announce(THEMEFILE)', loaded 'default.zst' instead!"
+	} else {
+		putlog "dZSbot: Couldn't load theme '$announce(THEMEFILE)' and not 'default.zst' either. Cannot continue!"
+		set dzerror 1
+	}
+}
+
+if { $dzerror == "0" } {
+	putlog "dZSbot loaded ok!"
 } else {
- putlog "dZSbot had errors. Please check log and fix."
- die
+	putlog "dZSbot had errors. Please check log and fix."
+	die
 }
 
 

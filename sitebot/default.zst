@@ -1,0 +1,6 @@
+color1 = "05"
+color2 = "06"
+color3 = "14"
+#prefix = "%c1{[%c2{%section}]}"
+prefix = "%c1{[}%c2{%section}%c1{]}"
+fakesection.INVITE = "iNViTE"
