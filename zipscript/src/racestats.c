@@ -7,7 +7,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include <config.h>
+#include "config.h"
 
 #include "zsfunctions.h"
 #include "race-file.h"
@@ -18,7 +18,6 @@
 #include "stats.h"
 
 #include "../conf/zsconfig.h"
-#include "../../config.h"
 
 struct USERINFO  **userI;
 struct GROUPINFO **groupI;
@@ -76,7 +75,7 @@ int main( int argc, char **argv ) {
 
    if ( argc == 1 ) {
     printf("Usage: %s <path>\n", argv[0]);
-    exit(0);
+    exit(EXIT_SUCCESS);
    }
   
    locations.path = malloc( n = strlen(argv[1]) + 1 ); 
@@ -138,5 +137,5 @@ END:
    free(raceI.misc.release_name);
    free(locations.sfv);
 
-   exit(0);
+   exit(EXIT_SUCCESS);
 }

@@ -21,18 +21,18 @@ void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
 
  int    cnt, pos;
  char	*user_p,
-	*group_p,
-	*current_path;
+	*group_p;
  FILE	*msgfile;
  
  move_progress_bar(1, raceI);
  unlink(locations->incomplete);
  
 #if ( write_complete_message == TRUE )
- current_path = malloc( PATH_MAX );
- getcwd( current_path, PATH_MAX );
- if ( !matchpath(no_message_dirs, current_path) ) {
-  if ((msgfile = fopen(message_file_name, "w")) == NULL) { d_log("Couldn't fopen .message\n"); exit(EXIT_FAILURE); }
+ if ( !matchpath(no_message_dirs, locations->path) ) {
+  d_log("Writing %s file\n", message_file_name);
+  if ((msgfile = fopen(message_file_name, "w")) == NULL) {
+	d_log("Couldn't fopen .message\n"); exit(EXIT_FAILURE);
+  }
 
   fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_header));
   fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_user_header));
@@ -43,17 +43,16 @@ void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
   fprintf(msgfile, "%s", convert(raceI, userI, groupI, message_user_footer));
   fprintf(msgfile, "%s", convert(raceI, userI, groupI, message_group_header));
   for ( cnt = 0 ; cnt < raceI->total.groups ; cnt++ ) {
-	 pos = groupI[cnt]->pos;
-	 fprintf(msgfile, "%s", convert3(raceI, groupI[pos], message_group_body, cnt));
+	pos = groupI[cnt]->pos;
+	fprintf(msgfile, "%s", convert3(raceI, groupI[pos], message_group_body, cnt));
 	}
   fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_group_footer));
-  
+
   if ( raceI->misc.release_type == 3 ) fprintf(msgfile, convert( raceI, userI, groupI, message_mp3));
 
   fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_footer));
   fclose(msgfile);
-  free(current_path);
-  }
+ } else { d_log("Directory matched with no_message_dirs\n"); }
 #endif
 
  user_p = raceI->misc.top_messages[0];
@@ -72,8 +71,6 @@ void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
 		}
  	}
 }
-
-
 
 
 

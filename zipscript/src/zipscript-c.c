@@ -10,7 +10,7 @@
 #include <sys/shm.h>
 #include <sys/stat.h>
 
-#include <config.h>
+#include "config.h"
 
 #include "zsfunctions.h"
 #include "race-file.h"
@@ -26,7 +26,6 @@
 #include "crc.h"
 
 #include "../conf/zsconfig.h"
-#include "../../config.h"
 
 /* Remove the portion of PARAM matched by PATTERN according to OP, where OP
    can have one of 4 values:
@@ -229,7 +228,7 @@ int main( int argc, char **argv ) {
  char		*complete_bar = 0;
  char		*error_msg;
  unsigned int	crc, s_crc;
- unsigned char	exit_value = 0;
+ unsigned char	exit_value = EXIT_SUCCESS;
  unsigned char	no_check = FALSE;
  unsigned char	complete_type = 0;
  int		cnt, cnt2;
@@ -266,11 +265,16 @@ int main( int argc, char **argv ) {
 
  /*gettimeofday(&raceI.transfer_stop, (struct timezone *)0 );*/
 
+ raceI.file.name=argv[1];
+ d_log("Checking the file size of %s\n", raceI.file.name);
+ stat(raceI.file.name, &fileinfo);
+ raceI.file.size=fileinfo.st_size;
+
  d_log("Reading data from environment variables\n");
  if (!(getenv("USER") && getenv("GROUP") && getenv("TAGLINE") && getenv("SPEED"))) {
         d_log("We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE and $SPEED\n");
-	memcpy(raceI.user.name, "glftpd", 7);
-	memcpy(raceI.user.group, "NoGroup", 8);
+	strcpy(raceI.user.name, "Unknown");
+	strcpy(raceI.user.group, "NoGroup");
 	memcpy(raceI.user.tagline, "No Tagline Set", 15);
 	raceI.file.speed=2004;
   } else {
@@ -284,10 +288,7 @@ int main( int argc, char **argv ) {
  }
  raceI.file.speed*=1024;
 
- raceI.file.name=argv[1];
- d_log("Checking the file size of %s\n", raceI.file.name);
- stat(raceI.file.name, &fileinfo);
- raceI.file.size=fileinfo.st_size;
+ d_log("Setting race times\n");
  raceI.total.stop_time=fileinfo.st_mtime;
  raceI.total.start_time=fileinfo.st_mtime-((unsigned int)(raceI.file.size)/raceI.file.speed);
  if ((int)(raceI.total.stop_time - raceI.total.start_time) < 1)
@@ -346,13 +347,6 @@ int main( int argc, char **argv ) {
  maketempdir(&locations);
  printf(zipscript_header);
 
-	/* No check directories */
-
- if ( matchpath(nocheck_dirs, locations.path) ) {
-	d_log("Directory matched with nocheck_dirs\n");
-	no_check = TRUE;
-	}
-
 	/* Hide users in group_dirs */
  if ( matchpath(group_dirs, locations.path ) && ( hide_group_uploaders == TRUE )) {
 	d_log("Hiding user in group-dir\n");
@@ -360,15 +354,18 @@ int main( int argc, char **argv ) {
 	}
 
 	/* Empty file recieved	*/
-
  if ( raceI.file.size == 0 ) {
 	d_log("File seems to be 0\n");
 	sprintf(raceI.misc.error_msg, EMPTY_FILE);
 	exit_value = 2;
 	}
 
+ /* No check directories */
+ if ( matchpath(nocheck_dirs, locations.path) ) {
+	d_log("Directory matched with nocheck_dirs\n");
+	no_check = TRUE;
+	} else {
 	/* Process file		*/
-
  switch ( get_filetype(fileext) ) {
 	case 0: /* ZIP */
 		d_log("File type is: ZIP\n");
@@ -387,7 +384,6 @@ int main( int argc, char **argv ) {
 			d_log("Directory matched with zip_dirs\n");
 		} else if (matchpath(sfv_dirs, locations.path)) {
 			d_log("Directory matched with sfv_dirs\n");
-/*			no_check = FALSE; */
 			break;
 		}
 
@@ -756,14 +752,14 @@ int main( int argc, char **argv ) {
 		/* END OF UNKNOWN CHECK */
 		break;
 	}
-
+ }
 
 
 
  if ( no_check == TRUE ) {	/* File was not checked */
 	printf(zipscript_any_ok);
 	printf(convert(&raceI, userI, groupI, zipscript_footer_skip));
-	} else if ( exit_value == 0 ) {		/* File was checked */
+	} else if ( exit_value == EXIT_SUCCESS ) {		/* File was checked */
 
 	if ( raceI.total.users > 0 ) {
 		d_log("Sorting race stats\n");
@@ -913,7 +909,7 @@ int main( int argc, char **argv ) {
 
 		d_log("Removing old complete bar, if any\n");
 		removecomplete();
-		d_log("Writing .message file\n");
+
 		complete(&locations, &raceI, userI, groupI, complete_type);
 
 		if ( complete_msg != NULL ) {
@@ -949,14 +945,14 @@ int main( int argc, char **argv ) {
 	}
 
 #if ( enable_accept_script == TRUE )
- if ( exit_value == 0 ) {
+ if ( exit_value == EXIT_SUCCESS ) {
 	d_log("Executing accept script\n");
 	sprintf(target, accept_script " %s", raceI.file.name);
 	execute(target);
 	}
 #endif
 
- d_log("Relasing memory\n");
+ d_log("Releasing memory\n");
  free(locations.link_source);
  free(raceI.misc.release_name);
  m_free(target);

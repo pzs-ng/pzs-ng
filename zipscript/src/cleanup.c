@@ -9,7 +9,7 @@
 #include <time.h>
 #include <unistd.h>
 
-#include <config.h>
+#include "config.h"
 
 #include "objects.h"
 #include "macros.h"
@@ -285,5 +285,5 @@ int main(void) {
  scandirectory((char *)audio_artist_path);
  #endif
  if ( cleanupdirs[0] ) cleanup(cleanupdirs);
- exit(0);
+ exit(EXIT_SUCCESS);
 }

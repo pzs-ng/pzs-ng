@@ -10,7 +10,7 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 
-#include <config.h>
+#include "config.h"
 
 #include "zsfunctions.h"
 #include "race-file.h"
@@ -20,7 +20,6 @@
 #include "dizreader.h"
 
 #include "../conf/zsconfig.h"
-#include "../../config.h"
 
 struct USERINFO  **userI;
 struct GROUPINFO **groupI;
@@ -329,7 +328,7 @@ int main( int argc, char **argv ) {
 	move_progress_bar(0, &raceI);
 	}
 
- d_log("Relasing memory\n");
+ d_log("Releasing memory\n");
  free(fileext);
  free(target);
  free(raceI.misc.release_name);

@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <config.h>
+#include "config.h"
 
 #include "objects.h"
 #include "macros.h"
@@ -521,7 +521,7 @@ void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned in
 
  if ( (file = fopen(locations->race, "a+")) == NULL) {
   d_log("Racefile cannot be written. Aborting.\n");
-  exit (2);
+  exit(EXIT_FAILURE);
  }
 
  len = strlen(raceI->file.name) + 1;

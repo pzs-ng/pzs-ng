@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 
-#include <config.h>
+#include "config.h"
 
 #include "objects.h"
 #include "macros.h"
