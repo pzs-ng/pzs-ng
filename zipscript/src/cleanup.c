@@ -140,6 +140,9 @@ replace_cookies(char *s)
 				break;
 			case '%':
 				*pos++ = '%';
+				break;
+			case '\0':
+				return new_string;
 			}
 			break;
 		case '(':
@@ -148,6 +151,8 @@ replace_cookies(char *s)
 		case ']':
 			pos += sprintf(pos, "\\%c", *s);
 			break;
+		case '\0':
+			return new_string;
 		default:
 			*pos++ = *s;
 		}
