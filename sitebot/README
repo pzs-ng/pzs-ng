@@ -1,5 +1,5 @@
                        This script is part of:
-            Project Zipscript Next Generation (www.pzs-ng.com)
+            Project Zipscript - Next Generation (www.pzs-ng.com)
     (Based on dZSbot by Dark0n3 - http://kotisivu.raketti.net/darkone/)
 
 --------------------------------------------------------------------------------
@@ -12,14 +12,27 @@
  1-2 Compiling
  1-3 Using with eggdrop 
 
- 2. Ressources
- 
- 2-1 Links
+ 2. Themes
 
+ 2-1 Installation
+ 2-2 Bundled themes
+ 2-3 Customizing
+ 2-4 Submit your theme?
+
+ 3. Ressources
+ 
+ 3-1 Links
+
+--------------------------------------------------------------------------------
+ 1. Installation
 --------------------------------------------------------------------------------
  1-1 Configuration
 --------------------------------------------------------------------------------
  Please edit the actual file dZSbconf.tcl for general setup and hints.
+ (But copy dZSbconf.tcl.dist to dZSbconf.tcl first)
+
+ Copy dZSbot.tcl, dZSbot.help, and dZSbconf.tcl somewhere readable to your
+ TCL enabled bot. Read below for use with eggdrop.
 
 
 --------------------------------------------------------------------------------
@@ -52,10 +65,23 @@
 --------------------------------------------------------------------------------
  1-3 Using with eggdrop
 --------------------------------------------------------------------------------
+ First - copy at least 4 files to your sitebot's dir:
+
+ cp sitebot/dZSbot.tcl /glftpd/bot/scripts/
+ cp sitebot/dZSbot.help /glftpd/bot/scripts/
+ cp sitebot/dZSbconf.tcl.dist /glftpd/bot/scripts/dZSbconf.tcl
+ cp sitebot/default.zst.dist /glftpd/bot/scripts/default.zst
+
+ Then: vi /glftpd/bot/scripts/dZSbconf.tcl
+
  Load the sitebot like any other script. Add this to eggdrop.conf:
  
  source scripts/dZSbot.tcl (or any other path you choose)
+
+ (Re)start your eggdrop!
  
+ In details:
+
  For first install you need to copy dZSbconf.tcl.dist to dZSbconf.tcl and
  make sure to include dZSbot.help for !help to work.
  
@@ -66,7 +92,7 @@
  Files "*.zst" is theme files and was introduced with pzs-ng and heavily
  extended in beta3. You can change them to your liking but it is suggested
  that you simply make a copy of the bundled themes if you want to change
- anything.
+ anything. Read more about themes in the chapter "Themes" in this file.
  
  When installing the sitebot for the first time it will look for default.zst.
  You need to copy this yourself "cp default.zst.dist default.zst".
@@ -75,7 +101,80 @@
 
 
 --------------------------------------------------------------------------------
- 2-1 Links
+ 2. Themes
+--------------------------------------------------------------------------------
+ 2-1 Installation
+--------------------------------------------------------------------------------
+ To install a theme - all you need to do is edit dZSbconf.tcl and change a line:
+ set announce(THEMEFILE) "yourtheme.zst"
+
+ dZSbot is looking for the theme in its own path by default. However - you can
+ supply a full path if this is preferred for whatever obscure reason :)
+
+
+--------------------------------------------------------------------------------
+ 2-2 Bundled themes
+--------------------------------------------------------------------------------
+ When writing this - we only have 2 working themes bundled:
+
+ default.zst.dist: Previously known as avizion.zst which was made to test the
+                   new way of using themes and to show "all" possible outputs.
+                   Use this as a reference when making your own themes.
+
+ psxc.zst:         psxc thought he needed more colours - so he made his own
+                   theme based on default.zst.dist (avizion.zst at that time).
+
+ classic.zst.dist: This theme is currently outdated but still included for
+                   nostalgic reasons. We may update this to work with the new
+                   dZSbot - but more on that later.
+
+
+--------------------------------------------------------------------------------
+ 2-3 Customizing
+--------------------------------------------------------------------------------
+ Feel free to edit and customize any of the bundled themes, but it is advised
+ for you to make a copy first. Maybe do "cp default.zst.dist mytheme.zst" before
+ raping the theme to suit your needs.
+
+ Using colours is fairly simple in dZSbot now. Simply define a new colour like:
+
+ COLOR1 = "04"
+ ..
+ COLOR4 = "07"
+
+ Then use it on the .zst file like:
+
+ announce.SOMETHING = "[%c4{%section}] %c2{Something happend} in %c1{%pf}"
+
+ Colour table for use in TCL:
+
+ 00 white                 08 yellow
+ 01 black                 09 light green
+ 02 blue                  10 cyan
+ 03 green                 11 light cyan
+ 04 light red             12 light blue
+ 05 red                   13 light magenta
+ 06 magenta (purple)      14 gray
+ 07 orange (dark yellow)  15 light gray
+
+ NOTE: dZSbot does only support 9 colours max per theme.
+
+
+--------------------------------------------------------------------------------
+ 2-4 Submit your theme?
+-------------------------------------------------------------------------------- 
+ Did you make your own theme - and is it ready for the public?
+
+ We dare you to submit it to the project... in the spirit of open source :)
+
+ Upload via FTP on ftp://pzs-ng.ftpd.gl/pub/upload/themes/
+ Upload via HTTP on http://bugs.pzs-ng.com
+
+
+--------------------------------------------------------------------------------
+ 3. Ressources
+--------------------------------------------------------------------------------
+ 3-1 Links
 --------------------------------------------------------------------------------
  http://www.tcl.tk/                    Main page for TCL
  http://www.scriptics.com/             General TCL page

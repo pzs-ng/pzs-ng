@@ -26,7 +26,7 @@ datacleaner - how to use:
   -----
 
   Using it as a cscript may, or may not be such a great idea, since it will
-  search the entire directory-tree under ftp-data/zipscript/site/* and check
+  search the entire directory-tree under ftp-data/pzs-ng/site/* and check
   to see if the corresponding dir exists under site/*, ie, it can take time.
 
 datacleaner - why:

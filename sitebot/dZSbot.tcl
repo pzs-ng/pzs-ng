@@ -9,6 +9,7 @@
 #################################################################################
 set dver "0.0.4"
 set dzerror "0"
+set tclroot [file dirname [info script]]
 putlog "Launching dZSBot (v$dver) for zipscript-c..."
 
 if {[catch {source [file dirname [info script]]/dZSbconf.tcl} tmperror]} {
@@ -1061,20 +1062,20 @@ proc stats_group_gpad {nick uhost hand chan args} { showstats "$nick" "-d" "-A" 
 # Help Section                                                                  #
 #################################################################################
 proc help {nick uhost hand chan arg} {
-	global sections cmdpre dver
+	global sections cmdpre dver tclroot
 
-	if {![file exist [file dirname [info script]]/dZSbot.help]} {
-		puthelp "PRIVMSG $nick : help file dZSbot.help is missing, please check install"
+	set file "$tclroot/dZSbot.help"
+	if {![file readable $file]} {
+		puthelp "PRIVMSG $nick : File dZSbot.help is missing, please check install"
 		puthelp "PRIVMSG $nick : (file should reside in same dir as dZSbot.tcl)"
 		return 0
 	}
 
-	puthelp "PRIVMSG $nick : -------zipscript-c--------"
-	puthelp "PRIVMSG $nick : - Dark0n3's sitebot help -"
-	puthelp "PRIVMSG $nick : ---------v$dver-----------"
+	puthelp "PRIVMSG $nick : -project-zipscript-ng-help-"
+	puthelp "PRIVMSG $nick : ---------v$dver------------"
 	puthelp "PRIVMSG $nick : "
 
-	set helpfile [open [file dirname [info script]]/dZSbot.help r]
+	set helpfile [open $file r]
 	set helpdb [read $helpfile]
 	close $helpfile
 	foreach line [split $helpdb "\n"] {
@@ -1093,6 +1094,7 @@ proc loadtheme {file} {
 	global theme announce theme_fakes
 
 	if {[string index $file 0] != "/"} { set file "[file dirname [info script]]/$file" }
+	putlog "Theme loaded: $file"
 	if {![file readable $file]} {
 		putlog "dZSbot: themefile is not readable or does not exist. ($file)"
 		return 0
