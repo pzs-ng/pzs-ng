@@ -119,10 +119,14 @@ myscan(int my_result, int new_user, int new_group, int user_flag, int group_flag
 			n = direntries;
 			while (n--) {
 				my_total += close(open(dirlist[n]->d_name, O_NONBLOCK));
-				chown(dirlist[n]->d_name, new_user, new_group);
+				if (new_user != 0 && new_group != 0) {
+					chown(dirlist[n]->d_name, new_user, new_group);
+				}
 			}
 			if ((my_result == 0) && (dir_flag == 1)) {
-				chown(my_path, new_user, new_group);
+				if (new_user != 0 && new_group != 0) {
+					chown(my_path, new_user, new_group);
+				}
 			}
 			return my_total;
 		} else {
@@ -132,7 +136,9 @@ myscan(int my_result, int new_user, int new_group, int user_flag, int group_flag
 		if (dir_flag == 1) {
 			my_result = close(open(my_path, O_NONBLOCK));
 			if (my_result == 0) {
-				chown(my_path, new_user, new_group);
+				if (new_user != 0 && new_group != 0) {
+					chown(my_path, new_user, new_group);
+				}
 			} else {
 				printf("%s - Error: Unable to read file %s\n", my_name, my_path);
 			}
