@@ -144,10 +144,17 @@ sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 #if ( get_competitor_list == TRUE )
 		if ( (strncmp(raceI->user.name, userI[n]->name, strlen(raceI->user.name) < strlen(userI[n]->name) ? strlen(raceI->user.name) : strlen(userI[n]->name))) || ((strlen(raceI->user.name) != strlen(userI[n]->name)) && (!strncmp(raceI->user.name, userI[n]->name, strlen(raceI->user.name) < strlen(userI[n]->name) ? strlen(raceI->user.name) : strlen(userI[n]->name))))) {
 			if (t2 > 0) {
-				r_list += sprintf(r_list, " %s %s", racersplit, convert2(raceI, userI[n], groupI, racersmsg, t));
+				if (strlen(racersplit)) {
+					r_list += sprintf(r_list, " %s %s", racersplit, convert2(raceI, userI[n], groupI, racersmsg, t));
+				} else {
+					r_list += sprintf(r_list, " %s", convert2(raceI, userI[n], groupI, racersmsg, t));
+				}
+			} else if (strlen(racersplit_prior)) {
+				t2 = 1;
+				r_list += sprintf(r_list, "%s %s", racersplit_prior, convert2(raceI, userI[n], groupI, racersmsg, t));
 			} else {
 				t2 = 1;
-				r_list += sprintf(r_list, " %s %s", racersplit_prior, convert2(raceI, userI[n], groupI, racersmsg, t));
+				r_list += sprintf(r_list, "%s", convert2(raceI, userI[n], groupI, racersmsg, t));
 			}
 		} else {
 			raceI->user.pos = n;
@@ -159,10 +166,17 @@ sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 	}
 	for (n = 1; n < raceI->total.users; n++) {
 		if (t3 > 0) {
-			t_list += sprintf(t_list, " %s %s", racersplit, convert2(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
+			if (strlen(racersplit)) {
+				t_list += sprintf(t_list, " %s %s", racersplit, convert2(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
+			} else {
+				t_list += sprintf(t_list, " %s", convert2(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
+			}
+		} else if (strlen(racersplit_prior)) {
+			t3 = 1;
+			t_list += sprintf(t_list, "%s %s", racersplit_prior, convert2(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
 		} else {
 			t3 = 1;
-			t_list += sprintf(t_list, " %s %s", racersplit_prior, convert2(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
+			t_list += sprintf(t_list, "%s", convert2(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
 		}
 	}
 	bzero(p_array, raceI->total.groups * sizeof(int));

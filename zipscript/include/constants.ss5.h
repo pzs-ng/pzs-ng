@@ -121,10 +121,10 @@
 #define fastestfile		"{%u} {%g} {%.3F}"	/* Put in %l cookie */
 #define slowestfile		"{%u} {%g} {%.3S}"	/* Put in %L cookie */
 #ifndef racersplit_prior
-#define racersplit_prior        " "
+#define racersplit_prior        ""
 #endif
 #ifndef racersplit
-#define racersplit		" "	/* Put between racers in the %R */
+#define racersplit		""	/* Put between racers in the %R */
 #endif
 #ifndef racersmsg
 #define racersmsg		"%u/%g"	/* Put in %R cookie */
