@@ -108,6 +108,7 @@ main(void)
 		d_log("rescan: Failed to lock release.\n");
 		if (k == 1) {
 			d_log("rescan: version mismatch. Exiting.\n");
+			printf("Error. You need to rm -fR ftp-data/pzs-ng/* before rescan will work.\n");
 			exit(EXIT_FAILURE);
 		}
 		for ( k = 0; k <= 20; k++) {
