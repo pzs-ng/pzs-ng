@@ -392,7 +392,7 @@
  *                                are marked as bad and deleted)
  */
 #define enable_unduper_script	TRUE
-#define unduper_script		"/bin/pzsng-undupe"
+#define unduper_script		"/bin/ng-undupe"
 
 /*
  *	Other binary settings
