@@ -147,7 +147,6 @@ getrelname(char *directory)
 
 d_log("DEBUG: result of subdir-test: %d\n", subcomp(path[1]));
 	if (subcomp(path[1])) {
-		//raceI.misc.release_name = malloc(l[0] + 18);
 		locations.link_source = malloc(n = (locations.length_path - l[1]));
 		sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
 		sprintf(locations.link_source, "%.*s", n - 1, locations.path);
@@ -158,7 +157,6 @@ d_log("DEBUG: result of subdir-test: %d\n", subcomp(path[1]));
 		if (k < 2)
 			free(path[1]);
 	} else {
-		//raceI.misc.release_name = malloc(l[1] + 10);
 		locations.link_source = malloc(locations.length_path + 1);
 		strlcpy(locations.link_source, locations.path, locations.length_path + 1);
 		sprintf(raceI.misc.release_name, "%s", path[1]);
@@ -359,7 +357,6 @@ main(int argc, char **argv)
 		memcpy(raceI.user.tagline, "No Tagline Set", 15);
 		raceI.file.speed = 2005;
 		raceI.section = 0;
-		raceI.sectionname = malloc(8 * sizeof(char));
 		sprintf(raceI.sectionname, "DEFAULT");
 	} else {
 		gnum = buffer_groups(GROUPFILE, 0);
@@ -381,7 +378,6 @@ main(int argc, char **argv)
 #endif
 
 		d_log("Reading section from env (%s)\n", getenv("SECTION"));
-		raceI.sectionname = malloc(sizeof(getenv("SECTION")) * sizeof(char));
 		sprintf(raceI.sectionname, getenv("SECTION"));
 		temp_p_free = temp_p = strdup((const char *)gl_sections);	/* temp_p_free is needed since temp_p is modified by strsep */
 		if ((temp_p) == NULL) {
@@ -1534,7 +1530,6 @@ main(int argc, char **argv)
 	free(locations.link_source);
 	//free(raceI.misc.release_name);
 	free(fileext);
-	free(raceI.sectionname);
 	m_free(target);
 	m_free(locations.race);
 	m_free(locations.sfv);

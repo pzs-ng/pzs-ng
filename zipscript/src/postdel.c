@@ -260,10 +260,8 @@ main(int argc, char **argv)
 	target = malloc(4096);
 
 	if (getenv("SECTION") == NULL) {
-		raceI.sectionname = malloc(8 * sizeof(char));
 		sprintf(raceI.sectionname, "DEFAULT");
 	} else {
-		raceI.sectionname = malloc(sizeof(getenv("SECTION")) * sizeof(char));
 		sprintf(raceI.sectionname, getenv("SECTION"));
 	}
 
@@ -497,7 +495,6 @@ main(int argc, char **argv)
 	free(fileext);
 	free(target);
 	//free(raceI.misc.release_name);
-	free(raceI.sectionname);
 	free(locations.path);
 	free(locations.race);
 	free(locations.sfv);

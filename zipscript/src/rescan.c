@@ -172,10 +172,8 @@ main()
 	raceI.misc.release_type = RTYPE_NULL;
 
 	if (getenv("SECTION") == NULL) {
-		raceI.sectionname = malloc(8 * sizeof(char));
 		sprintf(raceI.sectionname, "DEFAULT");
 	} else {
-		raceI.sectionname = malloc(sizeof(getenv("SECTION")) * sizeof(char));
 		sprintf(raceI.sectionname, getenv("SECTION"));
 	}
 
@@ -231,7 +229,6 @@ main()
 			unlink(locations.sfv);
 			unlink(locations.race);
 //			unlink(raceI.file.name);
-			free(raceI.sectionname);
 			free(userI);
 			free(groupI);
 			free(locations.path);
@@ -481,7 +478,6 @@ main()
 	free(locations.race);
 	free(locations.sfv);
 	free(locations.leader);
-	free(raceI.sectionname);
 	//free(raceI.misc.release_name);
 	free(locations.link_source);
 	buffer_groups(GROUPFILE, gnum);

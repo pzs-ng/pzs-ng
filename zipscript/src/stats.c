@@ -36,7 +36,7 @@ struct userdata {
  */
 void
 updatestats_free(struct VARS raceI, struct USERINFO **userI, struct GROUPINFO **groupI) {
-	int n = 0;
+	int n;
 
 	for (n = 0; n < raceI.total.users; n++) {
 	if (userI[n])

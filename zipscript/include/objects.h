@@ -134,7 +134,7 @@ struct VARS {
 	struct audio	audio;
 	struct video	video;
 	unsigned char	section;
-	char	       *sectionname;
+	char		sectionname[128];
 };
 
 struct LOCATIONS {
