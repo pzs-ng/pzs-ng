@@ -79,7 +79,7 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 	SFVDATA		sd;
 
 	if (!(sfvfile = fopen(path, "r"))) {
-		d_log("Failed to open sfv (%s): %s\n", path, strerror(errno));
+		d_log("readsfv: Failed to open sfv (%s): %s\n", path, strerror(errno));
 		return 0;
 	}
 
@@ -130,7 +130,7 @@ update_sfvdata(const char *path, const unsigned int crc)
 	SFVDATA		sd;
 
 	if ((fd = open(path, O_RDWR, 0666)) == -1) {
-		d_log("Failed to open sfvdata (%s): %s\n", path, strerror(errno));
+		d_log("update_sfvdata: Failed to open sfvdata (%s): %s\n", path, strerror(errno));
 		return;
 	}
 
@@ -166,12 +166,12 @@ sfvdata_to_sfv(const char *source, const char *dest)
 	SFVDATA		sd;
 
 	if ((infd = open(source, O_RDONLY)) == -1) {
-		d_log("Failed to open (%s): %s\n", source, strerror(errno));
+		d_log("sfvdata_to_sfv: Failed to open (%s): %s\n", source, strerror(errno));
 		return;
 	}
 
 	if ((outfd = open(source, O_CREAT | O_WRONLY, 0644)) == -1) {
-		d_log("Failed to open (.tmpsfv): %s\n", strerror(errno));
+		d_log("sfvdata_to_sfv: Failed to open (.tmpsfv): %s\n", strerror(errno));
 		return;
 	}
 
@@ -215,7 +215,7 @@ delete_sfv(const char *path)
 	SFVDATA		sd;
 
 	if (!(sfvfile = fopen(path, "r"))) {
-		d_log("Couldn't fopen %s: %s\n", path, strerror(errno));
+		d_log("delete_sfv: Couldn't fopen %s: %s\n", path, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 	
@@ -338,7 +338,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 				if (rstatus)
 					printf("File: %s FAILED!\n", rd.fname);
 
-				d_log("marking %s bad.\n", rd.fname);
+				d_log("testfiles: marking %s bad.\n", rd.fname);
 				if (enable_unduper_script == TRUE) {
 					if (!fileexists(unduper_script)) {
 						d_log("Failed to undupe '%s' - '%s' does not exist.\n",
@@ -346,9 +346,9 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 					} else {
 						sprintf(target, unduper_script " \"%s\"", rd.fname);
 						if (execute(target) == 0)
-							d_log("undupe of %s successful.\n", rd.fname);
+							d_log("testfiles: undupe of %s successful.\n", rd.fname);
 						else
-							d_log("undupe of %s failed.\n", rd.fname);
+							d_log("testfiles: undupe of %s failed.\n", rd.fname);
 					}
 				}
 			}
@@ -504,7 +504,7 @@ copysfv(const char *source, const char *target)
 			/* TODO */
 			/* calculate file's crc if it exists */
 			if (sd.crc32 == 0) {
-				d_log("Got filename (%s) without crc, trying to calculate.\n", sd.fname);
+				d_log("copysfv: Got filename (%s) without crc, trying to calculate.\n", sd.fname);
 				sd.crc32 = calc_crc32(sd.fname);
 			}
 #endif
@@ -531,7 +531,7 @@ copysfv(const char *source, const char *target)
 					continue;
 #endif
 
-				d_log("File in sfv: '%s' (%x)\n", sd.fname, sd.crc32);
+				d_log("copysfv:  File in sfv: '%s' (%x)\n", sd.fname, sd.crc32);
 
 #if ( sfv_cleanup == TRUE )
 				/* write good stuff to .tmpsfv */
@@ -846,7 +846,7 @@ verify_racedata(const char *path)
 	close(fd);
 	
 	if ((fd = open(path, O_WRONLY | O_TRUNC)) == -1) {
-		d_log("remove_from_race: open(%s): %s\n", path, strerror(errno));
+		d_log("verify_racedata: open(%s): %s\n", path, strerror(errno));
 		if (tmprd)
 			free(tmprd);
 		return 0;

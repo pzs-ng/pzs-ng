@@ -342,9 +342,9 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 	struct dirent *dp;
 
 	delbar = convert5(del_progressmeter);
-	d_log("del_progressmeter: %s\n", delbar);
-	d_log("raceI->total.files: %i\n", raceI->total.files);
-	d_log("raceI->total.files_missing: %i\n", raceI->total.files_missing);
+	d_log("move_progress_bar: del_progressmeter: %s\n", delbar);
+	d_log("move_progress_bar: raceI->total.files: %i\n", raceI->total.files);
+	d_log("move_progress_bar: raceI->total.files_missing: %i\n", raceI->total.files_missing);
 	regcomp(&preg, delbar, REG_NEWLINE | REG_EXTENDED);
 
 	dir = opendir(".");
@@ -352,7 +352,7 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 	if (delete) {
 		while ((dp = readdir(dir))) {
 			if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
-				d_log("Found progress bar (%s), removing\n", dp->d_name);
+				d_log("move_progress_bar: Found progress bar (%s), removing\n", dp->d_name);
 				remove(dp->d_name);
 				*dp->d_name = 0;
 				m = 1;
@@ -363,7 +363,7 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 			closedir(dir);
 			return;
 		} else {
-			d_log("Progress bar could not be deleted, not found!\n");
+			d_log("move_progress_bar: Progress bar could not be deleted, not found!\n");
 		}
 	} else {
 		if (!raceI->total.files) {
@@ -375,11 +375,11 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 		while ((dp = readdir(dir))) {
 			if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
 				if (!m) {
-					d_log("Found progress bar (%s), renaming (to %s)\n", dp->d_name, bar);
+					d_log("move_progress_bar: Found progress bar (%s), renaming (to %s)\n", dp->d_name, bar);
 					rename(dp->d_name, bar);
 					m = 1;
 				} else {
-					d_log("Found (extra) progress bar (%s), removing\n", dp->d_name);
+					d_log("move_progress_bar: Found (extra) progress bar (%s), removing\n", dp->d_name);
 					remove(dp->d_name);
 					*dp->d_name = 0;
 					m = 2;
@@ -387,7 +387,7 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 			}
 		}
 		if (!m) {
-			d_log("Progress bar could not be moved, creating a new one now!\n");
+			d_log("move_progress_bar: Progress bar could not be moved, creating a new one now!\n");
 			createstatusbar(bar);
 		}
 	}
@@ -467,7 +467,7 @@ removecomplete()
 	if (message_file_name)
 		unlink(message_file_name);
 	mydelbar = convert5(del_completebar);
-	d_log("del_completebar: %s\n", mydelbar);
+	d_log("removecomplete: del_completebar: %s\n", mydelbar);
 	regcomp(&preg, mydelbar, REG_NEWLINE | REG_EXTENDED);
 	
 	dir = opendir(".");
@@ -950,18 +950,18 @@ mark_as_bad(char *filename)
 	char	newname[NAME_MAX];
 
 	if (!fileexists(filename)) {
-		d_log("Debug: Failed to open file \"%s\"\n", filename);
+		d_log("mark_as_bad: \"%s\" doesn't exist\n", filename);
 		return;
 	}
 	sprintf(newname, "%s.bad", filename);
 	if (rename(filename, newname)) {
-		d_log("Error - failed to rename %s to %s.\n", filename, newname);
+		d_log("mark_as_bad: Error - failed to rename %s to %s\n", filename, newname);
 	} else {
 		createzerofile(filename);
 		chmod(newname, 0644);
 	}
 #endif
-	d_log("File (%s) marked as bad.\n", filename);
+	d_log("mark_as_bad: File (%s) marked as bad\n", filename);
 }
 
 void 
@@ -976,7 +976,7 @@ writelog(GLOBAL *g, char *msg, char *status)
 		timenow = time(NULL);
 		date = ctime(&timenow);
 		if (!(glfile = fopen(log, "a+"))) {
-			d_log("Unable to open %s for read/write (append) - NO RACEINFO WILL BE WRITTEN!\n", log);
+			d_log("writelog: fopen(%s): %s\n", log, strerror(errno));
 			return;
 		}
 		line = newline = msg;

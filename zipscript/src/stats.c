@@ -218,36 +218,36 @@ showstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 	int		cnt;
 
 #if ( show_user_info == TRUE )
-	d_log("Showing realtime user stats ...\n");
+	d_log("showstats: Showing realtime user stats ...\n");
 	if (realtime_user_header != DISABLED) {
-		d_log("  - printing realtime_user_header ...\n");
+		d_log("showstats:   - printing realtime_user_header ...\n");
 		printf("%s", convert(raceI, userI, groupI, realtime_user_header));
 	}
 	if (realtime_user_body != DISABLED) {
-		d_log("  - printing realtime_user_body ...\n");
+		d_log("showstats:   - printing realtime_user_body ...\n");
 		for (cnt = 0; cnt < raceI->total.users; cnt++) {
 			printf("%s", convert2(raceI, userI[userI[cnt]->pos], groupI, realtime_user_body, cnt));
 		}
 	}
 	if (realtime_user_footer != DISABLED) {
-		d_log("  - printing realtime_user_footer ...\n");
+		d_log("showstats:   - printing realtime_user_footer ...\n");
 		printf("%s", convert(raceI, userI, groupI, realtime_user_footer));
 	}
 #endif
 #if ( show_group_info == TRUE )
-	d_log("Showing realtime user stats ...\n");
+	d_log("showstats: Showing realtime user stats ...\n");
 	if (realtime_group_header != DISABLED) {
-		d_log("  - printing realtime_group_header ...\n");
+		d_log("showstats:   - printing realtime_group_header ...\n");
 		printf("%s", convert(raceI, userI, groupI, realtime_group_header));
 	}
 	if (realtime_group_body != DISABLED) {
-		d_log("  - printing realtime_group_body ...\n");
+		d_log("showstats:   - printing realtime_group_body ...\n");
 		for (cnt = 0; cnt < raceI->total.groups; cnt++) {
 			printf("%s", convert3(raceI, groupI[groupI[cnt]->pos], realtime_group_body, cnt));
 		}
 	}
 	if (realtime_group_footer != DISABLED) {
-		d_log("  - printing realtime_group_footer ...\n");
+		d_log("showstats:   - printing realtime_group_footer ...\n");
 		printf("%s", convert(raceI, userI, groupI, realtime_group_footer));
 	}
 #endif
@@ -278,7 +278,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	struct dirent	*dp;
 
 	if (!(dir = opendir(gl_userfiles))) {
-		d_log("opendir(%s): %s\n", gl_userfiles, strerror(errno));
+		d_log("get_stats: opendir(%s): %s\n", gl_userfiles, strerror(errno));
 		return; 
 	}
 	
@@ -288,13 +288,13 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 		sprintf(t_buf, "%s/%s", gl_userfiles, dp->d_name);
 
 		if ((fd = open(t_buf, O_RDONLY)) == -1) {
-			d_log("open(%s): %s\n", t_buf, strerror(errno));
+			d_log("get_stats: open(%s): %s\n", t_buf, strerror(errno));
 			continue;
 		}
 		
 		fileinfo.st_mode = 0;
 		if (fstat(fd, &fileinfo) == -1) {
-			d_log("fstat(): %s\n", strerror(errno));
+			d_log("get_stats: fstat(%i): %s\n", fd, strerror(errno));
 			continue;
 		}
 		

@@ -56,8 +56,8 @@ main(void)
 
 	umask(0666 & 000);
 
-	d_log("PZS-NG (rescan) v%s debug log.\n", ng_version());
-	d_log("Allocating memory for variables\n");
+	d_log("rescan: PZS-NG (rescan) v%s debug log.\n", ng_version());
+	d_log("rescan: Allocating memory for variables\n");
 	g.ui = malloc(sizeof(struct USERINFO *) * 30);
 	memset(g.ui, 0, sizeof(struct USERINFO *) * 30);
 	g.gi = malloc(sizeof(struct GROUPINFO *) * 30);
@@ -66,8 +66,8 @@ main(void)
 	getcwd(g.l.path, PATH_MAX);
 
 	if ((matchpath(nocheck_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) && rescan_nocheck_dirs_allowed == FALSE) {
-		d_log("Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
-		d_log("Freeing memory, and exiting\n");
+		d_log("rescan: Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
+		d_log("rescan: Freeing memory, and exiting\n");
 		free(g.ui);
 		free(g.gi);
 		return 0;
@@ -125,7 +125,7 @@ main(void)
 					unlink(dp->d_name);
 			}
 
-			d_log("Freeing memory, and exiting\n");
+			d_log("rescan: Freeing memory, and exiting\n");
 			unlink(g.l.sfv);
 			unlink(g.l.race);
 			free(g.ui);
@@ -182,17 +182,17 @@ main(void)
 
 				/* Hide users in group_dirs */
 				if (matchpath(group_dirs, g.l.path) && (hide_group_uploaders == TRUE)) {
-					d_log("Hiding user in group-dir:\n");
+					d_log("rescan: Hiding user in group-dir:\n");
 					if (strlen(hide_gname) > 0) {
 						snprintf(g.v.user.group, 18, "%s", hide_gname);
-						d_log("   Changing groupname\n");
+						d_log("rescan:    Changing groupname\n");
 					}
 					if (strlen(hide_uname) > 0) {
 						snprintf(g.v.user.name, 18, "%s", hide_uname);
-						d_log("   Changing username\n");
+						d_log("rescan:    Changing username\n");
 					}
 					if (strlen(hide_uname) == 0) {
-						d_log("   Making username = groupname\n");
+						d_log("rescan:    Making username = groupname\n");
 						snprintf(g.v.user.name, 18, "%s", g.v.user.group);
 					}
 				}
@@ -208,7 +208,7 @@ main(void)
 					}
 				}
 				if(fflush(stdout))
-					d_log("ERROR: %s\n", strerror(errno));
+					d_log("rescan: ERROR: %s\n", strerror(errno));
 				writerace(g.l.race, &g.v, crc, F_NOTCHECKED);
 			}
 		}
@@ -222,18 +222,18 @@ main(void)
 
 		if (g.l.nfo_incomplete) {
 			if (findfileext(dir, ".nfo")) {
-				d_log("Removing missing-nfo indicator (if any)\n");
+				d_log("rescan: Removing missing-nfo indicator (if any)\n");
 				remove_nfo_indicator(&g);
 			} else if (matchpath(check_for_missing_nfo_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
 				if (!g.l.in_cd_dir) {
-					d_log("Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
+					d_log("rescan: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 					create_incomplete_nfo();
 				} else {
 					if (findfileextparent(parent, ".nfo")) {
-						d_log("Removing missing-nfo indicator (if any)\n");
+						d_log("rescan: Removing missing-nfo indicator (if any)\n");
 						remove_nfo_indicator(&g);
 					} else {
-						d_log("Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
+						d_log("rescan: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
 					}
 				}
@@ -305,7 +305,7 @@ main(void)
 				if (!fileexists("file_id.diz")) {
 					sprintf(exec, "%s -qqjnCLL %s file_id.diz", unzip_bin, g.v.file.name);
 					if (execute(exec) != 0) {
-						d_log("No file_id.diz found (#%d): %s\n", errno, strerror(errno));
+						d_log("rescan: No file_id.diz found (#%d): %s\n", errno, strerror(errno));
 					} else {
 						if ((loc = findfile(dir, "file_id.diz.bad"))) {
 							seekdir(dir, loc);
@@ -356,18 +356,18 @@ main(void)
 		}
 		if (g.l.nfo_incomplete) {
 			if (findfileext(dir, ".nfo")) {
-				d_log("Removing missing-nfo indicator (if any)\n");
+				d_log("rescan: Removing missing-nfo indicator (if any)\n");
 				remove_nfo_indicator(&g);
 			} else if (matchpath(check_for_missing_nfo_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
 				if (!g.l.in_cd_dir) {
-					d_log("Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
+					d_log("rescan: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 					create_incomplete_nfo();
 				} else {
 					if (findfileextparent(parent, ".nfo")) {
-						d_log("Removing missing-nfo indicator (if any)\n");
+						d_log("rescan: Removing missing-nfo indicator (if any)\n");
 						remove_nfo_indicator(&g);
 					} else {
-						d_log("Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
+						d_log("rescan: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
 					}
 				}
@@ -382,7 +382,7 @@ main(void)
 	printf(" Missing: %i\n", (int)g.v.total.files_missing);
 	printf("  Total : %i\n", (int)g.v.total.files);
 
-	d_log("Freeing memory.\n");
+	d_log("rescan: Freeing memory.\n");
 	closedir(dir);
 	closedir(parent);
 	updatestats_free(&g);
