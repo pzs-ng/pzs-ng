@@ -45,10 +45,7 @@ void scandirectory(char *directoryname) {
     }
 }
 
-char * replace_cookies(char *s) {
-    char	*new_string, *pos;
-
-    new_string = pos = malloc(4096);
+void replace_cookies(char *s, char *pos) {
 
     while ( *s == '.' || *s == '/' ) s++;
 
@@ -72,32 +69,31 @@ char * replace_cookies(char *s) {
     }
     *pos = 0;
 
-    return new_string;
 }
 
 /*
  * Name of release (Multi CD)
  */
-char * multi_name(char *s, char *q) {
+void multi_name(char *s, char *q, char *retval) {
     int	begin_multi[2], end_multi, n;
-    char 	*p, *t, *r = 0;
+    char 	*p, *r = 0;
 
     end_multi = 0;
 
-    t = q;
+    retval = q;
 
-    while ( *t == '.' || *t == '/' ) t++;
-    p = t;
+    while ( *retval == '.' || *retval == '/' ) retval++;
+    p = retval;
 
-    for ( n = 0 ; *t ; t++ ) if ( *t == '%' && *(t+1) == '0' ) {
+    for ( n = 0 ; *retval ; retval++ ) if ( *retval == '%' && *(retval + 1) == '0' ) {
 	begin_multi[0] = n;
 	break;
     } else {
 	n++;
     }
 
-    t = p;
-    for ( n = 0 ; *t ; t++ ) if ( *t == '%' && *(t+1) == '1' ) {
+    retval = p;
+    for ( n = 0 ; *retval ; retval++ ) if ( *retval == '%' && *(retval + 1) == '1' ) {
 	begin_multi[1] = n;
 	break;
     } else {
@@ -105,42 +101,39 @@ char * multi_name(char *s, char *q) {
     }
 
     if ( begin_multi[0] < begin_multi[1] ) {
-	for ( t = p + begin_multi[1] + 2; *t ; t++ ) end_multi++;
+	for ( retval = p + begin_multi[1] + 2; *retval ; retval++ ) end_multi++;
 
 	p = malloc(6);
 	s += begin_multi[0];
 	s += sprintf(p, "%.*s", tolower(*s) == 'd' ? 5 : 3,  s);
 
 	s += begin_multi[1] - begin_multi[0] - 2;
-	t = malloc((n = strlen(s)) + 7);
-	sprintf(t, "%.*s/%s", n - end_multi, s, p);
+	sprintf(retval, "%.*s/%s", n - end_multi, s, p);
     } else {
-	for ( t = p + begin_multi[0] + 2; *t ; t++ ) end_multi++;
+	for ( retval = p + begin_multi[0] + 2; *retval ; retval++ ) end_multi++;
 
 	s += begin_multi[1];
 	n = strlen(s) - end_multi;
 
-	t = s + n - 3;
+	retval = s + n - 3;
 	p = malloc(6);
-	if ( tolower(*t) == 'c' ) {
-	    sprintf(p, "%s", t);
+	if ( tolower(*retval) == 'c' ) {
+	    sprintf(p, "%s", retval);
 	} else {
 	    r--;
-	    sprintf(p, "%s", t);
+	    sprintf(p, "%s", retval);
 	}
-	n = t - s - (begin_multi[0] - begin_multi[1] - 2);
-	t = malloc(n + 7);
+	n = retval - s - (begin_multi[0] - begin_multi[1] - 2);
 	sprintf(r, "%.*s/%s", n, s, p);
     }
 
     free(p);
-    return t;
 }
 
 /*
  * Name of release (Common)
  */
-char * single_name(char *s, char *inc) {
+void single_name(char *s, char *inc, char *retval) {
     int	begin_single, end_single, size;
     char	*t;
 
@@ -164,11 +157,7 @@ char * single_name(char *s, char *inc) {
     }
 
     size = strlen(s) - begin_single - end_single + 1;
-
-    t = malloc(size);
-    sprintf(t, "%.*s", size - 1, s + begin_single);
-
-    return(t);
+    sprintf(retval, "%.*s", size - 1, s + begin_single);
 }
 
 void incomplete_cleanup(char *path, char *cd_inc, char *inc) {
@@ -180,19 +169,18 @@ void incomplete_cleanup(char *path, char *cd_inc, char *inc) {
     char		*temp;
     char		*locator;
 
-    temp = malloc(sizeof(cd_inc) > sizeof(inc) ? sizeof(cd_inc) : sizeof(inc));
+    temp = malloc(PATH_MAX);
+    *temp = 0;
+    locator = malloc(PATH_MAX);
+    *locator = 0;
 
     sprintf(temp, "%s", cd_inc);
-    locator = replace_cookies(temp);
+    replace_cookies(temp, locator);
     regcomp(&preg[0], locator, REG_NEWLINE|REG_EXTENDED);
-    free(locator);
 
     sprintf(temp, "%s", inc);
-    locator = replace_cookies(temp);
+    replace_cookies(temp, locator);
     regcomp(&preg[1], locator, REG_NEWLINE|REG_EXTENDED);
-    free(locator);
-
-    free(temp);
 
     printf("[%s]\n", path);
 
@@ -203,7 +191,7 @@ void incomplete_cleanup(char *path, char *cd_inc, char *inc) {
 		/* Multi CD */
 		if ( regexec(&preg[0], dirlist[entries]->d_name, 1, pmatch, 0) == 0 ) {
 		    if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries]) ) {
-			temp=multi_name(dirlist[entries]->d_name, cd_inc);
+			multi_name(dirlist[entries]->d_name, cd_inc, temp);
 			if ( stat(temp, &fileinfo) != 0 ) {
 			    unlink(dirlist[entries]->d_name);
 			    printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
@@ -215,7 +203,7 @@ void incomplete_cleanup(char *path, char *cd_inc, char *inc) {
 		/* Normal */
 		if ( regexec(&preg[1], dirlist[entries]->d_name, 1, pmatch, 0) == 0 ) {
 		    if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries]) ) {
-			temp=single_name(dirlist[entries]->d_name, inc);
+			single_name(dirlist[entries]->d_name, inc, temp);
 			if ( stat(temp, &fileinfo) != 0 ) {
 			    unlink(dirlist[entries]->d_name);
 			    printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
@@ -223,13 +211,19 @@ void incomplete_cleanup(char *path, char *cd_inc, char *inc) {
 			continue;
 		    }
 		}
+		free(dirlist[entries]);
 	    }
 	} else {
 	    fprintf(stderr, "Unable to scandir(%s)\n", path);
 	}
+        free(dirlist);
     } else {
 	fprintf(stderr, "Unable to chdir(%s)\n", path);
     }
+    regfree(&preg[0]);
+    regfree(&preg[1]);
+    free(temp);
+    free(locator);
 }
 
 void cleanup(char *pathlist) {
@@ -275,6 +269,7 @@ void cleanup(char *pathlist) {
 		    incomplete_cleanup(data_today, incomplete_cd_indicator, incomplete_indicator);
 		    incomplete_cleanup(data_today, incomplete_cd_nfo_indicator, incomplete_nfo_indicator);
 		}
+
 		if (!*newentry)
 		    break;
 		
@@ -284,6 +279,8 @@ void cleanup(char *pathlist) {
     free(data_today);
     free(data_yesterday);
     free(path);
+    free(time_today);
+    free(time_yesterday);
 }
 
 int main(void) {
