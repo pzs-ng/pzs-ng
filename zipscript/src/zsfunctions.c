@@ -659,6 +659,7 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 
 	mkdir(org, 0777);
 
+	//printf("\n%s\n%s\n\n", source, target);
 #if ( userellink == 1 )
 	abs2rel(source, org, result, MAXPATHLEN);
 #endif
@@ -1220,25 +1221,25 @@ remove_nfo_indicator(GLOBAL *g)
 void 
 getrelname(GLOBAL *g)
 {
-	int		l[2], n = 0, k = 2;
+	int		n = 0, k = 2;
 	char		**path = 0;
 
 	path = buffer_paths(g, path, &k, (strlen(g->l.path)-1));
 
 d_log("DEBUG: result of subdir-test: %d\n", subcomp(path[1]));
 	if (subcomp(path[1])) {
-		g->l.link_source = malloc(n = (g->l.length_path - l[1]));
+		//g->l.link_source = malloc(n = (g->l.length_path - l[1]));
 		sprintf(g->v.misc.release_name, "%s/%s", path[0], path[1]);
 		sprintf(g->l.link_source, "%.*s", n - 1, g->l.path);
-		g->l.link_target = path[0];
+		strlcpy(g->l.link_target, path[0], PATH_MAX);
 		g->l.incomplete = c_incomplete(incomplete_cd_indicator, path, &g->v);
 		g->l.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &g->v);
 		g->l.in_cd_dir = 1;
 	} else {
-		g->l.link_source = malloc(g->l.length_path + 1);
-		strlcpy(g->l.link_source, g->l.path, g->l.length_path + 1);
+		//g->l.link_source = malloc(g->l.length_path + 1);
+		strlcpy(g->l.link_source, g->l.path, PATH_MAX);
 		sprintf(g->v.misc.release_name, "%s", path[1]);
-		g->l.link_target = path[1];
+		strlcpy(g->l.link_target, path[0], PATH_MAX);
 		g->l.incomplete = c_incomplete(incomplete_indicator, path, &g->v);
 		g->l.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &g->v);
 		g->l.in_cd_dir = 0;

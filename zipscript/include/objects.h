@@ -138,14 +138,14 @@ struct VARS {
 };
 
 struct LOCATIONS {
-	char           *leader;
-	char           *nfo_incomplete;
-	char           *incomplete;
-	char           *sfv;
-	char           *race;
-	char           *link_target;
-	char           *link_source;
-	char            path[PATH_MAX];
+	char		*leader;
+	char		*nfo_incomplete;
+	char		*incomplete;
+	char		*sfv;
+	char		*race;
+	char		link_target[PATH_MAX];
+	char		link_source[PATH_MAX];
+	char		path[PATH_MAX];
 	unsigned int	length_path;
 	unsigned int	length_zipdatadir;
 	unsigned int	in_cd_dir;

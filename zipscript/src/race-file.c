@@ -467,7 +467,7 @@ create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char *f)
 	while ((fread(&rd, 1, sizeof(RACEDATA), r))) {
 		if (rd.status == F_CHECKED) {
 			strlcpy(fname[c], rd.fname, PATH_MAX);
-			t_pos[0] = 0;
+			t_pos[c] = 0;
 			c++;
 		}
 	}

@@ -209,7 +209,7 @@ main(int argc, char **argv)
 	g.l.race = m_alloc(n += 10 + (g.l.length_zipdatadir = sizeof(storage) - 1));
 	g.l.sfv = m_alloc(n);
 	g.l.leader = m_alloc(n);
-	g.l.link_target = m_alloc(n + 256);
+	//g.l.link_target = m_alloc(n + 256);
 	target = m_alloc(n + 256);
 	g.ui = malloc(sizeof(struct USERINFO *) * 30);
 	memset(g.ui, 0, sizeof(struct USERINFO *) * 30);
@@ -1337,14 +1337,14 @@ main(int argc, char **argv)
 	buffer_users(PASSWDFILE, unum);
 	updatestats_free(g.v, g.ui, g.gi);
 	rescandir(1);
-	free(g.l.link_source);
+	//free(g.l.link_source);
 	//free(g.v.misc.release_name);
 	free(fileext);
 	m_free(target);
 	m_free(g.l.race);
 	m_free(g.l.sfv);
 	m_free(g.l.leader);
-	m_free(g.l.link_target);
+	//m_free(g.l.link_target);
 
 #if ( benchmark_mode == TRUE )
 	gettimeofday(&bstop, (struct timezone *)0);

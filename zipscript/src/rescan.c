@@ -375,7 +375,7 @@ main()
 	free(g.l.sfv);
 	free(g.l.leader);
 	//free(g.v.misc.release_name);
-	free(g.l.link_source);
+	//free(g.l.link_source);
 	buffer_groups(GROUPFILE, gnum);
 	buffer_users(PASSWDFILE, unum);
 
