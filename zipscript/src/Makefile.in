@@ -6,7 +6,7 @@ binpath=../bin
 
 CC=@CC@
 #CFLAGS=-O2 @STATIC@ -Wall -pedantic -I../include/
-CFLAGS=-W -Wall @STATIC@ -g -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I../include
+CFLAGS=-W -Wall -O2 @STATIC@ -g -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I../include
 LDFLAGS=@LDFLAGS@
 ZSLIBS=@ZSLIBS@
 UNIVERSAL=race-file.o zsfunctions.o mp3info.o
