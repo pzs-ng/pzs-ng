@@ -261,7 +261,7 @@ int main( int argc, char **argv ) {
  raceI.misc.fastest_user[0] =
  raceI.misc.release_type = 0;
 
- //gettimeofday(&raceI.transfer_stop, (struct timezone *)0 );
+ /*gettimeofday(&raceI.transfer_stop, (struct timezone *)0 );*/
 
  d_log("Reading data from environment variables\n");
  if (!(getenv("USER") && getenv("GROUP") && getenv("TAGLINE") && getenv("SPEED"))) {
@@ -288,7 +288,9 @@ int main( int argc, char **argv ) {
  /* Store mtime */
  raceI.file.mtime=fileinfo.st_mtime;
  /* Store upload duration/start time */
-// raceI.transfer_start.tv_sec=raceI.transfer_stop.tv_sec-((unsigned int)(raceI.file.size)/raceI.file.speed);
+
+/* obsolete: */
+/* raceI.transfer_start.tv_sec=raceI.transfer_stop.tv_sec-((unsigned int)(raceI.file.size)/raceI.file.speed);*/
 
 
 

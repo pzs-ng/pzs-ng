@@ -279,7 +279,7 @@ int main () {
  removecomplete();
  unlink( locations.race );
  unlink( locations.sfv );
- rescandir2(); // Rescan dir after deleting files..
+ rescandir2(); /* Rescan dir after deleting files.. */
  printf("Rescanning files...\n");
 
  if ( (raceI.file.name = findfileext(".sfv")) != NULL) {
@@ -293,7 +293,7 @@ int main () {
 		 while ( ext[m] != '.' && m > 0 ) m--;
 		 if ( ext[m] != '.' ) m = l; else m++;
 		 ext += m;
-//	printf("ext: %s\n",ext);
+/*	printf("ext: %s\n",ext); */
 		 if ( ! strcomp( ignored_types, ext ) && strcmp( dirlist[n]->d_name + l - 8, "-missing" ) ) {
 			 stat( dirlist[n]->d_name, &fileinfo );
 			 f_uid = fileinfo.st_uid;
@@ -322,7 +322,7 @@ int main () {
 		}
 	 printf("\n\n");
 	 testfiles_file( &locations, &raceI );
-	 rescandir(); // We need to rescan again
+	 rescandir(); /* We need to rescan again */
 	 readsfv_file( &locations, &raceI, 0 );
 	 readrace_file( &locations, &raceI, userI, groupI );
 	 sortstats( &raceI, userI, groupI );

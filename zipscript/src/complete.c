@@ -28,7 +28,6 @@ void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
  unlink(locations->incomplete);
  
 #if ( write_complete_message == TRUE )
-// msgfile = fopen(".message", "w");
  if ((msgfile = fopen(".message", "w")) == NULL) { d_log("Couldn't fopen .message\n"); exit(EXIT_FAILURE); }
 
  fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_header));
