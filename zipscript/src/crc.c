@@ -77,7 +77,7 @@ unsigned int calc_crc32(char *f) {
  size_t		i, j;
  int		k;
 
- in = fopen(f, "rb");
+ if (!(in = fopen(f, "rb"))) { printf("Cannot find file %s.\n",f); exit (2); }
  buf = malloc(32766);
  crc = 0xFFFFFFFF;
  while( ( i = fread( buf, 1, 32766, in ) ) > 0 ){
