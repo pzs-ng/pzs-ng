@@ -103,6 +103,9 @@ main(void)
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
 
+	d_log("rescan: Creating directory to store racedata in\n");
+ 	maketempdir(g.l.path);
+
 	d_log("rescan: Locking release\n");
 	if ((k = create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0))) {
 		d_log("rescan: Failed to lock release.\n");

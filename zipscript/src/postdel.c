@@ -136,6 +136,9 @@ main(int argc, char **argv)
 
 	getcwd(g.l.path, PATH_MAX);
 
+	d_log("rescan: Creating directory to store racedata in\n");
+	maketempdir(g.l.path);
+
 	d_log("postdel: Locking release\n");
 	if ((m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0))) {
 		d_log("postdel: Failed to lock release.\n");
