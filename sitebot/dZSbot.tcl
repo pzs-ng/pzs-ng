@@ -743,7 +743,7 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 			set output2 [replacevar $output2 "%section" $section]
 			set output2 [replacevar $output2 "%sitename" $sitename]
 			set output2 [replacevar $output2 "%splitter" $theme(SPLITTER)]
-			set output2 [string trim $output2 "$theme(SPLITTER)"]
+			set output2 [string range $output2 0 [expr [string length "$output2"] - [string length "$theme(SPLITTER)"] - 1]]
 			set output [replacevar $output "%loop$loop" $output2]
 			set loop [expr $loop + 1]
 		} else {
@@ -1746,7 +1746,7 @@ proc launchnuke2 {type path section sargs dargs} {
 		}
 	}
 
-	set nuke(NUKEE) [string trim $nuke(NUKEE) "$theme(SPLITTER)"]
+	set nuke(NUKEE) [string range $nuke(NUKEE) 0 [expr [string length "$nuke(NUKEE)"] - [string length "$theme(SPLITTER)"] - 1]]
 	set split [split $nuke(PATH) "/"]
 	set ll [llength $split]
 	set split2 [split $mpath "/"]
