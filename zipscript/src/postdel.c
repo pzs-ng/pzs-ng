@@ -140,7 +140,7 @@ main(int argc, char **argv)
 	maketempdir(g.l.path);
 
 	d_log("postdel: Locking release\n");
-	if ((m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0))) {
+	if ((m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 3, 0))) {
 		d_log("postdel: Failed to lock release.\n");
 		if (m == 1) {
 			d_log("postdel: version mismatch. Exiting.\n");
@@ -153,12 +153,12 @@ main(int argc, char **argv)
 		for ( m = 0; m <= 20; m++) {
 			d_log("postdel: sleeping for 1 second before trying to get a lock.\n");
 			sleep(1);
-			if (!create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0))
+			if (!create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0, g.v.data_queue))
 				break;
 		}
 		if (m >= max_seconds_wait_for_lock) {
 			d_log("postdel: Failed to get lock. Forcing unlock.\n");
-			if (create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 2)) {
+			if (create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 2, g.v.data_queue)) {
 				d_log("postdel: Failed to force a lock. No choice but to exit.\n");
 				exit(EXIT_FAILURE);
 			}

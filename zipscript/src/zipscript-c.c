@@ -281,7 +281,7 @@ main(int argc, char **argv)
 	maketempdir(g.l.path);
 
 	d_log("zipscript-c: Locking release\n");
-	if ((m = create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0))) {
+	if ((m = create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 3, 0))) {
 		d_log("zipscript-c: Failed to lock release.\n");
 		if (m == 1) {
 			d_log("zipscript-c: version mismatch. Exiting.\n");
@@ -295,12 +295,13 @@ main(int argc, char **argv)
 		for ( m = 0; m <= 20; m++) {
 			d_log("zipscript-c: sleeping for 1 second before trying to get a lock.\n");
 			sleep(1);
-			if (!create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0))
+			if (!create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0, g.v.data_queue))
 				break;
+			
 		}
 		if (m >= max_seconds_wait_for_lock) {
 			d_log("zipscript-c: Failed to get lock. Forcing unlock.\n");
-			if (create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 2)) {
+			if (create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 2, g.v.data_queue)) {
 				d_log("zipscript-c: Failed to force a lock. No choice but to exit.\n");
 				exit(EXIT_FAILURE);
 			}

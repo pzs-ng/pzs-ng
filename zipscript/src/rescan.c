@@ -107,22 +107,31 @@ main(void)
  	maketempdir(g.l.path);
 
 	d_log("rescan: Locking release\n");
-	if ((k = create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0))) {
+	if ((k = create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 3, 0))) {
 		d_log("rescan: Failed to lock release.\n");
 		if (k == 1) {
 			d_log("rescan: version mismatch. Exiting.\n");
 			printf("Error. You need to rm -fR ftp-data/pzs-ng/* before rescan will work.\n");
 			exit(EXIT_FAILURE);
 		}
+		l = g.v.data_incrementor;
 		for ( k = 0; k <= 20; k++) {
-			d_log("rescan: sleeping for 1 second before trying to get a lock.\n");
+			d_log("rescan: sleeping for 1 second before trying to get a lock (queue: %d).\n", g.v.data_queue);
 			sleep(1);
-			if (!create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0))
+			if (!create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0, g.v.data_queue))
 				break;
 		}
 		if (k >= max_seconds_wait_for_lock) {
-			d_log("rescan: Failed to get lock. Will not force unlock.\n");
-			exit(EXIT_FAILURE);
+			if (l == g.v.data_incrementor) {
+				d_log("rescan: Failed to get lock. Forcing unlock.\n");
+				if (create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 2, g.v.data_queue)) {
+					d_log("rescan: Failed to force a lock. No choice but to exit.\n");
+					exit(EXIT_FAILURE);
+				}
+			} else {
+				d_log("rescan: Failed to get lock. Will not force unlock.\n");
+				exit(EXIT_FAILURE);
+			}
 		}
 	}
 

@@ -887,7 +887,7 @@ verify_racedata(const char *path)
  */
 
 int
-create_lock(struct VARS *raceI, const char *path, short int progtype, short int force_lock)
+create_lock(struct VARS *raceI, const char *path, short int progtype, short int force_lock, short int queue)
 {
 	int		fd;
 	HEADDATA	hd;
@@ -908,22 +908,39 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 		raceI->data_in_use = hd.data_in_use = progtype;
 		raceI->data_incrementor = hd.data_incrementor = 1;
 		raceI->data_queue = hd.data_queue = 0;
+		hd.data_qcurrent = 0;
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
 		return 0;
 	} else {
 		read(fd, &hd, sizeof(HEADDATA));
 		if (hd.data_in_use) {
-			if (force_lock > 1) {
+			if (force_lock == 2) {
 				d_log("create_lock: Unlock forced.\n");
 			} else {
-				d_log("create_lock: Data is already locked.\n");
-				hd.data_queue++;
+				if (force_lock == 3) {
+					d_log("create_lock: Data is already locked - putting you in queue.\n");
+					hd.data_queue++;
+					raceI->data_queue = hd.data_queue;
+				} else 
+					d_log("create_lock: Data is already locked.\n");
 				lseek(fd, 0L, SEEK_SET);
 				write(fd, &hd, sizeof(HEADDATA));
 				close(fd);
-				raceI->data_queue = hd.data_queue;
 				return hd.data_in_use;
+			}
+		}
+		if (!hd.data_in_use) {
+			if (force_lock == 3 && queue) {
+				d_log("create_lock: Data is already locked - putting you in queue.\n");
+				hd.data_queue++;
+				raceI->data_queue = hd.data_queue;
+			} else if (hd.data_queue && queue != hd.data_qcurrent && force_lock != 2) {
+				d_log("create_lock: You are still queued - please wait.\n");
+				lseek(fd, 0L, SEEK_SET);
+				write(fd, &hd, sizeof(HEADDATA));
+				close(fd);
+				return -1;
 			}
 		}
 		if (force_lock == 1) {
@@ -939,9 +956,6 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 			close(fd);
 			return 1;
 		}
-		if (hd.data_queue)
-			hd.data_queue--;
-		raceI->data_queue = hd.data_queue;
 		lseek(fd, 0L, SEEK_SET);
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
@@ -968,6 +982,11 @@ remove_lock(struct VARS *raceI)
 	read(fd, &hd, sizeof(HEADDATA));
 	hd.data_in_use = 0;
 	hd.data_incrementor = 0;
+	if (hd.data_queue)
+		hd.data_qcurrent++;
+	if (hd.data_queue <= hd.data_qcurrent)
+		hd.data_queue = hd.data_qcurrent = 0;
+d_log("queue: %d - qcurrent: %d\n", hd.data_queue, hd.data_qcurrent);
 	lseek(fd, 0L, SEEK_SET);
 	write(fd, &hd, sizeof(HEADDATA));
 	close(fd);
