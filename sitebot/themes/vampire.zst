@@ -6,7 +6,7 @@
 #  Created by: Phen0menon & juanker                        #
 #  Maintained by: juanker (juanker@EFnet #pzs-ng)          #
 #  Notes: Best experienced on dark -black- backgrounds     #
-#  Tested with: pzs-ng r1092                               #
+#  Tested with: pzs-ng r1105                               #
 #                                                          #
 ############################################################
 #                                                          #
@@ -183,3 +183,17 @@ announce.REQANNOUNCE2				= "%b{REQUEST%c1{:}} %c3{%b{%who}} %c1{requests} %c3{%b
 announce.FILLANNOUNCE				= "%b{REQUEST%c1{:}} %c3{%b{%who}} %c1{%action} %c3{%b{%request}} %c1{(request #}%c3{%what}%c1{). Good work!}"
 announce.RLSTATS				= "%b{RELEASE STATS%c1{:}} %c3{%path/%b{%reldir}} %c1{has a total of} %c3{%b{%numfiles}} %c1{files (}%c3{%b{%totsize}}%c1{MB), which have been downloaded} %c3{%b{%totdn}} %c1{times generating a traffic of} %c3{%b{%rlstraffic}}%c1{MB. Globally, this release has been fully downloaded} %c3{%b{%rlsdn}} %c1{times.}"
 announce.AUTODELETE				= "%b{AUTODELETE%c1{:}} %c3{%b{%dir}} %c1{was just removed, which freed} %c3{%b{%size}}%c1{MB.}"
+
+# announces for !new !search !nukes and !unnukes
+announce.NEW					= "%b{NEW%c1{:}} %c1{-}%c2{%section}%c1{- Latest releases:}"
+announce.NEW_BODY				= "%c2{%num}%c1{.-} %c3{%b{%reldir}} %c1{created by} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{%age ago} %c1{(}%c3{%b{%mbytes}}%c1{MB in} %c3{%b{%files}} %c1{files).}"
+announce.NEW_NONE				= "%c1{No releases found!}"
+announce.SEARCH					= "%b{SEARCH%c1{:}} %c1{Search results for '}%c3{%b{%pattern}}%c1{':}"
+announce.SEARCH_BODY				= "%c2{%num}%c1{.-} %c3{%b{%reldir}} %c1{created by} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{%age ago} %c1{(}%c3{%b{%mbytes}}%c1{MB in} %c3{%b{%files}} %c1{files).}"
+announce.SEARCH_NONE				= "%c1{No matching results found!}"
+announce.NUKES					= "%b{NUKES%c1{:}} %c1{-}%c2{%section}%c1{- Latest nukes:}"
+announce.NUKES_BODY				= "%c2{%num}%c1{.-} %c3{%b{%reldir}} %c1{was nuked factor} %c3{%b{x%multiplier}} %c1{by} %c3{%b{%nuker}} %c1{[reason]} %c3{%b{%reason}} %c1{(Nuke date was} %c3{%date}%c1{).}"
+announce.NUKES_NONE				= "%c1{No nukes found!}"
+announce.UNNUKES				= "%b{UNNUKES%c1{:}} %c1{-}%c2{%section}%c1{- Latest unnukes:}"
+announce.UNNUKES_BODY				= "%c2{%num}%c1{.-} %c3{%b{%reldir}} %c1{was unnuked factor} %c3{%b{x%multiplier}} %c1{by} %c3{%b{%unnuker}} %c1{[reason]} %c3{%b{%reason}} %c1{(Unnuke date was} %c3{%date}%c1{).}"
+announce.UNNUKES_NONE				= "%c1{No unnukes found!}"
