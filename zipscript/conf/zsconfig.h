@@ -25,20 +25,21 @@
 
 /* Are you using GLFTPD 2?
  */
-#define for_glftpd2	TRUE
+#define for_glftpd2	FALSE
 
 /* On default, announcing is disabled everywhere, use zip/sfv paths to enable annouces and private paths to disable.
  * Don't be lazy! Be specific! And remember - pathnames are case sensitive.
  */
 #define group_dirs	"/site/groups/ /site/incoming/mp3/.groups/"
-#define zip_dirs	"/site/incoming/0day/"
-#define sfv_dirs	"/site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/"
+#define zip_dirs	"/site/0day/"
+#define sfv_dirs	"/site/mp3/ /site/games/ /site/apps/ /site/musicvideos/"
+//#define sfv_dirs	"/site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/"
 #define nocheck_dirs	"/site/private/"
 
 /* Directories for cleanup to check for broken incomplete files
  * Use same % values as with date
  */
-#define cleanupdirs	"/site/incoming/games/ /site/incoming/apps/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
+#define cleanupdirs	"/site/games/ /site/apps/ /site/0day/%m%d/ /site/mp3/%m%d/"
 
 /* Creates a zero-byte file for every non-existing file defined in sfv?
  */
@@ -73,7 +74,7 @@
 
 /* Special modes
  */
-#define debug_mode		FALSE
+#define debug_mode		TRUE
 #define benchmark_mode		TRUE
 
 /* Get user day/week/month/allup position

@@ -10,6 +10,7 @@ v0.7.2
  - daxxar fixed an ugly group dir bug.
  - psxc added support for DVD announces.
  - psxc removed support for adding nfo to zip (spam! begone!)
+ - psxc changed mp3-genres to match mp3info
 
 v0.7.1
  - merged in freebsd patches by iwdisb ( http://mobilcom.dyndns.org/~iwdisb/glftpd/ )
