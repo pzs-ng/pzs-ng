@@ -2,7 +2,7 @@ CFLAGS=-Wall -g
 CC=@CC@
 LIBS=@LIBS@
 
-all: strl
+all: strl_dir
 
 distclean: clean
 	cd strl ; $(MAKE) distclean
@@ -10,6 +10,6 @@ distclean: clean
 clean:
 	cd strl ; $(MAKE) clean
 
-strl:
+strl_dir:
 	@(echo -e "\n\033[1;37mCompiling the strl lib\033[0m")
 	cd strl ; $(MAKE) all
