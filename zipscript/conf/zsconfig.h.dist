@@ -11,113 +11,65 @@
 
 
 #define sitepath_dir			"/site/"
-#define group_dirs                      "/site/groups/"
-#define zip_dirs                        "/site/test/ /site/incoming/0day/"
-#define sfv_dirs                        "/site/test/ /site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/requests/"
-#define nocheck_dirs                    "/site/private/"
-#define audio_nocheck_dirs              "/site/groups/ /site/incoming/requests/"
-#define allowed_types_exemption_dirs    "/site/incoming/musicvideos/"
+#define group_dirs			"/site/groups/"
+#define zip_dirs			"/site/incoming/0day/"
+#define sfv_dirs			"/site/test/ /site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/requests/"
+#define nocheck_dirs			"/site/private/"
+#define audio_nocheck_dirs		"/site/groups/ /site/incoming/requests/"
+#define allowed_types_exemption_dirs	"/site/incoming/musicvideos/"
 #define check_for_missing_nfo_dirs	"/site/incoming/games/ /site/incoming/apps/"
 
-#define cleanupdirs     "/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
+#define cleanupdirs			"/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 
-#define short_sitename		"NG"
+#define short_sitename			"NG"
 
-#define status_bar_type         1
+#define status_bar_type			1
 
-#define incompleteislink        1
+#define incompleteislink		1
 
-#define allowed_types           "jpg,cue,m3u,mpg,avi,nfo,txt"
+#define allowed_types			"jpg,cue,m3u,mpg,avi,nfo,txt"
 
-#define ignored_types           ",diz,jpg,cue,m3u,nfo,sfv,debug"
+#define ignored_types			",diz,jpg,cue,m3u,nfo,sfv,debug"
 
-#define debug_mode		TRUE
+#define debug_mode			TRUE
 
-#define deny_double_sfv         FALSE
-#define force_sfv_first         FALSE
+#define deny_double_sfv			FALSE
+#define force_sfv_first			FALSE
 
-#define audio_genre_path                "/site/incoming/music.by.genre/"
-#define audio_artist_path               "/site/incoming/music.by.artist/"
-#define audio_year_path                 "/site/incoming/music.by.year/"
-#define audio_group_path                "/site/incoming/music.by.group/"
-#define allowed_constant_bitrates       "160,192"
-#define allowed_years                   "2000,2001,2002,2003,2004,2005"
-#define banned_genres                   "Christian Rap"
-#define allowed_genres                  "Rock"
-#define audio_genre_sort                FALSE
-#define audio_year_sort                 FALSE
-#define audio_artist_sort               FALSE
-#define audio_group_sort                FALSE
-#define audio_cbr_check                 TRUE
-#define audio_cbr_warn                  TRUE
-#define audio_year_check                TRUE
-#define audio_year_warn                 TRUE
-#define audio_banned_genre_check        TRUE
-#define audio_allowed_genre_check       FALSE
-#define audio_genre_warn                TRUE
+#define audio_genre_path		"/site/incoming/music.by.genre/"
+#define audio_artist_path		"/site/incoming/music.by.artist/"
+#define audio_year_path			"/site/incoming/music.by.year/"
+#define audio_group_path		"/site/incoming/music.by.group/"
+#define allowed_constant_bitrates	"160,192"
+#define allowed_years			"2003,2004,2005"
+#define banned_genres			"Christian Rap"
+#define allowed_genres			"Rock"
+#define audio_genre_sort		FALSE
+#define audio_year_sort			FALSE
+#define audio_artist_sort		FALSE
+#define audio_group_sort		FALSE
+#define audio_cbr_check			TRUE
+#define audio_cbr_warn			TRUE
+#define audio_year_check		TRUE
+#define audio_year_warn			TRUE
+#define audio_banned_genre_check	TRUE
+#define audio_allowed_genre_check	FALSE
+#define audio_genre_warn		TRUE
 
-#define announce_norace         TRUE
-#define zip_complete_type               0
-#define zip_norace_complete_type        0
-#define rar_complete_type               1
-#define rar_norace_complete_type        0
-#define audio_complete_type             1
-#define audio_norace_complete_type      0
-#define video_complete_type             1
-#define video_norace_complete_type      0
-#define other_complete_type             1
-#define other_norace_complete_type      0
+#define announce_norace			TRUE
+#define zip_complete_type		0
+#define zip_norace_complete_type	0
+#define rar_complete_type		1
+#define rar_norace_complete_type	0
+#define audio_complete_type		1
+#define audio_norace_complete_type	0
+#define video_complete_type		1
+#define video_norace_complete_type	0
+#define other_complete_type		1
+#define other_norace_complete_type	0
 
-#define message_header          ""
-#define message_user_header     "\n                           U S E R T O P\n" \
-    "+--------------------------------------------------------------------+\n"
-#define message_user_body       "%3n %-34U %7.1mM %3fF %5.1p%% %5.0sKBs\n"
-#define message_user_footer     "+--------------------------------------------------------------------+\n" \
-    "%3u Total %36.1mM %3fF 100.0%% %5.0aKBs\n"
-
-#define message_group_header    "\n\n                          G R O U P T O P\n" \
-    "+--------------------------------------------------------------------+\n"
-#define message_group_body      "%3n %-34g %7.1mM %3fF %5.1p%% %5.0sKBs\n"
-#define message_group_footer    "+--------------------------------------------------------------------+\n" \
-    "%3g Total %36.1mM %3fF 100.0%% %5.0aKBs\n"
-
-#define message_mp3             "\n\n                            I D 3 - T A G\n" \
-    "+--------------------------------------------------------------------+\n" \
-"  Artist : %x\n" \
-"  Album  : %W\n" \
-"  Genre  : %-34w Rate  : %Xkbit/sec\n" \
-"  Tracks : %-34f Year  : %Y\n" \
-"  Encoder: %-34i Preset: %I\n" \
-"+--------------------------------------------------------------------+\n"
-#define message_footer          ""
-
-
-#define zipscript_header         ".-== PZS-NG Zipscript-C ==--,d1'--== (C) 2004 ==---.\n"
-#define zipscript_sfv_ok         "| + SFV-file: oK!                                  |\n"
-#define zipscript_any_ok         "| + File: ok!                                      |\n"
-#define zipscript_SFV_ok         "| + CRC-Check: oK!                                 |\n"
-#define zipscript_SFV_skip       "| + CRC-Check: SKIPPED!                            |\n"
-#define zipscript_zip_ok         "| + ZiP integrity: oK!                             |\n"
-#define realtime_mp3_info        "+-=[ID3tag]=------------------------===------------+\n" \
-    "| Title  : %-39y |\n" \
-"| Artist : %-39x |\n" \
-"| Album  : %-39W |\n" \
-"| Genre  : %-39w |\n" \
-"| Year   : %-39Y |\n"
-#define realtime_user_header     "+-=[UserTop]=-------------------===----------------+\n"
-#define realtime_user_body       "| %2n. %-17u %8.1mmB %2fF %7.0skB/s |\n"
-#define realtime_user_footer     ""
-#define realtime_group_header    "+-=[GroupTop]=--------------------===--------------+\n"
-#define realtime_group_body      "| %2n. %-17g %8.1mmB %2fF %7.0skB/s |\n"
-#define realtime_group_footer    ""
-#define zipscript_footer_unknown "`-[ - NO - SFV - ]------------------------[%2F/??]--'\n"
-#define zipscript_footer_ok      "`-[%V]------------------------[%2F/%-2f]--'\n"
-#define zipscript_footer_error   "| - %-46v |\n" \
-    "`-----------------------------------========-------'\n"
-#define zipscript_footer_skip    "`--------------------------------=====-------------'\n"
-
-#define enable_nfo_script       FALSE
-#define nfo_script              "/bin/psxc-imdb.sh"
-#define enable_complete_script  FALSE
-#define complete_script         "/bin/nfo_copy.sh"
+#define enable_nfo_script		FALSE
+#define nfo_script			"/bin/psxc-imdb.sh"
+#define enable_complete_script		FALSE
+#define complete_script			"/bin/nfo_copy.sh"
 

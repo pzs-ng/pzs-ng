@@ -555,7 +555,13 @@ proc sndall {section args} {
 # POST WHO INFO                                                                 #
 #################################################################################
 proc who {nick uhost hand chan args} {
-	global binary
+	global binary disable mainchan
+
+	if { $disable(TRIGINALLCHAN) == 1 } {
+		if {$chan!=$mainchan} {
+			return 0
+		}
+	}
 	foreach line [split [exec $binary(WHO)] \n] {
 		if {![info exists newline($line)]} {
 			set newline($line) 0
@@ -571,8 +577,13 @@ proc who {nick uhost hand chan args} {
 # POST SPEED                                                                    #
 #################################################################################
 proc speed {nick uhost hand chan args} {
-	global binary announce theme
+	global binary announce theme disable mainchan
 
+	if { $disable(TRIGINALLCHAN) == 1 } {
+		if {$chan!=$mainchan} {
+			return 0
+		}
+	}
 	set base_output "$theme(PREFIX)$announce(DEFAULT)"
 	foreach line [split [exec $binary(WHO) [lindex $args 0]] "\n"] {
 		set output [replacevar $base_output "%msg" $line]
@@ -587,8 +598,13 @@ proc speed {nick uhost hand chan args} {
 # POST BANDWIDTH                                                                #
 #################################################################################
 proc bandwidth {nick uhost hand chan args} {
-	global binary announce theme
+	global binary announce theme disable mainchan
 
+	if { $disable(TRIGINALLCHAN) == 1 } {
+		if {$chan!=$mainchan} {
+			return 0
+		}
+	}
 	set output "$theme(PREFIX)$announce(BW)"
 	set data [exec $binary(BW)]
 	set output [replacevar $output "%uploads" [lindex $data 0]]
@@ -607,7 +623,14 @@ proc bandwidth {nick uhost hand chan args} {
 #################################################################################
 # uploaders BANDWIDTH                                                           #
 #################################################################################
-proc ng_bwup { nick uhost hand chan args} { global binary announce speed theme
+proc ng_bwup { nick uhost hand chan args} {
+	global binary announce speed theme disable mainchan
+
+	if { $disable(TRIGINALLCHAN) == 1 } {
+		if {$chan!=$mainchan} {
+			return 0
+		}
+	}
 	set output "$theme(PREFIX)$announce(BWUP)"
 	set raw [exec $binary(BW)]
 	set upper [format "%.1f" [expr 100 * ([lindex $raw 1] / $speed(INCOMING))]]
@@ -638,8 +661,13 @@ proc ng_bwup { nick uhost hand chan args} { global binary announce speed theme
 # ng_uploaders - Origional by Celerex - Mod/Merge by themolester                #
 #################################################################################
 proc ng_uploaders {nick uhost hand chan args} {
-	global binary announce speed theme
+	global binary announce speed theme disable mainchan
 
+	if { $disable(TRIGINALLCHAN) == 1 } {
+		if {$chan!=$mainchan} {
+			return 0
+		}
+	}
 	set output "$theme(PREFIX)$announce(UPLOAD)"
 	set output [basicreplace "$output" "UPLOAD"]
 	putserv "PRIVMSG $chan :$output "
@@ -697,7 +725,14 @@ proc ng_uploaders {nick uhost hand chan args} {
 #################################################################################
 # downloaders BANDWIDTH                                                         #
 #################################################################################
-proc ng_bwdn { nick uhost hand chan args} { global binary announce speed theme
+proc ng_bwdn { nick uhost hand chan args} {
+	global binary announce speed theme disable mainchan
+
+	if { $disable(TRIGINALLCHAN) == 1 } {
+		if {$chan!=$mainchan} {
+			return 0
+		}
+	}
 	set output "$theme(PREFIX)$announce(BWDN)"
 	set raw [exec $binary(BW)]
 	set upper [format "%.0f" [expr [lindex $raw 1] / $speed(INCOMING)]]
@@ -728,8 +763,13 @@ proc ng_bwdn { nick uhost hand chan args} { global binary announce speed theme
 # ng_leechers - Origional by Celerex - Mod/Merge by themolester                 #
 #################################################################################
 proc ng_leechers {nick uhost hand chan args} {
-	global binary announce speed theme
+	global binary announce speed theme disable mainchan
 
+	if { $disable(TRIGINALLCHAN) == 1 } {
+		if {$chan!=$mainchan} {
+			return 0
+		}
+	}
 	set output "$theme(PREFIX)$announce(LEECH)"
 	set output [basicreplace "$output" "LEECH"]
 	putserv "PRIVMSG $chan :$output "
@@ -787,7 +827,14 @@ proc ng_leechers {nick uhost hand chan args} {
 #################################################################################
 # ng_idlers - Origional by Celerex - Mod/Merge by themolester                   #
 #################################################################################
-proc ng_idlers { nick uhost hand chan args} { global binary announce speed minidletime theme
+proc ng_idlers { nick uhost hand chan args} {
+	global binary announce speed minidletime theme disable mainchan
+
+	if { $disable(TRIGINALLCHAN) == 1 } {
+		if {$chan!=$mainchan} {
+			return 0
+		}
+	}
 	set output "$theme(PREFIX)$announce(IDLE)"
 	set output [basicreplace "$output" "IDLE"]
 	putserv "PRIVMSG $chan :$output "
@@ -840,8 +887,13 @@ proc ng_idlers { nick uhost hand chan args} { global binary announce speed minid
 # UPDATED BANDWIDTH                                                             #
 #################################################################################
 proc ng_bandwidth {nick uhost hand chan args} {
-	global binary announce speed theme
+	global binary announce speed theme disable mainchan
 
+	if { $disable(TRIGINALLCHAN) == 1 } {
+		if {$chan!=$mainchan} {
+			return 0
+		}
+	}
 	set output "$theme(PREFIX)$announce(BW)"
 	set raw [exec $binary(BW)]
 	set upper [format "%.0f" [expr [lindex $raw 1] * 100 / $speed(INCOMING)]]
@@ -874,8 +926,13 @@ proc ng_bandwidth {nick uhost hand chan args} {
 # POST STATS                                                                    #
 #################################################################################
 proc showstats {nick type time section} {
-	global binary statsection location
+	global binary statsection location disable mainchan
 
+	if { $disable(TRIGINALLCHAN) == 1 } {
+		if {$chan!=$mainchan} {
+			return 0
+		}
+	}
 	set sect 0
 	if {[string length $section] != 0} {
 		set error 1
@@ -951,8 +1008,13 @@ proc invite {nick host hand arg} {
 # SHOW FREE SPACE                                                               #
 #################################################################################
 proc show_free {nick uhost hand chan arg} {
-	global binary announce device theme
+	global binary announce device theme disable mainchan
 
+	if { $disable(TRIGINALLCHAN) == 1 } {
+		if {$chan!=$mainchan} {
+			return 0
+		}
+	}
 	set output "$theme(PREFIX)$announce(FREE)"
 	set devices ""; set free 0; set used 0
 	set total 0; set num 0; set perc 0
@@ -1104,8 +1166,13 @@ proc denycheck {release} {
 # SHOW INCOMPLETE LIST                                                          #
 #################################################################################
 proc show_incompletes { nick uhost hand chan arg } {
-	global sitename binary
+	global sitename binary disable mainchan
 
+	if { $disable(TRIGINALLCHAN) == 1 } {
+		if {$chan!=$mainchan} {
+			return 0
+		}
+	}
 	foreach line [split [exec $binary(INCOMPLETE)] "\n"] {
 		if {![info exists newline($line)]} {
 			set newline($line) 0
@@ -1140,7 +1207,14 @@ proc welcome_msg { nick uhost hand chan } {
 #################################################################################
 # CHECK BOUNCER STATUSES                                                        #
 #################################################################################
-proc ng_bnc_check {nick uhost hand chan arg} {global bnc binary
+proc ng_bnc_check {nick uhost hand chan arg} {
+	global bnc binary disable mainchan
+
+	if { $disable(TRIGINALLCHAN) == 1 } {
+		if {$chan!=$mainchan} {
+			return 0
+		}
+	}
 	putquick "NOTICE $nick :Checking bouncer(s) status..."
 	set count 1
 	foreach i $bnc(LIST) {
@@ -1203,8 +1277,13 @@ proc stats_group_gpad {nick uhost hand chan args} { showstats "$nick" "-d" "-A" 
 # Help Section                                                                  #
 #################################################################################
 proc help {nick uhost hand chan arg} {
-	global sections cmdpre dver tclroot
+	global sections cmdpre dver tclroot disable mainchan
 
+	if { $disable(TRIGINALLCHAN) == 1 } {
+		if {$chan!=$mainchan} {
+			return 0
+		}
+	}
 	set file "$tclroot/dZSbot.help"
 	if {![file readable $file]} {
 		puthelp "PRIVMSG $nick : File dZSbot.help is missing, please check install"
