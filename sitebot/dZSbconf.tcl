@@ -8,7 +8,7 @@
 # Locations of all the usual files, change is usually only required
 # if you have another glroot than /glftpd/ =)
 set location(GLLOG)			"/glftpd/ftp-data/logs/glftpd.log"
-set location(PASSWD)		"/glftpd/etc/passwd"
+set location(PASSWD)			"/glftpd/etc/passwd"
 set location(USERS)			"/glftpd/ftp-data/users/"
 
 # Are you using glftpd2? Set to "YES" if you are, "NO" if not.
@@ -17,7 +17,7 @@ set use_glftpd2				"YES"
 # What types of messages are counted as the different types of output
 # (for disabling etc)
 set msgtypes(RACE)			"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV UPDATE HALFWAY NEWLEADER COMPLETE STATS BADGENRE BADYEAR BADBITRATE"
-set msgtypes(DEFAULT)		"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT"
+set msgtypes(DEFAULT)		"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT WIPE WIPE-r"
 
 # Sitename is for the %sitename-cookie in announces :)
 set sitename				"pzs-ng"
@@ -99,11 +99,11 @@ set disable(NUKE)           0
 set disable(UNNUKE)         0
 set disable(MSGINVITE)      0
 set disable(BADMSGINVITE)   0
-set disable(LOGIN)          1
+set disable(LOGIN)          1 
 set disable(LOGOUT)         1
 set disable(INCOMPLETE)     0
 set disable(RACE)           0
-set disable(SFV)            1
+set disable(SFV)            0
 set disable(UPDATE)         0
 set disable(HALFWAY)        0
 set disable(NEWLEADER)      0
@@ -114,7 +114,8 @@ set disable(BADYEAR)        0
 set disable(BADBITRATE)     0
 set disable(WELCOME)        0
 set disable(DEFAULT)        1
-
+set disable(WIPE)	    0
+set disable(WIPE-r)	    0
 #########################################################
 # ADVANCED CONFIG, EDIT CAREFULLY                       #
 #########################################################
@@ -155,8 +156,9 @@ set variables(INVITE)       "%ircnick %user %group"
 set variables(BADGENRE)     "%pf %msg"
 set variables(BADYEAR)      "%pf %msg"
 set variables(BADBITRATE)   "%pf %msg"
+set variables(WIPE)         "%pf %user %group %tagline"
+set variables(WIPE-r)       "%pf %user %group %tagline"
 set variables(DEFAULT)      "%pf %msg"
-
 ## Converts empty or zero variable to something else if defined
 #
 # Example:

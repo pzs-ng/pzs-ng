@@ -642,12 +642,15 @@ proc show_incompletes { nick uhost hand chan arg } {
 # SHOW WELCOME MSG                                                              #
 #################################################################################
 proc welcome_msg { nick uhost hand chan } {
-    global announce disable chanlist
+    global announce disable chanlist sitename cmdpre
 
     if {$disable(WELCOME) == 0} {
         foreach c_chan $chanlist(WELCOME) {
             if {[string match -nocase $c_chan $chan] == 1} {
-                puthelp "NOTICE $nick : $announce(WELCOME)"
+		set output "$announce(WELCOME)"
+		set output [replacevar $output "%sitename" $sitename]
+		set output [replacevar $output "%cmdpre" $cmdpre]
+                puthelp "NOTICE $nick : $output"
             }
         }
     }
@@ -755,13 +758,13 @@ proc loadtheme {file} {
 	foreach line $content {
 		if {![regexp -nocase -- "^#" $line]} {
 			if {[regexp -nocase -- {fakesection\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-				set setting [string toupper $setting]
+#				set setting [string toupper $setting]
 				set theme_fakes($setting) $value
 			} elseif {[regexp -nocase -- {announce\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-				set setting [string toupper $setting]
+#				set setting [string toupper $setting]
 				set announcetmp($setting) $value
 			} elseif {[regexp -nocase -- {(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-				set setting [string toupper $setting]
+#				set setting [string toupper $setting]
 				set theme($setting) $value
 			}
 		}
