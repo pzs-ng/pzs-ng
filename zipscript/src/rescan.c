@@ -441,6 +441,9 @@ main()
 				}
 			}
 		}
+	} else if ( mark_empty_dirs_as_incomplete_on_rescan) {
+			create_incomplete();
+			printf(" Empty dir - marking as incomplete.\n");
 	}
 	printf(" Passed : %i\n", (int)raceI.total.files - (int)raceI.total.files_missing);
 	printf(" Failed : %i\n", (int)raceI.total.files_bad);

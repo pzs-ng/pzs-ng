@@ -1059,6 +1059,11 @@ chmod_completebar <TRUE|FALSE>
 	to prevent it from being transfered on download/fxp.
 	Default: FALSE
 
+mark_empty_dirs_as_incomplete_on_rescan <TRUE|FALSE>
+	If you wish to mark an empty dir as incomplete, set this to TRUE. Empty
+	dirs that are rescanned will then be marked as incomplete
+	Default: FALSE
+
 allow_uid_change_in_ng_chown <TRUE|FALSE>
 	ng-chown is a binary that changes the uid/gid of files dirs. In
 	order for it to work you have to enable a few things. This variable

@@ -39,18 +39,18 @@ A: In dZSbconf.tcl there's a 'set variables(PRE)' line. Either change this to
    match your foo setup, or change the announce in foo's config to:
    group.DEFAULT.announce=PRE: "%PP/%R" "%R" "%G" "%D" "%F" "%S" "%C" "%W" "%U" "%g" "%T"
 
-Q: Integrity check failed (#17): File exists
---------------------------------------------
+Q: (ZIPSCRIPT) Integrity check failed (#17): File exists
+--------------------------------------------------------
 A: This is usually seen with zipfiles. It means you'ved changed the variable
    unzip_bin to a location outside glftpd's chroot, or to a place it is not
    found, or have forgotten to copy unzip into glftpd's bin/ dir.
 
-Q: Anything special worth mentioning for <enter-systemname-here>?
------------------------------------------------------------------
+Q: (ALL) Anything special worth mentioning for <enter-systemname-here>?
+-----------------------------------------------------------------------
 A: Gentoo: You need baselayout 1.8.6.13 or newer.
 
-Q: I don't want announces of CD/SAMPLE/SUBS etc. How do I do that?
-------------------------------------------------------------------
+Q: (BOT) I don't want announces of CD/SAMPLE/SUBS etc. How do I do that?
+------------------------------------------------------------------------
 A: You should disable the announce in glftpd.conf. Change your dirlog lines
    to something like this:
      dirlog          /site/0DAY/*/*/                 *
@@ -58,4 +58,15 @@ A: You should disable the announce in glftpd.conf. Change your dirlog lines
    The / at the end hinders announces/logging of new dirs after it, ie dirs
    created in /site/BOOKWARE/some_release/* is not announced. For more info
    see glftpd.docs.
+
+Q: (BOT) I get errors on !bw !speed etc in the bot. What to do?
+---------------------------------------------------------------
+A: If you get either of the following errors in partyline:
+	Tcl error [speed]: unmatched open quote in list
+	Tcl error [ng_bandwidth]: list element in quotes followed by "<something>" instead of space
+   This is usually a result of you turning on debug in sitewho.conf. Try
+   to turn debug off.
+
+
+
 

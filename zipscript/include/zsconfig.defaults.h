@@ -912,6 +912,10 @@
 #define	chmod_completebar		FALSE
 #endif
 
+#ifndef mark_empty_dirs_as_incomplete_on_rescan
+#define mark_empty_dirs_as_incomplete_on_rescan	FALSE
+#endif
+
 /*
  * Some setting used in ng-chown
  * -----------------------------
