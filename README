@@ -256,8 +256,8 @@ the zipscript will not run, and no files are checked.
 
 You should also add the following lines:
 
-cscript		DELE	post	/bin/postdel
-cscript		RMD	post	/bin/datacleaner
+cscript		DELE			post	/bin/postdel
+cscript		RMD			post	/bin/datacleaner
 
 This will take care of making things right when something is deleted. Like
 updating the race stats, adding/editing the (in)complete-bar etc. Forget
@@ -265,12 +265,16 @@ to add this, and you end up with a rather shabby site.
 
 Optionally, add the following:
 
-site_cmd	RESCAN	EXEC	/bin/rescan
-custom-rescan	!8 *
+cscript		SITE[:space:]NUKE	post	/bin/cleanup
+cscript		SITE[:space:]WIPE	post	/bin/cleanup
 
-This will allow you to rescan a dir. This comes in handy in places the
-zipscript isn't invoked by default, when you have dirs you wish to check
-from before you added the zipscript, and a lot of other occations.
+site_cmd	RESCAN			EXEC	/bin/rescan
+custom-rescan	!8	*
+
+The first two will remove dead symlinks. The last two will allow you to
+rescan a dir. This comes in handy in places the zipscript isn't invoked
+by default, when you have dirs you wish to check from before you added
+the zipscript, and a lot of other occations.
 Forget to add this and you will hit yourself hard quite a few times. ;)
 
 
