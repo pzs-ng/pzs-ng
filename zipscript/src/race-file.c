@@ -736,4 +736,39 @@ remove_from_race(const char *path, const char *f)
 
 }
 
+int
+verify_racedata(const char *path)
+{
+	char		tmppath[PATH_MAX];
+	FILE		*file, *tmp;
+	
+	RACEDATA	rd;
+
+	if (!(file = fopen(path, "r+"))) {
+		d_log("Couldn't fopen racefile (%s): %s\n", path, strerror(errno));
+		return 0;
+	}
+	
+	sprintf(tmppath, "%s/rd.verifydata.tmp", storage);
+
+	if (!(tmp = fopen(tmppath, "w"))) {
+		d_log("Couldn't fopen racefile (%s): %s\n", tmppath, strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+
+	while ((fread(&rd, sizeof(RACEDATA), 1, file))) {
+		if (fileexists(rd.fname))
+			fwrite(&rd, sizeof(RACEDATA), 1, tmp);
+		else
+			create_missing(rd.fname);
+	}
+	fclose(file);
+	fclose(tmp);
+
+	if (rename(tmppath, path) == -1) {
+		d_log("Failed rename of '%s' to '%s': %s", tmppath, path, strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+	return 1;
+}
 

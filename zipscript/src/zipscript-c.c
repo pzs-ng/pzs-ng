@@ -324,6 +324,10 @@ main(int argc, char **argv)
 		no_check = TRUE;
 	} else {
 		/* Process file */
+		d_log("Verifying old racedata\n");
+		if (!verify_racedata(g.l.race))
+			d_log("  Failed to open racedata - assuming this is a new race.\n");
+
 		switch (get_filetype(&g, fileext)) {
 		case 0:	/* ZIP CHECK */
 			d_log("File type is: ZIP\n");
