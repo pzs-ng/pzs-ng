@@ -1,4 +1,3 @@
-#include "../zipscript/conf/zsconfig.h"
 #include "../zipscript/include/objects.h"
 
 #include <stdio.h>
