@@ -55,13 +55,13 @@ void check_dir_loop(char *path) {
 	    sprintf(target, "%s/%s", path, list[n]->d_name );
 	    if ((dirp = opendir(target + zd_length))) {
 		check_dir_loop(target);
-		closedir(dirp);
 		chdir(path);
 	    } else {
 		remove_dir_loop(target);
 		rmdir(target);
 		chdir(path);
 	    }
+	    closedir(dirp);
 	}
 	free(list[n]);
     }
