@@ -17,7 +17,7 @@ distclean: clean
 	cd sitebot/src ; $(MAKE) distclean
 
 clean:
-	rm sitewho/sitewho
+	rm -f sitewho/sitewho
 	cd zipscript/src ; $(MAKE) clean
 	cd sitebot/src ; $(MAKE) clean
 
