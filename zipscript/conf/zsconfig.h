@@ -406,9 +406,8 @@
 #define enable_mp3_script	TRUE
 #define mp3_script		"/bin/mp3-test.sh"
 
-
 /* Enable/disable unduper script (runs if sfv is uploaded after files, and files
-                                  are marked as bad and deleted)
+ *                                are marked as bad and deleted)
  */
 #define enable_unduper_script	TRUE
 #define unduper_script		"/bin/pzsng-undupe"

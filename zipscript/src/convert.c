@@ -75,6 +75,7 @@ char* convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **gr
 
 				switch ( *instr ) {
 					case 'B': out_p += sprintf(out_p, "\\002"); break;
+					case 'K': out_p += sprintf(out_p, "\\003"); break;
 					case 'F': out_p += sprintf(out_p, "%*i", val1, (int)raceI->misc.fastest_user[0]); break;
 					case 'n': out_p += sprintf(out_p, "%*i", val1, (int)userpos + 1); break;
 					case 'u': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)userI->name); break;
@@ -150,6 +151,7 @@ char* convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short 
 
          switch ( *instr ) {
 		case 'B': out_p += sprintf(out_p, "\\002"); break;
+		case 'K': out_p += sprintf(out_p, "\\003"); break;
 		case 'n': out_p += sprintf(out_p, "%*i", val1, (int)grouppos + 1); break;
 		case 'g': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)groupI->name); break;
 		case 'b': out_p += sprintf(out_p, "%*i", val1, (int)groupI->bytes); break;
@@ -310,6 +312,7 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 			(double)((raceI->total.size / (raceI->total.stop_time - raceI->total.start_time)) / 1024)); break;
 		case 'b': out_p += sprintf(out_p, "%*u", val1, (unsigned int)raceI->total.size); break; /* what about files bigger than 4gb? */
 		case 'B': out_p += sprintf(out_p, "\\002"); break;
+		case 'K': out_p += sprintf(out_p, "\\003"); break;
 		case 'c':
 			from = to = reverse = 0;
 			instr++;
