@@ -305,7 +305,7 @@
  * rescan (to be used with *allowed/approved* type files).
  */
 #ifndef debug_mode
-#define debug_mode		TRUE
+#define debug_mode		FALSE
 #endif
 #ifndef debug_altlog
 #define debug_altlog		FALSE

@@ -25,7 +25,7 @@
 
 #ifndef PATH_MAX
  #define PATH_MAX 1024
- #define NAME_MAX 256
+ #define NAME_MAX 255
  #define _ALT_MAX
 #endif
 
