@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.7c"
+VERSION="v2.7d"
 
 ######################################################################################################
 
@@ -270,7 +270,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
   done
   DIRNAME=`echo $DIRNAME | sed "s|\"\"|$SEPARATOR|g" | sed "s|\"||g"`
   if [ -d $GLROOT$DIRNAME ]; then
-   FILENAME=`ls -1 $GLROOT$DIRNAME | grep -a "\.[Nn][Ff][Oo]$" | head -1`
+   FILENAME=`ls -1 $GLROOT$DIRNAME | grep -a "\.[Nn][Ff][Oo]$" | head -n 1`
     IMDBURL="`grep -a [Ii][Mm][Dd][Bb] $GLROOT$DIRNAME/$FILENAME | tr ' ' '\n' | sed -n /[hH][tT][tT][pP]:[/][/].*[.][iI][mM][dD][bB].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?'`"
    if [ ! -z "`echo $IMDBURL | grep -a "\.imdb\."`" ]; then
      IMDBURL="http://us.imdb.com/title/tt""`echo $IMDBURL | sed "s/=/-/g" | sed "s/.imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]'`"
@@ -514,15 +514,15 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     RATINGCLEAN=`echo $RATING | sed "s/User Rating..: *//"`
     RATINGBAR="`cat $TMPFILE | grep -a -e "User\ Rating:" | tr -cd '\*_' | tr '\*_' '#-' | head -n 1`"
     if [ "`echo $RATINGCLEAN | grep -a -e "[Ww][Aa][Ii][Tt]"`" = "" ]; then
-     RATINGVOTES=`echo $RATINGCLEAN | sed "s/ [Vv][Oo][Tt][Ee][Ss]//" | tr '() ' '\n' | grep -a -v "/" | grep -a -e "[0-9]" | head -1`
-     RATINGSCORE=`echo $RATINGCLEAN | grep -a -e "/" | tr '/' '\n' | head -1`
+     RATINGVOTES=`echo $RATINGCLEAN | sed "s/ [Vv][Oo][Tt][Ee][Ss]//" | tr '() ' '\n' | grep -a -v "/" | grep -a -e "[0-9]" | head -n 1`
+     RATINGSCORE=`echo $RATINGCLEAN | grep -a -e "/" | tr '/' '\n' | head -n 1`
     else
      RATINGVOTES=""
      RATINGSCORE=""
     fi
     COUNTRY=`cat $TMPFILE | grep -a -e "Country:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Country:/Country......:/" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $COUNTRYNUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//"`
     COUNTRYCLEAN=`echo $COUNTRY | sed "s/Country......: *//"`
-    TAGLINE=`cat $TMPFILE | grep -a -e "Tagline:" | sed "s/(more)//" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/([Mm][Oo][Rr][Ee])//" | sed "s/Tagline:/Tagline......:/" | sed s/\"/$QUOTECHAR/g | head -1`
+    TAGLINE=`cat $TMPFILE | grep -a -e "Tagline:" | sed "s/(more)//" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/([Mm][Oo][Rr][Ee])//" | sed "s/Tagline:/Tagline......:/" | sed s/\"/$QUOTECHAR/g | head -n 1`
     TAGLINECLEAN=`echo $TAGLINE | sed "s/Tagline......: *//"`
     LANGUAGE=`cat $TMPFILE | grep -a -e "Language:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Language:/Language.....:/" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $LANGUAGENUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//"`
     LANGUAGECLEAN=`echo $LANGUAGE | sed "s/Language.....: *//"`
@@ -533,12 +533,12 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
      break
     fi
     CERT=`cat $TMPFILE | grep -a -e "Certification:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $CERTIFICATIONNUM | sed "s/(.*//g" | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//"`
-    CERTCLEAN=`echo $CERT | sed "s/Certification: *//" | tr '/' '\n' | grep -a -e "[uU][sS][aA]" | tr -d ' ' | head -1`
-    CAST=`cat $TMPFILE | grep -a -e "\ \.\.\.\.\ " | sed s/\"/$QUOTECHAR/g | head -$CASTNUM`
+    CERTCLEAN=`echo $CERT | sed "s/Certification: *//" | tr '/' '\n' | grep -a -e "[uU][sS][aA]" | tr -d ' ' | head -n 1`
+    CAST=`cat $TMPFILE | grep -a -e "\ \.\.\.\.\ " | sed s/\"/$QUOTECHAR/g | head -n $CASTNUM`
     CASTCLEAN=`echo "$CAST" | sed "s/\.\.\.\..*/|/g" | tr '\n' ' ' | tr -s ' ' | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ |/\,/g" | sed "s/,$//"`
-    CASTLEADNAME="`echo "$CAST" | head -1 | tr '.' '\n' | sed -e /^$/d | head -1 | tr -s ' ' | sed "s/^\ //g" | sed "s/\ $//g"`"
-    CASTLEADCHAR="`echo "$CAST" | head -1 | tr '.' '\n' | sed -e /^$/d | tail -1 | tr -s ' ' | sed "s/^\ //g" | sed "s/\ $//g"`"
-    COMMENTSHORT=`cat $TMPFILE | grep -a -e "User Comments:" | head -1 | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/([Mm][Oo][Rr][Ee])//" | sed s/\"/$QUOTECHAR/g`
+    CASTLEADNAME="`echo "$CAST" | head -n 1 | tr '.' '\n' | sed -e /^$/d | head -n 1 | tr -s ' ' | sed "s/^\ //g" | sed "s/\ $//g"`"
+    CASTLEADCHAR="`echo "$CAST" | head -n 1 | tr '.' '\n' | sed -e /^$/d | tail -n 1 | tr -s ' ' | sed "s/^\ //g" | sed "s/\ $//g"`"
+    COMMENTSHORT=`cat $TMPFILE | grep -a -e "User Comments:" | head -n 1 | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/([Mm][Oo][Rr][Ee])//" | sed s/\"/$QUOTECHAR/g`
     COMMENTSHORTCLEAN=`echo $COMMENTSHORT | sed "s/User Comments: *//"`
     COMMENT=`cat $TMPFILE | awk '/User Comments:$/, /Check for other user comments.$/' | sed s/\"/$QUOTECHAR/g`
     COMMENTCLEAN=`echo "$COMMENT" | grep -a -e "^\ \ \ \ \ " | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\{\}\"/$QUOTECHAR/g | tr '\n' '|'`
@@ -547,7 +547,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     if [ ! -z "$RUNTIMECLEAN" ]; then
      RUNTIMECLEAN="$RUNTIMECLEAN min"
     fi
-    DIRECTOR=`cat $TMPFILE | awk '/Directed by$/, /Writing credits$/' | grep -a -v "Directed by" | grep -a -v "Writing Credits" | sed "s/^\ *//g" | sed "s/\ *$//g" | head -1 | sed s/\"/$QUOTECHAR/g`
+    DIRECTOR=`cat $TMPFILE | awk '/Directed by$/, /Writing credits$/' | grep -a -v "Directed by" | grep -a -v "Writing Credits" | sed "s/^\ *//g" | sed "s/\ *$//g" | head -n 1 | sed s/\"/$QUOTECHAR/g`
     DIRECTORCLEAN=`echo $DIRECTOR`
     if [ ! -z "`echo "$DIRECTOR" | grep -a -e "\(\ \)\ \(\ \)"`" ]; then
      OUTPUTOK=""
@@ -624,14 +624,14 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     done
     if [ "$LYNXTRIES" = "$LYNXTRIESORIG" ]; then
      BUSINESS=`cat $TMPFILE  | awk '/Opening Weekend$/,/Gross$/' | grep -a -e "(" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\"/$QUOTECHAR/g`
-     BUSINESSSHORT=`cat $TMPFILE | awk '/Opening Weekend$/,/Gross$/' | grep -a -e "[Ss][Cc][Rr][Ee][Ee][Nn]" | grep -a -e "[Uu][Ss][Aa]" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\"/$QUOTECHAR/g | head -1`
+     BUSINESSSHORT=`cat $TMPFILE | awk '/Opening Weekend$/,/Gross$/' | grep -a -e "[Ss][Cc][Rr][Ee][Ee][Nn]" | grep -a -e "[Uu][Ss][Aa]" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\"/$QUOTECHAR/g | head -n 1`
      if [ -z "$BUSINESSSHORT" ]; then
-      BUSINESSSHORT=`cat $TMPFILE | awk '/Opening Weekend$/,/Gross$/' | grep -a -e "[Uu][Ss][Aa]" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\"/$QUOTECHAR/g | head -1`
+      BUSINESSSHORT=`cat $TMPFILE | awk '/Opening Weekend$/,/Gross$/' | grep -a -e "[Uu][Ss][Aa]" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\"/$QUOTECHAR/g | head -n 1`
      fi
      if [ -z "$BUSINESSSHORT" ]; then
-      BUSINESSSHORT=`echo "$BUSINESS" | head -1`
+      BUSINESSSHORT=`echo "$BUSINESS" | head -n 1`
      fi
-     BUSINESSSCREENS=`echo "$BUSINESSSHORT" | tr '()' '\n' | grep -a -e "[Ss][Cc][Rr][Ee][Ee][Nn]" | tr ' ' '\n' | head -1`
+     BUSINESSSCREENS=`echo "$BUSINESSSHORT" | tr '()' '\n' | grep -a -e "[Ss][Cc][Rr][Ee][Ee][Nn]" | tr ' ' '\n' | head -n 1`
      BUSINESSSCREENSNUMBER=`echo "$BUSINESSSCREENS" | sed "s/,//"` #tr -d ','`
 echo "BIZNUM : $BUSINESSSCREENSNUMBER ( $BUSINESSSCREENS )" >/tmp/imdebug.log
      if [ ! -z "$BUSINESSSCREENSNUMBER" ]; then
@@ -673,9 +673,9 @@ echo "BIZNUM : $BUSINESSSCREENSNUMBER ( $BUSINESSSCREENS )" >/tmp/imdebug.log
     done
     if [ "$LYNXTRIES" = "$LYNXTRIESORIG" ]; then
      if [ ! -z "$USEPREMIERE" ]; then
-      PREMIERE=`cat $TMPFILE | awk /Date$/,/endofThefile/ | grep -a -e "(" | grep -a -e "[Pp][Rr][Ee][Mm][Ii][Ee][Rr][Ee]" | head -n 1 | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ (/(/" | tr '(' '\n' | tr -s ' ' | head -1 | sed s/\"/$QUOTECHAR/g`
+      PREMIERE=`cat $TMPFILE | awk /Date$/,/endofThefile/ | grep -a -e "(" | grep -a -e "[Pp][Rr][Ee][Mm][Ii][Ee][Rr][Ee]" | head -n 1 | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ (/(/" | tr '(' '\n' | tr -s ' ' | head -n 1 | sed s/\"/$QUOTECHAR/g`
       if [ -z "$PREMIERE" ]; then
-       PREMIERE=`cat $TMPFILE | awk /Date$/,/endofThefile/ | grep -a -v "Date$" | head -n 1 | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ (/(/" | tr '(' '\n' | tr -s ' ' | head -1 | sed s/\"/$QUOTECHAR/g`
+       PREMIERE=`cat $TMPFILE | awk /Date$/,/endofThefile/ | grep -a -v "Date$" | head -n 1 | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ (/(/" | tr '(' '\n' | tr -s ' ' | head -n 1 | sed s/\"/$QUOTECHAR/g`
       fi
       if [ -z "`echo "$PREMIERE" | tr -cd '0-9'`" ]; then
        PREMIERE=""
@@ -798,40 +798,40 @@ echo "BIZNUM : $BUSINESSSCREENSNUMBER ( $BUSINESSSCREENS )" >/tmp/imdebug.log
 ##############################
 
     echo -e "$IMDBHEAD" > "$IMDBLNK"
-    OWNER=`ls -1nl "$GLROOT$IMDBLKL" | tail -1 | { read junk junk owner group junk; echo $owner:$group; };`
-    echo "Title........: $TITLE" | fold -s -w $IMDBWIDTH | head -1 >> "$IMDBLNK"
+    OWNER=`ls -1nl "$GLROOT$IMDBLKL" | tail -n 1 | { read junk junk owner group junk; echo $owner:$group; };`
+    echo "Title........: $TITLE" | fold -s -w $IMDBWIDTH | head -n 1 >> "$IMDBLNK"
     echo "-" >> "$IMDBLNK"
-    echo "IMDb Link....: $IMDBURL" | head -1 >> "$IMDBLNK"
+    echo "IMDb Link....: $IMDBURL" | head -n 1 >> "$IMDBLNK"
     if [ ! -z "$DIRECTOR" ]; then
-     echo "$DIRECTOR" | fold -s -w $IMDBWIDTH | head -1 >> "$IMDBLNK"
+     echo "$DIRECTOR" | fold -s -w $IMDBWIDTH | head -n 1 >> "$IMDBLNK"
     fi
     if [ ! -z "$GENRE" ]; then
-     echo "$GENRE" | fold -s -w $IMDBWIDTH | head -1 >> "$IMDBLNK"
+     echo "$GENRE" | fold -s -w $IMDBWIDTH | head -n 1 >> "$IMDBLNK"
     fi
     if [ ! -z "$RATING" ]; then
-     echo "$RATING" | fold -s -w $IMDBWIDTH | head -1 >> "$IMDBLNK"
+     echo "$RATING" | fold -s -w $IMDBWIDTH | head -n 1 >> "$IMDBLNK"
     fi
     if [ ! -z "$TAGLINE" ]; then
      echo "$TAGLINE" | fold -s -w $IMDBWIDTH >> "$IMDBLNK"
     fi
     echo "-" >> "$IMDBLNK"
     if [ ! -z "$COUNTRY" ]; then
-     echo "$COUNTRY" | fold -s -w $IMDBWIDTH | head -1 >> "$IMDBLNK"
+     echo "$COUNTRY" | fold -s -w $IMDBWIDTH | head -n 1 >> "$IMDBLNK"
     fi
     if [ ! -z "$LANGUAGE" ]; then
-     echo "$LANGUAGE" | fold -s -w $IMDBWIDTH | head -1 >> "$IMDBLNK"
+     echo "$LANGUAGE" | fold -s -w $IMDBWIDTH | head -n 1 >> "$IMDBLNK"
     fi
     if [ ! -z "$CERT" ]; then
-     echo "$CERT" | fold -s -w $IMDBWIDTH | head -1 >> "$IMDBLNK"
+     echo "$CERT" | fold -s -w $IMDBWIDTH | head -n 1 >> "$IMDBLNK"
     fi
     if [ ! -z "$PREMIERE" ]; then         
-     echo "Premiere Date: $PREMIERE" | fold -s -w $IMDBWIDTH | head -1 >> "$IMDBLNK"
+     echo "Premiere Date: $PREMIERE" | fold -s -w $IMDBWIDTH | head -n 1 >> "$IMDBLNK"
     fi
     if [ ! -z "$LIMITED" ]; then      
-     echo "Limited Date.: $LIMITED" | fold -s -w $IMDBWIDTH | head -1 >> "$IMDBLNK"
+     echo "Limited Date.: $LIMITED" | fold -s -w $IMDBWIDTH | head -n 1 >> "$IMDBLNK"
     fi
     if [ ! -z "$RUNTIME" ]; then
-     echo "$RUNTIME" | fold -s -w $IMDBWIDTH | head -1 >> "$IMDBLNK"
+     echo "$RUNTIME" | fold -s -w $IMDBWIDTH | head -n 1 >> "$IMDBLNK"
     fi
     if [ ! -z "$CAST" ]; then
      echo "-" >> "$IMDBLNK"

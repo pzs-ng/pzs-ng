@@ -9,7 +9,7 @@
 # and chmod'ed world read-writable.
 
 # version number. do not change.
-VERSION="v2.7"
+VERSION="v2.7d"
 
 # needed binaries. do not change.
 BINARIES="date cat echo cut lynx grep head sed awk fold rm bash ls basename dirname chmod ps wc wget"
@@ -125,7 +125,7 @@ GLROOT=$MYGLROOT
     echo -n "found."
    fi
    chmod ugoa+rx $GLROOT/bin/$BINAR || {
-    BINARPERM=`ls -l $GLROOT/bin/$BINAR | grep "$BINAR" | cut -d ' ' -f 1 | head -1`
+    BINARPERM=`ls -l $GLROOT/bin/$BINAR | grep "$BINAR" | cut -d ' ' -f 1 | head -n 1`
     echo -n " Failed to chmod the file. Current permissions on file: $BINARPERM"
    }
    echo ""
@@ -142,7 +142,7 @@ GLROOT=$MYGLROOT
    echo -n "found."
    chmod ugoa+rx `which $BINAR` || {
     BINARWHICH=`which $BINAR`
-    BINARPERM=`ls -l $BINARWHICH | grep "$BINAR" | cut -d ' ' -f 1 | head -1`
+    BINARPERM=`ls -l $BINARWHICH | grep "$BINAR" | cut -d ' ' -f 1 | head -n 1`
     echo -n " Failed to chmod the file. Current permissions on file: $BINARPERM"
    }
    echo ""

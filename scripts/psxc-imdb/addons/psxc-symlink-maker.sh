@@ -17,7 +17,7 @@
 ############################################################################
 
 # version number. no need to change
-VERSION=2.7
+VERSION=2.7d
 
 # The location of psxc-imdb.conf. This is the full path.
 IMDB_CONF=/glftpd/etc/psxc-imdb.conf
@@ -435,7 +435,7 @@ if [ $SORT_BY_DATE -eq 1 ]; then
 
 # Cleanup Date-dirs
  for DATE_SYM in `ls -lF "$GLROOT$SYMLINK_PATH/$SORT_BY_DATE_NAME/" | grep -e ">" | sed "s|->|>|g" | tr ' \?' '%'`; do
-  DATE_SYM_SRC="`echo $DATE_SYM | cut -d '>' -f 1 | tr '%' ' ' | tr '@' '\n' | grep -v "^$" | head -1 | awk '{for (i = ENVIRON["MYNUM"]; i <= NF; i++) print $i}' | tr '\n' ' '`"
+  DATE_SYM_SRC="`echo $DATE_SYM | cut -d '>' -f 1 | tr '%' ' ' | tr '@' '\n' | grep -v "^$" | head -n 1 | awk '{for (i = ENVIRON["MYNUM"]; i <= NF; i++) print $i}' | tr '\n' ' '`"
   let DATE_SYM_SRC_CNT="`echo "$DATE_SYM_SRC" | wc -c`-2"
   if [ ! $DATE_SYM_SRC_CNT -eq 1 ]; then
    DATE_SYM_SRC="`echo "$DATE_SYM_SRC" | cut -c 1-$DATE_SYM_SRC_CNT`"
