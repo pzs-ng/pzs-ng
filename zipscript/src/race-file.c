@@ -520,6 +520,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 #if ( sfv_dupecheck == TRUE )
 				/* read from sfvdata - no parsing */
 				skip = 0;
+				lseek(outfd, 0L, SEEK_SET);
 				while (read(outfd, &tempsd, sizeof(SFVDATA)))
 					if (strcmp(sd.fname, tempsd.fname) == 0)
 						skip = 1;
