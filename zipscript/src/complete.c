@@ -123,9 +123,9 @@ writetop(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI,
 	char	       *buffer = 0;
 
 	if (completetype == 1) {
-		if (pre_stats != NULL) {
-			writelog(convert(raceI, userI, groupI, pre_stats), stat_users_head_type);
-		}
+//		if (pre_stats != NULL) {
+//			writelog(convert(raceI, userI, groupI, pre_stats), stat_users_head_type);
+//		}
 		if (user_top != NULL) {
 			buffer = templine;
 			for (cnt = 0; cnt < max_users_in_top && cnt < raceI->total.users; cnt++) {
@@ -134,9 +134,9 @@ writetop(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI,
 			*buffer -= '\0';
 			writelog(templine, stat_users_type);
 		}
-		if (between_stats != NULL) {
-			writelog(convert(raceI, userI, groupI, between_stats), stat_groups_head_type);
-		}
+//		if (between_stats != NULL) {
+//			writelog(convert(raceI, userI, groupI, between_stats), stat_groups_head_type);
+//		}
 		if (group_top != NULL) {
 			buffer = templine;
 			for (cnt = 0; cnt < max_groups_in_top && cnt < raceI->total.groups; cnt++) {
