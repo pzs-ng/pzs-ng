@@ -712,13 +712,13 @@ realtime_group_header <STRING|DISABLED>
 	group-stats.
 	Default: "+-=[GroupTop]=--------------------===--------------+\n"
 
-realtime_user_body <STRING|DISABLED>
+realtime_group_body <STRING|DISABLED>
 	When files are uploaded, some output is shown to the racer uploading.
 	Put here what should be shown in the body of that message, body of
 	group-stats.
 	Default: "| %2n. %-17g %8.1mmB %2fF %7.0skB/s |\n"
 
-realtime_user_footer <STRING|DISABLED>
+realtime_group_footer <STRING|DISABLED>
 	When files are uploaded, some output is shown to the racer uploading.
 	Put here what should be shown in the body of that message, footer of
 	group-stats.

@@ -547,7 +547,7 @@ showtotals(char raw)
 		if ((total_up_speed > threshold) || (total_dn_speed > threshold)) {
 			total_up_speed = (total_up_speed / 1024);
 			total_dn_speed = (total_dn_speed / 1024);
-			printf("| Up: %2i / %7.2fMB/s | Dn: %2i / %7.2fKB/s | Total: %2i / %7.2fMB/s |\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed);
+			printf("| Up: %2i / %7.2fMB/s | Dn: %2i / %7.2fMB/s | Total: %2i / %7.2fMB/s |\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed);
 		} else {
 			printf("| Up: %2i / %7.0fKB/s | Dn: %2i / %7.0fKB/s | Total: %2i / %7.0fKB/s |\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed);
 		}
