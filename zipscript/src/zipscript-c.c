@@ -383,8 +383,9 @@ main(int argc, char **argv)
 				exit_value = 2;
 				break;
 			} else {
-				sprintf(target, "%s -qqt %s", unzip_bin, g.v.file.name);
-				if (execute(target) != 0) {
+				//sprintf(target, "%s -qqt %s", unzip_bin, g.v.file.name);
+				//if (execute(target) != 0) {
+				if (execute("%s%s%s", unzip_bin, "-qqt", g.v.file.name) != 0) {
 					d_log("zipscript-c: Integrity check failed (#%d): %s\n", errno, strerror(errno));
 					sprintf(g.v.misc.error_msg, BAD_ZIP);
 					mark_as_bad(g.v.file.name);
@@ -420,8 +421,9 @@ main(int argc, char **argv)
 			}
 			if (!fileexists("file_id.diz")) {
 				d_log("zipscript-c: file_id.diz does not exist, trying to extract it from %s\n", g.v.file.name);
-				sprintf(target, "%s -qqjnCLL %s file_id.diz", unzip_bin, g.v.file.name);
-				if (execute(target) != 0) {
+				//sprintf(target, "%s -qqjnCLL %s file_id.diz", unzip_bin, g.v.file.name);
+				//if (execute(target) != 0) {
+				if (execute("%s%s%s%s", unzip_bin, "-qqjnCLL", g.v.file.name, "file_id.diz") != 0) {
 					d_log("zipscript-c: No file_id.diz found (#%d): %s\n", errno, strerror(errno));
 				} else {
 					if ((loc = findfile(dir, "file_id.diz.bad"))) {
@@ -665,11 +667,12 @@ main(int argc, char **argv)
 				d_log("zipscript-c: Could not execute nfo_script (%s) - file does not exists\n", nfo_script);
 			} else {
 				d_log("zipscript-c: Executing nfo script (%s)\n", nfo_script);
-				sprintf(target, nfo_script " %s", g.v.file.name);
+				//sprintf(target, nfo_script " %s", g.v.file.name);
 				/* if ( execute_old(target) != 0 ) { */
-				if (execute(target) != 0) {
+				//if (execute(target) != 0) {
+				if (execute("%s%s", nfo_script, g.v.file.name) != 0)
 					d_log("zipscript-c: Failed to execute nfo_script: %s\n", strerror(errno));
-				}
+				//}
 			}
 #endif
 
@@ -724,12 +727,12 @@ main(int argc, char **argv)
 								if (!fileexists(unduper_script)) {
 									d_log("zipscript-c: Failed to undupe '%s' - '%s' does not exist.\n", g.v.file.name, unduper_script);
 								} else {
-									sprintf(target, unduper_script " %s", g.v.file.name);
-									if (execute(target) == 0) {
+									//sprintf(target, unduper_script " %s", g.v.file.name);
+									//if (execute(target) == 0) {
+									if (execute("%s%s", unduper_script, g.v.file.name) == 0)
 										d_log("zipscript-c: undupe of %s successful.\n", g.v.file.name);
-									} else {
+									else
 										d_log("zipscript-c: undupe of %s failed.\n", g.v.file.name);
-									}
 								}
 							}
 							break;
@@ -831,10 +834,11 @@ main(int argc, char **argv)
 							d_log("zipscript-c: Could not execute mp3_script (%s) - file does not exists\n", mp3_script);
 						} else {
 							d_log("zipscript-c: Executing mp3 script (%s %s)\n", mp3_script, convert(&g.v, g.ui, g.gi, mp3_script_cookies));
-							sprintf(target, "%s %s", mp3_script, convert(&g.v, g.ui, g.gi, mp3_script_cookies));
-							if (execute(target) != 0) {
+							//sprintf(target, "%s %s", mp3_script, convert(&g.v, g.ui, g.gi, mp3_script_cookies));
+							//if (execute(target) != 0) {
+							if (execute("%s%s", mp3_script, convert(&g.v, g.ui, g.gi, mp3_script_cookies)) != 0)
 								d_log("zipscript-c: Failed to execute mp3_script: %s\n", strerror(errno));
-							}
+							//}
 						}
 					}
 					if (!matchpath(audio_nocheck_dirs, g.l.path)) {
@@ -1302,8 +1306,9 @@ main(int argc, char **argv)
 				d_log("zipscript-c: Could not execute complete_script (%s) - file does not exists\n", complete_script);
 			} else {
 				d_log("zipscript-c: Executing complete script\n");
-				sprintf(target, complete_script " %s", g.v.file.name);
-				if (execute(target) != 0)
+				//sprintf(target, complete_script " %s", g.v.file.name);
+				//if (execute(target) != 0)
+				if (execute("%s%s", complete_script, g.v.file.name) != 0)
 					d_log("zipscript-c: Failed to execute complete_script: %s\n", strerror(errno));
 			}
 
@@ -1313,10 +1318,11 @@ main(int argc, char **argv)
 					d_log("zipscript-c: Could not execute nfo_script (%s) - file does not exists\n", nfo_script);
 				} else {
 					d_log("zipscript-c: Executing nfo script (%s)\n", nfo_script);
-					sprintf(target, nfo_script " %s", g.v.file.name);
-					if (execute(target) != 0) {
+					//sprintf(target, nfo_script " %s", g.v.file.name);
+					//if (execute(target) != 0) {
+					if (execute("%s%s", nfo_script, g.v.file.name) != 0)
 						d_log("zipscript-c: Failed to execute nfo_script: %s\n", strerror(errno));
-					}
+					//}
 				}
 			}
 #endif
@@ -1368,10 +1374,11 @@ main(int argc, char **argv)
 			d_log("zipscript-c: Could not execute accept_script (%s) - file does not exists\n", accept_script);
 		} else {
 			d_log("zipscript-c: Executing accept script\n");
-			sprintf(target, accept_script " %s", g.v.file.name);
-			if (execute(target) != 0) {
+			//sprintf(target, accept_script " %s", g.v.file.name);
+			//if (execute(target) != 0) {
+			if (execute("%s%s", accept_script, g.v.file.name) != 0)
 				d_log("zipscript-c: Failed to execute accept_script: %s\n", strerror(errno));
-			}
+			//}
 		}
 #if ( enable_nfo_script == TRUE )
 		if (!nfofound && findfileext(dir, ".nfo")) {
@@ -1379,10 +1386,11 @@ main(int argc, char **argv)
 				d_log("zipscript-c: Could not execute nfo_script (%s) - file does not exists\n", nfo_script);
 			} else {
 				d_log("zipscript-c: Executing nfo script (%s)\n", nfo_script);
-				sprintf(target, nfo_script " %s", g.v.file.name);
-				if (execute(target) != 0) {
+				//sprintf(target, nfo_script " %s", g.v.file.name);
+				//if (execute(target) != 0) {
+				if (execute("%s%s", nfo_script, g.v.file.name) != 0)
 					d_log("zipscript-c: Failed to execute nfo_script: %s\n", strerror(errno));
-				}
+				//}
 			}
 		}
 #endif

@@ -343,8 +343,9 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 						d_log("Failed to undupe '%s' - '%s' does not exist.\n",
 							  rd.fname, unduper_script);
 					} else {
-						sprintf(target, unduper_script " \"%s\"", rd.fname);
-						if (execute(target) == 0)
+						//sprintf(target, unduper_script " \"%s\"", rd.fname);
+						//if (execute(target) == 0)
+						if (execute("%s%s", unduper_script, rd.fname) == 0)
 							d_log("testfiles: undupe of %s successful.\n", rd.fname);
 						else
 							d_log("testfiles: undupe of %s failed.\n", rd.fname);
