@@ -1203,49 +1203,25 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 			case RTYPE_NULL:
 				complete_bar = zip_completebar;
 				complete_msg = CHOOSE(raceI.total.users, zip_complete, zip_norace_complete);
-//				complete_type = CHOOSE(raceI.total.users, zip_complete_type, zip_norace_complete_type);
-//				if (!complete_type) {
-					complete_announce = CHOOSE(raceI.total.users, zip_announce_one_race_complete_type, zip_announce_norace_complete_type);
-//				} else {
-//					complete_announce = CHOOSE(raceI.total.users, zip_announce_race_complete_type, zip_announce_norace_complete_type);
-//				}
+				complete_announce = CHOOSE(raceI.total.users, zip_announce_one_race_complete_type, zip_announce_norace_complete_type);
 				break;
 			case RTYPE_RAR:
 				complete_bar = rar_completebar;
 				complete_msg = CHOOSE(raceI.total.users, rar_complete, rar_norace_complete);
-//				complete_type = CHOOSE(raceI.total.users, rar_complete_type, rar_norace_complete_type);
-//				if (!complete_type) {
-					complete_announce = CHOOSE(raceI.total.users, rar_announce_one_race_complete_type, rar_announce_norace_complete_type);
-//				} else {
-//				complete_announce = CHOOSE(raceI.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
-//				}
+				complete_announce = CHOOSE(raceI.total.users, rar_announce_one_race_complete_type, rar_announce_norace_complete_type);
 				break;
 			case RTYPE_OTHER:
 				complete_bar = other_completebar;
 				complete_msg = CHOOSE(raceI.total.users, other_complete, other_norace_complete);
-//				complete_type = CHOOSE(raceI.total.users, other_complete_type, other_norace_complete_type);
-//				if (!complete_type) {
-					complete_announce = CHOOSE(raceI.total.users, other_announce_one_race_complete_type, other_announce_norace_complete_type);
-//				} else {
-//					complete_announce = CHOOSE(raceI.total.users, other_announce_race_complete_type, other_announce_norace_complete_type);
-//				}
+				complete_announce = CHOOSE(raceI.total.users, other_announce_one_race_complete_type, other_announce_norace_complete_type);
 				break;
 			case RTYPE_AUDIO:
 				complete_bar = audio_completebar;
 				complete_msg = CHOOSE(raceI.total.users, audio_complete, audio_norace_complete);
-//				complete_type = CHOOSE(raceI.total.users, audio_complete_type, audio_norace_complete_type);
 				if (raceI.audio.is_vbr == 0) {
-//					if (!complete_type) {
-						complete_announce = CHOOSE(raceI.total.users, audio_cbr_announce_one_race_complete_type, audio_cbr_announce_norace_complete_type);
-//					} else {
-//						complete_announce = CHOOSE(raceI.total.users, audio_cbr_announce_race_complete_type, audio_cbr_announce_norace_complete_type);
-//					}
+					complete_announce = CHOOSE(raceI.total.users, audio_cbr_announce_one_race_complete_type, audio_cbr_announce_norace_complete_type);
 				} else {
-//					if (!complete_type) {
-						complete_announce = CHOOSE(raceI.total.users, audio_vbr_announce_one_race_complete_type, audio_vbr_announce_norace_complete_type);
-//					} else {
-//						complete_announce = CHOOSE(raceI.total.users, audio_vbr_announce_race_complete_type, audio_vbr_announce_norace_complete_type);
-//					}
+					complete_announce = CHOOSE(raceI.total.users, audio_vbr_announce_one_race_complete_type, audio_vbr_announce_norace_complete_type);
 				}
 
 				d_log("Symlinking audio\n");
@@ -1300,12 +1276,7 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 			case RTYPE_VIDEO:
 				complete_bar = video_completebar;
 				complete_msg = CHOOSE(raceI.total.users, video_complete, video_norace_complete);
-//				complete_type = CHOOSE(raceI.total.users, video_complete_type, video_norace_complete_type);
-//				if (!complete_type) {
-					complete_announce = CHOOSE(raceI.total.users, video_announce_one_race_complete_type, video_announce_norace_complete_type);
-//				} else {
-//					complete_announce = CHOOSE(raceI.total.users, video_announce_race_complete_type, video_announce_norace_complete_type);
-//				}
+				complete_announce = CHOOSE(raceI.total.users, video_announce_one_race_complete_type, video_announce_norace_complete_type);
 				break;
 			}
 

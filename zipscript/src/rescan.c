@@ -328,15 +328,12 @@ main()
 		if ((raceI.total.files_missing == 0) & (raceI.total.files > 0)) {
 			switch (raceI.misc.release_type) {
 			case RTYPE_RAR:
-//				complete_type = rar_complete_type;
 				complete_bar = rar_completebar;
 				break;
 			case RTYPE_OTHER:
-//				complete_type = other_complete_type;
 				complete_bar = other_completebar;
 				break;
 			case RTYPE_AUDIO:
-//				complete_type = audio_complete_type;
 				complete_bar = audio_completebar;
 #if ( enabled_create_m3u )
 				n = sprintf(exec, findfileext(".sfv"));
@@ -345,7 +342,6 @@ main()
 #endif
 				break;
 			case RTYPE_VIDEO:
-//				complete_type = video_complete_type;
 				complete_bar = video_completebar;
 				break;
 			}
@@ -412,7 +408,6 @@ main()
 		buffer_progress_bar(&raceI);
 		if (raceI.total.files_missing == 0) {
 			complete(&locations, &raceI, userI, groupI, complete_type);
-//			complete(&locations, &raceI, userI, groupI, zip_complete_type);
 			createstatusbar(convert(&raceI, userI, groupI, zip_completebar));
 		} else {
 			create_incomplete();
