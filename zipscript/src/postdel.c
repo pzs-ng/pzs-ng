@@ -98,7 +98,13 @@ main(int argc, char **argv)
 
 	dir = opendir(".");
 	parent = opendir("..");
-	
+
+	d_log("postdel: Locking release\n");
+	if (create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0)) {
+		d_log("postdel: Failed to lock release.\n");
+		exit(EXIT_FAILURE);
+	}
+
 	if (fileexists(fname)) {
 		d_log("postdel: File (%s) still exists\n", fname);
 #if (remove_dot_debug_on_delete == TRUE)
@@ -138,13 +144,14 @@ main(int argc, char **argv)
 
 	if (matchpath(nocheck_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
 		d_log("postdel: Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
-		d_log("postdel: Freeing memory, and exiting\n");
+		d_log("postdel: Freeing memory, removing lock and exiting\n");
 		free(g.ui);
 		free(g.gi);
 
 		if (remove_dot_debug_on_delete)
 			unlink(".debug");
 
+		remove_lock(&g.v);
 		return 0;
 
 	}
@@ -410,7 +417,7 @@ main(int argc, char **argv)
 		move_progress_bar(0, &g.v, g.ui, g.gi);
 	}
 	
-	d_log("postdel: Releasing memory\n");
+	d_log("postdel: Releasing memory and removing lock.\n");
 	closedir(dir);
 	closedir(parent);
 	updatestats_free(&g);
@@ -418,6 +425,8 @@ main(int argc, char **argv)
 	free(g.l.race);
 	free(g.l.sfv);
 	free(g.l.leader);
+
+	remove_lock(&g.v);
 
 	d_log("postdel: Exit\n");
 

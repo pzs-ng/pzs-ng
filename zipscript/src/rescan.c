@@ -103,6 +103,12 @@ main(void)
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
 
+	d_log("rescan: Locking release\n");
+	if (create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0)) {
+		d_log("rescan: Failed to lock release.\n");
+		exit(EXIT_FAILURE);
+	}
+
 	move_progress_bar(1, &g.v, g.ui, g.gi);
 	if (g.l.incomplete)
 		unlink(g.l.incomplete);
@@ -130,7 +136,7 @@ main(void)
 					unlink(dp->d_name);
 			}
 
-			d_log("rescan: Freeing memory, and exiting\n");
+			d_log("rescan: Freeing memory, removing lock and exiting\n");
 			unlink(g.l.sfv);
 			unlink(g.l.race);
 			free(g.ui);
@@ -139,6 +145,8 @@ main(void)
 			free(g.l.sfv);
 			free(g.l.leader);
 			
+			remove_lock(&g.v);
+
 			return 0;
 		}
 		g.v.total.start_time = 0;
@@ -397,13 +405,16 @@ main(void)
 	printf(" Missing: %i\n", (int)g.v.total.files_missing);
 	printf("  Total : %i\n", (int)g.v.total.files);
 
-	d_log("rescan: Freeing memory.\n");
+	d_log("rescan: Freeing memory and removing lock.\n");
 	closedir(dir);
 	closedir(parent);
 	updatestats_free(&g);
 	free(g.l.race);
 	free(g.l.sfv);
 	free(g.l.leader);
+
+	remove_lock(&g.v);
+
 	buffer_groups(GROUPFILE, gnum);
 	buffer_users(PASSWDFILE, unum);
 

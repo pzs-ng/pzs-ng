@@ -44,9 +44,9 @@ extern short clear_file(const char *, char *);
 extern void writerace(const char *, struct VARS *, unsigned int, unsigned char);
 extern void remove_from_race(const char *, const char *);
 extern int verify_racedata(const char *);
-extern int create_lock(const char *, short int, short int);
-extern void remove_lock(const char *);
-extern int update_lock(const char *, short int, short int, short int);
+extern int create_lock(struct VARS *, const char *, short int, short int);
+extern void remove_lock(struct VARS *);
+extern int update_lock(struct VARS *, short int, short int);
 
 #endif
 

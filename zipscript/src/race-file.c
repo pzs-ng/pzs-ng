@@ -84,6 +84,8 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 		return 0;
 	}
 
+	update_lock(raceI, 1, 0);
+
 	/* check version of the sfvdata */
 	fread(&l_sfv_version, sizeof(short int), 1, sfvfile);
 	if (l_sfv_version != v_sfv_version) {
@@ -249,6 +251,8 @@ read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
 		return;
 	}
 	
+	update_lock(raceI, 1, 0);
+
 	fstat(fd, &sb);
 
 	if (sb.st_size == 0) {
@@ -296,6 +300,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	count = 0;
 	while ((read(fd, &rd, sizeof(RACEDATA)))) {
 
+		update_lock(raceI, 1, 0);
 
 		d_log("testfiles:  Checking: %s\n", rd.fname);
 		ext = find_last_of(realfile, ".");
@@ -614,6 +619,8 @@ create_indexfile(const char *racefile, struct VARS *raceI, char *f)
 		exit(EXIT_FAILURE);
 	}
 
+	update_lock(raceI, 1, 0);
+
 	/* Read filenames from race file */
 	c = 0;
 	while ((read(fd, &rd, sizeof(RACEDATA)))) {
@@ -691,6 +698,9 @@ readrace(const char *path, struct VARS *raceI, struct USERINFO **userI, struct G
 	RACEDATA	rd;
 
 	if ((fd = open(path, O_RDONLY)) != -1) {
+
+		update_lock(raceI, 1, 0);
+
 		while ((rlength = read(fd, &rd, sizeof(RACEDATA)))) {
 			if (rlength != sizeof(RACEDATA)) {
 				d_log("readrace: Agh! racedata seems to be broken!\n");
@@ -734,6 +744,8 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 			exit(EXIT_FAILURE);
 		}
 	}
+
+	update_lock(raceI, 1, 0);
 
 	/* find an existing entry that we will overwrite */
 	while (read(fd, &rd, sizeof(RACEDATA))) {
@@ -851,14 +863,16 @@ verify_racedata(const char *path)
  */
 
 int
-create_lock(const char *path, short int progtype, short int force_lock)
+create_lock(struct VARS *raceI, const char *path, short int progtype, short int force_lock)
 {
 	int		fd;
 	HEADDATA	hd;
 	struct stat	sb;
 
-	if ((fd = open(path, O_CREAT | O_RDWR, 0666)) == -1) {
-		d_log("create_lock: open(%s): %s\n", path, strerror(errno));
+	snprintf(raceI->headpath, PATH_MAX, "%s/%s/headdata", storage, path);
+
+	if ((fd = open(raceI->headpath, O_CREAT | O_RDWR, 0666)) == -1) {
+		d_log("create_lock: open(%s): %s\n", raceI->headpath, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
@@ -898,6 +912,8 @@ create_lock(const char *path, short int progtype, short int force_lock)
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
 	}
+	raceI->data_in_use = hd.data_in_use;
+	raceI->data_incrementor = hd.data_incrementor;
 	return 0;
 }
 
@@ -905,13 +921,13 @@ create_lock(const char *path, short int progtype, short int force_lock)
  */
 
 void
-remove_lock(const char *path)
+remove_lock(struct VARS *raceI)
 {
 	int		fd;
 	HEADDATA	hd;
 
-	if ((fd = open(path, O_RDWR, 0666)) == -1) {
-		d_log("remove_lock: open(%s): %s\n", path, strerror(errno));
+	if ((fd = open(raceI->headpath, O_RDWR, 0666)) == -1) {
+		d_log("remove_lock: open(%s): %s\n", raceI->headpath, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
@@ -923,24 +939,30 @@ remove_lock(const char *path)
 	close(fd);
 }
 
+/* update a lock. This should be used after each file checked.
+ * Please note:
+ *   if counter == 0 a suggested lock-removal will be written. if >0 it's used as normal.
+ *   if datatype != 0, this datatype will be written.
+ */
+
 int
-update_lock(const char *path, short int progtype, short int counter, short int datatype)
+update_lock(struct VARS *raceI, short int counter, short int datatype)
 {
 	int		fd, retval = 1;
 	HEADDATA	hd;
 
-	if ((fd = open(path, O_RDWR, 0666)) == -1) {
-		d_log("update_lock: open(%s): %s\n", path, strerror(errno));
+	if ((fd = open(raceI->headpath, O_RDWR, 0666)) == -1) {
+		d_log("update_lock: open(%s): %s\n", raceI->headpath, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
 	read(fd, &hd, sizeof(HEADDATA));
-	if (hd.data_in_use != progtype) {
-		d_log("update_lock: Lock not active or prog mismatch - no choice but to exit.\n");
+	if (hd.data_in_use != raceI->data_in_use) {
+		d_log("update_lock: Lock not active or progtype mismatch - no choice but to exit.\n");
 		exit(EXIT_FAILURE);
 	}
 
-	if (((counter) && (hd.data_incrementor < counter)) || !hd.data_incrementor) {
+	if (((counter) && (hd.data_incrementor < raceI->data_incrementor)) || !hd.data_incrementor) {
 		d_log("update_lock: Lock suggested removed by a different process.\n");
 		retval = 0;
 	} else {
@@ -956,6 +978,8 @@ update_lock(const char *path, short int progtype, short int counter, short int d
 	lseek(fd, 0L, SEEK_SET);
 	write(fd, &hd, sizeof(HEADDATA));
 	close(fd);
+	raceI->data_incrementor = hd.data_incrementor;
+	raceI->data_in_use = hd.data_in_use;
 	return retval;
 }
 

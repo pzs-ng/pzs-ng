@@ -142,6 +142,9 @@ struct VARS {
 	struct video	video;
 	unsigned char	section;
 	char		sectionname[128];
+	char		headpath[PATH_MAX];
+	short int	data_incrementor;
+	short int	data_in_use;
 };
 
 struct LOCATIONS {

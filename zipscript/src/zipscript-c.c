@@ -234,15 +234,6 @@ main(int argc, char **argv)
 	g.v.user.pos = 0;
 	sprintf(g.v.misc.old_leader, "none");
 
-	//d_log("zipscript-c: Creating directory to store racedata in\n");
-	//maketempdir(&g.l.;
-
-
-	/*
-	 * d_log("zipscript-c: Changing directory to %s\n", g.l.path);
-	 * chdir(g.l.path);
-	 */
-
 	/* Get file extension */
 
 	d_log("zipscript-c: Parsing file extension from filename... (%s)\n", argv[1]);
@@ -288,6 +279,13 @@ main(int argc, char **argv)
 
 	d_log("zipscript-c: Creating directory to store racedata in\n");
 	maketempdir(g.l.path);
+
+	d_log("zipscript-c: Locking release\n");
+	if (create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0)) {
+		d_log("zipscript-c: Failed to lock release.\n");
+		exit(EXIT_FAILURE);
+	}
+
 	printf(zipscript_header);
 
 	/* Hide users in group_dirs */
@@ -1362,21 +1360,19 @@ main(int argc, char **argv)
 	}
 #endif
 
-	d_log("zipscript-c: Releasing memory\n");
+	d_log("zipscript-c: Releasing memory and removing lock\n");
 	closedir(dir);
 	closedir(parent);
+	remove_lock(&g.v);
 	
 	buffer_groups(GROUPFILE, gnum);
 	buffer_users(PASSWDFILE, unum);
 	updatestats_free(&g);
-	//free(g.l.link_source);
-	//free(g.v.misc.release_name);
 	free(fileext);
 	m_free(target);
 	m_free(g.l.race);
 	m_free(g.l.sfv);
 	m_free(g.l.leader);
-	//m_free(g.l.link_target);
 
 #if ( benchmark_mode == TRUE )
 	gettimeofday(&bstop, (struct timezone *)0);
