@@ -10,6 +10,7 @@ case_insensitive = false
 count_hidden = true
 ipc_key = 0x0000DEAD
 grp_path = /etc/group
+idle_barrier = 30
 
 ##############
 # glrootpath = /glftpd/ ... rootpath of glftpd
@@ -24,5 +25,7 @@ grp_path = /etc/group
 # count_hidden = <true|false> ... include hidden users in the count of users online.
 # ipc_key = "0x0000DEAD" ... ipc-key used in glftpd
 # grp_path = "/etc/group" ... (chroot'ed) path to glftpd's groupfile
+# idle_barrier = 30 ... when a user has been idle for more than this number, he is considered an idler. if less,
+                          he is considered a browser.
 ##################################################
 

@@ -33,8 +33,8 @@ char           *header = 0, *footer = 0, *glpath = 0, *mpaths = 0, *husers = 0, 
 	       *def_husers = "", *def_hgroups = "", *def_mpaths = "", *def_glpath = "/glftpd/",
 	       *def_count_hidden = "true", *count_hidden, *def_header = "/ftp-data/misc/who.head",
 	       *def_footer = "/ftp-data/misc/who.foot";
-int		maxusers = 20 , showall = 0, uploads = 0, downloads = 0, onlineusers = 0,
-		chidden = 1;
+int		maxusers = 20 , showall = 0, uploads = 0, downloads = 0, onlineusers = 0, browsers = 0, idlers = 0, chidden = 1,
+		idle_barrier = -1, def_idle_barrier = 30;
 double		total_dn_speed = 0, total_up_speed = 0;
 
 int
@@ -278,6 +278,12 @@ showusers(int n, int mode, char *ucomp, char raw)
 				minutes++;
 				seconds -= 60;
 			}
+			if ((!noshow && !mask && !(maskchar == '*')) || chidden) {
+				if ((int)seconds > idle_barrier)
+					idlers++;
+				else
+					browsers++;
+			}
 			if (!raw)
 				sprintf(status, "Idle: %02d:%02d:%02d", hours, minutes, seconds);
 			else if (raw == 1)
@@ -451,6 +457,8 @@ readconfig(char *arg)
 						showall = compareflags(getenv("FLAGS"), tmp);
 					else if (!memcmp(buf + l_b, "maxusers", 8))
 						maxusers = atoi(tmp);
+					else if (!memcmp(buf + l_b, "idle_barrier", 8))
+						idle_barrier = atoi(tmp);
 					free(tmp);
 				}
 			}
@@ -537,7 +545,7 @@ showtotals(char raw)
 		 * total_dn_speed, onlineusers, maxusers);
 		 */
 	} else if (raw == 3) {
-		printf("%i %.1f %i %.1f %i %.1f %i %i %i %i\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed, onlineusers - uploads - downloads, onlineusers - uploads - downloads, onlineusers, maxusers);
+		printf("%i %.1f %i %.1f %i %.1f %i %i %i %i\n", uploads, total_up_speed, downloads, total_dn_speed, uploads + downloads, total_up_speed + total_dn_speed, browsers, idlers, onlineusers, maxusers);
 	}
 }
 
@@ -632,6 +640,8 @@ main(int argc, char **argv)
 		header = def_header;
 	if (!footer)
 		footer = def_footer;
+	if (idle_barrier < 0)
+		idle_barrier = def_idle_barrier;
 
 	buffer_groups(glgroup);
 
