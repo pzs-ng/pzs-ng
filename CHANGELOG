@@ -13,8 +13,9 @@ v0.7.2 (aka beta2 of pzs-ng (r511))
  - The makefile/configure is improved.
  - Dangling incomplete links are found/removed in cleanup.
  - Hybrid types support is added.
- - only cbr music is checked for bad bitrate.
+ - Only cbr music is checked for bad bitrate.
  - The bug with the music.by.* symlinks is fixed.
+ - Added stat_section support (thanks to sv3n).
  - + lots of other stuff.
 
 v0.7.2 (aka beta1 of pzs-ng (r434))
