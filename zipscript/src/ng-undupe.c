@@ -16,6 +16,14 @@
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#ifndef HAVE_STRLCPY
+# include "strl/strl.h"
+#endif
+
 struct dupeentry {
 	char		filename  [256];
 	time_t		timeup;
@@ -34,8 +42,8 @@ main(int argc, char *argv[])
 		printf("Please give a filename to undupe as well\n");
 		return 1;
 	}
-	strcpy(dupefile, dupepath);
-	strcpy(dupename, argv[1]);
+	strlcpy(dupefile, dupepath, 1024);
+	strlcpy(dupename, argv[1], 1024);
 
 	sprintf(data2, "%s/dupefile.%d", storage, getuid());
 

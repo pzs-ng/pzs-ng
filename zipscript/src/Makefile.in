@@ -4,11 +4,17 @@ storage=/ftp-data/pzs-ng
 bindir=$(prefix)/bin
 
 CC=@CC@
-CFLAGS=@CFLAGS@ -W -Wall @STATIC@ @NOFORMAT@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE @DEFS@ -I../include/ -I../../
+CFLAGS=@CFLAGS@ -W -Wall @STATIC@ @NOFORMAT@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE @DEFS@ -I../include/ -I../../ -I../../lib/
 LDFLAGS=@LDFLAGS@
 UNIVERSAL=stats.o convert.o race-file.o zsfunctions.o mp3info.o
 RM=@RM@ -f
 INSTALL=@INSTALL@
+
+# Nasty, but I know of now better way! :)
+STRLCPY=@STRLCPY@
+ifdef STRLCPY
+ STRLCPY:=../../lib/strl/$(STRLCPY)
+endif
 
 RD-OBJECTS=racedebug.o
 ZS-OBJECTS=zipscript-c.o dizreader.o complete.o multimedia.o crc.o $(UNIVERSAL)
@@ -46,7 +52,7 @@ datacleaner: $(DC-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(DC-OBJECTS)
 
 ng-undupe: $(UD-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(UD-OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(UD-OBJECTS) $(STRLCPY)
 
 ng-chown: $(CH-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(CH-OBJECTS)

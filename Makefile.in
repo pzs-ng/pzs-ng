@@ -4,7 +4,7 @@ CFLAGS=-Wall -g
 CC=@CC@
 LIBS=@LIBS@
 
-all: zs bot swho lib
+all: libs zs bot swho
 	@(echo -e "\n\tProject-ZS-NG is now compiled!\n\tType 'make install' to install it into $(prefix).\n")
 
 install: all
@@ -44,7 +44,7 @@ swho:
 	@(echo -e "\n\033[1;37mCompiling the sitewho\033[0m")
 	cd sitewho/ ; $(MAKE) all
 
-lib:
+libs:
 	@(echo -e "\n\033[1;37mCompiling the additional libraries\033[0m")
 	cd lib/ ; $(MAKE) all
 
