@@ -16,8 +16,11 @@ DESCRIPTION : Short description of bug
 
 
 R.DATE | STA | REV.FIX | DESCRIPTION
--------|-----|---------|-------------------------------------------------------
-220704 | [ ] | [     ] | progress bars are left undeleted on fbsd (linux too?)
+-------|-----|---------|---------------------------------------------------------
+230704 | [ ] | [     ] | ng-bandwidth is 'lagged' after upload/dl
+230704 | [ ] | [     ] | ng-bandwidth/the bot have mixed up 'idle' and 'browsing'
+230704 | [ ] | [     ] | speed cookies in progress bar kill rescan
+220704 | [ ] | [r 459] | progress bars are left undeleted on fbsd (linux too?)
 210704 | [ ] | [     ] | compile fails on OpenBSD (could not find libcrypt)
 210704 | [x] | [r 435] | music.by.* is broken
 210704 | [x] | [r 442] | double sfv is buggy
