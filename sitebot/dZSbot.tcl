@@ -96,7 +96,7 @@ if {[string equal -nocase "AUTO" $use_glftpd2]} {
 		putlog "dZSbot: Detected $glversion, running in standard mode."
 		set glversion 2
 	} else {
-		die "dZSbot: Autodetecting glftpd-version failed. Set \"use_glftpd2\" in $scriptpath/dZSbot.conf manually."
+		die "dZSbot: Auto-detecting glftpd version failed, set \"use_glftpd2\" in $scriptpath/dZSbot.conf manually."
 	}
 } else {
 	set glversion [expr [istrue $use_glftpd2] ? 2 : 1]
@@ -497,7 +497,7 @@ proc from_mb {str} {
 
 	set unit 1
 	while {$str >= 1000} {
-		set str [expr $str / 1000.00]
+		set str [expr {$str / 1000.00}]
 		incr unit
 	}
 
@@ -1117,23 +1117,20 @@ proc speed {nick uhost hand chan argv} {
 			set output [replacevar $output "%tagline" [lindex $line 6]]
 			set output [replacevar $output "%timeonline" [lindex $line 7]]
 			set output [replacevar $output "%f_name" [lindex $line 8]]
-			set output [basicreplace $output "SPEED"]
-			sndone $chan $output
+			sndone $chan [basicreplace $output "SPEED"]
 		}
 	} else {
 		set base_output "$theme(PREFIX)$announce(DEFAULT)"
 		foreach line [split [exec $binary(WHO) [lindex $argv 0]] "\n"] {
 			set output [replacevar $base_output "%msg" $line]
-			set output [basicreplace $output "SPEED"]
-			sndone $chan $output
+			sndone $chan [basicreplace $output "SPEED"]
 		}
 	}
 
 	if {$line == ""} {
 		set output "$theme(PREFIX)$announce(SPEEDERROR)"
 		set output [replacevar $output "%msg" "User not online."]
-		set output [basicreplace $output "SPEED"]
-		sndone $chan $output
+		sndone $chan [basicreplace $output "SPEED"]
 	}
 }
 
@@ -1164,9 +1161,7 @@ proc ng_bwup {nick uhost hand chan argv} {
 	set output [replacevar $output "%uppercent" $upper]
 	set output [replacevar $output "%dnpercent" $dnper]
 #	set output [replacevar $output "%totalpercent" $totalper]
-
-	set output [basicreplace $output "BW"]
-	sndone $chan $output
+	sndone $chan [basicreplace $output "BW"]
 }
 
 #################################################################################
@@ -1177,8 +1172,7 @@ proc ng_uploaders {nick uhost hand chan argv} {
 	checkchan $nick $chan
 
 	set output "$theme(PREFIX)$announce(UPLOAD)"
-	set output [basicreplace $output "UPLOAD"]
-	sndone $chan $output
+	sndone $chan [basicreplace $output "UPLOAD"]
 
 	set raw [exec $binary(WHO) "--raw"]
 	set count 0; set total 0.0
@@ -1201,10 +1195,9 @@ proc ng_uploaders {nick uhost hand chan argv} {
 			set output [replacevar $output "%tagline" $tagline]
 			set output [replacevar $output "%since" $since]
 			set output [replacevar $output "%filename" $filename]
-			set output [basicreplace $output "UPLOAD"]
-			sndone $chan $output
+			sndone $chan [basicreplace $output "UPLOAD"]
 			incr count
-			set total [expr $total+$uspeed]
+			set total [expr {$total + $uspeed}]
 		}
 	}
 	set per [format "%.1f" [expr double($total) * 100 / double($speed(INCOMING)) ]]
@@ -1213,9 +1206,7 @@ proc ng_uploaders {nick uhost hand chan argv} {
 	set output [replacevar $output "%count" $count]
 	set output [replacevar $output "%total" [format_speed $total "none"]]
 	set output [replacevar $output "%per" $per]
-
-	set output [basicreplace $output "UPLOAD"]
-	sndone $chan $output
+	sndone $chan [basicreplace $output "UPLOAD"]
 }
 
 #################################################################################
@@ -1245,9 +1236,7 @@ proc ng_bwdn {nick uhost hand chan argv} {
 	set output [replacevar $output "%uppercent" $upper]
 	set output [replacevar $output "%dnpercent" $dnper]
 	set output [replacevar $output "%totalpercent" $totalper]
-
-	set output [basicreplace $output "BW"]
-	sndone $chan $output
+	sndone $chan [basicreplace $output "BW"]
 }
 
 #################################################################################
@@ -1258,8 +1247,7 @@ proc ng_leechers {nick uhost hand chan argv} {
 	checkchan $nick $chan
 
 	set output "$theme(PREFIX)$announce(LEECH)"
-	set output [basicreplace $output "LEECH"]
-	sndone $chan $output
+	sndone $chan [basicreplace $output "LEECH"]
 
 	set raw [exec $binary(WHO) "--raw"]
 	set count 0; set total 0.0
@@ -1282,10 +1270,9 @@ proc ng_leechers {nick uhost hand chan argv} {
 			set output [replacevar $output "%tagline" $tagline]
 			set output [replacevar $output "%since" $since]
 			set output [replacevar $output "%filename" $filename]
-			set output [basicreplace $output "LEECH"]
-			sndone $chan $output
+			sndone $chan [basicreplace $output "LEECH"]
 			incr count
-			set total [expr $total+$uspeed]
+			set total [expr {$total + $uspeed}]
 		}
 	}
 	set per [format "%.1f" [expr double($total) * 100 / double($speed(OUTGOING)) ]]
@@ -1294,9 +1281,7 @@ proc ng_leechers {nick uhost hand chan argv} {
 	set output [replacevar $output "%count" $count]
 	set output [replacevar $output "%total" [format_speed $total "none"]]
 	set output [replacevar $output "%per" $per]
-
-	set output [basicreplace $output "LEECH"]
-	sndone $chan $output
+	sndone $chan [basicreplace $output "LEECH"]
 }
 
 #################################################################################
@@ -1307,8 +1292,7 @@ proc ng_idlers {nick uhost hand chan argv} {
 	checkchan $nick $chan
 
 	set output "$theme(PREFIX)$announce(IDLE)"
-	set output [basicreplace $output "IDLE"]
-	sndone $chan $output
+	sndone $chan [basicreplace $output "IDLE"]
 
 	set raw [exec $binary(WHO) "--raw"]
 	set count 0; set total 0.0
@@ -1327,15 +1311,13 @@ proc ng_idlers {nick uhost hand chan argv} {
 				set output [replacevar $output "%idletime" [format_duration $idletime]]
 				set output [replacevar $output "%tagline" $tagline]
 				set output [replacevar $output "%since" $since]
-				set output [basicreplace $output "IDLE"]
-				sndone $chan $output
+				sndone $chan [basicreplace $output "IDLE"]
 				incr count
 			}
 		}
 	}
 	set output [replacevar "$theme(PREFIX)$announce(TOTIDLE)" "%count" $count]
-	set output [basicreplace $output "IDLE"]
-	sndone $chan $output
+	sndone $chan [basicreplace $output "IDLE"]
 }
 
 #################################################################################
@@ -1369,9 +1351,7 @@ proc ng_bandwidth {nick uhost hand chan argv} {
 	set output [replacevar $output "%uppercent" $upper]
 	set output [replacevar $output "%dnpercent" $dnper]
 	set output [replacevar $output "%totalpercent" $totalper]
-
-	set output [basicreplace $output "BW"]
-	sndone $chan $output
+	sndone $chan [basicreplace $output "BW"]
 }
 
 #################################################################################
@@ -1479,10 +1459,10 @@ proc show_free {nick uhost hand chan arg} {
 				}
 				append devices($i) $tmp
 
-				set total [expr $total + double($dev_total)];
-				set used [expr $used + double($dev_used)]
-				set free [expr $free + double($dev_free)];
-				set perc [expr $perc + double($dev_percent)]
+				set total [expr {$total + double($dev_total)}]
+				set used [expr {$used + double($dev_used)}]
+				set free [expr {$free + double($dev_free)}]
+				set perc [expr {$perc + double($dev_percent)}]
 				incr num
 				unset tmpdev($dev)
 			}
@@ -1503,10 +1483,9 @@ proc show_free {nick uhost hand chan arg} {
 		set output [replacevar $output "%total" $totalgb]
 		set output [replacevar $output "%used" $usedgb]
 		set output [replacevar $output "%free" $freegb]
-		set output [replacevar $output "%percentage" [expr round($perc/$num)]]
+		set output [replacevar $output "%percentage" [expr {$num > 0 ? round($perc/$num) : 0}]]
 		set output [replacevar $output "%devices" $devices($o)]
-		set output [basicreplace $output "FREE"]
-		sndone $chan $output
+		sndone $chan [basicreplace $output "FREE"]
 		incr o
 	}
 }

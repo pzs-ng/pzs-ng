@@ -1,5 +1,5 @@
 Quickreference of cookies:
-        (ANNOUNCES)       
+        (ANNOUNCES)
 ##########################
 ## Read %u_ as 'User'
 ## Read %g_ as 'Group'
@@ -11,32 +11,80 @@ Quickreference of cookies:
 # BADGENRE:
 %g_name, %genre, %u_name
 
+# BADPASSWD:
+%u_hostmask, %u_ip, %u_name
+
+# BADUSERHOST:
+%u_hostmask, %u_ip, %u_name
+
 # BADYEAR:
 %g_name, %u_name, %year
 
+# BAD_FILE_0SIZE:
+%filename, %g_name, %releasename, %u_name
+
+# BAD_FILE_BITRATE:
+%filename, %g_name, %releasename, %u_name
+
+# BAD_FILE_CRC:
+%filename, %g_name, %releasename, %u_name
+
+# BAD_FILE_DISALLOWED:
+%filename, %g_name, %releasename, %u_name
+
+# BAD_FILE_GENRE:
+%filename, %g_name, %releasename, %u_name
+
+# BAD_FILE_NOSFV:
+%filename, %g_name, %releasename, %u_name
+
+# BAD_FILE_SFV:
+%filename, %g_name, %releasename, %u_name
+
+# BAD_FILE_WRONGDIR:
+%filename, %g_name, %releasename, %u_name
+
+# BAD_FILE_YEAR:
+%filename, %g_name, %releasename, %u_name
+
+# BAD_FILE_ZIP:
+%filename, %g_name, %releasename, %u_name
+
 # COMPLETE_AUDIO_CBR:
-%album, %artist, %audio, %bitrate, %codec, %filename, %g_name, %genre, %layer, %mode
-%r_avgspeed, %releasename, %sampling, %t_avgspeed, %t_duration, %t_files, %t_mbytes
-%title, %u_name, %u_tagline, %year
+%album, %artist, %audio, %bitrate, %codec, %filename, %g_name, %g_racer_avgspeed
+%g_racer_files, %g_racer_mbytes, %g_racer_name, %g_racer_name, %g_racer_percent, %g_racer_position
+%genre, %layer, %mode, %r_avgspeed, %releasename, %sampling, %t_avgspeed, %t_duration
+%t_files, %t_mbytes, %title, %u_name, %u_racer_allup, %u_racer_avgspeed, %u_racer_dayup
+%u_racer_files, %u_racer_mbytes, %u_racer_monthup, %u_racer_name, %u_racer_percent
+%u_racer_position, %u_racer_wkup, %u_tagline, %year
 
 # COMPLETE_AUDIO_VBR:
-%a_stream, %album, %artist, %audio, %bitrate, %codec, %filename, %g_name, %genre
-%layer, %mode, %r_avgspeed, %releasename, %sampling, %t_avgspeed, %t_duration, %t_files
-%t_mbytes, %title, %u_name, %u_tagline, %year
+%a_stream, %a_version, %album, %artist, %audio, %bitrate, %codec, %filename, %g_name
+%g_racer_avgspeed, %g_racer_files, %g_racer_mbytes, %g_racer_name, %g_racer_name
+%g_racer_percent, %g_racer_position, %genre, %layer, %mode, %r_avgspeed, %releasename
+%sampling, %t_avgspeed, %t_duration, %t_files, %t_mbytes, %title, %u_name, %u_racer_allup
+%u_racer_avgspeed, %u_racer_dayup, %u_racer_files, %u_racer_mbytes, %u_racer_monthup
+%u_racer_name, %u_racer_percent, %u_racer_position, %u_racer_wkup, %u_tagline, %year
 
 # COMPLETE_OTHER:
-%filename, %g_name, %r_avgspeed, %releasename, %t_avgspeed, %t_duration, %t_files
-%t_mbytes, %u_name, %u_tagline
+%filename, %g_name, %g_racer_avgspeed, %g_racer_files, %g_racer_mbytes, %g_racer_name
+%g_racer_name, %g_racer_percent, %g_racer_position, %r_avgspeed, %releasename, %t_avgspeed
+%t_duration, %t_files, %t_mbytes, %u_name, %u_racer_allup, %u_racer_avgspeed, %u_racer_dayup
+%u_racer_files, %u_racer_mbytes, %u_racer_monthup, %u_racer_name, %u_racer_percent
+%u_racer_position, %u_racer_wkup, %u_tagline
 
 # COMPLETE_RAR:
-%compression, %filename, %g_name, %r_avgspeed, %releasename, %t_avgspeed, %t_duration
-%t_files, %t_mbytes, %u_name, %u_tagline
+%compression, %filename, %g_name, %g_racer_avgspeed, %g_racer_files, %g_racer_mbytes
+%g_racer_name, %g_racer_name, %g_racer_percent, %g_racer_position, %r_avgspeed, %releasename
+%t_avgspeed, %t_duration, %t_files, %t_mbytes, %u_name, %u_racer_allup, %u_racer_avgspeed
+%u_racer_dayup, %u_racer_files, %u_racer_mbytes, %u_racer_monthup, %u_racer_name
+%u_racer_percent, %u_racer_position, %u_racer_wkup, %u_tagline
 
 # COMPLETE_STAT_RACE_AUDIO_CBR:
 %album, %artist, %audio, %bitrate, %codec, %filename, %g_count, %g_racer_avgspeed %u_racer_position
 %g_racer_files, %g_racer_mbytes, %g_racer_name, %g_racer_name, %g_racer_percent, %g_winner_avgspeed
 %g_winner_files, %g_winner_mbytes, %g_winner_name, %g_winner_percent, %genre, %layer
-%mode, %r_avgspeed, %r_gname %g_racer_position, %r_name, %r_split, %releasename, %sampling
+%mode, %r_avgspeed, %r_gname %g_racer_position, %r_name, %releasename, %sampling
 %t_avgspeed, %t_duration, %t_files, %t_mbytes, %title, %u_count, %u_fastest_gname
 %u_fastest_name, %u_fastest_speed, %u_racer_allup\, %u_racer_avgspeed, %u_racer_dayup
 %u_racer_files, %u_racer_mbytes, %u_racer_monthup, %u_racer_name, %u_racer_percent
@@ -45,68 +93,71 @@ Quickreference of cookies:
 %year
 
 # COMPLETE_STAT_RACE_AUDIO_VBR:
-%a_stream, %album, %artist, %audio, %bitrate, %codec, %filename, %g_count, %g_racer_avgspeed %u_racer_position
-%g_racer_files, %g_racer_mbytes, %g_racer_name, %g_racer_name, %g_racer_percent, %g_winner_avgspeed
-%g_winner_files, %g_winner_mbytes, %g_winner_name, %g_winner_percent, %genre, %layer
-%mode, %r_avgspeed, %r_gname %g_racer_position, %r_name, %r_split, %releasename, %sampling
-%t_avgspeed, %t_duration, %t_files, %t_mbytes, %title, %u_count, %u_fastest_gname
-%u_fastest_name, %u_fastest_speed, %u_racer_allup\, %u_racer_avgspeed, %u_racer_dayup
-%u_racer_files, %u_racer_mbytes, %u_racer_monthup, %u_racer_name, %u_racer_percent
-%u_racer_wkup, %u_slowest_gname, %u_slowest_name, %u_slowest_speed, %u_winner_avgspeed
-%u_winner_files, %u_winner_gname, %u_winner_mbytes, %u_winner_name, %u_winner_percent
-%year
+%a_stream, %a_version, %album, %artist, %audio, %bitrate, %codec, %filename, %g_count
+%g_racer_avgspeed %u_racer_position, %g_racer_files, %g_racer_mbytes, %g_racer_name
+%g_racer_name, %g_racer_percent, %g_winner_avgspeed, %g_winner_files, %g_winner_mbytes
+%g_winner_name, %g_winner_percent, %genre, %layer, %mode, %r_avgspeed, %r_gname %g_racer_position
+%r_name, %releasename, %sampling, %t_avgspeed, %t_duration, %t_files, %t_mbytes, %title
+%u_count, %u_fastest_gname, %u_fastest_name, %u_fastest_speed, %u_racer_allup\, %u_racer_avgspeed
+%u_racer_dayup, %u_racer_files, %u_racer_mbytes, %u_racer_monthup, %u_racer_name
+%u_racer_percent, %u_racer_wkup, %u_slowest_gname, %u_slowest_name, %u_slowest_speed
+%u_winner_avgspeed, %u_winner_files, %u_winner_gname, %u_winner_mbytes, %u_winner_name
+%u_winner_percent, %year
 
 # COMPLETE_STAT_RACE_OTHER:
 %filename, %g_count, %g_racer_avgspeed %u_racer_position, %g_racer_files, %g_racer_mbytes
 %g_racer_name, %g_racer_name, %g_racer_percent, %g_winner_avgspeed, %g_winner_files
 %g_winner_mbytes, %g_winner_name, %g_winner_percent, %r_avgspeed, %r_gname %g_racer_position
-%r_name, %r_split, %releasename, %t_avgspeed, %t_duration, %t_files, %t_mbytes, %u_count
-%u_fastest_gname, %u_fastest_name, %u_fastest_speed, %u_racer_allup\, %u_racer_avgspeed
-%u_racer_dayup, %u_racer_files, %u_racer_mbytes, %u_racer_monthup, %u_racer_name
-%u_racer_percent, %u_racer_wkup, %u_slowest_gname, %u_slowest_name, %u_slowest_speed
-%u_winner_avgspeed, %u_winner_files, %u_winner_gname, %u_winner_mbytes, %u_winner_name
-%u_winner_percent
+%r_name, %releasename, %t_avgspeed, %t_duration, %t_files, %t_mbytes, %u_count, %u_fastest_gname
+%u_fastest_name, %u_fastest_speed, %u_racer_allup\, %u_racer_avgspeed, %u_racer_dayup
+%u_racer_files, %u_racer_mbytes, %u_racer_monthup, %u_racer_name, %u_racer_percent
+%u_racer_wkup, %u_slowest_gname, %u_slowest_name, %u_slowest_speed, %u_winner_avgspeed
+%u_winner_files, %u_winner_gname, %u_winner_mbytes, %u_winner_name, %u_winner_percent
 
 # COMPLETE_STAT_RACE_RAR:
 %filename, %g_count, %g_racer_avgspeed %u_racer_position, %g_racer_files, %g_racer_mbytes
 %g_racer_name, %g_racer_name, %g_racer_percent, %g_racer_position, %g_winner_avgspeed
 %g_winner_files, %g_winner_mbytes, %g_winner_name, %g_winner_percent, %r_avgspeed
-%r_gname %compression, %r_name, %r_split, %releasename, %t_avgspeed, %t_duration
-%t_files, %t_mbytes, %u_count, %u_fastest_gname, %u_fastest_name, %u_fastest_speed
-%u_racer_allup\, %u_racer_avgspeed, %u_racer_dayup, %u_racer_files, %u_racer_mbytes
-%u_racer_monthup, %u_racer_name, %u_racer_percent, %u_racer_wkup, %u_slowest_gname
-%u_slowest_name, %u_slowest_speed, %u_winner_avgspeed, %u_winner_files, %u_winner_gname
-%u_winner_mbytes, %u_winner_name, %u_winner_percent
+%r_gname %compression, %r_name, %releasename, %t_avgspeed, %t_duration, %t_files
+%t_mbytes, %u_count, %u_fastest_gname, %u_fastest_name, %u_fastest_speed, %u_racer_allup\
+%u_racer_avgspeed, %u_racer_dayup, %u_racer_files, %u_racer_mbytes, %u_racer_monthup
+%u_racer_name, %u_racer_percent, %u_racer_wkup, %u_slowest_gname, %u_slowest_name
+%u_slowest_speed, %u_winner_avgspeed, %u_winner_files, %u_winner_gname, %u_winner_mbytes
+%u_winner_name, %u_winner_percent
 
 # COMPLETE_STAT_RACE_VIDEO:
 %filename, %g_count, %g_racer_avgspeed %u_racer_position, %g_racer_files, %g_racer_mbytes
 %g_racer_name, %g_racer_name, %g_racer_percent, %g_winner_avgspeed, %g_winner_files
 %g_winner_mbytes, %g_winner_name, %g_winner_percent, %r_avgspeed, %r_gname %g_racer_position
-%r_name, %r_split, %releasename, %t_avgspeed, %t_duration, %t_files, %t_mbytes, %u_count
-%u_fastest_gname, %u_fastest_name, %u_fastest_speed, %u_racer_allup\, %u_racer_avgspeed
-%u_racer_dayup, %u_racer_files, %u_racer_mbytes, %u_racer_monthup, %u_racer_name
-%u_racer_percent, %u_racer_wkup, %u_slowest_gname, %u_slowest_name, %u_slowest_speed
-%u_winner_avgspeed, %u_winner_files, %u_winner_gname, %u_winner_mbytes, %u_winner_name
-%u_winner_percent
+%r_name, %releasename, %t_avgspeed, %t_duration, %t_files, %t_mbytes, %u_count, %u_fastest_gname
+%u_fastest_name, %u_fastest_speed, %u_racer_allup\, %u_racer_avgspeed, %u_racer_dayup
+%u_racer_files, %u_racer_mbytes, %u_racer_monthup, %u_racer_name, %u_racer_percent
+%u_racer_wkup, %u_slowest_gname, %u_slowest_name, %u_slowest_speed, %u_winner_avgspeed
+%u_winner_files, %u_winner_gname, %u_winner_mbytes, %u_winner_name, %u_winner_percent
 
 # COMPLETE_STAT_RACE_ZIP:
 %filename, %g_count, %g_racer_avgspeed %u_racer_position, %g_racer_files, %g_racer_mbytes
 %g_racer_name, %g_racer_name, %g_racer_percent, %g_winner_avgspeed, %g_winner_files
 %g_winner_mbytes, %g_winner_name, %g_winner_percent, %r_avgspeed, %r_gname %g_racer_position
-%r_name, %r_split, %releasename, %t_avgspeed, %t_duration, %t_files, %t_mbytes, %u_count
-%u_fastest_gname, %u_fastest_name, %u_fastest_speed, %u_racer_allup\, %u_racer_avgspeed
-%u_racer_dayup, %u_racer_files, %u_racer_mbytes, %u_racer_monthup, %u_racer_name
-%u_racer_percent, %u_racer_wkup, %u_slowest_gname, %u_slowest_name, %u_slowest_speed
-%u_winner_avgspeed, %u_winner_files, %u_winner_gname, %u_winner_mbytes, %u_winner_name
-%u_winner_percent
+%r_name, %releasename, %t_avgspeed, %t_duration, %t_files, %t_mbytes, %u_count, %u_fastest_gname
+%u_fastest_name, %u_fastest_speed, %u_racer_allup\, %u_racer_avgspeed, %u_racer_dayup
+%u_racer_files, %u_racer_mbytes, %u_racer_monthup, %u_racer_name, %u_racer_percent
+%u_racer_wkup, %u_slowest_gname, %u_slowest_name, %u_slowest_speed, %u_winner_avgspeed
+%u_winner_files, %u_winner_gname, %u_winner_mbytes, %u_winner_name, %u_winner_percent
 
 # COMPLETE_VIDEO:
-%filename, %g_name, %r_avgspeed, %releasename, %t_avgspeed, %t_duration, %t_files
-%t_mbytes, %u_name, %u_tagline
+%filename, %g_name, %g_racer_avgspeed, %g_racer_files, %g_racer_mbytes, %g_racer_name
+%g_racer_name, %g_racer_percent, %g_racer_position, %r_avgspeed, %releasename, %t_avgspeed
+%t_duration, %t_files, %t_mbytes, %u_name, %u_racer_allup, %u_racer_avgspeed, %u_racer_dayup
+%u_racer_files, %u_racer_mbytes, %u_racer_monthup, %u_racer_name, %u_racer_percent
+%u_racer_position, %u_racer_wkup, %u_tagline
 
 # COMPLETE_ZIP:
-%filename, %g_name, %r_avgspeed, %releasename, %t_avgspeed, %t_duration, %t_files
-%t_mbytes, %u_name, %u_tagline
+%filename, %g_name, %g_racer_avgspeed, %g_racer_files, %g_racer_mbytes, %g_racer_name
+%g_racer_name, %g_racer_percent, %g_racer_position, %r_avgspeed, %releasename, %t_avgspeed
+%t_duration, %t_files, %t_mbytes, %u_name, %u_racer_allup, %u_racer_avgspeed, %u_racer_dayup
+%u_racer_files, %u_racer_mbytes, %u_racer_monthup, %u_racer_name, %u_racer_percent
+%u_racer_position, %u_racer_wkup, %u_tagline
 
 # DEBUG:
 %msg, %u_pid
@@ -126,65 +177,69 @@ Quickreference of cookies:
 # HALFWAY_NORACE_AUDIO:
 %filename, %g_count, %g_leader_avgspeed, %g_leader_files, %g_leader_mbytes, %g_leader_name
 %g_leader_percent, %g_name, %r_avgspeed, %releasename, %t_avgspeed, %t_files, %t_mbytes
-%t_missingfiles, %t_percent, %t_total_files, %u_count, %u_leader_avgspeed, %u_leader_files
-%u_leader_gname, %u_leader_mbytes, %u_leader_name, %u_leader_percent, %u_name, %u_tagline
+%t_missingfiles, %t_percent, %t_timeleft, %t_total_files, %u_count, %u_leader_avgspeed
+%u_leader_files, %u_leader_gname, %u_leader_mbytes, %u_leader_name, %u_leader_percent
+%u_name, %u_tagline
 
 # HALFWAY_NORACE_OTHER:
 %filename, %g_count, %g_leader_avgspeed, %g_leader_files, %g_leader_mbytes, %g_leader_name
 %g_leader_percent, %g_name, %r_avgspeed, %releasename, %t_avgspeed, %t_files, %t_mbytes
-%t_missingfiles, %t_percent, %t_total_files, %u_count, %u_leader_avgspeed, %u_leader_files
-%u_leader_gname, %u_leader_mbytes, %u_leader_name, %u_leader_percent, %u_name, %u_tagline
+%t_missingfiles, %t_percent, %t_timeleft, %t_total_files, %u_count, %u_leader_avgspeed
+%u_leader_files, %u_leader_gname, %u_leader_mbytes, %u_leader_name, %u_leader_percent
+%u_name, %u_tagline
 
 # HALFWAY_NORACE_RAR:
 %compression, %filename, %g_count, %g_leader_avgspeed, %g_leader_files, %g_leader_mbytes
 %g_leader_name, %g_leader_percent, %g_name, %r_avgspeed, %releasename, %t_avgspeed
-%t_files, %t_mbytes, %t_missingfiles, %t_percent, %t_total_files, %u_count, %u_leader_avgspeed
-%u_leader_files, %u_leader_gname, %u_leader_mbytes, %u_leader_name, %u_leader_percent
-%u_name, %u_tagline
+%t_files, %t_mbytes, %t_missingfiles, %t_percent, %t_timeleft, %t_total_files, %u_count
+%u_leader_avgspeed, %u_leader_files, %u_leader_gname, %u_leader_mbytes, %u_leader_name
+%u_leader_percent, %u_name, %u_tagline
 
 # HALFWAY_NORACE_VIDEO:
 %filename, %g_count, %g_leader_avgspeed, %g_leader_files, %g_leader_mbytes, %g_leader_name
 %g_leader_percent, %g_name, %r_avgspeed, %releasename, %t_avgspeed, %t_files, %t_mbytes
-%t_missingfiles, %t_percent, %t_total_files, %u_count, %u_leader_avgspeed, %u_leader_files
-%u_leader_gname, %u_leader_mbytes, %u_leader_name, %u_leader_percent, %u_name, %u_tagline
+%t_missingfiles, %t_percent, %t_timeleft, %t_total_files, %u_count, %u_leader_avgspeed
+%u_leader_files, %u_leader_gname, %u_leader_mbytes, %u_leader_name, %u_leader_percent
+%u_name, %u_tagline
 
 # HALFWAY_NORACE_ZIP:
 %filename, %g_count, %g_leader_avgspeed, %g_leader_files, %g_leader_mbytes, %g_leader_name
 %g_leader_percent, %g_name, %r_avgspeed, %releasename, %t_avgspeed, %t_files, %t_mbytes
-%t_missingfiles, %t_percent, %t_total_files, %u_count, %u_leader_avgspeed, %u_leader_files
-%u_leader_gname, %u_leader_mbytes, %u_leader_name, %u_leader_percent, %u_name, %u_tagline
+%t_missingfiles, %t_percent, %t_timeleft, %t_total_files, %u_count, %u_leader_avgspeed
+%u_leader_files, %u_leader_gname, %u_leader_mbytes, %u_leader_name, %u_leader_percent
+%u_name, %u_tagline
 
 # HALFWAY_RACE_AUDIO:
 %filename, %g_count, %g_leader_avgspeed, %g_leader_files, %g_leader_mbytes, %g_leader_name
-%g_leader_percent, %g_name, %r_avgspeed, %r_gname\, %r_name, %r_split, %releasename
+%g_leader_percent, %g_name, %r_avgspeed, %r_gname %t_timeleft, %r_name, %releasename
 %t_avgspeed, %t_files, %t_mbytes, %t_missingfiles, %t_percent, %t_total_files, %u_count
 %u_leader_avgspeed, %u_leader_files, %u_leader_gname, %u_leader_mbytes, %u_leader_name
 %u_leader_percent, %u_name
 
 # HALFWAY_RACE_OTHER:
 %filename, %g_count, %g_leader_avgspeed, %g_leader_files, %g_leader_mbytes, %g_leader_name
-%g_leader_percent, %g_name, %r_avgspeed, %r_gname\, %r_name, %r_split, %releasename
+%g_leader_percent, %g_name, %r_avgspeed, %r_gname %t_timeleft, %r_name, %releasename
 %t_avgspeed, %t_files, %t_mbytes, %t_missingfiles, %t_percent, %t_total_files, %u_count
 %u_leader_avgspeed, %u_leader_files, %u_leader_gname, %u_leader_mbytes, %u_leader_name
 %u_leader_percent, %u_name
 
 # HALFWAY_RACE_RAR:
 %filename, %g_count, %g_leader_avgspeed, %g_leader_files, %g_leader_mbytes, %g_leader_name
-%g_leader_percent, %g_name, %r_avgspeed, %r_gname %compression, %r_name, %r_split
-%releasename, %t_avgspeed, %t_files, %t_mbytes, %t_missingfiles, %t_percent, %t_total_files
+%g_leader_percent, %g_name, %r_avgspeed, %r_gname %compression, %r_name, %releasename
+%t_avgspeed, %t_files, %t_mbytes, %t_missingfiles, %t_percent, %t_timeleft, %t_total_files
 %u_count, %u_leader_avgspeed, %u_leader_files, %u_leader_gname, %u_leader_mbytes
 %u_leader_name, %u_leader_percent, %u_name
 
 # HALFWAY_RACE_VIDEO:
 %filename, %g_count, %g_leader_avgspeed, %g_leader_files, %g_leader_mbytes, %g_leader_name
-%g_leader_percent, %g_name, %r_avgspeed, %r_gname\, %r_name, %r_split, %releasename
+%g_leader_percent, %g_name, %r_avgspeed, %r_gname %t_timeleft, %r_name, %releasename
 %t_avgspeed, %t_files, %t_mbytes, %t_missingfiles, %t_percent, %t_total_files, %u_count
 %u_leader_avgspeed, %u_leader_files, %u_leader_gname, %u_leader_mbytes, %u_leader_name
 %u_leader_percent, %u_name
 
 # HALFWAY_RACE_ZIP:
 %filename, %g_count, %g_leader_avgspeed, %g_leader_files, %g_leader_mbytes, %g_leader_name
-%g_leader_percent, %g_name, %r_avgspeed, %r_gname\, %r_name, %r_split, %releasename
+%g_leader_percent, %g_name, %r_avgspeed, %r_gname %t_timeleft, %r_name, %releasename
 %t_avgspeed, %t_files, %t_mbytes, %t_missingfiles, %t_percent, %t_total_files, %u_count
 %u_leader_avgspeed, %u_leader_files, %u_leader_gname, %u_leader_mbytes, %u_leader_name
 %u_leader_percent, %u_name
@@ -194,6 +249,13 @@ Quickreference of cookies:
 
 # IMDBFIND:
 %msg
+
+# IMDBFINDVAR:
+%imdbbar, %imdbbusinessdata, %imdbcasting, %imdbcastleadchar, %imdbcastleadname, %imdbcertification
+%imdbcommentshort, %imdbcountry, %imdbdestination, %imdbdirector, %imdbdirname, %imdbgenre
+%imdbislimited, %imdblanguage, %imdblimitedinfo, %imdbname, %imdbnumscreens, %imdbplot
+%imdbpremiereinfo, %imdbrating, %imdbruntime, %imdbscore, %imdbtagline, %imdbtitle
+%imdburl, %imdbvotes, %imdbyear
 
 # IMDBVAR:
 %imdbbar, %imdbbusinessdata, %imdbcasting, %imdbcastleadchar, %imdbcastleadname, %imdbcertification
@@ -208,6 +270,9 @@ Quickreference of cookies:
 # INVITE:
 %g_name, %u_ircnick, %u_name
 
+# IPNOTADDED:
+%u_hostmask, %u_ip
+
 # LOGIN:
 %dummy, %g_name, %u_hostmask, %u_ip, %u_name, %u_pid, %u_tagline
 
@@ -218,35 +283,35 @@ Quickreference of cookies:
 %g_name, %u_name, %u_tagline
 
 # NEWLEADER_AUDIO:
-%a_gname\, %a_name, %a_split, %filename, %g_count, %g_leader_avgspeed, %g_leader_files
+%a_gname %t_timeleft, %a_name, %filename, %g_count, %g_leader_avgspeed, %g_leader_files
 %g_leader_mbytes, %g_leader_name, %g_leader_percent, %g_name, %releasename, %t_duration
 %t_files, %t_missingfiles, %u_count, %u_leader_avgspeed, %u_leader_files, %u_leader_gname
 %u_leader_mbytes, %u_leader_name, %u_leader_percent, %u_name, %u_speed, %u_tagline
 %uploaded_files, %uploaded_mbytes, %uploaded_percent
 
 # NEWLEADER_OTHER:
-%a_gname\, %a_name, %a_split, %filename, %g_count, %g_leader_avgspeed, %g_leader_files
+%a_gname %t_timeleft, %a_name, %filename, %g_count, %g_leader_avgspeed, %g_leader_files
 %g_leader_mbytes, %g_leader_name, %g_leader_percent, %g_name, %releasename, %t_duration
 %t_files, %t_missingfiles, %u_count, %u_leader_avgspeed, %u_leader_files, %u_leader_gname
 %u_leader_mbytes, %u_leader_name, %u_leader_percent, %u_name, %u_speed, %u_tagline
 %uploaded_files, %uploaded_mbytes, %uploaded_percent
 
 # NEWLEADER_RAR:
-%a_gname %compression, %a_name, %a_split, %filename, %g_count, %g_leader_avgspeed
-%g_leader_files, %g_leader_mbytes, %g_leader_name, %g_leader_percent, %g_name, %releasename
-%t_duration, %t_files, %t_missingfiles, %u_count, %u_leader_avgspeed, %u_leader_files
+%a_gname %compression, %a_name, %filename, %g_count, %g_leader_avgspeed, %g_leader_files
+%g_leader_mbytes, %g_leader_name, %g_leader_percent, %g_name, %releasename, %t_duration
+%t_files, %t_missingfiles, %t_timeleft, %u_count, %u_leader_avgspeed, %u_leader_files
 %u_leader_gname, %u_leader_mbytes, %u_leader_name, %u_leader_percent, %u_name, %u_speed
 %u_tagline, %uploaded_files, %uploaded_mbytes, %uploaded_percent
 
 # NEWLEADER_VIDEO:
-%a_gname\, %a_name, %a_split, %filename, %g_count, %g_leader_avgspeed, %g_leader_files
+%a_gname %t_timeleft, %a_name, %filename, %g_count, %g_leader_avgspeed, %g_leader_files
 %g_leader_mbytes, %g_leader_name, %g_leader_percent, %g_name, %releasename, %t_duration
 %t_files, %t_missingfiles, %u_count, %u_leader_avgspeed, %u_leader_files, %u_leader_gname
 %u_leader_mbytes, %u_leader_name, %u_leader_percent, %u_name, %u_speed, %u_tagline
 %uploaded_files, %uploaded_mbytes, %uploaded_percent
 
 # NEWLEADER_ZIP:
-%a_gname\, %a_name, %a_split, %filename, %g_count, %g_leader_avgspeed, %g_leader_files
+%a_gname %t_timeleft, %a_name, %filename, %g_count, %g_leader_avgspeed, %g_leader_files
 %g_leader_mbytes, %g_leader_name, %g_leader_percent, %g_name, %releasename, %t_duration
 %t_files, %t_missingfiles, %u_count, %u_leader_avgspeed, %u_leader_files, %u_leader_gname
 %u_leader_mbytes, %u_leader_name, %u_leader_percent, %u_name, %u_speed, %u_tagline
@@ -257,29 +322,29 @@ Quickreference of cookies:
 %who
 
 # RACE_AUDIO:
-%a_gname %releasename, %a_name, %a_split, %filename, %g_count, %g_name, %missing_files
-%r_gname\, %r_name, %r_split, %t_duration, %t_files, %t_percent, %t_upfiles, %u_count
-%u_name, %u_speed, %u_tagline
+%a_gname %releasename, %a_name, %filename, %g_count, %g_name, %missing_files, %r_gname %t_timeleft
+%r_name, %t_duration, %t_files, %t_percent, %t_upfiles, %u_count, %u_name, %u_speed
+%u_tagline
 
 # RACE_OTHER:
-%a_gname %releasename, %a_name, %a_split, %filename, %g_count, %g_name, %missing_files
-%r_gname\, %r_name, %r_split, %t_duration, %t_files, %t_percent, %t_upfiles, %u_count
-%u_name, %u_speed, %u_tagline
+%a_gname %releasename, %a_name, %filename, %g_count, %g_name, %missing_files, %r_gname %t_timeleft
+%r_name, %t_duration, %t_files, %t_percent, %t_upfiles, %u_count, %u_name, %u_speed
+%u_tagline
 
 # RACE_RAR:
-%a_gname %releasename, %a_name, %a_split, %filename, %g_count, %g_name, %missing_files
-%r_gname %compression, %r_name, %r_split, %t_duration, %t_files, %t_percent, %t_upfiles
-%u_count, %u_name, %u_speed, %u_tagline
+%a_gname %releasename, %a_name, %filename, %g_count, %g_name, %missing_files, %r_gname %compression
+%r_name, %t_duration, %t_files, %t_percent, %t_timeleft, %t_upfiles, %u_count, %u_name
+%u_speed, %u_tagline
 
 # RACE_VIDEO:
-%a_gname %releasename, %a_name, %a_split, %filename, %g_count, %g_name, %missing_files
-%r_gname\, %r_name, %r_split, %t_duration, %t_files, %t_percent, %t_upfiles, %u_count
-%u_name, %u_speed, %u_tagline
+%a_gname %releasename, %a_name, %filename, %g_count, %g_name, %missing_files, %r_gname %t_timeleft
+%r_name, %t_duration, %t_files, %t_percent, %t_upfiles, %u_count, %u_name, %u_speed
+%u_tagline
 
 # RACE_ZIP:
-%a_gname %releasename, %a_name, %a_split, %filename, %g_count, %g_name, %missing_files
-%r_gname\, %r_name, %r_split, %t_duration, %t_files, %t_percent, %t_upfiles, %u_count
-%u_name, %u_speed, %u_tagline
+%a_gname %releasename, %a_name, %filename, %g_count, %g_name, %missing_files, %r_gname %t_timeleft
+%r_name, %t_duration, %t_files, %t_percent, %t_upfiles, %u_count, %u_name, %u_speed
+%u_tagline
 
 # REQFILLED:
 %g_name, %releasename, %u_name, %u_requester, %u_tagline
@@ -307,25 +372,29 @@ Quickreference of cookies:
 
 # UPDATE_CBR:
 %album, %artist, %audio, %bitrate, %codec, %filename, %g_name, %genre, %layer, %mode
-%releasename, %sampling, %t_files, %title, %u_name, %u_speed, %u_tagline, %year
+%releasename, %sampling, %t_files, %t_mbytes, %t_timeleft, %title, %u_name, %u_speed
+%u_tagline, %year
 
 # UPDATE_OTHER:
-%filename, %g_name, %releasename, %t_files, %t_mbytes, %u_name, %u_speed, %u_tagline
-
-# UPDATE_RAR:
-%compression, %filename, %g_name, %releasename, %t_files, %t_mbytes, %u_name, %u_speed
+%filename, %g_name, %releasename, %t_files, %t_mbytes, %t_timeleft, %u_name, %u_speed
 %u_tagline
 
+# UPDATE_RAR:
+%compression, %filename, %g_name, %releasename, %t_files, %t_mbytes, %t_timeleft
+%u_name, %u_speed, %u_tagline
+
 # UPDATE_VBR:
-%a_stream, %album, %artist, %audio, %bitrate, %codec, %filename, %g_name, %genre
-%layer, %mode, %releasename, %sampling, %t_files, %title, %u_name, %u_speed, %u_tagline
-%year
+%a_stream, %a_version, %album, %artist, %audio, %bitrate, %codec, %filename, %g_name
+%genre, %layer, %mode, %releasename, %sampling, %t_files, %t_mbytes, %t_timeleft
+%title, %u_name, %u_speed, %u_tagline, %year
 
 # UPDATE_VIDEO:
-%filename, %g_name, %releasename, %t_files, %t_mbytes, %u_name, %u_speed, %u_tagline
+%filename, %g_name, %releasename, %t_files, %t_mbytes, %t_timeleft, %u_name, %u_speed
+%u_tagline
 
 # UPDATE_ZIP:
-%filename, %g_name, %releasename, %t_files, %t_mbytes, %u_name, %u_speed, %u_tagline
+%filename, %g_name, %releasename, %t_files, %t_mbytes, %t_timeleft, %u_name, %u_speed
+%u_tagline
 
 # WIPE:
 %g_name, %u_name, %u_tagline
