@@ -194,7 +194,7 @@ set invite_channels     $chanlist(INVITE)
 #############################################################
 
 # Splits output into several lines.
-set splitter(CHAR)      "|"
+set splitter(CHAR)      "\n"
 
 # The path to your dZSbot theme file.
 set announce(THEMEFILE) "themes/default.zst"

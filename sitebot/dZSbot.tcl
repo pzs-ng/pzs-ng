@@ -25,7 +25,6 @@ if {[catch {source $scriptpath/dZSbot.vars} error]} {
 if {[catch {source $scriptpath/dZSbot.conf} error]} {
 	putlog "dZSbot warning: Unable to load dZSbot.conf ($error), using defaults."
 	putlog "dZSbot warning: If this is your first install, do: cp dZSbot.conf.dist dZSbot.conf"
-	die
 }
 
 #################################################################################
@@ -739,7 +738,7 @@ proc rightscheck {rights user group flags} {
 
 proc ng_inviteuser {nick user group flags} {
 	global invite_channels privchannel
-	if {![eventhandler precommand INVITEUSER [list $nick $user $group]]} {return}
+	if {![eventhandler precommand INVITEUSER [list $nick $user $group $flags]]} {return}
 
 	## Invite the user to the defined channels.
 	foreach chan $invite_channels {

@@ -89,7 +89,7 @@ set invite_channels         $chanlist(INVITE)
 
 # Stuff you may need to change #
 ################################
-set splitter(CHAR)                  "|"
+set splitter(CHAR)                  "\n"
 
 ## script announcements
 set disable(DEFAULT)                 0
