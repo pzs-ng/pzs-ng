@@ -600,7 +600,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				break;
 			case '$':
 				out_p += sprintf(out_p, "%*.*s", val1, val2,
-						 (char *)hms((((raceI->total.stop_time - raceI->total.start_time) / (raceI->total.files - raceI->total.files_missing)) * raceI->total.files) - (raceI->total.stop_time - raceI->total.start_time)));
+						 (char *)hms(((((raceI->total.stop_time - raceI->total.start_time) + (raceI->total.files - raceI->total.files_missing)) / (raceI->total.files - raceI->total.files_missing)) * raceI->total.files) - (raceI->total.stop_time - raceI->total.start_time)));
 				break;
 			case 'e':
 				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->file.size * raceI->total.files >> 10) / 1024.));
