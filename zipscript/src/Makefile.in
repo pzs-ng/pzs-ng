@@ -65,10 +65,14 @@ install:
 	cp -f $(binpath)/racedebug $(bindir)/
 	cp -f $(binpath)/pzsng-undupe $(bindir)/
 
+distclean: clean
+	@$(RM) Makefile
+
 clean:
-	@$(RM) *.o $(binpath)/zipscript-c $(binpath)/postdel $(binpath)/racestats $(binpath)/cleanup $(binpath)/datacleaner $(binpath)/rescan $(binpath)/racedebug $(binpath)/pzsng-undupe Makefile
-binclean:
 	@$(RM) *.o $(binpath)/zipscript-c $(binpath)/postdel $(binpath)/racestats $(binpath)/cleanup $(binpath)/datacleaner $(binpath)/rescan $(binpath)/racedebug $(binpath)/pzsng-undupe
+
+#binclean:
+#	@$(RM) *.o $(binpath)/zipscript-c $(binpath)/postdel $(binpath)/racestats $(binpath)/cleanup $(binpath)/datacleaner $(binpath)/rescan $(binpath)/racedebug $(binpath)/pzsng-undupe
 
 strip:
 	strip $(binpath)/*

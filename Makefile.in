@@ -15,15 +15,16 @@ all: zs
 install: zs
 	@( cd zipscript/src ; $(MAKE) install )
 
-clean:
-	@( cd zipscript/src ; $(MAKE) clean )
+distclean: clean
 	@( rm -f *~ Makefile config.cache config.log config.status config.h )
 
-binclean:
-	@( cd zipscript/src ; $(MAKE) binclean )
+clean:
+	@( cd zipscript/src ; $(MAKE) clean )
 
 zs:
 	@( cd zipscript/src ; $(MAKE) all )
 
+bot:
+	@( cd sitebot/src ; ${MAKE} all )
 #Configurator:
 #	@( if test x$(CFGLIBS) != x ; then cd configurator ; $(MAKE) all ; fi )
