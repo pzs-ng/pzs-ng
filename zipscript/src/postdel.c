@@ -262,7 +262,7 @@ main(int argc, char **argv)
 	if (getenv("SECTION") == NULL) {
 		sprintf(raceI.sectionname, "DEFAULT");
 	} else {
-		sprintf(raceI.sectionname, getenv("SECTION"));
+		snprintf(raceI.sectionname, 127, getenv("SECTION"));
 	}
 
 	d_log("Copying data locations into memory\n");

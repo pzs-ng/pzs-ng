@@ -174,7 +174,7 @@ main()
 	if (getenv("SECTION") == NULL) {
 		sprintf(raceI.sectionname, "DEFAULT");
 	} else {
-		sprintf(raceI.sectionname, getenv("SECTION"));
+		snprintf(raceI.sectionname, 127, getenv("SECTION"));
 	}
 
 	locations.race = malloc(n = strlen(locations.path) + 10 + sizeof(storage));

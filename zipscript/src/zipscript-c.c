@@ -363,10 +363,10 @@ main(int argc, char **argv)
 		unum = buffer_users(PASSWDFILE, 0);
 		sprintf(raceI.user.name, getenv("USER"));
 		sprintf(raceI.user.group, getenv("GROUP"));
-		if (strlen(raceI.user.group) == 0)
+		if (!strlen(raceI.user.group))
 			memcpy(raceI.user.group, "NoGroup", 8);
 		sprintf(raceI.user.tagline, getenv("TAGLINE"));
-		if (strlen(raceI.user.tagline) == 0)
+		if (!strlen(raceI.user.tagline))
 			memcpy(raceI.user.tagline, "No Tagline Set", 15);
 		raceI.file.speed = (unsigned int)strtol(getenv("SPEED"), NULL, 0);
 		if (!raceI.file.speed)
@@ -378,7 +378,7 @@ main(int argc, char **argv)
 #endif
 
 		d_log("Reading section from env (%s)\n", getenv("SECTION"));
-		sprintf(raceI.sectionname, getenv("SECTION"));
+		snprintf(raceI.sectionname, 127, getenv("SECTION"));
 		temp_p_free = temp_p = strdup((const char *)gl_sections);	/* temp_p_free is needed since temp_p is modified by strsep */
 		if ((temp_p) == NULL) {
 			d_log("Can't allocate memory for sections\n");
