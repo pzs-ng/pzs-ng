@@ -1,4 +1,4 @@
-#define for_glftpd2	TRUE
+#include "../zipscript/conf/zsconfig.h"
 
 #include <stdio.h>
 #include <stdlib.h>
