@@ -4,7 +4,8 @@ v0.7.2
  - daxxar made some changes in the autoconf file to detect os and make the appropriate changes.
  - daxxar made an option to choose between glftpd 1 or 2.
  - psxc added support for the old double-sfv deny patch.
- - psxc added iono's fix for glftpd2 nuke style
+ - psxc added iono's fix for glftpd2 nuke style.
+ - daxxar fixed an ugly group dir bug.
 
 v0.7.1
  - merged in freebsd patches by iwdisb ( http://mobilcom.dyndns.org/~iwdisb/glftpd/ )
