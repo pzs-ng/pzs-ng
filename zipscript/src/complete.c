@@ -88,23 +88,23 @@ void writetop(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 
     if ( completetype == 1 ) {
 	if ( pre_stats != NULL ) {
-	    writelog(convert(raceI, userI, groupI, pre_stats), "STATS");
+	    writelog(convert(raceI, userI, groupI, pre_stats), "STAT_USERS_HEAD");
 	}
 	if ( user_top != NULL ) {
 	    for ( cnt = 0 ; cnt < max_users_in_top && cnt < raceI->total.users; cnt++ ) {
-		writelog(convert2(raceI, userI[userI[cnt]->pos], groupI, user_top, cnt), "STATS");
+		writelog(convert2(raceI, userI[userI[cnt]->pos], groupI, user_top, cnt), "STAT_USERS");
 	    }
 	}
 	if ( between_stats != NULL ) {
-	    writelog(convert(raceI, userI, groupI, between_stats), "STATS");
+	    writelog(convert(raceI, userI, groupI, between_stats), "STAT_GROUPS_HEAD");
 	}
 	if ( group_top != NULL ) {
 	    for ( cnt = 0 ; cnt < max_groups_in_top && cnt < raceI->total.groups; cnt++ ) {
-		writelog(convert3(raceI, groupI[groupI[cnt]->pos], group_top, cnt), "STATS");
+		writelog(convert3(raceI, groupI[groupI[cnt]->pos], group_top, cnt), "STAT_GROUPS");
 	    }
 	}
 	if ( post_stats != NULL ) {
-	    writelog(convert(raceI, userI, groupI, post_stats), "STATS");
+	    writelog(convert(raceI, userI, groupI, post_stats), "STAT_POST");
 	}
     }
 }

@@ -64,7 +64,7 @@ install:
 distclean: clean
 
 clean:
-	$(RM) zipscript-c postdel racestats cleanup datacleaner rescan racedebug ng-undupe ng-chown
+	$(RM) zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chown
 
 uninstall:
 	rm -rf "$(prefix)$(storage)"

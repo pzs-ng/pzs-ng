@@ -32,7 +32,7 @@ void writelog(char *msg, char *status) {
     char   *line, *newline;
     time_t timenow;
 
-    if ( raceI.misc.write_log == TRUE ) {
+    if ( raceI.misc.write_log == TRUE && !matchpath(group_dirs, locations.path)) {
 	timenow = time(NULL);
 	date = ctime(&timenow);
 	glfile = fopen(log, "a+");
@@ -41,16 +41,16 @@ void writelog(char *msg, char *status) {
 	while ( 1 ) {
 	    switch ( *newline++ ) {
 		case 0:
-		    fprintf(glfile, "%.24s %s: \"%s\" \"%s\"\n", date, status, locations.path, line);
+		    fprintf(glfile, "%.24s %s: \"%s\" %s\n", date, status, locations.path, line);
 		    fclose(glfile);
 		    return;
 		case '\n':
-		    fprintf(glfile, "%.24s %s: \"%s\" \"%.*s\"\n", date, status, locations.path, (int)(newline - line - 1), line);
+		    fprintf(glfile, "%.24s %s: \"%s\" %.*s\n", date, status, locations.path, (int)(newline - line - 1), line);
 		    line = newline;
 		    break;
 	    }
-	}       
-    }           
+	}
+    }
 }
 
 /* GET NAME OF MULTICD RELEASE (CDx/D[Ii]S[CK]x/DVDx) (SYMLINK LOCATION + INCOMPLETE FILENAME) */
@@ -153,8 +153,8 @@ int main( int argc, char **argv ) {
 
     locations.path = malloc(PATH_MAX);
     getcwd(locations.path, PATH_MAX);
-    locations.race = malloc(n = strlen(locations.path) + 9 + sizeof(storage)); 
-    locations.sfv = malloc(n); 
+    locations.race = malloc(n = strlen(locations.path) + 9 + sizeof(storage));
+    locations.sfv = malloc(n);
     locations.leader = malloc(n);
     target = malloc(4096);
 
@@ -187,7 +187,7 @@ int main( int argc, char **argv ) {
     d_log("Copying lowercased version of extension to memory\n");
     fileext = malloc(name_p - temp_p);
     memcpy(fileext, temp_p, name_p - temp_p);
-    strtolower(fileext); 
+    strtolower(fileext);
 
     switch ( get_filetype(fileext) ) {
 	case 0:
@@ -230,11 +230,11 @@ int main( int argc, char **argv ) {
 	    }
 	    if ( ! raceI.total.files_missing ) {
 		d_log("Creating complete bar\n");
-		createstatusbar(convert(&raceI, userI, groupI, zip_completebar) ); 
+		createstatusbar(convert(&raceI, userI, groupI, zip_completebar) );
 	    } else if ( raceI.total.files_missing < raceI.total.files ) {
 		if ( raceI.total.files_missing == 1 ) {
 		    d_log("Writing INCOMPLETE to %s\n", log);
-		    writelog(convert(&raceI, userI, groupI, incompletemsg), "INCOMPLETE"); 
+		    writelog(convert(&raceI, userI, groupI, incompletemsg), "INCOMPLETE");
 		}
 		incomplete = 1;
 	    } else {
@@ -309,10 +309,10 @@ int main( int argc, char **argv ) {
 	    delete_sfv_file(&locations);
 	}
 	unlink(locations.incomplete);
-	unlink("file_id.diz"); 
+	unlink("file_id.diz");
 	unlink(locations.sfv);
-	unlink(locations.race); 
-	unlink(locations.leader); 
+	unlink(locations.race);
+	unlink(locations.leader);
 	move_progress_bar(1, &raceI);
     }
 

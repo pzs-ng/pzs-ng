@@ -27,17 +27,30 @@ struct GROUPINFO **groupI;
 struct VARS      raceI;
 struct LOCATIONS locations;
 
-/* WRITE TO GLFTPD LOG */
 void writelog(char *msg, char *status) {
     FILE   *glfile;
     char   *date;
+    char   *line, *newline;
     time_t timenow;
 
-    if ( raceI.misc.write_log ) {
-	timenow = time( NULL );
+    if ( raceI.misc.write_log == TRUE && !matchpath(group_dirs, locations.path)) {
+	timenow = time(NULL);
 	date = ctime(&timenow);
-	fprintf(glfile = fopen(log, "a+"), "%.24s %s: \"%s\" \"%s\"\n", date, status, locations.path, msg);
-	fclose(glfile);
+	glfile = fopen(log, "a+");
+
+	line = newline = msg;
+	while ( 1 ) {
+	    switch ( *newline++ ) {
+		case 0:
+		    fprintf(glfile, "%.24s %s: \"%s\" %s\n", date, status, locations.path, line);
+		    fclose(glfile);
+		    return;
+		case '\n':
+		    fprintf(glfile, "%.24s %s: \"%s\" %.*s\n", date, status, locations.path, (int)(newline - line - 1), line);
+		    line = newline;
+		    break;
+	    }
+	}
     }
 }
 
@@ -107,7 +120,7 @@ int main () {
 
     bzero(&raceI.total, sizeof(struct race_total));
     raceI.misc.fastest_user[0] =
-	raceI.misc.release_type = 0;    
+	raceI.misc.release_type = 0;
 
     locations.path = malloc( PATH_MAX );
     getcwd( locations.path, PATH_MAX );

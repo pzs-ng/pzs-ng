@@ -65,9 +65,9 @@ bind pub	-|-	[set cmdpre]who		who
 bind pub	-|-	[set cmdpre]speed	speed
 bind pub	-|-	[set cmdpre]bw		ng_bandwidth
 bind pub	-|-	[set cmdpre]bwup	ng_bwup
-bind pub    -|- [set cmdpre]uploaders	ng_uploaders
+bind pub    	-|- 	[set cmdpre]uploaders	ng_uploaders
 bind pub	-|-	[set cmdpre]bwdn	ng_bwdn
-bind pub	-|- [set cmdpre]leechers	ng_leechers
+bind pub	-|- 	[set cmdpre]leechers	ng_leechers
 bind pub	-|-	[set cmdpre]idlers	ng_idlers
 bind pub	-|-	[set cmdpre]bnc		ng_bnc_check
 bind pub	-|-	[set cmdpre]free	show_free
@@ -91,40 +91,41 @@ bind pub	-|-	[set cmdpre]gwpd	stats_group_gpwd
 bind pub	-|-	[set cmdpre]gpad	stats_group_gpad
 bind pub	-|-	[set cmdpre]help	help
 
-bind join	-|-	*					welcome_msg
+bind join	-|-	*			welcome_msg
 
-bind msg	-|-	!invite				invite
+bind msg	-|-	!invite			invite
 
 if {$bindnopre == "YES"} { 
-	bind pub    -|- !who		who
-	bind pub    -|- !speed		speed
-	bind pub    -|- !bw			ng_bandwidth
-	bind pub    -|- !bwdn		ng_bwdn
-	bind pub	-|- !uploaders	ng_uploaders
-	bind pub    -|- !bwup		ng_bwup
-	bind pub    -|- !leechers	ng_leechers
+	bind pub	-|- !who		who
+	bind pub	-|- !speed		speed
+	bind pub	-|- !bw			ng_bandwidth
+	bind pub	-|- !bwdn		ng_bwdn
+	bind pub	-|- !uploaders		ng_uploaders
+	bind pub	-|- !bwup		ng_bwup
+	bind pub	-|- !leechers		ng_leechers
 	bind pub	-|- !idlers		ng_idlers
-	bind pub    -|- !bnc		ng_bnc_check
-	bind pub    -|- !free		show_free
+	bind pub	-|- !bnc		ng_bnc_check
+	bind pub	-|- !free		show_free
+	bind pub	-|- !df			show_free
 	bind pub	-|- !df			show_free
 
-	bind pub    -|- !dayup		stats_user_dayup
-	bind pub    -|- !wkup		stats_user_wkup
-	bind pub    -|- !monthup	stats_user_monthup
-	bind pub    -|- !allup		stats_user_allup
+	bind pub	-|- !dayup		stats_user_dayup
+	bind pub	-|- !wkup		stats_user_wkup
+	bind pub	-|- !monthup		stats_user_monthup
+	bind pub	-|- !allup		stats_user_allup
 
-	bind pub    -|- !daydn		stats_user_daydn
-	bind pub    -|- !wkdn		stats_user_wkdn
-	bind pub    -|- !monthdn	stats_user_monthdn
-	bind pub    -|- !alldn		stats_user_alldn
+	bind pub	-|- !daydn		stats_user_daydn
+	bind pub	-|- !wkdn		stats_user_wkdn
+	bind pub	-|- !monthdn		stats_user_monthdn
+	bind pub	-|- !alldn		stats_user_alldn
 
-	bind pub    -|- !gpwk		stats_group_gpwk
-	bind pub    -|- !gpal		stats_group_gpal
-	bind pub    -|- !inc		show_incompletes
+	bind pub	-|- !gpwk		stats_group_gpwk
+	bind pub	-|- !gpal		stats_group_gpal
+	bind pub	-|- !inc		show_incompletes
 
-	bind pub    -|- !gwpd		stats_group_gpwd
-	bind pub    -|- !gpad		stats_group_gpad
-	bind pub    -|- !help		help
+	bind pub	-|- !gwpd		stats_group_gpwd
+	bind pub	-|- !gpad		stats_group_gpad
+	bind pub	-|- !help		help
 }
 
 if {$bindnopre != "YES"} {
@@ -133,7 +134,7 @@ if {$bindnopre != "YES"} {
 	catch { unbind pub    -|- !bw		ng_bandwidth }
 	catch { unbind pub    -|- !bwup		ng_bwup }
 	catch { unbind pub    -|- !uploaders	ng_uploaders }
-	catch { unbind pub    -|- !bwdn     ng_bwdn }
+	catch { unbind pub    -|- !bwdn		ng_bwdn }
 	catch { unbind pub    -|- !leechers	ng_leechers }
 	catch { unbind pub    -|- !idlers	ng_idlers }
 	catch { unbind pub    -|- !bnc		ng_bnc_check }
