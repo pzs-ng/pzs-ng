@@ -17,13 +17,13 @@ RS-OBJECTS=racestats.o dizreader.o $(UNIVERSAL)
 CU-OBJECTS=cleanup.o
 #IL-OBJECTS=incomplete-list.o
 DC-OBJECTS=datacleaner.o
-UD-OBJECTS=pzsng-undupe.o
+UD-OBJECTS=ng-undupe.o
 SC-OBJECTS=rescan.o dizreader.o complete.o crc.o multimedia.o $(UNIVERSAL)
 CH-OBJECTS=ng-chown.o
 #ZS-DEPEND=cleanup.o incomplete-list.o complete.o datacleaner.o postdel.o racestats.o rescan.o zipscript-c.o multimedia.o $(UNIVERSAL)
 ZS-DEPEND=cleanup.o complete.o datacleaner.o postdel.o racestats.o rescan.o zipscript-c.o multimedia.o $(UNIVERSAL)
 
-all: pzsng-undupe racedebug zipscript-c postdel racestats cleanup datacleaner rescan ng-chown
+all: ng-undupe racedebug zipscript-c postdel racestats cleanup datacleaner rescan ng-chown
 
 $(ZS-DEPEND): ../conf/zsconfig.h
 
@@ -45,7 +45,7 @@ cleanup: $(CU-OBJECTS)
 datacleaner: $(DC-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(DC-OBJECTS)
 
-pzsng-undupe: $(UD-OBJECTS)
+ng-undupe: $(UD-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(UD-OBJECTS)
 
 ng-chown: $(CH-OBJECTS)
@@ -59,16 +59,16 @@ install:
 	chown 0:0 $(prefix)$(storage)
 	chmod 4777 $(prefix)$(storage)
 	if [ -e $(prefix)$(datapath)/logs/glftpd.log ]; then chmod 666 $(prefix)$(datapath)/logs/glftpd.log; fi
-	if [ -e $(bindir) ]; then cp -f zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chown $(bindir)/; fi
+	if [ -e $(bindir) ]; then cp -f zipscript-c postdel racestats cleanup datacleaner rescan racedebug ng-undupe ng-chown $(bindir)/; fi
 
 distclean: clean
 
 clean:
-	$(RM) zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chown
+	$(RM) zipscript-c postdel racestats cleanup datacleaner rescan racedebug ng-undupe ng-chown
 
 uninstall:
 	rm -rf "$(prefix)$(storage)"
-	rm -f $(bindir)/{zipscript-c,postdel,racestats,cleanup,datacleaner,rescan,racedebug,pzsng-undupe,ng-chown}
+	rm -f $(bindir)/{zipscript-c,postdel,racestats,cleanup,datacleaner,rescan,racedebug,ng-undupe,ng-chown}
 
 strip:
-	strip zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chown
+	strip zipscript-c postdel racestats cleanup datacleaner rescan racedebug ng-undupe ng-chown
