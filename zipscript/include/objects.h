@@ -160,4 +160,16 @@ typedef struct {
 	struct LOCATIONS	l;
 } GLOBAL; /* reconsider this name */
 
+/* this is what we write to racedata files */
+typedef struct {
+	uint32_t	crc32,
+			speed;
+	off_t		size;
+	time_t		start_time;
+	unsigned char	status;
+	char		fname[PATH_MAX],
+			uname[24],
+			group[24];
+} RACEDATA;
+
 #endif

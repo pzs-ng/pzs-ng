@@ -276,7 +276,7 @@ main(int argc, char **argv)
 			strtolower(g.v.file.name);
 #endif
 #endif
-			create_missing(g.v.file.name, name_p - g.v.file.name - 1);
+			create_missing(g.v.file.name);
 #endif
 			d_log("Reading file count from SFV\n");
 			readsfv_file(&g.l, &g.v, 0);

@@ -161,24 +161,30 @@ testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 {
 	int		len;
 	unsigned char	status;
-	FILE           *file;
-	char           *fname, *realfile, *target, *ext;
-	unsigned int	Tcrc, crc;
+	FILE		*file;
+	char		*fname, *realfile, target[256], *ext;
+	//unsigned int	Tcrc, crc;
+	uint32_t	Tcrc;
 	int		m= 0, l = 0;
 	struct stat	filestat;
-	target = m_alloc(256);
 
+	RACEDATA	rd;
+	
+	//target = m_alloc(256);
+	
 	if ((file = fopen(locations->race, "r+"))) {
 		realfile = raceI->file.name;
 		if (rstatus)
 			printf("\n");
-		while (fread(&len, sizeof(int), 1, file) == 1) {
+		while ((fread(&rd, 1, sizeof(RACEDATA), file))) {
+		//while (fread(&len, sizeof(int), 1, file) == 1) {
 
-			fname = m_alloc(len);
+			/*fname = m_alloc(len);
 			fread(fname, 1, len, file);
 			fread(&status, 1, 1, file);
-			fread(&crc, sizeof(int), 1, file);
+			fread(&crc, sizeof(int), 1, file);*/
 
+			/* what does this do? */
 			m = l = strlen(realfile);
 			ext = realfile;
 			while (ext[m] != '.' && m > 0)
@@ -189,53 +195,58 @@ testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 				m++;
 			ext += m;
 
-			if (status == F_NOTCHECKED) {
-				raceI->file.name = fname;
+			if (rd.status == F_NOTCHECKED) {
+				strlcpy(raceI->file.name, rd.fname, PATH_MAX);
 				Tcrc = readsfv_file(locations, raceI, 0);
-				stat(fname, &filestat);
+				stat(rd.fname, &filestat);
 				if (S_ISDIR(filestat.st_mode)) {
-					status = F_IGNORED;
-				} else if (crc != 0 && Tcrc == crc) {
-					status = F_CHECKED;
-				} else if (crc != 0 && strcomp(ignored_types, ext)) {
-					status = F_IGNORED;
-				} else if (crc != 0 && Tcrc == 0 && strcomp(allowed_types, ext)) {
-					status = F_IGNORED;
-				} else if ((crc != 0) && (Tcrc != crc) && (strcomp(allowed_types, ext) && !matchpath(allowed_types_exemption_dirs, locations->path))) {
-					status = F_IGNORED;
+					rd.status = F_IGNORED;
+				} else if (rd.crc32 != 0 && Tcrc == rd.crc32) {
+					rd.status = F_CHECKED;
+				} else if (rd.crc32 != 0 && strcomp(ignored_types, ext)) {
+					rd.status = F_IGNORED;
+				} else if (rd.crc32 != 0 && Tcrc == 0 && strcomp(allowed_types, ext)) {
+					rd.status = F_IGNORED;
+				} else if ((rd.crc32 != 0) && (Tcrc != rd.crc32) &&
+				           (strcomp(allowed_types, ext) &&
+					   !matchpath(allowed_types_exemption_dirs, locations->path))) {
+					rd.status = F_IGNORED;
 				} else {
-					mark_as_bad(fname);
-					if (fname)
-					unlink(fname);
-					status = F_BAD;
+					mark_as_bad(rd.fname);
+					if (rd.fname)
+						unlink(rd.fname);
+					rd.status = F_BAD;
 
 #if ( create_missing_files )
 					if (Tcrc != 0)
-						create_missing(fname, len - 1);
+						create_missing(rd.fname);
 #endif
 
 					if (rstatus)
-						printf("File: %s FAILED!\n", fname);
+						printf("File: %s FAILED!\n", rd.fname);
 
-					d_log("marking %s bad.\n", fname);
+					d_log("marking %s bad.\n", rd.fname);
 					if (enable_unduper_script == TRUE) {
 						if (!fileexists(unduper_script)) {
-							d_log("Failed to undupe '%s' - '%s' does not exist.\n", fname, unduper_script);
+							d_log("Failed to undupe '%s' - '%s' does not exist.\n",
+							      rd.fname, unduper_script);
 						} else {
-							sprintf(target, unduper_script " \"%s\"", fname);
+							sprintf(target, unduper_script " \"%s\"", rd.fname);
 							if (execute(target) == 0) {
-								d_log("undupe of %s successful.\n", fname);
+								d_log("undupe of %s successful.\n", rd.fname);
 							} else {
-								d_log("undupe of %s failed.\n", fname);
+								d_log("undupe of %s failed.\n", rd.fname);
 							}
 						}
 					}
 				}
 			}
-			fseek(file, -1 - sizeof(int), SEEK_CUR);
-			fwrite(&status, 1, 1, file);
-			fseek(file, 48 + 5 * sizeof(int), SEEK_CUR);
-			m_free(fname);
+			//fseek(file, -1 - sizeof(int), SEEK_CUR);
+			//fwrite(&status, 1, 1, file);
+			//fseek(file, 48 + 5 * sizeof(int), SEEK_CUR);
+			//m_free(fname);
+			fseek(file, -sizeof(RACEDATA), SEEK_CUR);
+			fwrite(&rd, 1, sizeof(RACEDATA), file);
 		}
 
 		raceI->file.name = realfile;
@@ -371,7 +382,7 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
 					}
 #if ( create_missing_files == TRUE )
 					if (!findfile(line) && !sfv_failed) {
-						create_missing(line, len - 1);
+						create_missing(line);
 					}
 #endif
 					if (!sfv_failed) {
@@ -441,26 +452,38 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
 void 
 create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char *f)
 {
-	FILE           *r;
-	int		l         , n, m, c;
-	int            *pos;
-	int            *t_pos;
+	FILE		*r;
+	int		l, n, m, c;
+	//int		*pos;
+	int		pos[raceI->total.files],
+			t_pos[raceI->total.files];
 	unsigned char	s;
-	char           *t;
-	char          **fname;
+	char		*t;
+	//char		**fname;
+	char		fname[raceI->total.files][PATH_MAX];
+	
+	RACEDATA	rd;
 
-	pos = m_alloc(sizeof(int) * raceI->total.files);
+	/*pos = m_alloc(sizeof(int) * raceI->total.files);
 	t_pos = m_alloc(sizeof(int) * raceI->total.files);
-	fname = m_alloc(sizeof(char *) * raceI->total.files);
+	fname = m_alloc(sizeof(char *) * raceI->total.files);*/
 	if (!(r = fopen(locations->race, "r"))) {
 		d_log("Couldn't fopen %s: %s\n", locations->race, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	c = 0;
 
 	/* Read filenames from race file */
+	c = 0;
+	while ((fread(&rd, 1, sizeof(RACEDATA), r))) {
+		if (rd.status == F_CHECKED) {
+			strlcpy(fname[c], rd.fname, PATH_MAX);
+			t_pos[0] = 0;
+			c++;
+		}
+	}
+	fclose(r);
 
-	while (fread(&l, sizeof(int), 1, r) == 1) {
+	/*while (fread(&l, sizeof(int), 1, r) == 1) {
 		t = m_alloc(l);
 		fread(t, 1, l, r);
 		fread(&s, 1, 1, r);
@@ -473,7 +496,7 @@ create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char *f)
 		}
 		fseek(r, 48 + 5 * sizeof(int), SEEK_CUR);
 	}
-	fclose(r);
+	fclose(r);*/
 
 	/* Sort with cache */
 
@@ -495,17 +518,17 @@ create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char *f)
 		for (n = 0; n < c; n++) {
 			m = pos[n];
 			fprintf(r, "%s\n", fname[m]);
-			m_free(fname[m]);
+			//m_free(fname[m]);
 		}
 		fclose(r);
-	} else {
-		for (n = 0; n < c; n++)
-			m_free(fname[n]);
-	}
+	}// else {
+		//for (n = 0; n < c; n++)
+		//	m_free(fname[n]);
+	//}
 
-	m_free(fname);
+	/*m_free(fname);
 	m_free(t_pos);
-	m_free(pos);
+	m_free(pos);*/
 }
 
 /*
@@ -516,19 +539,35 @@ create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char *f)
 short int 
 clear_file_file(struct LOCATIONS *locations, char *f)
 {
-	int		len       , n;
+	int		len, n = 0;
 	unsigned char	status;
 	FILE           *file;
 	char           *fname;
+	RACEDATA	rd;
 
 	if ((file = fopen(locations->race, "r+"))) {
+		while (fread(&rd, 1, sizeof(RACEDATA), file)) {
+			if (strncmp(rd.fname, f, PATH_MAX) == 0) {
+				rd.status = F_DELETED;
+				fseek(file, -sizeof(RACEDATA), SEEK_CUR);
+				fwrite(&rd, 1, sizeof(RACEDATA), file);
+				n++;
+			}
+		}
+		fclose(file);
+	}
+
+	return n;
+	
+	/*if ((file = fopen(locations->race, "r+"))) {
 		n = 0;
 		while (fread(&len, sizeof(int), 1, file) == 1) {
 			fname = m_alloc(len);
 			fread(fname, 1, len, file);
 			fread(&status, 1, 1, file);
 
-			if ((status == F_CHECKED || status == F_NOTCHECKED || status == F_NFO) && !memcmp(f, fname, len)) {
+			if ((status == F_CHECKED || status == F_NOTCHECKED || status == F_NFO) &&
+			     !memcmp(f, fname, len)) {
 				status = F_DELETED;
 				n++;
 				fseek(file, -1, SEEK_CUR);
@@ -541,7 +580,7 @@ clear_file_file(struct LOCATIONS *locations, char *f)
 		if (n)
 			return 1;
 	}
-	return 0;
+	return 0;*/
 }
 
 /*
@@ -562,7 +601,29 @@ readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
 	char           *uname;
 	char           *ugroup;
 
-	if (!(file = fopen(locations->race, "r"))) {
+	RACEDATA	rd;
+
+	if ((file = fopen(locations->race, "r"))) {
+		while (fread(&rd, 1, sizeof(RACEDATA), file)) {
+			switch (rd.status) {
+				case F_NOTCHECKED:
+				case F_CHECKED:
+					updatestats(raceI, userI, groupI, rd.uname, rd.group,
+						    rd.size, rd.speed, rd.start_time);
+					break;
+				case F_BAD:
+					raceI->total.files_bad++;
+					raceI->total.bad_size += rd.size;
+					break;
+				case F_NFO:
+					raceI->total.nfo_present = 1;
+					break;
+			}
+		}
+		fclose(file);
+	}
+
+	/*if (!(file = fopen(locations->race, "r"))) {
 		return;
 	}
 	while (fread(&len, sizeof(int), 1, file) == 1) {
@@ -594,7 +655,7 @@ readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
 			break;
 		}
 	}
-	fclose(file);
+	fclose(file);*/
 }
 
 /*
@@ -611,13 +672,30 @@ writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned int crc
 	unsigned char  *buf;
 	unsigned char  *p_buf;
 
+	RACEDATA	rd;
+
 	clear_file_file(locations, raceI->file.name);
 
 	if (!(file = fopen(locations->race, "a+"))) {
 		d_log("Couldn't fopen racefile (%s): %s\n", locations->race, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	len = strlen(raceI->file.name) + 1;
+	
+	rd.status = status;
+	rd.crc32 = crc;
+	
+	strlcpy(rd.fname, raceI->file.name, PATH_MAX);
+	strlcpy(rd.uname, raceI->user.name, 24);
+	strlcpy(rd.group, raceI->user.group, 24);
+	
+	rd.size = raceI->file.size;
+	rd.speed = raceI->file.speed;
+	rd.start_time = raceI->total.start_time;
+
+	fwrite(&rd, 1, sizeof(RACEDATA), file);
+	
+	fclose(file);
+	/*len = strlen(raceI->file.name) + 1;
 	sz = len + 1 + 2 * 24 + 4 * sizeof(int) + sizeof(off_t);
 	p_buf = buf = m_alloc(sz);
 
@@ -640,5 +718,5 @@ writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned int crc
 
 	fwrite(buf, 1, sz, file);
 	fclose(file);
-	m_free(buf);
+	m_free(buf);*/
 }

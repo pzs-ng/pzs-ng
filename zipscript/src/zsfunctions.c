@@ -68,12 +68,11 @@ d_log(char *fmt,...)
  *        Revision: 1218
  */
 void 
-create_missing(char *f, short int l)
+create_missing(char *f)
 {
-	char		fname[l+9];
+	char		fname[PATH_MAX];
 
-	memcpy(fname, f, l);
-	memcpy(fname + l, "-missing", 9);
+	snprintf(fname, PATH_MAX, "%s-missing", f);
 	createzerofile(fname);
 }
 

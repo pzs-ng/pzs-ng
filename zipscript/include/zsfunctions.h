@@ -86,7 +86,7 @@ extern unsigned int direntries;
 
 extern void	d_log(char *,...);
 
-extern void	create_missing(char *, short);
+extern void	create_missing(char *);
 extern char    *findfileext(char *);
 extern char    *findfileextparent(char *);
 extern int	findfileextcount(char *);
