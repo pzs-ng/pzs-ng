@@ -797,7 +797,7 @@ main(int argc, char **argv)
 								write_log = g.v.misc.write_log;
 								g.v.misc.write_log = 1;
 								error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-								if (exit_value < 2)
+								if ((g.ui[g.v.user.pos]->files == 1) && (exit_value < 2))
 									writelog(&g, error_msg, bad_file_genre_type);
 								exit_value = 2;
 							}
@@ -826,7 +826,7 @@ main(int argc, char **argv)
 								write_log = g.v.misc.write_log;
 								g.v.misc.write_log = 1;
 								error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-								if (exit_value < 2)
+								if ((g.ui[g.v.user.pos]->files == 1) && (exit_value < 2))
 									writelog(&g, error_msg, bad_file_genre_type);
 								exit_value = 2;
 							}
@@ -856,7 +856,7 @@ main(int argc, char **argv)
 								write_log = g.v.misc.write_log;
 								g.v.misc.write_log = 1;
 								error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-								if (exit_value < 2)
+								if ((g.ui[g.v.user.pos]->files == 1) && (exit_value < 2))
 									writelog(&g, error_msg, bad_file_year_type);
 								exit_value = 2;
 							}
@@ -887,7 +887,7 @@ main(int argc, char **argv)
 									write_log = g.v.misc.write_log;
 									g.v.misc.write_log = 1;
 									error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-									if (exit_value < 2)
+									if ((g.ui[g.v.user.pos]->files == 1) && (exit_value < 2))
 										writelog(&g, error_msg, bad_file_bitrate_type);
 									exit_value = 2;
 								}
