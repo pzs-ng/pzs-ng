@@ -32,8 +32,7 @@ announce.BADBITRATE				= "[%b{notice}] %b{%u_name} of %g_name is violating rules
 announce.BADGENRE				= "[%b{notice}] %b{%u_name} of %g_name is violating rules by uploading %b{%genre}."
 announce.BADYEAR				= "[%b{notice}] %b{%u_name} of %g_name is violating rules by uploading shit from %b{%year}."
 
-# some special loop variables - these format the racers and
-stats for each racer in the corresponding output.
+# some special loop variables - these format the racers and stats for each racer in the corresponding output.
 announce.RACE_ZIP_LOOP1				= "%a_split%b{%a_name}/%a_gname"
 announce.RACE_ZIP_LOOP2				= "%r_split%b{%r_name}/%r_gname"
 announce.RACE_RAR_LOOP1				= "%a_split%b{%a_name}/%a_gname"
