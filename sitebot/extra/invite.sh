@@ -8,9 +8,7 @@ if [ -z "$1" ] || [ ! -z "$2" ] ; then
 fi
 
 badchars=`echo -n "$1" | tr -d "[a-z][A-Z][0-9]|\-_^]["`
-alpha=`echo -n "$badchars" | wc -c`
-
-if [ $alpha -gt 0 ]; then
+if [ ! -z "$badchars" ]; then
  echo -e "\nERROR - Invalid characters in nick: $badchars\n"
  exit 0
 fi
