@@ -21,3 +21,7 @@ Q: (BOT) dZSbot: dZSbconf.tcl not found or has errors. Cannot continue.
 -----------------------------------------------------------------------
 A: try 'tclsh dZSbconf.tcl' from shell and check what it says.
 
+Q: (ZIPSCRIPT) I have a drive mounted as SMBFS/VFAT/NTFS - stuff no workie!
+---------------------------------------------------------------------------
+A: Don't expect stuff to work on such mounts - there are limits in the
+   filesystems, like chars that doesn't work, symlinks may not work, etc.
