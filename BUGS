@@ -17,6 +17,7 @@ DESCRIPTION : Short description of bug
 
 R.DATE | STA | REV.FIX | DESCRIPTION
 -------|-----|---------|-------------------------------------------------------
+220704 | [ ] | [     ] | progress bars are left undeleted on fbsd (linux too?)
 210704 | [ ] | [     ] | compile fails on OpenBSD (could not find libcrypt)
 210704 | [x] | [r 435] | music.by.* is broken
 210704 | [x] | [r 442] | double sfv is buggy
