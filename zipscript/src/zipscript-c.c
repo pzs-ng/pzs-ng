@@ -417,21 +417,32 @@ int main( int argc, char **argv ) {
 
 	case 1:	/* SFV */
 		d_log("File type is: SFV\n");
-		if ( data_exists(&locations, locations.sfv) ) {
-			d_log("Reading remainders of old sfv\n");
-			readsfv(&locations, &raceI, 1);
-			cnt = raceI.total.files - raceI.total.files_missing;
-			raceI.total.files_missing = raceI.total.files = 0;
-			readsfv_ffile(raceI.file.name, raceI.file.size);
-			if ( (raceI.total.files - raceI.total.files_missing) &&  ! cnt ) {
-				d_log("Old sfv seems to match with more files than current one\n");
-				strcpy(raceI.misc.error_msg, "SFV does not match with files!");
-			exit_value = 2;
-			break;
-		}
-			raceI.total.files = raceI.total.files_missing = 0;
+		if ( data_exists(&locations, locations.sfv) )
+			if (deny_double_sfv == TRUE && findfileextcount(".sfv") > 1 ) {
+				char * error_msg;
+				int write_log = raceI.misc.write_log;
+				raceI.misc.write_log = 1;
+				d_log("No double sfv allowed\n");
+				error_msg = convert(&raceI,userI,groupI,deny_double_msg);
+				writelog(error_msg,"DOUBLESFV");
+				sprintf(raceI.misc.error_msg, DOUBLE_SFV);
+				exit_value = 2;
+				raceI.misc.write_log = write_log;
+				break;
+			} else {
+				d_log("Reading remainders of old sfv\n");
+				readsfv(&locations, &raceI, 1);
+				cnt = raceI.total.files - raceI.total.files_missing;
+				raceI.total.files_missing = raceI.total.files = 0;
+				readsfv_ffile(raceI.file.name, raceI.file.size);
+				if ( (raceI.total.files - raceI.total.files_missing) &&  ! cnt ) {
+					d_log("Old sfv seems to match with more files than current one\n");
+					strcpy(raceI.misc.error_msg, "SFV does not match with files!");
+					exit_value = 2;
+					break;
+				}
+				raceI.total.files = raceI.total.files_missing = 0;
 			}
-
 		d_log("Parsing sfv and creating sfv data\n");
 		copysfv(&locations, raceI.file.name, locations.sfv, raceI.file.size);
 

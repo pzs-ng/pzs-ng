@@ -1,5 +1,10 @@
 v0.7.2
  - added a fix to prevent coredump on cookie usage when the cookie is DISABLED (iwdisb)
+ - iwdisb made a patch which will show bitrate on mp3's on vbr files as well!
+ - daxxar made some changes in the Makefile, to detect os and make the appropriate changes.
+ - daxxar made an option to choose between glftpd 1 or 2 (NOT! WORKING!)
+ - added support for the old double-sfv deny patch (psxc).
+
 v0.7.1
  - merged in freebsd patches by iwdisb ( http://mobilcom.dyndns.org/~iwdisb/glftpd/ )
     this undo the previous DOUBLE-SFV patch. iwdisb had imho a better solution - check the sfv

@@ -53,6 +53,13 @@
 
 #define sfv_cleanup		TRUE
 
+/* Should new sfv files be denied in dir? If not, the new sfv will be checked and denied/allowed depending on the
+   content of the sfv.
+ */
+
+#define deny_double_sfv		FALSE
+#define deny_double_msg		"User %B%U%B/%G uploaded a second (dupe) SFV in %r (%n). Naughty boy!"
+
 /* Create m3u file on release complete for audio release
  */
 
@@ -103,13 +110,13 @@
 #define zip_complete_type		0
 #define zip_norace_complete_type	0
 #define rar_complete_type		1
-#define rar_norace_complete_type	1
+#define rar_norace_complete_type	0
 #define audio_complete_type		1
-#define audio_norace_complete_type	1
+#define audio_norace_complete_type	0
 #define video_complete_type		1
-#define video_norace_complete_type	1
+#define video_norace_complete_type	0
 #define other_complete_type		1
-#define other_norace_complete_type	1
+#define other_norace_complete_type	0
 
 /*	NOTE: You may disable announces by typing DISABLED instead of cookie string (do not use DISABLED with message etc files!!!)
  */
@@ -319,15 +326,15 @@
  */
 
 #define	audio_bitrate_check	FALSE
-#define audio_year_check	TRUE
-#define audio_genre_check	TRUE
+#define audio_year_check	FALSE
+#define audio_genre_check	FALSE
 
 /* Audio related sym links
  */
 
-#define audio_genre_sort	TRUE
-#define audio_year_sort		TRUE
-#define audio_artist_sort	TRUE
+#define audio_genre_sort	FALSE
+#define audio_year_sort		FALSE
+#define audio_artist_sort	FALSE
 
 /* Special modes
  */
@@ -393,4 +400,5 @@
 #define newleader_files_ahead	2 
 
 /* Is this being compiled for GLFTPD 2? */
-#define for_glftpd2 TRUE
+#define for_glftpd2		FALSE
+
