@@ -536,32 +536,32 @@ message_footer <STRING>
 video_completebar <STRING>
 	When a release is complete, a 'complete bar' will be created. Define
 	here how it should look like on video releases.
-	Default: "[dS] - ( %.0mM %fF - COMPLETE ) - [dS]"
+	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 
 audio_completebar <STRING>
 	When a release is complete, a 'complete bar' will be created. Define
 	here how it should look like on audio releases.
-	Default: "[dS] - ( %.0mM %fF - COMPLETE - %w %Y ) - [dS]"
+	Default: "[%Z] - ( %.0mM %fF - COMPLETE - %w %Y ) - [%Z]"
 
 rar_completebar <STRING>
 	When a release is complete, a 'complete bar' will be created. Define
 	here how it should look like on rar releases.
-	Default: "[dS] - ( %.0mM %fF - COMPLETE ) - [dS]"
+	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 
 zip_completebar <STRING>
 	When a release is complete, a 'complete bar' will be created. Define
 	here how it should look like on zip releases.
-	Default: "[dS] - ( %.0mM %fF - COMPLETE ) - [dS]"
+	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 
 other_completebar <STRING>
 	When a release is complete, a 'complete bar' will be created. Define
 	here how it should look like on other releases.
-	Default: "[dS] - ( %.0mM %fF - COMPLETE ) - [dS]"
+	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 
 del_completebar <STRING>
 	This setting is what the zipscript will search for (and delete) when
 	it updates the complete bar.
-	Default: "\\[dS] - \\( .*F - COMPLETE.*) - \\[dS]"
+	Default: "\\[%Z] - \\( .*F - COMPLETE.*) - \\[%Z]"
 
 zipscript_header <STRING>
 	When files are uploaded, some output is shown to the racer uploading.
@@ -697,13 +697,13 @@ incomplete_nfo_indicator <STRING>
 progressmeter <STRING>
 	On upload a complete-bar is created after each file, to show how
 	complete the release is. Put here how that indicator will look.
-	Default: "[%V] - %3.0p%% Complete - [dS]"
+	Default: "[%V] - %3.0p%% Complete - [%Z]"
 
 del_progressmeter <STRING>
 	On upload a complete-bar is created after each file, to show how
 	complete the release is. Put here what to search for when updating
 	that bar - the file(s) matching this will be deleted.
-	Default: "\\[.*] - ...% Complete - \\[dS]"
+	Default: "\\[.*] - ...%% Complete - \\[%Z]"
 
 enable_accept_script <TRUE|FALSE>
 	An external script can be run after a file is verified and ok. Put
