@@ -43,7 +43,7 @@ unsigned long filesize(char *filename) {
 	return filestat.st_size;
 }
 
-char* get_g_name(int gid) {
+char* get_g_name(unsigned int gid) {
 	int	n;
 
 	for (n = 0; n < groups; n++) {
@@ -119,22 +119,29 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			maskchar = ' ';
 			mask = noshow = 0;
 
-			if (strcomp(husers, user[x].username) != 0) {
-				if ( showall ) {
-					maskchar = '*';
-				} else {
-					noshow++;
-				}
-			}
+		if ( strcmp(husers,"") == 0 ) {
+			printf("Error in config (hiddenusers)- bug sysop\n");
+			return;
+		}
+		if ( strcmp(mpaths,"") == 0 ) {
+			printf("Error in config (seeallflags) - bug sysop\n");
+			return;
+		}
+	    if (( strcmp(husers,"") != 0 ) && (strcomp(husers, user[x].username) != 0 )) {
+		if ( showall ) {
+		    maskchar = '*';
+		} else {
+		    noshow++;
+		}
 
-			if ( noshow == 0 ) {
-				if ( maskchar == ' ' && matchpath(mpaths, user[x].currentdir) != 0) {
-					if ( showall ) {
-						maskchar = '*';
-					} else {
-						mask++;
-					}
-				}
+	    if ( noshow == 0 ) {
+		if (( strcmp(husers,"") != 0 ) && ( maskchar == ' ' && matchpath(mpaths, user[x].currentdir) != 0 )) {
+		    if ( showall ) {
+			maskchar = '*';
+		    } else {
+			mask++;
+		    }
+		}
 
 				if ((strncasecmp(user[x].status, "STOR ", 5) == 0 ||
 					strncasecmp(user[x].status, "APPE ", 5) == 0) &&
@@ -234,8 +241,8 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 
 /* COMPARE USERFLAGS ON CHECKFLAGS */
 short compareflags(char *flags, char *checkflags) {
-	int  n1 = 0, n2 = 0;
-	char *userflags;
+    unsigned int  n1 = 0, n2 = 0;
+    char *userflags;
 
 	userflags = (flags != NULL ? flags : "1234ABCDEFGHI" );
 
