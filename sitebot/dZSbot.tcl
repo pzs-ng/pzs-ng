@@ -66,8 +66,11 @@ bind pub	-|-	[set cmdpre]speed	speed
 bind pub	-|-	[set cmdpre]bw		ng_bandwidth
 bind pub	-|-	[set cmdpre]bwup	ng_bwup
 bind pub    	-|- 	[set cmdpre]uploaders	ng_uploaders
+bind pub    	-|- 	[set cmdpre]up		ng_uploaders
 bind pub	-|-	[set cmdpre]bwdn	ng_bwdn
 bind pub	-|- 	[set cmdpre]leechers	ng_leechers
+bind pub	-|- 	[set cmdpre]downloaders	ng_leechers
+bind pub	-|- 	[set cmdpre]down	ng_leechers
 bind pub	-|-	[set cmdpre]idlers	ng_idlers
 bind pub	-|-	[set cmdpre]bnc		ng_bnc_check
 bind pub	-|-	[set cmdpre]free	show_free
@@ -86,6 +89,8 @@ bind pub	-|-	[set cmdpre]alldn	stats_user_alldn
 bind pub	-|-	[set cmdpre]gpwk	stats_group_gpwk
 bind pub	-|-	[set cmdpre]gpal	stats_group_gpal
 bind pub	-|-	[set cmdpre]inc		show_incompletes
+bind pub	-|-	[set cmdpre]incomplete	show_incompletes
+bind pub	-|-	[set cmdpre]incompletes	show_incompletes
 
 bind pub	-|-	[set cmdpre]gwpd	stats_group_gpwd
 bind pub	-|-	[set cmdpre]gpad	stats_group_gpad
@@ -101,8 +106,11 @@ if {$bindnopre == "YES"} {
 	bind pub	-|- !bw			ng_bandwidth
 	bind pub	-|- !bwdn		ng_bwdn
 	bind pub	-|- !uploaders		ng_uploaders
+	bind pub	-|- !up			ng_uploaders
 	bind pub	-|- !bwup		ng_bwup
 	bind pub	-|- !leechers		ng_leechers
+	bind pub	-|- !downloaders	ng_leechers
+	bind pub	-|- !down		ng_leechers
 	bind pub	-|- !idlers		ng_idlers
 	bind pub	-|- !bnc		ng_bnc_check
 	bind pub	-|- !free		show_free
@@ -122,6 +130,8 @@ if {$bindnopre == "YES"} {
 	bind pub	-|- !gpwk		stats_group_gpwk
 	bind pub	-|- !gpal		stats_group_gpal
 	bind pub	-|- !inc		show_incompletes
+	bind pub	-|- !incomplete		show_incompletes
+	bind pub	-|- !incompletes	show_incompletes
 
 	bind pub	-|- !gwpd		stats_group_gpwd
 	bind pub	-|- !gpad		stats_group_gpad
@@ -134,8 +144,11 @@ if {$bindnopre != "YES"} {
 	catch { unbind pub    -|- !bw		ng_bandwidth }
 	catch { unbind pub    -|- !bwup		ng_bwup }
 	catch { unbind pub    -|- !uploaders	ng_uploaders }
+	catch { unbind pub    -|- !up		ng_uploaders }
 	catch { unbind pub    -|- !bwdn		ng_bwdn }
 	catch { unbind pub    -|- !leechers	ng_leechers }
+	catch { unbind pub    -|- !downloaders	ng_leechers }
+	catch { unbind pub    -|- !down		ng_leechers }
 	catch { unbind pub    -|- !idlers	ng_idlers }
 	catch { unbind pub    -|- !bnc		ng_bnc_check }
 	catch { unbind pub    -|- !free		show_free }
@@ -153,6 +166,8 @@ if {$bindnopre != "YES"} {
 	catch { unbind pub    -|- !gpwk		stats_group_gpwk }
 	catch { unbind pub    -|- !gpal		stats_group_gpal }
 	catch { unbind pub    -|- !inc		show_incompletes }
+	catch { unbind pub    -|- !incomplete	show_incompletes }
+	catch { unbind pub    -|- !incompletes	show_incompletes }
 
 	catch { unbind pub    -|- !gwpd		stats_group_gpwd }
 	catch { unbind pub    -|- !gpad		stats_group_gpad }
@@ -672,9 +687,9 @@ proc ng_bandwidth {nick uhost hand chan args} {
 
 	set output "$theme(PREFIX)$announce(BW)"
 	set raw [exec $binary(BW)]
-	set upper [format "%.0f" [expr [lindex $raw 1] / $speed(INCOMING)]]
-	set dnper [format "%.0f" [expr [lindex $raw 3] / $speed(OUTGOING)]]
-	set totalper [format "%.0f" [expr [lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING) )]]
+	set upper [format "%.0f" [expr [lindex $raw 1] * 100 / $speed(INCOMING)]]
+	set dnper [format "%.0f" [expr [lindex $raw 3] *100 / $speed(OUTGOING)]]
+	set totalper [format "%.0f" [expr [lindex $raw 5] * 100 / ( $speed(INCOMING) + $speed(OUTGOING) )]]
 
 	set output [replacevar $output "%uploads" [lindex $raw 0]]
 	set output [replacevar $output "%upspeed" [lindex $raw 1]]

@@ -38,14 +38,19 @@ set bnc(LIST)			"uk:msn.test1.com:123 de:msn.test2.com:345 se:msn.test3.com:567"
 # Username and password to use for testing bncs (must exist with this box's ip added)
 set bnc(USER)			"bncuser"
 set bnc(PASS)			"bncpass"
-# Number of seconds to wait before giving up on connecting to the BNCs
-set bnc(TIMEOUT)		"10"
+# Number of seconds to wait before giving up on connecting to the BNCs (Note that SSL takes extra time)
+set bnc(TIMEOUT)		"20"
 # Should we make a ping test too? TRUE/FALSE
 set bnc(PING)			"TRUE"
 
-# Your sites bandwidth - used for % of bandwidth used calculations in !bw (in mbit)
-set speed(INCOMING)		"100"
-set speed(OUTGOING)		"100"
+# Your sites bandwidth - used for % of bandwidth used calculations in !bw (in kilobytes)
+# 100 mbit full duplex
+set speed(INCOMING)		"12500"
+set speed(OUTGOING)		"12500"
+# 4096 / 1024 kbit asymmetric dsl
+#set speed(INCOMING)		"512"
+#set speed(OUTGOING)		"128"
+# etc. ;)
 
 # During !idlers what is the minimum amount of seconds for a user to be shown as "idle"
 # set to 0 to show all users who are not currently upload/downloading (may be a lot)
@@ -129,7 +134,7 @@ set disable(COMPLETE_RACE_ZIP)				0
 set disable(COMPLETE_RACE_OTHER)			0
 set disable(COMPLETE_RACE_VIDEO)			0
 set disable(COMPLETE_RACE_AUDIO)			0
-set disable(DEFAULT)					0
+set disable(DEFAULT)					1
 set disable(DELDIR)					0
 set disable(DOUBLESFV)					0
 set disable(HALFWAY)					0
