@@ -105,7 +105,7 @@
 
 /* Exclude non sfv directories (ie group/request directory)
  */
-#define exclude_non_sfv_dirs	TRUE
+/*#define exclude_non_sfv_dirs	TRUE*/
 
 /* Force sfv to be uploaded first, before accepting any files
  */
@@ -199,7 +199,7 @@
  * 0 = complete msg only
  * 1 = n line mode (complete, pre_stats, user top, between stats, group top, post stats)
  */
-#define zip_complete_type		0
+/*#define zip_complete_type		0
 #define zip_norace_complete_type	0
 #define rar_complete_type		1
 #define rar_norace_complete_type	0
@@ -208,12 +208,12 @@
 #define video_complete_type		1
 #define video_norace_complete_type	0
 #define other_complete_type		1
-#define other_norace_complete_type	0
+#define other_norace_complete_type	0*/
 
 
 /* General output settings and cookies
  */
-#define pre_stats		"UserTop: "
+/*#define pre_stats		"UserTop: "
 #define between_stats		"GroupTop: "
 #define post_stats		DISABLED
 
@@ -221,71 +221,70 @@
 #define user_info		"%B%u%B/%g [%.1mM/%fF/%.1p%%/%.0sKB/s]"
 #define group_top		"%n. %B%g%B [%.1mM/%fF/%.1p%%/%.0sKB/s]"		
 #define group_info		"%B%g%B [%.1mM/%fF/%.1p%%/%.0sKB/s]"
-#define fastestfile		"Fastest upload by %B%u%B/%g at %B%.3F%BKB/S."		/* Put in %l cookie */
-#define slowestfile		"Slowest upload by %B%u%B/%g at %B%.3S%BKB/S."		/* Put in %L cookie */
+#define fastestfile		"Fastest upload by %B%u%B/%g at %B%.3F%BKB/S."*/		/* Put in %l cookie */
+/*#define slowestfile		"Slowest upload by %B%u%B/%g at %B%.3S%BKB/S."*/		/* Put in %L cookie */
 
 /* Get list of competitors (all racers excluding current user) - stored in %R cookie
  */
-#define get_competitor_list	TRUE
-#define racersmsg		"%B%u%B(%g)"					/* Put in %R cookie */
-
+/*#define get_competitor_list	TRUE
+#define racersmsg		"%B%u%B(%g)"*/					/* Put in %R cookie */
 
 /* Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 & mpeg2.5 + layer1 & 2 can be added if needed
  */
-#define audio_vbr		"Encoded @ %XKbps VBR (%I) in %zHz %Q."		/* Put in %j cookie */
+/*#define audio_vbr		"Encoded @ %XKbps VBR (%I) in %zHz %Q."*/		/* Put in %j cookie */
 #define audio_cbr		"Encoded @ %XKbps CBR in %zHz %Q."		/* Put in %j cookie */
 
-#define audio_race		"%B%U%B is racing [ %R ] on %B%r%B @ %B%.0S%BkB/s."
+/*#define audio_race		"%B%U%B is racing [ %R ] on %B%r%B @ %B%.0S%BkB/s."
 #define audio_sfv		"Got SFV for %B%r%B. Expecting %B%f%BF."
 #define audio_update		"Got MP3 info for %B%r%B. Expecting %B%f%BF of %B%w%B from %B%Y%B. %j"
 #define audio_halfway		"%B%r%B is in halfway. Leading uploader is %C0. Leading group is %c0."
 #define audio_newleader		"%C0 takes the lead in %B%r%B!"
 #define audio_complete		"%B%r%B [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
 #define audio_norace_halfway	"%B%r%B is in halfway. Leading uploader is %C0. Leading group is %c0."
-#define audio_norace_complete	"%B%r%B [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
+#define audio_norace_complete	"%B%r%B [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"*/
 
 /* Video files - supports mpeg1/mpeg2 and various avi formats
  */
-#define video_race		"%B%U%B is racing [ %R ] on %B%r%B @ %B%.0S%BkB/s."
+/*#define video_race		"%B%U%B is racing [ %R ] on %B%r%B @ %B%.0S%BkB/s."
 #define video_sfv		"Got SFV for %B%r%B. Expecting %B%f%BF."
 #define video_update		"%B%U%B/%G was the first to upload file in %B%r%B. Expecting %B%.1e%BmB."
 #define video_halfway		"%B%r%B is in halfway. Leading uploader is %C0. Leading group is %c0."
 #define video_newleader		"%C0 takes the lead in %B%r%B!"
 #define video_complete		"%B%r%B [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). Compression method: m%B%Z%B. %l %L"
 #define video_norace_halfway	"%B%r%B is in halfway. Leading uploader is %C0. Leading group is %c0."
-#define video_norace_complete	"%B%r%B [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
+#define video_norace_complete	"%B%r%B [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"*/
 
 /* RAR - allows usage of compression mode cookie for rarred releases
  */
-#define rar_race		"%B%U%B is racing [ %R ] on %B%r%B @ %B%.0S%BkB/s."
+/*#define rar_race		"%B%U%B is racing [ %R ] on %B%r%B @ %B%.0S%BkB/s."
 #define rar_sfv			"Got SFV for %B%r%B. Expecting %B%f%BF."
 #define rar_update		"%B%U%B/%G was the first to upload file in %B%r%B. Expecting %B%.1e%BmB."
 #define rar_halfway		"%B%r%B is in halfway. Leading uploader is %C0. Leading group is %c0."
 #define rar_newleader		"%C0 takes the lead in %B%r%B!"
 #define rar_complete		"%B%r%B [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). Compression method: m%B%Z%B. %l %L"
 #define rar_norace_halfway	"%B%r%B is in halfway. Leading uploader is %C0. Leading group is %c0."
-#define rar_norace_complete	"%B%r%B [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
+#define rar_norace_complete	"%B%r%B [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"*/
 
 /* Rest of the stuff inside sfv
  */
-#define other_race		"%B%U%B is racing [ %R ] on %B%r%B @ %B%.0S%BkB/s."
+/*#define other_race		"%B%U%B is racing [ %R ] on %B%r%B @ %B%.0S%BkB/s."
 #define other_sfv		"Got SFV for %B%r%B. Expecting %B%f%BF."
 #define other_update		"%B%U%B/%G was the first to upload file in %B%r%B. Expecting %B%.1e%BmB."
 #define other_halfway		"%B%r%B is in halfway. Leading uploader is %C0. Leading group is %c0."
 #define other_newleader		"%C0 takes the lead in %B%r%B!"
 #define other_complete		"%B%r%B [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
 #define other_norace_halfway	"%B%r%B is in halfway. Leading uploader is %C0. Leading group is %c0."
-#define other_norace_complete	"%B%r%B [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
+#define other_norace_complete	"%B%r%B [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"*/
 
 /* Zipped files
  */
-#define zip_race		"%B%U%B is racing [ %R ] on %B%r%B @ %B%.0S%BkB/s."
+/*#define zip_race		"%B%U%B is racing [ %R ] on %B%r%B @ %B%.0S%BkB/s."
 #define zip_update		"Got DiZ for %B%r%B. Expecting %B%.1e%BmB in %B%f%BF"
 #define zip_halfway		"%B%r%B is in halfway. Leading uploader is %C0. Leading group is %c0."
 #define zip_newleader		"%C0 takes the lead in %B%r%B!"
 #define zip_complete		"%B%r%B [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L Lucky7: %T"
 #define zip_norace_halfway	"%B%r%B is in halfway. Leading uploader is %C0. Leading group is %c0."
-#define zip_norace_complete	"%B%r%B [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"
+#define zip_norace_complete	"%B%r%B [ %B%.0m%BmB in %B%f%BF at %B%.0A%BkB/s - %d ] was completed by %B%u%B racer(s) from %B%g%B group(s). %l %L"*/
 
 
 
@@ -411,5 +410,87 @@
 
 /* Output of postdel binary
  */
-#define incompletemsg		"%B%U%B/%G deletes file from %B%r%B. Release is now %Bincomplete%B!"
+/*#define incompletemsg		"%B%U%B/%G deletes file from %B%r%B. Release is now %Bincomplete%B!"*/
 
+
+
+
+
+/* #--#--#--#-- REQUIRED BY SITESTAT DO NOT MODIFY --#--#--#--#--# */
+/* #--#--#--#-- REQUIRED BY SITESTAT DO NOT MODIFY --#--#--#--#--# */
+/* #--#--#--#-- REQUIRED BY SITESTAT DO NOT MODIFY --#--#--#--#--# */
+
+#define exclude_non_sfv_dirs		FALSE
+
+#define zip_complete_type		0
+#define zip_norace_complete_type	1
+#define rar_complete_type		1
+#define rar_norace_complete_type	1
+#define audio_complete_type		1
+#define audio_norace_complete_type	1
+#define video_complete_type		1
+#define video_norace_complete_type	1
+#define other_complete_type		1
+#define other_norace_complete_type	1
+
+#define pre_stats		"UserTop: "
+#define between_stats		"GroupTop: "
+#define post_stats		DISABLED
+
+#define user_top		"%n/%u/%g/%.1m/%f/%.1p/%.0s"
+#define user_info		"%u/%g/%.1m/%f/%.1p/%.0s"
+#define group_top		"%n/SS/%g/%.1m/%f/%.1p/%.0s"
+#define group_info		"SS/%g/%.1m/%f/%.1p/%.0s"
+#define fastestfile		""
+#define slowestfile		""
+
+#define get_competitor_list	TRUE
+#define racersmsg		"%u/%g"
+
+#define audio_vbr		"%i %I "
+
+#define audio_race		"%U %G %.0S {%R}"
+#define audio_sfv		"%f"
+#define audio_update		"{%.1e} {%w} {%Y} {%X}"
+#define audio_halfway		"{%C0} {%c0}"
+#define audio_newleader		"{%C0}"
+#define audio_complete		"{%U} {%G} {%.0m} {%d}"
+#define audio_norace_halfway	"{%C0} {%c0}"
+#define audio_norace_complete	"{%U} {%G} {%.0m} {%d}"
+
+#define video_race		"%U %G %.0S {%R}"
+#define video_sfv		"%f"
+#define video_update		"%.1e %f"
+#define video_halfway		"{%C0} {%c0}"
+#define video_newleader		"{%C0}"
+#define video_complete		"{%U} {%G} {%.0m} {%d}"
+#define video_norace_halfway	"{%C0} {%c0}"
+#define video_norace_complete	"{%U} {%G} {%.0m} {%d}"
+
+#define rar_race		"%U %G %.0S {%R}"
+#define rar_sfv			"%f"
+#define rar_update		"%.1e %f"
+#define rar_halfway		"{%C0} {%c0}"
+#define rar_newleader		"{%C0}"
+#define rar_complete		"{%U} {%G} {%.0m} {%d}"
+#define rar_norace_halfway	"{%C0} {%c0}"
+#define rar_norace_complete	"{%U} {%G} {%.0m} {%d}"
+
+#define other_race		"%U %G %.0S {%R}"
+#define other_sfv		"%f"
+#define other_update		"%.1e %f"
+#define other_halfway		"{%C0} {%c0}"
+#define other_newleader		"{%C0}"
+#define other_complete		"{%U} {%G} {%.0m} {%d}"
+#define other_norace_halfway	"{%C0} {%c0}"
+#define other_norace_complete	"{%U} {%G} {%.0m} {%d}"
+
+#define zip_race		"%U %G %.0S {%R}"
+#define zip_update		"%.1e %f"
+#define zip_halfway		"{%C0} {%c0}"
+#define zip_newleader		"{%C0}"
+#define zip_complete		"{%U} {%G} {%.0m} {%d}"
+#define zip_norace_halfway	"{%C0} {%c0}"
+#define zip_norace_complete	"{%U} {%G} {%.0m} {%d}"
+
+#define incompletemsg		""

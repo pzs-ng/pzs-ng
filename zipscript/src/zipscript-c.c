@@ -530,12 +530,6 @@ if ( matchpath(group_dirs, locations.path ) && ( hide_group_uploaders == TRUE ))
 		        sprintf(target, nfo_script " %s", raceI.file.name);
 		        execute(target);
 			}
-                if ( enable_nfo_script2 == TRUE )
-			{
-			d_log("Executing 2nd nfo script\n");
-			sprintf(target, nfo_script2 " %s", raceI.file.name);
-			execute(target);
-			}
 
 		break;
 		/* END OF NFO CHECK */
@@ -924,11 +918,6 @@ if ( matchpath(group_dirs, locations.path ) && ( hide_group_uploaders == TRUE ))
 		sprintf(target, complete_script " %s", raceI.file.name);
 		execute(target);
 #endif
-#if ( enable_complete_script2 == TRUE )
-		d_log("Executing 2nd complete script\n");
-		sprintf(target, complete_script2 " %s", raceI.file.name);
-		execute(target);
-#endif
 		} else {
 
 			/* Release is at unknown state */
@@ -949,13 +938,6 @@ if ( matchpath(group_dirs, locations.path ) && ( hide_group_uploaders == TRUE ))
  if ( exit_value == 0 ) {
 	d_log("Executing accept script\n");
 	sprintf(target, accept_script " %s", raceI.file.name);
-	execute(target);
-	}
-#endif
-#if ( enable_accept_script2 == TRUE )
- if ( exit_value == 0 ) {
-	d_log("Executing 2nd accept script\n");
-	sprintf(target, accept_script2 " %s", raceI.file.name);
 	execute(target);
 	}
 #endif
