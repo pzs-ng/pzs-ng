@@ -4,7 +4,7 @@
 #
 # Description:
 # - Keeps track of IRC nick names and their corresponding FTP user name.
-# - Remember, this only effective if the channel is invite-only.
+# - Remember, this module is only effective if the channel is invite-only.
 # - Thanks to compieter for the idea.
 #
 # Installation:
@@ -115,6 +115,8 @@ proc ::ngBot::NickDb::DeInit {args} {
     if {[info exists postcommand(INVITEUSER)] && [set pos [lsearch -exact $postcommand(INVITEUSER) $scriptName]] !=  -1} {
         set postcommand(INVITEUSER) [lreplace $postcommand(INVITEUSER) $pos $pos]
     }
+
+    catch {unbind evnt -|- prerehash [namespace current]::DeInit}
 
     namespace delete [namespace current]
     return

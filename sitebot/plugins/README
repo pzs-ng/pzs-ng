@@ -17,7 +17,7 @@ Example:
 ###############################################################
 
 - A pre-command and post-command script interface was added to
-  dZSbot in revision r1428.
+  dZSbot in revision 1428.
 
 - This interface allows end-users with Tcl knowledge to add custom
   features without having to directly edit the dZSbot.tcl file.

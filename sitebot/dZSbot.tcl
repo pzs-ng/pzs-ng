@@ -1,7 +1,7 @@
 #################################################################################
 # dZSbot - ProjectZS-NG Sitebot                                                 #
 #################################################################################
-# - Displays information real-time events and stats for your glFTPd site.       #
+# - Displays information, real-time events, and stats for your glFTPd site.     #
 # - Based on the original dZSbot written by dark0n3.                            #
 #################################################################################
 
@@ -25,6 +25,7 @@ if {[catch {source $scriptpath/dZSbot.vars} error]} {
 if {[catch {source $scriptpath/dZSbot.conf} error]} {
 	putlog "dZSbot warning: Unable to load dZSbot.conf ($error), using defaults."
 	putlog "dZSbot warning: If this is your first install, do: cp dZSbot.conf.dist dZSbot.conf"
+	die
 }
 
 #################################################################################
@@ -277,7 +278,7 @@ proc readlog {} {
 
 		## If a pre-event script returns false, skip the announce.
 		if {![eventhandler precommand $event [list $section $line]] || \
-		    ([info exists disable($event)] && $disable($event) == 1)} {continue}
+			([info exists disable($event)] && $disable($event) == 1)} {continue}
 
 		if {![info exists variables($event)]} {
 			putlog "dZSbot error: \"variables($event)\" not defined in the config, type becomes \"DEFAULT\"."
@@ -1849,6 +1850,6 @@ foreach rep [array names msgreplace] {
 if {!$dzerror} {
 	putlog "dZSbot: Loaded successfully!"
 } else {
-	putlog "dZSbot: Errors were encountered while loading, please check the log and correct them."
+	putlog "dZSbot: Errors were encountered while loading, refer to the messages above for details."
 	if {[istrue $die_on_error]} {die}
 }

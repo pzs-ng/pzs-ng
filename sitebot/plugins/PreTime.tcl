@@ -107,6 +107,8 @@ proc ::ngBot::PreTime::DeInit {args} {
         set postcommand(NEWDIR) [lreplace $postcommand(NEWDIR) $pos $pos]
     }
 
+    catch {unbind evnt -|- prerehash [namespace current]::DeInit}
+
     namespace delete [namespace current]
     return
 }

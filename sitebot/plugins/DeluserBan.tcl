@@ -77,6 +77,8 @@ proc ::ngBot::DeluserBan::DeInit {args} {
         }
     }
 
+    catch {unbind evnt -|- prerehash [namespace current]::DeInit}
+
     namespace delete [namespace current]
     return
 }
