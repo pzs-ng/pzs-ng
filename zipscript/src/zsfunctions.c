@@ -348,10 +348,12 @@ short fileexists(char *f) {
 
 /* Create symbolic link */
 void createlink(char *factor1, char *factor2, char *source, char *ltarget) {
- char	*org,
+ char	*org, *tmp,
 	*target;
+ char	*relative;
  int	l1, l2, l3;
 
+ 
  l1 = strlen( factor1 ) + 1;
  l2 = strlen( factor2 ) + 1;
  l3 = strlen( ltarget ) + 1;
@@ -370,8 +372,30 @@ void createlink(char *factor1, char *factor2, char *source, char *ltarget) {
  mkdir(org, 0777);
 
  memcpy( target, ltarget, l3 );
- symlink(source, org);
+	
+	/* convert absolute path to relative */
+	/* made by js on 2004-07-13 */
+	tmp = malloc(strlen(org)*sizeof(char)+1);
+	strcpy(tmp, org);
+ 	relative = malloc(strlen(org)*sizeof(char)+1);
+	memset(relative, 0, strlen(org)*sizeof(char)+1);
+	
+	while(source[0] == org[0]) {
+		source++;
+		org++;
+	}
+	while(org[0]) {
+		if(org[0] == '/' && org[1] != '/')
+			strcat(relative, "../");
+		org++;
+	}
+	strcat(relative, source);
+	/*************************************/
+ 
+ symlink(relative, tmp);
  m_free( org );
+ m_free(tmp);
+ m_free(relative);
 }
 
 
