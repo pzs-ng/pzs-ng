@@ -80,7 +80,7 @@
 #define program_gid             200
 
 /* These file types are allowed without any checks */
-#define allowed_types           "jpg,cue,m3u,avi,mpg"
+#define allowed_types           "jpg,cue,m3u,mpg,avi,nfo,txt"
 
 /* These file types are ignored from sfv
  * NOTE: , at the beginning ignores all files without extensions
@@ -140,7 +140,7 @@
  */
 #define allowed_constant_bitrates       "160,192"
 #define allowed_years                   "2000,2001,2002,2003,2004,2005"
-#define banned_genres                   "Christian Rap,R&B"
+#define banned_genres                   "Christian Rap"
 #define allowed_genres                  "Rock"
 
 /* Audio related symlinks - set to TRUE if you wish to sort/symlink releases, or FALSE if not. */
@@ -153,7 +153,7 @@
  * If warn is true, any banned files will not be deleted, but instead a warning message will be logged
  * to your glftpd.log.
  */
-#define audio_cbr_check                 FALSE
+#define audio_cbr_check                 TRUE
 #define audio_cbr_warn                  TRUE
 #define audio_cbr_warn_msg              "%U %G %X"
 #define audio_year_check                TRUE
@@ -161,7 +161,7 @@
 #define audio_year_warn_msg             "%U %G %Y"
 /* either "audio_banned_genre_check" or "audio_allowed_genre_check" should be set to TRUE */
 #define audio_banned_genre_check        TRUE
-#define audio_allowed_genre_check       FALSE
+#define audio_allowed_genre_check       TRUE
 #define audio_genre_warn                TRUE
 #define audio_genre_warn_msg            "%U %G %w"
 
@@ -220,10 +220,10 @@
 #define winner                  "dummy_winner"
 #define loser                   "dummy_loser"
 
-#define user_top                "%n \"%-9u\" \"%-9g\" %.1m %f %.1p %.0s"
-#define user_info               "\"%-9u\" \"%-9g\" %.1m %f %.1p %.0s"
-#define group_top               "%n \"%-9g\" %.1m %f %.1p %.0s"
-#define group_info              "\"%-9g\" %.1m \"%-2f\" %.1p %.0s"
+#define user_top                "%n \"%-9u\" \"%-9g\" \"%5.1m\" \"%2f\" \"%5.1p\" \"%5.0s\" \"%2W\""
+#define user_info               "\"%u\" \"%g\" %.1m %f %.1p %.0s"
+#define group_top               "%n \"%-9g\" %.1m %f %.1p \"%5.0s\""
+#define group_info              "\"%g\" %.1m \"%-2f\" %.1p %.0s"
 #define fastestfile             "%u %g %.3F" /* Put in %l cookie */
 #define slowestfile             "%u %g %.3S" /* Put in %L cookie */
 
@@ -236,21 +236,21 @@
 #define audio_vbr               "\"%X\" \"%z\" \"%Q\" \"VBR %I\"" /* Put in %j cookie */
 #define audio_cbr               "\"%X\" \"%z\" \"%Q\" \"CBR\""    /* Put in %j cookie */
 
-#define audio_race              "\"%U\" \"%R\" \"%r\" \"%.0S\""
+#define audio_race              "%U %G \"%R\" \"%r\" \"%.0S\""
 #define audio_sfv               "\"%r\" \"%f\""
-#define audio_update            "\"%U\" \"%G\" \"%w\" \"%Y\" %j"
-#define audio_halfway           "\"%r\" \"%C0\" \"%c0\""
-#define audio_newleader         "\"%C0\" \"%r\""
-#define audio_complete          "\"%r\" \"%.0m\" \"%f\" \"%.0A\" \"%d\" \"%u\" \"%g\" \"%l\" \"%L\""
-#define audio_norace_halfway    "\"%r\" \"%C0\" \"%c0\""
-#define audio_norace_complete   "\"%r\" \"%.0m\" \"%f\" \"%.0A\" \"%d\" \"%u\" \"%g\" \"%l\" \"%L\""
+#define audio_update            "\"%U\" \"%G\" \"%w\" \"%Y\" %j \"%.0S\" %f"
+#define audio_halfway           "\"%r\" %C0 %c0"
+#define audio_newleader         "%C0 \"%r\""
+#define audio_complete          "\"%r\" \"%.0m\" \"%f\" \"%.0A\" \"%d\" %u %g %l %L %U %G"
+#define audio_norace_halfway    "\"%r\" %C0 %c0"
+#define audio_norace_complete   "\"%r\" \"%.0m\" \"%f\" \"%.0A\" \"%d\" %u %g %l %L %U %G"
 
 /* Video files - supports mpeg1/mpeg2 and various avi formats */
-#define video_race              "%U \"%R\" %r %.0S"
-#define video_sfv               "%r %f"
+#define video_race              "%U %G \"%R\" \"%r\" \"%.0S\""
+#define video_sfv               "\"%r\" \"%f\""
 #define video_update            "%U %G %.1e"
-#define video_halfway           "%r %C0 %c0"
-#define video_newleader         "%C0 %r"
+#define video_halfway           "\"%r\" %C0 %c0"
+#define video_newleader         "%C0 \"%r\""
 #define video_complete          "%r %.0m %f %.0A %d %u %g %Z %l %L"
 #define video_norace_halfway    "%r %C0 %c0"
 #define video_norace_complete   "%r %.0m %f %.0A %d %u %g %l %L"
