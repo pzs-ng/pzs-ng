@@ -225,19 +225,21 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
     unsigned int	music	= 0;
     unsigned int	rars	= 0;
     unsigned int	others	= 0;
-    int		len	= 0;
-    short int	n	= 0;
+    int			len	= 0;
+    short int		n	= 0;
     unsigned int	t_crc;
+    int		sfv_error	= FALSE;
+
 #if ( sfv_dupecheck == TRUE )
     char		*fname[256]; /* Semi-gay. We limit @ 256, which is better than 100 anyways */
     unsigned int	files 	= 0;
     unsigned char	exists;
 #endif
-#if ( sfv_cleanup == TRUE )
+#if ( sfv_cleanup == TRUE && sfv_error == FALSE )
     int		fd_new	= open(".tmpsfv", O_CREAT|O_TRUNC|O_WRONLY, 0644);
     if ( fd_new != NULL ) {
-        d_log("Failed to create temporary sfv file.\n");
-	exit(EXIT_FAILURE);
+        d_log("Failed to create temporary sfv file - setting cleanup of sfv to false and tries to continue.\n");
+	sfv_error = TRUE;
     }
 
     if ( sfv_comment != NULL ) {
@@ -289,7 +291,7 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
 
 		    fname[files++] = line;
 #endif
-#if ( sfv_cleanup == TRUE )
+#if ( sfv_cleanup == TRUE && sfv_error == FALSE )
 		    write(fd_new, line, len - 1);
 		    write(fd_new, " ", 1);
 		    write(fd_new, crc, 8);
@@ -336,7 +338,7 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
     write(fd, &n, sizeof(short int));
     close(fd);
 
-#if ( sfv_cleanup == TRUE )
+#if ( sfv_cleanup == TRUE && sfv_error == FALSE )
     unlink(source);
     rename(".tmpsfv", source);
     close(fd_new);
