@@ -36,7 +36,7 @@
 int 
 main(int argc, char **argv)
 {
-	char		*fileext;
+	char		fileext[4];
 	char		*name_p = 0;
 	char		*temp_p;
 	char		*target;
@@ -178,12 +178,13 @@ main(int argc, char **argv)
 	}
 	name_p++;
 
-	d_log("Copying lowercased version of extension to memory\n");
+//	d_log("Copying lowercased version of extension to memory\n");
 
-	fileext = malloc(sizeof(temp_p));
+//	fileext = malloc(sizeof(temp_p));
 
-	memcpy(fileext, temp_p, sizeof(temp_p));
-	strtolower(fileext);
+//	memcpy(fileext, temp_p, sizeof(temp_p));
+	snprintf(fileext, 4, "%s", temp_p);
+//	strtolower(fileext);
 
 	switch (get_filetype_postdel(&g, fileext)) {
 	case 0:
@@ -253,7 +254,7 @@ main(int argc, char **argv)
 		}
 		break;
 	case 1:
-		d_log("Reading file count from SFV\n");
+		d_log("Reading file count from sfvdata\n");
 		readsfv(g.l.sfv, &g.v, 0);
 
 		if (fileexists(g.l.race)) {
@@ -262,9 +263,19 @@ main(int argc, char **argv)
 		}
 		d_log("Caching progress bar\n");
 		buffer_progress_bar(&g.v);
+
 		if (g.v.total.files_missing == g.v.total.files) {
 			empty_dir = 1;
 		}
+		d_log("SFV was removed - removing progressbar/completebar and -missing pointers.\n");
+		removecomplete();
+		if (fileexists(g.l.sfv))
+			delete_sfv(g.l.sfv);
+		if (g.l.nfo_incomplete)
+			unlink(g.l.nfo_incomplete);
+		if (g.l.incomplete)
+			unlink(g.l.incomplete);
+		move_progress_bar(1, &g.v, g.ui, g.gi);
 		break;
 	case 3:
 		d_log("Removing old complete bar, if any\n");
@@ -325,7 +336,7 @@ main(int argc, char **argv)
 		break;
 	}
 
-	rescandir(2);
+	//rescandir(2);
 	if (empty_dir == 1) {
 		d_log("Removing all files and directories created by zipscript\n");
 		removecomplete();
@@ -383,7 +394,7 @@ main(int argc, char **argv)
 	d_log("Releasing memory\n");
 	rescandir(1);
 	updatestats_free(g.v, g.ui, g.gi);
-	free(fileext);
+	//free(fileext);
 	free(target);
 	//free(g.l.path);
 	free(g.l.race);
@@ -401,13 +412,13 @@ main(int argc, char **argv)
 unsigned char 
 get_filetype_postdel(GLOBAL *g, char *ext)
 {
-	if (!memcmp(ext, "sfv", 4))
+	if (!strcasecmp(ext, "sfv"))
 		return 1;
 	if (!clear_file(g->l.race, g->v.file.name))
 		return 4;
-	if (!memcmp(ext, "zip", 4))
+	if (!strcasecmp(ext, "zip"))
 		return 0;
-	if (!memcmp(ext, "nfo", 4))
+	if (!strcasecmp(ext, "nfo"))
 		return 2;
 	if (!strcomp(ignored_types, ext) || !strcomp(allowed_types, ext))
 		return 3;
