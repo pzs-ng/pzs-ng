@@ -66,7 +66,9 @@ void delete_sfv_file(struct LOCATIONS *locations) {
  FILE		*sfvfile;
  unsigned int	len;
  
- sfvfile = fopen(locations->sfv, "r");
+ if ((sfvfile = fopen(locations->sfv, "r")) == NULL) { d_log("Couldn't fopen %s.\n", locations->sfv); exit(EXIT_FAILURE); }
+ /*sfvfile = fopen(locations->sfv, "r");*/
+
  fseek(sfvfile, sizeof(short int), SEEK_CUR);
  while ( fread(&len, sizeof(int), 1, sfvfile) == 1 ) {
 	fname = m_alloc(len + 8);
@@ -357,7 +359,8 @@ void create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char
  pos = m_alloc(sizeof(int) * raceI->total.files);
  t_pos = m_alloc(sizeof(int) * raceI->total.files);
  fname = m_alloc(sizeof(int) * raceI->total.files);
- r = fopen( locations->race, "r" );
+ if ((r = fopen( locations->race, "r" )) == NULL) { d_log("Couldn't fopen %s.\n", locations->race); exit(EXIT_FAILURE); }
+ /*r = fopen( locations->race, "r" );*/
  c = 0;
 
 	/* Read filenames from race file */
