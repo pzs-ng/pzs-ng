@@ -460,8 +460,8 @@ short int clear_file_file(struct LOCATIONS *locations, char *f) {
  */
 void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI) {
  off_t		fsize;
- unsigned int	uspeed=0;
- unsigned int	mtime=0;
+ unsigned int	uspeed;
+ unsigned int	start_time;
  unsigned char	*p_buf;
  unsigned char	buf[1 + 2*24 + 3 * sizeof(int) + sizeof(off_t)];
  unsigned int	len;
@@ -482,14 +482,11 @@ void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERI
 	ugroup	= (char *)p_buf;			p_buf += 24;
 	memcpy(&fsize , p_buf, sizeof(off_t));		p_buf += sizeof(off_t);
 	memcpy(&uspeed, p_buf, sizeof(int));		p_buf += sizeof(int);
-	memcpy(&mtime , p_buf, sizeof(int));
+	memcpy(&start_time , p_buf, sizeof(int));
 
 	switch (*buf) {
 		case F_NOTCHECKED:
-		case F_CHECKED:
-d_log("DEBUG A: uspeed: %u mtime: %u\n",uspeed, mtime);
-d_log("DEBUG B: uname: %s - ugroup: %s - fsize: %zu - uspeed: %u - mtime: %u\n",uname, ugroup, fsize, uspeed, mtime);
-updatestats(raceI, userI, groupI, uname, ugroup, (off_t)fsize, (unsigned int)uspeed, (unsigned int)mtime); break;
+		case F_CHECKED: updatestats(raceI, userI, groupI, uname, ugroup, (off_t)fsize, (unsigned int)uspeed, (unsigned int)start_time); break;
 		case F_BAD: raceI->total.files_bad++; raceI->total.bad_size += fsize; break;
 		case F_NFO:
 			raceI->total.nfo_present = 1;
@@ -531,7 +528,7 @@ void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned in
  memcpy(p_buf, raceI->user.group, 24);				p_buf += 24;
  memcpy(p_buf, &raceI->file.size, sizeof(off_t));		p_buf += sizeof(off_t);
  memcpy(p_buf, &raceI->file.speed, sizeof(int));		p_buf += sizeof(int);
- memcpy(p_buf, &raceI->file.mtime, sizeof(int));
+ memcpy(p_buf, &raceI->total.start_time, sizeof(int));
 
  fwrite(buf, 1, sz, file);
  fclose(file);

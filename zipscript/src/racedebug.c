@@ -10,7 +10,7 @@
 int main (int argc, char **argv) {
  off_t		*fsize;
  unsigned int	*uspeed;
- unsigned int	*mtime;
+ unsigned int	*start_time;
  unsigned int	*crc;
  unsigned char  buf[1 + 2*24 + 3 * sizeof(int) + sizeof(off_t)];
  char		*status = 0;
@@ -51,7 +51,7 @@ int main (int argc, char **argv) {
 	ugroup	= p_buf;				p_buf += 24;
 	fsize	= (off_t *)p_buf;			p_buf += sizeof(off_t);
 	uspeed	= (unsigned int *)p_buf;		p_buf += sizeof(int);
-	mtime	= (unsigned int *)p_buf;
+	start_time = (unsigned int *)p_buf;
 
 	switch ( *buf ) {
 		case F_NOTCHECKED:
@@ -70,7 +70,7 @@ int main (int argc, char **argv) {
 
 	printf("|-[File #%i]\n", files);
 	printf("| Filename: %s - Status: %s - CRC-32: %08X - Filesize: %u\n", fname, status, (unsigned int)*crc, (unsigned int)*fsize);
-	printf("| User    : %s - Group: %s - Speed: %0.1fKb/s - mtime: %i\n", uname, ugroup, *uspeed / 1024., *mtime );
+	printf("| User    : %s - Group: %s - Speed: %0.1fKb/s - Start Time: %u\n", uname, ugroup, *uspeed / 1024., *start_time );
 
 	free(fname);
 	}

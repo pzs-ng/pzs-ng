@@ -91,7 +91,7 @@ int main( int argc, char **argv ) {
    raceI.total.size =
    raceI.total.users =
    raceI.total.groups = 0;
-/*   raceI.user.name = "";
+/* raceI.user.name = "";
    raceI.file.name = "";*/
 
 

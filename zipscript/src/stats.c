@@ -31,12 +31,11 @@ struct	userdata	{
  * Description: Updates existing entries in userI and groupI or creates new, if old doesnt exist
  *
  */
-void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *usern, char *group, off_t filesize, unsigned int speed, unsigned int mtime) {
+void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *usern, char *group, off_t filesize, unsigned int speed, unsigned int start_time) {
  int		u_no = -1;
  int		g_no = -1;
  int		n;
-d_log("DEBUG: filesize %zu speed %u mtime %u\n", filesize, speed, mtime);
- double		speedD = filesize / (double)speed;
+ double		speedD = filesize * 1024. / speed;
 
  for (n = 0; n < raceI->total.users; n++) {
 	if (strncmp(userI[n]->name, usern, 24) == 0) {
@@ -48,7 +47,7 @@ d_log("DEBUG: filesize %zu speed %u mtime %u\n", filesize, speed, mtime);
 
  if ( u_no == -1 ) {
 	if ( ! raceI->total.users ) {
-		raceI->file.mtime = mtime;
+		raceI->total.start_time = start_time;
 		}
 	u_no = raceI->total.users++;
 	userI[u_no] = malloc(sizeof(struct USERINFO));
@@ -75,9 +74,7 @@ d_log("DEBUG: filesize %zu speed %u mtime %u\n", filesize, speed, mtime);
  groupI[g_no]->bytes += filesize;
  raceI->total.size += filesize;
 
-d_log("DEBUG1: %i userI[u_no]->speed %f speedD %f\n", u_no, userI[u_no]->speed, speedD);
  userI[u_no]->speed += speedD;
-d_log("DEBUG2: userI[u_no]->speed %f speedD %f\n", userI[u_no]->speed, speedD);
  groupI[g_no]->speed += speedD;
  raceI->total.speed += speedD;
 

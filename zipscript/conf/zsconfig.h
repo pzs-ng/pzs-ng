@@ -313,17 +313,17 @@
 
 #define message_mp3 		"\n\n                            I D 3 - T A G\n" \
 				"+--------------------------------------------------------------------+\n" \
-				"  Artist: %x\n" \
-				"  Album : %W\n" \
-				"  Genre : %-34w Rate: %Xkbit/sec\n" \
-				"  Tracks: %-34f Year: %Y\n" \
+				"   Artist: %x\n" \
+				"   Album : %W\n" \
+				"   Genre : %-34w Rate: %Xkbit/sec\n" \
+				"   Tracks: %-34f Year: %Y\n" \
 				"  Encoder: %-34i Preset: %I\n" \
 				"+--------------------------------------------------------------------+\n"
 #define message_footer		""
 
 #define video_completebar	"[dS] - ( %.0mM %fF - COMPLETE ) - [dS]"
 #define audio_completebar	"[dS] - ( %.0mM %fF - COMPLETE - %w %Y ) - [dS]"
-#define rar_completebar		"[dS] - ( %.0mM %fF - COMPLETE ) - [dS] %A %b %s"
+#define rar_completebar		"[dS] - ( %.0mM %fF - COMPLETE ) - [dS]"
 #define other_completebar	"[dS] - ( %.0mM %fF - COMPLETE ) - [dS]"
 #define zip_completebar		"[dS] - ( %.0mM %fF - COMPLETE ) - [dS]"
 #define del_completebar		"\\[dS] - \\( .*F - COMPLETE.*) - \\[dS]"

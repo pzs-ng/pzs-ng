@@ -306,7 +306,8 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 
 	 switch ( *instr ) {
 		case 'a': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size) / raceI->total.speed); break;
-		case 'A': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size) / raceI->file.speed); break;
+		case 'A': out_p += sprintf(out_p, "%*.*f", val1, val2,
+			(double)((raceI->total.size / (raceI->total.stop_time - raceI->total.start_time)) / 1024)); break;
 		case 'b': out_p += sprintf(out_p, "%*u", val1, (unsigned int)raceI->total.size); break; /* what about files bigger than 4gb? */
 		case 'B': out_p += sprintf(out_p, "\\002"); break;
 		case 'c':
@@ -397,7 +398,8 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 				}
 			instr--;
 			break;
-		case 'd': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)hms((int)(0.5+((double)raceI->file.size/raceI->file.speed)))); break;
+		case 'd': out_p += sprintf(out_p, "%*.*s", val1, val2,
+			(char *)hms(raceI->total.stop_time - raceI->total.start_time)); break;
 		case 'e': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->file.size * raceI->total.files >> 10) / 1024.)); break;
 		case 'f': out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.files); break;
 		case 'F': out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.files - raceI->total.files_missing); break;

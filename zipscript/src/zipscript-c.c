@@ -285,15 +285,8 @@ int main( int argc, char **argv ) {
  d_log("Checking the file size of %s\n", raceI.file.name);
  stat(raceI.file.name, &fileinfo);
  raceI.file.size=fileinfo.st_size;
- /* Store mtime */
- raceI.file.mtime=fileinfo.st_mtime;
- /* Store upload duration/start time */
-
-/* obsolete: */
-/* raceI.transfer_start.tv_sec=raceI.transfer_stop.tv_sec-((unsigned int)(raceI.file.size)/raceI.file.speed);*/
-
-
-
+ raceI.total.stop_time=fileinfo.st_mtime;
+ raceI.total.start_time=fileinfo.st_mtime-((unsigned int)(raceI.file.size)/raceI.file.speed);
 
 
  n = (locations.length_path = strlen(locations.path = argv[2])) + 1;

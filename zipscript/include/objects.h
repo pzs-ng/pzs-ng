@@ -72,11 +72,12 @@ struct current_file {
  unsigned int			speed;
  off_t				size;
  char				compression_method;
- unsigned int			mtime;
 };
 
 
 struct race_total {
+ unsigned int			start_time;
+ unsigned int			stop_time;
  unsigned char			users;
  unsigned char			groups;
  unsigned char			files;

@@ -304,7 +304,7 @@ int main () {
 			 raceI.file.name = dirlist[n]->d_name;
 			 raceI.file.speed = 2004 * 1024;
 			 raceI.file.size = fileinfo.st_size;
-			 raceI.file.mtime = 0;
+			 raceI.total.start_time = 0;
 
 			 sprintf(exec, "%s-missing", raceI.file.name);
 			 strtolower(exec);
@@ -376,7 +376,7 @@ int main () {
 			 raceI.file.name = dirlist[n]->d_name;
 			 raceI.file.speed = 2004 * 1024;
 			 raceI.file.size = fileinfo.st_size;
-			 raceI.file.mtime = 0;
+			 raceI.total.start_time = 0;
 
 			 if ( ! fileexists("file_id.diz") ) {
 				sprintf(exec, "/bin/unzip -qqjnCL %s file_id.diz > file_id.diz", raceI.file.name);
