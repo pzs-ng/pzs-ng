@@ -209,62 +209,53 @@ incomplete_cleanup(char *path, int setfree)
 }
 
 void 
-cleanup(char *pathlist, int setfree, char *startpath)
+cleanup(char *pathlist, char *pathlist_dated, int setfree, char *startpath)
 {
-	char		data_today[PATH_MAX],
-			data_yesterday[PATH_MAX],
+	char		data_day[PATH_MAX],
 			path[PATH_MAX];
 	char	       *newentry, *entry;
 
-	struct tm      *time_today, *time_yesterday;
-	time_t		t_today, t_yesterday;
+	struct tm      *time_day;
+	time_t		t_day;
+	int		day_back = 0;
 
-	if ((time_today = malloc(sizeof(struct tm))) == NULL) {
+	if ((time_day = malloc(sizeof(struct tm))) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
 			exit(1);
 		}
-	if ((time_yesterday = malloc(sizeof(struct tm))) == NULL) {
-			printf("Error! Failed to allocate enough memory!\n");
-			exit(1);
-		}
 
-
-	t_today = time(NULL);
-	time_today = localtime_r(&t_today, time_today);
-
-	t_yesterday = time(NULL) - (60 * 60 * 24);	/* 86400 seconds back ==
-							 * 1 day */
-	time_yesterday = localtime_r(&t_yesterday, time_yesterday);
-
-	newentry = pathlist;
 
 	if ((strlen(startpath) > 1) && (setfree == 1)) {
 		/* Scanning current dir only */
 		incomplete_cleanup(startpath, setfree);
 	} else {
+		newentry = pathlist;
 		while (1) {
 			for (entry = newentry; *newentry != ' ' && *newentry != 0; newentry++);
-
 			sprintf(path, "%s%.*s", startpath, (int)(newentry - entry), entry);
-			strftime(data_today, PATH_MAX, path, time_today);
-			strftime(data_yesterday, PATH_MAX, path, time_yesterday);
-
-			if (strcmp(data_today, data_yesterday)) {
-				if (check_yesterday == TRUE)
-					incomplete_cleanup(data_yesterday, setfree);
-				if (check_today == TRUE)
-					incomplete_cleanup(data_today, setfree);
-			} else
-				incomplete_cleanup(data_today, setfree);
+			incomplete_cleanup(path, setfree);
 			if (!*newentry)
 				break;
-
 			newentry++;
+		}
+		while (day_back <= (days_back_cleanup - 1)) {
+			newentry = pathlist_dated;
+			t_day = time(NULL) - (60 * 60 * 24 * day_back);	/* 86400 seconds back == * 1 day */
+			time_day = localtime_r(&t_day, time_day);
+			while (1) {
+				for (entry = newentry; *newentry != ' ' && *newentry != 0; newentry++);
+				sprintf(path, "%s%.*s", startpath, (int)(newentry - entry), entry);
+				strftime(data_day, PATH_MAX, path, time_day);
+				incomplete_cleanup(data_day, setfree);
+				if (!*newentry)
+					break;
+				newentry++;
+			}
+			day_back++;
 		}
 	}
 
-	free(time_today);
-	free(time_yesterday);
+	free(time_day);
 }
 
 int 
@@ -277,18 +268,18 @@ main(int argc, char **argv)
 	if (argc > 1) {
 		if (!strncmp(argv[1], "/", 1)) {
 			setfree = 0;
-			printf("%s: Running script in view mode only.\n", argv[0]);
+			printf("PZS-NG Cleanup: Running script in view mode only.\n");
 			sprintf(startdir, argv[1]);
 		} else {
 			if (getcwd(startdir, PATH_MAX) == NULL) {
 				printf("PZS-NG Cleanup: ERROR - Failed to getcwd.\n");
 				exit (0);
 			}
-			printf("PZS-NG Cleanup: OK.\n");
+			printf("PZS-NG Cleanup: Running.\n");
 		}
 	}
 
-	cleanup(cleanupdirs, setfree, startdir);
+	cleanup(cleanupdirs, cleanupdirs_dated, setfree, startdir);
 
 	if (argc < 2 || always_scan_audio_syms == TRUE) {
 

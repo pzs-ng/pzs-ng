@@ -179,22 +179,22 @@ PASSWDFILE <PATH>
 	This is the location of glftpd's passwd file.
 	Default: "/etc/passwd"
 
-check_today <TRUE|FALSE>
-	When cleaning up dead symlinks you may wish to clean up in today's
-	dir. This usually apply to mp3 and 0day releases.
-	Default: TRUE
-
-check_yesterday <TRUE|FALSE>
-	When cleaning up dead symlinks you may wish to clean up in yesterday's
-	dir. This usually apply to mp3 and 0day releases.
-	Default: TRUE
-
+days_back_cleanup <NUMBER>
+	This setting defines how many days backward should be scanned on
+	cleanup. 0=disabled, 1=today only, 2=yesterday and today etc.
+	Default: 2
 cleanupdirs <PATHS>
 	To keep your site tidy and free from stale/dead symlinks created by the
 	zipscript, you should put here a list of dirs to scan for dead links.
-	The list is not recursive, and does not take wildcards. It do, however,
-	take dirs in date-format.
-	Default: "/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
+	The list is not recursive, and does not take wildcards.
+	Default: "/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/"
+
+cleanupdirs_dated <PATHS>
+	To keep your site tidy and free from stale/dead symlinks created by the
+	zipscript, you should put here a list of dirs to scan for dead links.
+	The list is not recursive, and does not take wildcards. This list takes
+	dated format (%m=month, %d=day <-only these two).
+	Default: "/site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 
 always_scan_audio_syms <TRUE|FALSE>
 	On cleanup symlinks are removed. However, if cleanup is used as a

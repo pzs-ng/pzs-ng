@@ -172,22 +172,22 @@
 /*
  * Directories for cleanup to check for broken incomplete files. Used by the
  * cleanup binary (which should be run in crontab) to remove stale links. Use
- * same %-values as with date. All paths are chroot'ed.
- *  check_today - check today's dir for stale links.
- * check_yesterday - check yesterday's dir for stale links.
+ * %m for month and %d for day in dated dirs. All paths are chroot'ed.
+ * days_back_cleanup - how many days should cleanup go? 1=today, 0=disabled.
  * cleanupdirs - paths to be checked for broken links - these are not recursive.
+ * cleanupdirs_dated - path with dated dirs.
  * This has also effect on the incomplete-list.sh script added in the archive.
  * If you use this on your bot, make sure to fill in correct paths.
  */
 
-#ifndef check_today
-#define check_today		TRUE
-#endif
-#ifndef check_yesterday
-#define check_yesterday		TRUE
+#ifndef days_back_cleanup
+#define days_back_cleanup	2
 #endif
 #ifndef cleanupdirs
-#define cleanupdirs		"/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
+#define cleanupdirs		"/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/"
+#endif
+#ifndef cleanupdirs_dated
+#define cleanupdirs_dated	"/site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 #endif
 #ifndef always_scan_audio_syms
 #define always_scan_audio_syms	FALSE
