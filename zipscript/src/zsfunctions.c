@@ -39,10 +39,11 @@ d_log(char *fmt,...)
 	time_t		timenow;
 	FILE           *file;
 	va_list		ap;
-	static char	debugname[] = ".debug";
 #if ( debug_altlog == TRUE )
 	static char	debugpath[PATH_MAX];
 	static char	debugname[PATH_MAX];
+#else
+	static char	debugname[] = ".debug";
 #endif
 #endif
 
