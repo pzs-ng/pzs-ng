@@ -397,6 +397,7 @@ int main( int argc, char **argv ) {
 			d_log("file_id.diz does not exist, trying to extract it from %s\n", raceI.file.name);
 			sprintf(target, "/bin/unzip -qqjnCL %s file_id.diz", raceI.file.name);
 			execute(target);
+			chmod("file_id.diz",0644);
 		}
 
 		d_log("Reading diskcount from diz\n");

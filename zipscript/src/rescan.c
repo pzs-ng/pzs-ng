@@ -382,8 +382,9 @@ int main () {
 			 raceI.file.size = fileinfo.st_size;
 
 			 if ( ! fileexists("file_id.diz") ) {
-				 sprintf(exec, "/bin/unzip -qqjnpC %s file_id.diz > file_id.diz", raceI.file.name);
-				 execute(exec);
+				sprintf(exec, "/bin/unzip -qqjnpC %s file_id.diz > file_id.diz", raceI.file.name);
+				execute(exec);
+				chmod("file_id.diz",0644);
 				}
 
 			 sprintf(exec, "/bin/unzip -qqt %s &> /dev/null", raceI.file.name);

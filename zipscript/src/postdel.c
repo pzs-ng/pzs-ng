@@ -209,6 +209,7 @@ int main( int argc, char **argv ) {
 				d_log("file_id.diz does not exist, trying to extract it from %s\n", temp_p);
 				sprintf(target, "/bin/unzip -qqjnCL %s file_id.diz", temp_p);
 				execute(target);
+				chmod("file_id.diz",0644);
 				}
 			}
 
