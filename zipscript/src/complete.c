@@ -31,7 +31,7 @@ void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
  if ( !matchpath(no_message_dirs, locations->path) ) {
   d_log("Writing %s file\n", message_file_name);
   if ((msgfile = fopen(message_file_name, "w")) == NULL) {
-	d_log("Couldn't fopen .message\n"); exit(EXIT_FAILURE);
+	d_log("Couldn't fopen %s\n", message_file_name); exit(EXIT_FAILURE);
   }
 
   fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_header));
