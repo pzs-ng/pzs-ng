@@ -842,10 +842,11 @@ proc show_free {nick uhost hand chan arg} {
 	set output "$theme(PREFIX)$announce(FREE)"
 	set devices ""; set free 0; set used 0
 	set total 0; set num 0; set perc 0
-	foreach line [split [exec $binary(DF) "-Ph"] "\n"] {
+	set tmpdev $device
+	foreach line [split [exec $binary(DF) "-Phx none"] "\n"] {
 		regsub {,} $line {.} line
 		foreach dev [array names device] {
-			if {[string match [lindex $line 0] [lindex $device($dev) 0]] == 1} {
+			if {[string match [lindex $line 0] [lindex $tmpdev($dev) 0]] == 1} {
 				set tmp [replacevar $announce(FREE-DEV) "%total" "[lindex $line 1]B"]
 				set tmp [replacevar $tmp "%used" "[lindex $line 2]B"]
 				set tmp [replacevar $tmp "%free" "[lindex $line 3]B"]
@@ -856,8 +857,12 @@ proc show_free {nick uhost hand chan arg} {
 				incr total [to_mb [lindex $line 1]]; incr used [to_mb [lindex $line 2]]
 				incr free [to_mb [lindex $line 3]]; incr num
 				incr perc [string trim [lindex $line 4] " %"]
+				array unset "tmpdev" $dev
 			}
 		}
+	}
+	if {[llength [array names "tmpdev"]]} {
+		putlog "dZSbot error: following devices had no matching \"df -Phx none\" entry: [join [array names tmpdev]]"
 	}
 	set output [replacevar $output "%total" $total]
 	set output [replacevar $output "%used" $used]
