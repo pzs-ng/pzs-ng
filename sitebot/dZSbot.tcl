@@ -549,7 +549,11 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 		set cnt 1
 	} elseif {[ string compare [lindex $vars 0] "%failed_nick" ] == 0 && $pid != 0} {
 		set output [replacevar $output "%failed_nick" $f_user ]
-		set cnt 1
+		set vars [string range $vars 13 end]
+		set ip1 [lindex $msgline 1]
+		set ip2 [string range $ip1 1 [expr [string length $ip1] - 3]]
+		set msgline [replacevar $msgline $ip1 $ip2]
+		set cnt 0
 	}
 
 	foreach vari $vars {
@@ -583,7 +587,7 @@ proc who {nick uhost hand chan args} {
 	global binary disable mainchan
 
 	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 1} {
+		if {[string match -nocase $chan $mainchan] == 0} {
 			return 0
 		}
 	}
@@ -605,7 +609,7 @@ proc speed {nick uhost hand chan args} {
 	global binary announce theme disable mainchan
 
 	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 1} {
+		if {[string match -nocase $chan $mainchan] == 0} {
 			return 0
 		}
 	}
@@ -663,7 +667,7 @@ proc bandwidth {nick uhost hand chan args} {
 	global binary announce theme disable mainchan
 
 	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 1} {
+		if {[string match -nocase $chan $mainchan] == 0} {
 			return 0
 		}
 	}
@@ -689,7 +693,7 @@ proc ng_bwup { nick uhost hand chan args} {
 	global binary announce speed theme disable mainchan
 
 	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 1} {
+		if {[string match -nocase $chan $mainchan] == 0} {
 			return 0
 		}
 	}
@@ -726,7 +730,7 @@ proc ng_uploaders {nick uhost hand chan args} {
 	global binary announce speed theme disable mainchan
 
 	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 1} {
+		if {[string match -nocase $chan $mainchan] == 0} {
 			return 0
 		}
 	}
@@ -791,7 +795,7 @@ proc ng_bwdn { nick uhost hand chan args} {
 	global binary announce speed theme disable mainchan
 
 	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 1} {
+		if {[string match -nocase $chan $mainchan] == 0} {
 			return 0
 		}
 	}
@@ -828,7 +832,7 @@ proc ng_leechers {nick uhost hand chan args} {
 	global binary announce speed theme disable mainchan
 
 	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 1} {
+		if {[string match -nocase $chan $mainchan] == 0} {
 			return 0
 		}
 	}
@@ -893,7 +897,7 @@ proc ng_idlers { nick uhost hand chan args} {
 	global binary announce speed minidletime theme disable mainchan
 
 	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 1} {
+		if {[string match -nocase $chan $mainchan] == 0} {
 			return 0
 		}
 	}
@@ -952,7 +956,7 @@ proc ng_bandwidth {nick uhost hand chan args} {
 	global binary announce speed theme disable mainchan
 
 	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 1} {
+		if {[string match -nocase $chan $mainchan] == 0} {
 			return 0
 		}
 	}
@@ -991,7 +995,7 @@ proc showstats {nick type time section} {
 	global binary statsection location disable mainchan
 
 	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 1} {
+		if {[string match -nocase $chan $mainchan] == 0} {
 			return 0
 		}
 	}
@@ -1073,7 +1077,7 @@ proc show_free {nick uhost hand chan arg} {
 	global binary announce device theme disable mainchan
 
 	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 1} {
+		if {[string match -nocase $chan $mainchan] == 0} {
 			return 0
 		}
 	}
@@ -1256,7 +1260,7 @@ proc show_incompletes { nick uhost hand chan arg } {
 	global sitename binary disable mainchan
 
 	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 1} {
+		if {[string match -nocase $chan $mainchan] == 0} {
 			return 0
 		}
 	}
@@ -1298,7 +1302,7 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 	global bnc binary disable mainchan
 
 	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 1} {
+		if {[string match -nocase $chan $mainchan] == 0} {
 			return 0
 		}
 	}
@@ -1367,7 +1371,7 @@ proc help {nick uhost hand chan arg} {
 	global sections cmdpre dver tclroot disable mainchan
 
 	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 1} {
+		if {[string match -nocase $chan $mainchan] == 0} {
 			return 0
 		}
 	}
