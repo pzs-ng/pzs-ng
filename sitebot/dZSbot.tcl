@@ -61,7 +61,6 @@ set nuke(SHOWN) 1
 set variables(NUKE)   ""
 set variables(UNNUKE) ""
 set mpath ""
-set debuglevel [DEBUG_INFO]
 
 #################################################################################
 # SET BINDINGS                                                                  #
@@ -209,6 +208,7 @@ proc DEBUG_FATAL {{string 0}} {
 	} else { return 0; }
 }
 
+set debuglevel [DEBUG_INFO]
 
 
 #################################################################################
