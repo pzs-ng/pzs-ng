@@ -19,9 +19,9 @@ if {[catch {source [file dirname [info script]]/dZSbconf.defaults.tcl} tmperror]
 	die
 }
 if {[catch {source [file dirname [info script]]/dZSbconf.tcl} tmperror]} {
-	putlog "dZSbot: dZSbconf.tcl not found or has errors. Cannot continue."
-	putlog "dZSbot: See FAQ for possible solutions/debugging options."
-	die
+	putlog "dZSbot: dZSbconf.tcl not found or has errors. Continuing with defaults only!"
+	putlog "dZSbot: See FAQ/README for possible solutions/debugging options."
+	putlog "dZSbot: If this is your first install - do; cp dZSbconf.dist.tcl dZSbconf.tcl."
 }
 if {[catch {source [file dirname [info script]]/dZSbvars.tcl} tmperror]} {
 	putlog "dZSbot: dZSbvars.tcl not found or has errors. Cannot continue."
