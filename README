@@ -310,19 +310,31 @@ There are a few other binaries compiled, but they are mostly used by 3rd party
 scripts. Here's a short description of each compiled binary:
 
   - cleanup - This little bin will clean out dead symlinks. Where it search
-    you can specify in zsconfig.h in the define of "cleanupdirs".
+    you can specify in zsconfig.h in the define of "cleanupdirs". Please note
+    that this script does *NOT* scan recursively, meaning you really have to
+    insert the names of dirs to be scanned in this variable. Setting this to
+    '/site/incoming/' will only search /site/incoming, not /site/incoming/apps/
+    or any other dir just below.
+    This script may be used as a cscript to 'site wipe' or 'site nuke' for
+    instance, in which case it will only scan the current dir. You may also run
+    it in 'view' mode, by giving it rootpath to glftpd. This will only list
+    incomplete dirs, not remove any links.
     How to test: chroot /glftpd /bin/cleanup
+                 (in chroot, in a site dir) /bin/glftpd something
+                 /glftpd/bin/cleanup /glftpd
 
   - datacleaner - This one will remove the racedata of dirs no longer found
     on your site. Please note that this script may be run in crontab (example
     1), as a command from shell (example 2) or as a cscript (example 3).
     Please note that if you try to use it as a cscript to anything but RMD,
-    it will scan all dirs in the storage variable. This means it's possible
-    to use it as a cscript to 'site wipe' for instance, but it's not recommended
-    as it may take some time for it to go thru all the data.
+    it will scan recursively, relative to where you are. This means it's possible
+    to use it as a cscript to 'site wipe' or 'site nuke' for instance, but it
+    may take some time for it to go thru all the data.
     How to test: chroot /glftpd /bin/datacleaner
 		 chroot /glftpd /bin/datacleaner /site/path/to/file
 		 chroot /glftpd /bin/datacleaner "RMD /path/to/file" (no /site
+		 in front!)
+		 chroot /glftpd /bin/datacleaner "NUKE /path/to/file" (no /site
 		 in front!)
 
   - postdel - Should be run after you delete something (as a cscript). Will

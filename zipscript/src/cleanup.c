@@ -446,26 +446,29 @@ cleanup(char *pathlist, int setfree, char *startpath)
 
 	newentry = pathlist;
 
-	while (1) {
-		for (entry = newentry; *newentry != ' ' && *newentry != 0; newentry++);
+	if ((strlen(startpath) > 1) && (setfree == 1)) {
+		/* Scanning current dir only */
+		incomplete_cleanup(startpath, setfree);
+	} else {
+		while (1) {
+			for (entry = newentry; *newentry != ' ' && *newentry != 0; newentry++);
 
-		sprintf(path, "%s%.*s", startpath, (int)(newentry - entry), entry);
-		strftime(data_today, PATH_MAX, path, time_today);
-		strftime(data_yesterday, PATH_MAX, path, time_yesterday);
+			sprintf(path, "%s%.*s", startpath, (int)(newentry - entry), entry);
+			strftime(data_today, PATH_MAX, path, time_today);
+			strftime(data_yesterday, PATH_MAX, path, time_yesterday);
 
-
-		if (strcmp(data_today, data_yesterday)) {
-			if (check_yesterday == TRUE)
-				incomplete_cleanup(data_yesterday, setfree);
-			if (check_today == TRUE)
+			if (strcmp(data_today, data_yesterday)) {
+				if (check_yesterday == TRUE)
+					incomplete_cleanup(data_yesterday, setfree);
+				if (check_today == TRUE)
+					incomplete_cleanup(data_today, setfree);
+			} else
 				incomplete_cleanup(data_today, setfree);
-		} else
-			incomplete_cleanup(data_today, setfree);
+			if (!*newentry)
+				break;
 
-		if (!*newentry)
-			break;
-
-		newentry++;
+			newentry++;
+		}
 	}
 
 	free(path);
@@ -480,16 +483,28 @@ main(int argc, char **argv)
 {
 
 	int		setfree = 1;
-	char           *startdir = 0;
+	char           *startdir = 0, *wd = 0;
 
 	startdir = malloc(PATH_MAX);
 	sprintf(startdir, "/");
 
 	if (argc > 1) {
-		setfree = 0;
-		printf("%s: Running script in view mode only.\n", argv[0]);
-		sprintf(startdir, "%s", argv[1]);
+		if (!strncmp(argv[1], "/", 1)) {
+			setfree = 0;
+			printf("%s: Running script in view mode only.\n", argv[0]);
+			sprintf(startdir, "%s", argv[1]);
+		} else {
+			if (( wd = getcwd(NULL, PATH_MAX)) == NULL) {
+				printf("PZS-NG Cleanup: ERROR - Failed to getcwd.\n");
+				exit (0);
+			} else {
+				sprintf(startdir, "%s", wd);
+				free(wd);
+				printf("PZS-NG Cleanup: OK.\n");
+			}
+		}
 	}
+
 	cleanup(cleanupdirs, setfree, startdir);
 
 	if (argc < 2) {
@@ -515,3 +530,4 @@ main(int argc, char **argv)
 	free(startdir);
 	exit(EXIT_SUCCESS);
 }
+

@@ -109,9 +109,13 @@ main(int argc, char **argv)
 				sprintf(st, storage "/%s", argv[1]);
 				printf("Checking dir: %s\n", st);
 			} else {
-				/* script is called with bad args - scanning all dirs */
-				check_dir_loop(storage);
-				return 0;
+				/* script is called with bad args - scanning current dirs */
+				if (( wd = getcwd(NULL, PATH_MAX)) == NULL) {
+						exit (2);
+				} else {
+					sprintf(st, storage "/%s", wd);
+					free(wd);
+				}
 			}
 		}
 		/* check subdirs */
