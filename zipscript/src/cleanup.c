@@ -264,6 +264,10 @@ int main(void) {
     scandirectory((char *)audio_artist_path);
 #endif
 
+#if ( audio_group_sort == TRUE )
+    scandirectory((char *)audio_group_path);
+#endif
+
     if ( cleanupdirs[0] )
 	cleanup(cleanupdirs);
     exit(EXIT_SUCCESS);

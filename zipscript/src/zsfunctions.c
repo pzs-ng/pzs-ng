@@ -18,8 +18,8 @@ int num_groups=0, num_users=0;
 struct USER      **user;
 struct GROUP     **group;
 
-#if ( debug_mode == TRUE )
 void d_log(char *fmt, ...) {
+#if ( debug_mode == TRUE )
     time_t		timenow;
     FILE		*file;
     va_list	ap;
@@ -33,10 +33,8 @@ void d_log(char *fmt, ...) {
 	fclose(file);
     }
     chmod(".debug",0666);
-}
-#else 
-void __inline__ d_log(char *fmt, ...) { }
 #endif
+}
 
 void create_missing(char *f, short int l) {
     char	*fname;
