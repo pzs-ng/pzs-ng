@@ -298,14 +298,6 @@
 #define program_uid		10
 #define program_gid		200
 
-/* SQL information
- */
-
-#define sql_user		"dServer"
-#define sql_pass		"dServer"  
-#define sql_host		"212.146.42.251"
-#define sql_db			"reldata"
-
 /* These file types are allowed without any checks (types need to be also ignored)
  */
 
