@@ -99,32 +99,6 @@ main(int argc, char **argv)
 	dir = opendir(".");
 	parent = opendir("..");
 
-	d_log("postdel: Locking release\n");
-	if ((m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0))) {
-		d_log("postdel: Failed to lock release.\n");
-		if (m == 1) {
-			d_log("postdel: version mismatch. Exiting.\n");
-			exit(EXIT_FAILURE);
-		}
-		if (m == PROGTYPE_RESCAN) {
-			d_log("postdel: Detected rescan running - will try to make it quit.\n");
-			update_lock(&g.v, 0, 0);
-		}
-		for ( m = 0; m <= 20; m++) {
-			d_log("postdel: sleeping for 1 second before trying to get a lock.\n");
-			sleep(1);
-			if (!create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0))
-				break;
-		}
-		if (m >= max_seconds_wait_for_lock) {
-			d_log("postdel: Failed to get lock. Forcing unlock.\n");
-			if (create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 2)) {
-				d_log("postdel: Failed to force a lock. No choice but to exit.\n");
-				exit(EXIT_FAILURE);
-			}
-		}
-	}
-
 	if (fileexists(fname)) {
 		d_log("postdel: File (%s) still exists\n", fname);
 #if (remove_dot_debug_on_delete == TRUE)
@@ -161,6 +135,32 @@ main(int argc, char **argv)
 	memset(g.gi, 0, sizeof(struct GROUPINFO *) * 30);
 
 	getcwd(g.l.path, PATH_MAX);
+
+	d_log("postdel: Locking release\n");
+	if ((m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0))) {
+		d_log("postdel: Failed to lock release.\n");
+		if (m == 1) {
+			d_log("postdel: version mismatch. Exiting.\n");
+			exit(EXIT_FAILURE);
+		}
+		if (m == PROGTYPE_RESCAN) {
+			d_log("postdel: Detected rescan running - will try to make it quit.\n");
+			update_lock(&g.v, 0, 0);
+		}
+		for ( m = 0; m <= 20; m++) {
+			d_log("postdel: sleeping for 1 second before trying to get a lock.\n");
+			sleep(1);
+			if (!create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0))
+				break;
+		}
+		if (m >= max_seconds_wait_for_lock) {
+			d_log("postdel: Failed to get lock. Forcing unlock.\n");
+			if (create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 2)) {
+				d_log("postdel: Failed to force a lock. No choice but to exit.\n");
+				exit(EXIT_FAILURE);
+			}
+		}
+	}
 
 	if (matchpath(nocheck_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
 		d_log("postdel: Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
