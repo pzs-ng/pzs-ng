@@ -11,6 +11,8 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
 #include "../conf/zsconfig.h"
 
 struct dupefile {
@@ -33,7 +35,7 @@ int main (int argc, char *argv[]) {
     strcpy(dupefile, dupepath);
     strcpy(dupename, argv[1]);
 
-    sprintf(data2, "%s/dupefile", storage);
+    sprintf(data2, "%s/dupefile.%d", storage, getuid());
 
     if((fp = fopen(dupefile, "r+b")) == NULL) {
 	printf("FATAL ERROR: Unable to open dupefile (%s)\n", dupefile);
@@ -83,8 +85,10 @@ int main (int argc, char *argv[]) {
     fclose(fp2);
 
     chmod(dupefile,0666);
-    chmod(data2,0666);
-
+    if ( unlink(data2) > 0 ) {
+      printf("FATAL ERROR: Unable to delete tempfile (%s)\n", data2);
+      return 1;
+    }
     return 0;
 }
 
