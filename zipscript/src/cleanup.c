@@ -164,24 +164,24 @@ incomplete_cleanup(char *path, int setfree)
 	
 	struct stat	fileinfo;
 	int		tempsize = 0;
-	regex_t		preg   [4];
+	regex_t		preg[4];
 	regmatch_t	pmatch[1];
 	char		temp[PATH_MAX];
-	char           *locator;
+	char		*locator;
 
-	sprintf(temp, "%s", incomplete_cd_indicator);
+	snprintf(temp, PATH_MAX, "%s", incomplete_cd_indicator);
 	locator = replace_cookies(temp);
 	regcomp(&preg[0], locator, REG_NEWLINE | REG_EXTENDED);
 
-	sprintf(temp, "%s", incomplete_indicator);
+	snprintf(temp, PATH_MAX, "%s", incomplete_indicator);
 	locator = replace_cookies(temp);
 	regcomp(&preg[1], locator, REG_NEWLINE | REG_EXTENDED);
 
-	sprintf(temp, "%s", incomplete_base_nfo_indicator);
+	snprintf(temp, PATH_MAX, "%s", incomplete_base_nfo_indicator);
 	locator = replace_cookies(temp);
 	regcomp(&preg[2], locator, REG_NEWLINE | REG_EXTENDED);
 
-	sprintf(temp, "%s", incomplete_nfo_indicator);
+	snprintf(temp, PATH_MAX, "%s", incomplete_nfo_indicator);
 	locator = replace_cookies(temp);
 	regcomp(&preg[3], locator, REG_NEWLINE | REG_EXTENDED);
 
