@@ -269,7 +269,7 @@ void removecomplete() {
  regex_t	preg;
  regmatch_t	pmatch[1];
 
-// unlink(".message");
+ unlink(".message");
  regcomp( &preg, del_completebar, REG_NEWLINE|REG_EXTENDED );
  n = direntries;
  while(n--) {
