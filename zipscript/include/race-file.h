@@ -8,6 +8,7 @@
 typedef struct {
 	unsigned int	crc32,
 			speed;
+	unsigned long	bitrate;
 	off_t		size;
 	time_t		start_time;
 	unsigned char	status;
@@ -25,13 +26,13 @@ typedef struct {
 
 /* this is what we put in a special 'head' file for version control, lock etc */
 typedef struct {
-	short int	data_version;		// version control.
-	short int	data_type;		// type of release.
-	short int	data_in_use;		// which program currently holds the lock.
-	short int	data_incrementor;	// a check to see if nothing else wants the lock.
-	short int	data_queue;		// positions in queue.
-	short int	data_qcurrent;		// current position in queue.
-	short int	data_pid;		// the pid of the process holding the lock.
+	short int	data_version,		// version control.
+			data_type,		// type of release.
+			data_in_use,		// which program currently holds the lock.
+			data_incrementor,	// a check to see if nothing else wants the lock.
+			data_queue,		// positions in queue.
+			data_qcurrent,		// current position in queue.
+			data_pid;		// the pid of the process holding the lock.
 } HEADDATA;
 
 extern unsigned int readsfv(const char *, struct VARS *, int);
@@ -47,6 +48,7 @@ extern void create_indexfile(const char *, struct VARS *, char *);
 extern short clear_file(const char *, char *);
 extern short match_file(char *, char *);
 extern void writerace(const char *, struct VARS *, unsigned int, unsigned char);
+extern void write_bitrate_in_race(const char *, struct VARS *);
 extern void remove_from_race(const char *, const char *);
 extern int verify_racedata(const char *);
 extern int create_lock(struct VARS *, const char *, short int, short int, short int);

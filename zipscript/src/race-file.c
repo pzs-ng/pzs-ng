@@ -725,7 +725,7 @@ match_file(char *rname, char *f)
 	if ((file = fopen(rname, "r+"))) {
 		while (fread(&rd, sizeof(RACEDATA), 1, file)) {
 			if (strncmp(rd.fname, f, NAME_MAX) == 0 && rd.status == F_CHECKED) {
-d_log("match: '%s' == '%s'\n", rd.fname, f);
+				d_log("match_file: '%s' == '%s'\n", rd.fname, f);
 				n = 1;
 				break;
 			}
@@ -830,6 +830,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	strlcpy(rd.uname, raceI->user.name, 24);
 	strlcpy(rd.group, raceI->user.group, 24);
 	
+	rd.bitrate = 0;
 	rd.size = raceI->file.size;
 	rd.speed = raceI->file.speed;
 	rd.start_time = raceI->total.start_time;
@@ -838,6 +839,50 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	
 	close(fd);
 }
+
+void 
+write_bitrate_in_race(const char *path, struct VARS *raceI)
+{
+	int		fd, count, ret;
+
+	RACEDATA	rd;
+
+	/* create file if it doesn't exist */
+	if ((fd = open(path, O_RDWR, 0666)) == -1) {
+		if (errno != EEXIST) {
+			d_log("write_bitrate_in_race: open(%s): %s\n", path, strerror(errno));
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	if (!update_lock(raceI, 1, 0)) {
+		d_log("write_bitrate_in_race: Lock is suggested removed. Will comply and exit\n");
+		remove_lock(raceI);
+		exit(EXIT_FAILURE);
+	}
+
+	/* find an existing entry that we will overwrite */
+	count = 0;
+	while ((ret = read(fd, &rd, sizeof(RACEDATA)))) {
+		if (ret == -1) {
+			d_log("write_bitrate_in_race: read(%s): %s\n", path, strerror(errno));
+			exit(EXIT_FAILURE);
+		}
+		if (strncmp(rd.fname, raceI->file.name, NAME_MAX) == 0) {
+			lseek(fd, sizeof(RACEDATA) * count, SEEK_SET);
+			break;
+		}
+		count++;
+	}
+
+	if (*raceI->audio.bitrate)
+		rd.bitrate = atol(raceI->audio.bitrate);
+
+	write(fd, &rd, sizeof(RACEDATA));
+	
+	close(fd);
+}
+
 
 /* remove file entry from racedata file */
 void

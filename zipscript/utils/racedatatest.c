@@ -28,7 +28,8 @@ int main(int argc, char **argv)
 		printf("Status: %u\n", rd.status);
 		printf("Uname:  %s\n", rd.uname);
 		printf("Group:  %s\n", rd.group);
-		printf("Speed:  %dkb/s\n\n", rd.speed / 1024);
+		printf("Speed:  %dkb/s\n", rd.speed / 1024);
+		printf("Bitrate:%lukbit\n\n", rd.bitrate);
 	}
 
 	fclose(f);
