@@ -383,6 +383,7 @@ copysfv(const char *source, const char *target)
 #endif
 #endif
 		sd.crc32 = 0;
+		bzero(sd.fname, sizeof(sd.fname));
 		if ((ptr = find_last_of(fbuf, " \t"))) {
 			
 			/* pass the " \t" */
