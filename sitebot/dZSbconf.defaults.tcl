@@ -68,6 +68,11 @@ set sitename			"pzs-ng"
 # trigger option. example: you can set cmdpre to !pn but if bindnopre is set to # "YES" then the sitebot will respond to !pnbnc and also !bnc useful for rings.
 set cmdpre			"!pn"
 set bindnopre			"YES"
+
+# Allow people to check bnc-status using !bnc/!PREFIXbnc. In some / many cases,
+# this is not needed. It will also disable check of binary(NCFTPLS).
+# You can set it to "YES" or "NO".
+set bnc(ENABLED)		"YES"
 # List of bnc's (used for BNC-testing with the <prefix>bnc command in channel)
 # Format: countrycode:hostname:port (space seperated)
 set bnc(LIST)			"uk:msn.test1.com:123 de:msn.test2.com:345 se:msn.test3.com:567"

@@ -30,6 +30,9 @@ if {[catch {source [file dirname [info script]]/dZSbvars.tcl} tmperror]} {
 }
 
 foreach bin [array names binary] {
+	if {$bin == "NCFTPLS" && $bnc(ENABLED) != "YES"} { continue; }
+	if {$bin == "PING" && ($bnc(ENABLED) != "YES" || $bnc(PING) != "YES")} { continue; }
+		
 	if {![file executable $binary($bin)]} {
 		putlog "dZSbot: Wrong path/missing bin for $bin - Please fix."
 		set dzerror "1"
@@ -1882,6 +1885,10 @@ proc welcome_msg { nick uhost hand chan } {
 proc ng_bnc_check {nick uhost hand chan arg} {
 	global bnc binary disable mainchan
 
+	# We should probably just not bind at all, but this is easier.
+	# (It's easier since we won't have to deal with unbinding etc)
+	if {$bnc(ENABLED) != "YES"} { return; }
+
 	if { $disable(TRIGINALLCHAN) == 1 } {
 		if {[string match -nocase $chan $mainchan] == 0} {
 			return 0
@@ -2060,7 +2067,7 @@ proc themereplace {targetString section} {
 	# We replace %cX{string}, %b{string} and %u{string} with their coloured, bolded and underlined equivilants ;)
 	# We also do the justification and padding that is required for %r / %l / %m to work.
 	# bold and underline replacement should not be needed here...
-	while {[regexp {(%c(\d)\{([^\{\}]+)\}|%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\}|%([lrm])(\d+)\{([^\{\}]+)\})} $targetString matchString dud padOp padLength padString]} {
+	while {[regexp {(%c(\d)\{([^\{\}]+)\}|%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\}|%([lrm])(\d\d?)\{([^\{\}]+)\})} $targetString matchString dud padOp padLength padString]} {
 		# Check if any innermost %r/%l/%m are present. :-)
 		while {[regexp {%([lrm])(\d\d?)\{([^\{\}]+)\}} $targetString matchString padOp padLength padString]} {
 			if {[string length $padString] >= $padLength} {
