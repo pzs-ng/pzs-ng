@@ -284,7 +284,7 @@ proc getsection {cpath msgtype} {
 	global sections msgtypes paths type defaultsection mpath
 
 	foreach section $sections {
-		if {[llength [array names "paths" -exact $section]]} {
+		if {[llength [array names "paths" $section]]} {
 			putlog "dZSbot error: \"paths($section)\" not set in config, section becomes \"$defaultsection\""
 			continue
 		}
@@ -846,7 +846,7 @@ proc show_free {nick uhost hand chan arg} {
 
 	foreach line [split [exec $binary(DF) "-Phx none"] "\n"] {
 		regsub {,} $line {.} line
-		foreach dev [array names tmpdev] {
+		foreach dev [array names "tmpdev"] {
 			if {[string match [lindex $line 0] [lindex $tmpdev($dev) 0]] == 1} {
 				set tmp [replacevar $announce(FREE-DEV) "%total" "[lindex $line 1]B"]
 				set tmp [replacevar $tmp "%used" "[lindex $line 2]B"]
