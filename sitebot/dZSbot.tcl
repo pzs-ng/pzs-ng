@@ -350,14 +350,17 @@ proc readlog {} {
 			foreach channel $invite_channels {puthelp "INVITE $ircnick $channel"}
 
 			foreach privchan [array names privchannel] {
-				foreach privgroup $privgroups($privchan) {
-					if {[string equal $group $privgroup]} {
-						foreach channel $privchannel($privchan) {puthelp "INVITE $ircnick $channel"}
+				if {[info exists privgroups($privchan)]} {
+					foreach privgroup $privgroups($privchan) {
+						if {[string equal $group $privgroup]} {
+							foreach channel $privchannel($privchan) {puthelp "INVITE $ircnick $channel"}
+						}
 					}
-				}
-				foreach privuser $privusers($privchan) {
-					if {[string equal $nick $privuser]} {
-						foreach channel $privchannel($privchan) {puthelp "INVITE $ircnick $channel"}
+				if {[info exists privusers($privchan)]} {
+					foreach privuser $privusers($privchan) {
+						if {[string equal $nick $privuser]} {
+							foreach channel $privchannel($privchan) {puthelp "INVITE $ircnick $channel"}
+						}
 					}
 				}
 			}
