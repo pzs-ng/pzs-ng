@@ -12,11 +12,11 @@ set location(PASSWD)		"/glftpd/etc/passwd"
 set location(USERS)			"/glftpd/ftp-data/users/"
 
 # Are you using glftpd2? Set to "YES" if you are, "NO" if not.
-set use_glftpd2				"NO"
+set use_glftpd2				"YES"
 
 # What types of messages are counted as the different types of output
 # (for disabling etc)
-set msgtypes(RACE)			"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV UPDATE HALFWAY NEWLEADER COMPLETE STATS"
+set msgtypes(RACE)			"NEWDIR DELDIR INCOMPLETE NUKE UNNUKE PRE RACE SFV UPDATE HALFWAY NEWLEADER COMPLETE STATS BADGENRE BADYEAR BADBITRATE"
 set msgtypes(DEFAULT)		"MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT"
 
 # Sitename is for the %sitename-cookie in announces :)
@@ -30,7 +30,7 @@ set bnc(LIST)				"uk:msn.test1.com:123 de:msn.test2.com:345 se:msn.test3.com:567
 set bnc(USER)				"bncuser"
 set bnc(PASS)				"bncpass"
 # Number of seconds to wait before giving up on connecting to the BNCs
-set bnc(TIMEOUT)			"2"
+set bnc(TIMEOUT)			"10"
 
 # Your sites bandwidth - used for % of bandwidth used calculations in !bw
 set speed(INCOMING)			"12500"
@@ -53,11 +53,11 @@ set binary(WHO)				"/glftpd/bin/sitewho"
 set binary(BW)				"/glftpd/bin/ng-bandwidth"
 set binary(STATS)			"/glftpd/bin/stats"
 set binary(PASSCHK)			"/glftpd/bin/passchk"
-set binary(NCFTPLS)			"/usr/bin/ncftpls"
+set binary(NCFTPLS)			"/usr/local/bin/ncftpls"
 set binary(BNCTEST)			"/glftpd/bin/bnctest.sh"
-set binary(BNCCHECK)		"/glftpd/bin/bnc-check.pl"
-set binary(INCOMPLETE)		"/glftpd/bin/incomplete-list.sh"
-set binary(DF)				"/glftpd/bin/df"
+set binary(BNCCHECK)			"/glftpd/bin/bnc-check.pl"
+set binary(INCOMPLETE)			"/glftpd/bin/incomplete-list.sh"
+set binary(DF)				"/bin/df"
 
 # Definition of hd devices (for freespace) Syntax is "disk sections".
 # 'sections' is purely for cosmetic uses (output)
@@ -85,9 +85,9 @@ set chanlist(APPS)			"$mainchan"
 set chanlist(MP3)			"$mainchan"
 set chanlist(0DAY)			"$mainchan"
 set chanlist(MV)			"$mainchan"
-set chanlist(DEFAULT)		"$mainchan"
-set chanlist(INVITE)		"$mainchan"
-set chanlist(WELCOME)		"$mainchan"
+set chanlist(DEFAULT)			"$mainchan"
+set chanlist(INVITE)			"$mainchan"
+set chanlist(WELCOME)			"$mainchan"
 
 # Are we disabling the announce of this stuff?
 # If its set to 1, we wont show it :)
@@ -109,6 +109,9 @@ set disable(HALFWAY)        0
 set disable(NEWLEADER)      0
 set disable(COMPLETE)       0
 set disable(STATS)          0
+set disable(BADGENRE)       0
+set disable(BADYEAR)        0
+set disable(BADBITRATE)     0
 set disable(WELCOME)        0
 set disable(DEFAULT)        1
 
@@ -149,6 +152,9 @@ set variables(DELDIR)       "%pf %user %group %tagline"
 set variables(LOGIN)        "%hostmask %ip %user %group %tagline"
 set variables(LOGOUT)       "%hostmask %ip %user %group %tagline"
 set variables(INVITE)       "%ircnick %user %group"
+set variables(BADGENRE)     "%pf %msg"
+set variables(BADYEAR)      "%pf %msg"
+set variables(BADBITRATE)   "%pf %msg"
 set variables(DEFAULT)      "%pf %msg"
 
 ## Converts empty or zero variable to something else if defined

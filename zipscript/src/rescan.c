@@ -237,7 +237,7 @@ int main () {
  uid_t	f_uid;
  gid_t	f_gid;
 
- #if ( enabled_suid )
+ #if ( program_uid > 0 )
   setegid(program_gid);
   seteuid(program_uid);
  #endif

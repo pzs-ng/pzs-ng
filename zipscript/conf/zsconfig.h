@@ -15,7 +15,7 @@
 /* Are you using GLFTPD 2?
    If you do not use GLFTDP 2, comment out the next line!
  */
-#define use_glftpd2
+#define use_glftpd2	TRUE
 
 /* These should be changed to match your glftpd installation.
  */
@@ -235,8 +235,8 @@
 
 /* Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 & mpeg2.5 + layer1 & 2 can be added if needed
  */
-#define audio_vbr		"%XKbps VBR I:%I w:%w W:%W (Q:%Q) x:%x X:%X y:%y Y:%Y z:%Z h:%h q:%q Q:%Q"					/* Put in %j cookie */
-#define audio_cbr		"%XKbps CBR (%Q)"					/* Put in %j cookie */
+#define audio_vbr		"Encoded @ %XKbps VBR (%I) in %zHz %Q."		/* Put in %j cookie */
+#define audio_cbr		"Encoded @ %XKbps CBR in %zHz %Q."		/* Put in %j cookie */
 
 #define audio_race		"%B%U%B is racing [ %R ] on %r @ %B%.0S%BkB/s."
 #define audio_sfv		"Got SFV for %r. Expecting %B%f%BF."
