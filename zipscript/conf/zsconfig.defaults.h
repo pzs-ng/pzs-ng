@@ -680,43 +680,128 @@
  * should probably be done in your bot, but as of this writing, the default
  * dzsbot does not support such an option.
  */
-#define disable_audio_race		FALSE
-#define disable_audio_sfv		FALSE
-#define disable_audio_update		FALSE
-#define disable_audio_halfway		FALSE
-#define disable_audio_newleader		FALSE
-#define disable_audio_complete		FALSE
-#define disable_audio_norace_halfway	FALSE
-#define disable_audio_norace_complete	FALSE
-#define disable_video_race		FALSE
-#define disable_video_sfv		FALSE
-#define disable_video_update		FALSE
-#define disable_video_halfway		FALSE
-#define disable_video_newleader		FALSE
-#define disable_video_complete		FALSE
-#define disable_video_norace_halfway	FALSE
-#define disable_video_norace_complete	FALSE
-#define disable_rar_race		FALSE
-#define disable_rar_sfv			FALSE
-#define disable_rar_update		FALSE
-#define disable_rar_halfway		FALSE
-#define disable_rar_newleader		FALSE
-#define disable_rar_complete		FALSE
-#define disable_rar_norace_halfway	FALSE
-#define disable_rar_norace_complete	FALSE
-#define disable_other_race		FALSE
-#define disable_other_sfv		FALSE
-#define disable_other_update		FALSE
-#define disable_other_halfway		FALSE
-#define disable_other_newleader		FALSE
-#define disable_other_complete		FALSE
-#define disable_other_norace_halfway	FALSE
-#define disable_other_norace_complete	FALSE
-#define disable_zip_race		FALSE
-#define disable_zip_update		FALSE
-#define disable_zip_halfway		FALSE
-#define disable_zip_newleader		FALSE
-#define disable_zip_complete		FALSE
-#define disable_zip_norace_halfway	FALSE
-#define disable_zip_norace_complete	FALSE
+#ifndef disable_audio_race
+	#define disable_audio_race		FALSE
+#endif
+#ifndef disable_audio_sfv
+	#define disable_audio_sfv		FALSE
+#endif
+#ifndef disable_audio_update
+	#define disable_audio_update		FALSE
+#endif
+#ifndef disable_audio_halfway
+	#define disable_audio_halfway		FALSE
+#endif
+#ifndef disable_audio_newleader
+	#define disable_audio_newleader		FALSE
+#endif
+#ifndef disable_audio_complete
+	#define disable_audio_complete		FALSE
+#endif
+#ifndef disable_audio_norace_halfway
+	#define disable_audio_norace_halfway	FALSE
+#endif
+#ifndef disable_audio_norace_complete
+	#define disable_audio_norace_complete	FALSE
+#endif
+
+#ifndef disable_video_race
+	#define disable_video_race		FALSE
+#endif
+#ifndef disable_video_sfv
+	#define disable_video_sfv		FALSE
+#endif
+#ifndef disable_video_update
+	#define disable_video_update		FALSE
+#endif
+#ifndef disable_video_halfway
+	#define disable_video_halfway		FALSE
+#endif
+#ifndef disable_video_newleader
+	#define disable_video_newleader		FALSE
+#endif
+#ifndef disable_video_complete
+	#define disable_video_complete		FALSE
+#endif
+#ifndef disable_video_norace_halfway
+	#define disable_video_norace_halfway	FALSE
+#endif
+#ifndef disable_video_norace_complete
+	#define disable_video_norace_complete	FALSE
+#endif
+
+#ifndef disable_rar_race
+	#define disable_rar_race		FALSE
+#endif
+#ifndef disable_rar_sfv
+	#define disable_rar_sfv			FALSE
+#endif
+#ifndef disable_rar_update
+	#define disable_rar_update		FALSE
+#endif
+#ifndef disable_rar_halfway
+	#define disable_rar_halfway		FALSE
+#endif
+#ifndef disable_rar_newleader
+	#define disable_rar_newleader		FALSE
+#endif
+#ifndef disable_rar_complete
+	#define disable_rar_complete		FALSE
+#endif
+#ifndef disable_rar_norace_halfway
+	#define disable_rar_norace_halfway	FALSE
+#endif
+#ifndef disable_rar_norace_complete
+	#define disable_rar_norace_complete	FALSE
+#endif
+
+#ifndef disable_other_race
+	#define disable_other_race		FALSE
+#endif
+#ifndef disable_other_sfv
+	#define disable_other_sfv		FALSE
+#endif
+#ifndef disable_other_update
+	#define disable_other_update		FALSE
+#endif
+#ifndef disable_other_halfway
+	#define disable_other_halfway		FALSE
+#endif
+#ifndef disable_other_newleader
+	#define disable_other_newleader		FALSE
+#endif
+#ifndef disable_other_complete
+	#define disable_other_complete		FALSE
+#endif
+#ifndef disable_other_norace_halfway
+	#define disable_other_norace_halfway	FALSE
+#endif
+#ifndef disable_other_norace_complete
+	#define disable_other_norace_complete	FALSE
+#endif
+
+#ifndef disable_zip_race
+	#define disable_zip_race		FALSE
+#endif
+#ifndef disable_zip_sfv
+	#define disable_zip_sfv			FALSE
+#endif
+#ifndef disable_zip_update
+	#define disable_zip_update		FALSE
+#endif
+#ifndef disable_zip_halfway
+	#define disable_zip_halfway		FALSE
+#endif
+#ifndef disable_zip_newleader
+	#define disable_zip_newleader		FALSE
+#endif
+#ifndef disable_zip_complete
+	#define disable_zip_complete		FALSE
+#endif
+#ifndef disable_zip_norace_halfway
+	#define disable_zip_norace_halfway	FALSE
+#endif
+#ifndef disable_zip_norace_complete
+	#define disable_zip_norace_complete	FALSE
+#endif
 
