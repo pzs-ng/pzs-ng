@@ -202,28 +202,35 @@ proc readlog {} {
 	
 	set lines ""
 	
-	if {$glftpdlogsize != $lastoct && ![catch {set of [open $location(GLLOG) r]} ]} {
-		seek $of $lastoct
-		while {![eof $of]} {
-			set line [gets $of]
-			if {$line == ""} { continue; }
-			lappend lines $line
+	if {$glftpdlogsize != $lastoct} {
+		if {![catch {set of [open $location(GLLOG) r]} ]} {
+			seek $of $lastoct
+			while {![eof $of]} {
+				set line [gets $of]
+				if {$line == ""} { continue; }
+				lappend lines $line
+			}
+			close $of
+		} else {
+			putlog "dZSbot error: Could not open GLLOG. ($location(GLLOG))"
+			return 0
 		}
-		close $of
-	} else {
-		putlog "dZSbot error: Could not open GLLOG. ($location(GLLOG))"
 	}
+
 	
-	if {$loginlogsize != $loglastoct && ![catch {set of [open $location(LOGINLOG) r]} ]} {
-		seek $of $loglastoct
-		while {![eof $of]} {
-			set line [gets $of]
-			if {$line == ""} { continue; }
-			lappend lines $line
+	if {$loginlogsize != $loglastoct} {
+		if {![catch {set of [open $location(LOGINLOG) r]} ]} {
+			seek $of $loglastoct
+			while {![eof $of]} {
+				set line [gets $of]
+				if {$line == ""} { continue; }
+				lappend lines $line
+			}
+			close $of
+		} else {
+			putlog "dZSbot error: Could not open LOGINLOG. ($location(LOGINLOG))"
+			return 0
 		}
-		close $of
-	} else {
-		putlog "dZSbot error: Could not open LOGINLOG. ($location(LOGINLOG))"
 	}
 
 	set lastoct [file size $location(GLLOG)]
