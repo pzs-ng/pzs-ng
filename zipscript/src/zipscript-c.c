@@ -171,6 +171,7 @@ main(int argc, char **argv)
 
 		d_log("Reading section from env (%s)\n", getenv("SECTION"));
 		snprintf(g.v.sectionname, 127, getenv("SECTION"));
+		g.v.section = 0;
 		temp_p_free = temp_p = strdup((const char *)gl_sections);	/* temp_p_free is needed since temp_p is modified by strsep */
 		if ((temp_p) == NULL) {
 			d_log("Can't allocate memory for sections\n");
