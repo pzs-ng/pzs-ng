@@ -1041,8 +1041,9 @@ proc stats_group_gpad {nick uhost hand chan args} { showstats "$nick" "-d" "-A" 
 proc help {nick uhost hand chan arg} {
 	global sections cmdpre dver
 
-	if {![file exist scripts/dZSbot.help]} {
-		puthelp "PRIVMSG $nick : help file dZSbot.help is missing please check install"
+	if {![file exist [file dirname [info script]]/dZSbot.help]} {
+		puthelp "PRIVMSG $nick : help file dZSbot.help is missing, please check install"
+		puthelp "PRIVMSG $nick : (file should reside in same dir as dZSbot.tcl)"
 		return 0
 	}
 
@@ -1051,7 +1052,7 @@ proc help {nick uhost hand chan arg} {
 	puthelp "PRIVMSG $nick : ---------v$dver-----------"
 	puthelp "PRIVMSG $nick : "
 
-	set helpfile [open scripts/dZSbot.help r]
+	set helpfile [open [file dirname [info script]]/dZSbot.help r]
 	set helpdb [read $helpfile]
 	close $helpfile
 	foreach line [split $helpdb "\n"] {
