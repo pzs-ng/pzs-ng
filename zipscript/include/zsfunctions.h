@@ -58,17 +58,13 @@ extern int findfileextcount(char *);
 extern unsigned int hexstrtodec(unsigned char *);
 #if defined(__linux__)
 extern int selector (const struct dirent *);
-extern int selector2 (const struct dirent *);
 #elif defined(__NetBSD__)
 extern int selector (const struct dirent *);
-extern int selector2 (const struct dirent *);
 #else
 extern int selector (struct dirent *);
-extern int selector2 (struct dirent *);
 #endif
 
 extern void rescandir();
-extern void rescandir2();
 extern void strtolower(char *);
 extern char israr(char *);
 extern char isvideo(char *);
@@ -84,5 +80,9 @@ extern void readsfv_ffile(char *, off_t buf_bytes);
 extern void get_rar_info(char *);
 extern int execute(char *);
 extern char *abs2rel(const char *, const char *, char *, const size_t);
+extern char *get_g_name(int);
+extern char *get_u_name(int);
+extern void buffer_groups(char *);
+extern void buffer_users(char *);
 
 #endif

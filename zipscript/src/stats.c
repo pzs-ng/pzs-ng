@@ -49,6 +49,10 @@ void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO *
  if ( u_no == -1 ) {
 	if ( ! raceI->total.users ) {
 		raceI->total.start_time = start_time;
+		/* to prevent a possible floating point exception in convert, */
+		/* if first entry in racefile is not the oldest one           */
+		if ((int)(raceI->total.stop_time - raceI->total.start_time) < 1)
+			raceI->total.stop_time = raceI->total.start_time + 1;
 		}
 	u_no = raceI->total.users++;
 	userI[u_no] = malloc(sizeof(struct USERINFO));
@@ -281,7 +285,7 @@ void get_stats(struct VARS *raceI, struct USERINFO **userI) {
 	free(userlist[n + shift]);
 	close(fd);
 	}
- free(userlist);
+ if (n != 0 ) free(userlist);
 
  for ( m = 0 ; m < raceI->total.users ; m++ ) {
 	userI[m]->dayup =

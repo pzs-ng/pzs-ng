@@ -306,6 +306,8 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 		val2 = -1;
 		}
 
+//printf("debug: %u %f time: %u %u %u\n", raceI->total.files, raceI->total.speed, 
+//(raceI->total.stop_time - raceI->total.start_time), raceI->total.start_time, raceI->total.stop_time);
 	 switch ( *instr ) {
 		case 'a': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size) / raceI->total.speed); break;
 		case 'A': out_p += sprintf(out_p, "%*.*f", val1, val2,

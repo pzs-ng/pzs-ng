@@ -273,8 +273,14 @@ int main( int argc, char **argv ) {
  d_log("Reading data from environment variables\n");
  if (!(getenv("USER") && getenv("GROUP") && getenv("TAGLINE") && getenv("SPEED"))) {
         d_log("We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE and $SPEED\n");
-	strcpy(raceI.user.name, "Unknown");
-	strcpy(raceI.user.group, "NoGroup");
+/*	strcpy(raceI.user.name, "Unknown");
+	strcpy(raceI.user.group, "NoGroup");*/
+                         
+	buffer_groups( GROUPFILE );
+	buffer_users( PASSWDFILE );
+	strcpy(raceI.user.name, get_u_name(fileinfo.st_uid));
+	strcpy(raceI.user.group, get_g_name(fileinfo.st_gid));
+
 	memcpy(raceI.user.tagline, "No Tagline Set", 15);
 	raceI.file.speed=2004;
   } else {
@@ -283,14 +289,14 @@ int main( int argc, char **argv ) {
 	if (strlen(raceI.user.group)==0) memcpy(raceI.user.group, "NoGroup", 8);
 	sprintf(raceI.user.tagline, getenv("TAGLINE"));
 	if (strlen(raceI.user.tagline)==0) memcpy(raceI.user.tagline, "No Tagline Set", 15);
-	raceI.file.speed=strtol(getenv("SPEED"),NULL,0);
+	raceI.file.speed=(unsigned int)strtol(getenv("SPEED"),NULL,0);
 	if (!raceI.file.speed) raceI.file.speed=1;
  }
  raceI.file.speed*=1024;
 
  d_log("Setting race times\n");
  raceI.total.stop_time=fileinfo.st_mtime;
- raceI.total.start_time=fileinfo.st_mtime-((unsigned int)(raceI.file.size)/raceI.file.speed);
+ raceI.total.start_time=raceI.total.stop_time-((unsigned int)(raceI.file.size)/raceI.file.speed);
  if ((int)(raceI.total.stop_time - raceI.total.start_time) < 1)
   raceI.total.stop_time = raceI.total.start_time + 1;
 
@@ -360,7 +366,7 @@ int main( int argc, char **argv ) {
 	exit_value = 2;
 	}
 
- /* No check directories */
+ 	/* No check directories */
  if ( matchpath(nocheck_dirs, locations.path) ) {
 	d_log("Directory matched with nocheck_dirs\n");
 	no_check = TRUE;
@@ -915,8 +921,6 @@ int main( int argc, char **argv ) {
 		if ( complete_msg != NULL ) {
 			d_log("Writing COMPLETE and STATS to %s\n", log);
 			writelog(convert(&raceI, userI, groupI, complete_msg), "COMPLETE");
-/* writetop does not use &locations */
-/*			writetop(&locations, &raceI, userI, groupI, complete_type);*/
 			writetop(&raceI, userI, groupI, complete_type);
 			}
 
@@ -943,7 +947,6 @@ int main( int argc, char **argv ) {
 	writerace_file(&locations, &raceI, 0, F_BAD);
 	printf(convert(&raceI, userI, groupI, zipscript_footer_error));
 	}
-
 #if ( enable_accept_script == TRUE )
  if ( exit_value == EXIT_SUCCESS ) {
 	d_log("Executing accept script\n");

@@ -2,8 +2,21 @@
 #include "constants.h"
 #include "convert.h"
 
+struct GROUP {
+        char            *name;
+        gid_t           id;
+};
+
+struct USER {
+        char            *name;
+        uid_t           id;
+};
+
 struct dirent	**dirlist;
 unsigned int direntries = 0;
+int num_groups=0, num_users=0;
+struct USER      **user;
+struct GROUP     **group;
 
 #if ( debug_mode == TRUE )
 void d_log(char *fmt, ...) {
@@ -106,17 +119,6 @@ int selector (struct dirent *d) {
         return 1;
 }
 
-#if defined(__linux__)
-int selector2 (const struct dirent *d) {
-#elif defined(__NetBSD__)
-int selector2 (const struct dirent *d) {
-#else
-int selector2 (struct dirent *d) {
-#endif
-        struct stat st;
-        if ((stat(d->d_name, &st) < 0) || S_ISDIR(st.st_mode)) return 0;
-        return 1;
-}
 
 
 /*
@@ -129,28 +131,9 @@ void rescandir() {
 		}
 	free(dirlist);
 	}
-/*
-     int
-     scandir(const char *dirname, struct dirent ***namelist,
-             int (*select)(const struct dirent *),
-             int (*compar)(const void *, const void *));
-
-     int
-     alphasort(const void *d1, const void *d2);
-*/
-
  direntries = scandir(".", &dirlist, selector, 0);
 }
 
-void rescandir2() {
- if ( direntries > 0 ) {
-	while ( direntries-- ) {
-		free(dirlist[direntries]);
-		}
-	free(dirlist);
-	}
- direntries = scandir(".", &dirlist, selector2, alphasort);
-}
 
 
 /*
@@ -233,7 +216,7 @@ void move_progress_bar(short int delete, struct VARS *raceI) {
 	n = direntries;
 
 	if (delete) {
-		d_log("Removing progress bar.");
+		d_log("Removing progress bar\n");
 		while (n--) {
 			if ( regexec( &preg, dirlist[n]->d_name, 1, pmatch, 0) == 0 ) {
 				if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[n]) ) {
@@ -245,7 +228,7 @@ void move_progress_bar(short int delete, struct VARS *raceI) {
 			}
 		}
 	} else {
-		d_log("Moving (updating) progress bar.");
+		d_log("Moving (updating) progress bar\n");
 		if (!raceI->total.files) return;
 		bar = convert(raceI, userI, groupI, progressmeter);
 		while (n--) {
@@ -618,4 +601,123 @@ finish:
 erange:
 	errno = ERANGE;
 	return (NULL);
+}
+
+char* get_g_name(int gid) {
+ int    n;
+ for ( n = 0 ; n < num_groups ; n++ ) if ( (int)group[n]->id / 100 == (int)gid / 100 ) return group[n]->name;
+ return "NoGroup";
+}
+
+char* get_u_name(int uid) {
+ int    n;
+ for ( n = 0 ; n < num_users ; n++ ) if ( user[n]->id == (unsigned int)uid ) return user[n]->name;
+ return "Unknown";
+}
+
+/* Buffer groups file */
+void buffer_groups(char *groupfile) {
+ char   *f_buf,
+        *g_name;
+ gid_t  g_id;
+ off_t  f_size;
+ int   f, n, m,
+        g_n_size,
+        l_start = 0;
+ int    GROUPS = 0;
+ struct stat   fileinfo;
+
+ if ((f = open( groupfile, O_NONBLOCK )) == NULL) {
+  exit(EXIT_FAILURE);
+ }
+
+ fstat( f, &fileinfo );
+ f_size = fileinfo.st_size;
+ f_buf  = malloc( f_size );
+ read( f, f_buf, f_size );
+
+ for ( n = 0 ; n < f_size ; n++ ) if ( f_buf[n] == '\n' ) GROUPS++;
+ group = malloc( GROUPS * sizeof( struct GROUP* ) );
+
+ for ( n = 0 ; n < f_size ; n++ ) {
+  if ( f_buf[n] == '\n' || n == f_size ) {
+   f_buf[n] = 0;
+   m        = l_start;
+   while ( f_buf[m] != ':' && m < n ) m++;
+   if ( m != l_start ) {
+    f_buf[m] = 0;
+    g_name   = f_buf + l_start;
+    g_n_size = m - l_start;
+    m        = n;
+    while ( f_buf[m] != ':' && m > l_start ) m--;
+    f_buf[m] = 0;
+    while ( f_buf[m] != ':' && m > l_start ) m--;
+    if ( m != n ) {
+     g_id = atoi( f_buf + m + 1 );
+     group[num_groups] = malloc( sizeof( struct GROUP ) );
+     group[num_groups]->name = malloc( g_n_size + 1 );
+     strcpy( group[num_groups]->name, g_name );
+     group[num_groups]->id = g_id;
+     num_groups++;
+    }
+   }
+   l_start = n + 1;
+  }
+ }
+
+ close( f );
+ free( f_buf );
+}
+
+/* Buffer users file */
+void buffer_users(char *passwdfile) {
+ char   *f_buf,
+        *u_name;
+ uid_t  u_id;
+ off_t  f_size;
+ int    f, n, m, l,
+        u_n_size,
+        l_start = 0;
+ int    USERS = 0;
+ struct stat      fileinfo;
+
+ f = open( passwdfile, O_NONBLOCK );
+ fstat( f, &fileinfo );
+ f_size = fileinfo.st_size;
+ f_buf  = malloc( f_size );
+ read( f, f_buf, f_size );
+
+ for ( n = 0 ; n < f_size ; n++ ) if ( f_buf[n] == '\n' ) USERS++;
+ user = malloc( USERS * sizeof( struct USER* ) );
+
+ for ( n = 0 ; n < f_size ; n++ ) {
+  if ( f_buf[n] == '\n' || n == f_size ) {
+   f_buf[n] = 0;
+   m        = l_start;
+   while ( f_buf[m] != ':' && m < n ) m++;
+   if ( m != l_start ) {
+    f_buf[m] = 0;
+    u_name   = f_buf + l_start;
+    u_n_size = m - l_start;
+    m        = n;
+    for ( l = 0 ; l < 4 ; l ++ ) {
+     while ( f_buf[m] != ':' && m > l_start ) m--;
+     f_buf[m] = 0;
+    }
+    while ( f_buf[m] != ':' && m > l_start ) m--;
+    if ( m != n ) {
+     u_id = atoi( f_buf + m + 1 );
+     user[num_users] = malloc( sizeof( struct USER ) );
+     user[num_users]->name = malloc( u_n_size + 1 );
+     strcpy( user[num_users]->name, u_name );
+     user[num_users]->id = u_id;
+     num_users++;
+    }
+   }
+   l_start = n + 1;
+  }
+ }
+
+ close( f );
+ free( f_buf );
 }

@@ -7,7 +7,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include <config.h>
+#include "config.h"
 
 #include "zsfunctions.h"
 #include "race-file.h"
@@ -21,32 +21,11 @@
 #include "crc.h"
 
 #include "../conf/zsconfig.h"
-#include "../../config.h"
 
-#define GROUPFILE "/etc/group"
-#define PASSWDFILE "/etc/passwd"
-
-struct GROUP {
-	char		*name;
-	gid_t		id;
-};
-
-struct USER {
-	char		*name;
-	uid_t		id;
-};
-
-int	groups = 0,
-	users  = 0,
-	ERROR_CODE;
-
-static struct USER	**user;
-static struct GROUP	**group;
 struct USERINFO  **userI;
 struct GROUPINFO **groupI;
 struct VARS      raceI;
 struct LOCATIONS locations;
-struct stat      fileinfo;
 
 
 /* WRITE TO GLFTPD LOG */
@@ -105,124 +84,6 @@ void getrelname(char *directory) {
 
 
 
-/* Buffer groups file */
-void buffer_groups(char *groupfile) {
- char   *f_buf,
-        *g_name;
- gid_t	g_id;
- int   f, n, m,
- 	f_size, /* should be off_t */
-        g_n_size,
-        l_start = 0;
- int	GROUPS = 0;
- 
- f = open( groupfile, O_NONBLOCK );
- fstat( f, &fileinfo );
- f_size = (int)fileinfo.st_size;
- f_buf  = malloc( f_size );
- read( f, f_buf, f_size );
- 
- for ( n = 0 ; n < f_size ; n++ ) if ( f_buf[n] == '\n' ) GROUPS++;
- group = malloc( GROUPS * sizeof( struct GROUP* ) );
-   
- for ( n = 0 ; n < f_size ; n++ ) {
-  if ( f_buf[n] == '\n' || n == f_size ) {
-   f_buf[n] = 0;
-   m        = l_start;
-   while ( f_buf[m] != ':' && m < n ) m++;
-   if ( m != l_start ) {
-    f_buf[m] = 0;
-    g_name   = f_buf + l_start;
-    g_n_size = m - l_start;
-    m        = n;
-    while ( f_buf[m] != ':' && m > l_start ) m--;
-    f_buf[m] = 0;
-    while ( f_buf[m] != ':' && m > l_start ) m--;
-    if ( m != n ) {
-     g_id = atoi( f_buf + m + 1 );
-     group[groups] = malloc( sizeof( struct GROUP ) );
-     group[groups]->name = malloc( g_n_size + 1 );
-     strcpy( group[groups]->name, g_name );
-     group[groups]->id = g_id;
-     groups++;
-    }
-   }
-   l_start = n + 1;
-  }
- }
- 
- close( f );
- free( f_buf );
-}
-
-
-/* Buffer users file */
-void buffer_users(char *passwdfile) {
- char   *f_buf,
-        *u_name;
- uid_t  u_id;
- int	f, n, m, l,
-        f_size, /* should be off_t */
-        u_n_size,
-        l_start = 0;
- int	USERS = 0;
- 
- f = open( passwdfile, O_NONBLOCK );
- fstat( f, &fileinfo );
- f_size = (int)fileinfo.st_size;
- f_buf  = malloc( f_size );
- read( f, f_buf, f_size );
- 
- for ( n = 0 ; n < f_size ; n++ ) if ( f_buf[n] == '\n' ) USERS++;
- user = malloc( USERS * sizeof( struct USER* ) );
-   
- for ( n = 0 ; n < f_size ; n++ ) {
-  if ( f_buf[n] == '\n' || n == f_size ) {
-   f_buf[n] = 0;
-   m        = l_start;
-   while ( f_buf[m] != ':' && m < n ) m++;
-   if ( m != l_start ) {
-    f_buf[m] = 0;
-    u_name   = f_buf + l_start;
-    u_n_size = m - l_start;
-    m        = n;
-    for ( l = 0 ; l < 4 ; l ++ ) { 
-     while ( f_buf[m] != ':' && m > l_start ) m--;
-     f_buf[m] = 0;
-    }
-    while ( f_buf[m] != ':' && m > l_start ) m--;
-    if ( m != n ) {
-     u_id = atoi( f_buf + m + 1 );
-     user[users] = malloc( sizeof( struct USER ) );
-     user[users]->name = malloc( u_n_size + 1 );
-     strcpy( user[users]->name, u_name );
-     user[users]->id = u_id;
-     users++;
-    }
-   }
-   l_start = n + 1;
-  }
- }
- 
- close( f );
- free( f_buf );
-}
-
-
-
-char* get_g_name(int gid) {
- int	n;
- for ( n = 0 ; n < groups ; n++ ) if ( (int)group[n]->id / 100 == (int)gid / 100 ) return group[n]->name;
- return "NoGroup";
-}
-
-char* get_u_name(int uid) {
- int	n;
- for ( n = 0 ; n < users ; n++ ) if ( user[n]->id == (unsigned int)uid ) return user[n]->name;
- return "Unknown";
-}
-
-
 int main () {
  int	n, m, l,
 	complete_type = 0;
@@ -230,6 +91,7 @@ int main () {
 	exec[ 4096 ],
 	*complete_bar = 0;
  unsigned int crc;
+ struct stat fileinfo;
  
  uid_t	f_uid;
  gid_t	f_gid;
@@ -276,7 +138,7 @@ int main () {
  removecomplete();
  unlink( locations.race );
  unlink( locations.sfv );
- rescandir2(); /* Rescan dir after deleting files.. */
+ rescandir(); /* Rescan dir after deleting files.. */
  printf("Rescanning files...\n");
 
  if ( (raceI.file.name = findfileext(".sfv")) != NULL) {
@@ -301,7 +163,7 @@ int main () {
 			 raceI.file.name = dirlist[n]->d_name;
 			 raceI.file.speed = 2004 * 1024;
 			 raceI.file.size = fileinfo.st_size;
-			 raceI.total.start_time = fileinfo.st_mtime;
+			 raceI.total.start_time=0;
 
 			 sprintf(exec, "%s-missing", raceI.file.name);
 			 strtolower(exec);
