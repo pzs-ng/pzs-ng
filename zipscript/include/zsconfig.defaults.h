@@ -694,7 +694,7 @@
 #define del_completebar		"^\\[.*] - \\( .*F - COMPLETE.*) - \\[.*]$"
 #endif
 #ifndef zipscript_header
-#define zipscript_header	".-== PZS-NG Zipscript-C ==--,d1'--== (C) 2005 ==---.\n"
+#define zipscript_header	".-== PZS-NG Zipscript-C ==-------------------------.\n"
 #endif
 #ifndef zipscript_sfv_ok
 #define zipscript_sfv_ok	"| + SFV-file: oK!                                  |\n"
