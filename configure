@@ -4059,6 +4059,10 @@ case $build in
 	x86_64-*) M32="-m32";;
 esac
 
+if [ $(uname -s) = "SunOS" ]; then
+	CFLAGS="$CFLAGS -D_SunOS_"
+fi
+
 # Check whether --enable-ss5 or --disable-ss5 was given.
 if test "${enable_ss5+set}" = set; then
   enableval="$enable_ss5"

@@ -17,7 +17,11 @@
 #include <unistd.h>
 #ifndef PATH_MAX
 #define _LIMITS_H_
-#include <sys/syslimits.h>
+ #ifdef _SunOS_
+  #include <syslimits.h>
+ #else
+  #include <sys/syslimits.h>
+ #endif
 #endif
 
 #include <config.h>
