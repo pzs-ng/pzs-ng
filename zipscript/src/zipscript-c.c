@@ -127,27 +127,17 @@ void getrelname(char *directory) {
 
 
 void read_user_info() {
- int	usersonline, cnt;
- pid_t	pid;
- struct	shmid_ds ipcbuf;
- double	dT;
-
- pid = getppid();
  gettimeofday(&raceI.transfer_stop, (struct timezone *)0 );
- cnt = shmget((key_t)KEY, 0, 0);
- online = (struct ONLINE *)shmat(cnt, NULL, SHM_RDONLY);
- shmctl(cnt, IPC_STAT, &ipcbuf);
- usersonline = ipcbuf.shm_segsz / sizeof(struct ONLINE);
- for ( cnt = 0 ; cnt < usersonline ; cnt++ ) if (online[cnt].procid == pid) {
-	raceI.user.name = online[cnt].username;
-	raceI.user.tagline = online[cnt].tagline;
-	raceI.transfer_start.tv_sec = online[cnt].tstart.tv_sec;
-	raceI.transfer_start.tv_usec = online[cnt].tstart.tv_usec;
-	dT = (raceI.transfer_stop.tv_usec - raceI.transfer_start.tv_usec) / 1000000. +
-	     (raceI.transfer_stop.tv_sec - raceI.transfer_start.tv_sec);
-	raceI.file.speed = online[cnt].bytes_xfer / (dT > 0 ? dT : 0.0000001);
-	break;
-	}
+ sprintf(raceI.user.name, getenv("USER"));
+ sprintf(raceI.user.group, getenv("GROUP"));
+ if ( sprintf(raceI.user.group, getenv("GROUP")) == 0 ) {
+	memcpy(raceI.user.group, "NoGroup", 8);
+ }
+ sprintf(raceI.user.tagline, getenv("TAGLINE"));
+ raceI.file.speed=atoi(getenv("SPEED"));
+ if (raceI.file.speed==0) raceI.file.speed=1;
+/*	raceI.transfer_start.tv_sec = 0;
+        raceI.transfer_start.tv_usec = 0;*/
 }
 
 
@@ -290,11 +280,6 @@ int main( int argc, char **argv ) {
 
  d_log("Reading data from shared memory\n");
  read_user_info();
-
- d_log("Reading group name from env\n");
- if ( sprintf(raceI.user.group, getenv("GROUP")) == 0 ) {
-	memcpy(raceI.user.group, "NoGroup", 8);
-	}
 
  d_log("Checking the file size\n");
  stat(argv[1], &fileinfo);

@@ -262,7 +262,6 @@ int main () {
  locations.race   = malloc( n += + 10 );
  locations.sfv    = malloc( n );
  locations.leader = malloc( n );
- raceI.user.name  = malloc( 25 );
 
  getrelname(locations.path);
  buffer_groups( GROUPFILE );
@@ -302,7 +301,7 @@ int main () {
 
 			 strcpy(raceI.user.name, get_u_name(f_uid));
 			 strcpy(raceI.user.group, get_g_name(f_gid));
-			 raceI.file.speed = 2004 * 1024.;
+			 raceI.file.speed = 2004.; //kbps
 			 raceI.file.name = dirlist[n]->d_name;
 			 raceI.transfer_start.tv_sec = 0;
 			 raceI.transfer_start.tv_usec = 0;
@@ -376,7 +375,7 @@ int main () {
 			 strcpy(raceI.user.name, get_u_name(f_uid));
 			 strcpy(raceI.user.group, get_g_name(f_gid));
 			 raceI.file.name = dirlist[n]->d_name;
-			 raceI.file.speed = 2004 * 1024.;
+			 raceI.file.speed = 2004.; //kbps
 			 raceI.transfer_start.tv_sec = 0;
 			 raceI.transfer_start.tv_usec = 0;
 			 raceI.file.size = fileinfo.st_size;

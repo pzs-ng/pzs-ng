@@ -142,7 +142,6 @@ int main( int argc, char **argv ) {
  raceI.misc.slowest_user[0] = 30000;
  raceI.misc.fastest_user[0] = 0;
 
- raceI.user.name = malloc(25);
  d_log("Reading user name from env\n");
  strncpy(raceI.user.name, getenv("USER"), 25);
  d_log("Reading group name from env\n");

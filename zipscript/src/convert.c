@@ -306,7 +306,7 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 
 	 switch ( *instr ) {
 		case 'a': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size / raceI->total.speed)); break;
-		case 'A': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size / ((raceI->transfer_stop.tv_sec - raceI->transfer_start.tv_sec) + (raceI->transfer_stop.tv_usec - raceI->transfer_start.tv_usec) / 1000000.) / 1024)); break;
+//		case 'A': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size / ((raceI->transfer_stop.tv_sec - raceI->transfer_start.tv_sec) + (raceI->transfer_stop.tv_usec - raceI->transfer_start.tv_usec) / 1000000.) / 1024)); break;
 		case 'b': out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.size); break;
 		case 'B': out_p += sprintf(out_p, "\\002"); break;
 		case 'c':
@@ -397,7 +397,7 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 				}
 			instr--;
 			break;
-		case 'd': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)hms(raceI->transfer_stop.tv_sec - raceI->transfer_start.tv_sec)); break;
+//		case 'd': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)hms(raceI->transfer_stop.tv_sec - raceI->transfer_start.tv_sec)); break;
 		case 'e': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->file.size * raceI->total.files >> 10) / 1024.)); break;
 		case 'f': out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.files); break;
 		case 'F': out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.files - raceI->total.files_missing); break;
@@ -414,7 +414,7 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
 		case 'O': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->total.bad_size >> 10) / 1024.)); break;
 		case 'p': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->total.files - raceI->total.files_missing) * 100. / raceI->total.files)); break;
 		case 'P': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.bad_size / 1024.)); break;
-		case 'S': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->file.speed / 1024.)); break;
+		case 'S': out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->file.speed)); break; //kbps
 		case 'r': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.release_name); break;
 		case 'R': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.racer_list + 1); break;
 		case 't': out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.top_messages[1] + 1); break;

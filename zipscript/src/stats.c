@@ -35,7 +35,7 @@ void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO *
  int		u_no = -1;
  int		g_no = -1;
  int		n;
- double		speedD = filesize * 1024.0 / speed;
+ double		speedD = filesize / speed;
 
  for (n = 0; n < raceI->total.users; n++) {
 	if (strncmp(userI[n]->name, usern, 24) == 0) {

@@ -12,21 +12,12 @@
  *	================
  */
 
-/* Are you using GLFTPD 2?
-   If you do not use GLFTDP 2, comment out the next line!
- */
-#define use_glftpd2	TRUE
-
 /* These should be changed to match your glftpd installation.
  */
 #define site_root	"/glftpd/"
 #define log		"/ftp-data/logs/glftpd.log"
 #define storage		"/ftp-data/zipscript/"
 #define gl_userfiles	"/ftp-data/users/"
-
-/* SHM area to use (for glftpd) - Only change if you know what you're doing.
- */
-#define KEY		0x0000DEAD
 
 /* On default, announcing is disabled everywhere, use zip/sfv paths to enable annouces and private paths to disable.
  * Don't be lazy! Be specific! And remember - pathnames are case sensitive.
@@ -328,7 +319,7 @@
 
 #define video_completebar	"[dS] - ( %.0mM %fF - COMPLETE ) - [dS]"
 #define audio_completebar	"[dS] - ( %.0mM %fF - COMPLETE - %w %Y ) - [dS]"
-#define rar_completebar		"[dS] - ( %.0mM %fF - COMPLETE ) - [dS]"
+#define rar_completebar		"[dS] - ( %.0mM %fF - COMPLETE ) - [dS] a:%a A:%A s:%s S:%S"
 #define other_completebar	"[dS] - ( %.0mM %fF - COMPLETE ) - [dS]"
 #define zip_completebar		"[dS] - ( %.0mM %fF - COMPLETE ) - [dS]"
 #define del_completebar		"\\[dS] - \\( .*F - COMPLETE.*) - \\[dS]"
