@@ -2068,9 +2068,10 @@ proc themereplace {targetString section} {
 				set paddedString [format "%*s%s" [expr ($padLength - [string length $padString]) / 2] "" $padString]
 				set paddedString [format "%-*s" $padLength $paddedString]
 			}
+			
+			set targetString [string map [list $matchString $paddedString] $targetString]
 		}
 
-		set targetString [string map [list $matchString $paddedString] $targetString]
 	
 		set colorString [format "COLOR_%s_1" $section]
 		if {[lsearch -exact [array names theme] $colorString] != -1} {
