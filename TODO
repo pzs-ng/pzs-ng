@@ -33,7 +33,7 @@ status  who       what
                    running datacleaner fixes the problem... maybe check race-file.c (readsfv_file())
  [x]     iwdisb    calc crc on the fly if glftpd does not pass crc
  [x]     iwdisb    group and albumname sort in mp3
- [ ]     psxc      add support to change the gid of the releasedir based on genre. need a script to initiate the
+ [/]     psxc      add support to change the gid of the releasedir based on genre. need a script to initiate the
                    glftpd groupfile too (create groups based on genre names), if we are to include it.
  [/]               add support for hiding affill uploads (in both output to channel and the .message. Should also
                    consider the 'anonymity' setting above.)

@@ -49,7 +49,7 @@ PZS-NG should compile fine on the following platforms:
 - (AIX - untested, but the original docs say it works there)
 - (Solaris - soon *g*)
 
-64-bit processors - this is still very shady. We do work to make it work
+64-bit processors - this is still a bit shady. We do work to make it work
 on AMD64 for instance, but have limited ability to test on this platform
 since none of the devs currently owns one. Feel free to contact us if
 you feel the need to share your box with us.
@@ -185,6 +185,8 @@ here's what to do:
            mkdir /path/to/your/glftpd/ftp-data/zipscript
            chmod 777 /path/to/your/glftpd/ftp-data/zipscript
 (optional) chmod +s /path/to/your/glftpd/bin/zipscript-c
+(optional) chmod 666 /path/to/your/glftpd/ftp-data/logs/dupelog (needed by the unduper)
+(optional) chmod 777 /path/to/your/glftpd/ftp-data/logs         (needed by the unduper)
 
 If you need to recompile the script because you made a booboo in the config,
 you should always do a 'make clean' first. The quick-quick version of it is:
@@ -197,17 +199,13 @@ Changes in glftpd.conf:
 You're almost done now. To actually make glftpd use your new zipscript, we need
 to change/add some settings in your glftpd.conf:
 
-Choose one of the following lines:
+Add the following line:
 
 calc_crc	*
-calc_crc	*.[mM][pP]3 *.[rR][aA][rR] *.[rRsS0-9][0-9][0-9]
-calc_crc	*.[mM][pP]3 *.[rR][aA][rR] *.[rRsS0-9][0-9][0-9] *.[mM][pP][gG] *.[mM]2[vV]
 
-The first one will calculate crc codes on all files. The 2nd and 3rd line
-will only make a crc code on files matching the criteria set. Whichever
-of these lines you choose to add to glftpd.conf is up to you. You may skip
-to add this line in glftpd.conf, and the zipscript will calculate it instead.
-This is, however, slower than if glftpd does it on the fly.
+This will calculate the crc of all files uploaded on your site, on the fly.
+You may skip to add this line in glftpd.conf, and the zipscript will calculate
+it instead. This is, however, slower than if glftpd does it on the fly.
 
 Next, add:
 
@@ -284,12 +282,18 @@ scripts. Here's a short description of each compiled binary:
   
   - zipscript-c - The zipscript.
 
+  - ng-chown - currently not used. It's a bin designed to chown files/dirs
+    in your site to a specified used/group. When used it needs the +s bit
+    set. Take care, though - using this bin with +s may be a security risk.
 
 The bot:
 --------
 If everything is working smoothly on your site, it's time to add a bot to
 your channel. It is expected that you already have installed an eggdrop,
 that it's working and have found its way into your channel.
+
+<mental note - add something about editing sitebot/src/structonline.h if
+the user uses a different ipc key than default>
 
 <SOMEONE PLEASE FILL IN STUFF HERE>
 
