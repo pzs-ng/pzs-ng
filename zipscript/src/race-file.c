@@ -523,7 +523,7 @@ void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned lo
 
 /* do not coredump when user disconnects or is killed
  */
- if (!raceI->user.name) exit(1);
+ if (!raceI->user.name) exit(2);
 
  memcpy(p_buf, &len, sizeof(int));				p_buf += sizeof(int);
  memcpy(p_buf, raceI->file.name, len);				p_buf += len;
