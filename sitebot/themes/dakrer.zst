@@ -192,7 +192,7 @@ announce.FREE					= "%b{[SPACE]} %devices[Totals: %b{%free} of %b{%total} (used 
 announce.FREE-DEV				= "%section: %b{%free} of %b{%total} (used %percentage%) :: "
 
 # 3rd party imdb announce - example for psxc-imdb
-announce.IMDBVAR				= "%b{[%section]} %b{%imdbname} (%imdburl), a %imdbdirector movie which scored %b{%imdbscore of 10} (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.|%b{%sitename} :: [%b{imdb  }][%section] %b{%imdbname} plot summary: %imdbplot \[%imdbbar\]"
+announce.IMDBVAR				= "%b{[%section]} %b{%imdbname} (%imdburl), a %imdbdirector movie which scored %b{%imdbscore of 10} (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.|%b{[%section]} %b{%imdbname} plot summary: %imdbplot \[%imdbbar\]"
 announce.IMDB					= "%b{[%section]} %msg"
 announce.IMDBFIND				= "%b{[%section]} %msg"
 announce.MSGINVITE				= "%b{IRC INVITE} %b{%u_name} invited himself as %b{%u_ircnick}."
