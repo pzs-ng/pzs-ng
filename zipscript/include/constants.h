@@ -130,8 +130,8 @@
 #ifndef racersmsg
 #define racersmsg		"{%u} {%g}"	/* Put in %R cookie */
 #endif
-#define audio_vbr		"{%w} {%Y} {%X} {%z} {%Q} {VBR} {%I} {%x} {%W} {%y} {%h} {%q}"	/* Put in %j cookie */
-#define audio_cbr		"{%w} {%Y} {%X} {%z} {%Q} {CBR} {%x} {%W} {%y} {%h} {%q}"	/* Put in %j cookie */
+#define audio_vbr		"{%w} {%Y} {%X} {%z} {%Q} {VBR} {%I} {%i} {%x} {%W} {%y} {%h} {%q}"	/* Put in %j cookie */
+#define audio_cbr		"{%w} {%Y} {%X} {%z} {%Q} {CBR} {%x} {%W} {%y} {%h} {%q}"		/* Put in %j cookie */
 
 /*
  * Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 &
