@@ -59,7 +59,8 @@ void removespaces(char *instr, int l ) {
 
 
 int read_diz(char *filename) {
- int pos, fd, matches, diskc, control, cnt, cnt3, cnt2, tgt;
+ int pos, fd, diskc, control, tgt, cnt, cnt2;
+ unsigned int cnt3, matches;
  char data[4096];
  char disks[4];
 
@@ -69,7 +70,7 @@ int read_diz(char *filename) {
   for ( cnt = 0 ; cnt < tgt ; cnt++ )  
    for ( cnt2 = 0 ; cnt2 < strings ; cnt2++ ) {
     pos = matches = control = 0; disks[0] = disks[1] = disks[2] = disks[3] = '\0';
-    for ( cnt3 = 0; cnt3 <= (strlen(search[cnt2]) - control) ; cnt3++ )
+    for ( cnt3 = 0; (unsigned int)cnt3 <= (strlen(search[cnt2]) - control) ; cnt3++ )
      switch ( search[cnt2][cnt3 + control] ) {
       case '#': if ( isdigit(data[cnt + cnt3]) || data[cnt + cnt3] == ' ' ) { matches++; pos += sprintf(disks + pos, "%c", data[cnt + cnt3]); } break;
       case '?': matches++; break;
@@ -77,7 +78,7 @@ int read_diz(char *filename) {
       case '&': control++; if ( data[cnt + cnt3] != search[cnt2][cnt3 + control] ) matches++; break;
       default : if ( search[cnt2][cnt3 + control] == data[cnt + cnt3] ) matches++; break;
      }
-    if ( matches == strlen(search[cnt2]) - control && (diskc = atoi(disks))) return diskc;
+    if ( (unsigned int)matches == strlen(search[cnt2]) - control && (diskc = atoi(disks))) return diskc;
    }
  }
  close(fd);

@@ -84,12 +84,12 @@ void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO *
 
  speed >>= 10;
 
- if ( speed > raceI->misc.fastest_user[0] ) {
+ if ( speed > (unsigned int)raceI->misc.fastest_user[0] ) {
 	raceI->misc.fastest_user[1] = u_no;
 	raceI->misc.fastest_user[0] = speed;
 	}
 
- if ( speed < raceI->misc.slowest_user[0] ) {
+ if ( speed < (unsigned int)raceI->misc.slowest_user[0] ) {
 	raceI->misc.slowest_user[1] = u_no;
 	raceI->misc.slowest_user[0] = speed;
 	}

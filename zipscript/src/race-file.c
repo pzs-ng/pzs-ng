@@ -267,7 +267,7 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
 				len = crc - line;
 #if ( sfv_dupecheck == TRUE )
 				exists = 0;
-				for ( n = 0 ; n < files ; n++ ) {
+				for ( n = 0 ; (unsigned int)n < files ; n++ ) {
 					if ( ! memcmp(fname[n], line, len) ) {
 						exists = 1;
 						break;

@@ -221,7 +221,7 @@ char* get_g_name(int gid) {
 
 char* get_u_name(int uid) {
  int	n;
- for ( n = 0 ; n < users ; n++ ) if ( user[n]->id == uid ) return user[n]->name;
+ for ( n = 0 ; n < users ; n++ ) if ( user[n]->id == (unsigned int)uid ) return user[n]->name;
  return "Unknown";
 }
 
