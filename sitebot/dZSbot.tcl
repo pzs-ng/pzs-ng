@@ -622,6 +622,18 @@ proc speed_convert {value section} {
 
 
 #################################################################################
+# TRIMS TRAILING STRING FROM ANOTHER STRING                                     #
+#################################################################################
+proc trimtail {strsrc strrm} {
+	if { [expr [string length $strsrc] - [string length $strrm]] == [string last $strrm $strsrc] } {
+		return [string range $strsrc 0 [expr [string length $strsrc] - [string length $strrm] - 1]]
+	}
+	return $strsrc
+}
+#################################################################################
+
+
+#################################################################################
 # CONVERT BASIC COOKIES TO DATA                                                 #
 #################################################################################
 proc basicreplace {rstring section} {
@@ -743,7 +755,7 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 			set output2 [replacevar $output2 "%section" $section]
 			set output2 [replacevar $output2 "%sitename" $sitename]
 			set output2 [replacevar $output2 "%splitter" $theme(SPLITTER)]
-			set output2 [string trimright $output2 "$theme(SPLITTER)"]
+			set output2 [trimtail $output2 $theme(SPLITTER)]
 			set output [replacevar $output "%loop$loop" $output2]
 			set loop [expr $loop + 1]
 		} else {
@@ -1746,7 +1758,7 @@ proc launchnuke2 {type path section sargs dargs} {
 		}
 	}
 
-	set nuke(NUKEE) [string range $nuke(NUKEE) 0 [expr [string length "$nuke(NUKEE)"] - [string length "$theme(SPLITTER)"] - 1]]
+	set nuke(NUKEE) [trimtail $nuke(NUKEE) $theme(SPLITTER)]
 	set split [split $nuke(PATH) "/"]
 	set ll [llength $split]
 	set split2 [split $mpath "/"]
@@ -1810,7 +1822,7 @@ proc fuelnuke {type path section args} {global nuke
 proc launchnuke {} {
 	global nuke sitename announce theme mpath
 	if {$nuke(SHOWN) == 1} {return 0}
-	set nuke(NUKEE) [string trim $nuke(NUKEE) "$theme(SPLITTER)"]
+	set nuke(NUKEE) [trimtail $nuke(NUKEE) $theme(SPLITTER)]
 
 	set split [split $nuke(PATH) "/"]
 	set ll [llength $split]
