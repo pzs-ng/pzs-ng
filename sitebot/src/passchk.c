@@ -67,7 +67,7 @@ int pbkdf2(const unsigned char *pw, unsigned int pwlen,
     unsigned char txt[4], hash[HLEN * 2], tmp[HLEN], *p =
         dk, *lhix, *hix, *swap;
     unsigned short k;
-    int outlen;
+    unsigned int outlen;
 
     if (dklen > ((((unsigned long long) 1) << 32) - 1) * HLEN) {
         /* TODO: Call an error handler. */
@@ -77,7 +77,7 @@ int pbkdf2(const unsigned char *pw, unsigned int pwlen,
     r = dklen % HLEN;
 
     for (i = 1; i <= l; i++) {
-        sprintf(txt, "%04u", (unsigned int) i);
+        sprintf((char *)txt, "%04u", (unsigned int) i);
         HMAC(EVP_sha1(), pw, pwlen, txt, 4, hash, &outlen);
         lhix = hash;
         hix = hash + HLEN;
@@ -98,7 +98,7 @@ int pbkdf2(const unsigned char *pw, unsigned int pwlen,
         }
     }
     if (r) {
-        sprintf(txt, "%04u", (unsigned int) i);
+        sprintf((char *)txt, "%04u", (unsigned int) i);
         HMAC(EVP_sha1(), pw, pwlen, txt, 4, hash, &outlen);
         lhix = hash;
         hix = hash + HLEN;
@@ -126,7 +126,7 @@ int pw_encrypt(const unsigned char *pwd, char *digest) {
         int mdlen=SHA_DIGEST_LENGTH, i;
 
         //see pbe.c for info, 100x multihash
-        pbkdf2(pwd, strlen(pwd), 100, md, SHA_DIGEST_LENGTH);
+        pbkdf2(pwd, strlen((char *)pwd), 100, md, SHA_DIGEST_LENGTH);
 
         for(i = 0; i < mdlen; i++) {
                 sprintf(digest, "%02x", md[i]);
@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) {
 				printf("Ooops, couldn't allocate %d bytes of memory for hash.\n", (SHA_DIGEST_LENGTH * 2 + 1));
 				return 1;
 			}
-			pw_encrypt(argv[2], crypted);
+			pw_encrypt((unsigned char *)argv[2], crypted);
 		} else {
 			printf("Ooops, password is of invalid length! (not gl1 nor gl2).\n");
 			return 1;
