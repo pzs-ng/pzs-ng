@@ -233,8 +233,16 @@ proc postcmd {msgtype section path} {
 
 	if {[info exists postcommand($msgtype)]} {
 		foreach cmd $postcommand($msgtype) {
-			if {[catch {$cmd $msgtype $section $path} result] != 0} {
-				putlog "dZSbot error: $cmd caused an error - $result"
+			if {[lindex $cmd 0] == "exec"} { set cmd [lindex $cmd 1] ; set isexec 1}
+			if {[info exists isexec]} {
+				if {[catch {exec $cmd $msgtype $section $path} result] != 0} {
+					putlog "dZSbot error: exec \"$cmd\" caused an error - \"$result\""
+					unset isexec 
+				}
+			} else {
+				if {[catch {$cmd $msgtype $section $path} result] != 0} {
+					putlog "dZSbot error: \"$cmd\" caused an error - \"$result\""
+				}
 			}
 		}
 	}

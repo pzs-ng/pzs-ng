@@ -118,7 +118,8 @@ set chanlist(WELCOME)					"$mainchan"
 #  2nd - section name, eg: 0DAY
 #  3rd - path to release, eg: /site/incoming/0day
 #
-#set postcommand(NEWDIR)       "imdb:check some:other:cmd {exec imdb.sh}"
+#set postcommand(NEWDIR)              "imdb:check some:other:cmd 
+#set postcommand(NEWDIR)              "{exec {/some long/freaking annoying. path that doesnt conform/imdb.sh}}"
 
 # Are we disabling the announce of this stuff?
 # If its set to 1, we wont show it :)
