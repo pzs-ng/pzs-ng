@@ -394,11 +394,16 @@ int main( int argc, char **argv ) {
     }
     name_p++;
 
-    d_log("Copying lowercased version of extension to memory\n");
+#if ( sfv_cleanup_lowercase == TRUE )
+    d_log("Copying (lowercased version of) extension to memory\n");
+#else
+    d_log("Copying (unchanged version of) extension to memory\n");
+#endif
     fileext = malloc(name_p - temp_p);
     memcpy(fileext, temp_p, name_p - temp_p);
+#if ( sfv_cleanup_lowercase == TRUE )
     strtolower(fileext);
-
+#endif
     d_log("Reading directory structure\n");
     rescandir();
 
