@@ -362,7 +362,7 @@ set splitter(CHAR)				"|"
 #             # OF IDS ---------^
 
 # Announces are now set in announce(THEMEFILE). they can still be set here like you're used to, but it's deprecated.
-set announce(THEMEFILE)				"default.zst"
+set announce(THEMEFILE)				"themes/default.zst"
 
 # In this announce you can use %free, %total and %used for the free/total/used sum of all disks
 # and you can use %devices. Each device specified (see above (set device(0) etc)) will be inserted
