@@ -224,7 +224,11 @@ proc readlog {} {
 				if {[lsearch -glob $msgtypes(DEFAULT) $msgtype] != -1} {
 					if {$disable($msgtype) == 0} {
 						set echoline [parse $msgtype [lrange $line 6 end] "DEFAULT"]
-						sndall "DEFAULT" $echoline
+						if { [info exists chanlist($msgtype)] } {
+							sndall "$msgtype" $echoline
+						} else {
+							sndall "DEFAULT" $echoline
+						}
 						postcmd $msgtype "DEFAULT" $path
 					}
 				} else {
@@ -1152,7 +1156,9 @@ proc themereplace {rstring} {
 
 if {[info exists dZStimer]} {
 	if {[catch {killutimer $dZStimer} err]} {
+		putlog "dZSbot.tcl: WARNING!"
 		putlog "dZSbot.tcl: killutimer failed ($err)"
+		putlog "dZSbot.tcl: You should .restart the bot to be safe."
 	}
 }
 set dZStimer [utimer 1 "readlog"]
