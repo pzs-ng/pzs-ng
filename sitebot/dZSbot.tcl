@@ -206,12 +206,9 @@ proc to_mb {str} {
 # CONVERT BASIC COOKIES TO DATA                                                 #
 #################################################################################
 proc basicreplace {rstring section} {
-	global sitename theme
+	global sitename
 
-	regsub -all {%c(\d)\{([^\}]+)\}} $rstring {\003$theme(COLOR\1)\2\003} output
-	regsub -all {\[} $output {\\[} output; regsub -all {\]} $output {\\]} output
-	
-	set output [subst $output]
+	set output [themereplace $rstring]
 	set output [replacevar $output "%sitename" $sitename]
 	set output [replacevar $output "%bold" "\002"]
 	set output [replacevar $output "%uline" "\037"]
@@ -250,7 +247,7 @@ proc parse {msgtype msgline section} {
 		set output $announce($type)
 	}
 
-	set output $theme(PREFIX)$output
+	set output "$theme(PREFIX) $output"
 	if {![string compare $section $defaultsection] && [llength [array names "theme_fakes" "$type"]] > 0} { set section $theme_fakes($type) }
     set output [basicreplace $output $section]
     set cnt 0
@@ -737,13 +734,20 @@ proc help {nick uhost hand chan arg} {
 }
 #################################################################################
 
+
+
 #################################################################################
 # LOAD A THEME FILE                                                             #
 #################################################################################
 proc loadtheme {file} {
 	global theme
+	set ret 1
+
+	if {[string index $file 0] != "/"} { set file "[file dirname [info script]]/$file" }
 	set fh [open $file]
 	set content [split [read -nonewline $fh] "\n"]
+	close $fh
+
 	foreach line $content {
 		if {![regexp -nocase -- "^#" $line]} {
 			if {[regexp -nocase -- {fakesection\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
@@ -755,26 +759,37 @@ proc loadtheme {file} {
 			}
 		}
 	}
-	close $fh
 	
-	foreach name [array names theme] {
-		set value $theme($name)
-		regsub -all {%c(\d)\{([^\}]+)\}} $value {\\003$theme(COLOR\1)\2\\003} value
-		regsub -all {\003(\d)(?!\d)} $value {\\0030\1} value
-		regsub -all {\[} $value {\\[} value; regsub -all {\]} $value {\\]} value
-		set theme($name) [subst $value]
+	foreach name [array names theme] { set theme($name) [themereplace $theme($name)] }
+	foreach name [array names theme_fakes] { set theme_fakes($name) [themereplace $theme_fakes($name)] }
+
+	set required "PREFIX"
+	foreach req [split $required " "] {
+		if {[lsearch -exact [array names theme] $req] == -1} {
+			putlog "dZSbot: missing required themefile setting (in $file): '$req', failing."
+			set ret 0
+		}
 	}
-	foreach name [array names theme_fakes] {
-		set value $theme_fakes($name)
-		regsub -all {%c(\d)\{([^\}]+)\}} $value {\\003$theme(COLOR\1)\2\\003} value
-		regsub -all {\003(\d)(?!\d)} $value {\\0030\1} value
-		regsub -all {\[} $value {\\[} value; regsub -all {\]} $value {\\]} value
-		set theme_fakes($name) [subst $value]
-	}
-	return 1
+	
+	return $ret
 }	
+#################################################################################
+
+
 
 #################################################################################
+# REPLACES THEMERELATED STUFF IN A GIVEN STRING                                 #
+#################################################################################
+proc themereplace {rstring} {
+	global theme
+	regsub -all {%c(\d)\{([^\}]+)\}} $rstring {\\003$theme(COLOR\1)\2\\003} rstring
+	regsub -all {\003(\d)(?!\d)} $rstring {\\0030\1} rstring
+	regsub -all {\[} $rstring {\\[} rstring; regsub -all {\]} $rstring {\\]} rstring
+	return [subst $rstring]
+}
+#################################################################################
+
+
 
 if {[info exists dZStimer]} {
     if {[catch {killutimer $dZStimer} err]} {
