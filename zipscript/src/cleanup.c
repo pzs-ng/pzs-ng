@@ -71,12 +71,9 @@ scandirectory(char *directoryname, int setfree)
 char           *
 replace_cookies(char *s)
 {
-	char           *new_string, *pos;
+	static char	new_string[PATH_MAX], *pos;
 
-	if ((new_string = pos = malloc(4096)) == NULL) {
-		printf("Error! Could not allocate enough memory\n");
-		exit(1);
-	}
+	pos = new_string;
 
 	while (*s == '.' || *s == '/')
 		s++;
@@ -110,298 +107,32 @@ replace_cookies(char *s)
 	return new_string;
 }
 
-/*
- * Name of release (Multi CD)
- */
-char           *
-multi_name(char *s)
-{
-	int		begin_multi[2], end_multi, n;
-	char           *p, *t, *r = 0;
-
-	end_multi = 0;
-	begin_multi[0] = -1;
-	begin_multi[1] = -1;
-
-	t = incomplete_cd_indicator;
-
-	while (*t == '.' || *t == '/')
-		t++;
-	p = t;
-
-	for (n = 0; *t; t++)
-		if (*t == '%' && *(t + 1) == '0') {
-			begin_multi[0] = n;
-			break;
-		} else {
-			n++;
-		}
-
-	t = p;
-	for (n = 0; *t; t++)
-		if (*t == '%' && *(t + 1) == '1') {
-			begin_multi[1] = n;
-			break;
-		} else {
-			n++;
-		}
-
-	if ((begin_multi[0] < begin_multi[1]) && (begin_multi[1] != -1)){
-		for (t = p + begin_multi[1] + 2; *t; t++)
-			end_multi++;
-
-		if ((p = malloc(6)) == NULL) {
-			printf("Error! Failed to allocate enough memory!\n");
-			exit(1);
-		}
-		s += begin_multi[0];
-		s += sprintf(p, "%.*s", tolower(*s) == 'd' ? 5 : 3, s);
-
-		s += begin_multi[1] - begin_multi[0] - 2;
-		if ((t = malloc((n = strlen(s)) + 7)) == NULL) {
-			printf("Error! Failed to allocate enough memory!\n");
-			exit(1);
-		}
-		sprintf(t, "%.*s/%s", n - end_multi, s, p);
-	} else if (begin_multi[0] != -1){
-		for (t = p + begin_multi[0] + 2; *t; t++)
-			end_multi++;
-
-		s += begin_multi[1];
-		n = strlen(s) - end_multi;
-
-		t = s + n - 3;
-		if ((p = malloc(6)) == NULL) {
-			printf("Error! Failed to allocate enough memory!\n");
-			exit(1);
-		}
-		if (tolower(*t) == 'c') {
-			sprintf(p, "%s", t);
-		} else {
-			r--;
-			sprintf(p, "%s", t);
-		}
-		n = t - s - (begin_multi[0] - begin_multi[1] - 2);
-		if ((t = malloc(n + 7)) == NULL) {
-			printf("Error! Failed to allocate enough memory!\n");
-			exit(1);
-		}
-		sprintf(r, "%.*s/%s", n, s, p);
-#if (debug_mode)
-	} else {
-		printf("DEBUG: (cd) multi[0]=%d multi[1]=%d\n", begin_multi[0], begin_multi[1]);
-#endif
-	}
-
-	free(p);
-	return t;
-}
-
-char           *
-multi_nfo_name(char *s)
-{
-	int		begin_multi[2], end_multi, n;
-	char           *p, *t, *r = 0;
-
-	end_multi = 0;
-	begin_multi[0] = -1;
-	begin_multi[1] = -1;
-
-	t = incomplete_base_nfo_indicator;
-
-	while (*t == '.' || *t == '/')
-		t++;
-	p = t;
-
-	for (n = 0; *t; t++) {
-		if (*t == '%' && *(t + 1) == '0') {
-			begin_multi[0] = n;
-			break;
-		} else {
-			n++;
-		}
-	}
-	t = p;
-	for (n = 0; *t; t++) {
-		if (*t == '%' && *(t + 1) == '1') {
-			begin_multi[1] = n;
-			break;
-		} else {
-			n++;
-		}
-	}
-	if ((begin_multi[0] < begin_multi[1]) && (begin_multi[1] != -1)) {
-		for (t = p + begin_multi[1] + 2; *t; t++)
-			end_multi++;
-
-		if ((p = malloc(6)) == NULL) {
-			printf("Error! Failed to allocate enough memory!\n");
-			exit(1);
-		}
-		s += begin_multi[0];
-		s += sprintf(p, "%.*s", tolower(*s) == 'd' ? 5 : 3, s);
-
-		s += begin_multi[1] - begin_multi[0] - 2;
-		if ((t = malloc((n = strlen(s)) + 7)) == NULL) {
-			printf("Error! Failed to allocate enough memory!\n");
-			exit(1);
-		}
-		sprintf(t, "%.*s/%s", n - end_multi, s, p);
-	} else if (begin_multi[0] != -1) {
-		for (t = p + begin_multi[0] + 2; *t; t++)
-			end_multi++;
-
-		s += begin_multi[1];
-		n = strlen(s) - end_multi;
-
-		t = s + n - 3;
-		if ((p = malloc(6)) == NULL) {
-			printf("Error! Failed to allocate enough memory!\n");
-			exit(1);
-		}
-		if (tolower(*t) == 'c') {
-			sprintf(p, "%s", t);
-		} else {
-			r--;
-			sprintf(p, "%s", t);
-		}
-		n = t - s - (begin_multi[0] - begin_multi[1] - 2);
-		if ((t = malloc(n + 7)) == NULL) {
-			printf("Error! Failed to allocate enough memory!\n");
-			exit(1);
-		}
-		sprintf(r, "%.*s/%s", n, s, p);
-#if (debug_mode)
-	} else {
-		printf("DEBUG: (nfo) multi[0]=%d multi[1]=%d\n", begin_multi[0], begin_multi[1]);
-#endif
-	}
-	free(p);
-	return t;
-}
-
-
-/*
- * Name of release (Common)
- */
-char           *
-single_name(char *s)
-{
-	int		begin_single, end_single, size;
-	char           *t = 0;
-
-	begin_single = end_single = 0;
-
-	t = incomplete_indicator;
-
-	while (*t == '.' || *t == '/')
-		t++;
-
-	for (; *t; t++)
-		if (*t == '%' && *(t + 1) == '0') {
-			t += 2;
-			break;
-		} else {
-			begin_single++;
-		}
-	for (; *t; t++)
-		if (*t == '%') {
-			t++;
-			if (*t == '%')
-				end_single++;
-		} else {
-			end_single++;
-		}
-
-	size = strlen(s) - begin_single - end_single + 1;
-
-	if((t = malloc(size)) == NULL) {
-			printf("Error! Failed to allocate enough memory!\n");
-			exit(1);
-		}
-	sprintf(t, "%.*s", size - 1, s + begin_single);
-
-	return (t);
-}
-
-char           *
-single_nfo_name(char *s)
-{
-	int		begin_single, end_single, size;
-	char           *t = 0;
-
-	begin_single = end_single = 0;
-
-	t = incomplete_nfo_indicator;
-
-	while (*t == '.' || *t == '/')
-		t++;
-
-	for (; *t; t++)
-		if (*t == '%' && *(t + 1) == '0') {
-			t += 2;
-			break;
-		} else {
-			begin_single++;
-		}
-	for (; *t; t++)
-		if (*t == '%') {
-			t++;
-			if (*t == '%')
-				end_single++;
-		} else {
-			end_single++;
-		}
-
-	size = strlen(s) - begin_single - end_single + 1;
-
-	if ((t = malloc(size)) == NULL) {
-			printf("Error! Failed to allocate enough memory!\n");
-			exit(1);
-		}
-	sprintf(t, "%.*s", size - 1, s + begin_single);
-
-	return (t);
-}
-
 void 
 incomplete_cleanup(char *path, int setfree)
 {
 	struct dirent **dirlist;
 	struct stat	fileinfo;
-	int		entries;
+	int		entries, tempsize = 0;
 	regex_t		preg   [4];
 	regmatch_t	pmatch[1];
-	char           *temp;
+	char		temp[PATH_MAX];
 	char           *locator;
-
-	if((temp = malloc(sizeof(incomplete_cd_indicator) > sizeof(incomplete_indicator) ? sizeof(incomplete_cd_indicator) : sizeof(incomplete_indicator))) == NULL) {
-			printf("Error! Failed to allocate enough memory!\n");
-			exit(1);
-		}
 
 	sprintf(temp, "%s", incomplete_cd_indicator);
 	locator = replace_cookies(temp);
 	regcomp(&preg[0], locator, REG_NEWLINE | REG_EXTENDED);
-	free(locator);
 
 	sprintf(temp, "%s", incomplete_indicator);
 	locator = replace_cookies(temp);
 	regcomp(&preg[1], locator, REG_NEWLINE | REG_EXTENDED);
-	free(locator);
 
 	sprintf(temp, "%s", incomplete_base_nfo_indicator);
 	locator = replace_cookies(temp);
 	regcomp(&preg[2], locator, REG_NEWLINE | REG_EXTENDED);
-	free(locator);
 
 	sprintf(temp, "%s", incomplete_nfo_indicator);
 	locator = replace_cookies(temp);
 	regcomp(&preg[3], locator, REG_NEWLINE | REG_EXTENDED);
-	free(locator);
-
-
-	free(temp);
 
 	printf("[%s]\n", path);
 
@@ -412,54 +143,52 @@ incomplete_cleanup(char *path, int setfree)
 				/* Multi CD */
 				if (regexec(&preg[0], dirlist[entries]->d_name, 1, pmatch, 0) == 0) {
 					if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries])) {
-						temp = multi_name(dirlist[entries]->d_name);
-						if (stat(temp, &fileinfo) != 0) {
+						tempsize = readlink(dirlist[entries]->d_name, temp, PATH_MAX);
+						temp[tempsize] = '\0';
+						if (stat(dirlist[entries]->d_name, &fileinfo)) {
 							if (setfree) {
 								unlink(dirlist[entries]->d_name);
-								printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
+								printf("Broken symbolic link \"%s\" removed.\n", temp);
 							}
 						} else
-							printf("Incomplete release: \"%s%s\".\n", path, temp);
-						free(temp);
-//						continue;
+							printf("Incomplete release: \"%s\".\n", temp);
 					}
 				} else if (regexec(&preg[2], dirlist[entries]->d_name, 1, pmatch, 0) == 0) {
 					if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries])) {
-						temp = multi_nfo_name(dirlist[entries]->d_name);
-						if (stat(temp, &fileinfo) != 0) {
+						tempsize = readlink(dirlist[entries]->d_name, temp, PATH_MAX);
+						temp[tempsize] = '\0';
+						if (stat(dirlist[entries]->d_name, &fileinfo)) {
 							if (setfree) {
 								unlink(dirlist[entries]->d_name);
-								printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
+								printf("Broken symbolic link \"%s\" removed.\n", temp);
 							}
-						}
-						free(temp);
-//						continue;
+						} else
+							printf("Incomplete release: \"%s\".\n", temp);
 					}
 				/* Normal */
 				} else	if (regexec(&preg[1], dirlist[entries]->d_name, 1, pmatch, 0) == 0) {
 					if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries])) {
-						temp = single_name(dirlist[entries]->d_name);
-						if (stat(temp, &fileinfo) != 0) {
+						tempsize = readlink(dirlist[entries]->d_name, temp, PATH_MAX);
+						temp[tempsize] = '\0';
+						if (stat(dirlist[entries]->d_name, &fileinfo)) {
 							if (setfree) {
 								unlink(dirlist[entries]->d_name);
-								printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
+								printf("Broken symbolic link \"%s\" removed.\n", temp);
 							}
 						} else
-							printf("Incomplete release: \"%s%s\".\n", path, temp);
-						free(temp);
-//						continue;
+							printf("Incomplete release: \"%s\".\n", temp);
 					}
 				} else if (regexec(&preg[3], dirlist[entries]->d_name, 1, pmatch, 0) == 0) {
 					if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries])) {
-						temp = single_nfo_name(dirlist[entries]->d_name);
-						if (stat(temp, &fileinfo) != 0) {
+						tempsize = readlink(dirlist[entries]->d_name, temp, PATH_MAX);
+						temp[tempsize] = '\0';
+						if (stat(dirlist[entries]->d_name, &fileinfo)) {
 							if (setfree) {
 								unlink(dirlist[entries]->d_name);
-								printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
+								printf("Broken symbolic link \"%s\" removed.\n", temp);
 							}
-						}
-						free(temp);
-//						continue;
+						} else
+							printf("Incomplete release: \"%s\".\n", temp);
 					}
 				}
 				free(dirlist[entries]);
@@ -480,24 +209,13 @@ incomplete_cleanup(char *path, int setfree)
 void 
 cleanup(char *pathlist, int setfree, char *startpath)
 {
-	char           *data_today, *data_yesterday, *path, *newentry,
-	               *entry;
+	char		data_today[PATH_MAX],
+			data_yesterday[PATH_MAX],
+			path[PATH_MAX];
+	char	       *newentry, *entry;
 
 	struct tm      *time_today, *time_yesterday;
 	time_t		t_today, t_yesterday;
-
-	if ((path = malloc(PATH_MAX)) == NULL) {
-			printf("Error! Failed to allocate enough memory!\n");
-			exit(1);
-		}
-	if ((data_today = malloc(PATH_MAX)) == NULL) {
-			printf("Error! Failed to allocate enough memory!\n");
-			exit(1);
-		}
-	if ((data_yesterday = malloc(PATH_MAX)) == NULL) {
-			printf("Error! Failed to allocate enough memory!\n");
-			exit(1);
-		}
 
 	if ((time_today = malloc(sizeof(struct tm))) == NULL) {
 			printf("Error! Failed to allocate enough memory!\n");
@@ -543,9 +261,6 @@ cleanup(char *pathlist, int setfree, char *startpath)
 		}
 	}
 
-	free(path);
-	free(data_today);
-	free(data_yesterday);
 	free(time_today);
 	free(time_yesterday);
 }
@@ -555,28 +270,19 @@ main(int argc, char **argv)
 {
 
 	int		setfree = 1;
-	char           *startdir = 0, *wd = 0;
-
-	if ((startdir = malloc(PATH_MAX)) == NULL) {
-			printf("Error! Failed to allocate enough memory!\n");
-			exit(1);
-		}
-	sprintf(startdir, "/");
+	char		startdir[PATH_MAX] = "/";
 
 	if (argc > 1) {
 		if (!strncmp(argv[1], "/", 1)) {
 			setfree = 0;
 			printf("%s: Running script in view mode only.\n", argv[0]);
-			sprintf(startdir, "%s", argv[1]);
+			sprintf(startdir, argv[1]);
 		} else {
-			if (( wd = getcwd(NULL, PATH_MAX)) == NULL) {
+			if (getcwd(startdir, PATH_MAX) == NULL) {
 				printf("PZS-NG Cleanup: ERROR - Failed to getcwd.\n");
 				exit (0);
-			} else {
-				sprintf(startdir, "%s", wd);
-				free(wd);
-				printf("PZS-NG Cleanup: OK.\n");
 			}
+			printf("PZS-NG Cleanup: OK.\n");
 		}
 	}
 
@@ -602,7 +308,6 @@ main(int argc, char **argv)
 
 		printf("Finished successfully.\n");
 	}
-	free(startdir);
 	exit(EXIT_SUCCESS);
 }
 

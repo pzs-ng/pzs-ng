@@ -335,6 +335,8 @@ scripts. Here's a short description of each compiled binary:
     insert the names of dirs to be scanned in this variable. Setting this to
     '/site/incoming/' will only search /site/incoming, not /site/incoming/apps/
     or any other dir just below.
+    Please note that dead symlinks in the mp3 genre/group/year/etc will be
+    scanned automatically - there is no need to add these to 'cleanupdirs'.
     This script may be used as a cscript to 'site wipe' or 'site nuke' for
     instance, in which case it will only scan the current dir. You may also run
     it in 'view' mode, by giving it rootpath to glftpd. This will only list
