@@ -1,5 +1,36 @@
+v0.7.4 (aka beta4 of pzs-ng (r???))
+ - fixed - cleanup just removes the incomplete indicator when run, valid or not.
+ - fixed - cleanup does not report incomplete releases.
+ - changed - sitebot command !inc uses new code (and actually work!).
+ - fix - passchk is broken in glftpd2 rc3 (and above).
+ - fix - sitewho needed fixing on amd64.
+ - fix - cleanup does not remove broken no-nfo links.
+ - new - missing nfo's are reported in releases.
+ - fix - no-nfo needs a path-variable.
+ - fix - problem with double sfv and 0 bytes sfv file.
+ - fix - no-nfo does not report missing nfo's in main dir of multi-cd releases.
+ - new - add support for alternate location of .debug.
+ - fix - sitewho reports wrong file dl percentage / segfaults.
+ - fix - Make !up show MB progress instead of ??.
+ - fix - zipscript fails to track sfv info randomly.
+ - fix - announce-cookies missing for post_stats.
+ - fix - Issue when calling uploaders from irc trigger.
+ - fix - sitewho cannot read ipckey 0xDEADBEEF.
+ - fix - if filename in sfv differs (part) in case from the filename, the -missing indicator is not removed on upload.
+ - fix - when rehashing bot, previous theme is not unloaded.
+ - fix - Free does not report correctly.
+ - fix - free-space IRC trigger stops working randomly.
+ - fix - Disabling MSGINVITE doesn't work.
+ - new - Make it optional to ignore filename casing (sfv vs. actual files).
+ - fix - sitewho (--raw) fails when a file outside /incoming is being downloaded?
+ - fix - Cookie %W (wkuk position) is always using section 0.
+ - fix - LOGIN / LOGOUT events are moved from glftpd.log to login.log.
+ - fix - nested tags (%b{}, %cX{}, %u{}) in themes not working right.
+ - new - added cookie for sitename in progress-bars.
+ - new - remade the whole config loading - zsconfig.h now overrides the defaults.
+
 v0.7.3 (aka beta3 of pzs-ng (r738))
- Too many changes have been made, but here are a few:
+ Too many changes have been made to list all , but here are some highlights:
  - added section support
  - BIG CHANGE: bot has changed dramatically - now uses skins for output
  - BIG CHANGE: all output is now formatted in the bot (not in zipscript)

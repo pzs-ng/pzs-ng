@@ -63,6 +63,7 @@ check_dir_loop(char *path)
 			if (S_ISDIR(entry_stat.st_mode)) {
 				sprintf(target, "%s/%s", path, list[n]->d_name);
 				if ((dirp = opendir(target + zd_length))) {
+					closedir(dirp);
 					check_dir_loop(target);
 					chdir(path);
 				} else {
@@ -70,7 +71,6 @@ check_dir_loop(char *path)
 					rmdir(target);
 					chdir(path);
 				}
-				closedir(dirp);
 			}
 			free(list[n]);
 		}
@@ -81,14 +81,6 @@ int
 main(int argc, char **argv)
 {
 	char		st        [PATH_MAX];
-
-	/*
-	 * if (geteuid() != 0) { printf("%s: you can only run this program
-	 * under effective UID 0.\n", argv[0]); printf("%s: (read
-	 * README.datacleaner for information on how to change effective
-	 * UID)\n", argv[0]); return 1; } else { zd_length = strlen(storage);
-	 * chroot(site_root); check_dir_loop(storage); } return 0;
-	 */
 
 	zd_length = strlen(storage);
 
