@@ -1,4 +1,6 @@
 v0.7.2
+ - psxc added support for allowed_genres on mp3 releases.
+ - psxc added support for warning messages on illegal mp3 genre/year/bitrate.
  - psxc added a iwdisb's fix to prevent coredump on cookie usage when the cookie is DISABLED.
  - iwdisb made a patch which will show bitrate on mp3's on vbr files as well!
  - daxxar made some changes in the autoconf file to detect os and make the appropriate changes.

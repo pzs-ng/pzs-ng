@@ -132,7 +132,7 @@
 #define allowed_bitrates		"160,192"
 #define allowed_years			"2000,2001,2002,2003,2004"
 #define banned_genres			"Christian Rap,R&B"
-#define allowed_genres			"R&B"
+#define allowed_genres			"Rock"
 
 
 /* Audio related symlinks - set to TRUE if you wish to sort/symlink releases, or FALSE if not.
