@@ -14,6 +14,8 @@
 #include "convert.h"
 #include "dizreader.h"
 #include "stats.h"
+#include "race-file.h"
+#include "race-file.h"
 
 #include "../conf/zsconfig.h"
 #include "../../config.h"
@@ -30,19 +32,8 @@ struct VARS      raceI;
 struct LOCATIONS locations;
 
 /* NEW OPTIMIZED STUFF GOES HERE */
-extern unsigned long readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount);
-extern void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned long crc, int logtype);
-extern void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);
-extern void copysfv_file(char *source, char *target, long buf_bytes);
-extern void create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char *filename);
-extern void testfiles_file(struct LOCATIONS *locations, struct VARS *raceI);
 extern void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, int completetype);
 extern void writetop(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, int completetype );
-extern void maketempdir(struct LOCATIONS *locations);
-
-/* TO BE REMOVED */
-extern	void	read_write_leader_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *userI);
-
 
 # define data_exists(paths, datalocation) fileexists(datalocation)
 # define file_set_race		sprintf

@@ -14,6 +14,7 @@
 #include "convert.h"
 #include "dizreader.h"
 #include "stats.h"
+#include "race-file.h"
 
 #include "../conf/zsconfig.h"
 #include "../../config.h"
@@ -23,9 +24,6 @@ struct GROUPINFO **groupI;
 struct VARS      raceI;
 struct LOCATIONS locations;
 
-extern char* readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount);
-
-extern void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);
 
 #define data_exists(paths, datalocation) fileexists(datalocation)
 #define file_set_race   sprintf

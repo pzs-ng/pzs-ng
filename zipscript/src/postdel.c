@@ -16,6 +16,7 @@
 #include "zsfunctions.h"
 #include "convert.h"
 #include "dizreader.h"
+#include "race-file.h"
 
 #include "../conf/zsconfig.h"
 #include "../../config.h"
@@ -25,17 +26,6 @@ struct GROUPINFO **groupI;
 struct VARS      raceI;
 struct LOCATIONS locations;
 
-extern void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);
-extern void read_write_leader_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI);
-extern unsigned long readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount);
-
-extern short clear_file_file(struct LOCATIONS *, char *);
-
-// from race-file.c - let's move to headers later.
-extern void delete_sfv_file(struct LOCATIONS *locations);
-
-
- 
 #define data_exists(paths, datalocation) fileexists(datalocation)
 #define file_set_race	 sprintf
 #define file_set_sfv	 sprintf
