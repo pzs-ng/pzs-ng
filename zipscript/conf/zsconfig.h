@@ -373,9 +373,6 @@
 #define incomplete_cd_indicator		"../../(incomplete)-(%0)-%1"
 #define incomplete_indicator		"../(incomplete)-%0"
 
-#define incomplete_nonfo_cd_indicator	"../../(incomplete)-(no nfo)-(%0)-%1"
-#define incomplete_nonfo_indicator	"../(incomplete)-(no nfo)-%0"
-
 #define progressmeter			"[%V] - %3.0p%% Complete - [dS]"
 #define del_progressmeter		"\\[.*] - ...% Complete - \\[dS]"
 
