@@ -25,7 +25,7 @@
 #################################################################################
 
 usr="TestUser"
-grp="Siteops"
+grp="Siteops "
 tag="Default Tagline"
 rls="Some.Release-GRP"
 
@@ -155,6 +155,12 @@ function pre {
 	gllog "PRE: \"$what\" \"$rls\" \"$pregrp\" \"$section\" $files $size 1 \"\" \"\" \"\" \"\""
 }
 
+function premp3 {
+	what=${2:-"SomeArtist.TheAlbum.2004-GRP"}
+	echo "Test PRE-MP3INFO: $what"
+	gllog "PRE-MP3INFO: \"$what\" \"SomeArtist\" \"TheAlbum\" \"2004\" \"Rap\" \"15\" \"192\" \"44100\" \"joint stereo\" \"NYI\" \"NYI\" \"NYI\" \"NYI\""
+}
+
 function nuke {
 	what=${2:-"$glprefix/$rls"}
 	nuker=${3:-$usr}
@@ -181,6 +187,12 @@ function sfv {
 	what=${2:-"$glprefix/$rls/CD1"}
 	echo "Test SFV"
 	gllog "SFV: \"$what\" \"$rls/CD1\" \"50\""
+}
+
+function update {
+	what=${2:-"$glprefix/$rls"}
+	echo "Test UPDATE"
+	gllog "UPDATE: \"$what\" user group 15.2 5"
 }
 
 function update_rar {
@@ -314,9 +326,11 @@ syntax:
 	"logout"		) logout "$@" ;;
 	"invite"		) invite "$@" ;;
 	"pre"			) pre "$@" ;;
+	"premp3"		) premp3 "$@" ;;
 	"nuke"			) nuke "$@" ;;
 	"unnuke"		) unnuke "$@" ;;
 	"sfv"			) sfv "$@" ;;
+	"update"		) update "$@" ;;
 	"update_rar"		) update_rar "$@" ;;
 	"update_other"		) update_other "$@" ;;
 	"update_audio"		) update_audio "$@" ;;
@@ -332,7 +346,7 @@ syntax:
 	"stat_groups"		) stat_groups "$@" ;;
 	"stat_post"		) stat_post "$@" ;;
 
-	"stat"		)
+	"stats"		)
 		stat_users_head "$@"
 		stat_users "$@"
 		stat_groups_head "$@"
@@ -340,7 +354,8 @@ syntax:
 		stat_post "$@"
 	;;
 	
-	"update"	)
+	"updates"	)
+		update "$@"
 		update_rar "$@"
 		update_other "$@"
 		update_audio "$@"
@@ -357,19 +372,25 @@ syntax:
 		login "$@"
 		logout "$@"
 		pre "$@"
+		premp3 "$@"
 		nuke "$@"
 		unnuke "$@"
 		sfv "$@"
 		update "$@"
+		update_rar "$@"
+		update_other "$@"
+		update_audio "$@"
+		update_video "$@"
 		complete "$@"
 		incomplete "$@"
 		race "$@"
 		newleader "$@"
 		halfway "$@"
-		stat_uhead "$@"
+		stat_users_head "$@"
 		stat_users "$@"
-		stat_ghead "$@"
-		stat_group "$@"
+		stat_groups_head "$@"
+		stat_groups "$@"
+		stat_post "$@"
 
 	;;
 	* ) echo "try ./fakelog help" ;;
