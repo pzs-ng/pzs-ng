@@ -3,10 +3,13 @@ MAKE=@MAKE@
 
 CFLAGS=@CFLAGS@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -W -Wall -Wundef -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline -I../include/
 
-all: racedatatest sfvdatatest
+all: racedatatest sfvdatatest headdatatest
 
 racedatatest: racedatatest.c
 	$(CC) $(CFLAGS) racedatatest.c -o $@
 	
 sfvdatatest: sfvdatatest.c
+	$(CC) $(CFLAGS) sfvdatatest.c -o $@
+
+headdatatest: headdatatest.c
 	$(CC) $(CFLAGS) sfvdatatest.c -o $@

@@ -117,7 +117,7 @@ main(void)
 		l = g.v.data_incrementor;
 		for ( k = 0; k <= max_seconds_wait_for_lock * 10; k++) {
 			d_log("rescan: sleeping for .1 second before trying to get a lock (queue: %d).\n", g.v.data_queue);
-			usleep(100);
+			usleep(100000);
 			if (!create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0, g.v.data_queue))
 				break;
 		}

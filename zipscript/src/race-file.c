@@ -893,6 +893,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 	HEADDATA	hd;
 	struct stat	sb;
 
+	/* this should really be moved out of the proc - we'll worry about it later */
 	snprintf(raceI->headpath, PATH_MAX, "%s/%s/headdata", storage, path);
 
 	if ((fd = open(raceI->headpath, O_CREAT | O_RDWR, 0666)) == -1) {
@@ -902,7 +903,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 
 	fstat(fd, &sb);
 
-	if (!sb.st_size) {
+	if (!sb.st_size) {							/* no lock file exists - let's create one with default values. */
 		hd.data_version = sfv_version;
 		raceI->data_type = hd.data_type = 0;
 		raceI->data_in_use = hd.data_in_use = progtype;
@@ -915,48 +916,60 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 		return 0;
 	} else {
 		read(fd, &hd, sizeof(HEADDATA));
-		if (hd.data_in_use) {
-			if (force_lock == 2) {
-				d_log("create_lock: Unlock forced.\n");
-			} else {
-				if (force_lock == 3) {
-					d_log("create_lock: Data is already locked - putting you in queue.\n");
-					hd.data_queue++;
-					raceI->data_queue = hd.data_queue;
-				} // else
-					// d_log("create_lock: Data is already locked.\n");
-				lseek(fd, 0L, SEEK_SET);
-				write(fd, &hd, sizeof(HEADDATA));
-				close(fd);
-				return hd.data_in_use;
-			}
-		}
-		if (!hd.data_in_use) {
-			if (force_lock == 3 && hd.data_queue) {
-				d_log("create_lock: Data is already locked - putting you in queue.\n");
-				hd.data_queue++;
-				raceI->data_queue = hd.data_queue;
-			} else if (hd.data_queue && queue != hd.data_qcurrent && force_lock != 2) {
-				// d_log("create_lock: You are still queued - please wait.\n");
-				lseek(fd, 0L, SEEK_SET);
-				write(fd, &hd, sizeof(HEADDATA));
-				close(fd);
-				return -1;
-			}
-		}
-		if (force_lock == 1) {
-			d_log("create_lock: Unlock suggested.\n");
-			hd.data_incrementor = 0;
-		} else {
-			hd.data_incrementor = 1;
-			hd.data_in_use = progtype;
-		}
-		raceI->data_incrementor = hd.data_incrementor;
 		if (hd.data_version != sfv_version) {
 			d_log("create_lock: version of datafile mismatch. Stopping and suggesting a cleanup.\n");
 			close(fd);
 			return 1;
 		}
+		if (hd.data_in_use) {						/* the lock is active */
+			if (force_lock == 2) {
+				raceI->data_queue = hd.data_queue = 0;
+				hd.data_qcurrent = 0;
+				d_log("create_lock: Unlock forced.\n");
+			} else {
+				if (force_lock == 3) {				/* we got a request to queue a lock if active */
+					d_log("create_lock: lock active - putting you in queue.\n");
+					hd.data_queue++;			/* we increment the number in the queue */
+					raceI->data_queue = hd.data_queue;	/* and give the number back to the calling process */
+					lseek(fd, 0L, SEEK_SET);
+					write(fd, &hd, sizeof(HEADDATA));
+				}
+				close(fd);
+				return hd.data_in_use;
+			}
+		}
+		if (!hd.data_in_use) {						/* looks like the lock is inactive */
+			if (force_lock == 2) {
+				raceI->data_queue = hd.data_queue = 0;
+				hd.data_qcurrent = 0;
+				d_log("create_lock: Unlock forced.\n");
+			} else if (force_lock == 3 && hd.data_queue) {		/* we got a request to queue a lock if active, */
+										/* and there seems to be others in queue. Will not allow the */
+										/* process to lock, but wait for the queued process to do so. */
+				d_log("create_lock: putting you in queue.\n");
+				hd.data_queue++;				/* we increment the number in the queue */
+				raceI->data_queue = hd.data_queue;		/* and give the number back to the calling process */
+				raceI->data_incrementor = hd.data_incrementor;
+				lseek(fd, 0L, SEEK_SET);
+				write(fd, &hd, sizeof(HEADDATA));
+				close(fd);
+				return -1;
+			} else if (hd.data_queue && (queue > hd.data_qcurrent) && !force_lock) {
+										/* seems there is a queue, and the calling process' place in */
+										/* the queue is still less than current. */
+				raceI->data_incrementor = hd.data_incrementor;	/* feed back the current incrementor */
+				close(fd);
+				return -1;
+			}
+		}
+		if (force_lock == 1) {						/* lock suggested - reseting the incrementor to 0 */
+			d_log("create_lock: Unlock suggested.\n");
+			hd.data_incrementor = 0;
+		} else {							/* either no lock and queue, or unlock is forced. */
+			hd.data_incrementor = 1;
+			hd.data_in_use = progtype;
+		}
+		raceI->data_incrementor = hd.data_incrementor;
 		lseek(fd, 0L, SEEK_SET);
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
@@ -984,17 +997,20 @@ remove_lock(struct VARS *raceI)
 	read(fd, &hd, sizeof(HEADDATA));
 	hd.data_in_use = 0;
 	hd.data_incrementor = 0;
-	if (hd.data_queue)
-		hd.data_qcurrent++;
-	if (hd.data_queue <= hd.data_qcurrent)
-		hd.data_queue = hd.data_qcurrent = 0;
-	d_log("remove_lock: queue: %d/%d\n", hd.data_qcurrent, hd.data_queue);
+	if (hd.data_queue)							/* if queue, increase the number in current so next */
+		hd.data_qcurrent++;						/* process can start. */
+	if (hd.data_queue < hd.data_qcurrent)					/* If the next in line is bigger than the queue itself, */
+		hd.data_queue = hd.data_qcurrent = 0;				/* it should be fair to assume there is noone else in queue */
+										/* and reset the queue. Normally, this should not happen. */
 	lseek(fd, 0L, SEEK_SET);
 	write(fd, &hd, sizeof(HEADDATA));
 	close(fd);
+	close(fd);
+	d_log("remove_lock: queue %d/%d (%d)\n", hd.data_qcurrent, hd.data_queue);
 }
 
 /* update a lock. This should be used after each file checked.
+ * This procs task is mainly to 'touch' the lock and to check that nothing else wants the lock.
  * Please note:
  *   if counter == 0 a suggested lock-removal will be written. if >0 it's used as normal.
  *   if datatype != 0, this datatype will be written.
@@ -1019,6 +1035,7 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 	}
 	if ((hd.data_in_use != raceI->data_in_use) && counter) {
 		d_log("update_lock: Lock not active or progtype mismatch - no choice but to exit.\n");
+		close(fd);
 		exit(EXIT_FAILURE);
 	}
 	if (((counter) && (hd.data_incrementor < raceI->data_incrementor)) || !hd.data_incrementor) {
@@ -1041,7 +1058,7 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 		raceI->data_incrementor = hd.data_incrementor;
 		raceI->data_in_use = hd.data_in_use;
 	}
+	d_log("update_lock: updating lock (%d)\n", raceI->data_incrementor);
 	return retval;
 }
-
 
