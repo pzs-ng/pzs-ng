@@ -100,6 +100,7 @@ if {[string equal -nocase "AUTO" $use_glftpd2]} {
 	}
 } else {
 	set glversion [expr [istrue $use_glftpd2] ? 2 : 1]
+	putlog "dZSbot: glftpd version defined as: $glversion."
 }
 
 if {![info exists invite_channels] && [info exists chanlist(INVITE)]} {
@@ -533,8 +534,10 @@ proc parse {msgtype msgline section} {
 	if {[string equal $type "NUKE"] || [string equal $type "UNNUKE"]} {
 		if {$glversion == 1} {
 			fuelnuke $type [lindex $msgline 0] $section $msgline
-		} else {
+		} elseif {$glversion == 2} {
 			launchnuke2 $type [lindex $msgline 0] $section [lrange $msgline 1 3] [lrange $msgline 4 end]
+		} else {
+		    putlog "dZSbot error: Internal error, unknown glftpd version ($glversion)."
 		}
 		return ""
 	}
