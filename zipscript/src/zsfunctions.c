@@ -36,7 +36,7 @@ d_log(char *fmt,...)
 	va_list		ap;
 #if ( debug_altlog == TRUE )
 	static char	debugpath[PATH_MAX];
-	static char	debugname[PATH_MAX];
+	static char	debugname[NAME_MAX];
 #else
 	static char	debugname[] = ".debug";
 #endif
@@ -72,9 +72,9 @@ d_log(char *fmt,...)
 void 
 create_missing(char *f)
 {
-	char		fname[PATH_MAX];
+	char		fname[NAME_MAX];
 
-	snprintf(fname, PATH_MAX, "%s-missing", f);
+	snprintf(fname, NAME_MAX, "%s-missing", f);
 	createzerofile(fname);
 }
 
@@ -235,12 +235,12 @@ strtolower(char *s)
 void 
 unlink_missing(char *s)
 {
-	char		t[PATH_MAX];
+	char		t[NAME_MAX];
 	long		loc;
 	DIR		*dir;
 	struct dirent	*dp;
 
-	snprintf(t, PATH_MAX, "%s-missing", s);
+	snprintf(t, NAME_MAX, "%s-missing", s);
 	unlink(t);
 #if (sfv_cleanup && sfv_cleanup_lowercase)
 	strtolower(t);
@@ -253,7 +253,7 @@ unlink_missing(char *s)
 		unlink(dp->d_name);
 	}
 
-	snprintf(t, PATH_MAX, "%s.bad", s);
+	snprintf(t, NAME_MAX, "%s.bad", s);
 	unlink(t);
 #if (sfv_cleanup && sfv_cleanup_lowercase)
 	strtolower(t);
@@ -947,7 +947,7 @@ void
 mark_as_bad(char *filename)
 {
 #if (mark_file_as_bad)
-	char	newname[PATH_MAX];
+	char	newname[NAME_MAX];
 
 	if (!fileexists(filename)) {
 		d_log("Debug: Failed to open file \"%s\"\n", filename);

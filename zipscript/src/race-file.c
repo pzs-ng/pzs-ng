@@ -491,8 +491,8 @@ copysfv(const char *source, const char *target)
 		}
 
 		/* we assume what's left is a filename */
-		if (strlen(fbuf) > 0) {
-			strlcpy(sd.fname, fbuf, PATH_MAX);
+		if (strlen(fbuf) > 0 && strlen(fbuf) < NAME_MAX-9 ) {
+			strlcpy(sd.fname, fbuf, NAME_MAX-9);
 
 			if (sd.fname != find_last_of(sd.fname, "/") || *sd.fname == '/') {
 				d_log("copysfv: found '/' in sfv - logging file as bad.\n");
