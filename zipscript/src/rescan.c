@@ -183,12 +183,13 @@ main()
 					if (g.v.file.name)
 						unlink_missing(g.v.file.name);
 					if (l > 44) {
-						printf("\nFile: %s %x", dirlist[n]->d_name + l - 35, crc);
+						printf("\nFile: %s %x", dirlist[n]->d_name + l - 44, crc);
 					} else {
-						printf("\nFile: %-35s %x", dirlist[n]->d_name, crc);
+						printf("\nFile: %-44s %x", dirlist[n]->d_name, crc);
 					}
 				}
-				fflush(stdout);
+				if(fflush(stdout))
+					d_log("ERROR: %s\n", strerror(errno));
 				writerace_file(&g.l, &g.v, crc, F_NOTCHECKED);
 			}
 		}
