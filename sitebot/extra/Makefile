@@ -8,7 +8,7 @@ CC = gcc
 RM = rm -f
 MAKE = make
 
-CCFLAGS = -Wall -lcrypt -pedantic -O2
+CCFLAGS = -Wall -lcrypt -lcrypto -O2
 CFFLAGS = -Wall -pedantic -static -O2
 
 all:	clean compile

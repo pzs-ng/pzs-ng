@@ -5,7 +5,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-extern char * crypt(const char *key, const char *salt);
+#include <paths.h>
+#include <openssl/evp.h>
+#include <openssl/hmac.h>
 
 #ifndef  __USE_SVID
 struct passwd pwd;
@@ -42,19 +44,104 @@ struct passwd* fgetpwent(FILE *fp) {
  if ( fieldcnt == 6 ) {
   pwd.pw_name = malloc(charcnt[0]);
   pwd.pw_passwd = malloc(charcnt[1]);
+  pwd.pw_gecos = malloc(charcnt[4]);
   strcpy(pwd.pw_name, data[0]);
   strcpy(pwd.pw_passwd, data[1]);
+  strcpy(pwd.pw_gecos, data[4]);
  } else return NULL;
 
  return &pwd;
 }
 #endif
 
+/* see http://lists.jammed.com/secprog/2002/11/0008.html for info */
+
+#define HLEN (20)               /*Using SHA-1 */
+
+int pbkdf2(const unsigned char *pw, unsigned int pwlen, char *salt,
+           unsigned long long saltlen, unsigned int ic,
+           unsigned char *dk, unsigned long long dklen)
+{
+    unsigned long l, r, i, j;
+    unsigned char txt[4], hash[HLEN * 2], tmp[HLEN], *p =
+        dk, *lhix, *hix, *swap;
+    short k;
+    int outlen;
+
+    if (dklen > ((((unsigned long long) 1) << 32) - 1) * HLEN) {
+        /* TODO: Call an error handler. */
+        return 1;
+    }
+    l = dklen / HLEN;
+    r = dklen % HLEN;
+
+    for (i = 1; i <= l; i++) {
+        sprintf(txt, "%04u", (unsigned int) i);
+        HMAC(EVP_sha1(), pw, pwlen, txt, 4, hash, &outlen);
+        lhix = hash;
+        hix = hash + HLEN;
+        for (k = 0; k < HLEN; k++) {
+            tmp[k] = hash[k];
+        }
+        for (j = 1; j < ic; j++) {
+            HMAC(EVP_sha1(), pw, pwlen, lhix, HLEN, hix, &outlen);
+            for (k = 0; k < HLEN; k++) {
+                tmp[k] ^= hix[k];
+            }
+            swap = hix;
+            hix = lhix;
+            lhix = swap;
+        }
+        for (k = 0; k < HLEN; k++) {
+            *p++ = tmp[k];
+        }
+    }
+    if (r) {
+        sprintf(txt, "%04u", (unsigned int) i);
+        HMAC(EVP_sha1(), pw, pwlen, txt, 4, hash, &outlen);
+        lhix = hash;
+        hix = hash + HLEN;
+        for (k = 0; k < HLEN; k++) {
+            tmp[k] = hash[k];
+        }
+        for (j = 1; j < ic; j++) {
+            HMAC(EVP_sha1(), pw, pwlen, lhix, HLEN, hix, &outlen);
+            for (k = 0; k < HLEN; k++) {
+                tmp[k] ^= hix[k];
+            }
+            swap = hix;
+            hix = lhix;
+            lhix = swap;
+        }
+        for (k = 0; k < r; k++) {
+            *p++ = tmp[k];
+        }
+    }
+    return 0;
+}
+
+int pw_encrypt(const unsigned char *pwd, char *digest, char *seed) {
+        unsigned char md[SHA_DIGEST_LENGTH];
+        int mdlen=SHA_DIGEST_LENGTH, i;
+
+        //see pbe.c for info, 100x multihash
+        pbkdf2(pwd, strlen(pwd), seed, strlen(seed), 100, md, SHA_DIGEST_LENGTH);
+
+        for(i = 0; i < mdlen; i++) {
+                sprintf(digest, "%02x", md[i]);
+                digest += 2;
+        }
+        //fix the last /0 !!!
+        *digest='\0';
+        return 1;
+}
+
+
 int main(int argc, char *argv[]) {
 	FILE *fp;
 	struct passwd *buf;
-	char *crypted;
-	char salt[2];
+	char crypted[SHA_DIGEST_LENGTH * 2 + 1];
+	char *salt;
 	if (argc != 4) {
 		printf("Usage: %s <user> <pass> <passwdfile>\n", argv[0]);
 		return 1;
@@ -67,12 +154,8 @@ int main(int argc, char *argv[]) {
 	while ((buf=fgetpwent(fp)) != NULL) {
 		if (strcmp(buf->pw_name, argv[1]))
 			continue;
-		strncpy(salt, buf->pw_passwd, 2);
-		if ((crypted=(char *)malloc(64)) == NULL) {
-			fprintf(stderr, "Couldn't malloc!\n");
-			return 1;
-		}
-		crypted=crypt(argv[2], salt);
+		salt = buf->pw_gecos;
+		pw_encrypt(argv[2], crypted, salt);
 		if (strcmp(buf->pw_passwd, crypted) == 0) {
 			printf("MATCH\n");
 			return 0;
