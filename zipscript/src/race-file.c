@@ -515,7 +515,7 @@ void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned in
  clear_file_file(locations, raceI->file.name);
 
  if ( (file = fopen(locations->race, "a+")) == NULL) {
-  d_log("Racefile cannot be written. Aborting.");
+  d_log("Racefile cannot be written. Aborting.\n");
   exit (2);
  }
 
