@@ -90,8 +90,10 @@ main(int argc, char **argv)
 
 	if (!strcmp(fname, "debug"))
 		d_log("Reading directory structure\n");
-	rescandir(2);
 
+	dir = opendir(".");
+	parent = opendir("..");
+	
 	if (fileexists(fname)) {
 		d_log("File (%s) still exists\n", fname);
 #if (remove_dot_debug_on_delete == TRUE)
@@ -103,7 +105,6 @@ main(int argc, char **argv)
 	umask(0666 & 000);
 
 	d_log("Clearing arrays\n");
-	//bzero(&g.v.total, sizeof(struct race_total));
 	bzero(&g.v.total, sizeof(struct race_total));
 	g.v.misc.slowest_user[0] = 30000;
 	g.v.misc.fastest_user[0] = 0;
@@ -198,7 +199,7 @@ main(int argc, char **argv)
 		}
 
 		if (!fileexists("file_id.diz")) {
-			temp_p = findfileext_old_(".zip");
+			temp_p = findfileext(dir, ".zip");
 			if (temp_p != NULL) {
 				d_log("file_id.diz does not exist, trying to extract it from %s\n", temp_p);
 				sprintf(target, "%s -qqjnCLL %s file_id.diz", unzip_bin, temp_p);
@@ -302,7 +303,7 @@ main(int argc, char **argv)
 		} else {
 			d_log("Removing old race data\n");
 			unlink(g.l.race);
-			if (findfileext_old_(".sfv") == NULL) {
+			if (findfileext(dir, ".sfv") == NULL) {
 				empty_dir = 1;
 			} else {
 				incomplete = 1;
@@ -358,7 +359,7 @@ main(int argc, char **argv)
 
 		getrelname(&g);
 		if (g.l.nfo_incomplete) {
-			if (findfileext_old_(".nfo")) {
+			if (findfileext(dir, ".nfo")) {
 				d_log("Removing missing-nfo indicator (if any)\n");
 				remove_nfo_indicator(&g);
 			} else if (matchpath(check_for_missing_nfo_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
@@ -366,15 +367,14 @@ main(int argc, char **argv)
 					d_log("Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 					create_incomplete_nfo();
 				} else {
-					rescanparent(2);
-					if (findfileext_old_parent(".nfo")) {
+					
+					if (findfileextparent(parent, ".nfo")) {
 						d_log("Removing missing-nfo indicator (if any)\n");
 						remove_nfo_indicator(&g);
 					} else {
 						d_log("Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
 					}
-					rescanparent(1);
 				}
 			}
 		}
@@ -388,7 +388,8 @@ main(int argc, char **argv)
 	}
 	
 	d_log("Releasing memory\n");
-	rescandir(1);
+	closedir(dir);
+	closedir(parent);
 	updatestats_free(&g);
 	free(target);
 	free(g.l.race);

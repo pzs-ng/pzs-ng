@@ -87,7 +87,7 @@ char *
 findfileext(DIR *dir, char *fileext)
 {
 	int			k;
-	static struct dirent *dp;
+	static struct dirent	*dp;
 
 	rewinddir(dir);
 	while ((dp = readdir(dir))) {
