@@ -10,9 +10,12 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+
 #include "objects.h"
 #include "macros.h"
 #include "zsfunctions.h"
+#include "convert.h"
+
 #include "../conf/zsconfig.h"
 #include "../../config.h"
 
@@ -21,13 +24,10 @@ struct GROUPINFO **groupI;
 struct VARS      raceI;
 struct LOCATIONS locations;
 
-extern char	*c_incomplete(char *instr, char **path);
-
 extern void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);
 extern void read_write_leader_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI);
 extern unsigned long readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount);
 
-extern char*	convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *instr);
 extern short clear_file_file(struct LOCATIONS *, char *);
 
 // from dizreader.c - let's move to headers later.

@@ -8,13 +8,12 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/uio.h>
+
 #include "objects.h"
 #include "macros.h"
-#include "../conf/zsconfig.h"
+#include "convert.h"
 
-extern char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *instr);
-extern char* convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, char *instr, short userpos);
-extern char* convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short grouppos);
+#include "../conf/zsconfig.h"
 
 struct	userdata	{
 	long	allup_bytes;

@@ -11,6 +11,7 @@
 #include "errors.h"
 #include "zsfunctions.h"
 #include "multimedia.h" 
+#include "convert.h"
 
 #include "../conf/zsconfig.h"
 #include "../../config.h"
@@ -34,11 +35,7 @@ extern int read_diz(char *);
 extern void showstats(struct VARS *, struct USERINFO **, struct GROUPINFO **);
 
 /* NEW OPTIMIZED STUFF GOES HERE */
-extern char * convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, char *instr, short userpos);
-extern char * convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short grouppos);
-extern char * convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *instr);
 extern unsigned long readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount);
-extern char * c_incomplete(char *instr, char **path);
 extern void sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);
 extern void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned long crc, int logtype);
 extern void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);

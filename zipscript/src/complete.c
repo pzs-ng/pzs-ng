@@ -2,11 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "objects.h"
+#include "convert.h"
 #include "../conf/zsconfig.h"
 
-extern char * convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, char *instr, short userpos);
-extern char * convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short grouppos);
-extern char * convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *instr);
 extern void writelog(char *msg, char *status);
 
 // from zsfunctions.h *shiver* - MAKE zsfunctions.h TO A .c AND AN ACCOMPANYING HEADER!

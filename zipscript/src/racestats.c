@@ -7,9 +7,12 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+
 #include "objects.h"
 #include "macros.h"
 #include "zsfunctions.h"
+#include "convert.h"
+
 #include "../conf/zsconfig.h"
 #include "../../config.h"
 
@@ -22,7 +25,6 @@ extern void updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROU
                         char *usern, char *group, long filesize, long speed, long startsec, long startusec);
 extern void sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);
 
-extern char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *instr);
 extern char* readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int getfcount);
 
 extern void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI);

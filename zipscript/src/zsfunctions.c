@@ -1,10 +1,9 @@
 #include "zsfunctions.h"
 #include "constants.h"
+#include "convert.h"
 
 struct dirent	**dirlist;
 unsigned int direntries = 0;
-
-extern char* convert(struct VARS *, struct USERINFO **, struct GROUPINFO **, char *);
 
 #if ( debug_mode == TRUE )
 void d_log(char *fmt, ...) {
