@@ -1,11 +1,19 @@
-#############################################################
-# Project Zipscript Next Generation - Sitebot Configuration #
-#                (originally by Dark0n3)                    #
-# This is configuration for dZSbot.tcl                      #
-#############################################################
-# Use this file to override settings found in dZSbconf.tcl  #
-# Also, find details on the individual setting in same file #
-#############################################################
+######################################################################
+#      Project Zipscript Next Generation - Sitebot Configuration     #
+#                        (originally by Dark0n3)                     #
+#                                                                    #
+######################################################################
+#                                                                    #
+#                          IMPORTANT!!                               #
+#                          -----------                               #
+# This file contains overrides only. You may find that some settings #
+# are missing - search in dZSbconf.defaults.tcl for the settings you #
+# need and COPY THOSE INTO THIS FILE - do not edit the defaults file #
+# - it will be changed! This file, however, will not, which means    #
+# that when you upgrade your bot, you can keep this file, replace    #
+# the defaults file, and be done with it.                            #
+#                                                                    #
+######################################################################
 
 set sitename			"pzs-ng"
 set cmdpre			"!pn"
