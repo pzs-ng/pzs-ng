@@ -28,7 +28,7 @@ long long	shmid;
 struct shmid_ds	ipcbuf;
 struct stat	filestat;
 
-char           *header, *footer, *glpath, *mpaths, *husers, *ipckey, *glgroup,
+char           *header, *footer, *glpath, *mpaths, *husers, *hgroups, *ipckey, *glgroup,
                *def_ipckey = "0x0000DEAD", *def_glgroup = "/etc/group";
 int		maxusers  , showall = 0, uploads = 0, downloads = 0, onlineusers = 0;
 double		total_dn_speed = 0, total_up_speed = 0;
@@ -144,7 +144,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 		maskchar = ' ';
 		mask = noshow = 0;
 
-		if (strcomp(husers, user[x].username)) {
+		if (strcomp(husers, user[x].username) || strcomp(hgroups, get_g_name(user[x].groupid))) {
 			if (showall)
 				maskchar = '*';
 			else
@@ -388,6 +388,8 @@ readconfig(char *arg)
 					mpaths = tmp;
 				else if (!memcmp(buf + l_b, "hiddenusers", 11))
 					husers = tmp;
+				else if (!memcmp(buf + l_b, "hiddengroups", 12))
+					hgroups = tmp;
 				else if (!memcmp(buf + l_b, "glrootpath", 10))
 					glpath = tmp;
 				else if (!memcmp(buf + l_b, "ipc_key", 7))

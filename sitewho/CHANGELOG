@@ -2,3 +2,4 @@
  + Completly rewritten... phew !!! Config file has changed
  + sitewho <username> now shows shows actions of <username> in bot compatible form
  + User now sees his own masked/hidden actions
+ + Now it's possible to hide whole groups too
