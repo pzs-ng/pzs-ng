@@ -1639,9 +1639,6 @@ proc loadtheme {file} {
 #	foreach name [array names theme] { set theme($name) [themereplace $theme($name)] }
 #	foreach name [array names theme_fakes] { set theme_fakes($name) [themereplace $theme_fakes($name)] }
 #	foreach name [array names announcetmp] { set announce($name) [themereplace $announcetmp($name)] }
-
-	foreach name [array names theme] { set theme($name) $theme($name) }
-	foreach name [array names theme_fakes] { set theme_fakes($name) $theme_fakes($name) }
 	foreach name [array names announcetmp] { set announce($name) $announcetmp($name) }
 
 	set ret 1
@@ -1673,7 +1670,7 @@ proc themereplace {rstring} {
 		}
 		regsub -all {%b\{([^\{\}]+)\}} $rstring {\\002\1\\002} rstring
 		regsub -all {%u\{([^\{\}]+)\}} $rstring {\\037\1\\037} rstring
-        }
+	}
 
 	regsub -all {\003(\d)(?!\d)} $rstring {\\0030\1} rstring
 	return [subst -nocommands $rstring]
