@@ -75,7 +75,6 @@ if { $countlog == 0 } {
 	putlog "dZSbot: Number of login logfiles found: $countlog"
 }
 
-
 if {![info exists use_glftpd2] || ($use_glftpd2 == "AUTO" && ![info exists binary(GLFTPD)])} {
 	putlog "dZSbot: you did not thouroughly edit your $scriptpath/dZSbconf.tcl file. Try again."
 	die
@@ -234,12 +233,10 @@ proc DEBUG_FATAL {{string 0}} {
 
 set debuglevel [DEBUG_INFO]
 
-
 #################################################################################
 # MAIN LOOP - PARSES DATA FROM GLFTPD.LOG                                       #
 # Modified: 2004-11-18 by Zenuka
 #################################################################################
-
 proc readlog {} {
 	global location glftpdlog loginlog lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2 invite_channels loglastoct pid msgreplace privchannel privgroups privusers max_log_change
 
@@ -422,8 +419,6 @@ proc readlog {} {
 }
 
 #################################################################################
-
-#################################################################################
 # POST COMMAND                                                                  #
 #################################################################################
 proc postcmd {msgtype section path} {
@@ -453,7 +448,7 @@ proc getsection {cpath msgtype} {
 	global sections msgtypes paths type defaultsection mpath
 
 	foreach section $sections {
-		if {![llength [array names "paths" $section]]} {
+		if {![llength [array names paths $section]]} {
 			putlog "dZSbot error: \"paths($section)\" not set in config, section becomes \"$defaultsection\""
 			continue
 		}
@@ -467,8 +462,6 @@ proc getsection {cpath msgtype} {
 	}
 	return $defaultsection
 }
-#################################################################################
-
 
 #################################################################################
 # Replace Cookie With Value                                                     #
@@ -481,8 +474,6 @@ proc replacevar {string cookie value} {
 	## Why not use Tcl's string replacement function? It's faster :P
 	return [string map [list $cookie $value] $string]
 }
-#################################################################################
-
 
 #################################################################################
 # CONVERT ANYTHING>MB TO MEGABYTES                                              #
@@ -503,8 +494,6 @@ proc to_mb {str} {
 	if {$factor == 0} { return -1 }
 	return [expr round($size*$factor)]
 }
-#################################################################################
-
 
 #################################################################################
 # CONVERT ANYTHING>1000MB TO BETTER UNIT                                        #
@@ -523,18 +512,14 @@ proc from_mb {str} {
 
 	return "[format %.1f $str]$units($unit)"
 }
-#################################################################################
-
 
 #################################################################################
 # CONVERT SPEED UNIT TO A CUSTOMIZED UNIT                                       #
 #################################################################################
 proc speed_convert {value section} {
-
 	global speedmeasure speedthreshold theme
 
 	switch -exact -- [string tolower $speedmeasure] {
-
 		"mb"		{
 					set value [format "%.2f" [expr $value / 1024.0]]
 					set type $theme(MB)
@@ -576,8 +561,6 @@ proc speed_convert {value section} {
 	return [themereplace "$value$type" $section]
 
 }
-#################################################################################
-
 
 #################################################################################
 # TRIMS TRAILING STRING FROM ANOTHER STRING                                     #
@@ -588,8 +571,6 @@ proc trimtail {strsrc strrm} {
 	}
 	return $strsrc
 }
-#################################################################################
-
 
 #################################################################################
 # CONVERT BASIC COOKIES TO DATA                                                 #
@@ -602,8 +583,6 @@ proc basicreplace {string section} {
 	set string [replacevar $string "%section" $section]
 	return $string
 }
-#################################################################################
-
 
 #################################################################################
 # CONVERT COOKIES TO DATA                                                       #
@@ -657,7 +636,9 @@ proc parse {msgtype msgline section} {
 	}
 
 	set output "$theme(PREFIX)$output"
-	if {[string equal $section $defaultsection] && [llength [array names "theme_fakes" $type]] > 0} { set section $theme_fakes($type) }
+	if {[string equal $section $defaultsection] && [llength [array names theme_fakes $type]] > 0} {
+	    set section $theme_fakes($type)
+	}
 	set output [basicreplace $output $section]
 	set cnt 0
 
@@ -728,7 +709,6 @@ proc parse {msgtype msgline section} {
 	set output [themereplace $output $section]
 	return $output
 }
-#################################################################################
 
 #################################################################################
 # Channel trigger check.                                                        #
@@ -737,12 +717,9 @@ proc checkchan {nick chan} {
 	global disable lastbind mainchan
 	if {$disable(TRIGINALLCHAN) != 0 && ![string equal -nocase $chan $mainchan]} {
 		putlog "dZSbot: \002$nick\002 tried to use \002$lastbind\002 from an invalid channel ($chan)."
-		return 0
+		return -code return
 	}
-	return 1
 }
-#################################################################################
-
 
 #################################################################################
 # Parse command options.                                                        #
@@ -758,8 +735,6 @@ proc getsectionpath {getsection} {
 	}
 	return ""
 }
-#################################################################################
-
 
 #################################################################################
 # Retrieve a list of UIDs and users.                                            #
@@ -780,8 +755,6 @@ proc gl_userids {} {
 	}
 	return $userlist
 }
-#################################################################################
-
 
 #################################################################################
 # Retrieve a list of GIDs and groups.                                           #
@@ -802,8 +775,6 @@ proc gl_groupids {} {
 	}
 	return $grouplist
 }
-#################################################################################
-
 
 #################################################################################
 # Parse IRC command options.                                                    #
@@ -838,8 +809,6 @@ proc getoptions {argv p_results p_other} {
 	}
 	return 1
 }
-#################################################################################
-
 
 #################################################################################
 # Format The Time Duration                                                      #
@@ -853,15 +822,13 @@ proc format_duration {secs} {
 	}
 	if {[llength $duration]} {return [join $duration]} else {return "\0020\002s"}
 }
-#################################################################################
-
 
 #################################################################################
 # Display the latest releases.                                                  #
 #################################################################################
 proc ng_new {nick uhost hand chan argv} {
 	global announce binary defaultsection lastbind location sections theme
-	if {![checkchan $nick $chan]} {return}
+	checkchan $nick $chan
 
 	if {![getoptions $argv results section]} {
 		## By displaying the command syntax in the channel (opposed to private message), we can inform others
@@ -921,15 +888,13 @@ proc ng_new {nick uhost hand chan argv} {
 		sndone $nick [basicreplace $output "NEW"]
 	}
 }
-#################################################################################
-
 
 #################################################################################
 # Search the dirlog for releases.                                               #
 #################################################################################
 proc ng_search {nick uhost hand chan argv} {
 	global announce binary defaultsection lastbind location search_chars theme
-	if {![checkchan $nick $chan]} {return}
+	checkchan $nick $chan
 
 	if {![getoptions $argv results pattern] || $pattern == ""} {
 		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] <pattern>"
@@ -982,15 +947,13 @@ proc ng_search {nick uhost hand chan argv} {
 		sndone $nick [basicreplace $output "SEARCH"]
 	}
 }
-#################################################################################
-
 
 #################################################################################
 # Display the latest nukes.                                                     #
 #################################################################################
 proc ng_nukes {nick uhost hand chan argv} {
 	global announce binary defaultsection lastbind location sections theme
-	if {![checkchan $nick $chan]} {return}
+	checkchan $nick $chan
 
 	if {![getoptions $argv results section]} {
 		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] \[section\]"
@@ -1038,15 +1001,13 @@ proc ng_nukes {nick uhost hand chan argv} {
 		sndone $nick [basicreplace $output "NUKES"]
 	}
 }
-#################################################################################
-
 
 #################################################################################
 # Display the latest unnukes.                                                   #
 #################################################################################
 proc ng_unnukes {nick uhost hand chan argv} {
 	global announce binary defaultsection lastbind location sections theme
-	if {![checkchan $nick $chan]} {return}
+	checkchan $nick $chan
 
 	if {![getoptions $argv results section]} {
 		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] \[section\]"
@@ -1095,8 +1056,6 @@ proc ng_unnukes {nick uhost hand chan argv} {
 		sndone $nick [basicreplace $output "UNNUKES"]
 	}
 }
-#################################################################################
-
 
 #################################################################################
 # SEND TO ALL CHANNELS LISTED                                                   #
@@ -1109,8 +1068,6 @@ proc sndall {section text} {
 		}
 	}
 }
-#################################################################################
-
 
 #################################################################################
 # SEND TO ONE CHANNEL                                                           #
@@ -1121,15 +1078,13 @@ proc sndone {chan text} {
 		putquick "PRIVMSG $chan :[themereplace $line "none"]"
 	}
 }
-#################################################################################
-
 
 #################################################################################
 # POST WHO INFO                                                                 #
 #################################################################################
 proc who {nick uhost hand chan argv} {
 	global binary
-	if {![checkchan $nick $chan]} {return}
+	checkchan $nick $chan
 
 	foreach line [split [exec $binary(WHO)] \n] {
 		if {![info exists newline($line)]} {
@@ -1139,15 +1094,13 @@ proc who {nick uhost hand chan argv} {
 	}
 	puthelp "PRIVMSG $nick : "
 }
-#################################################################################
-
 
 #################################################################################
 # POST SPEED                                                                    #
 #################################################################################
 proc speed {nick uhost hand chan argv} {
 	global binary announce theme disable
-	if {![checkchan $nick $chan]} {return}
+	checkchan $nick $chan
 
 	set line ""
 	if { $disable(ALTWHO) == 0 } {
@@ -1190,15 +1143,13 @@ proc speed {nick uhost hand chan argv} {
 		sndone $chan $output
 	}
 }
-#################################################################################
-
 
 #################################################################################
 # uploaders BANDWIDTH                                                           #
 #################################################################################
 proc ng_bwup {nick uhost hand chan argv} {
 	global binary announce speed theme
-	if {![checkchan $nick $chan]} {return}
+	checkchan $nick $chan
 
 	set output "$theme(PREFIX)$announce(BWUP)"
 	set raw [exec $binary(WHO) --nbw]
@@ -1224,55 +1175,43 @@ proc ng_bwup {nick uhost hand chan argv} {
 	set output [basicreplace $output "BW"]
 	sndone $chan $output
 }
-################################################################################
 
 #################################################################################
 # ng_uploaders - Origional by Celerex - Mod/Merge by themolester                #
 #################################################################################
 proc ng_uploaders {nick uhost hand chan argv} {
 	global binary announce speed theme
-	if {![checkchan $nick $chan]} {return}
+	checkchan $nick $chan
 
 	set output "$theme(PREFIX)$announce(UPLOAD)"
 	set output [basicreplace $output "UPLOAD"]
 	sndone $chan $output
 
 	set raw [exec $binary(WHO) "--raw"]
+	set count 0; set total 0.0
 
-	set getsecond 0
-	set count 0
-	set total 0.0
 	foreach line [split $raw "\n"] {
-
-		switch [lindex $line 0] {
-
-			USER {
-				switch [lindex $line 4] {
-
-					UP {
-						set user  [lindex $line 2]
-						set group [lindex $line 3]
-						set uspeed [replacevar [lindex $line 5] "KB/s" ""]
-						set tagline [lindex $line 6]
-						set since [lindex $line 7]
-						set filename [lindex $line 8]
-						set progress [lindex $line 9]
-						set per [format "%.2f%%" [expr double($uspeed) * 100 / double($speed(INCOMING))]]
-						set output [replacevar "$theme(PREFIX)$announce(USER)" "%u_name" $user]
-						set output [replacevar $output "%g_name" $group]
-						set output [replacevar $output "%fper" $progress]
-						set output [replacevar $output "%uspeed" [speed_convert $uspeed "none"]]
-						set output [replacevar $output "%per" $per]
-						set output [replacevar $output "%tagline" $tagline]
-						set output [replacevar $output "%since" $since]
-						set output [replacevar $output "%filename" $filename]
-						set output [basicreplace $output "UPLOAD"]
-						sndone $chan $output
-						incr count
-						set total [expr $total+$uspeed]
-					}
-				}
-			}
+	    if {[string equal "USER" [lindex $line 0]] && [string equal "UP" [lindex $line 4]]} {
+			set user  [lindex $line 2]
+			set group [lindex $line 3]
+			set uspeed [replacevar [lindex $line 5] "KB/s" ""]
+			set tagline [lindex $line 6]
+			set since [lindex $line 7]
+			set filename [lindex $line 8]
+			set progress [lindex $line 9]
+			set per [format "%.2f%%" [expr double($uspeed) * 100 / double($speed(INCOMING))]]
+			set output [replacevar "$theme(PREFIX)$announce(USER)" "%u_name" $user]
+			set output [replacevar $output "%g_name" $group]
+			set output [replacevar $output "%fper" $progress]
+			set output [replacevar $output "%uspeed" [speed_convert $uspeed "none"]]
+			set output [replacevar $output "%per" $per]
+			set output [replacevar $output "%tagline" $tagline]
+			set output [replacevar $output "%since" $since]
+			set output [replacevar $output "%filename" $filename]
+			set output [basicreplace $output "UPLOAD"]
+			sndone $chan $output
+			incr count
+			set total [expr $total+$uspeed]
 		}
 	}
 	set per [format "%.1f" [expr double($total) * 100 / double($speed(INCOMING)) ]]
@@ -1285,14 +1224,13 @@ proc ng_uploaders {nick uhost hand chan argv} {
 	set output [basicreplace $output "UPLOAD"]
 	sndone $chan $output
 }
-#################################################################################
 
 #################################################################################
 # downloaders BANDWIDTH                                                         #
 #################################################################################
 proc ng_bwdn {nick uhost hand chan argv} {
 	global binary announce speed theme
-	if {![checkchan $nick $chan]} {return}
+	checkchan $nick $chan
 
 	set output "$theme(PREFIX)$announce(BWDN)"
 	set raw [exec $binary(WHO) --nbw]
@@ -1318,55 +1256,43 @@ proc ng_bwdn {nick uhost hand chan argv} {
 	set output [basicreplace $output "BW"]
 	sndone $chan $output
 }
-################################################################################
 
 #################################################################################
 # ng_leechers - Origional by Celerex - Mod/Merge by themolester                 #
 #################################################################################
 proc ng_leechers {nick uhost hand chan argv} {
 	global binary announce speed theme
-	if {![checkchan $nick $chan]} {return}
+	checkchan $nick $chan
 
 	set output "$theme(PREFIX)$announce(LEECH)"
 	set output [basicreplace $output "LEECH"]
 	sndone $chan $output
 
 	set raw [exec $binary(WHO) "--raw"]
+	set count 0; set total 0.0
 
-	set getsecond 0
-	set count 0
-	set total 0.0
 	foreach line [split $raw "\n"] {
-
-		switch [lindex $line 0] {
-
-			USER {
-				switch [lindex $line 4] {
-
-					DN {
-						set user  [lindex $line 2]
-						set group [lindex $line 3]
-						set uspeed [replacevar [lindex $line 5] "KB/s" ""]
-						set tagline [lindex $line 6]
-						set since [lindex $line 7]
-						set filename [lindex $line 8]
-						set per [format "%.2f%%" [expr double($uspeed) * 100 / double($speed(OUTGOING))]]
-						set fper [lindex $line 9]
-						set output [replacevar "$theme(PREFIX)$announce(USER)" "%u_name" $user]
-						set output [replacevar $output "%g_name" $group]
-						set output [replacevar $output "%fper"	$fper]
-						set output [replacevar $output "%uspeed" [speed_convert $uspeed "none"]]
-						set output [replacevar $output "%per" $per]
-						set output [replacevar $output "%tagline" $tagline]
-						set output [replacevar $output "%since" $since]
-						set output [replacevar $output "%filename" $filename]
-						set output [basicreplace $output "LEECH"]
-						sndone $chan $output
-						incr count
-						set total [expr $total+$uspeed]
-					}
-				}
-			}
+	    if {[string equal "USER" [lindex $line 0]] && [string equal "DN" [lindex $line 4]]} {
+			set user  [lindex $line 2]
+			set group [lindex $line 3]
+			set uspeed [replacevar [lindex $line 5] "KB/s" ""]
+			set tagline [lindex $line 6]
+			set since [lindex $line 7]
+			set filename [lindex $line 8]
+			set per [format "%.2f%%" [expr double($uspeed) * 100 / double($speed(OUTGOING))]]
+			set fper [lindex $line 9]
+			set output [replacevar "$theme(PREFIX)$announce(USER)" "%u_name" $user]
+			set output [replacevar $output "%g_name" $group]
+			set output [replacevar $output "%fper"	$fper]
+			set output [replacevar $output "%uspeed" [speed_convert $uspeed "none"]]
+			set output [replacevar $output "%per" $per]
+			set output [replacevar $output "%tagline" $tagline]
+			set output [replacevar $output "%since" $since]
+			set output [replacevar $output "%filename" $filename]
+			set output [basicreplace $output "LEECH"]
+			sndone $chan $output
+			incr count
+			set total [expr $total+$uspeed]
 		}
 	}
 	set per [format "%.1f" [expr double($total) * 100 / double($speed(OUTGOING)) ]]
@@ -1379,54 +1305,44 @@ proc ng_leechers {nick uhost hand chan argv} {
 	set output [basicreplace $output "LEECH"]
 	sndone $chan $output
 }
-#################################################################################
 
 #################################################################################
 # ng_idlers - Origional by Celerex - Mod/Merge by themolester                   #
 #################################################################################
 proc ng_idlers {nick uhost hand chan argv} {
 	global binary announce speed minidletime theme
-	if {![checkchan $nick $chan]} {return}
+	checkchan $nick $chan
 
 	set output "$theme(PREFIX)$announce(IDLE)"
 	set output [basicreplace $output "IDLE"]
 	sndone $chan $output
 
 	set raw [exec $binary(WHO) "--raw"]
-	set count 0
-	set total 0.0
+	set count 0; set total 0.0
+
 	foreach line [split $raw "\n"] {
+	    if {[string equal "USER" [lindex $line 0]] && [string equal "ID" [lindex $line 4]]} {
+			set user  [lindex $line 2]
+			set group [lindex $line 3]
 
-		switch [lindex $line 0] {
+			set rawtime [lindex $line 5]
+			set hours [lindex [split $rawtime ":"] 0]
+			set minutes [lindex [split $rawtime ":"] 1]
+			set seconds [lindex [split $rawtime ":"] 2]
+			set idletime [expr ($hours*60+$minutes)*60+$seconds]
 
-			USER {
-				switch [lindex $line 4] {
+			set tagline [lindex $line 6]
+			set since [lindex $line 7]
 
-					ID {
-						set user  [lindex $line 2]
-						set group [lindex $line 3]
-
-						set rawtime [lindex $line 5]
-						set hours [lindex [split $rawtime ":"] 0]
-						set minutes [lindex [split $rawtime ":"] 1]
-						set seconds [lindex [split $rawtime ":"] 2]
-						set idletime [expr ($hours*60+$minutes)*60+$seconds]
-
-						set tagline [lindex $line 6]
-						set since [lindex $line 7]
-
-						if { $idletime > $minidletime } {
-							set output [replacevar "$theme(PREFIX)$announce(USERIDLE)" "%u_name" $user]
-							set output [replacevar $output "%g_name" $group]
-							set output [replacevar $output "%idletime" $idletime]
-							set output [replacevar $output "%tagline" $tagline]
-							set output [replacevar $output "%since" $since]
-							set output [basicreplace $output "IDLE"]
-							sndone $chan $output
-							incr count
-						}
-					}
-				}
+			if { $idletime > $minidletime } {
+				set output [replacevar "$theme(PREFIX)$announce(USERIDLE)" "%u_name" $user]
+				set output [replacevar $output "%g_name" $group]
+				set output [replacevar $output "%idletime" $idletime]
+				set output [replacevar $output "%tagline" $tagline]
+				set output [replacevar $output "%since" $since]
+				set output [basicreplace $output "IDLE"]
+				sndone $chan $output
+				incr count
 			}
 		}
 	}
@@ -1434,14 +1350,13 @@ proc ng_idlers {nick uhost hand chan argv} {
 	set output [basicreplace $output "IDLE"]
 	sndone $chan $output
 }
-#################################################################################
 
 #################################################################################
 # UPDATED BANDWIDTH                                                             #
 #################################################################################
 proc ng_bandwidth {nick uhost hand chan argv} {
 	global binary announce speed theme speedmeasure speedthreshold
-	if {![checkchan $nick $chan]} {return}
+	checkchan $nick $chan
 
 	set output "$theme(PREFIX)$announce(BW)"
 	set raw [exec $binary(WHO) --nbw]
@@ -1471,15 +1386,13 @@ proc ng_bandwidth {nick uhost hand chan argv} {
 	set output [basicreplace $output "BW"]
 	sndone $chan $output
 }
-################################################################################
-
 
 #################################################################################
 # POST STATS                                                                    #
 #################################################################################
 proc showstats {type time nick uhost hand chan argv} {
 	global binary statsection location
-	if {![checkchan $nick $chan]} {return}
+	checkchan $nick $chan
 
 	set sect 0
 	set section [lindex $argv 1]
@@ -1508,8 +1421,6 @@ proc showstats {type time nick uhost hand chan argv} {
 	puthelp "PRIVMSG $nick :------------------------------------------------------------------------"
 	puthelp "PRIVMSG $nick : "
 }
-#################################################################################
-
 
 #################################################################################
 # INVITE CHECK                                                                  #
@@ -1524,7 +1435,6 @@ proc invite {nick host hand arg} {
 		set group ""
 
 		set userfile $location(USERS)$username
-
 
 		if {[string equal $result "MATCH"]} {
 			set output "$theme(PREFIX)$announce(MSGINVITE)"
@@ -1549,15 +1459,13 @@ proc invite {nick host hand arg} {
 		}
 	}
 }
-#################################################################################
-
 
 #################################################################################
 # SHOW FREE SPACE                                                               #
 #################################################################################
 proc show_free {nick uhost hand chan arg} {
 	global binary announce device theme dev_max_length
-	if {![checkchan $nick $chan]} {return}
+	checkchan $nick $chan
 
 	set devices(0) ""; set free 0.0; set used 0.0
 	set total 0.0; set num 0; set perc 0.0
@@ -1616,8 +1524,6 @@ proc show_free {nick uhost hand chan arg} {
 		incr o
 	}
 }
-#################################################################################
-
 
 #################################################################################
 # LAUNCH A NUKE (GL2.0)                                                         #
@@ -1668,8 +1574,6 @@ proc launchnuke2 {type path section info nukees} {
 	set output [themereplace [basicreplace $output $nuke(TYPE)] "none"]
 	sndall $nuke(SECTION) $output
 }
-#################################################################################
-
 
 #################################################################################
 # UPDATE NUKE BUFFER (GL1.0)                                                    #
@@ -1697,8 +1601,6 @@ proc fuelnuke {type path section line} {
 	set nuke(LASTTYPE) $type
 	set nuke(LASTDIR) $path
 }
-#################################################################################
-
 
 #################################################################################
 # FLUSH NUKE BUFFER  (GL1.0)                                                    #
@@ -1734,8 +1636,6 @@ proc launchnuke {} {
 
 	set nuke(SHOWN) 1
 }
-#################################################################################
-
 
 #################################################################################
 # CHECK IF RELEASE SHOULD NOT BE ANNOUNCED                                      #
@@ -1747,15 +1647,13 @@ proc denycheck {release} {
 	}
 	return 0
 }
-#################################################################################
-
 
 #################################################################################
 # SHOW INCOMPLETE LIST                                                          #
 #################################################################################
 proc show_incompletes {nick uhost hand chan arg } {
 	global sitename binary
-	if {![checkchan $nick $chan]} {return}
+	checkchan $nick $chan
 
 	foreach line [split [exec $binary(INCOMPLETE)] "\n"] {
 		if {![info exists newline($line)]} {
@@ -1764,8 +1662,6 @@ proc show_incompletes {nick uhost hand chan arg } {
 		puthelp "PRIVMSG $nick :$line\003$newline($line)"
 	}
 }
-#################################################################################
-
 
 #################################################################################
 # SHOW WELCOME MSG                                                              #
@@ -1786,8 +1682,6 @@ proc welcome_msg {nick uhost hand chan } {
 		}
 	}
 }
-#################################################################################
-
 
 #################################################################################
 # CHECK BOUNCER STATUSES                                                        #
@@ -1842,15 +1736,13 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 		set raw ""
 	}
 }
-#################################################################################
-
 
 #################################################################################
 # Help Section                                                                  #
 #################################################################################
 proc help {nick uhost hand chan arg} {
 	global sections cmdpre dver scriptpath
-	if {![checkchan $nick $chan]} {return}
+	checkchan $nick $chan
 
 	set file "$scriptpath/dZSbot.help"
 	if {![file readable $file]} {
@@ -1872,8 +1764,6 @@ proc help {nick uhost hand chan arg} {
 	}
 	puthelp "PRIVMSG $nick : Valid sections are: $sections"
 }
-#################################################################################
-
 
 #################################################################################
 # LOAD A THEME FILE                                                             #
@@ -1922,8 +1812,6 @@ proc loadtheme {file} {
 	}
 	return $ret
 }
-#################################################################################
-
 
 #################################################################################
 # REPLACES THEMERELATED STUFF IN A GIVEN STRING, STATIC REPLACE FOR STARTUP     #
@@ -1986,8 +1874,6 @@ proc themereplace {targetString section} {
 
 	return [subst -nocommands $targetString]
 }
-#################################################################################
-
 
 #################################################################################
 # OUTPUTS STUFF TO IRC / DCC CHAT IF DEBUG MODE ON :)                           #
@@ -2006,11 +1892,11 @@ proc dprint {arg1 {arg2 0}} {
 	set level_str [$level "1"]
 	set level     [$level]
 
-	if {[llength [array names "disable" "DEBUG"]] == 0} {
+	if {[llength [array names disable DEBUG]] == 0} {
 		putlog "dZSbot error: disable(DEBUG) not set, defaulting to 0."
 		set disable(DEBUG) 0
 	}
-	if {[llength [array names "disable" "DEBUG_DCC"]] == 0} {
+	if {[llength [array names disable DEBUG_DCC]] == 0} {
 		putlog "dZSbot error: disable(DEBUG_DCC) not set, defaulting to 0."
 		set disable(DEBUG_DCC) 0
 	}
@@ -2019,7 +1905,7 @@ proc dprint {arg1 {arg2 0}} {
 	if {$debuglevel < $level} { return; }
 
 	if {!$disable(DEBUG_DCC)} {
-		if {[llength [array names "announce" "DEBUG_DCC"]] > 0} {
+		if {[llength [array names announce DEBUG_DCC]] > 0} {
 			set outp [themereplace [basicreplace $announce(DEBUG_DCC) $level_str] "none"]
 			putlog "dZSbot debug: $outp"
 		} else {
@@ -2030,12 +1916,15 @@ proc dprint {arg1 {arg2 0}} {
 	if {!$disable(DEBUG)} {
 		set chans $chanlist(DEFAULT)
 		set outp $announce(DEFAULT)
-		if {[llength [array names "chanlist" "DEBUG"]] > 0} { set chans $chanlist(DEBUG) }
-		if {[llength [array names "announce" "DEBUG"]] > 0} { set outp $announce(DEBUG) }
+		if {[llength [array names chanlist DEBUG]] > 0} { set chans $chanlist(DEBUG) }
+		if {[llength [array names announce DEBUG]] > 0} { set outp $announce(DEBUG) }
 		set outp [themereplace [basicreplace $outp $level_str] "none"
 		foreach chan $chans { putquick "PRIVMSG $chan :$outp" }
 	}
 }
+
+#################################################################################
+# START UP STUFF                                                                #
 #################################################################################
 
 if {[info exists enable_irc_invite]} {
@@ -2062,21 +1951,21 @@ if {![loadtheme $announce(THEMEFILE)]} {
 	}
 }
 
-if {![array exists chanlist] || [llength [array names "chanlist" "DEFAULT"]] == 0} {
+if {![array exists chanlist] || [llength [array names chanlist DEFAULT]] == 0} {
 	putlog "dZSbot error: no entry in chanlist set, or chanlist(DEFAULT) not set."
 	set dzerror 1
 }
-if {![array exists announce] || [llength [array names "announce" "DEFAULT"]] == 0} {
+if {![array exists announce] || [llength [array names announce DEFAULT]] == 0} {
 	putlog "dZSbot error: no entry in announce set, or announce(DEFAULT) not set."
 	putlog "dZSbot error: setting announce(DEFAULT) to '\[DEFAULT\] %msg'."
 	set announce(DEFAULT) "\[DEFAULT\] %msg"
 }
-if {![array exists variables] || [llength [array names "variables" "DEFAULT"]] == 0} {
+if {![array exists variables] || [llength [array names variables DEFAULT]] == 0} {
 	putlog "dZSbot error: no entry in variables set, or variables(DEFAULT) not set."
 	putlog "dZSbot error: setting variables(DEFAULT) to '%pf %msg'."
 	set variables(DEFAULT) "%pf %msg"
 }
-if {![array exists disable] || [llength [array names "disable" "DEFAULT"]] == 0} {
+if {![array exists disable] || [llength [array names disable DEFAULT]] == 0} {
 	putlog "dZSbot error: no entry in disable set, or disable(DEFAULT) not set."
 	putlog "dZSbot error: setting disable(DEFAULT) to '0."
 	set disable(DEFAULT) "0"
@@ -2086,7 +1975,7 @@ if {![array exists disable] || [llength [array names "disable" "DEFAULT"]] == 0}
 # New message should have identical variables definition as old message
 # New announce set to old announce if not found in theme file (and output a
 # warning message).
-foreach rep [array names "msgreplace"] {
+foreach rep [array names msgreplace] {
 	set rep [split $msgreplace($rep) ":"]
 	set variables([lindex $rep 2]) $variables([lindex $rep 0])
 	set disable([lindex $rep 2]) 0
