@@ -424,7 +424,7 @@ int main( int argc, char **argv ) {
 	    case 0: /* ZIP CHECK */
 		d_log("File type is: ZIP\n");
 		d_log("Testing file integrity with unzip\n");
-		sprintf(target, "/bin/unzip -qqt %s", raceI.file.name);
+		sprintf(target, "/bin/unzip -qqt \"%s\"", raceI.file.name);
 		if (execute(target) != 0) {
 		    d_log("Integrity check failed\n");
 		    sprintf(raceI.misc.error_msg, BAD_ZIP);
@@ -586,8 +586,8 @@ int main( int argc, char **argv ) {
 		}
 
 #if ( enable_nfo_script == TRUE )
-		    d_log("Executing nfo script (%s %s)\n", nfo_script, raceI.file.name);
-		    sprintf(target, nfo_script " %s", raceI.file.name);
+		    d_log("Executing nfo script (%s)\n", nfo_script);
+		    sprintf(target, nfo_script " \"%s\"", raceI.file.name);
 		    /*if ( execute_old(target) != 0 ) {*/
 		    if ( execute(target) != 0 ) {
 			d_log("Failed to execute nfo_script!");
@@ -1006,7 +1006,7 @@ int main( int argc, char **argv ) {
 
 #if ( enable_complete_script == TRUE )
 	    d_log("Executing complete script\n");
-	    sprintf(target, complete_script " %s", raceI.file.name);
+	    sprintf(target, complete_script " \"%s\"", raceI.file.name);
 	    execute(target);
 #endif
 	} else {
@@ -1027,7 +1027,7 @@ int main( int argc, char **argv ) {
 #if ( enable_accept_script == TRUE )
     if ( exit_value == EXIT_SUCCESS ) {
 	d_log("Executing accept script\n");
-	sprintf(target, accept_script " %s", raceI.file.name);
+	sprintf(target, accept_script " \"%s\"", raceI.file.name);
 	execute(target);
     }
 #endif
