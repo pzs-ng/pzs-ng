@@ -1810,6 +1810,8 @@ foreach {filename filepath} [array get binary] {
 		if {[string equal "CURL" $filename]} {continue}
 		if {[string equal "PING" $filename] && ![istrue $bnc(PING)]} {continue}
 	}
+	if {![istrue $enable_irc_invite] && [string equal "PASSCHK" $filename]} {continue}
+
 	if {![file executable $filepath]} {
 		putlog "dZSbot error: Invalid path/permissions for $filename ($filepath)."
 		set dzerror 1
