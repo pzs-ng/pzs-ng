@@ -212,10 +212,12 @@ void load_sysconfig(const char *config_file)
 		}
 
 		if (strcasecmp(lvalue, "datapath") == 0) {
-			strlcpy(datapath, rvalue, sizeof(datapath));
+			strncpy(datapath, rvalue, sizeof(datapath) - 1);
+			datapath[sizeof(datapath) - 1] = 0;
 		}
 		if (strcasecmp(lvalue, "rootpath") == 0) {
-			strlcpy(rootpath, rvalue, sizeof(rootpath));
+			strncpy(rootpath, rvalue, sizeof(rootpath) - 1);
+			rootpath[sizeof(rootpath) - 1] = 0;
 		}
 	}
 
