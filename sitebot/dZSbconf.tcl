@@ -43,6 +43,10 @@ set bnc(TIMEOUT)					"10"
 set speed(INCOMING)					"12500"
 set speed(OUTGOING)					"12500"
 
+# During !idlers what is the minimum amount of seconds for a user to be shown as "idle"
+# set to 0 to show all users who are not currently upload/downloading (may be a lot)
+set minidletime						"10"
+
 # What sections are we announcing for? (Remeber to define path and type below)
 set sections						"GAMES APPS MP3 0DAY MV"
 
@@ -65,9 +69,7 @@ set binary(BNCTEST)					"/glftpd/bin/bnctest.sh"
 set binary(BNCCHECK)				"/glftpd/bin/bnc-check.pl"
 set binary(INCOMPLETE)				"/glftpd/bin/incomplete-list.sh"
 set binary(DF)						"/bin/df"
-set binary(LEECH)					"/glftpd/bin/leechers.sh"
-set binary(UPLOAD)					"/glftpd/bin/uploaders.sh"
-set binary(IDLE)					"/glftpd/bin/idlers.sh"
+set binary(SITEWHO)					"/glftpd/bin/sitewho"
 # This is needed for autodetection of glversion. If you unset this, use_glftpd2
 # MUST be set to YES or NO :)
 set binary(GLFTPD)					"/glftpd/bin/glftpd"
