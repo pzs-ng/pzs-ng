@@ -4,7 +4,7 @@
 #
 # Created & maintained by: dakrer (dakrer@hotmail.com, #pzs-ng @ EFnet)
 #
-# Tested with: pzs-ng, revision 1441 (post beta4)
+# Tested with: pzs-ng, revision 1464 (pre RC1)
 #
 # The theme is designed to limit the amount of output while keeping readability
 # high. The use of colors is limited to important events such as pre, newdir,
@@ -16,8 +16,7 @@
 # should be redirected to a staff channel instead of the main channel anyway).
 #
 # For best results this theme should be used with a sitebot where the following
-# announces have been disabled:
-# NEWLEADER_*, UPDATE_*, WIPE, WIPE-r, FAILLOGIN, ALTWHO
+# announces have been disabled: NEWLEADER_*, UPDATE_*
 #
 # Also, to limit output further the following changes to the zsconfig.h file
 # are recommended:
@@ -27,7 +26,16 @@
 # #define max_groups_in_top               1
 #
 # This theme have custom announces for samples/subs/covers/cds/discs, please
-# uncomment the msgreplace example code in dZSbot.conf to enable them!
+# add the following to dZSbot.conf to enable them:
+# set msgreplace(0)           "NEWDIR:*/sample:SAMPLE"
+# set msgreplace(1)           "NEWDIR:*/cd?:NEWCD"
+# set msgreplace(2)           "NEWDIR:*/disc?:NEWDISC"
+# set msgreplace(3)           "NEWDIR:*/disk?:NEWDISC"
+# set msgreplace(4)           "NEWDIR:*/subs:SUBTITLES"
+# set msgreplace(5)           "NEWDIR:*/vobsub:SUBTITLES"
+# set msgreplace(6)           "NEWDIR:*/vobsubs:SUBTITLES"
+# set msgreplace(7)           "NEWDIR:*/cover:COVERS"
+# set msgreplace(8)           "NEWDIR:*/covers:COVERS"
 #
 # By default this theme does not use a prefix (usually the sitename). If you use
 # this theme in a channel where other sites also announce (like a site ring) you
@@ -40,7 +48,8 @@
 ################################################################################
 
 
-# Default colors, used for all sections except those defined below
+# Default colors, used for all sections. See default.zst for example on how to
+# use custom section colors (not used in this theme).
 COLOR1		= "03"
 COLOR2		= "04"
 COLOR3		= "07"
@@ -73,7 +82,6 @@ announce.IPNOTADDED				= "[%b{BAD IP}] Denied unknown connection from %b{%u_host
 announce.KILLGHOST				= "[%b{GHOST KILLED}] %b{%u_name} killed a ghost with PID %b{%pid}"
 announce.TAGLINE				= "[%b{TAGLINE}] %b{%u_name} has changed tagline to %b{%u_tagline}"
 announce.TIMEOUT				= "[%b{TIMEOUT}] %b{%u_name} has timed out after %b{%u_idletime}s"
-#announce.FAILLOGIN				= "[%b{BAD LOGIN}] %b{%failed_nick} failed login: %b{%word1 %word2}"
 
 ## Sysop announcements (only important announces are themed)
 announce.ADDUSER				= "[%b{ADDUSER}] %b{%u_siteop} added user %b{%u_name}"
@@ -85,6 +93,7 @@ announce.DELIP					= "[%b{DELIP}] %b{%u_siteop} removed ip %b{%u_ip} from %b{%u_
 announce.READDED				= "[%b{READD}] %b{%u_siteop} readded %b{%u_name}"
 announce.DELUSER				= "[%b{DELUSER}] %b{%u_siteop} deleted %b{%u_name}"
 announce.PURGED					= "[%b{PURGE}] %b{%u_siteop} purged %b{%u_name}"
+announce.KILLED					= "[%b{KILLED}] %b{%u_siteop} killed %b{%u_name} (PID: %pid)"
 announce.SYSOP					= "[%b{SYSOP LOG}] %msg"
 
 ## glFTPd announcements
@@ -113,7 +122,7 @@ announce.BAD_FILE_WRONGDIR			= "[%b{WRONG DIR}] %b{%u_name} uploaded a bad file 
 announce.BAD_FILE_YEAR				= "[%b{BAD YEAR}] %b{%u_name} uploaded a bad file (%b{banned year}) in %b{%releasename}"
 announce.BAD_FILE_ZIP				= "[%b{BAD ZIP}] %b{%u_name} uploaded a bad file (%b{ZIP integrity failed}) in %b{%releasename}"
 
-# some special loop variables - these format the racers and stats for each racer in the corresponding output.
+## Loop variables, these format the racers and stats
 announce.RACE_ZIP_LOOP1				= "%b{%a_name}%splitter"
 announce.RACE_ZIP_LOOP2				= "%b{%r_name}%splitter"
 announce.RACE_RAR_LOOP1				= "%b{%a_name}%splitter"
@@ -140,21 +149,21 @@ announce.COMPLETE_STAT_RACE_OTHER_LOOP1		= "%b{%r_name}%splitter"
 announce.COMPLETE_STAT_RACE_VIDEO_LOOP1		= "%b{%r_name}%splitter"
 announce.COMPLETE_STAT_RACE_AUDIO_CBR_LOOP1	= "%b{%r_name}%splitter"
 announce.COMPLETE_STAT_RACE_AUDIO_VBR_LOOP1	= "%b{%r_name}%splitter"
-announce.COMPLETE_STAT_RACE_RAR_LOOP2		= "|[%b{%section}] %g_racer_position. %b{%l10{%g_racer_name}} :: %b{%r6{%g_racer_mbytes}}MB :: %b{%r2{%g_racer_files}} files :: avg. %l8{%g_racer_avgspeed}"
-announce.COMPLETE_STAT_RACE_ZIP_LOOP2		= "|[%b{%section}] %g_racer_position. %b{%l10{%g_racer_name}} :: %b{%r6{%g_racer_mbytes}}MB :: %b{%r2{%g_racer_files}} files :: avg. %l8{%g_racer_avgspeed}"
-announce.COMPLETE_STAT_RACE_OTHER_LOOP2		= "|[%b{%section}] %g_racer_position. %b{%l10{%g_racer_name}} :: %b{%r6{%g_racer_mbytes}}MB :: %b{%r2{%g_racer_files}} files :: avg. %l8{%g_racer_avgspeed}"
-announce.COMPLETE_STAT_RACE_VIDEO_LOOP2		= "|[%b{%section}] %g_racer_position. %b{%l10{%g_racer_name}} :: %b{%r6{%g_racer_mbytes}}MB :: %b{%r2{%g_racer_files}} files :: avg. %l8{%g_racer_avgspeed}"
-announce.COMPLETE_STAT_RACE_AUDIO_CBR_LOOP2	= "|[%b{%section}] %g_racer_position. %b{%l10{%g_racer_name}} :: %b{%r6{%g_racer_mbytes}}MB :: %b{%r2{%g_racer_files}} files :: avg. %l8{%g_racer_avgspeed}"
-announce.COMPLETE_STAT_RACE_AUDIO_VBR_LOOP2	= "|[%b{%section}] %g_racer_position. %b{%l10{%g_racer_name}} :: %b{%r6{%g_racer_mbytes}}MB :: %b{%r2{%g_racer_files}} files :: avg. %l8{%g_racer_avgspeed}"
-announce.COMPLETE_STAT_RACE_RAR_LOOP3		= "|[%b{%section}] %u_racer_position. %b{%l10{%u_racer_name}} :: %b{%r6{%u_racer_mbytes}}MB :: %b{%r2{%u_racer_files}} files :: avg. %l8{%u_racer_avgspeed} :: W/M/A %u_racer_wkup/%u_racer_monthup/%u_racer_allup"
-announce.COMPLETE_STAT_RACE_ZIP_LOOP3		= "|[%b{%section}] %u_racer_position. %b{%l10{%u_racer_name}} :: %b{%r6{%u_racer_mbytes}}MB :: %b{%r2{%u_racer_files}} files :: avg. %l8{%u_racer_avgspeed} :: W/M/A %u_racer_wkup/%u_racer_monthup/%u_racer_allup"
-announce.COMPLETE_STAT_RACE_OTHER_LOOP3		= "|[%b{%section}] %u_racer_position. %b{%l10{%u_racer_name}} :: %b{%r6{%u_racer_mbytes}}MB :: %b{%r2{%u_racer_files}} files :: avg. %l8{%u_racer_avgspeed} :: W/M/A %u_racer_wkup/%u_racer_monthup/%u_racer_allup"
-announce.COMPLETE_STAT_RACE_VIDEO_LOOP3		= "|[%b{%section}] %u_racer_position. %b{%l10{%u_racer_name}} :: %b{%r6{%u_racer_mbytes}}MB :: %b{%r2{%u_racer_files}} files :: avg. %l8{%u_racer_avgspeed} :: W/M/A %u_racer_wkup/%u_racer_monthup/%u_racer_allup"
-announce.COMPLETE_STAT_RACE_AUDIO_CBR_LOOP3	= "|[%b{%section}] %u_racer_position. %b{%l10{%u_racer_name}} :: %b{%r6{%u_racer_mbytes}}MB :: %b{%r2{%u_racer_files}} files :: avg. %l8{%u_racer_avgspeed} :: W/M/A %u_racer_wkup/%u_racer_monthup/%u_racer_allup"
-announce.COMPLETE_STAT_RACE_AUDIO_VBR_LOOP3	= "|[%b{%section}] %u_racer_position. %b{%l10{%u_racer_name}} :: %b{%r6{%u_racer_mbytes}}MB :: %b{%r2{%u_racer_files}} files :: avg. %l8{%u_racer_avgspeed} :: W/M/A %u_racer_wkup/%u_racer_monthup/%u_racer_allup"
+announce.COMPLETE_STAT_RACE_RAR_LOOP2		= "\n[%b{%section}] %g_racer_position. %b{%l10{%g_racer_name}} :: %b{%r6{%g_racer_mbytes}}MB :: %b{%r2{%g_racer_files}} files :: avg. %l8{%g_racer_avgspeed}"
+announce.COMPLETE_STAT_RACE_ZIP_LOOP2		= "\n[%b{%section}] %g_racer_position. %b{%l10{%g_racer_name}} :: %b{%r6{%g_racer_mbytes}}MB :: %b{%r2{%g_racer_files}} files :: avg. %l8{%g_racer_avgspeed}"
+announce.COMPLETE_STAT_RACE_OTHER_LOOP2		= "\n[%b{%section}] %g_racer_position. %b{%l10{%g_racer_name}} :: %b{%r6{%g_racer_mbytes}}MB :: %b{%r2{%g_racer_files}} files :: avg. %l8{%g_racer_avgspeed}"
+announce.COMPLETE_STAT_RACE_VIDEO_LOOP2		= "\n[%b{%section}] %g_racer_position. %b{%l10{%g_racer_name}} :: %b{%r6{%g_racer_mbytes}}MB :: %b{%r2{%g_racer_files}} files :: avg. %l8{%g_racer_avgspeed}"
+announce.COMPLETE_STAT_RACE_AUDIO_CBR_LOOP2	= "\n[%b{%section}] %g_racer_position. %b{%l10{%g_racer_name}} :: %b{%r6{%g_racer_mbytes}}MB :: %b{%r2{%g_racer_files}} files :: avg. %l8{%g_racer_avgspeed}"
+announce.COMPLETE_STAT_RACE_AUDIO_VBR_LOOP2	= "\n[%b{%section}] %g_racer_position. %b{%l10{%g_racer_name}} :: %b{%r6{%g_racer_mbytes}}MB :: %b{%r2{%g_racer_files}} files :: avg. %l8{%g_racer_avgspeed}"
+announce.COMPLETE_STAT_RACE_RAR_LOOP3		= "\n[%b{%section}] %u_racer_position. %b{%l10{%u_racer_name}} :: %b{%r6{%u_racer_mbytes}}MB :: %b{%r2{%u_racer_files}} files :: avg. %l8{%u_racer_avgspeed} :: W/M/A %u_racer_wkup/%u_racer_monthup/%u_racer_allup"
+announce.COMPLETE_STAT_RACE_ZIP_LOOP3		= "\n[%b{%section}] %u_racer_position. %b{%l10{%u_racer_name}} :: %b{%r6{%u_racer_mbytes}}MB :: %b{%r2{%u_racer_files}} files :: avg. %l8{%u_racer_avgspeed} :: W/M/A %u_racer_wkup/%u_racer_monthup/%u_racer_allup"
+announce.COMPLETE_STAT_RACE_OTHER_LOOP3		= "\n[%b{%section}] %u_racer_position. %b{%l10{%u_racer_name}} :: %b{%r6{%u_racer_mbytes}}MB :: %b{%r2{%u_racer_files}} files :: avg. %l8{%u_racer_avgspeed} :: W/M/A %u_racer_wkup/%u_racer_monthup/%u_racer_allup"
+announce.COMPLETE_STAT_RACE_VIDEO_LOOP3		= "\n[%b{%section}] %u_racer_position. %b{%l10{%u_racer_name}} :: %b{%r6{%u_racer_mbytes}}MB :: %b{%r2{%u_racer_files}} files :: avg. %l8{%u_racer_avgspeed} :: W/M/A %u_racer_wkup/%u_racer_monthup/%u_racer_allup"
+announce.COMPLETE_STAT_RACE_AUDIO_CBR_LOOP3	= "\n[%b{%section}] %u_racer_position. %b{%l10{%u_racer_name}} :: %b{%r6{%u_racer_mbytes}}MB :: %b{%r2{%u_racer_files}} files :: avg. %l8{%u_racer_avgspeed} :: W/M/A %u_racer_wkup/%u_racer_monthup/%u_racer_allup"
+announce.COMPLETE_STAT_RACE_AUDIO_VBR_LOOP3	= "\n[%b{%section}] %u_racer_position. %b{%l10{%u_racer_name}} :: %b{%r6{%u_racer_mbytes}}MB :: %b{%r2{%u_racer_files}} files :: avg. %l8{%u_racer_avgspeed} :: W/M/A %u_racer_wkup/%u_racer_monthup/%u_racer_allup"
 # Example for when using prefix:
-#announce.COMPLETE_STAT_RACE_RAR_LOOP2		= "|[%b{%sitename}] [%b{%section}] %g_racer_position. %b{%l10{%g_racer_name}} :: %b{%r6{%g_racer_mbytes}}MB :: %b{%r2{%g_racer_files}} files :: avg. %l8{%g_racer_avgspeed}"
-#announce.COMPLETE_STAT_RACE_RAR_LOOP3		= "|[%b{%sitename}] [%b{%section}] %u_racer_position. %b{%l10{%u_racer_name}} :: %b{%r6{%u_racer_mbytes}}MB :: %b{%r2{%u_racer_files}} files :: avg. %l8{%u_racer_avgspeed} :: W/M/A %u_racer_wkup/%u_racer_monthup/%u_racer_allup"
+#announce.COMPLETE_STAT_RACE_RAR_LOOP2		= "\n[%b{%sitename}] [%b{%section}] %g_racer_position. %b{%l10{%g_racer_name}} :: %b{%r6{%g_racer_mbytes}}MB :: %b{%r2{%g_racer_files}} files :: avg. %l8{%g_racer_avgspeed}"
+#announce.COMPLETE_STAT_RACE_RAR_LOOP3		= "\n[%b{%sitename}] [%b{%section}] %u_racer_position. %b{%l10{%u_racer_name}} :: %b{%r6{%u_racer_mbytes}}MB :: %b{%r2{%u_racer_files}} files :: avg. %l8{%u_racer_avgspeed} :: W/M/A %u_racer_wkup/%u_racer_monthup/%u_racer_allup"
 
 ## Standard zipscript announcements
 announce.RACE_ZIP				= "[%b{%section}] %b{%t_percent%} done when %b{%u_name} races %reldir @ %u_speed"
@@ -193,12 +202,12 @@ announce.COMPLETE_OTHER				= "[%b{%section}] [%c3{%b{COMPLETE}}] %b{%relname} - 
 announce.COMPLETE_VIDEO				= "[%b{%section}] [%c3{%b{COMPLETE}}] %b{%relname} - %t_mbytesMB uploaded in %t_duration (%t_avgspeed) by %b{%u_name}"
 announce.COMPLETE_AUDIO_CBR			= "[%b{%section}] [%c3{%b{COMPLETE}}] %b{%reldir} - %t_mbytesMB uploaded in %t_duration (%t_avgspeed) by %b{%u_name}"
 announce.COMPLETE_AUDIO_VBR			= "[%b{%section}] [%c3{%b{COMPLETE}}] %b{%reldir} - %t_mbytesMB uploaded in %t_duration (%t_avgspeed) by %b{%u_name}"
-announce.COMPLETE_STAT_RACE_RAR			= "[%b{%section}] [%c3{%b{COMPLETE}}] %b{%relname} - %t_mbytesMB uploaded in %t_duration (%t_avgspeed) by %b{%u_count} racers. Slowest: %b{%u_slowest_name} (%u_slowest_speed), Fastest: %b{%u_fastest_name} (%u_fastest_speed)%loop3|[%b{%section}] Grouptop:%loop2"
-announce.COMPLETE_STAT_RACE_ZIP			= "[%b{%section}] [%c3{%b{COMPLETE}}] %b{%reldir} - %t_mbytesMB uploaded in %t_duration (%t_avgspeed) by %b{%u_count} racers. Slowest: %b{%u_slowest_name} (%u_slowest_speed), Fastest: %b{%u_fastest_name} (%u_fastest_speed)%loop3|[%b{%section}] Grouptop:%loop2"
-announce.COMPLETE_STAT_RACE_OTHER		= "[%b{%section}] [%c3{%b{COMPLETE}}] %b{%relname} - %t_mbytesMB uploaded in %t_duration (%t_avgspeed) by %b{%u_count} racers. Slowest: %b{%u_slowest_name} (%u_slowest_speed), Fastest: %b{%u_fastest_name} (%u_fastest_speed)%loop3|[%b{%section}] Grouptop:%loop2"
-announce.COMPLETE_STAT_RACE_VIDEO		= "[%b{%section}] [%c3{%b{COMPLETE}}] %b{%relname} - %t_mbytesMB uploaded in %t_duration (%t_avgspeed) by %b{%u_count} racers. Slowest: %b{%u_slowest_name} (%u_slowest_speed), Fastest: %b{%u_fastest_name} (%u_fastest_speed)%loop3|[%b{%section}] Grouptop:%loop2"
-announce.COMPLETE_STAT_RACE_AUDIO_CBR		= "[%b{%section}] [%c3{%b{COMPLETE}}] %b{%reldir} - %t_mbytesMB uploaded in %t_duration (%t_avgspeed) by %b{%u_count} racers. Slowest: %b{%u_slowest_name} (%u_slowest_speed), Fastest: %b{%u_fastest_name} (%u_fastest_speed)%loop3|[%b{%section}] Grouptop:%loop2"
-announce.COMPLETE_STAT_RACE_AUDIO_VBR		= "[%b{%section}] [%c3{%b{COMPLETE}}] %b{%reldir} - %t_mbytesMB uploaded in %t_duration (%t_avgspeed) by %b{%u_count} racers. Slowest: %b{%u_slowest_name} (%u_slowest_speed), Fastest: %b{%u_fastest_name} (%u_fastest_speed)%loop3|[%b{%section}] Grouptop:%loop2"
+announce.COMPLETE_STAT_RACE_RAR			= "[%b{%section}] [%c3{%b{COMPLETE}}] %b{%relname} - %t_mbytesMB uploaded in %t_duration (%t_avgspeed) by %b{%u_count} racers. Slowest: %b{%u_slowest_name} (%u_slowest_speed), Fastest: %b{%u_fastest_name} (%u_fastest_speed)%loop3\n[%b{%section}] Grouptop:%loop2"
+announce.COMPLETE_STAT_RACE_ZIP			= "[%b{%section}] [%c3{%b{COMPLETE}}] %b{%reldir} - %t_mbytesMB uploaded in %t_duration (%t_avgspeed) by %b{%u_count} racers. Slowest: %b{%u_slowest_name} (%u_slowest_speed), Fastest: %b{%u_fastest_name} (%u_fastest_speed)%loop3\n[%b{%section}] Grouptop:%loop2"
+announce.COMPLETE_STAT_RACE_OTHER		= "[%b{%section}] [%c3{%b{COMPLETE}}] %b{%relname} - %t_mbytesMB uploaded in %t_duration (%t_avgspeed) by %b{%u_count} racers. Slowest: %b{%u_slowest_name} (%u_slowest_speed), Fastest: %b{%u_fastest_name} (%u_fastest_speed)%loop3\n[%b{%section}] Grouptop:%loop2"
+announce.COMPLETE_STAT_RACE_VIDEO		= "[%b{%section}] [%c3{%b{COMPLETE}}] %b{%relname} - %t_mbytesMB uploaded in %t_duration (%t_avgspeed) by %b{%u_count} racers. Slowest: %b{%u_slowest_name} (%u_slowest_speed), Fastest: %b{%u_fastest_name} (%u_fastest_speed)%loop3\n[%b{%section}] Grouptop:%loop2"
+announce.COMPLETE_STAT_RACE_AUDIO_CBR		= "[%b{%section}] [%c3{%b{COMPLETE}}] %b{%reldir} - %t_mbytesMB uploaded in %t_duration (%t_avgspeed) by %b{%u_count} racers. Slowest: %b{%u_slowest_name} (%u_slowest_speed), Fastest: %b{%u_fastest_name} (%u_fastest_speed)%loop3\n[%b{%section}] Grouptop:%loop2"
+announce.COMPLETE_STAT_RACE_AUDIO_VBR		= "[%b{%section}] [%c3{%b{COMPLETE}}] %b{%reldir} - %t_mbytesMB uploaded in %t_duration (%t_avgspeed) by %b{%u_count} racers. Slowest: %b{%u_slowest_name} (%u_slowest_speed), Fastest: %b{%u_fastest_name} (%u_fastest_speed)%loop3\n[%b{%section}] Grouptop:%loop2"
 
 ## Postdel announce
 announce.INCOMPLETE				= "[%b{%section}] [%c2{%b{INCOMPLETE}}] %b{%releasename} is now incomplete thanks to %b{%u_name}"
@@ -213,7 +222,7 @@ announce.COVERS					= "[%b{%section}] [%c1{COVERS}] %path/%b{%reldir} (created b
 ## Third party scripts
 announce.IMDB					= "[%b{%section}] %msg"
 announce.IMDBFIND				= "[%b{%section}] %msg"
-announce.IMDBVAR				= "[%b{%section}] %b{%imdbname} (%imdburl), a %imdbdirector movie which scored %b{%imdbscore of 10} (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.|%b{[%section]} %b{%imdbname} plot summary: %imdbplot \[%imdbbar\]"
+announce.IMDBVAR				= "[%b{%section}] %b{%imdbname} (%imdburl), a %imdbdirector movie which scored %b{%imdbscore of 10} (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.\n%b{[%section]} %b{%imdbname} plot summary: %imdbplot \[%imdbbar\]"
 announce.PRE					= "[%b{%section}] [%c1{%b{NEW PRE}}] %c2{%b{%relname}} was pred by %b{%pregroup} (%b{%files} files / %b{%mbytes}MB)"
 announce.TURGEN					= "%msg"
 
@@ -246,9 +255,9 @@ announce.SPEEDDN				= "[%b{SPEED}] %b{%u_name} is downloading %b{%f_name} at %dn
 announce.SPEEDID				= "[%b{SPEED}] %b{%u_name} has been idle for %idletime"
 announce.SPEEDERROR				= "[%b{ERROR}] Nope, try again. Found noone by that name on site"
 announce.WELCOME				= "Welcome to %b{%sitename}'s sitechan. Type %cmdprehelp for help"
-announce.FREE					= "[%b{SPACE}] Free space on site:|%devices[%b{SPACE}] TOTALS: %b{%free} of %b{%total} (used %percentage%)"
-announce.FREE-DEV				= "[%b{SPACE}] %section: %b{%free} of %b{%total} (used %percentage%)|"
-announce.UPTIME					= "[%b{UPTIME}] %b{System:} %time, %b{%users} user(s), load: %load|[%b{UPTIME}] %b{Eggdrop:} %eggdrop"
+announce.FREE					= "[%b{SPACE}] Free space on site:\n%devices[%b{SPACE}] TOTALS: %b{%free} of %b{%total} (used %percentage%)"
+announce.FREE-DEV				= "[%b{SPACE}] %section: %b{%free} of %b{%total} (used %percentage%)\n"
+announce.UPTIME					= "[%b{UPTIME}] %b{System:} %time, %b{%users} user(s), load: %load\n[%b{UPTIME}] %b{Eggdrop:} %eggdrop"
 
 ## IRC Command: !new
 announce.NEW					= "[%b{NEW}] Latest releases in %b{%section} section:"
