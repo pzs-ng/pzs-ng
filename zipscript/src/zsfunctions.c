@@ -377,8 +377,9 @@ void createlink(char *factor1, char *factor2, char *source, char *ltarget) {
 
  d_log("new: ln -s %s %s\n", result, org);
  symlink(result, org);
-// d_log("old: ln -s %s %s\n", source, org);
-// symlink(source, org);
+
+/* d_log("old: ln -s %s %s\n", source, org);
+ symlink(source, org);*/
 
  m_free(org);
 }
@@ -565,6 +566,7 @@ abs2rel(path, base, result, size)
 	 */
 	rp = result;
 	for (bp = base + (branch - path); *bp; bp++)
+/* fixed by iwdisb */
 		if (*bp == '/' && *(bp + 1) != 0 && *(bp + 1) != '/') {
 			if (rp + 3 > endp)
 				goto erange;
