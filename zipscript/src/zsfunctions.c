@@ -428,33 +428,16 @@ void get_rar_info(char *filename) {
  *
  * Description: Executes extern program and returns return value
  *
- * Modified by js on 08.08.2004 to handle " and ' in arguments
- * Rewritten by js on 07.09.2004
+ * check execute_old for the... old version
  */
 int execute(char *s) {
-	int len, i=0, n;
-	char **ap, *argv[128], *p1, *p2;
-    
-	/* man strsep, omg */
-	for (ap = argv; (*ap = strsep(&s, " ")) != NULL;)
-		if (**ap != '\0')
-			if (++ap >= &argv[128])
-				break;
-    
-	switch (fork()) {
-		case 0: 
-			close(1);
-			close(2);
-			d_log("Executing command: %s\n", argv[0]);
-			n = execv(argv[0], argv);
-			exit(0);
-			break;
-		default:
-			wait(&n);
-			break;
-	}
+	int n;
 
-	return n >> 8;
+	if ((n = system(s)) == -1)
+		d_log("%s\n", errno);
+
+	return n;
+	
 }
 
 int execute_old(char *s) {
