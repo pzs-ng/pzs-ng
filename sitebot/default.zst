@@ -1,8 +1,7 @@
-color1 = "04"
-color2 = "11"
-color3 = "11"
-#prefix = "%c1{[%c2{%section}]}"
-prefix = "-%c1{%sitename}- [%c2{%section}]"
+COLOR1 = "04"
+COLOR2 = "11"
+COLOR3 = "11"
+PREFIX = "-%c1{%sitename}- [%c2{%section}]"
 fakesection.INVITE = "iNViTE"
 
 announce.NEWDIR			= "+ New Release: %path/%bold%release%bold (%relname) by %bold%user%bold@%group"
