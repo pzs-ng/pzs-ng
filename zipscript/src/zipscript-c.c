@@ -263,7 +263,7 @@ remove_pattern(param, pattern, op)
 int 
 main(int argc, char **argv)
 {
-	char           *fileext, *name_p, *temp_p = 0;
+	char           *fileext, *name_p, *temp_p = NULL, *temp_p_free = NULL;
 	char           *target = 0;
 	char	       *ext = 0;
 	char           *complete_msg = 0;
@@ -383,7 +383,7 @@ main(int argc, char **argv)
 		d_log("Reading section from env (%s)\n", getenv("SECTION"));
 		raceI.sectionname = malloc(sizeof(getenv("SECTION")) * sizeof(char));
 		sprintf(raceI.sectionname, getenv("SECTION"));
-		temp_p = strdup(gl_sections);
+		temp_p_free = temp_p = strdup((const char *)gl_sections);	/* temp_p_free is needed since temp_p is modified by strsep */
 		if ((temp_p) == NULL) {
 			d_log("Can't allocate memory for sections\n");
 		} else {
@@ -395,8 +395,7 @@ main(int argc, char **argv)
 				} else
 					n++;
 			}
-//			free(temp_p);
-//			FOR SOME REASON FREING THIS SEEMS TO GIVE COREDUMPS!
+			free(temp_p_free);
 		}
 	}
 	raceI.file.speed *= 1024;
