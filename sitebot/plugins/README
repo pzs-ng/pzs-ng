@@ -46,7 +46,7 @@ Example:
 
 - INVITEUSER
  Trigged: On !invite and and SITE INIVITE.
-    Args: event ircNick ftpUser ftpGroup
+    Args: event ircUser ftpUser ftpGroup ftpFlags
 
 - More to come...
 

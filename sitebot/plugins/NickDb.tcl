@@ -130,7 +130,7 @@ proc ::ngBot::NickDb::StripName {name} {
 # Called by the sitebot's event handler on
 # the "INVITEUSER" event.
 #
-proc ::ngBot::NickDb::InviteEvent {event ircUser ftpUser ftpGroup} {
+proc ::ngBot::NickDb::InviteEvent {event ircUser ftpUser ftpGroup ftpFlags} {
     variable hostChange
     variable hostFormat
     if {![string equal "INVITEUSER" $event]} {return 1}

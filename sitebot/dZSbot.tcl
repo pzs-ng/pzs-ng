@@ -243,7 +243,8 @@ proc readlog {} {
 	    }
 		## Invite users to public and private channels.
 		if {[string equal $event "INVITE"]} {
-			eval ng_inviteuser [lrange $line 0 2]
+		    foreach {nick user group flags} $line {break}
+			ng_inviteuser $nick $user $group $flags
 		}
 		if {[lsearch -exact $msgtypes(SECTION) $event] != -1} {
 			set path [lindex $line 0]
@@ -677,7 +678,7 @@ proc sndone {chan text {section "none"}} {
 # Invite User                                                                   #
 #################################################################################
 
-proc ng_inviteuser {nick user group} {
+proc ng_inviteuser {nick user group flags} {
 	global invite_channels privchannel privgroups privusers
     if {![eventhandler precommand INVITEUSER [list $nick $user $group]]} {return}
 
@@ -698,7 +699,7 @@ proc ng_inviteuser {nick user group} {
 			}
 		}
 	}
-	eventhandler postcommand INVITEUSER [list $nick $user $group]
+	eventhandler postcommand INVITEUSER [list $nick $user $group $flags]
 	return
 }
 
@@ -709,7 +710,7 @@ proc ng_invite {nick host hand argv} {
 		set user [lindex $argv 0]
 		set pass [lindex $argv 1]
 		set result [exec $binary(PASSCHK) $user $pass $location(PASSWD)]
-		set group ""
+		set group ""; set flags ""
 
 		if {[string equal $result "MATCH"]} {
 			set output "$theme(PREFIX)$announce(MSGINVITE)"
@@ -718,14 +719,15 @@ proc ng_invite {nick host hand argv} {
 				set data [read $handle]
 				close $handle
 				foreach line [split $data "\n"] {
-					if {[string equal -length 6 $line "GROUP "]} {
-						set group [lindex $line 1]; break
-					}
+				    switch -exact -- [lindex $line 0] {
+				        "FLAGS" {set flags [lindex $line 1]}
+				        "GROUP" {set group [lindex $line 1]}
+				    }
 				}
 			} else {
 				putlog "dZSbot error: Unable to open user file for \"$user\" ($error)."
 			}
-			ng_inviteuser $nick $user $group
+			ng_inviteuser $nick $user $group $flags
 		} else {
 			set output "$theme(PREFIX)$announce(BADMSGINVITE)"
 		}
@@ -901,7 +903,7 @@ proc ng_bnc {nick uhost hand chan arg} {
 					7 {set error "connection refused"}
 					9 - 10 {set error "couldn't login"}
 					28 {set error "timed out"}
-					default {putlog "dZSbot error: Unknown curl exit code \"$code\", please report to pzs-ng developers."}
+					default {putlog "dZSbot error: Unknown curl exit code \"$code\", check the \"exit codes\" section of curl's man page."}
 				}
 			} else {
 				## If the first list item in errorCode is not "CHILDSTATUS",
@@ -1051,7 +1053,8 @@ proc ng_stats {type time nick uhost hand chan argv} {
 }
 
 proc ng_uptime {nick uhost hand chan argv} {
-	global announce binary theme uptime
+	global announce binary theme
+	checkchan $nick $chan
 
 	if {[catch {exec $binary(UPTIME)} reply]} {
 		putlog "dZSbot error: Unable to execute uptime ($reply)."
@@ -1710,7 +1713,7 @@ foreach {varname logtype} {glftpdlog 0 loginlog 1 sysoplog 2} {
 			putlog "dZSbot error: Unable to read the log file \"$filepath\"."
 			set dzerror 1
 		} else {
-			lappend loglist $logtype [incr logid] [file normalize $filepath]
+			lappend loglist $logtype [incr logid] $filepath
 			set lastread($logid) [file size $filepath]
 		}
 	}
