@@ -22,6 +22,17 @@
 #define O_SYNC O_FSYNC
 #endif
 
+#define zip_complete_type               0
+#define zip_norace_complete_type        0
+#define rar_complete_type               0
+#define rar_norace_complete_type        0
+#define audio_complete_type             0
+#define audio_norace_complete_type      0
+#define video_complete_type             0
+#define video_norace_complete_type      0
+#define other_complete_type             0
+#define other_norace_complete_type      0
+
 #define video_announce_norace_complete_type		"COMPLETE"
 #define zip_announce_norace_complete_type		"COMPLETE"
 #define rar_announce_norace_complete_type		"COMPLETE"

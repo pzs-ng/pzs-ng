@@ -473,41 +473,6 @@
 #endif
 
 /*
- * Defines how stats are written into log 0 = complete msg only 1 = n line
- * mode (complete, pre_stats, user top, between stats, group top, post stats)
- */
-#ifndef zip_complete_type
-#define zip_complete_type		0
-#endif
-#ifndef zip_norace_complete_type
-#define zip_norace_complete_type	0
-#endif
-#ifndef rar_complete_type
-#define rar_complete_type		1
-#endif
-#ifndef rar_norace_complete_type
-#define rar_norace_complete_type	0
-#endif
-#ifndef audio_complete_type
-#define audio_complete_type		1
-#endif
-#ifndef audio_norace_complete_type
-#define audio_norace_complete_type	0
-#endif
-#ifndef video_complete_type
-#define video_complete_type		1
-#endif
-#ifndef video_norace_complete_type
-#define video_norace_complete_type	0
-#endif
-#ifndef other_complete_type
-#define other_complete_type		1
-#endif
-#ifndef other_norace_complete_type
-#define other_norace_complete_type	0
-#endif
-
-/*
  * Get list of competitors (all racers excluding current user) - stored in %R
  * cookie
  */

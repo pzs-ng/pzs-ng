@@ -21,6 +21,17 @@
 #define FILE_MAX			256
 #define MAXIMUM_FILES_IN_RELEASE	1024
 
+#define zip_complete_type		0
+#define zip_norace_complete_type	0
+#define rar_complete_type		0
+#define rar_norace_complete_type	0
+#define audio_complete_type		0
+#define audio_norace_complete_type	0
+#define video_complete_type		0
+#define video_norace_complete_type	0
+#define other_complete_type		0
+#define other_norace_complete_type	0
+
 #ifndef O_SYNC
 #define O_SYNC O_FSYNC
 #endif

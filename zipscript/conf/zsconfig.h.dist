@@ -60,16 +60,6 @@
 #define audio_genre_warn		TRUE
 
 #define announce_norace			TRUE
-#define zip_complete_type		0
-#define zip_norace_complete_type	0
-#define rar_complete_type		1
-#define rar_norace_complete_type	0
-#define audio_complete_type		1
-#define audio_norace_complete_type	0
-#define video_complete_type		1
-#define video_norace_complete_type	0
-#define other_complete_type		1
-#define other_norace_complete_type	0
 
 #define enable_nfo_script		FALSE
 #define nfo_script			"/bin/psxc-imdb.sh"
