@@ -18,7 +18,7 @@
 # Changes
 ###############################################################
 
-r1418: Failed login theme changes and removed the cat binary.
+r1419: Failed login theme changes and removed the cat binary.
 - Theme file (.zst) changes:
 Renamed: BADUSERHOST -> BADHOSTMASK and BADPASSWD -> BADPASSWORD.
     New: BAD_FILE_DUPENFO, BANNEDHOST, and DELETED.
