@@ -16,7 +16,7 @@ if {[catch {source [file dirname [info script]]/dZSbconf.tcl} tmperror]} {
 	die
 }
 
-foreach bin [array names binary] { 
+foreach bin [array names binary] {
 	if {![file executable $binary($bin)]} {
 		putlog "dZSbot: Wrong path/missing bin for $bin - Please fix."
 		set dzerror "1"
@@ -40,7 +40,7 @@ if {$use_glftpd2 == "AUTO"} {
 		putlog "dZSbot: autodetecting glftpd-version failed. Set use_glftpd in [file dirname [info script]]/dZSbconf.tcl manually."
 	}
 }
-	
+
 
 
 #################################################################################
@@ -102,7 +102,7 @@ bind join	-|-	*			welcome_msg
 
 bind msg	-|-	!invite			invite
 
-if {$bindnopre == "YES"} { 
+if {$bindnopre == "YES"} {
 	bind pub	-|- !who		who
 	bind pub	-|- !speed		speed
 	bind pub	-|- !bw			ng_bandwidth
@@ -258,7 +258,7 @@ proc postcmd {msgtype section path} {
 			if {[info exists isexec]} {
 				if {[catch {exec $cmd $msgtype $section $path} result] != 0} {
 					putlog "dZSbot error: exec \"$cmd\" caused an error - \"$result\""
-					unset isexec 
+					unset isexec
 				}
 			} else {
 				if {[catch {$cmd $msgtype $section $path} result] != 0} {
@@ -507,13 +507,13 @@ proc ng_bwup { nick uhost hand chan args} { global binary announce speed theme
 #################################################################################
 proc ng_uploaders {nick uhost hand chan args} {
 	global binary announce speed theme
-	
+
 	set output "$theme(PREFIX)$announce(UPLOAD)"
 	set output [basicreplace "$output" "UPLOAD"]
 	putserv "PRIVMSG $chan :$output "
 
 	set raw [exec $binary(WHO) "--raw"]
-	
+
 	set getsecond 0
 	set count 0
 	set total 0.0
@@ -550,7 +550,7 @@ proc ng_uploaders {nick uhost hand chan args} {
 		}
 	}
 	set per [format "%.1f" [expr double($total) * 100 / double($speed(INCOMING)) ]]
-	
+
 	set output [replacevar "$theme(PREFIX)$announce(TOTUPDN)" "%type" "Uploaders:"]
 	set output [replacevar $output "%count" $count]
 	set output [replacevar $output "%total" $total]
@@ -600,7 +600,7 @@ proc ng_leechers {nick uhost hand chan args} {
 	set output "$theme(PREFIX)$announce(LEECH)"
 	set output [basicreplace "$output" "LEECH"]
 	putserv "PRIVMSG $chan :$output "
-	
+
 	set raw [exec $binary(WHO) "--raw"]
 
 	set getsecond 0
@@ -612,7 +612,7 @@ proc ng_leechers {nick uhost hand chan args} {
 
 			USER {
 				switch [lindex $line 4] {
-				
+
 					DN {
 						set user  [lindex $line 2]
 						set group [lindex $line 3]
@@ -640,13 +640,13 @@ proc ng_leechers {nick uhost hand chan args} {
 		}
 	}
 	set per [format "%.1f" [expr double($total) * 100 / double($speed(OUTGOING)) ]]
-	
+
 	set output [replacevar "$theme(PREFIX)$announce(TOTUPDN)" "%type" "Leechers:"]
 	set output [replacevar $output "%count" $count]
 	set output [replacevar $output "%total" $total]
 	set output [replacevar $output "%per" $per]
 	set output [basicreplace "$output" "LEECH"]
-	
+
 	putserv "PRIVMSG $chan :$output "
 }
 #################################################################################
@@ -663,12 +663,12 @@ proc ng_idlers { nick uhost hand chan args} { global binary announce speed minid
 	set count 0
 	set total 0.0
 	foreach line [split $raw "\n"] {
-	
+
 		switch [lindex $line 0] {
 
 			USER {
 				switch [lindex $line 4] {
-				
+
 					ID {
 						set user  [lindex $line 2]
 						set group [lindex $line 3]
@@ -695,7 +695,7 @@ proc ng_idlers { nick uhost hand chan args} { global binary announce speed minid
 					}
 				}
 			}
-		}	
+		}
 	}
 	set output [replacevar "$theme(PREFIX)$announce(TOTIDLE)" "%count" $count]
 	set output [basicreplace $output "IDLE"]
@@ -798,7 +798,7 @@ proc invite {nick host hand arg} {
 				}
 			}
 		} else {
-			set output "$theme(PREFIX)$announce(BADMSGINVITE)" 
+			set output "$theme(PREFIX)$announce(BADMSGINVITE)"
 		}
 
 		set output [replacevar $output "%ircnick" $nick]
@@ -854,7 +854,7 @@ proc show_free {nick uhost hand chan arg} {
 #################################################################################
 proc launchnuke2 {type path section sargs dargs} {
 	global nuke hidenuke announce sitename theme
-	
+
 	set nuke(TYPE) $type
 	set nuke(PATH) $path
 	set nuke(SECTION) $section
@@ -872,7 +872,7 @@ proc launchnuke2 {type path section sargs dargs} {
 	set split [split $nuke(PATH) "/"]
 	set ll [llength $split]
 
-	set output "$theme(PREFIX)$announce($nuke(TYPE))" 
+	set output "$theme(PREFIX)$announce($nuke(TYPE))"
 	set output [replacevar $output "%nuker" $nuke(NUKER)]
 	set output [replacevar $output "%nukees" $nuke(NUKEE)]
 	set output [replacevar $output "%type" $nuke(TYPE)]
@@ -1010,7 +1010,7 @@ proc ng_bnc_check {nick uhost hand chan arg} {global bnc binary
 		set exitlevel [catch {exec $binary(NCFTPLS) -P $port -u $bnc(USER) -p $bnc(PASS) -t $bnc(TIMEOUT) -r 0 ftp://$ip 2>@ stdout} raw]
 		set dur [expr [clock clicks -milliseconds] - $dur]
 		if { $bnc(PING) == "TRUE" } {set ping ", ping: [format %.1f [lindex [split [lindex [lindex [split [ exec $binary(PING) -c1 $ip ] \"\n\"] 1] 6] \"=\"] 1]]ms"} else {set ping ""}
-		
+
 		if { $exitlevel == 0 } {
 			putquick "NOTICE $nick :$count. .$loc - $ip:$port - UP (login: [format %.0f $dur]ms$ping)"
 		} else {
@@ -1113,7 +1113,7 @@ proc loadtheme {file} {
 			}
 		}
 	}
-	
+
 	foreach name [array names theme] { set theme($name) [themereplace $theme($name)] }
 	foreach name [array names theme_fakes] { set theme_fakes($name) [themereplace $theme_fakes($name)] }
 	foreach name [array names announcetmp] { set announce($name) [themereplace $announcetmp($name)] }
@@ -1127,7 +1127,7 @@ proc loadtheme {file} {
 		}
 	}
 	return $ret
-}	
+}
 #################################################################################
 
 
@@ -1156,10 +1156,10 @@ if {[info exists dZStimer]} {
 set dZStimer [utimer 1 "readlog"]
 
 if {![loadtheme $announce(THEMEFILE)]} {
-	if {[loadtheme "default.zst"]} {
-		putlog "dZSbot: Couldn't load theme '$announce(THEMEFILE)', loaded 'default.zst' instead!"
+	if {[loadtheme "default.zst.dist"]} {
+		putlog "dZSbot: Couldn't load theme '$announce(THEMEFILE)', loaded 'default.zst.dist' instead!"
 	} else {
-		putlog "dZSbot: Couldn't load theme '$announce(THEMEFILE)' and not 'default.zst' either. Cannot continue!"
+		putlog "dZSbot: Couldn't load theme '$announce(THEMEFILE)' and not 'default.zst.dist' either. Cannot continue!"
 		set dzerror 1
 	}
 }
