@@ -114,7 +114,6 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 
 	gettimeofday(&tstop, (struct timezone *)0);
 
-	filename = malloc(1024);
 	for (x = 0; x < n; x++) {
 		if (!user[x].procid)
 			continue;
@@ -138,12 +137,16 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			}
 		}
 
+		if (strplen(user[x].status) > 5)
+			filename = malloc(strplen(user[x].status) - 5 + 1);
+		else
+			filename = malloc(1);
+
 		if ((strncasecmp(user[x].status, "STOR ", 5) == 0 ||
 			strncasecmp(user[x].status, "APPE ", 5) == 0) &&
 			user[x].bytes_xfer != 0 && mask == 0 ) {
 
 			m = strplen(user[x].status) - 5;
-//			filename = malloc(m) + 1;
 			if (m < 15 || raw)
 				sprintf(filename, "%.*s", m, user[x].status + 5);
 			else
@@ -162,7 +165,6 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 				sprintf(status, "\"UP\" \"%.1f\"", speed);
 		} else if ((!strncasecmp (user[x].status, "RETR ", 5) && user[x].bytes_xfer) && mask == 0 ) {
 			m = strplen(user[x].status) - 5;
-//			filename = malloc(m) + 1;
 
 			for (i = sprintf(realfile, "%s", user[x].currentdir); realfile[i] != '/' && i > 0; i--);
 			sprintf(realfile + i + 1, "%.*s", m, user[x].status + 5);
@@ -190,7 +192,6 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			else
 				sprintf(status, "\"DN\" \"%.1f\"", speed);
 		} else {
-//			filename = malloc(1);
 			*bar = *filename = hours = minutes = 0;
 			seconds = tstop.tv_sec - user[x].tstart.tv_sec;
 			while (seconds >= 3600) { hours++; seconds -= 3600; }
@@ -231,8 +232,8 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			}
 			onlineusers++;
 		}
+		free(filename);
 	}
-	free(filename);
 }
 
 /* COMPARE USERFLAGS ON CHECKFLAGS */
