@@ -58,7 +58,7 @@ announce.STAT_USERS_HEAD	= "[%b{stats }][%section] Users hall of fame"
 announce.STAT_USERS	        = "[%b{stats }][%section] %u_position %b{%u_name} of %g_name :: %b{%u_files}f :: %b{%u_mbytes}mb :: %b{%u_percent}% :: %b{%u_avgspeed}kb/s :: wkup %b{%u_wkup}"
 announce.STAT_GROUPS_HEAD	= "[%b{stats }][%section] Groups hall of fame"
 announce.STAT_GROUPS		= "[%b{stats }][%section] %g_position %b{%g_name} :: %b{%g_files}f :: %b{%g_mbytes}mb :: %b{%g_percent}% :: %b{%g_avgspeed}kb/s"
-announce.STAT_POST		= "[%b{stats }][%section] Race for %b{%releasename} is over, lasted %t_duration seconds. (%u_count racer(s), %g_count group(s))"
+announce.STAT_POST		= "[%b{stats }][%section] Race for %b{%reldir} is over, lasted %t_duration seconds. (%u_count racer(s), %g_count group(s))"
 
 # 3rd party addons - take note that these variables should possibly be changed in order to work with your setup/3rd party app.
 announce.PRE		        = "[%b{%c1{pre}   }][%section] %{%releasename} by %b{%pregroup} in %b{%files} files (%b{%mbytes}mb)"
