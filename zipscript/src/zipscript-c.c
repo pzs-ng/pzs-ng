@@ -209,15 +209,13 @@ int main( int argc, char **argv ) {
     char		*halfway_msg = 0;
     char		*complete_bar = 0;
     char		*error_msg;
-    char		*sections;
     unsigned int	crc, s_crc;
     unsigned char	exit_value = EXIT_SUCCESS;
     unsigned char	no_check = FALSE;
     unsigned char	complete_type = 0;
-    int		cnt, cnt2;
-    int		n;
-    int		write_log;
-    struct	stat	fileinfo;
+    int			cnt, cnt2, n;
+    int			write_log;
+    struct stat		fileinfo;
 
 #if ( benchmark_mode == TRUE )
     struct timeval bstart, bstop;
@@ -256,8 +254,8 @@ int main( int argc, char **argv ) {
     d_log("Reading data from environment variables\n");
     if (!(getenv("USER") && getenv("GROUP") && getenv("TAGLINE") && getenv("SPEED"))) {
 	d_log("We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE, $SECTION and $SPEED\n");
-	/*	strcpy(raceI.user.name, "Unknown");
-		strcpy(raceI.user.group, "NoGroup");*/
+	/*strcpy(raceI.user.name, "Unknown");
+	strcpy(raceI.user.group, "NoGroup");*/
 
 	buffer_groups( GROUPFILE );
 	buffer_users( PASSWDFILE );
@@ -277,22 +275,19 @@ int main( int argc, char **argv ) {
 	if (!raceI.file.speed) raceI.file.speed=1;
 
 	d_log("Reading section from env\n");
-	if ((sections=strdup(gl_sections)) == NULL) {
+	if ((temp_p=strdup(gl_sections)) == NULL) {
 	    d_log("Can't allocate memory for sections\n");
 	} else {
 	    n=0;
-	    while (sections) {
-		if (strcmp(strsep(&sections," "), getenv("SECTION")) == 0) {
+	    while (temp_p) 
+		if (strcmp(strsep(&temp_p," "), getenv("SECTION")) == 0) {
 		    raceI.section=(unsigned char)n;
 		    break;
-		} else {
-		    n++;
-		}
-	    }
+		} else n++;
 	}
 
     }
-    raceI.file.speed*=1024;
+    raceI.file.speed *= 1024;
 
     d_log("Setting race times\n");
     raceI.total.stop_time=fileinfo.st_mtime;
@@ -873,8 +868,10 @@ int main( int argc, char **argv ) {
 			d_log("Sorting mp3 by artist\n");
 			if ( *raceI.audio.id3_artist ) {
 			    if ( memcmp(raceI.audio.id3_artist, "VA", 3) ) {
-				sprintf(raceI.audio.id3_artist, "%c", toupper(*raceI.audio.id3_artist));
-				createlink(audio_artist_path, raceI.audio.id3_artist, locations.link_source, locations.link_target);
+				temp_p = malloc(2);
+				sprintf(temp_p, "%c", toupper(*raceI.audio.id3_artist));
+				createlink(audio_artist_path, temp_p, locations.link_source, locations.link_target);
+				free(temp_p);
 			    } else {
 				createlink(audio_artist_path, "VA", locations.link_source, locations.link_target);
 			    }
