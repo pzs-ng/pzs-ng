@@ -1,3 +1,4 @@
+#!/usr/bin/tclsh
 #
 # - ParseCookies
 #

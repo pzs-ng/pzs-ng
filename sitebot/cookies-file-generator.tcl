@@ -1,6 +1,7 @@
+#!/usr/bin/tclsh
+
 source dZSbconf.tcl.dist
 source dZSbvars.tcl.dist
-
 
 puts "Quickreference of cookies:"
 puts "        (ANNOUNCES)       "
