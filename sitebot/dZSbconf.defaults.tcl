@@ -285,7 +285,7 @@ set disable(ALTWHO)					0
 # REMEMBER: This is CaSe SeNsItIvE.
 set denypost						""
 
-# Do not show it if this user gets nuked
+# Do not show these users if they get nuked (multiple entries allowed)
 set hidenuke						"UNKNOWN"
 
 ## Defining variables for announce

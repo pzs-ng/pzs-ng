@@ -1736,7 +1736,7 @@ proc launchnuke2 {type path section sargs dargs} {
 	set nuke(NUKEE) {}
 
 	foreach entry $dargs {
-		if {[lindex $entry 0] != $hidenuke} {
+		if {[lsearch -exact $hidenuke [lindex $entry 0]] == -1} {
 			set mb [format "%.1f" [expr [lindex $entry 1] / 1024]]
 			set nukee "$announce(NUKEES)" 
 			set nukee [replacevar $nukee "%u_name" [lindex $entry 0]]
@@ -1781,12 +1781,12 @@ proc fuelnuke {type path section args} {global nuke
 
 	set args [lindex $args 0]
 	if {$type == $nuke(LASTTYPE) && $path == $nuke(LASTDIR) && $nuke(SHOWN) == 0} {
-		if {[lindex $args 2] != $hidenuke} {
+		if {[lsearch -exact $hidenuke [lindex $args 2]] == -1} {
 			append nuke(NUKEE) "\002[lindex $args 2]\002 (\002[lindex [lindex $args 3] 1]\002MB), "
 		}
 	} else {
 		launchnuke
-		if {[lindex $args 2] != $hidenuke} {
+		if {[lsearch -exact $hidenuke [lindex $args 2]] == -1} {
 			set nuke(TYPE) $type
 			set nuke(PATH) $path
 			set nuke(SECTION) $section
