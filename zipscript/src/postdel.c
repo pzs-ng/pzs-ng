@@ -11,9 +11,8 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 
-#include "zsfunctions.c"
-#include "race-file.c"
-
+#include "zsfunctions.h"
+#include "race-file.h"
 #include "objects.h"
 #include "macros.h"
 #include "convert.h"

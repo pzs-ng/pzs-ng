@@ -10,9 +10,8 @@
 #include <sys/shm.h>
 #include <sys/stat.h>
 
-#include "zsfunctions.c"
-#include "race-file.c"
-
+#include "zsfunctions.h"
+#include "race-file.h"
 #include "objects.h"
 #include "macros.h"
 #include "constants.h"

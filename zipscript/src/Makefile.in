@@ -5,21 +5,21 @@ bindir=$(rootpath)/bin
 binpath=../bin
 
 CC=@CC@
-#CFLAGS=-O2 @STATIC@ -Wall
+#CFLAGS=-O2 @STATIC@ -Wall -pedantic -I../include/
 CFLAGS=@STATIC@ -Wall -g -I../include
 LDFLAGS=@LDFLAGS@
 ZSLIBS=@ZSLIBS@
-ZSTYPE=
+UNIVERSAL=race-file.o zsfunctions.o mp3info.o
 RM=rm -f
 
 RD-OBJECTS=racedebug.o
-ZS-OBJECTS=zipscript-c.o dizreader.o stats.o complete.o convert.o multimedia.o mp3info.o $(ZSTYPE)
-PD-OBJECTS=postdel.o dizreader.o stats.o convert.o multimedia.o mp3info.o $(ZSTYPE)
-RS-OBJECTS=racestats.o dizreader.o stats.o convert.o mp3info.o $(ZSTYPE)
+ZS-OBJECTS=zipscript-c.o dizreader.o stats.o complete.o convert.o multimedia.o $(UNIVERSAL)
+PD-OBJECTS=postdel.o dizreader.o stats.o convert.o multimedia.o $(UNIVERSAL)
+RS-OBJECTS=racestats.o dizreader.o stats.o convert.o $(UNIVERSAL)
 CU-OBJECTS=cleanup.o
 DC-OBJECTS=datacleaner.o
-SC-OBJECTS=rescan.o dizreader.o stats.o convert.o complete.o crc.o multimedia.o mp3info.o $(ZSTYPE)
-ZS-DEPEND=cleanup.o complete.o convert.o datacleaner.o postdel.o racestats.o rescan.o stats.o zipscript-c.o multimedia.o mp3info.o $(ZSTYPE)
+SC-OBJECTS=rescan.o dizreader.o stats.o convert.o complete.o crc.o multimedia.o $(UNIVERSAL)
+ZS-DEPEND=cleanup.o complete.o convert.o datacleaner.o postdel.o racestats.o rescan.o stats.o zipscript-c.o multimedia.o $(UNIVERSAL)
 
 all: zipscript-c postdel racestats cleanup datacleaner rescan racedebug
 	@(ls -lA $(binpath))
@@ -64,3 +64,6 @@ clean:
 	@$(RM) *.o $(binpath)/zipscript-c $(binpath)/postdel $(binpath)/racestats $(binpath)/cleanup $(binpath)/datacleaner $(binpath)/rescan $(binpath)/racedebug Makefile
 binclean:
 	@$(RM) *.o $(binpath)/zipscript-c $(binpath)/postdel $(binpath)/racestats $(binpath)/cleanup $(binpath)/datacleaner $(binpath)/rescan $(binpath)/racedebug
+
+strip:
+	strip $(binpath)/*
