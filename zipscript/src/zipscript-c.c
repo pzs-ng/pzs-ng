@@ -343,7 +343,7 @@ main(int argc, char **argv)
 	chdir(locations.path);
 
 	d_log("Reading data from environment variables\n");
-	if (!(getenv("USER") && getenv("GROUP") && getenv("TAGLINE") && getenv("SPEED") && getenv("SECTION"))) {
+	if ((getenv("USER") != NULL) && (getenv("GROUP") != NULL) && (getenv("TAGLINE") != NULL) && (getenv("SPEED") !=NULL) && (getenv("SECTION") != NULL)) {
 		d_log("We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE, $SECTION and $SPEED\n");
 		/*
 		 * strcpy(raceI.user.name, "Unknown");
@@ -379,7 +379,7 @@ main(int argc, char **argv)
 #endif
 
 		d_log("Reading section from env (%s)\n", getenv("SECTION"));
-		raceI.sectionname = malloc(strlen(getenv("SECTION")) * sizeof(char));
+		raceI.sectionname = malloc(sizeof(getenv("SECTION")) * sizeof(char));
 		sprintf(raceI.sectionname, getenv("SECTION"));
 		if ((temp_p = strdup(gl_sections)) == NULL) {
 			d_log("Can't allocate memory for sections\n");

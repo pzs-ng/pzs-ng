@@ -171,11 +171,11 @@ main()
 	raceI.misc.fastest_user[0] = 0;
 	raceI.misc.release_type = RTYPE_NULL;
 
-	if (!getenv("SECTION")) {
+	if (getenv("SECTION") == NULL) {
 		raceI.sectionname = malloc(8 * sizeof(char));
 		sprintf(raceI.sectionname, "DEFAULT");
 	} else {
-		raceI.sectionname = malloc(strlen(getenv("SECTION")) * sizeof(char));
+		raceI.sectionname = malloc(sizeof(getenv("SECTION")) * sizeof(char));
 		sprintf(raceI.sectionname, getenv("SECTION"));
 	}
 
@@ -469,6 +469,9 @@ main()
 	free(locations.race);
 	free(locations.sfv);
 	free(locations.leader);
+	free(raceI.sectionname);
+	free(raceI.misc.release_name);
+	free(locations.link_source);
 	free(userI);
 	free(groupI);
 

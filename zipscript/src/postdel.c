@@ -187,14 +187,12 @@ main(int argc, char **argv)
 				 * filename) */
 
 	d_log("Reading user name from env\n");
-	env_user = getenv("USER");
-	if (env_user == NULL) {
+	if ((env_user = getenv("USER")) == NULL) {
 		d_log("Could not find environment variable 'USER', setting value to 'Nobody'\n");
 		env_user = "Nobody";
 	}
 	d_log("Reading group name from env\n");
-	env_group = getenv("GROUP");
-	if (env_group == NULL) {
+	if ((env_group = getenv("GROUP")) == NULL) {
 		d_log("Could not find environment variable 'GROUP', setting value to 'NoGroup'\n");
 		env_group = "NoGroup";
 	}
@@ -260,11 +258,11 @@ main(int argc, char **argv)
 	locations.leader = malloc(n);
 	target = malloc(4096);
 
-	if (!getenv("SECTION")) {
+	if (getenv("SECTION") == NULL) {
 		raceI.sectionname = malloc(8 * sizeof(char));
 		sprintf(raceI.sectionname, "DEFAULT");
 	} else {
-		raceI.sectionname = malloc(strlen(getenv("SECTION")) * sizeof(char));
+		raceI.sectionname = malloc(sizeof(getenv("SECTION")) * sizeof(char));
 		sprintf(raceI.sectionname, getenv("SECTION"));
 	}
 

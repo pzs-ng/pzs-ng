@@ -120,6 +120,8 @@ multi_name(char *s)
 	char           *p, *t, *r = 0;
 
 	end_multi = 0;
+	begin_multi[0] = -1;
+	begin_multi[1] = -1;
 
 	t = incomplete_cd_indicator;
 
@@ -144,7 +146,7 @@ multi_name(char *s)
 			n++;
 		}
 
-	if (begin_multi[0] < begin_multi[1]) {
+	if ((begin_multi[0] < begin_multi[1]) && (begin_multi[1] != -1)){
 		for (t = p + begin_multi[1] + 2; *t; t++)
 			end_multi++;
 
@@ -161,7 +163,7 @@ multi_name(char *s)
 			exit(1);
 		}
 		sprintf(t, "%.*s/%s", n - end_multi, s, p);
-	} else {
+	} else if (begin_multi[0] != -1){
 		for (t = p + begin_multi[0] + 2; *t; t++)
 			end_multi++;
 
@@ -185,6 +187,10 @@ multi_name(char *s)
 			exit(1);
 		}
 		sprintf(r, "%.*s/%s", n, s, p);
+#if (debug_mode)
+	} else {
+		printf("DEBUG: (cd) multi[0]=%d multi[1]=%d\n", begin_multi[0], begin_multi[1]);
+#endif
 	}
 
 	free(p);
@@ -198,6 +204,8 @@ multi_nfo_name(char *s)
 	char           *p, *t, *r = 0;
 
 	end_multi = 0;
+	begin_multi[0] = -1;
+	begin_multi[1] = -1;
 
 	t = incomplete_base_nfo_indicator;
 
@@ -205,24 +213,24 @@ multi_nfo_name(char *s)
 		t++;
 	p = t;
 
-	for (n = 0; *t; t++)
+	for (n = 0; *t; t++) {
 		if (*t == '%' && *(t + 1) == '0') {
 			begin_multi[0] = n;
 			break;
 		} else {
 			n++;
 		}
-
+	}
 	t = p;
-	for (n = 0; *t; t++)
+	for (n = 0; *t; t++) {
 		if (*t == '%' && *(t + 1) == '1') {
 			begin_multi[1] = n;
 			break;
 		} else {
 			n++;
 		}
-
-	if (begin_multi[0] < begin_multi[1]) {
+	}
+	if ((begin_multi[0] < begin_multi[1]) && (begin_multi[1] != -1)) {
 		for (t = p + begin_multi[1] + 2; *t; t++)
 			end_multi++;
 
@@ -239,7 +247,7 @@ multi_nfo_name(char *s)
 			exit(1);
 		}
 		sprintf(t, "%.*s/%s", n - end_multi, s, p);
-	} else {
+	} else if (begin_multi[0] != -1) {
 		for (t = p + begin_multi[0] + 2; *t; t++)
 			end_multi++;
 
@@ -263,8 +271,11 @@ multi_nfo_name(char *s)
 			exit(1);
 		}
 		sprintf(r, "%.*s/%s", n, s, p);
+#if (debug_mode)
+	} else {
+		printf("DEBUG: (nfo) multi[0]=%d multi[1]=%d\n", begin_multi[0], begin_multi[1]);
+#endif
 	}
-
 	free(p);
 	return t;
 }
