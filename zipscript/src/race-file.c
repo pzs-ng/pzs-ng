@@ -537,7 +537,7 @@ copysfv(const char *source, const char *target)
 			if (!strcomp(ignored_types, ptr)) {
 
 #if ( sfv_dupecheck == TRUE )
-				lseek(outfd, sizeof(short int), SEEK_SET);
+				lseek(outfd, sizeof(short int)*2, SEEK_SET);
 				
 				/* read from sfvdata - no parsing */
 				skip = 0;
