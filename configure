@@ -2268,8 +2268,8 @@ echo "${ECHO_T}$ac_cv_lib_crypto_HMAC" >&6
 if test $ac_cv_lib_crypto_HMAC = yes; then
   LCRYPTO="-lcrypto"
 else
-  { { echo "$as_me:$LINENO: error: Couldn't find libcrypto, quitting!" >&5
-echo "$as_me: error: Couldn't find libcrypto, quitting!" >&2;}
+  { { echo "$as_me:$LINENO: error: Couldn't find libcrypto, quitting! Install SSL dev package and try again." >&5
+echo "$as_me: error: Couldn't find libcrypto, quitting! Install SSL dev package and try again." >&2;}
    { (exit 1); exit 1; }; }
 fi
 
