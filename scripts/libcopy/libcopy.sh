@@ -1,5 +1,18 @@
 #!/bin/bash
 
+###############################################################################
+#
+# LIBCOPY
+#########
+#
+# This small script (ripped from glinstall.sh ;) will copy libs used by files
+# in glftpd's bin dir.
+# The script should be run after the zipscript is installed.
+# You can also use this script any time there is changes in your bin dir, or
+# you upgrade your system.
+#
+###############################################################################
+
 # Set system type
 case $(uname -s) in
     Linux) os=linux ;;
