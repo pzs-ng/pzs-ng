@@ -6,7 +6,9 @@ INSTALL=@INSTALL@
 
 CFLAGS=@CFLAGS@ -W -Wall @GLVERSION@ -I../../
 
-all: sitewho.c
+all: sitewho
+
+sitewho: sitewho.c
 	$(CC) $(CFLAGS) -o sitewho sitewho.c
 
 install: all
