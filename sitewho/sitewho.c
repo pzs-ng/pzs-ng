@@ -364,7 +364,7 @@ void buffer_groups(char *groupfile) {
  read( f, f_buf, f_size );
 
  for ( n = 0 ; n < f_size ; n++ ) if ( f_buf[n] == '\n' ) GROUPS++;
- group = malloc( GROUPS * sizeof( int ) );
+ group = malloc( GROUPS * sizeof( struct GROUP* ) );
 
  for ( n = 0 ; n < f_size ; n++ ) {
   if ( f_buf[n] == '\n' || n == f_size ) {

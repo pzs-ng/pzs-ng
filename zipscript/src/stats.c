@@ -187,7 +187,7 @@ void showstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **g
  * Modified	: 01.17.2002
  * Author	: Dark0n3
  * 
- * Description	: Reads transfer stats for all users from usefiles and creates
+ * Description	: Reads transfer stats for all users from userfiles and creates
  *		  which is used to set dayup/weekup/monthup/allup variables for
  *		  every user in race.
  */

@@ -126,7 +126,7 @@ void buffer_groups(char *groupfile) {
  read( f, f_buf, f_size );
  
  for ( n = 0 ; n < f_size ; n++ ) if ( f_buf[n] == '\n' ) GROUPS++;
- group = malloc( GROUPS * sizeof( long ) );
+ group = malloc( GROUPS * sizeof( struct GROUP* ) );
    
  for ( n = 0 ; n < f_size ; n++ ) {
   if ( f_buf[n] == '\n' || n == f_size ) {
@@ -177,7 +177,7 @@ void buffer_users(char *passwdfile) {
  read( f, f_buf, f_size );
  
  for ( n = 0 ; n < f_size ; n++ ) if ( f_buf[n] == '\n' ) USERS++;
- user = malloc( USERS * sizeof( long ) );
+ user = malloc( USERS * sizeof( struct USER* ) );
    
  for ( n = 0 ; n < f_size ; n++ ) {
   if ( f_buf[n] == '\n' || n == f_size ) {
