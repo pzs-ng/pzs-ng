@@ -372,7 +372,6 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 			continue;
 		for (m = 0; m < users; m++)
 			if (m != n) {
-				printf("%i\n", userI[u1]->monthup);
 				if (user[n].wkup_bytes >= user[m].wkup_bytes) {
 					userI[u1]->wkup--;
 				}
