@@ -1134,6 +1134,13 @@ max_seconds_wait_for_lock <NUMBER>
 	rescanned on a regular basis.
 	Default: 20
 
+lock_optimize <NUMBER>
+	This option is meant to minimize impact the runtime of the locking.
+	The number represents the number of seconds that must pass before the
+	lock is touched/updated. Usually, this is either set to 1 or 0.
+	0 disable this feature.
+	Default: 1
+
 use_old_execute <TRUE|FALSE>
 	This is for debugging purposes only. It will use the old type of
 	execute(). To be used only if execution of external scripts fail.

@@ -1036,12 +1036,14 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 {
 	int		fd, retval;
 	HEADDATA	hd;
+	struct stat	sb;
 
 	if ((fd = open(raceI->headpath, O_RDWR, 0666)) == -1) {
 		d_log("update_lock: open(%s): %s\n", raceI->headpath, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 	read(fd, &hd, sizeof(HEADDATA));
+	fstat(fd, &sb);
 
 	if (hd.data_version != sfv_version) {
 		d_log("create_lock: version of datafile mismatch. Stopping and suggesting a cleanup.\n");
@@ -1061,8 +1063,8 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 		close(fd);
 		return -1;
 	}
-	if (((counter) && (hd.data_incrementor < raceI->data_incrementor)) || !hd.data_incrementor) {
-		d_log("update_lock: Lock suggested removed by a different process.\n");
+	if (!hd.data_incrementor) {
+		d_log("update_lock: Lock suggested removed by a different process (%d/%d).\n", hd.data_incrementor, raceI->data_incrementor);
 		retval = 0;
 	} else {
 		if (counter)
@@ -1074,14 +1076,16 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 	}
 	if (datatype && counter)
 		hd.data_type = datatype;
-	lseek(fd, 0L, SEEK_SET);
-	write(fd, &hd, sizeof(HEADDATA));
+	if ((retval && !lock_optimize) || !retval || (time(NULL) - sb.st_ctime >= lock_optimize && hd.data_incrementor > 1)) {
+		lseek(fd, 0L, SEEK_SET);
+		write(fd, &hd, sizeof(HEADDATA));
+		d_log("update_lock: updating lock (%d)\n", raceI->data_incrementor);
+	}
 	close(fd);
 	if (counter) {
 		raceI->data_incrementor = hd.data_incrementor;
 		raceI->data_in_use = hd.data_in_use;
 	}
-	d_log("update_lock: updating lock (%d)\n", raceI->data_incrementor);
 	return retval;
 }
 

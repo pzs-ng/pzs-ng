@@ -980,6 +980,9 @@
 #ifndef max_seconds_wait_for_lock
 #define max_seconds_wait_for_lock	20
 #endif
+#ifndef lock_optimize
+#define lock_optimize			1
+#endif
 
 #ifndef use_old_execute
 #define use_old_execute			FALSE
