@@ -195,6 +195,19 @@ rescandir()
 }
 
 void 
+temprescandir(int usefree)
+{
+	if (direntries > 0 && usefree) {
+		while (direntries--) {
+			free(dirlist[direntries]);
+		}
+		free(dirlist);
+	} else {
+		direntries = scandir(".", &dirlist, selector, 0);
+	}
+}
+
+void 
 rescanparent()
 {
 	if (direntriesp > 0) {

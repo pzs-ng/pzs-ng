@@ -74,6 +74,7 @@ extern int	selector(struct dirent *);
 #endif
 
 extern void	rescandir();
+extern void	temprescandir(int);
 extern void	rescanparent();
 extern void	strtolower(char *);
 extern void	unlink_missing(char *);

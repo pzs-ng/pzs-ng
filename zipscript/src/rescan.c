@@ -294,7 +294,9 @@ main()
 		printf("\n");
 		testfiles_file(&locations, &raceI, 1);
 		printf("\n");
-		//rescandir();	/* We need to rescan again */
+//
+		temprescandir( 0 );	/* We need to rescan again */
+//
 		readsfv_file(&locations, &raceI, 0);
 		readrace_file(&locations, &raceI, userI, groupI);
 		sortstats(&raceI, userI, groupI);
@@ -442,6 +444,7 @@ main()
 	printf("  Total : %i\n", (int)raceI.total.files);
 
 	d_log("Freeing memory.\n");
+	temprescandir( 1 );	/* We need to rescan again */
 	free(locations.path);
 	free(locations.race);
 	free(locations.sfv);
