@@ -1039,7 +1039,7 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 	HEADDATA	hd;
 	struct stat	sb;
 
-	if (!strlen(raceI->lock.headpath))
+	if (!strlen(raceI->headpath))
 		return -1;
 
 	if ((fd = open(raceI->headpath, O_RDWR, 0666)) == -1) {
