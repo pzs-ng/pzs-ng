@@ -272,7 +272,7 @@ PACKAGE_STRING=
 PACKAGE_BUGREPORT=
 
 ac_unique_file="zipscript/conf/zsconfig.h"
-ac_default_prefix=/glftpd/bin/
+ac_default_prefix=/glftpd/
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
