@@ -57,7 +57,7 @@ main(int argc, char **argv)
 		return 0;
 	}
 
-	if (strlen(argv[1]) < 6 || strncmp(argv[1], "DELE ", 5)) {
+	if ((int)strlen(argv[1]) < 6 || strncmp(argv[1], "DELE ", 5)) {
 		printf("pzs-ng postdel script.\n");
 		printf(" - this is supposed to be run from glftpd.\n");
 		printf(" - if you wish to run it yourself from chroot, \n");
@@ -190,7 +190,7 @@ main(int argc, char **argv)
 		return 0;
 
 	}
-	g.l.race = malloc(n = strlen(g.l.path) + 10 + sizeof(storage));
+	g.l.race = malloc(n = (int)strlen(g.l.path) + 10 + sizeof(storage));
 	g.l.sfv = malloc(n);
 	g.l.leader = malloc(n);
 	target = malloc(4096);

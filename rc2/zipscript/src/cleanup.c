@@ -258,7 +258,7 @@ cleanup(char *pathlist, char *pathlist_dated, int setfree, char *startpath)
 		}
 
 
-	if ((strlen(startpath) > 1) && (setfree == 1)) {
+	if (((int)strlen(startpath) > 1) && (setfree == 1)) {
 		/* Scanning current dir only */
 		incomplete_cleanup(startpath, setfree);
 	} else {

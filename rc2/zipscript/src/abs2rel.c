@@ -50,7 +50,7 @@ abs2rel(const char *path, const char *base, char *result, const size_t size)
 	char           *rp;
 
 	if (*path != '/') {
-		if (strlen(path) >= size)
+		if ((unsigned int)strlen(path) >= size)
 			goto erange;
 		strcpy(result, path);
 		goto finish;
@@ -99,7 +99,7 @@ abs2rel(const char *path, const char *base, char *result, const size_t size)
 	 * down to leaf.
 	 */
 	if (*branch) {
-		if (rp + strlen(branch + 1) > endp)
+		if (rp + (int)strlen(branch + 1) > endp)
 			goto erange;
 		strcpy(rp, branch + 1);
 	} else

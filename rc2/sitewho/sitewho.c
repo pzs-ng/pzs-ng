@@ -81,7 +81,7 @@ main(int argc, char **argv)
 
 	gnum = buffer_groups(glgroup, 0);
 
-	if (argc > 1 && strlen(argv[1]) == 5) {
+	if (argc > 1 && (int)strlen(argv[1]) == 5) {
 		if (!strcasecmp(argv[1], "--raw")) {
 			user_idx = 2;
 			raw_output = 1;
@@ -96,10 +96,10 @@ main(int argc, char **argv)
 
 	if ((shmid = shmget((key_t) strtoll(ipckey, NULL, 16), 0, 0)) == -1) {
 		if (argc == 1 || (raw_output)) {
-			if (!raw_output && strlen(header))
+			if (!raw_output && (int)strlen(header))
 				show(header);
 			showtotals(raw_output);
-			if (!raw_output && strlen(footer))
+			if (!raw_output && (int)strlen(footer))
 				show(footer);
 		} else {
 			if (!raw_output)
@@ -112,7 +112,7 @@ main(int argc, char **argv)
 
 	copystruct(raw_output);
 
-	if (argc == 1 && (!raw_output) && strlen(header))
+	if (argc == 1 && (!raw_output) && (int)strlen(header))
 		show(header);
 
 	if (raw_output < 2)
@@ -127,7 +127,7 @@ main(int argc, char **argv)
 
 	if (argc == 1 || raw_output == 3) {
 		showtotals(raw_output);
-		if (!raw_output && strlen(footer))
+		if (!raw_output && (int)strlen(footer))
 			show(footer);
 	} else {
 		if (!onlineusers) {
@@ -274,7 +274,7 @@ filesize(char *filename)
 {
 	char           *file;
 
-	file = malloc(strlen(glpath) + strlen(filename) + 2);
+	file = malloc((int)strlen(glpath) + (int)strlen(filename) + 2);
 	sprintf(file, "%s/%s", glpath, filename);
 	if (stat(file, &filestat) != 0) {
 		if (!strcmp(filename, "")) {
@@ -329,7 +329,7 @@ matchpath(char *instr, char *path)
 	if (!strncasecmp(nocase, "true", 4))
 		ncase = 1;
 
-	k = strlen(instr) + 1;
+	k = (int)strlen(instr) + 1;
 	for (cnt = pos = 0; cnt < k; cnt++) {
 		if (instr[cnt] == ' ' || instr[cnt] == 0) {
 			if (ncase == 0 && !strncmp(instr + cnt - pos, path, pos - 1) && pos) {
@@ -348,8 +348,8 @@ short
 strcomp(char *instr, char *searchstr)
 {
 	int		cnt, pos, ncase = 0;
-	int		k = strlen(searchstr);
-	int		l = strlen(instr) + 1;
+	int		k = (int)strlen(searchstr);
+	int		l = (int)strlen(instr) + 1;
 
 	if (!strncasecmp(nocase, "true", 4))
 		ncase = 1;
@@ -411,7 +411,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 			else
 				noshow++;
 		}
-		if (noshow == 0 && strlen(mpaths)) {
+		if (noshow == 0 && (int)strlen(mpaths)) {
 			if (maskchar == ' ' && matchpath(mpaths, user[x].currentdir)) {
 				if (showall)
 					maskchar = '*';
@@ -632,8 +632,8 @@ compareflags(char *flags, char *checkflags)
 
 	userflags = (flags != NULL ? flags : "3");
 
-	for (n1 = 0; n1 < strlen(userflags); n1++) {
-		for (n2 = 0; n2 < strlen(checkflags); n2++) {
+	for (n1 = 0; n1 < (unsigned int)strlen(userflags); n1++) {
+		for (n2 = 0; n2 < (unsigned int)strlen(checkflags); n2++) {
 			if (*(userflags + n1) == *(checkflags + n2))
 				return 1;
 		}
@@ -652,7 +652,7 @@ readconfig(char *arg)
 			e_w = 0,/* End of first word */
 			l_b = 0;/* Beginning of the line */
 
-	n = strlen(arg);
+	n = (int)strlen(arg);
 	while (arg[n] != '/' && n > 0)
 		n--;
 
@@ -758,7 +758,7 @@ show(char *filename)
 	char		buf       [128];
 	char           *fname = 0;
 
-	fname = malloc(strlen(glpath) + strlen(filename) + 2);
+	fname = malloc((int)strlen(glpath) + (int)strlen(filename) + 2);
 	sprintf(fname, "%s/%s", glpath, filename);
 	if (!check_path(fname))
 		sprintf(fname, "/%s", filename);
@@ -830,7 +830,7 @@ buffer_groups(char *groupfile, int setfree)
 		return 0;
         }
 
-	f_name = malloc(strlen(glpath) + strlen(groupfile) + 2);
+	f_name = malloc((int)strlen(glpath) + (int)strlen(groupfile) + 2);
 	sprintf(f_name, "%s/%s", glpath, groupfile);
 	if (!check_path(f_name))
 		sprintf(f_name, "/%s", groupfile);

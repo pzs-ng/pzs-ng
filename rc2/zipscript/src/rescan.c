@@ -89,10 +89,10 @@ main(void)
 		snprintf(g.v.sectionname, 127, getenv("SECTION"));
 	}
 
-	g.l.race = malloc(n = strlen(g.l.path) + 10 + sizeof(storage));
+	g.l.race = malloc(n = (int)strlen(g.l.path) + 10 + sizeof(storage));
 	g.l.sfv = malloc(n);
 	g.l.leader = malloc(n);
-	g.l.length_path = strlen(g.l.path);
+	g.l.length_path = (int)strlen(g.l.path);
 	g.l.length_zipdatadir = sizeof(storage);
 
 	getrelname(&g);
@@ -153,7 +153,7 @@ main(void)
 			printf("Found invalid entries in SFV - Exiting.\n");
 
 			while ((dp = readdir(dir))) {
-				m = l = strlen(dp->d_name);
+				m = l = (int)strlen(dp->d_name);
 				ext = find_last_of(dp->d_name, "-");
 				if (!strncmp(ext, "-missing", 8))
 					unlink(dp->d_name);
@@ -175,7 +175,7 @@ main(void)
 		g.v.total.start_time = 0;
 		rewinddir(dir);
 		while ((dp = readdir(dir))) {
-			m = l = strlen(dp->d_name);
+			m = l = (int)strlen(dp->d_name);
 
 			ext = find_last_of(dp->d_name, ".");
 			if (*ext == '.')
@@ -225,15 +225,15 @@ main(void)
 				/* Hide users in group_dirs */
 				if (matchpath(group_dirs, g.l.path) && (hide_group_uploaders == TRUE)) {
 					d_log("rescan: Hiding user in group-dir:\n");
-					if (strlen(hide_gname) > 0) {
+					if ((int)strlen(hide_gname) > 0) {
 						snprintf(g.v.user.group, 18, "%s", hide_gname);
 						d_log("rescan:    Changing groupname\n");
 					}
-					if (strlen(hide_uname) > 0) {
+					if ((int)strlen(hide_uname) > 0) {
 						snprintf(g.v.user.name, 18, "%s", hide_uname);
 						d_log("rescan:    Changing username\n");
 					}
-					if (strlen(hide_uname) == 0) {
+					if ((int)strlen(hide_uname) == 0) {
 						d_log("rescan:    Making username = groupname\n");
 						snprintf(g.v.user.name, 18, "%s", g.v.user.group);
 					}
@@ -338,7 +338,7 @@ main(void)
 		crc = 0;
 		rewinddir(dir);
 		while ((dp = readdir(dir))) {
-			m = l = strlen(dp->d_name);
+			m = l = (int)strlen(dp->d_name);
 			
 			ext = find_last_of(dp->d_name, ".");
 			if (*ext == '.')
