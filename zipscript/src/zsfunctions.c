@@ -1212,6 +1212,8 @@ remove_nfo_indicator(GLOBAL *g)
 		free(path[1]);
 	if (k == 0)
 		free(path[0]);
+	
+	free(path);
 }
 
 void 
@@ -1244,6 +1246,8 @@ d_log("DEBUG: result of subdir-test: %d\n", subcomp(path[1]));
 		if (k == 0)
 			free(path[0]);
 	}
+
+	free(path);
 }
 
 unsigned char 
