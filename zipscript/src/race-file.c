@@ -86,7 +86,6 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 
 	/* check version of the sfvdata */
 	fread(&l_sfv_version, sizeof(short int), 1, sfvfile);
-d_log("l: %d - v: %d\n", l_sfv_version, v_sfv_version);
 	if (l_sfv_version != v_sfv_version) {
 		d_log("sfvdata out of date - removing.\n");
 		fclose(sfvfile);
@@ -454,6 +453,8 @@ copysfv(const char *source, const char *target)
 
 		strip_whitespaces(fbuf);
 		ptr = prestrip_whitespaces(fbuf);
+		if (ptr != fbuf)
+			d_log("copysfv: prestripped whitespaces (%d chars)\n", ptr - fbuf);
 
 		if (strlen(ptr) == 0)
 			continue;
@@ -507,11 +508,14 @@ copysfv(const char *source, const char *target)
 
 		/* we assume what's left is a filename */
 		ptr = prestrip_whitespaces(fbuf);
+		if (ptr != fbuf)
+			d_log("copysfv: prestripped whitespaces (%d chars)\n", ptr - fbuf);
+
 		if (strlen(ptr) > 0 && strlen(ptr) < NAME_MAX-9 ) {
 			strlcpy(sd.fname, ptr, NAME_MAX-9);
 
 			if (sd.fname != find_last_of(sd.fname, "\t/") || *sd.fname == '/') {
-				d_log("copysfv: found '/' or TAB in sfv - logging file as bad.\n");
+				d_log("copysfv: found '/' or TAB as part of filename in sfv - logging file as bad.\n");
 				retval = 1;
 				break;
 			}
@@ -601,18 +605,17 @@ END:
 	close(infd);
 #if ( sfv_cleanup == TRUE )
 	if (tmpfd != -1) {
-		unlink(source);
 		xunlock(&fl, tmpfd);
 		close(tmpfd);
+		unlink(source);
 		rename(".tmpsfv", source);
 	}
 #endif
 	
 	closedir(dir);
-//	lseek(outfd, 0L, SEEK_SET);
 	lseek(outfd, sizeof(short int), SEEK_SET);
 	write(outfd, &type, sizeof(short int));
-	xunlock(&fl, infd);
+	xunlock(&fl, outfd);
 	close(outfd);
 	
 	return retval;
@@ -878,7 +881,7 @@ verify_racedata(const char *path)
 	xunlock(&fl, fd);
 	close(fd);
 	
-	xunlock(&fl, fd);
+//	xunlock(&fl, fd);
 
 	if (tmprd)
 		free(tmprd);
