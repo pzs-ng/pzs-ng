@@ -1021,7 +1021,7 @@ int main( int argc, char **argv ) {
     free(locations.link_source);
     free(raceI.misc.release_name);
     m_free(target);
-    m_free(fileext);
+    free(fileext);
     m_free(locations.race);
     m_free(locations.sfv);
     m_free(locations.leader);

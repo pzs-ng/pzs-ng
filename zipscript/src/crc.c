@@ -87,5 +87,6 @@ unsigned int calc_crc32(char *f) {
 	}
     }
     fclose(in);
+    free(buf);
     return ~crc;
 }
