@@ -161,7 +161,7 @@ testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 {
 	FILE		*file;
 	char		*realfile, target[256], *ext;
-	uint32_t	Tcrc;
+	unsigned int	Tcrc;
 	int		m= 0, l = 0;
 	struct stat	filestat;
 
