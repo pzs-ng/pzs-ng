@@ -213,7 +213,7 @@ void incomplete_cleanup(char *path, int setfree) {
 					unlink(dirlist[entries]->d_name);
 					printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
 				}
-			} else printf("Incomplete release \"%s\".\n", temp);
+			} else printf("Incomplete release: \"%s%s\".\n", path, temp);
 			free(temp);
 			continue;
 		    }
@@ -222,13 +222,13 @@ void incomplete_cleanup(char *path, int setfree) {
 		/* Normal */
 		if ( regexec(&preg[1], dirlist[entries]->d_name, 1, pmatch, 0) == 0 ) {
 		    if ( ! (int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dirlist[entries]) ) {
-			temp=(dirlist[entries]->d_name);
+			temp=single_name(dirlist[entries]->d_name);
 			if ( stat(temp, &fileinfo) != 0 ) {
 				if (setfree) {
 					unlink(dirlist[entries]->d_name);
 					printf("Broken symbolic link \"%s\" removed.\n", dirlist[entries]->d_name);
 				}
-			} else printf("Incomplete release \"%s\".\n", temp);
+			} else printf("Incomplete release: \"%s%s\".\n", path, temp);
 			continue;
 		    }
 		}
