@@ -62,7 +62,7 @@
 
 /* If file has suid bit set, program changes uid and gid to these (0 leaves option uncompiled)
  */
-#define program_uid		10
+#define program_uid		20
 #define program_gid		200
 
 /* These file types are allowed without any checks (types need to be also ignored)
@@ -237,7 +237,7 @@
 /* Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 & mpeg2.5 + layer1 & 2 can be added if needed
  */
 /*#define audio_vbr		"Encoded @ %XKbps VBR (%I) in %zHz %Q."*/		/* Put in %j cookie */
-#define audio_cbr		"Encoded @ %XKbps CBR in %zHz %Q."		/* Put in %j cookie */
+/*#define audio_cbr		"Encoded @ %XKbps CBR in %zHz %Q."*/		/* Put in %j cookie */
 
 /*#define audio_race		"%B%U%B is racing [ %R ] on %B%r%B @ %B%.0S%BkB/s."
 #define audio_sfv		"Got SFV for %B%r%B. Expecting %B%f%BF."
@@ -416,7 +416,7 @@
 
 /* Output of racestats binary
  */
-#define stats_line		"%B%r%B: %B%F%B of %B%f%B files uploaded by %B%u%B racer(s) from %B%g%B group(s). Leading uploader: %C0."
+/*#define stats_line		"%B%r%B: %B%F%B of %B%f%B files uploaded by %B%u%B racer(s) from %B%g%B group(s). Leading uploader: %C0."*/
 
 /* Output of postdel binary
  */
@@ -457,50 +457,53 @@
 #define get_competitor_list	TRUE
 #define racersmsg		"%u/%g"
 
-#define audio_vbr		"%i %I "
+#define audio_vbr		"%w %Y VBR %i %I"
+#define audio_cbr		"%w %Y %X"
 
 #define audio_race		"%U %G %.0S {%R}"
 #define audio_sfv		"%f"
-#define audio_update		"{%.1e} {%w} {%Y} {%X}"
+#define audio_update		"{%.1e} {%w} {%Y} {%X} {%j}"
 #define audio_halfway		"{%C0} {%c0}"
 #define audio_newleader		"{%C0}"
-#define audio_complete		"{%U} {%G} {%.0m} {%d}"
+#define audio_complete		"{%U} {%G} {%.0m} {%d} {%.0A}"
 #define audio_norace_halfway	"{%C0} {%c0}"
-#define audio_norace_complete	"{%U} {%G} {%.0m} {%d}"
+#define audio_norace_complete	"{%U} {%G} {%.0m} {%d} {%.0A}"
 
 #define video_race		"%U %G %.0S {%R}"
 #define video_sfv		"%f"
 #define video_update		"%.1e %f"
 #define video_halfway		"{%C0} {%c0}"
 #define video_newleader		"{%C0}"
-#define video_complete		"{%U} {%G} {%.0m} {%d}"
+#define video_complete		"{%U} {%G} {%.0m} {%d} {%.0A}"
 #define video_norace_halfway	"{%C0} {%c0}"
-#define video_norace_complete	"{%U} {%G} {%.0m} {%d}"
+#define video_norace_complete	"{%U} {%G} {%.0m} {%d} {%.0A}"
 
 #define rar_race		"%U %G %.0S {%R}"
 #define rar_sfv			"%f"
 #define rar_update		"%.1e %f"
 #define rar_halfway		"{%C0} {%c0}"
 #define rar_newleader		"{%C0}"
-#define rar_complete		"{%U} {%G} {%.0m} {%d}"
+#define rar_complete		"{%U} {%G} {%.0m} {%d} {%.0A}"
 #define rar_norace_halfway	"{%C0} {%c0}"
-#define rar_norace_complete	"{%U} {%G} {%.0m} {%d}"
+#define rar_norace_complete	"{%U} {%G} {%.0m} {%d} {%.0A}"
 
 #define other_race		"%U %G %.0S {%R}"
 #define other_sfv		"%f"
 #define other_update		"%.1e %f"
 #define other_halfway		"{%C0} {%c0}"
 #define other_newleader		"{%C0}"
-#define other_complete		"{%U} {%G} {%.0m} {%d}"
+#define other_complete		"{%U} {%G} {%.0m} {%d} {%.0A}"
 #define other_norace_halfway	"{%C0} {%c0}"
-#define other_norace_complete	"{%U} {%G} {%.0m} {%d}"
+#define other_norace_complete	"{%U} {%G} {%.0m} {%d} {%.0A}"
 
 #define zip_race		"%U %G %.0S {%R}"
 #define zip_update		"%.1e %f"
 #define zip_halfway		"{%C0} {%c0}"
 #define zip_newleader		"{%C0}"
-#define zip_complete		"{%U} {%G} {%.0m} {%d}"
+#define zip_complete		"{%U} {%G} {%.0m} {%d} {%.0A}"
 #define zip_norace_halfway	"{%C0} {%c0}"
-#define zip_norace_complete	"{%U} {%G} {%.0m} {%d}"
+#define zip_norace_complete	"{%U} {%G} {%.0m} {%d} {%.0A}"
 
-#define incompletemsg		""
+#define stats_line		"%r/%F/%f%/%u/%g/%C0"
+
+#define incompletemsg		"%U/%G/%r"
