@@ -176,12 +176,12 @@ main(int argc, char **argv)
 	}
 	name_p++;
 
-
-	if (sizeof(temp_p) - 4 > 0) {
-		temp_p = temp_p + sizeof(temp_p) - 4;
+	if (temp_p) {
+		if (sizeof(temp_p) - 4 > 0)
+			temp_p = temp_p + sizeof(temp_p) - 4;
 		snprintf(fileext, 4, "%s", temp_p);
 	} else
-		sprintf(fileext, "---");
+		*fileext = '\0';
 
 	switch (get_filetype_postdel(&g, fileext)) {
 	case 0:
@@ -416,6 +416,8 @@ main(int argc, char **argv)
 unsigned char 
 get_filetype_postdel(GLOBAL *g, char *ext)
 {
+	if (!(*ext))
+		return 255;
 	if (!strcasecmp(ext, "sfv"))
 		return 1;
 	if (!clear_file(g->l.race, g->v.file.name))
