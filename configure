@@ -848,12 +848,6 @@ Optional Features:
   --disable-altwho        compiles the sitewho to not use an alternative
                           output on single user who lookups
   --enable-static         enable static linking of zs-c
-  --enable-gl132          disable autodetect of glversion, and compile bot
-                          binaries for glftpd 1.32
-  --enable-gl200          disable autodetect of glversion, and compile bot
-                          binaries for glftpd 2.00
-  --enable-gl201          disable autodetect of glversion, and compile bot
-                          binaries for glftpd 2.01
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -962,7 +956,7 @@ esac
     else
       echo "$as_me: WARNING: no configuration information is in $ac_dir" >&2
     fi
-    cd "$ac_popdir"
+    cd $ac_popdir
   done
 fi
 
@@ -1961,7 +1955,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -2019,7 +2014,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -2135,7 +2131,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -2189,7 +2186,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -2234,7 +2232,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -2278,7 +2277,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -2593,7 +2593,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -2909,7 +2910,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -3079,7 +3081,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -3165,7 +3168,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -3277,7 +3281,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -3346,7 +3351,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -3504,7 +3510,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -3575,7 +3582,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -3647,7 +3655,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -3701,7 +3710,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -3772,7 +3782,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -3826,7 +3837,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -3893,7 +3905,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -4063,7 +4076,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -4221,7 +4235,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -4374,7 +4389,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -4555,7 +4571,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -4671,36 +4688,22 @@ else
 echo "${ECHO_T}NOTICE: linking dynamically." >&6
 fi
 
-# Check whether --enable-gl132 or --disable-gl132 was given.
-if test "${enable_gl132+set}" = set; then
-  enableval="$enable_gl132"
-  GLVERSION="-DGLVERSION=132"
-              echo "$as_me:$LINENO: result: NOTICE: compiling bot binaries for glftpd 1.32. (--enable-gl132)." >&5
-echo "${ECHO_T}NOTICE: compiling bot binaries for glftpd 1.32. (--enable-gl132)." >&6
-else
-  GLVERSION="detect"
-fi;
+#dnl GL version =)
+#AC_ARG_ENABLE(gl132, AS_HELP_STRING([--enable-gl132], [disable autodetect of glversion, and compile bot binaries for glftpd 1.32]),
+#              GLVERSION="-DGLVERSION=132"
+#              AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd 1.32. (--enable-gl132).]),
+#              GLVERSION="detect")
 
-if [ "$GLVERSION" = "detect" ]; then
-  # Check whether --enable-gl200 or --disable-gl200 was given.
-if test "${enable_gl200+set}" = set; then
-  enableval="$enable_gl200"
-  GLVERSION="-DGLVERSION=200"
-                echo "$as_me:$LINENO: result: NOTICE: compiling bot binaries for glftpd 2.00. (--enable-gl200)." >&5
-echo "${ECHO_T}NOTICE: compiling bot binaries for glftpd 2.00. (--enable-gl200)." >&6
-else
-  GLVERSION="detect"
-fi;
-  # Check whether --enable-gl201 or --disable-gl201 was given.
-if test "${enable_gl201+set}" = set; then
-  enableval="$enable_gl201"
-  GLVERSION="-DGLVERSION=201"
-                echo "$as_me:$LINENO: result: NOTICE: compiling bot binaries for glftpd 2.01. (--enable-gl201)." >&5
-echo "${ECHO_T}NOTICE: compiling bot binaries for glftpd 2.01. (--enable-gl201)." >&6
-else
-  GLVERSION="detect"
-fi;
-fi
+#if [[ "$GLVERSION" = "detect" ]]; then
+#  AC_ARG_ENABLE(gl200, AS_HELP_STRING([--enable-gl200], [disable autodetect of glversion, and compile bot binaries for glftpd 2.00]),
+#                GLVERSION="-DGLVERSION=200"
+#                AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd 2.00. (--enable-gl200).]),
+#                GLVERSION="detect")
+#  AC_ARG_ENABLE(gl201, AS_HELP_STRING([--enable-gl201], [disable autodetect of glversion, and compile bot binaries for glftpd 2.01]),
+#                GLVERSION="-DGLVERSION=201"
+#                AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd 2.01. (--enable-gl201).]),
+#                GLVERSION="detect")
+#fi
 
 
 # Check whether --with-glpath or --without-glpath was given.
@@ -4711,25 +4714,20 @@ else
   GLPATH="/glftpd"
 fi;
 
-if [ "$GLVERSION" = "detect" ]; then
-  if [ ! -d "$GLPATH" ] || [ ! -x "${GLPATH}/bin/glftpd" ]; then
-    { { echo "$as_me:$LINENO: error: Invalid glpath \"$GLPATH\". Use ./configure --with-glpath=PATH with a valid path! (or --enable-gl(132|200) to disable autodetect). Quitting!" >&5
-echo "$as_me: error: Invalid glpath \"$GLPATH\". Use ./configure --with-glpath=PATH with a valid path! (or --enable-gl(132|200) to disable autodetect). Quitting!" >&2;}
-   { (exit 1); exit 1; }; }
-  fi
-  glversion="`strings $GLPATH/bin/glftpd | grep -i '^glftpd ' | cut -c8-11 | tr -d '.'`"
-  #echo "$v" | grep -E "^(132)|(200)|(201)$"
-  if [ "$glversion" = "132" ] || [ "$glversion" = "200" ] || [ "$glversion" = "201" ]; then
-    GLVERSION="-DGLVERSION=$glversion"
-    glversion="`echo "$glversion" | sed 's/^\(.\)/\1\./'`"
-    echo "$as_me:$LINENO: result: NOTICE: detected glversion, compiling bot binaries for glftpd $glversion." >&5
-echo "${ECHO_T}NOTICE: detected glversion, compiling bot binaries for glftpd $glversion." >&6
-  else
-    { { echo "$as_me:$LINENO: error: Couldn't detect glversion, please run ./configure --enable-gl132 or ./configure --enable-gl200 or ./configure --enable-gl201. Quitting!" >&5
-echo "$as_me: error: Couldn't detect glversion, please run ./configure --enable-gl132 or ./configure --enable-gl200 or ./configure --enable-gl201. Quitting!" >&2;}
-   { (exit 1); exit 1; }; }
-  fi
-fi
+#if [[ "$GLVERSION" = "detect" ]]; then
+#  if [[ ! -d "$GLPATH" ] || [ ! -x "${GLPATH}/bin/glftpd" ]]; then
+#    AC_MSG_ERROR([Invalid glpath "$GLPATH". Use ./configure --with-glpath=PATH with a valid path! (or --enable-gl(132|200) to disable autodetect). Quitting!])
+#  fi
+#  glversion="`strings $GLPATH/bin/glftpd | grep -i '^glftpd ' | cut -c8-11 | tr -d '.'`"
+#  #echo "$v" | grep -E "^(132)|(200)|(201)$"
+#  if [[ "$glversion" = "132" ] || [ "$glversion" = "200" ] || [ "$glversion" = "201" ]]; then
+#    GLVERSION="-DGLVERSION=$glversion"
+#    glversion="`echo "$glversion" | sed 's/^\(.\)/\1\./'`"
+#    AC_MSG_RESULT([NOTICE: detected glversion, compiling bot binaries for glftpd $glversion.])
+#  else
+#    AC_MSG_ERROR([Couldn't detect glversion, please run ./configure --enable-gl132 or ./configure --enable-gl200 or ./configure --enable-gl201. Quitting!])
+#  fi
+#fi
 
 
 
@@ -5569,6 +5567,11 @@ esac
 
 
 
+  if test x"$ac_file" != x-; then
+    { echo "$as_me:$LINENO: creating $ac_file" >&5
+echo "$as_me: creating $ac_file" >&6;}
+    rm -f "$ac_file"
+  fi
   # Let's still pretend it is `configure' which instantiates (i.e., don't
   # use $as_me), people would be surprised to read:
   #    /* config.h.  Generated by config.status.  */
@@ -5607,12 +5610,6 @@ echo "$as_me: error: cannot find input file: $f" >&2;}
 	 fi;;
       esac
     done` || { (exit 1); exit 1; }
-
-  if test x"$ac_file" != x-; then
-    { echo "$as_me:$LINENO: creating $ac_file" >&5
-echo "$as_me: creating $ac_file" >&6;}
-    rm -f "$ac_file"
-  fi
 _ACEOF
 cat >>$CONFIG_STATUS <<_ACEOF
   sed "$ac_vpsub
