@@ -974,7 +974,7 @@ proc ng_bnc {nick uhost hand chan arg} {
 }
 
 proc ng_help {nick uhost hand chan arg} {
-	global scriptpath sections
+	global scriptpath sections statsection
 	checkchan $nick $chan
 
 	if {[catch {set handle [open "$scriptpath/dZSbot.help" r]} error]} {
@@ -985,11 +985,18 @@ proc ng_help {nick uhost hand chan arg} {
 	set data [read -nonewline $handle]
 	close $handle
 
-	foreach line [split $data "\n"] {
-		set line [themereplace [replacebasic $line "HELP"] "none"]
-		puthelp "PRIVMSG $nick :$line"
+	set statlist ""
+	foreach {name value} [array get statsection] {
+		lappend statlist $value
 	}
-	puthelp "PRIVMSG $nick :Valid sections are: [join [lsort -ascii $sections] {, }]"
+	set sectlist [join [lsort -ascii $sections] {, }]
+	set statlist [join [lsort -ascii $statlist] {, }]
+
+	foreach line [split $data "\n"] {
+		set line [replacevar $line "%sections" $sectlist]
+		set line [replacevar $line "%statsections" $statlist]
+		puthelp "PRIVMSG $nick :[themereplace [replacebasic $line "HELP"] "none"]"
+	}
 	return
 }
 
@@ -1072,18 +1079,16 @@ proc ng_stats {type time nick uhost hand chan argv} {
 	global binary statsection statdefault location
 	checkchan $nick $chan
 
-	set sect $statdefault
-	set section [lindex $argv 0]
-	if {[string length $section] != 0} {
+	set section $statdefault
+	if {[string length $section]} {
 		set error 1
 		set sections ""
-		foreach sectnumb [array names statsection] {
-			if {[string equal -nocase $statsection($sectnumb) $section]} {
-				set sect $sectnumb
-				set error 0
-				break
+		foreach {name value} [array get statsection] {
+			if {[string equal -nocase $value [lindex $argv 0]]} {
+				set section $value
+				set error 0; break
 			}
-			lappend sections $statsection($sectnumb)
+			lappend sections $value
 		}
 		if {$error} {
 			puthelp "PRIVMSG $nick :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
@@ -1091,7 +1096,7 @@ proc ng_stats {type time nick uhost hand chan argv} {
 		}
 	}
 
-	foreach line [split [exec $binary(STATS) -r $location(GLCONF) $type $time -s $sect] "\n"] {
+	foreach line [split [exec $binary(STATS) -r $location(GLCONF) $type $time -s $section] "\n"] {
 		if {![info exists newline($line)]} { set newline($line) 0
 		} else { set newline($line) [expr $newline($line) + 1] }
 		puthelp "PRIVMSG $nick :$line\003$newline($line)"
