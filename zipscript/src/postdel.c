@@ -225,10 +225,13 @@ main(int argc, char **argv)
 	raceI.misc.slowest_user[0] = 30000;
 	raceI.misc.fastest_user[0] = 0;
 
+	/* YARR; THE PAIN OF MAGIC NUMBERS! */
 	d_log("Copying env/predefined username to raceI. (%s)\n", env_user);
-	strncpy(raceI.user.name, env_user, 25);
+	strncpy(raceI.user.name, env_user, 24);
+	raceI.user.name[23] = 0;
 	d_log("Copying env/predefined groupname to raceI. (%s)\n", env_group);
-	strncpy(raceI.user.group, env_group, 25);
+	strncpy(raceI.user.group, env_group, 24);
+	raceI.user.group[23] = 0;
 
 	d_log("File to remove is: %s\n", fname);
 
