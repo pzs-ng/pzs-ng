@@ -211,9 +211,9 @@ NUKE			%nuker, %nukees, %type, %multiplier, %reason, %section, %release, %path
 
 UNNUKE			%nuker, %nukees, %type, %multiplier, %reason, %section, %release, %path
 
-MSGINVITE		%ircnick, %user, %host, %group
+MSGINVITE		%u_ircnick, %u_name, %g_name, %u_host
 
-BADMSGINVITE		%ircnick, %user, %host, %group
+BADMSGINVITE		%u_ircnick, %u_name, %g_name, %u_host
 
 WELCOME			%bold, %sitename, %cmdpre
 
