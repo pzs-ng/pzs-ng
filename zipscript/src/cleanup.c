@@ -17,8 +17,12 @@
 #include "../include/zsconfig.defaults.h"
 
 #ifndef PATH_MAX
-#define _LIMITS_H_
-#include <sys/syslimits.h>
+ #define _LIMITS_H_
+ #ifdef _SunOS_
+  #include <syslimits.h>
+ #else
+  #include <sys/syslimits.h>
+ #endif
 #endif
 
 struct tm      *timenow;
