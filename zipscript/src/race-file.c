@@ -418,7 +418,7 @@ copysfv(const char *source, const char *target)
 	int		tmpfd;
 	char		crctmp[8];
 	
-	if ((tmpfd = open(".tmpsfv", O_CREAT | O_RDWR, 0644)) == -1)
+	if ((tmpfd = open(".tmpsfv", O_CREAT | O_TRUNC | O_RDWR, 0644)) == -1)
 		d_log("copysfv: open(.tmpsfv): %s\n", strerror(errno));
 	else
 		xlock(&fl, tmpfd, F_WRLCK | F_RDLCK);
@@ -429,7 +429,7 @@ copysfv(const char *source, const char *target)
 		exit(EXIT_FAILURE);
 	}
 	
-	if ((outfd = open(target, O_CREAT | O_RDWR, 0666)) == -1) {
+	if ((outfd = open(target, O_CREAT | O_TRUNC | O_RDWR, 0666)) == -1) {
 		d_log("copysfv: open(%s): %s\n", target, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
