@@ -111,12 +111,9 @@ void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERI
 	uname = (char*)p_buf;				p_buf += 24;
 	ugroup = (char*)p_buf;				p_buf += 24;
 	memcpy(&fsize, p_buf, sizeof(long));	p_buf += sizeof(long);
-	memcpy(&uspeed, p_buf, sizeof(long));
-/*
-	p_buf += sizeof(long);
+	memcpy(&uspeed, p_buf, sizeof(long));	p_buf += sizeof(long);
 	memcpy(&startsec, p_buf, sizeof(long));	p_buf += sizeof(long);
 	memcpy(&startusec, p_buf, sizeof(long));
-*/
 
 	switch (*buf) {
 		case F_NOTCHECKED:
@@ -531,10 +528,9 @@ void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned lo
  memcpy(p_buf, raceI->user.name, 24);				p_buf += 24;
  memcpy(p_buf, raceI->user.group, 24);				p_buf += 24;
  memcpy(p_buf, &raceI->file.size, sizeof(long));		p_buf += sizeof(long);
- memcpy(p_buf, &raceI->file.speed, sizeof(long));
-// p_buf += sizeof(long);
-// memcpy(p_buf, &raceI->transfer_start.tv_sec, sizeof(long));	p_buf += sizeof(long);
-// memcpy(p_buf, &raceI->transfer_start.tv_usec, sizeof(long));
+ memcpy(p_buf, &raceI->file.speed, sizeof(long));		p_buf += sizeof(long);
+ memcpy(p_buf, &raceI->transfer_start.tv_sec, sizeof(long));	p_buf += sizeof(long);
+ memcpy(p_buf, &raceI->transfer_start.tv_usec, sizeof(long));
 
  fwrite(buf, 1, sz, file);
  fclose(file);

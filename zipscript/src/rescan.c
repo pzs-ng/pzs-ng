@@ -303,8 +303,8 @@ int main () {
 			 strcpy(raceI.user.group, get_g_name(f_gid));
 			 raceI.file.name = dirlist[n]->d_name;
 			 raceI.file.speed = 2004 * 1024;
-//			 raceI.transfer_start.tv_sec = 0;
-//			 raceI.transfer_start.tv_usec = 0;
+			 raceI.transfer_start.tv_sec = 0;
+			 raceI.transfer_start.tv_usec = 0;
 			 raceI.file.size = fileinfo.st_size;
 
 			 sprintf(exec, "%s-missing", raceI.file.name);
@@ -376,8 +376,8 @@ int main () {
 			 strcpy(raceI.user.group, get_g_name(f_gid));
 			 raceI.file.name = dirlist[n]->d_name;
 			 raceI.file.speed = 2004 * 1024;
-//			 raceI.transfer_start.tv_sec = 0;
-//			 raceI.transfer_start.tv_usec = 0;
+			 raceI.transfer_start.tv_sec = 0;
+			 raceI.transfer_start.tv_usec = 0;
 			 raceI.file.size = fileinfo.st_size;
 
 			 if ( ! fileexists("file_id.diz") ) {

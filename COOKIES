@@ -21,6 +21,7 @@
  %p  = percent of files uploaded (uploaded files / totalfiles * 100)
 
  %a  = average speed per transfer (kb/sec)
+ %A  = average speed (kb/sec)
  %d  = race length (so far)
 #
 #### Current User

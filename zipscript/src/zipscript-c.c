@@ -261,8 +261,9 @@ int main( int argc, char **argv ) {
  raceI.misc.fastest_user[0] =
  raceI.misc.release_type = 0;
 
- d_log("Reading data from shared memory\n");
-// gettimeofday(&raceI.transfer_stop, (struct timezone *)0 );
+ //gettimeofday(&raceI.transfer_stop, (struct timezone *)0 );
+
+ d_log("Reading data from environment Variables\n");
  sprintf(raceI.user.name, getenv("USER"));
  sprintf(raceI.user.group, getenv("GROUP"));
  if ( sprintf(raceI.user.group, getenv("GROUP")) == 0 ) {
@@ -270,19 +271,28 @@ int main( int argc, char **argv ) {
  }
  sprintf(raceI.user.tagline, getenv("TAGLINE"));
  raceI.file.speed=atoi(getenv("SPEED"));
+// raceI.file.speed=strtol(getenv("SPEED"),NULL,0);
  if (raceI.file.speed==0) raceI.file.speed=1;
  raceI.file.speed*=1024;
-/*      raceI.transfer_start.tv_sec = 0;
-        raceI.transfer_start.tv_usec = 0;*/
 
- d_log("Checking the file size\n");
- stat(argv[1], &fileinfo);
- raceI.file.size = fileinfo.st_size;
-
- d_log("Allocating memory for variables\n");
  raceI.file.name = argv[1];
+ d_log("Checking the file size of %s\n", raceI.file.name);
+ stat(raceI.file.name, &fileinfo);
+ raceI.file.size = fileinfo.st_size;
+ /* Store mtime */
+ raceI.transfer_stop.tv_sec = fileinfo.st_mtime;
+ raceI.transfer_stop.tv_usec = 0;
+ /* Store upload duration */
+ raceI.transfer_start.tv_sec = raceI.transfer_stop.tv_sec - (raceI.file.size/raceI.file.speed);
+ raceI.transfer_start.tv_usec = 0;
+
+
+
+
+
  n = (locations.length_path = strlen(locations.path = argv[2])) + 1;
 
+ d_log("Allocating memory for variables\n");
  locations.race   = m_alloc(n += 10 + (locations.length_zipdatadir = sizeof(storage) - 1));
  locations.sfv    = m_alloc(n);
  locations.leader = m_alloc(n);

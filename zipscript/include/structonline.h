@@ -10,8 +10,8 @@ struct ONLINE {
  char                           currentdir[256];/* The users current dir (fullpath) */
  long                           groupid;        /* The groupid of the users primary group */
  time_t                         login_time;     /* The login time since the epoch (man 2 time) */
- struct timeval         tstart;         /* Replacement for last_update. */
- unsigned long          bytes_xfer;     /* Bytes transferred this far. */
+ struct timeval                 tstart;         /* Replacement for last_update. */
+ unsigned long                  bytes_xfer;     /* Bytes transferred this far. */
  pid_t                          procid;         /* The processor id of the process */
 } __attribute__ ((deprecated));
 #else

@@ -100,8 +100,8 @@ struct misc {
 
 
 struct VARS {
-// struct	timeval			transfer_start;
-// struct	timeval			transfer_stop;
+ struct	timeval			transfer_start;
+ struct	timeval			transfer_stop;
  struct	current_user		user;
  struct current_file		file;
  struct race_total		total;
