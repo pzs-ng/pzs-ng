@@ -35,7 +35,7 @@ void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *
 	    d_log("Couldn't fopen %s\n", message_file_name); exit(EXIT_FAILURE);
 	}
 
-      if (custom_group_dirs_complete_message) {
+      if ((matchpath(group_dirs, locations->path)) && (custom_group_dirs_complete_message)) {
 	fprintf(msgfile, "%s", convert( raceI, userI, groupI, custom_group_dirs_complete_message));
       } else {
 	fprintf(msgfile, "%s", convert( raceI, userI, groupI, message_header));
