@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "race-file.h" 
+
 #include "objects.h"
 #include "macros.h"
 
@@ -20,6 +22,8 @@
 #include "stats.h"
 #include "zsfunctions.h"
 
+#include "helpfunctions.h"
+
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
 
@@ -31,81 +35,10 @@
 # include "strl/strl.h"
 #endif
 
-/*
- * Modified	: 01.16.2002 Author	: Dark0n3
- * 
- * Description	: Reads crc for current file from preparsed sfv file.
- */
-unsigned int 
-readsfv(const char *path, struct VARS *raceI, int getfcount)
-{
-	char           *fname;
-	unsigned int	crc = 0;
-	unsigned int	t_crc = 0;
-	FILE           *sfvfile;
-	unsigned int	len = 0;
-
-	if (!(sfvfile = fopen(path, "r"))) {
-		d_log("Failed to open sfv (%s): %s\n", path, strerror(errno));
-		return 0;
-	}
-
-	fread(&raceI->misc.release_type, sizeof(short int), 1, sfvfile);
-	d_log("Reading data from sfv (%s)\n", raceI->file.name);
-	while (fread(&len, sizeof(int), 1, sfvfile) == 1) {
-		fname = m_alloc(len);
-		fread(fname, 1, len, sfvfile);
-		fread(&t_crc, sizeof(int), 1, sfvfile);
-		raceI->total.files++;
-		if (!strcasecmp(raceI->file.name, fname)) {
-			d_log("DEBUG: crc read from sfv-file %s : %X\n", fname, t_crc);
-			crc = t_crc;
-		}
-		if (getfcount && findfile(fname))
-			raceI->total.files_missing--;
-		m_free(fname);
-	}
-	fclose(sfvfile);
-	raceI->total.files_missing += raceI->total.files;
-	return crc;
-}
-
-/*
- * Modified	: 01.16.2002 Author	: Dark0n3
- * 
- * Description	: Deletes all -missing files with preparsed sfv.
- */
-void 
-delete_sfv(const char *path)
-{
-	char		*fname, *fnname;
-	FILE		*sfvfile;
-	unsigned int	len;
-
-	if (!(sfvfile = fopen(path, "r"))) {
-		d_log("Couldn't fopen %s: %s\n", path, strerror(errno));
-		exit(EXIT_FAILURE);
-	}
-	fseek(sfvfile, sizeof(short int), SEEK_CUR);
-
-	while (fread(&len, sizeof(int), 1, sfvfile) == 1) {
-		fname = fnname = m_alloc(len + 8);
-		fread(fname, 1, len, sfvfile);
-		fseek(sfvfile, sizeof(int), SEEK_CUR);
-		memcpy(fname + len - 1, "-missing", 9);
-		if (fname)
-			unlink(fname);
-		fnname = findfilename(fname);
-		if (fnname)
-			unlink(fnname);
-		m_free(fname);
-	}
-	fclose(sfvfile);
-}
 
 /*
  * Modified	: 02.19.2002 Author	: Dark0n3
- *		: 06.02.2005 by		: js
+ * Modified	: 06.02.2005 by		: js
  * Description	: Creates directory where all race information will be
  * stored.
  */
@@ -132,10 +65,80 @@ maketempdir(char *path)
 /*
  * Modified	: 01.16.2002 Author	: Dark0n3
  * 
- * Description	: Reads name of old race leader and writes name of new leader
- * into temporary file.
+ * Description	: Reads crc for current file from preparsed sfv file.
+ */
+unsigned int 
+readsfv(const char *path, struct VARS *raceI, int getfcount)
+{
+	unsigned int	crc = 0;
+	FILE		*sfvfile;
+	
+	SFVDATA		sd;
+
+	if (!(sfvfile = fopen(path, "r"))) {
+		d_log("Failed to open sfv (%s): %s\n", path, strerror(errno));
+		return 0;
+	}
+
+	/* release_type is stored in the beginning of sfvdata */
+	fread(&raceI->misc.release_type, sizeof(short int), 1, sfvfile);
+	
+	d_log("Reading data from sfv (%s)\n", raceI->file.name);
+	
+	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
+		raceI->total.files++;
+		if (!strcasecmp(raceI->file.name, sd.fname)) {
+			d_log("DEBUG: crc read from sfv-file %s : %X\n", sd.fname, sd.crc32);
+			crc = sd.crc32;
+		}
+		if (getfcount && findfile(sd.fname))
+			raceI->total.files_missing--;
+	}
+	
+	fclose(sfvfile);
+	
+	raceI->total.files_missing += raceI->total.files;
+	
+	return crc;
+}
+
+/*
+ * Modified	: 01.16.2002 Author	: Dark0n3
  * 
- * Todo		: Make this unneccessary (write info to another file)
+ * Description	: Deletes all -missing files with preparsed sfv.
+ */
+void 
+delete_sfv(const char *path)
+{
+	char		*f, missing_fname[PATH_MAX];
+	FILE		*sfvfile;
+
+	SFVDATA		sd;
+
+	if (!(sfvfile = fopen(path, "r"))) {
+		d_log("Couldn't fopen %s: %s\n", path, strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+	
+	/* jump past release_type */
+	fseek(sfvfile, sizeof(short int), SEEK_CUR);
+
+	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
+		snprintf(missing_fname, PATH_MAX, "%s-missing", sd.fname);
+		f = findfilename(missing_fname);
+		if (f)
+			unlink(f);
+	}
+	
+	fclose(sfvfile);
+}
+
+/*
+ * Modified	: 01.16.2002 Author	: Dark0n3
+ * 
+ * Description	: Reads name of old race leader and writes name of new leader
+ * 		  into temporary file.
+ * 
  */
 void 
 read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
@@ -170,7 +173,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	FILE		*file;
 	char		*realfile, target[256], *ext;
 	unsigned int	Tcrc;
-	int		m= 0, l = 0;
+	int		m = 0, l = 0;
 	struct stat	filestat;
 
 	RACEDATA	rd;
@@ -250,190 +253,198 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 
 /*
  * Modified	: 01.20.2002 Author	: Dark0n3
- * 
+ *
  * Description	: Parses file entries from sfv file and store them in a file.
  * 
  * Todo		: Add dupefile remover.
+ *
+ * Totally rewritten by js on 08.02.2005
  */
 int
-copysfv(char *source, char *target, off_t buf_bytes)
+copysfv(const char *source, const char *target)
 {
-	int		fd;
-	char           *buf;
-	char           *line;
-	char           *newline;
-	char           *eof;
-	char           *fext;
-	char           *crc;
-	char		crclen;
-	unsigned int	video = 0;
-	unsigned int	music = 0;
-	unsigned int	rars = 0;
-	unsigned int	others = 0;
-	int		len = 0;
-	short int	n = 0;
-	unsigned int	t_crc;
-	short int	sfv_failed = 0;
-#if (sfv_cleanup == TRUE )
-	int		sfv_error = FALSE;
-#endif
+	int		i, retval = 0;
+	short int	music, rars, video, others, type;
+	
+	char		*ptr, fbuf[2048];
+	FILE		*insfv, *outsfv;
+
+	SFVDATA		sd;
+	
 #if ( sfv_dupecheck == TRUE )
-	char           *fname[MAXIMUM_FILES_IN_RELEASE];	/* Semi-stupid. We limit @
-								 * MAXIMUM_FILES_IN_RELEASE, statically. */
-	unsigned int	files = 0;
-	unsigned char	exists;
+	int		skip = 0;
+	SFVDATA		tempsd;
 #endif
-#if ( sfv_cleanup == TRUE && sfv_error == FALSE )
-	int		fd_new = open(".tmpsfv", O_CREAT | O_TRUNC | O_WRONLY, 0644);
-	if (fd_new == -1) {
-		d_log("Failed to create temporary sfv file (%d) - setting cleanup of sfv to false and tries to continue. (error: %s)\n", fd_new, strerror(errno));
-		sfv_error = TRUE;
-	}
+	
+#if ( sfv_cleanup == TRUE )
+	char		crctmp[8];
+	FILE		*tmpsfv = 0;
+	
+	if ((tmpsfv = fopen(".tmpsfv", "w+")) == NULL)
+		d_log("Failed to open '.tmpsfv': %s\n", strerror(errno));
+
 #endif
 
-	if ((fd = open(source, O_RDONLY)) == -1) {
-		d_log("Failed to open %s: %s\n", source, strerror(errno));
+	if ((insfv = fopen(source, "r")) == NULL) {
+		d_log("Failed to open '%s': %s\n", source, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	buf = m_alloc(buf_bytes);
-	read(fd, buf, buf_bytes);
-	close(fd);
-	eof = buf + buf_bytes;
-
-	if ((fd = open(target, O_CREAT | O_TRUNC | O_WRONLY, 0666)) == -1) {
-		d_log("Failed to create %s: %s\n", target, strerror(errno));
+	
+	if ((outsfv = fopen(target, "w+")) == NULL) {
+		d_log("Failed to fopen '%s': %s\n", target, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	write(fd, &n, sizeof(short int));
+	
+	video = music = rars = others = type = 0;
 
-	for (newline = buf; newline < eof; newline++) {
-		for (line = newline; *newline != '\n' && newline < eof; newline++) {
+	fwrite(&type, sizeof(short int), 1, outsfv);
+	
+	while ((fgets(fbuf, sizeof(fbuf), insfv))) {
+		
+		/* remove comment */
+		if ((ptr = find_first_of(fbuf, ";")))
+			*ptr = '\0';
+			
+		strip_whitespaces(fbuf);
+
+		if (strlen(fbuf) == 0)
+			continue;
+	
 #if (sfv_cleanup == TRUE)
 #if (sfv_cleanup_lowercase == TRUE)
-			*newline = tolower(*newline);
+		for (ptr = fbuf; *ptr; ptr++)
+			*ptr = tolower(*ptr);
 #endif
 #endif
-		}
-		if (*line != ';' && newline > line) {
-			*newline = crclen = 0;
-			for (crc = newline - 1; isxdigit(*crc) == 0 && crc > line; crc--)
-				*crc = 0;
-			for (; *crc != ' ' && *crc != '\t' && crc > line; crc--)
-				crclen++;
-			if ((*crc == ' ' || *crc == '\t') && crc > line && crclen == 8) {
-				for (fext = crc; *fext != '.' && fext > line; fext--);
-				if (*fext == '.')
-					fext++;
-				*crc++ = 0;
-				if (!strcomp(ignored_types, fext) && strcasecmp("sfv", fext) && strcasecmp("nfo", fext) && (t_crc = hexstrtodec((unsigned char *)crc)) > 0) {
-					len = crc - line;
-#if ( sfv_dupecheck == TRUE )
-					exists = 0;
-					for (n = 0; (unsigned int)n < files; n++) {
-						if (!memcmp(fname[n], line, len)) {
-							exists = 1;
-							break;
-						}
-					}
-
-					if (exists == 1) {
-						continue;
-					}
-					fname[files++] = line;
-#endif
-					if ((strlen(line) + 1) < (unsigned int)len) {
-						d_log("ERROR: NULL encountered in filename (%s)\n", line);
-						if (strict_sfv_check == TRUE) {
-							sfv_failed = 1;
-						d_log("       Strict mode on - logging sfv as bad.\n");
+		sd.crc32 = 0;
+		if ((ptr = find_last_of(fbuf, " \t"))) {
+			
+			/* pass the " \t" */
+			ptr++;
+			
+			/* what we have now is hopefully a crc */
+			for (i = 0; isxdigit(*ptr) != 0; i++)
+				ptr++;
+			
+			ptr -= i;
+			if (i != 8) {
+				/* we didn't get an 8 digit crc number */
 #if (sfv_cleanup == TRUE)
-							sfv_error = TRUE;
+				/* do stuff  */
+#else
+				retval = 1;
+				goto END;
 #endif
-						}
-						continue;
-					}
-
-					d_log("file in sfv - %s (%s)\n", line, crc);
-
-#if ( sfv_cleanup == TRUE && sfv_error == FALSE )
-					write(fd_new, line, len - 1);
-					write(fd_new, " ", 1);
-					write(fd_new, crc, 8);
-#if (sfv_cleanup_crlf == TRUE && sfv_error == FALSE )
-					write(fd_new, "\r", 1);
-#endif
-					write(fd_new, "\n", 1);
-#endif
-					if (!memcmp(fext, "mp3", 4) && !sfv_failed) {
-						music++;
-					} else if (israr(fext) && !sfv_failed) {
-						rars++;
-					} else if (isvideo(fext) && !sfv_failed) {
-						video++;
-					} else if (!sfv_failed) {
-						others++;
-					}
-#if ( create_missing_files == TRUE )
-					if (!findfile(line) && !sfv_failed) {
-						create_missing(line);
-					}
-#endif
-					if (!sfv_failed) {
-						write(fd, &len, sizeof(int));
-						write(fd, line, len);
-						write(fd, &t_crc, sizeof(int));
-					}
-				}
 			} else {
-				crc = line;
-				while (*crc) {
-					if (*crc == ' ' || *crc == '\n' || *crc == '\r' || *crc == '\t') {
-						crc++;
-					} else {
-						d_log("ERROR: Found an entry in SFV without checksum (%s).\n", line);
-						if (strict_sfv_check == TRUE) {
-							sfv_failed = 1;
-							d_log("       Strict mode on - logging sfv as bad.\n");
-#if (sfv_cleanup == TRUE)
-							sfv_error = TRUE;
+				sd.crc32 = hexstrtodec(ptr);
+				
+				/* cut off crc string */
+				*ptr = '\0';
+				
+				/* nobody should be stupid enough to have spaces
+				 * at the end of the file name */
+				strip_whitespaces(fbuf);
+			}
+		
+		} else {
+			/* we have a filename only. */
+
+#if (sfv_calc_single_fname == TRUE)
+			/* TODO */
+			/* calculate file's crc if it exists */
+#else
+			retval = 1;
+			goto END;
 #endif
-						}
-						break;
-					}
+
+		}
+
+		/* we assume what's left is a filename */
+		if (strlen(fbuf) > 0) {
+			strlcpy(sd.fname, fbuf, PATH_MAX);
+			
+			/* get file extension */
+			ptr = find_last_of(fbuf, ".");
+			if (*ptr == '.')
+				ptr++;
+			
+			if (!strcomp(ignored_types, ptr)) {
+
+#if ( sfv_dupecheck == TRUE )
+				fseek(outsfv, sizeof(short int), SEEK_SET);
+				
+				/* read from sfvdata - no parsing */
+				skip = 0;
+				while (fread(&tempsd, sizeof(SFVDATA), 1, outsfv))
+					if (strcmp(sd.fname, tempsd.fname) == 0)
+						skip = 1;
+						
+				fseek(outsfv, 0L, SEEK_END);
+
+				if (skip)
+					continue;
+#endif
+
+				d_log("File in sfv: '%s' (%x)\n", sd.fname, sd.crc32);
+
+#if ( sfv_cleanup == TRUE )
+				/* write good stuff to .tmpsfv */
+				if (tmpsfv) {
+					sprintf(crctmp, "%x", sd.crc32);
+					fwrite(sd.fname, strlen(sd.fname), 1, tmpsfv);
+					fwrite(" ", 1, 1, tmpsfv);
+					fwrite(crctmp, 8, 1, tmpsfv);
+#if (sfv_cleanup_crlf == TRUE )
+					fwrite("\r", 1, 1, tmpsfv);
+#endif
+					fwrite("\n", 1, 1, tmpsfv);
 				}
+#endif
+
+				if (strncasecmp(ptr, "mp3", 4) == 0)
+					music++;
+				else if (israr(ptr))
+					rars++;
+				else if (isvideo(ptr))
+					video++;
+				else
+					others++;
+				
+#if ( create_missing_files == TRUE )
+				if (!findfile(sd.fname))
+					create_missing(sd.fname);
+#endif
+
+				fwrite(&sd, sizeof(SFVDATA), 1, outsfv);
 			}
 		}
 	}
-
-	lseek(fd, 0, 0);
-
+	
 	if (music > rars) {
-		if (video > music) {
-			n = (video >= others ? 4 : 2);
-		} else {
-			n = (music >= others ? 3 : 2);
-		}
+		if (video > music)
+			type = (video >= others ? 4 : 2);
+		else
+			type = (music >= others ? 3 : 2);
 	} else {
-		if (video > rars) {
-			n = (video >= others ? 4 : 2);
-		} else {
-			n = (rars >= others ? 1 : 2);
-		}
+		if (video > rars)
+			type = (video >= others ? 4 : 2);
+		else
+			type = (rars >= others ? 1 : 2);
 	}
 
-	if (!sfv_failed)
-		write(fd, &n, sizeof(short int));
-	close(fd);
-
+END:
+	fclose(insfv);
 #if ( sfv_cleanup == TRUE && sfv_error == FALSE )
-	if (source)
-		unlink(source);
+	unlink(source);
+	fclose(tmpsfv);
 	rename(".tmpsfv", source);
-	close(fd_new);
 #endif
-
-	m_free(buf);
-	return sfv_failed;
+	
+	rewind(outsfv);
+	fwrite(&type, sizeof(short int), 1, outsfv);
+	fclose(outsfv);
+	
+	return 0;
 }
 
 /*
@@ -604,3 +615,4 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	
 	fclose(file);
 }
+

@@ -102,16 +102,12 @@ main(int argc, char **argv)
 	d_log("Clearing arrays\n");
 	//bzero(&g.v.total, sizeof(struct race_total));
 	bzero(&g.v.total, sizeof(struct race_total));
-	//g.v.misc.slowest_user[0] = 30000;
-	//g.v.misc.fastest_user[0] = 0;
 	g.v.misc.slowest_user[0] = 30000;
 	g.v.misc.fastest_user[0] = 0;
 
 	/* YARR; THE PAIN OF MAGIC NUMBERS! */
 	d_log("Copying env/predefined username to g.v. (%s)\n", env_user);
 	strlcpy(g.v.user.name, env_user, 24);
-	/*strlcpy(g.v.user.name, env_user, 24);
-	g.v.user.name[23] = 0;*/
 	
 	d_log("Copying env/predefined groupname to g.v. (%s)\n", env_group);
 	strlcpy(g.v.user.group, env_group, 24);
@@ -327,7 +323,7 @@ main(int argc, char **argv)
 		d_log("Removing all files and directories created by zipscript\n");
 		removecomplete();
 		if (fileexists(g.l.sfv))
-			delete_sfv(g.l.path);
+			delete_sfv(g.l.sfv);
 		if (g.l.nfo_incomplete)
 			unlink(g.l.nfo_incomplete);
 		if (g.l.incomplete)

@@ -109,7 +109,7 @@ main()
 	if ((strlcpy(g.v.file.name, findfileext(".sfv"), PATH_MAX)) > 0) {
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
-		if (copysfv(g.v.file.name, g.l.sfv, fileinfo.st_size)) {
+		if (copysfv(g.v.file.name, g.l.sfv)) {
 			printf("Found invalid entries in SFV - Exiting.\n");
 
 			rescandir(2);

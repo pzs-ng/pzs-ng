@@ -160,24 +160,4 @@ typedef struct {
 	struct LOCATIONS	l;
 } GLOBAL; /* reconsider this name */
 
-/* this is what we write to racedata files */
-typedef struct {
-	unsigned int	crc32,
-			speed;
-	off_t		size;
-	time_t		start_time;
-	unsigned char	status;
-	char		fname[PATH_MAX],
-			uname[24],
-			group[24];
-} RACEDATA;
-
-/* IMPLEMENT THIS */
-/* this is put in sfvdata files */
-typedef struct {
-	unsigned int	crc32;
-	char		fname[PATH_MAX];
-} SFVDATA;
-
-
 #endif

@@ -476,7 +476,7 @@ main(int argc, char **argv)
 				}
 			}
 			d_log("Parsing sfv and creating sfv data\n");
-			if (copysfv(g.v.file.name, g.l.sfv, g.v.file.size)) {
+			if (copysfv(g.v.file.name, g.l.sfv)) {
 				d_log("Found invalid entries in SFV.\n");
 				write_log = g.v.misc.write_log;
 				g.v.misc.write_log = 1;

@@ -358,6 +358,8 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 
 	delbar = convert5(del_progressmeter);
 	d_log("del_progressmeter: %s\n", delbar);
+	d_log("raceI->total.files: %i\n", raceI->total.files);
+	d_log("raceI->total.files_missing: %i\n", raceI->total.files_missing);
 	regcomp(&preg, delbar, REG_NEWLINE | REG_EXTENDED);
 	/* workaround if progressbar was changed while zs-c is running */
 	rescandir(2);

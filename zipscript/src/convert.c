@@ -3,8 +3,10 @@
 #include <sys/types.h>
 #include <ctype.h>
 #include "objects.h"
+#include "zsfunctions.h"
 #include "../conf/zsconfig.h"
 #include "zsconfig.defaults.h"
+
 
 char	output2[1024], output[2048];
 
