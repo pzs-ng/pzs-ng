@@ -32,7 +32,7 @@
 #endif
 
 int 
-main(int argc, char **argv)
+main(int argc, char *argv[])
 {
 	int		k, n, m, l, gnum = 0, unum = 0;
 	char           *ext, exec[4096], *complete_bar = 0, *inc_point[2];
@@ -47,6 +47,7 @@ main(int argc, char **argv)
 	struct dirent	*dp;
 	long		loc;
 	short		rescan_quick = FALSE;
+	char		one_name[NAME_MAX];
 
 	GLOBAL		g;
 
@@ -63,8 +64,20 @@ main(int argc, char **argv)
 	d_log("rescan: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
 #endif
 
-	if (argc > 1 && !strncasecmp(argv[1], "--quick", 7))
-		rescan_quick = TRUE;
+	if (argc > 1) {
+		if (!strncasecmp(argv[1], "--quick", 7))
+			rescan_quick = TRUE;
+		else {
+			strncpy(one_name, argv[1], NAME_MAX - 1);
+			if (one_name[strlen(one_name) - 1] == '*')
+				one_name[strlen(one_name) - 1] = '\0';
+			else if (!fileexists(one_name)) {
+				printf("\nPZS-NG Rescan v%s: No file named '%s' exists.\n\n", ng_version(), one_name);
+				return 1;
+			}
+		}		
+	} else
+		bzero(one_name, NAME_MAX);
 
 	d_log("rescan: Allocating memory for variables\n");
 	g.ui = malloc(sizeof(struct USERINFO *) * 30);
@@ -144,10 +157,7 @@ main(int argc, char **argv)
 	dir = opendir(".");
 	parent = opendir("..");
 
-	if (rescan_quick && findfileext(dir, ".sfv")) {
-//		readsfv(g.l.sfv, &g.v, 0);
-//		readrace(g.l.race, &g.v, g.ui, g.gi);
-	} else {
+	if (!((rescan_quick && findfileext(dir, ".sfv")) || *one_name)) {
 		if (g.l.sfv)
 			unlink(g.l.sfv);
 		if (g.l.race)
@@ -186,6 +196,8 @@ main(int argc, char **argv)
 		g.v.total.start_time = 0;
 		rewinddir(dir);
 		while ((dp = readdir(dir))) {
+			if (*one_name && strncasecmp(one_name, dp->d_name, strlen(one_name)))
+				continue;
 			m = l = (int)strlen(dp->d_name);
 
 			ext = find_last_of(dp->d_name, ".");

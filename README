@@ -383,6 +383,13 @@ scripts. Here's a short description of each compiled binary:
     in your site to a specified used/group. When used it needs the +s bit
     set. Take care, though - using this bin with +s may be a security risk.
 
+  - rescan - rescans a dir, rechecking files against the sfv. Comes in
+    handy when you manually move releases/files, or you suspect corruption of
+    some files.
+    How to test: (in chroot, in a site dir):
+                 /bin/rescan
+                 /bin/rescan --quick (scans directory for file-changes only)
+
 The bot:
 --------
 If everything is working smoothly on your site, it's time to add a bot to
