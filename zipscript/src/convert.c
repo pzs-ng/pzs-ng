@@ -477,8 +477,6 @@ char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **gr
     return output;
 }
 
-
-
 /* Converts cookies in incomplete indicators */   
 char    i_buf[ FILE_MAX ];
 char *c_incomplete(char *instr, char **path) {
@@ -497,5 +495,25 @@ char *c_incomplete(char *instr, char **path) {
     }
     *buf_p = 0;  
     return i_buf;
+}
+
+/* Converts cookies in nfo-incomplete indicators */   
+char    j_buf[ FILE_MAX ];
+char *i_incomplete(char *instr, char **path) {
+    char   *buf_p;
+
+    buf_p = j_buf;
+    for ( ; *instr ; instr++ ) if ( *instr == '%' ) {
+	instr++;
+	switch ( *instr ) {  
+	    case '1': buf_p += sprintf( buf_p, "%s", path[0] ); break;
+	    case '0': buf_p += sprintf( buf_p, "%s", path[1] ); break;
+	    case '%': *buf_p++ = '%' ; break;
+	}
+    } else {
+	*buf_p++ = *instr;
+    }
+    *buf_p = 0;  
+    return j_buf;
 }
 

@@ -91,14 +91,12 @@ void remove_nfo_indicator(char *directory) {
 		} else n++;
 	}
 	d_log("Removing nfo-missing indicator.\n");
-	locations.incompletenfo = c_incomplete(incomplete_indicator, path);
-	unlink(locations.incompletenfo);
+	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
+	unlink(locations.nfo_incomplete);
 	if (k < 2)
 		free(path[1]);
 	if (k == 0)
 		free(path[0]);
-	
-
 }
 
 void getrelname(char *directory) {
@@ -140,12 +138,10 @@ void getrelname(char *directory) {
 		sprintf(raceI.misc.release_name, "%s", path[1]);
 		locations.link_target = path[1];
 		locations.incomplete = c_incomplete(incomplete_indicator, path);
-		d_log("checking for missing nfo.\n");
-		if ((show_missing_nfo) && (! findfileext(".nfo"))) {
-			d_log("Creating missing-nfo indicator.\n");
-			locations.incompletenfo = c_incomplete(incomplete_nfo_indicator, path);
-			create_incomplete_nfo();
-		}
+		d_log("incomplete-indicator: %s\n", locations.incomplete);
+		locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
+		d_log("incomplete-nfo-indicator: %s\n", locations.nfo_incomplete);
+
 		if (k == 0)
 			free(path[0]);
 	}
@@ -280,7 +276,7 @@ int main( int argc, char **argv ) {
 
     if ( argc != 4 ) {
 	d_log("Wrong number of arguments used\n");
-	printf(" - - ZipScript-C v" VERSION " - - dark0n3 (c) 2001 - 2004 - -\n\nUsage: %s <filename> <path> <crc>\n\n", argv[0]);
+	printf(" - - PZS-NG ZipScript-C v" VERSION " - - dark0n3 (c) 2001 - 2004 - -\n\nUsage: %s <filename> <path> <crc>\n\n", argv[0]);
 	exit(1);
     }
 
@@ -875,8 +871,13 @@ int main( int argc, char **argv ) {
 	    d_log("Caching progress bar\n");
 	    buffer_progress_bar(&raceI);
 
-	    d_log("Creating incomplete indicator\n");
+	    d_log("Creating incomplete indicator %s\n", locations.incomplete);
 	    create_incomplete();
+
+	    if ((show_missing_nfo) && (! findfileext(".nfo"))) {
+	    	d_log("Creating missing-nfo indicator %s.\n", locations.nfo_incomplete);
+	    	create_incomplete_nfo();
+	    }
 
 	    d_log("Creating/moving progress bar\n");
 	    move_progress_bar(0, &raceI);
@@ -1025,6 +1026,8 @@ int main( int argc, char **argv ) {
     m_free(locations.sfv);
     m_free(locations.leader);
     m_free(locations.link_target);
+    m_free(locations.incomplete);
+    m_free(locations.nfo_incomplete);
 
 #if ( benchmark_mode == TRUE )
     gettimeofday(&bstop, (struct timezone *)0);

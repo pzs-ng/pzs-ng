@@ -91,7 +91,7 @@ void getrelname(char *directory) {
 	locations.link_target = path[1];
 	locations.incomplete = c_incomplete(incomplete_indicator, path);
 	if (show_missing_nfo) {
-		locations.incompletenfo = c_incomplete(incomplete_nfo_indicator, path);
+		locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
 		create_incomplete_nfo();
 	}
 	if (k == 0) free(path[0]);

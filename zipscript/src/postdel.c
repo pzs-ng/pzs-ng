@@ -83,13 +83,14 @@ void getrelname(char *directory) {
    	raceI.misc.release_name = malloc( l[0] + 18 );
 	sprintf(raceI.misc.release_name, "%s/%s", path[0], path[1]);
 	locations.incomplete = c_incomplete(incomplete_cd_indicator, path);
+	locations.nfo_incomplete = c_incomplete(incomplete_nfo_indicator, path);
 	if (k < 2) free(path[1]);
     } else {
 	raceI.misc.release_name = malloc( l[1] + 10 );
 	sprintf(raceI.misc.release_name, "%s", path[1]);
 	locations.incomplete = c_incomplete(incomplete_indicator, path);
 	if (show_missing_nfo) {
-		locations.incompletenfo = c_incomplete(incomplete_nfo_indicator, path);
+		locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
 		create_incomplete_nfo();
 	}
 	if (k == 0) free(path[0]);
@@ -238,7 +239,7 @@ int main( int argc, char **argv ) {
 	    } else if ( raceI.total.files_missing < raceI.total.files ) {
 		if ( raceI.total.files_missing == 1 ) {
 		    d_log("Writing INCOMPLETE to %s\n", log);
-		    writelog(convert(&raceI, userI, groupI, incompletemsg), "INCOMPLETE");
+		    writelog(convert(&raceI, userI, groupI, incompletemsg), general_incomplete_type);
 		}
 		incomplete = 1;
 	    } else {
@@ -287,7 +288,7 @@ int main( int argc, char **argv ) {
 	    if ( raceI.total.files_missing < raceI.total.files ) {
 		if ( raceI.total.files_missing == 1 ) {
 		    d_log("Writing INCOMPLETE to %s\n", log);
-		    writelog(convert(&raceI, userI, groupI, incompletemsg), "INCOMPLETE");
+		    writelog(convert(&raceI, userI, groupI, incompletemsg), general_incomplete_type);
 		}
 		incomplete = 1;
 	    } else {
@@ -313,7 +314,7 @@ int main( int argc, char **argv ) {
 	    delete_sfv_file(&locations);
 	}
 	unlink(locations.incomplete);
-	unlink(locations.incompletenfo);
+	unlink(locations.nfo_incomplete);
 	unlink("file_id.diz");
 	unlink(locations.sfv);
 	unlink(locations.race);

@@ -48,6 +48,7 @@
 #define general_badgenre_type			"BADGENRE"
 #define general_badyear_type			"BADYEAR"
 #define general_badbitrate_type			"BADBITRATE"
+#define general_incomplete_type			"INCOMPLETE"
 #define stat_users_head_type			"STAT_USERS_HEAD"
 #define stat_users_type				"STAT_USERS"
 #define stat_groups_head_type			"STAT_GROUPS_HEAD"

@@ -235,8 +235,8 @@ void copysfv_file(char *source, char *target, off_t buf_bytes) {
 #endif
 #if ( sfv_cleanup == TRUE && sfv_error == FALSE )
     int		fd_new	= open(".tmpsfv", O_CREAT|O_TRUNC|O_WRONLY, 0644);
-    if (fd_new) {
-        d_log("Failed to create temporary sfv file - setting cleanup of sfv to false and tries to continue.\n");
+    if ( fd_new < 0 ) {
+        d_log("Failed to create temporary sfv file (%d) - setting cleanup of sfv to false and tries to continue.\n", fd_new);
 		sfv_error = TRUE;
     }
 

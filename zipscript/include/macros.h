@@ -24,14 +24,14 @@
 #if ( incompleteislink == 1 )
 # if ( userellink == 1 )
 #  define create_incomplete() symlink(raceI.misc.release_name, locations.incomplete)
-#  define create_incomplete_nfo() symlink(raceI.misc.release_name, locations.incompletenfo)
+#  define create_incomplete_nfo() symlink(raceI.misc.release_name, locations.nfo_incomplete)
 # else
 #  define create_incomplete() symlink(locations.path, locations.incomplete)
-#  define create_incomplete_nfo() symlink(locations.path, locations.incompletenfo)
+#  define create_incomplete_nfo() symlink(locations.path, locations.nfo_incomplete)
 # endif
 #else
 # define create_incomplete() createzerofile(locations.incomplete)
-# define create_incomplete_nfo() createzerofile(locations.incompletenfo)
+# define create_incomplete_nfo() createzerofile(locations.nfo_incomplete)
 #endif
 
 /* No race */
