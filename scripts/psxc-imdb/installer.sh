@@ -48,8 +48,10 @@ choose_editor ()
   if [ ! -z "$line" ]; then
    EDITOR="$line"
   fi
-  if [ ! -z "`which $EDITOR`" ] && [ -x `which $EDITOR` ]; then
-   EDITOROK="OK"
+  if [ ! -z "`which $EDITOR`" ]; then
+   if [ -x `which $EDITOR` ]; then
+    EDITOROK="OK"
+   fi
   fi
  done
 
@@ -553,7 +555,7 @@ export_vars ()
  echo "GLBOT=\"$GLBOT\"" >>$installvars
  echo "GLBOTPATH=\"$GLBOTPATH\"" >>$installvars
  echo "FILESREADY=\"$FILESREADY\"" >>$installvars
- echo "cronname="\"$cronname\"" >>$installvars
+ echo "cronname=\"$cronname\"" >>$installvars
 }
 
 start_menu ()
