@@ -1097,6 +1097,7 @@ proc help {nick uhost hand chan arg} {
 #################################################################################
 proc loadtheme {file} {
 	global theme announce theme_fakes
+	unset announce
 
 	if {[string index $file 0] != "/"} { set file "[file dirname [info script]]/$file" }
 	putlog "Theme loaded: $file"
