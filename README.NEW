@@ -56,8 +56,8 @@ PZS-NG should compile fine on the following platforms:
 on AMD64 for instance, but have limited ability to test on this platform
 since none of the devs currently owns one.
 
-Only i386 platforms is tested, but feel free to let us know if you try it
-on anything else. :)
+Only the i386 platforms is tested, but feel free to let us know if you
+try it on anything else. :)
 
 
 
@@ -142,7 +142,7 @@ the cookie-system.
 zsconfig.h is the heart of the script. You should take the time to read the
 comments inside it, look at the examples, get a feel for how it works. I
 cannot stress this enough - If you do something bad here, chances are the
-entire script stops working as it should, or misbehaves. So thread carefully,
+entire script stops working as it should, or misbehaves. So step carefully,
 edit with care, don't miss any quotation marks.
 
 For windows users - don't edit the file in windows. Install an editor on
@@ -242,7 +242,7 @@ to add this, and you end up with a rather shabby site.
 Optionally, add the following:
 
 site_cmd	RESCAN	EXEC	/bin/rescan
-custom-rescan		!8 *
+custom-rescan	!8 *
 
 This will allow you to rescan a dir. This comes in handy in places the
 zipscript isn't invoked by default, when you have dirs you wish to check
@@ -256,24 +256,44 @@ Crontab:
 All that's left now is to tie up some loose ends. And installing the bot,
 ofcourse. As for loose ends:
 You might have noticed that we added a dir in ftp-data called zipscript.
-This is the place we keep all race data - a sort of mirror of the site if
+This is the place we keep all racedata - a sort of mirror of the site if
 you like, without the actual files in them. Over time this can grow and
 becomes huge, taking up a great deal of space, even making your system
 refuse to add more files. Thus, the included 'datacleaner' bin. This will
 remove all the racedata from dirs that no longer exists on your site.
-We also have a bin named 'cleaner' which helps clean out dead symlinks -
+We also have a bin named 'cleanup' which helps clean out dead symlinks -
 you might have nuked an incomplete release, in which case the incomplete-
 link will still exist. To the rescue comes crontab :)
 Add the following lines in a users crontab if the bins are owned by root
 and have the setuid bit, or run it in root's crontab if not.
 
-59	*	*	*	*	/glftpd/bin/cleaner >/dev/null 2>&1
-29	4	*	*	*	/chroot /glftpd /bin/datacleaner >/dev/null 2>&1
-
-<CLEANER DOES NOT EXIST - WE NEED TO CREATE IT>
+59	23	*	*	*	chroot /glftpd /bin/cleanup >/dev/null 2>&1
+29	4	*	*	*	chroot /glftpd /bin/datacleaner >/dev/null 2>&1
 
 This should help keep your site nice and tidy, not burden the hardware too
 much, and stop crontab from sending you annoying emails. ;)
+
+
+
+
+
+Compiled Bins:
+--------------
+There are a few other bins compiled, but they are mostly used by 3rd party
+scripts, or by scripters. Here's a short description of each bin compiled:
+  - cleanup - This little bin will clean out dead symlinks. Where it search
+      you can specify in zsconfig.h in the define of "cleanupdirs".
+  - datacleaner - This one will remove the racedata of dirs no longer found
+      on your site.
+  - postdel - Should be run after you delete something (as a cscript). Will
+      re-check the release and update the racedata accordingly.
+  - pzsng-undupe - Removes entry in dupelog after a file fails sfv check.
+  - racedebug - Debugger for racedata. (duh!) Not needed for 'ordinary' sites.
+  - racestats - Mostly used by 3rd party scripts. Will give raceinfo of a
+      release.
+  - zipscript-c - The zipscript.
+
+
 
 
 

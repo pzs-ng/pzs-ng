@@ -45,7 +45,8 @@ status  who       what
  [x]     psxc      add support for unduping bad files after sfv upload
  [ ]               add support for accumulative upload-speed (as in, calc total upload speed of entire release, calc
                    the percentage each racer did, and base stats on that)
- [ ]               create a modded datacleaner to be used as 'cscript RMD post /bin/zscleanup'
+ [x]               create a modded datacleaner to be used as 'cscript RMD post /bin/zscleanup'
+ [ ]               modifiy cleanup.c to take glftpd'ish args like /* and */ (recursive and non-recursive). Also add support for cleanup in yesterday's dir.
 
 status   description
  [ ]     not done 
