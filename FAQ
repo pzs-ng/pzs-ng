@@ -94,6 +94,6 @@ A: Already exists. Try http://poci.u5-inside.de/index.php
 Q: (BOT) What does "Tcl error in script for 'timer#####'" mean?
 ------------------------------------------------------------
 A: It means Eggdrop encountered a problem while evaluating a timed procedure. In other
-   words, you found a bug in sitebot. Please type .lasterror in the bot's partyline
-   after you see that error message. Be sure to include the output from .lasterror
+   words, you found a bug in sitebot. Please type .errorinfo in the bot's partyline
+   after you see that error message. Be sure to include the output from .errorinfo
    in your bug report on http://bugs.pzs-ng.com.
