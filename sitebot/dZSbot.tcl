@@ -772,7 +772,8 @@ proc bnc {nick uhost hand chan arg} {
 #################################################################################
 # CHECK BOUNCER STATUSES                                                        #
 #################################################################################
-proc ng_bnc_check { nick host hand arg } { global bnc sitename binary errorCode
+proc ng_bnc_check {nick uhost hand chan arg} {
+	global bnc sitename binary errorCode
 	putquick "NOTICE $nick :Checking bouncer(s) status..."
 	foreach line [split [exec $binary(BNCCHECK) $binary(NCFTPLS) $bnc(USER) $bnc(PASS) $bnc(TIMEOUT) $bnc(LIST)] "\n"] {
 		putquick "NOTICE $nick :$line"
