@@ -45,7 +45,7 @@ foreach (@BNCs) {					# for each bouncer
 	for ($tiFinish[1], $tiStart[1]) { $_ /= 1_000_000 }
 	my $logintime = sprintf "%.4f", (($tiFinish[0]  + $tiFinish[1]  ) - ($tiStart[0] + $tiStart[1] )) * 100;
 
-	if ($?) {					# returned an error code...so pattern match the
+	if (($? >> 8) > 0) {		# returned an error code...so pattern match the
 								# STDOUT & STDERR in order to find out what was
 								# wrong, made slightly more complex than needed
 								# as ncftpls' error codes for login issues aren't

@@ -7,7 +7,8 @@ CC=@CC@
 CFLAGS=@CFLAGS@ -W -Wall @STATIC@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I../include/ -I../../
 LDFLAGS=@LDFLAGS@
 UNIVERSAL=stats.o convert.o race-file.o zsfunctions.o mp3info.o
-RM=rm -f
+RM=@RM@ -f
+INSTALL=@INSTALL@
 
 RD-OBJECTS=racedebug.o
 ZS-OBJECTS=zipscript-c.o dizreader.o complete.o multimedia.o crc.o $(UNIVERSAL)
@@ -53,17 +54,16 @@ rescan: $(SC-OBJECTS)
 	$(CC) $(LDFLAGS) -o $@ $(SC-OBJECTS)
 
 install:
-	if [ ! -e "$(prefix)$(storage)" ]; then mkdir -p "$(prefix)$(storage)"; fi
+	if [ ! -e "$(prefix)$(storage)" ]; then mkdir -p -m777 "$(prefix)$(storage)"; fi
 	chown 0:0 $(prefix)$(storage)
 	chmod 4777 $(prefix)$(storage)
 	if [ -e $(prefix)$(datapath)/logs/glftpd.log ]; then chmod 666 $(prefix)$(datapath)/logs/glftpd.log; fi
 	if [ -e $(bindir) ]; then cp -f zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chown $(bindir)/; fi
 
 distclean: clean
-	$(RM) Makefile
 
 clean:
-	$(RM) *.o zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chown
+	$(RM) zipscript-c postdel racestats cleanup datacleaner rescan racedebug pzsng-undupe ng-chown
 
 uninstall:
 	rm -rf "$(prefix)$(storage)"

@@ -72,9 +72,7 @@ void getrelname(char *directory) {
 
     if (( ! strncasecmp(path[1], "CD"  , 2) && l[1] <= 4 ) ||
 	    ( ! strncasecmp(path[1], "DISC", 4) && l[1] <= 6 ) ||
-	    ( ! strncasecmp(path[1], "DiSC", 4) && l[1] <= 6 ) ||
 	    ( ! strncasecmp(path[1], "DISK", 4) && l[1] <= 6 ) ||
-	    ( ! strncasecmp(path[1], "DiSK", 4) && l[1] <= 6 ) ||
 	    ( ! strncasecmp(path[1], "DVD" , 3) && l[1] <= 5 )) {
 	raceI.misc.release_name = malloc(l[0] + 18);
 	locations.link_source = malloc(n = (locations.length_path - l[1]));
@@ -215,6 +213,11 @@ int main () {
 		    create_indexfile_file(&locations, &raceI, exec);
 #endif
 		    break;
+	        case 4:
+		  complete_type = video_complete_type;
+		  complete_bar  = video_completebar;
+		  break;
+
 	    }
 	    complete( &locations, &raceI, userI, groupI, complete_type );
 	    createstatusbar( convert(&raceI, userI, groupI, complete_bar) );

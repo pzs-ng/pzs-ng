@@ -9,7 +9,6 @@ all: passchk.c ng-bw.c
 	$(CC) $(CFLAGS) -o ng-bandwidth ng-bw.c
 
 distclean: clean
-	$(RM) Makefile
 
 clean:
 	$(RM) ng-bandwidth passchk

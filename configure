@@ -271,7 +271,7 @@ PACKAGE_VERSION=
 PACKAGE_STRING=
 PACKAGE_BUGREPORT=
 
-ac_unique_file="zipscript/conf/zsconfig.h"
+ac_unique_file="zipscript/conf/zsconfig.h.dist"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -309,7 +309,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT GREP STRINGS CUT CPP EGREP GLPATH GLVERSION STATIC LCRYPT LCRYPTO LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT GREP STRINGS CUT RM INSTALL CPP EGREP GLPATH GLVERSION STATIC LCRYPT LCRYPTO LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -2244,7 +2244,7 @@ do
   test -z "$as_dir" && as_dir=.
   for ac_exec_ext in '' $ac_executable_extensions; do
   if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_GREP="found"
+    ac_cv_prog_GREP="grep"
     echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -2282,7 +2282,7 @@ do
   test -z "$as_dir" && as_dir=.
   for ac_exec_ext in '' $ac_executable_extensions; do
   if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_STRINGS="found"
+    ac_cv_prog_STRINGS="strings"
     echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -2320,7 +2320,7 @@ do
   test -z "$as_dir" && as_dir=.
   for ac_exec_ext in '' $ac_executable_extensions; do
   if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_CUT="found"
+    ac_cv_prog_CUT="cut"
     echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -2340,6 +2340,82 @@ fi
 
 if [ -z "$CUT" ]; then { { echo "$as_me:$LINENO: error: Couldn't find cut, quitting!" >&5
 echo "$as_me: error: Couldn't find cut, quitting!" >&2;}
+   { (exit 1); exit 1; }; }; fi
+# Extract the first word of "rm", so it can be a program name with args.
+set dummy rm; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_prog_RM+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$RM"; then
+  ac_cv_prog_RM="$RM" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_RM="rm"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+fi
+fi
+RM=$ac_cv_prog_RM
+if test -n "$RM"; then
+  echo "$as_me:$LINENO: result: $RM" >&5
+echo "${ECHO_T}$RM" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+if [ -z "$RM" ]; then { { echo "$as_me:$LINENO: error: Couldn't find rm, quitting!" >&5
+echo "$as_me: error: Couldn't find rm, quitting!" >&2;}
+   { (exit 1); exit 1; }; }; fi
+# Extract the first word of "install", so it can be a program name with args.
+set dummy install; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_prog_INSTALL+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$INSTALL"; then
+  ac_cv_prog_INSTALL="$INSTALL" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_INSTALL="install"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+fi
+fi
+INSTALL=$ac_cv_prog_INSTALL
+if test -n "$INSTALL"; then
+  echo "$as_me:$LINENO: result: $INSTALL" >&5
+echo "${ECHO_T}$INSTALL" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+if [ -z "$INSTALL" ]; then { { echo "$as_me:$LINENO: error: Couldn't find install, quitting!" >&5
+echo "$as_me: error: Couldn't find install, quitting!" >&2;}
    { (exit 1); exit 1; }; }; fi
 
 LCRYPT=""
@@ -3938,7 +4014,9 @@ fi
 
 
 
-                                        ac_config_files="$ac_config_files sitewho/compile.sh Makefile zipscript/src/Makefile sitebot/src/Makefile"
+[ ! -f zipscript/conf/zsconfig.h ] && cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h
+
+                                        ac_config_files="$ac_config_files Makefile zipscript/src/Makefile sitebot/src/Makefile sitewho/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -4463,10 +4541,10 @@ for ac_config_target in $ac_config_targets
 do
   case "$ac_config_target" in
   # Handling of arguments.
-  "sitewho/compile.sh" ) CONFIG_FILES="$CONFIG_FILES sitewho/compile.sh" ;;
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "zipscript/src/Makefile" ) CONFIG_FILES="$CONFIG_FILES zipscript/src/Makefile" ;;
   "sitebot/src/Makefile" ) CONFIG_FILES="$CONFIG_FILES sitebot/src/Makefile" ;;
+  "sitewho/Makefile" ) CONFIG_FILES="$CONFIG_FILES sitewho/Makefile" ;;
   "config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
@@ -4562,6 +4640,8 @@ s,@OBJEXT@,$OBJEXT,;t t
 s,@GREP@,$GREP,;t t
 s,@STRINGS@,$STRINGS,;t t
 s,@CUT@,$CUT,;t t
+s,@RM@,$RM,;t t
+s,@INSTALL@,$INSTALL,;t t
 s,@CPP@,$CPP,;t t
 s,@EGREP@,$EGREP,;t t
 s,@GLPATH@,$GLPATH,;t t
@@ -5058,6 +5138,15 @@ if test "$no_create" != yes; then
   $ac_cs_success || { (exit 1); exit 1; }
 fi
 
-chmod +x sitewho/compile.sh
-echo "$as_me:$LINENO: result: Now type 'make' to compile" >&5
-echo "${ECHO_T}Now type 'make' to compile" >&6
+echo "$as_me:$LINENO: result: $( echo )
+The makefiles are now configured. Next up you need to edit
+zipscript/conf/zsconfig.h to fit your needs.
+
+Then type 'make' to compile it.
+" >&5
+echo "${ECHO_T}$( echo )
+The makefiles are now configured. Next up you need to edit
+zipscript/conf/zsconfig.h to fit your needs.
+
+Then type 'make' to compile it.
+" >&6
