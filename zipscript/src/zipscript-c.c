@@ -346,7 +346,7 @@ main(int argc, char **argv)
 				exit_value = 2;
 				break;
 			} else {
-				sprintf(target, "%s -qqt \"%s\"", unzip_bin, g.v.file.name);
+				sprintf(target, "%s -qqt %s", unzip_bin, g.v.file.name);
 				if (execute(target) != 0) {
 					d_log("zipscript-c: Integrity check failed (#%d): %s\n", errno, strerror(errno));
 					sprintf(g.v.misc.error_msg, BAD_ZIP);
@@ -616,7 +616,7 @@ main(int argc, char **argv)
 				d_log("zipscript-c: Could not execute nfo_script (%s) - file does not exists\n", nfo_script);
 			} else {
 				d_log("zipscript-c: Executing nfo script (%s)\n", nfo_script);
-				sprintf(target, nfo_script " \"%s\"", g.v.file.name);
+				sprintf(target, nfo_script " %s", g.v.file.name);
 				/* if ( execute_old(target) != 0 ) { */
 				if (execute(target) != 0) {
 					d_log("zipscript-c: Failed to execute nfo_script: %s\n", strerror(errno));
@@ -675,7 +675,7 @@ main(int argc, char **argv)
 								if (!fileexists(unduper_script)) {
 									d_log("zipscript-c: Failed to undupe '%s' - '%s' does not exist.\n", g.v.file.name, unduper_script);
 								} else {
-									sprintf(target, unduper_script " \"%s\"", g.v.file.name);
+									sprintf(target, unduper_script " %s", g.v.file.name);
 									if (execute(target) == 0) {
 										d_log("zipscript-c: undupe of %s successful.\n", g.v.file.name);
 									} else {
@@ -1242,7 +1242,7 @@ main(int argc, char **argv)
 				d_log("zipscript-c: Could not execute complete_script (%s) - file does not exists\n", complete_script);
 			} else {
 				d_log("zipscript-c: Executing complete script\n");
-				sprintf(target, complete_script " \"%s\"", g.v.file.name);
+				sprintf(target, complete_script " %s", g.v.file.name);
 				if (execute(target) != 0)
 					d_log("zipscript-c: Failed to execute complete_script: %s\n", strerror(errno));
 			}
@@ -1253,7 +1253,7 @@ main(int argc, char **argv)
 					d_log("zipscript-c: Could not execute nfo_script (%s) - file does not exists\n", nfo_script);
 				} else {
 					d_log("zipscript-c: Executing nfo script (%s)\n", nfo_script);
-					sprintf(target, nfo_script " \"%s\"", g.v.file.name);
+					sprintf(target, nfo_script " %s", g.v.file.name);
 					if (execute(target) != 0) {
 						d_log("zipscript-c: Failed to execute nfo_script: %s\n", strerror(errno));
 					}
@@ -1312,7 +1312,7 @@ main(int argc, char **argv)
 			d_log("zipscript-c: Could not execute accept_script (%s) - file does not exists\n", accept_script);
 		} else {
 			d_log("zipscript-c: Executing accept script\n");
-			sprintf(target, accept_script " \"%s\"", g.v.file.name);
+			sprintf(target, accept_script " %s", g.v.file.name);
 			if (execute(target) != 0) {
 				d_log("zipscript-c: Failed to execute accept_script: %s\n", strerror(errno));
 			}
@@ -1323,7 +1323,7 @@ main(int argc, char **argv)
 				d_log("zipscript-c: Could not execute nfo_script (%s) - file does not exists\n", nfo_script);
 			} else {
 				d_log("zipscript-c: Executing nfo script (%s)\n", nfo_script);
-				sprintf(target, nfo_script " \"%s\"", g.v.file.name);
+				sprintf(target, nfo_script " %s", g.v.file.name);
 				if (execute(target) != 0) {
 					d_log("zipscript-c: Failed to execute nfo_script: %s\n", strerror(errno));
 				}

@@ -742,21 +742,42 @@ get_rar_info(struct VARS *raceI)
 }
 
 /*
- * Modified   : 02.07.2002 Author     : dark0n3
+ * Modified   : 27.02.2005 Author     : js
  * 
- * Description: Executes extern program and returns return value
+ * Description: Executes external program and returns return value
  * 
  */
 int 
 execute(char *s)
 {
-	int		n;
+	int		status = 0, i = 0;
+	pid_t	pid;
+	char	*cmdv[52]; /* 52 arguments */
 
-	if ((n = system(s)) == -1)
-		d_log("execute: system(%s): %s\n", s, strerror(errno));
+	bzero(cmdv, sizeof(char *)*52);
 
-	return n;
+	/* TODO: make this understand quoted strings */
+	cmdv[i] = strtok(s, " \t");
+	for (i++; (i < 52) && (cmdv[i] = strtok(NULL, " \t")); i++);
 
+	switch ((pid = fork())) {
+		case -1:
+			d_log("execute: fork(): %s\n", strerror(errno));
+			return -1;
+			break;
+		case 0:
+			close(STDOUT_FILENO);
+			close(STDERR_FILENO);
+			execvp(cmdv[0], cmdv);
+			d_log("execute: execvp(%s): %s\n", cmdv[0], strerror(errno));
+			exit(-1);
+			break;
+		default:
+			waitpid(pid, &status, WUNTRACED);
+			break;
+	}
+
+	return WEXITSTATUS(status);
 }
 
 char           *
