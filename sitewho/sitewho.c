@@ -99,7 +99,7 @@ short strcomp(char *instr, char *searchstr) {
 void showusers(int n, int mode, char *ucomp, char raw) {
 	char	    status[20];
 	char	    online[20];
-	char	    filename[20];
+	char	    *filename;
 	char	    realfile[512];
 	char	    bar[20];
 	struct timeval  tstop;
@@ -142,6 +142,7 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			user[x].bytes_xfer != 0 && mask == 0 ) {
 
 			m = strplen(user[x].status) - 5;
+			filename = malloc(m) + 1;
 			if (m < 15 || raw)
 				sprintf(filename, "%.*s", m, user[x].status + 5);
 			else
@@ -164,14 +165,11 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			for (i = sprintf(realfile, "%s", user[x].currentdir); realfile[i] != '/' && i > 0; i--);
 			sprintf(realfile + i + 1, "%.*s", m, user[x].status + 5);
 
+			filename = malloc(m) + 1;
 			if (m < 15 || raw)
 				sprintf(filename, "%.*s", m, user[x].status + 5);
 			else
 				sprintf(filename, "%.15s", user[x].status + m - 10);
-/*			if (m < 15)
-				sprintf(filename, "%.*s", m, user[x].status + 5);
-			else
-				sprintf(filename, "%.15s", user[x].status + m - 10);*/
 
 			i = 15 * user[x].bytes_xfer * 1. / filesize(realfile);
 			i = (i > 15 ? 15 : i);
@@ -191,6 +189,7 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			else
 				sprintf(status, "\"DN\" \"%.1f\"", speed);
 		} else {
+			filename = malloc(1);
 			*bar = *filename = hours = minutes = 0;
 			seconds = tstop.tv_sec - user[x].tstart.tv_sec;
 			while (seconds >= 3600) { hours++; seconds -= 3600; }
@@ -231,6 +230,7 @@ void showusers(int n, int mode, char *ucomp, char raw) {
 			}
 			onlineusers++;
 		}
+		free(filename);
 	}
 }
 
