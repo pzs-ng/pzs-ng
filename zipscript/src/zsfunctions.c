@@ -84,7 +84,7 @@ create_missing(char *f)
 char *
 findfileext(DIR *dir, char *fileext)
 {
-	int		n, k;
+	int			k;
 	static struct dirent *dp;
 
 	rewinddir(dir);
@@ -107,8 +107,8 @@ findfileext(DIR *dir, char *fileext)
 char           *
 findfileextparent(DIR *dir, char *fileext)
 {
-	int		n         , k;
-	struct dirent	*dp;
+	int			k;
+	static struct dirent	*dp;
 
 	rewinddir(dir);
 	while ((dp = readdir(dir))) {

@@ -247,8 +247,6 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	FILE		*file;
 	char		*realfile, target[256], *ext;
 	unsigned int	Tcrc;
-	//int		m = 0, l = 0;
-	int		filenum = 0;
 	struct stat	filestat;
 
 	RACEDATA	rd;
