@@ -1081,14 +1081,12 @@ proc sndone {chan text} {
 proc who {nick uhost hand chan argv} {
 	global binary
 	checkchan $nick $chan
-
 	foreach line [split [exec $binary(WHO)] \n] {
 		if {![info exists newline($line)]} {
 			set newline($line) 0
 		} else { set newline($line) [expr $newline($line) + 1] }
 		puthelp "PRIVMSG $nick :$line\003$newline($line)"
 	}
-	puthelp "PRIVMSG $nick : "
 }
 
 #################################################################################
@@ -1409,7 +1407,6 @@ proc showstats {type time nick uhost hand chan argv} {
 		puthelp "PRIVMSG $nick :$line\003$newline($line)"
 	}
 	puthelp "PRIVMSG $nick :------------------------------------------------------------------------"
-	puthelp "PRIVMSG $nick : "
 }
 
 #################################################################################
@@ -1722,8 +1719,8 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 					default {putlog "dZSbot error: Unknown curl exit code \"$code\", please report to pzs-ng developers."}
 				}
 			} else {
-				## If the first item in errorCode is not CHILDSTATUS, it means
-				## that Tcl was unable to execute the binary.
+				## If the first list item in errorCode is not "CHILDSTATUS",
+				## Tcl was unable to execute the binary.
 				putlog "dZSbot error: Unable to execute curl ($reply)."
 			}
 			set output "$theme(PREFIX)$announce(BNC_OFFLINE)"
@@ -1747,8 +1744,8 @@ proc help {nick uhost hand chan arg} {
 
 	set file "$scriptpath/dZSbot.help"
 	if {![file readable $file]} {
-		puthelp "PRIVMSG $nick : File dZSbot.help is missing, please check install"
-		puthelp "PRIVMSG $nick : (file should reside in same dir as dZSbot.tcl)"
+		putlog "dZSbot error: The \"dZSbot.help\" file is missing, please check your install."
+		puthelp "PRIVMSG $nick :Unable to find help file, please contact a siteop."
 		return 0
 	}
 
