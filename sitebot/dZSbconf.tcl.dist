@@ -100,6 +100,10 @@ set binary(GLFTPD)		"/glftpd/bin/glftpd"
 # 'sections' is purely for cosmetic uses (output)
 set device(0)			"/dev/da0s1f MP3"
 set device(1)			"/dev/ad0s1e ISO"
+# Max length of devices before splitting to new line (note: you need to take
+# the rest of the announce(FREE) into account yourself) Also, it'll output
+# total on all lines, if you have multiple. Set it to 0 to disable.
+set dev_max_length		300
 
 # Set up paths for all the sections (wildcards) and their
 # types. Types are to decide if things get shown or not ;)
