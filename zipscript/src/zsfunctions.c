@@ -1072,6 +1072,10 @@ mark_as_bad(char *filename)
 #if (mark_file_as_bad == TRUE)
 	char    *newname = 0;
 
+	if (!fclose(fopen(filename, "r")) {
+		d_log("Failed to open file (is it a directory?)\n");
+		return;
+	}
 	newname=malloc(strlen(filename) + 4);
 	sprintf(newname, "%s.bad", filename);
 	if (rename(filename, newname)) {

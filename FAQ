@@ -45,3 +45,7 @@ A: This is usually seen with zipfiles. It means you'ved changed the variable
    unzip_bin to a location outside glftpd's chroot, or to a place it is not
    found, or have forgotten to copy unzip into glftpd's bin/ dir.
 
+Q: Anything special worth mentioning for <enter-systemname-here>?
+-----------------------------------------------------------------
+A: Gentoo: You need baselayout 1.8.6.13 or newer.
+

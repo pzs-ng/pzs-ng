@@ -173,7 +173,7 @@ testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	char           *fname, *realfile, *target, *ext;
 	unsigned int	Tcrc, crc;
 	int		m= 0, l = 0;
-
+	struct stat	filestat;
 	target = m_alloc(256);
 
 	if ((file = fopen(locations->race, "r+"))) {
@@ -200,7 +200,10 @@ testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 			if (status == F_NOTCHECKED) {
 				raceI->file.name = fname;
 				Tcrc = readsfv_file(locations, raceI, 0);
-				if (crc != 0 && Tcrc == crc) {
+				stat(fname, &filestat);
+				if (S_ISDIR(filestat.st_mode)) {
+					status = F_IGNORED;
+				} else if (crc != 0 && Tcrc == crc) {
 					status = F_CHECKED;
 				} else if (crc != 0 && strcomp(ignored_types, ext)) {
 					status = F_IGNORED;
@@ -211,7 +214,7 @@ testfiles_file(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 				} else {
 					mark_as_bad(fname);
 					if (fname)
-						unlink(fname);
+					unlink(fname);
 					status = F_BAD;
 
 #if ( create_missing_files )
