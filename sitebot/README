@@ -59,7 +59,7 @@
  from root makefile. However, you can always compile them separately by issuing
  "make" and "make install" inside this the directory.
 
- glwho            - An experimental glftpd who extension for Tcl.
+ glwho            - An experimental Tcl extension for glftpd online stats.
 
  passchk          - Used by !invite to authenticate users (requires OpenSSL headers).
 

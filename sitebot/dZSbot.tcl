@@ -1050,7 +1050,7 @@ proc ng_free {nick uhost hand chan arg} {
 
 	foreach line [split [exec $binary(DF) "-k"] "\n"] {
 		foreach {name value} [array get tmpdev] {
-			if {[string match [lindex $line 0] [lindex $value 0]]} {
+			if {[string equal [lindex $line 0] [lindex $value 0]]} {
 				foreach {devName devSize devUsed devFree} $line {break}
 				set devPercFree [format "%.1f" [expr (double($devFree) / double($devSize)) * 100]]
 				set devPercUsed [format "%.1f" [expr (double($devUsed) / double($devSize)) * 100]]

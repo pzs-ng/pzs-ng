@@ -168,7 +168,7 @@ set sections            ""
 
 # Disable certain announce types for sections (wildcards are optional).
 #set disabletypes(0DAY) "BAD_* HALFWAY_* NEWLEADER_* RACE_* UPDATE_*"
-#set disabletypes(MP3)  "BADBITRATE BADGENRE BADMSGINVITE BADYEAR UPDATE_*"
+#set disabletypes(MP3)  "BAD_* UPDATE_*"
 
 # Which channels we announce to, separate multiple channels with a single space.
 set mainchan            ""
@@ -179,18 +179,17 @@ set mainchan            ""
 #set chanlist(MV)       $mainchan
 #set chanlist(TEST)     $mainchan
 set chanlist(DEFAULT)   $mainchan
-set chanlist(INVITE)    $mainchan
 set chanlist(WELCOME)   $mainchan
 
 # Which channels should users be invited to (by default, users are invited
 # to the same channel the invite is announced in).
-set invite_channels     $chanlist(INVITE)
+set invite_channels     $mainchan
 
 # Private invite channels, only users matching the glFTPd-style permissions
 # are invited to the channel. You may only define one channel per line.
 #set privchannel(#NG-STAFF)  "-glftpd =SiTEOPS =STAFF 1"
 #set privchannel(#NG-FREAKS) "=FREAKS"
-#set privchannel(#NG-EVIL)   "!-test* !=FRiENDS *"
+#set privchannel(#NG-EVIL)   "!-t?st !=FRiENDS *"
 
 #############################################################
 # ANNOUNCING                                                #

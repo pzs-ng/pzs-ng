@@ -17,11 +17,11 @@
 
 # Some Very Important Settings #
 ################################
-set glroot                  "/glftpd/"
+set cmdpre                  "!ng"
 set sitename                "pzs-ng"
-set cmdpre                  "!pn"
-set announce(THEMEFILE)     "themes/default.zst"
 set mainchan                "#pzs-ng"
+set glroot                  "/glftpd/"
+set announce(THEMEFILE)     "themes/default.zst"
 
 # Some Bins and Paths - Edit to match your config/OS #
 ######################################################
@@ -45,8 +45,7 @@ set binary(UPTIME)          "/usr/bin/uptime"
 
 # Important Settings #
 ######################
-set bindnopre               "TRUE"
-set disable(TRIGINALLCHAN)  0
+set bindnopre               "FALSE"
 set speed(INCOMING)         12500
 set speed(OUTGOING)         12500
 set device(0)               "/dev/da0s1f MP3"
@@ -84,57 +83,56 @@ set statsection(2)          "MP3"
 # Invite #
 ##########
 set enable_irc_invite       "FALSE"
-set chanlist(INVITE)        $mainchan
-set invite_channels         $chanlist(INVITE)
+set invite_channels         $mainchan
 
 # Stuff you may need to change #
 ################################
-set splitter(CHAR)                  "\n"
+set splitter(CHAR)          "\n"
 
-## script announcements
-set disable(DEFAULT)                 0
-set disable(BADMSGINVITE)            0
-set disable(INVITE)                  0
-set disable(MSGINVITE)               0
-set disable(WELCOME)                 0
+## Script announcements
+set disable(DEFAULT)        0
+set disable(BADMSGINVITE)   0
+set disable(INVITE)         0
+set disable(MSGINVITE)      0
+set disable(WELCOME)        0
 
 ## Login announcements
-set disable(LOGIN)                   1
-set disable(LOGOUT)                  1
-set disable(BADHOSTMASK)             1
-set disable(BADPASSWORD)             1
-set disable(BANNEDHOST)              1
-set disable(DELETED)                 1
-set disable(IPNOTADDED)              1
-set disable(KILLGHOST)               1
-set disable(TAGLINE)                 1
-set disable(TIMEOUT)                 1
+set disable(LOGIN)          1
+set disable(LOGOUT)         1
+set disable(BADHOSTMASK)    1
+set disable(BADPASSWORD)    1
+set disable(BANNEDHOST)     1
+set disable(DELETED)        1
+set disable(IPNOTADDED)     1
+set disable(KILLGHOST)      1
+set disable(TAGLINE)        1
+set disable(TIMEOUT)        1
 
 ## Sysop announcements
-set disable(ADDUSER)                 1
-set disable(GADDUSER)                1
-set disable(CHGRPADD)                1
-set disable(CHGRPDEL)                1
-set disable(ADDIP)                   1
-set disable(DELIP)                   1
-set disable(READDED)                 1
-set disable(DELUSER)                 1
-set disable(PURGED)                  1
-set disable(SYSOP)                   1
+set disable(ADDUSER)        1
+set disable(GADDUSER)       1
+set disable(CHGRPADD)       1
+set disable(CHGRPDEL)       1
+set disable(ADDIP)          1
+set disable(DELIP)          1
+set disable(READDED)        1
+set disable(DELUSER)        1
+set disable(PURGED)         1
+set disable(SYSOP)          1
 
 ## glFTPd announcements
-set disable(DELDIR)                  0
-set disable(NEWDIR)                  0
-set disable(NUKE)                    0
-set disable(UNNUKE)                  0
-set disable(REQFILLED)               0
-set disable(REQUEST)                 0
-set disable(WIPE)                    0
-set disable(WIPE-r)                  0
+set disable(DELDIR)         0
+set disable(NEWDIR)         0
+set disable(NUKE)           0
+set disable(UNNUKE)         0
+set disable(REQFILLED)      0
+set disable(REQUEST)        0
+set disable(WIPE)           0
+set disable(WIPE-r)         0
 
 ## Third party announcements
-set disable(IMDB)                    0
-set disable(IMDBFIND)                0
-set disable(IMDBVAR)                 0
-set disable(PRE)                     0
-set disable(TURGEN)                  0
+set disable(IMDB)           0
+set disable(IMDBFIND)       0
+set disable(IMDBVAR)        0
+set disable(PRE)            0
+set disable(TURGEN)         0

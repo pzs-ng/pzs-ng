@@ -12,7 +12,6 @@ Example:
  source pzs-ng/dZSbot.tcl
  source pzs-ng/plugins/Example.tcl
 
-
 # Notes
 ###############################################################
 
@@ -30,7 +29,6 @@ Example:
 - If a pre-command script returns 0/FALSE, the remaining portion
   of that event will be cancelled (i.e. skipping the channel output
   for announcements).
-
 
 # Announce Events
 ###############################################################
