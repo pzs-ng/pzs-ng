@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-extern char *crypt(const char *key, const char *salt);
+extern char * crypt(const char *key, const char *salt);
 
 #ifndef  __USE_SVID
 struct passwd pwd;
