@@ -153,7 +153,6 @@ set disable(COMPLETE_OTHER)				0
 set disable(COMPLETE_VIDEO)				0
 set disable(COMPLETE_AUDIO_CBR)				0
 set disable(COMPLETE_AUDIO_VBR)				0
-set disable(COMPLETE_STAT_RACE)				0
 set disable(COMPLETE_STAT_RACE_RAR)			0
 set disable(COMPLETE_STAT_RACE_ZIP)			0
 set disable(COMPLETE_STAT_RACE_OTHER)			0
