@@ -488,10 +488,22 @@ main(int argc, char **argv)
 				} else {
 					d_log("zipscript-c: DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g.v.file.size));
 					d_log("zipscript-c: Hmm.. Seems the old .sfv was deleted. Allowing new one.\n");
-#if (remove_sfv_data_on_delete == TRUE)
 					unlink(g.l.race);
 					unlink(g.l.sfv);
-#endif
+					rewinddir(dir);
+					while ((dp = readdir(dir))) {
+						cnt = cnt2 = strlen(dp->d_name);
+						ext = dp->d_name;
+						while (ext[cnt] != '-' && cnt > 0)
+							cnt--;
+						if (ext[cnt] != '-')
+							cnt = cnt2;
+						else
+							cnt++;
+						ext += cnt;
+						if (!strncmp(ext, "missing", 7))
+							unlink(dp->d_name);
+					}
 				}
 			}
 			d_log("zipscript-c: Parsing sfv and creating sfv data\n");

@@ -125,14 +125,6 @@ sfv_calc_single_fname <TRUE|FALSE>
 	Normally only broken sfv's should have a missing crc after a filename.
 	Default: FALSE
 
-remove_sfv_data_on_delete <TRUE|FALSE>
-	If files are removed from a location, and reupped again, in the same 
-	place, the zipscript will probably announce complete messages after each
-	file. Setting the following to TRUE hinders this, but may have other
-	consequences (like erasing race-data if a sfv is uploaded after it is
-	first removed) which is why it's set to FALSE as default.
-	Default: FALSE
-
 subdir_list <STRING>
 	This is a list of what is defined as subdirs. Dirs matching these
 	patterns will be considered subdirs, and follow a different pattern

@@ -106,16 +106,6 @@
 #endif
 
 /*
- * If files are removed from a location, and reupped again, in the same place,
- * the zipscript will probably announce complete messages after each file.
- * Setting the following to TRUE hinders this, but may have other consequences
- * which is why it's set to FALSE as default.
- */
-#ifndef remove_sfv_data_on_delete
-#define remove_sfv_data_on_delete	FALSE
-#endif
-
-/*
  * Normally files marked as bad are deleted. You can change this by setting the
  * following value to TRUE - instead of the file being deleted, it will be renamed
  * <filename>.bad. Bad files are ignored on rescan.
