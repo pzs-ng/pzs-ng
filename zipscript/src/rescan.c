@@ -21,6 +21,7 @@
 #include "crc.h"
 
 #include "../conf/zsconfig.h"
+#include "../conf/zsconfig.defaults.h"
 
 struct USERINFO  **userI;
 struct GROUPINFO **groupI;

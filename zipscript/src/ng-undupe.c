@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include "../conf/zsconfig.h"
+#include "../conf/zsconfig.defaults.h"
 
 struct dupefile {
     char filename[256];

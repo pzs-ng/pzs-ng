@@ -142,11 +142,17 @@ The result is that the config for the zipscript is much smaller, and there
 should no longer be any need to recompile the zipscript if you decide to
 change the layout.
 
-ZSCONFIG.H is the heart of the script. You should take the time to read the
-comments inside it, look at the examples, get a feel for how it works. I
-cannot stress this enough - if you do something bad here, chances are the
-entire script stops working as it should, or misbehaves. So step carefully,
-edit with care and don't miss any quotation marks.
+People familiar with the old zipscript-c will remember zsconfig.h. This is
+slightly changed - it now does not hold all options, but only the most common
+options used. The full list of options is stored in zsconfig.defaults.h. Do
+take time to read this file and the comments included. If you need to change
+some of these options, you should copy the define(s) from this file and into
+your zsconfig.h - your settings will override whatever is in the defaults.
+
+zsconfig.h is the heart of the script. I cannot stress this enough - if you
+do something bad here, chances are the entire script stops working as it
+should, or misbehaves. So step carefully, edit with care and don't miss any
+quotation marks.
 
 For Windows users - don't edit the file in windows. Install an editor on
 you linux/unix/bsd box - vim, aee, ee, pico, nano are good choices.

@@ -32,6 +32,7 @@
 #include "crc.h"
 
 #include "../conf/zsconfig.h"
+#include "../conf/zsconfig.defaults.h"
 
 /* Remove the portion of PARAM matched by PATTERN according to OP, where OP
  * can have one of 4 values:
@@ -328,7 +329,7 @@ int main( int argc, char **argv ) {
 	raceI.file.speed=(unsigned int)strtol(getenv("SPEED"),NULL,0);
 	if (!raceI.file.speed) raceI.file.speed=1;
 
-	d_log("Reading section from env\n");
+	d_log("Reading section from env (%s)\n", getenv("SECTION"));
 	if ((temp_p=strdup(gl_sections)) == NULL) {
 	    d_log("Can't allocate memory for sections\n");
 	} else {
@@ -839,6 +840,7 @@ d_log("DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", raceI.file.size))
 	    sortstats(&raceI, userI, groupI);
 #if ( get_user_stats == TRUE )
 	    d_log("Reading day/week/month/all stats for racers\n");
+d_log("stat section: %i\n", raceI.section);
 	    get_stats(&raceI, userI);
 #endif
 	    d_log("Printing on-site race info\n");

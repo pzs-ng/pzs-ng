@@ -11,6 +11,7 @@
 #include "objects.h"
 #include "macros.h"
 #include "../conf/zsconfig.h"
+#include "../conf/zsconfig.defaults.h"
 
 struct stat	entry_stat;
 int		zd_length;
