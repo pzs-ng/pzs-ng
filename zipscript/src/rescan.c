@@ -143,6 +143,7 @@ main(void)
 		strlcpy(g.v.file.name, findfileext(dir, ".sfv"), NAME_MAX);
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
+
 		if (copysfv(g.v.file.name, g.l.sfv, &g.v)) {
 			printf("Found invalid entries in SFV - Exiting.\n");
 
@@ -289,6 +290,7 @@ main(void)
 			get_mpeg_audio_info(findfileext(dir, ".mp3"), &g.v.audio);
 
 		if ((g.v.total.files_missing == 0) && (g.v.total.files > 0)) {
+
 			switch (g.v.misc.release_type) {
 			case RTYPE_RAR:
 				complete_bar = rar_completebar;
@@ -310,6 +312,7 @@ main(void)
 			}
 			g.v.misc.write_log = 0;
 			complete(&g, complete_type);
+
 			createstatusbar(convert(&g.v, g.ui, g.gi, complete_bar));
 #if (chmod_completebar)
 			if (!matchpath(group_dirs, g.l.path)) {

@@ -591,7 +591,7 @@ END:
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
-	
+	raceI->data_type = type;
 	return retval;
 }
 
@@ -899,12 +899,13 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 
 	if (!sb.st_size) {
 		hd.data_version = sfv_version;
-		hd.data_type = 0;
-		hd.data_in_use = progtype;
-		hd.data_incrementor = 1;
-		hd.data_queue = 0;
+		raceI->data_type = hd.data_type = 0;
+		raceI->data_in_use = hd.data_in_use = progtype;
+		raceI->data_incrementor = hd.data_incrementor = 1;
+		raceI->data_queue = hd.data_queue = 0;
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
+		return 0;
 	} else {
 		read(fd, &hd, sizeof(HEADDATA));
 		if (hd.data_in_use) {
@@ -927,6 +928,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 			hd.data_incrementor = 1;
 			hd.data_in_use = progtype;
 		}
+		raceI->data_incrementor = hd.data_incrementor;
 		if (hd.data_version != sfv_version) {
 			d_log("create_lock: version of datafile mismatch. Stopping and suggesting a cleanup.\n");
 			close(fd);
@@ -934,15 +936,14 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 		}
 		if (hd.data_queue)
 			hd.data_queue--;
+		raceI->data_queue = hd.data_queue;
 		lseek(fd, 0L, SEEK_SET);
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
+		raceI->data_in_use = progtype;
+		raceI->data_type = 0;
+		return 0;
 	}
-	raceI->data_in_use = hd.data_in_use;
-	raceI->data_incrementor = hd.data_incrementor;
-	raceI->data_type = hd.data_type;
-	raceI->data_queue = hd.data_queue;
-	return 0;
 }
 
 /* Remove the lock
