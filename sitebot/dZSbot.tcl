@@ -32,7 +32,7 @@ if {[catch {source [file dirname [info script]]/dZSbvars.tcl} tmperror]} {
 foreach bin [array names binary] {
 	if {$bin == "NCFTPLS" && $bnc(ENABLED) != "YES"} { continue; }
 	if {$bin == "PING" && ($bnc(ENABLED) != "YES" || $bnc(PING) != "YES")} { continue; }
-		
+
 	if {![file executable $binary($bin)]} {
 		putlog "dZSbot: Wrong path/missing bin for $bin - Please fix."
 		set dzerror "1"
@@ -115,141 +115,134 @@ set mpath ""
 # SET BINDINGS                                                                  #
 #################################################################################
 
-# Where?	Flags	What?			Proc to call
-bind pub	-|-	[set cmdpre]who		who
-bind pub	-|-	[set cmdpre]speed	speed
-bind pub	-|-	[set cmdpre]bw		ng_bandwidth
-bind pub	-|-	[set cmdpre]bwup	ng_bwup
-bind pub    	-|- 	[set cmdpre]uploaders	ng_uploaders
-bind pub    	-|- 	[set cmdpre]up		ng_uploaders
-bind pub	-|-	[set cmdpre]bwdn	ng_bwdn
-bind pub	-|- 	[set cmdpre]leechers	ng_leechers
-bind pub	-|- 	[set cmdpre]downloaders	ng_leechers
-bind pub	-|- 	[set cmdpre]down	ng_leechers
-bind pub	-|- 	[set cmdpre]dn		ng_leechers
-bind pub	-|-	[set cmdpre]idlers	ng_idlers
-bind pub	-|-	[set cmdpre]idle	ng_idlers
-bind pub	-|-	[set cmdpre]bnc		ng_bnc_check
-bind pub	-|-	[set cmdpre]free	show_free
-bind pub	-|-	[set cmdpre]df		show_free
+bind pub -|- [set cmdpre]who         who
+bind pub -|- [set cmdpre]speed       speed
+bind pub -|- [set cmdpre]bw          ng_bandwidth
+bind pub -|- [set cmdpre]bwup        ng_bwup
+bind pub -|- [set cmdpre]uploaders   ng_uploaders
+bind pub -|- [set cmdpre]up          ng_uploaders
+bind pub -|- [set cmdpre]bwdn        ng_bwdn
+bind pub -|- [set cmdpre]leechers    ng_leechers
+bind pub -|- [set cmdpre]downloaders ng_leechers
+bind pub -|- [set cmdpre]down        ng_leechers
+bind pub -|- [set cmdpre]dn          ng_leechers
+bind pub -|- [set cmdpre]idlers      ng_idlers
+bind pub -|- [set cmdpre]idle        ng_idlers
+bind pub -|- [set cmdpre]bnc         ng_bnc_check
+bind pub -|- [set cmdpre]free        show_free
+bind pub -|- [set cmdpre]df          show_free
+bind pub -|- [set cmdpre]inc         show_incompletes
+bind pub -|- [set cmdpre]incomplete  show_incompletes
+bind pub -|- [set cmdpre]incompletes show_incompletes
+bind pub -|- [set cmdpre]help        help
 
-bind pub	-|-	[set cmdpre]dayup	stats_user_dayup
-bind pub	-|-	[set cmdpre]wkup	stats_user_wkup
-bind pub	-|-	[set cmdpre]monthup	stats_user_monthup
-bind pub	-|-	[set cmdpre]allup	stats_user_allup
+bind pub -|- [set cmdpre]dupe    ng_search
+bind pub -|- [set cmdpre]new     ng_new
+bind pub -|- [set cmdpre]nukes   ng_nukes
+bind pub -|- [set cmdpre]search  ng_search
+bind pub -|- [set cmdpre]unnukes ng_unnukes
 
-bind pub	-|-	[set cmdpre]daydn	stats_user_daydn
-bind pub	-|-	[set cmdpre]wkdn	stats_user_wkdn
-bind pub	-|-	[set cmdpre]monthdn	stats_user_monthdn
-bind pub	-|-	[set cmdpre]alldn	stats_user_alldn
+bind pub -|- [set cmdpre]alldn   stats_user_alldn
+bind pub -|- [set cmdpre]allup   stats_user_allup
+bind pub -|- [set cmdpre]daydn   stats_user_daydn
+bind pub -|- [set cmdpre]dayup   stats_user_dayup
+bind pub -|- [set cmdpre]monthdn stats_user_monthdn
+bind pub -|- [set cmdpre]monthup stats_user_monthup
+bind pub -|- [set cmdpre]wkdn    stats_user_wkdn
+bind pub -|- [set cmdpre]wkup    stats_user_wkup
 
-bind pub	-|-	[set cmdpre]gpwk	stats_group_gpwk
-bind pub	-|-	[set cmdpre]gpal	stats_group_gpal
-bind pub	-|-	[set cmdpre]inc		show_incompletes
-bind pub	-|-	[set cmdpre]incomplete	show_incompletes
-bind pub	-|-	[set cmdpre]incompletes	show_incompletes
+bind pub -|- [set cmdpre]gpad    stats_group_gpad
+bind pub -|- [set cmdpre]gpal    stats_group_gpal
+bind pub -|- [set cmdpre]gpwk    stats_group_gpwk
+bind pub -|- [set cmdpre]gwpd    stats_group_gpwd
 
-bind pub	-|-	[set cmdpre]gwpd	stats_group_gpwd
-bind pub	-|-	[set cmdpre]gpad	stats_group_gpad
-bind pub	-|-	[set cmdpre]help	help
-
-bind join	-|-	*			welcome_msg
-
-bind pub	-|-	[set cmdpre]dupe	ng_search
-bind pub	-|-	[set cmdpre]new		ng_new
-bind pub	-|-	[set cmdpre]nukes	ng_nukes
-bind pub	-|-	[set cmdpre]search	ng_search
-bind pub	-|-	[set cmdpre]unnukes	ng_unnukes
+bind join -|- *           welcome_msg
 
 if {$bindnopre == "YES"} {
-	bind pub	-|- !who		who
-	bind pub	-|- !speed		speed
-	bind pub	-|- !bw			ng_bandwidth
-	bind pub	-|- !bwdn		ng_bwdn
-	bind pub	-|- !uploaders		ng_uploaders
-	bind pub	-|- !up			ng_uploaders
-	bind pub	-|- !bwup		ng_bwup
-	bind pub	-|- !leechers		ng_leechers
-	bind pub	-|- !downloaders	ng_leechers
-	bind pub	-|- !down		ng_leechers
-	bind pub	-|- !dn			ng_leechers
-	bind pub	-|- !idlers		ng_idlers
-	bind pub	-|- !idle		ng_idlers
-	bind pub	-|- !bnc		ng_bnc_check
-	bind pub	-|- !free		show_free
-	bind pub	-|- !df			show_free
+    bind pub -|- !who         who
+    bind pub -|- !speed       speed
+    bind pub -|- !bw          ng_bandwidth
+    bind pub -|- !bwdn        ng_bwdn
+    bind pub -|- !uploaders   ng_uploaders
+    bind pub -|- !up          ng_uploaders
+    bind pub -|- !bwup        ng_bwup
+    bind pub -|- !leechers    ng_leechers
+    bind pub -|- !downloaders ng_leechers
+    bind pub -|- !down        ng_leechers
+    bind pub -|- !dn          ng_leechers
+    bind pub -|- !idlers      ng_idlers
+    bind pub -|- !idle        ng_idlers
+    bind pub -|- !bnc         ng_bnc_check
+    bind pub -|- !free        show_free
+    bind pub -|- !df          show_free
+    bind pub -|- !inc         show_incompletes
+    bind pub -|- !incomplete  show_incompletes
+    bind pub -|- !incompletes show_incompletes
+    bind pub -|- !help        help
 
-	bind pub	-|- !dayup		stats_user_dayup
-	bind pub	-|- !wkup		stats_user_wkup
-	bind pub	-|- !monthup		stats_user_monthup
-	bind pub	-|- !allup		stats_user_allup
+    bind pub -|- !dupe        ng_search
+    bind pub -|- !new         ng_new
+    bind pub -|- !nukes       ng_nukes
+    bind pub -|- !search      ng_search
+    bind pub -|- !unnukes     ng_unnukes
 
-	bind pub	-|- !daydn		stats_user_daydn
-	bind pub	-|- !wkdn		stats_user_wkdn
-	bind pub	-|- !monthdn		stats_user_monthdn
-	bind pub	-|- !alldn		stats_user_alldn
+    bind pub -|- !alldn       stats_user_alldn
+    bind pub -|- !allup       stats_user_allup
+    bind pub -|- !daydn       stats_user_daydn
+    bind pub -|- !dayup       stats_user_dayup
+    bind pub -|- !monthdn     stats_user_monthdn
+    bind pub -|- !monthup     stats_user_monthup
+    bind pub -|- !wkdn        stats_user_wkdn
+    bind pub -|- !wkup        stats_user_wkup
 
-	bind pub	-|- !gpwk		stats_group_gpwk
-	bind pub	-|- !gpal		stats_group_gpal
-	bind pub	-|- !inc		show_incompletes
-	bind pub	-|- !incomplete		show_incompletes
-	bind pub	-|- !incompletes	show_incompletes
+    bind pub -|- !gpad        stats_group_gpad
+    bind pub -|- !gpal        stats_group_gpal
+    bind pub -|- !gpwk        stats_group_gpwk
+    bind pub -|- !gwpd        stats_group_gpwd
 
-	bind pub	-|- !gwpd		stats_group_gpwd
-	bind pub	-|- !gpad		stats_group_gpad
-	bind pub	-|- !help		help
+} elseif {![string equal "!" $cmdpre]} {
+    catch {unbind pub -|- !who      who}
+    catch {unbind pub -|- !speed    speed}
+    catch {unbind pub -|- !bw       ng_bandwidth}
+    catch {unbind pub -|- !bwup     ng_bwup}
+    catch {unbind pub -|- !uploaders    ng_uploaders}
+    catch {unbind pub -|- !up       ng_uploaders}
+    catch {unbind pub -|- !bwdn     ng_bwdn}
+    catch {unbind pub -|- !leechers ng_leechers}
+    catch {unbind pub -|- !downloaders  ng_leechers}
+    catch {unbind pub -|- !down     ng_leechers}
+    catch {unbind pub -|- !dn       ng_leechers}
+    catch {unbind pub -|- !idlers   ng_idlers}
+    catch {unbind pub -|- !idle     ng_idlers}
+    catch {unbind pub -|- !bnc      ng_bnc_check}
+    catch {unbind pub -|- !free     show_free}
+    catch {unbind pub -|- !df       show_free}
+    catch {unbind pub -|- !inc      show_incompletes}
+    catch {unbind pub -|- !incomplete   show_incompletes}
+    catch {unbind pub -|- !incompletes  show_incompletes}
+    catch {unbind pub -|- !help     help}
 
-	bind pub	-|- !dupe		ng_search
-	bind pub	-|- !new		ng_new
-	bind pub	-|- !nukes		ng_nukes
-	bind pub	-|- !search		ng_search
-	bind pub	-|- !unnukes		ng_unnukes
+    catch {unbind pub -|- !dupe     ng_search}
+    catch {unbind pub -|- !new      ng_new}
+    catch {unbind pub -|- !nukes    ng_nukes}
+    catch {unbind pub -|- !search   ng_search}
+    catch {unbind pub -|- !unnukes  ng_unnukes}
 
-} else {
-	if { "[set cmdpre]" != "!" } {
-		catch { unbind pub    -|- !who		who }
-		catch { unbind pub    -|- !speed	speed }
-		catch { unbind pub    -|- !bw		ng_bandwidth }
-		catch { unbind pub    -|- !bwup		ng_bwup }
-		catch { unbind pub    -|- !uploaders	ng_uploaders }
-		catch { unbind pub    -|- !up		ng_uploaders }
-		catch { unbind pub    -|- !bwdn		ng_bwdn }
-		catch { unbind pub    -|- !leechers	ng_leechers }
-		catch { unbind pub    -|- !downloaders	ng_leechers }
-		catch { unbind pub    -|- !down		ng_leechers }
-		catch { unbind pub    -|- !dn		ng_leechers }
-		catch { unbind pub    -|- !idlers	ng_idlers }
-		catch { unbind pub    -|- !idle		ng_idlers }
-		catch { unbind pub    -|- !bnc		ng_bnc_check }
-		catch { unbind pub    -|- !free		show_free }
-		catch { unbind pub    -|- !df		show_free }
-		catch { unbind pub    -|- !dayup	stats_user_dayup }
-		catch { unbind pub    -|- !wkup		stats_user_wkup }
-		catch { unbind pub    -|- !monthup	stats_user_monthup }
-		catch { unbind pub    -|- !allup	stats_user_allup }
+    catch {unbind pub -|- !alldn    stats_user_alldn}
+    catch {unbind pub -|- !allup    stats_user_allup}
+    catch {unbind pub -|- !daydn    stats_user_daydn}
+    catch {unbind pub -|- !dayup    stats_user_dayup}
+    catch {unbind pub -|- !monthdn  stats_user_monthdn}
+    catch {unbind pub -|- !monthup  stats_user_monthup}
+    catch {unbind pub -|- !wkdn     stats_user_wkdn}
+    catch {unbind pub -|- !wkup     stats_user_wkup}
 
-		catch { unbind pub    -|- !daydn	stats_user_daydn }
-		catch { unbind pub    -|- !wkdn		stats_user_wkdn }
-		catch { unbind pub    -|- !monthdn	stats_user_monthdn }
-		catch { unbind pub    -|- !alldn	stats_user_alldn }
+    catch {unbind pub -|- !gpad     stats_group_gpad}
+    catch {unbind pub -|- !gpal     stats_group_gpal}
+    catch {unbind pub -|- !gpwk     stats_group_gpwk}
+    catch {unbind pub -|- !gwpd     stats_group_gpwd}
+}
 
-		catch { unbind pub    -|- !gpwk		stats_group_gpwk }
-		catch { unbind pub    -|- !gpal		stats_group_gpal }
-		catch { unbind pub    -|- !inc		show_incompletes }
-		catch { unbind pub    -|- !incomplete	show_incompletes }
-		catch { unbind pub    -|- !incompletes	show_incompletes }
-	
-		catch { unbind pub    -|- !gwpd		stats_group_gpwd }
-		catch { unbind pub    -|- !gpad		stats_group_gpad }
-		catch { unbind pub    -|- !help		help }
-	
-		catch { unbind pub    -|- !dupe		ng_search}
-		catch { unbind pub    -|- !new		ng_new}
-		catch { unbind pub    -|- !nukes	ng_nukes}
-		catch { unbind pub    -|- !search	ng_search}
-		catch { unbind pub    -|- !unnukes	ng_unnukes}
-	}
-}	
 ## Some 'constants'
 proc DEFAULT_LEVEL {{string 0}} {
 	if {$string} { return [DEBUG_INFO 1];
@@ -282,7 +275,6 @@ set debuglevel [DEBUG_INFO]
 #################################################################################
 
 proc readlog {} {
-
 	global location glftpdlog loginlog lastoct disable defaultsection variables msgtypes chanlist dZStimer use_glftpd2 invite_channels loglastoct pid msgreplace privchannel privgroups privusers max_log_change
 
 	set dZStimer [utimer 1 "readlog"]
@@ -556,7 +548,7 @@ proc from_mb {str} {
 	set units(2) "GB"
 	set units(3) "TB"
 	set units(4) "PB"
-	
+
 	set unit 1
 	while {$str >= 1000} {
 		set str [expr $str / 1000.00]
@@ -652,7 +644,8 @@ proc basicreplace {rstring section} {
 #################################################################################
 # CONVERT COOKIES TO DATA                                                       #
 #################################################################################
-proc parse {msgtype msgline section} { global variables announce random mpath use_glftpd2 theme theme_fakes defaultsection pid disable sitename
+proc parse {msgtype msgline section} {
+    global variables announce random mpath use_glftpd2 theme theme_fakes defaultsection pid disable sitename
 	set type $msgtype
 
 	if {![string compare $type "NUKE"] || ! [string compare $type "UNNUKE"]} {
@@ -776,12 +769,13 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 #################################################################################
 # Channel trigger check.                                                        #
 #################################################################################
-proc checkchan {chan} {
-	global disable mainchan
-	## Better than including this in every proc!
-	if {$disable(TRIGINALLCHAN) == 1 && [string equal -nocase $chan $mainchan]} {
-		return -code return
+proc checkchan {nick chan} {
+	global disable lastbind mainchan
+	if {$disable(TRIGINALLCHAN) != 0 && [string equal -nocase $chan $mainchan]} {
+		putlog "dZSbot: \002$nick\002 tried to use \002$lastbind\002 from an invalid channel ($chan)."
+		return 0
 	}
+	return 1
 }
 #################################################################################
 
@@ -903,7 +897,7 @@ proc format_duration {secs} {
 #################################################################################
 proc ng_new {nick uhost hand chan argv} {
 	global announce binary defaultsection lastbind location sections theme
-	checkchan $chan
+	if {![checkchan $nick $chan]} {return}
 
 	if {![getoptions $argv results section]} {
 		## By displaying the command syntax in the channel (opposed to private message), we can inform others
@@ -971,7 +965,7 @@ proc ng_new {nick uhost hand chan argv} {
 #################################################################################
 proc ng_search {nick uhost hand chan argv} {
 	global announce binary defaultsection lastbind location search_chars theme
-	checkchan $chan
+	if {![checkchan $nick $chan]} {return}
 
 	if {![getoptions $argv results pattern] || $pattern == ""} {
 		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] <pattern>"
@@ -989,7 +983,7 @@ proc ng_search {nick uhost hand chan argv} {
 	array set uid [gl_userids]
 	array set gid [gl_groupids]
 
-	set output "$theme(PREFIX)$announce(SEARCH)" 
+	set output "$theme(PREFIX)$announce(SEARCH)"
 	set output [replacevar $output "%pattern" $pattern]
 	sndone $nick [basicreplace $output "SEARCH"]
 	set body "$theme(PREFIX)$announce(SEARCH_BODY)"
@@ -1032,7 +1026,7 @@ proc ng_search {nick uhost hand chan argv} {
 #################################################################################
 proc ng_nukes {nick uhost hand chan argv} {
 	global announce binary defaultsection lastbind location sections theme
-	checkchan $chan
+	if {![checkchan $nick $chan]} {return}
 
 	if {![getoptions $argv results section]} {
 		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] \[section\]"
@@ -1053,7 +1047,7 @@ proc ng_nukes {nick uhost hand chan argv} {
 	set output "$theme(PREFIX)$announce(NUKES)"
 	set output [replacevar $output "%section" $section]
 	sndone $nick [basicreplace $output "NUKES"]
-	set body "$theme(PREFIX)$announce(NUKES_BODY)" 
+	set body "$theme(PREFIX)$announce(NUKES_BODY)"
 	set num 0
 
 	foreach line [split $lines "\n"] {
@@ -1088,7 +1082,7 @@ proc ng_nukes {nick uhost hand chan argv} {
 #################################################################################
 proc ng_unnukes {nick uhost hand chan argv} {
 	global announce binary defaultsection lastbind location sections theme
-	checkchan $chan
+	if {![checkchan $nick $chan]} {return}
 
 	if {![getoptions $argv results section]} {
 		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] \[section\]"
@@ -1106,10 +1100,10 @@ proc ng_unnukes {nick uhost hand chan argv} {
 		set lines [exec $binary(SHOWLOG) -f -u -m $results -p $sectionpath -r $location(GLCONF)]
 	}
 
-	set output "$theme(PREFIX)$announce(UNNUKES)" 
+	set output "$theme(PREFIX)$announce(UNNUKES)"
 	set output [replacevar $output "%section" $section]
 	sndone $nick [basicreplace $output "UNNUKES"]
-	set body "$theme(PREFIX)$announce(UNNUKES_BODY)" 
+	set body "$theme(PREFIX)$announce(UNNUKES_BODY)"
 	set num 0
 
 	foreach line [split $lines "\n"] {
@@ -1170,13 +1164,9 @@ proc sndone {chan args} {
 # POST WHO INFO                                                                 #
 #################################################################################
 proc who {nick uhost hand chan args} {
-	global binary disable mainchan
+	global binary
+	if {![checkchan $nick $chan]} {return}
 
-	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 0} {
-			return 0
-		}
-	}
 	foreach line [split [exec $binary(WHO)] \n] {
 		if {![info exists newline($line)]} {
 			set newline($line) 0
@@ -1192,13 +1182,8 @@ proc who {nick uhost hand chan args} {
 # POST SPEED                                                                    #
 #################################################################################
 proc speed {nick uhost hand chan args} {
-	global binary announce theme disable mainchan
-
-	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 0} {
-			return 0
-		}
-	}
+	global binary announce theme disable
+	if {![checkchan $nick $chan]} {return}
 
 	set line ""
 	if { $disable(ALTWHO) == 0 } {
@@ -1247,42 +1232,12 @@ proc speed {nick uhost hand chan args} {
 
 
 #################################################################################
-# POST BANDWIDTH                                                                #
-#################################################################################
-proc bandwidth {nick uhost hand chan args} {
-	global binary announce theme disable mainchan
-
-	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 0} {
-			return 0
-		}
-	}
-	set output "$theme(PREFIX)$announce(BW)"
-	set data [exec $binary(WHO) --nbw]
-	set output [replacevar $output "%uploads" [lindex $data 0]]
-	set output [replacevar $output "%downloads" [lindex $data 2]]
-	set output [replacevar $output "%transfers" [lindex $data 4]]
-	set output [replacevar $output "%upspeed" [speed_convert [lindex $data 1] "none"]]
-	set output [replacevar $output "%dnspeed" [speed_convert [lindex $data 3] "none"]]
-	set output [replacevar $output "%totalspeed" [speed_convert [lindex $data 5] "none"]]
-	set output [basicreplace "$output" "BW"]
-
-	sndone $chan $output
-}
-#################################################################################
-
-
-#################################################################################
 # uploaders BANDWIDTH                                                           #
 #################################################################################
 proc ng_bwup { nick uhost hand chan args} {
-	global binary announce speed theme disable mainchan
+	global binary announce speed theme
+	if {![checkchan $nick $chan]} {return}
 
-	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 0} {
-			return 0
-		}
-	}
 	set output "$theme(PREFIX)$announce(BWUP)"
 	set raw [exec $binary(WHO) --nbw]
 	set upper [format "%.1f" [expr 100 * ([lindex $raw 1] / $speed(INCOMING))]]
@@ -1305,7 +1260,6 @@ proc ng_bwup { nick uhost hand chan args} {
 #	set output [replacevar $output "%totalpercent" $totalper]
 
 	set output [basicreplace "$output" "BW"]
-
 	sndone $chan $output
 }
 ################################################################################
@@ -1314,13 +1268,9 @@ proc ng_bwup { nick uhost hand chan args} {
 # ng_uploaders - Origional by Celerex - Mod/Merge by themolester                #
 #################################################################################
 proc ng_uploaders {nick uhost hand chan args} {
-	global binary announce speed theme disable mainchan
+	global binary announce speed theme
+	if {![checkchan $nick $chan]} {return}
 
-	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 0} {
-			return 0
-		}
-	}
 	set output "$theme(PREFIX)$announce(UPLOAD)"
 	set output [basicreplace "$output" "UPLOAD"]
 	sndone $chan $output
@@ -1369,8 +1319,8 @@ proc ng_uploaders {nick uhost hand chan args} {
 	set output [replacevar $output "%count" $count]
 	set output [replacevar $output "%total" [speed_convert $total "none"]]
 	set output [replacevar $output "%per" $per]
-	set output [basicreplace $output "UPLOAD"]
 
+	set output [basicreplace $output "UPLOAD"]
 	sndone $chan $output
 }
 #################################################################################
@@ -1379,13 +1329,9 @@ proc ng_uploaders {nick uhost hand chan args} {
 # downloaders BANDWIDTH                                                         #
 #################################################################################
 proc ng_bwdn { nick uhost hand chan args} {
-	global binary announce speed theme disable mainchan
+	global binary announce speed theme
+	if {![checkchan $nick $chan]} {return}
 
-	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 0} {
-			return 0
-		}
-	}
 	set output "$theme(PREFIX)$announce(BWDN)"
 	set raw [exec $binary(WHO) --nbw]
 	set upper [format "%.1f" [expr 100 * ([lindex $raw 1] / $speed(INCOMING))]]
@@ -1408,7 +1354,6 @@ proc ng_bwdn { nick uhost hand chan args} {
 	set output [replacevar $output "%totalpercent" $totalper]
 
 	set output [basicreplace "$output" "BW"]
-
 	sndone $chan $output
 }
 ################################################################################
@@ -1417,13 +1362,9 @@ proc ng_bwdn { nick uhost hand chan args} {
 # ng_leechers - Origional by Celerex - Mod/Merge by themolester                 #
 #################################################################################
 proc ng_leechers {nick uhost hand chan args} {
-	global binary announce speed theme disable mainchan
+	global binary announce speed theme
+	if {![checkchan $nick $chan]} {return}
 
-	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 0} {
-			return 0
-		}
-	}
 	set output "$theme(PREFIX)$announce(LEECH)"
 	set output [basicreplace "$output" "LEECH"]
 	sndone $chan $output
@@ -1472,8 +1413,8 @@ proc ng_leechers {nick uhost hand chan args} {
 	set output [replacevar $output "%count" $count]
 	set output [replacevar $output "%total" [speed_convert $total "none"]]
 	set output [replacevar $output "%per" $per]
-	set output [basicreplace "$output" "LEECH"]
 
+	set output [basicreplace "$output" "LEECH"]
 	sndone $chan $output
 }
 #################################################################################
@@ -1482,13 +1423,9 @@ proc ng_leechers {nick uhost hand chan args} {
 # ng_idlers - Origional by Celerex - Mod/Merge by themolester                   #
 #################################################################################
 proc ng_idlers { nick uhost hand chan args} {
-	global binary announce speed minidletime theme disable mainchan
+	global binary announce speed minidletime theme
+	if {![checkchan $nick $chan]} {return}
 
-	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 0} {
-			return 0
-		}
-	}
 	set output "$theme(PREFIX)$announce(IDLE)"
 	set output [basicreplace "$output" "IDLE"]
 	sndone $chan $output
@@ -1541,19 +1478,15 @@ proc ng_idlers { nick uhost hand chan args} {
 # UPDATED BANDWIDTH                                                             #
 #################################################################################
 proc ng_bandwidth {nick uhost hand chan args} {
-	global binary announce speed theme disable mainchan speedmeasure speedthreshold
+	global binary announce speed theme speedmeasure speedthreshold
+	if {![checkchan $nick $chan]} {return}
 
-	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 0} {
-			return 0
-		}
-	}
 	set output "$theme(PREFIX)$announce(BW)"
 	set raw [exec $binary(WHO) --nbw]
 	set upper [format "%.0f" [expr [lindex $raw 1] * 100 / $speed(INCOMING)]]
 	set dnper [format "%.0f" [expr [lindex $raw 3] *100 / $speed(OUTGOING)]]
 	set totalper [format "%.0f" [expr [lindex $raw 5] * 100 / ( $speed(INCOMING) + $speed(OUTGOING) )]]
-	
+
 	set up [speed_convert [lindex $raw 1] "none"]
 	set dn [speed_convert [lindex $raw 3] "none"]
 	set totalspeed [speed_convert [lindex $raw 5] "none"]
@@ -1573,10 +1506,8 @@ proc ng_bandwidth {nick uhost hand chan args} {
 	set output [replacevar $output "%dnpercent" $dnper]
 	set output [replacevar $output "%totalpercent" $totalper]
 
-	set output [themereplace [basicreplace "$output" "BW"] "none"]
-
-	putserv "PRIVMSG $chan :$output"
-
+	set output [basicreplace "$output" "BW"]
+	sndone $chan $output
 }
 ################################################################################
 
@@ -1585,13 +1516,9 @@ proc ng_bandwidth {nick uhost hand chan args} {
 # POST STATS                                                                    #
 #################################################################################
 proc showstats {chan nick type time section} {
-	global binary statsection location disable mainchan
+	global binary statsection location
+	if {![checkchan $nick $chan]} {return}
 
-	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 0} {
-			return 0
-		}
-	}
 	set sect 0
 	if {[string length $section] != 0} {
 		set error 1
@@ -1667,13 +1594,9 @@ proc invite {nick host hand arg} {
 # SHOW FREE SPACE                                                               #
 #################################################################################
 proc show_free {nick uhost hand chan arg} {
-	global binary announce device theme disable mainchan dev_max_length
+	global binary announce device theme dev_max_length
+	if {![checkchan $nick $chan]} {return}
 
-	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 0} {
-			return 0
-		}
-	}
 	set devices(0) ""; set free 0.0; set used 0.0
 	set total 0.0; set num 0; set perc 0.0
 	array set "tmpdev" [array get "device"]
@@ -1720,7 +1643,7 @@ proc show_free {nick uhost hand chan arg} {
 
 	set o 0
 	while {$o < [expr $i + 1]} {
-		set output "$theme(PREFIX)$announce(FREE)" 
+		set output "$theme(PREFIX)$announce(FREE)"
 		set output [replacevar $output "%total" "${totalgb}"]
 		set output [replacevar $output "%used" "${usedgb}"]
 		set output [replacevar $output "%free" "${freegb}"]
@@ -1751,7 +1674,7 @@ proc launchnuke2 {type path section sargs dargs} {
 	foreach entry $dargs {
 		if {[lsearch -exact $hidenuke [lindex $entry 0]] == -1} {
 			set mb [format "%.1f" [expr [lindex $entry 1] / 1024]]
-			set nukee "$announce(NUKEES)" 
+			set nukee "$announce(NUKEES)"
 			set nukee [replacevar $nukee "%u_name" [lindex $entry 0]]
 			set nukee [replacevar $nukee "%size" $mb]
 			append nuke(NUKEE) "$nukee" "$theme(SPLITTER)"
@@ -1835,7 +1758,7 @@ proc launchnuke {} {
 	}
 	set relname [string range $relname 1 end]
 
-	set output "$theme(PREFIX)$announce($nuke(TYPE))" 
+	set output "$theme(PREFIX)$announce($nuke(TYPE))"
 	set output [replacevar $output "%nuker" $nuke(NUKER)]
 	set output [replacevar $output "%nukees" $nuke(NUKEE)]
 	set output [replacevar $output "%type" $nuke(TYPE)]
@@ -1870,13 +1793,9 @@ proc denycheck {release} {
 # SHOW INCOMPLETE LIST                                                          #
 #################################################################################
 proc show_incompletes { nick uhost hand chan arg } {
-	global sitename binary disable mainchan
+	global sitename binary
+	if {![checkchan $nick $chan]} {return}
 
-	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 0} {
-			return 0
-		}
-	}
 	foreach line [split [exec $binary(INCOMPLETE)] "\n"] {
 		if {![info exists newline($line)]} {
 			set newline($line) 0
@@ -1913,17 +1832,12 @@ proc welcome_msg { nick uhost hand chan } {
 # CHECK BOUNCER STATUSES                                                        #
 #################################################################################
 proc ng_bnc_check {nick uhost hand chan arg} {
-	global bnc binary disable mainchan
+	global bnc
 
 	# We should probably just not bind at all, but this is easier.
 	# (It's easier since we won't have to deal with unbinding etc)
-	if {$bnc(ENABLED) != "YES"} { return; }
+	if {$bnc(ENABLED) != "YES" || ![checkchan $nick $chan]} {return}
 
-	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 0} {
-			return 0
-		}
-	}
 	putquick "NOTICE $nick :Checking bouncer(s) status..."
 	set count 0
 	foreach i $bnc(LIST) {
@@ -1932,9 +1846,9 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 		set loc [lindex $i 0]
 		set ip [lindex $i 1]
 		set port [lindex $i 2]
-	
+
 		if { $bnc(PING) == "TRUE" } {
-			if {[catch { set data [exec $binary(PING) -c1 $ip]} error]} { 
+			if {[catch { set data [exec $binary(PING) -c1 $ip]} error]} {
 				putquick "NOTICE $nick :$count. .$loc - $ip:$port - DOWN (Can't ping host)"
 				continue
 			}
@@ -1994,13 +1908,9 @@ proc stats_group_gpad {nick uhost hand chan args} { showstats "$chan" "$nick" "-
 # Help Section                                                                  #
 #################################################################################
 proc help {nick uhost hand chan arg} {
-	global sections cmdpre dver tclroot disable mainchan
+	global sections cmdpre dver tclroot
+	if {![checkchan $nick $chan]} {return}
 
-	if { $disable(TRIGINALLCHAN) == 1 } {
-		if {[string match -nocase $chan $mainchan] == 0} {
-			return 0
-		}
-	}
 	set file "$tclroot/dZSbot.help"
 	if {![file readable $file]} {
 		puthelp "PRIVMSG $nick : File dZSbot.help is missing, please check install"
@@ -2107,20 +2017,20 @@ proc themereplace {targetString section} {
 			if {[string length $padString] >= $padLength} {
 				set paddedString $padString
 			} elseif {$padOp == "l"} {
-				set paddedString [format "%-*s" $padLength $padString]	
+				set paddedString [format "%-*s" $padLength $padString]
 			} elseif {$padOp == "r"} {
-				set paddedString [format "%*s" $padLength $padString]	
+				set paddedString [format "%*s" $padLength $padString]
 			} elseif {$padOp == "m"} {
 				set paddedString [format "%*s%s" [expr ($padLength - [string length $padString]) / 2] "" $padString]
 				set paddedString [format "%-*s" $padLength $paddedString]
 			}
-			
+
 			set targetString [string map [list $matchString $paddedString] $targetString]
 		}
 
 		regsub -all {%b\{([^\{\}]+)\}} $targetString {\\002\1\\002} targetString
 		regsub -all {%u\{([^\{\}]+)\}} $targetString {\\037\1\\037} targetString
-	
+
 		set colorString [format "COLOR_%s_1" $section]
 		if {[lsearch -exact [array names theme] $colorString] != -1} {
 			regsub -all {%c(\d)\{([^\{\}]+)\}} $targetString {\\003$theme([format "COLOR_%s_" $section]\1)\2\\003} targetString
@@ -2141,7 +2051,7 @@ proc themereplace {targetString section} {
 #################################################################################
 proc dprint {arg1 {arg2 0}} {
 	global disable announce chanlist debuglevel
-	
+
 	if {$arg2 != 0} {
 		set level $arg1
 		set string $arg2
@@ -2152,8 +2062,8 @@ proc dprint {arg1 {arg2 0}} {
 
 	set level_str [$level "1"]
 	set level     [$level]
-	
-	if {[llength [array names "disable" "DEBUG"]] == 0} { 
+
+	if {[llength [array names "disable" "DEBUG"]] == 0} {
 		putlog "dZSbot error: disable(DEBUG) not set, defaulting to 0."
 		set disable(DEBUG) 0
 	}
@@ -2161,7 +2071,7 @@ proc dprint {arg1 {arg2 0}} {
 		putlog "dZSbot error: disable(DEBUG_DCC) not set, defaulting to 0."
 		set disable(DEBUG_DCC) 0
 	}
-	
+
 	if {$disable(DEBUG) && $disable(DEBUG_DCC)} { return; }
 	if {$debuglevel < $level} { return; }
 
