@@ -170,13 +170,14 @@ with the corresponding _LOOP# variable.
  Another new addition to pzs-ng beta4 is the ability to add padding/jystifying
  control codes to the theme. You can select left or right justification, and the
  number of spaces to pad the string to. %r = right-justified text, %l = left-
- justified text. Example:
+ justified text, %m = centered text. Example:
  
  In theme                         Output
  --------                         ------
  XtestX                           XtestX
  X%l9{test}X                      Xtest     X
  X%r9{test}X                      X     testX
+ X%m9{test}X                      X  test   X
 
 --------------------------------------------------------------------------------
  2-5 Submit your theme?

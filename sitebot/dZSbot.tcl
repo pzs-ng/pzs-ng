@@ -614,55 +614,25 @@ proc basicreplace {rstring section} {
 #################################################################################
 # JUSTIFY AND PAD OUTPUT                                                        #
 #################################################################################
-proc justifyandpad {output} {
-	set startindex 0
-	while { 1==1 } {
-		set side 0
-		set i [string first "%r" $output $startindex]
-		if { $i == -1 } {
-			if { $side == 0 } { set startindex 0 }
-			set side 1
-			set i [string first "%l" $output $startindex]
+proc justifyandpad {targetString} {
+	while {[regexp {%([lrm])(\d\d?)\{([^\{\}]+)\}} $targetString matchString padOp padLength padString]} {
+		if {[string length $padString] >= $padLength} {
+			set paddedString $padString
+		} elseif {$padOp == "l"} {
+			set paddedString [format "%-*s" $padLength $padString]	
+		} elseif {$padOp == "r"} {
+			set paddedString [format "%*s" $padLength $padString]	
+		} elseif {$padOp == "m"} {
+			set paddedString [format "%*s%s" [expr ($padLength - [string length $padString]) / 2] "" $padString]
+			set paddedString [format "%-*s" $padLength $paddedString]
 		}
-		if { $i != -1 } {
-			if {![string is integer -strict [string index $output [expr $i+2]]]} {
-				set startindex [expr $i+1]
-			} else {
-				set padlength ""
-				set j [expr $i+2]
-				while {![string match [string index $output $j] "\{"]} {
-					if {![string is integer -strict [string index $output $j]]} { break }
-					append padlength [string index $output $j]
-					incr j
-				}
-				if {![string match [string index $output $j] "\{"]} {
-					putlog "dZSbot error: Malformed padding/justification (junk character detected after %r/%l). Check your theme file!"
-					return $output
-				}
-				set padstring ""
-				set k [expr $j+1]
-				while {![string match [string index $output $k] "\}"]} {
-					if {[string match [string index $output $k] "\{"]} {
-						putlog "dZSbot error: Malformed padding/justification (%r and %l needs to be the innermost formatting command). Check your theme file!"
-						return $output
-					}
-					append padstring [string index $output $k]
-					incr k
-				}
-				set paddedstring ""
-				set padmissing [expr $padlength-[string length $padstring]]
-				if { $side == 1 } { append paddedstring $padstring }
-				for {set x 0} {$x<$padmissing} {incr x} { append paddedstring " " }
-				if { $side == 0 } { append paddedstring $padstring }
-				set endindex [expr $k+1]
-				set newstring [string range $output 0 [expr $i-1]]
-				append newstring $paddedstring
-				append newstring [string range $output $endindex 63335]
-				set output $newstring
-			}
-		} else { return $output }
+
+		set targetString [string map [list $matchString $paddedString] $targetString]
 	}
+
+	return $targetString
 }
+
 
 #################################################################################
 # CONVERT COOKIES TO DATA                                                       #
@@ -783,7 +753,7 @@ proc parse {msgtype msgline section} { global variables announce random mpath us
 		set cnt [expr $cnt + 1]
 	}
 
-	set output [themereplace [justifyandpad $output] $section]
+	set output [themereplace $output $section]
 	return $output
 }
 #################################################################################
@@ -1785,7 +1755,7 @@ proc launchnuke2 {type path section sargs dargs} {
 	}
 	set relname [string range $relname 1 end]
 
-	set output "[themereplace "$theme(PREFIX)$announce($nuke(TYPE))" "none"]"
+	set output [themereplace "$theme(PREFIX)$announce($nuke(TYPE))" "none"]
 	set output [replacevar $output "%nuker" $nuke(NUKER)]
 	set output [replacevar $output "%nukees" $nuke(NUKEE)]
 	set output [replacevar $output "%type" $nuke(TYPE)]
@@ -1795,7 +1765,7 @@ proc launchnuke2 {type path section sargs dargs} {
 	set output [replacevar $output "%relname" $relname]
 	set output [replacevar $output "%reldir" [lindex $split [expr $ll -1]]]
 	set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
-	set output [justifyandpad [basicreplace $output $nuke(TYPE)]]
+	set output [basicreplace $output $nuke(TYPE)]
 	sndall $nuke(SECTION) $output
 }
 #################################################################################
@@ -1850,7 +1820,7 @@ proc launchnuke {} {
 	}
 	set relname [string range $relname 1 end]
 
-	set output "[themereplace "$theme(PREFIX)$announce($nuke(TYPE))" "none"]"
+	set output [themereplace "$theme(PREFIX)$announce($nuke(TYPE))" "none"]
 	set output [replacevar $output "%nuker" $nuke(NUKER)]
 	set output [replacevar $output "%nukees" $nuke(NUKEE)]
 	set output [replacevar $output "%type" $nuke(TYPE)]
@@ -1860,7 +1830,7 @@ proc launchnuke {} {
 	set output [replacevar $output "%relname" $relname]
 	set output [replacevar $output "%reldir" [lindex $split [expr $ll -1]]]
 	set output [replacevar $output "%path" [lindex $split [expr $ll -2]]]
-	set output [justifyandpad [basicreplace $output $nuke(TYPE)]]
+	set output [basicreplace $output $nuke(TYPE)]
 	sndall $nuke(SECTION) $output
 
 	set nuke(SHOWN) 1
@@ -2107,19 +2077,34 @@ proc themereplace {rstring section} {
 
 	# We replace %cX{string}, %b{string} and %u{string} with their coloured, bolded and underlined equivilants ;)
 	# bold and underline replacement should not be needed here...
-	while {[regexp {(%c(\d)\{([^\{\}]+)\}|%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\})} $rstring]} {
+	while {[regexp {(%c(\d)\{([^\{\}]+)\}|%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\}|%([lrm])(\d\d?)\{([^\{\}]+)\})} $targetString matchString dud padOp padLength padString]} {
+		while {[regexp {%([lrm])(\d\d?)\{([^\{\}]+)\}} $targetString matchString padOp padLength padString]} {
+			if {[string length $padString] >= $padLength} {
+				set paddedString $padString
+			} elseif {$padOp == "l"} {
+				set paddedString [format "%-*s" $padLength $padString]	
+			} elseif {$padOp == "r"} {
+				set paddedString [format "%*s" $padLength $padString]	
+			} elseif {$padOp == "m"} {
+				set paddedString [format "%*s%s" [expr ($padLength - [string length $padString]) / 2] "" $padString]
+				set paddedString [format "%-*s" $padLength $paddedString]
+			}
+		}
+
+		set targetString [string map [list $matchString $paddedString] $targetString]
+	
 		set tmpstr [format "COLOR_%s_1" $section]
 		if {[lsearch -exact [array names theme] $tmpstr] != -1} {
-			regsub -all {%c(\d)\{([^\{\}]+)\}} $rstring {\\003$theme([format "COLOR_%s_" $section]\1)\2\\003} rstring
+			regsub -all {%c(\d)\{([^\{\}]+)\}} $targetString {\\003$theme([format "COLOR_%s_" $section]\1)\2\\003} targetString
 		} else {
-			regsub -all {%c(\d)\{([^\{\}]+)\}} $rstring {\\003$theme(COLOR\1)\2\\003} rstring
+			regsub -all {%c(\d)\{([^\{\}]+)\}} $targetString {\\003$theme(COLOR\1)\2\\003} targetString
 		}
-		regsub -all {%b\{([^\{\}]+)\}} $rstring {\\002\1\\002} rstring
-		regsub -all {%u\{([^\{\}]+)\}} $rstring {\\037\1\\037} rstring
+		regsub -all {%b\{([^\{\}]+)\}} $targetString {\\002\1\\002} targetString
+		regsub -all {%u\{([^\{\}]+)\}} $targetString {\\037\1\\037} targetString
 	}
 
-	regsub -all {\003(\d)(?!\d)} $rstring {\\0030\1} rstring
-	return [subst -nocommands $rstring]
+	regsub -all {\003(\d)(?!\d)} $targetString {\\0030\1} targetString
+	return [subst -nocommands $targetString]
 }
 #################################################################################
 
