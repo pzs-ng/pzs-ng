@@ -29,8 +29,8 @@ set location(GROUP)         "$glroot/etc/group"
 set location(PASSWD)        "$glroot/etc/passwd"
 set location(USERS)         "$glroot/ftp-data/users/"
 set location(GLCONF)        "/etc/glftpd.conf"
-set glftpdlog(GLLOG01)      "$glroot/ftp-data/logs/glftpd.log"
-set loginlog(LOGINLOG01)    "$glroot/ftp-data/logs/login.log"
+set glftpdlog(GL1)          "$glroot/ftp-data/logs/glftpd.log"
+set loginlog(LOGIN1)        "$glroot/ftp-data/logs/login.log"
 set binary(GLFTPD)          "$glroot/bin/glftpd"
 set binary(INCOMPLETE)      "$glroot/bin/incomplete-list.sh"
 set binary(PASSCHK)         "$glroot/bin/passchk"
@@ -91,6 +91,7 @@ set invite_channels         $chanlist(INVITE)
 set splitter(CHAR)                  "|"
 
 ## script announcements
+set disable(DEFAULT)                 0
 set disable(BADMSGINVITE)            0
 set disable(INVITE)                  0
 set disable(MSGINVITE)               0

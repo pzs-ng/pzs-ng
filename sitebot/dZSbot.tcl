@@ -328,9 +328,9 @@ proc parse {event section line} {
 					append output2 "$announce(${event}_LOOP${loop})"
 				}
 				if {[string match "*speed" [lindex $vari $cnt2]]} {
-					set output2 [replacevar $output2 "[lindex $vari $cnt2]" [format_speed $value $section]]
+					set output2 [replacevar $output2 [lindex $vari $cnt2] [format_speed $value $section]]
 				} else {
-					set output2 [replacevar $output2 "[lindex $vari $cnt2]" $value]
+					set output2 [replacevar $output2 [lindex $vari $cnt2] $value]
 				}
 				incr cnt2
 				if {[string equal "" [lindex $vari $cnt2]]} {
@@ -353,7 +353,7 @@ proc parse {event section line} {
 		}
 		incr cnt
 	}
-	return [themereplace $output $section]
+	return $output
 }
 
 ## TODO (neoxed): trash this garbage and add a more generic handler (?)
@@ -411,20 +411,20 @@ proc launchnuke {} {
 	set nuke(NUKEE) [trimtail $nuke(NUKEE) $theme(SPLITTER)]
 
 	set output "$theme(PREFIX)$announce($nuke(TYPE))"
+	set output [replacebasic $output $nuke(SECTION)]
 	set output [replacevar $output "%nuker" $nuke(NUKER)]
 	set output [replacevar $output "%nukees" $nuke(NUKEE)]
 	set output [replacevar $output "%type" $nuke(TYPE)]
 	set output [replacevar $output "%multiplier" $nuke(MULT)]
 	set output [replacevar $output "%reason" $nuke(REASON)]
-	set output [replacevar $output "%section" $nuke(SECTION)]
 	set output [replacepath $output $mpath $nuke(PATH)]
-	set output [replacevar $output "%relname" $relname]
 	sndall $nuke(TYPE) $nuke(SECTION) $output
 	set nuke(SHOWN) 1
 }
 
 proc launchnuke2 {type path section info nukees} {
 	global nuke hidenuke announce sitename theme mpath
+
 	set nuke(TYPE) $type
 	set nuke(PATH) $path
 	set nuke(SECTION) $section
@@ -444,12 +444,12 @@ proc launchnuke2 {type path section info nukees} {
 	}
 	set nuke(NUKEE) [trimtail $nuke(NUKEE) $theme(SPLITTER)]
 	set output "$theme(PREFIX)$announce($nuke(TYPE))"
+	set output [replacebasic $output $nuke(SECTION)]
 	set output [replacevar $output "%nuker" $nuke(NUKER)]
 	set output [replacevar $output "%nukees" $nuke(NUKEE)]
 	set output [replacevar $output "%type" $nuke(TYPE)]
 	set output [replacevar $output "%multiplier" $nuke(MULT)]
 	set output [replacevar $output "%reason" $nuke(REASON)]
-	set output [replacevar $output "%section" $nuke(SECTION)]
 	set output [replacepath $output $mpath $nuke(PATH)]
 	sndall $nuke(TYPE) $nuke(SECTION) $output
 }
@@ -503,7 +503,7 @@ proc format_speed {value section} {
 		"disabled" {
 			return $value
 		}
-		"default" {
+		default {
 			set type $theme(KB)
 		}
 	}
@@ -632,18 +632,15 @@ proc sndall {msgtype section text} {
 		putlog "dZSbot error: \"chanlist($section)\" not defined in the config."
 		return
 	}
-
 	foreach chan $channels {
-		foreach line [split $text $splitter(CHAR)] {
-			putquick "PRIVMSG $chan :$line"
-		}
+	    sndone $chan $text $section
 	}
 }
 
-proc sndone {chan text} {
+proc sndone {chan text {section "none"}} {
 	global splitter
 	foreach line [split $text $splitter(CHAR)] {
-		putquick "PRIVMSG $chan :[themereplace $line "none"]"
+		putquick "PRIVMSG $chan :[themereplace $line $section]"
 	}
 }
 

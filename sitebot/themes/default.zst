@@ -168,17 +168,24 @@ announce.COMPLETE_STAT_RACE_ZIP         = "[%b{done  }][%section] %b{%reldir} wi
 # Announce done by the postdel binary
 announce.INCOMPLETE             = "[%b{d0h!  }][%section] %b{%releasename} is now incomplete thanks to %b{%u_name} of %b{%g_name}."
 
-# 3rd party addons - take note that these variables should possibly be changed in order to work with your setup/3rd party app.
-announce.INVITE                 = "[%b{invite}] %b{%u_name} of %g_name invited himself as %b{%u_ircnick}."
+# 3rd party scripts
+announce.IMDB                   = "%msg"
+announce.IMDBFIND               = "%msg"
+announce.IMDBVAR                = "[%b{imdb  }][%section] %b{%imdbname} (%imdburl), a %imdbdirector movie which scored %b{%imdbscore of 10} (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.|%b{%sitename} :: [%b{imdb  }][%section] %b{%imdbname} plot summary: %imdbplot \[%imdbbar\]"
 announce.PRE                    = "[%b{%c1{pre}   }][%section] %b{%relname} by %b{%pregroup} in %b{%files} files (%b{%mbytes}MB)."
-announce.REQFILLED              = "[%b{filled}] %b{%u_name} of %g_name just filled %b{%releasename} for %b{%u_requester}."
-announce.REQUEST                = "[%b{req   }] %b{%u_name} of %g_name requests %b{%releasename}."
 
 # bouncer status
 announce.BNC                    = "Checking bouncer status..."
 announce.BNC_PING               = "%b{-} %num. %desc at %ip:%port is %b{DOWN} (can't ping host)"
 announce.BNC_ONLINE             = "%b{-} %num. %desc at %ip:%port is %b{UP} (login: %b{%response}ms ping: %b{%ping}ms)"
 announce.BNC_OFFLINE            = "%b{-} %num. %desc at %ip:%port is %b{DOWN} (%error)"
+
+# miscellaneous announces
+announce.BADMSGINVITE           = "[%b{%c1{badinv}}] %b{%u_ircnick} (%u_host) tried to invite himself with invalid login!"
+announce.INVITE                 = "[%b{invite}] %b{%u_name} of %g_name invited himself as %b{%u_ircnick}."
+announce.MSGINVITE              = "[%b{invite}] %b{%u_name} of %g_name invited himself as %b{%u_ircnick}."
+announce.REQFILLED              = "[%b{filled}] %b{%u_name} of %g_name just filled %b{%releasename} for %b{%u_requester}."
+announce.REQUEST                = "[%b{req   }] %b{%u_name} of %g_name requests %b{%releasename}."
 
 # internal announces
 announce.LEECH                  = "[%b{bwinfo}] Current leechers:"
@@ -199,13 +206,6 @@ announce.WELCOME                = "Welcome to %b{%sitename}'s sitechan. Type %cm
 announce.FREE                   = "[%b{space }] %devices[Totals: %b{%free} of %b{%total} (used %percentage%)]."
 announce.FREE-DEV               = "%section: %b{%free} of %b{%total} (used %percentage%) :: "
 announce.UPTIME                 = "[%b{uptime}] System: %time, %b{%users} user(s), load: %load Eggdrop: %eggdrop"
-
-# 3rd party imdb announce - example for psxc-imdb
-announce.BADMSGINVITE           = "[%b{%c1{badinv}}] %b{%u_ircnick} (%u_host) tried to invite himself with invalid login!"
-announce.IMDB                   = "%msg"
-announce.IMDBFIND               = "%msg"
-announce.IMDBVAR                = "[%b{imdb  }][%section] %b{%imdbname} (%imdburl), a %imdbdirector movie which scored %b{%imdbscore of 10} (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.|%b{%sitename} :: [%b{imdb  }][%section] %b{%imdbname} plot summary: %imdbplot \[%imdbbar\]"
-announce.MSGINVITE              = "[%b{invite}] %b{%u_name} of %g_name invited himself as %b{%u_ircnick}."
 
 # Example of custom announces (see dZSbot.conf for info on how to enable)
 #announce.COVERS                = "[%b{covers}][%section] %b{%relname} by %b{%u_name} of %g_name."
