@@ -248,11 +248,12 @@ void
 del_releasedir(char *relname)
 {
 	int	fnum = direntries;
+
 	if (fnum > 0) {
 		while (fnum--) {
 			unlink(dirlist[fnum]->d_name);
 		}
-	rmdir(relname);
+		rmdir(relname);
 	}
 }
 
@@ -277,19 +278,19 @@ strtolower(char *s)
 void 
 unlink_missing(char *s)
 {
-	static char	t[PATH_MAX];
+	char		t[PATH_MAX];
 	int		n = 0;
 
 	snprintf(t, PATH_MAX, "%s-missing", s);
 	unlink(t);
-	if ((n = findfile(t))) {
+	if ((n = findfile(t)))
 		unlink(dirlist[n]->d_name);
-	}
+
 	snprintf(t, PATH_MAX, "%s.bad", s);
 	unlink(t);
-	if ((n = findfile(t))) {
+	if ((n = findfile(t)))
 		unlink(dirlist[n]->d_name);
-	}
+
 }
 
 /*
@@ -318,18 +319,16 @@ isvideo(char *fileext)
 {
 	switch (*fileext++) {
 		case 'm':
-		if (!memcmp(fileext, "pg", 3) ||
-		    !memcmp(fileext, "peg", 4) ||
-		    !memcmp(fileext, "2v", 3) ||
-		    !memcmp(fileext, "2p", 3)) {
-			return 1;
-		}
-		break;
-	case 'a':
-		if (!memcmp(fileext, "vi", 3)) {
-			return 1;
-		}
-		break;
+			if (!memcmp(fileext, "pg", 3) ||
+			    !memcmp(fileext, "peg", 4) ||
+			    !memcmp(fileext, "2v", 3) ||
+			    !memcmp(fileext, "2p", 3))
+				return 1;
+			break;
+		case 'a':
+			if (!memcmp(fileext, "vi", 3))
+				return 1;
+			break;
 	}
 
 	return 0;
