@@ -885,6 +885,33 @@ buffer_users(char *passwdfile)
 unsigned long
 sample_dir(char *dirname)
 {
+	int		n         , k = 0;
+	unsigned long	l = 0;
+	struct stat	filestat;
+
+	n = direntries;
+	while (n--) {
+		if (samplecmp(dirlist[n]->d_name, sampledirs)) {
+			
+			continue;
+		} else
+			continue;
+
+
+
+		if ((k = NAMLEN(dirlist[n])) < 4)
+			continue;
+		if (strcasecmp(dirlist[n]->d_name + k - 4, fileext) == 0) {
+			if (stat(dirlist[n]->d_name, &filestat) != 0)
+				filestat.st_size = 1;
+			l = l + filestat.st_size;
+			continue;
+		}
+	}
+	if (!(l = l - fsize) > 0)
+		l = 0;
+	return l;
+}
 	
  */
 

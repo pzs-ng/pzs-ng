@@ -140,7 +140,8 @@ sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 		}
 		userI[t]->pos = n;
 #if ( get_competitor_list == TRUE )
-		if ((userI[t]->pos) > 0) {
+d_log("DEBUG:raceI->total.users: %d\n", raceI->total.users);
+		if (userI[t]->pos < raceI->total.users - 1) {
 //		if (strcmp(raceI->user.name, userI[n]->name)) {
 			r_list += sprintf(r_list, "%s%s", racersplit, convert2(raceI, userI[n], groupI, racersmsg, t));
 			t_list += sprintf(t_list, "%s%s", racersplit, convert2(raceI, userI[n], groupI, racersmsg, t));
