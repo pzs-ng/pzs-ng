@@ -113,8 +113,10 @@ getrelname(char *directory)
 void 
 remove_nfo_indicator(char *directory)
 {
-	int		cnt       , l[2], n = 0, k = 2;
+	int		cnt, l[2], n = 0, k = 2;
 	char           *path[2];
+
+	locations.length_path = strlen(locations.path);
 
 	for (cnt = locations.length_path - 1; k && cnt; cnt--) {
 		if (directory[cnt] == '/') {
@@ -128,10 +130,10 @@ remove_nfo_indicator(char *directory)
 			n++;
 	}
 	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
-	if (fileexists(locations.nfo_incomplete))
+	if (locations.nfo_incomplete)
 		unlink(locations.nfo_incomplete);
 	locations.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path);
-	if (fileexists(locations.nfo_incomplete))
+	if (locations.nfo_incomplete)
 		unlink(locations.nfo_incomplete);
 	if (k < 2)
 		free(path[1]);
@@ -408,17 +410,17 @@ main(int argc, char **argv)
 		removecomplete();
 		if (fileexists(locations.sfv))
 			delete_sfv_file(&locations);
-		if (fileexists(locations.nfo_incomplete))
+		if (locations.nfo_incomplete)
 			unlink(locations.nfo_incomplete);
-		if (fileexists(locations.incomplete))
+		if (locations.incomplete)
 			unlink(locations.incomplete);
-		if (fileexists("file_id.diz"))
+//		if (fileexists("file_id.diz"))
 			unlink("file_id.diz");
-		if (fileexists(locations.sfv))
+//		if (fileexists(locations.sfv))
 			unlink(locations.sfv);
-		if (fileexists(locations.race))
+//		if (fileexists(locations.race))
 			unlink(locations.race);
-		if (fileexists(locations.leader))
+//		if (fileexists(locations.leader))
 			unlink(locations.leader);
 		move_progress_bar(1, &raceI);
 #if (remove_dot_files_on_delete == TRUE)
@@ -427,9 +429,7 @@ main(int argc, char **argv)
 	}
 	if (incomplete == 1 && raceI.total.files > 0) {
 
-		d_log("DEBUG 1: incomplete: '%s', path: '%s'\n", locations.incomplete, locations.path);
 		getrelname(locations.path);
-		d_log("DEBUG 2: incomplete: '%s', path: '%s'\n", locations.incomplete, locations.path);
 		if (locations.nfo_incomplete) {
 			if (findfileext(".nfo")) {
 				d_log("Removing missing-nfo indicator (if any)\n");
