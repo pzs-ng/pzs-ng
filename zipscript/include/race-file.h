@@ -11,7 +11,7 @@ typedef struct {
 	off_t		size;
 	time_t		start_time;
 	unsigned char	status;
-	char		fname[PATH_MAX],
+	char		fname[NAME_MAX],
 			uname[24],
 			group[24];
 } RACEDATA;
@@ -19,7 +19,7 @@ typedef struct {
 /* this is put in sfvdata files */
 typedef struct {
 	unsigned int	crc32;
-	char		fname[PATH_MAX];
+	char		fname[NAME_MAX];
 } SFVDATA;
 
 extern unsigned int readsfv(const char *, struct VARS *, int);

@@ -128,7 +128,7 @@ main(int argc, char **argv)
 
 	/* gettimeofday(&g.v.transfer_stop, (struct timezone *)0 ); */
 
-	strlcpy(g.v.file.name, argv[1], PATH_MAX);
+	strlcpy(g.v.file.name, argv[1], NAME_MAX);
 	strlcpy(g.l.path, argv[2], PATH_MAX);
 	strlcpy(g.v.misc.current_path, g.l.path, PATH_MAX);
 	d_log("zipscript-c: Changing directory to %s\n", g.l.path);

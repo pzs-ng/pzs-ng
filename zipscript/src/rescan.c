@@ -112,7 +112,7 @@ main(void)
 	parent = opendir("..");
 
 	if (findfileext(dir, ".sfv")) {
-		strlcpy(g.v.file.name, findfileext(dir, ".sfv"), PATH_MAX);
+		strlcpy(g.v.file.name, findfileext(dir, ".sfv"), NAME_MAX);
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
 		if (copysfv(g.v.file.name, g.l.sfv)) {
@@ -167,7 +167,7 @@ main(void)
 
 				strcpy(g.v.user.name, get_u_name(f_uid));
 				strcpy(g.v.user.group, get_g_name(f_gid));
-				strlcpy(g.v.file.name, dp->d_name, PATH_MAX);
+				strlcpy(g.v.file.name, dp->d_name, NAME_MAX);
 				g.v.file.speed = 2005 * 1024;
 				g.v.file.size = fileinfo.st_size;
 
@@ -277,7 +277,7 @@ main(void)
 				move_progress_bar(0, &g.v, g.ui, g.gi);
 		}
 	} else if (findfileext(dir, ".zip")) {
-		strlcpy(g.v.file.name, findfileext(dir, ".zip"), PATH_MAX);
+		strlcpy(g.v.file.name, findfileext(dir, ".zip"), NAME_MAX);
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
 		//n = direntries;
@@ -297,7 +297,7 @@ main(void)
 
 				strcpy(g.v.user.name, get_u_name(f_uid));
 				strcpy(g.v.user.group, get_g_name(f_gid));
-				strlcpy(g.v.file.name, dp->d_name, PATH_MAX);
+				strlcpy(g.v.file.name, dp->d_name, NAME_MAX);
 				g.v.file.speed = 2005 * 1024;
 				g.v.file.size = fileinfo.st_size;
 				g.v.total.start_time = 0;

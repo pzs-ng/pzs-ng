@@ -183,7 +183,7 @@ sfvdata_to_sfv(const char *source, const char *dest)
 		
 		sprintf(crctmp, "%.8x", sd.crc32);
 		
-		write(outfd, sd.fname, PATH_MAX);
+		write(outfd, sd.fname, NAME_MAX);
 		write(outfd, " ", 1);
 		write(outfd, &crctmp, 8),
 #if (sfv_cleanup_crlf == TRUE )
@@ -209,7 +209,7 @@ sfvdata_to_sfv(const char *source, const char *dest)
 void 
 delete_sfv(const char *path)
 {
-	char		*f = 0, missing_fname[PATH_MAX];
+	char		*f = 0, missing_fname[NAME_MAX];
 	FILE		*sfvfile;
 
 	SFVDATA		sd;
@@ -223,7 +223,7 @@ delete_sfv(const char *path)
 	fseek(sfvfile, sizeof(short int), SEEK_CUR);
 
 	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
-		snprintf(missing_fname, PATH_MAX, "%s-missing", sd.fname);
+		snprintf(missing_fname, NAME_MAX, "%s-missing", sd.fname);
 		if ((f = findfilename(missing_fname, f)))
 			unlink(missing_fname);
 	}
@@ -308,7 +308,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 			ext++;
 
 		if (rd.status == F_NOTCHECKED) {
-			strlcpy(raceI->file.name, rd.fname, PATH_MAX);
+			strlcpy(raceI->file.name, rd.fname, NAME_MAX);
 			Tcrc = readsfv(locations->sfv, raceI, 0);
 			stat(rd.fname, &filestat);
 			if (S_ISDIR(filestat.st_mode))
@@ -615,7 +615,7 @@ create_indexfile(const char *racefile, struct VARS *raceI, char *f)
 	int		l, n, m, c;
 	int		pos[raceI->total.files],
 			t_pos[raceI->total.files];
-	char		fname[raceI->total.files][PATH_MAX];
+	char		fname[raceI->total.files][NAME_MAX];
 	
 	RACEDATA	rd;
 
@@ -628,7 +628,7 @@ create_indexfile(const char *racefile, struct VARS *raceI, char *f)
 	c = 0;
 	while ((read(fd, &rd, sizeof(RACEDATA)))) {
 		if (rd.status == F_CHECKED) {
-			strlcpy(fname[c], rd.fname, PATH_MAX);
+			strlcpy(fname[c], rd.fname, NAME_MAX);
 			t_pos[c] = 0;
 			c++;
 		}
@@ -674,7 +674,7 @@ clear_file(const char *path, char *f)
 
 	if ((file = fopen(path, "r+"))) {
 		while (fread(&rd, sizeof(RACEDATA), 1, file)) {
-			if (strncmp(rd.fname, f, PATH_MAX) == 0) {
+			if (strncmp(rd.fname, f, NAME_MAX) == 0) {
 				rd.status = F_DELETED;
 				fseek(file, -sizeof(RACEDATA), SEEK_CUR);
 				fwrite(&rd, sizeof(RACEDATA), 1, file);
@@ -750,7 +750,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	
 	/* find an existing entry that we will overwrite */
 	while (read(fd, &rd, sizeof(RACEDATA))) {
-		if (strncmp(rd.fname, raceI->file.name, PATH_MAX) == 0) {
+		if (strncmp(rd.fname, raceI->file.name, NAME_MAX) == 0) {
 			lseek(fd, -sizeof(RACEDATA), SEEK_CUR);
 			break;
 		}
@@ -759,7 +759,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	rd.status = status;
 	rd.crc32 = crc;
 	
-	strlcpy(rd.fname, raceI->file.name, PATH_MAX);
+	strlcpy(rd.fname, raceI->file.name, NAME_MAX);
 	strlcpy(rd.uname, raceI->user.name, 24);
 	strlcpy(rd.group, raceI->user.group, 24);
 	
