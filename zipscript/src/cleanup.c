@@ -69,44 +69,6 @@ scandirectory(char *dirname, int setfree)
 	}
 }
 
-/* Relic from old cleaner.. but it works, so why to change? */
-/*void 
-scandirectory(char *directoryname, int setfree)
-{
-	struct dirent **namelist, **namelist2;
-	int		m         , n, fd;
-	printf("[%s]\n", directoryname);
-	if (chdir(directoryname) != -1) {
-		if ((n = scandir(".", &namelist, 0, 0)) > 0) {
-			while (n--) {
-				if (namelist[n]->d_name[0] != '.') {
-					chdir(namelist[n]->d_name);
-					if ((m = scandir(".", &namelist2, 0, 0)) > 0) {
-						while (m--) {
-							if (namelist2[m]->d_name[0] != '.') {
-								if ((fd = open(namelist2[m]->d_name, O_NDELAY, 0777)) != -1) {
-									close(fd);
-								} else if (setfree) {
-									unlink(namelist2[m]->d_name);
-									printf("Broken symbolic link \"%s\" removed.\n", namelist2[m]->d_name);
-								}
-							}
-						free(namelist2[m]);
-						}
-					free(namelist2);
-					}
-					chdir("..");
-					if (setfree) {
-						rmdir(namelist[n]->d_name);
-					}
-				}
-			free(namelist[n]);
-			}
-		free(namelist);
-		}
-	}
-}*/
-
 char           *
 replace_cookies(char *s)
 {
@@ -152,9 +114,7 @@ incomplete_cleanup(char *path, int setfree)
 	DIR		*dir;
 	struct dirent	*dp;
 	
-	//struct dirent **dirlist;
 	struct stat	fileinfo;
-	//int		entries, tempsize = 0;
 	int		tempsize = 0;
 	regex_t		preg   [4];
 	regmatch_t	pmatch[1];
@@ -180,8 +140,6 @@ incomplete_cleanup(char *path, int setfree)
 	printf("[%s]\n", path);
 
 	if (chdir(path) != -1) {
-		//if ((entries = scandir(".", &dirlist, 0, 0)) != -1) {
-			//while (entries--) {
 		if ((dir = opendir("."))) {
 			while ((dp = readdir(dir))) {
 
@@ -236,9 +194,7 @@ incomplete_cleanup(char *path, int setfree)
 							printf("Incomplete release: \"%s\".\n", temp);
 					}
 				}
-				//free(dirlist[entries]);
 			}
-			//free(dirlist);
 			closedir(dir);
 		} else {
 			fprintf(stderr, "opendir(%s): %s\n", path, strerror(errno));

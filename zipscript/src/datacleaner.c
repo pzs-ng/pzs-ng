@@ -13,9 +13,6 @@
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
 
-//struct stat	entry_stat;
-//int		zd_length;
-
 #ifndef PATH_MAX
  #define _LIMITS_H_
  #ifdef _SunOS_
@@ -33,9 +30,7 @@ void
 remove_dir_loop(char *path)
 {
 	DIR 		*dir;
-	//struct dirent **list;
 	struct dirent	*dp;
-	//int		n;
 	char		target[PATH_MAX];
 	struct stat	sb;
 
@@ -44,9 +39,7 @@ remove_dir_loop(char *path)
 		exit(EXIT_FAILURE);
 	}
 	
-	//n = scandir(path, &list, 0, 0);
 	dir = opendir(path);
-	//while (n--)
 	while ((dp = readdir(dir))) {
 		if (dp->d_name[0] != '.') {
 			stat(dp->d_name, &sb);
@@ -57,10 +50,8 @@ remove_dir_loop(char *path)
 				chdir(path);
 			} else
 				unlink(dp->d_name);
-			//free(list[n]);
 		}
 	}
-	//free(list);
 	closedir(dir);
 }
 
@@ -69,10 +60,7 @@ check_dir_loop(char *path, int zd_length)
 {
 	DIR 		*dir1, *dir2;
 	struct dirent	*dp;
-	//struct dirent **list;
-	//int		n;
 	char		target    [PATH_MAX];
-	//DIR            *dirp;
 	struct stat	sb;
 
 	if (chdir(path) == -1) {
@@ -80,11 +68,7 @@ check_dir_loop(char *path, int zd_length)
 		exit(EXIT_FAILURE);
 	}
 
-	//n = scandir(path, &list, 0, 0);
-	//if (n < 2)
-	//	exit(2);
 	dir1 = opendir(path);
-	//while (n--)
 	while ((dp = readdir(dir1))) {
 		if (dp->d_name[0] != '.') {
 			stat(dp->d_name, &sb);
@@ -100,10 +84,8 @@ check_dir_loop(char *path, int zd_length)
 					chdir(path);
 				}
 			}
-			//free(list[n]);
 		}
 	}
-	//free(list);
 }
 
 int 
