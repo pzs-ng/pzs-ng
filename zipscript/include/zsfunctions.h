@@ -45,12 +45,9 @@ extern unsigned int     direntries;
 
 #if ( debug_mode == TRUE )
 #include <stdarg.h>
-
-extern void d_log(char *, ...);
-#else
-# define d_log
 #endif
 
+extern void d_log(char *, ...);
 
 extern void create_missing(char *, short);
 extern char * findfileext(char *);

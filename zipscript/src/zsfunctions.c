@@ -20,6 +20,8 @@ void d_log(char *fmt, ...) {
 	fclose(file);
 	}
 }
+#else 
+void __inline__ d_log(char *fmt, ...) {  }
 #endif
 
 void create_missing(char *f, short l) {

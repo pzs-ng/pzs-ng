@@ -331,7 +331,7 @@
 /* Special modes
  */
 
-#define debug_mode		TRUE
+#define debug_mode			TRUE
 #define benchmark_mode		TRUE
 
 /* Force sfv to be uploaded first, before accepting any files
