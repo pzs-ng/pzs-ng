@@ -12,11 +12,11 @@ set location(GLLOG)					"/glftpd/ftp-data/logs/glftpd.log"
 set location(PASSWD)				"/glftpd/etc/passwd"
 set location(USERS)					"/glftpd/ftp-data/users/"
 
-# Are you using glftpd2? Set to "YES" if you are, "NO" if not.
-# This should be autodetected if binary(GLFTPD) is set correctly.
-# If you want to override autodetection, or if autodetection does not
-# work, uncomment this and set it to YES or NO. :-)
-#set use_glftpd2					"NO"
+# Are you using glftpd2? Default setting ("AUTO") should be safe,
+# enables autodetection (if binary(GLFTPD) is set correctly)
+# To override autodetection (or if it just doesn't work), you can set
+# it to "YES" or "NO".
+set use_glftpd2					"AUTO"
 
 # What types of messages are counted as the different types of output
 # (for disabling etc)

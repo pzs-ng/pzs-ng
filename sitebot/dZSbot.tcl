@@ -23,12 +23,12 @@ foreach bin [array names binary] {
 	}
 }
 
-if {![info exists binary(GLFTPD)] && ![info exists use_glftpd2]} {
+if {![info exists use_glftpd2] || ($use_glftpd2 == "AUTO" && ![info exists binary(GLFTPD)])} {
 	putlog "dZSbot: you did not thouroughly edit your [file dirname [info script]]/dZSbconf.tcl file. Try again."
 	die
 }
 
-if {![info exists use_glftpd2]} {
+if {$use_glftpd2 == "AUTO"} {
 	set glversion [exec strings $binary(GLFTPD) | grep -i "^glftpd " | cut -f1 -d. | tr A-Z a-z]
 	if {$glversion == "glftpd 1"} {
 		putlog "dZSbot: detected $glversion, running in legacy mode."
@@ -205,7 +205,7 @@ proc readlog {} {
 
 	close $of
 	set lastoct [file size $location(GLLOG)]
-	if { $use_glftpd2 != "YES" } {
+	if {$use_glftpd2 != "YES"} {
 		launchnuke
 	}
 	return 0
@@ -857,7 +857,7 @@ proc pre_rehash {type} {
 	global use_glftpd2
 	# Prevents people uncommenting use_glftpd2 and .rehashing, thinking it'll
 	# autodetect. (It wouldn't have.)
-	unset use_glftpd2
+	set use_glftpd2 "AUTO"
 	# Should we perhaps unset all the other config vars here too? (to prevent
 	# similar stuff as above, and also preventing thing to work after .rehash,
 	# but not after .restart, rather crashing on .rehash)
