@@ -6,7 +6,7 @@
 #  Created by: Phen0menon & juanker                        #
 #  Maintained by: juanker (juanker@EFnet #pzs-ng)          #
 #  Notes: Best experienced on dark -black- backgrounds     #
-#  Tested with: pzs-ng r1437                               #
+#  Tested with: pzs-ng r1439                               #
 #                                                          #
 ############################################################
 #                                                          #
@@ -42,16 +42,16 @@ announce.TAGLINE				= "%b{TAGLiNE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c
 announce.TIMEOUT				= "%b{LOGOUT%c1{:}} %c3{%b{%u_name}} %c1{has timed out after} %c3{%b{%u_idletime}}%c1{s.}"
 
 ## Sysop announcements (only important announces are themed)
-announce.ADDUSER				= "%b{SYSOP}%c1{:}} %c3{%b{%u_siteop}} %c1{added user} %c3{%b{%u_name}}%c1{.}"
-announce.GADDUSER				= "%b{SYSOP}%c1{:}} %c3{%b{%u_siteop}} %c1{added user} %c3{%b{%u_name}} %c1{to group} %c3{%b{%g_name}}%c1{.}"
-announce.CHGRPADD				= "%b{SYSOP}%c1{:}} %c3{%b{%u_siteop}} %c1{added} %c3{%b{%u_name}} %c1{to group} %c3{%b{%g_name}}%c1{.}"
-announce.CHGRPDEL				= "%b{SYSOP}%c1{:}} %c3{%b{%u_siteop}} %c1{removed} %c3{%b{%u_name}} %c1{from group} %c3{%b{%g_name}}%c1{.}"
-announce.ADDIP					= "%b{SYSOP}%c1{:}} %c3{%b{%u_siteop}} %c1{added ip} %c3{%b{%u_ip}} %c1{to} %c3{%b{%u_name}}%c1{.}"
-announce.DELIP					= "%b{SYSOP}%c1{:}} %c3{%b{%u_siteop}} %c1{removed ip} %c3{%b{%u_ip}} %c1{from} %c3{%b{%u_name}}%c1{.}"
-announce.READDED				= "%b{SYSOP}%c1{:}} %c3{%b{%u_siteop}} %c1{readded} %c3{%b{%u_name}}%c1{.}"
-announce.DELUSER				= "%b{SYSOP}%c1{:}} %c3{%b{%u_siteop}} %c1{deleted} %c3{%b{%u_name}}%c1{.}"
-announce.PURGED					= "%b{SYSOP}%c1{:}} %c3{%b{%u_siteop}} %c1{purged} %c3{%b{%u_name}}%c1{.}"
-announce.SYSOP					= "%b{SYSOP}%c1{:}} %c1{%msg}"
+announce.ADDUSER				= "%b{SYSOP%c1{:}} %c3{%b{%u_siteop}} %c1{added user} %c3{%b{%u_name}}%c1{.}"
+announce.GADDUSER				= "%b{SYSOP%c1{:}} %c3{%b{%u_siteop}} %c1{added user} %c3{%b{%u_name}} %c1{to group} %c3{%b{%g_name}}%c1{.}"
+announce.CHGRPADD				= "%b{SYSOP%c1{:}} %c3{%b{%u_siteop}} %c1{added} %c3{%b{%u_name}} %c1{to group} %c3{%b{%g_name}}%c1{.}"
+announce.CHGRPDEL				= "%b{SYSOP%c1{:}} %c3{%b{%u_siteop}} %c1{removed} %c3{%b{%u_name}} %c1{from group} %c3{%b{%g_name}}%c1{.}"
+announce.ADDIP					= "%b{SYSOP%c1{:}} %c3{%b{%u_siteop}} %c1{added ip} %c3{%b{%u_ip}} %c1{to} %c3{%b{%u_name}}%c1{.}"
+announce.DELIP					= "%b{SYSOP%c1{:}} %c3{%b{%u_siteop}} %c1{removed ip} %c3{%b{%u_ip}} %c1{from} %c3{%b{%u_name}}%c1{.}"
+announce.READDED				= "%b{SYSOP%c1{:}} %c3{%b{%u_siteop}} %c1{readded} %c3{%b{%u_name}}%c1{.}"
+announce.DELUSER				= "%b{SYSOP%c1{:}} %c3{%b{%u_siteop}} %c1{deleted} %c3{%b{%u_name}}%c1{.}"
+announce.PURGED					= "%b{SYSOP%c1{:}} %c3{%b{%u_siteop}} %c1{purged} %c3{%b{%u_name}}%c1{.}"
+announce.SYSOP					= "%b{SYSOP%c1{:}} %c1{%msg}"
 
 ## glFTPd announcements
 announce.NEWDIR					= "%b{NEW RELEASE%c1{:}} %c1{-}%c2{%section}%c1{-} %c3{%b{%relname}} %c1{by} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{[}%c3{%u_tagline}%c1{].}"
@@ -182,10 +182,10 @@ announce.REQFILLED				= "%b{FiLLED%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %
 announce.REQUEST				= "%b{REQUEST%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{requests} %c3{%b{%releasename}}%c1{.}"
 
 ## Bouncer status
-announce.BNC					= "%c3{%b{Checking bouncer status}} %c1{...}"
-announce.BNC_PING				= "%c2{%b{%num.}} %c3{%b{%desc}} %c1{at} %c3{%ip}%c1{:}%c3{%port} %c1{is} %c3{%b{DOWN}} %c1{(can't ping host).}"
-announce.BNC_ONLINE				= "%c2{%b{%num.}} %c3{%b{%desc}} %c1{at} %c3{%ip}%c1{:}%c3{%port} %c1{is} %c3{%b{UP}} %c1{(login:} %c3{%b{%response}}%c1{ms ping:} %c3{%b{%ping}}%c1{ms).}"
-announce.BNC_OFFLINE				= "%c2{%b{%num.}} %c3{%b{%desc}} %c1{at} %c3{%ip}%c1{:}%c3{%port} %c1{is} %c3{%b{DOWN}} %c1{(%error).}"
+announce.BNC					= "%b{BNC%c1{:}} %c1{Checking bouncer status, please} %c3{%b{wait}} %c1{...}"
+announce.BNC_PING				= "%c2{%num}%c1{.-} %c3{%b{%desc}} %c1{at} %c3{%ip}%c1{:}%c3{%port} %c1{is} %c3{%b{DOWN}} %c1{(can't ping host).}"
+announce.BNC_ONLINE				= "%c2{%num}%c1{.-} %c3{%b{%desc}} %c1{at} %c3{%ip}%c1{:}%c3{%port} %c1{is} %c3{%b{UP}} %c1{(login:} %c3{%b{%response}}%c1{ms ping:} %c3{%b{%ping}}%c1{ms).}"
+announce.BNC_OFFLINE				= "%c2{%num}%c1{.-} %c3{%b{%desc}} %c1{at} %c3{%ip}%c1{:}%c3{%port} %c1{is} %c3{%b{DOWN}} %c1{(%error).}"
 
 ## IRC Commands
 announce.LEECH					= "%b{BANDWiDTH%c1{:}} %c1{Current leechers:}"
