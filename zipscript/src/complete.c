@@ -1,15 +1,14 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "objects.h"
 #include "convert.h"
+#include "zsfunctions.h"
+
 #include "../conf/zsconfig.h"
 
-extern void writelog(char *msg, char *status);
-
-// from zsfunctions.h *shiver* - MAKE zsfunctions.h TO A .c AND AN ACCOMPANYING HEADER!
-void move_progress_bar(short, struct VARS *);
-
+extern void writelog(char *, char *);
 
 /*
  * Modified     : 01.27.2002

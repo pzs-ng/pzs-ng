@@ -1,5 +1,5 @@
-#ifndef _RACE-FILE_H_
-#define _RACE-FILE_H_
+#ifndef _RACE_FILE_H_
+#define _RACE_FILE_H_
 
 unsigned long readsfv_file(struct LOCATIONS *, struct VARS *, int);
 void delete_sfv_file(struct LOCATIONS *);

@@ -11,16 +11,9 @@
 #include "macros.h"
 #include "constants.h"
 #include "stats.h"
+#include "zsfunctions.h"
 
 #include "../conf/zsconfig.h"
-
-extern char*		findfile(char *filename);
-extern char		israr(char *fileext);
-extern char		isavi(char *fileext);
-extern char		isvideo(char *fileext); 
-extern short		strcomp(char *instr, char *searchstr);
-extern void		create_missing(char *f, short l);
-extern unsigned long	hexstrtodec(char *s);
 
 /*
  * Modified	: 01.16.2002

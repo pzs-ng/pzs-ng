@@ -16,6 +16,8 @@
 #include "dizreader.h"
 #include "stats.h"
 #include "race-file.h"
+#include "complete.h"
+#include "crc.h"
 
 #include "../conf/zsconfig.h"
 #include "../../config.h"
@@ -44,9 +46,6 @@ struct GROUPINFO **groupI;
 struct VARS      raceI;
 struct LOCATIONS locations;
 struct stat      fileinfo;
-
-extern unsigned long calc_crc32( char *f );
-extern void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, int completetype );
 
 #define data_exists(paths, datalocation) fileexists(datalocation)
 #define file_set_race   sprintf

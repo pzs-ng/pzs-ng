@@ -15,7 +15,7 @@
 #include "dizreader.h"
 #include "stats.h"
 #include "race-file.h"
-#include "race-file.h"
+#include "complete.h"
 
 #include "../conf/zsconfig.h"
 #include "../../config.h"
@@ -30,10 +30,6 @@ struct USERINFO  **userI;
 struct GROUPINFO **groupI;
 struct VARS      raceI;
 struct LOCATIONS locations;
-
-/* NEW OPTIMIZED STUFF GOES HERE */
-extern void complete(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, int completetype);
-extern void writetop(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, int completetype );
 
 # define data_exists(paths, datalocation) fileexists(datalocation)
 # define file_set_race		sprintf
