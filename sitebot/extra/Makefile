@@ -14,6 +14,7 @@ all:	clean compile
 
 compile:	
 		${CC} ${CCFLAGS} -o passchk passchk.c
+		${CC} ${CCFLAGS} -o ng-bandwidth ng-bw.c
 
 clean:	
-	$(RM) passchk
+	$(RM) ng-bandwidth passchk
