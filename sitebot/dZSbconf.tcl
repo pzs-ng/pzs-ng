@@ -65,6 +65,9 @@ set binary(BNCTEST)					"/glftpd/bin/bnctest.sh"
 set binary(BNCCHECK)				"/glftpd/bin/bnc-check.pl"
 set binary(INCOMPLETE)				"/glftpd/bin/incomplete-list.sh"
 set binary(DF)						"/bin/df"
+set binary(LEECH)					"/glftpd/bin/leechers.sh"
+set binary(UPLOAD)					"/glftpd/bin/uploaders.sh"
+set binary(IDLE)					"/glftpd/bin/idlers.sh"
 # This is needed for autodetection of glversion. If you unset this, use_glftpd2
 # MUST be set to YES or NO :)
 set binary(GLFTPD)					"/glftpd/bin/glftpd"
