@@ -310,7 +310,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CPP EGREP ZSLIBS CFGLIBS ZSTYPE STATIC LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CPP EGREP ZSLIBS CFGLIBS STATIC LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -842,11 +842,6 @@ Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
 enable static linking of zs-c
-
-Optional Packages:
-  --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
-  --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-mysql	  mysql support default = disabled
 
 Some influential environment variables:
   CC          C compiler command
@@ -2779,8 +2774,7 @@ done
 
 
 
-
-for ac_header in sys/time.h unistd.h mysql/mysql.h
+for ac_header in sys/time.h unistd.h
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if eval "test \"\${$as_ac_Header+set}\" = set"; then
@@ -2927,182 +2921,40 @@ _ACEOF
 fi
 
 done
+ #mysql/mysql.h)
 
 
 
+#AC_CHECK_LIB(mysqlclient, mysql_query, ZSLIBS="-lmysqlclient")
+#AC_CHECK_LIB(curses, curses_version, CFGLIBS="-lcurses")
 
-echo "$as_me:$LINENO: checking for mysql_query in -lmysqlclient" >&5
-echo $ECHO_N "checking for mysql_query in -lmysqlclient... $ECHO_C" >&6
-if test "${ac_cv_lib_mysqlclient_mysql_query+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lmysqlclient  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-/* Override any gcc2 internal prototype to avoid an error.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-/* We use char because int might match the return type of a gcc2
-   builtin and then its argument prototype would still apply.  */
-char mysql_query ();
-int
-main ()
-{
-mysql_query ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; } &&
-	 { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_lib_mysqlclient_mysql_query=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_lib_mysqlclient_mysql_query=no
-fi
-rm -f conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_mysqlclient_mysql_query" >&5
-echo "${ECHO_T}$ac_cv_lib_mysqlclient_mysql_query" >&6
-if test $ac_cv_lib_mysqlclient_mysql_query = yes; then
-  ZSLIBS="-lmysqlclient"
-fi
-
-echo "$as_me:$LINENO: checking for curses_version in -lcurses" >&5
-echo $ECHO_N "checking for curses_version in -lcurses... $ECHO_C" >&6
-if test "${ac_cv_lib_curses_curses_version+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lcurses  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-/* Override any gcc2 internal prototype to avoid an error.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-/* We use char because int might match the return type of a gcc2
-   builtin and then its argument prototype would still apply.  */
-char curses_version ();
-int
-main ()
-{
-curses_version ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; } &&
-	 { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_lib_curses_curses_version=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_lib_curses_curses_version=no
-fi
-rm -f conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_curses_curses_version" >&5
-echo "${ECHO_T}$ac_cv_lib_curses_curses_version" >&6
-if test $ac_cv_lib_curses_curses_version = yes; then
-  CFGLIBS="-lcurses"
-fi
+#want_mysql=no
+#AC_ARG_WITH(mysql,
+#[  --with-mysql	  mysql support [default = disabled] ],
+# want_mysql=yes
+#)
 
 
-want_mysql=no
+#if test "x$CFGLIBS" = "x" ; then
+# AC_MSG_RESULT(NOTICE: Could not find curses. Configurator will not be compiled.)
+# CFGLIBS=""
+#fi
 
-# Check whether --with-mysql or --without-mysql was given.
-if test "${with_mysql+set}" = set; then
-  withval="$with_mysql"
-  want_mysql=yes
-
-fi;
-
-
-if test "x$CFGLIBS" = "x" ; then
- echo "$as_me:$LINENO: result: NOTICE: Could not find curses. Configurator will not be compiled." >&5
-echo "${ECHO_T}NOTICE: Could not find curses. Configurator will not be compiled." >&6
- CFGLIBS=""
-fi
-
-if test "$want_mysql" = "no" ; then
- echo "$as_me:$LINENO: result: NOTICE: mysql support disabled. " >&5
-echo "${ECHO_T}NOTICE: mysql support disabled. " >&6
- ZSLIBS=""
- ZSTYPE="race-file.o"
-else
- if test "x$ZSLIBS" = "x" ; then
-  { { echo "$as_me:$LINENO: error: could not find mysqlclient library. Use file logging instead!" >&5
-echo "$as_me: error: could not find mysqlclient library. Use file logging instead!" >&2;}
-   { (exit 1); exit 1; }; }
-  ZSTYPE="race-file.o"
- else
-  echo "$as_me:$LINENO: result: NOTICE: mysql support enabled." >&5
-echo "${ECHO_T}NOTICE: mysql support enabled." >&6
-  ZSTYPE="race-mysql.o"
-  cat >>confdefs.h <<\_ACEOF
-#define HAVE_MYSQL 1
-_ACEOF
-
- fi
-fi
+#ZSTYPE="race-file.o"
+#if test "$want_mysql" = "no" ; then
+# AC_MSG_RESULT(NOTICE: mysql support disabled. )
+# ZSLIBS=""
+# ZSTYPE="race-file.o"
+#else
+# if test "x$ZSLIBS" = "x" ; then
+#  AC_MSG_ERROR(could not find mysqlclient library. Use file logging instead!)
+#  ZSTYPE="race-file.o"
+# else
+#  AC_MSG_RESULT(NOTICE: mysql support enabled.)
+#  ZSTYPE="race-mysql.o"
+#  AC_DEFINE(HAVE_MYSQL)
+# fi
+#fi
 
 
 os=unknown
@@ -3149,7 +3001,7 @@ fi
 
 
 
-
+#AC_SUBST(ZSTYPE)
 
 
                     ac_config_files="$ac_config_files Makefile zipscript/src/Makefile"
@@ -3775,7 +3627,6 @@ s,@CPP@,$CPP,;t t
 s,@EGREP@,$EGREP,;t t
 s,@ZSLIBS@,$ZSLIBS,;t t
 s,@CFGLIBS@,$CFGLIBS,;t t
-s,@ZSTYPE@,$ZSTYPE,;t t
 s,@STATIC@,$STATIC,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t
