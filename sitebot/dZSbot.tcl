@@ -209,7 +209,7 @@ proc readlog {} {
 	foreach {type event line} $lines {
 		#putlog "DATA: type=$type event=\{$event\} line=\{$line\}"
 
-		## Parse the login.log errors into announce types. This is quite hack'ish,
+		## Parse the failed login errors into announce types. This is quite hack'ish,
 		## but it's the easiest way since the login.log file lacks consistency.
 		if {$type == 1 && [regexp {(.+@.+) \((.+)\): (.+)} $line output hostmask ip error]} {
 			## The "event" variable contains the user name.
@@ -253,7 +253,7 @@ proc readlog {} {
 			set event "DEFAULT"
 		}
 		if {([info exists disable($event)] && $disable($event) != 1) && ![eventcheck $section $event]} {
-			## TODO:
+			## TODO (neoxed):
 			## - add a script handler for post/pre event scripts
 			## - add precmd(event) pre=before announce / post=after announce
 			## - if the precmd script returns FALSE (0) we skip the announce
@@ -261,7 +261,7 @@ proc readlog {} {
 
 			sndall $event $section [parse $event $section $line]
 
-			##TODO:
+			##TODO (neoxed):
 			## - move postcmd to use the script handler
 			#postcmd $event $section $line
 		}
@@ -289,7 +289,7 @@ proc parse {event section line} {
 	}
 
 	if {![info exists announce($event)]} {
-		putlog "dZSbot error: \"announce($event)\" not set in theme, event becomes \"DEFAULT\""
+		putlog "dZSbot error: \"announce($event)\" not set in theme, event becomes \"DEFAULT\"."
 		set event "DEFAULT"
 	}
 	set vars $variables($event)
@@ -333,7 +333,7 @@ proc parse {event section line} {
 					set output2 [replacevar $output2 "[lindex $vari $cnt2]" $value]
 				}
 				incr cnt2
-				if {[lindex $vari $cnt2] == ""} {
+				if {[string equal "" [lindex $vari $cnt2]]} {
 					incr cnt3
 					set cnt2 0
 				}
@@ -356,7 +356,7 @@ proc parse {event section line} {
 	return [themereplace $output $section]
 }
 
-## TODO: trash this garbage and add a more generic handler (?)
+## TODO (neoxed): trash this garbage and add a more generic handler (?)
 
 #proc postcmd {msgtype section path} {
 #	global postcommand
@@ -557,7 +557,7 @@ proc gluserids {} {
 		}
 		close $fh
 	} else {
-		putlog "dZSbot error: Could not open PASSWD: $error"
+		putlog "dZSbot error: Could not open passwd ($error)."
 	}
 	return $userlist
 }
@@ -574,7 +574,7 @@ proc glgroupids {} {
 		}
 		close $fh
 	} else {
-		putlog "dZSbot error: Could not open GROUP: $error"
+		putlog "dZSbot error: Could not open group ($error)."
 	}
 	return $grouplist
 }
@@ -607,7 +607,6 @@ proc replacevar {string cookie value} {
 	if {[string length $value] == 0 && [info exists zeroconvert($cookie)]} {
 		set value $zeroconvert($cookie)
 	}
-	## Why not use Tcl's string replacement function? It's faster :P
 	return [string map [list $cookie $value] $string]
 }
 
@@ -1059,7 +1058,7 @@ proc ng_new {nick uhost hand chan argv} {
 		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] \[section\]"
 		return
 	}
-	if {$section == ""} {
+	if {[string equal "" $section]} {
 		set section $defaultsection
 		set lines [exec $binary(SHOWLOG) -l -m $results -r $location(GLCONF)]
 	} else {
@@ -1099,6 +1098,7 @@ proc ng_new {nick uhost hand chan argv} {
 		set output [replacevar $output "%g_name" $group]
 		set output [replacevar $output "%files" $files]
 		set output [replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
+		## TODO (neoxed): use replacepath instead
 		set path [lrange [file split [string trim [file dirname $dirname] "/"]] 1 end]
 		set output [replacevar $output "%path" [join $path "/"]]
 		set output [replacevar $output "%reldir" [file tail $dirname]]
@@ -1120,7 +1120,7 @@ proc ng_nukes {nick uhost hand chan argv} {
 		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] \[section\]"
 		return
 	}
-	if {$section == ""} {
+	if {[string equal "" $section]} {
 		set section $defaultsection
 		set lines [exec $binary(SHOWLOG) -n -m $results -r $location(GLCONF)]
 	} else {
@@ -1151,6 +1151,7 @@ proc ng_nukes {nick uhost hand chan argv} {
 		set output [replacevar $output "%multiplier" $multiplier]
 		set output [replacevar $output "%reason" $reason]
 		set output [replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
+		## TODO (neoxed): use replacepath instead
 		set path [lrange [file split [string trim [file dirname $dirname] "/"]] 1 end]
 		set output [replacevar $output "%path" [join $path "/"]]
 		set output [replacevar $output "%reldir" [file tail $dirname]]
@@ -1168,7 +1169,7 @@ proc ng_search {nick uhost hand chan argv} {
 	global announce binary defaultsection lastbind location search_chars theme
 	checkchan $nick $chan
 
-	if {![getoptions $argv results pattern] || $pattern == ""} {
+	if {![getoptions $argv results pattern] || [string equal "" $pattern]} {
 		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] <pattern>"
 		return
 	}
@@ -1208,6 +1209,7 @@ proc ng_search {nick uhost hand chan argv} {
 		set output [replacevar $output "%g_name" $group]
 		set output [replacevar $output "%files" $files]
 		set output [replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
+		## TODO (neoxed): use replacepath instead
 		set path [lrange [file split [string trim [file dirname $dirname] "/"]] 1 end]
 		set output [replacevar $output "%path" [join $path "/"]]
 		set output [replacevar $output "%reldir" [file tail $dirname]]
@@ -1229,7 +1231,7 @@ proc ng_unnukes {nick uhost hand chan argv} {
 		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] \[section\]"
 		return
 	}
-	if {$section == ""} {
+	if {[string equal "" $section]} {
 		set section $defaultsection
 		set lines [exec $binary(SHOWLOG) -u -m $results -r $location(GLCONF)]
 	} else {
@@ -1261,6 +1263,7 @@ proc ng_unnukes {nick uhost hand chan argv} {
 		set output [replacevar $output "%multiplier" $multiplier]
 		set output [replacevar $output "%reason" $reason]
 		set output [replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
+		## TODO (neoxed): use replacepath instead
 		set path [lrange [file split [string trim [file dirname $dirname] "/"]] 1 end]
 		set output [replacevar $output "%path" [join $path "/"]]
 		set output [replacevar $output "%reldir" [file tail $dirname]]
@@ -1478,7 +1481,7 @@ proc ng_speed {nick uhost hand chan argv} {
 		}
 	}
 
-	if {$line == ""} {
+	if {[string equal "" $line]} {
 		set output "$theme(PREFIX)$announce(SPEEDERROR)"
 		set output [replacevar $output "%msg" "User not online."]
 		sndone $chan [replacebasic $output "SPEED"]
