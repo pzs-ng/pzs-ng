@@ -179,8 +179,10 @@ main(int argc, char **argv)
 	name_p++;
 
 	d_log("Copying lowercased version of extension to memory\n");
-	fileext = malloc(name_p - temp_p);
-	memcpy(fileext, temp_p, name_p - temp_p);
+
+	fileext = malloc(sizeof(temp_p));
+
+	memcpy(fileext, temp_p, sizeof(temp_p));
 	strtolower(fileext);
 
 	switch (get_filetype_postdel(&g, fileext)) {
@@ -383,7 +385,7 @@ main(int argc, char **argv)
 	updatestats_free(g.v, g.ui, g.gi);
 	free(fileext);
 	free(target);
-	free(g.l.path);
+	//free(g.l.path);
 	free(g.l.race);
 	free(g.l.sfv);
 	free(g.l.leader);
