@@ -1,28 +1,3 @@
-Here's the list of known bugs. devs - please update often!
-
-*******************************************************************************
-
-R.DATE      : Report Date - this is the date the bug was reported (d/m/y)
-STA         : Status - [ ] = not fixed/looked at
-                     - [x] = fixed
-                     - [/] = modification done, unknown status
-                     - [?] = looked at, but unable to reproduce bug
-                     - [-] = cancelled
-REV.FIX     : Revision the bug was corrected/edited 
-DESCRIPTION : Short description of bug
-
-*******************************************************************************
-
-
-
-R.DATE | STA | REV.FIX | DESCRIPTION
--------|-----|---------|---------------------------------------------------------
-230704 | [ ] | [     ] | ng-bandwidth is 'lagged' after upload/dl
-230704 | [ ] | [     ] | ng-bandwidth/the bot have mixed up 'idle' and 'browsing'
-230704 | [ ] | [     ] | speed cookies in progress bar kill rescan
-220704 | [ ] | [r 459] | progress bars are left undeleted on fbsd (linux too?)
-210704 | [x] | [r 472] | compile fails on OpenBSD (could not find libcrypt)
-210704 | [x] | [r 435] | music.by.* is broken
-210704 | [x] | [r 442] | double sfv is buggy
-
-
+TODO is now deprecated. use http://bugs.relay.dk/.
+(You can report bugs and classify them as features to add feature-requests)
+Thank you. :-)
