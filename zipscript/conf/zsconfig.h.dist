@@ -4,7 +4,7 @@
  * Please see README.ZSCONFIG for a complete list
  * of all settings.
  *
- * Please do not change settings you don not understand!
+ * Please do not change settings you do not understand!
  *
  */
 
@@ -21,7 +21,7 @@
 
 #define cleanupdirs     "/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 
-#define short_sitename		"dS"
+#define short_sitename		"NG"
 
 #define status_bar_type         1
 
