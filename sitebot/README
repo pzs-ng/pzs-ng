@@ -100,7 +100,7 @@
 --------------------------------------------------------------------------------
  2-2 Bundled themes
 --------------------------------------------------------------------------------
- When writing this - we only have 2 working themes bundled:
+ The following themes are bundled with pzs-ng:
 
  default.zst:	Previously known as avizion.zst which was made to test the
 		new way of using themes and to show "all" possible outputs.

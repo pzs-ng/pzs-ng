@@ -1069,10 +1069,10 @@ proc ng_incompletes {nick uhost hand chan arg} {
 }
 
 proc ng_stats {type time nick uhost hand chan argv} {
-	global binary statsection location
+	global binary statsection statdefault location
 	checkchan $nick $chan
 
-	set sect 0
+	set sect $statdefault
 	set section [lindex $argv 0]
 	if {[string length $section] != 0} {
 		set error 1
