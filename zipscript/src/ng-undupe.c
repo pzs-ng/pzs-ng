@@ -27,9 +27,9 @@ int main (int argc, char *argv[]) {
 
     struct dupefile buffer;
 
-    if ( argc != 2 ) {
-	printf("Please give a filename to undupe as well\n");
-	return 1;
+    if (argc != 2) {
+		printf("Please give a filename to undupe as well\n");
+		return 1;
     }
 
     strcpy(dupefile, dupepath);
@@ -37,25 +37,25 @@ int main (int argc, char *argv[]) {
 
     sprintf(data2, "%s/dupefile.%d", storage, getuid());
 
-    if((fp = fopen(dupefile, "r+b")) == NULL) {
-	printf("FATAL ERROR: Unable to open dupefile (%s)\n", dupefile);
-	return 1;
+    if (!(fp = fopen(dupefile, "r+b"))) {
+		printf("FATAL ERROR: Unable to open dupefile (%s)\n", dupefile);
+		return 1;
     }
-    if((fp2 = fopen(data2, "w+b")) == NULL) {
-	printf("FATAL ERROR: Unable to write to tempfile (%s)\n", data2);
-	return 1;
+    if (!(fp2 = fopen(data2, "w+b"))) {
+		printf("FATAL ERROR: Unable to write to tempfile (%s)\n", data2);
+		return 1;
     }
     while (!feof(fp)) {
 
-	if (fread(&buffer, sizeof(struct dupefile), 1, fp) < 1)
-	    break;
-	/* If we found the file, delete it */
-	if (strcmp(buffer.filename, dupename) == 0)
-	    fflush(fp);
-	/* if not, write it to the new file */
-	if (strcmp(buffer.filename, dupename) != 0)
-	    if (fwrite(&buffer, sizeof(struct dupefile), 1, fp2) < 1)
-		break;
+		if (fread(&buffer, sizeof(struct dupefile), 1, fp) < 1)
+		    break;
+		/* If we found the file, delete it */
+		if (strcmp(buffer.filename, dupename) == 0)
+		    fflush(fp);
+		/* if not, write it to the new file */
+		if (strcmp(buffer.filename, dupename) != 0)
+		    if (fwrite(&buffer, sizeof(struct dupefile), 1, fp2) < 1)
+			break;
     }
 
     fclose(fp);
@@ -65,20 +65,20 @@ int main (int argc, char *argv[]) {
     /* as was done before, we stream the content back - this is a workaround for a  */
     /* world writable logs directory...                                             */
 
-    if((fp = fopen(data2, "r+b")) == NULL) {
-	printf("FATAL ERROR: Unable to open tempfile (%s)\n", data2);
-	return 1;
+    if (!(fp = fopen(data2, "r+b"))) {
+		printf("FATAL ERROR: Unable to open tempfile (%s)\n", data2);
+		return 1;
     }
-    if((fp2 = fopen(dupefile, "w+b")) == NULL) {
-	printf("FATAL ERROR: Unable to write to dupefile (%s)\n", dupefile);
-	return 1;
+    if (!(fp2 = fopen(dupefile, "w+b"))) {
+		printf("FATAL ERROR: Unable to write to dupefile (%s)\n", dupefile);
+		return 1;
     }
 
     while (!feof(fp)) {
-	if (fread(&buffer, sizeof(struct dupefile), 1, fp) < 1)
-	    break;
-	if (fwrite(&buffer, sizeof(struct dupefile), 1, fp2) < 1)
-	    break;
+		if (fread(&buffer, sizeof(struct dupefile), 1, fp) < 1)
+		    break;
+		if (fwrite(&buffer, sizeof(struct dupefile), 1, fp2) < 1)
+		    break;
     }
 
     fclose(fp);

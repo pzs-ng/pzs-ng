@@ -30,26 +30,24 @@ unsigned int readsfv_file(struct LOCATIONS *locations, struct VARS *raceI, int g
     FILE		*sfvfile;
     unsigned int	len;
 
-    if ( (sfvfile = fopen(locations->sfv, "r")) == NULL ) {
+    if (!(sfvfile = fopen(locations->sfv, "r"))) {
       d_log("Failed to open sfv.\n");
       return 0;
     }
     fread( &raceI->misc.release_type, sizeof(short int), 1, sfvfile);
 	d_log("Reading data from sfv (%s)\n", raceI->file.name);
     while ( fread(&len, sizeof(int), 1, sfvfile) == 1 ) {
-	fname = m_alloc(len);
-	fread(fname, 1, len, sfvfile);
-	fread(&t_crc, sizeof(int), 1, sfvfile);
-	raceI->total.files++;
-	if (! strcasecmp(raceI->file.name, fname)) {
-	    crc = t_crc;
-	}
-	if (getfcount && findfile(fname)) {
-	    raceI->total.files_missing--;
-	}
+		fname = m_alloc(len);
+		fread(fname, 1, len, sfvfile);
+		fread(&t_crc, sizeof(int), 1, sfvfile);
+		raceI->total.files++;
+		if (! strcasecmp(raceI->file.name, fname))
+		    crc = t_crc;
+		if (getfcount && findfile(fname))
+		    raceI->total.files_missing--;
 
-	d_log("Storing data on %s - CRC: %u - T_CRC: %u.\n", fname, crc, t_crc);
-	m_free(fname);
+		d_log("Storing data on %s - CRC: %u - T_CRC: %u.\n", fname, crc, t_crc);
+		m_free(fname);
     }
     fclose(sfvfile);
     raceI->total.files_missing += raceI->total.files;
@@ -67,20 +65,20 @@ void delete_sfv_file(struct LOCATIONS *locations) {
     FILE		*sfvfile;
     unsigned int	len;
 
-    if ((sfvfile = fopen(locations->sfv, "r")) == NULL) {
-	d_log("Couldn't fopen %s.\n", locations->sfv);
-	exit(EXIT_FAILURE);
+    if (!(sfvfile = fopen(locations->sfv, "r"))) {
+		d_log("Couldn't fopen %s.\n", locations->sfv);
+		exit(EXIT_FAILURE);
     }
-    /*sfvfile = fopen(locations->sfv, "r");*/
 
     fseek(sfvfile, sizeof(short int), SEEK_CUR);
-    while ( fread(&len, sizeof(int), 1, sfvfile) == 1 ) {
-	fname = m_alloc(len + 8);
-	fread(fname, 1, len, sfvfile);
-	fseek(sfvfile, sizeof(int), SEEK_CUR);
-	memcpy(fname + len - 1, "-missing", 9);
-	unlink(fname);
-	m_free(fname);
+	
+    while (fread(&len, sizeof(int), 1, sfvfile) == 1) {
+		fname = m_alloc(len + 8);
+		fread(fname, 1, len, sfvfile);
+		fseek(sfvfile, sizeof(int), SEEK_CUR);
+		memcpy(fname + len - 1, "-missing", 9);
+		unlink(fname);
+		m_free(fname);
     }
     fclose(sfvfile);
 }
@@ -127,17 +125,17 @@ void maketempdir(struct LOCATIONS *locations) {
 void read_write_leader_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERINFO *userI) {
     FILE	*file;
 
-    if ( (file = fopen(locations->leader, "r+")) != NULL ) {
-	fread(&raceI->misc.old_leader, 1, 24, file);
-	rewind(file);
-	fwrite(userI->name, 1, 24, file);
+    if ((file = fopen(locations->leader, "r+"))) {
+		fread(&raceI->misc.old_leader, 1, 24, file);
+		rewind(file);
+		fwrite(userI->name, 1, 24, file);
     } else {
-	*raceI->misc.old_leader = 0;
-	if ((file = fopen( locations->leader, "w+" )) == NULL) { 
-		d_log("Couldn't write to %s.\n", locations->leader);
-		exit(EXIT_FAILURE);
-	}
-	fwrite(userI->name, 1, 24, file);
+		*raceI->misc.old_leader = 0;
+		if (!(file = fopen( locations->leader, "w+" ))) { 
+			d_log("Couldn't write to %s.\n", locations->leader);
+			exit(EXIT_FAILURE);
+		}
+		fwrite(userI->name, 1, 24, file);
     }
     fclose(file);
 }
@@ -160,7 +158,7 @@ void testfiles_file(struct LOCATIONS *locations, struct VARS *raceI) {
 
     target = m_alloc(256);
 
-    if ( ( file = fopen( locations->race, "r+" ) ) != NULL ) {
+    if ((file = fopen( locations->race, "r+" ))) {
 	realfile = raceI->file.name;
 	while ( fread( &len, sizeof(int), 1, file ) == 1 ) {
 
@@ -370,11 +368,10 @@ void create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char
     pos = m_alloc(sizeof(int) * raceI->total.files);
     t_pos = m_alloc(sizeof(int) * raceI->total.files);
     fname = m_alloc(sizeof(char*) * raceI->total.files);
-    if ((r = fopen( locations->race, "r" )) == NULL) {
-	d_log("Couldn't fopen %s.\n", locations->race);
-	exit(EXIT_FAILURE);
+    if (!(r = fopen( locations->race, "r" ))) {
+		d_log("Couldn't fopen %s.\n", locations->race);
+		exit(EXIT_FAILURE);
 	}
-    /*r = fopen( locations->race, "r" );*/
     c = 0;
 
     /* Read filenames from race file */
@@ -410,17 +407,16 @@ void create_indexfile_file(struct LOCATIONS *locations, struct VARS *raceI, char
 
     /* Write to file and free memory */
 
-    if ( ( r = fopen( f, "w" ) ) != NULL ) {
-	for ( n = 0 ; n < c ; n++ ) {
-	    m = pos[n];
-	    fprintf(r, "%s\n", fname[m]);
-	    m_free(fname[m]);
-	}
-	fclose(r);
+    if ((r = fopen(f, "w"))) {
+		for (n = 0; n < c; n++) {
+		    m = pos[n];
+		    fprintf(r, "%s\n", fname[m]);
+		    m_free(fname[m]);
+		}
+		fclose(r);
     } else {
-	for ( n = 0 ; n < c ; n++ ) {
-	    m_free(fname[n]);
-	}
+		for (n = 0; n < c; n++)
+		    m_free(fname[n]);
     }
 
     m_free(fname);
@@ -440,25 +436,26 @@ short int clear_file_file(struct LOCATIONS *locations, char *f) {
     FILE		*file;
     char		*fname;
 
-    if ((file = fopen(locations->race, "r+")) != NULL) {
-	n = 0;
-	while (fread(&len, sizeof(int), 1, file) == 1) {
-	    fname = m_alloc(len);
-	    fread(fname, 1, len, file);
-	    fread(&status, 1, 1, file);
+    if ((file = fopen(locations->race, "r+"))) {
+		n = 0;
+		while (fread(&len, sizeof(int), 1, file) == 1) {
+		    fname = m_alloc(len);
+		    fread(fname, 1, len, file);
+		    fread(&status, 1, 1, file);
 
-	    if (( status == F_CHECKED || status == F_NOTCHECKED || status == F_NFO ) && ! memcmp(f, fname, len)) {
-		status = F_DELETED;
-		n++;
-		fseek(file, -1, SEEK_CUR);
-		fwrite(&status, 1, 1, file);
-	    }
+		    if (( status == F_CHECKED || status == F_NOTCHECKED || status == F_NFO ) && ! memcmp(f, fname, len)) {
+				status = F_DELETED;
+				n++;
+				fseek(file, -1, SEEK_CUR);
+				fwrite(&status, 1, 1, file);
+		    }
 
-	    fseek(file, 48 + 5 * sizeof(int), SEEK_CUR);
-	    m_free(fname);
-	}
-	fclose(file);
-	if ( n != 0 ) return 1;
+		    fseek(file, 48 + 5 * sizeof(int), SEEK_CUR);
+		    m_free(fname);
+		}
+		fclose(file);
+		if (n)
+			return 1;
     }
     return 0;
 }
@@ -480,7 +477,7 @@ void readrace_file(struct LOCATIONS *locations, struct VARS *raceI, struct USERI
     char		*uname;
     char		*ugroup;
 
-    if ( (file = fopen(locations->race, "r")) == NULL ) {
+    if (!(file = fopen(locations->race, "r"))) {
 	return;
     }
 
@@ -522,9 +519,9 @@ void writerace_file(struct LOCATIONS *locations, struct VARS *raceI, unsigned in
 
     clear_file_file(locations, raceI->file.name);
 
-    if ( (file = fopen(locations->race, "a+")) == NULL) {
-	d_log("Racefile cannot be written. Aborting.\n");
-	exit(EXIT_FAILURE);
+    if (!(file = fopen(locations->race, "a+"))) {
+		d_log("Racefile cannot be written. Aborting.\n");
+		exit(EXIT_FAILURE);
     }
 
     len = strlen(raceI->file.name) + 1;

@@ -19,7 +19,9 @@ int num_groups = 0, num_users = 0;
 struct USER	**user;
 struct GROUP	**group;
 
-    void d_log(char *fmt, ...) {
+void d_log(char *fmt, ...) {
+	if (fmt == NULL)
+		return;
 #if ( debug_mode == TRUE )
 	time_t		timenow;
 	FILE		*file;
@@ -28,14 +30,14 @@ struct GROUP	**group;
 	va_start(ap, fmt);
 	timenow = time(NULL);
 
-	if ((file = fopen(".debug", "a+")) != NULL ) {
+	if ((file = fopen(".debug", "a+"))) {
 	    fprintf(file, "%.24s - ", ctime(&timenow));
 	    vfprintf(file, fmt, ap);
 	    fclose(file);
 	}
 	chmod(".debug",0666);
 #endif
-    }
+}
 
 void create_missing(char *f, short int l) {
     char	*fname;
@@ -55,8 +57,10 @@ char* findfileext(char *fileext) {
 
     n = direntries;
     while(n--) {
-	if ((k = NAMLEN(dirlist[n])) < 4 ) continue;
-	if ( strcasecmp(dirlist[n]->d_name + k - 4, fileext) == 0 ) return dirlist[n]->d_name;
+		if ((k = NAMLEN(dirlist[n])) < 4 )
+			continue;
+		if (strcasecmp(dirlist[n]->d_name + k - 4, fileext) == 0)
+			return dirlist[n]->d_name;
     }
     return NULL;
 }

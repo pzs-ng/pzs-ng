@@ -27,9 +27,9 @@ int main (int argc, char **argv) {
 	return 0;
     }
 
-    if ( (file = fopen(argv[1], "r")) == NULL ) {
-	printf("File does not exist or could not be opened\n");
-	return 0;
+    if (!(file = fopen(argv[1], "r"))) {
+		printf("File does not exist or could not be opened\n");
+		return 0;
     }
 
     printf("|-[Racedata lister for project-zs]\n");
