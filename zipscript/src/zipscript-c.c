@@ -306,6 +306,8 @@ main(int argc, char **argv)
 				exit(EXIT_FAILURE);
 			}
 		}
+		rewinddir(dir);
+		rewinddir(parent);
 	}
 
 	printf(zipscript_header);

@@ -163,6 +163,8 @@ main(int argc, char **argv)
 				exit(EXIT_FAILURE);
 			}
 		}
+		rewinddir(dir);
+		rewinddir(parent);
 	}
 
 	if (matchpath(nocheck_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
