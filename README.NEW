@@ -1,0 +1,311 @@
+ Project-ZS-NG (Next Generation)
+---------------------------------
+
+
+
+
+Introduction:
+-------------
+Project-ZS-NG is based off of Project-ZS by Dark0n3. It is what is commonly
+known as a zipscript, or a post check script for file uploads. It's task is,
+among others, to check the integrety of the files uploaded, and make sure
+a "release" is complete, ie, not missing any files.
+
+Of course, this is not the only thing done by this zipscript. ;) Read on to
+find out why this zipscript is considered the best of the bunch by most.
+
+
+
+
+History:
+--------
+Project-ZS-NG is a continuance of the original Project-ZS by Dark0n3.
+Dark0n3 stopped development in June(?) 2002, and remained stagnant for a
+long time. Up until now various coders/scripters have made patches to fix
+bugs or make some enhancements, but the patches have at times been
+overlapping, or complete replacements of source-files, making it hard for
+the siteops to implement them all. 
+In April, 2004, daxxar and psxc collected the various patches into packages,
+but soon found out it was better to pool resources and make a unified
+version. The result - Project-ZS-NG.
+
+
+
+
+The Team:
+---------
+
+<INSERT SOMETHING HERE>
+
+
+
+
+
+
+Supported Platforms:
+--------------------
+Project-ZS-NG should compile fine on the following platforms:
+
+- Linux
+- FreeBSD
+- OpenBSD
+- (AIX - untested, but the original docs say it works there)
+
+Only i386 platforms is tested, but feel free to let us know if you try it
+on anything else. :)
+
+
+
+
+
+Supported FTP Daemons:
+----------------------
+
+- glftpd 1.xx
+- glftpd 2.xx
+
+
+
+
+
+Basic description of How Things Work (tm):
+------------------------------------------
+As mentioned in Introduction earlier, a zipscript checks the integrity of
+the files, and keep tabs on when a release is complete. How it does this
+depends on the filetype. 'ZIP'-files have an integrity code build within
+the file itself, which makes it easy to verify the file. To keep track of
+wether or not a release based on zip-files is complete, a file named
+file-id.diz is scanned.
+The most common method of checking files, however, is by 'SFV'. Unlike zip,
+the sfv-file is a text file which stores the filenames and a CRC (cyclic
+redundancy checking) code. The files belonging to/listed in the sfv-file
+can be of any type, of which the most common are rar and mp3. The crc-code
+listed in the file is compared to a crc-code calculated on the fly by either
+the ftp-daemon, or the program itself (more on this later). It is also quite
+easy to find out if a release is complete by counting files in the sfv-file.
+
+
+
+
+
+Features of Project-ZS-NG:
+--------------------------
+Project-ZS-NG would not be considered the best zipscript by most unless it
+had features beyond simple filechecking. Here's a list of a few things it
+can do:
+
+- Log information about sfv files (how many files expected etc)
+- Log information about mp3 files (genre, year, bps etc)
+- Log information about the first uploaded file (who did it, speed etc)
+- Log information about halfway (when a release is halfway, who is leading,
+  speed etc)
+- Log information about complete (who won, speed, percent, who raced etc)
+- Log information about a race (who takes the lead, who is racing, what
+  speed, percent etc)
+- include information about the release in the releasedir (who raced, won,
+  any information on the mediafiles, speed etc)
+- creation of -missing files (to easily spot what files are missing in a
+  release)
+- create (in)complete dirs/files (to show what releases are incomplete,
+  and info on the release itself when it's complete)
+- execute external script based on filetypes, when a file is uploaded, and/
+  or when a release complete.
+- MORE!
+
+Along with the included sitebot (more on this later) we can pass this
+information on to a sitechannel on irc, which in turn will make the site
+seem alive, and help traders/couriers in their work. Using a bot also has
+a high fun-factor :)
+
+
+
+
+
+Setting it up:
+--------------
+Project-ZS-NG is made in C. This means that it compiles sourcecode into
+binaries you use. In other words, it's not a script where you can edit
+the config and test immediatly after - you have to compile the zipscript
+and copy the binaries every time you change the config. I'll say again -
+edit config --> recompile and copy bins. How we compile and copy I'll get
+back to.
+
+First off - COOKIES. Read it. Print it out. Keep it close by when you edit
+your config.
+Project-ZS-NG is based on a cookie system. This means that certain character-
+combinations is replaced by text dynamically as the zipscript runs. So learn
+the cookie-system.
+
+zsconfig.h is the heart of the script. You should take the time to read the
+comments inside it, look at the examples, get a feel for how it works. I
+cannot stress this enough - If you do something bad here, chances are the
+entire script stops working as it should, or misbehaves. So thread carefully,
+edit with care, don't miss any quotation marks.
+
+For windows users - don't edit the file in windows. Install an editor on
+you linux/unix/bsd box - aee, ee, pico, nano are good choices.
+
+Make sure long lines stay on one line - some editors break lines in two (
+or more) when they become a certain length.
+
+The hash character (#) does not signify comments! Do not remove the hashes
+you find - they're supposed to be there. Comments in C are signified by
+/* ... until ... */ and // .... to the end of line.
+
+Got all that? Well, then, you'll find the config file at
+./zipscript/conf/zsconfig.h - go edit. When you're done, come back here.
+
+
+
+
+
+Installation:
+-------------
+Back? Good. You now should have edited zsconfig.h and made the output reflect
+how you wish it to be. Don't worry, we'll get to the bot-output soon enough.
+First, you need to compile the script. People with more than 2 weeks 
+experience with linux/unix/bsd (aka '*nix' - get used to the expression) will
+not see this as particularly challenging. Compiling stuff is quite common
+under *nix. Anyway, I'll walk you thru it. First off, type:
+
+> ./configure
+
+This will start a process which will create the makefiles we'll use later.
+It's beyond the scope of this document to explain what a makefile is, but
+in short it will adjust some settings to accommodate the compile-process
+for your system.
+The configure process takes a couple of seconds. When it's done, type:
+
+> make
+
+This will compile the sources into binaries. This process can take a few
+seconds longer. When it's done, there should be no errors. To install the
+binaries and some other stuff, you need to be root. As root, type:
+
+> make install
+
+This will make the necessary additions/changes to your system.
+
+If the make install fails, or you really wish to make the changes by hand,
+here's what to do:
+
+cp ./zipscript/bin/* /path/to/your/glftpd/bin/
+chmod +666 /path/to/your/glftpd/ftp-data/logs/glftpd.log
+mkdir /path/to/your/glftpd/ftp-data/zipscript
+chmod 777 /path/to/your/glftpd/ftp-data/zipscript
+chmod +s /path/to/your/glftpd/bin/datacleaner
+chmod +s /path/to/your/glftpd/bin/zipscript-c
+
+If you need to recompile the script because you made a booboo in the config,
+you should always do a 'make clean' first. The quick-quick version of it is:
+
+> make clean && ./configure && make && make install
+
+
+
+
+Changes in glftpd.conf:
+-----------------------
+Almost done now. To actually make glftpd use your new zipscript, we need
+to change/add some settings in your glftpd.conf:
+
+Choose one of the following lines:
+
+calc_crc	*
+calc_crc	*.[mM][pP]3 *.[rR][aA][rR] *.[rRsS0-9][0-9][0-9]
+calc_crc	*.[mM][pP]3 *.[rR][aA][rR] *.[rRsS0-9][0-9][0-9] *.[mM][pP][gG] *.[mM]2[vV]
+
+The first one will calculate crc codes on all files. The 2nd and 3rd line
+will only make a crc code on files matching the criteria set. Whichever
+of these lines you choose to add to glftpd.conf is up to you. Forget to
+add this, and all your sfv files will fail.
+
+Next, add:
+
+post_check	/bin/zipscript-c *
+
+This will invoke the zipscript after a file is uploaded. For more info
+on the post_check line, refer to glftpd.docs. Forget to add this, and
+the zipscript is not run, and no files are checked.
+
+You should also add the following line:
+
+cscript		DELE	post	/bin/postdel
+
+This will take care of making things right when something is deleted. Like
+updating the race stats, adding/editing the (in)complete-bar etc. Forget
+to add this, and you end up with a rather shabby site.
+
+Optionally, add the following:
+
+site_cmd	RESCAN	EXEC	/bin/rescan
+custom-rescan		!8 *
+
+This will allow you to rescan a dir. This comes in handy in places the
+zipscript isn't invoked by default, when you have dirs you wish to check
+from before you added the zipscript, and a lot of other occations.
+Forget to add this and you will hit yourself hard quite a few times. ;)
+
+
+
+
+Crontab:
+--------
+All that's left now is to tie up some loose ends. And installing the bot,
+ofcourse. As for loose ends:
+You might have noticed that we added a dir in ftp-data called zipscript.
+This is the place we keep all race data - a sort of mirror of the site if
+you like, without the actual files in them. Over time this can grow and
+becomes huge, taking up a great deal of space, even making your system
+refuse to add more files. Thus, the included 'datacleaner' bin. This will
+remove all the racedata from dirs that no longer exists on your site.
+We also have a bin named 'cleaner' which helps clean out dead symlinks -
+you might have nuked an incomplete release, in which case the incomplete-
+link will still exist. Up to the rescue comes crontab :)
+Add the following lines in a users crontab if the bins are owned by root
+and have the setuid bit, or run it in root's crontab if not.
+
+59	*	*	*	*	/glftpd/bin/cleaner >/dev/null 2>&1
+29	4	*	*	*	/glftpd/bin/datacleaner >/dev/null 2>&1
+
+This should help keep your site nice and tidy, not burden the hardware too
+much, and stop crontab from sending you annoying emails. ;)
+
+
+
+
+
+The bot:
+--------
+If everything is working smoothly on your site, it's time to add a bot to
+your channel. It is expected that you already have installed an eggdrop,
+that's it working and have found it's way into your channel.
+
+
+....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -4,7 +4,8 @@
 
 status  who       what
  [x]     psxc      change "VBR" to real bps number (average)
- [x]     psxc      add a cleaner script/bin for the zipscript dir in ftp-data - to run in crontab
+ [!]     psxc      add a cleaner script/bin for the zipscript dir in ftp-data - to run in crontab
+                   - not needed
  [x]     iono      fix NUKE/UNNUKE in dZSbot.tcl for glftpd2 output
  [ ]     all       write documentation for different things (especially dZSbot (comments?))
  [ ]     daxxar    add theme-support to dZSbot.tcl, so that it reads an external theme file. (theme/skin)
