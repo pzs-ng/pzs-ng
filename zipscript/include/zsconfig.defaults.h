@@ -12,15 +12,18 @@
 
 
 /*
- * General Settings ================
+ * General Settings
+ * ================
  */
 
 /*
  * These should be changed to match your glftpd installation. All pathnames
- * must end with a slash ( / ) All paths are chroot'ed. log - /path/name of
- * your glftpd.log storage - place where the zipscript stores racedata.
- * Should not be accessible to your site's users. gl_userfiles - path to
- * glftpd's dir with userfiles. dupepath - /path/name to glftpd's dupefile.
+ * must end with a slash ( / ) All paths are chroot'ed.
+ * log - /path/name of your glftpd.log
+ * storage - place where the zipscript stores racedata.  Should not be
+ * accessible to your site's users.
+ * gl_userfiles - path to glftpd's dir with userfiles.
+ * dupepath - /path/name to glftpd's dupefile.
  * gl_section - names of sections defined in glftpd.conf
  */
 #ifndef sitepath_dir
@@ -47,13 +50,16 @@
  * Per default, announcing is disabled everywhere, use zip/sfv paths to
  * enable announces and private paths to disable. Don't be lazy! Be specific!
  * And remember - pathnames are case sensitive. All pathnames must end with a
- * slash ( / ) All paths are chroot'ed. group_dirs - paths where announcing
- * should be turned off. zip_dirs - paths where zipfiles normally are
- * uploaded. sfv_dirs - paths where sfv-releases normally are uploaded.
- * nocheck_dirs - paths where no checking of files occur at all. (All paths
- * are checked by default) audio_nocheck_dirs - paths where mp3 files are not
- * checked for genre, bitrate etc. allowed_types_exemption_dirs - paths where
- * certain files are not checked/denied if no sfv-file is uploaded.
+ * slash ( / ) All paths are chroot'ed.
+ * group_dirs - paths where announcing should be turned off.
+ * zip_dirs - paths where zipfiles normally are uploaded.
+ * sfv_dirs - paths where sfv-releases normally are uploaded.
+ * nocheck_dirs - paths where no checking of files occur at all. This overrides
+ * zip/sfv/group-dirs.
+ * audio_nocheck_dirs - paths where mp3 files are not checked for genre,
+ * bitrate etc.
+ * allowed_types_exemption_dirs - paths where certain files are not
+ * checked/denied if no sfv-file is uploaded.
  * check_for_missing_nfo_dirs - these dirs will be checked for missing nfo's
  * after a release is complete.
  */
@@ -129,8 +135,9 @@
 
 /*
  * Certain files are needed to change uid/gid to real names. All paths are
- * chroot'ed. GROUPFILE - /path/name of glftpd's group file PASSWDFILE -
- * /path/name of glftpd's passwd file
+ * chroot'ed.
+ * GROUPFILE - /path/name of glftpd's group file
+ * PASSWDFILE - /path/name of glftpd's passwd file
  */
 #ifndef GROUPFILE
 #define GROUPFILE	"/etc/group"
@@ -157,12 +164,12 @@
 /*
  * Directories for cleanup to check for broken incomplete files. Used by the
  * cleanup binary (which should be run in crontab) to remove stale links. Use
- * same %-values as with date. All paths are chroot'ed. check_today - check
- * today's dir for stale links. check_yesterday - check yesterday's dir for
- * stale links. cleanupdirs - paths to be checked for broken links - these
- * are not recursive. This has also effect on the incomplete-list.sh script
- * added in the archive. If you use this on your bot, make sure to fill in
- * correct paths.
+ * same %-values as with date. All paths are chroot'ed.
+ *  check_today - check today's dir for stale links.
+ * check_yesterday - check yesterday's dir for stale links.
+ * cleanupdirs - paths to be checked for broken links - these are not recursive.
+ * This has also effect on the incomplete-list.sh script added in the archive.
+ * If you use this on your bot, make sure to fill in correct paths.
  */
 
 #ifndef check_today
@@ -213,8 +220,9 @@
 #endif
 
 /*
- * Defines type of status bar (see below for the format of the status bar) 0
- * = file 1 = directory
+ * Defines type of status bar (see below for the format of the status bar)
+ * 0 = file
+ * 1 = directory
  */
 #ifndef status_bar_type
 #define status_bar_type		1
@@ -222,15 +230,18 @@
 
 /*
  * Defines type of incomplete pointer (see below for the format of the
- * incomplete pointer) 0 = file 1 = symbolic link
+ * incomplete pointer)
+ * 0 = file
+ * 1 = symbolic link
  */
 #ifndef incompleteislink
 #define incompleteislink	1
 #endif
 
 /*
- * Defines symbolic link type on incomplete and no-nfo indicators. 0 =
- * absolute path 1 = relative path
+ * Defines symbolic link type on incomplete and no-nfo indicators.
+ * 0 = absolute path
+ * 1 = relative path
  */
 #ifndef userellink
 #define userellink		1
@@ -280,12 +291,15 @@
 #endif
 
 /*
- * Special modes debug_mode - create .debug files in releasedirs.
+ * Special modes
+ * debug_mode - create .debug files in releasedirs.
  * debug_altlog - put all .debug files in the mirror stored in the storage
  * variable. Not reccommended with first use, as not all debug info will make
  * it into that file. But might be good on a prolonged debug period on a
- * "live" site. benchmark_mode - output to the user uploading how long it
- * took to run the zipscript.
+ * "live" site.
+ * benchmark_mode - output to the user uploading how long it took to run the
+ * zipscript.
+ * ignore_zero_size - will allow (seemingly) zero sized file uploads.
  */
 #ifndef debug_mode
 #define debug_mode		TRUE
@@ -326,6 +340,7 @@
 /*
  * Enter the (chroot'ed) path/name of unzip. This is used to test integrity
  * of zipfiles.
+ * NOTE: You need the unzip bin in order to test zip-files
  */
 #ifndef unzip_bin
 #define unzip_bin		"/bin/unzip"
@@ -394,8 +409,8 @@
 
 /*
  * These directories will contain symlinks to your audio releases, based on
- * genre, year and artist. Ignore these paths if you have no plans on sorting
- * your releases. All paths are chroot'ed.
+ * genre, year, artist and releasegroup. Ignore these paths if you have no
+ * plans on sorting your releases. All paths are chroot'ed.
  */
 #ifndef audio_genre_path
 #define audio_genre_path	"/site/incoming/music.by.genre/"
@@ -418,18 +433,15 @@
 #define allowed_constant_bitrates	"160,192"
 #endif
 #ifndef allowed_years
-#define allowed_years			"2000,2001,2002,2003,2004,2005"
+#define allowed_years		"2000,2001,2002,2003,2004,2005"
 #endif
 #ifndef banned_genres
-#define banned_genres			"Christian Rap,Christian Gangsta Rap,Contemporary Christian,Christian Rock"
+#define banned_genres		"Christian Rap,Christian Gangsta Rap,Contemporary Christian,Christian Rock"
 #endif
 #ifndef allowed_genres
-#define allowed_genres			"Top 40,Pop Funk,Rock,Pop"
+#define allowed_genres		"Top 40,Pop Funk,Rock,Pop"
 #endif
 
-#ifndef del_banned_release
-#define del_banned_release	FALSE
-#endif
 /*
  * Audio related symlinks - set to TRUE if you wish to sort/symlink releases,
  * or FALSE if not.
@@ -466,6 +478,13 @@
 #define audio_year_warn		TRUE
 #endif
 
+/* To be *very* strict, you can choose to remove the entire releasedir if a bad
+ * genre/year/whatnot is uploaded.
+ */
+#ifndef del_banned_release
+#define del_banned_release	FALSE
+#endif
+
 /*
  * either "audio_banned_genre_check" or "audio_allowed_genre_check" should be
  * set to TRUE
@@ -489,9 +508,10 @@
 
 
 /*
- * Race/Announce Settings ====================== NOTE: You may disable
- * announces by typing DISABLED instead of cookie string (do not use DISABLED
- * with message etc files!!!)
+ * Race/Announce Settings
+ * ======================
+ * NOTE: You may disable announces by typing DISABLED instead of cookie string
+ * (do not use DISABLED with message etc files!!!)
  */
 
 /*
@@ -558,10 +578,10 @@
 
 
 /*
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! !! Below
- * follow a series of settings that use cookies.        !! !! These cookies
- * can be found in the COOKIES file.            !! !! Before you change any
- * of these, make sure you read it.     !!
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ * !! Below follow a series of settings that use cookies.        !!
+ * !! These cookies can be found in the COOKIES file.            !!
+ * !! Before you change any of these, make sure you read it.     !!
  * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  */
 
@@ -691,11 +711,12 @@
  */
 
 /*
- * How Indicators look incomplete_cd_indicator = when a multi-cd release is
- * incomplete. incomplete_indicator = when a normal release is incomplete.
- * incomplete_nfo_indicator = when a normal release is missing nfo in the
- * dir. incomplete_base_nfo_indicator = when a multi-cd release is missing
- * nfo in the base dir.
+ * How Indicators look
+ * incomplete_cd_indicator = when a multi-cd release is incomplete.
+ * incomplete_indicator = when a normal release is incomplete.
+ * incomplete_nfo_indicator = when a normal release is missing nfo in the dir.
+ * incomplete_base_nfo_indicator = when a multi-cd release is missing nfo in
+ * the base dir.
  */
 #ifndef incomplete_cd_indicator
 #define incomplete_cd_indicator		"../../(incomplete)-(%0)-%1"
@@ -924,7 +945,6 @@
 /*
  * Some setting used in ng-chown
  * -----------------------------
- *
  */
 
 /* Should we allow the binary to change the uid of files/dirs?

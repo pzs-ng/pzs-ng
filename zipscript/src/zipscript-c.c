@@ -904,10 +904,11 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 								error_msg = convert(&raceI, userI, groupI, bad_file_msg);
 								writelog(error_msg, bad_file_msg_type);
 								exit_value = 2;
-#if ( del_banned_release )
-								deldir = 1;
-#endif
 							}
+#if ( del_banned_release )
+							deldir = 1;
+							exit_value = 2;
+#endif
 							break;
 						}
 #elif ( audio_allowed_genre_check == TRUE )
@@ -931,10 +932,11 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 								error_msg = convert(&raceI, userI, groupI, bad_file_msg);
 								writelog(error_msg, bad_file_msg_type);
 								exit_value = 2;
-#if ( del_banned_release )
-								deldir = 1;
-#endif
 							}
+#if ( del_banned_release )
+							deldir = 1;
+							exit_value = 2;
+#endif
 							break;
 						}
 #endif
@@ -959,10 +961,11 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 								error_msg = convert(&raceI, userI, groupI, bad_file_msg);
 								writelog(error_msg, bad_file_msg_type);
 								exit_value = 2;
-#if ( del_banned_release )
-								deldir = 1;
-#endif
 							}
+#if ( del_banned_release )
+							deldir = 1;
+							exit_value = 2;
+#endif
 							break;
 						}
 #endif
@@ -988,10 +991,11 @@ d_log("DEBUG: %s : %s\n", bad_file_msg_type, error_msg);
 									error_msg = convert(&raceI, userI, groupI, bad_file_msg);
 									writelog(error_msg, bad_file_msg_type);
 									exit_value = 2;
-#if ( del_banned_release )
-									deldir = 1;
-#endif
 								}
+#if ( del_banned_release )
+								deldir = 1;
+								exit_value = 2;
+#endif
 								break;
 							}
 						}
