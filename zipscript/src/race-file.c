@@ -912,7 +912,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 		hd.data_qcurrent = 0;
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
-		d_log("create_lock: lock set.\n");
+		d_log("create_lock: lock set. (no previous lockfile found)\n");
 		return 0;
 	} else {
 		read(fd, &hd, sizeof(HEADDATA));
@@ -920,6 +920,17 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 			d_log("create_lock: version of datafile mismatch. Stopping and suggesting a cleanup.\n");
 			close(fd);
 			return 1;
+		}
+		if ((time(NULL) - sb.st_ctime >= max_seconds_wait_for_lock)) {
+			raceI->data_in_use = hd.data_in_use = progtype;
+			raceI->data_incrementor = hd.data_incrementor = 1;
+			raceI->data_queue = hd.data_queue = 0;
+			hd.data_qcurrent = 0;
+			lseek(fd, 0L, SEEK_SET);
+			write(fd, &hd, sizeof(HEADDATA));
+			close(fd);
+			d_log("create_lock: lock set. (lockfile exceeded max life time)\n");
+			return 0;
 		}
 		if (hd.data_in_use) {						/* the lock is active */
 			if (force_lock == 2) {

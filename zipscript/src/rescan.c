@@ -114,7 +114,6 @@ main(void)
 			printf("Error. You need to rm -fR ftp-data/pzs-ng/* before rescan will work.\n");
 			exit(EXIT_FAILURE);
 		}
-		l = g.v.data_incrementor;
 		for ( k = 0; k <= max_seconds_wait_for_lock * 10; k++) {
 			d_log("rescan: sleeping for .1 second before trying to get a lock (queue: %d).\n", g.v.data_queue);
 			usleep(100000);
@@ -122,16 +121,8 @@ main(void)
 				break;
 		}
 		if (k >= max_seconds_wait_for_lock * 10) {
-			if (l == g.v.data_incrementor) {
-				d_log("rescan: Failed to get lock. Forcing unlock.\n");
-				if (create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 2, g.v.data_queue)) {
-					d_log("rescan: Failed to force a lock. No choice but to exit.\n");
-					exit(EXIT_FAILURE);
-				}
-			} else {
-				d_log("rescan: Failed to get lock. Will not force unlock.\n");
-				exit(EXIT_FAILURE);
-			}
+			d_log("rescan: Failed to get lock. Will not force unlock.\n");
+			exit(EXIT_FAILURE);
 		}
 	}
 
