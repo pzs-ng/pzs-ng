@@ -16,6 +16,6 @@ announce.INVITE			= "+ %bold%user%bold@%group invited himself as %boldircnick%bo
 announce.MSGINVITE		= "+ %bold%user%bold@%group invited himself as %bold%ircnick%bold"
 announce.BADMSGINVITE		= "- %bold%ircnick%bold (%host) tried to invite himself with invalid login!"
 announce.WELCOME		= "Welcome to %bold%sitename%bold's sitechan. Type %cmdprehelp for help."
-announce.WIPE			= "- Directory Wiped: %path/%bold%release%bold by %c3%bold%user%bold@%group"
+announce.WIPE			= "- Directory Wiped: %path/%bold%release%bold by %bold%user%bold@%group"
 announce.WIPE-r			= "- Directory Wiped: %path/%bold%release%bold and all subdirectories by %bold%user%bold@%group"
 announce.DEFAULT 		= "- %msg"

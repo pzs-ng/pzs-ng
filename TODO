@@ -42,6 +42,8 @@ status  who       what
  [x]     js        change how mp3-links are created from absolute paths to relative paths.
  [x]     iwdisb    look over shmem use - does the zipscript need to access it?
  [x]     psxc      add support for unduping bad files after sfv upload
+ [ ]               add support for accumulative upload-speed (as in, calc total upload speed of entire release, calc
+                   the percentage each racer did, and base stats on that)
 
 status   description
  [ ]     not done 
