@@ -234,10 +234,10 @@ void get_stats(struct VARS *raceI, struct USERINFO **userI) {
 		for ( p_buf = buf ; p_buf < eof ; p_buf++ ) switch ( *p_buf ) {
 			case '\n':
 				*p_buf = 0;
-				if ( !memcmp(arg[0], "DAYUP", 5)) user[n]->dayup_bytes = atol(arg[2]);
-				 else if ( !memcmp(arg[0], "WKUP", 4)) user[n]->wkup_bytes = atol(arg[2]);
-				 else if ( !memcmp(arg[0], "MONTHUP", 7)) user[n]->monthup_bytes = atol(arg[2]);
-				 else if ( !memcmp(arg[0], "ALLUP", 5)) user[n]->allup_bytes = atol(arg[2]);
+				if ( !memcmp(arg[0], "DAYUP", 5)) user[n]->dayup_bytes = atoi(arg[2]);
+				 else if ( !memcmp(arg[0], "WKUP", 4)) user[n]->wkup_bytes = atoi(arg[2]);
+				 else if ( !memcmp(arg[0], "MONTHUP", 7)) user[n]->monthup_bytes = atoi(arg[2]);
+				 else if ( !memcmp(arg[0], "ALLUP", 5)) user[n]->allup_bytes = atoi(arg[2]);
 				args = 0;
 				space = 1;
 				break;
