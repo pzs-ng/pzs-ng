@@ -104,6 +104,71 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 	return crc;
 }
 
+void
+update_sfvdata(const char *path, const unsigned int crc)
+{
+	FILE		*sfvfile;
+	
+	SFVDATA		sd;
+
+	if (!(sfvfile = fopen(path, "r"))) {
+		d_log("Failed to open sfvdata (%s): %s\n", path, strerror(errno));
+		return;
+	}
+
+	sd.crc32 = crc;
+	
+	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
+		if (strcasecmp(path, sd.fname) == 0) {
+			sd.crc32 = crc;
+			break;
+		}
+	}
+	
+	fseek(sfvfile, -sizeof(SFVDATA), SEEK_CUR);
+	fwrite(&sd, sizeof(SFVDATA), 1, sfvfile);
+	fclose(sfvfile);
+}
+
+/* convert the sfvdata file source to the sfv dest */
+void
+sfvdata_to_sfv(const char *source, const char *dest)
+{
+	char		crctmp[8];
+	FILE		*insfv, *outsfv;
+	
+	SFVDATA		sd;
+
+	if (!(insfv = fopen(source, "r"))) {
+		d_log("Failed to open (%s): %s\n", source, strerror(errno));
+		return;
+	}
+
+	if (!(outsfv = fopen(".tmpsfv", "w"))) {
+		d_log("Failed to open (.tmpsfv): %s\n", strerror(errno));
+		return;
+	}
+
+	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
+		
+		sprintf(crctmp, "%.8x", sd.crc32);
+		
+		fwrite(sd.fname, PATH_MAX, 1, outsfv);
+		fwrite(" ", 1, 1, outsfv);
+		fwrite(&crctmp, 8, 1, outsfv),
+#if (sfv_cleanup_crlf == TRUE )
+		fwrite("\r", 1, 1, tmpsfv);
+#endif
+		fwrite("\n", 1, 1, tmpsfv);
+		
+	}
+	
+	fclose(insfv);
+	fclose(outsfv);
+
+	rename(".tmpsfv", dest);	
+}
+
 /*
  * Modified	: 01.16.2002 Author	: Dark0n3
  * 
