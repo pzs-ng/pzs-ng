@@ -1079,64 +1079,84 @@ proc ng_bandwidth {nick uhost hand chan args} {
 	set up [lindex $raw 1]
 	set dn [lindex $raw 3]
 	set totalspeed [lindex $raw 5]
-	set type ""
+
 	if {[string match -nocase $speedmeasure "kb"] == 1} {
-	    set type "KB/s"
-	    append up $type
-	    append dn $type
-	    append totalspeed $type
+
+		foreach {uptype dntype totaltype} {"KB/s" "KB/s" "KB/s"} {}
+
 	} elseif {[string match -nocase $speedmeasure "mb"] == 1} {
-	    set up [string range [expr $up / 1024] 0 [expr [string first [expr $up / 1024] "."] + 3]]
-	    set dn [string range [expr $dn / 1024] 0 [expr [string first [expr $dn / 1024] "."] + 3]]
-	    set totalspeed [string range [expr $totalspeed / 1024] 0 [expr [string first [expr $totalspeed / 1024] "."] + 3]]
-	    set type "MB/s"
-	    append up $type
-	    append dn $type
-	    append totalspeed $type
+
+		set up [format "%.1f" [expr $up / 1024]]
+		set dn [format "%.1f" [expr $dn / 1024]]
+		set totalspeed [format "%.1f" [expr $totalspeed / 1024]]
+		foreach {uptype dntype totaltype} {"MB/s" "MB/s" "MB/s"} {}
+
 	} elseif {[string match -nocase $speedmeasure "kbit"] == 1} {
-	    set up [expr $up * 8]
-	    set dn [expr $dn * 8]
-	    set totalspeed [expr $totalspeed * 8]
-	    set type "Kbit/s"
-	    append up $type
-	    append dn $type
-	    append totalspeed $type
+
+		set up [expr $up * 8]
+		set dn [expr $dn * 8]
+		set totalspeed [expr $totalspeed * 8]
+		foreach {uptype dntype totaltype} {"Kbit/s" "Kbit/s" "Kbit/s"} {}
+
 	} elseif {[string match -nocase $speedmeasure "mbit"] == 1} {
-	    set up [string range [expr $up * 8 / 1024] 0 [expr [string first [expr $up * 8 / 1000] "."] + 3]]
-	    set dn [string range [expr $dn * 8 / 1024] 0 [expr [string first [expr $dn * 8 / 1000] "."] + 3]]
-	    set totalspeed [string range [expr $totalspeed * 8 / 1000] 0 [expr [string first [expr $totalspeed * 8 / 1000] "."] + 3]]
-	    set type "Mbit/s"
-	    append up $type
-	    append dn $type
-	    append totalspeed $type
+
+		set up [format "%.1f" [expr $up * 8 / 1000]]
+		set dn [format "%.1f" [expr $dn * 8 / 1000]]
+		set totalspeed [format "%.1f" [expr $totalspeed * 8 / 1000]]
+		foreach {uptype dntype totaltype} {"MBit/s" "MBit/s" "MBit/s"} {}
+
 	} elseif {[string match -nocase $speedmeasure "autobit"] == 1} {
-	    if {$totalspeed > $speedthreshold} {
-		set totalspeed [string range [expr $totalspeed * 8 / 1000] 0 [expr [string first [expr $totalspeed * 8 / 1000] "."] + 3]]
-		append totalspeed "Mbit/s"
-	    } else { append totalspeed "Kbit/s" }
-	    if {$up > $speedthreshold} {
-		set up [string range [expr $up * 8 / 1000] 0 [expr [string first [expr $up * 8 / 1000] "."] + 3]]
-		append up "Mbit/s" 
-	    } else { append up "Kbit/s" }
-	    if {$dn > $speedthreshold} {
-		set dn [string range [expr $dn * 8 / 1000] 0 [expr [string first [expr $dn * 8 / 1000] "."] + 3]]
-		append dn "Mbit/s"
-	    } else { append dn "Kbit/s" }
+
+		foreach {uptype dntype totaltype} {"KBit/s" "KBit/s" "KBit/s"} {}
+
+		if {$totalspeed > $speedthreshold} {
+			set totalspeed [format "%.1f" [expr $totalspeed * 8 / 1000]]
+			set totaltype "Mbit/s"
+		} else {
+			set totalspeed [expr $totalspeed * 8]
+		}
+		if {$up > $speedthreshold} {
+			set up [format "%.1f" [expr $up * 8 / 1000]]
+			set uptype "Mbit/s"
+		} else {
+			set up [expr $up * 8]
+		}
+		if {$dn > $speedthreshold} {
+			set dn [format "%.1f" [expr $dn * 8 / 1000]]
+			set dntype "Mbit/s"
+		} else {
+			set dn [expr $dn * 8]
+		}
+
 	} elseif {[string match -nocase $speedmeasure "autobyte"] == 1} {
-	    if {$totalspeed > $speedthreshold} {
-		set totalspeed [string range [expr $totalspeed / 1024] 0 [expr [string first [expr $totalspeed / 1024] "."] + 3]]
-		append totalspeed "MB/s"
-	    } else { append totalspeed "KB/s" }
-	    if {$up > $speedthreshold} {
-		set up [string range [expr $up / 1024] 0 [expr [string first [expr $up / 1024] "."] + 3]]
-		append up "MB/s" 
-	    } else { append up "KB/s" }
-	    if {$dn > $speedthreshold} {
-		set dn [string range [expr $dn / 1024] 0 [expr [string first [expr $dn / 1024] "."] + 3]]
-		append dn "MB/s"
-	    } else { append dn "KB/s" }
+
+		foreach {uptype dntype totaltype} {"KB/s" "KB/s" "KB/s"} {}
+
+		if {$totalspeed > $speedthreshold} {
+			set totalspeed [format "%.1f" [expr $totalspeed / 1024]]
+			set totaltype "MB/s"
+		}
+		if {$up > $speedthreshold} {
+			set up [format "%.1f" [expr $up / 1024]]
+			set uptype "MB/s"
+		}
+		if {$dn > $speedthreshold} {
+			set dn [format "%.1f" [expr $dn / 1024]]
+			set dntype "MB/s"
+		}
+
+	} else {
+
+		set uptype $speedmeasure
+		set dntype $speedmeasure
+		set totaltype $speedmeasure
+
 	}
-	
+
+	append dn $dntype
+	append up $uptype
+	append totalspeed $totaltype
+
 	set output [replacevar $output "%uploads" [lindex $raw 0]]
 	set output [replacevar $output "%upspeed" $up]
 	set output [replacevar $output "%downloads" [lindex $raw 2]]
