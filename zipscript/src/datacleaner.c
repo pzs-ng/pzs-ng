@@ -86,6 +86,7 @@ check_dir_loop(char *path, int zd_length)
 			}
 		}
 	}
+	closedir(dir1);
 }
 
 int 
