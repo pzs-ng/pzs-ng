@@ -198,6 +198,12 @@ int main () {
 		raceI.file.size = fileinfo.st_size;
 		raceI.total.start_time = 0;
 
+		/* Hide users in group_dirs */
+		if ( matchpath(group_dirs, locations.path ) && ( hide_group_uploaders == TRUE )) {
+			d_log("Hiding user in group-dir\n");
+			sprintf(raceI.user.name, raceI.user.group);
+		}
+
 		sprintf(exec, "%s-missing", raceI.file.name);
 		strtolower(exec);
 		unlink(exec);
