@@ -253,6 +253,7 @@ main(int argc, char **argv)
 {
 	char           *fileext, *name_p, *temp_p = 0;
 	char           *target = 0;
+	char	       *ext = 0;
 	char           *complete_msg = 0;
 	char           *update_msg = 0;
 	char           *race_msg = 0;
@@ -360,14 +361,14 @@ main(int argc, char **argv)
 			d_log("Can't allocate memory for sections\n");
 		} else {
 			n = 0;
-			while (temp_p)
+			while (temp_p) {
 				if (strcmp(strsep(&temp_p, " "), getenv("SECTION")) == 0) {
 					raceI.section = (unsigned char)n;
 					break;
 				} else
 					n++;
+			}
 		}
-
 	}
 	raceI.file.speed *= 1024;
 
@@ -610,6 +611,25 @@ main(int argc, char **argv)
 				d_log("Found invalid entries in SFV - Logging as bad.\n");
 				exit_value = 2;
 				sprintf(raceI.misc.error_msg, EMPTY_SFV);
+				unlink(locations.race);
+				unlink(locations.sfv);
+
+				rescandir();
+				n = direntries;
+				while (n--) {
+					cnt = cnt2 = strlen(dirlist[n]->d_name);
+					ext = dirlist[n]->d_name;
+					while (ext[cnt] != '-' && cnt > 0)
+						cnt--;
+					if (ext[cnt] != '-')
+						cnt = cnt2;
+					else
+						cnt++;
+					ext += cnt;
+					if (!strncmp(ext, "missing", 7))
+						unlink(dirlist[n]->d_name);
+				}
+
 				break;
 			}
 

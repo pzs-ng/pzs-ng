@@ -203,6 +203,23 @@ main()
 		stat(raceI.file.name, &fileinfo);
 		if (copysfv_file(raceI.file.name, locations.sfv, fileinfo.st_size)) {
 			printf("Found invalid entries in SFV - Exiting.\n");
+
+			rescandir();
+			n = direntries;
+			while (n--) {
+				m = l = strlen(dirlist[n]->d_name);
+				ext = dirlist[n]->d_name;
+				while (ext[m] != '-' && m > 0)
+					m--;
+				if (ext[m] != '-')
+					m = l;
+				else
+					m++;
+				ext += m;
+				if (!strncmp(ext, "missing", 7))
+					unlink(dirlist[n]->d_name);
+			}
+
 			d_log("Freeing memory, and exiting\n");
 			unlink(locations.sfv);
 			unlink(locations.race);

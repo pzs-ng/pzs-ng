@@ -324,9 +324,9 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
 			*newline = crclen = 0;
 			for (crc = newline - 1; isxdigit(*crc) == 0 && crc > line; crc--)
 				*crc = 0;
-			for (; *crc != ' ' && crc > line; crc--)
+			for (; *crc != ' ' && *crc != '\t' && crc > line; crc--)
 				crclen++;
-			if (*crc == ' ' && crc > line && crclen == 8) {
+			if ((*crc == ' ' || *crc == '\t') && crc > line && crclen == 8) {
 				for (fext = crc; *fext != '.' && fext > line; fext--);
 				if (*fext == '.')
 					fext++;
@@ -351,7 +351,7 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
 						d_log("ERROR: NULL encountered in filename (%s)\n", line);
 						if (strict_sfv_check == TRUE) {
 							sfv_failed = 1;
-						d_log("       Strict mode on - logging rest of sfv as bad.\n");
+						d_log("       Strict mode on - logging sfv as bad.\n");
 #if (sfv_cleanup == TRUE)
 							sfv_error = TRUE;
 #endif
@@ -393,13 +393,13 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
 			} else {
 				crc = line;
 				while (*crc) {
-					if (*crc == ' ' || *crc == '\n' || *crc == '\r') {
+					if (*crc == ' ' || *crc == '\n' || *crc == '\r' || *crc == '\t') {
 						crc++;
 					} else {
 						d_log("ERROR: Found an entry in SFV without checksum (%s).\n", line);
 						if (strict_sfv_check == TRUE) {
 							sfv_failed = 1;
-							d_log("       Strict mode on - logging rest of sfv as bad.\n");
+							d_log("       Strict mode on - logging sfv as bad.\n");
 #if (sfv_cleanup == TRUE)
 							sfv_error = TRUE;
 #endif
