@@ -11,6 +11,7 @@
 #include "macros.h"
 #include "convert.h"
 #include "zsfunctions.h"
+#include "race-file.h"
 
 #ifdef _SunOS_
 #include "scandir.h"
@@ -299,6 +300,12 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 		}
 		
 		if (S_ISDIR(fileinfo.st_mode) == 0) {
+
+			if (!update_lock(raceI, 1, 0)) {
+				d_log("get_stats: Lock is suggested removed. Will comply and exit\n");
+				remove_lock(raceI);
+				exit(EXIT_FAILURE);
+			}
 
 			user = realloc(user, sizeof(struct userdata)*(n+1));
 			bzero(&user[n], (sizeof(struct userdata)));
