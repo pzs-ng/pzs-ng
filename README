@@ -182,8 +182,8 @@ here's what to do:
 
            cp ./zipscript/bin/* /path/to/your/glftpd/bin/
            chmod +666 /path/to/your/glftpd/ftp-data/logs/glftpd.log
-           mkdir /path/to/your/glftpd/ftp-data/zipscript
-           chmod 777 /path/to/your/glftpd/ftp-data/zipscript
+           mkdir /path/to/your/glftpd/tmp/zipscript
+           chmod 777 /path/to/your/glftpd/tmp/zipscript
 (optional) chmod +s /path/to/your/glftpd/bin/zipscript-c
 (optional) chmod 666 /path/to/your/glftpd/ftp-data/logs/dupelog (needed by the unduper)
 (optional) chmod 777 /path/to/your/glftpd/ftp-data/logs         (needed by the unduper)
@@ -239,7 +239,7 @@ Crontab:
 All that's left now is to tie up some loose ends, and installing the bot,
 of course. As for loose ends:
 
-You might have noticed that we added a dir in ftp-data called zipscript.
+You might have noticed that we added a dir in tmp called zipscript.
 This is the place we keep all racedata - a sort of mirror of the site if
 you like, without the actual files in them. Over time this can grow and
 become huge, taking up a great deal of space, even making your system
