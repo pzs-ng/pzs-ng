@@ -14,7 +14,8 @@
 
 /* These should be changed to match your glftpd installation.
  */
-#define site_root	"/glftpd/"
+/* site_root is obsolete */
+/*#define site_root	"/glftpd/"*/
 #define log		"/ftp-data/logs/glftpd.log"
 #define storage		"/ftp-data/zipscript/"
 #define gl_userfiles	"/ftp-data/users/"

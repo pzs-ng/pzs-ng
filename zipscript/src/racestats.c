@@ -62,8 +62,8 @@ void getrelname(char *directory) {
   raceI.misc.release_name    = malloc(l + 12);
   sprintf(raceI.misc.release_name, "%s", directoryarray[1]);
  }
- free(directoryarray[0]);
- free(directoryarray[1]);
+ if (k < 2) free(directoryarray[1]);
+ if (k == 0) free(directoryarray[0]);
 }
 
 
@@ -78,7 +78,7 @@ int main( int argc, char **argv ) {
     exit(0);
    }
   
-   locations.path = malloc( n = strlen(argv[1]) + strlen(site_root) + 1 ); 
+   locations.path = malloc( n = strlen(argv[1]) + 1 ); 
    locations.race = malloc( n += 10 + strlen(storage) );
    locations.sfv  = malloc( n + 10 );
 
@@ -93,12 +93,10 @@ int main( int argc, char **argv ) {
    raceI.total.size =
    raceI.total.users =
    raceI.total.groups = 0;
-/* raceI.user.name = "";
-   raceI.file.name = "";*/
+   raceI.file.name = ".";
 
 
-   strcpy(locations.path, site_root);
-   strcat(locations.path, argv[1]);
+   strcpy(locations.path, argv[1]);
 
    n = strlen(locations.path);
    if ( locations.path[n] == '/' ) {
@@ -110,11 +108,11 @@ int main( int argc, char **argv ) {
 
    getrelname(locations.path);
 
-   sprintf(locations.race, site_root storage "/%s/racedata", argv[1]);
+   sprintf(locations.race, storage "/%s/racedata", argv[1]);
    if ( ! fileexists(locations.race) ) goto END;
 
    readrace_file(&locations, &raceI, userI, groupI);
-   sprintf(locations.sfv, site_root storage "/%s/sfvdata", argv[1]);
+   sprintf(locations.sfv, storage "/%s/sfvdata", argv[1]);
 
    if ( ! fileexists(locations.sfv) ) {
     if ( fileexists(locations.sfv) ) {

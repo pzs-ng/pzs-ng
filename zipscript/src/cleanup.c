@@ -273,7 +273,7 @@ int main(void) {
  tnow = time( NULL );
  timenow = localtime( &tnow ); 
 
- chroot(site_root);
+/* chroot(site_root);*/
  #if ( audio_genre_sort == TRUE )
  scandirectory((char *)audio_genre_path);
  #endif
