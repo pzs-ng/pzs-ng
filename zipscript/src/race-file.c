@@ -149,7 +149,7 @@ sfvdata_to_sfv(const char *source, const char *dest)
 		return;
 	}
 
-	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
+	while (fread(&sd, sizeof(SFVDATA), 1, insfv)) {
 		
 		sprintf(crctmp, "%.8x", sd.crc32);
 		
@@ -157,9 +157,9 @@ sfvdata_to_sfv(const char *source, const char *dest)
 		fwrite(" ", 1, 1, outsfv);
 		fwrite(&crctmp, 8, 1, outsfv),
 #if (sfv_cleanup_crlf == TRUE )
-		fwrite("\r", 1, 1, tmpsfv);
+		fwrite("\r", 1, 1, outsfv);
 #endif
-		fwrite("\n", 1, 1, tmpsfv);
+		fwrite("\n", 1, 1, outsfv);
 		
 	}
 	
