@@ -25,8 +25,10 @@ status  who       what
  [ ]               add anonymity support - chown files/dirs as they are uploaded to a "special" user (will only
                    work if zs-c is +s)
  [ ]     freezy3k  fix solaris compatability.
- [ ]               fig bug(?) in Sort.By.Artist (not confirmed - Joeed reported this from r140 - fails to compile)
+ [ ]               fix bug(?) in Sort.By.Artist (not confirmed - Joeed reported this from r140 - fails to compile)
  [ ]               ignore setting in allowed.bitrates if mp3 is vbr
+ [ ]               fix the %U cookie in message_group_footer (should be "user/group", not "user")
+ [ ]               compare the list of files stored in .rar to what's in the .sfv --> channel message if they differ.
 
 
 status   description
