@@ -1,5 +1,6 @@
 #include <sys/time.h>
 #include "constants.h"
+#include "../config/zsconfig.h"
 
 struct USERINFO {
  char				name[24];	/* Username */
