@@ -41,6 +41,7 @@ set binary(WHO)             "$glroot/bin/sitewho"
 set binary(CURL)            "/usr/local/bin/curl"
 set binary(DF)              "/bin/df"
 set binary(PING)            "/bin/ping"
+set binary(UPTIME)          "/usr/bin/uptime"
 
 # Important Settings #
 ######################

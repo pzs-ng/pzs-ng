@@ -197,6 +197,7 @@ announce.SPEEDERROR				= "[%b{bwinfo}] Nope, try again. Found noone by that name
 announce.WELCOME				= "Welcome to %b{%sitename}'s sitechan. Type %cmdprehelp for help."
 announce.FREE					= "[%b{space }] %devices[Totals: %b{%free} of %b{%total} (used %percentage%)]."
 announce.FREE-DEV				= "%section: %b{%free} of %b{%total} (used %percentage%) :: "
+announce.UPTIME                 = "[%b{uptime}] System: %system, %b{%users} user(s), %time, load: %load Eggdrop: %eggdrop"
 
 # 3rd party imdb announce - example for psxc-imdb
 announce.IMDBVAR				= "[%b{imdb  }][%section] %b{%imdbname} (%imdburl), a %imdbdirector movie which scored %b{%imdbscore of 10} (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.|%b{%sitename} :: [%b{imdb  }][%section] %b{%imdbname} plot summary: %imdbplot \[%imdbbar\]"

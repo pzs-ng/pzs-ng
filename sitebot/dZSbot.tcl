@@ -161,6 +161,7 @@ proc bindcommands {cmdpre} {
 	bind pub -|- [set cmdpre]unnukes     ng_unnukes
 	bind pub -|- [set cmdpre]up          ng_uploaders
 	bind pub -|- [set cmdpre]uploaders   ng_uploaders
+	bind pub -|- [set cmdpre]uptime      ng_uptime
 	bind pub -|- [set cmdpre]who         who
 
 	bind pub -|- [set cmdpre]gpad    [list showstats "-d" "-A"]
@@ -205,6 +206,7 @@ if {[istrue $bindnopre]} {
 	catch {unbind pub -|- !unnukes     ng_unnukes}
 	catch {unbind pub -|- !up          ng_uploaders}
 	catch {unbind pub -|- !uploaders   ng_uploaders}
+	catch {unbind pub -|- !uptime      ng_uptime}
 	catch {unbind pub -|- !who         who}
 
 	catch {unbind pub -|- !gpad    [list showstats "-d" "-A"]}
@@ -812,6 +814,33 @@ proc format_speed {value section} {
 }
 
 #################################################################################
+# Display Box Uptime                                                            #
+#################################################################################
+proc ng_uptime {nick uhost hand chan argv} {
+    global announce binary theme uptime
+
+    set eggup [format_duration [expr {[clock seconds] - $uptime}]]
+    set load "N/A"; set sysup "N/A"; set time "N/A"; set users "N/A"
+
+    if {[catch {exec $binary(UPTIME)} reply]} {
+        putlog "dZSbot error: Unable to execute uptime ($reply)."
+    } elseif {[regexp {.+ up (.+), (.+), (.+) users?, load averages: (.+)} $reply reply sysup time users load]} {
+        set sysup [format_duration [clock scan $sysup -base 0]]
+    } else {
+        putlog "dZSbot error: Unable to parse uptime reply \"$reply\", please report to pzs-ng developers."
+    }
+
+    set output "$theme(PREFIX)$announce(UPTIME)"
+	set output [replacevar $output "%eggdrop" $eggup]
+	set output [replacevar $output "%system" $sysup]
+	set output [replacevar $output "%time" $time]
+	set output [replacevar $output "%users" $users]
+	set output [replacevar $output "%load" $load]
+	sndone $chan [basicreplace $output "UPTIME"]
+    return
+}
+
+#################################################################################
 # Display the latest releases.                                                  #
 #################################################################################
 proc ng_new {nick uhost hand chan argv} {
@@ -875,6 +904,7 @@ proc ng_new {nick uhost hand chan argv} {
 		set output "$theme(PREFIX)$announce(NEW_NONE)"
 		sndone $nick [basicreplace $output "NEW"]
 	}
+	return
 }
 
 #################################################################################
@@ -934,6 +964,7 @@ proc ng_search {nick uhost hand chan argv} {
 		set output "$theme(PREFIX)$announce(SEARCH_NONE)"
 		sndone $nick [basicreplace $output "SEARCH"]
 	}
+	return
 }
 
 #################################################################################
@@ -988,6 +1019,7 @@ proc ng_nukes {nick uhost hand chan argv} {
 		set output "$theme(PREFIX)$announce(NUKES_NONE)"
 		sndone $nick [basicreplace $output "NUKES"]
 	}
+	return
 }
 
 #################################################################################
@@ -1043,6 +1075,7 @@ proc ng_unnukes {nick uhost hand chan argv} {
 		set output "$theme(PREFIX)$announce(UNNUKES_NONE)"
 		sndone $nick [basicreplace $output "UNNUKES"]
 	}
+	return
 }
 
 #################################################################################
@@ -1094,7 +1127,7 @@ proc who {nick uhost hand chan argv} {
 #################################################################################
 # POST SPEED                                                                    #
 #################################################################################
-proc speed {nick uhost hand chan argv} {
+proc ng_speed {nick uhost hand chan argv} {
 	global binary announce theme disable
 	checkchan $nick $chan
 
@@ -1135,6 +1168,7 @@ proc speed {nick uhost hand chan argv} {
 		set output [replacevar $output "%msg" "User not online."]
 		sndone $chan [basicreplace $output "SPEED"]
 	}
+	return
 }
 
 #################################################################################
@@ -1210,6 +1244,7 @@ proc ng_uploaders {nick uhost hand chan argv} {
 	set output [replacevar $output "%total" [format_speed $total "none"]]
 	set output [replacevar $output "%per" $per]
 	sndone $chan [basicreplace $output "UPLOAD"]
+	return
 }
 
 #################################################################################
@@ -1240,6 +1275,7 @@ proc ng_bwdn {nick uhost hand chan argv} {
 	set output [replacevar $output "%dnpercent" $dnper]
 	set output [replacevar $output "%totalpercent" $totalper]
 	sndone $chan [basicreplace $output "BW"]
+	return
 }
 
 #################################################################################
@@ -1285,6 +1321,7 @@ proc ng_leechers {nick uhost hand chan argv} {
 	set output [replacevar $output "%total" [format_speed $total "none"]]
 	set output [replacevar $output "%per" $per]
 	sndone $chan [basicreplace $output "LEECH"]
+	return
 }
 
 #################################################################################
@@ -1321,6 +1358,7 @@ proc ng_idlers {nick uhost hand chan argv} {
 	}
 	set output [replacevar "$theme(PREFIX)$announce(TOTIDLE)" "%count" $count]
 	sndone $chan [basicreplace $output "IDLE"]
+	return
 }
 
 #################################################################################
@@ -1355,6 +1393,7 @@ proc ng_bandwidth {nick uhost hand chan argv} {
 	set output [replacevar $output "%dnpercent" $dnper]
 	set output [replacevar $output "%totalpercent" $totalper]
 	sndone $chan [basicreplace $output "BW"]
+	return
 }
 
 #################################################################################
@@ -1389,6 +1428,7 @@ proc showstats {type time nick uhost hand chan argv} {
 		puthelp "PRIVMSG $nick :$line\003$newline($line)"
 	}
 	puthelp "PRIVMSG $nick :------------------------------------------------------------------------"
+	return
 }
 
 #################################################################################
@@ -1427,6 +1467,7 @@ proc invite {nick host hand arg} {
 			sndall "MSGINVITE" "DEFAULT" $output
 		}
 	}
+	return
 }
 
 #################################################################################
@@ -1491,6 +1532,7 @@ proc show_free {nick uhost hand chan arg} {
 		sndone $chan [basicreplace $output "FREE"]
 		incr o
 	}
+	return
 }
 
 #################################################################################
@@ -1618,6 +1660,7 @@ proc show_incompletes {nick uhost hand chan arg } {
 		} else { set newline($line) [expr $newline($line) + 1] }
 		puthelp "PRIVMSG $nick :$line\003$newline($line)"
 	}
+	return
 }
 
 #################################################################################
@@ -1635,6 +1678,7 @@ proc welcome_msg {nick uhost hand chan } {
 			puthelp "NOTICE $nick :$output"
 		}
 	}
+	return
 }
 
 #################################################################################
@@ -1714,6 +1758,7 @@ proc ng_bnc_check {nick uhost hand chan arg} {
 		set output [replacevar $output "%port" $port]
 		sndone $nick [basicreplace $output "BNC"]
 	}
+	return
 }
 
 #################################################################################
@@ -1738,6 +1783,7 @@ proc help {nick uhost hand chan arg} {
 		puthelp "PRIVMSG $nick :$line"
 	}
 	puthelp "PRIVMSG $nick :Valid sections are: [join [lsort -ascii $sections] {, }]"
+	return
 }
 
 #################################################################################

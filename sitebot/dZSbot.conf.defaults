@@ -39,6 +39,7 @@ set binary(CURL)        "/usr/local/bin/curl"
 set binary(DF)          "/bin/df"
 set binary(PING)        "/bin/ping"
 #set binary(PING)       "/sbin/ping" ;# FreeBSD
+set binary(UPTIME)      "/usr/bin/uptime"
 
 # This is needed for autodetection of glversion. If you unset this, use_glftpd2
 # MUST be set to TRUE or FALSE.

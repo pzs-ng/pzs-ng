@@ -155,8 +155,8 @@ announce.LEECH			= "%b{%c5{-BANDWIDTH-}} %b{OBSTICLE}:"
 announce.UPLOAD			= "%b{%c5{-BANDWIDTH-}} %b{RACERS}:"
 announce.IDLE			= "%b{%c5{-BANDWIDTH-}} %b{PEOPLE IN THE STANDS}:"
 announce.BW		        = "%b{%c5{-BANDWIDTH-}} %b{%uploads} racers on the track going at %upspeedmph with %b{%downloads} litres of oil on the track, slowing the racers down by %dnspeedmph per lap. %b{%transfers} total racers on the circuit going at a combined speed of %totalspeedmph.  %b{%active} total pitmen and %b{%idlers} spectators. %b{%totallogins} people at todays raceday!"
-announce.BWUP		        = "%b{%c5{-BANDWIDTH-}} %b{%upload}s racers going at a combined speed of %upspeedmph"
-announce.BWDN		        = "%b{%c5{-BANDWIDTH-}} %b{%downloads} litres of oil on the track, slowing the racers down by %dnspeedmph"
+announce.BWUP		    = "%b{%c5{-BANDWIDTH-}} %b{%upload}s racers going at a combined speed of %upspeedmph"
+announce.BWDN		    = "%b{%c5{-BANDWIDTH-}} %b{%downloads} litres of oil on the track, slowing the racers down by %dnspeedmph"
 announce.TOTUPDN		= "%b{%c5{-BANDWIDTH-}} %b{%type %count} at %b{%total}mph %b{(%per}%%b{)}."
 announce.TOTIDLE		= "%b{%c5{-BANDWIDTH-}} there are  %b%count%b people spectating."
 announce.USERIDLE		= "%b{%c5{-BANDWIDTH-}} spectator %b{%user} has been watching the race for %idletime."
@@ -166,9 +166,9 @@ announce.SPEEDDN		= "%b{%c5{-BANDWIDTH-}} %u_name%b{@}%b{%g_name}%b is downloadi
 announce.SPEEDID		= "%b{%c5{-BANDWIDTH-}} %u_name%b{@}%b{%g_name}%b has been idle for %idletime."
 announce.SPEEDERROR		= "%b{%c5{-BANDWIDTH-}} Nope, try again. Found noone by that name on site."
 announce.WELCOME		= "Welcome to %b{%sitename}'s sitechan. Type %cmdprehelp for help."
-announce.FREE		        = "%b{%c2{%section}} %devices"
-announce.FREE-DEV	        = "%b{%c3{%section}} - %b{%free} of %b{%total} (used %percentage%) "
-
+announce.FREE		    = "%b{%c2{%section}} %devices"
+announce.FREE-DEV	    = "%b{%c3{%section}} - %b{%free} of %b{%total} (used %percentage%) "
+announce.UPTIME         = "%b{%c5{-UPTIME-}} System: %system, %b{%users} user(s), %time, load: %load Eggdrop: %eggdrop"
 
 # 3rd party imdb announce - example for psxc-imdb
 announce.IMDBVAR		= "%b{%c6{-IMDB-}} %b{%c3{-%section-}} - %b{%imdbname} %b{(%imdburl)}, a %b{%imdbdirector} movie which scored %b{%imdbscore} of %b{10} %b{(%imdbvotes people voted%b{)}. It premiered in %b{%imdbpremiereinfo}, with %b{%imdbnumscreens} screens on the opening weekend.|%b{%c4{-IMDB-}} [%b{%c2{IMDB}] [%b{%c3{%section}] %b{%imdbname} plot summary: {%imdbplot %imdbbar}"
