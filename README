@@ -43,6 +43,8 @@ freezy3k (C specialist)
 iono (Tcl guru)
 themolester (Tcl guru)
 avizion (Tcl guru, webmaster)
+juanker (Tcl guru)
+dakrer (Tcl guru)
 
 
 You can find us in #pzs-ng on EFnet for support and/or bug reporting.
@@ -62,8 +64,8 @@ PZS-NG should compile fine on the following platforms:
 64-bit processors - this is still a bit shady. We do try to make it run
 on AMD64 for instance, but have limited ability to test on this platform,
 since none of the devs currently owns one. Feel free to contact us if
-you feel the need to share your box with us.
-As of beta3, it should run on AMD64, but it should be compiled in 32bit
+you have a box to share with us.
+As of beta3, pzs-ng should run on AMD64, but makesure it's compiled in 32bit
 mode - ie, you need 32bit libs.
 
 Only the i386 platform is tested, so if you try it on anything else, don't
@@ -126,15 +128,15 @@ a high fun-factor :)
 
 Setting it up:
 --------------
-PZS-NG is made in C and open source. This means that what you downloaded is
-sourcecode which is compiled into binaries ("programs") you execute. In other 
+PZS-NG is made in C and is open source. This means that what you downloaded is
+sourcecode, which is compiled into binaries ("programs") you execute. In other 
 words, it's not a script where you can edit the config and test immediately 
 after - you have to compile the zipscript and copy the binaries every time
 you change the config. I'll say again - edit config, recompile, and copy bins.
 
 How we compile and copy will be described later on.
 
-The old project-zs used cookies to format the output put into glftpd.log.
+The old project-zs used cookies to format the output found in glftpd.log.
 PZS-NG uses the same basic layout, but instead of formatting the output in
 the zipscript's config-file, it now relies on the bot formatting the output.
 Thus, it passes on some predefined cookies into glftpd.log, which the bot
@@ -144,11 +146,13 @@ should no longer be any need to recompile the zipscript if you decide to
 change the layout.
 
 People familiar with the old zipscript-c will remember zsconfig.h. This is
-slightly changed - it now does not hold all options, but only the most common
-options used. The full list of options is stored in zsconfig.defaults.h. Do
-take time to read this file and the comments included. If you need to change
-some of these options, you should copy the define(s) from this file and into
-your zsconfig.h - your settings will override whatever is in the defaults.
+slightly changed - it isn't full of options anymore, just overrides from the
+defaults. What config options you can use, and what defaults there are is
+described in README.ZSCONFIG. Spend time on the readme - read it - as there
+is a lot of options which can tune how the zipscript works.
+If you need to change some of these options, you should copy the define(s)
+found in the README into your zsconfig.h - your settings will override
+whatever is in the defaults.
 
 zsconfig.h is the heart of the script. I cannot stress this enough - if you
 do something bad here, chances are the entire script stops working as it
@@ -249,8 +253,8 @@ Add the following line:
 calc_crc	*
 
 This will calculate the crc of all files uploaded on your site, on the fly.
-You may skip to add this line in glftpd.conf, and the zipscript will calculate
-it instead. This is, however, slower than if glftpd does it on the fly.
+If you do not add this line in glftpd.conf, the zipscript will calculate it
+instead. This is, however, slower than if glftpd does it on the fly.
 Some will probably react on why we calc crc on everything. Simply put - todays
 computers and the current version of glftpd does this *real* quick w/o slowing
 down the computer much, as it's done while the upload occur. Also, almost
@@ -262,9 +266,9 @@ Next, add:
 
 post_check	/bin/zipscript-c *
 
-This will invoke the zipscript after a file is uploaded. For more info
-on the post_check line, refer to glftpd.docs. Forget to add this, and
-the zipscript will not run, and no files are checked.
+This will invoke the zipscript after a file is uploaded. For more info on the
+post_check line, refer to glftpd.docs. Forget to add this, and the zipscript
+will not run, and no files are checked.
 
 You should also add the following lines:
 
@@ -285,14 +289,14 @@ custom-rescan	!8	*
 
 The first two will remove dead symlinks. The last two will allow you to
 rescan a dir. This comes in handy in places the zipscript isn't invoked
-by default, when you have dirs you wish to check from before you added
+by default, when you have dirs you wish to check filled before you added
 the zipscript, and a lot of other occations.
 Forget to add this and you will hit yourself hard quite a few times. ;)
 
 
 Crontab:
 --------
-All that's left now is to tie up some loose ends, and installing the bot,
+All that's left now is to tie up some loose ends - and installing the bot,
 of course. As for loose ends:
 
 chmod 666 /path/to/your/glftpd/ftp-data/logs/dupelog
@@ -386,3 +390,4 @@ your channel. It is expected that you already have installed an eggdrop,
 that it's working and have found its way into your channel.
 
 For details on the sitebot please read the file "sitebot/README".
+

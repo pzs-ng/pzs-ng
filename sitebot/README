@@ -20,7 +20,7 @@
  2-4 Customizing
  2-5 Submit your theme?
 
- 3. Ressources
+ 3. Resources
  
  3-1 Links
 
@@ -30,11 +30,9 @@
  1-1 Configuration
 --------------------------------------------------------------------------------
  Copy necessary files to your bot's script dir:
-   cp dZSbot.tcl /path/to/egg/scripts/
-   cp dZSbot.help /path/to/egg/scripts/
-   cp dZSbconf.tcl.dist /path/to/egg/scripts/dZSbconf.tcl
-   cp dZSbvars.tcl.dist /path/to/egg/scripts/dZSbvars.tcl
-   cp *.zst /path/to/egg/scripts/
+   mkdir /path/to/egg/scripts/pzs-ng
+   cp dZSb* /path/to/egg/scripts/pzs-ng/
+   cp themes/*.zst /path/to/egg/scripts/pzs-ng/
 
  Edit dZSbconf.tcl to match your setup, and enter the name of a theme (.zst)
  you wish to use.
@@ -43,11 +41,10 @@
 --------------------------------------------------------------------------------
  1-2 Compiling
 --------------------------------------------------------------------------------
- Directory "src" contains ng-bw and passchk. These are compiled from root
- makefile. Anyhow - you can always compile these seperately by issuing
+ Directory "src" contains ng-bw(not used) and passchk. These are compiled from
+ root makefile. Anyhow - you can always compile these seperately by issuing
  "make" and "make install" inside this dir.
  
- ng-bw:   Used for !bw !bwup !bwdn
  passchk: Used for !invite to validate passwd (requires openssl header files)
  
  Directory "extra" contains helper scripts for use with the sitebot.
@@ -73,16 +70,12 @@
 
  Load the sitebot like any other script. Add this to eggdrop.conf:
  
- source scripts/dZSbot.tcl (or any other path you choose)
+ source scripts/pzs-ng/dZSbot.tcl
 
  (Re)start your eggdrop!
  
- In details:
-
- For first install you need to copy dZSbconf.tcl.dist to dZSbconf.tcl and
- make sure to include dZSbot.help for !help to work.
- 
- To upgrade later - you only need to copy dZSbot.tcl and maybe dZSbot.help.
+ Upgrading:
+ To upgrade, you should only need to copy dZSbot.tcl, dZSbvars.tcl, dZSbot.help.
  Always check the changelog to be sure you have all possible settings reflected
  in your installed dZSbconf.tcl.
 
@@ -91,11 +84,6 @@
  that you simply make a copy of the bundled themes if you want to change
  anything. Read more about themes in the chapter "Themes" in this file.
  
- When installing the sitebot for the first time it will look for default.zst.
- You need to copy this yourself "cp default.zst.dist default.zst".
- If the sitebot cannot find the default.zst file it will try to load
- default.zst.dist and fail to work if it's missing :)
-
 
 --------------------------------------------------------------------------------
  2. Themes
@@ -114,17 +102,11 @@
 --------------------------------------------------------------------------------
  When writing this - we only have 2 working themes bundled:
 
- default.zst.dist: Previously known as avizion.zst which was made to test the
-                   new way of using themes and to show "all" possible outputs.
-                   Use this as a reference when making your own themes.
+ default.zst:	Previously known as avizion.zst which was made to test the
+		new way of using themes and to show "all" possible outputs.
+		Use this as a reference when making your own themes.
 
- psxc.zst:         psxc thought he needed more colours - so he made his own
-                   theme based on default.zst.dist (avizion.zst at that time).
-
- classic.zst.dist: This theme is currently outdated but still included for
-                   nostalgic reasons. We may update this to work with the new
-                   dZSbot - but more on that later.
-
+ vampire.zst:	juanker's colorful theme.
 
 --------------------------------------------------------------------------------
  2-3 Special settings in the theme
@@ -140,7 +122,7 @@ with the corresponding _LOOP# variable.
  2-4 Customizing
 --------------------------------------------------------------------------------
  Feel free to edit and customize any of the bundled themes, but it is advised
- for you to make a copy first. Maybe do "cp default.zst.dist mytheme.zst" before
+ for you to make a copy first. Maybe do "cp default.zst mytheme.zst" before
  raping the theme to suit your needs.
 
  Using colours is fairly simple in dZSbot now. Simply define a new colour like:

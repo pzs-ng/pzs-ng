@@ -9,7 +9,18 @@ hassle, since new settings in the config is no longer a concern - they will
 be used with default settings.
 
 Here follow a summary of all settings. I hope this will provide some idea on
-what the different things does.
+what the different things does. The format is as follow:
+
+<define> <option(s)>
+	Description
+	Default: <value>
+
+To add a define, for instance sitepath_dir, put the following in you zsconfig.h
+
+#define sitepath_dir	"/mysite/"
+
+ie, add '#define" in front, and the option(s) behind.
+
 
 -------------------------------------------------------------------------------
 
@@ -473,70 +484,70 @@ zip_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
 	etc. on separate lines.
-	NON-CONFIGURABLE - DO NOT INCLUDE THIS INTO YOUR CONFIG
+	THIS OPTION IS DEPRICATED - The bot will format this in channel.
 	Default: 0
 
 zip_norace_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
 	etc. on separate lines.
-	NON-CONFIGURABLE - DO NOT INCLUDE THIS INTO YOUR CONFIG
+	THIS OPTION IS DEPRICATED - The bot will format this in channel.
 	Default: 0
 
 rar_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
 	etc. on separate lines.
-	NON-CONFIGURABLE - DO NOT INCLUDE THIS INTO YOUR CONFIG
+	THIS OPTION IS DEPRICATED - The bot will format this in channel.
 	Default: 0
 
 rar_norace_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
 	etc. on separate lines.
-	NON-CONFIGURABLE - DO NOT INCLUDE THIS INTO YOUR CONFIG
+	THIS OPTION IS DEPRICATED - The bot will format this in channel.
 	Default: 0
 
 audio_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
 	etc. on separate lines.
-	NON-CONFIGURABLE - DO NOT INCLUDE THIS INTO YOUR CONFIG
+	THIS OPTION IS DEPRICATED - The bot will format this in channel.
 	Default: 0
 
 audio_norace_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
 	etc. on separate lines.
-	NON-CONFIGURABLE - DO NOT INCLUDE THIS INTO YOUR CONFIG
+	THIS OPTION IS DEPRICATED - The bot will format this in channel.
 	Default: 0
 
 video_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
 	etc. on separate lines.
-	NON-CONFIGURABLE - DO NOT INCLUDE THIS INTO YOUR CONFIG
+	THIS OPTION IS DEPRICATED - The bot will format this in channel.
 	Default: 0
 
 video_norace_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
 	etc. on separate lines.
-	NON-CONFIGURABLE - DO NOT INCLUDE THIS INTO YOUR CONFIG
+	THIS OPTION IS DEPRICATED - The bot will format this in channel.
 	Default: 0
 
 other_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
 	etc. on separate lines.
-	NON-CONFIGURABLE - DO NOT INCLUDE THIS INTO YOUR CONFIG
+	THIS OPTION IS DEPRICATED - The bot will format this in channel.
 	Default: 0
 
 other_norace_complete_type <0|1>
 	This defines how stats are written into the log. '0' will write a
 	complete message only. '1' will write full stats of racers, groups
 	etc. on separate lines.
-	NON-CONFIGURABLE - DO NOT INCLUDE THIS INTO YOUR CONFIG
+	THIS OPTION IS DEPRICATED - The bot will format this in channel.
 	Default: 0
 
 get_competitor_list <TRUE|FALSE>
@@ -1044,28 +1055,21 @@ disable_other_norace_complete <TRUE|FALSE>
 racersmsg <STRING>
 	This is a cookie formatted string containing info of the racers. This
 	string will be used for each racer in a race.
-	This option is depricated - only edit if you know what you're doing.
+	THIS OPTION IS DEPRICATED - only edit if you know what you're doing.
 	Formatting of the racers are usually done by the bot.
 	Default: "{%u} {%g}"
 
 racersplit <STRING>
 	This is used to split racers in a race announce.
-	This option is depricated - only edit if you know what you're doing.
+	THIS OPTION IS DEPRICATED - only edit if you know what you're doing.
 	Splitting of the racers are usually done by the bot.
 	Default: ""
 
 racersplit_prior <STRING>
 	Used before any racers when listing the racers.
-	This option is depricated - only edit if you know what you're doing.
+	THIS OPTION IS DEPRICATED - only edit if you know what you're doing.
 	Splitting of the racers are usually done by the bot.
 	Default: ""
-
-KEY <IPCKEY>
-	You can define glftpd's ipckey with this argument. This is only used
-	in ng-bw, since the rest of the bins either does not access the shared
-	memory of glftpd, or uses a separate config for it (like sitewho).
-	Please note that the IPCKEY is a number - so no "" around it!
-	Default: 0x0000DEAD
 
 --END
 
