@@ -91,10 +91,7 @@ void getrelname(char *directory) {
 	raceI.misc.release_name = malloc( l[1] + 10 );
 	sprintf(raceI.misc.release_name, "%s", path[1]);
 	locations.incomplete = c_incomplete(incomplete_indicator, path);
-	if (show_missing_nfo) {
-		locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
-		create_incomplete_nfo();
-	}
+	locations.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path);
 	if (k == 0) free(path[0]);
     }
 }
@@ -315,16 +312,33 @@ int main( int argc, char **argv ) {
 	if ( fileexists(locations.sfv)) {
 	    delete_sfv_file(&locations);
 	}
-	unlink(locations.incomplete);
-	unlink(locations.nfo_incomplete);
-	unlink("file_id.diz");
-	unlink(locations.sfv);
-	unlink(locations.race);
-	unlink(locations.leader);
+	if ( fileexists(locations.nfo_incomplete)) {
+		unlink(locations.nfo_incomplete);
+	}
+	if ( fileexists(locations.incomplete)) {
+		unlink(locations.incomplete);
+	}
+	if ( fileexists("file_id.diz")) {
+		unlink("file_id.diz");
+	}
+	if ( fileexists(locations.sfv)) {
+		unlink(locations.sfv);
+	}
+	if ( fileexists(locations.race)) {
+		unlink(locations.race);
+	}
+	if ( fileexists(locations.leader)) {
+		unlink(locations.leader);
+	}
 	move_progress_bar(1, &raceI);
     }
 
     if ( incomplete == 1 && raceI.total.files > 0 ) {
+	if ((show_missing_nfo) && (!findfileext(".nfo"))) {
+	    create_incomplete_nfo();
+	} else if (locations.nfo_incomplete) {
+		unlink(locations.nfo_incomplete);
+	}
 	d_log("Creating incomplete indicator\n");
 	create_incomplete();
 	d_log("Moving progress bar\n");
@@ -341,5 +355,8 @@ int main( int argc, char **argv ) {
     free(locations.leader);
 
     d_log("Exit\n");
+    if ((empty_dir == 1) && (fileexists(".debug")) && (remove_dot_debug_on_delete == TRUE)) {
+	unlink(".debug");
+    }
     return 0;
 }
