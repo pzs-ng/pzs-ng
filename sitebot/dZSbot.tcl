@@ -228,7 +228,7 @@ proc readlog {} {
 	}
 
 	foreach {type event line} $lines {
-		putlog "DATA: type=$type event=\{$event\} line=\{$line\}"
+		#putlog "DATA: type=$type event=\{$event\} line=\{$line\}"
 
 		## Login and sysop log specific parsing.
 		if {$type == 1 && ![parselogin $line event line]} {
@@ -325,8 +325,7 @@ proc parsesysop {line eventvar datavar} {
 
 proc ng_format {event section line} {
 	global announce defaultsection disable glversion mpath random sitename theme theme_fakes variables
-
-	putlog "FORMAT: event=\{$event\} section=\{$section\} line=\{$line\}"
+	#putlog "FORMAT: event=\{$event\} section=\{$section\} line=\{$line\}"
 
 	if {[string equal $event "NUKE"] || [string equal $event "UNNUKE"]} {
 		if {$glversion == 1} {
@@ -730,7 +729,7 @@ proc ng_invite {nick host hand argv} {
 
 		if {$disable(MSGINVITE) != 1} {
 			set output [replacevar $output "%u_ircnick" $nick]
-			set output [replacevar $output "%u_name" $username]
+			set output [replacevar $output "%u_name" $user]
 			set output [replacevar $output "%u_host" $host]
 			set output [replacevar $output "%g_name" $group]
 			set output [themereplace [replacebasic $output "INVITE"] "none"]
