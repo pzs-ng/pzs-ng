@@ -5,10 +5,16 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <paths.h>
-#include <openssl/sha.h>
-#include <openssl/evp.h>
-#include <openssl/hmac.h>
+#include "structonline.h"
+
+#if use_glftpd2
+# include <paths.h>
+# include <openssl/sha.h>
+# include <openssl/evp.h>
+# include <openssl/hmac.h>
+#else
+ extern char *crypt(const char *key, const char *salt);
+#endif
 
 #ifndef  __USE_SVID
 struct passwd pwd;
@@ -55,8 +61,9 @@ struct passwd* fgetpwent(FILE *fp) {
 }
 #endif
 
-/* see http://lists.jammed.com/secprog/2002/11/0008.html for info */
+#if use_glftpd2
 
+/* see http://lists.jammed.com/secprog/2002/11/0008.html for info */
 #define HLEN (20)               /*Using SHA-1 */
 
 int pbkdf2(const unsigned char *pw, unsigned int pwlen, char *salt,
@@ -136,13 +143,20 @@ int pw_encrypt(const unsigned char *pwd, char *digest, char *seed) {
         *digest='\0';
         return 1;
 }
-
+#endif /* use_glftpd2 */
 
 int main(int argc, char *argv[]) {
 	FILE *fp;
 	struct passwd *buf;
+
+#if use_glftpd2
 	char crypted[SHA_DIGEST_LENGTH * 2 + 1];
 	char *salt;
+#else
+	char *crypted;
+	char salt[2];
+#endif
+
 	if (argc != 4) {
 		printf("Usage: %s <user> <pass> <passwdfile>\n", argv[0]);
 		return 1;
@@ -155,8 +169,13 @@ int main(int argc, char *argv[]) {
 	while ((buf=fgetpwent(fp)) != NULL) {
 		if (strcmp(buf->pw_name, argv[1]))
 			continue;
+#if use_glftpd2
 		salt = buf->pw_gecos;
 		pw_encrypt(argv[2], crypted, salt);
+#else
+		strncpy(salt, buf->pw_passwd, 2);
+		crypted = crypt(argv[2], salt);
+#endif
 		if (strcmp(buf->pw_passwd, crypted) == 0) {
 			printf("MATCH\n");
 			return 0;
