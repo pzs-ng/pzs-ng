@@ -16,7 +16,7 @@
 #    mkdir bld
 #    cd bld
 #    ../configure
-#    FreeBSD users may have to specify the path to tclConfig.sh:
+#    Users may have to specify the path to tclConfig.sh:
 #    ../configure --with-tcl=/usr/local/lib/tcl8.4/
 #    make
 #    make install

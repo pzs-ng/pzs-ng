@@ -1082,6 +1082,10 @@ proc ng_free {nick uhost hand chan arg} {
 	foreach line [split [exec $binary(DF) "-k"] "\n"] {
 		foreach {name value} [array get tmpdev] {
 			if {[string equal [lindex $line 0] [lindex $value 0]]} {
+				if {[llength $line] < 4} {
+					putlog "dZSbot warning: Invalid \"df -k\" line: $line"
+					continue
+				}
 				foreach {devName devSize devUsed devFree} $line {break}
 				set devPercFree [format "%.1f" [expr (double($devFree) / double($devSize)) * 100]]
 				set devPercUsed [format "%.1f" [expr (double($devUsed) / double($devSize)) * 100]]
@@ -1106,6 +1110,9 @@ proc ng_free {nick uhost hand chan arg} {
 
 				incr devCount
 				unset tmpdev($name)
+
+				## End the device match loop (not the df output loop)
+				break
 			}
 		}
 	}
