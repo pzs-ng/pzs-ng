@@ -276,12 +276,14 @@ proc readlog {} {
 		}
 
 		## If a pre-event script returns false, skip the announce.
-		if {![eventhandler precommand $event [list $section $line]]} {continue}
+		if {![eventhandler precommand $event [list $section $line]] || \
+		    ([info exists disable($event)] && $disable($event) == 1)} {continue}
+
 		if {![info exists variables($event)]} {
 			putlog "dZSbot error: \"variables($event)\" not defined in the config, type becomes \"DEFAULT\"."
 			set event "DEFAULT"
 		}
-		if {([info exists disable($event)] && $disable($event) != 1) && ![eventcheck $section $event]} {
+		if {![eventcheck $section $event]} {
 			sndall $event $section [ng_format $event $section $line]
 			eventhandler postcommand $event [list $section $line]
 		}
@@ -294,7 +296,12 @@ proc readlog {} {
 
 proc parselogin {line eventvar datavar} {
 	upvar $eventvar event $datavar data
-	if {[regexp {^(.+@.+) \((.+)\): connection refused: .+$} $line result hostmask ip]} {
+	## The data in login.log is not at all consistent,
+	## which makes it fun for us to parse.
+	if {[regexp {^'(.+)' killed a ghost with PID (\d+)\.$} $line result user pid]} {
+		set event "KILLGHOST"
+		set data [list $user $pid]
+	} elseif {[regexp {^(.+@.+) \((.+)\): connection refused: .+$} $line result hostmask ip]} {
 		set event "IPNOTADDED"
 		set data [list $hostmask $ip]
 	} elseif {[regexp {^(\S+): (.+@.+) \((.+)\): (.+)} $line result user hostmask ip error]} {
@@ -661,7 +668,7 @@ proc trimtail {strsrc strrm} {
 #################################################################################
 
 proc sndall {msgtype section text} {
-	global chanlist splitter redirect
+	global chanlist redirect
 
 	if {[info exists redirect($msgtype)]} {
 		set channels $redirect($msgtype)
@@ -790,7 +797,7 @@ proc ng_invite {nick host hand argv} {
 # Show Welcome Message                                                          #
 #################################################################################
 
-proc ng_welcome {nick uhost hand chan } {
+proc ng_welcome {nick uhost hand chan} {
 	global announce disable chanlist sitename cmdpre
 	if {$disable(WELCOME) == 1 || [isbotnick $nick]} {return}
 
@@ -1047,7 +1054,7 @@ proc ng_free {nick uhost hand chan arg} {
 	return
 }
 
-proc ng_incompletes {nick uhost hand chan arg } {
+proc ng_incompletes {nick uhost hand chan arg} {
 	global sitename binary
 	checkchan $nick $chan
 
@@ -1133,6 +1140,7 @@ proc ng_new {nick uhost hand chan argv} {
 	}
 	if {[string equal "" $section]} {
 		set section $defaultsection
+		set sectionpath "/site/*"
 		set lines [exec $binary(SHOWLOG) -l -m $results -r $location(GLCONF)]
 	} else {
 		if {[set sectiondata [getsectionpath $section]] == ""} {
@@ -1154,9 +1162,9 @@ proc ng_new {nick uhost hand chan argv} {
 	set num 0
 
 	foreach line [split $lines "\n"] {
-		## Format: status|uptime|uploader|group|files|kilobytesdirname
+		## Format: status|uptime|uploader|group|files|kilobytes|dirpath
 		if {[llength [set line [split $line "|"]]] != 7} {continue}
-		foreach {status ctime userid groupid files kbytes dirname} $line {break}
+		foreach {status ctime userid groupid files kbytes dirpath} $line {break}
 
 		## If array get returns "", zeroconvert will replace the value with NoOne/NoGroup.
 		set user [lindex [array get uid $userid] 1]
@@ -1171,10 +1179,7 @@ proc ng_new {nick uhost hand chan argv} {
 		set output [replacevar $output "%g_name" $group]
 		set output [replacevar $output "%files" $files]
 		set output [replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
-		## TODO (neoxed): use replacepath instead
-		set path [lrange [file split [string trim [file dirname $dirname] "/"]] 1 end]
-		set output [replacevar $output "%path" [join $path "/"]]
-		set output [replacevar $output "%reldir" [file tail $dirname]]
+		set output [replacepath $output $sectionpath $dirpath]
 		sndone $nick [replacebasic $output "NEW"]
 	}
 
@@ -1195,6 +1200,7 @@ proc ng_nukes {nick uhost hand chan argv} {
 	}
 	if {[string equal "" $section]} {
 		set section $defaultsection
+		set sectionpath "/site/*"
 		set lines [exec $binary(SHOWLOG) -n -m $results -r $location(GLCONF)]
 	} else {
 		if {[set sectiondata [getsectionpath $section]] == ""} {
@@ -1212,9 +1218,9 @@ proc ng_nukes {nick uhost hand chan argv} {
 	set num 0
 
 	foreach line [split $lines "\n"] {
-		## Format: status|nuketime|nuker|unnuker|nukee|multiplier|reason|kilobytes|dirname
+		## Format: status|nuketime|nuker|unnuker|nukee|multiplier|reason|kilobytes|dirpath
 		if {[llength [set line [split $line "|"]]] != 9} {continue}
-		foreach {status nuketime nuker unnuker nukee multiplier reason kbytes dirname} $line {break}
+		foreach {status nuketime nuker unnuker nukee multiplier reason kbytes dirpath} $line {break}
 
 		set output [replacevar $body "%num" [format "%02d" [incr num]]]
 		set output [replacevar $output "%date" [clock format $nuketime -format "%m-%d-%y"]]
@@ -1224,10 +1230,7 @@ proc ng_nukes {nick uhost hand chan argv} {
 		set output [replacevar $output "%multiplier" $multiplier]
 		set output [replacevar $output "%reason" $reason]
 		set output [replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
-		## TODO (neoxed): use replacepath instead
-		set path [lrange [file split [string trim [file dirname $dirname] "/"]] 1 end]
-		set output [replacevar $output "%path" [join $path "/"]]
-		set output [replacevar $output "%reldir" [file tail $dirname]]
+		set output [replacepath $output $sectionpath $dirpath]
 		sndone $nick [replacebasic $output "NUKES"]
 	}
 
@@ -1265,9 +1268,9 @@ proc ng_search {nick uhost hand chan argv} {
 	set num 0
 
 	foreach line [split $lines "\n"] {
-		## Format: status|uptime|uploader|group|files|kilobytes|dirname
+		## Format: status|uptime|uploader|group|files|kilobytes|dirpath
 		if {[llength [set line [split $line "|"]]] != 7} {continue}
-		foreach {status ctime userid groupid files kbytes dirname} $line {break}
+		foreach {status ctime userid groupid files kbytes dirpath} $line {break}
 
 		## If array get returns "", zeroconvert will replace the value with NoOne/NoGroup.
 		set user [lindex [array get uid $userid] 1]
@@ -1282,10 +1285,7 @@ proc ng_search {nick uhost hand chan argv} {
 		set output [replacevar $output "%g_name" $group]
 		set output [replacevar $output "%files" $files]
 		set output [replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
-		## TODO (neoxed): use replacepath instead
-		set path [lrange [file split [string trim [file dirname $dirname] "/"]] 1 end]
-		set output [replacevar $output "%path" [join $path "/"]]
-		set output [replacevar $output "%reldir" [file tail $dirname]]
+		set output [replacepath $output "/site/*" $dirpath]
 		sndone $nick [replacebasic $output "SEARCH"]
 	}
 
@@ -1306,6 +1306,7 @@ proc ng_unnukes {nick uhost hand chan argv} {
 	}
 	if {[string equal "" $section]} {
 		set section $defaultsection
+		set sectionpath "/site/*"
 		set lines [exec $binary(SHOWLOG) -u -m $results -r $location(GLCONF)]
 	} else {
 		if {[set sectiondata [getsectionpath $section]] == ""} {
@@ -1323,9 +1324,9 @@ proc ng_unnukes {nick uhost hand chan argv} {
 	set num 0
 
 	foreach line [split $lines "\n"] {
-		## Format: status|nuketime|nuker|unnuker|nukee|multiplier|reason|kilobytes|dirname
+		## Format: status|nuketime|nuker|unnuker|nukee|multiplier|reason|kilobytes|dirpath
 		if {[llength [set line [split $line "|"]]] != 9} {continue}
-		foreach {status nuketime nuker unnuker nukee multiplier reason kbytes dirname} $line {break}
+		foreach {status nuketime nuker unnuker nukee multiplier reason kbytes dirpath} $line {break}
 
 		set output [replacevar $body "%num" [format "%02d" [incr num]]]
 		set output [replacevar $output "%date" [clock format $nuketime -format "%m-%d-%y"]]
@@ -1336,10 +1337,7 @@ proc ng_unnukes {nick uhost hand chan argv} {
 		set output [replacevar $output "%multiplier" $multiplier]
 		set output [replacevar $output "%reason" $reason]
 		set output [replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
-		## TODO (neoxed): use replacepath instead
-		set path [lrange [file split [string trim [file dirname $dirname] "/"]] 1 end]
-		set output [replacevar $output "%path" [join $path "/"]]
-		set output [replacevar $output "%reldir" [file tail $dirname]]
+		set output [replacepath $output $sectionpath $dirpath]
 		sndone $nick [replacebasic $output "UNNUKES"]
 	}
 

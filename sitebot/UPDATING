@@ -18,6 +18,9 @@
 # Changes
 ###############################################################
 
+r1447: Added recognition for the "killed ghost with PID" login.log message.
+- New theme file setting: KILLGHOST.
+
 r1435: Private channel changes for invites.
 - Remove all previous privgroups, privusers, and privchannel settings.
 - Check the defaults.conf for an example on the new privchannel syntax.

@@ -106,6 +106,7 @@ set disable(BADPASSWORD)             1
 set disable(BANNEDHOST)              1
 set disable(DELETED)                 1
 set disable(IPNOTADDED)              1
+set disable(KILLGHOST)               1
 set disable(TAGLINE)                 1
 set disable(TIMEOUT)                 1
 

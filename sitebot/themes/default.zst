@@ -52,6 +52,7 @@ announce.BADPASSWORD            = "[%b{login }] %b{%u_name} could not login, inv
 announce.BANNEDHOST             = "[%b{login }] %b{%u_name} could not login, hostmask %b{%u_hostmask} is banned."
 announce.DELETED                = "[%b{login }] %b{%u_name} could not login, account deleted."
 announce.IPNOTADDED             = "[%b{login }] denied unknown connection from %b{%u_hostmask}."
+announce.KILLGHOST              = "[%b{ghost }] %b{%u_name} killed killed a ghost with PID %b{%pid}."
 announce.TAGLINE                = "[%b{tag   }] %b{%u_name}@%g_name has changed tagline to %b{%u_tagline}."
 announce.TIMEOUT                = "[%b{logout}] %b{%u_name} has timed out after %b{%u_idletime}s."
 
@@ -231,20 +232,20 @@ announce.UPTIME                 = "[%b{uptime}] System: %time, %b{%users} user(s
 
 ## IRC Command: !new
 announce.NEW                    = "%b{(NEW)} Latest Releases In: %b{%section}"
-announce.NEW_BODY               = "%b{-} %num. %path/%b{%reldir} by %b{%u_name}/%g_name (%b{%files}F/%b{%mbytes}MB/%age)"
+announce.NEW_BODY               = "%b{-} %num. %b{%relname} by %b{%u_name}/%g_name (%b{%files}F/%b{%mbytes}MB/%age)"
 announce.NEW_NONE               = "%b{-} No releases found."
 
 ## IRC Command: !dupe/!search
 announce.SEARCH                 = "%b{(SEARCH)} Searching for: %pattern"
-announce.SEARCH_BODY            = "%b{-} %num. %path/%b{%reldir} (%b{%files}F/%b{%mbytes}MB/%age)"
+announce.SEARCH_BODY            = "%b{-} %num. %b{%relname} (%b{%files}F/%b{%mbytes}MB/%age)"
 announce.SEARCH_NONE            = "%b{-} No matching results found."
 
 ## IRC Command: !nukes
 announce.NUKES                  = "%b{(NUKES)} Latest Nukes In: %b{%section}"
-announce.NUKES_BODY             = "%b{-} %num. %date %b{%reldir} was nuked %b{%multiplier}x by %b{%nuker}. Reason: %b{%reason}"
+announce.NUKES_BODY             = "%b{-} %date %b{%reldir} was nuked %b{%multiplier}x by %b{%nuker}. Reason: %b{%reason}"
 announce.NUKES_NONE             = "%b{-} No nukes found."
 
 ## IRC Command: !unnukes
 announce.UNNUKES                = "%b{(UNNUKES)} Latest Unnukes In: %b{%section}"
-announce.UNNUKES_BODY           = "%b{-} %num. %date %b{%reldir} was unnuked %b{%multiplier}x by %b{%unnuker}. Reason: %b{%reason}"
+announce.UNNUKES_BODY           = "%b{-} %date %b{%reldir} was unnuked %b{%multiplier}x by %b{%unnuker}. Reason: %b{%reason}"
 announce.UNNUKES_NONE           = "%b{-} No unnukes found."

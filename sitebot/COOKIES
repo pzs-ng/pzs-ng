@@ -290,6 +290,9 @@ Quickreference of cookies:
 # IPNOTADDED:
 %u_hostmask, %u_ip
 
+# KILLGHOST:
+%pid, %u_name
+
 # LOGIN:
 %dummy, %g_name, %u_hostmask, %u_ip, %u_name, %u_tagline
 
