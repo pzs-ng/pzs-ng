@@ -1,12 +1,13 @@
 #include <ctype.h>
-     #include <unistd.h>
-     #include <sys/types.h>
-     #include <sys/stat.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <string.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "../include/objects.h"
+#include "../include/macros.h"
 #include "../conf/zsconfig.h"
 
 extern char*		findfile(char *filename);

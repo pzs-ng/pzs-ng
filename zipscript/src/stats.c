@@ -9,6 +9,7 @@
 #include <sys/stat.h>
 #include <sys/uio.h>
 #include "../include/objects.h"
+#include "../include/macros.h"
 #include "../conf/zsconfig.h"
 
 extern char* convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *instr);

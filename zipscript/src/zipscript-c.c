@@ -24,6 +24,14 @@ static struct LOCATIONS locations;
 
 extern	void	get_stats(struct VARS *raceI, struct USERINFO **userI);
 
+// from dizreader.c - let's move to headers later.
+int read_diz(char *);
+// from multimedia.c - let's move to headers later. (together with struct video)
+void avi_video(char *, struct video *);
+void mpeg_video(char *, struct video *);
+// from stats.c - let's move to headers later. (together with USERINFO / GROUPINFO / VARS structs?)
+void showstats(struct VARS *, struct USERINFO **, struct GROUPINFO **);
+
 /* NEW OPTIMIZED STUFF GOES HERE */
 extern char * convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, char *instr, short userpos);
 extern char * convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short grouppos);
@@ -137,7 +145,6 @@ void getrelname(char *directory) {
 	l[2],
 	n = 0,
 	k = 2;
- long	index;
  char	*path[2];
 
  for ( cnt = locations.length_path - 1 ; k && cnt ; cnt-- ) if ( directory[cnt] == '/' ) {
@@ -148,11 +155,6 @@ void getrelname(char *directory) {
 	path[k][n] = 0;
 	n = 0;
 	} else n++;
-
- sql_get_index(&locations);
- sql_set_race(locations.race, "R_%i", index);
- sql_set_sfv(locations.sfv, "S_%i", index);
- sql_set_leader(locations.leader, "L_%i", index);
 
  if ((! strncasecmp(path[1], "CD"  , 2) && l[1] <= 4) ||
      (! strncasecmp(path[1], "DISC", 4) && l[1] <= 6)) {
@@ -222,18 +224,17 @@ unsigned char get_filetype(char *ext) {
 int main( int argc, char **argv ) {
  char		*fileext, *name_p, *temp_p;
  char		*target;
- char		*complete_msg;
- char		*update_msg;
- char		*race_msg;
- char		*sfv_msg;
- char		*newleader_msg;
- char		*halfway_msg;
- char		*complete_bar;
- char		chr[2];
+ char		*complete_msg = 0;
+ char		*update_msg = 0;
+ char		*race_msg = 0;
+ char		*sfv_msg = 0;
+ char		*newleader_msg = 0;
+ char		*halfway_msg = 0;
+ char		*complete_bar = 0;
  unsigned long	crc, s_crc;
  unsigned char	exit_value = 0;
  unsigned char	no_check = FALSE;
- unsigned char	complete_type;
+ unsigned char	complete_type = 0;
  int		cnt;
  int		n;
  struct	stat	fileinfo;
@@ -417,7 +418,7 @@ int main( int argc, char **argv ) {
 
 	case 1:	/* SFV */
 		d_log("File type is: SFV\n");
-		if ( data_exists(&locations, locations.sfv) )
+		if ( data_exists(&locations, locations.sfv) ) {
 			if (deny_double_sfv == TRUE && findfileextcount(".sfv") > 1 ) {
 				char * error_msg;
 				int write_log = raceI.misc.write_log;
@@ -443,6 +444,7 @@ int main( int argc, char **argv ) {
 				}
 				raceI.total.files = raceI.total.files_missing = 0;
 			}
+		 }
 		d_log("Parsing sfv and creating sfv data\n");
 		copysfv(&locations, raceI.file.name, locations.sfv, raceI.file.size);
 

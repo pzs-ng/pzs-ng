@@ -1,3 +1,6 @@
+#ifndef _OBJECTS_H_
+#define _OBJECTS_H_
+
 #include <sys/time.h>
 #include "constants.h"
 #include "../conf/zsconfig.h"
@@ -28,8 +31,7 @@ struct GROUPINFO {
 };
 
 
-#if ( for_glftpd2 == FALSE )
-#warn "Objects.h in gl1 compatability mode. (see zsconfig.h for setting)"
+#if (for_glftpd2 == FALSE)
 struct ONLINE {
  char				tagline[64];	/* The users tagline */
  char   			username[24];	/* The username of the user */
@@ -41,7 +43,7 @@ struct ONLINE {
  struct timeval		tstart;		/* Replacement for last_update. */
  unsigned long		bytes_xfer;	/* Bytes transferred this far. */
  pid_t				procid;		/* The processor id of the process */
-};
+} __attribute__ ((deprecated));
 #else
 struct ONLINE {
  char			tagline[64];		/* The users tagline */
@@ -152,28 +154,4 @@ struct LOCATIONS {
  unsigned			length_zipdatadir;
 };
 
-
-#define F_IGNORED		254
-#define F_BAD			255
-#define F_NFO			253
-#define F_DELETED		0
-#define F_CHECKED		1
-#define F_NOTCHECKED	2
-
-#define TRUE			1
-#define FALSE			0
-
-#define DISABLED		NULL
-
-#define FILE_MAX		256
-
-#ifndef O_SYNC
-# define O_SYNC O_FSYNC
-#endif
-#ifndef alloca
-# define m_alloc(x) malloc(x)
-# define m_free(p) free(p)
-#else
-# define m_alloc(x) alloca(x)
-# define m_free(p)
 #endif

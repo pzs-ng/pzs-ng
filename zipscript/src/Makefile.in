@@ -5,7 +5,7 @@ datadir=@datadir@
 binpath=../bin
 
 CC=@CC@
-CFLAGS=-O2 @STATIC@
+CFLAGS=-O2 @STATIC@ -Wall
 LDFLAGS=@LDFLAGS@
 ZSLIBS=@ZSLIBS@
 ZSTYPE=@ZSTYPE@ mp3info.o
