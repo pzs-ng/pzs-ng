@@ -121,24 +121,32 @@ case $os in
         done
 esac
 
-case $os in *bsd*)
-    echo -e "\nCopying your system's run-time library linker(s):"
-    echo "(NOTE: Searches can take a couple of minutes, please be patient.)"
-    case $os in
-        freebsd4)
-            bsdlibs="/usr/libexec/ld-elf.so.1"
-            ;;
-        freebsd5)
-            bsdlibs="/libexec/ld-elf.so.1"
-            ;;
-        openbsd)
-            bsdlibs="/usr/libexec/ld.so"
-            ;;
-        netbsd)
-            bsdlibs="/usr/libexec/ld.so /usr/libexec/ld.elf_so"
-            ;;
-        esac
-        libfailed=0
+echo -e "\nCopying your system's run-time library linker(s):"
+echo "(NOTE: Searches can take a couple of minutes, please be patient.)"
+libfailed=0
+case $os in
+	freebsd4)
+		bsdlibs="/usr/libexec/ld-elf.so.1"
+		;;
+	freebsd5)
+		bsdlibs="/libexec/ld-elf.so.1"
+		;;
+	openbsd)
+		bsdlibs="/usr/libexec/ld.so"
+		;;
+	netbsd)
+		bsdlibs="/usr/libexec/ld.so /usr/libexec/ld.elf_so"
+		;;
+	linux)
+		bsdlibs="/lib/ld-linux.so.2"
+		;;
+	*)
+		echo "No special library needed on this platform."
+		bsdlibs=""
+		;;
+esac
+
+if [ ! -z "$bsdlibs" ]; then
         for bsdlib in $bsdlibs; do
             bsdlibdir=${bsdlib%/*}
             mkdir -p "$glroot$bsdlibdir"
@@ -159,8 +167,7 @@ case $os in *bsd*)
             fi
         done
         [ $libfailed -eq 1 ] && echo "You must install and copy the missing libraries to $glroot$bsdlibdir manually." 
-    ;;
-esac   
+fi
 
 echo -ne "\nConfiguring the shared library cache . . . "
 sort "$glroot/etc/ld.so.conf" | uniq >"$glroot/etc/ld.so.temp" && mv "$glroot/etc/ld.so.temp" "$glroot/etc/ld.so.conf"

@@ -186,6 +186,9 @@ main(int argc, char **argv)
 		printf(" - thank you. (remember the quotes!)\n");
 		return 0;
 	}
+
+	d_log("Project-ZS Next Generation (pzs-ng) v%s debug log for postdel.\n", VERSION);
+
 	fname = argv[1] + 5;	/* This way we simply skip the required
 				 * 'DELE'-part of the argument (so we get
 				 * filename) */

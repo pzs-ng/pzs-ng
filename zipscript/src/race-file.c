@@ -328,6 +328,7 @@ copysfv_file(char *source, char *target, off_t buf_bytes)
 					}
 					fname[files++] = line;
 #endif
+d_log("DEBUG: file in sfv - %s (%s)\n", line,crc);
 #if ( sfv_cleanup == TRUE && sfv_error == FALSE )
 					write(fd_new, line, len - 1);
 					write(fd_new, " ", 1);
