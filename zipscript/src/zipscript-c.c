@@ -538,6 +538,7 @@ int main( int argc, char **argv ) {
 #if ( exclude_non_sfv_dirs == TRUE )
 				if ( raceI.misc.write_log == TRUE ) {
 #endif
+						if ( ! matchpath(no_audio_check_dirs, locations.path) ) {
 #if ( audio_banned_genre_check == TRUE )
 					if ( strcomp(banned_genres, raceI.audio.id3_genre)) {
 						d_log("File is from banned genre\n");
@@ -627,6 +628,9 @@ int main( int argc, char **argv ) {
 						break;
 						}
 #endif
+						} else {
+					d_log("user is in a no audio check dir - skipping checks.\n");
+						}
 #if ( exclude_non_sfv_dirs == TRUE )
 					}
 #endif

@@ -25,21 +25,20 @@
 
 /* Are you using GLFTPD 2?
  */
-#define for_glftpd2	FALSE
+#define for_glftpd2	TRUE
 
 /* On default, announcing is disabled everywhere, use zip/sfv paths to enable annouces and private paths to disable.
  * Don't be lazy! Be specific! And remember - pathnames are case sensitive.
  */
 #define group_dirs	"/site/groups/ /site/incoming/mp3/.groups/"
 #define zip_dirs	"/site/0day/"
-#define sfv_dirs	"/site/mp3/ /site/games/ /site/apps/ /site/musicvideos/"
-//#define sfv_dirs	"/site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/"
+#define sfv_dirs	"/site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/requests/"
 #define nocheck_dirs	"/site/private/"
 
 /* Directories for cleanup to check for broken incomplete files
  * Use same % values as with date
  */
-#define cleanupdirs	"/site/games/ /site/apps/ /site/0day/%m%d/ /site/mp3/%m%d/"
+#define cleanupdirs	"/site/incoming/games/ /site/incoming/apps/ /site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 
 /* Creates a zero-byte file for every non-existing file defined in sfv?
  */
@@ -132,9 +131,12 @@
  */
 #define allowed_bitrates		"160,192"
 #define allowed_years			"2000,2001,2002,2003,2004"
-#define banned_genres			"Christian Rap"
+#define banned_genres			"Christian Rap,R&B"
 #define allowed_genres			"Rock"
 
+/* Some dirs may be exluded from checks of bitrate, years, genres.
+ */
+#define no_audio_check_dirs		"/site/groups/ /site/incoming/requests/"
 
 /* Audio related symlinks - set to TRUE if you wish to sort/symlink releases, or FALSE if not.
  */
