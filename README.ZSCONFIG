@@ -740,6 +740,16 @@ del_progressmeter <STRING>
 	that bar - the file(s) matching this will be deleted.
 	Default: "\\[.*] - ...%% Complete - \\[%Z]"
 
+charbar_missing <CHAR>
+	The progressbar consist of two chars, which together marks the progress
+	of the release. Put here the char to be used to mark missing files.
+	Default: ":"
+
+charbar_filled <CHAR>
+	The progressbar consist of two chars, which together marks the progress
+	of the release. Put here the char to be used to mark uploaded files.
+	Default: "#"
+
 enable_accept_script <TRUE|FALSE>
 	An external script can be run after a file is verified and ok. Put
 	this to TRUE to run the external script.

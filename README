@@ -55,11 +55,12 @@ PZS-NG should compile fine on the following platforms:
 - Linux
 - FreeBSD
 - OpenBSD
+- OSX/Darwin (Feedback say the zipscript work on this platform)
 - (AIX - untested, but the original docs say it works there)
 - (Solaris - soon *g*)
 
-64-bit processors - this is still a bit shady. We do work to make it run
-on AMD64 for instance, but have limited ability to test on this platform
+64-bit processors - this is still a bit shady. We do try to make it run
+on AMD64 for instance, but have limited ability to test on this platform,
 since none of the devs currently owns one. Feel free to contact us if
 you feel the need to share your box with us.
 As of beta3, it should run on AMD64, but it should be compiled in 32bit
