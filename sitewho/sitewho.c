@@ -44,14 +44,22 @@ filesize(char *filename)
 
 	file = malloc(strlen(glpath) + strlen(filename) + 2);
 	sprintf(file, "%s/%s", glpath, filename);
-
 	if (stat(file, &filestat) != 0) {
 		if (!strcmp(filename, "")) {
 			filestat.st_size = 1;
 		} else {
-			fprintf(stderr, "Could not stat file '%s', is glrootpath set correctly in sitewho.conf? (error: %s)\n", file, strerror(errno));
 			free(file);
-			exit(1);
+			file = malloc(strlen(filename) + 2);
+			sprintf(file, "/%s", filename);
+			if (stat(file, &filestat) != 0) {
+				if (!strcmp(filename, "")) {
+					filestat.st_size = 1;
+				} else {
+					fprintf(stderr, "Could not stat file '%s', is glrootpath set correctly in sitewho.conf? (error: %s)\n", file, strerror(errno));
+					free(file);
+					exit(1);
+				}
+			}
 		}
 	}
 	free(file);
