@@ -132,7 +132,7 @@ main(int argc, char **argv)
 	//g.v.misc.release_name = malloc(PATH_MAX);
 	getcwd(g.l.path, PATH_MAX);
 
-	if (matchpath(nocheck_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) & !matchpath(group_dirs, g.l.path))) {
+	if (matchpath(nocheck_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
 		d_log("Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
 		d_log("Freeing memory, and exiting\n");
 		free(g.ui);

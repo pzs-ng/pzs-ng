@@ -238,7 +238,7 @@ main()
 		if (g.v.misc.release_type == RTYPE_AUDIO)
 			get_mpeg_audio_info(findfileext(dir, ".mp3"), &g.v.audio);
 
-		if ((g.v.total.files_missing == 0) & (g.v.total.files > 0)) {
+		if ((g.v.total.files_missing == 0) && (g.v.total.files > 0)) {
 			switch (g.v.misc.release_type) {
 			case RTYPE_RAR:
 				complete_bar = rar_completebar;
