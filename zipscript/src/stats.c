@@ -7,6 +7,8 @@
 #include <sys/stat.h>
 #include <sys/uio.h>
 
+#include <config.h>
+
 #if HAVE_DIRENT_H
 # include <dirent.h>
 # define NAMLEN(dirent) strlen((dirent)->d_name)

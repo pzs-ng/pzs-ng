@@ -12,6 +12,7 @@ install: zs
 
 distclean: clean
 	@( rm -f *~ Makefile config.cache config.log config.status config.h )
+	@( rm -rf autom4te.cache/ )
 	@( cd zipscript/src ; $(MAKE) distclean )
 	@( cd sitebot/src ; $(MAKE) distclean )
 

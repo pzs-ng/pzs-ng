@@ -20,12 +20,18 @@
 # include <sys/syslimits.h>
 #endif
 
+#include <config.h>
+
 #if HAVE_DIRENT_H
 # include <dirent.h>
-# define NAMLEN(dirent) strlen((dirent)->d_name)
+# ifndef NAMLEN
+#  define NAMLEN(dirent) strlen((dirent)->d_name)
+# endif
 #else
 # define dirent direct
-# define NAMLEN(dirent) (dirent)->d_namlen
+# ifndef NAMLEN
+#  define NAMLEN(dirent) (dirent)->d_namlen
+# endif
 # if HAVE_SYS_NDIR_H
 #  include <sys/ndir.h>
 # endif
