@@ -493,17 +493,23 @@ removedotfiles()
 	}
 }
 
-char           *
+int
 findfilename(char *filename)
 {
-	int	n;
+	int		retval = 0;
+	DIR		*dir;
+	struct dirent 	*dp;
 
-	n = direntries;
-	while (n--) {
-		if (!strcasecmp(dirlist[n]->d_name, filename))
-			return dirlist[n]->d_name;
+	dir = opendir(".");
+	while ((dp = readdir(dir))) {
+		if (!strcasecmp(dp->d_name, filename)) {
+			retval = 1;
+			break;
+		}
 	}
-	return NULL;
+	
+	closedir(dir);
+	return retval;
 }
 
 /*
@@ -512,7 +518,7 @@ findfilename(char *filename)
 void 
 removecomplete()
 {
-	char	       *mydelbar = 0;
+	char		*mydelbar = 0;
 	regex_t		preg;
 	regmatch_t	pmatch[1];
 

@@ -250,7 +250,7 @@ main(void)
 #if ( create_m3u == TRUE )
 				n = sprintf(exec, findfileext(dir, ".sfv"));
 				strcpy(exec + n - 3, "m3u");
-				create_indexfile(&g.l, &g.v, exec);
+				create_indexfile(g.v.file.name, &g.v, exec);
 #endif
 				break;
 			case RTYPE_VIDEO:

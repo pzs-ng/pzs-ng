@@ -113,7 +113,7 @@ extern char	isvideo(char *);
 extern void	buffer_progress_bar(struct VARS *);
 extern void	move_progress_bar(unsigned char, struct VARS *, struct USERINFO **, struct GROUPINFO **);
 extern short	findfile(char *);
-extern char    *findfilename(char *);
+extern int	findfilename(char *);
 extern void	removedotfiles(void);
 extern void	removecomplete(void);
 extern short	matchpath(char *, char *);
