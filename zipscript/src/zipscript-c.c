@@ -837,8 +837,19 @@ main(int argc, char **argv)
 							write_log = raceI.misc.write_log;
 							raceI.misc.write_log = 1;
 							error_msg = convert(&raceI, userI, groupI, bad_file_msg);
-							if (exit_value < 2)
-								writelog(error_msg, bad_file_crc_type);
+							writelog(error_msg, bad_file_crc_type);
+							if (enable_unduper_script == TRUE) {
+								if (!fileexists(unduper_script)) {
+									d_log("Failed to undupe '%s' - '%s' does not exist.\n", raceI.file.name, unduper_script);
+								} else {
+									sprintf(target, unduper_script " \"%s\"", raceI.file.name);
+									if (execute(target) == 0) {
+										d_log("undupe of %s successful.\n", raceI.file.name);
+									} else {
+										d_log("undupe of %s failed.\n", raceI.file.name);
+									}
+								}
+							}
 							break;
 						}
 						strlcpy(raceI.misc.error_msg, BAD_CRC, 80);
