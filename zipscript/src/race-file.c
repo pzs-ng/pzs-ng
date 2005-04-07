@@ -1170,7 +1170,7 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 	}
 	if (datatype && counter)
 		hd.data_type = datatype;
-	if ((retval && !lock_optimize) || !retval || !hd.data_incrementor || (time(NULL) - sb.st_ctime >= lock_optimize && hd.data_incrementor > 1)) {
+	if ((retval && !lock_optimize) || datatype || !retval || !hd.data_incrementor || (time(NULL) - sb.st_ctime >= lock_optimize && hd.data_incrementor > 1)) {
 		lseek(fd, 0L, SEEK_SET);
 		write(fd, &hd, sizeof(HEADDATA));
 		d_log("update_lock: updating lock (%d)\n", raceI->lock.data_incrementor);
