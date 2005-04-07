@@ -1074,6 +1074,7 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 
 		retval = hd.data_incrementor;
 	}
+	raceI->misc.release_type = hd.data_type;
 	if (hd.data_pid != (short int)getpid() && hd.data_incrementor) {
 		d_log("update_lock: Oops! Race condition - another process has the lock. pid: %d != %d\n", hd.data_pid, (short int)getpid());
 		hd.data_queue = raceI->data_queue - 1;
