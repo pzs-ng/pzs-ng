@@ -1012,6 +1012,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 			return 1;
 		}
 		if ((time(NULL) - sb.st_ctime >= max_seconds_wait_for_lock)) {
+			raceI->misc.release_type = hd.data_type;
 			raceI->lock.data_in_use = hd.data_in_use = progtype;
 			raceI->lock.data_incrementor = hd.data_incrementor = 1;
 			raceI->lock.data_queue = hd.data_queue = 1;
@@ -1036,6 +1037,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 					write(fd, &hd, sizeof(HEADDATA));
 					d_log("create_lock: lock active - putting you in queue. (%d/%d)\n", hd.data_qcurrent, hd.data_queue);
 				}
+				raceI->misc.release_type = hd.data_type;
 				close(fd);
 				return hd.data_in_use;
 			}
@@ -1051,6 +1053,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 				raceI->lock.data_queue = hd.data_queue;		/* we give the queue number to the calling process */
 				hd.data_queue++;				/* we increment the number in the queue */
 				raceI->lock.data_incrementor = hd.data_incrementor;
+				 raceI->misc.release_type = hd.data_type;
 				lseek(fd, 0L, SEEK_SET);
 				write(fd, &hd, sizeof(HEADDATA));
 				close(fd);
@@ -1060,6 +1063,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 										/* seems there is a queue, and the calling process' place in */
 										/* the queue is still less than current. */
 				raceI->lock.data_incrementor = hd.data_incrementor;	/* feed back the current incrementor */
+				raceI->misc.release_type = hd.data_type;
 				close(fd);
 				return -1;
 			}
@@ -1072,12 +1076,12 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 			hd.data_in_use = progtype;
 		}
 		raceI->lock.data_incrementor = hd.data_incrementor;
+		raceI->misc.release_type = hd.data_type;
 		hd.data_pid = (short int)getpid();
 		lseek(fd, 0L, SEEK_SET);
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
 		raceI->lock.data_in_use = progtype;
-		raceI->lock.data_type = 0;
 		d_log("create_lock: lock set. pid: %d\n", hd.data_pid);
 		return 0;
 	}
