@@ -262,7 +262,7 @@ proc readlogtimer {} {
 }
 
 proc readlog {} {
-	global chanlist defaultsection disable glversion lastread loglist max_log_change msgreplace msgtypes variables
+	global defaultsection disable glversion lastread loglist max_log_change msgreplace msgtypes variables
 	set lines ""
 
 	foreach {logtype logid logpath} $loglist {
@@ -825,7 +825,7 @@ proc ng_inviteuser {nick user group flags} {
 }
 
 proc ng_invite {nick host hand argv} {
-	global location binary chanlist announce theme invite_channels disable
+	global location binary announce theme invite_channels disable
 
 	if {[llength $argv] > 1} {
 		set user [lindex $argv 0]
@@ -1151,6 +1151,7 @@ proc ng_incompletes {nick uhost hand chan arg} {
 	global sitename binary
 	checkchan $nick $chan
 
+	#puthelp "PRIVMSG $chan :Processing incomplete list for $nick."
 	foreach line [split [exec $binary(INCOMPLETE)] "\n"] {
 		if {![info exists newline($line)]} {
 			set newline($line) 0
@@ -1460,7 +1461,7 @@ proc ng_bw {nick uhost hand chan argv} {
 	set output "$theme(PREFIX)$announce(BW)"
 	set raw [exec $binary(WHO) --nbw]
 	set upper [format "%.0f" [expr [lindex $raw 1] * 100 / $speed(INCOMING)]]
-	set dnper [format "%.0f" [expr [lindex $raw 3] *100 / $speed(OUTGOING)]]
+	set dnper [format "%.0f" [expr [lindex $raw 3] * 100 / $speed(OUTGOING)]]
 	set totalper [format "%.0f" [expr [lindex $raw 5] * 100 / ( $speed(INCOMING) + $speed(OUTGOING) )]]
 
 	set up [format_speed [lindex $raw 1] "none"]
