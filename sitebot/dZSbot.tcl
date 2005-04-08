@@ -262,7 +262,7 @@ proc readlogtimer {} {
 }
 
 proc readlog {} {
-	global chanlist defaultsection disable glversion lastread loglist max_log_change msgreplace msgtypes variables
+	global defaultsection disable glversion lastread loglist max_log_change msgreplace msgtypes variables
 	set lines ""
 
 	foreach {logtype logid logpath} $loglist {
@@ -825,7 +825,7 @@ proc ng_inviteuser {nick user group flags} {
 }
 
 proc ng_invite {nick host hand argv} {
-	global location binary chanlist announce theme invite_channels disable
+	global location binary announce theme invite_channels disable
 
 	if {[llength $argv] > 1} {
 		set user [lindex $argv 0]
@@ -1151,6 +1151,7 @@ proc ng_incompletes {nick uhost hand chan arg} {
 	global sitename binary
 	checkchan $nick $chan
 
+	#puthelp "PRIVMSG $chan :Processing incomplete list for $nick."
 	foreach line [split [exec $binary(INCOMPLETE)] "\n"] {
 		if {![info exists newline($line)]} {
 			set newline($line) 0
@@ -1460,7 +1461,7 @@ proc ng_bw {nick uhost hand chan argv} {
 	set output "$theme(PREFIX)$announce(BW)"
 	set raw [exec $binary(WHO) --nbw]
 	set upper [format "%.0f" [expr [lindex $raw 1] * 100 / $speed(INCOMING)]]
-	set dnper [format "%.0f" [expr [lindex $raw 3] *100 / $speed(OUTGOING)]]
+	set dnper [format "%.0f" [expr [lindex $raw 3] * 100 / $speed(OUTGOING)]]
 	set totalper [format "%.0f" [expr [lindex $raw 5] * 100 / ( $speed(INCOMING) + $speed(OUTGOING) )]]
 
 	set up [format_speed [lindex $raw 1] "none"]
@@ -1742,28 +1743,25 @@ proc loadtheme {file} {
 
 	foreach line [split $data "\n"] {
 		if {[string index $line 0] != "#"} {
-			## TODO (neoxed):
-			## The first three regular expressions can easily be unified (as shown with the code below);
-			## however, the time taken to parse the theme file drastically increased (I'm talking minutes).
-			if {[regexp -nocase -- {announce\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-				set announce($setting) $value
-			} elseif {[regexp -nocase -- {fakesection\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-				set theme_fakes($setting) $value
-			} elseif {[regexp -nocase -- {random\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-				set random($setting) $value
-			} elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
-				set theme($setting) $value
-			}
-#			if {[regexp -- {(\S+)\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud type setting quote value]} {
-#				switch -exact -- [string tolower $type] {
-#					"announce"    {set announce($setting) $value}
-#					"fakesection" {set theme_fakes($setting) $value}
-#					"random"      {set random($setting) $value}
-#					default       {putlog "dZSbot warning: Invalid theme setting \"$type.$setting\"."}
-#				}
+#			if {[regexp -nocase -- {announce\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+#				set announce($setting) $value
+#			} elseif {[regexp -nocase -- {fakesection\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+#				set theme_fakes($setting) $value
+#			} elseif {[regexp -nocase -- {random\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+#				set random($setting) $value
 #			} elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
 #				set theme($setting) $value
 #			}
+			if {[regexp -- {(\S+)\.(\S+)\s*=\s*(['\"])(.+)\3} $line dud type setting quote value]} {
+				switch -exact -- [string tolower $type] {
+					"announce"    {set announce($setting) $value}
+					"fakesection" {set theme_fakes($setting) $value}
+					"random"      {set random($setting) $value}
+					default       {putlog "dZSbot warning: Invalid theme setting \"$type.$setting\"."}
+				}
+			} elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
+				set theme($setting) $value
+			}
 		}
 	}
 

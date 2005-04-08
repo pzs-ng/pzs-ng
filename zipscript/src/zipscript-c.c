@@ -623,7 +623,7 @@ main(int argc, char **argv)
 			}
 
 			if (!sfv_msg)
-				d_log("zipscript-c.c: Something's messed up - sfv_msg not set!\n");
+				d_log("zipscript-c: Something's messed up - sfv_msg not set!\n");
 
 			halfway_msg = newleader_msg = race_msg = update_msg = NULL;
 
@@ -1007,7 +1007,7 @@ main(int argc, char **argv)
 			}
 
 			if (!race_msg)
-				d_log("zipscript-c.c: Something's messed up - race_msg not set!\n");
+				d_log("zipscript-c: Something's messed up - race_msg not set!\n");
 
 			if (exit_value == EXIT_SUCCESS) {
 				d_log("zipscript-c: Removing missing indicator\n");
@@ -1102,7 +1102,7 @@ main(int argc, char **argv)
 					}
 
 					if (!race_type)
-						d_log("zipscript-c.c: Something's messed up - race_type not set!\n");
+						d_log("zipscript-c: Something's messed up - race_type not set!\n");
 
 					writelog(&g, convert(&g.v, g.ui, g.gi, race_msg), race_type);
 				}
@@ -1138,7 +1138,7 @@ main(int argc, char **argv)
 					}
 
 					if (!newleader_type)
-						d_log("zipscript-c.c: Something's messed up - newleader_type not set!\n");
+						d_log("zipscript-c: Something's messed up - newleader_type not set!\n");
 
 					writelog(&g, convert(&g.v, g.ui, g.gi, newleader_msg), newleader_type);
 				}
@@ -1173,7 +1173,7 @@ main(int argc, char **argv)
 						break;	/* rar */
 					}
 					if (!update_type)
-						d_log("zipscript-c.c: Something's messed up - update_type not set!\n");
+						d_log("zipscript-c: Something's messed up - update_type not set!\n");
 
 					writelog(&g, convert(&g.v, g.ui, g.gi, update_msg), update_type);
 				}
@@ -1216,7 +1216,7 @@ main(int argc, char **argv)
 				}
 
 				if (!race_halfway_type)
-					d_log("zipscript-c.c: Something's messed up - race_halfway_type not set!\n");
+					d_log("zipscript-c: Something's messed up - race_halfway_type not set!\n");
 
 				writelog(&g, convert(&g.v, g.ui, g.gi, halfway_msg), (g.v.total.users > 1 ? race_halfway_type : norace_halfway_type));
 			}
