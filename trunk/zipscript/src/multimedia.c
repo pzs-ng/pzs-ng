@@ -352,6 +352,7 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 
 		if (memcmp(xing_header1, "Xing", 4) == 0 ||
 		    memcmp(xing_header2, "Xing", 4) == 0 ||
+		    memcmp(xing_header2, "LAME", 4) == 0 ||
 		    memcmp(xing_header3, "Xing", 4) == 0 ||
 		    memcmp(fraunhofer_header, "VBRI", 4) == 0) {
 
