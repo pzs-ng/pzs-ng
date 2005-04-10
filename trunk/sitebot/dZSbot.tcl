@@ -254,9 +254,9 @@ proc eventhandler {type event argv} {
 }
 
 proc readlogtimer {} {
-	global dZStimer
-	if {[catch {readlog} error]} {
-		putlog "dZSbot error: Unable to read log data ($error)."
+	global dZStimer errorInfo
+	if {[catch {readlog}]} {
+		putlog "dZSbot error: Unhandled error, please report to developers:\n$errorInfo"
 	}
 	set dZStimer [utimer 1 readlogtimer]
 }
