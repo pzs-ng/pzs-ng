@@ -13,8 +13,6 @@
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -32,23 +30,24 @@
 #define GLCONF "/etc/glftpd.conf"
 static char rootpath[MAXPATHLEN+1] = "/glftpd";
 static char datapath[MAXPATHLEN+1] = "/ftp-data";
-static char ipckey[11] = "0x000DEAD";
 static int max_results = 10;
 static int match_full = 0;
 static int search_mode = 0;
 
-struct dirlog132 {
-	ushort status;		        /* 0 = NEWDIR, 1 = NUKE, 2 = UNNUKE, 3 = DELETED */
+#if ( GLVERSION == 132 )
+struct dirlog {
+	ushort status;		            /* 0 = NEWDIR, 1 = NUKE, 2 = UNNUKE, 3 = DELETED */
 	time_t uptime;                  /* Creation time since epoch (man 2 time) */
 	ushort uploader;                /* The userid of the creator */
 	ushort group;                   /* The groupid of the primary group of the creator */
 	ushort files;                   /* The number of files inside the dir */
 	long bytes;                     /* The number of bytes in the dir */
 	char dirname[255];              /* The name of the dir (fullpath) */
-	struct dirlog132 *nxt;
-	struct dirlog132 *prv;
-};
-struct dirlog200 {
+	struct dirlog *nxt;
+	struct dirlog *prv;
+} __attribute__((deprecated));
+#else
+struct dirlog {
 	ushort status;                  /* 0 = NEWDIR, 1 = NUKE, 2 = UNNUKE, 3 = DELETED */
 	time_t uptime;                  /* Creation time since epoch (man 2 time) */
 	ushort uploader;                /* The userid of the creator */
@@ -56,9 +55,10 @@ struct dirlog200 {
 	ushort files;                   /* The number of files inside the dir */
 	unsigned long long bytes;       /* The number of bytes in the dir */
 	char dirname[255];              /* The name of the dir (fullpath) */
-	struct dirlog200 *nxt;          /* Unused, kept for compatibility reasons */
-	struct dirlog200 *prv;          /* Unused, kept for compatibility reasons */
+	struct dirlog *nxt;             /* Unused, kept for compatibility reasons */
+	struct dirlog *prv;             /* Unused, kept for compatibility reasons */
 };
+#endif
 
 struct nukelog {
 	ushort status;			/* 0 = NUKED, 1 = UNNUKED */
@@ -70,21 +70,8 @@ struct nukelog {
 	float bytes;			/* The number of bytes nuked */
 	char reason[60];		/* The nuke reason */
 	char dirname[255];		/* The dirname (fullpath) */
-	struct nukelog *nxt;	        /* Unused, kept for compatibility reasons */
-	struct nukelog *prv;	        /* Unused, kept for compatibility reasons */
-};
-
-struct ONLINE_GL132 {
-	char		tagline   [64];		/* The users tagline */
-	char		username  [24];		/* The username of the user */
-	char		status    [256];	/* The status of the user, idle, RETR, etc */
-	char		host      [256];	/* The host the user is coming from (with ident) */
-	char		currentdir[256];	/* The users current dir (fullpath) */
-	long		groupid;		/* The groupid of the users primary group */
-	time_t		login_time;		/* The login time since the epoch (man 2 time) */
-	struct timeval	tstart;			/* Replacement for last_update. */
-	unsigned long	bytes_xfer;		/* Bytes transferred this far. */
-	pid_t		procid;			/* The processor id of the process */
+	struct nukelog *nxt;	/* Unused, kept for compatibility reasons */
+	struct nukelog *prv;	/* Unused, kept for compatibility reasons */
 };
 
 enum {
@@ -100,7 +87,6 @@ void show_nukes(const ushort status, const char *pattern);
 char *trim(char *str);
 void usage(const char *binary);
 int wildcasecmp(const char *wild, const char *string);
-int get_glversion(int);
 
 int main(int argc, char *argv[])
 {
@@ -195,7 +181,7 @@ void load_sysconfig(const char *config_file)
 
 	while(fgets(work_buff, sizeof(work_buff), fp) != NULL) {
 		/* Clip out comments */
-		for(x = 0; x < (signed)(int)strlen(work_buff); x++) {
+		for(x = 0; x < (signed)strlen(work_buff); x++) {
 			if (work_buff[x] == '#') {
 				work_buff[x] = '\0';
 			}
@@ -210,7 +196,7 @@ void load_sysconfig(const char *config_file)
 
 		/* Parse lvalue */
 		y = 0;
-		for(x = 0; x < (signed)(int)strlen(work_buff) && work_buff[x] != ' '; x++) {
+		for(x = 0; x < (signed)strlen(work_buff) && work_buff[x] != ' '; x++) {
 			if (isprint(work_buff[x])) {
 				lvalue[y++] = work_buff[x];
 			}
@@ -219,7 +205,7 @@ void load_sysconfig(const char *config_file)
 		/* Parse rvalue */
 		y = 0;
 		x++;
-		for (; x < (signed)(int)strlen(work_buff); x++) {
+		for (; x < (signed)strlen(work_buff); x++) {
 			if (isprint(work_buff[x])) {
 				rvalue[y++] = work_buff[x];
 			}
@@ -233,34 +219,12 @@ void load_sysconfig(const char *config_file)
 			strncpy(rootpath, rvalue, sizeof(rootpath) - 1);
 			rootpath[sizeof(rootpath) - 1] = 0;
 		}
-		if (strcasecmp(lvalue, "ipc_key") == 0) {
-			strncpy(ipckey, rvalue, sizeof(ipckey) - 1);
-			ipckey[sizeof(ipckey) - 1] = 0;
-		}
 	}
 
 	fclose(fp);
 	return;
 }
 
-int get_glversion (int glversion)
-{
-	int shmid = -1;
-	struct shmid_ds shmval;
-
-	if ((shmid = shmget((key_t) strtoll(ipckey, NULL, 16), 0, 0)) == -1)
-		perror("shmget");
-	
-	if (shmctl(shmid, IPC_STAT, &shmval) == -1)
-		perror("shmctl");
-	
-	if (shmval.shm_segsz%sizeof(struct ONLINE_GL132))
-		glversion = 200;
-	else
-		glversion = 132;
-
-	return glversion;
-}
 
 /* trim - Trim whitespace from a string. */
 char *trim(char *str)
@@ -296,71 +260,48 @@ void show_newdirs(const char *pattern)
         printf("Failed to open dirlog (%s): %s\n", dirlog_path, strerror(errno));
         exit(1);
     } else {
-	struct dirlog132 buffer132;
-	struct dirlog200 buffer200;
+    	struct dirlog buffer;
     	char *p;
-	int i = 0, glversion = 0;
-
-	glversion = get_glversion(glversion);
+		int i = 0;
 
     	fseek(fp, 0L, SEEK_END);
     	while(i < max_results) {
-			if (glversion == 132) {
-				if (fseek(fp, -(sizeof(struct dirlog132)), SEEK_CUR) != 0)
-					break;
-				if (fread(&buffer132, sizeof(struct dirlog132), 1, fp) < 1)
-					break;
-				else
-					fseek(fp, -(sizeof(struct dirlog132)), SEEK_CUR);
-
-				/* Only display newdirs unless search_mode is specified (-s) */
-				if (!search_mode && buffer132.status != 0)
-					continue;
-
-				if (pattern != NULL) {
-					/* Pointer to the base of the directory path */
-					if (!match_full && (p = strrchr(buffer132.dirname, '/')) != NULL)
-						*p++;
-					else
-						p = buffer132.dirname;
-
-					if (!wildcasecmp(pattern, p))
-						continue;
-				}
-				/* Format: status|uptime|uploader|group|files|kilobytes|dirname */
-				printf("%d|%u|%d|%d|%d|%ld|",
-					buffer132.status, (unsigned int)buffer132.uptime, buffer132.uploader, buffer132.group,
-					buffer132.files, buffer132.bytes/1024);
-				puts(buffer132.dirname);
+			if (fseek(fp, -(sizeof(struct dirlog)), SEEK_CUR) != 0) {
+				break;
+			}
+			if (fread(&buffer, sizeof(struct dirlog), 1, fp) < 1) {
+				break;
 			} else {
-				if (fseek(fp, -(sizeof(struct dirlog200)), SEEK_CUR) != 0)
-					break;
-				if (fread(&buffer200, sizeof(struct dirlog200), 1, fp) < 1)
-					break;
-				else
-					fseek(fp, -(sizeof(struct dirlog200)), SEEK_CUR);
-
-				/* Only display newdirs unless search_mode is specified (-s) */
-				if (!search_mode && buffer200.status != 0)
-					continue;
-
-				if (pattern != NULL) {
-					/* Pointer to the base of the directory path */
-					if (!match_full && (p = strrchr(buffer200.dirname, '/')) != NULL)
-						*p++;
-					else
-						p = buffer200.dirname;
-					if (!wildcasecmp(pattern, p))
-						continue;
-				}
-
-				/* Format: status|uptime|uploader|group|files|kilobytes|dirname */
-				printf("%d|%u|%d|%d|%d|%lld|",
-					buffer200.status, (unsigned int)buffer200.uptime, buffer200.uploader, buffer200.group,
-					buffer200.files, buffer200.bytes/1024);
-				puts(buffer200.dirname);
+				fseek(fp, -(sizeof(struct dirlog)), SEEK_CUR);
 			}
 
+			/* Only display newdirs unless search_mode is specified (-s) */
+			if (!search_mode && buffer.status != 0) {
+				continue;
+			}
+
+			if (pattern != NULL) {
+				/* Pointer to the base of the directory path */
+				if (!match_full && (p = strrchr(buffer.dirname, '/')) != NULL) {
+					*p++;
+				} else {
+					p = buffer.dirname;
+				}
+				if (!wildcasecmp(pattern, p)) {
+					continue;
+				}
+			}
+			/* Format: status|uptime|uploader|group|files|kilobytes|dirname */
+#ifndef USE_GLFTPD132
+			printf("%d|%u|%d|%d|%d|%lld|",
+				buffer.status, (unsigned int)buffer.uptime, buffer.uploader, buffer.group,
+				buffer.files, buffer.bytes/1024);
+#else
+			printf("%d|%u|%d|%d|%d|%ld|",
+				buffer.status, (unsigned int)buffer.uptime, buffer.uploader, buffer.group,
+				buffer.files, buffer.bytes/1024);
+#endif
+			puts(buffer.dirname);
 			i++;
     	}
     	fclose(fp);

@@ -10,17 +10,12 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <ctype.h>
-#include "../../zipscript/conf/zsconfig.h"
-#include "zsconfig.defaults.h"
 
+#include "structonline.h"
 #include "sitewho.h"
 
 int		debug = 0;
 int		groups = 0, GROUPS = 0;
-
-static struct ONLINE_GL132 *online132;
-static struct ONLINE_GL200 *online200;
-static struct ONLINE_GL201 *online201;
 
 static struct ONLINE *user;
 static struct GROUP **group;
@@ -81,7 +76,7 @@ main(int argc, char **argv)
 
 	gnum = buffer_groups(glgroup, 0);
 
-	if (argc > 1 && (int)strlen(argv[1]) == 5) {
+	if (argc > 1 && strlen(argv[1]) == 5) {
 		if (!strcasecmp(argv[1], "--raw")) {
 			user_idx = 2;
 			raw_output = 1;
@@ -93,13 +88,12 @@ main(int argc, char **argv)
 			raw_output = 3;
 		}
 	}
-
 	if ((shmid = shmget((key_t) strtoll(ipckey, NULL, 16), 0, 0)) == -1) {
 		if (argc == 1 || (raw_output)) {
-			if (!raw_output && (int)strlen(header))
+			if (!raw_output && strlen(header))
 				show(header);
 			showtotals(raw_output);
-			if (!raw_output && (int)strlen(footer))
+			if (!raw_output && strlen(footer))
 				show(footer);
 		} else {
 			if (!raw_output)
@@ -109,12 +103,23 @@ main(int argc, char **argv)
 		}
 		exit(0);
 	}
+	if ((user = (struct ONLINE *)shmat(shmid, NULL, SHM_RDONLY)) == (struct ONLINE *)-1) {
+		if (!raw_output)
+			printf("Error!: (SHMAT) failed...");
+		else
+			printf("\"ERROR\" \"SHMAT Failed.\"\n");
+		exit(1);
+	}
 
-	copystruct(raw_output);
+	if (shmctl(shmid, IPC_STAT, &ipcbuf) == -1) {
+		perror("shmctl");
+		exit(EXIT_FAILURE);
+	}
 
-	if (argc == 1 && (!raw_output) && (int)strlen(header))
+	if (argc == 1 && (!raw_output) && strlen(header))
 		show(header);
 
+	(signed int)totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE));
 	if (raw_output < 2)
 		showusers((totusers > maxusers ? maxusers : totusers), argc - raw_output - 1, argv[user_idx], raw_output);
 	else if (argc == 1)
@@ -127,7 +132,7 @@ main(int argc, char **argv)
 
 	if (argc == 1 || raw_output == 3) {
 		showtotals(raw_output);
-		if (!raw_output && (int)strlen(footer))
+		if (!raw_output && strlen(footer))
 			show(footer);
 	} else {
 		if (!onlineusers) {
@@ -163,101 +168,6 @@ main(int argc, char **argv)
 		free(nocase);
 	if (count_hidden != def_count_hidden)
 		free(count_hidden);
-	if (user)
-		free(user);
-	return 0;
-}
-
-int copystruct(int raw_output) {
-	int	glversion = 0, numusers = 0;
-
-	if (shmctl(shmid, IPC_STAT, &ipcbuf) == -1) {
-		perror("shmctl");
-		exit(EXIT_FAILURE);
-	}
-
-	if (!(ipcbuf.shm_segsz%sizeof(struct ONLINE_GL132)))
-		glversion=132;
-	else if (!(ipcbuf.shm_segsz%sizeof(struct ONLINE_GL200)))
-		glversion=200;
-	else if (!(ipcbuf.shm_segsz%sizeof(struct ONLINE_GL201)))
-		glversion=201;
-	else {
-		printf("Error!: Unsupported version of glftpd or wrong ipckey!\n");
-		exit (1);
-	}
-
-	switch (glversion) {
-		case 132:
-			(signed int)totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE_GL132));
-			user = malloc(sizeof(struct ONLINE) * totusers);
-			memset(user, 0, sizeof(struct ONLINE) * totusers);
-			if ((online132 = (struct ONLINE_GL132 *)shmat(shmid, NULL, SHM_RDONLY)) == (struct ONLINE_GL132 *)-1) {
-				if (!raw_output)
-					printf("Error!: (SHMAT) failed...");
-				else
-					printf("\"ERROR\" \"SHMAT Failed.\"\n");
-				exit(1);
-			}
-			for (numusers = 0; numusers < totusers; numusers++) {
-				memcpy(user[numusers].tagline,    online132[numusers].tagline,    sizeof(online132[numusers].tagline));
-				memcpy(user[numusers].username,   online132[numusers].username,   sizeof(online132[numusers].username));
-				memcpy(user[numusers].status,     online132[numusers].status,     sizeof(online132[numusers].status));
-				memcpy(user[numusers].currentdir, online132[numusers].currentdir, sizeof(online132[numusers].currentdir));
-				user[numusers].groupid    = online132[numusers].groupid;
-				user[numusers].login_time = online132[numusers].login_time;
-				user[numusers].tstart     = online132[numusers].tstart;
-				user[numusers].bytes_xfer = online132[numusers].bytes_xfer;
-				user[numusers].procid     = online132[numusers].procid;
-			}
-			break;
-		case 200:
-			(signed int)totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE_GL200));
-			user = malloc(sizeof(struct ONLINE) * totusers);
-			memset(user, 0, sizeof(struct ONLINE) * totusers);
-			if ((online200 = (struct ONLINE_GL200 *)shmat(shmid, NULL, SHM_RDONLY)) == (struct ONLINE_GL200 *)-1) {
-				if (!raw_output)
-					printf("Error!: (SHMAT) failed...");
-				else
-					printf("\"ERROR\" \"SHMAT Failed.\"\n");
-				exit(1);
-			}
-			for (numusers = 0; numusers < totusers; numusers++) {
-				memcpy(user[numusers].tagline  ,  online200[numusers].tagline,    sizeof(online200[numusers].tagline));
-				memcpy(user[numusers].username,   online200[numusers].username,   sizeof(online200[numusers].username));
-				memcpy(user[numusers].status,     online200[numusers].status,     sizeof(online200[numusers].status));
-				memcpy(user[numusers].currentdir, online200[numusers].currentdir, sizeof(online200[numusers].currentdir));
-				user[numusers].groupid    = online200[numusers].groupid;
-				user[numusers].login_time = online200[numusers].login_time;
-				user[numusers].tstart     = online200[numusers].tstart;
-				user[numusers].bytes_xfer = online200[numusers].bytes_xfer;
-				user[numusers].procid     = online200[numusers].procid;
-			}
-			break;
-		case 201:
-			(signed int)totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE_GL201));
-			user = malloc(sizeof(struct ONLINE) * totusers);
-			memset(user, 0, sizeof(struct ONLINE) * totusers);
-			if ((online201 = (struct ONLINE_GL201 *)shmat(shmid, NULL, SHM_RDONLY)) == (struct ONLINE_GL201 *)-1) {
-				if (!raw_output)
-					printf("Error!: (SHMAT) failed...");
-				else
-					printf("\"ERROR\" \"SHMAT Failed.\"\n");
-				exit(1);
-			}
-			for (numusers = 0; numusers < totusers; numusers++) {
-				memcpy(user[numusers].tagline  ,  online201[numusers].tagline,    sizeof(online201[numusers].tagline));
-				memcpy(user[numusers].username,   online201[numusers].username,   sizeof(online201[numusers].username));
-				memcpy(user[numusers].status,     online201[numusers].status,     sizeof(online201[numusers].status));
-				memcpy(user[numusers].currentdir, online201[numusers].currentdir, sizeof(online201[numusers].currentdir));
-				user[numusers].groupid    = online201[numusers].groupid;
-				user[numusers].login_time = online201[numusers].login_time;
-				user[numusers].tstart     = online201[numusers].tstart;
-				user[numusers].bytes_xfer = online201[numusers].bytes_xfer;
-				user[numusers].procid     = online201[numusers].procid;
-			}
-			break;
-	}
 	return 0;
 }
 
@@ -274,7 +184,7 @@ filesize(char *filename)
 {
 	char           *file;
 
-	file = malloc((int)strlen(glpath) + (int)strlen(filename) + 2);
+	file = malloc(strlen(glpath) + strlen(filename) + 2);
 	sprintf(file, "%s/%s", glpath, filename);
 	if (stat(file, &filestat) != 0) {
 		if (!strcmp(filename, "")) {
@@ -329,7 +239,7 @@ matchpath(char *instr, char *path)
 	if (!strncasecmp(nocase, "true", 4))
 		ncase = 1;
 
-	k = (int)strlen(instr) + 1;
+	k = strlen(instr) + 1;
 	for (cnt = pos = 0; cnt < k; cnt++) {
 		if (instr[cnt] == ' ' || instr[cnt] == 0) {
 			if (ncase == 0 && !strncmp(instr + cnt - pos, path, pos - 1) && pos) {
@@ -348,8 +258,8 @@ short
 strcomp(char *instr, char *searchstr)
 {
 	int		cnt, pos, ncase = 0;
-	int		k = (int)strlen(searchstr);
-	int		l = (int)strlen(instr) + 1;
+	int		k = strlen(searchstr);
+	int		l = strlen(instr) + 1;
 
 	if (!strncasecmp(nocase, "true", 4))
 		ncase = 1;
@@ -411,7 +321,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 			else
 				noshow++;
 		}
-		if (noshow == 0 && (int)strlen(mpaths)) {
+		if (noshow == 0 && strlen(mpaths)) {
 			if (maskchar == ' ' && matchpath(mpaths, user[x].currentdir)) {
 				if (showall)
 					maskchar = '*';
@@ -632,8 +542,8 @@ compareflags(char *flags, char *checkflags)
 
 	userflags = (flags != NULL ? flags : "3");
 
-	for (n1 = 0; n1 < (unsigned int)strlen(userflags); n1++) {
-		for (n2 = 0; n2 < (unsigned int)strlen(checkflags); n2++) {
+	for (n1 = 0; n1 < strlen(userflags); n1++) {
+		for (n2 = 0; n2 < strlen(checkflags); n2++) {
 			if (*(userflags + n1) == *(checkflags + n2))
 				return 1;
 		}
@@ -652,7 +562,7 @@ readconfig(char *arg)
 			e_w = 0,/* End of first word */
 			l_b = 0;/* Beginning of the line */
 
-	n = (int)strlen(arg);
+	n = strlen(arg);
 	while (arg[n] != '/' && n > 0)
 		n--;
 
@@ -758,7 +668,7 @@ show(char *filename)
 	char		buf       [128];
 	char           *fname = 0;
 
-	fname = malloc((int)strlen(glpath) + (int)strlen(filename) + 2);
+	fname = malloc(strlen(glpath) + strlen(filename) + 2);
 	sprintf(fname, "%s/%s", glpath, filename);
 	if (!check_path(fname))
 		sprintf(fname, "/%s", filename);
@@ -830,7 +740,7 @@ buffer_groups(char *groupfile, int setfree)
 		return 0;
         }
 
-	f_name = malloc((int)strlen(glpath) + (int)strlen(groupfile) + 2);
+	f_name = malloc(strlen(glpath) + strlen(groupfile) + 2);
 	sprintf(f_name, "%s/%s", glpath, groupfile);
 	if (!check_path(f_name))
 		sprintf(f_name, "/%s", groupfile);

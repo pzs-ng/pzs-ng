@@ -4,7 +4,7 @@ RM=@RM@ -f
 MAKE=@MAKE@
 INSTALL=@INSTALL@
 
-CFLAGS=@M32@ @CFLAGS@ @ALTWHO@ -I../../ -I../zipscript/include/
+CFLAGS=@M32@ @CFLAGS@ @GLVERSION@ @ALTWHO@
 
 all: sitewho
 
