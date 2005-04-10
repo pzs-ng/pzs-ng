@@ -119,7 +119,7 @@ main(int argc, char **argv)
 	if (argc == 1 && (!raw_output) && strlen(header))
 		show(header);
 
-	(signed int)totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE));
+	totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE));
 	if (raw_output < 2)
 		showusers((totusers > maxusers ? maxusers : totusers), argc - raw_output - 1, argv[user_idx], raw_output);
 	else if (argc == 1)
