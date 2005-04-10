@@ -764,7 +764,6 @@ proc flagcheck {currentflags needflags} {
 }
 
 proc rightscheck {rights user group flags} {
-	set retval 0
 	foreach right $rights {
 		set prefix [string index $right 0]
 		if {[string equal "!" $prefix]} {
@@ -778,22 +777,18 @@ proc rightscheck {rights user group flags} {
 			} elseif {[string equal "=" $prefix]} {
 				set right [string range $right 1 end]
 				if {[string match $right $group]} {return 0}
-			} elseif {[flagcheck $flags $right]} {
-				return 0
-			}
+			} elseif {[flagcheck $flags $right]} {return 0}
 
 		## Regular matching
 		} elseif {[string equal "-" $prefix]} {
 			set right [string range $right 1 end]
-			if {[string match $right $user]} {set retval 1}
+			if {[string match $right $user]} {return 1}
 		} elseif {[string equal "=" $prefix]} {
 			set right [string range $right 1 end]
-			if {[string match $right $group]} {set retval 1}
-		} elseif {[flagcheck $flags $right]} {
-			set retval 1
-		}
+			if {[string match $right $group]} {return 1}
+		} elseif {[flagcheck $flags $right]} {return 1}
 	}
-	return $retval
+	return 0
 }
 
 proc ng_invitechan {nick chan} {
