@@ -7,7 +7,7 @@
  *
  * gcc -O2 -W -Wall -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE \
  *  -I/usr/local/include/tcl8.4/ -I../../zipscript/include/ \
- *  -c -o glwho.o glwho.c
+ *  -DGLVERSION=201 -I ../../sitewho -c -o glwho.o glwho.c
  * ld -o glwho.so glwho.o -G
  *
  * Edit the path to where tcl.h is if needed. Load the module in a tcl
@@ -18,6 +18,7 @@
 /* static defines for these things isn't superb */
 #define GLGROUPFILE "/glftpd/etc/group"
 #define GLROOT "/glftpd"
+#define KEY 0x0000DEAD
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,10 +31,9 @@
 #include <sys/shm.h>
 #include <ctype.h>
 #include <tcl.h>
+#include <time.h>
 
 #include "structonline.h"
-#include "../../zipscript/conf/zsconfig.h"
-#include "zsconfig.defaults.h"
 
 struct GROUP {
 	char g[24];
@@ -55,14 +55,14 @@ int Glwho_Init(Tcl_Interp *interp)
 {
 
 	/* create the basic "gl" command */
-	Tcl_CreateCommand(interp, "gl", GlCmd, (ClientData)0, (Tcl_CmdDeleteProc*)NULL);
+	Tcl_CreateCommand((Tcl_Interp *)interp, (CONST char *)"gl", (Tcl_CmdProc *)GlCmd, (ClientData)0, (Tcl_CmdDeleteProc *)NULL);
 	return TCL_OK;
 
 }
 
 int GlCmd(ClientData gl_word, Tcl_Interp *interp, int argc, char **argv)
 {
-	
+
 	/* check the argument(s) and execute their functions */
 	if (argc <= 1) {
 		Tcl_SetResult(interp, "Usage: gl bw|raw|user <uname>|version", TCL_STATIC);
@@ -90,16 +90,16 @@ struct ONLINE *getShmem(struct shmid_ds *shminfo)
 	int id;
 	struct ONLINE *shm;
 	
-	if ((id = shmget(KEY, 0, 0)) < 0) return NULL;
+	if ((id = shmget(KEY, 0, 0)) < 0) return 0;
 	
 	if (shmctl(id, IPC_STAT, shminfo) < 0) {
 		perror("shmctl");
-		return NULL;
+		return 0;
 	}
 
 	if ((shm = shmat(id, NULL, SHM_RDONLY)) == (struct ONLINE *)-1) {
 		perror("shmat");
-		return NULL;
+		return 0;
 	}
 
 	return shm;
@@ -182,12 +182,12 @@ int gl_raw()
 	/* this chunk of shit should be put somewhere else perhaps */
 	if ((grpfile = fopen(GLGROUPFILE, "r")) == NULL) {
 		perror("fopen");
-		return NULL;
+		return 0;
 	}
 
-	if (stat(GROUPFILE, &sb) == -1) {
+	if (stat(GLGROUPFILE, &sb) == -1) {
 		perror("stat");
-		return NULL;
+		return 0;
 	}
 
 	buf = malloc(sb.st_size);
