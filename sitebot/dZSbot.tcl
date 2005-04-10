@@ -282,6 +282,7 @@ proc readlog {} {
 			if {![catch {set handle [open $logpath r]} error]} {
 				seek $handle $lastread($logid)
 				set data [read -nonewline $handle]
+				set logsize [tell $handle]
 				close $handle
 
 				foreach line [split $data "\n"] {
