@@ -189,7 +189,7 @@ int copystruct(int raw_output) {
 
 	switch (glversion) {
 		case 132:
-			(signed int)totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE_GL132));
+			totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE_GL132));
 			user = malloc(sizeof(struct ONLINE) * totusers);
 			memset(user, 0, sizeof(struct ONLINE) * totusers);
 			if ((online132 = (struct ONLINE_GL132 *)shmat(shmid, NULL, SHM_RDONLY)) == (struct ONLINE_GL132 *)-1) {
@@ -212,7 +212,7 @@ int copystruct(int raw_output) {
 			}
 			break;
 		case 200:
-			(signed int)totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE_GL200));
+			totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE_GL200));
 			user = malloc(sizeof(struct ONLINE) * totusers);
 			memset(user, 0, sizeof(struct ONLINE) * totusers);
 			if ((online200 = (struct ONLINE_GL200 *)shmat(shmid, NULL, SHM_RDONLY)) == (struct ONLINE_GL200 *)-1) {
@@ -235,7 +235,7 @@ int copystruct(int raw_output) {
 			}
 			break;
 		case 201:
-			(signed int)totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE_GL201));
+			totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE_GL201));
 			user = malloc(sizeof(struct ONLINE) * totusers);
 			memset(user, 0, sizeof(struct ONLINE) * totusers);
 			if ((online201 = (struct ONLINE_GL201 *)shmat(shmid, NULL, SHM_RDONLY)) == (struct ONLINE_GL201 *)-1) {
