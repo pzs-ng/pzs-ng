@@ -35,7 +35,7 @@ char           *header = 0, *footer = 0, *glpath = 0, *mpaths = 0, *husers = 0, 
 	       *def_count_hidden = "true", *count_hidden, *def_header = "/ftp-data/misc/who.head",
 	       *def_footer = "/ftp-data/misc/who.foot";
 int		maxusers = 20 , showall = 0, uploads = 0, downloads = 0, onlineusers = 0, browsers = 0, idlers = 0, chidden = 1,
-		idle_barrier = -1, def_idle_barrier = 30, threshold = -1, def_threshold = 1024;
+		idle_barrier = -1, def_idle_barrier = 30, threshold = -1, def_threshold = 1024, glversion = 0;
 double		total_dn_speed = 0, total_up_speed = 0;
 int		totusers = 0;
 
@@ -142,6 +142,28 @@ main(int argc, char **argv)
 		}
 #endif
 	}
+
+	if (debug) {
+		printf(	"\n----- DEBUG: CALCED VARIABLES START: -----\n" \
+			"header=\"%s\"\n" \
+			"footer=\"%s\"\n" \
+			"mpaths=\"%s\"\n" \
+			"husers=\"%s\"\n" \
+			"hgroups=\"%s\"\n" \
+			"glpath=\"%s\"\n" \
+			"ipckey=\"%s\"\n" \
+			"glgroup=\"%s\"\n" \
+			"nocase=\"%s\"\n" \
+			"count_hidden=\"%s\"\n" \
+			"showall=\"%d\"\n" \
+			"maxusers=\"%d\"\n" \
+			"idle_barrier=\"%d\"\n" \
+			"threshold=\"%d\"\n" \
+			"glversion=\"%d\"\n" \
+			"----- DEBUG: CALCED VARIABLES END: -----\n",
+		header, footer, mpaths, husers, hgroups, glpath, ipckey, glgroup, nocase, count_hidden, showall, maxusers, idle_barrier, threshold, glversion);
+	}
+
 	buffer_groups(glgroup, gnum);
 	if (footer != def_footer)
 		free(footer);
@@ -169,26 +191,34 @@ main(int argc, char **argv)
 }
 
 int copystruct(int raw_output) {
-	int	glversion = 0, numusers = 0;
+	int	numusers = 0;
 
 	if (shmctl(shmid, IPC_STAT, &ipcbuf) == -1) {
 		perror("shmctl");
 		exit(EXIT_FAILURE);
 	}
 
-	if (!(ipcbuf.shm_segsz%sizeof(struct ONLINE_GL132)))
-		glversion=132;
-	else if (!(ipcbuf.shm_segsz%sizeof(struct ONLINE_GL200)))
-		glversion=200;
-	else if (!(ipcbuf.shm_segsz%sizeof(struct ONLINE_GL201)))
-		glversion=201;
-	else {
-		printf("Error!: Unsupported version of glftpd or wrong ipckey!\n");
-		exit (1);
+	if (glversion < 1 || glversion > 3 ) {
+		glversion = 0;
+		if (!(ipcbuf.shm_segsz%sizeof(struct ONLINE_GL132)))
+			glversion=1;
+		if (!(ipcbuf.shm_segsz%sizeof(struct ONLINE_GL200)))
+			glversion=(glversion * 5) + 2;
+		if (!(ipcbuf.shm_segsz%sizeof(struct ONLINE_GL201)))
+			glversion=(glversion * 5) + 3;
+		if (!glversion || glversion > 3) {
+			printf("Error!: Autodetect failed - Unsupported version of glftpd, multiple matches  or wrong ipckey!\n");
+			printf("Error!: Try to set the glversion in sitewho.conf\n");
+			exit (1);
+		}
 	}
 
 	switch (glversion) {
-		case 132:
+		case 1:
+			if (ipcbuf.shm_segsz%sizeof(struct ONLINE_GL132)) {
+				printf("Error!: Seems you have configged wrong glversion.\n");
+				exit (1);
+			}
 			totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE_GL132));
 			user = malloc(sizeof(struct ONLINE) * totusers);
 			memset(user, 0, sizeof(struct ONLINE) * totusers);
@@ -211,7 +241,11 @@ int copystruct(int raw_output) {
 				user[numusers].procid     = online132[numusers].procid;
 			}
 			break;
-		case 200:
+		case 2:
+			if (ipcbuf.shm_segsz%sizeof(struct ONLINE_GL200)) {
+				printf("Error!: Seems you have configged wrong glversion.\n");
+				exit (1);
+			}
 			totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE_GL200));
 			user = malloc(sizeof(struct ONLINE) * totusers);
 			memset(user, 0, sizeof(struct ONLINE) * totusers);
@@ -234,7 +268,11 @@ int copystruct(int raw_output) {
 				user[numusers].procid     = online200[numusers].procid;
 			}
 			break;
-		case 201:
+		case 3:
+			if (ipcbuf.shm_segsz%sizeof(struct ONLINE_GL201)) {
+				printf("Error!: Seems you have configged wrong glversion.\n");
+				exit (1);
+			}
 			totusers = (ipcbuf.shm_segsz / sizeof(struct ONLINE_GL201));
 			user = malloc(sizeof(struct ONLINE) * totusers);
 			memset(user, 0, sizeof(struct ONLINE) * totusers);
@@ -712,6 +750,8 @@ readconfig(char *arg)
 						idle_barrier = atoi(tmp);
 					else if (!memcmp(buf + l_b, "speed_threshold", 15))
 						threshold = atoi(tmp);
+					else if (!memcmp(buf + l_b, "glversion", 5))
+						glversion = atoi(tmp);
 					else if (!memcmp(buf + l_b, "debug", 5))
 						debug = atoi(tmp);
 					free(tmp);
@@ -743,7 +783,24 @@ readconfig(char *arg)
 	free(buf);
 
 	if (debug) {
-		printf("DEBUG: header=\"%s\"\nDEBUG: footer=\"%s\"\nDEBUG: mpaths=\"%s\"\nDEBUG: husers=\"%s\"\nDEBUG: hgroups=\"%s\"\nDEBUG: glpath=\"%s\"\nDEBUG: ipckey=\"%s\"\nDEBUG: glgroup=\"%s\"\nDEBUG: nocase=\"%s\"\nDEBUG: count_hidden=\"%s\"\nDEBUG: showall=\"%d\"\nDEBUG: maxusers=\"%d\"\nDEBUG: idle_barrier=\"%d\"\nDEBUG: threshold=\"%d\"\n", header, footer, mpaths, husers, hgroups, glpath, ipckey, glgroup, nocase, count_hidden, showall, maxusers, idle_barrier, threshold);
+		printf(	"\n----- DEBUG: READ VARIABLES START: -----\n" \
+			"header=\"%s\"\n" \
+			"footer=\"%s\"\n" \
+			"mpaths=\"%s\"\n" \
+			"husers=\"%s\"\n" \
+			"hgroups=\"%s\"\n" \
+			"glpath=\"%s\"\n" \
+			"ipckey=\"%s\"\n" \
+			"glgroup=\"%s\"\n" \
+			"nocase=\"%s\"\n" \
+			"count_hidden=\"%s\"\n" \
+			"showall=\"%d\"\n" \
+			"maxusers=\"%d\"\n" \
+			"idle_barrier=\"%d\"\n" \
+			"threshold=\"%d\"\n" \
+			"glversion=\"%d\"\n" \
+			"----- DEBUG: READ VARIABLES END: -----\n\n",
+		header, footer, mpaths, husers, hgroups, glpath, ipckey, glgroup, nocase, count_hidden, showall, maxusers, idle_barrier, threshold, glversion);
 	}
 
 //	if (filesize("") == 1)

@@ -12,6 +12,7 @@ ipc_key = 0x0000DEAD
 grp_path = /etc/group
 idle_barrier = 30
 speed_threshold = 1024
+glversion = 0
 debug = 0
 
 ##################################################################################################################
@@ -31,9 +32,9 @@ debug = 0
 # count_hidden = <true|false> ... set to 'true' to count hidden users when displaying the total stats.
 # ipc_key = 0x0000DEAD ... ipc-key used in glftpd
 # grp_path = /etc/group ... (chroot'ed) path to glftpd's groupfile
-# idle_barrier = 30 ... when a user has been idle for more than this number, he is considered an idler. if less,
-#                       he is considered a browser.
+# idle_barrier = 30 ... when a user has been idle for more than this number, he is considered an idler. if less, he is considered a browser.
 # speed_threshold = 1024 ... threshold (in KB/s) for changing between KB/s and MB/s in the output.
+# glversion = 0|1|2|3 ... define what version of the ONLINE struct your glftpd version is using. 0=autodetect, 1=gl v1.32 or less, 2=gl v2.00, 3=gl v2.01 or higher.
 # debug = 0|1 ... if set to 1 debug output is shown. Should not be used unless needed.
 #
 # Sitewho takes several args:
