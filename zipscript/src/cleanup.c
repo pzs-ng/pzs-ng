@@ -37,14 +37,18 @@ int
 main(int argc, char **argv)
 {
 
-	int		setfree = 1;
-	char		startdir[PATH_MAX] = "/";
+	int		setfree = 1, days = 0;
+	char		startdir[PATH_MAX] = "/", days_char[4];
 
 	if (argc > 1) {
 		if (!strncmp(argv[1], "/", 1)) {
 			setfree = 0;
-			printf("PZS-NG Cleanup: Running script in view mode only.\n");
 			sprintf(startdir, argv[1]);
+		} else if (!strncmp(argv[1], "--days=", 7)) {
+			bzero(days_char, 4);
+			memcpy(days_char, argv[1] + 7, 3);
+			days=atol(days_char);
+			printf("PZS-NG Cleanup: days to cleanup: %i\n", days);
 		} else {
 			if (getcwd(startdir, PATH_MAX) == NULL) {
 				printf("PZS-NG Cleanup: ERROR - Failed to getcwd.\n");
@@ -54,9 +58,12 @@ main(int argc, char **argv)
 		}
 	}
 
-	cleanup(cleanupdirs, cleanupdirs_dated, setfree, startdir);
+	if (!days && !setfree)
+		printf("PZS-NG Cleanup: Running script in view mode only.\n");
 
-	if (argc < 2 || always_scan_audio_syms == TRUE) {
+	cleanup(cleanupdirs, cleanupdirs_dated, setfree, startdir, days);
+
+	if (argc < 2 || always_scan_audio_syms == TRUE || days) {
 
 #if ( audio_genre_sort == TRUE )
 		scandirectory((char *)audio_genre_path, setfree);
@@ -242,7 +249,7 @@ checklink(char *path, char *link_, int setfree)
 }
 
 void 
-cleanup(char *pathlist, char *pathlist_dated, int setfree, char *startpath)
+cleanup(char *pathlist, char *pathlist_dated, int setfree, char *startpath, int days)
 {
 	char		data_day[PATH_MAX],
 			path[PATH_MAX];
@@ -258,7 +265,7 @@ cleanup(char *pathlist, char *pathlist_dated, int setfree, char *startpath)
 		}
 
 
-	if (((int)strlen(startpath) > 1) && (setfree == 1)) {
+	if (((int)strlen(startpath) > 1) && (setfree == 1) && !days) {
 		/* Scanning current dir only */
 		incomplete_cleanup(startpath, setfree);
 	} else {
@@ -271,7 +278,9 @@ cleanup(char *pathlist, char *pathlist_dated, int setfree, char *startpath)
 				break;
 			newentry++;
 		}
-		while (day_back <= (days_back_cleanup - 1)) {
+		if (!days)
+			days = days_back_cleanup;
+		while (day_back <= (days - 1)) {
 			newentry = pathlist_dated;
 			t_day = time(NULL) - (60 * 60 * 24 * day_back);	/* 86400 seconds back == * 1 day */
 			time_day = localtime_r(&t_day, time_day);

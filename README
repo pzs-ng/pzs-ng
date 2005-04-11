@@ -339,7 +339,10 @@ scripts. Here's a short description of each compiled binary:
     instance, in which case it will only scan the current dir. You may also run
     it in 'view' mode, by giving it rootpath to glftpd. This will only list
     incomplete dirs, not remove any links.
+    You can override the days_back_cleanup config option by providing a special
+    commandswitch (--days=XXX) where XXX is the number of days.
     How to test: chroot /glftpd /bin/cleanup
+                 chroot /glftpd /bin/cleanup --days=XXX
                  (in chroot, in a site dir) /bin/glftpd something
                  /glftpd/bin/cleanup /glftpd
 
