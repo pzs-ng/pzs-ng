@@ -758,6 +758,11 @@ main(int argc, char **argv)
 				if (s_crc == 0 && g.v.misc.sfv_match) {
 					d_log("zipscript-c: File was found in sfv, but had no crc.\n");
 					s_crc = crc;
+					update_sfvdata(g.l.sfv, g.v.file.name, s_crc);
+#if (smart_sfv_write && sfv_cleanup)
+					sfvdata_to_sfv(g.l.sfv, findfileext(dir, ".sfv"));
+#endif
+
 				}
 #if (sfv_cleanup == TRUE && sfv_cleanup_lowercase == TRUE)
 				if (check_dupefile(dir, g.v.file.name)) {

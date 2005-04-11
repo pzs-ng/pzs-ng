@@ -915,8 +915,9 @@ read_bitrate_in_race(const char *path, struct VARS *raceI)
 			d_log("read_bitrate_in_race: read(%s): %s\n", path, strerror(errno));
 			exit(EXIT_FAILURE);
 		}
+		if (rd.bitrate)
+			count++;
 		bitrate = bitrate + rd.bitrate;
-		count++;
 	}
 	close(fd);
 	return bitrate / count;
