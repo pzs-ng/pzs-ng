@@ -708,8 +708,8 @@ main(int argc, char **argv)
 				}
 
 				d_log("zipscript-c: DEBUG: crc: %X - s_crc: %X - match:%d\n", crc, s_crc, g.v.misc.sfv_match);
-				if (s_crc != crc) {
-					if (s_crc == 0) {
+				if (s_crc != crc && !(s_crc == 0 && g.v.misc.sfv_match)) {
+					if (s_crc == 0 && !g.v.misc.sfv_match) {
 						if (!strcomp(allowed_types, fileext)) {
 #if (allow_files_not_in_sfv == TRUE)
 							d_log("zipscript-c: Filename was not found in the SFV, but allowing anyway\n");
@@ -754,6 +754,10 @@ main(int argc, char **argv)
 						writelog(&g, error_msg, bad_file_crc_type);
 					exit_value = 2;
 					break;
+				}
+				if (s_crc == 0 && g.v.misc.sfv_match) {
+					d_log("zipscript-c: File was found in sfv, but had no crc.\n");
+					s_crc = crc;
 				}
 #if (sfv_cleanup == TRUE && sfv_cleanup_lowercase == TRUE)
 				if (check_dupefile(dir, g.v.file.name)) {
