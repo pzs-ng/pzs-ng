@@ -177,7 +177,7 @@ sfvdata_to_sfv(const char *source, const char *dest)
 		return;
 	}
 
-	d_log("Writing new sfv file (%s)\n", dest);
+	d_log("sfvdata_to_sfv: Writing new sfv file (%s)\n", dest);
 	while (read(infd, &sd, sizeof(SFVDATA))) {
 		
 		if (sd.fmatch) {
@@ -195,7 +195,10 @@ sfvdata_to_sfv(const char *source, const char *dest)
 	close(outfd);
 	close(infd);
 
-	rename(".tmpsfv", dest);	
+	if (!dest || !strlen(dest))
+		rename(".tmpsfv", "pzs-ng.sfv");
+	else
+		rename(".tmpsfv", dest);	
 }
 
 /*

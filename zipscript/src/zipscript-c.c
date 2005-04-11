@@ -573,8 +573,12 @@ main(int argc, char **argv)
 			}
 			d_log("zipscript-c: Reading file count from SFV\n");
 			readsfv(g.l.sfv, &g.v, 0);
-			
 
+#if (smart_sfv_write && sfv_cleanup)
+			d_log("zipscript-c: Rewriting sfv file according to smart_sfv_write\n");
+			sfvdata_to_sfv(g.l.sfv, g.v.file.name);
+#endif
+			
 			if (g.v.total.files == 0) {
 				d_log("zipscript-c: SFV seems to have no files of accepted types, or has errors.\n");
 				sprintf(g.v.misc.error_msg, EMPTY_SFV);
@@ -692,16 +696,14 @@ main(int argc, char **argv)
 					s_crc = calc_crc32(g.v.file.name);
 					update_sfvdata(g.l.sfv, g.v.file.name, s_crc);
   #if (smart_sfv_write && sfv_cleanup)
-					/* Write new sfv - this should be changed later, so it overwrites the current sfv in the dir */
-					sfvdata_to_sfv(g.l.sfv, "pzs-ng.sfv");
+					sfvdata_to_sfv(g.l.sfv, findfileext(dir, ".sfv"));
   #endif
 				}
 #endif
 				if (!g.v.misc.sfv_match) {
 					update_sfvdata(g.l.sfv, g.v.file.name, s_crc);
 #if (smart_sfv_write && sfv_cleanup)
-					/* Write new sfv - this should be changed later, so it overwrites the current sfv in the dir */
-					sfvdata_to_sfv(g.l.sfv, "pzs-ng.sfv");
+					sfvdata_to_sfv(g.l.sfv, findfileext(dir, ".sfv"));
 #endif
 				}
 
