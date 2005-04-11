@@ -888,6 +888,40 @@ write_bitrate_in_race(const char *path, struct VARS *raceI)
 	close(fd);
 }
 
+int
+read_bitrate_in_race(const char *path, struct VARS *raceI)
+{
+	int		fd, count, ret, bitrate;
+
+	RACEDATA	rd;
+
+	if ((fd = open(path, O_RDONLY)) == -1) {
+		if (errno != EEXIST) {
+			d_log("read_bitrate_in_race: open(%s): %s\n", path, strerror(errno));
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	if (!update_lock(raceI, 1, 0)) {
+		d_log("read_bitrate_in_race: Lock is suggested removed. Will comply and exit\n");
+		remove_lock(raceI);
+		exit(EXIT_FAILURE);
+	}
+
+	count = 0;
+	bitrate = 0;
+	while ((ret = read(fd, &rd, sizeof(RACEDATA)))) {
+		if (ret == -1) {
+			d_log("read_bitrate_in_race: read(%s): %s\n", path, strerror(errno));
+			exit(EXIT_FAILURE);
+		}
+		bitrate = bitrate + rd.bitrate;
+		count++;
+	}
+	close(fd);
+	return bitrate / count;
+}
+
 
 /* remove file entry from racedata file */
 void

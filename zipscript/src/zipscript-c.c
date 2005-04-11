@@ -848,6 +848,7 @@ main(int argc, char **argv)
 				d_log("zipscript-c: Trying to read audio header and tags\n");
 				get_mpeg_audio_info(g.v.file.name, &g.v.audio);
 				write_bitrate_in_race(g.l.race, &g.v);
+				sprintf(g.v.audio.bitrate, "%i", read_bitrate_in_race(g.l.race, &g.v));
 #if ( exclude_non_sfv_dirs )
 				if (g.v.misc.write_log == TRUE) {
 #endif

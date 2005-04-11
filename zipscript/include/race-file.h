@@ -49,6 +49,7 @@ extern short clear_file(const char *, char *);
 extern short match_file(char *, char *);
 extern void writerace(const char *, struct VARS *, unsigned int, unsigned char);
 extern void write_bitrate_in_race(const char *, struct VARS *);
+extern int read_bitrate_in_race(const char *, struct VARS *);
 extern void remove_from_race(const char *, const char *);
 extern int verify_racedata(const char *);
 extern int create_lock(struct VARS *, const char *, short int, short int, short int);
