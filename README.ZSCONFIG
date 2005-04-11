@@ -397,6 +397,12 @@ sfv_cleanup_crlf <TRUE|FALSE>
 	to TRUE, using windows style (<cr><lf>).
 	Default: TRUE
 
+smart_sfv_write <TRUE|FALSE>
+	If the original sfv had bad entries, rewrite it to only contain the
+	good ones. If false marked bad files are uploaded, the sfv is also
+	updated.
+	Default: FALSE
+
 deny_double_sfv <TRUE|FALSE>
 	With sfv releases, there should be only one sfv file allowed. This can
 	be done two ways - either by force or by being 'smart'. Setting this

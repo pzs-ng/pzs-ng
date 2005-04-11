@@ -155,6 +155,7 @@ update_sfvdata(const char *path, const char *filename, const unsigned int crc)
 	write(fd, &sd, sizeof(SFVDATA));
 	
 	close(fd);
+
 }
 
 /* convert the sfvdata file source to the sfv dest */
@@ -171,27 +172,28 @@ sfvdata_to_sfv(const char *source, const char *dest)
 		return;
 	}
 
-	if ((outfd = open(source, O_CREAT | O_WRONLY, 0644)) == -1) {
+	if ((outfd = open(".tmpsfv", O_CREAT | O_WRONLY, 0644)) == -1) {
 		d_log("sfvdata_to_sfv: Failed to open (.tmpsfv): %s\n", strerror(errno));
 		return;
 	}
 
+	d_log("Writing new sfv file (%s)\n", dest);
 	while (read(infd, &sd, sizeof(SFVDATA))) {
 		
-		sprintf(crctmp, "%.8x", sd.crc32);
-		
-		write(outfd, sd.fname, NAME_MAX);
-		write(outfd, " ", 1);
-		write(outfd, &crctmp, 8),
+		if (sd.fmatch) {
+			sprintf(crctmp, "%.8x", sd.crc32);
+			write(outfd, sd.fname, strlen(sd.fname));
+			write(outfd, " ", 1);
+			write(outfd, &crctmp, 8),
 #if (sfv_cleanup_crlf == TRUE )
-		write(outfd, "\r", 1);
+			write(outfd, "\r", 1);
 #endif
-		write(outfd, "\n", 1);
-
+			write(outfd, "\n", 1);
+		}
 	}
 	
-	close(infd);
 	close(outfd);
+	close(infd);
 
 	rename(".tmpsfv", dest);	
 }

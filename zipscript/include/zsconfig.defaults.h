@@ -396,6 +396,13 @@
 #endif
 
 /*
+ * Rewrite bad sfv files
+ */
+#ifndef smart_sfv_write
+#deinfe smart_sfv_write		FALSE
+#endif
+
+/*
  * Should new sfv files be denied in dir? If not, the new sfv will be checked
  * and denied/allowed depending on the content of the sfv.
  */
