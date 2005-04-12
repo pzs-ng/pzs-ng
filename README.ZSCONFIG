@@ -1155,6 +1155,16 @@ lock_optimize <NUMBER>
 	0 disable this feature.
 	Default: 1
 
+ignore_lock_timeout <TRUE|FALSE>
+	If a lock cannot be obtained within the time set in
+	max_seconds_wait_for_lock, the zipscript will usually exit with an
+	error. You can, however, bypass this so it checks the file as normal.
+	This can lead to race-conditions, however, so it's set to FALSE by
+	default. Usually such conditions should *never* occur, but may in
+	rare conditions, especially if 3rd party scripts/addons are being
+	used.
+	Default: FALSE
+
 allow_uid_change_in_ng_chown <TRUE|FALSE>
 	ng-chown is a binary that changes the uid/gid of files dirs. In
 	order for it to work you have to enable a few things. This variable
