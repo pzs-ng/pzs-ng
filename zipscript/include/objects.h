@@ -75,7 +75,7 @@ struct video {
 	char	       *fps;
 };
 
-struct VIDEO {
+struct avi {
 	int		height;
 	int		width;
 	double		fps;
@@ -149,6 +149,7 @@ struct VARS {
 	struct LOCK	lock;
 	unsigned char	section;
 	char		sectionname[128];
+	char		avi[1024];
 };
 
 struct LOCATIONS {

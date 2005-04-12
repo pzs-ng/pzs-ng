@@ -23,8 +23,9 @@
 #include "audio.h"
 #include "video.h"
 #include "objects.h"
+#include "avinfo.h"
 
-struct VIDEO vinfo;
+//struct avi vinfo;
 
 const char *fourcc(FOURCC tag)
 {
@@ -70,7 +71,7 @@ WORD get16(FILE *f)
 	return result;
 }
 
-int avinfo(char *filename, struct VIDEO video)
+int avinfo(char *filename, char *vidinfo)
 {
 	FILE *f;
 	FOURCC tag, list = 0, vids = 0, type = 0;
@@ -78,7 +79,7 @@ int avinfo(char *filename, struct VIDEO video)
 	WORD auds = 0, ch = 0;
 	double fps = 0;
 	int width = 0, height = 0, i;
-	char buf[1024], fourcc_vids[5];
+	char fourcc_vids[5];
 	const char *_vids = "Unknown codec", *_auds = "Unknown codec";
 	char *vidnfo = 0;
 	vidnfo = malloc(1024);
@@ -100,7 +101,7 @@ int avinfo(char *filename, struct VIDEO video)
 
 	if (tag != MKTAG('A','V','I',' '))
 		return 2;
-		error("Not an AVI file");
+//		error("Not an AVI file");
 
 	while (!feof(f)) {
 		tag = get32(f);
@@ -169,29 +170,29 @@ int avinfo(char *filename, struct VIDEO video)
 		fseek(f, size + (size & 1), SEEK_CUR);
 	}
 
-	for (i = 0; audio_formats[i].tag; i++)
-		if (audio_formats[i].tag == auds)
-			_auds = audio_formats[i].descr;
+	for (i = 0; aviaudio_formats[i].tag; i++)
+		if (aviaudio_formats[i].tag == auds)
+			_auds = aviaudio_formats[i].descr;
 
 	strcpy(fourcc_vids, fourcc(vids));
 
-	for (i = 0; video_formats[i].tag; i++)
-		if (!strcasecmp(video_formats[i].tag, fourcc_vids))
-			_vids = video_formats[i].descr;
+	for (i = 0; avideo_formats[i].tag; i++)
+		if (!strcasecmp(avideo_formats[i].tag, fourcc_vids))
+			_vids = avideo_formats[i].descr;
 
-	if (hz || ch || auds)
-		sprintf(buf,
-			"Video: %dx%d, %.2f fps, %s [%s] - "
-			"Audio: %ldHz, %dch, %s [0x%.4x]",
+//	if (hz || ch || auds)
+		sprintf(vidinfo,
+			"{%dx%d} {%.2f} {%s} {%s} "
+			"{%ld} {%d} {%s} {0x%.4x}",
 			width, height, fps, _vids, fourcc(vids),
 			hz, ch, _auds, auds);
-	else
+/*	else
 		sprintf(buf,
 			"Video: %dx%d, %.2f fps, %s [%s] - "
 			"No audio",
 			width, height, fps, _vids, fourcc(vids));
-
-	printf("%s\n", buf);
+*/
+//	printf("%s\n", buf);
 	return 0;
 }
 

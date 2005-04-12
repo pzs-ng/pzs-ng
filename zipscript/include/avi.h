@@ -58,8 +58,6 @@ typedef struct {
 	}  rcFrame;
 } AVISTREAMHEADER;
 
-#ifndef WIN32
-
 typedef struct { 
 	WORD  wFormatTag; 
 	WORD  nChannels; 
@@ -83,8 +81,6 @@ typedef struct {
 	DWORD   biClrUsed;
 	DWORD   biClrImportant;
 } BITMAPINFOHEADER;
-
-#endif
 
 /* stolen from libavcodec */
 

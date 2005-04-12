@@ -18,10 +18,10 @@
 #ifndef __AUDIO_H
 #define __AUDIO_H
 
-struct audio_format {
+struct aviaudio_format {
 	WORD tag;
 	const char *descr;
-} audio_formats[] = {
+} aviaudio_formats[] = {
 	{ 0x1, "PCM" },
 	{ 0x2, "MS ADPCM" },
 	{ 0x6, "aLaw PCM" },

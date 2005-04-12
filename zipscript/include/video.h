@@ -20,10 +20,10 @@
 
 /* fourcc list from from http://www.fourcc.org/ */
 
-struct video_format {
+struct avideo_format {
 	const char *tag;
 	const char *descr;
-} video_formats[] = {
+} avideo_formats[] = {
 	{ "3IV1", "3ivx" },
 	{ "3IV2", "3ivx" },
 	{ "8BPS", "Planar RGB Codec" },

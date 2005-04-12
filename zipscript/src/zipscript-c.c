@@ -34,6 +34,10 @@
 #include "complete.h"
 #include "crc.h"
 #include "ng-version.h"
+//#include "avi.h"
+//#include "audio.h"
+//#include "video.h"
+//#include "avinfo.h"
 
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
@@ -1008,8 +1012,11 @@ main(int argc, char **argv)
 				break;
 			case RTYPE_VIDEO:
 				d_log("zipscript-c: Trying to read video header\n");
-				if (!memcmp(fileext, "avi", 3))
+				if (!memcmp(fileext, "avi", 3)) {
+					avinfo(g.v.file.name, g.v.avi);
+					d_log("zipscript-c: avinfo: %s\n", g.v.avi);
 					avi_video(g.v.file.name, &g.v.video);
+				}
 				else
 					mpeg_video(g.v.file.name, &g.v.video);
 				race_msg = video_race;
