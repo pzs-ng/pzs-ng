@@ -160,12 +160,12 @@ main(int argc, char **argv)
 			if (n >= max_seconds_wait_for_lock * 10) {
 				if (m == PROGTYPE_RESCAN) {
 					d_log("postdel: Failed to get lock. Forcing unlock.\n");
-					if (create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 2, g.v.lock.data_queue)) {
-						d_log("postdel: Failed to force a lock. No choice but to exit.\n");
-						exit(EXIT_FAILURE);
-					}
-				} else {
-					d_log("postdel: Failed to get a lock. No choice but to exit.\n");
+					if (create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 2, g.v.lock.data_queue))
+						d_log("postdel: Failed to force a lock.\n");
+				} else
+					d_log("postdel: Failed to get a lock.\n");
+				if (!g.v.lock.data_in_use && !ignore_lock_timeout) {
+					d_log("postdel: Exiting with error.\n");
 					exit(EXIT_FAILURE);
 				}
 			}

@@ -991,6 +991,9 @@
 #ifndef lock_optimize
 #define lock_optimize			1
 #endif
+#ifndef ignore_lock_timeout
+#define ignore_lock_timeout		FALSE
+#endif
 
 /*
  * Some setting used in ng-chown
