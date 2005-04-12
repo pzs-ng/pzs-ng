@@ -14,7 +14,8 @@ typedef struct {
 	unsigned char	status;
 	char		fname[NAME_MAX],
 			uname[24],
-			group[24];
+			group[24],
+			tagline[64];
 } RACEDATA;
 
 /* this is put in sfvdata files */

@@ -105,20 +105,20 @@
 #define loser			"dummy_loser"
 
 #ifdef _WITH_NOFORMAT
-#define user_top		"{%n} {%u} {%g} {%.1m} {%f} {%.1p} {%.0s} {%D} {%W} {%M} {%A}"
-#define user_info		"{%u} {%g} {%.1m} {%f} {%.1p} {%.0s}"
+#define user_top		"{%n} {%u} {%g} {%K} {%.1m} {%f} {%.1p} {%.0s} {%D} {%W} {%M} {%A}"
+#define user_info		"{%u} {%g} {%K} {%.1m} {%f} {%.1p} {%.0s}"
 #define group_top		"{%n} {%g} {%.1m} {%f} {%.1p} {%.0s}"
 #define group_info		"{%g} {%.1m} {%f} {%.1p} {%.0s}"
 #else
-#define user_top		"{%n} {%-9u} {%-9g} {%5.1m} {%2f} {%5.1p} {%5.0s} {%2D} {%2W} {%2M} {%2A}"
-#define user_info		"{%u} {%g} {%.1m} {%f} {%.1p} {%.0s}"
+#define user_top		"{%n} {%-9u} {%-9g} {%-15K} {%5.1m} {%2f} {%5.1p} {%5.0s} {%2D} {%2W} {%2M} {%2A}"
+#define user_info		"{%u} {%g} {%-15K} {%.1m} {%f} {%.1p} {%.0s}"
 #define group_top		"{%n} {%-9g} {%.1m} {%f} {%.1p} {%5.0s}"
 #define group_info		"{%g} {%.1m} {%-2f} {%.1p} {%.0s}"
 #endif
 
 /* Special reformat cookies */
-#define fastestfile		"{%u} {%g} {%.3F}"	/* Put in %l cookie */
-#define slowestfile		"{%u} {%g} {%.3S}"	/* Put in %L cookie */
+#define fastestfile		"{%u} {%g} {%K} {%.3F}"	/* Put in %l cookie */
+#define slowestfile		"{%u} {%g} {%K} {%.3S}"	/* Put in %L cookie */
 #ifndef racersplit
 #define racersplit		""	/* Put between racers in the %R cookie */
 #endif
@@ -126,7 +126,7 @@
 #define racersplit_prior	""
 #endif
 #ifndef racersmsg
-#define racersmsg		"{%u} {%g}"	/* Put in %R cookie */
+#define racersmsg		"{%u} {%g} {%K}"	/* Put in %R cookie */
 #endif
 #define audio_vbr		"{%w} {%Y} {%X} {%z} {%Q} {VBR} {%I} {%i} {%x} {%W} {%y} {%h} {%q}"	/* Put in %j cookie */
 #define audio_cbr		"{%w} {%Y} {%X} {%z} {%Q} {CBR} {%x} {%W} {%y} {%h} {%q}"		/* Put in %j cookie */
@@ -136,7 +136,7 @@
  * mpeg2.5 + layer1 & 2 can be added if needed
  */
 #if ( disable_audio_race == FALSE )
-#define audio_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%K} {%B} {%$}"
+#define audio_race		"{%U} {%G} {%K} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%B} {%$}"
 #else
 #define audio_race		DISABLED
 #endif
@@ -151,12 +151,12 @@
 #define audio_update		DISABLED
 #endif
 #if ( disable_audio_halfway == FALSE )
-#define audio_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%B} {%$}"
+#define audio_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%K} {%B} {%$}"
 #else
 #define audio_halfway		DISABLED
 #endif
 #if ( disable_audio_newleader == FALSE )
-#define audio_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%K} {%R} {%$}"
+#define audio_newleader		"{%U} {%G} {%K} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%R} {%$}"
 #else
 #define audio_newleader		DISABLED
 #endif
@@ -171,14 +171,14 @@
 #define audio_norace_halfway	DISABLED
 #endif
 #if ( disable_audio_norace_complete == FALSE )
-#define audio_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%U} {%G} %j {%n} {%K} %t %T"
+#define audio_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%U} {%G} {%K} %j {%n} %t %T"
 #else
 #define audio_norace_complete	DISABLED
 #endif
 
 /* Video files - supports mpeg1/mpeg2 and various avi formats */
 #if ( disable_video_race == FALSE )
-#define video_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%K} {%B} {%$}"
+#define video_race		"{%U} {%G} {%K} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%B} {%$}"
 #else
 #define video_race		DISABLED
 #endif
@@ -193,12 +193,12 @@
 #define video_update		DISABLED
 #endif
 #if ( disable_video_halfway == FALSE )
-#define video_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%B} {%$}"
+#define video_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%K} {%B} {%$}"
 #else
 #define video_halfway		DISABLED
 #endif
 #if ( disable_video_newleader == FALSE )
-#define video_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%K} {%R} {%$}"
+#define video_newleader		"{%U} {%G} {%K} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%R} {%$}"
 #else
 #define video_newleader		DISABLED
 #endif
@@ -213,14 +213,14 @@
 #define video_norace_halfway	DISABLED
 #endif
 #if ( disable_video_norace_complete == FALSE )
-#define video_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%U} {%G} {%n} {%K} %t %T"
+#define video_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%U} {%G} {%K} {%n} %t %T"
 #else
 #define video_norace_complete	DISABLED
 #endif
 
 /* RAR - allows usage of compression mode cookie (%J) for rarred releases */
 #if ( disable_rar_race == FALSE )
-#define rar_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%K} {%B} {%J} {%$}"
+#define rar_race		"{%U} {%G} {%K} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%B} {%J} {%$}"
 #else
 #define rar_race		DISABLED
 #endif
@@ -235,12 +235,12 @@
 #define rar_update		DISABLED
 #endif
 #if ( disable_rar_halfway == FALSE )
-#define rar_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%B} {%J} {%$}"
+#define rar_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%K} {%B} {%J} {%$}"
 #else
 #define rar_halfway		DISABLED
 #endif
 #if ( disable_rar_newleader == FALSE )
-#define rar_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%K} {%R} {%J} {%$}"
+#define rar_newleader		"{%U} {%G} {%K} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%R} {%J} {%$}"
 #else
 #define rar_newleader		DISABLED
 #endif
@@ -255,14 +255,14 @@
 #define rar_norace_halfway	DISABLED
 #endif
 #if ( disable_rar_norace_complete == FALSE )
-#define rar_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%U} {%G} {%n} {%K} {%J} %t %T"
+#define rar_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%U} {%G} {%K} {%n} {%J} %t %T"
 #else
 #define rar_norace_complete	DISABLED
 #endif
 
 /* Rest of the stuff inside sfv */
 #if ( disable_other_race == FALSE )
-#define other_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%K} {%B} {%$}"
+#define other_race		"{%U} {%G} {%K} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%B} {%$}"
 #else
 #define other_race		DISABLED
 #endif
@@ -277,12 +277,12 @@
 #define other_update		DISABLED
 #endif
 #if ( disable_other_halfway == FALSE )
-#define other_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%B} {%$}"
+#define other_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%K} {%B} {%$}"
 #else
 #define other_halfway		DISABLED
 #endif
 #if ( disable_other_newleader == FALSE )
-#define other_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%K} {%R} {%$}"
+#define other_newleader		"{%U} {%G} {%K} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%R} {%$}"
 #else
 #define other_newleader		DISABLED
 #endif
@@ -297,14 +297,14 @@
 #define other_norace_halfway	DISABLED
 #endif
 #if ( disable_other_norace_complete == FALSE )
-#define other_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%U} {%G} {%n} {%K} %t %T"
+#define other_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%U} {%G} {%K} {%n} %t %T"
 #else
 #define other_norace_complete	DISABLED
 #endif
 
 /* Zipped files */
 #if ( disable_zip_race == FALSE )
-#define zip_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%K} {%B} {%$}"
+#define zip_race		"{%U} {%G} {%K} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%B} {%$}"
 #else
 #define zip_race		DISABLED
 #endif
@@ -314,12 +314,12 @@
 #define zip_update		DISABLED
 #endif
 #if ( disable_zip_halfway == FALSE )
-#define zip_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%B} {%$}"
+#define zip_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%K} {%B} {%$}"
 #else
 #define zip_halfway		DISABLED
 #endif
 #if ( disable_zip_newleader == FALSE )
-#define zip_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%K} {%R} {%$}"
+#define zip_newleader		"{%U} {%G} {%K} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 {%R} {%$}"
 #else
 #define zip_newleader		DISABLED
 #endif
@@ -334,7 +334,7 @@
 #define zip_norace_halfway	DISABLED
 #endif
 #if ( disable_zip_norace_complete == FALSE )
-#define zip_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%U} {%G} {%n} {%K} %t %T"
+#define zip_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%U} {%G} {%K} {%n} %t %T"
 #else
 #define zip_norace_complete	DISABLED
 #endif

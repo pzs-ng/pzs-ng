@@ -91,7 +91,7 @@ convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, 
 //					out_p += sprintf(out_p, "\\002");
 //					break;
 				case 'K':
-					out_p += sprintf(out_p, "%s", raceI->user.tagline);
+					out_p += sprintf(out_p, "%s", userI->tagline);
 					break;
 				case 'F':
 					out_p += sprintf(out_p, "%*i", val1, (unsigned int)raceI->misc.fastest_user[0]);

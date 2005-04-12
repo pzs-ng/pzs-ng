@@ -767,12 +767,13 @@ readrace(const char *path, struct VARS *raceI, struct USERINFO **userI, struct G
 		while ((rlength = read(fd, &rd, sizeof(RACEDATA)))) {
 			if (rlength != sizeof(RACEDATA)) {
 				d_log("readrace: Agh! racedata seems to be broken!\n");
+				remove_lock(raceI);
 				exit(EXIT_FAILURE);
 			}
 			switch (rd.status) {
 				case F_NOTCHECKED:
 				case F_CHECKED:
-					updatestats(raceI, userI, groupI, rd.uname, rd.group,
+					updatestats(raceI, userI, groupI, rd.uname, rd.group, rd.tagline,
 						    rd.size, rd.speed, rd.start_time);
 					break;
 				case F_BAD:
@@ -834,6 +835,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	strlcpy(rd.fname, raceI->file.name, NAME_MAX);
 	strlcpy(rd.uname, raceI->user.name, 24);
 	strlcpy(rd.group, raceI->user.group, 24);
+	strlcpy(rd.tagline, raceI->user.tagline, 64);
 	
 	rd.bitrate = 0;
 	rd.size = raceI->file.size;

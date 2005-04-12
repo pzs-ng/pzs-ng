@@ -49,7 +49,7 @@ updatestats_free(GLOBAL *g)
  * old doesnt exist
  */
 void 
-updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *usern, char *group, off_t filesize, unsigned int speed, unsigned int start_time)
+updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *usern, char *group, char *usertag, off_t filesize, unsigned int speed, unsigned int start_time)
 {
 	int		u_no = -1;
 	int		g_no = -1;
@@ -81,6 +81,7 @@ updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **grou
 		userI[u_no] = malloc(sizeof(struct USERINFO));
 		memset(userI[u_no], 0, sizeof(struct USERINFO));
 		memcpy(userI[u_no]->name, usern, 24);
+		memcpy(userI[u_no]->tagline, usertag, 64);
 		userI[u_no]->files = 0;
 
 		for (n = 0; n < raceI->total.groups; n++) {
