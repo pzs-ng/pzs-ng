@@ -399,7 +399,7 @@
  * Rewrite bad sfv files
  */
 #ifndef smart_sfv_write
-#deinfe smart_sfv_write		FALSE
+#define smart_sfv_write		FALSE
 #endif
 
 /*
