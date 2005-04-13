@@ -923,7 +923,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 			close(fd);
 			return 1;
 		}
-		if ((time(NULL) - sb.st_ctime >= max_seconds_wait_for_lock)) {
+		if ((time(NULL) - sb.st_ctime >= max_seconds_wait_for_lock * 5)) {
 			raceI->misc.release_type = hd.data_type;
 			raceI->data_in_use = hd.data_in_use = progtype;
 			raceI->data_incrementor = hd.data_incrementor = 1;
@@ -1012,21 +1012,24 @@ remove_lock(struct VARS *raceI)
 		d_log("remove_lock: open(%s): %s\n", raceI->headpath, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-
-	read(fd, &hd, sizeof(HEADDATA));
-	hd.data_in_use = 0;
-	hd.data_pid = 0;
-	hd.data_incrementor = 0;
-	if (hd.data_queue)							/* if queue, increase the number in current so the next */
-		hd.data_qcurrent++;						/* process can start. */
-	if (hd.data_queue < hd.data_qcurrent) {					/* If the next in line is bigger than the queue itself, */
-		hd.data_queue = 0;						/* it should be fair to assume there is noone else in queue */
-		hd.data_qcurrent = 0;						/* and reset the queue. Normally, this should not happen. */
+	if (!raceI->data_in_use)
+		d_log("remove_lock: lock not removed - no lock was set\n");
+	else {
+		read(fd, &hd, sizeof(HEADDATA));
+		hd.data_in_use = 0;
+		hd.data_pid = 0;
+		hd.data_incrementor = 0;
+		if (hd.data_queue)							/* if queue, increase the number in current so the next */
+			hd.data_qcurrent++;						/* process can start. */
+		if (hd.data_queue < hd.data_qcurrent) {					/* If the next in line is bigger than the queue itself, */
+			hd.data_queue = 0;						/* it should be fair to assume there is noone else in queue */
+			hd.data_qcurrent = 0;						/* and reset the queue. Normally, this should not happen. */
+		}
+		lseek(fd, 0L, SEEK_SET);
+		write(fd, &hd, sizeof(HEADDATA));
+		close(fd);
+		d_log("remove_lock: queue %d/%d\n", hd.data_qcurrent, hd.data_queue);
 	}
-	lseek(fd, 0L, SEEK_SET);
-	write(fd, &hd, sizeof(HEADDATA));
-	close(fd);
-	d_log("remove_lock: queue %d/%d\n", hd.data_qcurrent, hd.data_queue);
 }
 
 /* update a lock. This should be used after each file checked.
@@ -1043,8 +1046,15 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 	HEADDATA	hd;
 	struct stat	sb;
 
-	if (!(int)strlen(raceI->headpath))
+	if (!(int)strlen(raceI->headpath)) {
+		d_log("update_lock: variable 'headpath' empty - assuming no lock is set\n");
 		return -1;
+	}
+
+	if (!raceI->data_in_use) {
+		d_log("update_lock: not updating lock - no lock set\n");
+		return 1;
+	}
 
 	if ((fd = open(raceI->headpath, O_RDWR, 0666)) == -1) {
 		d_log("update_lock: open(%s): %s\n", raceI->headpath, strerror(errno));
