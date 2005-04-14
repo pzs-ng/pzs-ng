@@ -34,7 +34,7 @@
 int 
 main(int argc, char *argv[])
 {
-	int		k, n, m, l, gnum = 0, unum = 0;
+	int		k, n, m, l;
 	char           *ext, exec[4096], *complete_bar = 0, *inc_point[2];
 	unsigned int	crc = 0;
 	struct stat	fileinfo;

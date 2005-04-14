@@ -47,41 +47,60 @@
 #include "strsep.h"
 #endif
 
+/* Store various message strings here */
+typedef struct _MSG {
+	char *complete;
+	char *update;
+	char *race;
+	char *sfv;
+	char *newleader;
+	char *halfway;
+	char *error;
+} MSG;
+
+int handle_zip(GLOBAL *, MSG *, DIR *);
+int handle_sfv(GLOBAL *, MSG *, DIR *);
+int handle_nfo(GLOBAL *, MSG *, DIR *);
+int handle_sfv32(GLOBAL *, MSG *, DIR *, char **, char *);
+
 int 
 main(int argc, char **argv)
 {
 	GLOBAL		g; /* this motherfucker owns */
+	MSG		msg;
+
 	DIR		*dir, *parent;
-	struct dirent	*dp;
+	//struct dirent	*dp;
 
 	struct GDATA	gdata;
 	struct UDATA	udata;
 	
 	char           *fileext, *name_p, *temp_p = NULL, *temp_p_free = NULL;
 	char           *target = 0;
-	char	       *ext = 0;
-	char           *complete_msg = 0;
-	char           *update_msg = 0;
-	char           *race_msg = 0;
-	char           *sfv_msg = 0;
+	//char	       *ext = 0;
+	//char           *complete_msg = 0;
+	//char           *update_msg = 0;
+	//char           *race_msg = 0;
+	//char           *sfv_msg = 0;
 	char           *update_type = 0;
-	char           *newleader_msg = 0;
-	char           *halfway_msg = 0;
+	//char           *newleader_msg = 0;
+	//char           *halfway_msg = 0;
 	char           *complete_bar = 0;
-	char           *error_msg = 0;
-	unsigned int	crc, gnum = 0, unum = 0, s_crc = 0;
-	unsigned char	exit_value = EXIT_SUCCESS;
-	unsigned char	no_check = FALSE;
-	char	       *sfv_type = 0;
+	//char           *error_msg = 0;
+	//unsigned int	crc, gnum = 0, unum = 0, s_crc = 0;
+	int				exit_value = EXIT_SUCCESS;
+	int				no_check = FALSE;
+	//char	       *sfv_type = 0;
 	char	       *race_type = 0;
 	char	       *newleader_type = 0;
 	char	       *race_halfway_type = 0;
 	char	       *norace_halfway_type = 0;
 	char	       *inc_point[2];
 	char           *complete_announce = 0;
-	int		cnt, cnt2, n = 0, m = 0;
+	//int		cnt2;
+	int		cnt, n = 0, m = 0;
 	int		write_log = 0;
-	long		loc;
+	//long		loc;
 #if ( enable_complete_script || enable_accept_script )
 	int		nfofound = 0;
 #endif
@@ -344,9 +363,9 @@ main(int argc, char **argv)
 		write_log = g.v.misc.write_log;
 		g.v.misc.write_log = 1;
 		mark_as_bad(g.v.file.name);
-		error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
+		msg.error = convert(&g.v, g.ui, g.gi, bad_file_msg);
 		if (exit_value < 2)
-			writelog(&g, error_msg, bad_file_0size_type);
+			writelog(&g, msg.error, bad_file_0size_type);
 		exit_value = 2;
 	}
 #endif
@@ -366,700 +385,25 @@ main(int argc, char **argv)
 			d_log("zipscript-c:   Failed to open racedata - assuming this is a new race.\n");
 
 		switch (get_filetype(&g, fileext)) {
+		
 		case 0:	/* ZIP CHECK */
-			d_log("zipscript-c: File type is: ZIP\n");
-			d_log("zipscript-c: Testing file integrity with %s\n", unzip_bin);
-			if (!fileexists(unzip_bin)) {
-				d_log("zipscript-c: ERROR! Not able to check zip-files - %s does not exists!\n", unzip_bin);
-				sprintf(g.v.misc.error_msg, BAD_ZIP);
-				mark_as_bad(g.v.file.name);
-				write_log = g.v.misc.write_log;
-				g.v.misc.write_log = 1;
-				error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-				if (exit_value < 2)
-					writelog(&g, error_msg, bad_file_zip_type);
-				exit_value = 2;
-				break;
-			} else {
-				sprintf(target, "%s -qqt \"%s\"", unzip_bin, g.v.file.name);
-				if (execute(target) != 0) {
-					d_log("zipscript-c: Integrity check failed (#%d): %s\n", errno, strerror(errno));
-					sprintf(g.v.misc.error_msg, BAD_ZIP);
-					mark_as_bad(g.v.file.name);
-					write_log = g.v.misc.write_log;
-					g.v.misc.write_log = 1;
-					error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-					if (exit_value < 2)
-						writelog(&g, error_msg, bad_file_zip_type);
-					exit_value = 2;
-					break;
-				}
-			}
-			d_log("zipscript-c: Integrity ok\n");
-			printf(zipscript_zip_ok);
-
-			if ((matchpath(zip_dirs, g.l.path)) || (matchpath(group_dirs, g.l.path))  ) {
-				g.v.misc.write_log = 1;
-				d_log("zipscript-c: Directory matched with zip_dirs/group_dirs\n");
-			} else {
-				d_log("zipscript-c: WARNING! Directory did not match with zip_dirs/group_dirs\n");
-				if (strict_path_match == TRUE) {
-					d_log("zipscript-c: Strict mode on - exiting\n");
-					sprintf(g.v.misc.error_msg, UNKNOWN_FILE, fileext);
-					mark_as_bad(g.v.file.name);
-					write_log = g.v.misc.write_log;
-					g.v.misc.write_log = 1;
-					error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-					if (exit_value < 2)
-						writelog(&g, error_msg, bad_file_wrongdir_type);
-					exit_value = 2;
-					break;
-				}
-			}
-			if (!fileexists("file_id.diz")) {
-				d_log("zipscript-c: file_id.diz does not exist, trying to extract it from %s\n", g.v.file.name);
-				sprintf(target, "%s -qqjnCLL \"%s\" file_id.diz 2>.delme", unzip_bin, g.v.file.name);
-				if (execute(target) != 0)
-					d_log("zipscript-c: No file_id.diz found (#%d): %s\n", errno, strerror(errno));
-				else {
-					if ((loc = findfile(dir, "file_id.diz.bad"))) {
-						seekdir(dir, loc);
-						dp = readdir(dir);
-						unlink(dp->d_name);
-					}
-					chmod("file_id.diz", 0666);
-				}
-			}
-			d_log("zipscript-c: Reading diskcount from diz:\n");
-			g.v.total.files = read_diz("file_id.diz");
-			d_log("zipscript-c:    Expecting %d files.\n", g.v.total.files);
-
-			if (g.v.total.files == 0) {
-				d_log("zipscript-c:    Could not get diskcount from diz.\n");
-				g.v.total.files = 1;
-				unlink("file_id.diz");
-			}
-			g.v.total.files_missing = g.v.total.files;
-
-			d_log("zipscript-c: Storing new race data\n");
-			writerace(g.l.race, &g.v, 0, F_CHECKED);
-			d_log("zipscript-c: Reading race data from file to memory\n");
-			readrace(g.l.race, &g.v, g.ui, g.gi);
-			if (g.v.total.files_missing < 0) {
-				d_log("zipscript-c: There seems to be more files in zip than we expected\n");
-				g.v.total.files -= g.v.total.files_missing;
-				g.v.total.files_missing = g.v.misc.write_log = 0;
-			}
-			d_log("zipscript-c: Setting message pointers\n");
-			race_msg = zip_race;
-			update_msg = zip_update;
-			halfway_msg = CHOOSE(g.v.total.users, zip_halfway, zip_norace_halfway);
-			newleader_msg = zip_newleader;
-
+			exit_value = handle_zip(&g, &msg, dir);
 			break;
-			/* END OF ZIP CHECK */
 
 		case 1:	/* SFV CHECK */
-			d_log("zipscript-c: File type is: SFV\n");
-			if ((matchpath(sfv_dirs, g.l.path)) || (matchpath(group_dirs, g.l.path))  ) {
-				d_log("zipscript-c: Directory matched with sfv_dirs/group_dirs\n");
-			} else {
-				d_log("zipscript-c: WARNING! Directory did not match with sfv_dirs/group_dirs\n");
-				if (strict_path_match == TRUE) {
-					d_log("zipscript-c: Strict mode on - exiting\n");
-					sprintf(g.v.misc.error_msg, UNKNOWN_FILE, fileext);
-					mark_as_bad(g.v.file.name);
-					write_log = g.v.misc.write_log;
-					g.v.misc.write_log = 1;
-					error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-					if (exit_value < 2)
-						writelog(&g, error_msg, bad_file_wrongdir_type);
-					exit_value = 2;
-					break;
-				}
-			}
-
-			if (fileexists(g.l.sfv)) {
-				if (deny_double_sfv == TRUE && findfileextcount(dir, ".sfv") > 1 && sfv_compare_size(".sfv", g.v.file.size) > 0) {
-					write_log = g.v.misc.write_log;
-					g.v.misc.write_log = 1;
-					d_log("zipscript-c: DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g.v.file.size));
-					d_log("zipscript-c: No double sfv allowed\n");
-					error_msg = convert(&g.v, g.ui, g.gi, deny_double_msg);
-					writelog(&g, error_msg, general_doublesfv_type);
-					sprintf(g.v.misc.error_msg, DOUBLE_SFV);
-					mark_as_bad(g.v.file.name);
-					exit_value = 2;
-					g.v.misc.write_log = write_log;
-					break;
-				} else if (findfileextcount(dir, ".sfv") > 1 && sfv_compare_size(".sfv", g.v.file.size) > 0) {
-					d_log("zipscript-c: DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g.v.file.size));
-					d_log("zipscript-c: Reading remainders of old sfv\n");
-					readsfv(g.l.sfv, &g.v, 1);
-					cnt = g.v.total.files - g.v.total.files_missing;
-					cnt2 = g.v.total.files;
-					g.v.total.files_missing = g.v.total.files = 0;
-					//readsfv_ffile(g.v.file.name, g.v.file.size, g.v);
-					readsfv_ffile(&g.v);
-					if ((g.v.total.files <= cnt2) || (g.v.total.files != (cnt + g.v.total.files_missing))) {
-						write_log = g.v.misc.write_log;
-						g.v.misc.write_log = 1;
-						d_log("zipscript-c: Old sfv seems to match with more files than current one\n");
-						strlcpy(g.v.misc.error_msg, "SFV does not match with files!", 80);
-						error_msg = convert(&g.v, g.ui, g.gi, deny_double_msg);
-						writelog(&g, error_msg, general_doublesfv_type);
-						sprintf(g.v.misc.error_msg, DOUBLE_SFV);
-						mark_as_bad(g.v.file.name);
-						exit_value = 2;
-						g.v.misc.write_log = write_log;
-						break;
-					}
-					g.v.total.files = g.v.total.files_missing = 0;
-				} else {
-					d_log("zipscript-c: DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g.v.file.size));
-					d_log("zipscript-c: Hmm.. Seems the old .sfv was deleted. Allowing new one.\n");
-					unlink(g.l.race);
-					unlink(g.l.sfv);
-					rewinddir(dir);
-					while ((dp = readdir(dir))) {
-						cnt = cnt2 = (int)strlen(dp->d_name);
-						ext = dp->d_name;
-						while (ext[cnt] != '-' && cnt > 0)
-							cnt--;
-						if (ext[cnt] != '-')
-							cnt = cnt2;
-						else
-							cnt++;
-						ext += cnt;
-						if (!strncmp(ext, "missing", 7))
-							unlink(dp->d_name);
-					}
-				}
-			}
-			d_log("zipscript-c: Parsing sfv and creating sfv data\n");
-			if (copysfv(g.v.file.name, g.l.sfv, &g.v)) {
-				d_log("zipscript-c: Found invalid entries in SFV.\n");
-				write_log = g.v.misc.write_log;
-				g.v.misc.write_log = 1;
-				error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-				if (exit_value < 2)
-					writelog(&g, error_msg, bad_file_sfv_type);
-				mark_as_bad(g.v.file.name);
-				exit_value = 2;
-				sprintf(g.v.misc.error_msg, EMPTY_SFV);
-				unlink(g.l.race);
-				unlink(g.l.sfv);
-
-				rewinddir(dir);
-				while ((dp = readdir(dir))) {
-					cnt = cnt2 = (int)strlen(dp->d_name);
-					ext = dp->d_name;
-					while (ext[cnt] != '-' && cnt > 0)
-						cnt--;
-					if (ext[cnt] != '-')
-						cnt = cnt2;
-					else
-						cnt++;
-					ext += cnt;
-					if (!strncmp(ext, "missing", 7))
-						unlink(dp->d_name);
-				}
-
-				break;
-			}
-
-#if (use_partial_on_noforce == TRUE)
-			if ( (force_sfv_first == FALSE) || matchpartialpath(noforce_sfv_first_dirs, g.l.path))
-#else
-			if ( (force_sfv_first == FALSE) || matchpath(noforce_sfv_first_dirs, g.l.path))
-#endif
-			{
-				if (fileexists(g.l.race)) {
-					d_log("zipscript-c: Testing files marked as untested\n");
-					testfiles(&g.l, &g.v, 0);
-				}
-			}
-			d_log("zipscript-c: Reading file count from SFV\n");
-			readsfv(g.l.sfv, &g.v, 0);
-
-#if (smart_sfv_write && sfv_cleanup)
-			d_log("zipscript-c: Rewriting sfv file according to smart_sfv_write\n");
-			sfvdata_to_sfv(g.l.sfv, g.v.file.name);
-#endif
+			exit_value = handle_sfv(&g, &msg, dir);
+			break;
 			
-			if (g.v.total.files == 0) {
-				d_log("zipscript-c: SFV seems to have no files of accepted types, or has errors.\n");
-				sprintf(g.v.misc.error_msg, EMPTY_SFV);
-				mark_as_bad(g.v.file.name);
-				write_log = g.v.misc.write_log;
-				g.v.misc.write_log = 1;
-				error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-				if (exit_value < 2)
-					writelog(&g, error_msg, bad_file_sfv_type);
-				exit_value = 2;
-				break;
-			}
-			printf(zipscript_sfv_ok);
-			if (fileexists(g.l.race)) {
-				d_log("zipscript-c: Reading race data from file to memory\n");
-				readrace(g.l.race, &g.v, g.ui, g.gi);
-			}
-			if (del_completebar) {
-				d_log("zipscript-c: Making sure that release is not marked as complete\n");
-				removecomplete();
-			}
-			d_log("zipscript-c: Setting message pointers\n");
-			sfv_type = general_announce_sfv_type;
-			switch (g.v.misc.release_type) {
-			case RTYPE_RAR:
-				sfv_msg = rar_sfv;
-				sfv_type = rar_announce_sfv_type;
-				break;
-			case RTYPE_OTHER:
-				sfv_msg = other_sfv;
-				sfv_type = other_announce_sfv_type;
-				break;
-			case RTYPE_AUDIO:
-				sfv_msg = audio_sfv;
-				sfv_type = audio_announce_sfv_type;
-				break;
-			case RTYPE_VIDEO:
-				sfv_msg = video_sfv;
-				sfv_type = video_announce_sfv_type;
-				break;
-			default :
-				sfv_msg = rar_sfv;
-				sfv_type = rar_announce_sfv_type;
-				d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (1:%d)\n", g.v.misc.release_type);
-				break;
-			}
-
-			if (!sfv_msg)
-				d_log("zipscript-c: Something's messed up - sfv_msg not set!\n");
-
-			halfway_msg = newleader_msg = race_msg = update_msg = NULL;
-
-			g.v.misc.write_log = matchpath(sfv_dirs, g.l.path);
-			if (g.v.total.files_missing > 0) {
-				if (sfv_msg != NULL) {
-					d_log("zipscript-c: Writing SFV message to %s\n", log);
-					writelog(&g, convert(&g.v, g.ui, g.gi, sfv_msg), sfv_type);
-				}
-			} else {
-				if (g.v.misc.release_type == RTYPE_AUDIO) {
-					d_log("zipscript-c: Reading audio info for completebar\n");
-					get_mpeg_audio_info(findfileext(dir, ".mp3"), &g.v.audio);
-				}
-			}
-			break;
-			/* END OF SFV CHECK */
-
 		case 2:	/* NFO CHECK */
-			no_check = TRUE;
-			d_log("zipscript-c: File type is: NFO\n");
-#if ( deny_double_nfo )
-			if (findfileextcount(dir, ".nfo") > 1) {
-				d_log("zipscript-c: Looks like there already is a nfo uploaded. Denying this one.\n");
-				sprintf(g.v.misc.error_msg, DUPE_NFO);
-				//mark_as_bad(g.v.file.name);
-				write_log = g.v.misc.write_log;
-				g.v.misc.write_log = 1;
-				error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-				if (exit_value < 2)
-					writelog(&g, error_msg, bad_file_nfo_type);
-				exit_value = 2;
-				break;
-			}
-#endif
-			//writerace(g.l.race, &g.v, 0, F_NFO);
-
-#if ( enable_nfo_script )
-			if (!fileexists(nfo_script)) {
-				d_log("zipscript-c: Warning - nfo_script (%s) - file does not exists\n", nfo_script);
-			}
-			d_log("zipscript-c: Executing nfo script (%s)\n", nfo_script);
-			sprintf(target, nfo_script " \"%s\"", g.v.file.name);
-			if (execute(target) != 0)
-				d_log("zipscript-c: Failed to execute nfo_script: %s\n", strerror(errno));
-#endif
-
+			exit_value = handle_nfo(&g, &msg, dir);
 			break;
-			/* END OF NFO CHECK */
-
+		
 		case 3:	/* SFV BASED CRC-32 CHECK */
-			d_log("zipscript-c: File type is: ANY\n");
-
-			d_log("zipscript-c: Converting crc (%s) from string to integer\n", argv[3]);
-			crc = hexstrtodec(argv[3]);
-			if (crc == 0) {
-				d_log("zipscript-c: We did not get crc from ftp daemon, calculating crc for %s now.\n", g.v.file.name);
-				crc = calc_crc32(g.v.file.name);
-			}
-			if (fileexists(g.l.sfv)) {
-				s_crc = readsfv(g.l.sfv, &g.v, 0);
-
-#if (sfv_calc_single_fname == TRUE)
-				if (s_crc == 0 && errno == 1) {
-					d_log("zipscript-c: CRC in SFV is 0 - trying to calculate it from the file\n");
-					s_crc = calc_crc32(g.v.file.name);
-					update_sfvdata(g.l.sfv, g.v.file.name, s_crc);
-  #if (smart_sfv_write && sfv_cleanup)
-					sfvdata_to_sfv(g.l.sfv, findfileext(dir, ".sfv"));
-  #endif
-				}
-#endif
-				if (!g.v.misc.sfv_match) {
-					update_sfvdata(g.l.sfv, g.v.file.name, s_crc);
-#if (smart_sfv_write && sfv_cleanup)
-					sfvdata_to_sfv(g.l.sfv, findfileext(dir, ".sfv"));
-#endif
-				}
-
-				d_log("zipscript-c: DEBUG: crc: %X - s_crc: %X - match:%d\n", crc, s_crc, g.v.misc.sfv_match);
-				if (s_crc != crc && !(s_crc == 0 && g.v.misc.sfv_match)) {
-					if (s_crc == 0 && !g.v.misc.sfv_match) {
-						if (!strcomp(allowed_types, fileext)) {
-#if (allow_files_not_in_sfv == TRUE)
-							d_log("zipscript-c: Filename was not found in the SFV, but allowing anyway\n");
-							no_check = TRUE;
-							break;
-#endif
-							d_log("zipscript-c: Filename was not found in the SFV\n");
-							strlcpy(g.v.misc.error_msg, NOT_IN_SFV, 80);
-						} else {
-							d_log("zipscript-c: filetype is part of allowed_types.\n");
-							no_check = TRUE;
-							break;
-						}
-					} else {
-						d_log("zipscript-c: CRC-32 check failed\n");
-						if (!hexstrtodec(argv[3]) && allow_file_resume) {
-							d_log("zipscript-c: Broken xfer detected - allowing file.\n");
-							no_check = TRUE;
-							write_log = g.v.misc.write_log;
-							g.v.misc.write_log = 1;
-							error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-							writelog(&g, error_msg, bad_file_crc_type);
-							if (enable_unduper_script == TRUE) {
-								if (!fileexists(unduper_script)) {
-									d_log("zipscript-c: Warning - undupe script (%s) does not exist.\n", unduper_script);
-								}
-								sprintf(target, unduper_script " \"%s\"", g.v.file.name);
-								if (execute(target) == 0)
-									d_log("zipscript-c: undupe of %s successful.\n", g.v.file.name);
-								else
-									d_log("zipscript-c: undupe of %s failed.\n", g.v.file.name);
-							}
-							break;
-						}
-						strlcpy(g.v.misc.error_msg, BAD_CRC, 80);
-					}
-					mark_as_bad(g.v.file.name);
-					write_log = g.v.misc.write_log;
-					g.v.misc.write_log = 1;
-					error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-					if (exit_value < 2)
-						writelog(&g, error_msg, bad_file_crc_type);
-					exit_value = 2;
-					break;
-				}
-				if (s_crc == 0 && g.v.misc.sfv_match) {
-					d_log("zipscript-c: File was found in sfv, but had no crc.\n");
-					s_crc = crc;
-					update_sfvdata(g.l.sfv, g.v.file.name, s_crc);
-#if (smart_sfv_write && sfv_cleanup)
-					sfvdata_to_sfv(g.l.sfv, findfileext(dir, ".sfv"));
-#endif
-
-				}
-#if (sfv_cleanup == TRUE && sfv_cleanup_lowercase == TRUE)
-				if (check_dupefile(dir, g.v.file.name)) {
-					d_log("zipscript-c: dupe detected - same file, different case already exists.\n");
-					strlcpy(g.v.misc.error_msg, DOUBLE_SFV, 80);
-					mark_as_bad(g.v.file.name);
-					write_log = g.v.misc.write_log;
-					g.v.misc.write_log = 1;
-					error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-					if (exit_value < 2)
-						writelog(&g, error_msg, bad_file_crc_type);
-					exit_value = 2;
-					break;
-				}
-#endif
-				printf(zipscript_SFV_ok);
-				d_log("zipscript-c: Storing new race data\n");
-				writerace(g.l.race, &g.v, crc, F_CHECKED);
-			} else {
-#if ( force_sfv_first == TRUE )
-#if (use_partial_on_noforce == TRUE)
-				if (!matchpartialpath(noforce_sfv_first_dirs, g.l.path) && !matchpath(zip_dirs, g.l.path)) {
-#else
-				if (!matchpath(noforce_sfv_first_dirs, g.l.path) && !matchpath(zip_dirs, g.l.path)) {
-#endif
-					d_log("zipscript-c: SFV needs to be uploaded first\n");
-					strlcpy(g.v.misc.error_msg, SFV_FIRST, 80);
-					mark_as_bad(g.v.file.name);
-					write_log = g.v.misc.write_log;
-					g.v.misc.write_log = 1;
-					error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-					if (exit_value < 2)
-						writelog(&g, error_msg, bad_file_nosfv_type);
-					exit_value = 2;
-					break;
-				} else if (matchpath(zip_dirs, g.l.path) && (!fileexists(g.l.sfv))) {
-					d_log("zipscript-c: This looks like a file uploaded the wrong place - Not allowing it.\n");
-					strlcpy(g.v.misc.error_msg, SFV_FIRST, 80);
-					mark_as_bad(g.v.file.name);
-					write_log = g.v.misc.write_log;
-					g.v.misc.write_log = 1;
-					error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-					if (exit_value < 2)
-						writelog(&g, error_msg, bad_file_nosfv_type);
-					exit_value = 2;
-					break;
-				} else {
-					d_log("zipscript-c: path matched with noforce_sfv_first or zip_dirs - allowing file.\n");
-					printf(zipscript_SFV_skip);
-					d_log("zipscript-c: Storing new race data\n");
-					writerace(g.l.race, &g.v, crc, F_NOTCHECKED);
-				}
-#else
-				d_log("zipscript-c: Could not check file yet - SFV is not present\n");
-				printf(zipscript_SFV_skip);
-				d_log("zipscript-c: Storing new race data\n");
-				writerace(g.l.race, &g.v, crc, F_NOTCHECKED);
-#endif
-			}
-
-			g.v.misc.write_log = matchpath(sfv_dirs, g.l.path);
-
-			d_log("zipscript-c: Reading race data from file to memory\n");
-			readrace(g.l.race, &g.v, g.ui, g.gi);
-
-			d_log("zipscript-c: Setting pointers\n");
-			if (g.v.misc.release_type == RTYPE_NULL) {
-				if (israr(fileext))
-					g.v.misc.release_type = RTYPE_RAR;	/* .RAR / .R?? */
-				else if (isvideo(fileext))
-					g.v.misc.release_type = RTYPE_VIDEO;	/* AVI/MPEG */
-				else if (!memcmp(fileext, "mp3", 4))
-					g.v.misc.release_type = RTYPE_AUDIO;	/* MP3 */
-				else
-					g.v.misc.release_type = RTYPE_OTHER;	/* OTHER FILE */
-			}
-			switch (g.v.misc.release_type) {
-			case RTYPE_RAR:
-				get_rar_info(&g.v);
-				race_msg = rar_race;
-				update_msg = rar_update;
-				halfway_msg = CHOOSE(g.v.total.users, rar_halfway, rar_norace_halfway);
-				newleader_msg = rar_newleader;
-				break;
-			case RTYPE_OTHER:
-				race_msg = other_race;
-				update_msg = other_update;
-				halfway_msg = CHOOSE(g.v.total.users, other_halfway, other_norace_halfway);
-				newleader_msg = other_newleader;
-				break;
-			case RTYPE_AUDIO:
-				d_log("zipscript-c: Trying to read audio header and tags\n");
-				get_mpeg_audio_info(g.v.file.name, &g.v.audio);
-				write_bitrate_in_race(g.l.race, &g.v);
-				sprintf(g.v.audio.bitrate, "%i", read_bitrate_in_race(g.l.race, &g.v));
-#if ( exclude_non_sfv_dirs )
-				if (g.v.misc.write_log == TRUE) {
-#endif
-					if ((enable_mp3_script == TRUE) && (g.ui[g.v.user.pos]->files == 1)) {
-						if (!fileexists(mp3_script)) {
-							d_log("zipscript-c: Warning -  mp3_script (%s) - file does not exists\n", mp3_script);
-						}
-						d_log("zipscript-c: Executing mp3 script (%s %s)\n", mp3_script, convert(&g.v, g.ui, g.gi, mp3_script_cookies));
-						sprintf(target, "%s %s", mp3_script, convert(&g.v, g.ui, g.gi, mp3_script_cookies));
-						if (execute(target) != 0)
-							d_log("zipscript-c: Failed to execute mp3_script: %s\n", strerror(errno));
-					}
-					if (!matchpath(audio_nocheck_dirs, g.l.path)) {
-#if ( audio_banned_genre_check )
-						if (strcomp(banned_genres, g.v.audio.id3_genre)) {
-							d_log("zipscript-c: File is from banned genre\n");
-							sprintf(g.v.misc.error_msg, BANNED_GENRE, g.v.audio.id3_genre);
-							if (audio_genre_warn == TRUE) {
-								if (g.ui[g.v.user.pos]->files == 1) {
-									d_log("zipscript-c: warn on - logging to logfile\n");
-									write_log = g.v.misc.write_log;
-									g.v.misc.write_log = 1;
-									error_msg = convert(&g.v, g.ui, g.gi, audio_genre_warn_msg);
-									writelog(&g, error_msg, general_badgenre_type);
-									g.v.misc.write_log = write_log;
-								} else
-									d_log("zipscript-c: warn on - have already logged to logfile\n");
-							} else {
-								mark_as_bad(g.v.file.name);
-								write_log = g.v.misc.write_log;
-								g.v.misc.write_log = 1;
-								error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-								if ((g.ui[g.v.user.pos]->files == 1) && (exit_value < 2))
-									writelog(&g, error_msg, bad_file_genre_type);
-								exit_value = 2;
-							}
-#if ( del_banned_release )
-							deldir = 1;
-							exit_value = 2;
-#endif
-							break;
-						}
-#elif ( audio_allowed_genre_check == TRUE )
-						if (!strcomp(allowed_genres, g.v.audio.id3_genre)) {
-							d_log("zipscript-c: File is not in allowed genre\n");
-							sprintf(g.v.misc.error_msg, BANNED_GENRE, g.v.audio.id3_genre);
-							if (audio_genre_warn == TRUE) {
-								if (g.ui[g.v.user.pos]->files == 1) {
-									d_log("zipscript-c: warn on - logging to logfile\n");
-									write_log = g.v.misc.write_log;
-									g.v.misc.write_log = 1;
-									error_msg = convert(&g.v, g.ui, g.gi, audio_genre_warn_msg);
-									writelog(&g, error_msg, general_badgenre_type);
-									g.v.misc.write_log = write_log;
-								} else
-									d_log("zipscript-c: warn on - have already logged to logfile\n");
-							} else {
-								mark_as_bad(g.v.file.name);
-								write_log = g.v.misc.write_log;
-								g.v.misc.write_log = 1;
-								error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-								if ((g.ui[g.v.user.pos]->files == 1) && (exit_value < 2))
-									writelog(&g, error_msg, bad_file_genre_type);
-								exit_value = 2;
-							}
-#if ( del_banned_release )
-							deldir = 1;
-							exit_value = 2;
-#endif
-							break;
-						}
-#endif
-#if ( audio_year_check == TRUE )
-						if (!strcomp(allowed_years, g.v.audio.id3_year)) {
-							d_log("zipscript-c: File is from banned year\n");
-							sprintf(g.v.misc.error_msg, BANNED_YEAR, g.v.audio.id3_year);
-							if (audio_year_warn == TRUE) {
-								if (g.ui[g.v.user.pos]->files == 1) {
-									d_log("zipscript-c: warn on - logging to logfile\n");
-									write_log = g.v.misc.write_log;
-									g.v.misc.write_log = 1;
-									error_msg = convert(&g.v, g.ui, g.gi, audio_year_warn_msg);
-									writelog(&g, error_msg, general_badyear_type);
-									g.v.misc.write_log = write_log;
-								} else
-									d_log("zipscript-c: warn on - have already logged to logfile\n");
-							} else {
-								mark_as_bad(g.v.file.name);
-								write_log = g.v.misc.write_log;
-								g.v.misc.write_log = 1;
-								error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-								if ((g.ui[g.v.user.pos]->files == 1) && (exit_value < 2))
-									writelog(&g, error_msg, bad_file_year_type);
-								exit_value = 2;
-							}
-#if ( del_banned_release )
-							deldir = 1;
-							exit_value = 2;
-#endif
-							break;
-						}
-#endif
-#if ( audio_cbr_check == TRUE )
-						if (g.v.audio.is_vbr == 0) {
-							if (!strcomp(allowed_constant_bitrates, g.v.audio.bitrate)) {
-								d_log("zipscript-c: File is encoded using banned bitrate\n");
-								sprintf(g.v.misc.error_msg, BANNED_BITRATE, g.v.audio.bitrate);
-								if (audio_cbr_warn == TRUE) {
-									if (g.ui[g.v.user.pos]->files == 1) {
-										d_log("zipscript-c: warn on - logging to logfile\n");
-										write_log = g.v.misc.write_log;
-										g.v.misc.write_log = 1;
-										error_msg = convert(&g.v, g.ui, g.gi, audio_cbr_warn_msg);
-										writelog(&g, error_msg, general_badbitrate_type);
-										g.v.misc.write_log = write_log;
-									} else
-										d_log("zipscript-c: warn on - have already logged to logfile\n");
-								} else {
-									mark_as_bad(g.v.file.name);
-									write_log = g.v.misc.write_log;
-									g.v.misc.write_log = 1;
-									error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-									if ((g.ui[g.v.user.pos]->files == 1) && (exit_value < 2))
-										writelog(&g, error_msg, bad_file_bitrate_type);
-									exit_value = 2;
-								}
-#if ( del_banned_release )
-								deldir = 1;
-								exit_value = 2;
-#endif
-								break;
-							}
-						}
-#endif
-					} else
-						d_log("zipscript-c: user is in a no audio check dir - skipping checks.\n");
-#if ( exclude_non_sfv_dirs == TRUE )
-				}
-#endif
-				if (realtime_mp3_info != DISABLED) {
-					d_log("zipscript-c: Printing realtime_mp3_info.\n");
-					printf("%s", convert(&g.v, g.ui, g.gi, realtime_mp3_info));
-				}
-				race_msg = audio_race;
-				update_msg = audio_update;
-				halfway_msg = CHOOSE(g.v.total.users, audio_halfway, audio_norace_halfway);
-				newleader_msg = audio_newleader;
-				break;
-			case RTYPE_VIDEO:
-				d_log("zipscript-c: Trying to read video header\n");
-				if (!memcmp(fileext, "avi", 3)) {
-					avinfo(g.v.file.name, g.v.avi);
-					d_log("zipscript-c: avinfo: %s\n", g.v.avi);
-					avi_video(g.v.file.name, &g.v.video);
-				}
-				else
-					mpeg_video(g.v.file.name, &g.v.video);
-				race_msg = video_race;
-				update_msg = video_update;
-				halfway_msg = CHOOSE(g.v.total.users, video_halfway, video_norace_halfway);
-				newleader_msg = video_newleader;
-				break;
-			default:
-				get_rar_info(&g.v);
-				race_msg = rar_race;
-				update_msg = rar_update;
-				halfway_msg = CHOOSE(g.v.total.users, rar_halfway, rar_norace_halfway);
-				newleader_msg = rar_newleader;
-				d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (2:%d)\n", g.v.misc.release_type);
-				break;
-			}
-
-			if (!race_msg)
-				d_log("zipscript-c: Something's messed up - race_msg not set!\n");
-
-			if (exit_value == EXIT_SUCCESS) {
-				d_log("zipscript-c: Removing missing indicator\n");
-				unlink_missing(g.v.file.name);
-
-				/*
-				sprintf(target, "%s-missing", g.v.file.name);
-#if ( sfv_cleanup == TRUE )
-#if (sfv_cleanup_lowercase == TRUE)
-				  strtolower(target);
-#endif
-#endif
-				if (target)
-					unlink(target);
-				*/
-			}
+			exit_value = handle_sfv32(&g, &msg, dir, argv, fileext);
 			break;
-			/* END OF SFV BASED CRC-32 CHECK */
 
 		case 4:	/* ACCEPTED FILE */
+
 			d_log("zipscript-c: File type: NO CHECK\n");
 			no_check = TRUE;
 			break;
@@ -1072,9 +416,9 @@ main(int argc, char **argv)
 			mark_as_bad(g.v.file.name);
 			write_log = g.v.misc.write_log;
 			g.v.misc.write_log = 1;
-			error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
+			msg.error = convert(&g.v, g.ui, g.gi, bad_file_msg);
 			if (exit_value < 2)
-				writelog(&g, error_msg, bad_file_disallowed_type);
+				writelog(&g, msg.error, bad_file_disallowed_type);
 			exit_value = 2;
 			break;
 			/* END OF UNKNOWN CHECK */
@@ -1108,7 +452,7 @@ main(int argc, char **argv)
 				read_write_leader(g.l.leader, &g.v, g.ui[g.ui[0]->pos]);
 			}
 			if (g.v.total.users > 1) {
-				if (g.ui[g.v.user.pos]->files == 1 && race_msg != NULL) {
+				if (g.ui[g.v.user.pos]->files == 1 && msg.race != NULL) {
 					d_log("zipscript-c: Writing RACE to %s\n", log);
 					race_type = general_announce_race_type;
 					switch (g.v.misc.release_type) {
@@ -1136,7 +480,7 @@ main(int argc, char **argv)
 					if (!race_type)
 						d_log("zipscript-c: Something's messed up - race_type not set!\n");
 
-					writelog(&g, convert(&g.v, g.ui, g.gi, race_msg), race_type);
+					writelog(&g, convert(&g.v, g.ui, g.gi, msg.race), race_type);
 				}
 
 				/*
@@ -1144,7 +488,7 @@ main(int argc, char **argv)
 				 * Only announce new leader if he leads with
 				 * newleader_files_ahead files :-)
 				 */
-				if (g.v.total.files >= min_newleader_files && ((g.v.total.size * g.v.total.files) >= (min_newleader_size * 1024 * 1024)) && strcmp(g.v.misc.old_leader, g.ui[g.ui[0]->pos]->name) && newleader_msg != NULL && g.ui[g.ui[0]->pos]->files >= (g.ui[g.ui[1]->pos]->files + newleader_files_ahead) && g.v.total.files_missing) {
+				if (g.v.total.files >= min_newleader_files && ((g.v.total.size * g.v.total.files) >= (min_newleader_size * 1024 * 1024)) && strcmp(g.v.misc.old_leader, g.ui[g.ui[0]->pos]->name) && msg.newleader != NULL && g.ui[g.ui[0]->pos]->files >= (g.ui[g.ui[1]->pos]->files + newleader_files_ahead) && g.v.total.files_missing) {
 					d_log("zipscript-c: Writing NEWLEADER to %s\n", log);
 					newleader_type = general_announce_newleader_type;
 					switch (g.v.misc.release_type) {
@@ -1172,11 +516,11 @@ main(int argc, char **argv)
 					if (!newleader_type)
 						d_log("zipscript-c: Something's messed up - newleader_type not set!\n");
 
-					writelog(&g, convert(&g.v, g.ui, g.gi, newleader_msg), newleader_type);
+					writelog(&g, convert(&g.v, g.ui, g.gi, msg.newleader), newleader_type);
 				}
 			} else {
 
-				if (g.ui[g.v.user.pos]->files == 1 && g.v.total.files >= min_update_files && ((g.v.total.size * g.v.total.files) >= (min_update_size * 1024 * 1024)) && update_msg != NULL) {
+				if (g.ui[g.v.user.pos]->files == 1 && g.v.total.files >= min_update_files && ((g.v.total.size * g.v.total.files) >= (min_update_size * 1024 * 1024)) && msg.update != NULL) {
 					d_log("zipscript-c: Writing UPDATE to %s\n", log);
 					update_type = general_announce_update_type;
 					switch (g.v.misc.release_type) {
@@ -1207,7 +551,7 @@ main(int argc, char **argv)
 					if (!update_type)
 						d_log("zipscript-c: Something's messed up - update_type not set!\n");
 
-					writelog(&g, convert(&g.v, g.ui, g.gi, update_msg), update_type);
+					writelog(&g, convert(&g.v, g.ui, g.gi, msg.update), update_type);
 				}
 			}
 		}
@@ -1215,7 +559,7 @@ main(int argc, char **argv)
 
 			/* Release is incomplete */
 
-			if (g.v.total.files_missing == g.v.total.files >> 1 && g.v.total.files >= min_halfway_files && ((g.v.total.size * g.v.total.files) >= (min_halfway_size * 1024 * 1024)) && halfway_msg != NULL) {
+			if (g.v.total.files_missing == g.v.total.files >> 1 && g.v.total.files >= min_halfway_files && ((g.v.total.size * g.v.total.files) >= (min_halfway_size * 1024 * 1024)) && msg.halfway != NULL) {
 				d_log("zipscript-c: Writing HALFWAY to %s\n", log);
 				norace_halfway_type = general_announce_norace_halfway_type;
 				race_halfway_type = general_announce_race_halfway_type;
@@ -1250,7 +594,7 @@ main(int argc, char **argv)
 				if (!race_halfway_type)
 					d_log("zipscript-c: Something's messed up - race_halfway_type not set!\n");
 
-				writelog(&g, convert(&g.v, g.ui, g.gi, halfway_msg), (g.v.total.users > 1 ? race_halfway_type : norace_halfway_type));
+				writelog(&g, convert(&g.v, g.ui, g.gi, msg.halfway), (g.v.total.users > 1 ? race_halfway_type : norace_halfway_type));
 			}
 			/*
 			 * It is _very_ unlikely that halfway would be
@@ -1283,22 +627,22 @@ main(int argc, char **argv)
 			switch (g.v.misc.release_type) {
 			case RTYPE_NULL:
 				complete_bar = zip_completebar;
-				complete_msg = CHOOSE(g.v.total.users, zip_complete, zip_norace_complete);
+				msg.complete = CHOOSE(g.v.total.users, zip_complete, zip_norace_complete);
 				complete_announce = CHOOSE(g.v.total.users, zip_announce_race_complete_type, zip_announce_norace_complete_type);
 				break;
 			case RTYPE_RAR:
 				complete_bar = rar_completebar;
-				complete_msg = CHOOSE(g.v.total.users, rar_complete, rar_norace_complete);
+				msg.complete = CHOOSE(g.v.total.users, rar_complete, rar_norace_complete);
 				complete_announce = CHOOSE(g.v.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
 				break;
 			case RTYPE_OTHER:
 				complete_bar = other_completebar;
-				complete_msg = CHOOSE(g.v.total.users, other_complete, other_norace_complete);
+				msg.complete = CHOOSE(g.v.total.users, other_complete, other_norace_complete);
 				complete_announce = CHOOSE(g.v.total.users, other_announce_race_complete_type, other_announce_norace_complete_type);
 				break;
 			case RTYPE_AUDIO:
 				complete_bar = audio_completebar;
-				complete_msg = CHOOSE(g.v.total.users, audio_complete, audio_norace_complete);
+				msg.complete = CHOOSE(g.v.total.users, audio_complete, audio_norace_complete);
 				if (g.v.audio.is_vbr == 0) {
 					complete_announce = CHOOSE(g.v.total.users, audio_cbr_announce_race_complete_type, audio_cbr_announce_norace_complete_type);
 				} else {
@@ -1357,12 +701,12 @@ main(int argc, char **argv)
 				break;
 			case RTYPE_VIDEO:
 				complete_bar = video_completebar;
-				complete_msg = CHOOSE(g.v.total.users, video_complete, video_norace_complete);
+				msg.complete = CHOOSE(g.v.total.users, video_complete, video_norace_complete);
 				complete_announce = CHOOSE(g.v.total.users, video_announce_race_complete_type, video_announce_norace_complete_type);
 				break;
 			default:
 				complete_bar = rar_completebar;
-				complete_msg = CHOOSE(g.v.total.users, rar_complete, rar_norace_complete);
+				msg.complete = CHOOSE(g.v.total.users, rar_complete, rar_norace_complete);
 				complete_announce = CHOOSE(g.v.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
 				d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (7:%d)\n", g.v.misc.release_type);
 				break;
@@ -1376,9 +720,9 @@ main(int argc, char **argv)
 			d_log("zipscript-c: Removing incomplete indicator (%s)\n", g.l.incomplete);
 			complete(&g);
 
-			if (complete_msg != NULL) {
+			if (msg.complete != NULL) {
 				d_log("zipscript-c: Writing COMPLETE and STATS to %s\n", log);
-				writelog(&g, convert(&g.v, g.ui, g.gi, complete_msg), complete_announce);
+				writelog(&g, convert(&g.v, g.ui, g.gi, msg.complete), complete_announce);
 			}
 			if (complete_bar) {
 				d_log("zipscript-c: Creating complete bar\n");
@@ -1556,3 +900,731 @@ main(int argc, char **argv)
 	return exit_value;
 		d_log("zipscript-c: del_banned_release is set - removing entire dir.\n");
 }
+
+int
+handle_zip(GLOBAL *g, MSG *msg, DIR *dir) {
+
+	int		write_log = 0;
+	//char           *error_msg = 0;
+	unsigned char	exit_value = EXIT_SUCCESS;
+	char           *target = 0, *fileext;
+	long		loc;
+	struct dirent	*dp;
+
+	d_log("zipscript-c: File type is: ZIP\n");
+	d_log("zipscript-c: Testing file integrity with %s\n", unzip_bin);
+	if (!fileexists(unzip_bin)) {
+		d_log("zipscript-c: ERROR! Not able to check zip-files - %s does not exists!\n", unzip_bin);
+		sprintf(g->v.misc.error_msg, BAD_ZIP);
+		mark_as_bad(g->v.file.name);
+		write_log = g->v.misc.write_log;
+		g->v.misc.write_log = 1;
+		msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+		if (exit_value < 2)
+			writelog(g, msg->error, bad_file_zip_type);
+		exit_value = 2;
+		return exit_value;
+	} else {
+		sprintf(target, "%s -qqt \"%s\"", unzip_bin, g->v.file.name);
+		if (execute(target) != 0) {
+			d_log("zipscript-c: Integrity check failed (#%d): %s\n", errno, strerror(errno));
+			sprintf(g->v.misc.error_msg, BAD_ZIP);
+			mark_as_bad(g->v.file.name);
+			write_log = g->v.misc.write_log;
+			g->v.misc.write_log = 1;
+			msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+			if (exit_value < 2)
+				writelog(g, msg->error, bad_file_zip_type);
+			exit_value = 2;
+			return exit_value;
+		}
+	}
+	d_log("zipscript-c: Integrity ok\n");
+	printf(zipscript_zip_ok);
+
+	if ((matchpath(zip_dirs, g->l.path)) || (matchpath(group_dirs, g->l.path))  ) {
+		g->v.misc.write_log = 1;
+		d_log("zipscript-c: Directory matched with zip_dirs/group_dirs\n");
+	} else {
+		d_log("zipscript-c: WARNING! Directory did not match with zip_dirs/group_dirs\n");
+		if (strict_path_match == TRUE) {
+			d_log("zipscript-c: Strict mode on - exiting\n");
+			sprintf(g->v.misc.error_msg, UNKNOWN_FILE, fileext);
+			mark_as_bad(g->v.file.name);
+			write_log = g->v.misc.write_log;
+			g->v.misc.write_log = 1;
+			msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+			if (exit_value < 2)
+				writelog(g, msg->error, bad_file_wrongdir_type);
+			exit_value = 2;
+			return exit_value;
+		}
+	}
+	if (!fileexists("file_id.diz")) {
+		d_log("zipscript-c: file_id.diz does not exist, trying to extract it from %s\n", g->v.file.name);
+		sprintf(target, "%s -qqjnCLL \"%s\" file_id.diz 2>.delme", unzip_bin, g->v.file.name);
+		if (execute(target) != 0)
+			d_log("zipscript-c: No file_id.diz found (#%d): %s\n", errno, strerror(errno));
+		else {
+			if ((loc = findfile(dir, "file_id.diz.bad"))) {
+				seekdir(dir, loc);
+				dp = readdir(dir);
+				unlink(dp->d_name);
+			}
+			chmod("file_id.diz", 0666);
+		}
+	}
+	d_log("zipscript-c: Reading diskcount from diz:\n");
+	g->v.total.files = read_diz("file_id.diz");
+	d_log("zipscript-c:    Expecting %d files.\n", g->v.total.files);
+
+	if (g->v.total.files == 0) {
+		d_log("zipscript-c:    Could not get diskcount from diz.\n");
+		g->v.total.files = 1;
+		unlink("file_id.diz");
+	}
+	g->v.total.files_missing = g->v.total.files;
+
+	d_log("zipscript-c: Storing new race data\n");
+	writerace(g->l.race, &g->v, 0, F_CHECKED);
+	d_log("zipscript-c: Reading race data from file to memory\n");
+	readrace(g->l.race, &g->v, g->ui, g->gi);
+	if (g->v.total.files_missing < 0) {
+		d_log("zipscript-c: There seems to be more files in zip than we expected\n");
+		g->v.total.files -= g->v.total.files_missing;
+		g->v.total.files_missing = g->v.misc.write_log = 0;
+	}
+	d_log("zipscript-c: Setting message pointers\n");
+	msg->race = zip_race;
+	msg->update = zip_update;
+	msg->halfway = CHOOSE2(g->v.total.users, zip_halfway, zip_norace_halfway);
+	msg->newleader = zip_newleader;
+
+	return exit_value;
+}
+
+int
+handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
+
+	char			*fileext;
+	int		write_log = 0;
+	unsigned char	exit_value = EXIT_SUCCESS;
+	struct dirent	*dp;
+	int		cnt, cnt2;
+	char	       *ext = 0;
+	char	       *sfv_type = 0;
+
+	d_log("zipscript-c: File type is: SFV\n");
+	if ((matchpath(sfv_dirs, g->l.path)) || (matchpath(group_dirs, g->l.path))  ) {
+		d_log("zipscript-c: Directory matched with sfv_dirs/group_dirs\n");
+	} else {
+		d_log("zipscript-c: WARNING! Directory did not match with sfv_dirs/group_dirs\n");
+		if (strict_path_match == TRUE) {
+			d_log("zipscript-c: Strict mode on - exiting\n");
+			sprintf(g->v.misc.error_msg, UNKNOWN_FILE, fileext);
+			mark_as_bad(g->v.file.name);
+			write_log = g->v.misc.write_log;
+			g->v.misc.write_log = 1;
+			msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+			if (exit_value < 2)
+				writelog(g, msg->error, bad_file_wrongdir_type);
+			exit_value = 2;
+			return exit_value;
+		}
+	}
+
+	if (fileexists(g->l.sfv)) {
+		if (deny_double_sfv == TRUE && findfileextcount(dir, ".sfv") > 1 && sfv_compare_size(".sfv", g->v.file.size) > 0) {
+			write_log = g->v.misc.write_log;
+			g->v.misc.write_log = 1;
+			d_log("zipscript-c: DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g->v.file.size));
+			d_log("zipscript-c: No double sfv allowed\n");
+			msg->error = convert(&g->v, g->ui, g->gi, deny_double_msg);
+			writelog(g, msg->error, general_doublesfv_type);
+			sprintf(g->v.misc.error_msg, DOUBLE_SFV);
+			mark_as_bad(g->v.file.name);
+			g->v.misc.write_log = write_log;
+			exit_value = 2;
+			return exit_value;
+		} else if (findfileextcount(dir, ".sfv") > 1 && sfv_compare_size(".sfv", g->v.file.size) > 0) {
+			d_log("zipscript-c: DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g->v.file.size));
+			d_log("zipscript-c: Reading remainders of old sfv\n");
+			readsfv(g->l.sfv, &g->v, 1);
+			cnt = g->v.total.files - g->v.total.files_missing;
+			cnt2 = g->v.total.files;
+			g->v.total.files_missing = g->v.total.files = 0;
+			//readsfv_ffile(g->v.file.name, g->v.file.size, g->v);
+			readsfv_ffile(&g->v);
+			if ((g->v.total.files <= cnt2) || (g->v.total.files != (cnt + g->v.total.files_missing))) {
+				write_log = g->v.misc.write_log;
+				g->v.misc.write_log = 1;
+				d_log("zipscript-c: Old sfv seems to match with more files than current one\n");
+				strlcpy(g->v.misc.error_msg, "SFV does not match with files!", 80);
+				msg->error = convert(&g->v, g->ui, g->gi, deny_double_msg);
+				writelog(g, msg->error, general_doublesfv_type);
+				sprintf(g->v.misc.error_msg, DOUBLE_SFV);
+				mark_as_bad(g->v.file.name);
+				g->v.misc.write_log = write_log;
+				exit_value = 2;
+				return exit_value;
+			}
+			g->v.total.files = g->v.total.files_missing = 0;
+		} else {
+			d_log("zipscript-c: DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g->v.file.size));
+			d_log("zipscript-c: Hmm.. Seems the old .sfv was deleted. Allowing new one.\n");
+			unlink(g->l.race);
+			unlink(g->l.sfv);
+			rewinddir(dir);
+			while ((dp = readdir(dir))) {
+				cnt = cnt2 = (int)strlen(dp->d_name);
+				ext = dp->d_name;
+				while (ext[cnt] != '-' && cnt > 0)
+					cnt--;
+				if (ext[cnt] != '-')
+					cnt = cnt2;
+				else
+					cnt++;
+				ext += cnt;
+				if (!strncmp(ext, "missing", 7))
+					unlink(dp->d_name);
+			}
+		}
+	}
+	d_log("zipscript-c: Parsing sfv and creating sfv data\n");
+	if (copysfv(g->v.file.name, g->l.sfv, &g->v)) {
+		d_log("zipscript-c: Found invalid entries in SFV.\n");
+		write_log = g->v.misc.write_log;
+		g->v.misc.write_log = 1;
+		msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+		if (exit_value < 2)
+			writelog(g, msg->error, bad_file_sfv_type);
+		mark_as_bad(g->v.file.name);
+		exit_value = 2;
+		sprintf(g->v.misc.error_msg, EMPTY_SFV);
+		unlink(g->l.race);
+		unlink(g->l.sfv);
+
+		rewinddir(dir);
+		while ((dp = readdir(dir))) {
+			cnt = cnt2 = (int)strlen(dp->d_name);
+			ext = dp->d_name;
+			while (ext[cnt] != '-' && cnt > 0)
+				cnt--;
+			if (ext[cnt] != '-')
+				cnt = cnt2;
+			else
+				cnt++;
+			ext += cnt;
+			if (!strncmp(ext, "missing", 7))
+				unlink(dp->d_name);
+		}
+
+		return exit_value;
+	}
+
+#if (use_partial_on_noforce == TRUE)
+	if ( (force_sfv_first == FALSE) || matchpartialpath(noforce_sfv_first_dirs, g->l.path))
+#else
+	if ( (force_sfv_first == FALSE) || matchpath(noforce_sfv_first_dirs, g->l.path))
+#endif
+	{
+		if (fileexists(g->l.race)) {
+			d_log("zipscript-c: Testing files marked as untested\n");
+			testfiles(&g->l, &g->v, 0);
+		}
+	}
+	d_log("zipscript-c: Reading file count from SFV\n");
+	readsfv(g->l.sfv, &g->v, 0);
+
+#if (smart_sfv_write && sfv_cleanup)
+	d_log("zipscript-c: Rewriting sfv file according to smart_sfv_write\n");
+	sfvdata_to_sfv(g->l.sfv, g->v.file.name);
+#endif
+	
+	if (g->v.total.files == 0) {
+		d_log("zipscript-c: SFV seems to have no files of accepted types, or has errors.\n");
+		sprintf(g->v.misc.error_msg, EMPTY_SFV);
+		mark_as_bad(g->v.file.name);
+		write_log = g->v.misc.write_log;
+		g->v.misc.write_log = 1;
+		msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+		if (exit_value < 2)
+			writelog(g, msg->error, bad_file_sfv_type);
+		exit_value = 2;
+		return exit_value;
+	}
+	printf(zipscript_sfv_ok);
+	if (fileexists(g->l.race)) {
+		d_log("zipscript-c: Reading race data from file to memory\n");
+		readrace(g->l.race, &g->v, g->ui, g->gi);
+	}
+	if (del_completebar) {
+		d_log("zipscript-c: Making sure that release is not marked as complete\n");
+		removecomplete();
+	}
+	d_log("zipscript-c: Setting message pointers\n");
+	sfv_type = general_announce_sfv_type;
+	switch (g->v.misc.release_type) {
+	case RTYPE_RAR:
+		msg->sfv = rar_sfv;
+		sfv_type = rar_announce_sfv_type;
+		break;
+	case RTYPE_OTHER:
+		msg->sfv = other_sfv;
+		sfv_type = other_announce_sfv_type;
+		break;
+	case RTYPE_AUDIO:
+		msg->sfv = audio_sfv;
+		sfv_type = audio_announce_sfv_type;
+		break;
+	case RTYPE_VIDEO:
+		msg->sfv = video_sfv;
+		sfv_type = video_announce_sfv_type;
+		break;
+	default :
+		msg->sfv = rar_sfv;
+		sfv_type = rar_announce_sfv_type;
+		d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (1:%d)\n", g->v.misc.release_type);
+		break;
+	}
+
+	if (!msg->sfv)
+		d_log("zipscript-c: Something's messed up - msg->sfv not set!\n");
+
+	msg->halfway = msg->newleader = msg->race = msg->update = NULL;
+
+	g->v.misc.write_log = matchpath(sfv_dirs, g->l.path);
+	if (g->v.total.files_missing > 0) {
+		if (msg->sfv != NULL) {
+			d_log("zipscript-c: Writing SFV message to %s\n", log);
+			writelog(g, convert(&g->v, g->ui, g->gi, msg->sfv), sfv_type);
+		}
+	} else {
+		if (g->v.misc.release_type == RTYPE_AUDIO) {
+			d_log("zipscript-c: Reading audio info for completebar\n");
+			get_mpeg_audio_info(findfileext(dir, ".mp3"), &g->v.audio);
+		}
+	}
+
+	return exit_value;
+}
+
+int
+handle_nfo(GLOBAL *g, MSG *msg, DIR *dir) {
+	
+	unsigned char	no_check = FALSE;
+	int		write_log = 0;
+	unsigned char	exit_value = EXIT_SUCCESS;
+	char           target[1024];
+
+	no_check = TRUE;
+	d_log("zipscript-c: File type is: NFO\n");
+#if ( deny_double_nfo )
+	if (findfileextcount(dir, ".nfo") > 1) {
+		d_log("zipscript-c: Looks like there already is a nfo uploaded. Denying this one.\n");
+		sprintf(g->v.misc.error_msg, DUPE_NFO);
+		//mark_as_bad(g->v.file.name);
+		write_log = g->v.misc.write_log;
+		g->v.misc.write_log = 1;
+		msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+		if (exit_value < 2)
+			writelog(g, msg->error, bad_file_nfo_type);
+		exit_value = 2;
+		return exit_value;
+	}
+#endif
+	//writerace(g->l.race, &g->v, 0, F_NFO);
+
+#if ( enable_nfo_script )
+	if (!fileexists(nfo_script)) {
+		d_log("zipscript-c: Warning - nfo_script (%s) - file does not exists\n", nfo_script);
+	}
+	d_log("zipscript-c: Executing nfo script (%s)\n", nfo_script);
+	sprintf(target, nfo_script " \"%s\"", g->v.file.name);
+	if (execute(target) != 0)
+		d_log("zipscript-c: Failed to execute nfo_script: %s\n", strerror(errno));
+#endif
+	return exit_value;
+}
+
+int
+handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
+	
+	unsigned int	crc, s_crc = 0;
+	unsigned char	no_check = FALSE;
+	int		write_log = 0;
+	char           *target = 0;
+	unsigned char	exit_value = EXIT_SUCCESS;
+
+	d_log("zipscript-c: File type is: ANY\n");
+
+	d_log("zipscript-c: Converting crc (%s) from string to integer\n", argv[3]);
+	crc = hexstrtodec(argv[3]);
+	if (crc == 0) {
+		d_log("zipscript-c: We did not get crc from ftp daemon, calculating crc for %s now.\n", g->v.file.name);
+		crc = calc_crc32(g->v.file.name);
+	}
+	if (fileexists(g->l.sfv)) {
+		s_crc = readsfv(g->l.sfv, &g->v, 0);
+
+#if (sfv_calc_single_fname == TRUE)
+		if (s_crc == 0 && errno == 1) {
+			d_log("zipscript-c: CRC in SFV is 0 - trying to calculate it from the file\n");
+			s_crc = calc_crc32(g->v.file.name);
+			update_sfvdata(g->l.sfv, g->v.file.name, s_crc);
+#if (smart_sfv_write && sfv_cleanup)
+			sfvdata_to_sfv(g->l.sfv, findfileext(dir, ".sfv"));
+#endif
+		}
+#endif
+		if (!g->v.misc.sfv_match) {
+			update_sfvdata(g->l.sfv, g->v.file.name, s_crc);
+#if (smart_sfv_write && sfv_cleanup)
+			sfvdata_to_sfv(g->l.sfv, findfileext(dir, ".sfv"));
+#endif
+		}
+
+		d_log("zipscript-c: DEBUG: crc: %X - s_crc: %X - match:%d\n", crc, s_crc, g->v.misc.sfv_match);
+		if (s_crc != crc && !(s_crc == 0 && g->v.misc.sfv_match)) {
+			if (s_crc == 0 && !g->v.misc.sfv_match) {
+				if (!strcomp(allowed_types, fileext)) {
+#if (allow_files_not_in_sfv == TRUE)
+					d_log("zipscript-c: Filename was not found in the SFV, but allowing anyway\n");
+					no_check = TRUE;
+					return exit_value;
+#endif
+					d_log("zipscript-c: Filename was not found in the SFV\n");
+					strlcpy(g->v.misc.error_msg, NOT_IN_SFV, 80);
+				} else {
+					d_log("zipscript-c: filetype is part of allowed_types.\n");
+					no_check = TRUE;
+					return exit_value;
+				}
+			} else {
+				d_log("zipscript-c: CRC-32 check failed\n");
+				if (!hexstrtodec(argv[3]) && allow_file_resume) {
+					d_log("zipscript-c: Broken xfer detected - allowing file.\n");
+					no_check = TRUE;
+					write_log = g->v.misc.write_log;
+					g->v.misc.write_log = 1;
+					msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+					writelog(g, msg->error, bad_file_crc_type);
+					if (enable_unduper_script == TRUE) {
+						if (!fileexists(unduper_script)) {
+							d_log("zipscript-c: Warning - undupe script (%s) does not exist.\n", unduper_script);
+						}
+						sprintf(target, unduper_script " \"%s\"", g->v.file.name);
+						if (execute(target) == 0)
+							d_log("zipscript-c: undupe of %s successful.\n", g->v.file.name);
+						else
+							d_log("zipscript-c: undupe of %s failed.\n", g->v.file.name);
+					}
+					return exit_value;
+				}
+				strlcpy(g->v.misc.error_msg, BAD_CRC, 80);
+			}
+			mark_as_bad(g->v.file.name);
+			write_log = g->v.misc.write_log;
+			g->v.misc.write_log = 1;
+			msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+			if (exit_value < 2)
+				writelog(g, msg->error, bad_file_crc_type);
+			exit_value = 2;
+			return exit_value;
+		}
+		if (s_crc == 0 && g->v.misc.sfv_match) {
+			d_log("zipscript-c: File was found in sfv, but had no crc.\n");
+			s_crc = crc;
+			update_sfvdata(g->l.sfv, g->v.file.name, s_crc);
+#if (smart_sfv_write && sfv_cleanup)
+			sfvdata_to_sfv(g->l.sfv, findfileext(dir, ".sfv"));
+#endif
+
+		}
+#if (sfv_cleanup == TRUE && sfv_cleanup_lowercase == TRUE)
+		if (check_dupefile(dir, g->v.file.name)) {
+			d_log("zipscript-c: dupe detected - same file, different case already exists.\n");
+			strlcpy(g->v.misc.error_msg, DOUBLE_SFV, 80);
+			mark_as_bad(g->v.file.name);
+			write_log = g->v.misc.write_log;
+			g->v.misc.write_log = 1;
+			msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+			if (exit_value < 2)
+				writelog(g, msg->error, bad_file_crc_type);
+			exit_value = 2;
+			return exit_value;
+		}
+#endif
+		printf(zipscript_SFV_ok);
+		d_log("zipscript-c: Storing new race data\n");
+		writerace(g->l.race, &g->v, crc, F_CHECKED);
+	} else {
+#if ( force_sfv_first == TRUE )
+#if (use_partial_on_noforce == TRUE)
+		if (!matchpartialpath(noforce_sfv_first_dirs, g->l.path) && !matchpath(zip_dirs, g->l.path)) {
+#else
+		if (!matchpath(noforce_sfv_first_dirs, g->l.path) && !matchpath(zip_dirs, g->l.path)) {
+#endif
+			d_log("zipscript-c: SFV needs to be uploaded first\n");
+			strlcpy(g->v.misc.error_msg, SFV_FIRST, 80);
+			mark_as_bad(g->v.file.name);
+			write_log = g->v.misc.write_log;
+			g->v.misc.write_log = 1;
+			msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+			if (exit_value < 2)
+				writelog(g, msg->error, bad_file_nosfv_type);
+			exit_value = 2;
+			return exit_value;
+		} else if (matchpath(zip_dirs, g->l.path) && (!fileexists(g->l.sfv))) {
+			d_log("zipscript-c: This looks like a file uploaded the wrong place - Not allowing it.\n");
+			strlcpy(g->v.misc.error_msg, SFV_FIRST, 80);
+			mark_as_bad(g->v.file.name);
+			write_log = g->v.misc.write_log;
+			g->v.misc.write_log = 1;
+			msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+			if (exit_value < 2)
+				writelog(g, msg->error, bad_file_nosfv_type);
+			exit_value = 2;
+			return exit_value;
+		} else {
+			d_log("zipscript-c: path matched with noforce_sfv_first or zip_dirs - allowing file.\n");
+			printf(zipscript_SFV_skip);
+			d_log("zipscript-c: Storing new race data\n");
+			writerace(g->l.race, &g->v, crc, F_NOTCHECKED);
+		}
+#else
+		d_log("zipscript-c: Could not check file yet - SFV is not present\n");
+		printf(zipscript_SFV_skip);
+		d_log("zipscript-c: Storing new race data\n");
+		writerace(g->l.race, &g->v, crc, F_NOTCHECKED);
+#endif
+	}
+
+	g->v.misc.write_log = matchpath(sfv_dirs, g->l.path);
+
+	d_log("zipscript-c: Reading race data from file to memory\n");
+	readrace(g->l.race, &g->v, g->ui, g->gi);
+
+	d_log("zipscript-c: Setting pointers\n");
+	if (g->v.misc.release_type == RTYPE_NULL) {
+		if (israr(fileext))
+			g->v.misc.release_type = RTYPE_RAR;	/* .RAR / .R?? */
+		else if (isvideo(fileext))
+			g->v.misc.release_type = RTYPE_VIDEO;	/* AVI/MPEG */
+		else if (!memcmp(fileext, "mp3", 4))
+			g->v.misc.release_type = RTYPE_AUDIO;	/* MP3 */
+		else
+			g->v.misc.release_type = RTYPE_OTHER;	/* OTHER FILE */
+	}
+	switch (g->v.misc.release_type) {
+	case RTYPE_RAR:
+		get_rar_info(&g->v);
+		msg->race = rar_race;
+		msg->update = rar_update;
+		msg->halfway = CHOOSE2(g->v.total.users, rar_halfway, rar_norace_halfway);
+		msg->newleader = rar_newleader;
+		break;
+	case RTYPE_OTHER:
+		msg->race = other_race;
+		msg->update = other_update;
+		msg->halfway = CHOOSE2(g->v.total.users, other_halfway, other_norace_halfway);
+		msg->newleader = other_newleader;
+		break;
+	case RTYPE_AUDIO:
+		d_log("zipscript-c: Trying to read audio header and tags\n");
+		get_mpeg_audio_info(g->v.file.name, &g->v.audio);
+		write_bitrate_in_race(g->l.race, &g->v);
+		sprintf(g->v.audio.bitrate, "%i", read_bitrate_in_race(g->l.race, &g->v));
+#if ( exclude_non_sfv_dirs )
+		if (g->v.misc.write_log == TRUE) {
+#endif
+			if ((enable_mp3_script == TRUE) && (g->ui[g->v.user.pos]->files == 1)) {
+				if (!fileexists(mp3_script)) {
+					d_log("zipscript-c: Warning -  mp3_script (%s) - file does not exists\n", mp3_script);
+				}
+				d_log("zipscript-c: Executing mp3 script (%s %s)\n", mp3_script, convert(&g->v, g->ui, g->gi, mp3_script_cookies));
+				sprintf(target, "%s %s", mp3_script, convert(&g->v, g->ui, g->gi, mp3_script_cookies));
+				if (execute(target) != 0)
+					d_log("zipscript-c: Failed to execute mp3_script: %s\n", strerror(errno));
+			}
+			if (!matchpath(audio_nocheck_dirs, g->l.path)) {
+#if ( audio_banned_genre_check )
+				if (strcomp(banned_genres, g->v.audio.id3_genre)) {
+					d_log("zipscript-c: File is from banned genre\n");
+					sprintf(g->v.misc.error_msg, BANNED_GENRE, g->v.audio.id3_genre);
+					if (audio_genre_warn == TRUE) {
+						if (g->ui[g->v.user.pos]->files == 1) {
+							d_log("zipscript-c: warn on - logging to logfile\n");
+							write_log = g->v.misc.write_log;
+							g->v.misc.write_log = 1;
+							msg->error = convert(&g->v, g->ui, g->gi, audio_genre_warn_msg);
+							writelog(g, msg->error, general_badgenre_type);
+							g->v.misc.write_log = write_log;
+						} else
+							d_log("zipscript-c: warn on - have already logged to logfile\n");
+					} else {
+						mark_as_bad(g->v.file.name);
+						write_log = g->v.misc.write_log;
+						g->v.misc.write_log = 1;
+						msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+						if ((g->ui[g->v.user.pos]->files == 1) && (exit_value < 2))
+							writelog(g, msg->error, bad_file_genre_type);
+						exit_value = 2;
+					}
+#if ( del_banned_release )
+					deldir = 1;
+					exit_value = 2;
+#endif
+					break;
+				}
+#elif ( audio_allowed_genre_check == TRUE )
+				if (!strcomp(allowed_genres, g->v.audio.id3_genre)) {
+					d_log("zipscript-c: File is not in allowed genre\n");
+					sprintf(g->v.misc.error_msg, BANNED_GENRE, g->v.audio.id3_genre);
+					if (audio_genre_warn == TRUE) {
+						if (g->ui[g->v.user.pos]->files == 1) {
+							d_log("zipscript-c: warn on - logging to logfile\n");
+							write_log = g->v.misc.write_log;
+							g->v.misc.write_log = 1;
+							msg->error = convert(&g->v, g->ui, g->gi, audio_genre_warn_msg);
+							writelog(&g, msg->error, general_badgenre_type);
+							g->v.misc.write_log = write_log;
+						} else
+							d_log("zipscript-c: warn on - have already logged to logfile\n");
+					} else {
+						mark_as_bad(g->v.file.name);
+						write_log = g->v.misc.write_log;
+						g->v.misc.write_log = 1;
+						msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+						if ((g->ui[g->v.user.pos]->files == 1) && (exit_value < 2))
+							writelog(&g, msg->error, bad_file_genre_type);
+						exit_value = 2;
+					}
+#if ( del_banned_release )
+					deldir = 1;
+					exit_value = 2;
+#endif
+					break;
+				}
+#endif
+#if ( audio_year_check == TRUE )
+				if (!strcomp(allowed_years, g->v.audio.id3_year)) {
+					d_log("zipscript-c: File is from banned year\n");
+					sprintf(g->v.misc.error_msg, BANNED_YEAR, g->v.audio.id3_year);
+					if (audio_year_warn == TRUE) {
+						if (g->ui[g->v.user.pos]->files == 1) {
+							d_log("zipscript-c: warn on - logging to logfile\n");
+							write_log = g->v.misc.write_log;
+							g->v.misc.write_log = 1;
+							msg->error = convert(&g->v, g->ui, g->gi, audio_year_warn_msg);
+							writelog(g, msg->error, general_badyear_type);
+							g->v.misc.write_log = write_log;
+						} else
+							d_log("zipscript-c: warn on - have already logged to logfile\n");
+					} else {
+						mark_as_bad(g->v.file.name);
+						write_log = g->v.misc.write_log;
+						g->v.misc.write_log = 1;
+						msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+						if ((g->ui[g->v.user.pos]->files == 1) && (exit_value < 2))
+							writelog(g, msg->error, bad_file_year_type);
+						exit_value = 2;
+					}
+#if ( del_banned_release )
+					deldir = 1;
+					exit_value = 2;
+#endif
+					break;
+				}
+#endif
+#if ( audio_cbr_check == TRUE )
+				if (g->v.audio.is_vbr == 0) {
+					if (!strcomp(allowed_constant_bitrates, g->v.audio.bitrate)) {
+						d_log("zipscript-c: File is encoded using banned bitrate\n");
+						sprintf(g->v.misc.error_msg, BANNED_BITRATE, g->v.audio.bitrate);
+						if (audio_cbr_warn == TRUE) {
+							if (g->ui[g->v.user.pos]->files == 1) {
+								d_log("zipscript-c: warn on - logging to logfile\n");
+								write_log = g->v.misc.write_log;
+								g->v.misc.write_log = 1;
+								msg->error = convert(&g->v, g->ui, g->gi, audio_cbr_warn_msg);
+								writelog(g, msg->error, general_badbitrate_type);
+								g->v.misc.write_log = write_log;
+							} else
+								d_log("zipscript-c: warn on - have already logged to logfile\n");
+						} else {
+							mark_as_bad(g->v.file.name);
+							write_log = g->v.misc.write_log;
+							g->v.misc.write_log = 1;
+							msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+							if ((g->ui[g->v.user.pos]->files == 1) && (exit_value < 2))
+								writelog(g, msg->error, bad_file_bitrate_type);
+							exit_value = 2;
+						}
+#if ( del_banned_release )
+						deldir = 1;
+						exit_value = 2;
+#endif
+						break;
+					}
+				}
+#endif
+			} else
+				d_log("zipscript-c: user is in a no audio check dir - skipping checks.\n");
+#if ( exclude_non_sfv_dirs == TRUE )
+		}
+#endif
+		if (realtime_mp3_info != DISABLED) {
+			d_log("zipscript-c: Printing realtime_mp3_info.\n");
+			printf("%s", convert(&g->v, g->ui, g->gi, realtime_mp3_info));
+		}
+		msg->race = audio_race;
+		msg->update = audio_update;
+		msg->halfway = CHOOSE2(g->v.total.users, audio_halfway, audio_norace_halfway);
+		msg->newleader = audio_newleader;
+		break;
+	case RTYPE_VIDEO:
+		d_log("zipscript-c: Trying to read video header\n");
+		if (!memcmp(fileext, "avi", 3)) {
+			avinfo(g->v.file.name, g->v.avi);
+			d_log("zipscript-c: avinfo: %s\n", g->v.avi);
+			avi_video(g->v.file.name, &g->v.video);
+		}
+		else
+			mpeg_video(g->v.file.name, &g->v.video);
+		msg->race = video_race;
+		msg->update = video_update;
+		msg->halfway = CHOOSE2(g->v.total.users, video_halfway, video_norace_halfway);
+		msg->newleader = video_newleader;
+		break;
+	default:
+		get_rar_info(&g->v);
+		msg->race = rar_race;
+		msg->update = rar_update;
+		msg->halfway = CHOOSE2(g->v.total.users, rar_halfway, rar_norace_halfway);
+		msg->newleader = rar_newleader;
+		d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (2:%d)\n", g->v.misc.release_type);
+		break;
+	}
+
+	if (!msg->race)
+		d_log("zipscript-c: Something's messed up - msg->race not set!\n");
+
+	if (exit_value == EXIT_SUCCESS) {
+		d_log("zipscript-c: Removing missing indicator\n");
+		unlink_missing(g->v.file.name);
+		/*
+		sprintf(target, "%s-missing", g->v.file.name);
+#if ( sfv_cleanup == TRUE )
+#if (sfv_cleanup_lowercase == TRUE)
+		  strtolower(target);
+#endif
+#endif
+		if (target)
+			unlink(target);
+		*/
+	}
+
+	return exit_value;
+}
+
