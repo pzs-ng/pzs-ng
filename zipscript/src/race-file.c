@@ -207,7 +207,7 @@ sfvdata_to_sfv(const char *source, const char *dest)
  * Description	: Deletes all -missing files with preparsed sfv.
  */
 void 
-delete_sfv(const char *path)
+delete_sfv(const char *path, struct VARS *raceI)
 {
 	char		*f = 0, missing_fname[NAME_MAX];
 	FILE		*sfvfile;
@@ -216,6 +216,7 @@ delete_sfv(const char *path)
 
 	if (!(sfvfile = fopen(path, "r"))) {
 		d_log("delete_sfv: Couldn't fopen %s: %s\n", path, strerror(errno));
+		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
 	
@@ -287,6 +288,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	if ((fd = open(locations->race, O_CREAT | O_RDWR, 0666)) == -1) {
 		if (errno != EEXIST) {
 			d_log("testfiles: open(%s): %s\n", locations->race, strerror(errno));
+			remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -368,6 +370,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 			} else {
 				if ((lret = lseek(fd, sizeof(RACEDATA) * count, SEEK_SET)) == -1) {
 					d_log("testfiles: lseek: %s\n", strerror(errno));
+					remove_lock(raceI);
 					exit(EXIT_FAILURE);
 				}
 				write(fd, &rd, sizeof(RACEDATA));
@@ -419,11 +422,13 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 
 	if ((infd = open(source, O_RDONLY)) == -1) {
 		d_log("copysfv: open(%s): %s\n", source, strerror(errno));
+		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
 	
 	if ((outfd = open(target, O_CREAT | O_TRUNC | O_RDWR, 0666)) == -1) {
 		d_log("copysfv: open(%s): %s\n", target, strerror(errno));
+		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
 	
@@ -643,6 +648,7 @@ create_indexfile(const char *racefile, struct VARS *raceI, char *f)
 
 	if ((fd = open(racefile, O_RDONLY)) == -1) {
 		d_log("create_indexfile: open(%s): %s\n", racefile, strerror(errno));
+		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
 
@@ -805,6 +811,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	if ((fd = open(path, O_CREAT | O_RDWR, 0666)) == -1) {
 		if (errno != EEXIST) {
 			d_log("writerace: open(%s): %s\n", path, strerror(errno));
+			remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -820,6 +827,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	while ((ret = read(fd, &rd, sizeof(RACEDATA)))) {
 		if (ret == -1) {
 			d_log("writerace: read(%s): %s\n", path, strerror(errno));
+			remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
 		if (strncmp(rd.fname, raceI->file.name, NAME_MAX) == 0) {
@@ -858,6 +866,7 @@ write_bitrate_in_race(const char *path, struct VARS *raceI)
 	if ((fd = open(path, O_RDWR, 0666)) == -1) {
 		if (errno != EEXIST) {
 			d_log("write_bitrate_in_race: open(%s): %s\n", path, strerror(errno));
+			remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -873,6 +882,7 @@ write_bitrate_in_race(const char *path, struct VARS *raceI)
 	while ((ret = read(fd, &rd, sizeof(RACEDATA)))) {
 		if (ret == -1) {
 			d_log("write_bitrate_in_race: read(%s): %s\n", path, strerror(errno));
+			remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
 		if (strncmp(rd.fname, raceI->file.name, NAME_MAX) == 0) {
@@ -900,6 +910,7 @@ read_bitrate_in_race(const char *path, struct VARS *raceI)
 	if ((fd = open(path, O_RDONLY)) == -1) {
 		if (errno != EEXIST) {
 			d_log("read_bitrate_in_race: open(%s): %s\n", path, strerror(errno));
+			remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -915,6 +926,7 @@ read_bitrate_in_race(const char *path, struct VARS *raceI)
 	while ((ret = read(fd, &rd, sizeof(RACEDATA)))) {
 		if (ret == -1) {
 			d_log("read_bitrate_in_race: read(%s): %s\n", path, strerror(errno));
+			remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
 		if (rd.bitrate)
