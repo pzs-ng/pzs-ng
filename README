@@ -172,6 +172,13 @@ you find - they're supposed to be there. Comments in C are signified by
 
 Installation:
 -------------
+
+Note: If you got the code from our subversion repository, you need to run
+
+./autogen.sh
+
+before you can continue with the next steps.
+
 First off, you should run ./configure - before editing the config (this is new
 in PZS-NG Beta3 with regards to the old versions). People with more than 2
 weeks experience with Linux/UNIX/*BSD (a.k.a. '*NIX') will not see this as
