@@ -72,22 +72,22 @@
 #define RP_SHORT_RIGHT  4
 
 struct GROUP {
-	char           *name;
+	char           name[16];
 	gid_t		id;
 };
 
 struct USER {
-	char           *name;
+	char           name[24];
 	uid_t		id;
 };
 
 struct GDATA {
-	struct GROUP **group;
+	struct GROUP *group;
 	int num_groups;
 };
 
 struct UDATA {
-	struct USER **user;
+	struct USER *user;
 	int num_users;
 };
 

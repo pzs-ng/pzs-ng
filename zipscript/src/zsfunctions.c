@@ -777,8 +777,8 @@ get_g_name(struct GDATA *gdata, gid_t gid)
 {
 	int		n;
 	for (n = 0; n < gdata->num_groups; n++)
-		if (gdata->group[n]->id / 100 == gid / 100)
-			return gdata->group[n]->name;
+		if (gdata->group[n].id / 100 == gid / 100)
+			return gdata->group[n].name;
 	return "NoGroup";
 }
 
@@ -787,8 +787,8 @@ get_u_name(struct UDATA *udata, uid_t uid)
 {
 	int		n;
 	for (n = 0; n < udata->num_users; n++)
-		if (udata->user[n]->id == uid)
-			return udata->user[n]->name;
+		if (udata->user[n].id == uid)
+			return udata->user[n].name;
 	return "Unknown";
 }
 
@@ -804,10 +804,10 @@ buffer_groups(struct GDATA *gdata, char *groupfile, int setfree)
 	struct stat	fileinfo;
 
 	if (setfree != 0) {
-		for (n = 0; n < setfree; n++) {
-			free(gdata->group[n]->name);
-			free(gdata->group[n]);
-		}
+		//for (n = 0; n < setfree; n++) {
+		//	free(gdata->group[n]->name);
+		//	free(gdata->group[n]);
+		//}
 		free(gdata->group);
 		return;
 	}
@@ -823,7 +823,8 @@ buffer_groups(struct GDATA *gdata, char *groupfile, int setfree)
 		if (f_buf[n] == '\n')
 			GROUPS++;
 			
-	gdata->group = malloc(GROUPS * sizeof(struct GROUP *));
+	//gdata->group = malloc(GROUPS * sizeof(struct GROUP *));
+	gdata->group = malloc(GROUPS * sizeof(struct GROUP));
 
 	for (n = 0; n < f_size; n++) {
 		if (f_buf[n] == '\n' || n == f_size) {
@@ -843,10 +844,10 @@ buffer_groups(struct GDATA *gdata, char *groupfile, int setfree)
 					m--;
 				if (m != n) {
 					g_id = atoi(f_buf + m + 1);
-					gdata->group[gdata->num_groups] = malloc(sizeof(struct GROUP));
-					gdata->group[gdata->num_groups]->name = malloc(g_n_size + 1);
-					strcpy(gdata->group[gdata->num_groups]->name, g_name);
-					gdata->group[gdata->num_groups]->id = g_id;
+					//gdata->group[gdata->num_groups] = malloc(sizeof(struct GROUP));
+					//gdata->group[gdata->num_groups]->name = malloc(g_n_size + 1);
+					strlcpy(gdata->group[gdata->num_groups].name, g_name, 15);
+					gdata->group[gdata->num_groups].id = g_id;
 					gdata->num_groups++;
 				}
 			}
@@ -870,10 +871,10 @@ buffer_users(struct UDATA *udata, char *passwdfile, int setfree)
 	struct stat	fileinfo;
 
 	if (setfree != 0) {
-		for (n = 0; n < setfree; n++) {
-			free(udata->user[n]->name);
-			free(udata->user[n]);
-		}
+		//for (n = 0; n < setfree; n++) {
+		//	free(udata->user[n]->name);
+		//	free(udata->user[n]);
+		//}
 		free(udata->user);
 		return;
 	}
@@ -888,7 +889,8 @@ buffer_users(struct UDATA *udata, char *passwdfile, int setfree)
 		if (f_buf[n] == '\n')
 			USERS++;
 			
-	udata->user = malloc(USERS * sizeof(struct USER *));
+	//udata->user = malloc(USERS * sizeof(struct USER *));
+	udata->user = malloc(USERS * sizeof(struct USER));
 
 	for (n = 0; n < f_size; n++) {
 		if (f_buf[n] == '\n' || n == f_size) {
@@ -910,10 +912,10 @@ buffer_users(struct UDATA *udata, char *passwdfile, int setfree)
 					m--;
 				if (m != n) {
 					u_id = atoi(f_buf + m + 1);
-					udata->user[udata->num_users] = malloc(sizeof(struct USER));
-					udata->user[udata->num_users]->name = malloc(u_n_size + 1);
-					strcpy(udata->user[udata->num_users]->name, u_name);
-					udata->user[udata->num_users]->id = u_id;
+					//udata->user[udata->num_users] = malloc(sizeof(struct USER));
+					//udata->user[udata->num_users]->name = malloc(u_n_size + 1);
+					strlcpy(udata->user[udata->num_users].name, u_name, 24);
+					udata->user[udata->num_users].id = u_id;
 					udata->num_users++;
 				}
 			}
