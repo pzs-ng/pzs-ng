@@ -12,7 +12,7 @@ STRLCPY=../../lib/strl/strlcpy.o
 
 SUNOBJS=@SUNOBJS@
 UNIVERSAL=stats.o convert.o race-file.o helpfunctions.o zsfunctions.o mp3info.o ng-version.o abs2rel.o $(SUNOBJS) $(STRLCPY)
-ZS-OBJECTS=zipscript-c.o dizreader.o complete.o multimedia.o crc.o avinfo.o $(UNIVERSAL)
+ZS-OBJECTS=zipscript-c.o dizreader.o complete.o multimedia.o crc.o $(UNIVERSAL)
 PD-OBJECTS=postdel.o dizreader.o multimedia.o crc.o $(UNIVERSAL)
 RS-OBJECTS=racestats.o dizreader.o crc.o $(UNIVERSAL)
 CU-OBJECTS=cleanup.o
