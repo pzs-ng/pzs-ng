@@ -114,6 +114,8 @@ main(int argc, char **argv)
 	g.v.misc.slowest_user[0] = 30000;
 	g.v.misc.fastest_user[0] = 0;
 
+	g.v.misc.write_log = TRUE;
+
 	/* YARR; THE PAIN OF MAGIC NUMBERS! */
 	d_log("postdel: Copying env/predefined username to g.v. (%s)\n", env_user);
 	strlcpy(g.v.user.name, env_user, 24);
@@ -234,14 +236,14 @@ main(int argc, char **argv)
 	case 0:
 		d_log("postdel: File type is: ZIP\n");
 		if (matchpath(zip_dirs, g.l.path)) {
-			if (matchpath(group_dirs, g.l.path)) {
-				g.v.misc.write_log = 0;
-			} else {
-				g.v.misc.write_log = 1;
-			}
+//			if (matchpath(group_dirs, g.l.path)) {
+//				g.v.misc.write_log = 0;
+//			} else {
+//				g.v.misc.write_log = 1;
+//			}
 		} else if (matchpath(sfv_dirs, g.l.path) && strict_path_match) {
 			if (matchpath(group_dirs, g.l.path)) {
-				g.v.misc.write_log = 0;
+//				g.v.misc.write_log = 0;
 			} else {
 				d_log("postdel: Directory matched with sfv_dirs\n");
 				break;
@@ -328,7 +330,7 @@ main(int argc, char **argv)
 			d_log("postdel: Removing old complete bar, if any\n");
 			removecomplete();
 		}
-		g.v.misc.write_log = matchpath(sfv_dirs, g.l.path) > 0 ? 1 - matchpath(group_dirs, g.l.path) : 0;
+//		g.v.misc.write_log = matchpath(sfv_dirs, g.l.path) > 0 ? 1 - matchpath(group_dirs, g.l.path) : 0;
 
 		if (fileexists(g.l.race)) {
 			d_log("postdel: Reading race data from file to memory\n");

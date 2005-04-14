@@ -987,7 +987,7 @@ writelog(GLOBAL *g, char *msg, char *status)
 	char           *line, *newline;
 	time_t		timenow;
 
-	if (g->v.misc.write_log == TRUE && !matchpath(group_dirs, g->l.path)) {
+	if (!matchpath(group_dirs, g->l.path)) {
 		timenow = time(NULL);
 		date = ctime(&timenow);
 		if (!(glfile = fopen(log, "a+"))) {

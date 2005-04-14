@@ -99,7 +99,6 @@ main(int argc, char **argv)
 	char           *complete_announce = 0;
 	//int		cnt2;
 	int		cnt, n = 0, m = 0;
-	int		write_log = 0;
 	//long		loc;
 #if ( enable_complete_script || enable_accept_script )
 	int		nfofound = 0;
@@ -148,6 +147,9 @@ main(int argc, char **argv)
 	g.v.misc.fastest_user[0] = g.v.misc.release_type = RTYPE_NULL;
 
 	/* gettimeofday(&g.v.transfer_stop, (struct timezone *)0 ); */
+
+	g.v.misc.write_log = TRUE;
+	g.v.misc.in_sfvfile = FALSE;
 
 	strlcpy(g.v.file.name, argv[1], NAME_MAX);
 	strlcpy(g.l.path, argv[2], PATH_MAX);
@@ -360,8 +362,6 @@ main(int argc, char **argv)
 	if (g.v.file.size == 0) {
 		d_log("zipscript-c: File seems to be 0\n");
 		sprintf(g.v.misc.error_msg, EMPTY_FILE);
-		write_log = g.v.misc.write_log;
-		g.v.misc.write_log = 1;
 		mark_as_bad(g.v.file.name);
 		msg.error = convert(&g.v, g.ui, g.gi, bad_file_msg);
 		if (exit_value < 2)
@@ -414,8 +414,6 @@ main(int argc, char **argv)
 			d_log("zipscript-c: File type: UNKNOWN [ignored in sfv]\n");
 			sprintf(g.v.misc.error_msg, UNKNOWN_FILE, fileext);
 			mark_as_bad(g.v.file.name);
-			write_log = g.v.misc.write_log;
-			g.v.misc.write_log = 1;
 			msg.error = convert(&g.v, g.ui, g.gi, bad_file_msg);
 			if (exit_value < 2)
 				writelog(&g, msg.error, bad_file_disallowed_type);
@@ -653,7 +651,7 @@ main(int argc, char **argv)
 				if (!strncasecmp(g.l.link_target, "VA", 2) && (g.l.link_target[2] == '-' || g.l.link_target[2] == '_'))
 					memcpy(g.v.audio.id3_artist, "VA", 3);
 
-				if (g.v.misc.write_log == TRUE && !matchpath(group_dirs, g.l.path)) {
+				if (!matchpath(group_dirs, g.l.path)) {
 #if ( audio_genre_sort == TRUE )
 					d_log("zipscript-c:   Sorting mp3 by genre (%s)\n", g.v.audio.id3_genre);
 					createlink(audio_genre_path, g.v.audio.id3_genre, g.l.link_source, g.l.link_target);
@@ -904,7 +902,6 @@ main(int argc, char **argv)
 int
 handle_zip(GLOBAL *g, MSG *msg, DIR *dir) {
 
-	int		write_log = 0;
 	//char           *error_msg = 0;
 	unsigned char	exit_value = EXIT_SUCCESS;
 	char           *target = 0, *fileext;
@@ -917,8 +914,6 @@ handle_zip(GLOBAL *g, MSG *msg, DIR *dir) {
 		d_log("zipscript-c: ERROR! Not able to check zip-files - %s does not exists!\n", unzip_bin);
 		sprintf(g->v.misc.error_msg, BAD_ZIP);
 		mark_as_bad(g->v.file.name);
-		write_log = g->v.misc.write_log;
-		g->v.misc.write_log = 1;
 		msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 		if (exit_value < 2)
 			writelog(g, msg->error, bad_file_zip_type);
@@ -930,8 +925,6 @@ handle_zip(GLOBAL *g, MSG *msg, DIR *dir) {
 			d_log("zipscript-c: Integrity check failed (#%d): %s\n", errno, strerror(errno));
 			sprintf(g->v.misc.error_msg, BAD_ZIP);
 			mark_as_bad(g->v.file.name);
-			write_log = g->v.misc.write_log;
-			g->v.misc.write_log = 1;
 			msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 			if (exit_value < 2)
 				writelog(g, msg->error, bad_file_zip_type);
@@ -943,7 +936,6 @@ handle_zip(GLOBAL *g, MSG *msg, DIR *dir) {
 	printf(zipscript_zip_ok);
 
 	if ((matchpath(zip_dirs, g->l.path)) || (matchpath(group_dirs, g->l.path))  ) {
-		g->v.misc.write_log = 1;
 		d_log("zipscript-c: Directory matched with zip_dirs/group_dirs\n");
 	} else {
 		d_log("zipscript-c: WARNING! Directory did not match with zip_dirs/group_dirs\n");
@@ -951,8 +943,6 @@ handle_zip(GLOBAL *g, MSG *msg, DIR *dir) {
 			d_log("zipscript-c: Strict mode on - exiting\n");
 			sprintf(g->v.misc.error_msg, UNKNOWN_FILE, fileext);
 			mark_as_bad(g->v.file.name);
-			write_log = g->v.misc.write_log;
-			g->v.misc.write_log = 1;
 			msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 			if (exit_value < 2)
 				writelog(g, msg->error, bad_file_wrongdir_type);
@@ -992,7 +982,8 @@ handle_zip(GLOBAL *g, MSG *msg, DIR *dir) {
 	if (g->v.total.files_missing < 0) {
 		d_log("zipscript-c: There seems to be more files in zip than we expected\n");
 		g->v.total.files -= g->v.total.files_missing;
-		g->v.total.files_missing = g->v.misc.write_log = 0;
+		g->v.total.files_missing = 0;
+		g->v.misc.write_log = FALSE;
 	}
 	d_log("zipscript-c: Setting message pointers\n");
 	msg->race = zip_race;
@@ -1007,7 +998,6 @@ int
 handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
 
 	char			*fileext;
-	int		write_log = 0;
 	unsigned char	exit_value = EXIT_SUCCESS;
 	struct dirent	*dp;
 	int		cnt, cnt2;
@@ -1023,8 +1013,6 @@ handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
 			d_log("zipscript-c: Strict mode on - exiting\n");
 			sprintf(g->v.misc.error_msg, UNKNOWN_FILE, fileext);
 			mark_as_bad(g->v.file.name);
-			write_log = g->v.misc.write_log;
-			g->v.misc.write_log = 1;
 			msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 			if (exit_value < 2)
 				writelog(g, msg->error, bad_file_wrongdir_type);
@@ -1035,15 +1023,12 @@ handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
 
 	if (fileexists(g->l.sfv)) {
 		if (deny_double_sfv == TRUE && findfileextcount(dir, ".sfv") > 1 && sfv_compare_size(".sfv", g->v.file.size) > 0) {
-			write_log = g->v.misc.write_log;
-			g->v.misc.write_log = 1;
 			d_log("zipscript-c: DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g->v.file.size));
 			d_log("zipscript-c: No double sfv allowed\n");
 			msg->error = convert(&g->v, g->ui, g->gi, deny_double_msg);
 			writelog(g, msg->error, general_doublesfv_type);
 			sprintf(g->v.misc.error_msg, DOUBLE_SFV);
 			mark_as_bad(g->v.file.name);
-			g->v.misc.write_log = write_log;
 			exit_value = 2;
 			return exit_value;
 		} else if (findfileextcount(dir, ".sfv") > 1 && sfv_compare_size(".sfv", g->v.file.size) > 0) {
@@ -1056,15 +1041,12 @@ handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
 			//readsfv_ffile(g->v.file.name, g->v.file.size, g->v);
 			readsfv_ffile(&g->v);
 			if ((g->v.total.files <= cnt2) || (g->v.total.files != (cnt + g->v.total.files_missing))) {
-				write_log = g->v.misc.write_log;
-				g->v.misc.write_log = 1;
 				d_log("zipscript-c: Old sfv seems to match with more files than current one\n");
 				strlcpy(g->v.misc.error_msg, "SFV does not match with files!", 80);
 				msg->error = convert(&g->v, g->ui, g->gi, deny_double_msg);
 				writelog(g, msg->error, general_doublesfv_type);
 				sprintf(g->v.misc.error_msg, DOUBLE_SFV);
 				mark_as_bad(g->v.file.name);
-				g->v.misc.write_log = write_log;
 				exit_value = 2;
 				return exit_value;
 			}
@@ -1093,8 +1075,6 @@ handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
 	d_log("zipscript-c: Parsing sfv and creating sfv data\n");
 	if (copysfv(g->v.file.name, g->l.sfv, &g->v)) {
 		d_log("zipscript-c: Found invalid entries in SFV.\n");
-		write_log = g->v.misc.write_log;
-		g->v.misc.write_log = 1;
 		msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 		if (exit_value < 2)
 			writelog(g, msg->error, bad_file_sfv_type);
@@ -1145,8 +1125,6 @@ handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
 		d_log("zipscript-c: SFV seems to have no files of accepted types, or has errors.\n");
 		sprintf(g->v.misc.error_msg, EMPTY_SFV);
 		mark_as_bad(g->v.file.name);
-		write_log = g->v.misc.write_log;
-		g->v.misc.write_log = 1;
 		msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 		if (exit_value < 2)
 			writelog(g, msg->error, bad_file_sfv_type);
@@ -1193,7 +1171,6 @@ handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
 
 	msg->halfway = msg->newleader = msg->race = msg->update = NULL;
 
-	g->v.misc.write_log = matchpath(sfv_dirs, g->l.path);
 	if (g->v.total.files_missing > 0) {
 		if (msg->sfv != NULL) {
 			d_log("zipscript-c: Writing SFV message to %s\n", log);
@@ -1213,7 +1190,6 @@ int
 handle_nfo(GLOBAL *g, MSG *msg, DIR *dir) {
 	
 	unsigned char	no_check = FALSE;
-	int		write_log = 0;
 	unsigned char	exit_value = EXIT_SUCCESS;
 	char           target[1024];
 
@@ -1223,9 +1199,6 @@ handle_nfo(GLOBAL *g, MSG *msg, DIR *dir) {
 	if (findfileextcount(dir, ".nfo") > 1) {
 		d_log("zipscript-c: Looks like there already is a nfo uploaded. Denying this one.\n");
 		sprintf(g->v.misc.error_msg, DUPE_NFO);
-		//mark_as_bad(g->v.file.name);
-		write_log = g->v.misc.write_log;
-		g->v.misc.write_log = 1;
 		msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 		if (exit_value < 2)
 			writelog(g, msg->error, bad_file_nfo_type);
@@ -1252,7 +1225,6 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 	
 	unsigned int	crc, s_crc = 0;
 	unsigned char	no_check = FALSE;
-	int		write_log = 0;
 	char           *target = 0;
 	unsigned char	exit_value = EXIT_SUCCESS;
 
@@ -1268,16 +1240,15 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 		s_crc = readsfv(g->l.sfv, &g->v, 0);
 
 #if (sfv_calc_single_fname == TRUE)
-		if (s_crc == 0 && errno == 1) {
+		if (s_crc == 0 && g->v.misc.in_sfvfile == TRUE) {
 			d_log("zipscript-c: CRC in SFV is 0 - trying to calculate it from the file\n");
 			s_crc = calc_crc32(g->v.file.name);
 			update_sfvdata(g->l.sfv, g->v.file.name, s_crc);
-#if (smart_sfv_write && sfv_cleanup)
-			sfvdata_to_sfv(g->l.sfv, findfileext(dir, ".sfv"));
-#endif
+			if (smart_sfv_write && sfv_cleanup)
+				sfvdata_to_sfv(g->l.sfv, findfileext(dir, ".sfv"));
 		}
 #endif
-		if (!g->v.misc.sfv_match) {
+		if (!g->v.misc.sfv_match && g->v.misc.in_sfvfile == TRUE) {
 			update_sfvdata(g->l.sfv, g->v.file.name, s_crc);
 #if (smart_sfv_write && sfv_cleanup)
 			sfvdata_to_sfv(g->l.sfv, findfileext(dir, ".sfv"));
@@ -1305,8 +1276,6 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 				if (!hexstrtodec(argv[3]) && allow_file_resume) {
 					d_log("zipscript-c: Broken xfer detected - allowing file.\n");
 					no_check = TRUE;
-					write_log = g->v.misc.write_log;
-					g->v.misc.write_log = 1;
 					msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 					writelog(g, msg->error, bad_file_crc_type);
 					if (enable_unduper_script == TRUE) {
@@ -1324,15 +1293,13 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 				strlcpy(g->v.misc.error_msg, BAD_CRC, 80);
 			}
 			mark_as_bad(g->v.file.name);
-			write_log = g->v.misc.write_log;
-			g->v.misc.write_log = 1;
 			msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 			if (exit_value < 2)
 				writelog(g, msg->error, bad_file_crc_type);
 			exit_value = 2;
 			return exit_value;
 		}
-		if (s_crc == 0 && g->v.misc.sfv_match) {
+		if (s_crc == 0 && g->v.misc.sfv_match && g->v.misc.in_sfvfile == TRUE) {
 			d_log("zipscript-c: File was found in sfv, but had no crc.\n");
 			s_crc = crc;
 			update_sfvdata(g->l.sfv, g->v.file.name, s_crc);
@@ -1346,8 +1313,6 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 			d_log("zipscript-c: dupe detected - same file, different case already exists.\n");
 			strlcpy(g->v.misc.error_msg, DOUBLE_SFV, 80);
 			mark_as_bad(g->v.file.name);
-			write_log = g->v.misc.write_log;
-			g->v.misc.write_log = 1;
 			msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 			if (exit_value < 2)
 				writelog(g, msg->error, bad_file_crc_type);
@@ -1368,8 +1333,6 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 			d_log("zipscript-c: SFV needs to be uploaded first\n");
 			strlcpy(g->v.misc.error_msg, SFV_FIRST, 80);
 			mark_as_bad(g->v.file.name);
-			write_log = g->v.misc.write_log;
-			g->v.misc.write_log = 1;
 			msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 			if (exit_value < 2)
 				writelog(g, msg->error, bad_file_nosfv_type);
@@ -1379,8 +1342,6 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 			d_log("zipscript-c: This looks like a file uploaded the wrong place - Not allowing it.\n");
 			strlcpy(g->v.misc.error_msg, SFV_FIRST, 80);
 			mark_as_bad(g->v.file.name);
-			write_log = g->v.misc.write_log;
-			g->v.misc.write_log = 1;
 			msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 			if (exit_value < 2)
 				writelog(g, msg->error, bad_file_nosfv_type);
@@ -1399,8 +1360,6 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 		writerace(g->l.race, &g->v, crc, F_NOTCHECKED);
 #endif
 	}
-
-	g->v.misc.write_log = matchpath(sfv_dirs, g->l.path);
 
 	d_log("zipscript-c: Reading race data from file to memory\n");
 	readrace(g->l.race, &g->v, g->ui, g->gi);
@@ -1435,9 +1394,6 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 		get_mpeg_audio_info(g->v.file.name, &g->v.audio);
 		write_bitrate_in_race(g->l.race, &g->v);
 		sprintf(g->v.audio.bitrate, "%i", read_bitrate_in_race(g->l.race, &g->v));
-#if ( exclude_non_sfv_dirs )
-		if (g->v.misc.write_log == TRUE) {
-#endif
 			if ((enable_mp3_script == TRUE) && (g->ui[g->v.user.pos]->files == 1)) {
 				if (!fileexists(mp3_script)) {
 					d_log("zipscript-c: Warning -  mp3_script (%s) - file does not exists\n", mp3_script);
@@ -1455,17 +1411,12 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 					if (audio_genre_warn == TRUE) {
 						if (g->ui[g->v.user.pos]->files == 1) {
 							d_log("zipscript-c: warn on - logging to logfile\n");
-							write_log = g->v.misc.write_log;
-							g->v.misc.write_log = 1;
 							msg->error = convert(&g->v, g->ui, g->gi, audio_genre_warn_msg);
 							writelog(g, msg->error, general_badgenre_type);
-							g->v.misc.write_log = write_log;
 						} else
 							d_log("zipscript-c: warn on - have already logged to logfile\n");
 					} else {
 						mark_as_bad(g->v.file.name);
-						write_log = g->v.misc.write_log;
-						g->v.misc.write_log = 1;
 						msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 						if ((g->ui[g->v.user.pos]->files == 1) && (exit_value < 2))
 							writelog(g, msg->error, bad_file_genre_type);
@@ -1484,17 +1435,12 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 					if (audio_genre_warn == TRUE) {
 						if (g->ui[g->v.user.pos]->files == 1) {
 							d_log("zipscript-c: warn on - logging to logfile\n");
-							write_log = g->v.misc.write_log;
-							g->v.misc.write_log = 1;
 							msg->error = convert(&g->v, g->ui, g->gi, audio_genre_warn_msg);
 							writelog(&g, msg->error, general_badgenre_type);
-							g->v.misc.write_log = write_log;
 						} else
 							d_log("zipscript-c: warn on - have already logged to logfile\n");
 					} else {
 						mark_as_bad(g->v.file.name);
-						write_log = g->v.misc.write_log;
-						g->v.misc.write_log = 1;
 						msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 						if ((g->ui[g->v.user.pos]->files == 1) && (exit_value < 2))
 							writelog(&g, msg->error, bad_file_genre_type);
@@ -1514,17 +1460,12 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 					if (audio_year_warn == TRUE) {
 						if (g->ui[g->v.user.pos]->files == 1) {
 							d_log("zipscript-c: warn on - logging to logfile\n");
-							write_log = g->v.misc.write_log;
-							g->v.misc.write_log = 1;
 							msg->error = convert(&g->v, g->ui, g->gi, audio_year_warn_msg);
 							writelog(g, msg->error, general_badyear_type);
-							g->v.misc.write_log = write_log;
 						} else
 							d_log("zipscript-c: warn on - have already logged to logfile\n");
 					} else {
 						mark_as_bad(g->v.file.name);
-						write_log = g->v.misc.write_log;
-						g->v.misc.write_log = 1;
 						msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 						if ((g->ui[g->v.user.pos]->files == 1) && (exit_value < 2))
 							writelog(g, msg->error, bad_file_year_type);
@@ -1545,17 +1486,12 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 						if (audio_cbr_warn == TRUE) {
 							if (g->ui[g->v.user.pos]->files == 1) {
 								d_log("zipscript-c: warn on - logging to logfile\n");
-								write_log = g->v.misc.write_log;
-								g->v.misc.write_log = 1;
 								msg->error = convert(&g->v, g->ui, g->gi, audio_cbr_warn_msg);
 								writelog(g, msg->error, general_badbitrate_type);
-								g->v.misc.write_log = write_log;
 							} else
 								d_log("zipscript-c: warn on - have already logged to logfile\n");
 						} else {
 							mark_as_bad(g->v.file.name);
-							write_log = g->v.misc.write_log;
-							g->v.misc.write_log = 1;
 							msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 							if ((g->ui[g->v.user.pos]->files == 1) && (exit_value < 2))
 								writelog(g, msg->error, bad_file_bitrate_type);
@@ -1571,9 +1507,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 #endif
 			} else
 				d_log("zipscript-c: user is in a no audio check dir - skipping checks.\n");
-#if ( exclude_non_sfv_dirs == TRUE )
-		}
-#endif
+
 		if (realtime_mp3_info != DISABLED) {
 			d_log("zipscript-c: Printing realtime_mp3_info.\n");
 			printf("%s", convert(&g->v, g->ui, g->gi, realtime_mp3_info));

@@ -100,6 +100,8 @@ main(int argc, char *argv[])
 	}
 	g.v.misc.slowest_user[0] = 30000;
 
+	g.v.misc.write_log = FALSE;
+
 	bzero(&g.v.total, sizeof(struct race_total));
 	g.v.misc.fastest_user[0] = 0;
 	g.v.misc.release_type = RTYPE_NULL;
@@ -379,7 +381,6 @@ main(int argc, char *argv[])
 				complete_bar = video_completebar;
 				break;
 			}
-			g.v.misc.write_log = 0;
 			complete(&g);
 
 			if (complete_bar) {
@@ -464,7 +465,6 @@ main(int argc, char *argv[])
 		}
 		buffer_progress_bar(&g.v);
 		if (g.v.total.files_missing == 0) {
-			g.v.misc.write_log = 0;
 			complete(&g);
 			createstatusbar(convert(&g.v, g.ui, g.gi, zip_completebar));
 #if (chmod_completebar)

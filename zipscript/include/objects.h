@@ -126,6 +126,7 @@ struct misc {
 	char		progress_bar[15];
 	short int	release_type;
 	short int	sfv_match;
+	short int	in_sfvfile;
 	unsigned char	write_log;
 	long		fastest_user[2];
 	long		slowest_user[2];
