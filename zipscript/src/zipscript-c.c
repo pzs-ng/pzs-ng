@@ -53,6 +53,9 @@ main(int argc, char **argv)
 	GLOBAL		g; /* this motherfucker owns */
 	DIR		*dir, *parent;
 	struct dirent	*dp;
+
+	struct GDATA	gdata;
+	struct UDATA	udata;
 	
 	char           *fileext, *name_p, *temp_p = NULL, *temp_p_free = NULL;
 	char           *target = 0;
@@ -141,19 +144,19 @@ main(int argc, char **argv)
 		 * strcpy(g.v.user.group, "NoGroup");
 		 */
 
-		gnum = buffer_groups(GROUPFILE, 0);
-		unum = buffer_users(PASSWDFILE, 0);
+		buffer_groups(&gdata, GROUPFILE, 0);
+		buffer_users(&udata, PASSWDFILE, 0);
 		fileinfo.st_uid = geteuid();
 		fileinfo.st_gid = getegid();
-		strlcpy(g.v.user.name, get_u_name(fileinfo.st_uid), 24);
-		strlcpy(g.v.user.group, get_g_name(fileinfo.st_gid), 24);
+		strlcpy(g.v.user.name, get_u_name(&udata, fileinfo.st_uid), 24);
+		strlcpy(g.v.user.group, get_g_name(&gdata, fileinfo.st_gid), 24);
 		memcpy(g.v.user.tagline, "No Tagline Set", 15);
 		g.v.file.speed = 2005;
 		g.v.section = 0;
 		sprintf(g.v.sectionname, "DEFAULT");
 	} else {
-		gnum = buffer_groups(GROUPFILE, 0);
-		unum = buffer_users(PASSWDFILE, 0);
+		buffer_groups(&gdata, GROUPFILE, 0);
+		buffer_users(&udata, PASSWDFILE, 0);
 		sprintf(g.v.user.name, getenv("USER"));
 		sprintf(g.v.user.group, getenv("GROUP"));
 		if (!(int)strlen(g.v.user.group))
@@ -1524,8 +1527,8 @@ main(int argc, char **argv)
 	if (fileexists(".delme"))
 		unlink(".delme");
 
-	buffer_groups(GROUPFILE, gnum);
-	buffer_users(PASSWDFILE, unum);
+	buffer_groups(&gdata, GROUPFILE, 1);
+	buffer_users(&udata, PASSWDFILE, 1);
 	updatestats_free(&g);
 	free(fileext);
 	m_free(target);

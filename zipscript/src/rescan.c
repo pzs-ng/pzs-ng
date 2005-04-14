@@ -39,6 +39,9 @@ main(int argc, char *argv[])
 	unsigned int	crc = 0;
 	struct stat	fileinfo;
 
+	struct GDATA	gdata;
+	struct UDATA	udata;
+
 	uid_t		f_uid;
 	gid_t		f_gid;
 	double		temp_time = 0;
@@ -114,8 +117,8 @@ main(int argc, char *argv[])
 	g.l.length_zipdatadir = sizeof(storage);
 
 	getrelname(&g);
-	gnum = buffer_groups(GROUPFILE, 0);
-	unum = buffer_users(PASSWDFILE, 0);
+	buffer_groups(&gdata, GROUPFILE, 0);
+	buffer_users(&udata, PASSWDFILE, 0);
 
 	sprintf(g.l.sfv, storage "/%s/sfvdata", g.l.path);
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
@@ -231,8 +234,8 @@ main(int argc, char *argv[])
 				f_uid = fileinfo.st_uid;
 				f_gid = fileinfo.st_gid;
 
-				strcpy(g.v.user.name, get_u_name(f_uid));
-				strcpy(g.v.user.group, get_g_name(f_gid));
+				strcpy(g.v.user.group, get_g_name(&gdata, f_gid));
+				strcpy(g.v.user.name, get_u_name(&udata, f_uid));
 				strlcpy(g.v.file.name, dp->d_name, NAME_MAX);
 				g.v.file.speed = 2005 * 1024;
 				g.v.file.size = fileinfo.st_size;
@@ -417,8 +420,8 @@ main(int argc, char *argv[])
 					d_log("rescan.c: Seems this file (%s) is in the process of being uploaded. Ignoring for now.\n", dp->d_name);
 					continue;
 				}
-				strcpy(g.v.user.name, get_u_name(f_uid));
-				strcpy(g.v.user.group, get_g_name(f_gid));
+				strcpy(g.v.user.name, get_u_name(&udata, f_uid));
+				strcpy(g.v.user.group, get_g_name(&gdata, f_gid));
 				strlcpy(g.v.file.name, dp->d_name, NAME_MAX);
 				g.v.file.speed = 2005 * 1024;
 				g.v.file.size = fileinfo.st_size;
@@ -544,8 +547,8 @@ main(int argc, char *argv[])
 
 	remove_lock(&g.v);
 
-	buffer_groups(GROUPFILE, gnum);
-	buffer_users(PASSWDFILE, unum);
+	buffer_groups(&gdata, GROUPFILE, 1);
+	buffer_users(&udata, PASSWDFILE, 1);
 
 	exit(0);
 }

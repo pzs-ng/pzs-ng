@@ -81,6 +81,16 @@ struct USER {
 	uid_t		id;
 };
 
+struct GDATA {
+	struct GROUP **group;
+	int num_groups;
+};
+
+struct UDATA {
+	struct USER **user;
+	int num_users;
+};
+
 /*extern struct USERINFO **userI;
 extern struct GROUPINFO **groupI;
 extern struct VARS raceI;*/
@@ -129,10 +139,10 @@ extern void	createlink(char *, char *, char *, char *);
 extern void	readsfv_ffile(struct VARS *);
 extern void	get_rar_info(struct VARS *);
 extern int	execute(char *);
-extern char    *get_g_name(int);
-extern char    *get_u_name(int);
-extern int	buffer_groups(char *, int);
-extern int	buffer_users(char *, int);
+extern char    *get_g_name(struct GDATA *, gid_t);
+extern char    *get_u_name(struct UDATA *, uid_t);
+extern void	buffer_groups(struct GDATA *, char *, int);
+extern void	buffer_users(struct UDATA *, char *, int);
 extern unsigned long sfv_compare_size(char *, unsigned long);
 extern void	mark_as_bad(char *);
 
