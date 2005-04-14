@@ -313,7 +313,7 @@ main(int argc, char **argv)
 			removecomplete();
 
 		if (fileexists(g.l.sfv)) {
-			delete_sfv(g.l.sfv);
+			delete_sfv(g.l.sfv, &g.v);
 			unlink(g.l.sfv);	
 		}
 
@@ -397,7 +397,7 @@ main(int argc, char **argv)
 		if (del_completebar)
 			removecomplete();
 		if (fileexists(g.l.sfv))
-			delete_sfv(g.l.sfv);
+			delete_sfv(g.l.sfv, &g.v);
 		if (g.l.nfo_incomplete)
 			unlink(g.l.nfo_incomplete);
 		if (g.l.incomplete)
