@@ -718,7 +718,7 @@ main(int argc, char **argv)
 			d_log("zipscript-c: Removing incomplete indicator (%s)\n", g.l.incomplete);
 			complete(&g);
 
-			if (msg.complete != NULL) {
+			if (msg.complete != NULL && g.v.misc.write_log == TRUE) {
 				d_log("zipscript-c: Writing COMPLETE and STATS to %s\n", log);
 				writelog(&g, convert(&g.v, g.ui, g.gi, msg.complete), complete_announce);
 			}
