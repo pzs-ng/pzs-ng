@@ -12,7 +12,8 @@ typedef struct {
 	off_t		size;
 	time_t		start_time;
 	unsigned char	status;
-	char		fname[NAME_MAX],
+	unsigned char	dummy;
+	char		fname[NAMEMAX],
 			uname[24],
 			group[24],
 			tagline[64];
@@ -21,7 +22,7 @@ typedef struct {
 /* this is put in sfvdata files */
 typedef struct {
 	unsigned int	crc32;
-	char		fname[NAME_MAX];
+	char		fname[NAMEMAX];
 	short int	fmatch;
 } SFVDATA;
 
