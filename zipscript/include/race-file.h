@@ -11,6 +11,7 @@ typedef struct {
 	off_t		size;
 	time_t		start_time;
 	unsigned char	status;
+	unsigned char	dummy;
 	char		fname[NAMEMAX],
 			uname[24],
 			group[24];

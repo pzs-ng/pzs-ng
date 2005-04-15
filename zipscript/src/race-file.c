@@ -789,10 +789,11 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 		count++;
 	}
 
+	bzero(&rd, sizeof(RACEDATA));
 	rd.status = status;
 	rd.crc32 = crc;
 	
-	strlcpy(rd.fname, raceI->file.name, NAME_MAX);
+	strlcpy(rd.fname, raceI->file.name, NAMEMAX);
 	strlcpy(rd.uname, raceI->user.name, 24);
 	strlcpy(rd.group, raceI->user.group, 24);
 	
@@ -801,7 +802,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	rd.start_time = raceI->total.start_time;
 
 	write(fd, &rd, sizeof(RACEDATA));
-	
+
 	close(fd);
 }
 
