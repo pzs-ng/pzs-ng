@@ -825,6 +825,7 @@ buffer_groups(struct GDATA *gdata, char *groupfile, int setfree)
 			
 	//gdata->group = malloc(GROUPS * sizeof(struct GROUP *));
 	gdata->group = malloc(GROUPS * sizeof(struct GROUP));
+	gdata->num_groups = 0;
 
 	for (n = 0; n < f_size; n++) {
 		if (f_buf[n] == '\n' || n == f_size) {
@@ -891,6 +892,7 @@ buffer_users(struct UDATA *udata, char *passwdfile, int setfree)
 			
 	//udata->user = malloc(USERS * sizeof(struct USER *));
 	udata->user = malloc(USERS * sizeof(struct USER));
+	udata->num_users = 0;
 
 	for (n = 0; n < f_size; n++) {
 		if (f_buf[n] == '\n' || n == f_size) {
