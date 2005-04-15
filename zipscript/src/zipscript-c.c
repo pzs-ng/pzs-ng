@@ -904,7 +904,8 @@ handle_zip(GLOBAL *g, MSG *msg, DIR *dir) {
 
 	//char           *error_msg = 0;
 	unsigned char	exit_value = EXIT_SUCCESS;
-	char           *target = 0, *fileext;
+	char			target[strlen(unzip_bin) + 10 + NAME_MAX];
+	char 			*fileext;
 	long		loc;
 	struct dirent	*dp;
 
