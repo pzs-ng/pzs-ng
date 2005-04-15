@@ -103,7 +103,7 @@ main(int argc, char **argv)
 #if ( enable_complete_script || enable_accept_script )
 	int		nfofound = 0;
 #endif
-#if ( del_banned_release )
+#if ( del_banned_release || enable_banned_script )
 	int		deldir = 0;
 #endif
 	struct stat	fileinfo;
@@ -850,14 +850,21 @@ main(int argc, char **argv)
 		remove_nfo_indicator(&g);
 	}
 
-#if ( del_banned_release )
+#if ( del_banned_release || enable_banned_script )
 	if (deldir) {
-		d_log("zipscript-c: del_banned_release is set - removing entire dir.\n");
-		move_progress_bar(1, &g.v, g.ui, g.gi);
-		if (g.l.incomplete)
-			unlink(g.l.incomplete);
-		rewinddir(dir);
-		del_releasedir(dir, g.l.path);
+		if (enable_banned_script) {
+			sprintf(target, banned_script " \"%s\"", g.v.file.name);
+			if (execute(target) != 0)
+				d_log("zipscript-c: Failed to execute banned_script: %s\n", strerror(errno));
+		}
+		if (del_banned_release) {
+			d_log("zipscript-c: del_banned_release is set - removing entire dir.\n");
+			move_progress_bar(1, &g.v, g.ui, g.gi);
+			if (g.l.incomplete)
+				unlink(g.l.incomplete);
+			rewinddir(dir);
+			del_releasedir(dir, g.l.path);
+		}
 	}
 #endif
 
@@ -896,7 +903,6 @@ main(int argc, char **argv)
 #endif
 	d_log("zipscript-c: Exit %d\n", exit_value);
 	return exit_value;
-		d_log("zipscript-c: del_banned_release is set - removing entire dir.\n");
 }
 
 int
@@ -1423,7 +1429,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 							writelog(g, msg->error, bad_file_genre_type);
 						exit_value = 2;
 					}
-#if ( del_banned_release )
+#if ( del_banned_release || enable_banned_script )
 					deldir = 1;
 					exit_value = 2;
 #endif
@@ -1447,7 +1453,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 							writelog(&g, msg->error, bad_file_genre_type);
 						exit_value = 2;
 					}
-#if ( del_banned_release )
+#if ( del_banned_release || enable_banned_script )
 					deldir = 1;
 					exit_value = 2;
 #endif
@@ -1472,7 +1478,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 							writelog(g, msg->error, bad_file_year_type);
 						exit_value = 2;
 					}
-#if ( del_banned_release )
+#if ( del_banned_release || enable_banned_script )
 					deldir = 1;
 					exit_value = 2;
 #endif
@@ -1498,7 +1504,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 								writelog(g, msg->error, bad_file_bitrate_type);
 							exit_value = 2;
 						}
-#if ( del_banned_release )
+#if ( del_banned_release || enable_banned_script )
 						deldir = 1;
 						exit_value = 2;
 #endif

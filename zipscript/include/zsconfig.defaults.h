@@ -841,6 +841,16 @@
 #endif
 
 /*
+ * Enable/disable banned script - executed on banned releases
+ */
+#ifndef enable_banned_script
+#define enable_banned_script	FALSE
+#endif
+#ifndef banned_script
+#define banned_script		"/bin/mp3-ban.sh"
+#endif
+
+/*
  * The following settings allow you to disable certain announces. This should
  * probably be done in your bot, but as of this writing, the default dzsbot
  * does not support such an option.

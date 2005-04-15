@@ -11,6 +11,7 @@ v1.xx	:
 	  zipscript: fix: the average bitrate for a full audio-release is used at the end of a race.
 	  zipscript: new: the cleanup binary got a command line override for days back to cleanup
 	  zipscript: new: tagline for each racer added to the (bot) output
+	  zipscript: new: added support for execution of external script on banned releases.
 
 v1.00	: Initial release
 
