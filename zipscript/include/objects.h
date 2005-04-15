@@ -29,6 +29,9 @@
  #define _ALT_MAX
 #endif
 
+#if NAME_MAX%2
+ #define NAMEMAX NAME_MAX+1
+#endif
 
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
