@@ -255,20 +255,37 @@ v0.6.1	--> 1.00  :	The changes from the original project-zs by d1 is
 
 		----	Changes in the sitebot:
 
-			Much have been rewritten/revised.
+			Numerous new IRC commands: !leechers, !idlers, !uploaders,
+			!new, !nukes, !unnukes, !search, and !uptime.
 
-			The bot now uses themes as templates for the output
-			in channel.
+			A new plug-in system, which makes it easier for users to
+			add custom features without having to directly modify the
+			source files. There are several example plug-ins included;
+			such as a pre-time check, channel kick on deluser, and
+			an IRC nick to FTP user mapping plug-in.
 
-			Easier config - if not all options is present, the
-			default for the missing values will be used. This makes
-			upgrading easier too, since there's no need to rewrite
-			the config for each update.
+			Invite users to private channels based on their name,
+			group, or flags. For example, one could invite all
+			users with the "1" flag to #Staff.
 
-			glftpd 1/2 support.
+			dZSbot can announce sysop.log and login.log events, or
+			redirect them to your staff channel.
+
+			The FTP bouncer check now supports explicit secure connections,
+			commonly referred to as "AUTH TLS".
+
+			The bot now uses a theming system to customize channel
+			announces. A preview system is included allowing you
+			to view your theme before using it.
+
+			Easier configuration - if an option isn't defined the
+			default value will be used. This makes upgrading much easier,
+			since there's no need to reconfigure the bot for each update.
+
+			Full support for glftpd v1.x and v2.x.
 
 			Better error control - instead of crashing, the bot
-			will output what's wrong in the partyline.
+			will output what's wrong in the party line.
 
 
 		----	Changes in sitebot scripts/addons:
@@ -304,4 +321,3 @@ v0.6.1	--> 1.00  :	The changes from the original project-zs by d1 is
 				END OF CHANGELOG
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-
