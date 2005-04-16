@@ -254,9 +254,9 @@ proc eventhandler {type event argv} {
 }
 
 proc readlogtimer {} {
-	global dZStimer
-	if {[catch {readlog} error]} {
-		putlog "dZSbot error: Unable to read log data ($error)."
+	global dZStimer errorInfo
+	if {[catch {readlog}]} {
+		putlog "dZSbot error: Unhandled error, please report to developers:\n$errorInfo"
 	}
 	set dZStimer [utimer 1 readlogtimer]
 }
@@ -282,6 +282,7 @@ proc readlog {} {
 			if {![catch {set handle [open $logpath r]} error]} {
 				seek $handle $lastread($logid)
 				set data [read -nonewline $handle]
+				set logsize [tell $handle]
 				close $handle
 
 				foreach line [split $data "\n"] {
@@ -514,7 +515,7 @@ proc fuelnuke {type path section line} {
 
 	if {$type == $nuke(LASTTYPE) && $path == $nuke(LASTDIR) && $nuke(SHOWN) == 0} {
 		if {[lsearch -exact $hidenuke [lindex $line 2]] == -1} {
-			append nuke(NUKEE) "\002[lindex $line 2]\002 (\002[lindex [lindex $line 3] 1]\002MB), "
+			append nuke(NUKEE) "\002[lindex $line 2]\002 (\002[lindex $line 3 1]\002MB), "
 		}
 	} else {
 		launchnuke
@@ -523,8 +524,8 @@ proc fuelnuke {type path section line} {
 			set nuke(PATH) $path
 			set nuke(SECTION) $section
 			set nuke(NUKER) [lindex $line 1]
-			set nuke(NUKEE) "\002[lindex $line 2]\002 (\002[lindex [lindex $line 3] 1]\002MB) "
-			set nuke(MULT) [lindex [lindex $line 3] 0]
+			set nuke(NUKEE) "\002[lindex $line 2]\002 (\002[lindex $line 3 1]\002MB) "
+			set nuke(MULT) [lindex $line 3 0]
 			set nuke(REASON) [lindex $line 4]
 			set nuke(SHOWN) 0
 		}
@@ -764,7 +765,6 @@ proc flagcheck {currentflags needflags} {
 }
 
 proc rightscheck {rights user group flags} {
-	set retval 0
 	foreach right $rights {
 		set prefix [string index $right 0]
 		if {[string equal "!" $prefix]} {
@@ -778,22 +778,18 @@ proc rightscheck {rights user group flags} {
 			} elseif {[string equal "=" $prefix]} {
 				set right [string range $right 1 end]
 				if {[string match $right $group]} {return 0}
-			} elseif {[flagcheck $flags $right]} {
-				return 0
-			}
+			} elseif {[flagcheck $flags $right]} {return 0}
 
 		## Regular matching
 		} elseif {[string equal "-" $prefix]} {
 			set right [string range $right 1 end]
-			if {[string match $right $user]} {set retval 1}
+			if {[string match $right $user]} {return 1}
 		} elseif {[string equal "=" $prefix]} {
 			set right [string range $right 1 end]
-			if {[string match $right $group]} {set retval 1}
-		} elseif {[flagcheck $flags $right]} {
-			set retval 1
-		}
+			if {[string match $right $group]} {return 1}
+		} elseif {[flagcheck $flags $right]} {return 1}
 	}
-	return $retval
+	return 0
 }
 
 proc ng_invitechan {nick chan} {
