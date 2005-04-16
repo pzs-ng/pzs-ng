@@ -1017,6 +1017,7 @@ buffer_paths(GLOBAL *g, char path[2][PATH_MAX], int *k, int len)
 {
 	int		cnt, n = 0;
 
+	d_log("buffer_paths: g->l.path=%s\n", g->l.path);
 	for (cnt = len; *k && cnt; cnt--) {
 		if (g->l.path[cnt] == '/') {
 			(*k)--;
