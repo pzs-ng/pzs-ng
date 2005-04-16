@@ -254,6 +254,7 @@ v0.6.1	--> 1.00  :	The changes from the original project-zs by d1 is
 			- upgrading is easy - there is no need to rewrite the config for each upgrade - just copy it over.
 			- zsconfig.h now only holds changes to the defaults, ie on upgrades new options will be used with default values.
 			- the zipscript can be run from (chroot'ed) shell, allowing for easier debugging (and execution from scripts).
+			- rescan is "safe" - it will not remove files that are being uploaded.
 
 
 		----	Changes in the sitebot:
