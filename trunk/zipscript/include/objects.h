@@ -148,10 +148,10 @@ struct VARS {
 	unsigned char	section;
 	char		sectionname[128];
 	char		headpath[PATH_MAX];
-	int		data_incrementor;
-	int		data_in_use;
-	int		data_queue;
-	int		data_type;
+	unsigned int	data_incrementor;
+	unsigned int	data_in_use;
+	unsigned int	data_queue;
+	unsigned int	data_type;
 };
 
 struct LOCATIONS {
