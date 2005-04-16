@@ -25,13 +25,13 @@ typedef struct {
 
 /* this is what we put in a special 'head' file for version control, lock etc */
 typedef struct {
-	short int	data_version;		// version control.
-	short int	data_type;		// type of release.
-	short int	data_in_use;		// which program currently holds the lock.
-	short int	data_incrementor;	// a check to see if nothing else wants the lock.
-	short int	data_queue;		// positions in queue.
-	short int	data_qcurrent;		// current position in queue.
-	short int	data_pid;		// the pid of the process holding the lock.
+	unsigned int	data_version;		// version control.
+	unsigned int	data_type;		// type of release.
+	unsigned int	data_in_use;		// which program currently holds the lock.
+	unsigned int	data_incrementor;	// a check to see if nothing else wants the lock.
+	unsigned int	data_queue;		// positions in queue.
+	unsigned int	data_qcurrent;		// current position in queue.
+	unsigned int	data_pid;		// the pid of the process holding the lock.
 } HEADDATA;
 
 extern unsigned int readsfv(const char *, struct VARS *, int);
@@ -48,9 +48,9 @@ extern short clear_file(const char *, char *);
 extern void writerace(const char *, struct VARS *, unsigned int, unsigned char);
 extern void remove_from_race(const char *, const char *);
 extern int verify_racedata(const char *);
-extern int create_lock(struct VARS *, const char *, int, int, int);
+extern int create_lock(struct VARS *, const char *, unsigned int, unsigned int, unsigned int);
 extern void remove_lock(struct VARS *);
-extern int update_lock(struct VARS *, int, int);
+extern int update_lock(struct VARS *, unsigned int, unsigned int);
 
 #endif
 
