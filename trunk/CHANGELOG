@@ -9,10 +9,10 @@ v0.6.1	--> 1.00  :	The changes from the original project-zs by d1 is
 			changed a lot and have been given a few new options, so
 			check the sitebot.conf and the README.
 
-			In total, there has been nearly 1600 code updates, so
-			i won't list all of those here. I'll just include what
-			changes are major ones, not including new config
-			options.
+			In total, there has been nearly 1700 code updates, so
+			i won't list all of those here. I'll just list what
+			changes are major ones. The new config options can be
+			read about in README.ZSCONFIG
 
 
 		----	Changes in the zipscript:
@@ -226,7 +226,8 @@ v0.6.1	--> 1.00  :	The changes from the original project-zs by d1 is
 
 			codechanges not directly related to config options:
 			---------------------------------------------------
-			- the 4GB limit has been removed
+			- glftpd v1.xx and 2.xx supported.
+			- the 4GB limit has been removed.
 			- max number of files in a release has been changed from 100 to 1024 - this limit can easily be changed later.
 			- support for sections added.
 			- the shared memory dependency has been removed. This means that it will work on any glftpd version, or other ftpd.
@@ -250,7 +251,9 @@ v0.6.1	--> 1.00  :	The changes from the original project-zs by d1 is
 			- a banned (mp3)-release can be deleted automatically after first file, saving bw and hd-space.
 			- ng-chown (a new bin) allows you to chown files/dirs. An example of its use is included.
 			- ng-undupe (a new bin) will undupe files that fail (on rescan for instance) allowing the file to be re-uploaded.
-
+			- upgrading is easy - there is no need to rewrite the config for each upgrade - just copy it over.
+			- zsconfig.h now only holds changes to the defaults, ie on upgrades new options will be used with default values.
+			- the zipscript can be run from (chroot'ed) shell, allowing for easier debugging (and execution from scripts).
 
 
 		----	Changes in the sitebot:
