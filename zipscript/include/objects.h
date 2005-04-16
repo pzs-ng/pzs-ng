@@ -78,16 +78,16 @@ struct video {
 	char	       *fps;
 };
 
-struct avi {
+struct MULTIMEDIA {
 	int		height;
 	int		width;
 	double		fps;
-	char	       *vids;
-	char	       *fourcc;
+	char		vids[100];
+	char		fourcc[100];
 	long		hz;
 	int		ch;
-	char	       *audio;
-	char	       *audiotype;
+	char		audio[100];
+	int		audiotype;
 };
 
 struct current_user {
@@ -177,6 +177,7 @@ typedef struct {
 	struct GROUPINFO	**gi;
 	struct VARS		v;
 	struct LOCATIONS	l;
+	struct MULTIMEDIA	m;
 } GLOBAL; /* reconsider this name */
 
 /* sfv_version - must be > 5. Should not be any need to add a version

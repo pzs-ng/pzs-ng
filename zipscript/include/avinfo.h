@@ -8,5 +8,5 @@ const char *fourcc(FOURCC);
 void error(const char *);
 DWORD get32(FILE *);
 WORD get16(FILE *);
-extern int avinfo(char *, char *);
+extern int avinfo(char *, struct MULTIMEDIA *);
 

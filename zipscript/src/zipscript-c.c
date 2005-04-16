@@ -1198,7 +1198,10 @@ handle_nfo(GLOBAL *g, MSG *msg, DIR *dir) {
 	
 	unsigned char	no_check = FALSE;
 	unsigned char	exit_value = EXIT_SUCCESS;
+
+#if ( enable_nfo_script)
 	char           target[1024];
+#endif
 
 	no_check = TRUE;
 	d_log("zipscript-c: File type is: NFO\n");
@@ -1527,8 +1530,9 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 	case RTYPE_VIDEO:
 		d_log("zipscript-c: Trying to read video header\n");
 		if (!memcmp(fileext, "avi", 3)) {
-			avinfo(g->v.file.name, g->v.avi);
-			d_log("zipscript-c: avinfo: %s\n", g->v.avi);
+			bzero(&g->m, sizeof(struct MULTIMEDIA));
+			avinfo(g->v.file.name, &g->m);
+			d_log("zipscript-c: avinfo: video - %dx%d * %.0f of %s (%s).\n", g->m.height, g->m.width, g->m.fps, g->m.vids, g->m.audio);
 			avi_video(g->v.file.name, &g->v.video);
 		}
 		else
