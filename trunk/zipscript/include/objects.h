@@ -132,7 +132,7 @@ struct misc {
 	char		top_messages[2][1024];
 	char		error_msg [80];
 	char		progress_bar[15];
-	short int	release_type;
+	int		release_type;
 	unsigned char	write_log;
 	long		fastest_user[2];
 	long		slowest_user[2];
@@ -148,10 +148,10 @@ struct VARS {
 	unsigned char	section;
 	char		sectionname[128];
 	char		headpath[PATH_MAX];
-	short int	data_incrementor;
-	short int	data_in_use;
-	short int	data_queue;
-	short int	data_type;
+	int		data_incrementor;
+	int		data_in_use;
+	int		data_queue;
+	int		data_type;
 };
 
 struct LOCATIONS {
@@ -180,6 +180,6 @@ typedef struct {
 /* sfv_version - must be > 5. Should not be any need to add a version
  * for racedata - if either sfv_data or racedata changes, they both
  * should be removed */
-#define sfv_version	14
+#define sfv_version	15
 
 #endif
