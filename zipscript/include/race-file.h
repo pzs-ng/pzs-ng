@@ -12,7 +12,6 @@ typedef struct {
 	off_t		size;
 	time_t		start_time;
 	unsigned char	status;
-	unsigned char	dummy;
 	char		fname[NAMEMAX],
 			uname[24],
 			group[24],
@@ -23,12 +22,12 @@ typedef struct {
 typedef struct {
 	unsigned int	crc32;
 	char		fname[NAMEMAX];
-	short int	fmatch;
+	int		fmatch;
 } SFVDATA;
 
 /* this is what we put in a special 'head' file for version control, lock etc */
 typedef struct {
-	short int	data_version,		// version control.
+	unsigned int	data_version,		// version control.
 			data_type,		// type of release.
 			data_in_use,		// which program currently holds the lock.
 			data_incrementor,	// a check to see if nothing else wants the lock.
@@ -54,9 +53,9 @@ extern void write_bitrate_in_race(const char *, struct VARS *);
 extern int read_bitrate_in_race(const char *, struct VARS *);
 extern void remove_from_race(const char *, const char *);
 extern int verify_racedata(const char *);
-extern int create_lock(struct VARS *, const char *, short int, short int, short int);
+extern int create_lock(struct VARS *, const char *, unsigned int, unsigned int, unsigned int);
 extern void remove_lock(struct VARS *);
-extern int update_lock(struct VARS *, short int, short int);
+extern int update_lock(struct VARS *, unsigned int, unsigned int);
 
 #endif
 

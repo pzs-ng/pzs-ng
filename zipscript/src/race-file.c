@@ -1026,7 +1026,7 @@ verify_racedata(const char *path)
  */
 
 int
-create_lock(struct VARS *raceI, const char *path, short int progtype, short int force_lock, short int queue)
+create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigned int force_lock, unsigned int queue)
 {
 	int		fd;
 	HEADDATA	hd;
@@ -1049,7 +1049,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 		raceI->lock.data_incrementor = hd.data_incrementor = 1;
 		raceI->lock.data_queue = hd.data_queue = 1;
 		hd.data_qcurrent = 0;
-		hd.data_pid = (short int)getpid();
+		hd.data_pid = (unsigned int)getpid();
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
 		d_log("create_lock: lock set. (no previous lockfile found) pid: %d\n", hd.data_pid);
@@ -1067,7 +1067,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 			raceI->lock.data_incrementor = hd.data_incrementor = 1;
 			raceI->lock.data_queue = hd.data_queue = 1;
 			hd.data_qcurrent = 0;
-			hd.data_pid = (short int)getpid();
+			hd.data_pid = (unsigned int)getpid();
 			lseek(fd, 0L, SEEK_SET);
 			write(fd, &hd, sizeof(HEADDATA));
 			close(fd);
@@ -1127,7 +1127,7 @@ create_lock(struct VARS *raceI, const char *path, short int progtype, short int 
 		}
 		raceI->lock.data_incrementor = hd.data_incrementor;
 		raceI->misc.release_type = hd.data_type;
-		hd.data_pid = (short int)getpid();
+		hd.data_pid = (unsigned int)getpid();
 		lseek(fd, 0L, SEEK_SET);
 		write(fd, &hd, sizeof(HEADDATA));
 		close(fd);
@@ -1178,7 +1178,7 @@ remove_lock(struct VARS *raceI)
  */
 
 int
-update_lock(struct VARS *raceI, short int counter, short int datatype)
+update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 {
 	int		fd, retval;
 	HEADDATA	hd;
@@ -1222,8 +1222,8 @@ update_lock(struct VARS *raceI, short int counter, short int datatype)
 		retval = hd.data_incrementor;
 	}
 	raceI->misc.release_type = hd.data_type;
-	if (hd.data_pid != (short int)getpid() && hd.data_incrementor) {
-		d_log("update_lock: Oops! Race condition - another process has the lock. pid: %d != %d\n", hd.data_pid, (short int)getpid());
+	if (hd.data_pid != (unsigned int)getpid() && hd.data_incrementor) {
+		d_log("update_lock: Oops! Race condition - another process has the lock. pid: %d != %d\n", hd.data_pid, (unsigned int)getpid());
 		hd.data_queue = raceI->lock.data_queue - 1;
 		lseek(fd, 0L, SEEK_SET);
 		write(fd, &hd, sizeof(HEADDATA));
