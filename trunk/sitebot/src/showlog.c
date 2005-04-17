@@ -22,6 +22,12 @@
 #include <strings.h>
 #include <unistd.h>
 
+#include "zsconfig.h"
+
+//#undef group_dirs
+//#define group_dirs                      "/site/groups/"
+
+
 /* Comment this line to compile showlog for glftpd v2.x */
 /* (psxc) - well, we'll do, since it's defined already when compiling in pzs-ng." */
 //#define GLVERSION 132
@@ -81,6 +87,7 @@ enum {
 	SHOW_UNNUKES
 };
 
+short int matchpath(char *instr, char *path);
 void load_sysconfig(const char *config_file);
 void show_newdirs(const char *pattern);
 void show_nukes(const ushort status, const char *pattern);
@@ -162,6 +169,32 @@ int main(int argc, char *argv[])
 	}
 
 	return 0;
+}
+
+
+
+short int
+matchpath(char *instr, char *path)
+{
+        int             pos = 0;
+
+        if ( (int)strlen(instr) < 2 || (int)strlen(path) < 2 )
+                return 0;
+        do {
+                switch (*instr) {
+                case 0:
+                case ' ':
+                        if (!strncmp(instr - pos, path, pos - 1)) {
+                                return 1;
+                        }
+                        pos = 0;
+                        break;
+                default:
+                        pos++;
+                        break;
+                }
+        } while (*instr++);
+        return 0;
 }
 
 
@@ -292,6 +325,8 @@ void show_newdirs(const char *pattern)
 				}
 			}
 			/* Format: status|uptime|uploader|group|files|kilobytes|dirname */
+
+if (!matchpath(group_dirs, buffer.dirname)) {
 #ifndef USE_GLFTPD132
 			printf("%d|%u|%d|%d|%d|%lld|",
 				buffer.status, (unsigned int)buffer.uptime, buffer.uploader, buffer.group,
@@ -303,6 +338,7 @@ void show_newdirs(const char *pattern)
 #endif
 			puts(buffer.dirname);
 			i++;
+}
     	}
     	fclose(fp);
     }
@@ -422,4 +458,3 @@ int wildcasecmp(const char *wild, const char *string)
 	}
 	return !*wild;
 }
-

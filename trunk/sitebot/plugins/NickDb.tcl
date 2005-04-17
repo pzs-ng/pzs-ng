@@ -81,7 +81,7 @@ proc ::ngBot::NickDb::Init {args} {
 
     ## The event handler will only be registered if the SQLite
     ## database is opened successfully.
-    if {[catch {sqlite3 [namespace current]::db $filePath} errorMsg]} {
+    if {[catch {sqlite3 db $filePath} errorMsg]} {
         putlog "\[ngBot\] NickDb :: Unable to open database \"$filePath\" - $errorMsg"
         return
     }

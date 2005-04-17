@@ -210,7 +210,7 @@
  * the group dirs. Define your message here, or put DISABLED to disable.
  */
 #ifndef custom_group_dirs_complete_message
-#define custom_group_dirs_complete_message	"... Looks like this is a pre. :)"
+#define custom_group_dirs_complete_message	"... Looks like this is a pre. :)\n"
 #endif
 
 /*
