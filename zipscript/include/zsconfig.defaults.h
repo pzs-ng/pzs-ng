@@ -644,31 +644,31 @@
  * Various Output
  */
 #ifndef message_header
-#define message_header		""
+#define message_header		".--== PZS-NG v1.0 ====-----------------------------------------------.\n"
 #endif
 #ifndef message_user_header
-#define message_user_header	"\n                           U S E R T O P\n+--------------------------------------------------------------------+\n"
+#define message_user_header	"|                          U S E R T O P                             |\n+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n"
 #endif
 #ifndef message_user_body
-#define message_user_body	"%3n %-34U %7.1mM %3fF %5.1p%% %5.0sKBs\n"
+#define message_user_body	"| %3n %-29U %7.1mM %4fF %5.1p%% %7.0sKBs |\n"
 #endif
 #ifndef message_user_footer
-#define message_user_footer	"+--------------------------------------------------------------------+\n%3u Total %36.1mM %3fF 100.0%% %5.0aKBs\n"
+#define message_user_footer	"+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n| %3u Total %31.1mM %4fF 100.0%% %7.0aKBs |\n"
 #endif
 #ifndef message_group_header
-#define message_group_header	"\n\n                          G R O U P T O P\n+--------------------------------------------------------------------+\n"
+#define message_group_header	"|                                                                    |\n|                                                                    |\n|                          G R O U P T O P                           |\n+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n"
 #endif
 #ifndef message_group_body
-#define message_group_body	"%3n %-34g %7.1mM %3fF %5.1p%% %5.0sKBs\n"
+#define message_group_body	"| %3n %-29g %7.1mM %4fF %5.1p%% %7.0sKBs |\n"
 #endif
 #ifndef message_group_footer
-#define message_group_footer	"+--------------------------------------------------------------------+\n%3g Total %36.1mM %3fF 100.0%% %5.0aKBs\n"
+#define message_group_footer	"+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n| %3g Total %31.1mM %4fF 100.0%% %7.0aKBs |\n"
 #endif
 #ifndef message_mp3
-#define message_mp3		"\n\n                            I D 3 - T A G\n+--------------------------------------------------------------------+\n  Artist : %x\n  Album  : %W\n  Genre  : %-34w Rate  : %Xkbit/sec\n  Tracks : %-34f Year  : %Y\n  Encoder: %-34i Preset: %I\n+--------------------------------------------------------------------+\n"
+#define message_mp3		"|                                                                    |\n|                                                                    |\n|                           I D 3 - T A G                            |\n+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n| Artist : %-57x |\n| Album  : %-57W |\n| Genre  : %-34w Rate  : %3Xkbit/s      |\n| Tracks : %-34f Year  : %-14Y |\n| Encoder: %-34i Preset: %-14I |\n"
 #endif
 #ifndef message_footer
-#define message_footer		""
+#define message_footer		"`-------------------------------------------------------===========--'\n"
 #endif
 #ifndef video_completebar
 #define video_completebar	"[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
@@ -713,7 +713,7 @@
 #define realtime_user_header	"+-=[UserTop]=-------------------===----------------+\n"
 #endif
 #ifndef realtime_user_body
-#define realtime_user_body	"| %2n. %-17u %8.1mmB %2fF %7.0skB/s |\n"
+#define realtime_user_body	"| %2n. %-15u %8.1mmB %4fF %7.0skB/s |\n"
 #endif
 #ifndef realtime_user_footer
 #define realtime_user_footer	""
@@ -722,16 +722,16 @@
 #define realtime_group_header	"+-=[GroupTop]=--------------------===--------------+\n"
 #endif
 #ifndef realtime_group_body
-#define realtime_group_body	"| %2n. %-17g %8.1mmB %2fF %7.0skB/s |\n"
+#define realtime_group_body	"| %2n. %-15g %8.1mmB %4fF %7.0skB/s |\n"
 #endif
 #ifndef realtime_group_footer
 #define realtime_group_footer	""
 #endif
 #ifndef zipscript_footer_unknown
-#define zipscript_footer_unknown	"`-[ - NO - SFV - ]------------------------[%2F/??]--'\n"
+#define zipscript_footer_unknown	"`-[ - NO - SFV - ]----------------------[%3F/???]--'\n"
 #endif
 #ifndef zipscript_footer_ok
-#define zipscript_footer_ok	"`-[%V]------------------------[%2F/%-2f]--'\n"
+#define zipscript_footer_ok	"`-[%V]----------------------[%3F/%-3f]--'\n"
 #endif
 #ifndef zipscript_footer_error
 #define zipscript_footer_error	"| - %-46v |\n`-----------------------------------========-------'\n"
