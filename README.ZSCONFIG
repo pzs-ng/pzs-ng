@@ -637,40 +637,40 @@ message_file_name <STRING>
 
 message_header <STRING|DISABLED>
 	Define here what should be put in the top of the complete_message.
-	Default: ""
+	Default: ".--== PZS-NG v1.1 ====-----------------------------------------------.\n"
 
 message_user_header <STRING|DISABLED>
 	Define here what should be put above a list of racers (users).
-	Default: "\n                           U S E R T O P\n+--------------------------------------------------------------------+\n"
+	Default: "|                          U S E R T O P                             |\n+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n"
 	    
 message_user_body <STRING|DISABLED>
 	Define here the body of the list of racers (users).
-	Default: "%3n %-34U %7.1mM %3fF %5.1p%% %5.0sKBs\n"
+	Default: "| %3n %-29U %7.1mM %4fF %5.1p%% %7.0sKBs |\n"
 
 message_user_footer <STRING|DISABLED>
 	Define here the footer of the list of racers (users).
-	Default: "+--------------------------------------------------------------------+\n%3u Total %36.1mM %3fF 100.0%% %5.0aKBs\n"
+	Default: "+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n| %3u Total %31.1mM %4fF 100.0%% %7.0aKBs |\n"
 	    
 message_group_header <STRING|DISABLED>
 	Define here what should be put above a list of racers (groups).
-	Default: "\n\n                          G R O U P T O P\n+--------------------------------------------------------------------+\n"
+	Default: "|                                                                    |\n|                                                                    |\n|      G R O U P T O P                           |\n+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n"
 
 message_group_body <STRING|DISABLED>
 	Define here the body of the list of racers (groups).
-	Default: "%3n %-34g %7.1mM %3fF %5.1p%% %5.0sKBs\n"
+	Default: "| %3n %-29g %7.1mM %4fF %5.1p%% %7.0sKBs |\n"
 
 message_group_footer <STRING|DISABLED>
 	Define here the footer of the list of racers (groups).
-	Default: "+--------------------------------------------------------------------+\n%3g Total %36.1mM %3fF 100.0%% %5.0aKBs\n"
+	Default: "+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n| %3g Total %31.1mM %4fF 100.0%% %7.0aKBs |\n"
 	    
 message_mp3 <STRING|DISABLED>
 	Define here a special complete_message for mp3-releases.
-	Default: "\n\n                            I D 3 - T A G\n+--------------------------------------------------------------------+\n  Artist : %x\n  Album  : %W\n  Genre  : %-34w Rate  : %Xkbit/sec\n  Tracks : %-34f Year  : %Y\n  Encoder: %-34i Preset: %I\n+--------------------------------------------------------------------+\n"
+	Default: "|                                                                    |\n|                                                                    |\n|       I D 3 - T A G                            |\n+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n| Artist : %-57x |\n| Album  : %-57W |\n| Genre  : %-34w Rate  : %3Xkbit/s     |\n| Tracks : %-34f Year  : %-14Y |\n| Encoder: %-34i Preset: %-14I |\n"
 	
 message_footer <STRING|DISABLED>
 	Define here what should be put at the bottom of the complete_message
 	file.
-	Default: ""
+	Default: "`-------------------------------------------------------===========--'\n"
 
 video_completebar <STRING|DISABLED>
 	When a release is complete, a 'complete bar' will be created. Define
@@ -753,7 +753,7 @@ realtime_user_body <STRING|DISABLED>
 	When files are uploaded, some output is shown to the racer uploading.
 	Put here what should be shown in the body of that message, body of
 	user-stats.
-	Default: "| %2n. %-17u %8.1mmB %2fF %7.0skB/s |\n"
+	Default: "| %2n. %-15u %8.1mmB %4fF %7.0skB/s |\n"
 
 realtime_user_footer <STRING|DISABLED>
 	When files are uploaded, some output is shown to the racer uploading.
@@ -771,7 +771,7 @@ realtime_group_body <STRING|DISABLED>
 	When files are uploaded, some output is shown to the racer uploading.
 	Put here what should be shown in the body of that message, body of
 	group-stats.
-	Default: "| %2n. %-17g %8.1mmB %2fF %7.0skB/s |\n"
+	Default: "| %2n. %-15g %8.1mmB %4fF %7.0skB/s |\n"
 
 realtime_group_footer <STRING|DISABLED>
 	When files are uploaded, some output is shown to the racer uploading.
@@ -783,13 +783,13 @@ zipscript_footer_unknown <STRING>
 	When files are uploaded, some output is shown to the racer uploading.
 	Put here what should be shown in the footer of that message, on uploads
 	where no sfv is uploaded yet.
-	Default: "`-[ - NO - SFV - ]------------------------[%2F/??]--'\n"
+	Default: "`-[ - NO - SFV - ]----------------------[%3F/???]--'\n"
 
 zipscript_footer_ok <STRING>
 	When files are uploaded, some output is shown to the racer uploading.
 	Put here what should be shown in the footer of that message, on uploads
 	where the file is verified ok.
-	Default: "`-[%V]------------------------[%2F/%-2f]--'\n"
+	Default: "`-[%V]----------------------[%3F/%-3f]--'\n"
 
 zipscript_footer_error <STRING>
 	When files are uploaded, some output is shown to the racer uploading.
