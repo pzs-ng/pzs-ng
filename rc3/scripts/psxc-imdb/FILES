@@ -1,0 +1,31 @@
+PSXC-IMDB FILES:
+----------------
+
+CHANGELOG                - List of changes made between releases.
+FAQ                      - Frequently Asked Questions.
+FILES                    - List of files included.
+README                   - Instructions on setup, needed files etc.
+TODO                     - Your requests, future plans.
+UPGRADING                - What needs to be done to upgrade your install.
+main/
+ - psxc-imdb.sh          - Main script. (chmod 755)
+ - psxc-imdb-bot.tcl     - botscript. (chmod 644)
+ - psxc-imdb.conf        - main configfile. (chmod 644)
+ - psxc-imdb-conf.tcl    - tcl configfile. (chmod 644)
+addons/                  - Directory with addons, aka EXTERNALSCRIPT.
+ - psxc-imdb-nuker.sh    - An auto nuker/logger/nuke warner.
+ - psxc-symlink-maker.sh - A symlink maker used to sort releases based on
+                            imdb score, genres, title, year or release group.
+ - psxc-imdb-dotimdb.pl  - A replacement-formatter for the standard .imdb.
+extras/                  - Directory with example-files and other helpful things.
+ - psxc-imdb-sanity.sh   - Checks your setup.
+ - psxc-imdb-rescan.sh   - A site_cmd script used to rescan for imdb info.
+ - psxc-imdb-parser.sh   - An example script which helps you create your own
+                            addons.
+ - psxc-imdb-find.sh     - A script used to find imdb-info based on name.
+                            Mostly used in conjunction with psxc-imdb-find.tcl.
+other/                   - Directory with other stuff for the imdb-script.
+diff/                    - Directory with diff-files. Useful for patching
+                            your own modified files, or checking what's
+                            changed.
+

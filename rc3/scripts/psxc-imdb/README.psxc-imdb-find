@@ -1,0 +1,84 @@
+psxc-imdb-find is a addon to psxc-imdb, which will give your bot !imdb
+capability. It means that the users in your channel can look up imdb info
+just by writing !imdb <search string here>.
+
+To set this up you need a working bot, and psxc-imdb should be installed.
+You then have two choices - use dZSbot.tcl to handle the output (default)
+or have the bot-addon handle it (the "full" mode).
+
+Using "full" mode:
+------------------
+This is a bit deceptive. You do not need to have everything logged by the
+script handled by the bot-addon, even in "full" mode. It just means that it
+will poll a logfile, and output everything logged in that file. Using "full"
+mode and setting it up to poll glftpd.log is *NOT* recommended - use a
+different logfile for this.
+To have !imdb lookups handled by the bot-addon, do the following:
+
+1. edit psxc-imdb.conf - check PSXCFINDLOG.
+                       - ignore FINDTRIGGER.
+                       - check FINDLOGFORMAT - this must be "".
+
+2. edit psxc-imdb-conf.tcl - set psxc(IMDBMOVIE) to the same file as
+                             PSXCFINDLOG.
+                           - set psxc(FINDTRIG) to whatever you like.
+                           - set psxc(FINDSCRIPT) to the correct path.
+                           - set psxc(USEFULL) to "YES"
+                           - set psxc(USEFIND) to "YES"
+
+3. run psxc-imdb-sanity.sh.
+
+4. restart your bot.
+
+
+Using dZSbot.tcl:
+-----------------
+This describes how to set things up using dZSbot.tcl.
+
+1. edit psxc-imdb.conf - check PSXCFINDLOG
+                       - check FINDTRIGGER
+                       - check FINDLOGFORMAT
+
+2. edit psxc-imdb-conf.tcl - set psxc(FINDTRIG) to whatever you like.
+                           - set psxc(FINDSCRIPT) to the correct path.
+                           - set psxc(USEFIND) to "YES"
+
+3. copy the file to glftpd's bin dir:
+     cp psxc-imdb-find.sh  /glftpd/bin/
+
+4. edit dZSbot.tcl:
+
+   In this example I use "IMDBFIND" as a keyword. It doesn't matter what you name
+     it, as long as it's not something you've used before.
+
+   - add "IMDBFIND" to "msgtypes(DEFAULT)"
+      set msgtypes(DEFAULT)	"IMDBFIND MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT"
+
+   - add "IMDBFIND" to the disable list
+      set disable(IMDBFIND)	0
+
+   - add "IMDBFIND" to chanlist
+      set chanlist(IMDBFIND)    "#mychannel"
+
+   - add "IMDBFIND" to variables
+      set variables(FIND)       "%pf %msg"
+
+   - add "IMDBFIND" to announce
+      set announce(FIND)        "-%sitename- %bold\[IMDB\]%bold - %msg"
+
+   Take note on what you put FINDTRIGGER and FINDLOGFORMAT to, and act
+   accordingly. Setting these to anything but the defaults ("") require
+   some knowledge on dZSbot.tcl - read up on it in README.use.of.special.format.
+
+   Also note that it's possible to use other methods than this, but this setup
+   should work for most people.
+
+5. restart your bot.
+
+Things should now just work.
+
+If you wish to find out what to do to get your own formatted output, read
+README.use.of.special.format
+
+- psxc
+

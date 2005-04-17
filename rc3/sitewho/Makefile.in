@@ -1,0 +1,24 @@
+prefix=@GLPATH@
+CC=@CC@
+RM=@RM@ -f
+MAKE=@MAKE@
+INSTALL=@INSTALL@
+
+CFLAGS=@M32@ @CFLAGS@ @GLVERSION@ @ALTWHO@
+
+all: sitewho
+
+sitewho: sitewho.c
+	$(CC) $(CFLAGS) -o sitewho sitewho.c
+
+install: all
+	$(INSTALL) -m755 sitewho $(prefix)/bin
+	[ -f "$(prefix)/ftp-data/misc/who.foot" ] || $(INSTALL) -m644 who.foot $(prefix)/ftp-data/misc
+	[ -f "$(prefix)/ftp-data/misc/who.head" ] || $(INSTALL) -m644 who.head $(prefix)/ftp-data/misc
+	[ -f "$(prefix)/bin/sitewho.conf" ] || $(INSTALL) -m644 sitewho.conf $(prefix)/bin
+
+distclean: clean
+	$(RM) sitewho.conf
+
+clean:
+	$(RM) sitewho

@@ -1,0 +1,21 @@
+PSXC-IMDB Installer
+-------------------
+
+This script will do basic installation/reinstallation/upgrading of
+psxc's imdb script.
+
+It should be fairly simple, really.  The installer will ask you a
+few questions, modify the install-files  to match your setup, and
+then copy the  files to where they  are supposed to be.  For each
+file copied, it will give you  the opportunity to edit the config
+of the file, or just check that it looks a-okay according to your
+setup.
+If you already have files installed,  it will give you the option
+of either  replacing the  file, trying  to patch it,  or keep the
+original one as  it is. If the file  is patched or  replaced, the
+original file will be backed up.
+Please take note that the  earliest version supported on patching
+is v2.0i. If you have an older version, patching will fail.
+
+- psxc
+
