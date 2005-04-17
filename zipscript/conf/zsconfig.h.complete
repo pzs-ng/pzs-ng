@@ -120,7 +120,7 @@
  * You may also choose a custom message to be put into the .message file in
  * the group dirs. Define your message here, or put DISABLED to disable.
  */
-#define custom_group_dirs_complete_message	"... Looks like this is a pre. :)"
+#define custom_group_dirs_complete_message	"... Looks like this is a pre. :)\n"
 /*
  * Creates a zero-byte file for every non-existing file defined in sfv?
  */

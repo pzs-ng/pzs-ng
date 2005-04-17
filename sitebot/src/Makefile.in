@@ -18,7 +18,7 @@ passchk: passchk.c
 #	$(CC) $(LDFLAGS) @M32@ $(CFLAGS) -o ng-bw ng-bw.c
 
 showlog: showlog.c
-	$(CC) $(LDFLAGS) @M32@ $(CFLAGS) -o showlog showlog.c
+	$(CC) $(LDFLAGS) @M32@ $(CFLAGS) -I../../zipscript/conf/ -o showlog showlog.c
 
 install: $(install_targets)
 
