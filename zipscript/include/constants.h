@@ -93,7 +93,7 @@
 #define bad_file_bitrate_type				"BAD_FILE_BITRATE"
 #define bad_file_disallowed_type			"BAD_FILE_DISALLOWED"
 #define bad_file_nfo_type				"BAD_FILE_DUPENFO"
-
+#define speed_type					"SPEEDTEST"
 
 #define deny_double_msg		"{%U} {%G} {%r} {%n}"
 #define audio_cbr_warn_msg	"{%U} {%G} {%X}"
@@ -337,6 +337,13 @@
 #define zip_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%U} {%G} {%K} {%n} %t %T"
 #else
 #define zip_norace_complete	DISABLED
+#endif
+
+/* Speed test */
+#if ( disable_speed_announce == FALSE )
+#define speed_announce		"{%U} {%G} {%K} {%.0S} {%.2/}"
+#else
+#define speed_announce		DISABLED
 #endif
 
 /* Output of racestats binary */

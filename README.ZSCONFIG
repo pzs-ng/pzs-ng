@@ -85,6 +85,12 @@ nocheck_dirs <PATHS>
 	by a space character.
 	Default: "/site/private/"
 
+speedtest_dirs <PATHS>
+	You may wish to have a place to perform speedtests. If someone uploads
+	files to dirs listed in this variable, the file is auto-deleted and a
+	message is written to glftpd.log.
+	Default: "/site/speedtest/"
+
 noforce_sfv_first_dirs <PATHS>
 	The option 'force_sfv_first' forces sfv to be uploaded first in a
 	release. In some dirs, this may not be desiarable. To the rescue come

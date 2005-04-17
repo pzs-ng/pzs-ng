@@ -697,6 +697,9 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 			case '?':
 				out_p += sprintf(out_p, "%*s", val1, raceI->misc.current_path);
 				break;
+			case '/':
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->file.size >> 10) / 1024.));
+				break;
 			}
 		} else
 			*out_p++ = *instr;

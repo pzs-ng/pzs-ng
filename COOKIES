@@ -94,6 +94,7 @@
  %A  = AllUp position
  %F  = Speed of fastest upload (use in fastestfilemsg)
  %S  = Speed of slowest upload (use in fastestfilemsg)
+ %/  = Size of uploaded file.
 #
 #### Group's
 #

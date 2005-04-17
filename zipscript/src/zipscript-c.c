@@ -370,13 +370,14 @@ main(int argc, char **argv)
 	}
 #endif
 	/* No check directories */
-	if (matchpath(nocheck_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
+	if (matchpath(nocheck_dirs, g.l.path) || matchpath(speedtest_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
 		d_log("zipscript-c: Directory matched with nocheck_dirs, or is not among sfv/zip/group dirs\n");
-		d_log("zipscript-c:   - nocheck_dirs: '%s'\n", nocheck_dirs);
-		d_log("zipscript-c:   - zip_dirs    : '%s'\n", zip_dirs);
-		d_log("zipscript-c:   - sfv_dirs    : '%s'\n", sfv_dirs);
-		d_log("zipscript-c:   - group_dirs  : '%s'\n", group_dirs);
-		d_log("zipscript-c:   - current path: '%s'\n", g.l.path);
+		d_log("zipscript-c:   - nocheck_dirs  : '%s'\n", nocheck_dirs);
+		d_log("zipscript-c:   - speedtest_dirs: '%s'\n", speedtest_dirs);
+		d_log("zipscript-c:   - zip_dirs      : '%s'\n", zip_dirs);
+		d_log("zipscript-c:   - sfv_dirs      : '%s'\n", sfv_dirs);
+		d_log("zipscript-c:   - group_dirs    : '%s'\n", group_dirs);
+		d_log("zipscript-c:   - current path  : '%s'\n", g.l.path);
 		no_check = TRUE;
 	} else {
 		/* Process file */
@@ -426,6 +427,12 @@ main(int argc, char **argv)
 	if (no_check == TRUE) {	/* File was not checked */
 		printf(zipscript_any_ok);
 		printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_skip));
+		if (matchpath(speedtest_dirs, g.l.path)) {
+			d_log("zipscript-c: writing speedtest to channel\n");
+			writelog(&g, convert(&g.v, g.ui, g.gi, speed_announce), speed_type);
+			exit_value = 2;
+		}
+
 	} else if (exit_value == EXIT_SUCCESS) {	/* File was checked */
 
 		if (g.v.total.users > 0) {

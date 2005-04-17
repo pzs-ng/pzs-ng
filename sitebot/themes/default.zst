@@ -193,6 +193,9 @@ announce.COMPLETE_RACE_RAR         = "[%b{done  }][%section] %b{%relname} with %
 announce.COMPLETE_RACE_VIDEO       = "[%b{done  }][%section] %b{%relname} with %b{%t_files} files (%b{%t_mbytes}MB) was completed in %b{%t_duration} (avg. %t_avgspeed) by %b{%u_count} user(s) in %b{%g_count} group(s).\n%b{%sitename} :: [%b{stats }][%section] Users hall of fame:%loop3\n%b{%sitename} :: [%b{stats }][%section] Groups hall of fame:%loop2"
 announce.COMPLETE_RACE_ZIP         = "[%b{done  }][%section] %b{%reldir} with %b{%t_files} files (%b{%t_mbytes}MB) was completed in %b{%t_duration} (avg. %t_avgspeed) by %b{%u_count} user(s) in %b{%g_count} group(s).\n%b{%sitename} :: [%b{stats }][%section] Users hall of fame:%loop3\n%b{%sitename} :: [%b{stats }][%section] Groups hall of fame:%loop2"
 
+## Speedtest announce
+announce.SPEEDTEST              = "[%b{bwtest}] %b{%u_name} of %g_name uploaded a file of %t_mbytesMB @ %u_speed."
+
 ## Postdel announce
 announce.INCOMPLETE             = "[%b{d0h!  }][%section] %b{%releasename} is now incomplete thanks to %b{%u_name} of %b{%g_name}."
 
