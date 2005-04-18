@@ -691,7 +691,7 @@ del_completebar <STRING|DISABLED>
 zipscript_header <STRING>
 	When files are uploaded, some output is shown to the racer uploading.
 	Put here what should be shown as the head of that message.
-	Default: ".-== PZS-NG Zipscript-C ==--,d1'--== (C) 2004 ==---.\n"
+	Default: ".-== PZS-NG Zipscript-C ==-------------------------.\n""
 
 zipscript_sfv_ok <STRING>
 	When files are uploaded, some output is shown to the racer uploading.
