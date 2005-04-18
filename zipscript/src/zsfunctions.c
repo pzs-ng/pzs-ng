@@ -346,8 +346,8 @@ void
 move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI)
 {
 	char           *bar;
-	char	       *delbar = 0;
-	int			m = 0;
+	char	       *delbar = 0, regbuf[100];
+	int		m = 0, regret;
 	regex_t		preg;
 	regmatch_t	pmatch[1];
 
@@ -358,54 +358,58 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 	d_log("move_progress_bar: del_progressmeter: %s\n", delbar);
 	d_log("move_progress_bar: raceI->total.files: %i\n", raceI->total.files);
 	d_log("move_progress_bar: raceI->total.files_missing: %i\n", raceI->total.files_missing);
-	regcomp(&preg, delbar, REG_NEWLINE | REG_EXTENDED);
+	regret = regcomp(&preg, delbar, REG_NEWLINE | REG_EXTENDED);
+	if (!regret) {
+		dir = opendir(".");
 
-	dir = opendir(".");
-
-	if (delete) {
-		while ((dp = readdir(dir))) {
-			if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
-				d_log("move_progress_bar: Found progress bar (%s), removing\n", dp->d_name);
-				remove(dp->d_name);
-				*dp->d_name = 0;
-				m = 1;
-			}
-		}
-		if (m) {
-			regfree(&preg);
-			closedir(dir);
-			return;
-		} else {
-			d_log("move_progress_bar: Progress bar could not be deleted, not found!\n");
-		}
-	} else {
-		if (!raceI->total.files) {
-			closedir(dir);
-			return;
-		}
-		
-		bar = convert(raceI, userI, groupI, progressmeter);
-		while ((dp = readdir(dir))) {
-			if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
-				if (!m) {
-					d_log("move_progress_bar: Found progress bar (%s), renaming (to %s)\n", dp->d_name, bar);
-					rename(dp->d_name, bar);
-					m = 1;
-				} else {
-					d_log("move_progress_bar: Found (extra) progress bar (%s), removing\n", dp->d_name);
+		if (delete) {
+			while ((dp = readdir(dir))) {
+				if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
+					d_log("move_progress_bar: Found progress bar (%s), removing\n", dp->d_name);
 					remove(dp->d_name);
 					*dp->d_name = 0;
-					m = 2;
+					m = 1;
 				}
 			}
+			if (m) {
+				regfree(&preg);
+				closedir(dir);
+				return;
+			} else {
+				d_log("move_progress_bar: Progress bar could not be deleted, not found!\n");
+			}
+		} else {
+			if (!raceI->total.files) {
+				closedir(dir);
+				return;
+			}
+		
+			bar = convert(raceI, userI, groupI, progressmeter);
+			while ((dp = readdir(dir))) {
+				if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
+					if (!m) {
+						d_log("move_progress_bar: Found progress bar (%s), renaming (to %s)\n", dp->d_name, bar);
+						rename(dp->d_name, bar);
+						m = 1;
+					} else {
+						d_log("move_progress_bar: Found (extra) progress bar (%s), removing\n", dp->d_name);
+						remove(dp->d_name);
+						*dp->d_name = 0;
+						m = 2;
+					}
+				}
+			}
+			if (!m) {
+				d_log("move_progress_bar: Progress bar could not be moved, creating a new one now!\n");
+				createstatusbar(bar);
+			}
 		}
-		if (!m) {
-			d_log("move_progress_bar: Progress bar could not be moved, creating a new one now!\n");
-			createstatusbar(bar);
-		}
+		closedir(dir);
+		regfree(&preg);
+	} else {
+		regerror(regret, &preg, regbuf, sizeof(regbuf));
+		d_log("move_progress_bar: regex failed: %s\n", regbuf);
 	}
-	closedir(dir);
-	regfree(&preg);
 }
 
 /*
@@ -470,9 +474,10 @@ findfilename(char *filename, char *dest)
 void 
 removecomplete()
 {
-	char		*mydelbar = 0;
+	char		*mydelbar = 0, regbuf[100];
 	regex_t		preg;
 	regmatch_t	pmatch[1];
+	int		regret;
 
 	DIR		*dir;
 	struct dirent	*dp;
@@ -483,19 +488,23 @@ removecomplete()
 	
 	mydelbar = convert5(del_completebar);
 	d_log("removecomplete: del_completebar: %s\n", mydelbar);
-	regcomp(&preg, mydelbar, REG_NEWLINE | REG_EXTENDED);
-	
-	dir = opendir(".");
-	while ((dp = readdir(dir))) {
-		if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
-			if ((int)pmatch[0].rm_so == 0 && (int)pmatch[0].rm_eo == (int)NAMLEN(dp)) {
-				remove(dp->d_name);
-				*dp->d_name = 0;
+	regret = regcomp(&preg, mydelbar, REG_NEWLINE | REG_EXTENDED);
+	if (!regret) {
+		dir = opendir(".");
+		while ((dp = readdir(dir))) {
+			if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
+				if ((int)pmatch[0].rm_so == 0 && (int)pmatch[0].rm_eo == (int)NAMLEN(dp)) {
+					remove(dp->d_name);
+					*dp->d_name = 0;
+				}
 			}
 		}
+		closedir(dir);
+		regfree(&preg);
+	} else {
+		regerror(regret, &preg, regbuf, sizeof(regbuf));
+		d_log("move_progress_bar: regex failed: %s\n", regbuf);
 	}
-	closedir(dir);
-	regfree(&preg);
 }
 
 /*
