@@ -656,7 +656,7 @@
 #define message_user_footer	"+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n| %3u Total %31.1mM %4fF 100.0%% %7.0aKBs |\n"
 #endif
 #ifndef message_group_header
-#define message_group_header	"|                                                                    |\n|                                                                    |\n|                          G R O U P T O P                           |\n+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n"
+#define message_group_header	"|                                                                    |\n|                          G R O U P T O P                           |\n+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n"
 #endif
 #ifndef message_group_body
 #define message_group_body	"| %3n %-29g %7.1mM %4fF %5.1p%% %7.0sKBs |\n"
