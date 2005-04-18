@@ -350,8 +350,8 @@ void
 move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI)
 {
 	char           *bar;
-	char	       *delbar = 0;
-	int			m = 0;
+	char	       *delbar = 0, regbuf[100];
+	int		m = 0, regret;
 	regex_t		preg;
 	regmatch_t	pmatch[1];
 
@@ -362,8 +362,8 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 	d_log("move_progress_bar: del_progressmeter: %s\n", delbar);
 	d_log("move_progress_bar: raceI->total.files: %i\n", raceI->total.files);
 	d_log("move_progress_bar: raceI->total.files_missing: %i\n", raceI->total.files_missing);
-	if (!regcomp(&preg, delbar, REG_NEWLINE | REG_EXTENDED)) {
-
+	regret = regcomp(&preg, delbar, REG_NEWLINE | REG_EXTENDED);
+	if (!regret) {
 		dir = opendir(".");
 
 		if (delete) {
@@ -410,8 +410,10 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 		}
 		closedir(dir);
 		regfree(&preg);
-	} else
-		d_log("move_progress_bar: regcomp failed.\n");
+	} else {
+		regerror(regret, &preg, regbuf, sizeof(regbuf));
+		d_log("move_progress_bar: regex failed: %s\n", regbuf);
+	}
 }
 
 /*
@@ -476,9 +478,10 @@ findfilename(char *filename, char *dest)
 void 
 removecomplete()
 {
-	char		*mydelbar = 0;
+	char		*mydelbar = 0, regbuf[100];
 	regex_t		preg;
 	regmatch_t	pmatch[1];
+	int		regret;
 
 	DIR		*dir;
 	struct dirent	*dp;
@@ -489,8 +492,8 @@ removecomplete()
 	
 	mydelbar = convert5(del_completebar);
 	d_log("removecomplete: del_completebar: %s\n", mydelbar);
-	if (!regcomp(&preg, mydelbar, REG_NEWLINE | REG_EXTENDED)) {
-	
+	regret = regcomp(&preg, mydelbar, REG_NEWLINE | REG_EXTENDED);
+	if (!regret) {
 		dir = opendir(".");
 		while ((dp = readdir(dir))) {
 			if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
@@ -502,8 +505,10 @@ removecomplete()
 		}
 		closedir(dir);
 		regfree(&preg);
-	} else
-		d_log("removecomplete: regcomp failed.\n");
+	} else {
+		regerror(regret, &preg, regbuf, sizeof(regbuf));
+		d_log("move_progress_bar: regex failed: %s\n", regbuf);
+	}
 }
 
 /*

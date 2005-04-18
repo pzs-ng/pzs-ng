@@ -105,6 +105,8 @@ main(int argc, char **argv)
 		if (strcmp(fname, "debug"))
 			unlink(fname);
 #endif
+		closedir(dir);
+		closedir(parent);
 		return 0;
 	}
 	umask(0666 & 000);
