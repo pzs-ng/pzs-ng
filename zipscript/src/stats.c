@@ -309,12 +309,27 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 			}
 
 			user = realloc(user, sizeof(struct userdata)*(n+1));
+			if (user == NULL) {
+				d_log("get_stats: (1) realloc failed: %s\n", strerror(errno));
+				remove_lock(raceI);
+				exit(EXIT_FAILURE);
+			}
+
 			bzero(&user[n], (sizeof(struct userdata)));
 
 			eof = f_buf = realloc(f_buf, fileinfo.st_size);
+			if (eof == NULL) {
+				d_log("get_stats: (2) realloc failed: %s\n", strerror(errno));
+				remove_lock(raceI);
+				exit(EXIT_FAILURE);
+			}
 			eof += fileinfo.st_size;
 
-			read(fd, f_buf, fileinfo.st_size);
+			if (read(fd, f_buf, fileinfo.st_size) == -1) {
+				d_log("get_stats: failed to read stats: %s\n", strerror(errno));
+				remove_lock(raceI);
+				exit(EXIT_FAILURE);
+			}
 			close(fd);
 
 			args = 0;
