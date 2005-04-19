@@ -274,6 +274,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	
 	/* User stats reader */
 	d_log("get_stats: reading stats..\n");
+
 	while ((dp = readdir(dir))) {
 		
 		sprintf(t_buf, "%s/%s", gl_userfiles, dp->d_name);
@@ -309,7 +310,6 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 				exit(EXIT_FAILURE);
 			}
 			close(fd);
-
 			args = 0;
 			space = 1;
 
@@ -317,14 +317,17 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 				switch (*p_buf) {
 					case '\n':
 						*p_buf = 0;
-						if (!memcmp(arg[0], "DAYUP", 5))
-							user[n].dayup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
-						else if (!memcmp(arg[0], "WKUP", 4))
-							user[n].wkup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
-						else if (!memcmp(arg[0], "MONTHUP", 7))
-							user[n].monthup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
-						else if (!memcmp(arg[0], "ALLUP", 5))
-							user[n].allup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
+						if (args >= raceI->section * 3 + 2) {
+							if (!memcmp(arg[0], "DAYUP", 5))
+								user[n].dayup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
+							else if (!memcmp(arg[0], "WKUP", 4))
+								user[n].wkup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
+							else if (!memcmp(arg[0], "MONTHUP", 7))
+								user[n].monthup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
+							else if (!memcmp(arg[0], "ALLUP", 5))
+								user[n].allup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
+						} else
+							d_log("get_stats: Failed to fetch stats - %d < %d\n", args, raceI->section * 3 + 2);
 						args = 0;
 						space = 1;
 						break;
