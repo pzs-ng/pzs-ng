@@ -75,7 +75,7 @@ main(int argc, char **argv)
 	struct GDATA	gdata;
 	struct UDATA	udata;
 	
-	char           *fileext, *name_p, *temp_p = NULL, *temp_p_free = NULL;
+	char           *fileext = NULL, *name_p, *temp_p = NULL, *temp_p_free = NULL;
 	char           *target = 0;
 	//char	       *ext = 0;
 	//char           *complete_msg = 0;
@@ -208,7 +208,7 @@ main(int argc, char **argv)
 				} else
 					n++;
 			}
-			free(temp_p_free);
+			ng_free(temp_p_free);
 		}
 	}
 	g.v.file.speed *= 1024;
@@ -235,15 +235,12 @@ main(int argc, char **argv)
 	n = (g.l.length_path = (int)strlen(g.l.path)) + 1;
 
 	d_log("zipscript-c: Allocating memory for variables\n");
-	g.l.race = m_alloc(n += 10 + (g.l.length_zipdatadir = sizeof(storage) - 1));
-	g.l.sfv = m_alloc(n);
-	g.l.leader = m_alloc(n);
-	//g.l.link_target = m_alloc(n + 256);
-	target = m_alloc(n + 256);
-	g.ui = malloc(sizeof(struct USERINFO *) * 30);
-	memset(g.ui, 0, sizeof(struct USERINFO *) * 30);
-	g.gi = malloc(sizeof(struct GROUPINFO *) * 30);
-	memset(g.gi, 0, sizeof(struct GROUPINFO *) * 30);
+	g.l.race = ng_realloc2(g.l.race, n += 10 + (g.l.length_zipdatadir = sizeof(storage) - 1), 1, 1, 1);
+	g.l.sfv = ng_realloc2(g.l.sfv, n, 1, 1, 1);
+	g.l.leader = ng_realloc2(g.l.leader, n, 1, 1, 1);
+	target = ng_realloc2(target, n + 256, 1, 1, 1);
+	g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
+	g.gi = ng_realloc2(g.gi, sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
 
 	d_log("zipscript-c: Copying data g.l into memory\n");
 	sprintf(g.l.sfv, storage "/%s/sfvdata", g.l.path);
@@ -281,7 +278,7 @@ main(int argc, char **argv)
 	d_log("zipscript-c: sfv_cleanup: OFF\n");
 	d_log("zipscript-c: Copying (unchanged version of) extension to memory\n");
 #endif
-	fileext = malloc(name_p - temp_p);
+	fileext = ng_realloc(fileext, name_p - temp_p, 1, 1, &g.v, 1);
 	memcpy(fileext, temp_p, name_p - temp_p);
 #if ( sfv_cleanup == TRUE )
 #if ( sfv_cleanup_lowercase == TRUE )
@@ -382,7 +379,7 @@ main(int argc, char **argv)
 	} else {
 		/* Process file */
 		d_log("zipscript-c: Verifying old racedata\n");
-		if (!verify_racedata(g.l.race))
+		if (!verify_racedata(g.l.race, &g.v))
 			d_log("zipscript-c:   Failed to open racedata - assuming this is a new race.\n");
 
 		switch (get_filetype(&g, fileext)) {
@@ -668,10 +665,10 @@ main(int argc, char **argv)
 					if (*g.v.audio.id3_artist) {
 						d_log("zipscript-c:     - artist: %s\n", g.v.audio.id3_artist);
 						if (memcmp(g.v.audio.id3_artist, "VA", 3)) {
-							temp_p = malloc(2);
+							temp_p = ng_realloc(temp_p, 2, 1, 1, &g.v, 1);
 							snprintf(temp_p, 2, "%c", toupper(*g.v.audio.id3_artist));
 							createlink(audio_artist_path, temp_p, g.l.link_source, g.l.link_target);
-							free(temp_p);
+							ng_free(temp_p);
 						} else {
 							createlink(audio_artist_path, "VA", g.l.link_source, g.l.link_target);
 						}
@@ -823,7 +820,7 @@ main(int argc, char **argv)
 		/* File is marked to be deleted */
 
 		d_log("zipscript-c: Logging file as bad\n");
-		remove_from_race(g.l.race, g.v.file.name);
+		remove_from_race(g.l.race, g.v.file.name, &g.v);
 		//writerace(g.l.race, &g.v, 0, F_BAD);
 
 		printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_error));
@@ -886,11 +883,11 @@ main(int argc, char **argv)
 	buffer_groups(&gdata, GROUPFILE, 1);
 	buffer_users(&udata, PASSWDFILE, 1);
 	updatestats_free(&g);
-	free(fileext);
-	m_free(target);
-	m_free(g.l.race);
-	m_free(g.l.sfv);
-	m_free(g.l.leader);
+	ng_free(fileext);
+	ng_free(target);
+	ng_free(g.l.race);
+	ng_free(g.l.sfv);
+	ng_free(g.l.leader);
 
 #if ( benchmark_mode == TRUE )
 	gettimeofday(&bstop, (struct timezone *)0);

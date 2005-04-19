@@ -296,7 +296,7 @@ cleanup(char *pathlist, char *pathlist_dated, int setfree, char *startpath, int 
 			day_back++;
 		}
 	}
-
-	free(time_day);
+	if (time_day)
+		free(time_day);
 }
 

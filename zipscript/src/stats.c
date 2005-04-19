@@ -28,18 +28,12 @@ updatestats_free(GLOBAL *g)
 	int n;
 
 	for (n = 0; n < g->v.total.users; n++)
-		if (g->ui[n])
-			free(g->ui[n]);
-			
-	if (g->ui)
-		free(g->ui);
+		ng_free(g->ui[n]);
+	ng_free(g->ui);
 
 	for (n = 0; n < g->v.total.groups; n++)
-		if (g->gi[n])
-			free(g->gi[n]);
-
-	if (g->gi)
-		free(g->gi);
+		ng_free(g->gi[n]);
+	ng_free(g->gi);
 }
 
 /*
@@ -76,10 +70,8 @@ updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **grou
 				raceI->total.stop_time = raceI->total.start_time + 1;
 		}
 		u_no = raceI->total.users++;
-		if (userI[u_no])
-			free(userI[u_no]);
-		userI[u_no] = malloc(sizeof(struct USERINFO));
-		memset(userI[u_no], 0, sizeof(struct USERINFO));
+		ng_free(userI[u_no]);
+		userI[u_no] = ng_realloc(userI[u_no], sizeof(struct USERINFO), 1, 1, raceI, 1);
 		memcpy(userI[u_no]->name, usern, 24);
 		memcpy(userI[u_no]->tagline, usertag, 64);
 		userI[u_no]->files = 0;
@@ -93,11 +85,9 @@ updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **grou
 
 		if (g_no == -1) {
 			g_no = raceI->total.groups++;
-			if (groupI[g_no])
-				free(groupI[g_no]);
+			ng_free(groupI[g_no]);
 
-			groupI[g_no] = malloc(sizeof(struct GROUPINFO));
-			memset(groupI[g_no], 0, sizeof(struct GROUPINFO));
+			groupI[g_no] = ng_realloc(groupI[g_no], sizeof(struct GROUPINFO), 1, 1, raceI, 1);
 			memcpy(groupI[g_no]->name, group, 24);
 		}
 		userI[u_no]->group = g_no;
@@ -141,12 +131,11 @@ sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 	int		n2;
 	int		t;
 	int		t2 = 0, t3 = 0;
-	int            *p_array;
+	int            *p_array = NULL;
 	char           *r_list;
 	char           *t_list;
 
-	p_array = (int *)m_alloc(raceI->total.users * sizeof(int));
-	bzero(p_array, raceI->total.users * sizeof(int));
+	p_array = (int *)ng_realloc(p_array, raceI->total.users * sizeof(int), 1, 1, raceI, 1);
 	r_list = raceI->misc.racer_list;
 	t_list = raceI->misc.total_racer_list;
 
@@ -211,7 +200,7 @@ sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 		}
 		groupI[t]->pos = n;
 	}
-	m_free(p_array);
+	ng_free(p_array);
 }
 
 void 
@@ -308,21 +297,10 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 				exit(EXIT_FAILURE);
 			}
 
-			user = realloc(user, sizeof(struct userdata)*(n+1));
-			if (user == NULL) {
-				d_log("get_stats: (1) realloc failed: %s\n", strerror(errno));
-				remove_lock(raceI);
-				exit(EXIT_FAILURE);
-			}
-
+			user = ng_realloc(user, sizeof(struct userdata)*(n+1), 0, 1, raceI, 0);
 			bzero(&user[n], (sizeof(struct userdata)));
 
-			eof = f_buf = realloc(f_buf, fileinfo.st_size);
-			if (eof == NULL) {
-				d_log("get_stats: (2) realloc failed: %s\n", strerror(errno));
-				remove_lock(raceI);
-				exit(EXIT_FAILURE);
-			}
+			eof = f_buf = ng_realloc(f_buf, fileinfo.st_size, 1, 1, raceI, 0);
 			eof += fileinfo.st_size;
 
 			if (read(fd, f_buf, fileinfo.st_size) == -1) {
@@ -411,9 +389,6 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 				}
 			}
 	}
-	
-	if (f_buf)
-		free(f_buf);
-	if (user)
-		free(user);
+	ng_free(f_buf);
+	ng_free(user);
 }

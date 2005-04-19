@@ -43,6 +43,7 @@
 #endif
 
 #include "objects.h"
+#include "zsfunctions.h"
 #include "../conf/zsconfig.h"
 #include "zsconfig.defaults.h"
 
@@ -153,9 +154,9 @@ myscandir(char *my_path, char *my_name)
 	if ((chdir(my_path) != -1) && ((matchpath2(group_dirs, my_path)) || (matchpath2(zip_dirs, my_path)) || (matchpath2(sfv_dirs, my_path)))) {
 		if (direntries > 0) {
 			while (direntries--) {
-				free(dirlist[direntries]);
+				ng_free(dirlist[direntries]);
 			}
-			free(dirlist);
+			ng_free(dirlist);
 		}
 		direntries = scandir(".", &dirlist, selector3, alphasort);
 		return 0;
@@ -223,7 +224,7 @@ get_gluid(char *passwdfile, char *user_name)
 #if (change_spaces_to_underscore_in_ng_chown)
 	char	       *u_modname = 0;
 
-	u_modname = malloc((int)strlen(user_name) * sizeof(char) + 1);
+	u_modname = ng_realloc2(u_modname, (int)strlen(user_name) * sizeof(char) + 1, 1, 1, 1);
 	for (i = 0; i < ((int)strlen(user_name) + 1); i++) {
 		if (user_name[i] == ' ')
 			sprintf(u_modname + i, "_");
@@ -235,7 +236,7 @@ get_gluid(char *passwdfile, char *user_name)
 	f = open(passwdfile, O_NONBLOCK);
 	fstat(f, &fileinfo);
 	f_size = fileinfo.st_size;
-	f_buf = malloc(f_size);
+	f_buf = ng_realloc2(f_buf, f_size, 1, 1, 1);
 	read(f, f_buf, f_size);
 
 	for (i = 0; i < f_size; i++) {
@@ -268,9 +269,9 @@ get_gluid(char *passwdfile, char *user_name)
 		}
 	}
 	close(f);
-	free(f_buf);
+	ng_free(f_buf);
 #if (change_spaces_to_underscore_in_ng_chown)
-	free(u_modname);
+	ng_free(u_modname);
 #endif
 	return u_id;
 }
@@ -288,7 +289,7 @@ get_glgid(char *groupfile, char *group_name)
 #if (change_spaces_to_underscore_in_ng_chown)
 	char	       *g_modname = 0;
 
-	g_modname = malloc((int)strlen(group_name) * sizeof(char) + 1);
+	g_modname = ng_realloc2(g_modname, (int)strlen(group_name) * sizeof(char) + 1, 1, 1, 1);
 	for (i = 0; i < ((int)strlen(group_name) + 1); i++) {
 		if (group_name[i] == ' ')
 			sprintf(g_modname + i, "_");
@@ -300,7 +301,7 @@ get_glgid(char *groupfile, char *group_name)
 	f = open(groupfile, O_NONBLOCK);
 	fstat(f, &fileinfo);
 	f_size = fileinfo.st_size;
-	f_buf = malloc(f_size);
+	f_buf = ng_realloc2(f_buf, f_size, 1, 1, 1);
 	read(f, f_buf, f_size);
 
 	for (i = 0; i < f_size; i++) {
@@ -332,9 +333,9 @@ get_glgid(char *groupfile, char *group_name)
 	}
 
 	close(f);
-	free(f_buf);
+	ng_free(f_buf);
 #if (change_spaces_to_underscore_in_ng_chown)
-	free(g_modname);
+	ng_free(g_modname);
 #endif
 	return g_id;
 }

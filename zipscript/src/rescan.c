@@ -84,18 +84,16 @@ main(int argc, char *argv[])
 		bzero(one_name, NAME_MAX);
 
 	d_log("rescan: Allocating memory for variables\n");
-	g.ui = malloc(sizeof(struct USERINFO *) * 30);
-	memset(g.ui, 0, sizeof(struct USERINFO *) * 30);
-	g.gi = malloc(sizeof(struct GROUPINFO *) * 30);
-	memset(g.gi, 0, sizeof(struct GROUPINFO *) * 30);
+	g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
+	g.gi = ng_realloc2(g.gi, sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
 
 	getcwd(g.l.path, PATH_MAX);
 
 	if ((matchpath(nocheck_dirs, g.l.path) || matchpath(speedtest_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) && rescan_nocheck_dirs_allowed == FALSE) {
 		d_log("rescan: Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
 		d_log("rescan: Freeing memory, and exiting\n");
-		free(g.ui);
-		free(g.gi);
+		ng_free(g.ui);
+		ng_free(g.gi);
 		return 0;
 	}
 	g.v.misc.slowest_user[0] = 30000;
@@ -112,9 +110,9 @@ main(int argc, char *argv[])
 		snprintf(g.v.sectionname, 127, getenv("SECTION"));
 	}
 
-	g.l.race = malloc(n = (int)strlen(g.l.path) + 10 + sizeof(storage));
-	g.l.sfv = malloc(n);
-	g.l.leader = malloc(n);
+	g.l.race = ng_realloc2(g.l.race, n = (int)strlen(g.l.path) + 10 + sizeof(storage), 1, 1, 1);
+	g.l.sfv = ng_realloc2(g.l.sfv, n, 1, 1, 1);
+	g.l.leader = ng_realloc2(g.l.leader, n, 1, 1, 1);
 	g.l.length_path = (int)strlen(g.l.path);
 	g.l.length_zipdatadir = sizeof(storage);
 
@@ -189,11 +187,11 @@ main(int argc, char *argv[])
 			d_log("rescan: Freeing memory, removing lock and exiting\n");
 			unlink(g.l.sfv);
 			unlink(g.l.race);
-			free(g.ui);
-			free(g.gi);
-			free(g.l.race);
-			free(g.l.sfv);
-			free(g.l.leader);
+			ng_free(g.ui);
+			ng_free(g.gi);
+			ng_free(g.l.race);
+			ng_free(g.l.sfv);
+			ng_free(g.l.leader);
 			
 			remove_lock(&g.v);
 
@@ -538,9 +536,9 @@ main(int argc, char *argv[])
 	closedir(dir);
 	closedir(parent);
 	updatestats_free(&g);
-	free(g.l.race);
-	free(g.l.sfv);
-	free(g.l.leader);
+	ng_free(g.l.race);
+	ng_free(g.l.sfv);
+	ng_free(g.l.leader);
 
 	if (fileexists(".delme"))
 		unlink(".delme");

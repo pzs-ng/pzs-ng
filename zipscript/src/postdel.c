@@ -39,7 +39,7 @@ main(int argc, char **argv)
 	char		fileext[4];
 	char		*name_p = 0;
 	char		*temp_p;
-	char		*target;
+	char		*target = NULL;
 	char		*fname;
 	char		*env_user;
 	char		*env_group;
@@ -133,10 +133,8 @@ main(int argc, char **argv)
 
 	d_log("postdel: Allocating memory for variables\n");
 
-	g.ui = malloc(sizeof(struct USERINFO *) * 30);
-	memset(g.ui, 0, sizeof(struct USERINFO *) * 30);
-	g.gi = malloc(sizeof(struct GROUPINFO *) * 30);
-	memset(g.gi, 0, sizeof(struct GROUPINFO *) * 30);
+	g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
+	g.gi = ng_realloc2(g.gi,sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
 
 	getcwd(g.l.path, PATH_MAX);
 
@@ -184,8 +182,8 @@ main(int argc, char **argv)
 	if (matchpath(nocheck_dirs, g.l.path) || matchpath(speedtest_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
 		d_log("postdel: Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
 		d_log("postdel: Freeing memory, removing lock and exiting\n");
-		free(g.ui);
-		free(g.gi);
+		ng_free(g.ui);
+		ng_free(g.gi);
 
 		if (remove_dot_debug_on_delete)
 			unlink(".debug");
@@ -194,10 +192,10 @@ main(int argc, char **argv)
 		return 0;
 
 	}
-	g.l.race = malloc(n = (int)strlen(g.l.path) + 10 + sizeof(storage));
-	g.l.sfv = malloc(n);
-	g.l.leader = malloc(n);
-	target = malloc(4096);
+	g.l.race = ng_realloc(g.l.race, n = (int)strlen(g.l.path) + 10 + sizeof(storage), 1, 1, &g.v, 1);
+	g.l.sfv = ng_realloc(g.l.sfv, n, 1, 1, &g.v, 1);
+	g.l.leader = ng_realloc(g.l.leader, n, 1, 1, &g.v, 1);
+	target = ng_realloc(target, 4096, 1, 1, &g.v, 1);
 
 	if (getenv("SECTION") == NULL)
 		sprintf(g.v.sectionname, "DEFAULT");
@@ -296,7 +294,7 @@ main(int argc, char **argv)
 		} else {
 			empty_dir = 1;
 		}
-		remove_from_race(g.l.race, g.v.file.name);
+		remove_from_race(g.l.race, g.v.file.name, &g.v);
 		break;
 	case 1: /* SFV */
 		d_log("postdel: Reading file count from sfvdata\n");
@@ -370,7 +368,7 @@ main(int argc, char **argv)
 				incomplete = 1;
 			}
 		}
-		remove_from_race(g.l.race, g.v.file.name);
+		remove_from_race(g.l.race, g.v.file.name, &g.v);
 		break;
 	case 4:
 		if (!fileexists(g.l.race))
@@ -490,10 +488,10 @@ main(int argc, char **argv)
 	closedir(dir);
 	closedir(parent);
 	updatestats_free(&g);
-	free(target);
-	free(g.l.race);
-	free(g.l.sfv);
-	free(g.l.leader);
+	ng_free(target);
+	ng_free(g.l.race);
+	ng_free(g.l.sfv);
+	ng_free(g.l.leader);
 
 	remove_lock(&g.v);
 
