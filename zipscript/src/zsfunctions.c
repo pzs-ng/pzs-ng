@@ -847,7 +847,7 @@ buffer_groups(struct GDATA *gdata, char *groupfile, int setfree)
 				while (f_buf[m] != ':' && m > l_start)
 					m--;
 				if (m != n) {
-					g_id = atoi(f_buf + m + 1);
+					g_id = strtol(f_buf + m + 1, NULL, 10);
 					strlcpy(gdata->group[gdata->num_groups].name, g_name, 15);
 					gdata->group[gdata->num_groups].id = g_id;
 					gdata->num_groups++;
@@ -909,7 +909,7 @@ buffer_users(struct UDATA *udata, char *passwdfile, int setfree)
 				while (f_buf[m] != ':' && m > l_start)
 					m--;
 				if (m != n) {
-					u_id = atoi(f_buf + m + 1);
+					u_id = strtol(f_buf + m + 1, NULL, 10);
 					strlcpy(udata->user[udata->num_users].name, u_name, 24);
 					udata->user[udata->num_users].id = u_id;
 					udata->num_users++;

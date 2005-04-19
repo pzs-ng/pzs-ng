@@ -274,6 +274,8 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	}
 	
 	/* User stats reader */
+	d_log("get_stats: reading stats..\n");
+
 	while ((dp = readdir(dir))) {
 		
 		sprintf(t_buf, "%s/%s", gl_userfiles, dp->d_name);
@@ -309,7 +311,6 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 				exit(EXIT_FAILURE);
 			}
 			close(fd);
-
 			args = 0;
 			space = 1;
 
@@ -317,14 +318,15 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 				switch (*p_buf) {
 					case '\n':
 						*p_buf = 0;
-						if (!memcmp(arg[0], "DAYUP", 5))
-							user[n].dayup_bytes = atoi(arg[raceI->section * 3 + 2]);
-						else if (!memcmp(arg[0], "WKUP", 4))
-							user[n].wkup_bytes = atoi(arg[raceI->section * 3 + 2]);
-						else if (!memcmp(arg[0], "MONTHUP", 7))
-							user[n].monthup_bytes = atoi(arg[raceI->section * 3 + 2]);
-						else if (!memcmp(arg[0], "ALLUP", 5))
-							user[n].allup_bytes = atoi(arg[raceI->section * 3 + 2]);
+						if ((!memcmp(arg[0], "DAYUP", 5)) && (args >= raceI->section * 3 + 2)) {
+							d_log("get_stats: Fetched stats from userfile '%s'\n", dp->d_name);
+							user[n].dayup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
+						} else if ((!memcmp(arg[0], "WKUP", 4)) && (args >= raceI->section * 3 + 2))
+							user[n].wkup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
+						else if ((!memcmp(arg[0], "MONTHUP", 7)) && (args >= raceI->section * 3 + 2))
+							user[n].monthup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
+						else if ((!memcmp(arg[0], "ALLUP", 5)) && (args >= raceI->section * 3 + 2))
+							user[n].allup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
 						args = 0;
 						space = 1;
 						break;
@@ -361,6 +363,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	}
 	closedir(dir);
 
+	d_log("get_stats: initializing stats..\n");
 	users = n;
 	for (m = 0; m < raceI->total.users; m++) {
 		userI[m]->dayup =
@@ -370,6 +373,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	}
 
 	/* Sort */
+	d_log("get_stats: sorting stats..\n");
 	for (n = 0; n < users; n++) {
 		if ((u1 = user[n].name) == -1)
 			continue;
@@ -391,4 +395,5 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	}
 	ng_free(f_buf);
 	ng_free(user);
+	d_log("get_stats: done.\n");
 }
