@@ -11,6 +11,7 @@
 #endif
 
 #include "convert.h"
+#include "race-file.h"
 
 #include <strl/strl.h>
 #include <stdarg.h>
@@ -453,7 +454,7 @@ removedotfiles(DIR *dir)
 }
 
 char *
-findfilename(char *filename, char *dest)
+findfilename(char *filename, char *dest, struct VARS *raceI)
 {
 	DIR		*dir;
 	struct dirent 	*dp;
@@ -462,7 +463,7 @@ findfilename(char *filename, char *dest)
 	while ((dp = readdir(dir))) {
 		if (!strcasecmp(dp->d_name, filename)) {
 			if (dest == 0)
-				dest = malloc((int)strlen(dp->d_name));
+				dest = ng_realloc(dest, (int)strlen(dp->d_name), 1, 1, raceI, 1);
 			strcpy(dest, dp->d_name);
 			break;
 		}
@@ -703,12 +704,12 @@ readsfv_ffile(struct VARS *raceI)
 {
 	int		fd, line_start = 0, index_start,
 			ext_start, n;
-	char		*buf, *fname;
+	char		*buf = NULL, *fname;
 	
 	DIR		*dir;
 
 	fd = open(raceI->file.name, O_RDONLY);
-	buf = m_alloc(raceI->file.size + 2);
+	buf = ng_realloc(buf, raceI->file.size + 2, 1, 1, raceI, 1);
 	read(fd, buf, raceI->file.size);
 	close(fd);
 
@@ -751,7 +752,7 @@ readsfv_ffile(struct VARS *raceI)
 		}
 	}
 	raceI->total.files_missing = raceI->total.files + raceI->total.files_missing;
-	m_free(buf);
+	ng_free(buf);
 	closedir(dir);
 }
 
@@ -809,19 +810,19 @@ get_u_name(int uid)
 int 
 buffer_groups(char *groupfile, int setfree)
 {
-	char           *f_buf, *g_name;
+	char           *f_buf = NULL, *g_name;
 	gid_t		g_id;
 	off_t		f_size;
-	int		f         , n, m, g_n_size, l_start = 0;
+	int		f, n, m, g_n_size, l_start = 0;
 	int		GROUPS = 0;
 	struct stat	fileinfo;
 
 	if (setfree != 0) {
 		for (n = 0; n < setfree; n++) {
-			free(group[n]->name);
-			free(group[n]);
+			ng_free(group[n]->name);
+			ng_free(group[n]);
 		}
-		free(group);
+		ng_free(group);
 		return 0;
 	}
 
@@ -829,13 +830,13 @@ buffer_groups(char *groupfile, int setfree)
 
 	fstat(f, &fileinfo);
 	f_size = fileinfo.st_size;
-	f_buf = malloc(f_size);
+	f_buf = ng_realloc2(f_buf, f_size, 1, 1, 1);
 	read(f, f_buf, f_size);
 
 	for (n = 0; n < f_size; n++)
 		if (f_buf[n] == '\n')
 			GROUPS++;
-	group = malloc(GROUPS * sizeof(struct GROUP *));
+	group = ng_realloc2(group, GROUPS * sizeof(struct GROUP *), 1, 1, 1);
 
 	for (n = 0; n < f_size; n++) {
 		if (f_buf[n] == '\n' || n == f_size) {
@@ -855,8 +856,8 @@ buffer_groups(char *groupfile, int setfree)
 					m--;
 				if (m != n) {
 					g_id = atoi(f_buf + m + 1);
-					group[num_groups] = malloc(sizeof(struct GROUP));
-					group[num_groups]->name = malloc(g_n_size + 1);
+					group[num_groups] = ng_realloc2(group[num_groups], sizeof(struct GROUP), 1, 1, 1);
+					group[num_groups]->name = ng_realloc2(group[num_groups]->name, g_n_size + 1, 1, 1, 1);
 					strcpy(group[num_groups]->name, g_name);
 					group[num_groups]->id = g_id;
 					num_groups++;
@@ -867,7 +868,7 @@ buffer_groups(char *groupfile, int setfree)
 	}
 
 	close(f);
-	free(f_buf);
+	ng_free(f_buf);
 	return num_groups;
 }
 
@@ -875,7 +876,7 @@ buffer_groups(char *groupfile, int setfree)
 int
 buffer_users(char *passwdfile, int setfree)
 {
-	char           *f_buf, *u_name;
+	char           *f_buf = NULL, *u_name;
 	uid_t		u_id;
 	off_t		f_size;
 	int		f, n, m, l, u_n_size, l_start = 0;
@@ -884,23 +885,23 @@ buffer_users(char *passwdfile, int setfree)
 
 	if (setfree != 0) {
 		for (n = 0; n < setfree; n++) {
-			free(user[n]->name);
-			free(user[n]);
+			ng_free(user[n]->name);
+			ng_free(user[n]);
 		}
-		free(user);
+		ng_free(user);
 		return 0;
 	}
 
 	f = open(passwdfile, O_NONBLOCK);
 	fstat(f, &fileinfo);
 	f_size = fileinfo.st_size;
-	f_buf = malloc(f_size);
+	f_buf = ng_realloc2(f_buf, f_size, 1, 1, 1);
 	read(f, f_buf, f_size);
 
 	for (n = 0; n < f_size; n++)
 		if (f_buf[n] == '\n')
 			USERS++;
-	user = malloc(USERS * sizeof(struct USER *));
+	user = ng_realloc2(user, USERS * sizeof(struct USER *), 1, 1, 1);
 
 	for (n = 0; n < f_size; n++) {
 		if (f_buf[n] == '\n' || n == f_size) {
@@ -922,8 +923,8 @@ buffer_users(char *passwdfile, int setfree)
 					m--;
 				if (m != n) {
 					u_id = atoi(f_buf + m + 1);
-					user[num_users] = malloc(sizeof(struct USER));
-					user[num_users]->name = malloc(u_n_size + 1);
+					user[num_users] = ng_realloc2(user[num_users], sizeof(struct USER), 1, 1, 1);
+					user[num_users]->name = ng_realloc2(user[num_users], u_n_size + 1, 1, 1, 1);
 					strcpy(user[num_users]->name, u_name);
 					user[num_users]->id = u_id;
 					num_users++;
@@ -934,7 +935,7 @@ buffer_users(char *passwdfile, int setfree)
 	}
 
 	close(f);
-	free(f_buf);
+	ng_free(f_buf);
 	return(num_users);
 }
 
@@ -1178,3 +1179,47 @@ remove_pattern(param, pattern, op)
 	return (param);		/* no match, return original string */
 }
 #endif
+
+void *
+ng_realloc(void *mempointer, int memsize, int zero_it, int exit_on_error, struct VARS *raceI, int zero_pointer)
+{
+	if (zero_pointer)
+		mempointer = malloc(memsize);
+	else
+		mempointer = realloc(mempointer, memsize);
+	if (mempointer == NULL) {
+		d_log("ng_realloc: realloc failed: %s\n", strerror(errno));
+		if (exit_on_error) {
+			remove_lock(raceI);
+			exit(EXIT_FAILURE);
+		}
+	} else if (zero_it)
+		bzero(mempointer, memsize);
+	return mempointer;
+}
+
+void *
+ng_realloc2(void *mempointer, int memsize, int zero_it, int exit_on_error, int zero_pointer)
+{
+	if (zero_pointer)
+		mempointer = malloc(memsize);
+	else
+		mempointer = realloc(mempointer, memsize);
+	if (mempointer == NULL) {
+		d_log("ng_realloc: realloc failed: %s\n", strerror(errno));
+		if (exit_on_error) {
+			exit(EXIT_FAILURE);
+		}
+	} else if (zero_it)
+		bzero(mempointer, memsize);
+	return mempointer;
+}
+
+void *
+ng_free(void *mempointer)
+{
+	if (mempointer)
+		free(mempointer);
+	return 0;
+}
+
