@@ -53,7 +53,9 @@ convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, 
 	int		val2;
 	char           *out_p;
 	char           *m;
-	char		ctrl      [50];
+	char		ctrl      [255];
+
+	bzero(ctrl, 255);
 
 	out_p = output2;
 	if (instr) {
@@ -67,7 +69,7 @@ convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, 
 					instr++;
 				if (m != instr) {
 					sprintf(ctrl, "%.*s", (int)(instr - m), m);
-					val1 = atoi(ctrl);
+					val1 = strtol(ctrl, NULL, 10);
 				} else
 					val1 = 0;
 				if (*instr == '.') {
@@ -79,7 +81,7 @@ convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, 
 						instr++;
 					if (m != instr) {
 						sprintf(ctrl, "%.*s", (int)(instr - m), m);
-						val2 = atoi(ctrl);
+						val2 = strtol(ctrl, NULL, 10);
 					} else
 						val2 = 0;
 				} else {
@@ -188,7 +190,7 @@ convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short int gr
 				instr++;
 			if (m != instr) {
 				sprintf(ctrl, "%.*s", (int)(instr - m), m);
-				val1 = atoi(ctrl);
+				val1 = strtol(ctrl, NULL, 10);
 			} else {
 				val1 = 0;
 			}
@@ -202,7 +204,7 @@ convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short int gr
 					instr++;
 				if (m != instr) {
 					sprintf(ctrl, "%.*s", (int)(instr - m), m);
-					val2 = atoi(ctrl);
+					val2 = strtol(ctrl, NULL, 10);
 				} else {
 					val2 = 0;
 				}
@@ -280,7 +282,7 @@ convert4(struct VARS *raceI, char *instr)
 				instr++;
 			if (m != instr) {
 				sprintf(ctrl, "%.*s", (int)(instr - m), m);
-				val1 = atoi(ctrl);
+				val1 = strtol(ctrl, NULL, 10);
 			} else {
 				val1 = 0;
 			}
@@ -293,7 +295,7 @@ convert4(struct VARS *raceI, char *instr)
 					instr++;
 				if (m != instr) {
 					sprintf(ctrl, "%.*s", (int)(instr - m), m);
-					val2 = atoi(ctrl);
+					val2 = strtol(ctrl, NULL, 10);
 				} else {
 					val2 = 0;
 				}
@@ -366,7 +368,7 @@ convert5(char *instr)
 				instr++;
 			if (m != instr) {
 				sprintf(ctrl, "%.*s", (int)(instr - m), m);
-				val1 = atoi(ctrl);
+				val1 = strtol(ctrl, NULL, 10);
 			} else {
 				val1 = 0;
 			}
@@ -379,7 +381,7 @@ convert5(char *instr)
 					instr++;
 				if (m != instr) {
 					sprintf(ctrl, "%.*s", (int)(instr - m), m);
-					val2 = atoi(ctrl);
+					val2 = strtol(ctrl, NULL, 10);
 				} else {
 					val2 = 0;
 				}
@@ -425,7 +427,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				instr++;
 			if (m != instr) {
 				sprintf(ctrl, "%.*s", (int)(instr - m), m);
-				val1 = atoi(ctrl);
+				val1 = strtol(ctrl, NULL, 10);
 			} else {
 				val1 = 0;
 			}
@@ -439,7 +441,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 					instr++;
 				if (m != instr) {
 					sprintf(ctrl, "%.*s", (int)(instr - m), m);
-					val2 = atoi(ctrl);
+					val2 = strtol(ctrl, NULL, 10);
 				} else {
 					val2 = 0;
 				}
