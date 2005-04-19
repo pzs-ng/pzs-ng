@@ -68,20 +68,20 @@ main(int argc, char *argv[])
 		return 1;
 	}
 	
-	new_user = atoi(argv[1]);	/* uid of user */
-	new_group = atoi(argv[2]);	/* gid of user */
+	new_user = strtol(argv[1], NULL, 10);	/* uid of user */
+	new_group = strtol(argv[2], NULL, 10);	/* gid of user */
 	
 	if (allow_uid_change_in_ng_chown)
-		user_flag = atoi(argv[3]);	/* change the uid of the files/dir if > 0      */
+		user_flag = strtol(argv[3], NULL, 10);	/* change the uid of the files/dir if > 0      */
 
 	if (allow_gid_change_in_ng_chown)
-		group_flag = atoi(argv[4]);	/* change the gid of the files/dir if > 0      */
+		group_flag = strtol(argv[4], NULL, 10);	/* change the gid of the files/dir if > 0      */
 
 	if (allow_files_chown_in_ng_chown)
-		files_flag = atoi(argv[5]);	/* make changes on the files in the dir if > 0 */
+		files_flag = strtol(argv[5], NULL, 10);	/* make changes on the files in the dir if > 0 */
 		
 	if (allow_dir_chown_in_ng_chown)
-		dir_flag = atoi(argv[6]);	/* make changes on the dir itself if > 0       */
+		dir_flag = strtol(argv[6], NULL, 10);	/* make changes on the dir itself if > 0       */
 
 	if ((new_user == 0) && (new_group == 0)) {
 		if ((int)strlen(argv[7]) < 25)
@@ -261,7 +261,7 @@ get_gluid(char *passwdfile, char *user_name)
 #else
 				if ((m != i) && ((int)strlen(u_name) == (int)strlen(user_name)) && !strcmp(u_name, user_name)){
 #endif
-					u_id = atoi(f_buf + m + 1);
+					u_id = strtol(f_buf + m + 1, NULL, 10);
 					break;
 				}
 			}
@@ -324,7 +324,7 @@ get_glgid(char *groupfile, char *group_name)
 #else
 				if ((m != i) && ((int)strlen(g_name) == (int)strlen(group_name)) && !strcmp(g_name, group_name)){
 #endif
-					g_id = atoi(f_buf + m + 1);
+					g_id = strtol(f_buf + m + 1, NULL, 10);
 					break;
 				}
 			}

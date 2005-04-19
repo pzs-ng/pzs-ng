@@ -95,7 +95,7 @@ read_diz(char *filename)
 							matches++;
 						break;
 					}
-				if ((unsigned int)matches == (unsigned int)strlen(search[cnt2]) - control && (diskc = atoi(disks)))
+				if ((unsigned int)matches == (unsigned int)strlen(search[cnt2]) - control && (diskc = strtol(disks, NULL, 10)))
 					return diskc;
 			}
 	}
