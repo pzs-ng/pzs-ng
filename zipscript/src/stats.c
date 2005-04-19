@@ -273,6 +273,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	}
 	
 	/* User stats reader */
+	d_log("get_stats: reading stats..\n");
 	while ((dp = readdir(dir))) {
 		
 		sprintf(t_buf, "%s/%s", gl_userfiles, dp->d_name);
@@ -360,6 +361,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	}
 	closedir(dir);
 
+	d_log("get_stats: initializing stats..\n");
 	users = n;
 	for (m = 0; m < raceI->total.users; m++) {
 		userI[m]->dayup =
@@ -369,6 +371,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	}
 
 	/* Sort */
+	d_log("get_stats: sorting stats..\n");
 	for (n = 0; n < users; n++) {
 		if ((u1 = user[n].name) == -1)
 			continue;
@@ -390,4 +393,5 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	}
 	ng_free(f_buf);
 	ng_free(user);
+	d_log("get_stats: done.\n");
 }
