@@ -395,10 +395,10 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 
 	SFVDATA		sd;
 
-#if ( sfv_dupecheck == TRUE )
+//#if ( sfv_dupecheck == TRUE )
 	int		skip = 0;
 	SFVDATA		tempsd;
-#endif
+//#endif
 	
 #if ( sfv_cleanup == TRUE )
 	int		tmpfd;
@@ -522,7 +522,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 			
 			if (!strcomp(ignored_types, ptr)) {
 
-#if ( sfv_dupecheck == TRUE )
+//#if ( sfv_dupecheck == TRUE )
 				/* read from sfvdata - no parsing */
 				skip = 0;
 				lseek(outfd, 0L, SEEK_SET);
@@ -532,6 +532,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 						
 				lseek(outfd, 0L, SEEK_END);
 
+#if ( sfv_dupecheck == TRUE )
 				if (skip)
 					continue;
 #endif

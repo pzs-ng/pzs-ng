@@ -855,7 +855,7 @@ buffer_groups(char *groupfile, int setfree)
 				while (f_buf[m] != ':' && m > l_start)
 					m--;
 				if (m != n) {
-					g_id = atoi(f_buf + m + 1);
+					g_id = strtol(f_buf + m + 1, NULL, 10);
 					group[num_groups] = ng_realloc2(group[num_groups], sizeof(struct GROUP), 1, 1, 1);
 					group[num_groups]->name = ng_realloc2(group[num_groups]->name, g_n_size + 1, 1, 1, 1);
 					strcpy(group[num_groups]->name, g_name);
@@ -922,7 +922,7 @@ buffer_users(char *passwdfile, int setfree)
 				while (f_buf[m] != ':' && m > l_start)
 					m--;
 				if (m != n) {
-					u_id = atoi(f_buf + m + 1);
+					u_id = strtol(f_buf + m + 1, NULL, 10);
 					user[num_users] = ng_realloc2(user[num_users], sizeof(struct USER), 1, 1, 1);
 					user[num_users]->name = ng_realloc2(user[num_users], u_n_size + 1, 1, 1, 1);
 					strcpy(user[num_users]->name, u_name);

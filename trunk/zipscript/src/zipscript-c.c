@@ -699,7 +699,7 @@ main(int argc, char **argv)
 					update_sfvdata(g.l.sfv, g.v.file.name, s_crc);
 				}
 #endif
-				d_log("zipscript-c: DEBUG: crc: %X - s_crc: %X\n", crc, s_crc);
+				d_log("zipscript-c: crc recieved/calc'ed: %X - crc found in sfv: %X\n", crc, s_crc);
 				if (s_crc != crc) {
 					if (s_crc == 0) {
 						if (!strcomp(allowed_types, fileext)) {
