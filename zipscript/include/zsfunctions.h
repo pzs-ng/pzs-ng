@@ -121,7 +121,7 @@ extern void	buffer_progress_bar(struct VARS *);
 extern void	move_progress_bar(unsigned char, struct VARS *, struct USERINFO **, struct GROUPINFO **);
 extern int	check_dupefile(DIR *, char *);
 extern long	findfile(DIR *, char *);
-extern char	*findfilename(char *, char *);
+extern char	*findfilename(char *, char *, struct VARS *);
 extern void	removedotfiles(DIR *);
 extern void	removecomplete(void);
 extern short	matchpath(char *, char *);
@@ -150,5 +150,8 @@ extern unsigned char get_filetype(GLOBAL *, char *);
 #if ( audio_group_sort == TRUE )
 extern char *remove_pattern(char *, char *, int);
 #endif
-
+extern void    *ng_realloc(void *, int, int, int, struct VARS *, int);
+extern void    *ng_realloc2(void *, int, int, int, int);
+extern void    *ng_free(void *);
 #endif
+

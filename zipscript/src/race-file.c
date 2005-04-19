@@ -214,7 +214,7 @@ delete_sfv(const char *path, struct VARS *raceI)
 	
 	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
 		snprintf(missing_fname, NAME_MAX, "%s-missing", sd.fname);
-		if ((f = findfilename(missing_fname, f)))
+		if ((f = findfilename(missing_fname, f, raceI)))
 			unlink(missing_fname);
 	}
 	
@@ -354,7 +354,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 				}
 			}
 			if (rd.status == F_BAD) {
-				remove_from_race(locations->race, rd.fname);
+				remove_from_race(locations->race, rd.fname, raceI);
 			} else {
 				if ((lret = lseek(fd, sizeof(RACEDATA) * count, SEEK_SET)) == -1) {
 					d_log("testfiles: lseek: %s\n", strerror(errno));
@@ -808,7 +808,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 
 /* remove file entry from racedata file */
 void
-remove_from_race(const char *path, const char *f)
+remove_from_race(const char *path, const char *f, struct VARS *raceI)
 {
 	int		fd, i, max;
 	
@@ -821,7 +821,7 @@ remove_from_race(const char *path, const char *f)
 	
 	for (i = 0; (read(fd, &rd, sizeof(RACEDATA)));) {
 		if (strcmp(rd.fname, f) != 0) {
-			tmprd = realloc(tmprd, sizeof(RACEDATA)*(i+1));
+			tmprd = ng_realloc(tmprd, sizeof(RACEDATA)*(i+1), 0, 1, raceI, 0);
 			memcpy(&tmprd[i], &rd, sizeof(RACEDATA));
 			i++;
 		}
@@ -831,8 +831,7 @@ remove_from_race(const char *path, const char *f)
 	
 	if ((fd = open(path, O_TRUNC | O_WRONLY)) == -1) {
 		d_log("remove_from_race: open(%s): %s\n", path, strerror(errno));
-		if (tmprd)
-			free(tmprd);
+		ng_free(tmprd);
 		return;
 	}
 	
@@ -841,13 +840,11 @@ remove_from_race(const char *path, const char *f)
 		write(fd, &tmprd[i], sizeof(RACEDATA));
 	
 	close(fd);
-
-	if (tmprd)
-		free(tmprd);
+	ng_free(tmprd);
 }
 
 int
-verify_racedata(const char *path)
+verify_racedata(const char *path, struct VARS *raceI)
 {
 	int		fd, i, ret, max;
 	
@@ -860,7 +857,7 @@ verify_racedata(const char *path)
 	
 	for (i = 0; (ret = read(fd, &rd, sizeof(RACEDATA)));) {
 		if (fileexists(rd.fname)) {
-			tmprd = realloc(tmprd, sizeof(RACEDATA)*(i+1));
+			tmprd = ng_realloc(tmprd, sizeof(RACEDATA)*(i+1), 0, 1, raceI, 0);
 			memcpy(&tmprd[i], &rd, sizeof(RACEDATA));
 			i++;
 		} else if (rd.fname) {
@@ -873,8 +870,7 @@ verify_racedata(const char *path)
 	
 	if ((fd = open(path, O_TRUNC | O_WRONLY)) == -1) {
 		d_log("verify_racedata: open(%s): %s\n", path, strerror(errno));
-		if (tmprd)
-			free(tmprd);
+		ng_free(tmprd);
 		return 0;
 	}
 	
@@ -883,9 +879,7 @@ verify_racedata(const char *path)
 		write(fd, &tmprd[i], sizeof(RACEDATA));
 	
 	close(fd);
-
-	if (tmprd)
-		free(tmprd);
+	ng_free(tmprd);
 
 	return 1;
 }
