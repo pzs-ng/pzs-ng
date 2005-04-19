@@ -326,8 +326,11 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 								user[n].monthup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
 							else if (!memcmp(arg[0], "ALLUP", 5))
 								user[n].allup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
-						} else
-							d_log("get_stats: Failed to fetch stats - %d < %d\n", args, raceI->section * 3 + 2);
+						} else {
+							d_log("get_stats: Failed to fetch stats for section %d for user '%s'\n", raceI->section, dp->d_name);
+							p_buf = eof;
+							break;
+						}
 						args = 0;
 						space = 1;
 						break;
