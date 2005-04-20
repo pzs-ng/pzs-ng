@@ -377,13 +377,8 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 						m = 1;
 					}
 				}
-				if (m) {
-					regfree(&preg);
-					closedir(dir);
-					return;
-				} else {
+				if (!m)
 					d_log("move_progress_bar: Progress bar could not be deleted, not found!\n");
-				}
 			} else {
 				if (!raceI->total.files) {
 					closedir(dir);
@@ -411,9 +406,10 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 				}
 			}
 			closedir(dir);
-			regfree(&preg);
 		} else
 			d_log("move_progress_bar: opendir() failed : %s\n", strerror(errno));
+		d_log("move_progress_bar: Freeing regpointer\n");
+		regfree(&preg);
 	} else {
 		regerror(regret, &preg, regbuf, sizeof(regbuf));
 		d_log("move_progress_bar: regex failed: %s\n", regbuf);
