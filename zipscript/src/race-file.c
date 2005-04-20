@@ -227,7 +227,7 @@ delete_sfv(const char *path, struct VARS *raceI)
 		if ((f = findfilename(missing_fname, f, raceI)))
 			unlink(missing_fname);
 	}
-	
+	ng_free(f);
 	fclose(sfvfile);
 }
 
