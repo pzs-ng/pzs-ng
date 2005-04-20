@@ -55,9 +55,10 @@ convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, 
 	char           *m;
 	char		ctrl      [255];
 
-	bzero(ctrl, 255);
-
 	out_p = output2;
+	bzero(out_p, (int)sizeof(out_p));
+	bzero(ctrl, (int)sizeof(ctrl));
+
 	if (instr) {
 		for (; *instr; instr++) {
 			if (*instr == '%') {
@@ -67,7 +68,7 @@ convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, 
 					instr += 2;
 				while (isdigit(*instr))
 					instr++;
-				if (m != instr) {
+				if (m != instr && instr-m < (int)sizeof(ctrl)) {
 					sprintf(ctrl, "%.*s", (int)(instr - m), m);
 					val1 = strtol(ctrl, NULL, 10);
 				} else
@@ -79,7 +80,7 @@ convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, 
 						instr += 2;
 					while (isdigit(*instr))
 						instr++;
-					if (m != instr) {
+					if (m != instr && instr-m < (int)sizeof(ctrl)) {
 						sprintf(ctrl, "%.*s", (int)(instr - m), m);
 						val2 = strtol(ctrl, NULL, 10);
 					} else
@@ -177,9 +178,13 @@ convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short int gr
 	int		val2;
 	char           *out_p;
 	char           *m;
-	char		ctrl      [10];
+	char		ctrl      [15];
 
 	out_p = output2;
+
+	bzero(out_p, (int)sizeof(out_p));
+	bzero(ctrl, (int)sizeof(ctrl));
+
 	for (; *instr; instr++)
 		if (*instr == '%') {
 			instr++;
@@ -188,7 +193,7 @@ convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short int gr
 				instr += 2;
 			while (isdigit(*instr))
 				instr++;
-			if (m != instr) {
+			if (m != instr && instr-m < (int)sizeof(ctrl)) {
 				sprintf(ctrl, "%.*s", (int)(instr - m), m);
 				val1 = strtol(ctrl, NULL, 10);
 			} else {
@@ -202,7 +207,7 @@ convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short int gr
 					instr += 2;
 				while (isdigit(*instr))
 					instr++;
-				if (m != instr) {
+				if (m != instr && instr-m < (int)sizeof(ctrl)) {
 					sprintf(ctrl, "%.*s", (int)(instr - m), m);
 					val2 = strtol(ctrl, NULL, 10);
 				} else {
@@ -268,9 +273,12 @@ convert4(struct VARS *raceI, char *instr)
 	int		val1      , val2;
 	char           *out_p;
 	char           *m;
-	char		ctrl      [10];
+	char		ctrl      [15];
 
 	out_p = output2;
+
+	bzero(out_p, (int)sizeof(out_p));
+	bzero(ctrl, (int)sizeof(ctrl));
 
 	for (; *instr; instr++)
 		if (*instr == '%') {
@@ -280,7 +288,7 @@ convert4(struct VARS *raceI, char *instr)
 				instr += 2;
 			while (isdigit(*instr))
 				instr++;
-			if (m != instr) {
+			if (m != instr && instr-m < (int)sizeof(ctrl)) {
 				sprintf(ctrl, "%.*s", (int)(instr - m), m);
 				val1 = strtol(ctrl, NULL, 10);
 			} else {
@@ -293,7 +301,7 @@ convert4(struct VARS *raceI, char *instr)
 					instr += 2;
 				while (isdigit(*instr))
 					instr++;
-				if (m != instr) {
+				if (m != instr && instr-m < (int)sizeof(ctrl)) {
 					sprintf(ctrl, "%.*s", (int)(instr - m), m);
 					val2 = strtol(ctrl, NULL, 10);
 				} else {
@@ -351,12 +359,15 @@ convert4(struct VARS *raceI, char *instr)
 char           *
 convert5(char *instr)
 {
-	int		val1      , val2;
+	int		val1, val2;
 	char           *out_p;
 	char           *m;
-	char		ctrl      [10];
+	char		ctrl[15];
 
 	out_p = output2;
+
+	bzero(out_p, (int)sizeof(out_p));
+	bzero(ctrl, (int)sizeof(ctrl));
 
 	for (; *instr; instr++)
 		if (*instr == '%') {
@@ -366,7 +377,7 @@ convert5(char *instr)
 				instr += 2;
 			while (isdigit(*instr))
 				instr++;
-			if (m != instr) {
+			if (m != instr && instr-m < (int)sizeof(ctrl)) {
 				sprintf(ctrl, "%.*s", (int)(instr - m), m);
 				val1 = strtol(ctrl, NULL, 10);
 			} else {
@@ -379,7 +390,7 @@ convert5(char *instr)
 					instr += 2;
 				while (isdigit(*instr))
 					instr++;
-				if (m != instr) {
+				if (m != instr && instr-m < (int)sizeof(ctrl)) {
 					sprintf(ctrl, "%.*s", (int)(instr - m), m);
 					val2 = strtol(ctrl, NULL, 10);
 				} else {
@@ -413,9 +424,12 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 	int		from, to, reverse;
 	char		*out_p;
 	char		*m;
-	char		ttime[40], ctrl[10];
+	char		ttime[40], ctrl[15];
 
 	out_p = output;
+
+	bzero(out_p, (int)sizeof(out_p));
+	bzero(ctrl, (int)sizeof(ctrl));
 
 	for (; *instr; instr++)
 		if (*instr == '%') {
@@ -425,7 +439,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				instr += 2;
 			while (isdigit(*instr))
 				instr++;
-			if (m != instr) {
+			if (m != instr && instr-m < (int)sizeof(ctrl)) {
 				sprintf(ctrl, "%.*s", (int)(instr - m), m);
 				val1 = strtol(ctrl, NULL, 10);
 			} else {
@@ -439,7 +453,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 					instr += 2;
 				while (isdigit(*instr))
 					instr++;
-				if (m != instr) {
+				if (m != instr && instr-m < (int)sizeof(ctrl)) {
 					sprintf(ctrl, "%.*s", (int)(instr - m), m);
 					val2 = strtol(ctrl, NULL, 10);
 				} else {
@@ -717,6 +731,9 @@ c_incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI)
 	char           *buf_p;
 
 	buf_p = i_buf;
+
+	bzero(buf_p, (int)sizeof(i_buf));
+
 	for (; *instr; instr++)
 		if (*instr == '%') {
 			instr++;
@@ -769,6 +786,9 @@ i_incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI)
 	char           *buf_p;
 
 	buf_p = j_buf;
+
+	bzero(buf_p, (int)sizeof(j_buf));
+
 	for (; *instr; instr++)
 		if (*instr == '%') {
 			instr++;
@@ -792,3 +812,4 @@ i_incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI)
 	*buf_p = 0;
 	return j_buf;
 }
+
