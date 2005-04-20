@@ -359,7 +359,7 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 	DIR		*dir;
 	struct dirent *dp;
 
-	d_log("move_progress_bar: del_progressmeter: %s\n", delbar);
+	d_log("move_progress_bar: del_progressmeter: %s\n", del_progressmeter);
 	delbar = convert5(del_progressmeter);
 	d_log("move_progress_bar: del_progressmeter: %s\n", delbar);
 	//d_log("move_progress_bar: raceI->total.files: %i\n", raceI->total.files);
