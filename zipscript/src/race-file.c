@@ -149,8 +149,8 @@ update_sfvdata(const char *path, const char *filename, const unsigned int crc)
 	}
 	
 	lseek(fd, sizeof(SFVDATA) * count, SEEK_SET);
-	write(fd, &sd, sizeof(SFVDATA));
-	
+	if (write(fd, &sd, sizeof(SFVDATA)) != sizeof(SFVDATA))
+		d_log("update_sfvdata: write failed: %s\n", strerror(errno));
 	close(fd);
 
 }
@@ -179,13 +179,18 @@ sfvdata_to_sfv(const char *source, const char *dest)
 		
 		if (sd.fmatch) {
 			sprintf(crctmp, "%.8x", sd.crc32);
-			write(outfd, sd.fname, strlen(sd.fname));
-			write(outfd, " ", 1);
-			write(outfd, &crctmp, 8),
+			if (write(outfd, sd.fname, strlen(sd.fname)) != (int)strlen(sd.fname))
+				d_log("sfvdata_to_sfv: write failed: %s\n", strerror(errno));
+			if (write(outfd, " ", 1) != 1)
+				d_log("sfvdata_to_sfv: write failed: %s\n", strerror(errno));
+			if (write(outfd, &crctmp, 8) != 8)
+				d_log("sfvdata_to_sfv: write failed: %s\n", strerror(errno));
 #if (sfv_cleanup_crlf == TRUE )
-			write(outfd, "\r", 1);
+			if (write(outfd, "\r", 1) != 1)
+				d_log("sfvdata_to_sfv: write failed: %s\n", strerror(errno));
 #endif
-			write(outfd, "\n", 1);
+			if (write(outfd, "\n", 1) != 1)
+				d_log("sfvdata_to_sfv: write failed: %s\n", strerror(errno));
 		}
 	}
 	
@@ -259,7 +264,8 @@ read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
 		lseek(fd, 0L, SEEK_SET);
 	}
 
-	write(fd, userI->name, 24);
+	if (write(fd, userI->name, 24) != 24)
+		d_log("read_write_leader: write failed: %s\n", strerror(errno));
 	
 	close(fd);
 }
@@ -369,7 +375,9 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 				remove_lock(raceI);
 				exit(EXIT_FAILURE);
 			}
-			write(fd, &rd, sizeof(RACEDATA));
+			if (write(fd, &rd, sizeof(RACEDATA)) != sizeof(RACEDATA))
+				d_log("testfiles: write failed: %s\n", strerror(errno));
+
 			if (!((timenow == filestat.st_ctime) && (filestat.st_mode & 0111)))
 				unlink_missing(rd.fname);
 		}
@@ -550,13 +558,18 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 				/* write good stuff to .tmpsfv */
 				if (tmpfd != -1) {
 					sprintf(crctmp, "%.8x", sd.crc32);
-					write(tmpfd, sd.fname, (int)strlen(sd.fname));
-					write(tmpfd, " ", 1);
-					write(tmpfd, crctmp, 8);
+					if (write(tmpfd, sd.fname, (int)strlen(sd.fname)) != (int)strlen(sd.fname))
+						d_log("copysfv: write failed: %s\n", strerror(errno));
+					if (write(tmpfd, " ", 1) != 1)
+						d_log("copysfv: write failed: %s\n", strerror(errno));
+					if (write(tmpfd, crctmp, 8) != 8)
+						d_log("copysfv: write failed: %s\n", strerror(errno));
 #if (sfv_cleanup_crlf == TRUE )
-					write(tmpfd, "\r", 1);
+					if (write(tmpfd, "\r", 1) != 1)
+						d_log("copysfv: write failed: %s\n", strerror(errno));
 #endif
-					write(tmpfd, "\n", 1);
+					if (write(tmpfd, "\n", 1) != 1)
+						d_log("copysfv: write failed: %s\n", strerror(errno));
 				}
 #endif
 
@@ -584,7 +597,8 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 					create_missing(sd.fname);
 #endif
 
-				write(outfd, &sd, sizeof(SFVDATA));
+				if (write(outfd, &sd, sizeof(SFVDATA)) != sizeof(SFVDATA))
+					d_log("copysfv: write failed: %s\n", strerror(errno));
 			}
 		}
 	}
@@ -708,7 +722,8 @@ clear_file(const char *path, char *f)
 			if (strncmp(rd.fname, f, NAME_MAX) == 0) {
 				rd.status = F_DELETED;
 				fseek(file, sizeof(RACEDATA) * count, SEEK_SET);
-				fwrite(&rd, sizeof(RACEDATA), 1, file);
+				if (fwrite(&rd, sizeof(RACEDATA), 1, file) != sizeof(RACEDATA))
+					d_log("clear_file: write failed: %s\n", strerror(errno));
 				n++;
 			}
 			count++;
@@ -847,7 +862,8 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	rd.speed = raceI->file.speed;
 	rd.start_time = raceI->total.start_time;
 
-	write(fd, &rd, sizeof(RACEDATA));
+	if (write(fd, &rd, sizeof(RACEDATA)) != sizeof(RACEDATA))
+		d_log("writerace: write failed: %s\n", strerror(errno));
 
 	close(fd);
 }
@@ -892,7 +908,8 @@ write_bitrate_in_race(const char *path, struct VARS *raceI)
 	if (*raceI->audio.bitrate)
 		rd.bitrate = atol(raceI->audio.bitrate);
 
-	write(fd, &rd, sizeof(RACEDATA));
+	if (write(fd, &rd, sizeof(RACEDATA)) != sizeof(RACEDATA))
+		d_log("write_bitrate_in_race: write failed: %s\n", strerror(errno));
 	
 	close(fd);
 }
@@ -966,7 +983,8 @@ remove_from_race(const char *path, const char *f, struct VARS *raceI)
 	
 	max = i;
 	for (i = 0; i < max; i++)
-		write(fd, &tmprd[i], sizeof(RACEDATA));
+		if (write(fd, &tmprd[i], sizeof(RACEDATA)) != sizeof(RACEDATA))
+			d_log("remove_from_race: write failed: %s\n", strerror(errno));
 	
 	close(fd);
 	ng_free(tmprd);
@@ -1005,7 +1023,8 @@ verify_racedata(const char *path, struct VARS *raceI)
 	
 	max = i;
 	for (i = 0; i < max; i++)
-		write(fd, &tmprd[i], sizeof(RACEDATA));
+		if (write(fd, &tmprd[i], sizeof(RACEDATA)) != sizeof(RACEDATA))
+			d_log("verify_racedata: write failed: %s\n", strerror(errno));
 	
 	close(fd);
 	ng_free(tmprd);
@@ -1045,7 +1064,8 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 		raceI->lock.data_queue = hd.data_queue = 1;
 		hd.data_qcurrent = 0;
 		hd.data_pid = (unsigned int)getpid();
-		write(fd, &hd, sizeof(HEADDATA));
+		if (write(fd, &hd, sizeof(HEADDATA)) != sizeof(HEADDATA))
+			d_log("create_lock: write failed: %s\n", strerror(errno));
 		close(fd);
 		d_log("create_lock: lock set. (no previous lockfile found) pid: %d\n", hd.data_pid);
 		return 0;
@@ -1064,7 +1084,8 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 			hd.data_qcurrent = 0;
 			hd.data_pid = (unsigned int)getpid();
 			lseek(fd, 0L, SEEK_SET);
-			write(fd, &hd, sizeof(HEADDATA));
+			if (write(fd, &hd, sizeof(HEADDATA)) != sizeof(HEADDATA))
+				d_log("create_lock: write failed: %s\n", strerror(errno));
 			close(fd);
 			d_log("create_lock: lock set. (lockfile exceeded max life time) pid: %d\n", hd.data_pid);
 			return 0;
@@ -1079,7 +1100,8 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 					raceI->lock.data_queue = hd.data_queue;	/* we give the current queue number to the calling process */
 					hd.data_queue++;			/* we increment the number in the queue */
 					lseek(fd, 0L, SEEK_SET);
-					write(fd, &hd, sizeof(HEADDATA));
+					if (write(fd, &hd, sizeof(HEADDATA)) != sizeof(HEADDATA))
+						d_log("create_lock: write failed: %s\n", strerror(errno));
 					d_log("create_lock: lock active - putting you in queue. (%d/%d)\n", hd.data_qcurrent, hd.data_queue);
 				}
 				raceI->misc.release_type = hd.data_type;
@@ -1100,7 +1122,8 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 				raceI->lock.data_incrementor = hd.data_incrementor;
 				 raceI->misc.release_type = hd.data_type;
 				lseek(fd, 0L, SEEK_SET);
-				write(fd, &hd, sizeof(HEADDATA));
+				if (write(fd, &hd, sizeof(HEADDATA)) != sizeof(HEADDATA))
+					d_log("create_lock: write failed: %s\n", strerror(errno));
 				close(fd);
 				d_log("create_lock: putting you in queue. (%d/%d)\n", hd.data_qcurrent, hd.data_queue);
 				return -1;
@@ -1124,7 +1147,8 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 		raceI->misc.release_type = hd.data_type;
 		hd.data_pid = (unsigned int)getpid();
 		lseek(fd, 0L, SEEK_SET);
-		write(fd, &hd, sizeof(HEADDATA));
+		if (write(fd, &hd, sizeof(HEADDATA)) != sizeof(HEADDATA))
+			d_log("create_lock: write failed: %s\n", strerror(errno));
 		close(fd);
 		raceI->lock.data_in_use = progtype;
 		d_log("create_lock: lock set. pid: %d\n", hd.data_pid);
@@ -1159,7 +1183,8 @@ remove_lock(struct VARS *raceI)
 			hd.data_qcurrent = 0;						/* and reset the queue. Normally, this should not happen. */
 		}
 		lseek(fd, 0L, SEEK_SET);
-		write(fd, &hd, sizeof(HEADDATA));
+		if (write(fd, &hd, sizeof(HEADDATA)) != sizeof(HEADDATA))
+			d_log("remove_lock: write failed: %s\n", strerror(errno));
 		close(fd);
 		d_log("remove_lock: queue %d/%d\n", hd.data_qcurrent, hd.data_queue);
 	}
@@ -1221,7 +1246,8 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 		d_log("update_lock: Oops! Race condition - another process has the lock. pid: %d != %d\n", hd.data_pid, (unsigned int)getpid());
 		hd.data_queue = raceI->lock.data_queue - 1;
 		lseek(fd, 0L, SEEK_SET);
-		write(fd, &hd, sizeof(HEADDATA));
+		if (write(fd, &hd, sizeof(HEADDATA)) != sizeof(HEADDATA))
+			d_log("update_lock: write failed: %s\n", strerror(errno));
 		close(fd);
 		return -1;
 	}
@@ -1229,7 +1255,8 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 		hd.data_type = datatype;
 	if ((retval && !lock_optimize) || datatype || !retval || !hd.data_incrementor || (time(NULL) - sb.st_ctime >= lock_optimize && hd.data_incrementor > 1)) {
 		lseek(fd, 0L, SEEK_SET);
-		write(fd, &hd, sizeof(HEADDATA));
+		if (write(fd, &hd, sizeof(HEADDATA)) != sizeof(HEADDATA))
+			d_log("update_lock: write failed: %s\n", strerror(errno));
 		d_log("update_lock: updating lock (%d)\n", raceI->lock.data_incrementor);
 	}
 	close(fd);
@@ -1238,5 +1265,40 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 		raceI->lock.data_in_use = hd.data_in_use;
 	}
 	return retval;
+}
+
+
+void backup_sfv(char *from, char *path)
+{
+	int nbytes;
+	int status = -1;
+	int fd1, fd2;
+	static char buffer[1024];
+	char to[PATH_MAX];
+
+	snprintf(to, PATH_MAX, "%s/%s/%s", storage, path, from);
+
+	if ((fd1 = open(from, O_RDONLY)) == -1)
+		d_log("backup_sfv: An error occured opening %s : %s\n", from, strerror(errno));
+	if ((fd2 = open(to, O_WRONLY | O_CREAT, S_IWRITE)) == -1)
+		d_log("backup_sfv: An error occured opening %s : %s\n", to, strerror(errno));
+	if (fd1 >= 0 && fd2 >= 0) {
+		status = 0;
+		while ((nbytes = read(fd1, buffer, 1024)) > 0) {
+			if (write(fd2, buffer, nbytes) != nbytes) {
+				d_log("backup_sfv: Failed to write to %s : %s\n", to, strerror(errno));
+				status = -2;
+				break;
+			}
+			if (nbytes == -1) {
+				d_log("backup_sfv: Failed to read from %s : %s\n", from, strerror(errno));
+				status = -2;
+			}
+		}
+	}
+	if (fd1 >= 0)
+		close(fd1);
+	if (fd2 >= 0)
+		close(fd2);
 }
 
