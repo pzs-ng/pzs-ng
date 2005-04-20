@@ -351,10 +351,10 @@ convert4(struct VARS *raceI, char *instr)
 char           *
 convert5(char *instr)
 {
-	int		val1      , val2;
+	int		val1, val2;
 	char           *out_p;
 	char           *m;
-	char		ctrl      [10];
+	char		ctrl[10];
 
 	out_p = output2;
 
