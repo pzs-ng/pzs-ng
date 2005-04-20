@@ -248,6 +248,7 @@ main(int argc, char **argv)
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
 	g.v.user.pos = 0;
 	sprintf(g.v.misc.old_leader, "none");
+	g.v.file.compression_method = '5';
 
 	/* Get file extension */
 
