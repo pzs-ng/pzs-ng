@@ -13,6 +13,7 @@ v1.xx	:
 	  zipscript: new: tagline for each racer added to the (bot) output
 	  zipscript: new: added support for execution of external script on banned releases.
 	  zipscript: new: added support for speedtests
+	  zipscript: new: if sfv_cleanup is set to true, the original sfv is copied to the storage dir (backup)
 
 v1.00	: Initial release
 
