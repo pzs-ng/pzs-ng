@@ -312,6 +312,7 @@ main(int argc, char **argv)
 		if (del_completebar)
 			removecomplete();
 
+		d_log("postdel: removing files created\n");
 		if (fileexists(g.l.sfv)) {
 			delete_sfv(g.l.sfv, &g.v);
 			unlink(g.l.sfv);	
@@ -321,6 +322,7 @@ main(int argc, char **argv)
 			unlink(g.l.nfo_incomplete);
 		if (g.l.incomplete)
 			unlink(g.l.incomplete);
+		d_log("postdel: removing progressbar, if any\n");
 		move_progress_bar(1, &g.v, g.ui, g.gi);
 		break;
 	case 3:
