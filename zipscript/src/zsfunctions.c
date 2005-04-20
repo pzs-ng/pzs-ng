@@ -371,7 +371,7 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 			if (delete) {
 				while ((dp = readdir(dir))) {
 					if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
-						d_log("move_progress_bar: Found progress bar (%s), removing\n", dp->d_name);
+						d_log("move_progress_bar: Found progress bar, removing\n");
 						remove(dp->d_name);
 						*dp->d_name = 0;
 						m = 1;
@@ -389,11 +389,11 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 				while ((dp = readdir(dir))) {
 					if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
 						if (!m) {
-							d_log("move_progress_bar: Found progress bar (%s), renaming (to %s)\n", dp->d_name, bar);
+							d_log("move_progress_bar: Found progress bar, renaming.\n");
 							rename(dp->d_name, bar);
 							m = 1;
 						} else {
-							d_log("move_progress_bar: Found (extra) progress bar (%s), removing\n", dp->d_name);
+							d_log("move_progress_bar: Found (extra) progress bar, removing\n");
 							remove(dp->d_name);
 							*dp->d_name = 0;
 							m = 2;
@@ -460,10 +460,9 @@ findfilename(char *filename, char *dest, struct VARS *raceI)
 
 	dir = opendir(".");
 	while ((dp = readdir(dir))) {
-		if (!strcasecmp(dp->d_name, filename)) {
-			if (dest == 0)
-				dest = ng_realloc(dest, (int)strlen(dp->d_name), 1, 1, raceI, 1);
-			strcpy(dest, dp->d_name);
+		if ((int)strlen(dp->d_name) && !strcasecmp(dp->d_name, filename)) {
+			dest = ng_realloc(dest, (int)sizeof(dp->d_name) + 1, 1, 1, raceI, 0);
+			strncpy(dest, dp->d_name, sizeof(dp->d_name));
 			break;
 		}
 	}
