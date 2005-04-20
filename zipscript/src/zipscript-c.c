@@ -1084,7 +1084,7 @@ handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
 		}
 	}
 	d_log("zipscript-c: Parsing sfv and creating sfv data\n");
-	if (copysfv(g->v.file.name, g->l.sfv, &g->v)) {
+	if (copysfv(g->v.file.name, g->l.sfv, &g->v, g->l.path)) {
 		d_log("zipscript-c: Found invalid entries in SFV.\n");
 		msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 		if (exit_value < 2)

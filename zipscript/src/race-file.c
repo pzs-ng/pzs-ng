@@ -398,7 +398,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
  * Totally rewritten by js on 08.02.2005
  */
 int
-copysfv(const char *source, const char *target, struct VARS *raceI)
+copysfv(const char *source, const char *target, struct VARS *raceI, const char *path)
 {
 	int		infd, outfd, i, retval = 0;
 	short int	music, rars, video, others, type;
@@ -419,6 +419,8 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 	int		tmpfd;
 	char		crctmp[8];
 	
+	backup_sfv(source, path);
+
 	if ((tmpfd = open(".tmpsfv", O_CREAT | O_TRUNC | O_RDWR, 0644)) == -1)
 		d_log("copysfv: open(.tmpsfv): %s\n", strerror(errno));
 #endif
@@ -1268,7 +1270,7 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 }
 
 
-void backup_sfv(char *from, char *path)
+void backup_sfv(const char *from, const char *path)
 {
 	int nbytes;
 	int status = -1;

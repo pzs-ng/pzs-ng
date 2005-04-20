@@ -44,7 +44,7 @@ extern void readrace(const char *, struct VARS *, struct USERINFO **, struct GRO
 extern void maketempdir(char *);
 extern void read_write_leader(const char *, struct VARS *, struct USERINFO *);
 extern void testfiles(struct LOCATIONS *, struct VARS *, int);
-extern int copysfv(const char *, const char *, struct VARS *);
+extern int copysfv(const char *, const char *, struct VARS *, const char *);
 extern void create_indexfile(const char *, struct VARS *, char *);
 extern short clear_file(const char *, char *);
 extern short match_file(char *, char *);
@@ -56,6 +56,6 @@ extern int verify_racedata(const char *, struct VARS *);
 extern int create_lock(struct VARS *, const char *, unsigned int, unsigned int, unsigned int);
 extern void remove_lock(struct VARS *);
 extern int update_lock(struct VARS *, unsigned int, unsigned int);
-
+extern void backup_sfv(const char *, const char *);
 #endif
 
