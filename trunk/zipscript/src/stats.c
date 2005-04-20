@@ -317,10 +317,9 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 				switch (*p_buf) {
 					case '\n':
 						*p_buf = 0;
-						if ((!memcmp(arg[0], "DAYUP", 5)) && (args >= raceI->section * 3 + 2)) {
-							d_log("get_stats: Fetched stats from userfile '%s'\n", dp->d_name);
+						if ((!memcmp(arg[0], "DAYUP", 5)) && (args >= raceI->section * 3 + 2))
 							user[n].dayup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
-						} else if ((!memcmp(arg[0], "WKUP", 4)) && (args >= raceI->section * 3 + 2))
+						else if ((!memcmp(arg[0], "WKUP", 4)) && (args >= raceI->section * 3 + 2))
 							user[n].wkup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
 						else if ((!memcmp(arg[0], "MONTHUP", 7)) && (args >= raceI->section * 3 + 2))
 							user[n].monthup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
