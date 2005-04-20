@@ -20,6 +20,8 @@ proc_chkdebug() {
   if [ "$odd" = 1 ]; then
    if [ ! "$pid" = "$lastpid" ]; then
     echo "check pid $lastpid in $1"
+    echo "listing last three lines below:"
+    grep -e " $lastpid - " $1 | tail -n 3
     cnt=0
    fi
   fi
