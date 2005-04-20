@@ -370,7 +370,7 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 
 			if (delete) {
 				while ((dp = readdir(dir))) {
-					if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
+					if ((int)strlen(dp->d_name) && regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
 						d_log("move_progress_bar: Found progress bar, removing\n");
 						remove(dp->d_name);
 						*dp->d_name = 0;
@@ -387,7 +387,7 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 	
 				bar = convert(raceI, userI, groupI, progressmeter);
 				while ((dp = readdir(dir))) {
-					if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
+					if ((int)strlen(dp->d_name) && regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
 						if (!m) {
 							d_log("move_progress_bar: Found progress bar, renaming.\n");
 							rename(dp->d_name, bar);
