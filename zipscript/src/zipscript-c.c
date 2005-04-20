@@ -227,6 +227,7 @@ main(int argc, char **argv)
 	sprintf(g.l.sfv, storage "/%s/sfvdata", g.l.path);
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
+	g.v.file.compression_method = '5';
 	g.v.user.pos = 0;
 	sprintf(g.v.misc.old_leader, "none");
 
