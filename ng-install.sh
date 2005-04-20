@@ -17,7 +17,7 @@ glpath=
 sslpath=
 
 # If you wish to install the bot, enter a valid path below.
-eggpath="/home/eggy/eggdrop/"
+eggpath="/path/to/eggdropdir/"
 
 # Do you use ss5? Leave empty if not.
 use_ss5=
@@ -45,6 +45,7 @@ mywhich() {
   unset binname; for p in `echo $PATH | tr -s ':' '\n'`; do test -x $p/$bin && { binname=$p/$bin; break; }; done;
 }
 
+clear
 # Getting glpath
 if [ ! -z "$glpath" ] && [ -e "$glpath" ]; then
   echo "Using glpath: $glpath"
@@ -63,18 +64,34 @@ else
   fi
 fi
 
-# Checking eggdrop path
-if [ ! -z "$eggpath" ] && [ -e "$eggpath" ]; then
-  echo -n "Installing bot in $eggpath/pzs-ng/"
-  mkdir -p $eggpath/pzs-ng/themes
+if [ ! -z "$eggpath" ] && [ -d "$eggpath" ]; then
+  echo "Installing bot in $eggpath/pzs-ng/" | tr -s '/'
+else
+  echo "Bot will NOT be installed."
+fi
+
+echo "This script may be used to install or upgrade pzs-ng. Please note that no"
+echo "config files or bot themes will be overwritten, neither will any of the"
+echo "shell scripts. Thus, it should be safe to use."
+echo
+echo "If you wish to continue, please press <ENTER>. If not, press <CTRL-C> to"
+echo "break."
+echo ""
+read readline
+
+# Eggdrop
+if [ ! -z "$eggpath" ] && [ -d "$eggpath" ]; then
   mkdir -p $eggpath/pzs-ng/plugins
-  cp -fR sitebot/dZSbot.* sitebot/plugins sitebot/themes $eggpath/pzs-ng/
+  cp -fR sitebot/dZSbot.* sitebot/plugins $eggpath/pzs-ng/
+  if [ ! -d $eggpath/pzs-ng/themes ]; then
+    mkdir -p $eggpath/pzs-ng/themes
+    cp -fR sitebot/themes/* sitebot/plugins $eggpath/pzs-ng/themes/
+  else
+    echo "sitebot themes is NOT be copied - please upgrade manually."
+  fi
   if [ ! -e $eggpath/pzs-ng/dZSbot.conf ]; then
     cp sitebot/dZSbot.conf.dist $eggpath/pzs-ng/dZSbot.conf
   fi
-  echo " .. DONE."
-else
-  echo "Bot will NOT be installed."
 fi
 
 # Setting configure options
@@ -95,7 +112,7 @@ if [ -d $glpath/bin ]; then
       cp -f $script "$glpath/bin/$(basename $script)"
       echo -n "OK "
     else
-      echo -n "IGNORED "
+      echo -n "NOT_COPIED "
     fi
   done
   echo
@@ -105,7 +122,17 @@ fi
 echo -e "\nrunning 'make distclean'"
 make distclean 2>/dev/null
 echo -e "\nrunning './configure $configline'"
+if [ ! -e ./zipscript/conf/zsconfig.h ]; then
+  zsstop=1
+else
+  zsstop=0
+fi
 ./configure $configline
+if [ $zsstop -eq 1 ]; then
+  echo "This seems to be the first time you install the zipscript."
+  echo "Please edit zipscript/conf/zsconfig.h and re-run this script to continue."
+  exit 0
+fi
 echo -e "\nrunning 'make install'"
 make install
 
