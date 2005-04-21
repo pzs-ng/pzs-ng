@@ -700,7 +700,7 @@ clear_file(const char *path, char *f)
 	count = 0;
 	if ((file = fopen(path, "r+"))) {
 		while (fread(&rd, sizeof(RACEDATA), 1, file)) {
-			if (strncmp(rd.fname, f, NAME_MAX) == 0) {
+			if (sizeof(rd.fname) && strncmp(rd.fname, f, NAME_MAX) == 0) {
 				rd.status = F_DELETED;
 				fseek(file, sizeof(RACEDATA) * count, SEEK_SET);
 				if (fwrite(&rd, sizeof(RACEDATA), 1, file) != sizeof(RACEDATA))
