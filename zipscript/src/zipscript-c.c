@@ -1130,7 +1130,7 @@ handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
 
 #if (smart_sfv_write && sfv_cleanup)
 	d_log("zipscript-c: Rewriting sfv file according to smart_sfv_write\n");
-	sfvdata_to_sfv(g->l.sfv, g->v.file.name);
+	sfvdata_to_sfv(g->l.sfv, findfileext(dir, ".sfv"));
 #endif
 	
 	if (g->v.total.files == 0) {
