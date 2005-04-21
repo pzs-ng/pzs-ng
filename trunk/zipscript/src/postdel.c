@@ -470,7 +470,7 @@ main(int argc, char **argv)
 
 	remove_lock(&g.v);
 
-	d_log("postdel: Exit\n");
+	d_log("postdel: Exit 0\n");
 
 	if ((empty_dir == 1) && (fileexists(".debug")) && (remove_dot_debug_on_delete == TRUE))
 		unlink(".debug");

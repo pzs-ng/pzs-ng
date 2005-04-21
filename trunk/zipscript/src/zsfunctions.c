@@ -382,6 +382,7 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 			} else {
 				if (!raceI->total.files) {
 					closedir(dir);
+					regfree(&preg);
 					return;
 				}
 	
@@ -409,11 +410,11 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 		} else
 			d_log("move_progress_bar: opendir() failed : %s\n", strerror(errno));
 		d_log("move_progress_bar: Freeing regpointer\n");
-		regfree(&preg);
 	} else {
 		regerror(regret, &preg, regbuf, sizeof(regbuf));
 		d_log("move_progress_bar: regex failed: %s\n", regbuf);
 	}
+	regfree(&preg);
 }
 
 /*
@@ -503,13 +504,13 @@ removecomplete()
 				}
 			}
 			closedir(dir);
-			regfree(&preg);
 		} else
 			d_log("removecomplete: opendir failed : %s\n", strerror(errno));
 	} else {
 		regerror(regret, &preg, regbuf, sizeof(regbuf));
 		d_log("move_progress_bar: regex failed: %s\n", regbuf);
 	}
+	regfree(&preg);
 }
 
 /*
