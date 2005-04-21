@@ -96,7 +96,7 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 		if (sd.fmatch)
 			raceI->total.files++;
 
-#if (sfv_cleanup && sfv_cleanup_lowercase)
+#if (sfv_cleanup_lowercase)
 		if (!strcasecmp(raceI->file.name, sd.fname))
 #else
 		if (!strcmp(raceI->file.name, sd.fname))
@@ -466,11 +466,9 @@ copysfv(const char *source, const char *target, struct VARS *raceI, const char *
 		if ((int)strlen(ptr) == 0)
 			continue;
 	
-#if (sfv_cleanup == TRUE)
-#if (sfv_cleanup_lowercase == TRUE)
+#if (sfv_cleanup_lowercase)
 		for (; *ptr; ptr++)
 			*ptr = tolower(*ptr);
-#endif
 #endif
 		sd.crc32 = 0;
 		bzero(sd.fname, sizeof(sd.fname));

@@ -268,23 +268,15 @@ main(int argc, char **argv)
 	}
 	name_p++;
 
-#if ( sfv_cleanup == TRUE )
-	d_log("zipscript-c: sfv_cleanup: ON\n");
 #if ( sfv_cleanup_lowercase == TRUE )
 	d_log("zipscript-c: Copying (lowercased version of) extension to memory\n");
 #else
 	d_log("zipscript-c: Copying (unchanged version of) extension to memory\n");
 #endif
-#else
-	d_log("zipscript-c: sfv_cleanup: OFF\n");
-	d_log("zipscript-c: Copying (unchanged version of) extension to memory\n");
-#endif
 	fileext = ng_realloc(fileext, name_p - temp_p, 1, 1, &g.v, 1);
 	memcpy(fileext, temp_p, name_p - temp_p);
-#if ( sfv_cleanup == TRUE )
 #if ( sfv_cleanup_lowercase == TRUE )
 	strtolower(fileext);
-#endif
 #endif
 	d_log("zipscript-c: Reading directory structure\n");
 	dir = opendir(".");
@@ -1323,7 +1315,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 #endif
 
 		}
-#if (sfv_cleanup == TRUE && sfv_cleanup_lowercase == TRUE)
+#if (sfv_cleanup_lowercase == TRUE)
 		if (check_dupefile(dir, g->v.file.name)) {
 			d_log("zipscript-c: dupe detected - same file, different case already exists.\n");
 			strlcpy(g->v.misc.error_msg, DOUBLE_SFV, 80);
@@ -1565,10 +1557,8 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 		unlink_missing(g->v.file.name);
 		/*
 		sprintf(target, "%s-missing", g->v.file.name);
-#if ( sfv_cleanup == TRUE )
 #if (sfv_cleanup_lowercase == TRUE)
 		  strtolower(target);
-#endif
 #endif
 		if (target)
 			unlink(target);
