@@ -838,6 +838,10 @@ main(int argc, char **argv)
 				newleader_msg = other_newleader;
 				break;
 			case RTYPE_AUDIO:
+				race_msg = audio_race;
+				update_msg = audio_update;
+				halfway_msg = CHOOSE(g.v.total.users, audio_halfway, audio_norace_halfway);
+				newleader_msg = audio_newleader;
 				d_log("zipscript-c: Trying to read audio header and tags\n");
 				get_mpeg_audio_info(g.v.file.name, &g.v.audio);
 #if ( exclude_non_sfv_dirs )
@@ -983,10 +987,6 @@ main(int argc, char **argv)
 					d_log("zipscript-c: Printing realtime_mp3_info.\n");
 					printf("%s", convert(&g.v, g.ui, g.gi, realtime_mp3_info));
 				}
-				race_msg = audio_race;
-				update_msg = audio_update;
-				halfway_msg = CHOOSE(g.v.total.users, audio_halfway, audio_norace_halfway);
-				newleader_msg = audio_newleader;
 				break;
 			case RTYPE_VIDEO:
 				d_log("zipscript-c: Trying to read video header\n");
