@@ -340,10 +340,8 @@ main(int argc, char **argv)
 		}
 		if (fileexists(g.l.sfv)) {
 #if ( create_missing_files == TRUE )
-#if ( sfv_cleanup == TRUE )
 #if ( sfv_cleanup_lowercase == TRUE )
 			strtolower(g.v.file.name);
-#endif
 #endif
 			create_missing(g.v.file.name);
 #endif

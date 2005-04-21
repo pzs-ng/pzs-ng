@@ -260,7 +260,7 @@ unlink_missing(char *s)
 
 	snprintf(t, NAME_MAX, "%s-missing", s);
 	unlink(t);
-#if (sfv_cleanup && sfv_cleanup_lowercase)
+#if (sfv_cleanup_lowercase)
 	strtolower(t);
 	unlink(t);
 #endif
@@ -273,7 +273,7 @@ unlink_missing(char *s)
 
 	snprintf(t, NAME_MAX, "%s.bad", s);
 	unlink(t);
-#if (sfv_cleanup && sfv_cleanup_lowercase)
+#if (sfv_cleanup_lowercase)
 	strtolower(t);
 	unlink(t);
 #endif
@@ -427,12 +427,8 @@ findfile(DIR *dir, char *filename)
 
 	rewinddir(dir);
 	while ((dp = readdir(dir))) {
-#if (sfv_cleanup)
 #if (sfv_cleanup_lowercase)
 		if (!strcasecmp(dp->d_name, filename))
-#else
-		if (!strcmp(dp->d_name, filename))
-#endif
 #else
 		if (!strcmp(dp->d_name, filename))
 #endif
@@ -725,12 +721,8 @@ readsfv_ffile(struct VARS *raceI)
 					buf[index_start + line_start] = 0;
 					fname = buf + line_start;
 					ext_start = index_start;
-#if (sfv_cleanup == TRUE)
 #if (sfv_cleanup_lowercase == TRUE)
 					while ((fname[ext_start] = tolower(fname[ext_start])) != '.' && ext_start > 0)
-#else
-					while (fname[ext_start] != '.' && ext_start > 0)
-#endif
 #else
 					while (fname[ext_start] != '.' && ext_start > 0)
 #endif
