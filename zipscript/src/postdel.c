@@ -319,11 +319,18 @@ main(int argc, char **argv)
 			delete_sfv(g.l.sfv, &g.v);
 			unlink(g.l.sfv);	
 		}
-
 		if (g.l.nfo_incomplete)
 			unlink(g.l.nfo_incomplete);
 		if (g.l.incomplete)
 			unlink(g.l.incomplete);
+#if (sfv_cleanup)
+		d_log("postdel: removing backup sfv.\n");
+		fname = 0;
+		fname = ng_realloc2(fname, PATH_MAX, 1, 1, 1);
+		sprintf(fname, "%s/%s/%s", storage, g.l.path, g.v.file.name);
+		unlink(fname);
+		ng_free(fname);
+#endif
 		d_log("postdel: removing progressbar, if any\n");
 		move_progress_bar(1, &g.v, g.ui, g.gi);
 		break;
@@ -406,7 +413,14 @@ main(int argc, char **argv)
 			unlink(g.l.nfo_incomplete);
 		if (g.l.incomplete)
 			unlink(g.l.incomplete);
-			
+#if (sfv_cleanup)
+		d_log("postdel: removing backup sfv.\n");
+		fname = 0;
+		fname = ng_realloc2(fname, PATH_MAX, 1, 1, 1);
+		sprintf(fname, "%s/%s/%s", storage, g.l.path, g.v.file.name);
+		unlink(fname);
+		ng_free(fname);
+#endif
 		unlink("file_id.diz");
 		unlink(g.l.sfv);
 		unlink(g.l.race);

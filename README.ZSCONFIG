@@ -387,8 +387,12 @@ sfv_dupecheck <TRUE|FALSE>
 	Default: TRUE
 
 sfv_cleanup <TRUE|FALSE>
-	Setting this to true will cleanup the uploaded sfv, removing
-	comments etc. from it.
+	Setting this to true will cleanup the uploaded sfv, removing comments
+	etc. from it. A copy of the original sfv will be kept in the storage-
+	dir. If you need to rescan, the original sfv will be used, and a new
+	cleaned version will be written in the releasedir.
+	Please note that if the sfv is removed from the releasedir, the backup
+	sfv is also removed.
 	Default: TRUE
 
 sfv_cleanup_lowercase <TRUE|FALSE>
