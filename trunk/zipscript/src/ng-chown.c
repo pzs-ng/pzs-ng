@@ -28,7 +28,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <fcntl.h>
-
+#include <stdio.h>
+#include <errno.h>
 #ifndef PATH_MAX
  #define _LIMITS_H_
  #ifdef _SunOS_
@@ -43,7 +44,6 @@
 #endif
 
 #include "objects.h"
-#include "zsfunctions.h"
 #include "../conf/zsconfig.h"
 #include "zsconfig.defaults.h"
 
@@ -154,9 +154,9 @@ myscandir(char *my_path, char *my_name)
 	if ((chdir(my_path) != -1) && ((matchpath2(group_dirs, my_path)) || (matchpath2(zip_dirs, my_path)) || (matchpath2(sfv_dirs, my_path)))) {
 		if (direntries > 0) {
 			while (direntries--) {
-				ng_free(dirlist[direntries]);
+				ng_free3(dirlist[direntries]);
 			}
-			ng_free(dirlist);
+			ng_free3(dirlist);
 		}
 		direntries = scandir(".", &dirlist, selector3, alphasort);
 		return 0;
@@ -224,7 +224,7 @@ get_gluid(char *passwdfile, char *user_name)
 #if (change_spaces_to_underscore_in_ng_chown)
 	char	       *u_modname = 0;
 
-	u_modname = ng_realloc2(u_modname, (int)strlen(user_name) * sizeof(char) + 1, 1, 1, 1);
+	u_modname = ng_realloc3(u_modname, (int)strlen(user_name) * sizeof(char) + 1);
 	for (i = 0; i < ((int)strlen(user_name) + 1); i++) {
 		if (user_name[i] == ' ')
 			sprintf(u_modname + i, "_");
@@ -236,7 +236,7 @@ get_gluid(char *passwdfile, char *user_name)
 	f = open(passwdfile, O_NONBLOCK);
 	fstat(f, &fileinfo);
 	f_size = fileinfo.st_size;
-	f_buf = ng_realloc2(f_buf, f_size, 1, 1, 1);
+	f_buf = ng_realloc3(f_buf, f_size);
 	read(f, f_buf, f_size);
 
 	for (i = 0; i < f_size; i++) {
@@ -269,9 +269,9 @@ get_gluid(char *passwdfile, char *user_name)
 		}
 	}
 	close(f);
-	ng_free(f_buf);
+	ng_free3(f_buf);
 #if (change_spaces_to_underscore_in_ng_chown)
-	ng_free(u_modname);
+	ng_free3(u_modname);
 #endif
 	return u_id;
 }
@@ -289,7 +289,7 @@ get_glgid(char *groupfile, char *group_name)
 #if (change_spaces_to_underscore_in_ng_chown)
 	char	       *g_modname = 0;
 
-	g_modname = ng_realloc2(g_modname, (int)strlen(group_name) * sizeof(char) + 1, 1, 1, 1);
+	g_modname = ng_realloc3(g_modname, (int)strlen(group_name) * sizeof(char) + 1);
 	for (i = 0; i < ((int)strlen(group_name) + 1); i++) {
 		if (group_name[i] == ' ')
 			sprintf(g_modname + i, "_");
@@ -301,7 +301,7 @@ get_glgid(char *groupfile, char *group_name)
 	f = open(groupfile, O_NONBLOCK);
 	fstat(f, &fileinfo);
 	f_size = fileinfo.st_size;
-	f_buf = ng_realloc2(f_buf, f_size, 1, 1, 1);
+	f_buf = ng_realloc3(f_buf, f_size);
 	read(f, f_buf, f_size);
 
 	for (i = 0; i < f_size; i++) {
@@ -333,10 +333,30 @@ get_glgid(char *groupfile, char *group_name)
 	}
 
 	close(f);
-	ng_free(f_buf);
+	ng_free3(f_buf);
 #if (change_spaces_to_underscore_in_ng_chown)
-	ng_free(g_modname);
+	ng_free3(g_modname);
 #endif
 	return g_id;
+}
+
+void *
+ng_realloc3(void *mempointer, int memsize)
+{
+	mempointer = realloc(mempointer, memsize);
+	if (mempointer == NULL) {
+		printf("ng_realloc3: realloc failed: %s\n", strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+	bzero(mempointer, memsize);
+	return mempointer;
+}
+
+void *
+ng_free3(void *mempointer)
+{
+	if (mempointer)
+		free(mempointer);
+	return 0;
 }
 

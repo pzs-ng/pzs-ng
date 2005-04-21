@@ -17,6 +17,7 @@ int myscandir(char *, char *);
 int myscan(int, int, int, int, int, int, int, char *, char *);
 uid_t get_gluid(char *, char *);
 gid_t get_glgid(char *, char *);
-
+void *ng_realloc3(void *, int);
+void *ng_free3(void *);
 #endif
 
