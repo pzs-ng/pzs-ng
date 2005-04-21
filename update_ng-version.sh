@@ -2,8 +2,8 @@
 
 # Simple script that updates the file FILE with revision-number
 # Also prepends/appends STRING_PRE/POST. :)
-STRING_PRE="0.7.3 (r"
-STRING_POST=", pre beta5)"
+STRING_PRE="0.7.7."
+STRING_POST=" (pre-v1)"
 FILE="zipscript/src/ng-version.c"
 REVHIST="../revhistory.log"
 
@@ -11,6 +11,9 @@ REVHIST="../revhistory.log"
 REV=$1
 if [ -z "$REV" -a -r "$REVHIST" ]; then
         REV=`head -2 ../revhistory.log | tail -1 | awk '{print $1}'`
+fi
+if [ -z "$REV" ]; then
+	REV=`svn info | grep -e ^Revision: | awk '{printf $2}'`
 fi
 
 REV="`echo $REV|sed 's/[^0-9]\{1,\}//'`"
