@@ -398,7 +398,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
  * Totally rewritten by js on 08.02.2005
  */
 int
-copysfv(const char *source, const char *target, struct VARS *raceI, const char *path)
+copysfv(const char *source, const char *target, struct VARS *raceI, const char *path, int reverse)
 {
 	int		infd, outfd, i, retval = 0;
 	short int	music, rars, video, others, type;
@@ -419,7 +419,10 @@ copysfv(const char *source, const char *target, struct VARS *raceI, const char *
 	int		tmpfd;
 	char		crctmp[8];
 	
-	backup_sfv(source, path);
+	if ((backup_sfv(source, path, reverse)) == -1) {
+		d_log("Failed to retrive backed up sfv - backing up now.\n");
+		backup_sfv(source, path, 0);
+	}
 
 	if ((tmpfd = open(".tmpsfv", O_CREAT | O_TRUNC | O_RDWR, 0644)) == -1)
 		d_log("copysfv: open(.tmpsfv): %s\n", strerror(errno));
@@ -1270,7 +1273,7 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 }
 
 
-void backup_sfv(const char *from, const char *path)
+int backup_sfv(const char *from, const char *path, int reverse)
 {
 	int nbytes;
 	int status = -1;
@@ -1280,27 +1283,28 @@ void backup_sfv(const char *from, const char *path)
 
 	snprintf(to, PATH_MAX, "%s/%s/%s", storage, path, from);
 
-	if ((fd1 = open(from, O_RDONLY)) == -1)
-		d_log("backup_sfv: An error occured opening %s : %s\n", from, strerror(errno));
-	if ((fd2 = open(to, O_WRONLY | O_CREAT, S_IWRITE)) == -1)
-		d_log("backup_sfv: An error occured opening %s : %s\n", to, strerror(errno));
+	if ((fd1 = open(reverse ? to : from , O_RDONLY)) == -1)
+		d_log("backup_sfv: An error occured opening %s (from) : %s\n", reverse ? to : from, strerror(errno));
+	if (fd1 != -1 && (fd2 = open(reverse ? from : to, O_WRONLY | O_CREAT | O_TRUNC, 0666)) == -1)
+		d_log("backup_sfv: An error occured opening %s (to) : %s\n", reverse ? to : from, strerror(errno));
 	if (fd1 >= 0 && fd2 >= 0) {
 		status = 0;
 		while ((nbytes = read(fd1, buffer, 1024)) > 0) {
 			if (write(fd2, buffer, nbytes) != nbytes) {
-				d_log("backup_sfv: Failed to write to %s : %s\n", to, strerror(errno));
+				d_log("backup_sfv: Failed to write to %s : %s\n", reverse ? from : to, strerror(errno));
 				status = -2;
 				break;
 			}
 			if (nbytes == -1) {
-				d_log("backup_sfv: Failed to read from %s : %s\n", from, strerror(errno));
+				d_log("backup_sfv: Failed to read from %s : %s\n", reverse ? to : from, strerror(errno));
 				status = -2;
 			}
 		}
 	}
+	if (fd1 >= 0 && fd2 >= 0)
+		close(fd2);
 	if (fd1 >= 0)
 		close(fd1);
-	if (fd2 >= 0)
-		close(fd2);
+	return status;
 }
 

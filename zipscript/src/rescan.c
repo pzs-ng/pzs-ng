@@ -174,7 +174,7 @@ main(int argc, char *argv[])
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
 
-		if (copysfv(g.v.file.name, g.l.sfv, &g.v, g.l.path)) {
+		if (copysfv(g.v.file.name, g.l.sfv, &g.v, g.l.path , 1)) {
 			printf("rescan: Found invalid entries in SFV - Exiting.\n");
 
 			while ((dp = readdir(dir))) {
