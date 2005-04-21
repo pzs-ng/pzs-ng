@@ -20,7 +20,7 @@ CU-OBJECTS=cleanup.o
 DC-OBJECTS=datacleaner.o
 UD-OBJECTS=ng-undupe.o $(STRLCPY)
 SC-OBJECTS=rescan.o dizreader.o complete.o crc.o multimedia.o $(UNIVERSAL)
-CH-OBJECTS=ng-chown.o $(UNIVERSAL)
+CH-OBJECTS=ng-chown.o crc.o $(UNIVERSAL)
 #ZS-DEPEND=cleanup.o incomplete-list.o complete.o datacleaner.o postdel.o racestats.o rescan.o zipscript-c.o multimedia.o $(UNIVERSAL)
 ZS-DEPEND=cleanup.o complete.o datacleaner.o postdel.o racestats.o rescan.o zipscript-c.o multimedia.o $(UNIVERSAL)
 
