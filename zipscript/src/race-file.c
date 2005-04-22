@@ -690,12 +690,11 @@ create_indexfile(const char *racefile, struct VARS *raceI, char *f)
 short int 
 clear_file(const char *path, char *f)
 {
-	int		n = 0, count;
+	int		n = 0, count = 0, retval = -1;
 	FILE           *file;
 
 	RACEDATA	rd;
 
-	count = 0;
 	if ((file = fopen(path, "r+"))) {
 		while (fread(&rd, sizeof(RACEDATA), 1, file)) {
 #if (sfv_cleanup_lowercase)
@@ -703,8 +702,11 @@ clear_file(const char *path, char *f)
 #else
 			if (sizeof(rd.fname) && strncmp(rd.fname, f, NAME_MAX) == 0) {
 #endif
+				rd.status = F_DELETED;
+				fseek(file, sizeof(RACEDATA) * count, SEEK_SET);
+				if ((retval = fwrite(&rd, sizeof(RACEDATA), 1, file)) != 1)
+					d_log("clear_file: write failed (%d != %d): %s\n", sizeof(RACEDATA), retval, strerror(errno));
 				n++;
-				break;
 			}
 			count++;
 		}
