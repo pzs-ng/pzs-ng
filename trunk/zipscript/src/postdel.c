@@ -230,9 +230,6 @@ main(int argc, char **argv)
 	} else
 		*fileext = '\0';
 
-#if ( sfv_cleanup_lowercase)
-	strtolower(fileext);
-#endif
 	switch (get_filetype_postdel(&g, fileext)) {
 	case 0:
 		d_log("postdel: File type is: ZIP\n");

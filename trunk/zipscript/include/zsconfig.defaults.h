@@ -644,31 +644,31 @@
  * Various Output
  */
 #ifndef message_header
-#define message_header		".--== PZS-NG v1.0 ====-----------------------------------------------.\n"
+#define message_header		".-----------------====---------------------------== PZS-NG v1.0 ===--.\n"
 #endif
 #ifndef message_user_header
-#define message_user_header	"|                          U S E R T O P                             |\n+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n"
+#define message_user_header	"|-=[ U S E R T O P ]=---------------.                                |\n|                                    `-----------------====----------|\n"
 #endif
 #ifndef message_user_body
 #define message_user_body	"| %3n %-29U %7.1mM %4fF %5.1p%% %7.0sKBs |\n"
 #endif
 #ifndef message_user_footer
-#define message_user_footer	"+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n| %3u Total %31.1mM %4fF 100.0%% %7.0aKBs |\n"
+#define message_user_footer	"|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |\n| %3u Total %31.1mM %4fF 100.0%% %7.0aKBs |\n"
 #endif
 #ifndef message_group_header
-#define message_group_header	"|                                                                    |\n|                          G R O U P T O P                           |\n+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n"
+#define message_group_header	"|                                                                    |\n|-=[ G R O U P T O P ]=-------------.                                |\n|                                    `--------------===--------------|\n"
 #endif
 #ifndef message_group_body
 #define message_group_body	"| %3n %-29g %7.1mM %4fF %5.1p%% %7.0sKBs |\n"
 #endif
 #ifndef message_group_footer
-#define message_group_footer	"+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n| %3g Total %31.1mM %4fF 100.0%% %7.0aKBs |\n"
+#define message_group_footer	"|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |\n| %3g Total %31.1mM %4fF 100.0%% %7.0aKBs |\n"
 #endif
 #ifndef message_mp3
-#define message_mp3		"|                                                                    |\n|                                                                    |\n|                           I D 3 - T A G                            |\n+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n| Artist : %-57x |\n| Album  : %-57W |\n| Genre  : %-34w Rate  : %3Xkbit/s      |\n| Tracks : %-34f Year  : %-14Y |\n| Encoder: %-34i Preset: %-14I |\n"
+#define message_mp3		"|                                                                    |\n|-=[ I D 3 - T A G ]=---------------.                                |\n|                                    `-----==-------------===--------|\n| Artist : %-57x |\n| Album  : %-57W |\n| Genre  : %-34w Rate  : %3Xkbit/s      |\n| Tracks : %-34f Year  : %-14Y |\n| Encoder: %-34i Preset: %-14I |\n"
 #endif
 #ifndef message_footer
-#define message_footer		"`-------------------------------------------------------===========--'\n"
+#define message_footer		"`-----================---------------------------==------------------'\n"
 #endif
 #ifndef video_completebar
 #define video_completebar	"[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
