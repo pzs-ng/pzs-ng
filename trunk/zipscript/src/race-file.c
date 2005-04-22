@@ -141,7 +141,7 @@ update_sfvdata(const char *path, const char *fname, const unsigned int crc)
 	sd.crc32 = crc;
 	count = 0;
 	while (read(fd, &sd, sizeof(SFVDATA))) {
-		if (strcasecmp(fname, sd.fname) == 0) {
+		if (!strcasecmp(fname, sd.fname)) {
 			sd.crc32 = crc;
 			break;
 		}
@@ -322,8 +322,8 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 			else if (rd.crc32 != 0 && Tcrc == 0 && strcomp(allowed_types, ext))
 				rd.status = F_IGNORED;
 			else if ((rd.crc32 != 0) && (Tcrc != rd.crc32) &&
-					   (strcomp(allowed_types, ext) &&
-				   !matchpath(allowed_types_exemption_dirs, locations->path)))
+					  (strcomp(allowed_types, ext) &&
+					   !matchpath(allowed_types_exemption_dirs, locations->path)))
 				rd.status = F_IGNORED;
 			else if	((timenow == filestat.st_ctime) && (filestat.st_mode & 0111)) {
 				d_log("testfiles: Looks like this file (%s) is in the process of being uploaded. Ignoring.\n", rd.fname);
@@ -698,12 +698,13 @@ clear_file(const char *path, char *f)
 	count = 0;
 	if ((file = fopen(path, "r+"))) {
 		while (fread(&rd, sizeof(RACEDATA), 1, file)) {
+#if (sfv_cleanup_lowercase)
+			if (sizeof(rd.fname) && strncasecmp(rd.fname, f, NAME_MAX) == 0) {
+#else
 			if (sizeof(rd.fname) && strncmp(rd.fname, f, NAME_MAX) == 0) {
-				rd.status = F_DELETED;
-				fseek(file, sizeof(RACEDATA) * count, SEEK_SET);
-				if (fwrite(&rd, sizeof(RACEDATA), 1, file) != sizeof(RACEDATA))
-					d_log("clear_file: write failed: %s\n", strerror(errno));
+#endif
 				n++;
+				break;
 			}
 			count++;
 		}
@@ -794,7 +795,11 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 			remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
+#if (sfv_cleanup_lowercase)
+		if (strncasecmp(rd.fname, raceI->file.name, NAME_MAX) == 0) {
+#else
 		if (strncmp(rd.fname, raceI->file.name, NAME_MAX) == 0) {
+#endif
 			lseek(fd, sizeof(RACEDATA) * count, SEEK_SET);
 			break;
 		}
@@ -833,7 +838,11 @@ remove_from_race(const char *path, const char *f, struct VARS *raceI)
 	}
 	
 	for (i = 0; (read(fd, &rd, sizeof(RACEDATA)));) {
+#if (sfv_cleanup_lowercase)
+		if (strcasecmp(rd.fname, f) != 0) {
+#else
 		if (strcmp(rd.fname, f) != 0) {
+#endif
 			tmprd = ng_realloc(tmprd, sizeof(RACEDATA)*(i+1), 0, 1, raceI, 0);
 			memcpy(&tmprd[i], &rd, sizeof(RACEDATA));
 			i++;
