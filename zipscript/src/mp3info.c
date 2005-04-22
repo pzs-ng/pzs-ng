@@ -228,7 +228,9 @@ int
 get_id3(mp3info * mp3, struct audio *audio)
 {
 	int		retcode = 0;
-	char		fbuf      [4];
+	unsigned long	sizeval = 0, totsize = 0;
+	char		fbuf[4];
+	char		mbuf[255];
 
 	if (mp3->datasize >= 128) {
 		if (fseek(mp3->file, -128, SEEK_END)) {
@@ -238,8 +240,7 @@ get_id3(mp3info * mp3, struct audio *audio)
 			fread(fbuf, 1, 3, mp3->file);
 			fbuf[3] = '\0';
 			mp3->id3.genre[0] = 255;
-
-			if (!strcmp((const char *)"TAG", (const char *)fbuf)) {
+			if (!strcmp((const char *)"ID3", (const char *)fbuf)) {
 				mp3->id3_isvalid = 1;
 				mp3->datasize -= 128;
 				fseek(mp3->file, -125, SEEK_END);
@@ -267,7 +268,99 @@ get_id3(mp3info * mp3, struct audio *audio)
 				memcpy(&(audio->id3_title), &(mp3->id3.title), sizeof(mp3->id3.title));
 				memcpy(&(audio->id3_album), &(mp3->id3.album), sizeof(mp3->id3.album));
 				memcpy(&(audio->id3_year), &(mp3->id3.year), sizeof(mp3->id3.year));
-				memcpy(&(audio->id3_artist), &(mp3->id3.artist), sizeof(mp3->id3.artist));
+			} else {
+				/* ID3v2 ? */
+				fseek(mp3->file, 0L, SEEK_SET);
+				fread(fbuf, 1, 3, mp3->file);
+				fbuf[3] = '\0';
+				if (!strcmp((const char *)"ID3", (const char *)fbuf)) {
+					mp3->id3_isvalid = 1;
+					fread(mp3->id3v2.version, 1, 2, mp3->file);
+					fread(mp3->id3v2.flags, 1, 1, mp3->file);
+					fread(fbuf, 4, 1, mp3->file);
+					totsize = fbuf[0];
+					totsize <<= 8;
+					totsize += fbuf[1];
+					totsize <<= 8;
+					totsize += fbuf[2];
+					totsize <<= 8;
+					totsize += fbuf[3];
+					if ((unsigned int)mp3->id3v2.flags[0] >> 6 & ~(~0 << 1)) {	/* ID3v2 Extended Header indicated */
+						fread(fbuf, 4, 1, mp3->file);
+						sizeval = fbuf[0];
+						sizeval <<= 8;
+						sizeval += fbuf[1];
+						sizeval <<= 8;
+						sizeval += fbuf[2];
+						sizeval <<= 8;
+						sizeval += fbuf[3];
+						fseek(mp3->file, sizeval - 4, SEEK_CUR);
+						totsize -= (sizeval + 4);
+					}
+					while ((totsize) && (fread(mp3->id3v2.frame_id, 1, 4, mp3->file) == 4)) {
+						if (mp3->id3v2.frame_id[0] < 0x30 || mp3->id3v2.frame_id[0] > 0x5A)
+							break;
+						mp3->id3v2.frame_id[4] = '\0';
+						fread(fbuf, 4, 1, mp3->file);
+						sizeval = fbuf[0];
+						sizeval <<= 8;
+						sizeval += fbuf[1];
+						sizeval <<= 8;
+						sizeval += fbuf[2];
+						sizeval <<= 8;
+						sizeval += fbuf[3];
+						totsize -= sizeval;
+						fseek(mp3->file, 2, SEEK_CUR);					/* Ignore flags */
+						if (!strcmp("TALB", mp3->id3v2.frame_id)) {	/* Album name */
+							bzero(mbuf, sizeof(mbuf));
+							fread(mbuf, 1, sizeval < sizeof(mbuf) ? sizeval : sizeof(mbuf), mp3->file);
+							unpadpre(mbuf);
+							unpad(mbuf);
+							memcpy(&(audio->id3_album), &(mbuf), sizeof(mp3->id3.album));
+							mp3->id3.album[sizeof(mp3->id3.album)] = '\0';
+							if (sizeval > sizeof(mbuf))
+								fseek(mp3->file, sizeval - sizeof(mbuf), SEEK_CUR);
+						} else if (!strcmp("TPE1", mp3->id3v2.frame_id)) {	/* Artist name */
+							bzero(mbuf, sizeof(mbuf));
+							fread(mbuf, 1, sizeval < sizeof(mbuf) ? sizeval : sizeof(mbuf), mp3->file);
+							unpadpre(mbuf);
+							unpad(mbuf);
+							memcpy(&(audio->id3_artist), &(mbuf), sizeof(mp3->id3.artist));
+							mp3->id3.artist[sizeof(mp3->id3.artist)] = '\0';
+							if (sizeval > sizeof(mbuf))
+								fseek(mp3->file, sizeval - sizeof(mbuf), SEEK_CUR);
+						} else if (!strcmp("TIT2", mp3->id3v2.frame_id)) {	/* Title name */
+							bzero(mbuf, sizeof(mbuf));
+							fread(mbuf, 1, sizeval < sizeof(mbuf) ? sizeval : sizeof(mbuf), mp3->file);
+							unpadpre(mbuf);
+							unpad(mbuf);
+							memcpy(&(audio->id3_title), &(mbuf), sizeof(mp3->id3.title));
+							mp3->id3.title[sizeof(mp3->id3.title)] = '\0';
+							if (sizeval > sizeof(mbuf))
+								fseek(mp3->file, sizeval - sizeof(mbuf), SEEK_CUR);
+						} else if (!strcmp("TYER", mp3->id3v2.frame_id)) {	/* Album Year */
+							bzero(mbuf, sizeof(mbuf));
+							fread(mbuf, 1, sizeval < sizeof(mbuf) ? sizeval : sizeof(mbuf), mp3->file);
+							unpadpre(mbuf);
+							unpad(mbuf);
+							memcpy(&(audio->id3_year), &(mbuf), sizeof(mp3->id3.year));
+							mp3->id3.year[sizeof(mp3->id3.year)] = '\0';
+							if (sizeval > sizeof(mbuf))
+								fseek(mp3->file, sizeval - sizeof(mbuf), SEEK_CUR);
+						} else if (!strcmp("TCON", mp3->id3v2.frame_id)) {	/* Genre */
+							bzero(mbuf, sizeof(mbuf));
+							fread(mbuf, 1, sizeval < sizeof(mbuf) ? sizeval : sizeof(mbuf), mp3->file);
+							unpadpre(mbuf);
+							unpad(mbuf);
+							getgenre(mbuf);
+							audio->id3_genrenum = strtol(mbuf, NULL, 10);
+							if (sizeval > sizeof(mbuf))
+								fseek(mp3->file, sizeval - sizeof(mbuf), SEEK_CUR);
+
+						} else
+							fseek(mp3->file, sizeval, SEEK_CUR);
+					}
+				}
 			}
 		}
 	}
@@ -281,6 +374,42 @@ unpad(char *string)
 	char           *pos = string + (int)strlen(string) - 1;
 	while (isspace(pos[0]))
 		(pos--)[0] = 0;
+	return string;
+}
+
+/* Remove preceding \0 from the start of a string */
+char *
+unpadpre(char *string)
+{
+	char	buf[255];
+	char   *pos = string;
+	int	strsize = (int)sizeof(string) -1;
+
+	bzero(buf, sizeof(buf));
+	while (pos[0] == '\0' && pos < string + strsize)
+		pos++;
+	sprintf(buf, "%s",  pos);
+	sprintf(string, "%s", buf);
+	return string;
+}
+
+/* Special genre thingy for id3v2*/
+char *
+getgenre(char *string)
+{
+	char	buf[255];
+	char   *pos = string, *pos2 = buf;
+	int	strsize = (int)sizeof(string);
+
+	bzero(buf, sizeof(buf));
+	while (((pos[0] < 0x30) || (pos[0] > 0x39)) && (pos < string + strsize))
+		pos++;
+	while (((pos[0] >= 0x30) && (pos[0] <= 0x39)) && (pos < string + strsize)) {
+		pos2[0] = pos[0];
+		pos++;
+		pos2++;
+	}
+	sprintf(string, "%s", buf);
 	return string;
 }
 

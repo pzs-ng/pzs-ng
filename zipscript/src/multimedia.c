@@ -427,7 +427,7 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 	}
 
 	if (tag_ok == 0) {
-		strcpy(audio->id3_year, "0000");
+		strcpy(audio->id3_year, "1111");
 		strcpy(audio->id3_title, "Unknown");
 		strcpy(audio->id3_artist, "Unknown");
 		strcpy(audio->id3_album, "Unknown");
@@ -435,6 +435,9 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 	}
 	close(fd);
 
+	audio->id3_genrenum = 0;
 	get_mp3_info(f, audio);
+	if (audio->id3_genre == genre_s[148] && audio->id3_genrenum)
+		audio->id3_genre = genre_s[audio->id3_genrenum];
 //	sprintf(audio->bitrate, "%.0f", get_mp3_info(f));
 }

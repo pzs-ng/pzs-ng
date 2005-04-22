@@ -71,6 +71,22 @@ typedef struct {
 }		id3tag;
 
 typedef struct {
+	char		title     [31];
+	char		artist    [31];
+	char		album     [31];
+	char		year      [5];
+	char		comment   [31];
+	unsigned char	track[1];
+	unsigned char	genre[1];
+	unsigned int	version[2];
+	unsigned int	flags[1];
+	long		size;
+	long		ext_size;
+	char		frame_id[5];
+}		id3v2tag;
+
+
+typedef struct {
 	char           *filename;
 	FILE           *file;
 	off_t		datasize;
@@ -78,6 +94,7 @@ typedef struct {
 	mp3header	header;
 	int		id3_isvalid;
 	id3tag		id3;
+	id3v2tag	id3v2;
 	int		vbr;
 	float		vbr_average;
 	int		seconds;
@@ -93,6 +110,8 @@ int		sameConstant(mp3header * h1, mp3header * h2);
 void		get_mp3_info(char *f, struct audio *);
 int		get_id3    (mp3info * mp3, struct audio *);
 char           *unpad(char *string);
+char           *unpadpre(char *string);
+char           *getgenre(char *string);
 int		header_frequency(mp3header * h);
 char           *header_emphasis(mp3header * h);
 char           *header_mode(mp3header * h);

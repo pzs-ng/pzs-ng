@@ -71,7 +71,8 @@ struct audio {
 		       *channelmode,
 			vbr_version_string[10],
 			vbr_preset[15];
-	int		is_vbr;
+	int		is_vbr,
+			id3_genrenum;
 };
 
 struct video {
