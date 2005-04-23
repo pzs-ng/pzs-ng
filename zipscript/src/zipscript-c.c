@@ -315,6 +315,77 @@ main(int argc, char **argv)
 
 	} else if (exit_value == EXIT_SUCCESS) {	/* File was checked */
 
+		switch (g.v.misc.release_type) {
+			case RTYPE_RAR:
+				race_type = rar_announce_race_type;
+				newleader_type = rar_announce_newleader_type;
+				update_type = rar_announce_update_type;
+				norace_halfway_type = rar_announce_norace_halfway_type;
+				race_halfway_type = rar_announce_race_halfway_type;
+				complete_bar = rar_completebar;
+				msg.complete = CHOOSE(g.v.total.users, rar_complete, rar_norace_complete);
+				complete_announce = CHOOSE(g.v.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
+				break;	/* rar */
+			case RTYPE_OTHER:
+				race_type = other_announce_race_type;
+				newleader_type = other_announce_newleader_type;
+				update_type = other_announce_update_type;
+				norace_halfway_type = other_announce_norace_halfway_type;
+				race_halfway_type = other_announce_race_halfway_type;
+				complete_bar = other_completebar;
+				msg.complete = CHOOSE(g.v.total.users, other_complete, other_norace_complete);
+				complete_announce = CHOOSE(g.v.total.users, other_announce_race_complete_type, other_announce_norace_complete_type);
+				break;	/* other */
+			case RTYPE_AUDIO:
+				race_type = audio_announce_race_type;
+				newleader_type = audio_announce_newleader_type;
+				if (!g.v.audio.is_vbr)
+					update_type = audio_announce_cbr_update_type;
+				else
+					update_type = audio_announce_vbr_update_type;
+				norace_halfway_type = audio_announce_norace_halfway_type;
+				race_halfway_type = audio_announce_race_halfway_type;
+				complete_bar = audio_completebar;
+				msg.complete = CHOOSE(g.v.total.users, audio_complete, audio_norace_complete);
+				if (!g.v.audio.is_vbr) {
+					complete_announce = CHOOSE(g.v.total.users, audio_cbr_announce_race_complete_type, audio_cbr_announce_norace_complete_type);
+				} else {
+					complete_announce = CHOOSE(g.v.total.users, audio_vbr_announce_race_complete_type, audio_vbr_announce_norace_complete_type);
+				}
+				break;	/* audio */
+			case RTYPE_VIDEO:
+				race_type = video_announce_race_type;
+				newleader_type = video_announce_newleader_type;
+				update_type = video_announce_update_type;
+				norace_halfway_type = video_announce_norace_halfway_type;
+				race_halfway_type = video_announce_race_halfway_type;
+				complete_bar = video_completebar;
+				msg.complete = CHOOSE(g.v.total.users, video_complete, video_norace_complete);
+				complete_announce = CHOOSE(g.v.total.users, video_announce_race_complete_type, video_announce_norace_complete_type);
+				break;	/* video */
+			case RTYPE_NULL:
+				race_type = zip_announce_race_type;
+				newleader_type = zip_announce_newleader_type;
+				update_type = zip_announce_update_type;
+				norace_halfway_type = zip_announce_norace_halfway_type;
+				race_halfway_type = zip_announce_race_halfway_type;
+				complete_bar = zip_completebar;
+				msg.complete = CHOOSE(g.v.total.users, zip_complete, zip_norace_complete);
+				complete_announce = CHOOSE(g.v.total.users, zip_announce_race_complete_type, zip_announce_norace_complete_type);
+				break;	/* zip */
+			default:
+				race_type = rar_announce_race_type;
+				newleader_type = rar_announce_newleader_type;
+				update_type = rar_announce_update_type;
+				norace_halfway_type = rar_announce_norace_halfway_type;
+				race_halfway_type = rar_announce_race_halfway_type;
+				complete_bar = rar_completebar;
+				msg.complete = CHOOSE(g.v.total.users, rar_complete, rar_norace_complete);
+				complete_announce = CHOOSE(g.v.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
+				d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (3:%d)\n", g.v.misc.release_type);
+				break;	/* rar */
+//			}
+		}
 		if (g.v.total.users > 0) {
 			d_log("zipscript-c: Sorting race stats\n");
 			sortstats(&g.v, g.ui, g.gi);
@@ -326,12 +397,6 @@ main(int argc, char **argv)
 			d_log("zipscript-c: Printing on-site race info\n");
 			showstats(&g.v, g.ui, g.gi);
 
-			/*
-			 * Modification by <daxxar@daxxar.com> Only write
-			 * new leader if he leads with newleader_files_ahead
-			 * or only one person is racing if enable_files_ahead
-			 * :)
-			 */
 			if (!enable_files_ahead || ((g.v.total.users > 1 && g.ui[g.ui[0]->pos]->files >= (g.ui[g.ui[1]->pos]->files + newleader_files_ahead)) || g.v.total.users == 1)) {
 				d_log("zipscript-c: Writing current leader to file\n");
 				read_write_leader(g.l.leader, &g.v, g.ui[g.ui[0]->pos]);
@@ -339,153 +404,24 @@ main(int argc, char **argv)
 			if (g.v.total.users > 1) {
 				if (g.ui[g.v.user.pos]->files == 1 && msg.race != NULL) {
 					d_log("zipscript-c: Writing RACE to %s\n", log);
-					race_type = general_announce_race_type;
-					switch (g.v.misc.release_type) {
-					case RTYPE_RAR:
-						race_type = rar_announce_race_type;
-						break;	/* rar */
-					case RTYPE_OTHER:
-						race_type = other_announce_race_type;
-						break;	/* other */
-					case RTYPE_AUDIO:
-						race_type = audio_announce_race_type;
-						break;	/* audio */
-					case RTYPE_VIDEO:
-						race_type = video_announce_race_type;
-						break;	/* video */
-					case RTYPE_NULL:
-						race_type = zip_announce_race_type;
-						break;	/* zip */
-					default:
-						race_type = rar_announce_race_type;
-						d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (3:%d)\n", g.v.misc.release_type);
-						break;	/* rar */
-					}
-
-					if (!race_type)
-						d_log("zipscript-c: Something's messed up - race_type not set!\n");
-
 					writelog(&g, convert(&g.v, g.ui, g.gi, msg.race), race_type);
 				}
-
-				/*
-				 * Modification by <daxxar@daxxar.com>
-				 * Only announce new leader if he leads with
-				 * newleader_files_ahead files :-)
-				 */
 				if (g.v.total.files >= min_newleader_files && ((g.v.total.size * g.v.total.files) >= (min_newleader_size * 1024 * 1024)) && strcmp(g.v.misc.old_leader, g.ui[g.ui[0]->pos]->name) && msg.newleader != NULL && g.ui[g.ui[0]->pos]->files >= (g.ui[g.ui[1]->pos]->files + newleader_files_ahead) && g.v.total.files_missing) {
 					d_log("zipscript-c: Writing NEWLEADER to %s\n", log);
-					newleader_type = general_announce_newleader_type;
-					switch (g.v.misc.release_type) {
-					case RTYPE_RAR:
-						newleader_type = rar_announce_newleader_type;
-						break;	/* rar */
-					case RTYPE_OTHER:
-						newleader_type = other_announce_newleader_type;
-						break;	/* other */
-					case RTYPE_AUDIO:
-						newleader_type = audio_announce_newleader_type;
-						break;	/* audio */
-					case RTYPE_VIDEO:
-						newleader_type = video_announce_newleader_type;
-						break;	/* video */
-					case RTYPE_NULL:
-						newleader_type = zip_announce_newleader_type;
-						break;	/* zip */
-					default:
-						newleader_type = rar_announce_newleader_type;
-						d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (4:%d)\n", g.v.misc.release_type);
-						break;	/* rar */
-					}
-
-					if (!newleader_type)
-						d_log("zipscript-c: Something's messed up - newleader_type not set!\n");
-
 					writelog(&g, convert(&g.v, g.ui, g.gi, msg.newleader), newleader_type);
 				}
 			} else {
-
-				if (g.ui[g.v.user.pos]->files == 1 && g.v.total.files >= min_update_files && ((g.v.total.size * g.v.total.files) >= (min_update_size * 1024 * 1024)) && msg.update != NULL) {
+				if (g.ui[g.v.user.pos]->files == 1 && g.v.total.files >= min_update_files && ((g.v.total.size * g.v.total.files) >= (min_update_size * 1024 * 1024)) && msg.update) {
 					d_log("zipscript-c: Writing UPDATE to %s\n", log);
-					update_type = general_announce_update_type;
-					switch (g.v.misc.release_type) {
-					case RTYPE_RAR:
-						update_type = rar_announce_update_type;
-						break;	/* rar */
-					case RTYPE_OTHER:
-						update_type = other_announce_update_type;
-						break;	/* other */
-					case RTYPE_AUDIO:
-						if (g.v.audio.is_vbr == 0) {
-							update_type = audio_announce_cbr_update_type;
-						} else {
-							update_type = audio_announce_vbr_update_type;
-						};
-						break;	/* audio */
-					case RTYPE_VIDEO:
-						update_type = video_announce_update_type;
-						break;	/* video */
-					case RTYPE_NULL:
-						update_type = zip_announce_update_type;
-						break;	/* zip */
-					default:
-						update_type = rar_announce_update_type;
-						d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (5:%d)\n", g.v.misc.release_type);
-						break;	/* rar */
-					}
-					if (!update_type)
-						d_log("zipscript-c: Something's messed up - update_type not set!\n");
-
 					writelog(&g, convert(&g.v, g.ui, g.gi, msg.update), update_type);
 				}
 			}
 		}
 		if (g.v.total.files_missing > 0) {
-
-			/* Release is incomplete */
-
 			if (g.v.total.files_missing == g.v.total.files >> 1 && g.v.total.files >= min_halfway_files && ((g.v.total.size * g.v.total.files) >= (min_halfway_size * 1024 * 1024)) && msg.halfway != NULL) {
 				d_log("zipscript-c: Writing HALFWAY to %s\n", log);
-				norace_halfway_type = general_announce_norace_halfway_type;
-				race_halfway_type = general_announce_race_halfway_type;
-				switch (g.v.misc.release_type) {
-				case RTYPE_RAR:
-					norace_halfway_type = rar_announce_norace_halfway_type;
-					race_halfway_type = rar_announce_race_halfway_type;
-					break;	/* rar */
-				case RTYPE_OTHER:
-					norace_halfway_type = other_announce_norace_halfway_type;
-					race_halfway_type = other_announce_race_halfway_type;
-					break;	/* other */
-				case RTYPE_AUDIO:
-					norace_halfway_type = audio_announce_norace_halfway_type;
-					race_halfway_type = audio_announce_race_halfway_type;
-					break;	/* audio */
-				case RTYPE_VIDEO:
-					norace_halfway_type = video_announce_norace_halfway_type;
-					race_halfway_type = video_announce_race_halfway_type;
-					break;	/* video */
-				case RTYPE_NULL:
-					norace_halfway_type = zip_announce_norace_halfway_type;
-					race_halfway_type = zip_announce_race_halfway_type;
-					break;	/* zip */
-				default:
-					norace_halfway_type = rar_announce_norace_halfway_type;
-					race_halfway_type = rar_announce_race_halfway_type;
-					d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (6:%d)\n", g.v.misc.release_type);
-					break;	/* rar */
-				}
-
-				if (!race_halfway_type)
-					d_log("zipscript-c: Something's messed up - race_halfway_type not set!\n");
-
 				writelog(&g, convert(&g.v, g.ui, g.gi, msg.halfway), (g.v.total.users > 1 ? race_halfway_type : norace_halfway_type));
 			}
-			/*
-			 * It is _very_ unlikely that halfway would be
-			 * announced on complete release ;)
-			 */
-
 			d_log("zipscript-c: Caching progress bar\n");
 			buffer_progress_bar(&g.v);
 
@@ -497,43 +433,14 @@ main(int argc, char **argv)
 
 			d_log("zipscript-c: Creating/moving progress bar\n");
 			move_progress_bar(0, &g.v, g.ui, g.gi);
-
 			printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_ok));
-
 		} else if ((g.v.total.files_missing == 0) && (g.v.total.files > 0)) {
-
 			/* Release is complete */
-
 			d_log("zipscript-c: Caching progress bar\n");
 			buffer_progress_bar(&g.v);
 			printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_ok));
-
 			d_log("zipscript-c: Setting complete pointers\n");
-			switch (g.v.misc.release_type) {
-			case RTYPE_NULL:
-				complete_bar = zip_completebar;
-				msg.complete = CHOOSE(g.v.total.users, zip_complete, zip_norace_complete);
-				complete_announce = CHOOSE(g.v.total.users, zip_announce_race_complete_type, zip_announce_norace_complete_type);
-				break;
-			case RTYPE_RAR:
-				complete_bar = rar_completebar;
-				msg.complete = CHOOSE(g.v.total.users, rar_complete, rar_norace_complete);
-				complete_announce = CHOOSE(g.v.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
-				break;
-			case RTYPE_OTHER:
-				complete_bar = other_completebar;
-				msg.complete = CHOOSE(g.v.total.users, other_complete, other_norace_complete);
-				complete_announce = CHOOSE(g.v.total.users, other_announce_race_complete_type, other_announce_norace_complete_type);
-				break;
-			case RTYPE_AUDIO:
-				complete_bar = audio_completebar;
-				msg.complete = CHOOSE(g.v.total.users, audio_complete, audio_norace_complete);
-				if (g.v.audio.is_vbr == 0) {
-					complete_announce = CHOOSE(g.v.total.users, audio_cbr_announce_race_complete_type, audio_cbr_announce_norace_complete_type);
-				} else {
-					complete_announce = CHOOSE(g.v.total.users, audio_vbr_announce_race_complete_type, audio_vbr_announce_norace_complete_type);
-				}
-
+			if ( g.v.misc.release_type == RTYPE_AUDIO ) {
 				d_log("zipscript-c: Symlinking audio\n");
 				if (!strncasecmp(g.l.link_target, "VA", 2) && (g.l.link_target[2] == '-' || g.l.link_target[2] == '_'))
 					memcpy(g.v.audio.id3_artist, "VA", 3);
@@ -552,16 +459,14 @@ main(int argc, char **argv)
 							snprintf(temp_p, 2, "%c", toupper(*g.v.audio.id3_artist));
 							createlink(audio_artist_path, temp_p, g.l.link_source, g.l.link_target);
 							ng_free(temp_p);
-						} else {
+						} else
 							createlink(audio_artist_path, "VA", g.l.link_source, g.l.link_target);
-						}
 					}
 #endif
 #if ( audio_year_sort == TRUE )
 					d_log("zipscript-c:   Sorting mp3 by year (%s)\n", g.v.audio.id3_year);
-					if (*g.v.audio.id3_year != 0) {
+					if (!*g.v.audio.id3_year != 0)
 						createlink(audio_year_path, g.v.audio.id3_year, g.l.link_source, g.l.link_target);
-					}
 #endif
 #if ( audio_group_sort == TRUE )
 					d_log("zipscript-c:   Sorting mp3 by group\n");
@@ -583,20 +488,7 @@ main(int argc, char **argv)
 				} else
 					d_log("zipscript-c: Cannot create m3u, sfv is missing\n");
 #endif
-				break;
-			case RTYPE_VIDEO:
-				complete_bar = video_completebar;
-				msg.complete = CHOOSE(g.v.total.users, video_complete, video_norace_complete);
-				complete_announce = CHOOSE(g.v.total.users, video_announce_race_complete_type, video_announce_norace_complete_type);
-				break;
-			default:
-				complete_bar = rar_completebar;
-				msg.complete = CHOOSE(g.v.total.users, rar_complete, rar_norace_complete);
-				complete_announce = CHOOSE(g.v.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
-				d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (7:%d)\n", g.v.misc.release_type);
-				break;
 			}
-
 			if (complete_bar) {
 				d_log("zipscript-c: Removing old complete bar, if any\n");
 				removecomplete();
@@ -613,32 +505,29 @@ main(int argc, char **argv)
 				d_log("zipscript-c: Creating complete bar\n");
 				createstatusbar(convert(&g.v, g.ui, g.gi, complete_bar));
 #if (chmod_completebar)
-				if (!matchpath(group_dirs, g.l.path)) {
+				if (!matchpath(group_dirs, g.l.path))
 					chmod(convert(&g.v, g.ui, g.gi, complete_bar), 0222);
-				} else {
+				else
 					d_log("zipscript-c: we are in a group_dir - will not chmod the complete bar.\n");
-				}
 #endif
 			}
 
 #if ( enable_complete_script == TRUE )
 			nfofound = (int)findfileext(dir, ".nfo");
-			if (!fileexists(complete_script)) {
+			if (!fileexists(complete_script))
 				d_log("zipscript-c: Warning - complete_script (%s) - file does not exists\n", complete_script);
-			}
 			d_log("zipscript-c: Executing complete script\n");
 			sprintf(target, complete_script " \"%s\"", g.v.file.name);
-			if (execute(target) != 0)
+			if (execute(target))
 				d_log("zipscript-c: Failed to execute complete_script: %s\n", strerror(errno));
 
 #if ( enable_nfo_script == TRUE )
 			if (!nfofound && findfileext(dir, ".nfo")) {
-				if (!fileexists(nfo_script)) {
+				if (!fileexists(nfo_script))
 					d_log("zipscript-c: Warning - nfo_script (%s) - file does not exists\n", nfo_script);
-				}
 				d_log("zipscript-c: Executing nfo script (%s)\n", nfo_script);
 				sprintf(target, nfo_script " \"%s\"", g.v.file.name);
-				if (execute(target) != 0)
+				if (execute(target))
 					d_log("zipscript-c: Failed to execute nfo_script: %s\n", strerror(errno));
 			}
 #endif
@@ -674,20 +563,18 @@ main(int argc, char **argv)
 					if (!g.l.in_cd_dir) {
 						d_log("zipscript-c: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
-					} else {
-						if (!findfileextparent(parent, ".nfo")) {
-							d_log("zipscript-c: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
-							/* This is not pretty, but should be functional. */
-							if ((inc_point[0] = find_last_of(g.l.path, "/")) != g.l.path)
-								*inc_point[0] = '\0';
-							if ((inc_point[1] = find_last_of(g.v.misc.release_name, "/")) != g.v.misc.release_name)
-								*inc_point[1] = '\0';
-							create_incomplete_nfo();
-							if (*inc_point[0] == '\0')
-								*inc_point[0] = '/';
-							if (*inc_point[1] == '\0')
-								*inc_point[1] = '/';
-						}
+					} else if (!findfileextparent(parent, ".nfo")) {
+						d_log("zipscript-c: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
+						/* This is not pretty, but should be functional. */
+						if ((inc_point[0] = find_last_of(g.l.path, "/")) != g.l.path)
+							*inc_point[0] = '\0';
+						if ((inc_point[1] = find_last_of(g.v.misc.release_name, "/")) != g.v.misc.release_name)
+							*inc_point[1] = '\0';
+						create_incomplete_nfo();
+						if (*inc_point[0] == '\0')
+							*inc_point[0] = '/';
+						if (*inc_point[1] == '\0')
+							*inc_point[1] = '/';
 					}
 				}
 			}
