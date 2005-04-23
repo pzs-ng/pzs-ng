@@ -62,44 +62,33 @@ int handle_zip(GLOBAL *, MSG *, DIR *);
 int handle_sfv(GLOBAL *, MSG *, DIR *);
 int handle_nfo(GLOBAL *, MSG *, DIR *);
 int handle_sfv32(GLOBAL *, MSG *, DIR *, char **, char *);
+void read_envdata(GLOBAL *, GDATA *, UDATA *, struct stat *);
+void check_filesize(GLOBAL *, const char *, struct stat *);
+void lock_release(GLOBAL *, DIR *, DIR *);
 
 int 
 main(int argc, char **argv)
 {
 	GLOBAL		g; /* this motherfucker owns */
 	MSG		msg;
+	GDATA		gdata;
+	UDATA		udata;
 
 	DIR		*dir, *parent;
-	//struct dirent	*dp;
-
-	struct GDATA	gdata;
-	struct UDATA	udata;
 	
-	char           *fileext = NULL, *name_p, *temp_p = NULL, *temp_p_free = NULL;
+	char           *fileext = NULL, *name_p, *temp_p = NULL;
 	char           *target = 0;
-	//char	       *ext = 0;
-	//char           *complete_msg = 0;
-	//char           *update_msg = 0;
-	//char           *race_msg = 0;
-	//char           *sfv_msg = 0;
 	char           *update_type = 0;
-	//char           *newleader_msg = 0;
-	//char           *halfway_msg = 0;
 	char           *complete_bar = 0;
-	//char           *error_msg = 0;
-	//unsigned int	crc, gnum = 0, unum = 0, s_crc = 0;
 	int				exit_value = EXIT_SUCCESS;
 	int				no_check = FALSE;
-	//char	       *sfv_type = 0;
 	char	       *race_type = 0;
 	char	       *newleader_type = 0;
 	char	       *race_halfway_type = 0;
 	char	       *norace_halfway_type = 0;
 	char	       *inc_point[2];
 	char           *complete_announce = 0;
-	//int		cnt2;
-	int		cnt, n = 0, m = 0;
-	//long		loc;
+	int		cnt, n = 0;
 #if ( enable_complete_script || enable_accept_script )
 	int		nfofound = 0;
 #endif
@@ -137,7 +126,6 @@ main(int argc, char **argv)
 #endif
 
 	if (argc != 4) {
-		d_log("zipscript-c: Wrong number of arguments used\n");
 		printf(" - - PZS-NG ZipScript-C v%s - -\n\nUsage: %s <filename> <path> <crc>\n\n", ng_version(), argv[0]);
 		exit(1);
 	}
@@ -158,71 +146,11 @@ main(int argc, char **argv)
 	chdir(g.l.path);
 
 	d_log("zipscript-c: Reading data from environment variables\n");
-	if ((getenv("USER") == NULL) || (getenv("GROUP") == NULL) || (getenv("TAGLINE") == NULL) || (getenv("SPEED") ==NULL) || (getenv("SECTION") == NULL)) {
-		d_log("zipscript-c: We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE, $SECTION and $SPEED\n");
-		/*
-		 * strcpy(g.v.user.name, "Unknown");
-		 * strcpy(g.v.user.group, "NoGroup");
-		 */
-
-		buffer_groups(&gdata, GROUPFILE, 0);
-		buffer_users(&udata, PASSWDFILE, 0);
-		fileinfo.st_uid = geteuid();
-		fileinfo.st_gid = getegid();
-		strlcpy(g.v.user.name, get_u_name(&udata, fileinfo.st_uid), 24);
-		strlcpy(g.v.user.group, get_g_name(&gdata, fileinfo.st_gid), 24);
-		memcpy(g.v.user.tagline, "No Tagline Set", 15);
-		g.v.file.speed = 2005;
-		g.v.section = 0;
-		sprintf(g.v.sectionname, "DEFAULT");
-	} else {
-		buffer_groups(&gdata, GROUPFILE, 0);
-		buffer_users(&udata, PASSWDFILE, 0);
-		sprintf(g.v.user.name, getenv("USER"));
-		sprintf(g.v.user.group, getenv("GROUP"));
-		if (!(int)strlen(g.v.user.group))
-			memcpy(g.v.user.group, "NoGroup", 8);
-		sprintf(g.v.user.tagline, getenv("TAGLINE"));
-		if (!(int)strlen(g.v.user.tagline))
-			memcpy(g.v.user.tagline, "No Tagline Set", 15);
-		g.v.file.speed = (unsigned int)strtol(getenv("SPEED"), NULL, 0);
-		if (!g.v.file.speed)
-			g.v.file.speed = 1;
-
-#if (debug_announce == TRUE)
-		printf("DEBUG: Speed: %dkb/s (%skb/s)\n",  g.v.file.speed, getenv("SPEED"));
-#endif
-
-		d_log("zipscript-c: Reading section from env (%s)\n", getenv("SECTION"));
-		snprintf(g.v.sectionname, 127, getenv("SECTION"));
-		g.v.section = 0;
-		temp_p_free = temp_p = strdup((const char *)gl_sections);	/* temp_p_free is needed since temp_p is modified by strsep */
-		if ((temp_p) == NULL) {
-			d_log("zipscript-c: Can't allocate memory for sections\n");
-		} else {
-			n = 0;
-			while (temp_p) {
-				if (!strcmp(strsep(&temp_p, " "), getenv("SECTION"))) {
-					g.v.section = (unsigned char)n;
-					break;
-				} else
-					n++;
-			}
-			ng_free(temp_p_free);
-		}
-	}
+	read_envdata(&g, &gdata, &udata, &fileinfo);
 	g.v.file.speed *= 1024;
 
 	d_log("zipscript-c: Checking the file size of %s\n", g.v.file.name);
-	if (stat(g.v.file.name, &fileinfo)) {
-		d_log("zipscript-c: Failed to stat file: %s\n", strerror(errno));
-		g.v.file.size = 0;
-		g.v.total.stop_time = 0;
-	} else {
-		g.v.file.size = fileinfo.st_size;
-		d_log("zipscript-c: File size was: %d\n", g.v.file.size);
-		g.v.total.stop_time = fileinfo.st_mtime;
-	}
+	check_filesize(&g, g.v.file.name, &fileinfo);
 
 	d_log("zipscript-c: Setting race times\n");
 	if (g.v.file.size != 0)
@@ -289,45 +217,7 @@ main(int argc, char **argv)
 	maketempdir(g.l.path);
 
 	d_log("zipscript-c: Locking release\n");
-	while(1) {
-		if ((m = create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 3, 0))) {
-			d_log("zipscript-c: Failed to lock release.\n");
-			if (m == 1) {
-				d_log("zipscript-c: version mismatch. Exiting.\n");
-				printf("Error. You need to rm -fR ftp-data/pzs-ng/* before zipscript-c will work.\n");
-				exit(EXIT_FAILURE);
-			}
-			if (m == PROGTYPE_RESCAN) {
-				d_log("zipscript-c: Detected rescan running - will try to make it quit.\n");
-				update_lock(&g.v, 0, 0);
-			}
-			for ( n = 0; n <= max_seconds_wait_for_lock * 10; n++) {
-				d_log("zipscript-c: sleeping for .1 second before trying to get a lock.\n");
-				usleep(100000);
-				if (!(m = create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0, g.v.lock.data_queue)))
-					break;
-				
-			}
-			if (n >= max_seconds_wait_for_lock * 10) {
-				if (m == PROGTYPE_RESCAN) {
-					d_log("zipscript-c: Failed to get lock. Forcing unlock.\n");
-					if (create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 2, g.v.lock.data_queue))
-						d_log("zipscript-c: Failed to force a lock.\n");
-				} else
-					d_log("zipscript-c: Failed to get a lock.\n");
-				if (!g.v.lock.data_in_use && !ignore_lock_timeout) {
-					d_log("zipscript-c: Exiting with error.\n");
-					exit(EXIT_FAILURE);
-				}
-			}
-
-			rewinddir(dir);
-			rewinddir(parent);
-		}
-		usleep(10000);
-		if (update_lock(&g.v, 1, 0) != -1)
-			break;
-	}
+	lock_release(&g, dir, parent);
 
 	printf(zipscript_header);
 
@@ -1593,3 +1483,134 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 	return exit_value;
 }
 
+void
+read_envdata(GLOBAL *g, GDATA *gdata, UDATA *udata, struct stat *fileinfo)
+{
+	
+	int			n;
+	char		*temp_p = NULL, *temp_p_free = NULL;
+
+	buffer_groups(gdata, GROUPFILE, 0);
+	buffer_users(udata, PASSWDFILE, 0);
+	
+	if ((getenv("USER") == NULL) || (getenv("GROUP") == NULL) || (getenv("TAGLINE") == NULL) || (getenv("SPEED") ==NULL) || (getenv("SECTION") == NULL)) {
+		d_log("zipscript-c: We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE, $SECTION and $SPEED\n");
+		/*
+		 * strcpy(g->v.user.name, "Unknown");
+		 * strcpy(g->v.user.group, "NoGroup");
+		 */
+
+		fileinfo->st_uid = geteuid();
+		fileinfo->st_gid = getegid();
+		strlcpy(g->v.user.name, get_u_name(udata, fileinfo->st_uid), 24);
+		strlcpy(g->v.user.group, get_g_name(gdata, fileinfo->st_gid), 24);
+		memcpy(g->v.user.tagline, "No Tagline Set", 15);
+		g->v.file.speed = 2005;
+		g->v.section = 0;
+		sprintf(g->v.sectionname, "DEFAULT");
+	} else {
+		sprintf(g->v.user.name, getenv("USER"));
+		sprintf(g->v.user.group, getenv("GROUP"));
+		if (!(int)strlen(g->v.user.group))
+			memcpy(g->v.user.group, "NoGroup", 8);
+		sprintf(g->v.user.tagline, getenv("TAGLINE"));
+		if (!(int)strlen(g->v.user.tagline))
+			memcpy(g->v.user.tagline, "No Tagline Set", 15);
+		g->v.file.speed = (unsigned int)strtol(getenv("SPEED"), NULL, 0);
+		if (!g->v.file.speed)
+			g->v.file.speed = 1;
+
+#if (debug_announce == TRUE)
+		printf("DEBUG: Speed: %dkb/s (%skb/s)\n",  g->v.file.speed, getenv("SPEED"));
+#endif
+
+		d_log("zipscript-c: Reading section from env (%s)\n", getenv("SECTION"));
+		snprintf(g->v.sectionname, 127, getenv("SECTION"));
+		g->v.section = 0;
+		temp_p_free = temp_p = strdup((const char *)gl_sections);	/* temp_p_free is needed since temp_p is modified by strsep */
+		if ((temp_p) == NULL) {
+			d_log("zipscript-c: Can't allocate memory for sections\n");
+		} else {
+			n = 0;
+			while (temp_p) {
+				if (!strcmp(strsep(&temp_p, " "), getenv("SECTION"))) {
+					g->v.section = (unsigned char)n;
+					break;
+				} else
+					n++;
+			}
+			ng_free(temp_p_free);
+		}
+	}
+}
+
+void
+check_filesize(GLOBAL *g, const char *filename, struct stat *fileinfo)
+{
+
+	if (stat(filename, fileinfo)) {
+		d_log("zipscript-c: Failed to stat file: %s\n", strerror(errno));
+		g->v.file.size = 0;
+		g->v.total.stop_time = 0;
+	} else {
+		g->v.file.size = fileinfo->st_size;
+		d_log("zipscript-c: File size was: %d\n", g->v.file.size);
+		g->v.total.stop_time = fileinfo->st_mtime;
+	}
+
+}
+
+void
+lock_release(GLOBAL *g, DIR *dir, DIR *parent)
+{
+
+	int		m, n;
+
+	while (1) {
+	
+		if ((m = create_lock(&g->v, g->l.path, PROGTYPE_ZIPSCRIPT, 3, 0))) {
+			d_log("zipscript-c: Failed to lock release.\n");
+			
+			if (m == 1) {
+				d_log("zipscript-c: version mismatch. Exiting.\n");
+				printf("Error. You need to rm -fR ftp-data/pzs-ng/* before zipscript-c will work.\n");
+				exit(EXIT_FAILURE);
+			}
+			
+			if (m == PROGTYPE_RESCAN) {
+				d_log("zipscript-c: Detected rescan running - will try to make it quit.\n");
+				update_lock(&g->v, 0, 0);
+			}
+			
+			for ( n = 0; n <= max_seconds_wait_for_lock * 10; n++) {
+				d_log("zipscript-c: sleeping for .1 second before trying to get a lock.\n");
+				usleep(100000);
+				if (!(m = create_lock(&g->v, g->l.path, PROGTYPE_ZIPSCRIPT, 0, g->v.lock.data_queue)))
+					break;	
+			}
+			
+			if (n >= max_seconds_wait_for_lock * 10) {
+				if (m == PROGTYPE_RESCAN) {
+					d_log("zipscript-c: Failed to get lock. Forcing unlock.\n");
+					if (create_lock(&g->v, g->l.path, PROGTYPE_ZIPSCRIPT, 2, g->v.lock.data_queue))
+						d_log("zipscript-c: Failed to force a lock.\n");
+				} else
+					d_log("zipscript-c: Failed to get a lock.\n");
+				if (!g->v.lock.data_in_use && !ignore_lock_timeout) {
+					d_log("zipscript-c: Exiting with error.\n");
+					exit(EXIT_FAILURE);
+				}
+			}
+
+			rewinddir(dir);
+			rewinddir(parent);
+		}
+		
+		usleep(10000);
+		
+		if (update_lock(&g->v, 1, 0) != -1)
+			break;
+			
+	}
+
+}

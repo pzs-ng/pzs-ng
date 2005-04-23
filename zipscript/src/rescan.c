@@ -39,8 +39,8 @@ main(int argc, char *argv[])
 	unsigned int	crc = 0;
 	struct stat	fileinfo;
 
-	struct GDATA	gdata;
-	struct UDATA	udata;
+	GDATA		gdata;
+	UDATA		udata;
 
 	uid_t		f_uid;
 	gid_t		f_gid;

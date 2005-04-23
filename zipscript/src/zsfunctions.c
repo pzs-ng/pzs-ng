@@ -439,7 +439,7 @@ removedotfiles(DIR *dir)
 	rewinddir(dir);
 	while ((dp = readdir(dir)))
 		if ((!strncasecmp(dp->d_name, ".", 1)) &&
-		    ((int)strlen(dp->d_name) > 2))
+		    (strlen(dp->d_name) > 2))
 			unlink(dp->d_name);
 }
 
@@ -451,8 +451,8 @@ findfilename(char *filename, char *dest, struct VARS *raceI)
 
 	dir = opendir(".");
 	while ((dp = readdir(dir))) {
-		if ((int)strlen(dp->d_name) && !strcasecmp(dp->d_name, filename)) {
-			dest = ng_realloc(dest, (int)sizeof(dp->d_name) + 1, 1, 1, raceI, 0);
+		if (strlen(dp->d_name) && !strcasecmp(dp->d_name, filename)) {
+			dest = ng_realloc(dest, sizeof(dp->d_name) + 1, 1, 1, raceI, 0);
 			strncpy(dest, dp->d_name, sizeof(dp->d_name));
 			break;
 		}
@@ -774,7 +774,7 @@ execute(char *s)
 }
 
 char           *
-get_g_name(struct GDATA *gdata, gid_t gid)
+get_g_name(GDATA *gdata, gid_t gid)
 {
 	int		n;
 	for (n = 0; n < gdata->num_groups; n++)
@@ -784,7 +784,7 @@ get_g_name(struct GDATA *gdata, gid_t gid)
 }
 
 char           *
-get_u_name(struct UDATA *udata, uid_t uid)
+get_u_name(UDATA *udata, uid_t uid)
 {
 	int		n;
 	for (n = 0; n < udata->num_users; n++)
@@ -795,7 +795,7 @@ get_u_name(struct UDATA *udata, uid_t uid)
 
 /* Buffer groups file */
 void 
-buffer_groups(struct GDATA *gdata, char *groupfile, int setfree)
+buffer_groups(GDATA *gdata, char *groupfile, int setfree)
 {
 	char           *f_buf = NULL, *g_name;
 	gid_t		g_id;
@@ -856,7 +856,7 @@ buffer_groups(struct GDATA *gdata, char *groupfile, int setfree)
 
 /* Buffer users file */
 void
-buffer_users(struct UDATA *udata, char *passwdfile, int setfree)
+buffer_users(UDATA *udata, char *passwdfile, int setfree)
 {
 	char           *f_buf = NULL, *u_name;
 	uid_t		u_id;
