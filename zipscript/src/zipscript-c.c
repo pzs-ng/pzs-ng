@@ -1397,6 +1397,10 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 		msg->newleader = other_newleader;
 		break;
 	case RTYPE_AUDIO:
+		msg->race = audio_race;
+		msg->update = audio_update;
+		msg->halfway = CHOOSE2(g->v.total.users, audio_halfway, audio_norace_halfway);
+		msg->newleader = audio_newleader;
 		d_log("zipscript-c: Trying to read audio header and tags\n");
 		get_mpeg_audio_info(g->v.file.name, &g->v.audio);
 		write_bitrate_in_race(g->l.race, &g->v);
@@ -1443,14 +1447,14 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 						if (g->ui[g->v.user.pos]->files == 1) {
 							d_log("zipscript-c: warn on - logging to logfile\n");
 							msg->error = convert(&g->v, g->ui, g->gi, audio_genre_warn_msg);
-							writelog(&g, msg->error, general_badgenre_type);
+							writelog(g, msg->error, general_badgenre_type);
 						} else
 							d_log("zipscript-c: warn on - have already logged to logfile\n");
 					} else {
 						mark_as_bad(g->v.file.name);
 						msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 						if ((g->ui[g->v.user.pos]->files == 1) && (exit_value < 2))
-							writelog(&g, msg->error, bad_file_genre_type);
+							writelog(g, msg->error, bad_file_genre_type);
 						exit_value = 2;
 					}
 #if ( del_banned_release || enable_banned_script )
@@ -1512,6 +1516,31 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 					}
 				}
 #endif
+#if ( audio_allowed_vbr_preset_check == TRUE )
+				if (g->v.audio.is_vbr && strlen(g->v.audio.vbr_preset) && !strcomp(allowed_vbr_presets, g->v.audio.vbr_preset)) {
+					d_log("zipscript-c: File is not in allowed vbr preset list (%s)\n", g->v.audio.vbr_preset);
+					sprintf(g->v.misc.error_msg, BANNED_PRESET, g->v.audio.vbr_preset);
+					if (audio_vbr_preset_warn == TRUE) {
+						if (g->ui[g->v.user.pos]->files == 1) {
+							d_log("zipscript-c: warn on - logging to logfile\n");
+							msg->error = convert(&g->v, g->ui, g->gi, audio_vbr_preset_warn_msg);
+							writelog(g, msg->error, general_badpreset_type);
+						} else
+							d_log("zipscript-c: warn on - have already logged to logfile\n");
+					} else {
+						mark_as_bad(g->v.file.name);
+						msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+						if ((g->ui[g->v.user.pos]->files == 1) && (exit_value < 2))
+							writelog(g, msg->error, bad_file_vbr_preset_type);
+						exit_value = 2;
+					}
+#if ( del_banned_release || enable_banned_script )
+					deldir = 1;
+					exit_value = 2;
+#endif
+					break;
+				}
+#endif
 			} else
 				d_log("zipscript-c: user is in a no audio check dir - skipping checks.\n");
 
@@ -1519,10 +1548,6 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 			d_log("zipscript-c: Printing realtime_mp3_info.\n");
 			printf("%s", convert(&g->v, g->ui, g->gi, realtime_mp3_info));
 		}
-		msg->race = audio_race;
-		msg->update = audio_update;
-		msg->halfway = CHOOSE2(g->v.total.users, audio_halfway, audio_norace_halfway);
-		msg->newleader = audio_newleader;
 		break;
 	case RTYPE_VIDEO:
 		d_log("zipscript-c: Trying to read video header\n");

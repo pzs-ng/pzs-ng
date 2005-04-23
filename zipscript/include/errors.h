@@ -10,4 +10,5 @@
 #define 	BANNED_GENRE			"%s is banned here!"				/* %s = genre		 */
 #define		BANNED_YEAR			"Releases from %s are not allowed here!"	/* %s = year		 */
 #define		BANNED_BITRATE			"%s kbit codec is not allowed here!"		/* %s = bitrate		 */
+#define		BANNED_PRESET			"vbr preset %s not allowed here!"		/* %s = preset		 */
 #define		DUPE_NFO			"NFO-File: DUPE!"

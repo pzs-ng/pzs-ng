@@ -506,13 +506,6 @@
 #define audio_year_warn		TRUE
 #endif
 
-/* To be *very* strict, you can choose to remove the entire releasedir if a bad
- * genre/year/whatnot is uploaded.
- */
-#ifndef del_banned_release
-#define del_banned_release	FALSE
-#endif
-
 /*
  * either "audio_banned_genre_check" or "audio_allowed_genre_check" should be
  * set to TRUE
@@ -525,6 +518,26 @@
 #endif
 #ifndef audio_genre_warn
 #define audio_genre_warn		TRUE
+#endif
+
+/*
+ * Restrict releases based on vbr preset
+ */
+#ifndef audio_allowed_vbr_preset_check
+#define audio_allowed_vbr_preset_check	FALSE
+#endif
+#ifndef allowed_vbr_presets
+#define allowed_vbr_presets		"APS,NA"
+#endif
+#ifndef audio_vbr_preset_warn
+#define audio_vbr_preset_warn		TRUE
+#endif
+
+/* To be *very* strict, you can choose to remove the entire releasedir if a bad
+ * genre/year/whatnot is uploaded.
+ */
+#ifndef del_banned_release
+#define del_banned_release	FALSE
 #endif
 
 /*

@@ -14,6 +14,10 @@ v1.xx	:
 	  zipscript: new: added support for execution of external script on banned releases.
 	  zipscript: new: added support for speedtests
 	  zipscript: new: if sfv_cleanup is set to true, the original sfv is copied to the storage dir (backup). Rescan will use the original sfv (re-copy it to the releasdir before performing a new cleanup).
+	  zipscript: new: deny/allow mp3 releases based on vbr preset.
+	  zipscript: new: config setting - audio_allowed_vbr_preset_check
+	  zipscript: new: config setting - allowed_vbr_presets
+	  zipscript: new: config setting - audio_vbr_preset_warn
 
 v1.00	: Initial release
 

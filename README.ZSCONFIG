@@ -544,6 +544,23 @@ audio_genre_warn <TRUE|FALSE>
 	TRUE if yes.
 	Default: TRUE
 	
+audio_allowed_vbr_preset_check <TRUE|FALSE>
+	VBR mp3 releases are encoded using certain presets. If you wish to
+	enforce restrictions based on the preset, you can use this setting.
+	Default: FALSE
+
+allowed_vbr_presets <STRING>
+	Enter here a comma separated list of presets you allow on site.
+	It is recommended you keep NA in the list, since the the zipscript may
+	fail to find the preset.
+	Default: "APS,NA"
+
+audio_vbr_preset_warn <TRUE|FALSE>
+	If the audio-release is not part of allowed presets, should the
+	zipscript log a warning message instead of deleting the file? Set to
+	TRUE if yes.
+	Default: TRUE
+
 del_banned_release <TRUE|FALSE>
 	If you want to make absolutely sure the banned release does not take up
 	more bandwith or space than necessary, you can choose to completely
