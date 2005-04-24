@@ -151,22 +151,42 @@ main(int argc, char **argv)
 				d_log("postdel: Detected rescan running - will try to make it quit.\n");
 				update_lock(&g.v, 0, 0);
 			}
-			for ( n = 0; n <= max_seconds_wait_for_lock * 10; n++) {
-				d_log("postdel: sleeping for .1 second before trying to get a lock.\n");
-				usleep(100000);
-				if (!(m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0, g.v.data_queue)))
+			if (m == PROGTYPE_POSTDEL) {
+				n = (signed int)g.v.data_incrementor;
+				d_log("postdel: Detected postdel running - sleeping for one second.\n");
+				if (!create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0, g.v.data_queue))
 					break;
-			}
-			if (n >= max_seconds_wait_for_lock * 10) {
-				if (m == PROGTYPE_RESCAN) {
+				usleep(1000000);
+				if (!create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0, g.v.data_queue))
+					break;
+				if ( n == (signed int)g.v.data_incrementor) {
 					d_log("postdel: Failed to get lock. Forcing unlock.\n");
-					if (create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 2, g.v.data_queue))
+					if (create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 2, g.v.data_queue)) {
 						d_log("postdel: Failed to force a lock.\n");
-				} else
-					d_log("postdel: Failed to get a lock.\n");
-				if (!g.v.data_in_use && !ignore_lock_timeout) {
-					d_log("postdel: Exiting with error.\n");
-					exit(EXIT_FAILURE);
+						d_log("postdel: Exiting with error.\n");
+						exit(EXIT_FAILURE);
+					}
+					break;
+				}
+			} else {
+				for ( n = 0; n <= max_seconds_wait_for_lock * 10; n++) {
+					d_log("postdel: sleeping for .1 second before trying to get a lock.\n");
+					usleep(100000);
+					if (!(m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0, g.v.data_queue)))
+						break;
+
+				}
+				if (n >= max_seconds_wait_for_lock * 10) {
+					if (m == PROGTYPE_RESCAN) {
+						d_log("postdel: Failed to get lock. Forcing unlock.\n");
+						if (create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 2, g.v.data_queue))
+						d_log("postdel: Failed to force a lock.\n");
+					} else
+						d_log("postdel: Failed to get a lock.\n");
+					if (!g.v.data_in_use && !ignore_lock_timeout) {
+						d_log("postdel: Exiting with error.\n");
+						exit(EXIT_FAILURE);
+					}
 				}
 			}
 			rewinddir(dir);

@@ -282,23 +282,42 @@ main(int argc, char **argv)
 				d_log("zipscript-c: Detected rescan running - will try to make it quit.\n");
 				update_lock(&g.v, 0, 0);
 			}
-			for ( n = 0; n <= max_seconds_wait_for_lock * 10; n++) {
-				d_log("zipscript-c: sleeping for .1 second before trying to get a lock.\n");
-				usleep(100000);
-				if (!(m = create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0, g.v.data_queue)))
+			if (m == PROGTYPE_POSTDEL) {
+				n = (signed int)g.v.data_incrementor;
+				d_log("zipscript-c: Detected postdel running - sleeping for one second.\n");
+				if (!create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0, g.v.data_queue))
 					break;
-				
-			}
-			if (n >= max_seconds_wait_for_lock * 10) {
-				if (m == PROGTYPE_RESCAN) {
+				usleep(1000000);
+				if (!create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0, g.v.data_queue))
+					break;
+				if ( n == (signed int)g.v.data_incrementor) {
 					d_log("zipscript-c: Failed to get lock. Forcing unlock.\n");
-					if (create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 2, g.v.data_queue))
+					if (create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 2, g.v.data_queue)) {
 						d_log("zipscript-c: Failed to force a lock.\n");
-				} else
-					d_log("zipscript-c: Failed to get a lock.\n");
-				if (!g.v.data_in_use && !ignore_lock_timeout) {
-					d_log("zipscript-c: Exiting with error.\n");
-					exit(EXIT_FAILURE);
+						d_log("zipscript-c: Exiting with error.\n");
+						exit(EXIT_FAILURE);
+					}
+					break;
+				}
+			} else {
+				for ( n = 0; n <= max_seconds_wait_for_lock * 10; n++) {
+					d_log("zipscript-c: sleeping for .1 second before trying to get a lock.\n");
+					usleep(100000);
+					if (!(m = create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0, g.v.data_queue)))
+						break;
+				
+				}
+				if (n >= max_seconds_wait_for_lock * 10) {
+					if (m == PROGTYPE_RESCAN) {
+						d_log("zipscript-c: Failed to get lock. Forcing unlock.\n");
+						if (create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 2, g.v.data_queue))
+						d_log("zipscript-c: Failed to force a lock.\n");
+					} else
+						d_log("zipscript-c: Failed to get a lock.\n");
+					if (!g.v.data_in_use && !ignore_lock_timeout) {
+						d_log("zipscript-c: Exiting with error.\n");
+						exit(EXIT_FAILURE);
+					}
 				}
 			}
 
