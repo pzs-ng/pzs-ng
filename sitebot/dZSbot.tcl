@@ -1962,7 +1962,9 @@ if {![array exists disable] || ![info exists disable(DEFAULT)]} {
 foreach rep [array names msgreplace] {
 	set rep [split $msgreplace($rep) ":"]
 	set variables([lindex $rep 2]) $variables([lindex $rep 0])
-	set disable([lindex $rep 2]) 0
+	if {![info exists disable([lindex $rep 2])]} {
+		set disable([lindex $rep 2]) 0
+	}
 	if {![info exists announce([lindex $rep 2])]} {
 		set announce([lindex $rep 2]) $announce([lindex $rep 0])
 		putlog "dZSbot warning: Custom message [lindex $rep 2] defined, but no announce definition found. Using same announce as [lindex $rep 0] for now. Please edit the theme file!"
