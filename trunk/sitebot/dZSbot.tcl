@@ -515,7 +515,7 @@ proc fuelnuke {type path section line} {
 
 	if {$type == $nuke(LASTTYPE) && $path == $nuke(LASTDIR) && $nuke(SHOWN) == 0} {
 		if {[lsearch -exact $hidenuke [lindex $line 2]] == -1} {
-			append nuke(NUKEE) "\002[lindex $line 2]\002 (\002[lindex [lindex $line 3] 1]\002MB), "
+			append nuke(NUKEE) "\002[lindex $line 2]\002 (\002[lindex $line 3 1]\002MB), "
 		}
 	} else {
 		launchnuke
@@ -524,8 +524,8 @@ proc fuelnuke {type path section line} {
 			set nuke(PATH) $path
 			set nuke(SECTION) $section
 			set nuke(NUKER) [lindex $line 1]
-			set nuke(NUKEE) "\002[lindex $line 2]\002 (\002[lindex [lindex $line 3] 1]\002MB) "
-			set nuke(MULT) [lindex [lindex $line 3] 0]
+			set nuke(NUKEE) "\002[lindex $line 2]\002 (\002[lindex $line 3 1]\002MB) "
+			set nuke(MULT) [lindex $line 3 0]
 			set nuke(REASON) [lindex $line 4]
 			set nuke(SHOWN) 0
 		}
@@ -1962,7 +1962,9 @@ if {![array exists disable] || ![info exists disable(DEFAULT)]} {
 foreach rep [array names msgreplace] {
 	set rep [split $msgreplace($rep) ":"]
 	set variables([lindex $rep 2]) $variables([lindex $rep 0])
-	set disable([lindex $rep 2]) 0
+	if {![info exists disable([lindex $rep 2])]} {
+		set disable([lindex $rep 2]) 0
+	}
 	if {![info exists announce([lindex $rep 2])]} {
 		set announce([lindex $rep 2]) $announce([lindex $rep 0])
 		putlog "dZSbot warning: Custom message [lindex $rep 2] defined, but no announce definition found. Using same announce as [lindex $rep 0] for now. Please edit the theme file!"
