@@ -311,7 +311,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 					break;
 				}
 					
-				ufile_section(&sect, get_statline(ufile, *strptr));
+				ufile_section(&sect, lineptr);
 				
 				if (raceI->section <= sect.n)
 					user[n].bytes[strptr-upstrs] = sect.s[raceI->section].kilobytes;
