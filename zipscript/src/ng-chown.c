@@ -101,8 +101,14 @@ main(int argc, char *argv[])
 	
 	if (my_result == 0) {
 		if ((new_user > 0) || (new_group > 0)) {
-			setuid(0);
-			setgid(0);
+			if (setuid(0) == -1) {
+				printf("%s - Error: Failed to change uid : %s\n", argv[0], strerror(errno));
+				return 1;
+			}
+			if (setgid(0) == -1) {
+				printf("%s - Error: Failed to change gid : %s\n", argv[0], strerror(errno));
+				return 1;
+			}
 			my_result = myscan(my_result, new_user, new_group, user_flag, group_flag, files_flag, dir_flag, my_path, argv[0]);
 		}
 	} else {
