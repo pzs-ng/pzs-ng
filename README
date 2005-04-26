@@ -45,6 +45,7 @@ themolester (Tcl guru)
 avizion (Tcl guru, webmaster)
 juanker (Tcl guru)
 dakrer (Tcl guru)
+neoxed (Tcl guru)
 
 
 You can find us in #pzs-ng on EFnet for support and/or bug reporting.
@@ -228,6 +229,13 @@ here's what to do:
            chmod 666 /path/to/your/glftpd/ftp-data/logs/glftpd.log
            mkdir -pm777 /path/to/your/glftpd/ftp-data/pzs-ng
 (optional) chmod +s /path/to/your/glftpd/bin/zipscript-c
+
+Please note:
+'make install' also copies the binaries found in sitebot/src/ , and the sitewho
+binary and config. The sitebot or zipscript may depend on some of the scripts
+in scripts/ - these are *not* copied by default. Please familiarize yourself
+with the content of these dirs. Documentation is either written in a separate
+README or is found in the script/config itself.
 
 
 Making sure you have the libs:
