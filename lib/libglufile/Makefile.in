@@ -1,0 +1,21 @@
+prefix=@GLPATH@
+libdir=$(prefix)/lib
+CC=@CC@
+LD=@CC@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@ -shared
+INSTALL=@INSTALL@
+RM=@RM@ -f
+
+install: all
+	$(INSTALL) -m444 libglufile.so $(prefix)/lib
+
+all: libglufile.so
+
+libglufile.so: gluserfile.o
+	$(LD) $(LDFLAGS) -o libglufile.so gluserfile.o
+
+gluserfile.o: gluserfile.c gluserfile.h glustruct.h
+
+clean:
+	$(RM) libglufile.so
