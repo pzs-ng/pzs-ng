@@ -30,13 +30,24 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <errno.h>
+
 #ifndef PATH_MAX
- #define _LIMITS_H_
- #ifdef _SunOS_
-  #include <syslimits.h>
- #else
-  #include <sys/syslimits.h>
- #endif
+# ifndef _SunOS_
+#  define _LIMITS_H_
+#  include <sys/syslimits.h>
+# endif
+#endif
+
+#ifndef PATH_MAX
+# define PATH_MAX 1024
+# define _ALT_MAX
+#endif
+
+#ifndef NAME_MAX
+# define NAME_MAX 255
+# ifndef _ALT_MAX
+#  define _ALT_MAX
+# endif
 #endif
 
 #ifdef _SunOS_

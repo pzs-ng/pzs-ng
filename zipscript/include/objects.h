@@ -8,27 +8,33 @@
 #include <unistd.h>
 
 #ifndef PATH_MAX
- #define _LIMITS_H_
- #if defined(_SunOS_)
-  #include <syslimits.h>
- #elif defined(_BSD_)
-  #include <sys/syslimits.h>
- #else
-  #include <limits.h>
-  #include <syslimits.h>
- #endif
+# ifndef _SunOS_
+#  define _LIMITS_H_
+#  ifdef _BSD_
+#   include <sys/syslimits.h>
+#  else
+#   include <limits.h>
+#   include <syslimits.h>
+#  endif
+# endif
 #endif
 
 #ifndef PATH_MAX
- #define PATH_MAX 1024
- #define NAME_MAX 255
- #define _ALT_MAX
+# define PATH_MAX 1024
+# define _ALT_MAX
+#endif
+
+#ifndef NAME_MAX
+# define NAME_MAX 255
+# ifndef _ALT_MAX
+#  define _ALT_MAX
+# endif
 #endif
 
 #if NAME_MAX%4
- #define NAMEMAX NAME_MAX+4-NAME_MAX%4
+#define NAMEMAX NAME_MAX+4-NAME_MAX%4
 #else
- #define NAMEMAX NAME_MAX
+#define NAMEMAX NAME_MAX
 #endif
 
 #include "../conf/zsconfig.h"

@@ -6,6 +6,9 @@
 /* uncomment the line below and comment this one if
    bzero isn't present on your system */
 #include <string.h>
+#ifdef _SunOS_
+# include <strings.h>
+#endif
 #define gluser_reset(x) bzero(x, sizeof(GLUSER))
 /* #define gluser_reset(x) _gluser_reset(x) */
 
