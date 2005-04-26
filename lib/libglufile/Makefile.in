@@ -3,7 +3,7 @@ libdir=$(prefix)/lib
 CC=@CC@
 LD=@LD@
 CFLAGS=@CFLAGS@
-LDFLAGS=@LDFLAGS@ -shared
+LDFLAGS=@LDFLAGS@
 INSTALL=@INSTALL@
 RM=@RM@ -f
 
