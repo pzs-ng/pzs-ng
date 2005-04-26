@@ -501,7 +501,7 @@ AINT *strtointarray(AINT *target, char *s)
 	}
 	
 	/* contract */
-	target->n = i+1;
+	target->n = i+3;
 	target->val = realloc(target->val, sizeof(int)*(target->n));
 	
 	return target;
