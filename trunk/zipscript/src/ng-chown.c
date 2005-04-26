@@ -105,6 +105,15 @@ main(int argc, char *argv[])
 			setgid(0);
 			my_result = myscan(my_result, new_user, new_group, user_flag, group_flag, files_flag, dir_flag, my_path, argv[0]);
 		}
+	} else {
+		printf("\n%s: Could not change ownership of '%s':\n", argv[0], argv[9]);
+		printf("\t- user  id set to: %5d (was: %5d / %s)\n", new_user, (int)strtol(argv[1], NULL, 10), argv[7]);
+		printf("\t- group id set to: %5d (was: %5d / %s)\n", new_group, (int)strtol(argv[2], NULL, 10), argv[8]);
+		printf("\t- allow_uid_change_in_ng_chown : %s - flag set to %d (was %d)\n", !allow_uid_change_in_ng_chown ? "FALSE" : "TRUE ", user_flag, (int)strtol(argv[3], NULL, 10));
+		printf("\t- allow_gid_change_in_ng_chown : %s - flag set to %d (was %d)\n", !allow_gid_change_in_ng_chown ? "FALSE" : "TRUE ", group_flag, (int)strtol(argv[4], NULL, 10));
+		printf("\t- allow_files_chown_in_ng_chown: %s - flag set to %d (was %d)\n", !allow_files_chown_in_ng_chown ? "FALSE" : "TRUE ", files_flag, (int)strtol(argv[5], NULL, 10));
+		printf("\t- allow_dir_chown_in_ng_chown  : %s - flag set to %d (was %d)\n", !allow_dir_chown_in_ng_chown ? "FALSE" : "TRUE ", dir_flag, (int)strtol(argv[6], NULL, 10));
+		
 	}
 	
 	return my_result;
@@ -151,17 +160,22 @@ matchpath2(char *instr, char *path)
 int 
 myscandir(char *my_path, char *my_name)
 {
-	if ((chdir(my_path) != -1) && ((matchpath2(group_dirs, my_path)) || (matchpath2(zip_dirs, my_path)) || (matchpath2(sfv_dirs, my_path)))) {
-		if (direntries > 0) {
-			while (direntries--) {
-				ng_free3(dirlist[direntries]);
+	if (chdir(my_path) != -1) {
+		if (matchpath2(group_dirs, my_path) || matchpath2(zip_dirs, my_path) || matchpath2(sfv_dirs, my_path)) {
+			if (direntries > 0) {
+				while (direntries--) {
+					ng_free3(dirlist[direntries]);
+				}
+				ng_free3(dirlist);
 			}
-			ng_free3(dirlist);
+			direntries = scandir(".", &dirlist, selector3, alphasort);
+			return 0;
+		} else {
+			printf("%s - Error: %s is not in allowed paths (group/zip/sfv-dirs).\n", my_name, my_path);
+			return 1;
 		}
-		direntries = scandir(".", &dirlist, selector3, alphasort);
-		return 0;
 	} else {
-		printf("%s - Error: Unable to chdir to %s\n", my_name, my_path);
+		printf("%s - Error: Unable to chdir to %s : %s\n", my_name, my_path, strerror(errno));
 		return 1;
 	}
 }
