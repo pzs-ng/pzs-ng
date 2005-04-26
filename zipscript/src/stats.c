@@ -352,14 +352,14 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 			continue;
 		for (m = 0; m < users; m++)
 			if (m != n) {
+				if (user[n].bytes[0] >= user[m].bytes[0])
+					userI[u1]->dayup--;
 				if (user[n].bytes[1] >= user[m].bytes[1])
 					userI[u1]->wkup--;
 				if (user[n].bytes[2] >= user[m].bytes[2])
 					userI[u1]->monthup--;
 				if (user[n].bytes[3] >= user[m].bytes[3])
 					userI[u1]->allup--;
-				if (user[n].bytes[0] >= user[m].bytes[0])
-					userI[u1]->dayup--;
 			}
 	}
 	ng_free(user);

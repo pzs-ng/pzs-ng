@@ -1,7 +1,7 @@
 prefix=@GLPATH@
 libdir=$(prefix)/lib
 CC=@CC@
-LD=@CC@
+LD=@LD@
 CFLAGS=@CFLAGS@
 LDFLAGS=@LDFLAGS@ -shared
 INSTALL=@INSTALL@

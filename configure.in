@@ -11,7 +11,10 @@ dnl Checks for programs.
 AC_PROG_CC
 
 if [[ "$CC" = "gcc" ]]; then
+	LD="$CC -shared"
 	CFLAGS="$CFLAGS -W -Wall -Wundef -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline"
+else
+	LD="$CC -G"
 fi
 
 AC_CHECK_PROG(GREP, grep, grep)
@@ -174,6 +177,7 @@ AC_SUBST(PASSCHK)
 AC_SUBST(PASSCHK2)
 AC_SUBST(MAKE)
 AC_SUBST(M32)
+AC_SUBST(LD)
 
 #if [[ "`ls zipscript/conf/zsconfig.h`" = "" ]]; then
 #	cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h  /dev/null 2>&1
