@@ -5,7 +5,7 @@ bindir=$(prefix)/bin
 
 CC=@CC@
 CFLAGS=@CFLAGS@ @STATIC@ @NOFORMAT@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE @DEFS@ -I../include/ -I../../ -I../../lib/
-LDFLAGS=@LDFLAGS@
+LDFLAGS=@LDFLAGS@ -L../../lib/libglufile
 RM=@RM@ -f
 INSTALL=@INSTALL@
 STRLCPY=../../lib/strl/strlcpy.o
@@ -34,13 +34,13 @@ scandir.o:
 	$(CC) $(CFLAGS) -o scandir.o -c scandir.c
 
 zipscript-c: $(ZS-OBJECTS) $(ZS-DEPEND) $(SUNOBJS)
-	$(CC) $(CFLAGS) -o $@ $(ZS-OBJECTS) $(SUNOBJS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(ZS-OBJECTS) $(SUNOBJS) -lglufile
 
 postdel: $(PD-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(PD-OBJECTS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(PD-OBJECTS) -lglufile
 
 racestats: $(RS-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(RS-OBJECTS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(RS-OBJECTS) -lglufile
 
 cleanup: $(CU-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(CU-OBJECTS) $(SUNOBJS)
@@ -55,7 +55,7 @@ ng-chown: $(CH-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(CH-OBJECTS) $(SUNOBJS)
 
 rescan: $(SC-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(SC-OBJECTS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(SC-OBJECTS) -lglufile
 
 install:
 	if [ ! -e "$(prefix)$(storage)" ]; then mkdir -p -m777 "$(prefix)$(storage)"; fi
