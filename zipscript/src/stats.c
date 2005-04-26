@@ -258,7 +258,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 {
 	int			u1, n = 0, m, users = 0;
 	char		t_buf[PATH_MAX]; /* target buf */
-	char		**strptr;
+	char		*lineptr, **strptr;
 	static char		*upstrs[] = { "DAYUP", "WKUP", "MONTHUP", "ALLUP", 0 };
 
 	struct userdata	*user = 0;
@@ -305,7 +305,12 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 			sect.n = 0; sect.s = 0;
 
 			for (strptr = upstrs; *strptr; strptr++) {
-			
+				
+				if (!(lineptr = get_statline(ufile, *strptr))) {
+					d_log("get_stats: Bad/corrupt user file %s\n", t_buf);
+					break;
+				}
+					
 				ufile_section(&sect, get_statline(ufile, *strptr));
 				
 				if (raceI->section <= sect.n)
