@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "gluserfile.h"
 
@@ -416,8 +417,8 @@ void ufile_section(ASECTION *sect, char *s)
 	temp.val = 0;
 	strtointarray(&temp, s);
 
-	sect->s = malloc(sizeof(SECTION)*(temp.n/3));
-	
+	sect->s = realloc(sect->s, sizeof(SECTION)*(temp.n/3));
+
 	for (i = u = 0; i < temp.n; u++) {
 		sect->s[u].files = temp.val[i];
 		sect->s[u].kilobytes = temp.val[i+1];
@@ -432,7 +433,7 @@ void ufile_section(ASECTION *sect, char *s)
 
 }
 
-/* ufile_group: Parses a GROUP line and stores it in a GLUSER structure.
+/* ufile_group: Parses a GROUP line and stores it in an AGROUP structure.
 */
 int ufile_group(AGROUP *groups, char *s)
 {
@@ -476,25 +477,26 @@ void ufile_private(AGROUP *priv, char *s)
 AINT *strtointarray(AINT *target, char *s)
 {
 
-	int i, count = 10;
-	char *space;
+	int i = 0, end = 0, reset = 1, count = 9;
 	
 	target->val = realloc(target->val, sizeof(int)*count);
 	
-	for (i = 0; ; i++) {
+	while (1) {
 
 		if (i == count) {
 			count *= 2;
 			target->val = realloc(target->val, sizeof(int)*count);
 		}
-		
-		target->val[i] = strtol(s, NULL, 10);
-		
-		if ((space = strchr(s, ' '))) {
-			*space = '\0';
-			s = space+1;
-		} else
+
+		target->val[i] = getint(s, &end, reset);
+
+		if (reset)
+			reset = 0;
+			
+		if (end)
 			break;
+
+		i++;
 
 	}
 	
@@ -503,6 +505,36 @@ AINT *strtointarray(AINT *target, char *s)
 	target->val = realloc(target->val, sizeof(int)*(target->n));
 	
 	return target;
+
+}
+
+/* getint: Find the next number in string s. If there are
+           no more numbers to find, end is set to 1.
+*/
+int getint(char *s, int *end, int reset)
+{
+
+	int i;
+	char *endptr = 0;
+	static char *pos = 0;
+
+	if (pos == 0 || reset == 1)
+		pos = s;
+
+	while (*pos == ' ')
+		pos++;
+
+	i = strtol(pos, &endptr, 10);
+
+	if (strcmp(pos, endptr) == 0) {
+		*end = 1;
+		return 0;
+	}
+
+	while (isdigit(*pos))
+		pos++;
+
+	return i;
 
 }
 

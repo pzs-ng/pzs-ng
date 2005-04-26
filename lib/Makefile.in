@@ -4,6 +4,9 @@ LIBS=@LIBS@
 
 all: strl_dir libglufile_dir
 
+install: all
+	cd libglufile ; $(MAKE) install
+
 distclean: clean
 	cd strl ; $(MAKE) distclean
 

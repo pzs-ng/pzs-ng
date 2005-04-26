@@ -8,6 +8,7 @@ all: zs bot swho
 	@(echo -e "\n\tProject-ZS-NG is now compiled!\n\tType 'make install' to install it into $(prefix).\n")
 
 install: all
+	cd lib ; $(MAKE) install
 	cd zipscript/src ; $(MAKE) install
 	cd sitewho ; $(MAKE) install
 	cd sitebot/src ; $(MAKE) install

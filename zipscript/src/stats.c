@@ -22,6 +22,8 @@
 
 #include "stats.h"
 
+#include <libglufile/gluserfile.h>
+
 void
 updatestats_free(GLOBAL *g)
 {
@@ -254,43 +256,41 @@ showstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 void 
 get_stats(struct VARS *raceI, struct USERINFO **userI)
 {
-	int		u1;
-	int		n = 0, m, users = 0;
-	int		fd;
-	unsigned char	space;
-	unsigned char	args;
-	char		*p_buf = 0, *eof = 0;
-	char		t_buf[PATH_MAX], *f_buf = 0; /* target buf, file buf */
-	char		*arg[45]; /* Enough to hold 10 sections (noone has more?) */
+	int			u1, n = 0, m, users = 0;
+	char		t_buf[PATH_MAX]; /* target buf */
+	char		**strptr;
+	static char		*upstrs[] = { "DAYUP", "WKUP", "MONTHUP", "ALLUP", 0 };
+
 	struct userdata	*user = 0;
 	struct stat	fileinfo;
 
 	DIR		*dir;
 	struct dirent	*dp;
+	FILE		*ufile;
+
+	ASECTION	sect;
 
 	if (!(dir = opendir(gl_userfiles))) {
 		d_log("get_stats: opendir(%s): %s\n", gl_userfiles, strerror(errno));
 		return; 
 	}
 	
-	/* User stats reader */
 	d_log("get_stats: reading stats..\n");
 
 	while ((dp = readdir(dir))) {
 		
 		sprintf(t_buf, "%s/%s", gl_userfiles, dp->d_name);
 
-		if ((fd = open(t_buf, O_RDONLY)) == -1) {
-			d_log("get_stats: open(%s): %s\n", t_buf, strerror(errno));
+		if (!(ufile = fopen(t_buf, "r"))) {
+			d_log("get_stats: fopen(%s): %s\n", t_buf, strerror(errno));
 			continue;
 		}
 		
-		fileinfo.st_mode = 0;
-		if (fstat(fd, &fileinfo) == -1) {
-			d_log("get_stats: fstat(%i): %s\n", fd, strerror(errno));
+		if (stat(t_buf, &fileinfo) == -1) {
+			d_log("get_stats: stat(%i): %s\n", t_buf, strerror(errno));
 			continue;
 		}
-		
+
 		if (S_ISDIR(fileinfo.st_mode) == 0) {
 
 			if (!update_lock(raceI, 1, 0)) {
@@ -301,58 +301,33 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 
 			user = ng_realloc(user, sizeof(struct userdata)*(n+1), 0, 1, raceI, 0);
 			bzero(&user[n], (sizeof(struct userdata)));
+			
+			sect.n = 0; sect.s = 0;
 
-			eof = f_buf = ng_realloc(f_buf, fileinfo.st_size, 1, 1, raceI, 0);
-			eof += fileinfo.st_size;
-
-			if (read(fd, f_buf, fileinfo.st_size) == -1) {
-				d_log("get_stats: failed to read stats: %s\n", strerror(errno));
-				remove_lock(raceI);
-				exit(EXIT_FAILURE);
+			for (strptr = upstrs; *strptr; strptr++) {
+			
+				ufile_section(&sect, get_statline(ufile, *strptr));
+				
+				if (raceI->section <= sect.n)
+					user[n].bytes[strptr-upstrs] = sect.s[raceI->section].kilobytes;
+					
 			}
-			close(fd);
-			args = 0;
-			space = 1;
 
-			for (p_buf = f_buf; p_buf < eof; p_buf++)
-				switch (*p_buf) {
-					case '\n':
-						*p_buf = 0;
-						if ((!memcmp(arg[0], "DAYUP", 5)) && (args >= raceI->section * 3 + 2))
-							user[n].dayup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
-						else if ((!memcmp(arg[0], "WKUP", 4)) && (args >= raceI->section * 3 + 2))
-							user[n].wkup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
-						else if ((!memcmp(arg[0], "MONTHUP", 7)) && (args >= raceI->section * 3 + 2))
-							user[n].monthup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
-						else if ((!memcmp(arg[0], "ALLUP", 5)) && (args >= raceI->section * 3 + 2))
-							user[n].allup_bytes = strtol(arg[raceI->section * 3 + 2], NULL, 10);
-						args = 0;
-						space = 1;
-						break;
-					case '\t':
-					case ' ':
-						*p_buf = 0;
-						space = 1;
-						break;
-					default:
-						if (space && args < 30) {
-							space = 0;
-							arg[args] = p_buf;
-							args++;
-						}
-						break;
-				}
-
+			if (sect.s)
+				free(sect.s);
+			
+			fclose(ufile);
+			
 			user[n].name = -1;
 
 			for (m = 0; m < raceI->total.users; m++) {
 				if (strcmp(dp->d_name, userI[m]->name) != 0)
 					continue;
 				if (!strcmp(raceI->user.name, userI[m]->name)) {
-					user[n].dayup_bytes += raceI->file.size >> 10;
-					user[n].wkup_bytes += raceI->file.size >> 10;
-					user[n].monthup_bytes += raceI->file.size >> 10;
-					user[n].allup_bytes += raceI->file.size >> 10;
+					user[n].bytes[0] += raceI->file.size >> 10;
+					user[n].bytes[1] += raceI->file.size >> 10;
+					user[n].bytes[2] += raceI->file.size >> 10;
+					user[n].bytes[3] += raceI->file.size >> 10;
 				}
 				user[n].name = m;
 				break;
@@ -371,28 +346,41 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 			userI[m]->allup = users;
 	}
 
-	/* Sort */
 	d_log("get_stats: sorting stats..\n");
 	for (n = 0; n < users; n++) {
 		if ((u1 = user[n].name) == -1)
 			continue;
 		for (m = 0; m < users; m++)
 			if (m != n) {
-				if (user[n].wkup_bytes >= user[m].wkup_bytes) {
+				if (user[n].bytes[1] >= user[m].bytes[1])
 					userI[u1]->wkup--;
-				}
-				if (user[n].monthup_bytes >= user[m].monthup_bytes) {
+				if (user[n].bytes[2] >= user[m].bytes[2])
 					userI[u1]->monthup--;
-				}
-				if (user[n].allup_bytes >= user[m].allup_bytes) {
+				if (user[n].bytes[3] >= user[m].bytes[3])
 					userI[u1]->allup--;
-				}
-				if (user[n].dayup_bytes >= user[m].dayup_bytes) {
+				if (user[n].bytes[0] >= user[m].bytes[0])
 					userI[u1]->dayup--;
-				}
 			}
 	}
-	ng_free(f_buf);
 	ng_free(user);
 	d_log("get_stats: done.\n");
 }
+
+char *
+get_statline(FILE *ufile, const char *linetype)
+{
+	static int len;
+	static char buf[512];
+
+	len = strlen(linetype);
+
+	rewind(ufile);
+	
+	bzero(buf, sizeof(buf));
+	while (fgets(buf, sizeof(buf), ufile))
+		if (strncmp(buf, linetype, len) == 0)
+			return buf+len;
+	
+	return NULL;
+}
+

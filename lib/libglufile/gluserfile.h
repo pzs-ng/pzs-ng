@@ -9,6 +9,7 @@
 #define gluser_reset(x) bzero(x, sizeof(GLUSER))
 /* #define gluser_reset(x) _gluser_reset(x) */
 
+int getint(char *, int *, int);
 char *strip_whitespaces(char *);
 AINT *strtointarray(AINT *, char *);
 

@@ -2,10 +2,12 @@
 #define _STATS_H_
 
 struct userdata {
-	int		allup_bytes;
-	int		monthup_bytes;
-	int		wkup_bytes;
-	int		dayup_bytes;
+	/* 0 - allup
+	   1 - monthup
+	   2 - wkup
+	   3 - dayup */
+	int			bytes[4];
+
 	short		name;
 };
 
@@ -14,5 +16,6 @@ void updatestats(struct VARS *, struct USERINFO **, struct GROUPINFO **, char *,
 void sortstats(struct VARS *, struct USERINFO **, struct GROUPINFO **);
 void showstats(struct VARS *, struct USERINFO **, struct GROUPINFO **);
 void get_stats(struct VARS *, struct USERINFO **);
+char *get_statline(FILE *, const char *);
 
 #endif
