@@ -720,8 +720,17 @@ handle_zip(GLOBAL *g, MSG *msg, DIR *dir) {
 			return exit_value;
 		}
 #if (test_for_password || extract_nfo)
-			if (!findfileextcount(dir, ".nfo") || findfileextcount(dir, ".zip") == 1)
-				check_zipfile(".unzipped");
+			if (!findfileextcount(dir, ".nfo") || findfileextcount(dir, ".zip") == 1) {
+				if (check_zipfile(".unzipped")) {
+					d_log("handle_zip: File is password protected.\n");
+					sprintf(g->v.misc.error_msg, DUPE_NFO);
+					msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+					if (exit_value < 2)
+						writelog(g, msg->error, bad_file_nfo_type);
+					exit_value = 2;
+					return exit_value;
+				}
+			}
 #endif
 	}
 	d_log("zipscript-c: Integrity ok\n");
@@ -1025,7 +1034,15 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 
 	d_log("zipscript-c: File type is: ANY\n");
 
-	check_rarfile(g->v.file.name);
+	if (check_rarfile(g->v.file.name)) {
+		d_log("handle_sfv32: File is password protected.\n");
+		sprintf(g->v.misc.error_msg, DUPE_NFO);
+		msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+		if (exit_value < 2)
+			writelog(g, msg->error, bad_file_nfo_type);
+		exit_value = 2;
+		return exit_value;
+	}
 
 	d_log("zipscript-c: Converting crc (%s) from string to integer\n", argv[3]);
 	crc = hexstrtodec(argv[3]);
