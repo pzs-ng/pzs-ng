@@ -1318,3 +1318,66 @@ int backup_sfv(const char *from, const char *path, int reverse)
 	return status;
 }
 
+
+int
+check_rarfile(const char *filename)
+{
+	int		fd;
+	short		HEAD_CRC;
+	char		HEAD_TYPE;
+	short		HEAD_FLAGS;
+	short		HEAD_SIZE;
+	long		ADD_SIZE;
+	long		block_size;
+	
+	if ((fd = open(filename, O_RDONLY)) == -1) {
+		d_log("check_rarfile: Failed to open file (%s): %s\n", filename, strerror(errno));
+		return 0;
+	}
+	read(fd, &HEAD_CRC, 2);
+	read(fd, &HEAD_TYPE, 1);
+	read(fd, &HEAD_FLAGS, 2);
+	read(fd, &HEAD_SIZE, 2);
+	if (!(HEAD_CRC == 0x6152 && HEAD_TYPE == 0x72 && HEAD_FLAGS == 0x1a21 && HEAD_SIZE == 0x0007)) {
+		close(fd);
+		return 0;
+	}
+	if (HEAD_FLAGS & 0x8000) {
+		read(fd, &ADD_SIZE, 4);
+		block_size = HEAD_SIZE + ADD_SIZE;
+		lseek(fd, block_size - 11 + 2, SEEK_CUR);
+	} else {
+		block_size = HEAD_SIZE;
+		lseek(fd, block_size - 7 + 2, SEEK_CUR);
+	}
+	read(fd, &HEAD_TYPE, 1);
+	read(fd, &HEAD_FLAGS, 2);
+	read(fd, &HEAD_SIZE, 2);
+	if (HEAD_TYPE != 0x73) {
+		close(fd);
+		return 0;
+	}
+	if (HEAD_FLAGS & 0x02) {
+		read(fd, &ADD_SIZE, 4);
+		block_size = HEAD_SIZE + ADD_SIZE;
+		lseek(fd, block_size - 11 + 2, SEEK_CUR);
+	} else {
+		block_size = HEAD_SIZE;
+		lseek(fd, block_size - 7 + 2, SEEK_CUR);
+	}
+	read(fd, &HEAD_TYPE, 1);
+	read(fd, &HEAD_FLAGS, 2);
+	if (HEAD_TYPE != 0x74) {
+		close(fd);
+		return 0;
+	}
+	if (HEAD_FLAGS & 0x04) {
+		d_log("check_rarfile: %s have pw protection\n", filename);
+		close(fd);
+		return 1;
+	}
+	d_log("check_rarfile: %s do not have pw protection\n", filename);
+	close(fd);
+	return 0;
+}
+

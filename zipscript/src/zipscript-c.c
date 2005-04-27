@@ -1014,6 +1014,8 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 
 	d_log("zipscript-c: File type is: ANY\n");
 
+	check_rarfile(g->v.file.name);
+
 	d_log("zipscript-c: Converting crc (%s) from string to integer\n", argv[3]);
 	crc = hexstrtodec(argv[3]);
 	if (crc == 0) {
