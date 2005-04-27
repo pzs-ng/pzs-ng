@@ -18,6 +18,12 @@ v1.xx	:
 	  zipscript: new: config setting - audio_allowed_vbr_preset_check
 	  zipscript: new: config setting - allowed_vbr_presets
 	  zipscript: new: config setting - audio_vbr_preset_warn
+	  zipscript: new: mark password protected rars as bad, even those embedded in zipfiles.
+	  zipscript: new: config setting - test_for_password
+	  zipscript: new: internal nfo extraction - will only extract one nfo (the real one) on the first zipfile uploaded.
+	  zipscript: new: config setting - extract_nfo
+	  zipscript: new: deny nfo upload in zip directories
+	  zipscript: new: config setting - deny_nfo_upload_in_zip
 
 v1.00	: Initial release
 

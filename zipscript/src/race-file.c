@@ -1409,18 +1409,27 @@ check_zipfile(const char *dirname)
 			ext++;
 		if (strcomp("nfo", ext)) {
 			stat(path_buf, &filestat);
-			if ((t != 0 && filestat.st_ctime < t) || t == 0) {
-				strlcpy(nfo_buf, dp->d_name, PATH_MAX);
+			if ((t && filestat.st_ctime < t) || !t) {
+				strlcpy(nfo_buf, dp->d_name, NAME_MAX);
 				t = filestat.st_ctime;
+				d_log("check_zipfile: nfo found - %s\n", nfo_buf);
 			}
 		}
+#endif
+		if (!strncasecmp("file_id.diz", dp->d_name, 11)) {
+			sprintf(path_buf, "%s/%s", dirname, dp->d_name);
+			rename(path_buf, "file_id.diz");
+			chmod("file_id.diz", 0644);
+			d_log("check_zipfile: diz found - %s\n", path_buf);
+		}
 	}
+#if (extract_nfo)
 	if (t) {
 		sprintf(path_buf, "%s/%s", dirname, nfo_buf);
+		strtolower(nfo_buf);
 		rename(path_buf, nfo_buf);
 		chmod(nfo_buf, 0644);
-	}
-#else
+		d_log("check_zipfile: nfo extracted - %s\n", nfo_buf);
 	}
 #endif
 	rewinddir(dir);

@@ -329,6 +329,11 @@ extract_nfo <TRUE|FALSE>
 	Should the zipscript extract the "real" nfo from a zip?
 	Default: TRUE
 
+deny_nfo_upload_in_zip <TRUE|FALSE>
+	Should we deny nfo uploads in zip dirs? Should really only be used in
+	conjuntion with extract_nfo.
+	Default: FALSE
+
 debug_mode <TRUE|FALSE>
 	If something seems weird/doesn't work, you should debug. Setting this
 	variable to TRUE will turn on debugging. A file named .debug will be

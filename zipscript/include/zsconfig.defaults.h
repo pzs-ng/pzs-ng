@@ -141,6 +141,9 @@
 #ifndef extract_nfo
 #define extract_nfo			TRUE
 #endif
+#ifndef deny_nfo_upload_in_zip
+#define deny_nfo_upload_in_zip		FALSE
+#endif
 
 /*
  * Certain files are needed to change uid/gid to real names. All paths are

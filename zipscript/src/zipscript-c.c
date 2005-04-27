@@ -994,7 +994,7 @@ handle_nfo(GLOBAL *g, MSG *msg, DIR *dir) {
 	unsigned char	exit_value = EXIT_SUCCESS;
 
 #if ( enable_nfo_script)
-	char           target[1024];
+	char           target[PATH_MAX];
 #endif
 
 	no_check = TRUE;
@@ -1010,8 +1010,18 @@ handle_nfo(GLOBAL *g, MSG *msg, DIR *dir) {
 		return exit_value;
 	}
 #endif
-	//writerace(g->l.race, &g->v, 0, F_NFO);
+#if ( deny_nfo_upload_in_zip )
+	if (matchpath(zip_dirs, g->l.path)) {
+		d_log("handle_nfo: nfo-files not allowed in zip_dirs.\n");
+		sprintf(g->v.misc.error_msg, DUPE_NFO);
+		msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+		if (exit_value < 2)
+			writelog(g, msg->error, bad_file_nfo_type);
+		exit_value = 2;
+		return exit_value;
+	}
 
+#endif
 #if ( enable_nfo_script )
 	if (!fileexists(nfo_script)) {
 		d_log("zipscript-c: Warning - nfo_script (%s) - file does not exists\n", nfo_script);
