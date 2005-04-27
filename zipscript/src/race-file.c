@@ -1418,6 +1418,7 @@ check_zipfile(const char *dirname)
 	if (t) {
 		sprintf(path_buf, "%s/%s", dirname, nfo_buf);
 		rename(path_buf, nfo_buf);
+		chmod(nfo_buf, 0644);
 	}
 #else
 	}
