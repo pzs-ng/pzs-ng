@@ -135,6 +135,13 @@
 #define sleep_on_bad			0
 #endif
 
+#ifndef test_for_password
+#define test_for_password		TRUE
+#endif
+#ifndef extract_nfo
+#define extract_nfo			TRUE
+#endif
+
 /*
  * Certain files are needed to change uid/gid to real names. All paths are
  * chroot'ed.

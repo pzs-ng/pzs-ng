@@ -320,6 +320,15 @@ sleep_on_bad <NUMBER>
 	sleep. Setting this to 0 ( or >1000) will disable this feature.
 	Default: 0
 
+test_for_password <TRUE|FALSE>
+	Some rarfiles have password protection. If you wish to check for such
+	files, set this to TRUE
+	Default: TRUE
+
+extract_nfo <TRUE|FALSE>
+	Should the zipscript extract the "real" nfo from a zip?
+	Default: TRUE
+
 debug_mode <TRUE|FALSE>
 	If something seems weird/doesn't work, you should debug. Setting this
 	variable to TRUE will turn on debugging. A file named .debug will be

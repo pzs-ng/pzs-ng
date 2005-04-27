@@ -1340,7 +1340,7 @@ check_rarfile(const char *filename)
 	read(fd, &HEAD_SIZE, 2);
 	if (!(HEAD_CRC == 0x6152 && HEAD_TYPE == 0x72 && HEAD_FLAGS == 0x1a21 && HEAD_SIZE == 0x0007)) {
 		close(fd);
-		return 0;
+		return 0;	/* Not a rar file */
 	}
 	if (HEAD_FLAGS & 0x8000) {
 		read(fd, &ADD_SIZE, 4);
@@ -1355,7 +1355,7 @@ check_rarfile(const char *filename)
 	read(fd, &HEAD_SIZE, 2);
 	if (HEAD_TYPE != 0x73) {
 		close(fd);
-		return 0;
+		return 0;	/* wrong header - broken(?) */
 	}
 	if (HEAD_FLAGS & 0x02) {
 		read(fd, &ADD_SIZE, 4);
@@ -1369,7 +1369,7 @@ check_rarfile(const char *filename)
 	read(fd, &HEAD_FLAGS, 2);
 	if (HEAD_TYPE != 0x74) {
 		close(fd);
-		return 0;
+		return 0;	/* wrong header - broken(?) */
 	}
 	if (HEAD_FLAGS & 0x04) {
 		d_log("check_rarfile: %s have pw protection\n", filename);
@@ -1379,5 +1379,56 @@ check_rarfile(const char *filename)
 	d_log("check_rarfile: %s do not have pw protection\n", filename);
 	close(fd);
 	return 0;
+}
+
+int
+check_zipfile(const char *dirname)
+{
+	int		ret = 0;
+#if (extract_nfo)
+	char		nfo_buf[NAME_MAX];
+	char		path_buf[PATH_MAX];
+	time_t		t = 0;
+	struct stat	filestat;
+	char	       *ext;
+#endif
+	DIR	       *dir;
+	struct dirent  *dp;
+
+	if (!(dir = opendir(dirname)))
+		return 0;
+	while ((dp = readdir(dir))) {
+		sprintf(path_buf, "%s/%s", dirname, dp->d_name);
+#if (test_for_password)
+		if (!ret)
+			ret = check_rarfile(path_buf);
+#endif
+#if (extract_nfo)
+		ext = find_last_of(dp->d_name, ".");
+		if (*ext == '.')
+			ext++;
+		if (strcomp("nfo", ext)) {
+			stat(path_buf, &filestat);
+			if ((t != 0 && filestat.st_ctime < t) || t == 0) {
+				strlcpy(nfo_buf, dp->d_name, PATH_MAX);
+				t = filestat.st_ctime;
+			}
+		}
+	}
+	if (t) {
+		sprintf(path_buf, "%s/%s", dirname, nfo_buf);
+		rename(path_buf, nfo_buf);
+	}
+#else
+	}
+#endif
+	rewinddir(dir);
+        while ((dp = readdir(dir))) {
+		sprintf(path_buf, "%s/%s", dirname, dp->d_name);
+                unlink(path_buf);
+	}
+	closedir(dir);
+        rmdir(dirname);
+	return ret;
 }
 

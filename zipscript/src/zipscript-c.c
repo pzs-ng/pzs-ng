@@ -701,7 +701,14 @@ handle_zip(GLOBAL *g, MSG *msg, DIR *dir) {
 		exit_value = 2;
 		return exit_value;
 	} else {
+#if (test_for_password || extract_nfo)
+		if ((!findfileextcount(dir, ".nfo") || findfileextcount(dir, ".zip") == 1) && !mkdir(".unzipped", 0777)) {
+			sprintf(target, "%s -qqjo \"%s\" -d .unzipped", unzip_bin, g->v.file.name);
+		} else
+			sprintf(target, "%s -qqt \"%s\"", unzip_bin, g->v.file.name);
+#else
 		sprintf(target, "%s -qqt \"%s\"", unzip_bin, g->v.file.name);
+#endif
 		if (execute(target) != 0) {
 			d_log("zipscript-c: Integrity check failed (#%d): %s\n", errno, strerror(errno));
 			sprintf(g->v.misc.error_msg, BAD_ZIP);
@@ -712,6 +719,10 @@ handle_zip(GLOBAL *g, MSG *msg, DIR *dir) {
 			exit_value = 2;
 			return exit_value;
 		}
+#if (test_for_password || extract_nfo)
+			if (!findfileextcount(dir, ".nfo") || findfileextcount(dir, ".zip") == 1)
+				check_zipfile(".unzipped");
+#endif
 	}
 	d_log("zipscript-c: Integrity ok\n");
 	printf(zipscript_zip_ok);
