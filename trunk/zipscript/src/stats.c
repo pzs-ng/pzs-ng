@@ -290,7 +290,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 			continue;
 		}
 		
-		if (S_ISDIR(fileinfo.st_mode) == 0) {
+		if (!S_ISDIR(fileinfo.st_mode) && fileinfo.st_size) {
 
 			if (!update_lock(raceI, 1, 0)) {
 				d_log("get_stats: Lock is suggested removed. Will comply and exit\n");
