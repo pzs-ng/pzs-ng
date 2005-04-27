@@ -383,7 +383,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 		}
 		count++;
 	}
-	strlcpy(raceI->file.name, realfile, (int)strlen(realfile)+1);
+	strlcpy(raceI->file.name, realfile, strlen(realfile)+1);
 	raceI->total.files = raceI->total.files_missing = 0;
 	close(fd);
 }
@@ -463,7 +463,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI, const char *
 		if (ptr != fbuf)
 			d_log("copysfv: prestripped whitespaces (%d chars)\n", ptr - fbuf);
 
-		if ((int)strlen(ptr) == 0)
+		if (strlen(ptr) == 0)
 			continue;
 	
 #if (sfv_cleanup_lowercase)
@@ -516,7 +516,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI, const char *
 		if (ptr != fbuf)
 			d_log("copysfv: prestripped whitespaces (%d chars)\n", ptr - fbuf);
 
-		if ((int)strlen(ptr) > 0 && (int)strlen(ptr) < NAME_MAX-9 ) {
+		if (strlen(ptr) > 0 && strlen(ptr) < NAME_MAX-9 ) {
 			strlcpy(sd.fname, ptr, NAME_MAX-9);
 
 			if (sd.fname != find_last_of(sd.fname, "\t/") || *sd.fname == '/') {
@@ -526,8 +526,6 @@ copysfv(const char *source, const char *target, struct VARS *raceI, const char *
 			}
 
 #if (sfv_calc_single_fname == TRUE)
-			/* TODO */
-			/* calculate file's crc if it exists */
 			if (sd.crc32 == 0) {
 				d_log("copysfv: Got filename (%s) without crc, trying to calculate.\n", sd.fname);
 				sd.crc32 = calc_crc32(sd.fname);
@@ -546,7 +544,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI, const char *
 				skip = 0;
 				lseek(outfd, 0L, SEEK_SET);
 				while (read(outfd, &tempsd, sizeof(SFVDATA)))
-					if (strcmp(sd.fname, tempsd.fname) == 0)
+					if ((!strcmp(sd.fname, tempsd.fname) && strlen(sd.fname) == strlen(tempsd.fname)) || ( sd.crc32 == tempsd.crc32 && sd.crc32))
 						skip = 1;
 				lseek(outfd, 0L, SEEK_END);
 
@@ -561,7 +559,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI, const char *
 				/* write good stuff to .tmpsfv */
 				if (tmpfd != -1) {
 					sprintf(crctmp, "%.8x", sd.crc32);
-					if (write(tmpfd, sd.fname, (int)strlen(sd.fname)) != (int)strlen(sd.fname))
+					if (write(tmpfd, sd.fname, strlen(sd.fname)) != (int)strlen(sd.fname))
 						d_log("copysfv: write failed: %s\n", strerror(errno));
 					if (write(tmpfd, " ", 1) != 1)
 						d_log("copysfv: write failed: %s\n", strerror(errno));
