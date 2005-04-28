@@ -91,6 +91,8 @@ announce.BAD_FILE_YEAR				= "[%b{%c1{RULES} }] %b{%u_name}@%g_name uploaded a ba
 announce.BAD_FILE_BITRATE			= "[%b{%c1{RULES} }] %b{%u_name}@%g_name uploaded a bad file (banned bitrate) in %b{%releasename}."
 announce.BAD_FILE_DISALLOWED			= "[%b{%c1{RULES} }] %b{%u_name}@%g_name uploaded a bad file (filetype not allowed) in %b{%releasename}."
 announce.BAD_FILE_DUPENFO			= "[%b{%c1{RULES} }] %b{%u_name}@%g_name uploaded a bad file (dupe nfo) in %b{%releasename}."
+announce.BAD_FILE_NFODENIED			= "[%b{%c1{RULES} }] %b{%u_name}@%g_name uploaded a bad file (nfo-file in a zipdir) in %b{%releasename}."
+announce.BAD_FILE_PASSWORD			= "[%b{%c1{RULES} }] %b{%u_name}@%g_name uploaded a bad file (password protected file) in %b{%releasename}."
 
 ## Loop variables, these format the racers and stats
 announce.RACE_ZIP_LOOP1				= "%b{%a_name}@%a_gname%splitter"

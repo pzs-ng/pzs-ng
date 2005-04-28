@@ -96,6 +96,7 @@
 #define bad_file_disallowed_type			"BAD_FILE_DISALLOWED"
 #define bad_file_nfo_type				"BAD_FILE_DUPENFO"
 #define bad_file_password_type				"BAD_FILE_PASSWORD"
+#define bad_file_nfodenied_type				"BAD_FILE_NFODENIED"
 #define speed_type					"SPEEDTEST"
 
 #define deny_double_msg			"{%U} {%G} {%r} {%n}"
