@@ -32,7 +32,7 @@
 #
 #################################################################################
 
-namespace eval ::ngBot::NickDb {
+namespace eval ::dZSBot::NickDb {
 
     ## Config Settings ###############################
     ##
@@ -72,7 +72,7 @@ interp alias {} IsFalse {} string is false -strict
 # Called on initialization. This procedure opens the user database and
 # registers the INVITEUSER script and Eggdrop event callbacks.
 #
-proc ::ngBot::NickDb::Init {args} {
+proc ::dZSBot::NickDb::Init {args} {
     global postcommand
     variable filePath
     variable libSQLite
@@ -80,11 +80,11 @@ proc ::ngBot::NickDb::Init {args} {
 
     ## Load the Tcl SQLite library.
     if {[catch {load $libSQLite Tclsqlite3} errorMsg]} {
-        putlog "\[ngBot\] NickDb :: $errorMsg"
+        putlog "\[dZSBot\] NickDb :: $errorMsg"
         return
     }
     if {[catch {sqlite3 [namespace current]::db $filePath} errorMsg]} {
-        putlog "\[ngBot\] NickDb :: Unable to open database \"$filePath\" - $errorMsg"
+        putlog "\[dZSBot\] NickDb :: Unable to open database \"$filePath\" - $errorMsg"
         return
     }
 
@@ -93,7 +93,7 @@ proc ::ngBot::NickDb::Init {args} {
         db eval {CREATE TABLE UserNames (time INT, online INT, ircUser TEXT, ftpUser TEXT UNIQUE)}
         db eval {PRAGMA user_version = 2}
     } elseif {[set version [db eval {PRAGMA user_version}]] != 2} {
-        putlog "\[ngBot\] NickDb :: Unsupported database version ($version), please remove \"$filePath\"."
+        putlog "\[dZSBot\] NickDb :: Unsupported database version ($version), please remove \"$filePath\"."
         db close
         return
     }
@@ -107,7 +107,7 @@ proc ::ngBot::NickDb::Init {args} {
     bind sign -|- "*" [list [namespace current]::ChanEvent quit]
     lappend postcommand(INVITEUSER) $scriptName
 
-    putlog "\[ngBot\] NickDb :: Loaded successfully."
+    putlog "\[dZSBot\] NickDb :: Loaded successfully."
     return
 }
 
@@ -117,7 +117,7 @@ proc ::ngBot::NickDb::Init {args} {
 # Called on rehash. This procedure closes the user database and unregisters
 # the INVITEUSER script and Eggdrop event callbacks.
 #
-proc ::ngBot::NickDb::DeInit {args} {
+proc ::dZSBot::NickDb::DeInit {args} {
     global postcommand
     variable scriptName
 
@@ -145,7 +145,7 @@ proc ::ngBot::NickDb::DeInit {args} {
 #
 # Updates the IRC nickname and online status of users.
 #
-proc ::ngBot::NickDb::ChanEvent {event args} {
+proc ::dZSBot::NickDb::ChanEvent {event args} {
     variable monitorChans
 
     switch -exact -- $event {
@@ -159,11 +159,11 @@ proc ::ngBot::NickDb::ChanEvent {event args} {
         }
         "kick" {
             foreach {kicker host handle channel nick reason} $args {break}
-            set online [OnMonitorChannels $nick $channel]
+            set online [OnMonitorChans $nick $channel]
         }
         "quit" - "part" {
             foreach {nick host handle channel message} $args {break}
-            set online [OnMonitorChannels $nick $channel]
+            set online [OnMonitorChans $nick $channel]
         }
         default {return}
     }
@@ -191,7 +191,7 @@ proc ::ngBot::NickDb::ChanEvent {event args} {
 #
 # Called by the sitebot's event handler on the "INVITEUSER" event.
 #
-proc ::ngBot::NickDb::InviteEvent {event ircUser ftpUser ftpGroup ftpFlags} {
+proc ::dZSBot::NickDb::InviteEvent {event ircUser ftpUser ftpGroup ftpFlags} {
     variable hostChange
     variable hostExempt
     variable hostFormat
@@ -209,18 +209,18 @@ proc ::ngBot::NickDb::InviteEvent {event ircUser ftpUser ftpGroup ftpFlags} {
 
     ## Update the user name database.
     set time [clock seconds]
-    set online [OnMonitorChannels $ircUser]
+    set online [OnMonitorChans $ircUser]
     db eval {INSERT OR REPLACE INTO UserNames (time,online,ircUser,ftpUser) values($time,$online,$ircUser,$ftpUser)}
 
     return 1
 }
 
 ####
-# NickDb::OnMonitorChannels
+# NickDb::OnMonitorChans
 #
-# Checks if the specified user is currently in any of the monitor channels.
+# Checks if the specified user is currently in any of the monitored channels.
 #
-proc ::ngBot::NickDb::OnMonitorChannels {ircUser {ignoreChannel ""}} {
+proc ::dZSBot::NickDb::OnMonitorChans {ircUser {ignoreChannel ""}} {
     variable monitorChans
     foreach channel $monitorChans {
         if {[string equal -nocase $ignoreChannel $channel]} {continue}
@@ -234,7 +234,7 @@ proc ::ngBot::NickDb::OnMonitorChannels {ircUser {ignoreChannel ""}} {
 #
 # Strips illegal characters from IRC user names.
 #
-proc ::ngBot::NickDb::StripName {name} {
+proc ::dZSBot::NickDb::StripName {name} {
     return [regsub -all {[^\w\[\]\{\}\-\`\^\\]+} $name {}]
 }
 
@@ -252,7 +252,7 @@ proc ::ngBot::NickDb::StripName {name} {
 #     puts "The IRC user nick for \"$ftpUser\" is \"$ircUser\"."
 # }
 #
-proc ::ngBot::NickDb::GetIrcUser {ftpUser} {
+proc ::dZSBot::NickDb::GetIrcUser {ftpUser} {
     return [db eval {SELECT ircUser FROM UserNames WHERE ftpUser=$ftpUser}]
 }
 
@@ -271,7 +271,7 @@ proc ::ngBot::NickDb::GetIrcUser {ftpUser} {
 #     puts "The FTP user name for \"$ircUser\" is \"$ftpUser\"."
 # }
 #
-proc ::ngBot::NickDb::GetFtpUser {ircUser} {
+proc ::dZSBot::NickDb::GetFtpUser {ircUser} {
     ## IRC user names are case-insensitive.
     return [db eval {SELECT ftpUser FROM UserNames WHERE StrCaseEq(ircUser,$ircUser) ORDER BY time DESC LIMIT 1}]
 }
@@ -291,7 +291,7 @@ proc ::ngBot::NickDb::GetFtpUser {ircUser} {
 #     puts "The FTP user $ftpUser was never seen online."
 # }
 #
-proc ::ngBot::NickDb::QueryFtpUser {ftpUser varName} {
+proc ::dZSBot::NickDb::QueryFtpUser {ftpUser varName} {
     upvar $varName values
     db eval {SELECT * FROM UserNames WHERE ftpUser=$ftpUser} values {
         return 1
@@ -314,7 +314,7 @@ proc ::ngBot::NickDb::QueryFtpUser {ftpUser varName} {
 #     puts "The IRC user $ircUser was never seen online."
 # }
 #
-proc ::ngBot::NickDb::QueryIrcUser {ircUser varName} {
+proc ::dZSBot::NickDb::QueryIrcUser {ircUser varName} {
     upvar $varName values
     ## IRC user names are case-insensitive.
     db eval {SELECT * FROM UserNames WHERE StrCaseEq(ircUser,$ircUser)} values {
@@ -323,4 +323,4 @@ proc ::ngBot::NickDb::QueryIrcUser {ircUser varName} {
     return 0
 }
 
-::ngBot::NickDb::Init
+::dZSBot::NickDb::Init

@@ -29,7 +29,7 @@
 #
 #################################################################################
 
-namespace eval ::ngBot::PreTime {
+namespace eval ::dZSBot::PreTime {
     variable mysql
 
     ## Config Settings ###############################
@@ -64,7 +64,7 @@ namespace eval ::ngBot::PreTime {
 #
 # Called on initialization; registers the event handler.
 #
-proc ::ngBot::PreTime::Init {args} {
+proc ::dZSBot::PreTime::Init {args} {
     global precommand
     variable libMySQLTcl
     variable mysql
@@ -72,20 +72,20 @@ proc ::ngBot::PreTime::Init {args} {
 
     ## Load the MySQLTcl library.
     if {[catch {load $libMySQLTcl Mysqltcl} errorMsg]} {
-        putlog "\[ngBot\] PreTime :: $errorMsg"
+        putlog "\[dZSBot\] PreTime :: $errorMsg"
         return
     }
 
     ## Connect to the MySQL server.
     if {[catch {set mysql(handle) [mysqlconnect -host $mysql(host) -user $mysql(user) -password $mysql(pass) -port $mysql(port) -db $mysql(db)]} errorMsg]} {
-        putlog "\[ngBot\] PreTime :: Unable to connect to MySQL server: $errorMsg"
+        putlog "\[dZSBot\] PreTime :: Unable to connect to MySQL server: $errorMsg"
         return
     }
 
     ## Register the event handler.
     lappend precommand(NEWDIR) $scriptName
 
-    putlog "\[ngBot\] PreTime :: Loaded successfully."
+    putlog "\[dZSBot\] PreTime :: Loaded successfully."
     return
 }
 
@@ -94,7 +94,7 @@ proc ::ngBot::PreTime::Init {args} {
 #
 # Called on rehash; unregisters the event handler.
 #
-proc ::ngBot::PreTime::DeInit {args} {
+proc ::dZSBot::PreTime::DeInit {args} {
     global precommand
     variable mysql
     variable scriptName
@@ -119,7 +119,7 @@ proc ::ngBot::PreTime::DeInit {args} {
 # Look up the pre time of the release. Returns 1 if
 # found and 0 if not.
 #
-proc ::ngBot::PreTime::LookUp {release timeVar} {
+proc ::dZSBot::PreTime::LookUp {release timeVar} {
 
     ## Note ##########################################
     ##
@@ -146,7 +146,7 @@ proc ::ngBot::PreTime::LookUp {release timeVar} {
 #
 # Called by the sitebot's event handler on the "NEWDIR" announce.
 #
-proc ::ngBot::PreTime::LogEvent {event section logData} {
+proc ::dZSBot::PreTime::LogEvent {event section logData} {
     variable lateMins
     variable ignoreDirs
     if {![string equal "NEWDIR" $event]} {return 1}
@@ -183,4 +183,4 @@ proc ::ngBot::PreTime::LogEvent {event section logData} {
     return 1
 }
 
-::ngBot::PreTime::Init
+::dZSBot::PreTime::Init

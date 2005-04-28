@@ -19,7 +19,7 @@
 #
 #################################################################################
 
-namespace eval ::ngBot::DeluserBan {
+namespace eval ::dZSBot::DeluserBan {
 
     ## Config Settings ###############################
     ##
@@ -36,7 +36,7 @@ namespace eval ::ngBot::DeluserBan {
     ##
     ##################################################
 
-    namespace import ::ngBot::NickDb::*
+    namespace import -force ::dZSBot::NickDb::*
     variable scriptName [namespace current]::LogEvent
     bind evnt -|- prerehash [namespace current]::DeInit
 }
@@ -49,7 +49,7 @@ interp alias {} IsFalse {} string is false -strict
 #
 # Called on initialization; registers the event handler.
 #
-proc ::ngBot::DeluserBan::Init {args} {
+proc ::dZSBot::DeluserBan::Init {args} {
     global precommand
     variable scriptName
 
@@ -57,7 +57,7 @@ proc ::ngBot::DeluserBan::Init {args} {
     lappend precommand(DELUSER) $scriptName
     lappend precommand(PURGED) $scriptName
 
-    putlog "\[ngBot\] DeluserBan :: Loaded successfully."
+    putlog "\[dZSBot\] DeluserBan :: Loaded successfully."
     return
 }
 
@@ -66,7 +66,7 @@ proc ::ngBot::DeluserBan::Init {args} {
 #
 # Called on rehash; unregisters the event handler.
 #
-proc ::ngBot::DeluserBan::DeInit {args} {
+proc ::dZSBot::DeluserBan::DeInit {args} {
     global precommand
     variable scriptName
 
@@ -89,7 +89,7 @@ proc ::ngBot::DeluserBan::DeInit {args} {
 # Called by the sitebot's event handler on the
 # "DELUSER" and "PURGED" announces.
 #
-proc ::ngBot::DeluserBan::LogEvent {event section logData} {
+proc ::dZSBot::DeluserBan::LogEvent {event section logData} {
     global botnick
     variable banUser
     variable killUser
@@ -104,7 +104,7 @@ proc ::ngBot::DeluserBan::LogEvent {event section logData} {
     ## Retrieve the IRC user name.
     set ircUser [GetIrcUser $ftpUser]
     if {[string equal "" $ircUser]} {
-        putlog "\[ngBot\] DeluserBan :: Unable to retrieve the IRC user for \"$ftpUser\", you will have to kick them manually."
+        putlog "\[dZSBot\] DeluserBan :: Unable to retrieve the IRC user for \"$ftpUser\", you will have to kick them manually."
         return 1
     }
 
@@ -112,7 +112,7 @@ proc ::ngBot::DeluserBan::LogEvent {event section logData} {
 
     ## Kill the user, die you bastard!
     if {[IsTrue $killUser]} {
-        putlog "\[ngBot\] DeluserBan :: Killing IRC user \"$ircUser\"."
+        putlog "\[dZSBot\] DeluserBan :: Killing IRC user \"$ircUser\"."
         putquick "KILL $ircUser :$reason"
     }
 
@@ -123,7 +123,7 @@ proc ::ngBot::DeluserBan::LogEvent {event section logData} {
     }
 
     ## Kick/ban the user from all channels.
-    putlog "\[ngBot\] DeluserBan :: Kicking/banning IRC user \"$ircUser\" from all channels."
+    putlog "\[dZSBot\] DeluserBan :: Kicking/banning IRC user \"$ircUser\" from all channels."
     foreach channel [channels] {
         if {[botisop $channel] && [onchan $ircUser $channel]} {
             putkick $channel $ircUser $reason
@@ -136,4 +136,4 @@ proc ::ngBot::DeluserBan::LogEvent {event section logData} {
     return 1
 }
 
-::ngBot::DeluserBan::Init
+::dZSBot::DeluserBan::Init
