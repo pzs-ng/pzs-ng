@@ -723,10 +723,10 @@ handle_zip(GLOBAL *g, MSG *msg, DIR *dir) {
 			if (!findfileextcount(dir, ".nfo") || findfileextcount(dir, ".zip") == 1) {
 				if (check_zipfile(".unzipped")) {
 					d_log("handle_zip: File is password protected.\n");
-					sprintf(g->v.misc.error_msg, DUPE_NFO);
+					sprintf(g->v.misc.error_msg, PASSWORD_PROTECTED);
 					msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 					if (exit_value < 2)
-						writelog(g, msg->error, bad_file_nfo_type);
+						writelog(g, msg->error, bad_file_password_type);
 					exit_value = 2;
 					return exit_value;
 				}
@@ -1046,10 +1046,10 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 
 	if (check_rarfile(g->v.file.name)) {
 		d_log("handle_sfv32: File is password protected.\n");
-		sprintf(g->v.misc.error_msg, DUPE_NFO);
+		sprintf(g->v.misc.error_msg, PASSWORD_PROTECTED);
 		msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 		if (exit_value < 2)
-			writelog(g, msg->error, bad_file_nfo_type);
+			writelog(g, msg->error, bad_file_password_type);
 		exit_value = 2;
 		return exit_value;
 	}

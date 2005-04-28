@@ -95,6 +95,7 @@
 #define bad_file_vbr_preset_type			"BAD_FILE_VBR_PRESET"
 #define bad_file_disallowed_type			"BAD_FILE_DISALLOWED"
 #define bad_file_nfo_type				"BAD_FILE_DUPENFO"
+#define bad_file_password_type				"BAD_FILE_PASSWORD"
 #define speed_type					"SPEEDTEST"
 
 #define deny_double_msg			"{%U} {%G} {%r} {%n}"

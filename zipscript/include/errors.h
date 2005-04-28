@@ -12,3 +12,5 @@
 #define		BANNED_BITRATE			"%s kbit codec is not allowed here!"		/* %s = bitrate		 */
 #define		BANNED_PRESET			"vbr preset %s not allowed here!"		/* %s = preset		 */
 #define		DUPE_NFO			"NFO-File: DUPE!"
+#define		PASSWORD_PROTECTED		"PW-Check: File is password protected!!"
+
