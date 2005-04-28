@@ -24,6 +24,7 @@ v1.xx	:
 	  zipscript: new: config setting - extract_nfo
 	  zipscript: new: deny nfo upload in zip directories
 	  zipscript: new: config setting - deny_nfo_upload_in_zip
+	  zipscript: change: we no longer format the time output - all is in seconds.
 
 v1.00	: Initial release
 

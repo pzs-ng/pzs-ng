@@ -17,6 +17,7 @@ char output[2048], output2[1024];
  * Converts source integer to bolded time string.
  * 
  */
+/*
 char *
 hms(char *ttime, int secs)
 {
@@ -40,7 +41,7 @@ hms(char *ttime, int secs)
 	
 	return ttime;
 }
-
+ */
 
 
 /*
@@ -424,7 +425,8 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 	int		from, to, reverse;
 	char		*out_p;
 	char		*m;
-	char		ttime[40], ctrl[15];
+//	char		ttime[40];
+	char		ctrl[15];
 
 	out_p = output;
 
@@ -560,11 +562,11 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				instr--;
 				break;
 			case 'd':
-				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)hms(ttime, raceI->total.stop_time - raceI->total.start_time));
+				out_p += sprintf(out_p, "%*i", val1, raceI->total.stop_time - raceI->total.start_time);
 				break;
 			case '$':
-				out_p += sprintf(out_p, "%*.*s", val1, val2,
-						 (char *)hms(ttime, ((((raceI->total.stop_time - raceI->total.start_time) + (raceI->total.files - raceI->total.files_missing)) / (raceI->total.files - raceI->total.files_missing)) * raceI->total.files) - (raceI->total.stop_time - raceI->total.start_time)));
+				out_p += sprintf(out_p, "%*i", val1,
+						((((raceI->total.stop_time - raceI->total.start_time) + (raceI->total.files - raceI->total.files_missing)) / (raceI->total.files - raceI->total.files_missing)) * raceI->total.files) - (raceI->total.stop_time - raceI->total.start_time));
 				break;
 			case 'e':
 				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->file.size * raceI->total.files >> 10) / 1024.));
