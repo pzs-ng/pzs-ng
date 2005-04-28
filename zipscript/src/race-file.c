@@ -50,13 +50,15 @@ maketempdir(char *path)
 	for (p = full_path; *p; p++) {
 		if (*p == '/') {
 			*p = '\0';
-			mkdir(full_path, 0777);
+			if (strlen(full_path) && mkdir(full_path, 0777) == -1 && errno != EEXIST)
+				d_log("maketempdir: Failed to create tempdir (%s): %s\n", full_path, strerror(errno));
 			*p = '/';
 		}
 	}
 
 	/* the final entry */
-	mkdir(full_path, 0777);
+	if (mkdir(full_path, 0777) == -1 && errno != EEXIST)
+		d_log("maketempdir: Failed to create tempdir: %s\n", strerror(errno));
 }
 
 /*
