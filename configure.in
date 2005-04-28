@@ -142,5 +142,8 @@ $( echo )
 The makefiles are now configured. Next up you need to edit
 zipscript/conf/zsconfig.h to fit your needs.
 
-Then type 'make' to compile it.
+Also be sure to edit sitewho/sitewho.conf - this holds all
+config options for the sitewho binary.
+
+When done type 'make' to compile.
 )
