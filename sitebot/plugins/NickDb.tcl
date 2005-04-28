@@ -56,7 +56,7 @@ namespace eval ::ngBot::NickDb {
     ##
     ##################################################
 
-    namespace export GetFtpUser GetIrcUser IsFtpUserOnline IsIrcUserOnline
+    namespace export GetFtpUser GetIrcUser QueryFtpUser QueryIrcUser
     variable filePath   [file join [file dirname [info script]] "Nicks.db"]
     variable scriptName [namespace current]::InviteEvent
 
