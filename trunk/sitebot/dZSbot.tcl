@@ -911,7 +911,7 @@ proc getoptions {argv p_results p_other} {
 			set arg [lindex $argv [incr i]]
 			if {![string is digit -strict $arg]} {return 0}
 			set results [expr {$arg < $maximum_results ? $arg : $maximum_results}]
-		} elseif {![string equal -length 1 "-" $arg] || $i == [expr $argc - 1]} {
+		} elseif {![string equal -length 1 "-" $arg] || $i == ($argc - 1)} {
 			## The lrange result must be joined to reverse the effect of the "split".
 			set other [join [lrange $argv $i end]]
 			return 1
