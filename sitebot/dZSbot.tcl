@@ -477,11 +477,13 @@ proc ng_format {event section line} {
 				if {$cnt2 == 0} {
 					append output2 "$announce(${event}_LOOP${loop})"
 				}
-				if {[string match "*speed" [lindex $vari $cnt2]]} {
-					set output2 [replacevar $output2 [lindex $vari $cnt2] [format_speed $value $section]]
-				} else {
-					set output2 [replacevar $output2 [lindex $vari $cnt2] $value]
+
+				switch -glob -- [lindex $vari $cnt2] {
+				    {*_duration} {set value [format_duration $value]}
+				    {*_speed}    {set value [format_speed $value $section]}
 				}
+				set output2 [replacevar $output2 [lindex $vari $cnt2] $value]
+
 				incr cnt2
 				if {[string equal "" [lindex $vari $cnt2]]} {
 					incr cnt3

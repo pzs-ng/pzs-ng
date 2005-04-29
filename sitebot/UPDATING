@@ -17,6 +17,15 @@
 # Changes
 ###############################################################
 
+r1777: All *_duration cookies are formatted by dZSbot.
+- Update your theme file accordingly (ie. the %t_duration cookie).
+
+r1772: NickDb now tracks channel events.
+- The Nicks.db file will have to be removed, since the database format changed.
+
+r1691: Added support for speed tests.
+- New theme file setting: SPEEDTEST.
+
 r1489: Partially rewrote the !free command.
 - The "%percentage" cookie was replaced in announce.FREE/FREE-DEV with:
   %perc_free - Percentage of disk space available.
