@@ -25,6 +25,7 @@ v1.xx	:
 	  zipscript: new: deny nfo upload in zip directories
 	  zipscript: new: config setting - deny_nfo_upload_in_zip
 	  zipscript: change: we no longer format the time output - all is in seconds.
+	  zipscript: fix: when making mp3-symlinks, it is case insensitive regarding subdir, meaning it will not make a dir named GrP if GRP already exists, but put the symlink to Release-GrP in GRP/
 
 v1.00	: Initial release
 
