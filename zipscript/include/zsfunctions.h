@@ -130,6 +130,7 @@ extern void	buffer_progress_bar(struct VARS *);
 extern void	move_progress_bar(unsigned char, struct VARS *, struct USERINFO **, struct GROUPINFO **);
 extern int	check_dupefile(DIR *, char *);
 extern long	findfile(DIR *, char *);
+extern long	findfilenocase(DIR *, char *);
 extern char	*findfilename(char *, char *, struct VARS *);
 extern void	removedotfiles(DIR *);
 extern void	removecomplete(void);

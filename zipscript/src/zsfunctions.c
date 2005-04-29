@@ -431,6 +431,19 @@ findfile(DIR *dir, char *filename)
 	return 0;
 }
 
+long
+findfilenocase(DIR *dir, char *filename)
+{
+	struct dirent	*dp;
+
+	rewinddir(dir);
+	while ((dp = readdir(dir)))
+		if (!strcasecmp(dp->d_name, filename))
+			return telldir(dir);
+	return 0;
+}
+
+
 void
 removedotfiles(DIR *dir)
 {
@@ -659,10 +672,30 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 	char		result	[MAXPATHLEN];
 #endif
 	char		org	[PATH_MAX];
+	char		dest	[NAME_MAX];
 	char	       *target = org;
 	int		l1 = (int)strlen(factor1) + 1,
 			l2 = (int)strlen(factor2) + 1,
 			l3 = (int)strlen(ltarget) + 1;
+	DIR		*dir;
+        struct dirent   *dp;
+
+	bzero(dest, sizeof(dest));
+	if (!(dir = opendir(factor1))) {
+		d_log("createlink: Failed to open dir %s : %s\n", factor1, strerror(errno));
+		closedir(dir);
+		return;
+	}
+        while ((dp = readdir(dir))) {
+                if (strlen(dp->d_name) && !strcasecmp(dp->d_name, factor2)) {
+                        strncpy(dest, dp->d_name, sizeof(dp->d_name));
+			d_log("createlink: found %s\n", dest);
+                        break;
+                }
+        }
+	closedir(dir);
+	if (*dest == '\0')
+		memcpy(dest, factor2, l2);
 
 	memcpy(target, factor1, l1);
 	target += l1 - 1;
@@ -670,11 +703,13 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 		*(target) = '/';
 		target += 1;
 	}
-	memcpy(target, factor2, l2);
+
+	memcpy(target, dest, l2);
 	target += l2;
 	memcpy(target - 1, "/", 2);
 
-	mkdir(org, 0777);
+	if (mkdir(org, 0777) == -1 && errno != EEXIST)
+		d_log("createlink: Failed to mkdir %s : %s\n", org, strerror(errno));
 
 #if ( userellink == 1 )
 	abs2rel(source, org, result, MAXPATHLEN);
