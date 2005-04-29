@@ -113,13 +113,17 @@ main(int argc, char **argv)
 
 	umask(0666 & 000);
 
-#if ( program_uid > 0 )
-	d_log("zipscript-c: Trying to change effective gid\n");
-	setegid(program_gid);
-	d_log("zipscript-c: Trying to change effective uid\n");
-	seteuid(program_uid);
-#endif
-
+	if ( program_uid > 0 ) {
+		d_log("zipscript-c: Trying to change effective uid/gid\n");
+		setegid(program_gid);
+		seteuid(program_uid);
+	} else if (!geteuid()) {
+		d_log("zipscript-c: +s mode detected - trying to change effective uid/gid to !root\n");
+		if (setegid(getgid()) == -1)
+			d_log("zipscript-c: failed to change gid: %s\n", strerror(errno));
+		if (seteuid(getuid()) == -1)
+			d_log("zipscript-c: failed to change uid: %s\n", strerror(errno));
+	}
 	if (argc != 4) {
 		d_log("zipscript-c: Wrong number of arguments used\n");
 		printf(" - - PZS-NG ZipScript-C v%s - -\n\nUsage: %s <filename> <path> <crc>\n\n", ng_version(), argv[0]);
