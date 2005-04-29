@@ -305,9 +305,7 @@ v0.6.1	--> 1.00  :	The changes from the original project-zs by d1 is
 
 			A few new options have been added.
 
-			Autodetection of glftpd version has been added, meaning
-			that it should work on any glftpd version (if you
-			upgrade glftpd, sitewho will still work).
+			Full support for glftpd v1.x and v2.x.
 
 
 		----	Changes in scripts/:
