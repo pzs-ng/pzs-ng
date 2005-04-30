@@ -102,10 +102,10 @@ set speedthreshold      1024
 set minidletime         15
 
 # Default number of results to return for !new, !search, !nukes and !unnukes.
-set default_results     10
+set default_results     5
 
 # Maximum number of results to return, when the -max parameter is specified.
-set maximum_results     25
+set maximum_results     20
 
 # Required number of alphanumeric characters for the !search pattern.
 set search_chars        3

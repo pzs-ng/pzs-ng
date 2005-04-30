@@ -36,6 +36,7 @@ namespace eval ::dZSBot::DeluserBan {
     ##
     ##################################################
 
+    namespace import -force ::dZSBot::*
     namespace import -force ::dZSBot::NickDb::*
     variable scriptName [namespace current]::LogEvent
     bind evnt -|- prerehash [namespace current]::DeInit
@@ -57,7 +58,7 @@ proc ::dZSBot::DeluserBan::Init {args} {
     lappend precommand(DELUSER) $scriptName
     lappend precommand(PURGED) $scriptName
 
-    putlog "\[dZSBot\] DeluserBan :: Loaded successfully."
+    InfoMsg "DeluserBan - Loaded successfully."
     return
 }
 
@@ -104,7 +105,7 @@ proc ::dZSBot::DeluserBan::LogEvent {event section logData} {
     ## Retrieve the IRC user name.
     set ircUser [GetIrcUser $ftpUser]
     if {[string equal "" $ircUser]} {
-        putlog "\[dZSBot\] DeluserBan :: Unable to retrieve the IRC user for \"$ftpUser\", you will have to kick them manually."
+        ErrorMsg DeluserBan "Unable to retrieve the IRC user for \"$ftpUser\", you will have to kick them manually."
         return 1
     }
 
@@ -112,7 +113,7 @@ proc ::dZSBot::DeluserBan::LogEvent {event section logData} {
 
     ## Kill the user, die you bastard!
     if {[IsTrue $killUser]} {
-        putlog "\[dZSBot\] DeluserBan :: Killing IRC user \"$ircUser\"."
+        InfoMsg "DeluserBan - Killing IRC user \"$ircUser\"."
         putquick "KILL $ircUser :$reason"
     }
 
@@ -123,7 +124,7 @@ proc ::dZSBot::DeluserBan::LogEvent {event section logData} {
     }
 
     ## Kick/ban the user from all channels.
-    putlog "\[dZSBot\] DeluserBan :: Kicking/banning IRC user \"$ircUser\" from all channels."
+    InfoMsg "DeluserBan - Kicking/banning IRC user \"$ircUser\" from all channels."
     foreach channel [channels] {
         if {[botisop $channel] && [onchan $ircUser $channel]} {
             putkick $channel $ircUser $reason

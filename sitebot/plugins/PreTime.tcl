@@ -55,6 +55,7 @@ namespace eval ::dZSBot::PreTime {
     ##################################################
 
     set mysql(handle) ""
+    namespace import -force ::dZSBot::*
     variable scriptName [namespace current]::LogEvent
     bind evnt -|- prerehash [namespace current]::DeInit
 }
@@ -72,20 +73,20 @@ proc ::dZSBot::PreTime::Init {args} {
 
     ## Load the MySQLTcl library.
     if {[catch {load $libMySQLTcl Mysqltcl} errorMsg]} {
-        putlog "\[dZSBot\] PreTime :: $errorMsg"
+        ErrorMsg PreTime $errorMsg
         return
     }
 
     ## Connect to the MySQL server.
     if {[catch {set mysql(handle) [mysqlconnect -host $mysql(host) -user $mysql(user) -password $mysql(pass) -port $mysql(port) -db $mysql(db)]} errorMsg]} {
-        putlog "\[dZSBot\] PreTime :: Unable to connect to MySQL server: $errorMsg"
+        ErrorMsg PreTime "Unable to connect to MySQL server: $errorMsg"
         return
     }
 
     ## Register the event handler.
     lappend precommand(NEWDIR) $scriptName
 
-    putlog "\[dZSBot\] PreTime :: Loaded successfully."
+    InfoMsg "PreTime - Loaded successfully."
     return
 }
 
@@ -172,11 +173,11 @@ proc ::dZSBot::PreTime::LogEvent {event section logData} {
         ## Format the pre time and append it to the log data.
         set formatDate [clock format $preTime -format "%m/%d/%y"]
         set formatTime [clock format $preTime -format "%H:%M:%S"]
-        lappend logData [format_duration $preAge] $formatDate $formatTime
+        lappend logData [FormatDuration $preAge] $formatDate $formatTime
 
         ## We'll announce the event ourself since we'll return zero
         ## to cancel the regular NEWDIR announce.
-        sndall $event $section [ng_format $event $section $logData]
+        SendAll $event $section [LogFormat $event $section $logData]
         return 0
     }
 

@@ -33,6 +33,7 @@
 #################################################################################
 
 namespace eval ::dZSBot::NickDb {
+    namespace import -force ::dZSBot::*
 
     ## Config Settings ###############################
     ##
@@ -80,11 +81,11 @@ proc ::dZSBot::NickDb::Init {args} {
 
     ## Load the Tcl SQLite library.
     if {[catch {load $libSQLite Tclsqlite3} errorMsg]} {
-        putlog "\[dZSBot\] NickDb :: $errorMsg"
+        ErrorMsg NickDb $errorMsg
         return
     }
     if {[catch {sqlite3 [namespace current]::db $filePath} errorMsg]} {
-        putlog "\[dZSBot\] NickDb :: Unable to open database \"$filePath\" - $errorMsg"
+        ErrorMsg NickDb "Unable to open database \"$filePath\" ($errorMsg)."
         return
     }
 
@@ -93,7 +94,7 @@ proc ::dZSBot::NickDb::Init {args} {
         db eval {CREATE TABLE UserNames (time INT, online INT, ircUser TEXT, ftpUser TEXT UNIQUE)}
         db eval {PRAGMA user_version = 2}
     } elseif {[set version [db eval {PRAGMA user_version}]] != 2} {
-        putlog "\[dZSBot\] NickDb :: Unsupported database version ($version), please remove \"$filePath\"."
+        ErrorMsg NickDb "Unsupported database version ($version), please remove \"$filePath\"."
         db close
         return
     }
@@ -107,7 +108,7 @@ proc ::dZSBot::NickDb::Init {args} {
     bind sign -|- "*" [list [namespace current]::ChanEvent quit]
     lappend postcommand(INVITEUSER) $scriptName
 
-    putlog "\[dZSBot\] NickDb :: Loaded successfully."
+    InfoMsg "NickDb - Loaded successfully."
     return
 }
 
