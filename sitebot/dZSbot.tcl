@@ -713,16 +713,34 @@ proc ::dZSBot::ReplaceBasic {message section} {
         "%sitename" $sitename "%bold" [b] "%uline" \037 "%color" [c]] $message]
 }
 
-proc ::dZSBot::ReplacePath {message basepath path} {
-    set path [split $path "/"]
-    set pathitems [llength $path]
-    set basepath [split $basepath "/"]
-    set baseitems [llength $basepath]
-    set relname [join [lrange $path [expr {$baseitems - 1}] end] "/"]
+proc ::dZSBot::ReplacePath {message basePath fullPath} {
+    variable subdirs
 
-    set message [ReplaceVar $message "%relname" $relname]
-    set message [ReplaceVar $message "%reldir" [lindex $path [expr {$pathitems - 1}]]]
-    set message [ReplaceVar $message "%path" [lindex $path [expr {$pathitems - 2}]]]
+    set basePath [file split $basePath]
+    set fullPath [file split $fullPath]
+    set fullPath [lrange $fullPath [expr {[llength $basePath] - 1}] end]
+
+    set relDir [lindex $fullPath end]
+    set relFull [join [lrange $fullPath 0 end-1] "/"]
+
+    set isSubDir 0
+    foreach subDir $subdirs {
+        if {[string match -nocase $subDir $relDir]} {
+            set isSubDir 1; break
+        }
+    }
+    if {$isSubDir && [llength $fullPath] > 1} {
+        set relName "[lindex $fullPath end-1] ([lindex $fullPath end])"
+        set relPath [join [lrange $fullPath 0 end-2] "/"]
+    } else {
+        set relName $relDir
+        set relPath $relFull
+    }
+
+    set message [ReplaceVar $message "%reldir" $relDir]
+    set message [ReplaceVar $message "%relfull" $relFull]
+    set message [ReplaceVar $message "%relname" $relName]
+    set message [ReplaceVar $message "%relpath" $relPath]
     return $message
 }
 
@@ -734,11 +752,11 @@ proc ::dZSBot::ReplaceVar {string cookie value} {
     return [string map [list $cookie $value] $string]
 }
 
-proc ::dZSBot::TrimTail {strsrc strrm} {
-    if { [expr [string length $strsrc] - [string length $strrm]] == [string last $strrm $strsrc] } {
-        return [string range $strsrc 0 [expr [string length $strsrc] - [string length $strrm] - 1]]
+proc ::dZSBot::TrimTail {base tail} {
+    if {([string length $base] - [string length $tail]) == [string last $tail $base]} {
+        return [string range $base 0 [expr {[string length $base] - [string length $tail] - 1}]]
     }
-    return $strsrc
+    return $base
 }
 
 #################################################################################

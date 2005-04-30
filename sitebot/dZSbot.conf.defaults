@@ -149,6 +149,9 @@ set bnc(TIMEOUT)        20
 # SECTIONS                                                  #
 #############################################################
 
+# Sub-directories used for the path parsing (%pf).
+set subdirs {cd[0-9] dis[ck][0-9] dvd[0-9] codec codecs cover covers extra extras sample sub subs vobsub vobsubs}
+
 # The sections we allow checking of stats on, remember that the number in
 # parantheses must be the same as the number of the section in glftpd config.
 set statsection(0)      "DEFAULT"

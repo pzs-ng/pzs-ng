@@ -99,7 +99,7 @@
 #define bad_file_nfodenied_type				"BAD_FILE_NFODENIED"
 #define speed_type					"SPEEDTEST"
 
-#define deny_double_msg			"{%U} {%G} {%r} {%n}"
+#define deny_double_msg			"{%U} {%G} {%n}"
 #define audio_cbr_warn_msg		"{%U} {%G} {%X}"
 #define audio_year_warn_msg		"{%U} {%G} {%Y}"
 #define audio_genre_warn_msg		"{%U} {%G} {%w}"
@@ -137,70 +137,70 @@
 #define audio_cbr		"{%w} {%Y} {%X} {%z} {%Q} {CBR} {%x} {%W} {%y} {%h} {%q}"		/* Put in %j cookie */
 
 /* Complete cookies (race) */
-#define	audio_complete		"{%r} {%.0m} {%f} {%.0A} {%.0a}	{%d} {%u} {%g} %j %l %L	%C0 %c0	{%n} {%B} {%t} {%T}"
-#define	other_complete		"{%r} {%.0m} {%f} {%.0A} {%.0a}	{%d} {%u} {%g} %l %L %C0 %c0 {%n} {%B} {%t} {%T}"
-#define	rar_complete		"{%r} {%.0m} {%f} {%.0A} {%.0a}	{%d} {%u} {%g} %l %L %C0 %c0 {%n} {%B} {%J} {%t} {%T}"
-#define	video_complete		"{%r} {%.0m} {%f} {%.0A} {%.0a}	{%d} {%u} {%g} %l %L %C0 %c0 {%n} {%B} {%t} {%T}"
-#define	zip_complete		"{%r} {%.0m} {%f} {%.0A} {%.0a}	{%d} {%u} {%g} %l %L %C0 %c0 {%n} {%B} {%t} {%T}"
+#define	audio_complete		"{%.0m} {%f} {%.0A} {%.0a}	{%d} {%u} {%g} %j %l %L	%C0 %c0	{%n} {%B} {%t} {%T}"
+#define	other_complete		"{%.0m} {%f} {%.0A} {%.0a}	{%d} {%u} {%g} %l %L %C0 %c0 {%n} {%B} {%t} {%T}"
+#define	rar_complete		"{%.0m} {%f} {%.0A} {%.0a}	{%d} {%u} {%g} %l %L %C0 %c0 {%n} {%B} {%J} {%t} {%T}"
+#define	video_complete		"{%.0m} {%f} {%.0A} {%.0a}	{%d} {%u} {%g} %l %L %C0 %c0 {%n} {%B} {%t} {%T}"
+#define	zip_complete		"{%.0m} {%f} {%.0A} {%.0a}	{%d} {%u} {%g} %l %L %C0 %c0 {%n} {%B} {%t} {%T}"
 
 /* Complete cookies (norace) */
-#define	audio_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a}	{%d} {%U} {%G} {%K} %j {%n} %t %T"
-#define	other_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a}	{%d} {%U} {%G} {%K} {%n} %t %T"
-#define	rar_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a}	{%d} {%U} {%G} {%K} {%n} {%J} %t %T"
-#define	video_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a}	{%d} {%U} {%G} {%K} {%n} %t %T"
-#define	zip_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a}	{%d} {%U} {%G} {%K} {%n} %t %T"
+#define	audio_norace_complete	"{%.0m} {%f} {%.0A} {%.0a}	{%d} {%U} {%G} {%K} %j {%n} %t %T"
+#define	other_norace_complete	"{%.0m} {%f} {%.0A} {%.0a}	{%d} {%U} {%G} {%K} {%n} %t %T"
+#define	rar_norace_complete	"{%.0m} {%f} {%.0A} {%.0a}	{%d} {%U} {%G} {%K} {%n} {%J} %t %T"
+#define	video_norace_complete	"{%.0m} {%f} {%.0A} {%.0a}	{%d} {%U} {%G} {%K} {%n} %t %T"
+#define	zip_norace_complete	"{%.0m} {%f} {%.0A} {%.0a}	{%d} {%U} {%G} {%K} {%n} %t %T"
 
 /* Halfway cookies (race) */
-#define	audio_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%B} {%$}"
-#define	other_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%B} {%$}"
-#define	rar_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%B} {%J} {%$}"
-#define	video_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%B} {%$}"
-#define	zip_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%B} {%$}"
+#define	audio_halfway		"%C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%B} {%$}"
+#define	other_halfway		"%C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%B} {%$}"
+#define	rar_halfway		"%C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%B} {%J} {%$}"
+#define	video_halfway		"%C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%B} {%$}"
+#define	zip_halfway		"%C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%B} {%$}"
 
 /* Halfway cookies (norace) */
-#define	audio_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%$}"
-#define	other_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%$}"
-#define	rar_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%J} {%$}"
-#define	video_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%$}"
-#define	zip_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%$}"
+#define	audio_norace_halfway	"%C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%$}"
+#define	other_norace_halfway	"%C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%$}"
+#define	rar_norace_halfway	"%C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%J} {%$}"
+#define	video_norace_halfway	"%C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%$}"
+#define	zip_norace_halfway	"%C0 %c0 {%.0m} {%F} {%.1p} {%.0A}	{%.0a} {%M} {%n} {%u} {%g} {%U}	{%G} {%f} {%K} {%$}"
 
 /* Update cookies */
-#define	audio_update		"{%U} {%G} {%f}	{%.0S} {%.1e} {%n} {%r}	{%K} %j	{%$}"
-#define	other_update		"{%U} {%G} {%f}	{%.0S} {%.1e} {%n} {%r}	{%K} {%$}"
-#define	rar_update		"{%U} {%G} {%f}	{%.0S} {%.1e} {%n} {%r}	{%K} {%J} {%$}"
-#define	video_update		"{%U} {%G} {%f}	{%.0S} {%.1e} {%n} {%r}	{%K} {%$}"
-#define	zip_update		"{%U} {%G} {%f}	{%.0S} {%.1e} {%n} {%r}	{%K} {%$}"
+#define	audio_update		"{%U} {%G} {%f}	{%.0S} {%.1e} {%n} {%K} %j	{%$}"
+#define	other_update		"{%U} {%G} {%f}	{%.0S} {%.1e} {%n} {%K} {%$}"
+#define	rar_update		"{%U} {%G} {%f}	{%.0S} {%.1e} {%n} {%K} {%J} {%$}"
+#define	video_update		"{%U} {%G} {%f}	{%.0S} {%.1e} {%n} {%K} {%$}"
+#define	zip_update		"{%U} {%G} {%f}	{%.0S} {%.1e} {%n} {%K} {%$}"
 
 /* New leader cookies */
-#define	audio_newleader		"{%U} {%G} {%K}	{%.0S} {%d} {%F} {%.1p}	{%.0m} {%r} {%n} {%u} {%g} {%f}	{%M} %C0 %c0 {%R} {%$}"
-#define	other_newleader		"{%U} {%G} {%K}	{%.0S} {%d} {%F} {%.1p}	{%.0m} {%r} {%n} {%u} {%g} {%f}	{%M} %C0 %c0 {%R} {%$}"
-#define	rar_newleader		"{%U} {%G} {%K}	{%.0S} {%d} {%F} {%.1p}	{%.0m} {%r} {%n} {%u} {%g} {%f}	{%M} %C0 %c0 {%R} {%J} {%$}"
-#define	video_newleader		"{%U} {%G} {%K}	{%.0S} {%d} {%F} {%.1p}	{%.0m} {%r} {%n} {%u} {%g} {%f}	{%M} %C0 %c0 {%R} {%$}"
-#define	zip_newleader		"{%U} {%G} {%K}	{%.0S} {%d} {%F} {%.1p}	{%.0m} {%r} {%n} {%u} {%g} {%f}	{%M} %C0 %c0 {%R} {%$}"
+#define	audio_newleader		"{%U} {%G} {%K}	{%.0S} {%d} {%F} {%.1p}	{%.0m} {%n} {%u} {%g} {%f}	{%M} %C0 %c0 {%R} {%$}"
+#define	other_newleader		"{%U} {%G} {%K}	{%.0S} {%d} {%F} {%.1p}	{%.0m} {%n} {%u} {%g} {%f}	{%M} %C0 %c0 {%R} {%$}"
+#define	rar_newleader		"{%U} {%G} {%K}	{%.0S} {%d} {%F} {%.1p}	{%.0m} {%n} {%u} {%g} {%f}	{%M} %C0 %c0 {%R} {%J} {%$}"
+#define	video_newleader		"{%U} {%G} {%K}	{%.0S} {%d} {%F} {%.1p}	{%.0m} {%n} {%u} {%g} {%f}	{%M} %C0 %c0 {%R} {%$}"
+#define	zip_newleader		"{%U} {%G} {%K}	{%.0S} {%d} {%F} {%.1p}	{%.0m} {%n} {%u} {%g} {%f}	{%M} %C0 %c0 {%R} {%$}"
 
 /* Race	cookies	*/
-#define	audio_race		"{%U} {%G} {%K}	{%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%B}	{%$}"
-#define	other_race		"{%U} {%G} {%K}	{%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%B}	{%$}"
-#define	rar_race		"{%U} {%G} {%K}	{%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%B}	{%J} {%$}"
-#define	video_race		"{%U} {%G} {%K}	{%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%B}	{%$}"
-#define	zip_race		"{%U} {%G} {%K}	{%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%B}	{%$}"
+#define	audio_race		"{%U} {%G} {%K}	{%R} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%B}	{%$}"
+#define	other_race		"{%U} {%G} {%K}	{%R} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%B}	{%$}"
+#define	rar_race		"{%U} {%G} {%K}	{%R} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%B}	{%J} {%$}"
+#define	video_race		"{%U} {%G} {%K}	{%R} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%B}	{%$}"
+#define	zip_race		"{%U} {%G} {%K}	{%R} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} {%B}	{%$}"
 
 /* SFV cookies */
-#define	audio_sfv		"{%r} {%f} {%U}	{%G} {%n} {%K}"
-#define	other_sfv		"{%r} {%f} {%U}	{%G} {%n} {%K}"
-#define	rar_sfv			"{%r} {%f} {%U}	{%G} {%n} {%K}"
-#define	video_sfv		"{%r} {%f} {%U}	{%G} {%n} {%K}"
+#define	audio_sfv		"{%f} {%U}	{%G} {%n} {%K}"
+#define	other_sfv		"{%f} {%U}	{%G} {%n} {%K}"
+#define	rar_sfv			"{%f} {%U}	{%G} {%n} {%K}"
+#define	video_sfv		"{%f} {%U}	{%G} {%n} {%K}"
 
 /* Speed test */
 #define speed_announce		"{%U} {%G} {%K} {%.0S} {%.2/}"
 
 /* Output of racestats binary */
-#define stats_line		"{%r} {%F} {%f} {%u} {%g} %C0 %c0"
+#define stats_line		"{%F} {%f} {%u} {%g} %C0 %c0"
 
 /* Output of postdel binary */
-#define incompletemsg		"{%U} {%G} {%r}"
+#define incompletemsg		"{%U} {%G}"
 
-#define bad_file_msg		"{%r} {%U} {%G} {%n}"
+#define bad_file_msg		"{%U} {%G} {%n}"
 
 enum ReleaseTypes {
 	RTYPE_NULL = 0,
