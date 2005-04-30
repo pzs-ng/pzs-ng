@@ -89,9 +89,7 @@ main(int argc, char **argv)
 	char	       *inc_point[2];
 	char           *complete_announce = 0;
 	int		cnt, n = 0;
-#if ( enable_complete_script || enable_accept_script )
 	int		nfofound = 0;
-#endif
 #if ( del_banned_release || enable_banned_script )
 	int		deldir = 0;
 #endif
@@ -225,6 +223,8 @@ main(int argc, char **argv)
 
 	printf(zipscript_header);
 
+	nfofound = (int)findfileext(dir, ".nfo");
+
 	/* Hide users in group_dirs */
 	if (matchpath(group_dirs, g.l.path) && (hide_group_uploaders == TRUE)) {
 		d_log("zipscript-c: Hiding user in group-dir:\n");
@@ -281,6 +281,7 @@ main(int argc, char **argv)
 			
 		case 2:	/* NFO CHECK */
 			exit_value = handle_nfo(&g, &msg, dir);
+			nfofound = 0;
 			break;
 		
 		case 3:	/* SFV BASED CRC-32 CHECK */
@@ -517,7 +518,6 @@ main(int argc, char **argv)
 			}
 
 #if ( enable_complete_script == TRUE )
-			nfofound = (int)findfileext(dir, ".nfo");
 			if (!fileexists(complete_script))
 				d_log("zipscript-c: Warning - complete_script (%s) - file does not exists\n", complete_script);
 			d_log("zipscript-c: Executing complete script\n");
@@ -525,16 +525,6 @@ main(int argc, char **argv)
 			if (execute(target))
 				d_log("zipscript-c: Failed to execute complete_script: %s\n", strerror(errno));
 
-#if ( enable_nfo_script == TRUE )
-			if (!nfofound && findfileext(dir, ".nfo")) {
-				if (!fileexists(nfo_script))
-					d_log("zipscript-c: Warning - nfo_script (%s) - file does not exists\n", nfo_script);
-				d_log("zipscript-c: Executing nfo script (%s)\n", nfo_script);
-				sprintf(target, nfo_script " \"%s\"", g.v.file.name);
-				if (execute(target))
-					d_log("zipscript-c: Failed to execute nfo_script: %s\n", strerror(errno));
-			}
-#endif
 #endif
 			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
 				/* Creating no-nfo link if needed. */
@@ -601,7 +591,6 @@ main(int argc, char **argv)
 	}
 #if ( enable_accept_script == TRUE )
 	if (exit_value == EXIT_SUCCESS) {
-		nfofound = (int)findfileext(dir, ".nfo");
 		if (!fileexists(accept_script)) {
 			d_log("zipscript-c: Warning - accept_script (%s) - file does not exists\n", accept_script);
 		}
@@ -610,17 +599,17 @@ main(int argc, char **argv)
 		if (execute(target) != 0)
 			d_log("zipscript-c: Failed to execute accept_script: %s\n", strerror(errno));
 
-#if ( enable_nfo_script == TRUE )
-		if (!nfofound && findfileext(dir, ".nfo")) {
-			if (!fileexists(nfo_script)) {
-				d_log("zipscript-c: Warning - nfo_script (%s) - file does not exists\n", nfo_script);
-			}
-			d_log("zipscript-c: Executing nfo script (%s)\n", nfo_script);
-			sprintf(target, nfo_script " \"%s\"", g.v.file.name);
-			if (execute(target) != 0)
-				d_log("zipscript-c: Failed to execute nfo_script: %s\n", strerror(errno));
-		}
+	}
 #endif
+#if ( enable_nfo_script == TRUE )
+	if (!nfofound && findfileext(dir, ".nfo")) {
+		if (!fileexists(nfo_script)) {
+			d_log("zipscript-c: Warning - nfo_script (%s) - file does not exists\n", nfo_script);
+		}
+		d_log("zipscript-c: Executing nfo script (%s)\n", nfo_script);
+		sprintf(target, nfo_script " \"%s\"", g.v.file.name);
+		if (execute(target) != 0)
+			d_log("zipscript-c: Failed to execute nfo_script: %s\n", strerror(errno));
 	}
 #endif
 	if ((findfileext(dir, ".nfo") || (findfileextparent(parent, ".nfo"))) && (g.l.nfo_incomplete)) {
@@ -997,10 +986,6 @@ handle_nfo(GLOBAL *g, MSG *msg, DIR *dir) {
 	unsigned char	no_check = FALSE;
 	unsigned char	exit_value = EXIT_SUCCESS;
 
-#if ( enable_nfo_script)
-	char           target[PATH_MAX];
-#endif
-
 	no_check = TRUE;
 	d_log("zipscript-c: File type is: NFO\n");
 #if ( deny_double_nfo )
@@ -1025,15 +1010,6 @@ handle_nfo(GLOBAL *g, MSG *msg, DIR *dir) {
 		return exit_value;
 	}
 
-#endif
-#if ( enable_nfo_script )
-	if (!fileexists(nfo_script)) {
-		d_log("zipscript-c: Warning - nfo_script (%s) - file does not exists\n", nfo_script);
-	}
-	d_log("zipscript-c: Executing nfo script (%s)\n", nfo_script);
-	sprintf(target, nfo_script " \"%s\"", g->v.file.name);
-	if (execute(target) != 0)
-		d_log("zipscript-c: Failed to execute nfo_script: %s\n", strerror(errno));
 #endif
 	return exit_value;
 }

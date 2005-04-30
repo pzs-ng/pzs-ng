@@ -59,5 +59,6 @@ extern int update_lock(struct VARS *, unsigned int, unsigned int);
 extern int backup_sfv(const char *, const char *, int);
 extern int check_rarfile(const char *);
 extern int check_zipfile(const char *);
+extern int filebanned_match(const char *);
 #endif
 

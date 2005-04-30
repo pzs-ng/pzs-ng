@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <fnmatch.h>
 
 #include "crc.h"
 #include "race-file.h" 
@@ -1440,5 +1441,29 @@ check_zipfile(const char *dirname)
 	closedir(dir);
         rmdir(dirname);
 	return ret;
+}
+
+int
+filebanned_match(const char *filename)
+{
+	int		fd;
+	char		buf[NAME_MAX];
+	FILE		*fname_fd;
+
+	if ((fd = open(banned_filelist, O_RDONLY)) == -1) {
+		d_log("filebanned_match: open(%s): %s\n", banned_filelist, strerror(errno));
+		return 0;
+	}
+	if ((fname_fd = fdopen(fd, "r")) == NULL) {
+		d_log("filebanned_match: fdopen(%s): %s\n", banned_filelist, strerror(errno));
+		return 0;
+	}
+	while ((fgets(buf, sizeof(buf), fname_fd))) {
+		if (!fnmatch(buf, filename, FNM_CASEFOLD)) {
+			close(fd);
+			return 1;
+		}
+	}
+	return 0;
 }
 

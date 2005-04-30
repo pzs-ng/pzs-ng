@@ -41,6 +41,9 @@
 #ifndef dupepath
 #define dupepath	"/ftp-data/logs/dupefile"
 #endif
+#ifndef banned_filelist
+#define banned_filelist	"/ftp-data/misc/banned_filelist.txt"
+#endif
 #ifndef gl_sections
 #define gl_sections	"DEFAULT"
 #endif
