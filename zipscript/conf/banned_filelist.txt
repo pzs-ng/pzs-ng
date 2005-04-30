@@ -180,6 +180,7 @@ dc.nfo
 de.nfo
 denon.nfo
 descript.ion
+dev.nfo
 devotion.nfo
 df3.nfo
 dfl.nfo
@@ -241,7 +242,6 @@ factory.nfo
 ff.nfo
 ffw-pre.nfo
 fight_for_the_right.jpg
-file_id.diz
 firefox.nfo
 firesite.nfo
 fireslut.nfo
