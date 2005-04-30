@@ -63,6 +63,7 @@ install:
 	chmod 4777 $(prefix)$(storage)
 	if [ -e $(prefix)$(datapath)/logs/glftpd.log ]; then chmod 666 $(prefix)$(datapath)/logs/glftpd.log; fi
 	if [ -e $(bindir) ]; then cp -f zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown $(bindir)/; fi
+	if [ ! -e $(prefix)$(datapath)/misc/banned_filelist.txt ]; then cp ../conf/banned_filelist.txt $(prefix)$(datapath)/misc/banned_filelist.txt && chmod 444 $(prefix)$(datapath)/misc/banned_filelist.txt; fi
 
 distclean: clean
 

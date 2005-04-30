@@ -241,18 +241,6 @@ main(int argc, char **argv)
 			snprintf(g.v.user.name, 18, "%s", g.v.user.group);
 		}
 	}
-	/* Empty file recieved */
-#if (ignore_zero_size == FALSE )
-	if (g.v.file.size == 0) {
-		d_log("zipscript-c: File seems to be 0\n");
-		sprintf(g.v.misc.error_msg, EMPTY_FILE);
-		mark_as_bad(g.v.file.name);
-		msg.error = convert(&g.v, g.ui, g.gi, bad_file_msg);
-		if (exit_value < 2)
-			writelog(&g, msg.error, bad_file_0size_type);
-		exit_value = 2;
-	}
-#endif
 	/* No check directories */
 	if (matchpath(nocheck_dirs, g.l.path) || matchpath(speedtest_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
 		d_log("zipscript-c: Directory matched with nocheck_dirs, or is not among sfv/zip/group dirs\n");
@@ -264,48 +252,72 @@ main(int argc, char **argv)
 		d_log("zipscript-c:   - current path  : '%s'\n", g.l.path);
 		no_check = TRUE;
 	} else {
-		/* Process file */
-		d_log("zipscript-c: Verifying old racedata\n");
-		if (!verify_racedata(g.l.race, &g.v))
-			d_log("zipscript-c:   Failed to open racedata - assuming this is a new race.\n");
-
-		switch (get_filetype(&g, fileext)) {
-		
-		case 0:	/* ZIP CHECK */
-			exit_value = handle_zip(&g, &msg, dir);
-			break;
-
-		case 1:	/* SFV CHECK */
-			exit_value = handle_sfv(&g, &msg, dir);
-			break;
-			
-		case 2:	/* NFO CHECK */
-			exit_value = handle_nfo(&g, &msg, dir);
-			nfofound = 0;
-			break;
-		
-		case 3:	/* SFV BASED CRC-32 CHECK */
-			exit_value = handle_sfv32(&g, &msg, dir, argv, fileext);
-			break;
-
-		case 4:	/* ACCEPTED FILE */
-
-			d_log("zipscript-c: File type: NO CHECK\n");
-			no_check = TRUE;
-			break;
-			/* END OF ACCEPTED FILE CHECK */
-
-		case 255:	/* UNKNOWN - WE DELETE THESE, SINCE IT WAS
-				 * ALSO IGNORED */
-			d_log("zipscript-c: File type: UNKNOWN [ignored in sfv]\n");
-			sprintf(g.v.misc.error_msg, UNKNOWN_FILE, fileext);
+	/* Empty file recieved */
+#if (ignore_zero_size == FALSE )
+		if (g.v.file.size == 0) {
+			d_log("zipscript-c: File seems to be 0\n");
+			sprintf(g.v.misc.error_msg, EMPTY_FILE);
+			mark_as_bad(g.v.file.name);
+			msg.error = convert(&g.v, g.ui, g.gi, bad_file_msg);
+			if (exit_value < 2)
+				writelog(&g, msg.error, bad_file_0size_type);
+			exit_value = 2;
+		}
+#endif
+#if ( check_for_banned_files )
+		if (filebanned_match(g.v.file.name)) {
+			d_log("zipscript-c: Banned file detected (%s)\n", g.v.file.name);
+			sprintf(g.v.misc.error_msg, BANNED_FILE);
 			mark_as_bad(g.v.file.name);
 			msg.error = convert(&g.v, g.ui, g.gi, bad_file_msg);
 			if (exit_value < 2)
 				writelog(&g, msg.error, bad_file_disallowed_type);
 			exit_value = 2;
-			break;
-			/* END OF UNKNOWN CHECK */
+		}
+#endif
+		if (exit_value != 2) {
+			/* Process file */
+			d_log("zipscript-c: Verifying old racedata\n");
+			if (!verify_racedata(g.l.race, &g.v))
+				d_log("zipscript-c:   Failed to open racedata - assuming this is a new race.\n");
+
+			switch (get_filetype(&g, fileext)) {
+		
+			case 0:	/* ZIP CHECK */
+				exit_value = handle_zip(&g, &msg, dir);
+				break;
+
+			case 1:	/* SFV CHECK */
+				exit_value = handle_sfv(&g, &msg, dir);
+				break;
+			
+			case 2:	/* NFO CHECK */
+				exit_value = handle_nfo(&g, &msg, dir);
+				nfofound = 0;
+				break;
+		
+			case 3:	/* SFV BASED CRC-32 CHECK */
+				exit_value = handle_sfv32(&g, &msg, dir, argv, fileext);
+				break;
+
+			case 4:	/* ACCEPTED FILE */
+				d_log("zipscript-c: File type: NO CHECK\n");
+				no_check = TRUE;
+				break;
+			/* END OF ACCEPTED FILE CHECK */
+
+			case 255:	/* UNKNOWN - WE DELETE THESE, SINCE IT WAS
+					 * ALSO IGNORED */
+				d_log("zipscript-c: File type: UNKNOWN [ignored in sfv]\n");
+				sprintf(g.v.misc.error_msg, UNKNOWN_FILE, fileext);
+				mark_as_bad(g.v.file.name);
+				msg.error = convert(&g.v, g.ui, g.gi, bad_file_msg);
+				if (exit_value < 2)
+					writelog(&g, msg.error, bad_file_disallowed_type);
+				exit_value = 2;
+				break;
+				/* END OF UNKNOWN CHECK */
+			}
 		}
 	}
 
@@ -712,9 +724,9 @@ handle_zip(GLOBAL *g, MSG *msg, DIR *dir) {
 			exit_value = 2;
 			return exit_value;
 		}
-#if (test_for_password || extract_nfo)
+#if (test_for_password || extract_nfo || zip_clean)
 			if (!findfileextcount(dir, ".nfo") || findfileextcount(dir, ".zip") == 1) {
-				if (check_zipfile(".unzipped")) {
+				if (check_zipfile(".unzipped", g->v.file.name)) {
 					d_log("handle_zip: File is password protected.\n");
 					sprintf(g->v.misc.error_msg, PASSWORD_PROTECTED);
 					msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);

@@ -14,4 +14,5 @@
 #define		DUPE_NFO			"NFO-File: DUPE!"
 #define		PASSWORD_PROTECTED		"PW-Check: File is password protected!"
 #define		NFO_DENIED			"NFO-File: Not allowed in zip-dirs!"
+#define		BANNED_FILE			"Name-check: File not allowed!"
 

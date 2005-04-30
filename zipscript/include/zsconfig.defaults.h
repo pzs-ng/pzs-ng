@@ -112,6 +112,9 @@
 #define strict_path_match		FALSE
 #endif
 
+#ifndef check_for_banned_files
+#define check_for_banned_files		TRUE
+#endif
 /*
  * Normally files marked as bad are deleted. You can change this by setting the
  * following value to TRUE - instead of the file being deleted, it will be renamed
@@ -367,6 +370,12 @@
  */
 #ifndef unzip_bin
 #define unzip_bin		"/bin/unzip"
+#endif
+#ifndef zip_bin
+#define zip_bin			"/bin/zip"
+#endif
+#ifndef zip_clean
+#define zip_clean		TRUE
 #endif
 
 

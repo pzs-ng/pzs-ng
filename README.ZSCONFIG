@@ -54,6 +54,17 @@ dupepath <PATH>
 	read/writable (+rw), and so must the containing dir (+rwx).
 	Default: "/ftp-data/logs/dupefile"
 
+banned_filelist <PATH>
+	You can ban certain files on site, based on name. The chck is not
+	case-senistive, and wildcards may be used.
+	Put here the path to the text-file with a list of the files you do not
+	want on your site.
+	For more info, or upgraded lists, see http://project-sl.swecheck.net
+	Please note - the chars [ and ] is used in the wildcard scheme - if you
+	search for these chars in the filenames, you need to double-escape them,
+	ie \\[ and \\].
+	Default: "/ftp-data/misc/banned_filelist.txt"
+
 group_dirs <PATHS>
 	This is the place(s) where your site's groups/affilliates have space
 	provided. Normally each (release-)group have a designated area
@@ -124,6 +135,11 @@ strict_path_match <TRUE|FALSE>
 	When set to TRUE, zip files is not allowed in sfv dirs, and the other
 	way around. group dirs are not affected, as they can be both.
 	Default: FALSE
+
+check_for_banned_files <TRUE|FALSE>
+	Setting this to TRUE will check the filename against the list defined in
+	banned_filelist - if found, the file is marked as bad.
+	Default: TRUE
 
 sfv_calc_single_fname <TRUE|FALSE>
 	Setting this to TRUE enables the zipscript to calculate a crc checksum
@@ -395,9 +411,19 @@ unzip_bin <PATH>
 	This is the location of the unzip binary needed to verify zip-releases.
 	Default: "/bin/unzip"
 
+zip_bin <PATH>
+	This is the location of the zip binary needed to clean zip-releases for
+	unwanted files.
+	Default: "/bin/zip"
+	
 sfv_dupecheck <TRUE|FALSE>
 	Setting this option to TRUE will remove duplicate entries within the
 	uploaded sfv file.
+	Default: TRUE
+
+zip_clean <TRUE|FALSE>
+	If you wish to clean zipfiles (remove files based on the list given in
+	banned_filelist), set this to TRUE.
 	Default: TRUE
 
 sfv_cleanup <TRUE|FALSE>

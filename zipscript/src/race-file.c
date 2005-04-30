@@ -1383,7 +1383,7 @@ check_rarfile(const char *filename)
 }
 
 int
-check_zipfile(const char *dirname)
+check_zipfile(const char *dirname, const char *zipfile)
 {
 	int		ret = 0;
 #if (extract_nfo)
@@ -1392,6 +1392,9 @@ check_zipfile(const char *dirname)
 	time_t		t = 0;
 	struct stat	filestat;
 	char	       *ext;
+#endif
+#if (zip_clean)
+	char		target[NAME_MAX];
 #endif
 	DIR	       *dir;
 	struct dirent  *dp;
@@ -1403,6 +1406,19 @@ check_zipfile(const char *dirname)
 #if (test_for_password)
 		if (!ret)
 			ret = check_rarfile(path_buf);
+#endif
+#if (zip_clean)
+		if (filebanned_match(dp->d_name)) {
+			d_log("check_zipfile: banned file detected: %s\n", dp->d_name);
+			if (!fileexists(zip_bin))
+				d_log("check_zipfile: ERROR! Not able to remove banned file from zip - zip_bin (%s) does not exists!\n", zip_bin);
+			else {
+				sprintf(target, "%s -qqd \"%s\" \"%s\" 2>.delme", zip_bin, zipfile, dp->d_name);
+				if (execute(target))
+					d_log("check_zipfile: Failed to remove file from zip.\n");
+			}
+			continue;
+		}
 #endif
 #if (extract_nfo)
 		ext = find_last_of(dp->d_name, ".");
@@ -1447,7 +1463,7 @@ int
 filebanned_match(const char *filename)
 {
 	int		fd;
-	char		buf[NAME_MAX];
+	char		buf[500];
 	FILE		*fname_fd;
 
 	if ((fd = open(banned_filelist, O_RDONLY)) == -1) {
@@ -1459,6 +1475,9 @@ filebanned_match(const char *filename)
 		return 0;
 	}
 	while ((fgets(buf, sizeof(buf), fname_fd))) {
+		buf[strlen(buf) - 1] = '\0';
+		if ( *buf == '\0' || *buf == ' ' || *buf == '\t' || *buf == '#' )
+			continue;
 		if (!fnmatch(buf, filename, FNM_CASEFOLD)) {
 			close(fd);
 			return 1;
