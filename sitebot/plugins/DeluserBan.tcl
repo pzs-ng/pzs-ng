@@ -12,7 +12,9 @@
 #
 # 2. Edit the configuration options below.
 #
-# 3. Add the following to your eggdrop.conf (load AFTER NickDb):
+# 3. Load this script in eggdrop.conf after dZSbot.tcl and NickDb.tcl, for example:
+#    source pzs-ng/dZSbot.tcl
+#    source pzs-ng/plugins/NickDb.tcl
 #    source pzs-ng/plugins/DeluserBan.tcl
 #
 # 4. Rehash or restart your eggdrop for the changes to take effect.
@@ -42,21 +44,17 @@ namespace eval ::dZSBot::DeluserBan {
     bind evnt -|- prerehash [namespace current]::DeInit
 }
 
-interp alias {} IsTrue {} string is true -strict
-interp alias {} IsFalse {} string is false -strict
-
 ####
 # DeluserBan::Init
 #
 # Called on initialization; registers the event handler.
 #
 proc ::dZSBot::DeluserBan::Init {args} {
-    global precommand
     variable scriptName
 
-    ## Register the event handler.
-    lappend precommand(DELUSER) $scriptName
-    lappend precommand(PURGED) $scriptName
+    ## Register event handler.
+    EventRegister precommand DELUSER $scriptName
+    EventRegister precommand PURGED $scriptName
 
     InfoMsg "DeluserBan - Loaded successfully."
     return
@@ -68,16 +66,11 @@ proc ::dZSBot::DeluserBan::Init {args} {
 # Called on rehash; unregisters the event handler.
 #
 proc ::dZSBot::DeluserBan::DeInit {args} {
-    global precommand
     variable scriptName
 
-    ## Remove the script events from precommand.
-    foreach type {DELUSER PURGED} {
-        if {[info exists precommand($type)] && [set pos [lsearch -exact $precommand($type) $scriptName]] !=  -1} {
-            set precommand($type) [lreplace $precommand($type) $pos $pos]
-        }
-    }
-
+    ## Remove script events and callbacks.
+    EventRegister precommand DELUSER $scriptName
+    EventRegister precommand PURGED $scriptName
     catch {unbind evnt -|- prerehash [namespace current]::DeInit}
 
     namespace delete [namespace current]

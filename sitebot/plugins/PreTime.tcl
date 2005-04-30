@@ -12,7 +12,8 @@
 #
 # 2. Edit the configuration options below.
 #
-# 3. Add the following to your eggdrop.conf:
+# 3. Load this script in eggdrop.conf after dZSbot.tcl, for example:
+#    source pzs-ng/dZSbot.tcl
 #    source pzs-ng/plugins/PreTime.tcl
 #
 # 4. Add the following to dZSbot.conf:
@@ -66,7 +67,6 @@ namespace eval ::dZSBot::PreTime {
 # Called on initialization; registers the event handler.
 #
 proc ::dZSBot::PreTime::Init {args} {
-    global precommand
     variable libMySQLTcl
     variable mysql
     variable scriptName
@@ -83,8 +83,8 @@ proc ::dZSBot::PreTime::Init {args} {
         return
     }
 
-    ## Register the event handler.
-    lappend precommand(NEWDIR) $scriptName
+    ## Register event handler.
+    EventRegister precommand NEWDIR $scriptName
 
     InfoMsg "PreTime - Loaded successfully."
     return
@@ -96,18 +96,14 @@ proc ::dZSBot::PreTime::Init {args} {
 # Called on rehash; unregisters the event handler.
 #
 proc ::dZSBot::PreTime::DeInit {args} {
-    global precommand
     variable mysql
     variable scriptName
 
     ## Close the MySQL connection.
     catch {mysqlclose $mysql(handle)}
 
-    ## Remove the script event from precommand.
-    if {[info exists precommand(NEWDIR)] && [set pos [lsearch -exact $precommand(NEWDIR) $scriptName]] !=  -1} {
-        set precommand(NEWDIR) [lreplace $precommand(NEWDIR) $pos $pos]
-    }
-
+    ## Remove script events and callbacks.
+    EventUnregister precommand NEWDIR $scriptName
     catch {unbind evnt -|- prerehash [namespace current]::DeInit}
 
     namespace delete [namespace current]

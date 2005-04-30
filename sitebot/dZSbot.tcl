@@ -166,6 +166,46 @@ proc ::dZSBot::ShowError {args} {
 }
 
 #################################################################################
+# Event Handling                                                                #
+#################################################################################
+
+proc ::dZSBot::EventHandler {type event args} {
+    variable $type
+    set varName "${type}($event)"
+    if {![info exists $varName]} {return 1}
+
+    foreach script [set $varName] {
+        if {[catch {set retval [eval [list $script $event] $args]} error]} {
+            ErrorMsg EventHandler "Error evaluating the script \"$script\" for \"$varName\" ($error)."
+        } elseif {[IsFalse $retval]} {
+            DebugMsg EventHandler "The script \"$script\" for \"$varName\" returned false."
+            return 0
+        } elseif {![IsTrue $retval]} {
+            WarningMsg EventHandler "The script \"$script\" for \"$varName\" must return a boolean value (0/FALSE or 1/TRUE)."
+        }
+    }
+    return 1
+}
+
+proc ::dZSBot::EventRegister {type event script} {
+    variable $type
+    set varName "${type}($event)"
+    if {![info exists $varName] || [lsearch -exact [set $varName] $script] == -1} {
+        lappend $varName $script
+    }
+    return
+}
+
+proc ::dZSBot::EventUnregister {type event script} {
+    variable $type
+    set varName "${type}($event)"
+    if {[info exists $varName] && [set pos [lsearch -exact [set $varName] $script]] != -1} {
+        set $varName [lreplace [set $varName] $pos $pos]
+    }
+    return
+}
+
+#################################################################################
 # Log Parsing for glFTPd and Login Logs                                         #
 #################################################################################
 
@@ -191,24 +231,6 @@ proc ::dZSBot::IsEventDenied {section event} {
         }
     }
     return 0
-}
-
-proc ::dZSBot::EventHandler {type event args} {
-    variable $type
-    set varName "$type\($event)"
-    if {![info exists $varName]} {return 1}
-
-    foreach script [set $varName] {
-        if {[catch {set retval [eval [list $script $event] $args]} error]} {
-            ErrorMsg EventHandler "Error evaluating the script \"$script\" for \"$varName\" ($error)."
-        } elseif {[IsFalse $retval]} {
-            DebugMsg EventHandler "The script \"$script\" for \"$varName\" returned false."
-            return 0
-        } elseif {![IsTrue $retval]} {
-            WarningMsg EventHandler "The script \"$script\" for \"$varName\" must return a boolean value (0/FALSE or 1/TRUE)."
-        }
-    }
-    return 1
 }
 
 proc ::dZSBot::LogTimer {} {
@@ -356,7 +378,6 @@ proc ::dZSBot::LogParseLogin {line eventvar datavar} {
 
 proc ::dZSBot::LogParseSysop {line eventvar datavar} {
     upvar $eventvar event $datavar newdata
-
     set patterns [list \
         ADDUSER  {^'(\S+)' added user '(\S+)'\.$} \
         GADDUSER {^'(\S+)' added user '(\S+)' to group '(\S+)'\.$} \

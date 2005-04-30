@@ -23,7 +23,8 @@
 #
 # 2. Edit the configuration options below.
 #
-# 3. Add the following to your eggdrop.conf AFTER dZSbot.tcl:
+# 3. Load this script in eggdrop.conf after dZSbot.tcl, for example:
+#    source pzs-ng/dZSbot.tcl
 #    source pzs-ng/plugins/NickDb.tcl
 #
 # 4. Make sure the bot has read/write access to the pzs-ng/plugins/ directory.
@@ -58,14 +59,11 @@ namespace eval ::dZSBot::NickDb {
     ##################################################
 
     namespace export GetFtpUser GetIrcUser QueryFtpUser QueryIrcUser
-    variable filePath   [file join [file dirname [info script]] "Nicks.db"]
+    variable filePath [file join [file dirname [info script]] "Nicks.db"]
     variable scriptName [namespace current]::InviteEvent
 
     bind evnt -|- prerehash [namespace current]::DeInit
 }
-
-interp alias {} IsTrue {} string is true -strict
-interp alias {} IsFalse {} string is false -strict
 
 ####
 # NickDb::Init
@@ -74,7 +72,6 @@ interp alias {} IsFalse {} string is false -strict
 # registers the INVITEUSER script and Eggdrop event callbacks.
 #
 proc ::dZSBot::NickDb::Init {args} {
-    global postcommand
     variable filePath
     variable libSQLite
     variable scriptName
@@ -100,13 +97,13 @@ proc ::dZSBot::NickDb::Init {args} {
     }
     db function StrCaseEq {string equal -nocase}
 
-    ## Register the invite handler and event callbacks.
+    ## Register invite handler and event callbacks.
+    EventRegister postcommand INVITEUSER $scriptName
     bind join -|- "*" [list [namespace current]::ChanEvent join]
     bind kick -|- "*" [list [namespace current]::ChanEvent kick]
     bind nick -|- "*" [list [namespace current]::ChanEvent nick]
     bind part -|- "*" [list [namespace current]::ChanEvent part]
     bind sign -|- "*" [list [namespace current]::ChanEvent quit]
-    lappend postcommand(INVITEUSER) $scriptName
 
     InfoMsg "NickDb - Loaded successfully."
     return
@@ -119,17 +116,13 @@ proc ::dZSBot::NickDb::Init {args} {
 # the INVITEUSER script and Eggdrop event callbacks.
 #
 proc ::dZSBot::NickDb::DeInit {args} {
-    global postcommand
     variable scriptName
 
     ## Close the SQLite database in case we're being unloaded.
     catch {db close}
 
-    ## Remove the script event from postcommand.
-    if {[info exists postcommand(INVITEUSER)] && [set pos [lsearch -exact $postcommand(INVITEUSER) $scriptName]] !=  -1} {
-        set postcommand(INVITEUSER) [lreplace $postcommand(INVITEUSER) $pos $pos]
-    }
-
+    ## Remove script events and callbacks.
+    EventUnregister postcommand INVITEUSER $scriptName
     catch {unbind evnt -|- prerehash [namespace current]::DeInit}
     catch {unbind join -|- "*" [list [namespace current]::ChanEvent join]}
     catch {unbind kick -|- "*" [list [namespace current]::ChanEvent kick]}
@@ -198,7 +191,7 @@ proc ::dZSBot::NickDb::InviteEvent {event ircUser ftpUser ftpGroup ftpFlags} {
     variable hostFormat
     if {![string equal "INVITEUSER" $event]} {return 1}
 
-    if {[IsTrue $hostChange] && ![rightscheck $hostExempt $ftpUser $ftpGroup $ftpFlags]} {
+    if {[IsTrue $hostChange] && ![RightsCheck $hostExempt $ftpUser $ftpGroup $ftpFlags]} {
         ## glFTPD allows characters in user names which are not allowed on IRC.
         set stripUser [StripName $ftpUser]
         set stripGroup [StripName $ftpGroup]
