@@ -1407,6 +1407,13 @@ check_zipfile(const char *dirname, const char *zipfile)
 		if (!ret)
 			ret = check_rarfile(path_buf);
 #endif
+		if (!strncasecmp("file_id.diz", dp->d_name, 11)) {
+			sprintf(path_buf, "%s/%s", dirname, dp->d_name);
+			rename(path_buf, "file_id.diz");
+			chmod("file_id.diz", 0644);
+			d_log("check_zipfile: diz found - %s\n", path_buf);
+			continue;
+		}
 #if (zip_clean)
 		if (filebanned_match(dp->d_name)) {
 			d_log("check_zipfile: banned file detected: %s\n", dp->d_name);
@@ -1430,15 +1437,10 @@ check_zipfile(const char *dirname, const char *zipfile)
 				strlcpy(nfo_buf, dp->d_name, NAME_MAX);
 				t = filestat.st_ctime;
 				d_log("check_zipfile: nfo found - %s\n", nfo_buf);
+				continue;
 			}
 		}
 #endif
-		if (!strncasecmp("file_id.diz", dp->d_name, 11)) {
-			sprintf(path_buf, "%s/%s", dirname, dp->d_name);
-			rename(path_buf, "file_id.diz");
-			chmod("file_id.diz", 0644);
-			d_log("check_zipfile: diz found - %s\n", path_buf);
-		}
 	}
 #if (extract_nfo)
 	if (t) {
