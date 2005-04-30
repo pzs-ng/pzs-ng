@@ -221,7 +221,7 @@ cleanupdirs_dated <PATHS>
 	To keep your site tidy and free from stale/dead symlinks created by the
 	zipscript, you should put here a list of dirs to scan for dead links.
 	The list is not recursive, and does not take wildcards. This list can
-	contain format cookies for dated directories, refer to 'man strftime' 
+	contain format cookies for dated directories, refer to 'man strftime'
 	for a list of available date cookies.
 	Default: "/site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 
@@ -287,7 +287,7 @@ program_uid <NUMBER>
 	but 0 will force the zipscript to change uid to the number you put
 	here. In order for this to work, zipscript-c needs the suid bit set.
 	Default: 0
-	
+
 program_gid <NUMBER>
 	Same as with program_uid, only this is with the group.
 	Default: 0
@@ -415,7 +415,7 @@ zip_bin <PATH>
 	This is the location of the zip binary needed to clean zip-releases for
 	unwanted files.
 	Default: "/bin/zip"
-	
+
 sfv_dupecheck <TRUE|FALSE>
 	Setting this option to TRUE will remove duplicate entries within the
 	uploaded sfv file.
@@ -583,7 +583,7 @@ audio_genre_warn <TRUE|FALSE>
 	zipscript log a warning message instead of deleting the file? Set to
 	TRUE if yes.
 	Default: TRUE
-	
+
 audio_allowed_vbr_preset_check <TRUE|FALSE>
 	VBR mp3 releases are encoded using certain presets. If you wish to
 	enforce restrictions based on the preset, you can use this setting.
@@ -654,7 +654,7 @@ min_halfway_size <NUMBER>
 	Define here the minimum estimated total size (in MB) of RELEASE to
 	announce a halfway message.
 	Default: 10
-	
+
 max_users_in_top <NUMBER>
 	Put here the maximum number of users to be logged in a race, when a
 	release is complete.
@@ -690,7 +690,7 @@ show_user_info <TRUE|FALSE>
 	set this to true. It will display racers (usernames) and stats on the
 	current race in the client's ftp program.
 	Default: TRUE
-	
+
 show_group_info <TRUE|FALSE>
 	If you wish to print stat info after a file is uploaded to the racer,
 	set this to true. It will display racers (groupnames) and stats on the
@@ -712,7 +712,7 @@ message_header <STRING|DISABLED>
 message_user_header <STRING|DISABLED>
 	Define here what should be put above a list of racers (users).
 	Default: "|                          U S E R T O P                             |\n+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n"
-	    
+
 message_user_body <STRING|DISABLED>
 	Define here the body of the list of racers (users).
 	Default: "| %3n %-29U %7.1mM %4fF %5.1p%% %7.0sKBs |\n"
@@ -720,7 +720,7 @@ message_user_body <STRING|DISABLED>
 message_user_footer <STRING|DISABLED>
 	Define here the footer of the list of racers (users).
 	Default: "+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n| %3u Total %31.1mM %4fF 100.0%% %7.0aKBs |\n"
-	    
+
 message_group_header <STRING|DISABLED>
 	Define here what should be put above a list of racers (groups).
 	Default: "|                                                                    |\n|                                                                    |\n|      G R O U P T O P                           |\n+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n"
@@ -732,11 +732,11 @@ message_group_body <STRING|DISABLED>
 message_group_footer <STRING|DISABLED>
 	Define here the footer of the list of racers (groups).
 	Default: "+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n| %3g Total %31.1mM %4fF 100.0%% %7.0aKBs |\n"
-	    
+
 message_mp3 <STRING|DISABLED>
 	Define here a special complete_message for mp3-releases.
 	Default: "|                                                                    |\n|                                                                    |\n|       I D 3 - T A G                            |\n+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n| Artist : %-57x |\n| Album  : %-57W |\n| Genre  : %-34w Rate  : %3Xkbit/s     |\n| Tracks : %-34f Year  : %-14Y |\n| Encoder: %-34i Preset: %-14I |\n"
-	
+
 message_footer <STRING|DISABLED>
 	Define here what should be put at the bottom of the complete_message
 	file.
@@ -812,7 +812,7 @@ realtime_mp3_info <STRING|DISABLED>
 	Put here what should be shown as the body of that message on mp3-file
 	upload.
 	Default: "+-=[ID3tag]=------------------------===------------+\n| Title  : %-39y |\n| Artist : %-39x |\n| Album  : %-39W |\n| Genre  : %-39w |\n| Year   : %-39Y |\n"
-	
+
 realtime_user_header <STRING|DISABLED>
 	When files are uploaded, some output is shown to the racer uploading.
 	Put here what should be shown in the body of that message, head of
@@ -969,7 +969,7 @@ enable_banned_script <TRUE|FALSE>
 	mp3-files, based on genre/year/etc). Put this to TRUE to run the
 	external script.
 	Default: FALSE
-	
+
 banned_script <PATH>
 	Put here the path to the external script which should be run if a
 	banned file is found.
@@ -987,206 +987,6 @@ enable_unduper_script <TRUE|FALSE>
 unduper_script <PATH>
 	Enter the name of the script doing the actual unduping of the file.
 	Default: "/bin/ng-undupe"
-
-disable_audio_race <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_audio_sfv <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_audio_update <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_audio_halfway <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_audio_newleader <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_audio_complete <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_audio_norace_halfway <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_audio_norace_complete <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_video_race <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_video_sfv <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_video_update <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_video_halfway <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_video_newleader <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_video_complete <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_video_norace_halfway <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_video_norace_complete <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_rar_race <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_rar_sfv <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_rar_update <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_rar_halfway <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_rar_newleader <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_rar_complete <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_rar_norace_halfway <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_rar_norace_complete <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_zip_race <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_zip_sfv <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_zip_update <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_zip_halfway <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_zip_newleader <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_zip_complete <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_zip_norace_halfway <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_zip_norace_complete <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_other_race <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_other_sfv <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_other_update <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_other_halfway <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_other_newleader <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_other_complete <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_other_norace_halfway <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_other_norace_complete <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
 
 racersmsg <STRING>
 	This is a cookie formatted string containing info of the racers. This
