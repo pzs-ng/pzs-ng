@@ -465,11 +465,12 @@ main(int argc, char **argv)
 				if (!matchpath(group_dirs, g.l.path)) {
 #if ( audio_genre_sort == TRUE )
 					d_log("zipscript-c:   Sorting mp3 by genre (%s)\n", g.v.audio.id3_genre);
-					createlink(audio_genre_path, g.v.audio.id3_genre, g.l.link_source, g.l.link_target);
+					if (g.v.audio.id3_genre)
+						createlink(audio_genre_path, g.v.audio.id3_genre, g.l.link_source, g.l.link_target);
 #endif
 #if ( audio_artist_sort == TRUE )
 					d_log("zipscript-c:   Sorting mp3 by artist\n");
-					if (*g.v.audio.id3_artist) {
+					if (g.v.audio.id3_artist) {
 						d_log("zipscript-c:     - artist: %s\n", g.v.audio.id3_artist);
 						if (memcmp(g.v.audio.id3_artist, "VA", 3)) {
 							temp_p = ng_realloc(temp_p, 2, 1, 1, &g.v, 1);
@@ -482,7 +483,7 @@ main(int argc, char **argv)
 #endif
 #if ( audio_year_sort == TRUE )
 					d_log("zipscript-c:   Sorting mp3 by year (%s)\n", g.v.audio.id3_year);
-					if (!*g.v.audio.id3_year != 0)
+					if (g.v.audio.id3_year)
 						createlink(audio_year_path, g.v.audio.id3_year, g.l.link_source, g.l.link_target);
 #endif
 #if ( audio_group_sort == TRUE )

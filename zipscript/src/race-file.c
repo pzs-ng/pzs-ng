@@ -1465,7 +1465,7 @@ filebanned_match(const char *filename)
 	int		fd;
 	char		buf[500];
 	FILE		*fname_fd;
-	char		fbuf[sizeof(filename)+1];
+	char		fbuf[strlen(filename)+1];
 
 	bzero(fbuf, sizeof(fbuf));
 	strcpy(fbuf, filename);
