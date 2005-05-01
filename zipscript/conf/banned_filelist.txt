@@ -1,9 +1,10 @@
 # This is a list of banned files/names.
 # Lines starting with a # is ignored, and is used as comments.
 # Wildcards can be used - see 'man fnmatch' for details.
-# Please note that special chars, like [ and ] are used as
+# Please note that special chars, like [, ], ( and ) are used as
 # wildcards, so if you wish to match those in a filename, you
-# need to double-escape them ( \\[ and \\] ).
+# need to double-escape them ( like \\[ , \\] , \\( and \\) ).
+# New, upgraded lists can be found at http://project-sl.swecheck.net
 *\\(*\\).nfo
 *.bad
 *.crc

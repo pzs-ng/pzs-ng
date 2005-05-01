@@ -26,6 +26,376 @@ v1.xx	:
 	  zipscript: new: config setting - deny_nfo_upload_in_zip
 	  zipscript: change: we no longer format the time output - all is in seconds.
 	  zipscript: fix: when making mp3-symlinks, it is case insensitive regarding subdir, meaning it will not make a dir named GrP if GRP already exists, but put the symlink to Release-GrP in GRP/
+	  zipscript: new: support for zipcleanup - will remove unwanted files from zipfiles. See http://project-sl.swecheck.net for more info.
+	  zipscript: new: support for denied files on upload - uses same list as the zipcleaner.
+	  zipscript: new: config setting - banned_filelist
+	  zipscript: new: config setting - check_for_banned_files
+	  zipscript: new: config setting - zip_clean
+	  zipscript: remove: config setting - disable_audio_race
+	  zipscript: remove: config setting - disable_audio_race
+	  zipscript: remove: config setting - disable_audio_sfv
+	  zipscript: remove: config setting - disable_audio_update
+	  zipscript: remove: config setting - disable_audio_halfway
+	  zipscript: remove: config setting - disable_audio_newleader
+	  zipscript: remove: config setting - disable_audio_complete
+	  zipscript: remove: config setting - disable_audio_norace_halfway
+	  zipscript: remove: config setting - disable_audio_norace_complete
+	  zipscript: remove: config setting - disable_video_race
+	  zipscript: remove: config setting - disable_video_race
+	  zipscript: remove: config setting - disable_video_sfv
+	  zipscript: remove: config setting - disable_video_update
+	  zipscript: remove: config setting - disable_video_halfway
+	  zipscript: remove: config setting - disable_video_newleader
+	  zipscript: remove: config setting - disable_video_complete
+	  zipscript: remove: config setting - disable_video_norace_halfway
+	  zipscript: remove: config setting - disable_video_norace_complete
+	  zipscript: remove: config setting - disable_rar_race
+	  zipscript: remove: config setting - disable_rar_race
+	  zipscript: remove: config setting - disable_rar_sfv
+	  zipscript: remove: config setting - disable_rar_update
+	  zipscript: remove: config setting - disable_rar_halfway
+	  zipscript: remove: config setting - disable_rar_newleader
+	  zipscript: remove: config setting - disable_rar_complete
+	  zipscript: remove: config setting - disable_rar_norace_halfway
+	  zipscript: remove: config setting - disable_rar_norace_complete
+	  zipscript: remove: config setting - disable_other_race
+	  zipscript: remove: config setting - disable_other_race
+	  zipscript: remove: config setting - disable_other_sfv
+	  zipscript: remove: config setting - disable_other_update
+	  zipscript: remove: config setting - disable_other_halfway
+	  zipscript: remove: config setting - disable_other_newleader
+	  zipscript: remove: config setting - disable_other_complete
+	  zipscript: remove: config setting - disable_other_norace_halfway
+	  zipscript: remove: config setting - disable_other_norace_complete
+	  zipscript: remove: config setting - disable_zip_race
+	  zipscript: remove: config setting - disable_zip_race
+	  zipscript: remove: config setting - disable_zip_update
+	  zipscript: remove: config setting - disable_zip_halfway
+	  zipscript: remove: config setting - disable_zip_newleader
+	  zipscript: remove: config setting - disable_zip_complete
+	  zipscript: remove: config setting - disable_zip_norace_halfway
+	  zipscript: remove: config setting - disable_zip_norace_complete
+
 
 v1.00	: Initial release
 
+PZS-NG CHANGELOG
+----------------
+
+v0.6.1	--> 1.00  :
+	The changes from the original project-zs by d1 was
+	significant. There is nearly no code that has not been
+	changed. For a full list of new/changed options, i
+	suggest you read README.ZSCONFIG for the zipscript, and
+	look at the README for the sitebot. Sitewho has also
+	changed a lot and have been given a few new options, so
+	check the sitebot.conf and the README.
+
+		----	Changes in the zipscript:
+
+			New config options:
+			-------------------
+			- dupepath
+			- noforce_sfv_first_dirs
+			- use_partial_on_noforce
+			- audio_nocheck_dirs
+			- rescan_nocheck_dirs_allowed
+			- strict_path_match
+			- sfv_calc_single_fname
+			- subdir_list
+			- gl_sections
+			- short_sitename
+			- allowed_types_exemption_dirs
+			- check_for_missing_nfo_dirs
+			- check_for_missing_nfo_filetypes
+			- create_incomplete_links_in_group_dirs
+			- days_back_cleanup
+			- cleanupdirs_dated
+			- always_scan_audio_syms
+			- write_complete_message_in_group_dirs
+			- hide_group_uploaders
+			- hide_gname
+			- hide_uname
+			- custom_group_dirs_complete_message
+			- userellink
+			- allow_files_not_in_sfv
+			- strict_sfv_check
+			- mark_file_as_bad
+			- allow_file_resume
+			- sleep_on_bad
+			- debug_altlog
+			- debug_announce
+			- ignore_zero_size
+			- ignore_zero_size_on_rescan
+			- remove_dot_debug_on_delete
+			- remove_dot_files_on_delete
+			- unzip_bin
+			- sfv_cleanup_lowercase
+			- sfv_cleanup_crlf
+			- deny_double_sfv
+			- deny_double_nfo
+			- audio_group_sort
+			- audio_group_path
+			- audio_cbr_check
+			- audio_cbr_warn
+			- audio_year_warn
+			- allowed_genres
+			- audio_banned_genre_check
+			- audio_allowed_genre_check
+			- audio_genre_warn
+			- del_banned_release
+			- enable_files_ahead
+			- newleader_files_ahead
+			- min_newleader_size
+			- min_update_size
+			- min_halfway_size
+			- show_stats_from_pos2_only
+			- message_file_name
+			- incomplete_base_nfo_indicator
+			- incomplete_nfo_indicator
+			- charbar_missing
+			- charbar_filled
+			- enable_nfo_script
+			- nfo_script
+			- enable_mp3_script
+			- mp3_script
+			- mp3_script_cookies
+			- enable_unduper_script
+			- unduper_script
+			- disable_audio_race
+			- disable_audio_sfv
+			- disable_audio_update
+			- disable_audio_halfway
+			- disable_audio_newleader
+			- disable_audio_complete
+			- disable_audio_norace_halfway
+			- disable_audio_norace_complete
+			- disable_video_race
+			- disable_video_sfv
+			- disable_video_update
+			- disable_video_halfway
+			- disable_video_newleader
+			- disable_video_complete
+			- disable_video_norace_halfway
+			- disable_video_norace_complete
+			- disable_rar_race
+			- disable_rar_sfv
+			- disable_rar_update
+			- disable_rar_halfway
+			- disable_rar_newleader
+			- disable_rar_complete
+			- disable_rar_norace_halfway
+			- disable_rar_norace_complete
+			- disable_zip_race
+			- disable_zip_sfv
+			- disable_zip_update
+			- disable_zip_halfway
+			- disable_zip_newleader
+			- disable_zip_complete
+			- disable_zip_norace_halfway
+			- disable_zip_norace_complete
+			- disable_other_race
+			- disable_other_sfv
+			- disable_other_update
+			- disable_other_halfway
+			- disable_other_newleader
+			- disable_other_complete
+			- disable_other_norace_halfway
+			- disable_other_norace_complete
+			- racersplit
+			- racersplit_prior
+			- chmod_completebar
+			- mark_empty_dirs_as_incomplete_on_rescan
+			- max_seconds_wait_for_lock
+			- lock_optimize
+			- ignore_lock_timeout
+			- allow_uid_change_in_ng_chown
+			- allow_gid_change_in_ng_chown
+			- allow_dir_chown_in_ng_chown
+			- allow_files_chown_in_ng_chown
+			- change_spaces_to_underscore_in_ng_chown
+
+
+			Changed config options:
+			-----------------------
+			- zip_dirs,sfv_dirs, group_dirs - dirs not listed in these variables will not be scanned.
+			- cleanupdirs - does no longer support dated dirs - those are moved to cleanupdirs_dated
+			- allowed_bitrates - renamed to allowed_constant_bitrates
+			- del_completebar - some cookies was added, and this variable had to be changed.
+			- del_progressmeter - some cookies was added, and this variable had to be changed.
+
+
+			Removed config options:
+			-----------------------
+			- site_root - no longer needed
+			- audio_genre_check - replaced by audio_banned_genre_check and audio_allowed_genre_check
+			- zip_complete_type - all bot output is done in the bot/theme
+			- zip_norace_complete_type - all bot output is done in the bot/theme
+			- rar_complete_type - all bot output is done in the bot/theme
+			- rar_norace_complete_type - all bot output is done in the bot/theme
+			- audio_complete_type - all bot output is done in the bot/theme
+			- audio_norace_complete_type - all bot output is done in the bot/theme
+			- video_complete_type - all bot output is done in the bot/theme
+			- video_norace_complete_type - all bot output is done in the bot/theme
+			- other_complete_type - all bot output is done in the bot/theme
+			- other_norace_complete_type - all bot output is done in the bot/theme
+			- pre_stats - all bot output is done in the bot/theme
+			- between_stats - all bot output is done in the bot/theme
+			- post_stats - all bot output is done in the bot/theme
+			- user_top - all bot output is done in the bot/theme
+			- user_info - all bot output is done in the bot/theme
+			- group_top - all bot output is done in the bot/theme
+			- group_info - all bot output is done in the bot/theme
+			- fastestfile - all bot output is done in the bot/theme
+			- slowestfile - all bot output is done in the bot/theme
+			- audio_race - all bot output is done in the bot/theme
+			- audio_sfv - all bot output is done in the bot/theme
+			- audio_update - all bot output is done in the bot/theme
+			- audio_halfway - all bot output is done in the bot/theme
+			- audio_newleader - all bot output is done in the bot/theme
+			- audio_complete - all bot output is done in the bot/theme
+			- audio_norace_halfway - all bot output is done in the bot/theme
+			- audio_norace_complete - all bot output is done in the bot/theme
+			- video_race - all bot output is done in the bot/theme
+			- video_sfv - all bot output is done in the bot/theme
+			- video_update - all bot output is done in the bot/theme
+			- video_halfway - all bot output is done in the bot/theme
+			- video_newleader - all bot output is done in the bot/theme
+			- video_complete - all bot output is done in the bot/theme
+			- video_norace_halfway - all bot output is done in the bot/theme
+			- video_norace_complete - all bot output is done in the bot/theme
+			- rar_race - all bot output is done in the bot/theme
+			- rar_sfv - all bot output is done in the bot/theme
+			- rar_update - all bot output is done in the bot/theme
+			- rar_halfway - all bot output is done in the bot/theme
+			- rar_newleader - all bot output is done in the bot/theme
+			- rar_complete - all bot output is done in the bot/theme
+			- rar_norace_halfway - all bot output is done in the bot/theme
+			- rar_norace_complete - all bot output is done in the bot/theme
+			- other_race - all bot output is done in the bot/theme
+			- other_sfv - all bot output is done in the bot/theme
+			- other_update - all bot output is done in the bot/theme
+			- other_halfway - all bot output is done in the bot/theme
+			- other_newleader - all bot output is done in the bot/theme
+			- other_complete - all bot output is done in the bot/theme
+			- other_norace_halfway - all bot output is done in the bot/theme
+			- other_norace_complete - all bot output is done in the bot/theme
+			- zip_race - all bot output is done in the bot/theme
+			- zip_update - all bot output is done in the bot/theme
+			- zip_halfway - all bot output is done in the bot/theme
+			- zip_newleader - all bot output is done in the bot/theme
+			- zip_complete - all bot output is done in the bot/theme
+			- zip_norace_halfway - all bot output is done in the bot/theme
+			- zip_norace_complete - all bot output is done in the bot/theme
+			- stats_line - all bot output is done in the bot/theme
+			- incompletemsg - all bot output is done in the bot/theme
+			- sfv_comment - spam removed
+			- KEY - shared mem is not used
+			- sql_user - sql is not used (never was)
+			- sql_pass - sql is not used (never was)
+			- sql_host - sql is not used (never was)
+			- sql_db - sql is not used (never was)
+			- copy_files_to_zip - spam removed
+			- includezip - spam removed
+			- version - removed from userconfig
+
+
+			codechanges not directly related to config options:
+			---------------------------------------------------
+			- glftpd v1.xx and 2.xx supported.
+			- the 4GB limit has been removed.
+			- max number of files in a release has been changed from 100 to 1024 - this limit can easily be changed later.
+			- support for sections added.
+			- the shared memory dependency has been removed. This means that it will work on any glftpd version, or other ftpd.
+			- some cookies has changed, others removed or added.
+			- output to glftpd.log is no longer user-formatted - instead raw cookies are logged.
+			- major rewrites removed all known memory leaks and possible core reasons.
+			- debug output is vastly improved.
+			- mp3 vbr support is added.
+			- portability has improved - the most popular platforms are supported.
+			- partial amd64-support - you need to compile in m32 mode, but the zipscript works.
+			- smart handling of double sfv make sure a false sfv isn't uploaded.
+			- improved handling of sfv content.
+			- a locking mechanism is added, which prevent race conditions and wrongly marked incomplete releases.
+			- the crc table was replaced with a better/correct one, which helps on large file releases.
+			- all bins are changed to run under chroot only.
+			- cleanup now removes broken links and lists incomplete releases
+			- compile options like --with-ss5 give ss5 support.
+			- the zipscript will calculate the crc of the file if no crc (0) is sent from glftpd.
+			- cleanup now works as a cscript to 'site nuke' and 'site wipe'
+			- datacleaner now works as a cscript to 'RMD' and 'site nuke'
+			- a banned (mp3)-release can be deleted automatically after first file, saving bw and hd-space.
+			- ng-chown (a new bin) allows you to chown files/dirs. An example of its use is included.
+			- ng-undupe (a new bin) will undupe files that fail (on rescan for instance) allowing the file to be re-uploaded.
+			- upgrading is easy - there is no need to rewrite the config for each upgrade - just copy it over.
+			- zsconfig.h now only holds changes to the defaults, ie on upgrades new options will be used with default values.
+			- the zipscript can be run from (chroot'ed) shell, allowing for easier debugging (and execution from scripts).
+			- rescan is "safe" - it will not remove files that are being uploaded.
+
+
+		----	Changes in the sitebot:
+
+			Numerous new IRC commands: !leechers, !idlers, !uploaders,
+			!new, !nukes, !unnukes, !search, and !uptime.
+
+			A new plug-in system, which makes it easier for users to
+			add custom features without having to directly modify the
+			source files. There are several example plug-ins included;
+			such as a pre-time check, channel kick on deluser, and
+			an IRC nick to FTP user mapping plug-in.
+
+			Invite users to private channels based on their name,
+			group, or flags. For example, one could invite all
+			users with the "1" flag to #Staff.
+
+			dZSbot can announce sysop.log and login.log events, or
+			redirect them to your staff channel.
+
+			The FTP bouncer check now supports explicit secure connections,
+			commonly referred to as "AUTH TLS".
+
+			The bot now uses a theming system to customize channel
+			announces. A preview system is included allowing you
+			to view your theme before using it.
+
+			Easier configuration - if an option isn't defined the
+			default value will be used. This makes upgrading much easier,
+			since there's no need to reconfigure the bot for each update.
+
+			Full support for glftpd v1.x and v2.x.
+
+			Better error control - instead of crashing, the bot
+			will output what's wrong in the party line.
+
+
+		----	Changes in sitebot scripts/addons:
+
+			A few new scripts have been added.
+
+			Some scripts have been revised, others rewritten.
+
+
+		----	Changes in sitewho:
+
+			A lot of the code have been rewritten.
+
+			A few new options have been added.
+
+			Full support for glftpd v1.x and v2.x.
+
+
+		----	Changes in scripts/:
+
+			A few scripts have been removed, other added and some
+			revised/rewritten/replaced.
+
+
+
+
+
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+				END OF CHANGELOG
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
