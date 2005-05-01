@@ -428,10 +428,10 @@ Path Parsing:
 %u_siteop, %u_name
 
 - REQFILLED:
-%releasename, %u_name, %g_name, %u_tagline, %u_requester
+%relname, %u_name, %g_name, %u_tagline, %u_requester
 
 - REQUEST:
-%releasename, %u_name, %g_name, %u_tagline
+%relname, %u_name, %g_name, %u_tagline
 
 - SFV_AUDIO:
 %t_filecount, %u_name, %g_name, %u_tagline

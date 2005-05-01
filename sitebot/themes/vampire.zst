@@ -185,8 +185,8 @@ announce.PRE                        = "%b{PRE%c1{:}} %c1{-}%c2{%section}%c1{-} %
 announce.BADMSGINVITE               = "%b{BAD iNViTE%c1{:}} %c3{%b{%u_ircnick}} %c1{(}%c3{%u_host}%c1{) tried to invite himself with invalid login!}"
 announce.INVITE                     = "%b{iNViTE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{invited himself as} %c3{%b{%u_ircnick}}%c1{.}"
 announce.MSGINVITE                  = "%b{iNViTE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{invited himself as} %c3{%b{%u_ircnick}}%c1{.}"
-announce.REQFILLED                  = "%b{FiLLED%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{just filled} %c3{%b{%releasename}} %c1{for} %c3{%b{%u_requester}}%c1{.}"
-announce.REQUEST                    = "%b{REQUEST%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{requests} %c3{%b{%releasename}}%c1{.}"
+announce.REQFILLED                  = "%b{FiLLED%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{just filled} %c3{%b{%relname}} %c1{for} %c3{%b{%u_requester}}%c1{.}"
+announce.REQUEST                    = "%b{REQUEST%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{requests} %c3{%b{%relname}}%c1{.}"
 
 ## Bouncer status
 announce.BNC                        = "%b{BNC%c1{:}} %c1{Checking bouncer status, please} %c3{%b{wait}} %c1{...}"

@@ -230,8 +230,8 @@ announce.TURGEN					= "%msg"
 announce.BADMSGINVITE				= "[%b{%c1{BAD IRC INVITE}}] %b{%u_ircnick} (%u_host) tried to invite himself with invalid login"
 announce.INVITE					= "[%b{INVITE}] %b{%u_name} of %g_name invited himself as %b{%u_ircnick}"
 announce.MSGINVITE				= "[%b{IRC INVITE}] %b{%u_name} invited himself as %b{%u_ircnick}"
-announce.REQFILLED				= "[%b{REQFILLED}] %b{%u_name} just filled %b{%releasename} for %b{%u_requester}"
-announce.REQUEST				= "[%b{REQUEST}] %b{%u_name} requests %b{%releasename}"
+announce.REQFILLED				= "[%b{REQFILLED}] %b{%u_name} just filled %b{%relname} for %b{%u_requester}"
+announce.REQUEST				= "[%b{REQUEST}] %b{%u_name} requests %b{%relname}"
 
 ## Bouncer status
 announce.BNC					= "[%b{BNC}] Checking bouncer status..."
