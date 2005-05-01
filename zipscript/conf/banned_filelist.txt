@@ -4,7 +4,7 @@
 # Please note that special chars, like [ and ] are used as
 # wildcards, so if you wish to match those in a filename, you
 # need to double-escape them ( \\[ and \\] ).
-*(*).nfo
+*\\(*\\).nfo
 *.bad
 *.crc
 *.date
@@ -333,7 +333,7 @@ koh.nfo
 kp.nfo
 l2.nfo
 lair.nfo
-lasttest(2).nfo
+lasttest\\(2\\).nfo
 lbt.nfo
 lips.nfo
 ll.nfo
@@ -700,7 +700,7 @@ zipscript-c.core
 zn.nfo
 zx.nfo
 \\[*%*incomplete*\\]
-\\[*\\]*(*)*\\[*\\]
+\\[*\\]*\\(*\\)*\\[*\\]
 \\[100% complete\\]*
 \\[imdb\\]=-*-=\\[imdb\\]
 \\[stream:*
