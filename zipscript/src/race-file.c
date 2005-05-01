@@ -1411,7 +1411,6 @@ check_zipfile(const char *dirname, const char *zipfile)
 			sprintf(path_buf, "%s/%s", dirname, dp->d_name);
 			rename(path_buf, "file_id.diz");
 			chmod("file_id.diz", 0644);
-			d_log("check_zipfile: diz found - %s\n", path_buf);
 			continue;
 		}
 #if (zip_clean)
@@ -1436,7 +1435,6 @@ check_zipfile(const char *dirname, const char *zipfile)
 			if ((t && filestat.st_ctime < t) || !t) {
 				strlcpy(nfo_buf, dp->d_name, NAME_MAX);
 				t = filestat.st_ctime;
-				d_log("check_zipfile: nfo found - %s\n", nfo_buf);
 				continue;
 			}
 		}
@@ -1467,8 +1465,9 @@ filebanned_match(const char *filename)
 	int		fd;
 	char		buf[500];
 	FILE		*fname_fd;
-	char		fbuf[sizeof(filename)];
+	char		fbuf[sizeof(filename)+1];
 
+	bzero(fbuf, sizeof(fbuf));
 	strcpy(fbuf, filename);
 
 	if ((fd = open(banned_filelist, O_RDONLY)) == -1) {
