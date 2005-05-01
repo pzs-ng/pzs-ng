@@ -1467,6 +1467,9 @@ filebanned_match(const char *filename)
 	int		fd;
 	char		buf[500];
 	FILE		*fname_fd;
+	char		fbuf[sizeof(filename)];
+
+	strcpy(fbuf, filename);
 
 	if ((fd = open(banned_filelist, O_RDONLY)) == -1) {
 		d_log("filebanned_match: open(%s): %s\n", banned_filelist, strerror(errno));
@@ -1476,11 +1479,13 @@ filebanned_match(const char *filename)
 		d_log("filebanned_match: fdopen(%s): %s\n", banned_filelist, strerror(errno));
 		return 0;
 	}
+	strtolower(fbuf);
 	while ((fgets(buf, sizeof(buf), fname_fd))) {
 		buf[strlen(buf) - 1] = '\0';
 		if ( *buf == '\0' || *buf == ' ' || *buf == '\t' || *buf == '#' )
 			continue;
-		if (!fnmatch(buf, filename, FNM_CASEFOLD)) {
+		strtolower(buf);
+		if (!fnmatch(buf, fbuf, 0)) {
 			close(fd);
 			return 1;
 		}
