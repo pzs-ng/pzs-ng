@@ -8,7 +8,7 @@
 #  Notes: Best experienced on dark -black- backgrounds.    #
 #         Please contact me if you have any suggestions,   #
 #         fixes or additions for this theme.               #
-#  Tested with: pzs-ng r1754                               #
+#  Tested with: pzs-ng r1793                               #
 #                                                          #
 ############################################################
 #                                                          #
@@ -82,6 +82,8 @@ announce.BAD_FILE_SFV           = "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{
 announce.BAD_FILE_WRONGDIR      = "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{uploaded a bad file (wrong dir) in} %c3{%b{%releasename}}%c1{.}"
 announce.BAD_FILE_YEAR          = "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{uploaded a bad file (banned year) in} %c3{%b{%releasename}}%c1{.}"
 announce.BAD_FILE_ZIP           = "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{uploaded a bad file (ZiP integrity failed) in} %c3{%b{%releasename}}%c1{.}"
+announce.BAD_FILE_NFODENIED     = "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{uploaded a bad file (nfo file in a zip dir) in} %c3{%b{%releasename}}%c1{.}"
+announce.BAD_FILE_PASSWORD      = "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{uploaded a bad file (password protected file) in} %c3{%b{%releasename}}%c1{.}"
 
 ## Loop variables, these format the racers and stats
 announce.RACE_AUDIO_LOOP1       = "%c3{%b{%a_name}} %c1{/} %c3{%a_gname}%splitter"
