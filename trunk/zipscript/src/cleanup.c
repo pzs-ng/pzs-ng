@@ -226,6 +226,7 @@ checklink(char *path, char *link_, int setfree)
 	struct stat	fileinfo;
 					
 	size = readlink(link_, temp, PATH_MAX);
+	if (size < 0) return 0;
 	temp[size] = '\0';
 	retval = 0;
 	if (stat(link_, &fileinfo)) {
