@@ -437,7 +437,9 @@
 #ifndef deny_double_nfo
 #define deny_double_nfo		FALSE
 #endif
-
+#ifndef deny_double_nfo_warn
+#define deny_double_nfo_warn	TRUE
+#endif
 /*
  * Exclude non sfv directories (ie group/request directory)
  */

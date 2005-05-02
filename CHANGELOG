@@ -75,6 +75,7 @@ v1.xx	:
 	  zipscript: remove: config setting - disable_zip_complete
 	  zipscript: remove: config setting - disable_zip_norace_halfway
 	  zipscript: remove: config setting - disable_zip_norace_complete
+	  zipscript: new: config option - deny_double_nfo_warn
 
 
 v1.00	: Initial release

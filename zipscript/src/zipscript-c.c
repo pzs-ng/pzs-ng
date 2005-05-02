@@ -1003,12 +1003,15 @@ handle_nfo(GLOBAL *g, MSG *msg, DIR *dir) {
 	d_log("zipscript-c: File type is: NFO\n");
 #if ( deny_double_nfo )
 	if (findfileextcount(dir, ".nfo") > 1) {
-		d_log("zipscript-c: Looks like there already is a nfo uploaded. Denying this one.\n");
 		sprintf(g->v.misc.error_msg, DUPE_NFO);
 		msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 		if (exit_value < 2)
 			writelog(g, msg->error, bad_file_nfo_type);
-		exit_value = 2;
+		if (!deny_double_nfo_warn) {
+			d_log("zipscript-c: Looks like there already is a nfo uploaded. Denying this one.\n");
+			exit_value = 2;
+		} else
+			d_log("zipscript-c: Looks like there already is a nfo uploaded. Warn on -allowing anyway.\n");
 		return exit_value;
 	}
 #endif

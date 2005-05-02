@@ -472,6 +472,15 @@ deny_double_nfo <TRUE|FALSE>
 	deny a nfo upload if one already exists in the same dir.
 	Default: FALSE
 
+deny_double_nfo_warn <TRUE|FALSE>
+	If you rather want the nfo to stay, to make sure the correct nfo is in
+	the dir, you can set this to TRUE - a msg will be logged in channel,
+	allowing the uploader (or and admin) to find out which of the two
+	nfo files are the correct one.
+	Note: deny_double_nfo needs to be set to TRUE for this option to take
+	effect.
+	Default: TRUE
+
 exclude_non_sfv_dirs <TRUE|FALSE>
 	Applies only to audio/mp3 releases - NEEDS MORE INFO HERE!!!!!
 	Default: TRUE
