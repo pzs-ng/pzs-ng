@@ -65,6 +65,7 @@ int handle_sfv32(GLOBAL *, MSG *, DIR *, char **, char *);
 void read_envdata(GLOBAL *, GDATA *, UDATA *, struct stat *);
 void check_filesize(GLOBAL *, const char *, struct stat *);
 void lock_release(GLOBAL *, DIR *, DIR *);
+void set_uid_gid(void);
 
 int 
 main(int argc, char **argv)
@@ -89,7 +90,7 @@ main(int argc, char **argv)
 	char	       *inc_point[2];
 	char           *complete_announce = 0;
 	int		cnt, n = 0;
-	int		nfofound = 0;
+	char	*nfofound = 0;
 #if ( del_banned_release || enable_banned_script )
 	int		deldir = 0;
 #endif
@@ -116,25 +117,18 @@ main(int argc, char **argv)
 
 	umask(0666 & 000);
 
-	if ( program_uid > 0 ) {
-		d_log("zipscript-c: Trying to change effective uid/gid\n");
-		setegid(program_gid);
-		seteuid(program_uid);
-	} else if (!geteuid()) {
-		d_log("zipscript-c: +s mode detected - trying to change effective uid/gid to !root\n");
-		if (setegid(getgid()) == -1)
-			d_log("zipscript-c: failed to change gid: %s\n", strerror(errno));
-		if (seteuid(getuid()) == -1)
-			d_log("zipscript-c: failed to change uid: %s\n", strerror(errno));
-	}
+	set_uid_gid();
+
 	if (argc != 4) {
 		printf(" - - PZS-NG ZipScript-C v%s - -\n\nUsage: %s <filename> <path> <crc>\n\n", ng_version(), argv[0]);
 		exit(1);
 	}
-	d_log("zipscript-c: Clearing arrays\n");
-	bzero(&g.v.total, sizeof(struct race_total));
-	g.v.misc.slowest_user[0] = 30000;
-	g.v.misc.fastest_user[0] = g.v.misc.release_type = RTYPE_NULL;
+	
+	bzero(&g, sizeof(GLOBAL));
+	//d_log("zipscript-c: Clearing arrays\n");
+	//bzero(&g.v.total, sizeof(struct race_total));
+	//g.v.misc.slowest_user[0] = 30000;
+	//g.v.misc.fastest_user[0] = g.v.misc.release_type = RTYPE_NULL;
 
 	/* gettimeofday(&g.v.transfer_stop, (struct timezone *)0 ); */
 
@@ -159,10 +153,10 @@ main(int argc, char **argv)
 		g.v.total.start_time = g.v.total.stop_time - ((unsigned int)(g.v.file.size) / g.v.file.speed);
 	else
 		g.v.total.start_time = g.v.total.stop_time > (g.v.total.stop_time - 1) ? g.v.total.stop_time : (g.v.total.stop_time -1);
-	if ((int)(g.v.total.stop_time - g.v.total.start_time) < 1)
+	if ((g.v.total.stop_time - g.v.total.start_time) < 1)
 		g.v.total.stop_time = g.v.total.start_time + 1;
 
-	n = (g.l.length_path = (int)strlen(g.l.path)) + 1;
+	n = (g.l.length_path = strlen(g.l.path)) + 1;
 
 	d_log("zipscript-c: Allocating memory for variables\n");
 	g.l.race = ng_realloc2(g.l.race, n += 10 + (g.l.length_zipdatadir = sizeof(storage) - 1), 1, 1, 1);
@@ -183,11 +177,12 @@ main(int argc, char **argv)
 	/* Get file extension */
 
 	d_log("zipscript-c: Parsing file extension from filename... (%s)\n", argv[1]);
-	for (temp_p = name_p = argv[1]; *name_p != 0; name_p++) {
+	name_p = temp_p = find_last_of(argv[1], ".");
+	/*for (temp_p = name_p = argv[1]; *name_p != 0; name_p++) {
 		if (*name_p == '.') {
 			temp_p = name_p;
 		}
-	}
+	}*/
 	
 	if (*temp_p != '.') {
 		d_log("zipscript-c: Got: no extension\n");
@@ -223,20 +218,20 @@ main(int argc, char **argv)
 
 	printf(zipscript_header);
 
-	nfofound = (int)findfileext(dir, ".nfo");
+	nfofound = findfileext(dir, ".nfo");
 
 	/* Hide users in group_dirs */
 	if (matchpath(group_dirs, g.l.path) && (hide_group_uploaders == TRUE)) {
 		d_log("zipscript-c: Hiding user in group-dir:\n");
-		if ((int)strlen(hide_gname) > 0) {
+		if (strlen(hide_gname) > 0) {
 			snprintf(g.v.user.group, 18, "%s", hide_gname);
 			d_log("zipscript-c:    Changing groupname\n");
 		}
-		if ((int)strlen(hide_uname) > 0) {
+		if (strlen(hide_uname) > 0) {
 			snprintf(g.v.user.name, 18, "%s", hide_uname);
 			d_log("zipscript-c:    Changing username\n");
 		}
-		if ((int)strlen(hide_uname) == 0) {
+		if (strlen(hide_uname) == 0) {
 			d_log("zipscript-c:    Making username = groupname\n");
 			snprintf(g.v.user.name, 18, "%s", g.v.user.group);
 		}
@@ -1555,6 +1550,24 @@ lock_release(GLOBAL *g, DIR *dir, DIR *parent)
 		if (update_lock(&g->v, 1, 0) != -1)
 			break;
 			
+	}
+
+}
+
+void
+set_uid_gid(void)
+{
+
+	if ( program_uid > 0 ) {
+		d_log("zipscript-c: Trying to change effective uid/gid\n");
+		setegid(program_gid);
+		seteuid(program_uid);
+	} else if (!geteuid()) {
+		d_log("zipscript-c: +s mode detected - trying to change effective uid/gid to !root\n");
+		if (setegid(getgid()) == -1)
+			d_log("zipscript-c: failed to change gid: %s\n", strerror(errno));
+		if (seteuid(getuid()) == -1)
+			d_log("zipscript-c: failed to change uid: %s\n", strerror(errno));
 	}
 
 }

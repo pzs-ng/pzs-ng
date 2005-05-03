@@ -44,12 +44,17 @@ find_last_of(char *name, const char *delim)
 void
 strip_whitespaces(char *s)
 {
-	if (s)
-		while (s[(int)strlen(s)-1] == ' '  ||
-	           s[(int)strlen(s)-1] == '\t' ||
-		   s[(int)strlen(s)-1] == '\n' ||
-	           s[(int)strlen(s)-1] == '\r')
-			s[(int)strlen(s)-1] = '\0';
+	size_t len;
+
+	if (s) {
+		len = strlen(s)-1;
+		while (s[len] == ' '  ||
+	           s[len] == '\t' ||
+		       s[len] == '\n' ||
+	           s[len] == '\r')
+			s[len] = '\0';
+			len--;
+	}
 }
 
 /* remove preceding whitespaces and newline stuff */
