@@ -4,7 +4,7 @@
 #
 # Created & maintained by: dakrer (dakrer@hotmail.com, #pzs-ng @ EFnet)
 #
-# Tested with: pzs-ng, revision 1490 (pre RC1)
+# Tested with: pzs-ng, revision 1797
 #
 # The theme is designed to limit the amount of output while keeping readability
 # high. The use of colors is limited to important events such as pre, newdir,
@@ -34,8 +34,9 @@
 # set msgreplace(4)           "NEWDIR:*/subs:SUBTITLES"
 # set msgreplace(5)           "NEWDIR:*/vobsub:SUBTITLES"
 # set msgreplace(6)           "NEWDIR:*/vobsubs:SUBTITLES"
-# set msgreplace(7)           "NEWDIR:*/cover:COVERS"
-# set msgreplace(8)           "NEWDIR:*/covers:COVERS"
+# set msgreplace(7)           "NEWDIR:*/subpack:SUBTITLES"
+# set msgreplace(8)           "NEWDIR:*/cover:COVERS"
+# set msgreplace(9)           "NEWDIR:*/covers:COVERS"
 #
 # By default this theme does not use a prefix (usually the sitename). If you use
 # this theme in a channel where other sites also announce (like a site ring) you
@@ -43,13 +44,13 @@
 # it easier to see which site is announcing.
 #
 # The theme uses the new padding/justifying control codes introduced in pzs-ng
-# beta4 to format the output of race stats.
+# v1.0beta4 to format the output of race stats.
 #
 ################################################################################
 
 
-# Default colors, used for all sections. See default.zst for example on how to
-# use custom section colors (not used in this theme).
+# Default colors, used for all sections. See default.zst for an example on how
+# to use custom section colors (not used in this theme).
 COLOR1		= "03"
 COLOR2		= "04"
 COLOR3		= "07"
@@ -61,6 +62,7 @@ COLOR3		= "07"
 # place.
 PREFIX		= ""
 #PREFIX		= "[%b{%sitename}] "
+
 SPLITTER	= ", "
 KB		= "%b{%value}kB/s"
 MB		= "%b{%value}MB/s"
@@ -104,6 +106,13 @@ announce.UNNUKE					= "[%b{%section}] [%b{UNNUKE}] %b{%relname} was unnuked by %
 announce.NUKEES					= "%b{%u_name} (%b{%size}MB)"
 announce.WIPE					= "[%b{%section}] [%b{WIPE}] %b{%relname} was wiped by %b{%u_name}"
 announce.WIPE-r					= "[%b{%section}] [%b{WIPE-r}] %b{%relname} and all subdirectories was wiped by %b{%u_name}"
+
+## Custom announcements (see dZSbot.defaults.conf for info on how to enable)
+announce.COVERS					= "[%b{%section}] [%c1{COVERS}] %path/%b{%reldir} (created by %b{%u_name})"
+announce.NEWCD					= "[%b{%section}] [%c1{NEW CD}] %path/%b{%reldir} (created by %b{%u_name})"
+announce.NEWDISC				= "[%b{%section}] [%c1{NEW DISC}] %path/%b{%reldir} (created by %b{%u_name})"
+announce.SAMPLE					= "[%b{%section}] [%c1{SAMPLE DIR}] %path/%b{%reldir} (created by %b{%u_name})"
+announce.SUBTITLES				= "[%b{%section}] [%c1{SUBTITLES}] %path/%b{%reldir} (created by %b{%u_name})"
 
 ## Special zipscript announcements
 announce.DOUBLESFV				= "[%b{DOUBLE SFV}] %b{%u_name} tried to upload a dupe sfv"
@@ -212,13 +221,6 @@ announce.COMPLETE_STAT_RACE_AUDIO_VBR		= "[%b{%section}] [%c3{%b{COMPLETE}}] %b{
 ## Postdel announce
 announce.INCOMPLETE				= "[%b{%section}] [%c2{%b{INCOMPLETE}}] %b{%releasename} is now incomplete thanks to %b{%u_name}"
 
-## Custom announcements (see dZSbot.defaults.conf for info on how to enable)
-announce.SAMPLE					= "[%b{%section}] [%c1{SAMPLE DIR}] %path/%b{%reldir} (created by %b{%u_name})"
-announce.NEWCD					= "[%b{%section}] [%c1{NEW CD}] %path/%b{%reldir} (created by %b{%u_name})"
-announce.NEWDISC				= "[%b{%section}] [%c1{NEW DISC}] %path/%b{%reldir} (created by %b{%u_name})"
-announce.SUBTITLES				= "[%b{%section}] [%c1{SUBTITLES}] %path/%b{%reldir} (created by %b{%u_name})"
-announce.COVERS					= "[%b{%section}] [%c1{COVERS}] %path/%b{%reldir} (created by %b{%u_name})"
-
 ## Third party scripts
 announce.IMDB					= "[%b{%section}] %msg"
 announce.IMDBFIND				= "[%b{%section}] %msg"
@@ -246,7 +248,7 @@ announce.IDLE					= "[%b{IDLERS}] Current idlers:"
 announce.BW					= "[%b{BW}] %b{%uploads} up at %upspeed (%uppercent%) :: %b{%downloads} down at %dnspeed (%dnpercent%) %b{%transfers} in total at %totalspeed (%totalpercent%) :: %b{%active} browsing :: %b{%idlers} idle :: %b{%totallogins} in total"
 announce.BWUP					= "[%b{BW}] %b{%uploads} uploads @ %upspeed (%uppercent%)"
 announce.BWDN					= "[%b{BW}] %b{%downloads} downloads @ %dnspeed (%dnpercent%)"
-announce.TOTUPDN				= "[%b{BW}] %type %b{%count} at %b{%total} (%b{%per}%)"
+announce.TOTUPDN				= "[%b{BW}] %type %b{%count} at %total (%b{%per}%)"
 announce.TOTIDLE				= "[%b{IDLERS}] Currently %b{%count} users idle"
 announce.USERIDLE				= "[%b{IDLER}] %b{%u_name} at %idletime"
 announce.USER					= "[%b{BW}] %b{%u_name} on %b{%filename} (%b{%fper} done) at %speed (%b{%per} usage)"
