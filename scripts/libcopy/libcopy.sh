@@ -2,7 +2,7 @@
 
 ###############################################################################
 #
-# LIBCOPY v1.0 by psxc
+# LIBCOPY v1.1 by psxc
 ######################
 #
 # This small script (ripped from glinstall.sh ;) will copy libs used by files
@@ -24,7 +24,7 @@ needed_bins="unzip zipscript-c postdel racestats cleanup datacleaner rescan ng-u
 # CODEPART - PLEASE DO NOT CHANGE #
 ###################################
 
-version="1.0 (pzs-ng version)"
+version="1.1 (pzs-ng version)"
 
 # Set system type
 case $(uname -s) in
@@ -144,7 +144,8 @@ case $os in
         done
     ;;
     *)
-        ldd $glroot/bin/* 2>/dev/null | awk '{print $3}' | grep -e "^/" | 
+	bindir="`echo $glroot/bin | tr -s '/'`"
+	ldd $bindir/* 2>/dev/null | grep -v "^$bindir" | tr ' \t' '\n' | grep -e "^/" |
         sort | uniq | while read lib; do
             lddsequence
         done
