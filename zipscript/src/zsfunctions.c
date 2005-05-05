@@ -1073,6 +1073,8 @@ getrelname(GLOBAL *g)
 	int		k = 2, subc;
 	char		path[2][PATH_MAX];
 
+	bzero(path[0], sizeof(path[0]));
+	bzero(path[1], sizeof(path[1]));
 	buffer_paths(g, path, &k, ((int)strlen(g->l.path)-1));
 
 	subc = subcomp(path[1]);
