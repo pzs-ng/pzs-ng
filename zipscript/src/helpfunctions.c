@@ -47,13 +47,14 @@ strip_whitespaces(char *s)
 	size_t len;
 
 	if (s && *s) {
-		len = strlen(s)-1;
+		len = strlen(s) - 1;
 		while (s[len] == ' '  ||
-	           s[len] == '\t' ||
-		       s[len] == '\n' ||
-	           s[len] == '\r')
-			s[len] = '\0';
-			len--;
+			s[len] == '\t' ||
+			s[len] == '\n' ||
+			s[len] == '\r') {
+				s[len] = '\0';
+				len--;
+			}
 	}
 }
 
