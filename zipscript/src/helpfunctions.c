@@ -46,7 +46,7 @@ strip_whitespaces(char *s)
 {
 	size_t len;
 
-	if (s) {
+	if (s && *s) {
 		len = strlen(s)-1;
 		while (s[len] == ' '  ||
 	           s[len] == '\t' ||
