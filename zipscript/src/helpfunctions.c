@@ -41,7 +41,7 @@ find_last_of(char *name, const char *delim)
 }
 
 /* remove trailing whitespaces and newline stuff */
-void
+char *
 strip_whitespaces(char *s)
 {
 	size_t len;
@@ -56,6 +56,8 @@ strip_whitespaces(char *s)
 				len--;
 			}
 	}
+
+	return s;
 }
 
 /* remove preceding whitespaces and newline stuff */
