@@ -83,7 +83,7 @@ proc ::dZSBot::DeluserBan::DeInit {args} {
 # Called by the sitebot's event handler on the
 # "DELUSER" and "PURGED" announces.
 #
-proc ::dZSBot::DeluserBan::LogEvent {event section logData} {
+proc ::dZSBot::DeluserBan::LogEvent {event section sectionPath logData} {
     global botnick
     variable banUser
     variable killUser

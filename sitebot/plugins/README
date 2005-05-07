@@ -36,7 +36,7 @@ Example:
 - Announce events are when a new log entry is read from glftpd.log,
   login.log, or sysop.log.
 
-- Arguments passed to the script: event section logData.
+- Arguments passed to the script: event section sectionPath logData
 
 
 # Special Events

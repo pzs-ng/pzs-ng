@@ -208,12 +208,13 @@ announce.IMDBVAR                = "[%b{imdb  }][%section] %b{%imdbname} (%imdbur
 announce.PRE                    = "[%b{%c1{pre}   }][%section] %b{%relname} by %b{%pregroup} in %b{%files} files (%b{%mbytes}MB)."
 announce.TURGEN                 = "%msg"
 
-## Miscellaneous announcements
+## Other announcements
 announce.BADMSGINVITE           = "[%b{%c1{badinv}}] %b{%u_ircnick} (%u_host) tried to invite himself with invalid login!"
 announce.INVITE                 = "[%b{invite}] %b{%u_name} of %g_name invited himself as %b{%u_ircnick}."
 announce.MSGINVITE              = "[%b{invite}] %b{%u_name} of %g_name invited himself as %b{%u_ircnick}."
 announce.REQFILLED              = "[%b{filled}] %b{%u_name} of %g_name just filled %b{%relname} for %b{%u_requester}."
 announce.REQUEST                = "[%b{req   }] %b{%u_name} of %g_name requests %b{%relname}."
+announce.WELCOME                = "Welcome to %b{%sitename}'s sitechan. Type %cmdprehelp for help."
 
 ## Bouncer status
 announce.BNC                    = "Checking bouncer status..."
@@ -221,42 +222,53 @@ announce.BNC_PING               = "%b{-} %num. %desc at %ip:%port is %b{DOWN} (c
 announce.BNC_ONLINE             = "%b{-} %num. %desc at %ip:%port is %b{UP} (login: %b{%response}ms ping: %b{%ping}ms)"
 announce.BNC_OFFLINE            = "%b{-} %num. %desc at %ip:%port is %b{DOWN} (%error)"
 
-## IRC Commands
-announce.LEECH                  = "[%b{bwinfo}] Current leechers:"
-announce.UPLOAD                 = "[%b{bwinfo}] Current uploaders:"
-announce.IDLE                   = "[%b{bwinfo}] Current idlers:"
-announce.BW                     = "[%b{bwinfo}] %b{%uploads} up at %upspeed (%uppercent%) :: %b{%downloads} down at %dnspeed (%dnpercent%) %b{%transfers} in total at %totalspeed (%totalpercent%) :: %b{%active} browsing :: %b{%idlers} idle :: %b{%totallogins} out of %b{%maxusers} in total."
-announce.BWUP                   = "[%b{bwinfo}] %b{%uploads} uploads @ %upspeed (%uppercent%)."
-announce.BWDN                   = "[%b{bwinfo}] %b{%downloads} downloads @ %dnspeed (%dnpercent%)."
-announce.TOTUPDN                = "[%b{bwinfo}] %type %b{%count} at %b{%total} (%b{%per}%)."
-announce.TOTIDLE                = "[%b{bwinfo}] Currently %b{%count} users idle!"
-announce.USERIDLE               = "[%b{bwinfo}] %b{%u_name} of %g_name at %idletime."
-announce.USER                   = "[%b{bwinfo}] %b{%u_name} of %g_name on %b{%filename} (%b{%fper} done) at %speed (%b{%per} usage)."
-announce.SPEEDUP                = "[%b{bwinfo}] %b{%u_name} of %g_name is uploading %b{%f_name} at %upspeed (%uppercent)."
-announce.SPEEDDN                = "[%b{bwinfo}] %b{%u_name} of %g_name is downloading %b{%f_name} at %dnspeed (%dnpercent)."
-announce.SPEEDID                = "[%b{bwinfo}] %b{%u_name} of %g_name has been idle for %idletime."
-announce.SPEEDERROR             = "[%b{bwinfo}] Nope, try again. Found noone by that name on site."
-announce.WELCOME                = "Welcome to %b{%sitename}'s sitechan. Type %cmdprehelp for help."
+## Other commands
 announce.FREE                   = "[%b{space }] %devices[Totals: %b{%free} of %b{%total}]."
 announce.FREE-DEV               = "%section: %b{%free} (%perc_free%) free, %b{%used} (%perc_used%) used, out of %b{%total}. :: "
 announce.UPTIME                 = "[%b{uptime}] System: %time, %b{%users} user(s), load: %load Eggdrop: %eggdrop"
 
-## IRC Command: !new
+## Command: !bw, !bwup, and !bwdn
+announce.BW                     = "[%b{bwinfo}] %b{%uploads} up at %upspeed (%uppercent%) :: %b{%downloads} down at %dnspeed (%dnpercent%) %b{%transfers} in total at %totalspeed (%totalpercent%) :: %b{%active} browsing :: %b{%idlers} idle :: %b{%totallogins} out of %b{%maxusers} in total."
+announce.BWUP                   = "[%b{bwinfo}] %b{%uploads} uploads @ %upspeed (%uppercent%)."
+announce.BWDN                   = "[%b{bwinfo}] %b{%downloads} downloads @ %dnspeed (%dnpercent%)."
+
+## Command: !leechers
+announce.LEECH                  = "[%b{bwinfo}] Current leechers:"
+announce.USERDN                 = "[%b{bwinfo}] %b{%u_name} of %g_name downloading %b{%filename} (%b{%fper} done) at %speed (%b{%per} usage)."
+announce.TOTALDN                = "[%b{bwinfo}] Leechers: %b{%count} at %b{%total} (%b{%per}%)."
+
+## Command: !uploaders
+announce.UPLOAD                 = "[%b{bwinfo}] Current uploaders:"
+announce.USERUP                 = "[%b{bwinfo}] %b{%u_name} of %g_name uploading %b{%filename} (%b{%fper} done) at %speed (%b{%per} usage)."
+announce.TOTALUP                = "[%b{bwinfo}] Uploaders: %b{%count} at %b{%total} (%b{%per}%)."
+
+## Command: !idlers
+announce.IDLE                   = "[%b{bwinfo}] Current idlers:"
+announce.USERIDLE               = "[%b{bwinfo}] %b{%u_name} of %g_name at %idletime."
+announce.TOTALIDLE              = "[%b{bwinfo}] Currently %b{%count} users idle!"
+
+## Command: !speed
+announce.SPEEDUP                = "[%b{bwinfo}] %b{%u_name} of %g_name is uploading %b{%f_name} at %upspeed (%uppercent)."
+announce.SPEEDDN                = "[%b{bwinfo}] %b{%u_name} of %g_name is downloading %b{%f_name} at %dnspeed (%dnpercent)."
+announce.SPEEDIDLE              = "[%b{bwinfo}] %b{%u_name} of %g_name has been idle for %idletime."
+announce.SPEEDERROR             = "[%b{bwinfo}] Nope, try again. Found noone by that name on site."
+
+## Command: !new
 announce.NEW                    = "%b{(NEW)} Latest Releases In: %b{%section}"
 announce.NEW_BODY               = "%b{-} %num. %b{%relname} by %b{%u_name}/%g_name (%b{%files}F/%b{%mbytes}MB/%age)"
 announce.NEW_NONE               = "%b{-} No releases found."
 
-## IRC Command: !dupe/!search
+## Command: !dupe and !search
 announce.SEARCH                 = "%b{(SEARCH)} Searching for: %pattern"
 announce.SEARCH_BODY            = "%b{-} %num. %b{%relname} (%b{%files}F/%b{%mbytes}MB/%age)"
 announce.SEARCH_NONE            = "%b{-} No matching results found."
 
-## IRC Command: !nukes
+## Command: !nukes
 announce.NUKES                  = "%b{(NUKES)} Latest Nukes In: %b{%section}"
 announce.NUKES_BODY             = "%b{-} %date %b{%relname} was nuked %b{%multiplier}x by %b{%nuker}. Reason: %b{%reason}"
 announce.NUKES_NONE             = "%b{-} No nukes found."
 
-## IRC Command: !unnukes
+## Command: !unnukes
 announce.UNNUKES                = "%b{(UNNUKES)} Latest Unnukes In: %b{%section}"
 announce.UNNUKES_BODY           = "%b{-} %date %b{%relname} was unnuked %b{%multiplier}x by %b{%unnuker}. Reason: %b{%reason}"
 announce.UNNUKES_NONE           = "%b{-} No unnukes found."

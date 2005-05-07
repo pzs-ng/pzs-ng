@@ -181,7 +181,7 @@ announce.IMDBVAR                = "Not implemented"
 announce.PRE                    = "%b{[%c1{%section-PRE}]} + %b{%group} launches %b{%relname} - (with %b{%size}MB in %b{%file_size}F)"
 announce.TURGEN                 = "%msg"
 
-## Miscellaneous announcements
+## Other announcements
 announce.BADMSGINVITE           = "%b{[%c2{INVITE}]} - %b{%u_ircnick} (%u_host) tried to invite himself with an invalid login."
 announce.INVITE                 = "%b{[%c1{INVITE}]} + %b{%u_name}/%g_name invited himself as %b{%u_ircnick}."
 announce.MSGINVITE              = "%b{[%c1{INVITE}]} + %b{%u_name}/%g_name invited himself as %b{%u_ircnick}."
@@ -195,28 +195,36 @@ announce.BNC_PING               = "%b{[%c1{BNC}]} + %ip:%port - %b{DOWN} (can't 
 announce.BNC_ONLINE             = "%b{[%c1{BNC}]} + %ip:%port - %b{UP} (response: %b{%response}ms)"
 announce.BNC_OFFLINE            = "%b{[%c1{BNC}]} + %ip:%port - %b{DOWN} (%error)"
 
-## Stats Commands
+## Other commands
+announce.FREE                   = "%devices-%b{%sitename}- %b{[%c1{FREE}]} + [TOTAL: %b{%free} free of %b{%total}]"
+announce.FREE-DEV               = "%b{[%c1{FREE}]} + [%section: %b{%free} free of %b{%total}]\n"
+announce.UPTIME                 = "%b{[%c1{UPTIME}]} + %b{system:} %time, %users user(s), load: %load %b{sitebot:} %eggdrop"
+
+## Command: !bw, !bwup, and !bwdn
 announce.BW                     = "%b{[%c1{BW}]} + Uploaders: %b{%uploads}@%upspeed - Leechers: %b{%downloads}@%dnspeed - Idlers: %b{%active} browsing, %b{%idlers} idle - Total: %b{%transfers}@%totalspeed with %b{%totallogins}/%b{%maxusers} online"
 announce.BWUP                   = "%b{[%c1{BW}]} + %b{%uploads} upload(s) at %upspeed"
 announce.BWDN                   = "%b{[%c1{BW}]} + %b{%downloads} download(s) at %dnspeed"
 
+## Command: !leechers
 announce.LEECH                  = "%b{[%c1{STATUS}]} + Current leechers:"
+announce.USERDN                 = "%b{[%c1{STATUS}]} + %b{%u_name}/%g_name downoading %b{%filename} at %speed (%b{%fper} done)"
+announce.TOTALDN                = "%b{[%c1{STATUS}]} + Leechers: %b{%count} at %total"
+
+## Command: !uploaders
 announce.UPLOAD                 = "%b{[%c1{STATUS}]} + Current uploaders:"
+announce.USERUP                 = "%b{[%c1{STATUS}]} + %b{%u_name}/%g_name uploading %b{%filename} at %speed (%b{%fper} done)"
+announce.TOTALUP                = "%b{[%c1{STATUS}]} + Uploaders: %b{%count} at %total"
+
+## Command: !idlers
 announce.IDLE                   = "%b{[%c1{STATUS}]} + Current idlers:"
 announce.USERIDLE               = "%b{[%c1{STATUS}]} + %b{%u_name}/%g_name at %idletime"
-announce.USER                   = "%b{[%c1{STATUS}]} + %b{%u_name}/%g_name on %b{%filename} at %speed (%b{%fper} done)"
-announce.TOTUPDN                = "%b{[%c1{STATUS}]} + %type %b{%count} at %total"
-announce.TOTIDLE                = "%b{[%c1{STATUS}]} + Currently %b{%count} users idle"
+announce.TOTALIDLE              = "%b{[%c1{STATUS}]} + Currently %b{%count} users idle"
 
+## Command: !speed
 announce.SPEEDUP                = "%b{[%c1{SPEED}]} + %b{%u_name}/%g_name is uploading %b{%f_name} at %upspeed (%b{%dnpercent} done)"
 announce.SPEEDDN                = "%b{[%c1{SPEED}]} + %b{%u_name}/%g_name is downloading %b{%f_name} at %dnspeed (%b{%dnpercent} done)"
 announce.SPEEDID                = "%b{[%c1{SPEED}]} + %b{%u_name}/%g_name has been idle for %idletime"
 announce.SPEEDERROR             = "%b{[%c1{SPEED}]} + The specified user is not online."
-
-## Misc commands
-announce.FREE                   = "%devices-%b{%sitename}- %b{[%c1{FREE}]} + [TOTAL: %b{%free} free of %b{%total}]"
-announce.FREE-DEV               = "%b{[%c1{FREE}]} + [%section: %b{%free} free of %b{%total}]\n"
-announce.UPTIME                 = "%b{[%c1{UPTIME}]} + %b{system:} %time, %users user(s), load: %load %b{sitebot:} %eggdrop"
 
 ## IRC Command: !new
 announce.NEW                    = "%b{[%c1{NEW}]} + Latest releases in: %b{%section}"

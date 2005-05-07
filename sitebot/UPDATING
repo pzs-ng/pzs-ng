@@ -17,7 +17,7 @@
 # Changes
 ###############################################################
 
-r1787: Rewrote path parser (%pf), removed %releasename cookie.
+r1787: Rewrote path parser (the %pf cookie), removed %releasename cookie.
 - Please see COOKIES for an explanation of the new path parser.
 
 r1777: All *_duration cookies are formatted by dZSbot.

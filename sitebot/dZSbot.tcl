@@ -14,13 +14,7 @@ putlog "\[dZSbot\] Loading..."
 namespace eval ::dZSBot {
     variable scriptPath [file dirname [info script]]
     namespace export *
-
-    ## TODO: remove mpath
-    set mpath ""
     set defaultsection "DEFAULT"
-    set nuke(LASTDIR) ""
-    set nuke(LASTTYPE) ""
-    set nuke(SHOWN) 1
     set variables(NUKE)   ""
     set variables(UNNUKE) ""
 }
@@ -311,7 +305,7 @@ proc ::dZSBot::LogRead {} {
         if {[lsearch -exact $msgtypes(SECTION) $event] != -1} {
             set path [lindex $line 0]
             if {[IsPathDenied $path]} {continue}
-            set section [GetSectionName $path]
+            GetSectionName $path section sectionPath
 
             # Replace messages with custom messages
             foreach {name value} [array get msgreplace] {
@@ -324,13 +318,14 @@ proc ::dZSBot::LogRead {} {
             }
         } elseif {[lsearch -exact $msgtypes(DEFAULT) $event] != -1} {
             set section $defaultsection
+            set sectionPath ""
         } else {
             ErrorMsg LogRead "Undefined message type \"$event\", check \"msgtypes(SECTION)\" and \"msgtypes(DEFAULT)\" in the config."
             continue
         }
 
         ## If a pre-event script returns false, skip the announce.
-        if {![EventHandler precommand $event $section] || ([info exists disable($event)] && $disable($event) == 1)} {
+        if {![EventHandler precommand $event $section $sectionPath $line] || ([info exists disable($event)] && $disable($event) == 1)} {
             DebugMsg LogRead "Announce skipped, \"$event\" is disabled or a pre-command script returned false."
             continue
         }
@@ -340,8 +335,8 @@ proc ::dZSBot::LogRead {} {
             set event $defaultsection
         }
         if {![IsEventDenied $section $event]} {
-            SendAll $event $section [LogFormat $event $section $line]
-            EventHandler postcommand $event $section $line
+            SendAll $event $section [LogFormat $event $section $sectionPath $line]
+            EventHandler postcommand $event $section $sectionPath $line
         }
     }
     if {$glVersion == 1} {
@@ -350,8 +345,8 @@ proc ::dZSBot::LogRead {} {
     return
 }
 
-proc ::dZSBot::LogParseLogin {line eventvar datavar} {
-    upvar $eventvar event $datavar data
+proc ::dZSBot::LogParseLogin {line eventVar dataVar} {
+    upvar $eventVar event $dataVar data
 
     ## The data in login.log is not at all consistent,
     ## which makes it fun for us to parse.
@@ -376,8 +371,8 @@ proc ::dZSBot::LogParseLogin {line eventvar datavar} {
     return 1
 }
 
-proc ::dZSBot::LogParseSysop {line eventvar datavar} {
-    upvar $eventvar event $datavar newdata
+proc ::dZSBot::LogParseSysop {line eventVar dataVar} {
+    upvar $eventVar event $dataVar newdata
     set patterns [list \
         ADDUSER  {^'(\S+)' added user '(\S+)'\.$} \
         GADDUSER {^'(\S+)' added user '(\S+)' to group '(\S+)'\.$} \
@@ -399,25 +394,23 @@ proc ::dZSBot::LogParseSysop {line eventvar datavar} {
     return 0
 }
 
-proc ::dZSBot::LogRandom {event rndvar} {
+proc ::dZSBot::LogRandom {event randVar} {
+    upvar $randVar randEvent
     variable random
-    upvar $rndvar rndevent
-
-    ## Select a random announce theme
-    set eventlist [array names random "${event}-*"]
-    if {[set items [llength $eventlist]]} {
-        set rndevent [lindex $eventlist [rand $items]]
+    ## Select a random announce theme.
+    set randList [array names random "${event}-*"]
+    if {[set randCount [llength $randList]]} {
+        set randEvent [lindex $randList [rand $randCount]]
         return 1
     }
     return 0
 }
 
-proc ::dZSBot::LogFormat {event section line} {
+proc ::dZSBot::LogFormat {event section sectionPath line} {
     variable announce
     variable defaultsection
     variable disable
     variable glVersion
-    variable mpath
     variable random
     variable sitename
     variable theme
@@ -426,9 +419,9 @@ proc ::dZSBot::LogFormat {event section line} {
 
     if {[string equal $event "NUKE"] || [string equal $event "UNNUKE"]} {
         if {$glVersion == 1} {
-            FuelNuke $event [lindex $line 0] $section $line
+            FuelNuke $event $section $sectionPath $line
         } elseif {$glVersion == 2} {
-            LaunchNuke2 $event [lindex $line 0] $section [lrange $line 1 3] [lrange $line 4 end]
+            LaunchNuke2 $event $section $sectionPath $line
         } else {
             ErrorMsg LogFormat "Internal error, unknown glftpd version ($glVersion)."
         }
@@ -439,12 +432,11 @@ proc ::dZSBot::LogFormat {event section line} {
         ErrorMsg LogFormat "\"announce($event)\" not set in theme, event becomes \"$defaultsection\"."
         set event $defaultsection
     }
-    set vars $variables($event)
     set output $theme(PREFIX)
 
-    ## Random announce messages
-    if {[string equal "random" $announce($event)] && [LogRandom $event rndevent]} {
-        append output $random($rndevent)
+    ## Random announce themes.
+    if {[string equal "random" $announce($event)] && [LogRandom $event randEvent]} {
+        append output $random($randEvent)
     } else {
         append output $announce($event)
     }
@@ -453,54 +445,48 @@ proc ::dZSBot::LogFormat {event section line} {
         set section $theme_fakes($event)
     }
     set output [ReplaceBasic $output $section]
-    set cnt 0
 
-    ## Path filter parsing
-    if {[string equal "%pf" [lindex $vars 0]]} {
-        set output [ReplacePath $output $mpath [lindex $line 0]]
-        set vars [lreplace $vars 0 0]
-        incr cnt
-    }
-
-    ## Replace variables and format the %loop cookies
+    ## Substitute all cookies with their corresponding values.
     set loop 1
-    foreach vari $vars {
-        if {[llength $vari] > 1} {
-            set cnt2 0
-            set cnt3 1
-            set values [lindex $line $cnt]
-            set output2 ""
-            foreach value $values {
-                if {$cnt2 == 0} {
-                    append output2 "$announce(${event}_LOOP${loop})"
+    foreach varName $variables($event) value $line {
+        if {[string equal "%pf" $varName]} {
+            set output [ReplacePath $output $sectionPath $value]
+        } elseif {[set varCount [llength $varName]] > 1} {
+            set outputLoop ""
+            set varIndex 0
+            foreach subValue $value {
+                if {!$varIndex} {
+                    append outputLoop "$announce(${event}_LOOP${loop})"
                 }
-
-                switch -glob -- [lindex $vari $cnt2] {
-                    {*_duration} {set value [FormatDuration $value]}
-                    {*_speed}    {set value [FormatSpeed $value $section]}
+                ## Special cookie formatting.
+                set subVarName [lindex $varName $varIndex]
+                switch -glob -- $subVarName {
+                    {%*_avgspeed} -
+                    {%*_speed}    {set subValue [FormatSpeed $subValue $section]}
+                    {%*_duration} {set subValue [FormatDuration $subValue]}
                 }
-                set output2 [ReplaceVar $output2 [lindex $vari $cnt2] $value]
+                set outputLoop [ReplaceVar $outputLoop $subVarName $subValue]
 
-                incr cnt2
-                if {[string equal "" [lindex $vari $cnt2]]} {
-                    incr cnt3
-                    set cnt2 0
+                ## Reset the index and proceed to the next data set once
+                ## we have processed all cookies for the current data.
+                if {[incr varIndex] == $varCount} {
+                    set varIndex 0
                 }
             }
-            set output2 [ReplaceVar $output2 "%section" $section]
-            set output2 [ReplaceVar $output2 "%sitename" $sitename]
-            set output2 [ReplaceVar $output2 "%splitter" $theme(SPLITTER)]
-            set output2 [TrimTail $output2 $theme(SPLITTER)]
-            set output [ReplaceVar $output "%loop$loop" $output2]
+            set outputLoop [ReplaceBasic $outputLoop $section]
+            set outputLoop [ReplaceVar $outputLoop "%splitter" $theme(SPLITTER)]
+            set outputLoop [TrimTail $outputLoop $theme(SPLITTER)]
+            set output [ReplaceVar $output "%loop$loop" $outputLoop]
             incr loop
         } else {
-            if {[string match "*speed" $vari]} {
-                set output [ReplaceVar $output $vari [FormatSpeed [lindex $line $cnt] $section]]
-            } else {
-                set output [ReplaceVar $output $vari [lindex $line $cnt]]
+            ## Special cookie formatting.
+            switch -glob -- $varName {
+                {%*_avgspeed} -
+                {%*_speed}    {set value [FormatSpeed $value $section]}
+                {%*_duration} {set value [FormatDuration $value]}
             }
+            set output [ReplaceVar $output $varName $value]
         }
-        incr cnt
     }
     return $output
 }
@@ -515,7 +501,7 @@ proc ::dZSBot::FuelNuke {type path section line} {
 
     if {$type == $nuke(LASTTYPE) && $path == $nuke(LASTDIR) && $nuke(SHOWN) == 0} {
         if {[lsearch -exact $hidenuke [lindex $line 2]] == -1} {
-            append nuke(NUKEE) "[b][lindex $line 2][b] ([b][lindex $line 3 1][b]MB), "
+            lappend nuke(NUKEE) "[b][lindex $line 2][b] ([b][lindex $line 3 1][b]MB)"
         }
     } else {
         LaunchNuke
@@ -524,7 +510,7 @@ proc ::dZSBot::FuelNuke {type path section line} {
             set nuke(PATH) $path
             set nuke(SECTION) $section
             set nuke(NUKER) [lindex $line 1]
-            set nuke(NUKEE) "[b][lindex $line 2][b] ([b][lindex $line 3 1][b]MB) "
+            set nuke(NUKEE) "[b][lindex $line 2][b] ([b][lindex $line 3 1][b]MB)"
             set nuke(MULT) [lindex $line 3 0]
             set nuke(REASON) [lindex $line 4]
             set nuke(SHOWN) 0
@@ -536,7 +522,6 @@ proc ::dZSBot::FuelNuke {type path section line} {
 
 proc ::dZSBot::LaunchNuke {} {
     variable announce
-    variable mpath
     variable nuke
     variable theme
 
@@ -555,41 +540,36 @@ proc ::dZSBot::LaunchNuke {} {
     set nuke(SHOWN) 1
 }
 
-proc ::dZSBot::LaunchNuke2 {type path section info nukees} {
+proc ::dZSBot::LaunchNuke2 {event section sectionPath logData} {
     variable announce
     variable hidenuke
-    variable mpath
-    variable nuke
-    variable sitename
     variable theme
 
-    set nuke(TYPE) $type
-    set nuke(PATH) $path
-    set nuke(SECTION) $section
-    set nuke(NUKER) [lindex $info 0]
-    set nuke(MULT) [lindex $info 1]
-    set nuke(REASON) [lindex $info 2]
-    set nuke(NUKEE) {}
+    ## Log Data:
+    ## NUKE   - path nuker mutli reason "nukee amount ..."
+    ## UNNUKE - path nuker mutli reason "nukee amount ..."
+    foreach {path nuker mutli reason nukees} $logData {break}
 
-    foreach entry $nukees {
-        if {[lsearch -exact $hidenuke [lindex $entry 0]] == -1} {
-            set mb [format "%.1f" [expr {[lindex $entry 1] / 1024]}]
-            set nukee $announce(NUKEES)
-            set nukee [ReplaceVar $nukee "%u_name" [lindex $entry 0]]
-            set nukee [ReplaceVar $nukee "%size" $mb]
-            append nuke(NUKEE) $nukee $theme(SPLITTER)
+    ## Format nuked user list.
+    set nukeeList ""
+    foreach {user size} $nukees {
+        if {[lsearch -exact $hidenuke $user] == -1} {
+            set size [format "%.1f" [expr {$size / 1024}]]
+            set output $announce(NUKEES)
+            set output [ReplaceVar $output "%u_name" $user]
+            set output [ReplaceVar $output "%size" $size]
+            lappend nukeeList $output
         }
     }
-    set nuke(NUKEE) [TrimTail $nuke(NUKEE) $theme(SPLITTER)]
-    set output "$theme(PREFIX)$announce($nuke(TYPE))"
-    set output [ReplaceBasic $output $nuke(SECTION)]
-    set output [ReplaceVar $output "%nuker" $nuke(NUKER)]
-    set output [ReplaceVar $output "%nukees" $nuke(NUKEE)]
-    set output [ReplaceVar $output "%type" $nuke(TYPE)]
-    set output [ReplaceVar $output "%multiplier" $nuke(MULT)]
-    set output [ReplaceVar $output "%reason" $nuke(REASON)]
-    set output [ReplacePath $output $mpath $nuke(PATH)]
-    SendAll $nuke(TYPE) $nuke(SECTION) $output
+    set nukees [join $nukeeList $theme(SPLITTER)]
+
+    set output [ReplaceBasic "$theme(PREFIX)$announce($event)" $section]
+    set output [ReplaceVar $output "%nuker" $nuker]
+    set output [ReplaceVar $output "%multiplier" $mutli]
+    set output [ReplaceVar $output "%reason" $reason]
+    set output [ReplaceVar $output "%nukees" $nukees]
+    set output [ReplacePath $output $sectionPath $path]
+    SendAll $event $section $output
 }
 
 #################################################################################
@@ -667,7 +647,6 @@ proc ::dZSBot::FormatSpeed {value section} {
 proc ::dZSBot::GetUserIds {} {
     variable location
     set userList ""
-
     if {![catch {set handle [open $location(PASSWD) r]} error]} {
         while {![eof $handle]} {
             ## Format: user:password:uid:gid:date:homedir:irrelevant
@@ -679,14 +658,12 @@ proc ::dZSBot::GetUserIds {} {
     } else {
         ErrorMsg UserIds "Could not open passwd ($error)."
     }
-
     return $userList
 }
 
 proc ::dZSBot::GetGroupIds {} {
     variable location
     set groupList ""
-
     if {![catch {set handle [open $location(GROUP) r]} error]} {
         while {![eof $handle]} {
             ## Format: group:description:gid:irrelevant
@@ -698,7 +675,6 @@ proc ::dZSBot::GetGroupIds {} {
     } else {
         ErrorMsg GroupIds "Could not open group ($error)."
     }
-
     return $groupList
 }
 
@@ -709,7 +685,7 @@ proc ::dZSBot::GetGroupIds {} {
 proc ::dZSBot::ReplaceBasic {message section} {
     variable cmdpre
     variable sitename
-    return [string map [list "%cmdpre" $cmdpre "%section" $section\
+    return [string map [list "%cmdpre" $cmdpre "%section" $section \
         "%sitename" $sitename "%bold" [b] "%uline" \037 "%color" [c]] $message]
 }
 
@@ -941,9 +917,9 @@ proc ::dZSBot::CheckChan {nick chan} {
 }
 
 proc ::dZSBot::GetOptions {argv resultsVar otherVar} {
+    upvar $resultsVar results $otherVar other
     variable default_results
     variable maximum_results
-    upvar $resultsVar results $otherVar other
 
     set results $default_results
     set other ""
@@ -972,29 +948,31 @@ proc ::dZSBot::GetOptions {argv resultsVar otherVar} {
     return 1
 }
 
-proc ::dZSBot::GetSectionName {checkpath} {
+proc ::dZSBot::GetSectionName {fullPath sectionVar secionPathVar} {
+    upvar $sectionVar sectionName $secionPathVar sectionPath
     variable defaultsection
-    variable mpath
     variable paths
     variable sections
 
     set bestMatch 0
-    set returnVal $defaultsection
+    set sectionName $defaultsection
+    set sectionPath ""
+
     foreach section $sections {
         if {![info exists paths($section)]} {
             ErrorMsg SectionName "\"paths($section)\" is not defined in the config."
             continue
         }
         foreach path $paths($section) {
-            ## Compare the path length of the previous match (best match wins)
-            if {[string match $path $checkpath] && [set pathlen [string length $path]] > $bestMatch} {
-                set mpath $path
-                set bestMatch $pathlen
-                set returnVal $section
+            ## Compare the path length of the previous match (best match wins).
+            if {[string match $path $fullPath] && [set pathLength [string length $path]] > $bestMatch} {
+                set bestMatch $pathLength
+                set sectionName $section
+                set sectionPath $path
             }
         }
     }
-    return $returnVal
+    return
 }
 
 proc ::dZSBot::GetSectionPath {getsection} {
@@ -1669,7 +1647,7 @@ proc ::dZSBot::CmdIdlers {nick uhost hand chan argv} {
             }
         }
     }
-    set output [ReplaceVar "$theme(PREFIX)$announce(TOTIDLE)" "%count" $count]
+    set output [ReplaceVar "$theme(PREFIX)$announce(TOTALIDLE)" "%count" $count]
     SendOne $chan [ReplaceBasic $output "IDLE"]
     return
 }
@@ -1697,7 +1675,7 @@ proc ::dZSBot::CmdLeechers {nick uhost hand chan argv} {
             set filename [lindex $line 8]
             set per [format "%.2f%%" [expr double($uspeed) * 100 / double($speed(OUTGOING))]]
             set fper [lindex $line 9]
-            set output [ReplaceVar "$theme(PREFIX)$announce(USER)" "%u_name" $user]
+            set output [ReplaceVar "$theme(PREFIX)$announce(USERDN)" "%u_name" $user]
             set output [ReplaceVar $output "%g_name" $group]
             set output [ReplaceVar $output "%fper"  $fper]
             set output [ReplaceVar $output "%speed" [FormatSpeed $uspeed "none"]]
@@ -1712,7 +1690,7 @@ proc ::dZSBot::CmdLeechers {nick uhost hand chan argv} {
     }
     set per [format "%.1f" [expr double($total) * 100 / double($speed(OUTGOING)) ]]
 
-    set output [ReplaceVar "$theme(PREFIX)$announce(TOTUPDN)" "%type" "Leechers:"]
+    set output "$theme(PREFIX)$announce(TOTALDN)"
     set output [ReplaceVar $output "%count" $count]
     set output [ReplaceVar $output "%total" [FormatSpeed $total "none"]]
     set output [ReplaceVar $output "%per" $per]
@@ -1790,7 +1768,7 @@ proc ::dZSBot::CmdUploaders {nick uhost hand chan argv} {
             set filename [lindex $line 8]
             set progress [lindex $line 9]
             set per [format "%.2f%%" [expr double($uspeed) * 100 / double($speed(INCOMING))]]
-            set output [ReplaceVar "$theme(PREFIX)$announce(USER)" "%u_name" $user]
+            set output [ReplaceVar "$theme(PREFIX)$announce(USERUP)" "%u_name" $user]
             set output [ReplaceVar $output "%g_name" $group]
             set output [ReplaceVar $output "%fper" $progress]
             set output [ReplaceVar $output "%speed" [FormatSpeed $uspeed "none"]]
@@ -1805,7 +1783,7 @@ proc ::dZSBot::CmdUploaders {nick uhost hand chan argv} {
     }
     set per [format "%.1f" [expr double($total) * 100 / double($speed(INCOMING)) ]]
 
-    set output [ReplaceVar "$theme(PREFIX)$announce(TOTUPDN)" "%type" "Uploaders:"]
+    set output "$theme(PREFIX)$announce(TOTALUP)"
     set output [ReplaceVar $output "%count" $count]
     set output [ReplaceVar $output "%total" [FormatSpeed $total "none"]]
     set output [ReplaceVar $output "%per" $per]
@@ -1855,17 +1833,16 @@ proc ::dZSBot::ThemeLoad {file} {
     close $handle
 
     foreach line [split $data "\n"] {
-        if {[string index $line 0] != "#"} {
-            if {[regexp -- {(\S+)\.(\S+)\s*=\s*(['\"])(.+)\3} $line dud type setting quote value]} {
-                switch -exact -- [string tolower $type] {
-                    "announce"    {set announce($setting) $value}
-                    "fakesection" {set theme_fakes($setting) $value}
-                    "random"      {set random($setting) $value}
-                    default       {WarningMsg ThemeLoad "Invalid theme setting \"$type.$setting\"."}
-                }
-            } elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
-                set theme($setting) $value
+        if {[string equal "" $line] || [string index $line 0] == "#"} {continue}
+        if {[regexp -- {(\S+)\.(\S+)\s*=\s*(['\"])(.+)\3} $line dud type setting quote value]} {
+            switch -exact -- [string tolower $type] {
+                "announce"    {set announce($setting) $value}
+                "fakesection" {set theme_fakes($setting) $value}
+                "random"      {set random($setting) $value}
+                default       {WarningMsg ThemeLoad "Invalid theme setting \"$type.$setting\"."}
             }
+        } elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
+            set theme($setting) $value
         }
     }
 
@@ -1918,20 +1895,20 @@ proc ::dZSBot::ThemePreview {handle idx text} {
     putdcc $idx "[b]Previewing:[b] $announce(THEMEFILE)"
     putdcc $idx ""
     foreach line [split $data "\n"] {
-        if {![string equal "" $line] && [string index $line 0] != "#"} {
-            if {[regexp -nocase -- {announce\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-                set prefix "announce."
-            } elseif {[regexp -nocase -- {random\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-                set prefix "random."
-            } elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
-                set prefix ""
-            } else {
-                continue
-            }
-            if {[string match -nocase $text $setting]} {
-                set value [ThemeReplace [ReplaceBasic $value $defaultsection] $defaultsection]
-                putdcc $idx "$prefix$setting = $value"
-            }
+        if {[string equal "" $line] || [string index $line 0] == "#"} {continue}
+        ## TODO: Clean this mess up.
+        if {[regexp -nocase -- {announce\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+            set prefix "announce."
+        } elseif {[regexp -nocase -- {random\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+            set prefix "random."
+        } elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
+            set prefix ""
+        } else {
+            continue
+        }
+        if {[string match -nocase $text $setting]} {
+            set value [ThemeReplace [ReplaceBasic $value $defaultsection] $defaultsection]
+            putdcc $idx "$prefix$setting = $value"
         }
     }
     return
@@ -2024,7 +2001,6 @@ namespace eval ::dZSBot {
         }
         set loadError 1
     }
-
 
     ## Check binary and file locations
     foreach {filename filepath} [array get binary] {

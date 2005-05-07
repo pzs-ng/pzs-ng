@@ -143,7 +143,7 @@ proc ::dZSBot::PreTime::LookUp {release timeVar} {
 #
 # Called by the sitebot's event handler on the "NEWDIR" announce.
 #
-proc ::dZSBot::PreTime::LogEvent {event section logData} {
+proc ::dZSBot::PreTime::LogEvent {event section sectionPath logData} {
     variable lateMins
     variable ignoreDirs
     if {![string equal "NEWDIR" $event]} {return 1}
@@ -173,7 +173,7 @@ proc ::dZSBot::PreTime::LogEvent {event section logData} {
 
         ## We'll announce the event ourself since we'll return zero
         ## to cancel the regular NEWDIR announce.
-        SendAll $event $section [LogFormat $event $section $logData]
+        SendAll $event $section [LogFormat $event $section $sectionPath $logData]
         return 0
     }
 
