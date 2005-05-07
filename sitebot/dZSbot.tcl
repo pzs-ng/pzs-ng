@@ -11,7 +11,7 @@
 
 putlog "\[dZSbot\] Loading..."
 
-namespace eval ::dZSBot {
+namespace eval ::dZSbot {
     variable scriptPath [file dirname [info script]]
     namespace export *
     set defaultsection "DEFAULT"
@@ -31,28 +31,28 @@ if {[catch {package require Tcl 8.4} error]} {
 # Miscellaneous Commands                                                        #
 #################################################################################
 
-proc ::dZSBot::DebugMsg {section text} {
+proc ::dZSbot::DebugMsg {section text} {
     variable debugmode
     if {[IsTrue $debugmode]} {putlog "\[dZSbot\] Debug :: $section - $text"}
 }
 
-proc ::dZSBot::InfoMsg {text} {
+proc ::dZSbot::InfoMsg {text} {
     putlog "\[dZSbot\] $text"
 }
 
-proc ::dZSBot::ErrorMsg {section text} {
+proc ::dZSbot::ErrorMsg {section text} {
     putlog "\[dZSbot\] Error :: $section - $text"
 }
 
-proc ::dZSBot::WarningMsg {section text} {
+proc ::dZSbot::WarningMsg {section text} {
     putlog "\[dZSbot\] Warning :: $section - $text"
 }
 
-proc ::dZSBot::b {} {return \002}
-proc ::dZSBot::c {} {return \003}
-proc ::dZSBot::u {} {return \037}
-proc ::dZSBot::r {} {return \026}
-proc ::dZSBot::o {} {return \015}
+proc ::dZSbot::b {} {return \002}
+proc ::dZSbot::c {} {return \003}
+proc ::dZSbot::u {} {return \037}
+proc ::dZSbot::r {} {return \026}
+proc ::dZSbot::o {} {return \015}
 
 interp alias {} IsTrue {} string is true -strict
 interp alias {} IsFalse {} string is false -strict
@@ -61,7 +61,7 @@ interp alias {} IsFalse {} string is false -strict
 # Internal Commands                                                             #
 #################################################################################
 
-proc ::dZSBot::BindCommands {prefix} {
+proc ::dZSbot::BindCommands {prefix} {
     set context [namespace current]
     bind pub -|- ${prefix}bnc         ${context}::CmdBnc
     bind pub -|- ${prefix}bw          ${context}::CmdBw
@@ -105,7 +105,7 @@ proc ::dZSBot::BindCommands {prefix} {
     bind pub -|- ${prefix}wkup    [list ${context}::CmdStats "-u" "-w"]
 }
 
-proc ::dZSBot::UnbindCommands {prefix} {
+proc ::dZSbot::UnbindCommands {prefix} {
     set context [namespace current]
     catch {unbind pub -|- ${prefix}bnc         ${context}::CmdBnc}
     catch {unbind pub -|- ${prefix}bw          ${context}::CmdBw}
@@ -149,7 +149,7 @@ proc ::dZSBot::UnbindCommands {prefix} {
     catch {unbind pub -|- ${prefix}wkup    [list ${context}::CmdStats "-u" "-w"]}
 }
 
-proc ::dZSBot::ShowError {args} {
+proc ::dZSbot::ShowError {args} {
     global errorInfo tcl_platform
     putlog "--\[[b]Error Info[b]\]------------------------------------------"
     putlog "Tcl: [info patchlevel]"
@@ -163,7 +163,7 @@ proc ::dZSBot::ShowError {args} {
 # Event Handling                                                                #
 #################################################################################
 
-proc ::dZSBot::EventHandler {type event args} {
+proc ::dZSbot::EventHandler {type event args} {
     variable $type
     set varName "${type}($event)"
     if {![info exists $varName]} {return 1}
@@ -181,7 +181,7 @@ proc ::dZSBot::EventHandler {type event args} {
     return 1
 }
 
-proc ::dZSBot::EventRegister {type event script} {
+proc ::dZSbot::EventRegister {type event script} {
     variable $type
     set varName "${type}($event)"
     if {![info exists $varName] || [lsearch -exact [set $varName] $script] == -1} {
@@ -190,7 +190,7 @@ proc ::dZSBot::EventRegister {type event script} {
     return
 }
 
-proc ::dZSBot::EventUnregister {type event script} {
+proc ::dZSbot::EventUnregister {type event script} {
     variable $type
     set varName "${type}($event)"
     if {[info exists $varName] && [set pos [lsearch -exact [set $varName] $script]] != -1} {
@@ -203,7 +203,7 @@ proc ::dZSBot::EventUnregister {type event script} {
 # Log Parsing for glFTPd and Login Logs                                         #
 #################################################################################
 
-proc ::dZSBot::IsPathDenied {release} {
+proc ::dZSbot::IsPathDenied {release} {
     variable denypost
     foreach deny $denypost {
         if {[string match $deny $release]} {
@@ -214,7 +214,7 @@ proc ::dZSBot::IsPathDenied {release} {
     return 0
 }
 
-proc ::dZSBot::IsEventDenied {section event} {
+proc ::dZSbot::IsEventDenied {section event} {
     variable disabletypes
     if {![info exists disabletypes($section)]} {return 0}
 
@@ -227,7 +227,7 @@ proc ::dZSBot::IsEventDenied {section event} {
     return 0
 }
 
-proc ::dZSBot::LogTimer {} {
+proc ::dZSbot::LogTimer {} {
     variable logTimerId
     if {[catch {LogRead}]} {
         ErrorMsg LogTimer "Unhandled error, please report to developers:\n$::errorInfo"
@@ -235,7 +235,7 @@ proc ::dZSBot::LogTimer {} {
     set logTimerId [utimer 1 [namespace current]::LogTimer]
 }
 
-proc ::dZSBot::LogRead {} {
+proc ::dZSbot::LogRead {} {
     variable defaultsection
     variable disable
     variable glVersion
@@ -345,7 +345,7 @@ proc ::dZSBot::LogRead {} {
     return
 }
 
-proc ::dZSBot::LogParseLogin {line eventVar dataVar} {
+proc ::dZSbot::LogParseLogin {line eventVar dataVar} {
     upvar $eventVar event $dataVar data
 
     ## The data in login.log is not at all consistent,
@@ -371,7 +371,7 @@ proc ::dZSBot::LogParseLogin {line eventVar dataVar} {
     return 1
 }
 
-proc ::dZSBot::LogParseSysop {line eventVar dataVar} {
+proc ::dZSbot::LogParseSysop {line eventVar dataVar} {
     upvar $eventVar event $dataVar newdata
     set patterns [list \
         ADDUSER  {^'(\S+)' added user '(\S+)'\.$} \
@@ -394,7 +394,7 @@ proc ::dZSBot::LogParseSysop {line eventVar dataVar} {
     return 0
 }
 
-proc ::dZSBot::LogRandom {event randVar} {
+proc ::dZSbot::LogRandom {event randVar} {
     upvar $randVar randEvent
     variable random
     ## Select a random announce theme.
@@ -406,7 +406,7 @@ proc ::dZSBot::LogRandom {event randVar} {
     return 0
 }
 
-proc ::dZSBot::LogFormat {event section sectionPath line} {
+proc ::dZSbot::LogFormat {event section sectionPath line} {
     variable announce
     variable defaultsection
     variable disable
@@ -495,7 +495,7 @@ proc ::dZSBot::LogFormat {event section sectionPath line} {
 # Nuke and Unnuke Handlers                                                      #
 #################################################################################
 
-proc ::dZSBot::FuelNuke {type path section line} {
+proc ::dZSbot::FuelNuke {type path section line} {
     variable hidenuke
     variable nuke
 
@@ -520,7 +520,7 @@ proc ::dZSBot::FuelNuke {type path section line} {
     set nuke(LASTDIR) $path
 }
 
-proc ::dZSBot::LaunchNuke {} {
+proc ::dZSbot::LaunchNuke {} {
     variable announce
     variable nuke
     variable theme
@@ -540,7 +540,7 @@ proc ::dZSBot::LaunchNuke {} {
     set nuke(SHOWN) 1
 }
 
-proc ::dZSBot::LaunchNuke2 {event section sectionPath logData} {
+proc ::dZSbot::LaunchNuke2 {event section sectionPath logData} {
     variable announce
     variable hidenuke
     variable theme
@@ -576,7 +576,7 @@ proc ::dZSBot::LaunchNuke2 {event section sectionPath logData} {
 # Format Size, Speed and Time Units                                             #
 #################################################################################
 
-proc ::dZSBot::FormatDuration {secs} {
+proc ::dZSbot::FormatDuration {secs} {
     set duration ""
     foreach div {31536000 604800 86400 3600 60 1} mod {0 52 7 24 60 60} unit {y w d h m s} {
         set num [expr {$secs / $div}]
@@ -586,7 +586,7 @@ proc ::dZSBot::FormatDuration {secs} {
     if {[llength $duration]} {return [join $duration]} else {return "[b]0[b]s"}
 }
 
-proc ::dZSBot::FormatKb {amount} {
+proc ::dZSbot::FormatKb {amount} {
     foreach dec {0 1 2 2 2} unit {KB MB GB TB PB} {
         if {abs($amount) >= 1024} {
             set amount [expr {double($amount) / 1024.0}]
@@ -595,7 +595,7 @@ proc ::dZSBot::FormatKb {amount} {
     return [format "%.*f%s" $dec $amount $unit]
 }
 
-proc ::dZSBot::FormatSpeed {value section} {
+proc ::dZSbot::FormatSpeed {value section} {
     variable speedmeasure
     variable speedthreshold
     variable theme
@@ -644,7 +644,7 @@ proc ::dZSBot::FormatSpeed {value section} {
 # glFTPd Users and Groups                                                       #
 #################################################################################
 
-proc ::dZSBot::GetUserIds {} {
+proc ::dZSbot::GetUserIds {} {
     variable location
     set userList ""
     if {![catch {set handle [open $location(PASSWD) r]} error]} {
@@ -661,7 +661,7 @@ proc ::dZSBot::GetUserIds {} {
     return $userList
 }
 
-proc ::dZSBot::GetGroupIds {} {
+proc ::dZSbot::GetGroupIds {} {
     variable location
     set groupList ""
     if {![catch {set handle [open $location(GROUP) r]} error]} {
@@ -682,14 +682,14 @@ proc ::dZSBot::GetGroupIds {} {
 # Replace Text                                                                  #
 #################################################################################
 
-proc ::dZSBot::ReplaceBasic {message section} {
+proc ::dZSbot::ReplaceBasic {message section} {
     variable cmdpre
     variable sitename
     return [string map [list "%cmdpre" $cmdpre "%section" $section \
         "%sitename" $sitename "%bold" [b] "%uline" \037 "%color" [c]] $message]
 }
 
-proc ::dZSBot::ReplacePath {message basePath fullPath} {
+proc ::dZSbot::ReplacePath {message basePath fullPath} {
     variable subdirs
 
     set basePath [file split $basePath]
@@ -720,7 +720,7 @@ proc ::dZSBot::ReplacePath {message basePath fullPath} {
     return $message
 }
 
-proc ::dZSBot::ReplaceVar {string cookie value} {
+proc ::dZSbot::ReplaceVar {string cookie value} {
     variable zeroconvert
     if {[string length $value] == 0 && [info exists zeroconvert($cookie)]} {
         set value $zeroconvert($cookie)
@@ -728,7 +728,7 @@ proc ::dZSBot::ReplaceVar {string cookie value} {
     return [string map [list $cookie $value] $string]
 }
 
-proc ::dZSBot::TrimTail {base tail} {
+proc ::dZSbot::TrimTail {base tail} {
     if {([string length $base] - [string length $tail]) == [string last $tail $base]} {
         return [string range $base 0 [expr {[string length $base] - [string length $tail] - 1}]]
     }
@@ -739,7 +739,7 @@ proc ::dZSBot::TrimTail {base tail} {
 # Send Messages                                                                 #
 #################################################################################
 
-proc ::dZSBot::SendAll {event section text} {
+proc ::dZSbot::SendAll {event section text} {
     variable chanlist
     variable redirect
 
@@ -757,7 +757,7 @@ proc ::dZSBot::SendAll {event section text} {
     }
 }
 
-proc ::dZSBot::SendOne {chan text {section "none"}} {
+proc ::dZSbot::SendOne {chan text {section "none"}} {
     variable splitter
     foreach line [split $text $splitter(CHAR)] {
         putquick "PRIVMSG $chan :[ThemeReplace $line $section]"
@@ -768,7 +768,7 @@ proc ::dZSBot::SendOne {chan text {section "none"}} {
 # Invite User                                                                   #
 #################################################################################
 
-proc ::dZSBot::RightsFlagCheck {currentflags needflags} {
+proc ::dZSbot::RightsFlagCheck {currentflags needflags} {
     set currentflags [split $currentflags ""]
     foreach needflag [split $needflags ""] {
         if {![string equal "" $needflag] && [lsearch -glob $currentflags $needflag] != -1} {return 1}
@@ -776,7 +776,7 @@ proc ::dZSBot::RightsFlagCheck {currentflags needflags} {
     return 0
 }
 
-proc ::dZSBot::RightsCheck {rights user group flags} {
+proc ::dZSbot::RightsCheck {rights user group flags} {
     foreach right $rights {
         set prefix [string index $right 0]
         if {[string equal "!" $prefix]} {
@@ -804,7 +804,7 @@ proc ::dZSBot::RightsCheck {rights user group flags} {
     return 0
 }
 
-proc ::dZSBot::InviteChan {nick chan} {
+proc ::dZSbot::InviteChan {nick chan} {
     if {![validchan $chan] || ![botonchan $chan]} {
         ErrorMsg InviteChan "Unable to invite \"$nick\" to \"$chan\", I'm not in the channel."
     } elseif {![botisop $chan]} {
@@ -814,7 +814,7 @@ proc ::dZSBot::InviteChan {nick chan} {
     }
 }
 
-proc ::dZSBot::InviteUser {nick user group flags} {
+proc ::dZSbot::InviteUser {nick user group flags} {
     variable invite_channels
     variable privchannel
     if {![EventHandler precommand INVITEUSER $nick $user $group $flags]} {return}
@@ -833,7 +833,7 @@ proc ::dZSBot::InviteUser {nick user group flags} {
     return
 }
 
-proc ::dZSBot::CmdInvite {nick host hand argv} {
+proc ::dZSbot::CmdInvite {nick host hand argv} {
     variable announce
     variable binary
     variable disable
@@ -883,7 +883,7 @@ proc ::dZSBot::CmdInvite {nick host hand argv} {
 # Show Welcome Message                                                          #
 #################################################################################
 
-proc ::dZSBot::ShowWelcome {nick uhost hand chan} {
+proc ::dZSbot::ShowWelcome {nick uhost hand chan} {
     variable announce
     variable chanlist
     variable cmdpre
@@ -906,7 +906,7 @@ proc ::dZSBot::ShowWelcome {nick uhost hand chan} {
 # Command Utilities                                                            #
 ################################################################################
 
-proc ::dZSBot::CheckChan {nick chan} {
+proc ::dZSbot::CheckChan {nick chan} {
     variable disable
     variable mainchan
 
@@ -916,7 +916,7 @@ proc ::dZSBot::CheckChan {nick chan} {
     }
 }
 
-proc ::dZSBot::GetOptions {argv resultsVar otherVar} {
+proc ::dZSbot::GetOptions {argv resultsVar otherVar} {
     upvar $resultsVar results $otherVar other
     variable default_results
     variable maximum_results
@@ -948,7 +948,7 @@ proc ::dZSBot::GetOptions {argv resultsVar otherVar} {
     return 1
 }
 
-proc ::dZSBot::GetSectionName {fullPath sectionVar secionPathVar} {
+proc ::dZSbot::GetSectionName {fullPath sectionVar secionPathVar} {
     upvar $sectionVar sectionName $secionPathVar sectionPath
     variable defaultsection
     variable paths
@@ -975,7 +975,7 @@ proc ::dZSBot::GetSectionName {fullPath sectionVar secionPathVar} {
     return
 }
 
-proc ::dZSBot::GetSectionPath {getsection} {
+proc ::dZSbot::GetSectionPath {getsection} {
     variable paths
     variable sections
 
@@ -993,7 +993,7 @@ proc ::dZSBot::GetSectionPath {getsection} {
 # General Commands                                                             #
 ################################################################################
 
-proc ::dZSBot::CmdBnc {nick uhost hand chan arg} {
+proc ::dZSbot::CmdBnc {nick uhost hand chan arg} {
     global errorCode
     variable announce
     variable binary
@@ -1075,7 +1075,7 @@ proc ::dZSBot::CmdBnc {nick uhost hand chan arg} {
     return
 }
 
-proc ::dZSBot::CmdHelp {nick uhost hand chan arg} {
+proc ::dZSbot::CmdHelp {nick uhost hand chan arg} {
     variable scriptPath
     variable sections
     variable statsection
@@ -1104,7 +1104,7 @@ proc ::dZSBot::CmdHelp {nick uhost hand chan arg} {
     return
 }
 
-proc ::dZSBot::CmdFree {nick uhost hand chan arg} {
+proc ::dZSbot::CmdFree {nick uhost hand chan arg} {
     variable announce
     variable binary
     variable dev_max_length
@@ -1185,7 +1185,7 @@ proc ::dZSBot::CmdFree {nick uhost hand chan arg} {
     return
 }
 
-proc ::dZSBot::CmdIncompletes {nick uhost hand chan arg} {
+proc ::dZSbot::CmdIncompletes {nick uhost hand chan arg} {
     variable binary
     CheckChan $nick $chan
 
@@ -1200,7 +1200,7 @@ proc ::dZSBot::CmdIncompletes {nick uhost hand chan arg} {
     return
 }
 
-proc ::dZSBot::CmdStats {type time nick uhost hand chan argv} {
+proc ::dZSbot::CmdStats {type time nick uhost hand chan argv} {
     variable binary
     variable statsection
     variable statdefault
@@ -1241,7 +1241,7 @@ proc ::dZSBot::CmdStats {type time nick uhost hand chan argv} {
     return
 }
 
-proc ::dZSBot::CmdUptime {nick uhost hand chan argv} {
+proc ::dZSbot::CmdUptime {nick uhost hand chan argv} {
     global uptime
     variable announce
     variable binary
@@ -1273,7 +1273,7 @@ proc ::dZSBot::CmdUptime {nick uhost hand chan argv} {
 # Latest Dirs/Nukes Commands                                                   #
 ################################################################################
 
-proc ::dZSBot::CmdNew {nick uhost hand chan argv} {
+proc ::dZSbot::CmdNew {nick uhost hand chan argv} {
     variable announce
     variable binary
     variable defaultsection
@@ -1341,7 +1341,7 @@ proc ::dZSBot::CmdNew {nick uhost hand chan argv} {
     return
 }
 
-proc ::dZSBot::CmdNukes {nick uhost hand chan argv} {
+proc ::dZSbot::CmdNukes {nick uhost hand chan argv} {
     variable announce
     variable binary
     variable defaultsection
@@ -1397,7 +1397,7 @@ proc ::dZSBot::CmdNukes {nick uhost hand chan argv} {
     return
 }
 
-proc ::dZSBot::CmdSearch {nick uhost hand chan argv} {
+proc ::dZSbot::CmdSearch {nick uhost hand chan argv} {
     variable announce
     variable binary
     variable defaultsection
@@ -1457,7 +1457,7 @@ proc ::dZSBot::CmdSearch {nick uhost hand chan argv} {
     return
 }
 
-proc ::dZSBot::CmdUnnukes {nick uhost hand chan argv} {
+proc ::dZSbot::CmdUnnukes {nick uhost hand chan argv} {
     variable announce
     variable binary
     variable defaultsection
@@ -1518,7 +1518,7 @@ proc ::dZSBot::CmdUnnukes {nick uhost hand chan argv} {
 # Online Stats Commands                                                        #
 ################################################################################
 
-proc ::dZSBot::CmdBw {nick uhost hand chan argv} {
+proc ::dZSbot::CmdBw {nick uhost hand chan argv} {
     variable announce
     variable binary
     variable speed
@@ -1553,7 +1553,7 @@ proc ::dZSBot::CmdBw {nick uhost hand chan argv} {
     return
 }
 
-proc ::dZSBot::CmdBwDn {nick uhost hand chan argv} {
+proc ::dZSbot::CmdBwDn {nick uhost hand chan argv} {
     variable announce
     variable binary
     variable speed
@@ -1584,7 +1584,7 @@ proc ::dZSBot::CmdBwDn {nick uhost hand chan argv} {
     return
 }
 
-proc ::dZSBot::CmdBwUp {nick uhost hand chan argv} {
+proc ::dZSbot::CmdBwUp {nick uhost hand chan argv} {
     variable announce
     variable binary
     variable speed
@@ -1614,7 +1614,7 @@ proc ::dZSBot::CmdBwUp {nick uhost hand chan argv} {
     SendOne $chan [ReplaceBasic $output "BW"]
 }
 
-proc ::dZSBot::CmdIdlers {nick uhost hand chan argv} {
+proc ::dZSbot::CmdIdlers {nick uhost hand chan argv} {
     variable announce
     variable binary
     variable minidletime
@@ -1652,7 +1652,7 @@ proc ::dZSBot::CmdIdlers {nick uhost hand chan argv} {
     return
 }
 
-proc ::dZSBot::CmdLeechers {nick uhost hand chan argv} {
+proc ::dZSbot::CmdLeechers {nick uhost hand chan argv} {
     variable announce
     variable binary
     variable speed
@@ -1698,7 +1698,7 @@ proc ::dZSBot::CmdLeechers {nick uhost hand chan argv} {
     return
 }
 
-proc ::dZSBot::CmdSpeed {nick uhost hand chan argv} {
+proc ::dZSbot::CmdSpeed {nick uhost hand chan argv} {
     variable announce
     variable binary
     variable disable
@@ -1745,7 +1745,7 @@ proc ::dZSBot::CmdSpeed {nick uhost hand chan argv} {
     return
 }
 
-proc ::dZSBot::CmdUploaders {nick uhost hand chan argv} {
+proc ::dZSbot::CmdUploaders {nick uhost hand chan argv} {
     variable announce
     variable binary
     variable speed
@@ -1791,7 +1791,7 @@ proc ::dZSBot::CmdUploaders {nick uhost hand chan argv} {
     return
 }
 
-proc ::dZSBot::CmdWho {nick uhost hand chan argv} {
+proc ::dZSbot::CmdWho {nick uhost hand chan argv} {
     variable binary
     CheckChan $nick $chan
     foreach line [split [exec $binary(WHO)] "\n"] {
@@ -1809,7 +1809,7 @@ proc ::dZSBot::CmdWho {nick uhost hand chan argv} {
 # Theme Loading and Replacement                                                 #
 #################################################################################
 
-proc ::dZSBot::ThemeLoad {file} {
+proc ::dZSbot::ThemeLoad {file} {
     variable announce
     variable random
     variable scriptPath
@@ -1874,7 +1874,7 @@ proc ::dZSBot::ThemeLoad {file} {
     return 1
 }
 
-proc ::dZSBot::ThemePreview {handle idx text} {
+proc ::dZSbot::ThemePreview {handle idx text} {
     variable announce
     variable defaultsection
 
@@ -1914,7 +1914,7 @@ proc ::dZSBot::ThemePreview {handle idx text} {
     return
 }
 
-proc ::dZSBot::ThemeReplace {targetString section} {
+proc ::dZSbot::ThemeReplace {targetString section} {
     variable theme
 
     ## Escape any "$" characters so they aren't interpreted as variables in the final "subst".
@@ -1960,7 +1960,7 @@ proc ::dZSBot::ThemeReplace {targetString section} {
     return [subst -nocommands $targetString]
 }
 
-proc ::dZSBot::ThemeReplaceBasic {rstring} {
+proc ::dZSbot::ThemeReplaceBasic {rstring} {
     # We replace %b{string} and %u{string} with their bolded and underlined equivilants ;)
     while {[regexp {(%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\})} $rstring]} {
         regsub -all {%b\{([^\{\}]+)\}} $rstring {\\002\1\\002} rstring
@@ -1974,7 +1974,7 @@ proc ::dZSBot::ThemeReplaceBasic {rstring} {
 #################################################################################
 
 ## TODO: Clean up initialization.
-namespace eval ::dZSBot {
+namespace eval ::dZSbot {
     variable glVersion 0
     variable loadError 0
     variable logList ""

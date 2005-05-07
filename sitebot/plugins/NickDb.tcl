@@ -33,8 +33,8 @@
 #
 #################################################################################
 
-namespace eval ::dZSBot::NickDb {
-    namespace import -force ::dZSBot::*
+namespace eval ::dZSbot::NickDb {
+    namespace import -force ::dZSbot::*
 
     ## Config Settings ###############################
     ##
@@ -71,7 +71,7 @@ namespace eval ::dZSBot::NickDb {
 # Called on initialization. This procedure opens the user database and
 # registers the INVITEUSER script and Eggdrop event callbacks.
 #
-proc ::dZSBot::NickDb::Init {args} {
+proc ::dZSbot::NickDb::Init {args} {
     variable filePath
     variable libSQLite
     variable scriptName
@@ -115,7 +115,7 @@ proc ::dZSBot::NickDb::Init {args} {
 # Called on rehash. This procedure closes the user database and unregisters
 # the INVITEUSER script and Eggdrop event callbacks.
 #
-proc ::dZSBot::NickDb::DeInit {args} {
+proc ::dZSbot::NickDb::DeInit {args} {
     variable scriptName
 
     ## Close the SQLite database in case we're being unloaded.
@@ -139,7 +139,7 @@ proc ::dZSBot::NickDb::DeInit {args} {
 #
 # Updates the IRC nickname and online status of users.
 #
-proc ::dZSBot::NickDb::ChanEvent {event args} {
+proc ::dZSbot::NickDb::ChanEvent {event args} {
     variable monitorChans
 
     switch -exact -- $event {
@@ -185,7 +185,7 @@ proc ::dZSBot::NickDb::ChanEvent {event args} {
 #
 # Called by the sitebot's event handler on the "INVITEUSER" event.
 #
-proc ::dZSBot::NickDb::InviteEvent {event ircUser ftpUser ftpGroup ftpFlags} {
+proc ::dZSbot::NickDb::InviteEvent {event ircUser ftpUser ftpGroup ftpFlags} {
     variable hostChange
     variable hostExempt
     variable hostFormat
@@ -214,7 +214,7 @@ proc ::dZSBot::NickDb::InviteEvent {event ircUser ftpUser ftpGroup ftpFlags} {
 #
 # Checks if the specified user is currently in any of the monitored channels.
 #
-proc ::dZSBot::NickDb::OnMonitorChans {ircUser {ignoreChannel ""}} {
+proc ::dZSbot::NickDb::OnMonitorChans {ircUser {ignoreChannel ""}} {
     variable monitorChans
     foreach channel $monitorChans {
         if {[string equal -nocase $ignoreChannel $channel]} {continue}
@@ -228,7 +228,7 @@ proc ::dZSBot::NickDb::OnMonitorChans {ircUser {ignoreChannel ""}} {
 #
 # Strips illegal characters from IRC user names.
 #
-proc ::dZSBot::NickDb::StripName {name} {
+proc ::dZSbot::NickDb::StripName {name} {
     return [regsub -all {[^\w\[\]\{\}\-\`\^\\]+} $name {}]
 }
 
@@ -246,7 +246,7 @@ proc ::dZSBot::NickDb::StripName {name} {
 #     puts "The IRC user nick for \"$ftpUser\" is \"$ircUser\"."
 # }
 #
-proc ::dZSBot::NickDb::GetIrcUser {ftpUser} {
+proc ::dZSbot::NickDb::GetIrcUser {ftpUser} {
     return [db eval {SELECT ircUser FROM UserNames WHERE ftpUser=$ftpUser}]
 }
 
@@ -265,7 +265,7 @@ proc ::dZSBot::NickDb::GetIrcUser {ftpUser} {
 #     puts "The FTP user name for \"$ircUser\" is \"$ftpUser\"."
 # }
 #
-proc ::dZSBot::NickDb::GetFtpUser {ircUser} {
+proc ::dZSbot::NickDb::GetFtpUser {ircUser} {
     ## IRC user names are case-insensitive.
     return [db eval {SELECT ftpUser FROM UserNames WHERE StrCaseEq(ircUser,$ircUser) ORDER BY time DESC LIMIT 1}]
 }
@@ -285,7 +285,7 @@ proc ::dZSBot::NickDb::GetFtpUser {ircUser} {
 #     puts "The FTP user $ftpUser was never seen online."
 # }
 #
-proc ::dZSBot::NickDb::QueryFtpUser {ftpUser varName} {
+proc ::dZSbot::NickDb::QueryFtpUser {ftpUser varName} {
     upvar $varName values
     db eval {SELECT * FROM UserNames WHERE ftpUser=$ftpUser} values {
         return 1
@@ -308,7 +308,7 @@ proc ::dZSBot::NickDb::QueryFtpUser {ftpUser varName} {
 #     puts "The IRC user $ircUser was never seen online."
 # }
 #
-proc ::dZSBot::NickDb::QueryIrcUser {ircUser varName} {
+proc ::dZSbot::NickDb::QueryIrcUser {ircUser varName} {
     upvar $varName values
     ## IRC user names are case-insensitive.
     db eval {SELECT * FROM UserNames WHERE StrCaseEq(ircUser,$ircUser)} values {
@@ -317,4 +317,4 @@ proc ::dZSBot::NickDb::QueryIrcUser {ircUser varName} {
     return 0
 }
 
-::dZSBot::NickDb::Init
+::dZSbot::NickDb::Init

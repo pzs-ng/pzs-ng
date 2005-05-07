@@ -21,7 +21,7 @@
 #
 #################################################################################
 
-namespace eval ::dZSBot::DeluserBan {
+namespace eval ::dZSbot::DeluserBan {
 
     ## Config Settings ###############################
     ##
@@ -38,8 +38,8 @@ namespace eval ::dZSBot::DeluserBan {
     ##
     ##################################################
 
-    namespace import -force ::dZSBot::*
-    namespace import -force ::dZSBot::NickDb::*
+    namespace import -force ::dZSbot::*
+    namespace import -force ::dZSbot::NickDb::*
     variable scriptName [namespace current]::LogEvent
     bind evnt -|- prerehash [namespace current]::DeInit
 }
@@ -49,7 +49,7 @@ namespace eval ::dZSBot::DeluserBan {
 #
 # Called on initialization; registers the event handler.
 #
-proc ::dZSBot::DeluserBan::Init {args} {
+proc ::dZSbot::DeluserBan::Init {args} {
     variable scriptName
 
     ## Register event handler.
@@ -65,7 +65,7 @@ proc ::dZSBot::DeluserBan::Init {args} {
 #
 # Called on rehash; unregisters the event handler.
 #
-proc ::dZSBot::DeluserBan::DeInit {args} {
+proc ::dZSbot::DeluserBan::DeInit {args} {
     variable scriptName
 
     ## Remove script events and callbacks.
@@ -83,7 +83,7 @@ proc ::dZSBot::DeluserBan::DeInit {args} {
 # Called by the sitebot's event handler on the
 # "DELUSER" and "PURGED" announces.
 #
-proc ::dZSBot::DeluserBan::LogEvent {event section sectionPath logData} {
+proc ::dZSbot::DeluserBan::LogEvent {event section sectionPath logData} {
     global botnick
     variable banUser
     variable killUser
@@ -130,4 +130,4 @@ proc ::dZSBot::DeluserBan::LogEvent {event section sectionPath logData} {
     return 1
 }
 
-::dZSBot::DeluserBan::Init
+::dZSbot::DeluserBan::Init

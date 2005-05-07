@@ -30,7 +30,7 @@
 #
 #################################################################################
 
-namespace eval ::dZSBot::PreTime {
+namespace eval ::dZSbot::PreTime {
     variable mysql
 
     ## Config Settings ###############################
@@ -56,7 +56,7 @@ namespace eval ::dZSBot::PreTime {
     ##################################################
 
     set mysql(handle) ""
-    namespace import -force ::dZSBot::*
+    namespace import -force ::dZSbot::*
     variable scriptName [namespace current]::LogEvent
     bind evnt -|- prerehash [namespace current]::DeInit
 }
@@ -66,7 +66,7 @@ namespace eval ::dZSBot::PreTime {
 #
 # Called on initialization; registers the event handler.
 #
-proc ::dZSBot::PreTime::Init {args} {
+proc ::dZSbot::PreTime::Init {args} {
     variable libMySQLTcl
     variable mysql
     variable scriptName
@@ -95,7 +95,7 @@ proc ::dZSBot::PreTime::Init {args} {
 #
 # Called on rehash; unregisters the event handler.
 #
-proc ::dZSBot::PreTime::DeInit {args} {
+proc ::dZSbot::PreTime::DeInit {args} {
     variable mysql
     variable scriptName
 
@@ -116,7 +116,7 @@ proc ::dZSBot::PreTime::DeInit {args} {
 # Look up the pre time of the release. Returns 1 if
 # found and 0 if not.
 #
-proc ::dZSBot::PreTime::LookUp {release timeVar} {
+proc ::dZSbot::PreTime::LookUp {release timeVar} {
 
     ## Note ##########################################
     ##
@@ -143,7 +143,7 @@ proc ::dZSBot::PreTime::LookUp {release timeVar} {
 #
 # Called by the sitebot's event handler on the "NEWDIR" announce.
 #
-proc ::dZSBot::PreTime::LogEvent {event section sectionPath logData} {
+proc ::dZSbot::PreTime::LogEvent {event section sectionPath logData} {
     variable lateMins
     variable ignoreDirs
     if {![string equal "NEWDIR" $event]} {return 1}
@@ -180,4 +180,4 @@ proc ::dZSBot::PreTime::LogEvent {event section sectionPath logData} {
     return 1
 }
 
-::dZSBot::PreTime::Init
+::dZSbot::PreTime::Init
