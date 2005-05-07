@@ -495,29 +495,33 @@ proc ::dZSbot::LogFormat {event section sectionPath line} {
 # Nuke and Unnuke Handlers                                                      #
 #################################################################################
 
-proc ::dZSbot::FuelNuke {type path section line} {
+proc ::dZSbot::FuelNuke {event section sectionPath logData} {
+    variable announce
     variable hidenuke
     variable nuke
 
-    if {$type == $nuke(LASTTYPE) && $path == $nuke(LASTDIR) && $nuke(SHOWN) == 0} {
-        if {[lsearch -exact $hidenuke [lindex $line 2]] == -1} {
-            lappend nuke(NUKEE) "[b][lindex $line 2][b] ([b][lindex $line 3 1][b]MB)"
-        }
+    ## Log Data:
+    ## NUKE   - path nuker nukee "multi amount" reason
+    ## UNNUKE - path nuker nukee "multi amount" reason
+    foreach {path nuker nukee info reason} $logData {break}
+    set multi [lindex $info 0]
+    set size [lindex $info 1]
+
+    if {[info exists nuke($path)]} {
+        set nukeeList [lindex $nuke($path) end]
     } else {
-        LaunchNuke
-        if {[lsearch -exact $hidenuke [lindex $line 2]] == -1} {
-            set nuke(TYPE) $type
-            set nuke(PATH) $path
-            set nuke(SECTION) $section
-            set nuke(NUKER) [lindex $line 1]
-            set nuke(NUKEE) "[b][lindex $line 2][b] ([b][lindex $line 3 1][b]MB)"
-            set nuke(MULT) [lindex $line 3 0]
-            set nuke(REASON) [lindex $line 4]
-            set nuke(SHOWN) 0
-        }
+        set nukeeList ""
     }
-    set nuke(LASTTYPE) $type
-    set nuke(LASTDIR) $path
+
+    ## Format nuked user and append to the list.
+    if {[lsearch -exact $hidenuke $nukee] == -1} {
+        set output $announce(NUKEES)
+        set output [ReplaceVar $output "%u_name" $nukee]
+        set output [ReplaceVar $output "%size" $size]
+        lappend nukeeList $output
+    }
+
+    set nuke($path) [list $event $section $sectionPath $nuker $multi $reason $nukeeList]
 }
 
 proc ::dZSbot::LaunchNuke {} {
@@ -525,19 +529,20 @@ proc ::dZSbot::LaunchNuke {} {
     variable nuke
     variable theme
 
-    if {$nuke(SHOWN) == 1} {return 0}
-    set nuke(NUKEE) [TrimTail $nuke(NUKEE) $theme(SPLITTER)]
+    foreach {path info} [array get nuke] {
+        foreach {event section sectionPath nuker multi reason nukeeList} $info {break}
+        set nukees [join $nukeeList $theme(SPLITTER)]
 
-    set output "$theme(PREFIX)$announce($nuke(TYPE))"
-    set output [ReplaceBasic $output $nuke(SECTION)]
-    set output [ReplaceVar $output "%nuker" $nuke(NUKER)]
-    set output [ReplaceVar $output "%nukees" $nuke(NUKEE)]
-    set output [ReplaceVar $output "%type" $nuke(TYPE)]
-    set output [ReplaceVar $output "%multiplier" $nuke(MULT)]
-    set output [ReplaceVar $output "%reason" $nuke(REASON)]
-    set output [ReplacePath $output $mpath $nuke(PATH)]
-    SendAll $nuke(TYPE) $nuke(SECTION) $output
-    set nuke(SHOWN) 1
+        set output [ReplaceBasic "$theme(PREFIX)$announce($event)" $section]
+        set output [ReplaceVar $output "%nuker" $nuker]
+        set output [ReplaceVar $output "%multiplier" $multi]
+        set output [ReplaceVar $output "%reason" $reason]
+        set output [ReplaceVar $output "%nukees" $nukees]
+        set output [ReplacePath $output $sectionPath $path]
+
+        SendAll $event $section $output
+        unset nuke($path)
+    }
 }
 
 proc ::dZSbot::LaunchNuke2 {event section sectionPath logData} {
@@ -546,9 +551,9 @@ proc ::dZSbot::LaunchNuke2 {event section sectionPath logData} {
     variable theme
 
     ## Log Data:
-    ## NUKE   - path nuker mutli reason "nukee amount ..."
-    ## UNNUKE - path nuker mutli reason "nukee amount ..."
-    foreach {path nuker mutli reason nukees} $logData {break}
+    ## NUKE   - path nuker multi reason "nukee amount ..."
+    ## UNNUKE - path nuker multi reason "nukee amount ..."
+    foreach {path nuker multi reason nukees} $logData {break}
 
     ## Format nuked user list.
     set nukeeList ""
@@ -565,7 +570,7 @@ proc ::dZSbot::LaunchNuke2 {event section sectionPath logData} {
 
     set output [ReplaceBasic "$theme(PREFIX)$announce($event)" $section]
     set output [ReplaceVar $output "%nuker" $nuker]
-    set output [ReplaceVar $output "%multiplier" $mutli]
+    set output [ReplaceVar $output "%multiplier" $multi]
     set output [ReplaceVar $output "%reason" $reason]
     set output [ReplaceVar $output "%nukees" $nukees]
     set output [ReplacePath $output $sectionPath $path]
