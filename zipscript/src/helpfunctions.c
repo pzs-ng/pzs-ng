@@ -44,7 +44,7 @@ find_last_of(char *name, const char *delim)
 void
 strip_whitespaces(char *s)
 {
-	if (s)
+	if (s && *s)
 		while (s[(int)strlen(s)-1] == ' '  ||
 	           s[(int)strlen(s)-1] == '\t' ||
 		   s[(int)strlen(s)-1] == '\n' ||

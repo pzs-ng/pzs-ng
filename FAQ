@@ -58,6 +58,8 @@ A: You should disable the announce in glftpd.conf. Change your dirlog lines
    The / at the end hinders announces/logging of new dirs after it, ie dirs
    created in /site/BOOKWARE/some_release/* is not announced. For more info
    see glftpd.docs.
+A: Check the docs on the sitebot. There is a denypost directive, and you have
+   options to redirect output to a different channel.
 
 Q: (BOT) I get errors on !bw !speed etc in the bot. What to do?
 ---------------------------------------------------------------
