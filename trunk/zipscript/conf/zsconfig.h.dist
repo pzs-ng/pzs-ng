@@ -1,13 +1,13 @@
 /* zsconfig.h - ZipScript-C config file
  *
- * This file only contains overrides of the defaults.
- * Please see README.ZSCONFIG for a complete list
- * of all settings.
+ * This file only contains overrides of the defaults. If you need to edit/change
+ * other options, please copy the option from README.ZSCONFIG and place it in
+ * here.
+ * The complete list of options availible is found in README.ZSCONFIG.
  *
  * Please do not change settings you do not understand!
  *
  */
-
 
 
 /* DO NOT USE WILDCARDS HERE - only cleanupdirs use wildcards! */
@@ -20,21 +20,19 @@
 #define audio_nocheck_dirs		"/site/groups/ /site/incoming/requests/"
 #define allowed_types_exemption_dirs	"/site/incoming/musicvideos/"
 #define check_for_missing_nfo_dirs	"/site/incoming/games/ /site/incoming/apps/"
-
 #define cleanupdirs			"/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/"
 #define cleanupdirs_dated		"/site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 
 #define short_sitename			"NG"
 
-#define status_bar_type			1
+#define debug_mode			FALSE
+#define debug_altlog			TRUE
 
+#define status_bar_type			1
 #define incompleteislink		1
 
 #define allowed_types			"jpg,cue,m3u,mpg,mpeg,avi,txt,mov,vob"
-
 #define ignored_types			",diz,debug,message,imdb"
-
-#define remove_dot_files_on_delete	FALSE
 
 #define deny_double_sfv			FALSE
 #define force_sfv_first			FALSE
@@ -44,7 +42,7 @@
 #define audio_year_path			"/site/incoming/music.by.year/"
 #define audio_group_path		"/site/incoming/music.by.group/"
 #define allowed_constant_bitrates	"160,192"
-#define allowed_years			"2003,2004,2005"
+#define allowed_years			"2003,2004,2005,2006"
 #define banned_genres			"Christian Rap,Christian Rock,Christian Gangsta Rap,Contemporary Christian"
 #define allowed_genres			"Rock,Ethnic,Indie,Instrumental Rock,Soundtrack"
 #define audio_genre_sort		FALSE
@@ -58,8 +56,6 @@
 #define audio_banned_genre_check	TRUE
 #define audio_allowed_genre_check	FALSE
 #define audio_genre_warn		TRUE
-
-#define announce_norace			TRUE
 
 #define enable_nfo_script		FALSE
 #define nfo_script			"/bin/psxc-imdb.sh"

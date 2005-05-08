@@ -9,10 +9,10 @@ v0.6.1	--> 1.00  :	The changes from the original project-zs by d1 is
 			changed a lot and have been given a few new options, so
 			check the sitebot.conf and the README.
 
-			In total, there has been nearly 1700 code updates, so
+			In total, there has been over 1800 code updates, so
 			i won't list all of those here. I'll just list what
-			changes are major ones. The new config options can be
-			read about in README.ZSCONFIG
+			changes are major ones. The new config options listed
+			below can be read about in README.ZSCONFIG.
 
 
 		----	Changes in the zipscript:
