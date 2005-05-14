@@ -250,7 +250,7 @@ announce.TOTALIDLE              = "[%b{bwinfo}] Currently %b{%count} users idle!
 ## Command: !speed
 announce.SPEEDUP                = "[%b{bwinfo}] %b{%u_name} of %g_name is uploading %b{%f_name} at %upspeed (%uppercent)."
 announce.SPEEDDN                = "[%b{bwinfo}] %b{%u_name} of %g_name is downloading %b{%f_name} at %dnspeed (%dnpercent)."
-announce.SPEEDIDLE              = "[%b{bwinfo}] %b{%u_name} of %g_name has been idle for %idletime."
+announce.SPEEDID                = "[%b{bwinfo}] %b{%u_name} of %g_name has been idle for %idletime."
 announce.SPEEDERROR             = "[%b{bwinfo}] Nope, try again. Found noone by that name on site."
 
 ## Command: !new

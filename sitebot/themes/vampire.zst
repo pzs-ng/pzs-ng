@@ -8,7 +8,7 @@
 #  Notes: Best experienced on dark -black- backgrounds.    #
 #         Please contact me if you have any suggestions,   #
 #         fixes or additions for this theme.               #
-#  Tested with: pzs-ng r1793                               #
+#  Tested with: pzs-ng r1819                               #
 #                                                          #
 ############################################################
 #                                                          #
@@ -189,6 +189,7 @@ announce.INVITE                     = "%b{iNViTE%c1{:}} %c3{%b{%u_name}} %c1{/} 
 announce.MSGINVITE                  = "%b{iNViTE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{invited himself as} %c3{%b{%u_ircnick}}%c1{.}"
 announce.REQFILLED                  = "%b{FiLLED%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{just filled} %c3{%b{%relname}} %c1{for} %c3{%b{%u_requester}}%c1{.}"
 announce.REQUEST                    = "%b{REQUEST%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{requests} %c3{%b{%relname}}%c1{.}"
+announce.WELCOME                    = "%c1{Welcome to} %c2{%b{%sitename}}%c1{'s sitechan. Type} %c3{%cmdprehelp} %c1{for help.}"
 
 ## Bouncer status
 announce.BNC                        = "%b{BNC%c1{:}} %c1{Checking bouncer status, please} %c3{%b{wait}} %c1{...}"
@@ -196,42 +197,53 @@ announce.BNC_PING                   = "%c2{%num}%c1{.-} %c3{%b{%desc}} %c1{at} %
 announce.BNC_ONLINE                 = "%c2{%num}%c1{.-} %c3{%b{%desc}} %c1{at} %c3{%ip}%c1{:}%c3{%port} %c1{is} %c3{%b{UP}} %c1{(login:} %c3{%b{%response}}%c1{ms ping:} %c3{%b{%ping}}%c1{ms).}"
 announce.BNC_OFFLINE                = "%c2{%num}%c1{.-} %c3{%b{%desc}} %c1{at} %c3{%ip}%c1{:}%c3{%port} %c1{is} %c3{%b{DOWN}} %c1{(%error).}"
 
-## IRC Commands
-announce.LEECH                      = "%b{BANDWiDTH%c1{:}} %c1{Current leechers:}"
-announce.UPLOAD                     = "%b{BANDWiDTH%c1{:}} %c1{Current uploaders:}"
-announce.IDLE                       = "%b{BANDWiDTH%c1{:}} %c1{Current idlers:}"
-announce.BW                         = "%b{BANDWiDTH%c1{:}} %c1{(}%c3{%uploads} %c1{uploading at} %c3{%upspeed} %c1{~} %c3{%uppercent}%c1{%) - (}%c3{%downloads} %c1{downloading at} %c3{%dnspeed} %c1{~} %c3{%dnpercent}%c1{%) - (}%c3{%active} %c1{browsing) - (}%c3{%idlers} %c1{idling}%c1{) - [}%c3{%totallogins} %c1{out of} %c3{%maxusers} %c1{users in total at} %c3{%totalspeed} %c1{~} %c3{%totalpercent}%c1{%]}"
-announce.BWUP                       = "%b{BANDWiDTH%c1{:}} %c3{%b{%uploads}} %c1{uploads at} %c3{%upspeed} %c1{(}%c3{%uppercent%}%c1{).}"
-announce.BWDN                       = "%b{BANDWiDTH%c1{:}} %c3{%b{%downloads}} %c1{downloads at} %c3{%dnspeed} %c1{(}%c3{%dnpercent%}%c1{).}"
-announce.TOTUPDN                    = "%b{BANDWiDTH%c1{:}} %c1{%type} %c3{%b{%count}} %c1{at} %c3{%total} %c1{(}%c3{%b{%per}%} %c1{total bandwidth usage).}"
-announce.TOTIDLE                    = "%b{BANDWiDTH%c1{:}} %c1{There are currently} %c3{%b{%count}} %c1{users idle!}"
-announce.USERIDLE                   = "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{idling for} %c3{%idletime}"
-announce.USER                       = "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{on} %c3{%b{%filename}} %c1{(}%c3{%fper} %c1{done) at} %c3{%speed} %c1{(}%c3{%b{%per}} %c1{bandwidth usage).}"
-announce.SPEEDUP                    = "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is uploading} %c3{%b{%f_name}} %c1{at} %c3{%upspeed} %c1{(}%c3{%uppercent}%c1{).}"
-announce.SPEEDDN                    = "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is downloading} %c3{%b{%f_name}} %c1{at} %c3{%dnspeed} %c1{(}%c3{%dnpercent}%c1{).}"
-announce.SPEEDID                    = "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{has been idle for} %c3{%idletime}%c1{.}"
-announce.SPEEDERROR                 = "%b{BANDWiDTH%c1{:}} %c1{The requested user is not online now.}"
-announce.WELCOME                    = "%c1{Welcome to} %c2{%b{%sitename}}%c1{'s sitechan. Type} %c3{%cmdprehelp} %c1{for help.}"
+## Other commands
 announce.FREE                       = "%b{FREE SPACE%c1{:}} %devices%c1{[}%c3{%b{%free}} %c1{of} %c3{%total} %c1{free in total (used %c3{%perc_used%}%c1{)]}}"
 announce.FREE-DEV                   = "%c1{(}%b{%c3{%section}} %c1{has} %c3{%b{%free}} %c1{of} %c3{%total} %c1{free - used} %c3{%perc_used%}%c1{)} %c1{-} "
 announce.UPTIME                     = "%b{UPTiME%c1{:}} %c2{system:} %c3{%b{%users}} %c1{user(s) - online for} %c3{%b{%time}} %c1{- load of} %c3{%b{%load}} %c1{-} %c2{sitebot:} %c3{%eggdrop}%c1{.}"
 
-## IRC Command: !new
+## Command: !bw, !bwup, and !bwdn
+announce.BW                         = "%b{BANDWiDTH%c1{:}} %c1{(}%c3{%uploads} %c1{uploading at} %c3{%upspeed} %c1{~} %c3{%uppercent}%c1{%) - (}%c3{%downloads} %c1{downloading at} %c3{%dnspeed} %c1{~} %c3{%dnpercent}%c1{%) - (}%c3{%active} %c1{browsing) - (}%c3{%idlers} %c1{idling}%c1{) - [}%c3{%totallogins} %c1{out of} %c3{%maxusers} %c1{users in total at} %c3{%totalspeed} %c1{~} %c3{%totalpercent}%c1{%]}"
+announce.BWUP                       = "%b{BANDWiDTH%c1{:}} %c3{%b{%uploads}} %c1{uploads at} %c3{%upspeed} %c1{(}%c3{%uppercent%}%c1{).}"
+announce.BWDN                       = "%b{BANDWiDTH%c1{:}} %c3{%b{%downloads}} %c1{downloads at} %c3{%dnspeed} %c1{(}%c3{%dnpercent%}%c1{).}"
+
+## Command: !leechers
+announce.LEECH                      = "%b{BANDWiDTH%c1{:}} %c1{Current leechers:}"
+announce.USERDN                     = "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is downloading} %c3{%b{%filename}} %c1{(}%c3{%b{%fper}}%c1{) at} %c3{%speed} %c1{(}%c3{%per}%c1{ usage).}"
+announce.TOTALDN                    = "%b{BANDWiDTH%c1{:}} %c1{Leechers:} %c3{%b{%count}} %c1{at} %c3{%total} %c1{(}%c3{%b{%per}%} %c1{total bandwidth usage).}"
+
+## Command: !uploaders
+announce.UPLOAD                     = "%b{BANDWiDTH%c1{:}} %c1{Current uploaders:}"
+announce.USERUP                     = "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is uploading} %c3{%b{%filename}} %c1{(}%c3{%b{%fper}}%c1{) at} %c3{%speed} %c1{(}%c3{%per}%c1{ usage).}"
+announce.TOTALUP                    = "%b{BANDWiDTH%c1{:}} %c1{Uploaders:} %c3{%b{%count}} %c1{at} %c3{%total} %c1{(}%c3{%b{%per}%} %c1{total bandwidth usage).}"
+
+## Command: !idlers
+announce.IDLE                       = "%b{BANDWiDTH%c1{:}} %c1{Current idlers:}"
+announce.USERIDLE                   = "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{idling for} %c3{%idletime}"
+announce.TOTALIDLE                  = "%b{BANDWiDTH%c1{:}} %c1{There are currently} %c3{%b{%count}} %c1{users idle!}"
+
+## Command: !speed
+announce.SPEEDUP                    = "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is uploading} %c3{%b{%f_name}} %c1{at} %c3{%upspeed} %c1{(}%c3{%uppercent}%c1{).}"
+announce.SPEEDDN                    = "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{is downloading} %c3{%b{%f_name}} %c1{at} %c3{%dnspeed} %c1{(}%c3{%dnpercent}%c1{).}"
+announce.SPEEDID                    = "%b{BANDWiDTH%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{has been idle for} %c3{%idletime}%c1{.}"
+announce.SPEEDERROR                 = "%b{BANDWiDTH%c1{:}} %c1{The requested user is not online now.}"
+
+## Command: !new
 announce.NEW                        = "%b{NEW%c1{:}} %c1{-}%c2{%section}%c1{- Latest releases:}"
 announce.NEW_BODY                   = "%c2{%num}%c1{.-} %c3{%b{%reldir}} %c1{created by} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{%age ago} %c1{(}%c3{%b{%mbytes}}%c1{MB in} %c3{%b{%files}} %c1{files).}"
 announce.NEW_NONE                   = "%c1{No releases found!}"
 
-## IRC Command: !dupe/!search
+## Command: !dupe and !search
 announce.SEARCH                     = "%b{SEARCH%c1{:}} %c1{Search results for '}%c3{%b{%pattern}}%c1{':}"
 announce.SEARCH_BODY                = "%c2{%num}%c1{.-} %c3{%b{%reldir}} %c1{created by} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{%age ago} %c1{(}%c3{%b{%mbytes}}%c1{MB in} %c3{%b{%files}} %c1{files).}"
 announce.SEARCH_NONE                = "%c1{No matching results found!}"
 
-## IRC Command: !nukes
+## Command: !nukes
 announce.NUKES                      = "%b{NUKES%c1{:}} %c1{-}%c2{%section}%c1{- Latest nukes:}"
 announce.NUKES_BODY                 = "%c2{%num}%c1{.-} %c3{%b{%reldir}} %c1{was nuked factor} %c3{%b{x%multiplier}} %c1{by} %c3{%b{%nuker}} %c1{[reason]} %c3{%b{%reason}} %c1{(Nuke date was} %c3{%date}%c1{).}"
 announce.NUKES_NONE                 = "%c1{No nukes found!}"
 
-## IRC Command: !unnukes
+## Command: !unnukes
 announce.UNNUKES                    = "%b{UNNUKES%c1{:}} %c1{-}%c2{%section}%c1{- Latest unnukes:}"
 announce.UNNUKES_BODY               = "%c2{%num}%c1{.-} %c3{%b{%reldir}} %c1{was unnuked factor} %c3{%b{x%multiplier}} %c1{by} %c3{%b{%unnuker}} %c1{[reason]} %c3{%b{%reason}} %c1{(Unnuke date was} %c3{%date}%c1{).}"
 announce.UNNUKES_NONE               = "%c1{No unnukes found!}"
