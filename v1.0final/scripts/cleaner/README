@@ -1,0 +1,5 @@
+This script removes dead symlinks in current dir, and the dir(s)
+just below. Should be used as a site command, or as a cscript.
+glftpd.docs has info on how to add custom commands and cscripts.
+
+

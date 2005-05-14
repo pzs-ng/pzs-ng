@@ -1,0 +1,142 @@
+############# Cookies:
+#
+#### Race Totals
+#
+ %r  = release name
+ %?  = current path
+
+ %u  = # of users in race 
+ %g  = # of groups in race
+ %f  = # of files in release
+ %F  = # of uploaded files
+ %o  = # of rejected files
+ %M  = # of missing files
+
+ %e  = estimated release size in mb
+ %b  = total bytes uploaded
+ %k  = total kilobytes uploaded
+ %P  = total kilobytes in rejected files
+ %m  = total megabytes uploaded
+ %O  = total megabytes in rejected files
+ %n  = name of current file
+ %p  = percent of files uploaded (uploaded files / totalfiles * 100)
+
+ %a  = average speed per transfer (kb/sec)
+ %A  = average speed (kb/sec)
+ %d  = race length (so far)
+ %$  = estimated time left of race
+#
+#### Current User
+#
+ %U  = Name
+ %S  = Speed (kb/sec)
+ %G  = Primary group
+#
+#### Appended messages
+#
+ %R  = Racers message 
+ %B  = All Racers
+ %l  = Fastest file message
+ %L  = Slowest file message
+ %t  = Group TopN
+ %T  = User TopN
+ %Cn = Racestats of n:th racer (n = 0-9, 0 = 1st, 1 = 2nd, 2 = 3rd...)
+ %cn = Racestats of n:th group
+#
+#### Static cookies
+#
+ %Z  = short_sitename
+ %%  = % char
+ %K  = user's tagline
+#
+#### Special cookies
+#
+ %v  = Error message
+ %V  = Progress bar (14 Chars)
+#
+#### MP3 specific cookies
+#
+ %x  = Artist
+ %w  = Genre
+ %W  = Album
+ %y  = Title
+ %Y  = Year
+ %z  = Sampling rate
+ %X  = Bitrate
+ %h  = Codec
+ %q  = Layer
+ %Q  = Channel mode
+ %i  = VBR version string
+ %I  = VBR preset
+ %j  = vbr/cbr info
+#
+#### Movie AVI/MPG/MPEG/M2V cookies
+#
+ %D  = Width
+ %E  = Height
+ %H  = Frame rate (fps) 
+#
+#
+ %J  = RAR Compression method (!! SHOULD NOT BE USED ATM !!)
+
+
+
+############# Cookies for user and group messages
+#
+#### User's
+#
+ %u  = Name
+ %U  = Name
+ %G  = Group
+ %D  = DayUp position
+ %W  = WkUp position
+ %M  = MonthUp position
+ %A  = AllUp position
+ %F  = Speed of fastest upload (use in fastestfilemsg)
+ %S  = Speed of slowest upload (use in fastestfilemsg)
+#
+#### Group's
+#
+ %g  = Name
+#
+#### Both
+#
+ %n  = rank
+ %N  = comment winner/loser
+ %f  = # of uploaded files
+ %b  = total bytes uploaded
+ %k  = total kilobytes uploaded
+ %m  = total megabytes uploaded
+ %p  = percent uploaded
+ %s  = speed (kb/sec)
+ %B  = Bold (on/off)
+ %%  = % char
+
+NOTE: With cookies you can (and in some cases you need to) define accuracy (or string length), 
+      reserved bytes for variable by using them as:
+
+ %.8u   => "username"
+ %.4u   => "user"
+ %12u   => "    username"
+ %-12u  => "username    "
+ 
+ %.0s   => "1234"
+ %.1s   => "1234.5"
+ %6.1s  => "1234.5"
+ %7.1s  => " 1234.5"
+ %-7.1s => "1234.5 "
+
+
+############# Cookies for incomplete indicators
+#
+ %0  = "/site/incoming/release/cd1" => release 
+ %1  = "/site/incoming/release/cd1" => cd1
+ %2  = name of current section, or DEFAULT if not found.
+ %%  = %-sign
+
+
+###### sitename
+#
+ %Z  = name of site, short form.
+
+##

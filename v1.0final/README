@@ -1,0 +1,401 @@
+PZS-NG (Project-ZS - Next Generation)
+--------------------------------------
+
+
+Introduction:
+-------------
+PZS-NG is based on Project-ZS by Dark0n3. It is what is commonly known as 
+a zipscript, or a post check script for file uploads. Its task is, among
+others, to check the integrity of the files uploaded, and make sure a 
+"release" is complete and not corrupted.
+
+Of course, this is not the only thing done by this zipscript ;). Read on to
+find out why this zipscript is considered the best of the bunch by most.
+
+Find us on the web:
+
+http://www.pzs-ng.com
+http://bugs.pzs-ng.com
+
+
+History:
+--------
+PZS-NG is a continuance of the original Project-ZS by Dark0n3, which stopped
+development in June(?) 2002, and remained stagnant for a long time. Up until
+now various coders/scripters have made patches to fix bugs or make some
+enhancements, but the patches have at times been overlapping, or complete
+replacements of source-files, making it hard for the siteops to implement
+them all.
+
+In April, 2004, daxxar and psxc collected the various patches into packages,
+but soon found out it was better to pool resources and make a unified
+version. After rounding up/threatening some of the scene's brightest boys, they
+got the result - PZS-NG.
+
+
+The Team:
+---------
+daxxar (all-round programmer)
+psxc (all-round programmer)
+iwdisb (C specialist)
+js (C specialist)
+freezy3k (C specialist)
+iono (Tcl guru)
+themolester (Tcl guru)
+avizion (Tcl guru, webmaster)
+juanker (Tcl guru)
+dakrer (Tcl guru)
+neoxed (Tcl guru)
+
+
+You can find us in #pzs-ng on EFnet for support and/or bug reporting.
+
+
+Supported Platforms:
+--------------------
+PZS-NG should compile fine on the following platforms:
+
+- Linux
+- FreeBSD
+- OpenBSD
+- OSX/Darwin (Feedback say the zipscript work on this platform)
+- (AIX - untested, but the original docs say it works there)
+- (Solaris - soon *g*)
+
+64-bit processors - this is still a bit shady. We do try to make it run
+on AMD64 for instance, but have limited ability to test on this platform,
+since none of the devs currently owns one. Feel free to contact us if
+you have a box to share with us.
+As of beta3, pzs-ng should run on AMD64, but makesure it's compiled in 32bit
+mode - ie, you need 32bit libs.
+
+Only the i386 platform is tested, so if you try it on anything else, don't
+hesitate to contact us and inform us of the result.
+
+
+Supported FTP Daemons:
+----------------------
+
+- glftpd 1.xx
+- glftpd 2.xx
+
+
+Basic description of How Things Work (tm):
+------------------------------------------
+As mentioned in the Introduction earlier, a zipscript checks the integrity 
+of the files, and keep tabs on when a release is complete. How it does this
+depends on the filetype. 'ZIP' files have an integrity code build within
+the file itself, which makes it easy to verify the file. To keep track of
+whether or not a release based on zip-files is complete, a file named
+file-id.diz is scanned.
+
+The most common method of checking files, however, is by 'SFV'. Unlike zip,
+the SFV file is a text file which stores the filenames and a CRC (cyclic
+redundancy check) code. The files belonging to/listed in the sfv file can be
+of any type, of which the most common are rar and mp3. The CRC code listed
+in the file is compared to a CRC code calculated on the fly by either
+the FTP daemon, or the program itself (more on this later). It is also quite
+easy to find out if a release is complete by counting files in the SFV file.
+
+
+Features of PZS-NG:
+-------------------
+PZS-NG would not be considered the best zipscript by most unless it had
+features beyond simple file checking. Here's a list of a few things it can do:
+
+- Log information about sfv files (how many files expected etc)
+- Log information about mp3 files (genre, year, quality etc)
+- Log information about the first uploaded file (who did it, speed etc)
+- Log information about halfway (when a release is halfway, who is leading,
+  speed etc)
+- Log information about complete (who won, speed, percent, who raced etc)
+- Log information about a race (who takes the lead, who is racing, what
+  speed, percent etc)
+- include information about the release in the release dir (who raced, won,
+  any information on the media files, speed etc)
+- creation of -missing files (to easily spot what files are missing in a
+  release)
+- create (in)complete dirs/files (to show what releases are incomplete,
+  and info on the release itself when it's complete)
+- execute external script based on filetypes, when a file is uploaded, and/
+  or when a release complete.
+- MORE!
+
+Along with the included sitebot (more on this later) we can pass this
+information on to an IRC channel, which in turn will make the site
+seem alive, and help couriers in their work. Using a bot also has
+a high fun-factor :)
+
+
+Setting it up:
+--------------
+PZS-NG is made in C and is open source. This means that what you downloaded is
+sourcecode, which is compiled into binaries ("programs") you execute. In other 
+words, it's not a script where you can edit the config and test immediately 
+after - you have to compile the zipscript and copy the binaries every time
+you change the config. I'll say again - edit config, recompile, and copy bins.
+
+How we compile and copy will be described later on.
+
+The old project-zs used cookies to format the output found in glftpd.log.
+PZS-NG uses the same basic layout, but instead of formatting the output in
+the zipscript's config-file, it now relies on the bot formatting the output.
+Thus, it passes on some predefined cookies into glftpd.log, which the bot
+reads and formats.
+The result is that the config for the zipscript is much smaller, and there
+should no longer be any need to recompile the zipscript if you decide to
+change the layout.
+
+People familiar with the old zipscript-c will remember zsconfig.h. This is
+slightly changed - it isn't full of options anymore, just overrides from the
+defaults. What config options you can use, and what defaults there are is
+described in README.ZSCONFIG. Spend time on the readme - read it - as there
+is a lot of options which can tune how the zipscript works.
+If you need to change some of these options, you should copy the define(s)
+found in the README into your zsconfig.h - your settings will override
+whatever is in the defaults.
+
+zsconfig.h is the heart of the script. I cannot stress this enough - if you
+do something bad here, chances are the entire script stops working as it
+should, or misbehaves. So step carefully, edit with care and don't miss any
+quotation marks.
+
+For Windows users - don't edit the file in windows. Install an editor on
+you linux/unix/bsd box - vim, aee, ee, pico, nano are good choices.
+
+Make sure long lines stay on one line - some editors break lines in two (
+or more) when they become a certain length.
+
+The hash character (#) does not signify comments! Do not remove the hashes
+you find - they're supposed to be there. Comments in C are signified by
+/* ... until ... */.
+
+
+Installation:
+-------------
+First off, you should run ./configure - before editing the config (this is new
+in PZS-NG Beta3 with regards to the old versions). People with more than 2
+weeks experience with Linux/UNIX/*BSD (a.k.a. '*NIX') will not see this as
+particularly challenging. Compiling stuff is quite common under *NIX. Anyway,
+I'll walk you through it. First, type:
+
+./configure
+
+This will start a process which will create the makefiles and the configs
+we'll use later. It is beyond the scope of this document to explain what a
+makefile is, but in short it will adjust some settings to accommodate the
+compile process for your system. 
+
+If you have special needs, or the configure script doesn't detect the correct
+glftpd version you have installed etc, there is some options you can use, which
+are shown when you type:
+
+./configure --help
+
+Among the options are these:
+  --enable-ss5            compiles the zipscript for use with SiteStat 5
+  --enable-static         enable static linking of zs-c
+  --with-glpath=PATH      specify nondefault path to root glftpd dir (/glftpd
+                          per default)
+
+The configure process takes a couple of seconds. When it's done, it will have
+made zsconfig.h, which is a copy of zsconfig.h.dist. Do not edit zsconfig.h.dist
+as it is only used as a template and may be changed in future version of the
+zipscript. Once zsconfig.h is made, you should edit it using you favorite
+editor. You'll find the config in zipscript/conf/zsconfig.h.
+If you worry about ./configure overwriting your old config - don't. It won't.
+It will only make a new zsconfig.h if none already exists.
+
+Once you're done editing zsconfig, you should run make:
+
+make
+
+This will compile the sources into binaries. This process can take a few
+seconds longer. When it's done, there should be no errors. Users that still
+uses glftpd 1.32 will get warnings about the ONLINE struct being deprecated -
+these warnings are normal.
+To install the binaries and some other stuff, you need to be root. As root,
+type:
+
+make install
+
+This will make the necessary additions/changes to your system.
+
+If the make install fails, or you really wish to make the changes by hand,
+here's what to do:
+
+           cp -f zipscript-c postdel racestats cleanup datacleaner rescan \
+	         racedebug ng-undupe ng-chown /path/to/your/glftpd/bin/
+           chmod 666 /path/to/your/glftpd/ftp-data/logs/glftpd.log
+           mkdir -pm777 /path/to/your/glftpd/ftp-data/pzs-ng
+(optional) chmod +s /path/to/your/glftpd/bin/zipscript-c
+
+Please note:
+'make install' also copies the binaries found in sitebot/src/ , and the sitewho
+binary and config. The sitebot or zipscript may depend on some of the scripts
+in scripts/ - these are *not* copied by default. Please familiarize yourself
+with the content of these dirs. Documentation is either written in a separate
+README or is found in the script/config itself.
+
+
+Making sure you have the libs:
+------------------------------
+To make sure you have all the libs you need, there is a script in scripts/
+called libcopy. Use this after you've installed the zipscript.
+
+Usage: ./libcopy.sh <glftpd path>
+
+This will copy all libs needed by the binaries in glftpd's bin dir correctly.
+Can/should(?) be used once in a while to make sure all libs needed are present.
+
+
+Changes in glftpd.conf:
+-----------------------
+You're almost done now. To actually make glftpd use your new zipscript, we need
+to change/add some settings in your glftpd.conf:
+
+Add the following line:
+
+calc_crc	*
+
+This will calculate the crc of all files uploaded on your site, on the fly.
+If you do not add this line in glftpd.conf, the zipscript will calculate it
+instead. This is, however, slower than if glftpd does it on the fly.
+Some will probably react on why we calc crc on everything. Simply put - todays
+computers and the current version of glftpd does this *real* quick w/o slowing
+down the computer much, as it's done while the upload occur. Also, almost
+everything uploaded on sites today uses crc check (sfv). Adding filters to what
+should be calculated and what shouldn't is totally up to the admin, but our
+advice is to just calc it for everything.
+
+Next, add:
+
+post_check	/bin/zipscript-c *
+
+This will invoke the zipscript after a file is uploaded. For more info on the
+post_check line, refer to glftpd.docs. Forget to add this, and the zipscript
+will not run, and no files are checked.
+
+You should also add the following lines:
+
+cscript		DELE			post	/bin/postdel
+cscript		RMD			post	/bin/datacleaner
+
+This will take care of making things right when something is deleted. Like
+updating the race stats, adding/editing the (in)complete-bar etc. Forget
+to add this, and you end up with a rather shabby site.
+
+Optionally, add the following:
+
+cscript		SITE[:space:]NUKE	post	/bin/cleanup
+cscript		SITE[:space:]WIPE	post	/bin/cleanup
+
+site_cmd	RESCAN			EXEC	/bin/rescan
+custom-rescan	!8	*
+
+The first two will remove dead symlinks. The last two will allow you (and all
+users except anon users) to rescan a dir. This comes in handy in places the
+zipscript isn't invoked by default, when you have dirs you wish to check filled
+before you added the zipscript, and a lot of other occations.
+Forget to add this and you will hit yourself hard quite a few times. ;)
+
+
+Crontab:
+--------
+All that's left now is to tie up some loose ends - and installing the bot,
+of course. As for loose ends:
+
+chmod 666 /path/to/your/glftpd/ftp-data/logs/dupelog
+
+This is needed by the unduper. Without this file being world writable, it
+will not be able to undupe files.
+
+You might have noticed that we added a dir in ftp-data/ called pzs-ng/.
+This is the place we keep all racedata - a sort of mirror of the site if
+you like, without the actual files in them. Over time this can grow and
+become huge, taking up a great deal of space, even making your system
+refuse to add more files. Thus, the included 'datacleaner' bin. This will
+remove all the racedata from dirs that no longer exists on your site.
+We also have a bin named 'cleanup' which helps clean out dead symlinks -
+you might have nuked an incomplete release, in which case the incomplete-
+link will still exist. To the rescue comes crontab :).
+
+Add the following lines in a users crontab if the bins are owned by root
+and have the setuid bit, or run it in root's crontab if not.
+
+59 23 * * *	chroot /glftpd /bin/cleanup >/dev/null 2>&1
+29 4  * * *	chroot /glftpd /bin/datacleaner >/dev/null 2>&1
+
+This should help keep your site nice and tidy, not burden the hardware too
+much, and stop crontab from sending you annoying emails ;).
+
+
+Compiled Binaries:
+--------------
+There are a few other binaries compiled, but they are mostly used by 3rd party
+scripts. Here's a short description of each compiled binary:
+
+  - cleanup - This little bin will clean out dead symlinks. Where it search
+    you can specify in zsconfig.h in the define of "cleanupdirs". Please note
+    that this script does *NOT* scan recursively, meaning you really have to
+    insert the names of dirs to be scanned in this variable. Setting this to
+    '/site/incoming/' will only search /site/incoming, not /site/incoming/apps/
+    or any other dir just below.
+    Please note that dead symlinks in the mp3 genre/group/year/etc will be
+    scanned automatically - there is no need to add these to 'cleanupdirs'.
+    This script may be used as a cscript to 'site wipe' or 'site nuke' for
+    instance, in which case it will only scan the current dir. You may also run
+    it in 'view' mode, by giving it rootpath to glftpd. This will only list
+    incomplete dirs, not remove any links.
+    How to test: chroot /glftpd /bin/cleanup
+                 (in chroot, in a site dir) /bin/glftpd something
+                 /glftpd/bin/cleanup /glftpd
+
+  - datacleaner - This one will remove the racedata of dirs no longer found
+    on your site. Please note that this script may be run in crontab (example
+    1), as a command from shell (example 2) or as a cscript (example 3).
+    Please note that if you try to use it as a cscript to anything but RMD,
+    it will scan recursively, relative to where you are. This means it's possible
+    to use it as a cscript to 'site wipe' or 'site nuke' for instance, but it
+    may take some time for it to go thru all the data.
+    How to test: chroot /glftpd /bin/datacleaner
+		 chroot /glftpd /bin/datacleaner /site/path/to/file
+		 chroot /glftpd /bin/datacleaner "RMD /path/to/file" (no /site
+		 in front!)
+		 chroot /glftpd /bin/datacleaner "NUKE /path/to/file" (no /site
+		 in front!)
+
+  - postdel - Should be run after you delete something (as a cscript). Will
+    re-check the release and update the racedata accordingly.
+    Please note that this script will *only* work as a cscript to the DELE
+    command.
+    How to test: chroot /glftpd /bin/postdel "DELE /site/path/to/filename"
+ 
+  - ng-undupe - Removes entry in dupelog after a file fails sfv check.
+    How to test: chroot /glftpd /bin/ng-undupe filename
+  
+  - racedebug - Debugging bin that reads the racedata directly and prints
+    out a report on racers, files, speed, crc etc.
+    How to test: chroot /glftpd /bin/racedebug /ftp-data/pzs-ng/path/to/racedata
+  
+  - racestats - Mostly used by 3rd party scripts. Will give raceinfo of a
+    release in cookie format.
+    How to test: chroot /glftpd /bin/racestats /site/path/to/dir
+  
+  - zipscript-c - The zipscript. Should be run from within glftpd after a file
+    is uploaded. Will do various tests, create stats, run external commands
+    etc, according to your config.
+    How to test: chroot /glftpd /bin/zipscript-c <filename> <path> <crc-code>
+
+  - ng-chown - currently not used. It's a bin designed to chown files/dirs
+    in your site to a specified used/group. When used it needs the +s bit
+    set. Take care, though - using this bin with +s may be a security risk.
+
+The bot:
+--------
+If everything is working smoothly on your site, it's time to add a bot to
+your channel. It is expected that you already have installed an eggdrop,
+that it's working and have found its way into your channel.
+
+For details on the sitebot please read the file "sitebot/README".
+

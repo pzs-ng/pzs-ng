@@ -1,0 +1,10 @@
+CC=@CC@
+CFLAGS=@CFLAGS@ @STATIC@ @NOFORMAT@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE @DEFS@ -I../include/ -I../../
+LDFLAGS=@LDFLAGS@
+
+all: strlcpy.o
+
+distclean: clean
+
+clean:
+

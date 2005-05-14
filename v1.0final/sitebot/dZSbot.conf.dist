@@ -1,0 +1,154 @@
+######################################################################
+#      Project Zipscript Next Generation - Sitebot Configuration     #
+#                        (originally by Dark0n3)                     #
+#                                                                    #
+######################################################################
+#                                                                    #
+#                          IMPORTANT!!                               #
+#                          -----------                               #
+# This file contains overrides only. You may find that some settings #
+# are missing - search in dZSbot.conf.defaults for the settings you  #
+# need and COPY THOSE INTO THIS FILE - do not edit the defaults file #
+# - it will be changed! This file, however, will not, which means    #
+# that when you upgrade your bot, you can keep this file, replace    #
+# the defaults file, and be done with it.                            #
+#                                                                    #
+######################################################################
+
+######################
+# Important Settings #
+######################
+set debugmode               "TRUE"
+set cmdpre                  "!ng"
+set sitename                "pzs-ng"
+set mainchan                "#pzs-ng"
+set glroot                  "/glftpd/"
+set announce(THEMEFILE)     "themes/default.zst"
+
+######################
+# Bins, Logs & Paths #
+######################
+set location(GROUP)         "$glroot/etc/group"
+set location(PASSWD)        "$glroot/etc/passwd"
+set location(USERS)         "$glroot/ftp-data/users/"
+set location(GLCONF)        "/etc/glftpd.conf"
+set glftpdlog(NORMAL)       "$glroot/ftp-data/logs/glftpd.log"
+set loginlog(NORMAL)        "$glroot/ftp-data/logs/login.log"
+set sysoplog(NORMAL)        "$glroot/ftp-data/logs/sysop.log"
+set binary(GLFTPD)          "$glroot/bin/glftpd"
+set binary(INCOMPLETE)      "$glroot/bin/incomplete-list.sh"
+set binary(PASSCHK)         "$glroot/bin/passchk"
+set binary(SHOWLOG)         "$glroot/bin/showlog"
+set binary(STATS)           "$glroot/bin/stats"
+set binary(WHO)             "$glroot/bin/sitewho"
+set binary(CURL)            "/usr/local/bin/curl"
+set binary(DF)              "/bin/df"
+set binary(PING)            "/bin/ping"
+set binary(UPTIME)          "/usr/bin/uptime"
+
+######################
+# Misc. Settings     #
+######################
+set bindnopre               "FALSE"
+set speed(INCOMING)         12500
+set speed(OUTGOING)         12500
+set device(0)               "/dev/da0s1f MP3"
+set device(1)               "/dev/ad0s1e ISO"
+
+######################
+# Bouncers           #
+######################
+set bnc(ENABLED)            "FALSE"
+set bnc(PING)               "TRUE"
+set bnc(SECURE)             "TRUE"
+set bnc(LIST)               "Canada:bnc.host.ca:123 Germany:bnc.host.de:456 Sweden:bnc.host.se:789"
+set bnc(USER)               "bncuser"
+set bnc(PASS)               "bncpass"
+
+######################
+# Sections           #
+######################
+set denypost                "/site/groups/* /site/private/*"
+set sections                "0DAY APPS GAMES MP3 MV"
+set paths(0DAY)             "/site/incoming/0day/*"
+set paths(APPS)             "/site/incoming/apps/*"
+set paths(GAMES)            "/site/incoming/games/*"
+set paths(MP3)              "/site/incoming/mp3/*"
+set paths(MV)               "/site/incoming/musicvideos/*"
+set chanlist(0DAY)          $mainchan
+set chanlist(APPS)          $mainchan
+set chanlist(GAMES)         $mainchan
+set chanlist(MP3)           $mainchan
+set chanlist(MV)            $mainchan
+set chanlist(DEFAULT)       $mainchan
+set chanlist(WELCOME)       $mainchan
+set statsection(0)          "DEFAULT"
+set statsection(1)          "PRE"
+
+######################
+# Invite             #
+######################
+set enable_irc_invite       "FALSE"
+set invite_channels         $mainchan
+
+######################
+# Announcing         #
+######################
+set splitter(CHAR)          "\n"
+
+## Staff channel announces
+set staffchan               "#pzs-staff"
+set disable(ADDUSER)        0
+set disable(GADDUSER)       0
+set disable(CHGRPADD)       0
+set disable(CHGRPDEL)       0
+set disable(ADDIP)          0
+set disable(DELIP)          0
+set disable(READDED)        0
+set disable(DELUSER)        0
+set disable(PURGED)         0
+set disable(SYSOP)          0
+set disable(BADHOSTMASK)    0
+set disable(BADPASSWORD)    0
+set disable(BANNEDHOST)     0
+set disable(DELETED)        0
+set disable(IPNOTADDED)     0
+set redirect(ADDUSER)       $staffchan
+set redirect(GADDUSER)      $staffchan
+set redirect(CHGRPADD)      $staffchan
+set redirect(CHGRPDEL)      $staffchan
+set redirect(ADDIP)         $staffchan
+set redirect(DELIP)         $staffchan
+set redirect(READDED)       $staffchan
+set redirect(DELUSER)       $staffchan
+set redirect(PURGED)        $staffchan
+set redirect(SYSOP)         $staffchan
+set redirect(BADHOSTMASK)   $staffchan
+set redirect(BADPASSWORD)   $staffchan
+set redirect(BANNEDHOST)    $staffchan
+set redirect(DELETED)       $staffchan
+set redirect(IPNOTADDED)    $staffchan
+
+## Script announcements
+set disable(DEFAULT)        0
+set disable(BADMSGINVITE)   0
+set disable(INVITE)         0
+set disable(MSGINVITE)      0
+set disable(WELCOME)        0
+
+## glFTPd announcements
+set disable(DELDIR)         0
+set disable(NEWDIR)         0
+set disable(NUKE)           0
+set disable(UNNUKE)         0
+set disable(REQFILLED)      0
+set disable(REQUEST)        0
+set disable(WIPE)           0
+set disable(WIPE-r)         0
+
+## Third party announcements
+set disable(IMDB)           0
+set disable(IMDBFIND)       0
+set disable(IMDBVAR)        0
+set disable(PRE)            0
+set disable(TURGEN)         0
