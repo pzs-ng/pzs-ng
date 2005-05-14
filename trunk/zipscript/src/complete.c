@@ -130,14 +130,14 @@ writetop(GLOBAL *g, int completetype)
 {
 	int		cnt, mlen, mset;
 	char		templine [FILE_MAX];
-	char	       *buffer = 0;
-	char	       *pbuf = 0;
+	char	       *buffer;
+	char	       *pbuf;
 
 	if (completetype == 1) {
 		if (user_top != NULL) {
 			mlen = 0;
 			mset = 1;
-			pbuf = buffer = ng_realloc(buffer, FILE_MAX, 1, 1, &g->v, 0);
+			pbuf = buffer = ng_realloc(buffer, FILE_MAX, 1, 1, &g->v, 1);
 			for (cnt = 0; cnt < max_users_in_top && cnt < g->v.total.users; cnt++) {
 				snprintf(templine, FILE_MAX, "%s ", convert2(&g->v, g->ui[g->ui[cnt]->pos], g->gi, user_top, cnt));
 				mlen += strlen(templine);
@@ -155,7 +155,7 @@ writetop(GLOBAL *g, int completetype)
 		if (group_top != NULL) {
 			mlen = 0;
 			mset = 1;
-			pbuf = buffer = ng_realloc(buffer, FILE_MAX, 1, 1, &g->v, 0);
+			pbuf = buffer = ng_realloc(buffer, FILE_MAX, 1, 1, &g->v, 1);
 			for (cnt = 0; cnt < max_groups_in_top && cnt < g->v.total.groups; cnt++) {
 				snprintf(templine, FILE_MAX, "%s ", convert3(&g->v, g->gi[g->gi[cnt]->pos], group_top, cnt));
 				mlen += strlen(templine);
