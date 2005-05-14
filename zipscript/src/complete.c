@@ -128,26 +128,47 @@ complete(GLOBAL *g, int completetype)
 void 
 writetop(GLOBAL *g, int completetype)
 {
-	int		cnt = 0;
+	int		cnt, mlen, mset;
 	char		templine [FILE_MAX];
 	char	       *buffer = 0;
+	char	       *pbuf = 0;
 
 	if (completetype == 1) {
 		if (user_top != NULL) {
-			buffer = templine;
+			mlen = 0;
+			mset = 1;
+			pbuf = buffer = ng_realloc(buffer, FILE_MAX, 1, 1, &g->v, 1);
 			for (cnt = 0; cnt < max_users_in_top && cnt < g->v.total.users; cnt++) {
-				buffer += sprintf(buffer, "%s ", convert2(&g->v, g->ui[g->ui[cnt]->pos], g->gi, user_top, cnt));
+				snprintf(templine, FILE_MAX, "%s ", convert2(&g->v, g->ui[g->ui[cnt]->pos], g->gi, user_top, cnt));
+				mlen += strlen(templine);
+				if (mlen >= FILE_MAX * mset) {
+					mset += 1;
+					buffer = ng_realloc(buffer, FILE_MAX * mset, 1, 1, &g->v, 1);
+				}
+				memcpy(pbuf, templine, mlen);
+				pbuf += mlen;
 			}
-			*buffer -= '\0';
-			writelog(g, templine, stat_users_type);
+			*pbuf -= '\0';
+			writelog(g, buffer, stat_users_type);
+			ng_free(buffer);
 		}
 		if (group_top != NULL) {
-			buffer = templine;
+			mlen = 0;
+			mset = 1;
+			pbuf = buffer = ng_realloc(buffer, FILE_MAX, 1, 1, &g->v, 1);
 			for (cnt = 0; cnt < max_groups_in_top && cnt < g->v.total.groups; cnt++) {
-				buffer += sprintf(buffer, "%s ", convert3(&g->v, g->gi[g->gi[cnt]->pos], group_top, cnt));
+				snprintf(templine, FILE_MAX, "%s ", convert3(&g->v, g->gi[g->gi[cnt]->pos], group_top, cnt));
+				mlen += strlen(templine);
+				if (mlen >= FILE_MAX * mset) {
+					mset += 1;
+					buffer = ng_realloc(buffer, FILE_MAX * mset, 1, 1, &g->v, 1);
+				}
+				memcpy(pbuf, templine, mlen);
+				pbuf += mlen;
 			}
-			*buffer -= '\0';
-			writelog(g, templine, stat_groups_type);
+			*pbuf -= '\0';
+			writelog(g, buffer, stat_groups_type);
+			ng_free(buffer);
 		}
 		if (post_stats != NULL) {
 			writelog(g, convert(&g->v, g->ui, g->gi, post_stats), stat_post_type);
