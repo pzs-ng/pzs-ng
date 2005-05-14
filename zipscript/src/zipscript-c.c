@@ -66,6 +66,10 @@ void read_envdata(GLOBAL *, GDATA *, UDATA *, struct stat *);
 void check_filesize(GLOBAL *, const char *, struct stat *);
 void lock_release(GLOBAL *, DIR *, DIR *);
 void set_uid_gid(void);
+void group_dir_users(GLOBAL *); /* call this something else */
+int match_nocheck_dirs(GLOBAL *);
+int check_zerosize(GLOBAL *, MSG *);
+int check_banned_file(GLOBAL *, MSG *);
 
 int 
 main(int argc, char **argv)
@@ -175,14 +179,8 @@ main(int argc, char **argv)
 	g.v.file.compression_method = '5';
 
 	/* Get file extension */
-
 	d_log("zipscript-c: Parsing file extension from filename... (%s)\n", argv[1]);
 	name_p = temp_p = find_last_of(argv[1], ".");
-	/*for (temp_p = name_p = argv[1]; *name_p != 0; name_p++) {
-		if (*name_p == '.') {
-			temp_p = name_p;
-		}
-	}*/
 	
 	if (*temp_p != '.') {
 		d_log("zipscript-c: Got: no extension\n");
@@ -221,55 +219,21 @@ main(int argc, char **argv)
 	nfofound = findfileext(dir, ".nfo");
 
 	/* Hide users in group_dirs */
-	if (matchpath(group_dirs, g.l.path) && (hide_group_uploaders == TRUE)) {
-		d_log("zipscript-c: Hiding user in group-dir:\n");
-		if (strlen(hide_gname) > 0) {
-			snprintf(g.v.user.group, 18, "%s", hide_gname);
-			d_log("zipscript-c:    Changing groupname\n");
-		}
-		if (strlen(hide_uname) > 0) {
-			snprintf(g.v.user.name, 18, "%s", hide_uname);
-			d_log("zipscript-c:    Changing username\n");
-		}
-		if (strlen(hide_uname) == 0) {
-			d_log("zipscript-c:    Making username = groupname\n");
-			snprintf(g.v.user.name, 18, "%s", g.v.user.group);
-		}
-	}
+	group_dir_users(&g);
+	
 	/* No check directories */
-	if (matchpath(nocheck_dirs, g.l.path) || matchpath(speedtest_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
-		d_log("zipscript-c: Directory matched with nocheck_dirs, or is not among sfv/zip/group dirs\n");
-		d_log("zipscript-c:   - nocheck_dirs  : '%s'\n", nocheck_dirs);
-		d_log("zipscript-c:   - speedtest_dirs: '%s'\n", speedtest_dirs);
-		d_log("zipscript-c:   - zip_dirs      : '%s'\n", zip_dirs);
-		d_log("zipscript-c:   - sfv_dirs      : '%s'\n", sfv_dirs);
-		d_log("zipscript-c:   - group_dirs    : '%s'\n", group_dirs);
-		d_log("zipscript-c:   - current path  : '%s'\n", g.l.path);
-		no_check = TRUE;
-	} else {
-	/* Empty file recieved */
+	no_check = match_nocheck_dirs(&g);
+
+	if (no_check == FALSE) {
+
 #if (ignore_zero_size == FALSE )
-		if (g.v.file.size == 0) {
-			d_log("zipscript-c: File seems to be 0\n");
-			sprintf(g.v.misc.error_msg, EMPTY_FILE);
-			mark_as_bad(g.v.file.name);
-			msg.error = convert(&g.v, g.ui, g.gi, bad_file_msg);
-			if (exit_value < 2)
-				writelog(&g, msg.error, bad_file_0size_type);
-			exit_value = 2;
-		}
+		exit_value = check_zerosize(&g, &msg);
 #endif
+
 #if ( check_for_banned_files )
-		if (filebanned_match(g.v.file.name)) {
-			d_log("zipscript-c: Banned file detected (%s)\n", g.v.file.name);
-			sprintf(g.v.misc.error_msg, BANNED_FILE);
-			mark_as_bad(g.v.file.name);
-			msg.error = convert(&g.v, g.ui, g.gi, bad_file_msg);
-			if (exit_value < 2)
-				writelog(&g, msg.error, bad_file_disallowed_type);
-			exit_value = 2;
-		}
+		exit_value = check_banned_file(&g, &msg);
 #endif
+
 		if (exit_value != 2) {
 			/* Process file */
 			d_log("zipscript-c: Verifying old racedata\n");
@@ -317,8 +281,10 @@ main(int argc, char **argv)
 	}
 
 	if (no_check == TRUE) {	/* File was not checked */
+		
 		printf(zipscript_any_ok);
 		printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_skip));
+		
 		if (matchpath(speedtest_dirs, g.l.path)) {
 			d_log("zipscript-c: writing speedtest to channel\n");
 			writelog(&g, convert(&g.v, g.ui, g.gi, speed_announce), speed_type);
@@ -1569,5 +1535,82 @@ set_uid_gid(void)
 		if (seteuid(getuid()) == -1)
 			d_log("zipscript-c: failed to change uid: %s\n", strerror(errno));
 	}
+
+}
+
+void
+group_dir_users(GLOBAL *g)
+{
+
+	if (matchpath(group_dirs, g->l.path) && (hide_group_uploaders == TRUE)) {
+		d_log("zipscript-c: Hiding user in group-dir:\n");
+		if (strlen(hide_gname) > 0) {
+			snprintf(g->v.user.group, 18, "%s", hide_gname);
+			d_log("zipscript-c:    Changing groupname\n");
+		}
+		if (strlen(hide_uname) > 0) {
+			snprintf(g->v.user.name, 18, "%s", hide_uname);
+			d_log("zipscript-c:    Changing username\n");
+		}
+		if (strlen(hide_uname) == 0) {
+			d_log("zipscript-c:    Making username = groupname\n");
+			snprintf(g->v.user.name, 18, "%s", g->v.user.group);
+		}
+	}
+
+}
+
+int
+match_nocheck_dirs(GLOBAL *g)
+{
+
+	if (matchpath(nocheck_dirs, g->l.path) || matchpath(speedtest_dirs, g->l.path) ||
+		(!matchpath(zip_dirs, g->l.path) && !matchpath(sfv_dirs, g->l.path) &&
+		!matchpath(group_dirs, g->l.path))) {
+		
+		d_log("zipscript-c: Directory matched with nocheck_dirs, or is not among sfv/zip/group dirs\n");
+		d_log("zipscript-c:   - nocheck_dirs  : '%s'\n", nocheck_dirs);
+		d_log("zipscript-c:   - speedtest_dirs: '%s'\n", speedtest_dirs);
+		d_log("zipscript-c:   - zip_dirs      : '%s'\n", zip_dirs);
+		d_log("zipscript-c:   - sfv_dirs      : '%s'\n", sfv_dirs);
+		d_log("zipscript-c:   - group_dirs    : '%s'\n", group_dirs);
+		d_log("zipscript-c:   - current path  : '%s'\n", g->l.path);
+		
+		return TRUE;
+
+	} else
+		return FALSE;
+
+}
+
+int
+check_zerosize(GLOBAL *g, MSG *msg)
+{
+	
+	if (g->v.file.size == 0) {
+		d_log("zipscript-c: File seems to be 0 bytes\n");
+		sprintf(g->v.misc.error_msg, EMPTY_FILE);
+		mark_as_bad(g->v.file.name);
+		msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+		writelog(g, msg->error, bad_file_0size_type);
+		return 2;
+	} else
+		return EXIT_SUCCESS;
+
+}
+
+int
+check_banned_file(GLOBAL *g, MSG *msg)
+{
+	
+	if (filebanned_match(g->v.file.name)) {
+		d_log("zipscript-c: Banned file detected (%s)\n", g->v.file.name);
+		sprintf(g->v.misc.error_msg, BANNED_FILE);
+		mark_as_bad(g->v.file.name);
+		msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+		writelog(g, msg->error, bad_file_disallowed_type);
+		return 2;
+	} else
+		return EXIT_SUCCESS;
 
 }
