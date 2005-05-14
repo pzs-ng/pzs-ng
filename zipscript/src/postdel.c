@@ -311,9 +311,8 @@ main(int argc, char **argv)
 				writelog(&g, convert(&g.v, g.ui, g.gi, incompletemsg), general_incomplete_type);
 			}
 			incomplete = 1;
-		} else {
+		} else if (!findfileextcount(dir, ".sfv"))
 			empty_dir = 1;
-		}
 		remove_from_race(g.l.race, g.v.file.name, &g.v);
 		break;
 	case 1: /* SFV */
@@ -327,9 +326,8 @@ main(int argc, char **argv)
 		d_log("postdel: Caching progress bar\n");
 		buffer_progress_bar(&g.v);
 
-		if (g.v.total.files_missing == g.v.total.files) {
+		if ((g.v.total.files_missing == g.v.total.files) && !findfileextcount(dir, ".sfv"))
 			empty_dir = 1;
-		}
 		d_log("postdel: SFV was removed - removing progressbar/completebar and -missing pointers.\n");
 		if (del_completebar)
 			removecomplete();
@@ -364,9 +362,8 @@ main(int argc, char **argv)
 		if (fileexists(g.l.race)) {
 			d_log("postdel: Reading race data from file to memory\n");
 			readrace(g.l.race, &g.v, g.ui, g.gi);
-		} else {
+		} else if (!findfileextcount(dir, ".sfv"))
 			empty_dir = 1;
-		}
 		if (fileexists(g.l.sfv)) {
 #if ( create_missing_files == TRUE )
 #if ( sfv_cleanup_lowercase == TRUE )
@@ -389,7 +386,7 @@ main(int argc, char **argv)
 		} else {
 			d_log("postdel: Removing old race data\n");
 			unlink(g.l.race);
-			if (findfileext(dir, ".sfv") == NULL) {
+			if (!findfileext(dir, ".sfv")) {
 				empty_dir = 1;
 			} else {
 				incomplete = 1;
@@ -398,22 +395,22 @@ main(int argc, char **argv)
 		remove_from_race(g.l.race, g.v.file.name, &g.v);
 		break;
 	case 4:
-		if (!fileexists(g.l.race))
+		if (!fileexists(g.l.race) && !findfileextcount(dir, ".sfv"))
 			empty_dir = 1;
 		break;
 	case 255:
-		if (!fileexists(g.l.race))
+		if (!fileexists(g.l.race) && !findfileextcount(dir, ".sfv"))
 			empty_dir = 1;
 		break;
 	case 2:
-		if (!fileexists(g.l.race)) {
+		if (!fileexists(g.l.race) && !findfileextcount(dir, ".sfv"))
 			empty_dir = 1;
-		} else {
+		else {
 			d_log("postdel: Reading race data from file to memory\n");
 			readrace(g.l.race, &g.v, g.ui, g.gi);
 			d_log("postdel: Caching progress bar\n");
 			buffer_progress_bar(&g.v);
-			if (g.v.total.files_missing == g.v.total.files) {
+			if ((g.v.total.files_missing == g.v.total.files) && !findfileextcount(dir, ".sfv")) {
 				empty_dir = 1;
 			}
 		}
