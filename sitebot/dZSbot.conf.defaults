@@ -19,12 +19,12 @@ set location(GLCONF)    "/etc/glftpd.conf"
 set location(GROUP)     "/glftpd/etc/group"
 
 # Log Files - If you wish to read several logfiles, uncomment/add and change the following.
-#set glftpdlog(NORMAL)      "$glroot/ftp-data/logs/glftpd.log"
-#set loginlog(NORMAL)       "$glroot/ftp-data/logs/login.log"
-#set sysoplog(NORMAL)       "$glroot/ftp-data/logs/sysop.log"
-#set glftpdlog(EXTERNAL)    "$glroot/ftp-data/logs/glftpd.log"
-#set loginlog(EXTERNAL)     "$glroot/ftp-data/logs/login.log"
-#set sysoplog(EXTERNAL)     "$glroot/ftp-data/logs/sysop.log"
+#set glftpdlog(NORMAL)      "/glftpd/ftp-data/logs/glftpd.log"
+#set loginlog(NORMAL)       "/glftpd/ftp-data/logs/login.log"
+#set sysoplog(NORMAL)       "/glftpd/ftp-data/logs/sysop.log"
+#set glftpdlog(EXTERNAL)    "/glftpd/ftp-data/logs/glftpd.log"
+#set loginlog(EXTERNAL)     "/glftpd/ftp-data/logs/login.log"
+#set sysoplog(EXTERNAL)     "/glftpd/ftp-data/logs/sysop.log"
 set max_log_change          2048
 
 # These are the binaries the script will use. They are usually best left
