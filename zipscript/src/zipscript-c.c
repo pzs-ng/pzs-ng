@@ -48,7 +48,7 @@
 #endif
 
 /* Store various message strings here */
-typedef struct _MSG {
+typedef struct _msg {
 	char *complete;
 	char *update;
 	char *race;
@@ -57,6 +57,15 @@ typedef struct _MSG {
 	char *halfway;
 	char *error;
 } MSG;
+
+/* Race type strings go in here */
+typedef struct _racetype {
+	char *race;
+	char *newleader;
+	char *update;
+	char *race_halfway;
+	char *norace_halfway;
+} RACETYPE;
 
 int handle_zip(GLOBAL *, MSG *, DIR *);
 int handle_sfv(GLOBAL *, MSG *, DIR *);
@@ -73,7 +82,8 @@ int match_nocheck_dirs(GLOBAL *);
 int check_zerosize(GLOBAL *, MSG *);
 int check_banned_file(GLOBAL *, MSG *);
 
-int process_file(GLOBAL *, MSG *, DIR *, char **, char *, int *, int *);
+int process_file(GLOBAL *, MSG *, DIR *, char **, char *, char **, int *);
+void check_release_type(GLOBAL *, MSG *, RACETYPE *, char *[2]);
 
 int 
 main(int argc, char **argv)
@@ -82,21 +92,18 @@ main(int argc, char **argv)
 	MSG		msg;
 	GDATA		gdata;
 	UDATA		udata;
+	RACETYPE	rtype;
 
 	DIR		*dir, *parent;
 	
 	char           *fileext = NULL, *name_p, *temp_p = NULL;
 	char           *target = 0;
-	char           *update_type = 0;
-	char           *complete_bar = 0;
+	char			*_complete[2] = { 0 }; /* 0 = bar, 1 = announce */
+	//char           *_complete[0] = 0;
 	int				exit_value = EXIT_SUCCESS;
 	int				no_check = FALSE;
-	char	       *race_type = 0;
-	char	       *newleader_type = 0;
-	char	       *race_halfway_type = 0;
-	char	       *norace_halfway_type = 0;
 	char	       *inc_point[2];
-	char           *complete_announce = 0;
+	//char           *_complete[1] = 0;
 	int		cnt, n = 0;
 	char	*nfofound = 0;
 #if ( del_banned_release || enable_banned_script )
@@ -133,12 +140,6 @@ main(int argc, char **argv)
 	set_uid_gid();
 
 	bzero(&g, sizeof(GLOBAL));
-	//d_log("zipscript-c: Clearing arrays\n");
-	//bzero(&g.v.total, sizeof(struct race_total));
-	//g.v.misc.slowest_user[0] = 30000;
-	//g.v.misc.fastest_user[0] = g.v.misc.release_type = RTYPE_NULL;
-
-	/* gettimeofday(&g.v.transfer_stop, (struct timezone *)0 ); */
 
 	g.v.misc.write_log = TRUE;
 	g.v.misc.in_sfvfile = FALSE;
@@ -254,79 +255,10 @@ main(int argc, char **argv)
 			exit_value = 2;
 		}
 
-	} else if (exit_value == EXIT_SUCCESS) {	/* File was checked */
+	} else if (exit_value == EXIT_SUCCESS) { /* File was checked */
 
-		switch (g.v.misc.release_type) {
-			case RTYPE_RAR:
-				race_type = rar_announce_race_type;
-				newleader_type = rar_announce_newleader_type;
-				update_type = rar_announce_update_type;
-				norace_halfway_type = rar_announce_norace_halfway_type;
-				race_halfway_type = rar_announce_race_halfway_type;
-				complete_bar = rar_completebar;
-				msg.complete = CHOOSE(g.v.total.users, rar_complete, rar_norace_complete);
-				complete_announce = CHOOSE(g.v.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
-				break;	/* rar */
-			case RTYPE_OTHER:
-				race_type = other_announce_race_type;
-				newleader_type = other_announce_newleader_type;
-				update_type = other_announce_update_type;
-				norace_halfway_type = other_announce_norace_halfway_type;
-				race_halfway_type = other_announce_race_halfway_type;
-				complete_bar = other_completebar;
-				msg.complete = CHOOSE(g.v.total.users, other_complete, other_norace_complete);
-				complete_announce = CHOOSE(g.v.total.users, other_announce_race_complete_type, other_announce_norace_complete_type);
-				break;	/* other */
-			case RTYPE_AUDIO:
-				race_type = audio_announce_race_type;
-				newleader_type = audio_announce_newleader_type;
-				if (!g.v.audio.is_vbr)
-					update_type = audio_announce_cbr_update_type;
-				else
-					update_type = audio_announce_vbr_update_type;
-				norace_halfway_type = audio_announce_norace_halfway_type;
-				race_halfway_type = audio_announce_race_halfway_type;
-				complete_bar = audio_completebar;
-				msg.complete = CHOOSE(g.v.total.users, audio_complete, audio_norace_complete);
-				if (!g.v.audio.is_vbr) {
-					complete_announce = CHOOSE(g.v.total.users, audio_cbr_announce_race_complete_type, audio_cbr_announce_norace_complete_type);
-				} else {
-					complete_announce = CHOOSE(g.v.total.users, audio_vbr_announce_race_complete_type, audio_vbr_announce_norace_complete_type);
-				}
-				break;	/* audio */
-			case RTYPE_VIDEO:
-				race_type = video_announce_race_type;
-				newleader_type = video_announce_newleader_type;
-				update_type = video_announce_update_type;
-				norace_halfway_type = video_announce_norace_halfway_type;
-				race_halfway_type = video_announce_race_halfway_type;
-				complete_bar = video_completebar;
-				msg.complete = CHOOSE(g.v.total.users, video_complete, video_norace_complete);
-				complete_announce = CHOOSE(g.v.total.users, video_announce_race_complete_type, video_announce_norace_complete_type);
-				break;	/* video */
-			case RTYPE_NULL:
-				race_type = zip_announce_race_type;
-				newleader_type = zip_announce_newleader_type;
-				update_type = zip_announce_update_type;
-				norace_halfway_type = zip_announce_norace_halfway_type;
-				race_halfway_type = zip_announce_race_halfway_type;
-				complete_bar = zip_completebar;
-				msg.complete = CHOOSE(g.v.total.users, zip_complete, zip_norace_complete);
-				complete_announce = CHOOSE(g.v.total.users, zip_announce_race_complete_type, zip_announce_norace_complete_type);
-				break;	/* zip */
-			default:
-				race_type = rar_announce_race_type;
-				newleader_type = rar_announce_newleader_type;
-				update_type = rar_announce_update_type;
-				norace_halfway_type = rar_announce_norace_halfway_type;
-				race_halfway_type = rar_announce_race_halfway_type;
-				complete_bar = rar_completebar;
-				msg.complete = CHOOSE(g.v.total.users, rar_complete, rar_norace_complete);
-				complete_announce = CHOOSE(g.v.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
-				d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (3:%d)\n", g.v.misc.release_type);
-				break;	/* rar */
-//			}
-		}
+		check_release_type(&g, &msg, &rtype, _complete);
+		
 		if (g.v.total.users > 0) {
 			d_log("zipscript-c: Sorting race stats\n");
 			sortstats(&g.v, g.ui, g.gi);
@@ -345,23 +277,23 @@ main(int argc, char **argv)
 			if (g.v.total.users > 1) {
 				if (g.ui[g.v.user.pos]->files == 1 && msg.race != NULL) {
 					d_log("zipscript-c: Writing RACE to %s\n", log);
-					writelog(&g, convert(&g.v, g.ui, g.gi, msg.race), race_type);
+					writelog(&g, convert(&g.v, g.ui, g.gi, msg.race), rtype.race);
 				}
 				if (g.v.total.files >= min_newleader_files && ((g.v.total.size * g.v.total.files) >= (min_newleader_size * 1024 * 1024)) && strcmp(g.v.misc.old_leader, g.ui[g.ui[0]->pos]->name) && msg.newleader != NULL && g.ui[g.ui[0]->pos]->files >= (g.ui[g.ui[1]->pos]->files + newleader_files_ahead) && g.v.total.files_missing) {
 					d_log("zipscript-c: Writing NEWLEADER to %s\n", log);
-					writelog(&g, convert(&g.v, g.ui, g.gi, msg.newleader), newleader_type);
+					writelog(&g, convert(&g.v, g.ui, g.gi, msg.newleader), rtype.newleader);
 				}
 			} else {
 				if (g.ui[g.v.user.pos]->files == 1 && g.v.total.files >= min_update_files && ((g.v.total.size * g.v.total.files) >= (min_update_size * 1024 * 1024)) && msg.update) {
 					d_log("zipscript-c: Writing UPDATE to %s\n", log);
-					writelog(&g, convert(&g.v, g.ui, g.gi, msg.update), update_type);
+					writelog(&g, convert(&g.v, g.ui, g.gi, msg.update), rtype.update);
 				}
 			}
 		}
 		if (g.v.total.files_missing > 0) {
 			if (g.v.total.files_missing == g.v.total.files >> 1 && g.v.total.files >= min_halfway_files && ((g.v.total.size * g.v.total.files) >= (min_halfway_size * 1024 * 1024)) && msg.halfway != NULL) {
 				d_log("zipscript-c: Writing HALFWAY to %s\n", log);
-				writelog(&g, convert(&g.v, g.ui, g.gi, msg.halfway), (g.v.total.users > 1 ? race_halfway_type : norace_halfway_type));
+				writelog(&g, convert(&g.v, g.ui, g.gi, msg.halfway), (g.v.total.users > 1 ? rtype.race_halfway : rtype.norace_halfway));
 			}
 			d_log("zipscript-c: Caching progress bar\n");
 			buffer_progress_bar(&g.v);
@@ -431,7 +363,7 @@ main(int argc, char **argv)
 					d_log("zipscript-c: Cannot create m3u, sfv is missing\n");
 #endif
 			}
-			if (complete_bar) {
+			if (_complete[0]) {
 				d_log("zipscript-c: Removing old complete bar, if any\n");
 				removecomplete();
 			}
@@ -441,14 +373,14 @@ main(int argc, char **argv)
 
 			if (msg.complete != NULL) {
 				d_log("zipscript-c: Writing COMPLETE and STATS to %s\n", log);
-				writelog(&g, convert(&g.v, g.ui, g.gi, msg.complete), complete_announce);
+				writelog(&g, convert(&g.v, g.ui, g.gi, msg.complete), _complete[1]);
 			}
-			if (complete_bar) {
+			if (_complete[0]) {
 				d_log("zipscript-c: Creating complete bar\n");
-				createstatusbar(convert(&g.v, g.ui, g.gi, complete_bar));
+				createstatusbar(convert(&g.v, g.ui, g.gi, _complete[0]));
 #if (chmod_completebar)
 				if (!matchpath(group_dirs, g.l.path))
-					chmod(convert(&g.v, g.ui, g.gi, complete_bar), 0222);
+					chmod(convert(&g.v, g.ui, g.gi, _complete[0]), 0222);
 				else
 					d_log("zipscript-c: we are in a group_dir - will not chmod the complete bar.\n");
 #endif
@@ -1580,7 +1512,7 @@ check_banned_file(GLOBAL *g, MSG *msg)
 
 /* fuck you, arguments */
 int
-process_file(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext, int *nfofound, int *no_check)
+process_file(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext, char **nfofound, int *no_check)
 {
 		
 	/* Process file */
@@ -1627,6 +1559,86 @@ process_file(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext, int *nfo
 	}
 
 	return EXIT_SUCCESS;
+
+}
+
+/* eww, arguments */
+void
+check_release_type(GLOBAL *g, MSG *msg, RACETYPE *rtype, char *_complete[2])
+{
+
+	switch (g->v.misc.release_type) {
+		case RTYPE_RAR:
+			rtype->race = rar_announce_race_type;
+			rtype->newleader = rar_announce_newleader_type;
+			rtype->update = rar_announce_update_type;
+			rtype->norace_halfway = rar_announce_norace_halfway_type;
+			rtype->race_halfway = rar_announce_race_halfway_type;
+			_complete[0] = rar_completebar;
+			_complete[1] = CHOOSE2(g->v.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
+			msg->complete = CHOOSE2(g->v.total.users, rar_complete, rar_norace_complete);
+			break;	/* rar */
+		case RTYPE_OTHER:
+			rtype->race = other_announce_race_type;
+			rtype->newleader = other_announce_newleader_type;
+			rtype->update = other_announce_update_type;
+			rtype->norace_halfway = other_announce_norace_halfway_type;
+			rtype->race_halfway = other_announce_race_halfway_type;
+			_complete[0] = other_completebar;
+			_complete[1] = CHOOSE2(g->v.total.users, other_announce_race_complete_type, other_announce_norace_complete_type);
+			msg->complete = CHOOSE2(g->v.total.users, other_complete, other_norace_complete);
+			break;	/* other */
+		case RTYPE_AUDIO:
+			rtype->race = audio_announce_race_type;
+			rtype->newleader = audio_announce_newleader_type;
+			if (!g->v.audio.is_vbr)
+				rtype->update = audio_announce_cbr_update_type;
+			else
+				rtype->update = audio_announce_vbr_update_type;
+			rtype->norace_halfway = audio_announce_norace_halfway_type;
+			rtype->race_halfway = audio_announce_race_halfway_type;
+			_complete[0] = audio_completebar;
+			
+			if (!g->v.audio.is_vbr) {
+				_complete[1] = CHOOSE2(g->v.total.users, audio_cbr_announce_race_complete_type, audio_cbr_announce_norace_complete_type);
+			} else {
+				_complete[1] = CHOOSE2(g->v.total.users, audio_vbr_announce_race_complete_type, audio_vbr_announce_norace_complete_type);
+			}
+
+			msg->complete = CHOOSE2(g->v.total.users, audio_complete, audio_norace_complete);
+			break;	/* audio */
+		case RTYPE_VIDEO:
+			rtype->race = video_announce_race_type;
+			rtype->newleader = video_announce_newleader_type;
+			rtype->update = video_announce_update_type;
+			rtype->norace_halfway = video_announce_norace_halfway_type;
+			rtype->race_halfway = video_announce_race_halfway_type;
+			_complete[0] = video_completebar;
+			_complete[1] = CHOOSE2(g->v.total.users, video_announce_race_complete_type, video_announce_norace_complete_type);
+			msg->complete = CHOOSE2(g->v.total.users, video_complete, video_norace_complete);
+			break;	/* video */
+		case RTYPE_NULL:
+			rtype->race = zip_announce_race_type;
+			rtype->newleader = zip_announce_newleader_type;
+			rtype->update = zip_announce_update_type;
+			rtype->norace_halfway = zip_announce_norace_halfway_type;
+			rtype->race_halfway = zip_announce_race_halfway_type;
+			_complete[0] = zip_completebar;
+			_complete[1] = CHOOSE2(g->v.total.users, zip_announce_race_complete_type, zip_announce_norace_complete_type);
+			msg->complete = CHOOSE2(g->v.total.users, zip_complete, zip_norace_complete);
+			break;	/* zip */
+		default:
+			rtype->race = rar_announce_race_type;
+			rtype->newleader = rar_announce_newleader_type;
+			rtype->update = rar_announce_update_type;
+			rtype->norace_halfway = rar_announce_norace_halfway_type;
+			rtype->race_halfway = rar_announce_race_halfway_type;
+			_complete[0] = rar_completebar;
+			_complete[1] = CHOOSE2(g->v.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
+			msg->complete = CHOOSE2(g->v.total.users, rar_complete, rar_norace_complete);
+			d_log("zipscript-c: WARNING! Not a known release type - Contact the authors! (3:%d)\n", g->v.misc.release_type);
+			break;	/* rar */
+	}
 
 }
 
