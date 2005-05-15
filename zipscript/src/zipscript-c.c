@@ -110,6 +110,11 @@ main(int argc, char **argv)
 	gettimeofday(&bstart, (struct timezone *)0);
 #endif
 
+	if (argc != 4) {
+		printf(" - - PZS-NG ZipScript-C v%s - -\n\nUsage: %s <filename> <path> <crc>\n\n", ng_version(), argv[0]);
+		return EXIT_FAILURE;
+	}
+
 #if ( debug_mode == TRUE && debug_announce == TRUE)
 	printf("PZS-NG: Running in debug mode.\n");
 #endif
@@ -127,11 +132,6 @@ main(int argc, char **argv)
 
 	set_uid_gid();
 
-	if (argc != 4) {
-		printf(" - - PZS-NG ZipScript-C v%s - -\n\nUsage: %s <filename> <path> <crc>\n\n", ng_version(), argv[0]);
-		exit(1);
-	}
-	
 	bzero(&g, sizeof(GLOBAL));
 	//d_log("zipscript-c: Clearing arrays\n");
 	//bzero(&g.v.total, sizeof(struct race_total));
