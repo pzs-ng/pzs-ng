@@ -68,8 +68,12 @@ void lock_release(GLOBAL *, DIR *, DIR *);
 void set_uid_gid(void);
 void group_dir_users(GLOBAL *); /* call this something else */
 int match_nocheck_dirs(GLOBAL *);
+
+/* turn these two into one function */
 int check_zerosize(GLOBAL *, MSG *);
 int check_banned_file(GLOBAL *, MSG *);
+
+int process_file(GLOBAL *, MSG *, DIR *, char **, char *, int *, int *);
 
 int 
 main(int argc, char **argv)
@@ -234,50 +238,9 @@ main(int argc, char **argv)
 		exit_value = check_banned_file(&g, &msg);
 #endif
 
-		if (exit_value != 2) {
-			/* Process file */
-			d_log("zipscript-c: Verifying old racedata\n");
-			if (!verify_racedata(g.l.race, &g.v))
-				d_log("zipscript-c:   Failed to open racedata - assuming this is a new race.\n");
+		if (exit_value < 2)
+			exit_value = process_file(&g, &msg, dir, argv, fileext, &nfofound, &no_check);
 
-			switch (get_filetype(&g, fileext)) {
-		
-			case 0:	/* ZIP CHECK */
-				exit_value = handle_zip(&g, &msg, dir);
-				break;
-
-			case 1:	/* SFV CHECK */
-				exit_value = handle_sfv(&g, &msg, dir);
-				break;
-			
-			case 2:	/* NFO CHECK */
-				exit_value = handle_nfo(&g, &msg, dir);
-				nfofound = 0;
-				break;
-		
-			case 3:	/* SFV BASED CRC-32 CHECK */
-				exit_value = handle_sfv32(&g, &msg, dir, argv, fileext);
-				break;
-
-			case 4:	/* ACCEPTED FILE */
-				d_log("zipscript-c: File type: NO CHECK\n");
-				no_check = TRUE;
-				break;
-			/* END OF ACCEPTED FILE CHECK */
-
-			case 255:	/* UNKNOWN - WE DELETE THESE, SINCE IT WAS
-					 * ALSO IGNORED */
-				d_log("zipscript-c: File type: UNKNOWN [ignored in sfv]\n");
-				sprintf(g.v.misc.error_msg, UNKNOWN_FILE, fileext);
-				mark_as_bad(g.v.file.name);
-				msg.error = convert(&g.v, g.ui, g.gi, bad_file_msg);
-				if (exit_value < 2)
-					writelog(&g, msg.error, bad_file_disallowed_type);
-				exit_value = 2;
-				break;
-				/* END OF UNKNOWN CHECK */
-			}
-		}
 	}
 
 	if (no_check == TRUE) {	/* File was not checked */
@@ -1614,3 +1577,56 @@ check_banned_file(GLOBAL *g, MSG *msg)
 		return EXIT_SUCCESS;
 
 }
+
+/* fuck you, arguments */
+int
+process_file(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext, int *nfofound, int *no_check)
+{
+		
+	/* Process file */
+	d_log("zipscript-c: Verifying old racedata\n");
+	if (!verify_racedata(g->l.race, &g->v))
+		d_log("zipscript-c:   Failed to open racedata - assuming this is a new race.\n");
+
+	switch (get_filetype(g, fileext)) {
+
+		case 0:	/* ZIP CHECK */
+			return handle_zip(g, msg, dir);
+			break;
+
+		case 1:	/* SFV CHECK */
+			return handle_sfv(g, msg, dir);
+			break;
+		
+		case 2:	/* NFO CHECK */
+			return handle_nfo(g, msg, dir);
+			*nfofound = 0;
+			break;
+
+		case 3:	/* SFV BASED CRC-32 CHECK */
+			return handle_sfv32(g, msg, dir, argv, fileext);
+			break;
+
+		case 4:	/* ACCEPTED FILE */
+			d_log("zipscript-c: File type: NO CHECK\n");
+			*no_check = TRUE;
+			break;
+		/* END OF ACCEPTED FILE CHECK */
+
+		case 255:	/* UNKNOWN - WE DELETE THESE, SINCE IT WAS
+				 * ALSO IGNORED */
+			d_log("zipscript-c: File type: UNKNOWN [ignored in sfv]\n");
+			sprintf(g->v.misc.error_msg, UNKNOWN_FILE, fileext);
+			mark_as_bad(g->v.file.name);
+			msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
+			writelog(g, msg->error, bad_file_disallowed_type);
+			return 2;
+			break;
+			/* END OF UNKNOWN CHECK */
+			
+	}
+
+	return EXIT_SUCCESS;
+
+}
+
