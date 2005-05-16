@@ -88,6 +88,8 @@ void check_release_type(GLOBAL *, MSG *, RACETYPE *, char *[2]);
 void execute_script(char *, char *, char *);
 int get_nfo_filetype(unsigned int);
 void create_missing_missing_nfo_ind(GLOBAL *, char *[2], DIR *);
+void release_complete(GLOBAL *, MSG *, DIR *, DIR *, char *[2]);
+void release_incomplete(GLOBAL *, MSG *, RACETYPE *);
 
 int 
 main(int argc, char **argv)
@@ -102,12 +104,9 @@ main(int argc, char **argv)
 	char           *fileext = NULL, *name_p, *temp_p = NULL;
 	char           *target = 0;
 	char			*_complete[2] = { 0 }; /* 0 = bar, 1 = announce */
-	//char           *_complete[0] = 0;
 	int				exit_value = EXIT_SUCCESS;
 	int				no_check = FALSE;
-	char	       *inc_point[2];
-	//char           *_complete[1] = 0;
-	int		cnt, n = 0;
+	int		n = 0;
 	char	*nfofound = 0;
 #if ( del_banned_release || enable_banned_script )
 	int		deldir = 0;
@@ -162,9 +161,10 @@ main(int argc, char **argv)
 
 	d_log(1, "zipscript-c: Setting race times\n");
 	if (g.v.file.size != 0)
-		g.v.total.start_time = g.v.total.stop_time - ((unsigned int)(g.v.file.size) / g.v.file.speed);
+		g.v.total.start_time = g.v.total.stop_time - (g.v.file.size / g.v.file.speed);
 	else
 		g.v.total.start_time = g.v.total.stop_time > (g.v.total.stop_time - 1) ? g.v.total.stop_time : (g.v.total.stop_time -1);
+		
 	if ((g.v.total.stop_time - g.v.total.start_time) < 1)
 		g.v.total.stop_time = g.v.total.start_time + 1;
 
@@ -204,11 +204,14 @@ main(int argc, char **argv)
 #else
 	d_log(1, "zipscript-c: Copying (unchanged version of) extension to memory\n");
 #endif
+
 	fileext = ng_realloc(fileext, sizeof(name_p), 1, 1, &g.v, 1);
 	memcpy(fileext, name_p, sizeof(name_p));
+	
 #if ( sfv_cleanup_lowercase == TRUE )
 	strtolower(fileext);
 #endif
+
 	d_log(1, "zipscript-c: Reading directory structure\n");
 	dir = opendir(".");
 	parent = opendir("..");
@@ -265,12 +268,13 @@ main(int argc, char **argv)
 		if (g.v.total.users > 0) {
 			d_log(1, "zipscript-c: Sorting race stats\n");
 			sortstats(&g.v, g.ui, g.gi);
+
 #if ( get_user_stats == TRUE )
 			d_log(1, "zipscript-c: Reading day/week/month/all stats for racers\n");
 			d_log(1, "zipscript-c: stat section: %i\n", g.v.section);
 			get_stats(&g.v, g.ui);
 #endif
-			d_log(1, "zipscript-c: Printing on-site race info\n");
+			
 			showstats(&g.v, g.ui, g.gi);
 
 			if (!enable_files_ahead || ((g.v.total.users > 1 && g.ui[g.ui[0]->pos]->files >= (g.ui[g.ui[1]->pos]->files + newleader_files_ahead)) || g.v.total.users == 1)) {
@@ -293,120 +297,12 @@ main(int argc, char **argv)
 				}
 			}
 		}
-		if (g.v.total.files_missing > 0) {
-			if (g.v.total.files_missing == g.v.total.files >> 1 && g.v.total.files >= min_halfway_files && ((g.v.total.size * g.v.total.files) >= (min_halfway_size * 1024 * 1024)) && msg.halfway != NULL) {
-				d_log(1, "zipscript-c: Writing HALFWAY to %s\n", log);
-				writelog(&g, convert(&g.v, g.ui, g.gi, msg.halfway), (g.v.total.users > 1 ? rtype.race_halfway : rtype.norace_halfway));
-			}
-			d_log(1, "zipscript-c: Caching progress bar\n");
-			buffer_progress_bar(&g.v);
-
-			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
-				d_log(1, "zipscript-c: Creating incomplete indicator:\n", g.l.incomplete);
-				d_log(1, "zipscript-c:    name: '%s', incomplete: '%s', path: '%s'\n", g.v.misc.release_name, g.l.incomplete, g.l.path);
-				create_incomplete();
-			}
-
-			d_log(1, "zipscript-c: Creating/moving progress bar\n");
-			move_progress_bar(0, &g.v, g.ui, g.gi);
-			printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_ok));
-		} else if ((g.v.total.files_missing == 0) && (g.v.total.files > 0)) {
-			/* Release is complete */
-			d_log(1, "zipscript-c: Caching progress bar\n");
-			buffer_progress_bar(&g.v);
-			printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_ok));
-			d_log(1, "zipscript-c: Setting complete pointers\n");
-			if ( g.v.misc.release_type == RTYPE_AUDIO ) {
-				d_log(1, "zipscript-c: Symlinking audio\n");
-				if (!strncasecmp(g.l.link_target, "VA", 2) && (g.l.link_target[2] == '-' || g.l.link_target[2] == '_'))
-					memcpy(g.v.audio.id3_artist, "VA", 3);
-
-				if (!matchpath(group_dirs, g.l.path)) {
-#if ( audio_genre_sort == TRUE )
-					d_log(1, "zipscript-c:   Sorting mp3 by genre (%s)\n", g.v.audio.id3_genre);
-					if (g.v.audio.id3_genre)
-						createlink(audio_genre_path, g.v.audio.id3_genre, g.l.link_source, g.l.link_target);
-#endif
-#if ( audio_artist_sort == TRUE )
-					d_log(1, "zipscript-c:   Sorting mp3 by artist\n");
-					if (g.v.audio.id3_artist) {
-						d_log(1, "zipscript-c:     - artist: %s\n", g.v.audio.id3_artist);
-						if (memcmp(g.v.audio.id3_artist, "VA", 3)) {
-							temp_p = ng_realloc(temp_p, 2, 1, 1, &g.v, 1);
-							snprintf(temp_p, 2, "%c", toupper(*g.v.audio.id3_artist));
-							createlink(audio_artist_path, temp_p, g.l.link_source, g.l.link_target);
-							ng_free(temp_p);
-						} else
-							createlink(audio_artist_path, "VA", g.l.link_source, g.l.link_target);
-					}
-#endif
-#if ( audio_year_sort == TRUE )
-					d_log(1, "zipscript-c:   Sorting mp3 by year (%s)\n", g.v.audio.id3_year);
-					if (g.v.audio.id3_year)
-						createlink(audio_year_path, g.v.audio.id3_year, g.l.link_source, g.l.link_target);
-#endif
-#if ( audio_group_sort == TRUE )
-					d_log(1, "zipscript-c:   Sorting mp3 by group\n");
-					temp_p = remove_pattern(g.l.link_target, "*-", RP_LONG_LEFT);
-					temp_p = remove_pattern(temp_p, "_", RP_SHORT_LEFT);
-					n = strlen(temp_p);
-					if (n > 0 && n < 15) {
-						d_log(1, "zipscript-c:   - Valid groupname found: %s (%i)\n", temp_p, n);
-						createlink(audio_group_path, temp_p, g.l.link_source, g.l.link_target);
-					}
-#endif
-				}
-#if ( create_m3u == TRUE )
-				if (findfileext(dir, ".sfv")) {
-					d_log(1, "zipscript-c: Creating m3u\n");
-					cnt = sprintf(target, findfileext(dir, ".sfv"));
-					strlcpy(target + cnt - 3, "m3u", 4);
-					create_indexfile(g.l.race, &g.v, target);
-				} else
-					d_log(1, "zipscript-c: Cannot create m3u, sfv is missing\n");
-#endif
-			}
-			if (_complete[0]) {
-				d_log(1, "zipscript-c: Removing old complete bar, if any\n");
-				removecomplete();
-			}
-
-			d_log(1, "zipscript-c: Removing incomplete indicator (%s)\n", g.l.incomplete);
-			complete(&g);
-
-			if (msg.complete != NULL) {
-				d_log(1, "zipscript-c: Writing COMPLETE and STATS to %s\n", log);
-				writelog(&g, convert(&g.v, g.ui, g.gi, msg.complete), _complete[1]);
-			}
-			if (_complete[0]) {
-				d_log(1, "zipscript-c: Creating complete bar\n");
-				createstatusbar(convert(&g.v, g.ui, g.gi, _complete[0]));
-#if (chmod_completebar)
-				if (!matchpath(group_dirs, g.l.path))
-					chmod(convert(&g.v, g.ui, g.gi, _complete[0]), 0222);
-				else
-					d_log(1, "zipscript-c: we are in a group_dir - will not chmod the complete bar.\n");
-#endif
-			}
-
-#if ( enable_complete_script == TRUE )
-			execute_script(complete_script, g.v.file.name, "complete");
-#endif
-			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
-				/* Creating no-nfo link if needed. */
-				n = 0;
-				
-				if (check_for_missing_nfo_filetypes)
-					n = get_nfo_filetype(g.v.misc.release_type);
-
-				if ((g.l.nfo_incomplete) && (!findfileext(dir, ".nfo")) &&
-				    (matchpath(check_for_missing_nfo_dirs, g.l.path) || n)) {
-					
-					create_missing_missing_nfo_ind(&g, inc_point, parent);
-				}
-
-			}
-		} else {
+		
+		if (g.v.total.files_missing > 0)
+			release_incomplete(&g, &msg, &rtype);
+		else if ((g.v.total.files_missing == 0) && (g.v.total.files > 0))
+			release_complete(&g, &msg, dir, parent, _complete);
+		else {
 
 			/* Release is at unknown state */
 			g.v.total.files = -g.v.total.files_missing;
@@ -414,6 +310,7 @@ main(int argc, char **argv)
 			printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_unknown));
 
 		}
+
 	} else {
 
 		/* File is marked to be deleted */
@@ -1656,3 +1553,149 @@ create_missing_missing_nfo_ind(GLOBAL *g, char *inc_point[2], DIR *parent)
 	}
 	
 }
+
+void
+release_complete(GLOBAL *g, MSG *msg, DIR *dir, DIR *parent, char *_complete[2])
+{
+
+	char			*inc_point[2];
+	char			target[NAME_MAX];
+	int				n = 0, cnt;
+
+	d_log(1, "zipscript-c: Caching progress bar\n");
+	buffer_progress_bar(&g->v);
+	
+	printf("%s", convert(&g->v, g->ui, g->gi, zipscript_footer_ok));
+	
+	d_log(1, "zipscript-c: Setting complete pointers\n");
+	if ( g->v.misc.release_type == RTYPE_AUDIO ) {
+		
+		d_log(1, "zipscript-c: Symlinking audio\n");
+		if (!strncasecmp(g->l.link_target, "VA", 2) && (g->l.link_target[2] == '-' || g->l.link_target[2] == '_'))
+			memcpy(g->v.audio.id3_artist, "VA", 3);
+
+		if (!matchpath(group_dirs, g->l.path)) {
+
+#if ( audio_genre_sort == TRUE )
+			d_log(1, "zipscript-c:   Sorting mp3 by genre (%s)\n", g->v.audio.id3_genre);
+			if (g->v.audio.id3_genre)
+				createlink(audio_genre_path, g->v.audio.id3_genre, g->l.link_source, g->l.link_target);
+#endif
+
+#if ( audio_artist_sort == TRUE )
+			d_log(1, "zipscript-c:   Sorting mp3 by artist\n");
+			if (g->v.audio.id3_artist) {
+				d_log(1, "zipscript-c:     - artist: %s\n", g->v.audio.id3_artist);
+				if (memcmp(g->v.audio.id3_artist, "VA", 3)) {
+					temp_p = ng_realloc(temp_p, 2, 1, 1, &g->v, 1);
+					snprintf(temp_p, 2, "%c", toupper(*g->v.audio.id3_artist));
+					createlink(audio_artist_path, temp_p, g->l.link_source, g->l.link_target);
+					ng_free(temp_p);
+				} else
+					createlink(audio_artist_path, "VA", g->l.link_source, g->l.link_target);
+			}
+#endif
+
+#if ( audio_year_sort == TRUE )
+			d_log(1, "zipscript-c:   Sorting mp3 by year (%s)\n", g->v.audio.id3_year);
+			if (g->v.audio.id3_year)
+				createlink(audio_year_path, g->v.audio.id3_year, g->l.link_source, g->l.link_target);
+#endif
+
+#if ( audio_group_sort == TRUE )
+			d_log(1, "zipscript-c:   Sorting mp3 by group\n");
+			temp_p = remove_pattern(g->l.link_target, "*-", RP_LONG_LEFT);
+			temp_p = remove_pattern(temp_p, "_", RP_SHORT_LEFT);
+			n = strlen(temp_p);
+			if (n > 0 && n < 15) {
+				d_log(1, "zipscript-c:   - Valid groupname found: %s (%i)\n", temp_p, n);
+				createlink(audio_group_path, temp_p, g->l.link_source, g->l.link_target);
+			}
+#endif
+
+		}
+		
+#if ( create_m3u == TRUE )
+		if (findfileext(dir, ".sfv")) {
+			d_log(1, "zipscript-c: Creating m3u\n");
+			cnt = sprintf(target, findfileext(dir, ".sfv"));
+			strlcpy(target + cnt - 3, "m3u", 4);
+			create_indexfile(g->l.race, &g->v, target);
+		} else
+			d_log(1, "zipscript-c: Cannot create m3u, sfv is missing\n");
+#endif
+
+	}
+	
+	if (_complete[0]) {
+		d_log(1, "zipscript-c: Removing old complete bar, if any\n");
+		removecomplete();
+	}
+
+	d_log(1, "zipscript-c: Removing incomplete indicator (%s)\n", g->l.incomplete);
+	complete(g);
+
+	if (msg->complete != NULL) {
+		d_log(1, "zipscript-c: Writing COMPLETE and STATS to %s\n", log);
+		writelog(g, convert(&g->v, g->ui, g->gi, msg->complete), _complete[1]);
+	}
+	
+	if (_complete[0]) {
+		d_log(1, "zipscript-c: Creating complete bar\n");
+		createstatusbar(convert(&g->v, g->ui, g->gi, _complete[0]));
+		
+#if (chmod_completebar)
+		if (!matchpath(group_dirs, g->l.path))
+			chmod(convert(&g->v, g->ui, g->gi, _complete[0]), 0222);
+		else
+			d_log(1, "zipscript-c: we are in a group_dir - will not chmod the complete bar.\n");
+#endif
+
+	}
+
+#if ( enable_complete_script == TRUE )
+	execute_script(complete_script, g->v.file.name, "complete");
+#endif
+
+	if (!matchpath(group_dirs, g->l.path) || create_incomplete_links_in_group_dirs) {
+		/* Creating no-nfo link if needed. */
+		n = 0;
+		
+		if (check_for_missing_nfo_filetypes)
+			n = get_nfo_filetype(g->v.misc.release_type);
+
+		if ((g->l.nfo_incomplete) && (!findfileext(dir, ".nfo")) &&
+			(matchpath(check_for_missing_nfo_dirs, g->l.path) || n)) {
+			
+			create_missing_missing_nfo_ind(g, inc_point, parent);
+		}
+
+	}
+
+}
+
+void
+release_incomplete(GLOBAL *g, MSG *msg, RACETYPE *rtype)
+{
+
+	if (g->v.total.files_missing == g->v.total.files >> 1 && g->v.total.files >= min_halfway_files &&
+	   ((g->v.total.size * g->v.total.files) >= (min_halfway_size * 1024 * 1024)) && msg->halfway != NULL) {
+		d_log(1, "zipscript-c: Writing HALFWAY to %s\n", log);
+		writelog(g, convert(&g->v, g->ui, g->gi, msg->halfway), (g->v.total.users > 1 ? rtype->race_halfway : rtype->norace_halfway));
+	}
+	
+	d_log(1, "zipscript-c: Caching progress bar\n");
+	buffer_progress_bar(&g->v);
+
+	if (!matchpath(group_dirs, g->l.path) || create_incomplete_links_in_group_dirs) {
+		d_log(1, "zipscript-c: Creating incomplete indicator:\n", g->l.incomplete);
+		d_log(1, "zipscript-c:    name: '%s', incomplete: '%s', path: '%s'\n", g->v.misc.release_name, g->l.incomplete, g->l.path);
+		create_incomplete2();
+	}
+
+	d_log(1, "zipscript-c: Creating/moving progress bar\n");
+	move_progress_bar(0, &g->v, g->ui, g->gi);
+	printf("%s", convert(&g->v, g->ui, g->gi, zipscript_footer_ok));
+
+}
+
