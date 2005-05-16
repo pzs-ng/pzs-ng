@@ -62,10 +62,10 @@ main(int argc, char *argv[])
 
 	umask(0666 & 000);
 
-	d_log("rescan: PZS-NG (rescan) v%s debug log.\n", ng_version());
+	d_log(1, "rescan: PZS-NG (rescan) v%s debug log.\n", ng_version());
 
 #ifdef _ALT_MAX
-	d_log("rescan: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
+	d_log(1, "rescan: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
 #endif
 
 	if (argc > 1) {
@@ -83,15 +83,15 @@ main(int argc, char *argv[])
 	} else
 		bzero(one_name, NAME_MAX);
 
-	d_log("rescan: Allocating memory for variables\n");
+	d_log(1, "rescan: Allocating memory for variables\n");
 	g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
 	g.gi = ng_realloc2(g.gi, sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
 
 	getcwd(g.l.path, PATH_MAX);
 
 	if ((matchpath(nocheck_dirs, g.l.path) || matchpath(speedtest_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) && rescan_nocheck_dirs_allowed == FALSE) {
-		d_log("rescan: Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
-		d_log("rescan: Freeing memory, and exiting\n");
+		d_log(1, "rescan: Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
+		d_log(1, "rescan: Freeing memory, and exiting\n");
 		ng_free(g.ui);
 		ng_free(g.gi);
 		return 0;
@@ -124,44 +124,44 @@ main(int argc, char *argv[])
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
 
-	d_log("rescan: Creating directory to store racedata in\n");
+	d_log(1, "rescan: Creating directory to store racedata in\n");
  	maketempdir(g.l.path);
 
-	d_log("rescan: Locking release\n");
+	d_log(1, "rescan: Locking release\n");
 	while (1) {
 		if ((k = create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 3, 0))) {
-			d_log("rescan: Failed to lock release.\n");
+			d_log(1, "rescan: Failed to lock release.\n");
 			if (k == 1) {
-				d_log("rescan: version mismatch. Exiting.\n");
+				d_log(1, "rescan: version mismatch. Exiting.\n");
 				printf("Error. You need to rm -fR ftp-data/pzs-ng/* before rescan will work.\n");
 				exit(EXIT_FAILURE);
 			}
 			if (k == PROGTYPE_POSTDEL) {
 				n = (signed int)g.v.lock.data_incrementor;
-				d_log("rescan: Detected postdel running - sleeping for one second.\n");
+				d_log(1, "rescan: Detected postdel running - sleeping for one second.\n");
 				if (!create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0, g.v.lock.data_queue))
 					break;
 				usleep(1000000);
 				if (!create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0, g.v.lock.data_queue))
 					break;
 				if ( n == (signed int)g.v.lock.data_incrementor) {
-					d_log("rescan: Failed to get lock. Forcing unlock.\n");
+					d_log(1, "rescan: Failed to get lock. Forcing unlock.\n");
 					if (create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 2, g.v.lock.data_queue)) {
-						d_log("rescan: Failed to force a lock.\n");
-						d_log("postdel: Exiting with error.\n");
+						d_log(1, "rescan: Failed to force a lock.\n");
+						d_log(1, "postdel: Exiting with error.\n");
 						exit(EXIT_FAILURE);
 					}
 					break;
 				}
 			} else {
 				for ( k = 0; k <= max_seconds_wait_for_lock * 10; k++) {
-					d_log("rescan: sleeping for .1 second before trying to get a lock (queue: %d).\n", g.v.lock.data_queue);
+					d_log(1, "rescan: sleeping for .1 second before trying to get a lock (queue: %d).\n", g.v.lock.data_queue);
 					usleep(100000);
 					if (!create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0, g.v.lock.data_queue))
 						break;
 				}
 				if (k >= max_seconds_wait_for_lock * 10) {
-					d_log("rescan: Failed to get lock. Will not force unlock.\n");
+					d_log(1, "rescan: Failed to get lock. Will not force unlock.\n");
 					exit(EXIT_FAILURE);
 				}
 			}
@@ -203,7 +203,7 @@ main(int argc, char *argv[])
 					unlink(dp->d_name);
 			}
 
-			d_log("rescan: Freeing memory, removing lock and exiting\n");
+			d_log(1, "rescan: Freeing memory, removing lock and exiting\n");
 			unlink(g.l.sfv);
 			unlink(g.l.race);
 			ng_free(g.ui);
@@ -228,7 +228,7 @@ main(int argc, char *argv[])
 				ext++;
 
 			if (!update_lock(&g.v, 1, 0)) {
-				d_log("rescan: Another process wants the lock - will comply and remove lock, then exit.\n");
+				d_log(1, "rescan: Another process wants the lock - will comply and remove lock, then exit.\n");
 				remove_lock(&g.v);
 				exit(EXIT_FAILURE);
 			}
@@ -270,17 +270,17 @@ main(int argc, char *argv[])
 
 				/* Hide users in group_dirs */
 				if (matchpath(group_dirs, g.l.path) && (hide_group_uploaders == TRUE)) {
-					d_log("rescan: Hiding user in group-dir:\n");
+					d_log(1, "rescan: Hiding user in group-dir:\n");
 					if ((int)strlen(hide_gname) > 0) {
 						snprintf(g.v.user.group, 18, "%s", hide_gname);
-						d_log("rescan:    Changing groupname\n");
+						d_log(1, "rescan:    Changing groupname\n");
 					}
 					if ((int)strlen(hide_uname) > 0) {
 						snprintf(g.v.user.name, 18, "%s", hide_uname);
-						d_log("rescan:    Changing username\n");
+						d_log(1, "rescan:    Changing username\n");
 					}
 					if ((int)strlen(hide_uname) == 0) {
-						d_log("rescan:    Making username = groupname\n");
+						d_log(1, "rescan:    Making username = groupname\n");
 						snprintf(g.v.user.name, 18, "%s", g.v.user.group);
 					}
 				}
@@ -306,7 +306,7 @@ main(int argc, char *argv[])
 					}
 				}
 				if(fflush(stdout))
-					d_log("rescan: ERROR: %s\n", strerror(errno));
+					d_log(1, "rescan: ERROR: %s\n", strerror(errno));
 				if (!rescan_quick || (g.l.race && !match_file(g.l.race, dp->d_name)))
 					writerace(g.l.race, &g.v, crc, F_NOTCHECKED);
 			}
@@ -321,7 +321,7 @@ main(int argc, char *argv[])
 
 		if (g.l.nfo_incomplete) {
 			if (findfileext(dir, ".nfo")) {
-				d_log("rescan: Removing missing-nfo indicator (if any)\n");
+				d_log(1, "rescan: Removing missing-nfo indicator (if any)\n");
 				remove_nfo_indicator(&g);
 			} else {
 				n = 0;
@@ -351,14 +351,14 @@ main(int argc, char *argv[])
 				}
 				if ((matchpath(check_for_missing_nfo_dirs, g.l.path) || n) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
 					if (!g.l.in_cd_dir) {
-						d_log("rescan: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
+						d_log(1, "rescan: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
 					} else {
 						if (findfileextparent(parent, ".nfo")) {
-							d_log("rescan: Removing missing-nfo indicator (if any)\n");
+							d_log(1, "rescan: Removing missing-nfo indicator (if any)\n");
 							remove_nfo_indicator(&g);
 						} else {
-							d_log("rescan: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
+							d_log(1, "rescan: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
 							/* This is not pretty, but should be functional. */
 							if ((inc_point[0] = find_last_of(g.l.path, "/")) != g.l.path)
 								*inc_point[0] = '\0';
@@ -435,7 +435,7 @@ main(int argc, char *argv[])
 				f_gid = fileinfo.st_gid;
 
 				if ((timenow == fileinfo.st_ctime) && (fileinfo.st_mode & 0111)) {
-					d_log("rescan.c: Seems this file (%s) is in the process of being uploaded. Ignoring for now.\n", dp->d_name);
+					d_log(1, "rescan.c: Seems this file (%s) is in the process of being uploaded. Ignoring for now.\n", dp->d_name);
 					continue;
 				}
 				strcpy(g.v.user.name, get_u_name(&udata, f_uid));
@@ -448,7 +448,7 @@ main(int argc, char *argv[])
 				if (!fileexists("file_id.diz")) {
 					sprintf(exec, "%s -qqjnCLL \"%s\" file_id.diz 2>.delme", unzip_bin, g.v.file.name);
 					if (execute(exec) != 0) {
-						d_log("rescan: No file_id.diz found (#%d): %s\n", errno, strerror(errno));
+						d_log(1, "rescan: No file_id.diz found (#%d): %s\n", errno, strerror(errno));
 					} else {
 						if ((loc = findfile(dir, "file_id.diz.bad"))) {
 							seekdir(dir, loc);
@@ -498,7 +498,7 @@ main(int argc, char *argv[])
 		}
 		if (g.l.nfo_incomplete) {
 			if (findfileext(dir, ".nfo")) {
-				d_log("rescan: Removing missing-nfo indicator (if any)\n");
+				d_log(1, "rescan: Removing missing-nfo indicator (if any)\n");
 				remove_nfo_indicator(&g);
 			} else {
 				n = 0;
@@ -528,14 +528,14 @@ main(int argc, char *argv[])
 				}
 				if ((matchpath(check_for_missing_nfo_dirs, g.l.path) || n) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
 					if (!g.l.in_cd_dir) {
-						d_log("rescan: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
+						d_log(1, "rescan: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
 					} else {
 						if (findfileextparent(parent, ".nfo")) {
-							d_log("rescan: Removing missing-nfo indicator (if any)\n");
+							d_log(1, "rescan: Removing missing-nfo indicator (if any)\n");
 							remove_nfo_indicator(&g);
 						} else {
-							d_log("rescan: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
+							d_log(1, "rescan: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
 							create_incomplete_nfo();
 						}
 					}
@@ -551,7 +551,7 @@ main(int argc, char *argv[])
 	printf(" Missing: %i\n", (int)g.v.total.files_missing);
 	printf("  Total : %i\n", (int)g.v.total.files);
 
-	d_log("rescan: Freeing memory and removing lock.\n");
+	d_log(1, "rescan: Freeing memory and removing lock.\n");
 	closedir(dir);
 	closedir(parent);
 	updatestats_free(&g);

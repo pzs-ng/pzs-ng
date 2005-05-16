@@ -211,36 +211,36 @@ showstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 	int		cnt;
 
 #if ( show_user_info == TRUE )
-	d_log("showstats: Showing realtime user stats ...\n");
+	d_log(1, "showstats: Showing realtime user stats ...\n");
 	if (realtime_user_header != DISABLED) {
-		d_log("showstats:   - printing realtime_user_header ...\n");
+		d_log(1, "showstats:   - printing realtime_user_header ...\n");
 		printf("%s", convert(raceI, userI, groupI, realtime_user_header));
 	}
 	if (realtime_user_body != DISABLED) {
-		d_log("showstats:   - printing realtime_user_body ...\n");
+		d_log(1, "showstats:   - printing realtime_user_body ...\n");
 		for (cnt = 0; cnt < raceI->total.users; cnt++) {
 			printf("%s", convert2(raceI, userI[userI[cnt]->pos], groupI, realtime_user_body, cnt));
 		}
 	}
 	if (realtime_user_footer != DISABLED) {
-		d_log("showstats:   - printing realtime_user_footer ...\n");
+		d_log(1, "showstats:   - printing realtime_user_footer ...\n");
 		printf("%s", convert(raceI, userI, groupI, realtime_user_footer));
 	}
 #endif
 #if ( show_group_info == TRUE )
-	d_log("showstats: Showing realtime user stats ...\n");
+	d_log(1, "showstats: Showing realtime user stats ...\n");
 	if (realtime_group_header != DISABLED) {
-		d_log("showstats:   - printing realtime_group_header ...\n");
+		d_log(1, "showstats:   - printing realtime_group_header ...\n");
 		printf("%s", convert(raceI, userI, groupI, realtime_group_header));
 	}
 	if (realtime_group_body != DISABLED) {
-		d_log("showstats:   - printing realtime_group_body ...\n");
+		d_log(1, "showstats:   - printing realtime_group_body ...\n");
 		for (cnt = 0; cnt < raceI->total.groups; cnt++) {
 			printf("%s", convert3(raceI, groupI[groupI[cnt]->pos], realtime_group_body, cnt));
 		}
 	}
 	if (realtime_group_footer != DISABLED) {
-		d_log("showstats:   - printing realtime_group_footer ...\n");
+		d_log(1, "showstats:   - printing realtime_group_footer ...\n");
 		printf("%s", convert(raceI, userI, groupI, realtime_group_footer));
 	}
 #endif
@@ -271,30 +271,30 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	ASECTION	sect;
 
 	if (!(dir = opendir(gl_userfiles))) {
-		d_log("get_stats: opendir(%s): %s\n", gl_userfiles, strerror(errno));
+		d_log(1, "get_stats: opendir(%s): %s\n", gl_userfiles, strerror(errno));
 		return; 
 	}
 	
-	d_log("get_stats: reading stats..\n");
+	d_log(1, "get_stats: reading stats..\n");
 
 	while ((dp = readdir(dir))) {
 		
 		sprintf(t_buf, "%s/%s", gl_userfiles, dp->d_name);
 
 		if (!(ufile = fopen(t_buf, "r"))) {
-			d_log("get_stats: fopen(%s): %s\n", t_buf, strerror(errno));
+			d_log(1, "get_stats: fopen(%s): %s\n", t_buf, strerror(errno));
 			continue;
 		}
 		
 		if (stat(t_buf, &fileinfo) == -1) {
-			d_log("get_stats: stat(%i): %s\n", t_buf, strerror(errno));
+			d_log(1, "get_stats: stat(%i): %s\n", t_buf, strerror(errno));
 			continue;
 		}
 
 		if (S_ISDIR(fileinfo.st_mode) == 0) {
 
 			if (!update_lock(raceI, 1, 0)) {
-				d_log("get_stats: Lock is suggested removed. Will comply and exit\n");
+				d_log(1, "get_stats: Lock is suggested removed. Will comply and exit\n");
 				remove_lock(raceI);
 				exit(EXIT_FAILURE);
 			}
@@ -307,7 +307,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 			for (strptr = upstrs; *strptr; strptr++) {
 				
 				if (!(lineptr = get_statline(ufile, *strptr))) {
-					d_log("get_stats: Bad/corrupt user file %s\n", t_buf);
+					d_log(1, "get_stats: Bad/corrupt user file %s\n", t_buf);
 					break;
 				}
 					
@@ -342,7 +342,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	}
 	closedir(dir);
 
-	d_log("get_stats: initializing stats..\n");
+	d_log(1, "get_stats: initializing stats..\n");
 	users = n;
 	for (m = 0; m < raceI->total.users; m++) {
 		userI[m]->dayup =
@@ -351,7 +351,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 			userI[m]->allup = users;
 	}
 
-	d_log("get_stats: sorting stats..\n");
+	d_log(1, "get_stats: sorting stats..\n");
 	for (n = 0; n < users; n++) {
 		if ((u1 = user[n].name) == -1)
 			continue;
@@ -368,7 +368,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 			}
 	}
 	ng_free(user);
-	d_log("get_stats: done.\n");
+	d_log(1, "get_stats: done.\n");
 }
 
 char *

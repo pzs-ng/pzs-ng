@@ -36,6 +36,8 @@
 #define ignored_types			",diz,debug,message,imdb"
 
 #define debug_mode			TRUE
+#define debug_level			1
+
 #define remove_dot_files_on_delete	FALSE
 #define remove_dot_debug_on_delete	TRUE
 

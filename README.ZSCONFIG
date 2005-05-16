@@ -626,6 +626,10 @@ debug_mode <TRUE|FALSE>
 	created, normally in the same dir as the upload-dir.
 	DEFAULT: FALSE
 
+debug_level <INTEGER>
+	This specifies the verbosity of the debug messages printed to .debug.
+	A higher value means higher verbosity.
+
 debug_altlog <TRUE|FALSE>
 	If debug is on, you can choose wether you wish to have the .debug file
 	in the releasedir, or in the mirrored tree created in 'storage'. Please

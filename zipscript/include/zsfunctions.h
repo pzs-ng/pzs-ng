@@ -94,13 +94,10 @@ typedef struct _UDATA {
 	int num_users;
 } UDATA;
 
-/*extern struct USERINFO **userI;
-extern struct GROUPINFO **groupI;
-extern struct VARS raceI;*/
-extern struct dirent **dirlist;
-extern unsigned int direntries;
+/*extern struct dirent **dirlist;
+extern unsigned int direntries;*/
 
-extern void	d_log(char *,...);
+extern void	d_log(int , char *, ...);
 
 extern void	create_missing(char *);
 extern char    *findfileext(DIR *, char *);

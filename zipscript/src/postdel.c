@@ -53,7 +53,7 @@ main(int argc, char **argv)
 	DIR		*dir, *parent;
 
 	if (argc == 1) {
-		d_log("postdel: no param specified\n");
+		d_log(1, "postdel: no param specified\n");
 		return 0;
 	}
 
@@ -66,41 +66,41 @@ main(int argc, char **argv)
 		return 0;
 	}
 
-	d_log("postdel: Project-ZS Next Generation (pzs-ng) v%s debug log for postdel.\n", ng_version());
+	d_log(1, "postdel: Project-ZS Next Generation (pzs-ng) v%s debug log for postdel.\n", ng_version());
 
 #ifdef _ALT_MAX
-	d_log("postdel: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
+	d_log(1, "postdel: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
 #endif
 
 	fname = argv[1] + 5;	/* This way we simply skip the required
 				 * 'DELE'-part of the argument (so we get
 				 * filename) */
 
-	d_log("postdel: Reading user name from env\n");
+	d_log(1, "postdel: Reading user name from env\n");
 	if ((env_user = getenv("USER")) == NULL) {
-		d_log("postdel: postdel: Could not find environment variable 'USER', setting value to 'Nobody'\n");
+		d_log(1, "postdel: postdel: Could not find environment variable 'USER', setting value to 'Nobody'\n");
 		env_user = "Nobody";
 	}
-	d_log("postdel: Reading group name from env\n");
+	d_log(1, "postdel: Reading group name from env\n");
 	if ((env_group = getenv("GROUP")) == NULL) {
-		d_log("postdel: Could not find environment variable 'GROUP', setting value to 'NoGroup'\n");
+		d_log(1, "postdel: Could not find environment variable 'GROUP', setting value to 'NoGroup'\n");
 		env_group = "NoGroup";
 	}
 #if ( program_uid > 0 )
-	d_log("postdel: Trying to change effective gid\n");
+	d_log(1, "postdel: Trying to change effective gid\n");
 	setegid(program_gid);
-	d_log("postdel: Trying to change effective uid\n");
+	d_log(1, "postdel: Trying to change effective uid\n");
 	seteuid(program_uid);
 #endif
 
 	if (!strcmp(fname, "debug"))
-		d_log("postdel: Reading directory structure\n");
+		d_log(1, "postdel: Reading directory structure\n");
 
 	dir = opendir(".");
 	parent = opendir("..");
 
 	if (fileexists(fname)) {
-		d_log("postdel: File (%s) still exists\n", fname);
+		d_log(1, "postdel: File (%s) still exists\n", fname);
 #if (remove_dot_debug_on_delete == TRUE)
 		if (strcmp(fname, "debug"))
 			unlink(fname);
@@ -111,7 +111,7 @@ main(int argc, char **argv)
 	}
 	umask(0666 & 000);
 
-	d_log("postdel: Clearing arrays\n");
+	d_log(1, "postdel: Clearing arrays\n");
 	bzero(&g.v.total, sizeof(struct race_total));
 	g.v.misc.slowest_user[0] = 30000;
 	g.v.misc.fastest_user[0] = 0;
@@ -119,60 +119,60 @@ main(int argc, char **argv)
 	g.v.misc.write_log = TRUE;
 
 	/* YARR; THE PAIN OF MAGIC NUMBERS! */
-	d_log("postdel: Copying env/predefined username to g.v. (%s)\n", env_user);
+	d_log(1, "postdel: Copying env/predefined username to g.v. (%s)\n", env_user);
 	strlcpy(g.v.user.name, env_user, 24);
 	
-	d_log("postdel: Copying env/predefined groupname to g.v. (%s)\n", env_group);
+	d_log(1, "postdel: Copying env/predefined groupname to g.v. (%s)\n", env_group);
 	strlcpy(g.v.user.group, env_group, 24);
 	g.v.user.group[23] = 0;
 
-	d_log("postdel: File to remove is: %s\n", fname);
+	d_log(1, "postdel: File to remove is: %s\n", fname);
 
 	if (!*g.v.user.group)
 		memcpy(g.v.user.group, "NoGroup", 8);
 
-	d_log("postdel: Allocating memory for variables\n");
+	d_log(1, "postdel: Allocating memory for variables\n");
 
 	g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
 	g.gi = ng_realloc2(g.gi,sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
 
 	getcwd(g.l.path, PATH_MAX);
 
-	d_log("postdel: Creating directory to store racedata in\n");
+	d_log(1, "postdel: Creating directory to store racedata in\n");
 	maketempdir(g.l.path);
 
-	d_log("postdel: Locking release\n");
+	d_log(1, "postdel: Locking release\n");
 	while(1) {
 		if ((m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 3, 0))) {
-			d_log("postdel: Failed to lock release.\n");
+			d_log(1, "postdel: Failed to lock release.\n");
 			if (m == 1) {
-				d_log("postdel: version mismatch. Exiting.\n");
+				d_log(1, "postdel: version mismatch. Exiting.\n");
 				exit(EXIT_FAILURE);
 			}
 			if (m == PROGTYPE_RESCAN) {
-				d_log("postdel: Detected rescan running - will try to make it quit.\n");
+				d_log(1, "postdel: Detected rescan running - will try to make it quit.\n");
 				update_lock(&g.v, 0, 0);
 			}
 			if (m == PROGTYPE_POSTDEL) {
 				n = (signed int)g.v.lock.data_incrementor;
-				d_log("postdel: Detected postdel running - sleeping for one second.\n");
+				d_log(1, "postdel: Detected postdel running - sleeping for one second.\n");
 				if (!create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0, g.v.lock.data_queue))
 					break;
 				usleep(1000000);
 				if (!create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0, g.v.lock.data_queue))
 					break;
 				if ( n == (signed int)g.v.lock.data_incrementor) {
-					d_log("postdel: Failed to get lock. Forcing unlock.\n");
+					d_log(1, "postdel: Failed to get lock. Forcing unlock.\n");
 					if (create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 2, g.v.lock.data_queue)) {
-						d_log("postdel: Failed to force a lock.\n");
-						d_log("postdel: Exiting with error.\n");
+						d_log(1, "postdel: Failed to force a lock.\n");
+						d_log(1, "postdel: Exiting with error.\n");
 						exit(EXIT_FAILURE);
 					}
 					break;
 				}
 			} else {
 				for ( n = 0; n <= max_seconds_wait_for_lock * 10; n++) {
-					d_log("postdel: sleeping for .1 second before trying to get a lock.\n");
+					d_log(1, "postdel: sleeping for .1 second before trying to get a lock.\n");
 					usleep(100000);
 					if (!(m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0, g.v.lock.data_queue)))
 						break;
@@ -180,13 +180,13 @@ main(int argc, char **argv)
 				}
 				if (n >= max_seconds_wait_for_lock * 10) {
 					if (m == PROGTYPE_RESCAN) {
-						d_log("postdel: Failed to get lock. Forcing unlock.\n");
+						d_log(1, "postdel: Failed to get lock. Forcing unlock.\n");
 						if (create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 2, g.v.lock.data_queue))
-						d_log("postdel: Failed to force a lock.\n");
+						d_log(1, "postdel: Failed to force a lock.\n");
 					} else
-						d_log("postdel: Failed to get a lock.\n");
+						d_log(1, "postdel: Failed to get a lock.\n");
 					if (!g.v.lock.data_in_use && !ignore_lock_timeout) {
-						d_log("postdel: Exiting with error.\n");
+						d_log(1, "postdel: Exiting with error.\n");
 						exit(EXIT_FAILURE);
 					}
 				}
@@ -200,8 +200,8 @@ main(int argc, char **argv)
 	}
 
 	if (matchpath(nocheck_dirs, g.l.path) || matchpath(speedtest_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
-		d_log("postdel: Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
-		d_log("postdel: Freeing memory, removing lock and exiting\n");
+		d_log(1, "postdel: Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
+		d_log(1, "postdel: Freeing memory, removing lock and exiting\n");
 		ng_free(g.ui);
 		ng_free(g.gi);
 
@@ -222,25 +222,25 @@ main(int argc, char **argv)
 	else
 		snprintf(g.v.sectionname, 127, getenv("SECTION"));
 
-	d_log("postdel: Copying data &g.l into memory\n");
+	d_log(1, "postdel: Copying data &g.l into memory\n");
 	strlcpy(g.v.file.name, fname, NAME_MAX);
 	sprintf(g.l.sfv, storage "/%s/sfvdata", g.l.path);
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
 
-	d_log("postdel: Caching release name\n");
+	d_log(1, "postdel: Caching release name\n");
 	getrelname(&g);
-	d_log("postdel: DEBUG 0: incomplete: '%s', path: '%s'\n", g.l.incomplete, g.l.path);
+	d_log(1, "postdel: DEBUG 0: incomplete: '%s', path: '%s'\n", g.l.incomplete, g.l.path);
 
-	d_log("postdel: Parsing file extension from filename...\n");
+	d_log(1, "postdel: Parsing file extension from filename...\n");
 
 	temp_p = find_last_of(g.v.file.name, ".");
 
 	if (*temp_p != '.') {
-		d_log("postdel: Got: no extension\n");
+		d_log(1, "postdel: Got: no extension\n");
 		temp_p = name_p;
 	} else {
-		d_log("postdel: Got: %s\n", temp_p);
+		d_log(1, "postdel: Got: %s\n", temp_p);
 		temp_p++;
 	}
 	name_p++;
@@ -254,7 +254,7 @@ main(int argc, char **argv)
 
 	switch (get_filetype_postdel(&g, fileext)) {
 	case 0:
-		d_log("postdel: File type is: ZIP\n");
+		d_log(1, "postdel: File type is: ZIP\n");
 		if (matchpath(zip_dirs, g.l.path)) {
 //			if (matchpath(group_dirs, g.l.path)) {
 //				g.v.misc.write_log = 0;
@@ -265,7 +265,7 @@ main(int argc, char **argv)
 			if (matchpath(group_dirs, g.l.path)) {
 //				g.v.misc.write_log = 0;
 			} else {
-				d_log("postdel: Directory matched with sfv_dirs\n");
+				d_log(1, "postdel: Directory matched with sfv_dirs\n");
 				break;
 			}
 		}
@@ -273,29 +273,29 @@ main(int argc, char **argv)
 		if (!fileexists("file_id.diz")) {
 			temp_p = findfileext(dir, ".zip");
 			if (temp_p != NULL) {
-				d_log("postdel: file_id.diz does not exist, trying to extract it from %s\n", temp_p);
+				d_log(1, "postdel: file_id.diz does not exist, trying to extract it from %s\n", temp_p);
 				sprintf(target, "%s -qqjnCLL \"%s\" file_id.diz", unzip_bin, temp_p);
 				execute(target);
 				chmod("file_id.diz", 0666);
 			}
 		}
-		d_log("postdel: Reading diskcount from diz\n");
+		d_log(1, "postdel: Reading diskcount from diz\n");
 		g.v.total.files = read_diz("file_id.diz");
 		if (g.v.total.files == 0) {
-			d_log("postdel: Could not get diskcount from diz\n");
+			d_log(1, "postdel: Could not get diskcount from diz\n");
 			g.v.total.files = 1;
 			
 		}
 		g.v.total.files_missing = g.v.total.files;
 
-		d_log("postdel: Reading race data from file to memory\n");
+		d_log(1, "postdel: Reading race data from file to memory\n");
 		readrace(g.l.race, &g.v, g.ui, g.gi);
 
-		d_log("postdel: Caching progress bar\n");
+		d_log(1, "postdel: Caching progress bar\n");
 		buffer_progress_bar(&g.v);
 
 		if (del_completebar) {
-			d_log("postdel: Removing old complete bar, if any\n");
+			d_log(1, "postdel: Removing old complete bar, if any\n");
 			removecomplete();
 		}
 		if (g.v.total.files_missing < 0) {
@@ -303,11 +303,11 @@ main(int argc, char **argv)
 			g.v.total.files_missing = 0;
 		}
 		if (!g.v.total.files_missing) {
-			d_log("postdel: Creating complete bar\n");
+			d_log(1, "postdel: Creating complete bar\n");
 			createstatusbar(convert(&g.v, g.ui, g.gi, zip_completebar));
 		} else if (g.v.total.files_missing < g.v.total.files) {
 			if (g.v.total.files_missing == 1) {
-				d_log("postdel: Writing INCOMPLETE to %s\n", log);
+				d_log(1, "postdel: Writing INCOMPLETE to %s\n", log);
 				writelog(&g, convert(&g.v, g.ui, g.gi, incompletemsg), general_incomplete_type);
 			}
 			incomplete = 1;
@@ -316,23 +316,23 @@ main(int argc, char **argv)
 		remove_from_race(g.l.race, g.v.file.name, &g.v);
 		break;
 	case 1: /* SFV */
-		d_log("postdel: Reading file count from sfvdata\n");
+		d_log(1, "postdel: Reading file count from sfvdata\n");
 		readsfv(g.l.sfv, &g.v, 0);
 
 		if (fileexists(g.l.race)) {
-			d_log("postdel: Reading race data from file to memory\n");
+			d_log(1, "postdel: Reading race data from file to memory\n");
 			readrace(g.l.race, &g.v, g.ui, g.gi);
 		}
-		d_log("postdel: Caching progress bar\n");
+		d_log(1, "postdel: Caching progress bar\n");
 		buffer_progress_bar(&g.v);
 
 		if ((g.v.total.files_missing == g.v.total.files) && !findfileextcount(dir, ".sfv"))
 			empty_dir = 1;
-		d_log("postdel: SFV was removed - removing progressbar/completebar and -missing pointers.\n");
+		d_log(1, "postdel: SFV was removed - removing progressbar/completebar and -missing pointers.\n");
 		if (del_completebar)
 			removecomplete();
 
-		d_log("postdel: removing files created\n");
+		d_log(1, "postdel: removing files created\n");
 		if (fileexists(g.l.sfv)) {
 			delete_sfv(g.l.sfv, &g.v);
 			unlink(g.l.sfv);	
@@ -342,25 +342,25 @@ main(int argc, char **argv)
 		if (g.l.incomplete)
 			unlink(g.l.incomplete);
 #if (sfv_cleanup)
-		d_log("postdel: removing backup sfv.\n");
+		d_log(1, "postdel: removing backup sfv.\n");
 		fname = 0;
 		fname = ng_realloc2(fname, PATH_MAX, 1, 1, 1);
 		sprintf(fname, "%s/%s/%s", storage, g.l.path, g.v.file.name);
 		unlink(fname);
 		ng_free(fname);
 #endif
-		d_log("postdel: removing progressbar, if any\n");
+		d_log(1, "postdel: removing progressbar, if any\n");
 		move_progress_bar(1, &g.v, g.ui, g.gi);
 		break;
 	case 3:
 		if (del_completebar) {
-			d_log("postdel: Removing old complete bar, if any\n");
+			d_log(1, "postdel: Removing old complete bar, if any\n");
 			removecomplete();
 		}
 //		g.v.misc.write_log = matchpath(sfv_dirs, g.l.path) > 0 ? 1 - matchpath(group_dirs, g.l.path) : 0;
 
 		if (fileexists(g.l.race)) {
-			d_log("postdel: Reading race data from file to memory\n");
+			d_log(1, "postdel: Reading race data from file to memory\n");
 			readrace(g.l.race, &g.v, g.ui, g.gi);
 		} else if (!findfileextcount(dir, ".sfv"))
 			empty_dir = 1;
@@ -371,20 +371,20 @@ main(int argc, char **argv)
 #endif
 			create_missing(g.v.file.name);
 #endif
-			d_log("postdel: Reading file count from SFV\n");
+			d_log(1, "postdel: Reading file count from SFV\n");
 			readsfv(g.l.sfv, &g.v, 0);
 
-			d_log("postdel: Caching progress bar\n");
+			d_log(1, "postdel: Caching progress bar\n");
 			buffer_progress_bar(&g.v);
 		}
 		if (g.v.total.files_missing < g.v.total.files) {
 			if (g.v.total.files_missing == 1) {
-				d_log("postdel: Writing INCOMPLETE to %s\n", log);
+				d_log(1, "postdel: Writing INCOMPLETE to %s\n", log);
 				writelog(&g, convert(&g.v, g.ui, g.gi, incompletemsg), general_incomplete_type);
 			}
 			incomplete = 1;
 		} else {
-			d_log("postdel: Removing old race data\n");
+			d_log(1, "postdel: Removing old race data\n");
 			unlink(g.l.race);
 			if (!findfileext(dir, ".sfv")) {
 				empty_dir = 1;
@@ -406,9 +406,9 @@ main(int argc, char **argv)
 		if (!fileexists(g.l.race) && !findfileextcount(dir, ".sfv"))
 			empty_dir = 1;
 		else {
-			d_log("postdel: Reading race data from file to memory\n");
+			d_log(1, "postdel: Reading race data from file to memory\n");
 			readrace(g.l.race, &g.v, g.ui, g.gi);
-			d_log("postdel: Caching progress bar\n");
+			d_log(1, "postdel: Caching progress bar\n");
 			buffer_progress_bar(&g.v);
 			if ((g.v.total.files_missing == g.v.total.files) && !findfileextcount(dir, ".sfv")) {
 				empty_dir = 1;
@@ -419,7 +419,7 @@ main(int argc, char **argv)
 
 	if (empty_dir == 1) {
 		
-		d_log("postdel: Removing all files and directories created by zipscript\n");
+		d_log(1, "postdel: Removing all files and directories created by zipscript\n");
 		if (del_completebar)
 			removecomplete();
 		if (fileexists(g.l.sfv))
@@ -429,7 +429,7 @@ main(int argc, char **argv)
 		if (g.l.incomplete)
 			unlink(g.l.incomplete);
 #if (sfv_cleanup)
-		d_log("postdel: removing backup sfv.\n");
+		d_log(1, "postdel: removing backup sfv.\n");
 		fname = 0;
 		fname = ng_realloc2(fname, PATH_MAX, 1, 1, 1);
 		sprintf(fname, "%s/%s/%s", storage, g.l.path, g.v.file.name);
@@ -454,7 +454,7 @@ main(int argc, char **argv)
 		getrelname(&g);
 		if (g.l.nfo_incomplete) {
 			if (findfileext(dir, ".nfo")) {
-				d_log("postdel: Removing missing-nfo indicator (if any)\n");
+				d_log(1, "postdel: Removing missing-nfo indicator (if any)\n");
 				remove_nfo_indicator(&g);
 			} else {
 				if (check_for_missing_nfo_filetypes) {
@@ -483,14 +483,14 @@ main(int argc, char **argv)
 				}
 				if ((matchpath(check_for_missing_nfo_dirs, g.l.path) || n) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
 					if (!g.l.in_cd_dir) {
-						d_log("postdel: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
+						d_log(1, "postdel: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
 					} else {
 						if (findfileextparent(parent, ".nfo")) {
-							d_log("postdel: Removing missing-nfo indicator (if any)\n");
+							d_log(1, "postdel: Removing missing-nfo indicator (if any)\n");
 							remove_nfo_indicator(&g);
 						} else {
-							d_log("postdel: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
+							d_log(1, "postdel: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
 		 					/* This is not pretty, but should be functional. */
 							if ((inc_point[0] = find_last_of(g.l.path, "/")) != g.l.path)
 								*inc_point[0] = '\0';
@@ -507,15 +507,15 @@ main(int argc, char **argv)
 			}
 		}
 		if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
-			d_log("postdel: Creating incomplete indicator\n");
-			d_log("postdel:    incomplete: '%s', path: '%s'\n", g.l.incomplete, g.l.path);
+			d_log(1, "postdel: Creating incomplete indicator\n");
+			d_log(1, "postdel:    incomplete: '%s', path: '%s'\n", g.l.incomplete, g.l.path);
 			create_incomplete();
 		}
-		d_log("postdel: Moving progress bar\n");
+		d_log(1, "postdel: Moving progress bar\n");
 		move_progress_bar(0, &g.v, g.ui, g.gi);
 	}
 	
-	d_log("postdel: Releasing memory and removing lock.\n");
+	d_log(1, "postdel: Releasing memory and removing lock.\n");
 	closedir(dir);
 	closedir(parent);
 	updatestats_free(&g);
@@ -526,7 +526,7 @@ main(int argc, char **argv)
 
 	remove_lock(&g.v);
 
-	d_log("postdel: Exit 0\n");
+	d_log(1, "postdel: Exit 0\n");
 
 	if ((empty_dir == 1) && (fileexists(".debug")) && (remove_dot_debug_on_delete == TRUE))
 		unlink(".debug");

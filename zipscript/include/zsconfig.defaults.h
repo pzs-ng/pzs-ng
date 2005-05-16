@@ -1024,6 +1024,15 @@
 #endif
 
 /*
+ * debug_level <INTEGER>
+ *  This specifies the verbosity of the debug messages printed to .debug.
+ *  A higher value means higher verbosity.
+ */
+#ifndef debug_level
+#define debug_level		1
+#endif
+
+/*
  * debug_altlog <TRUE|FALSE>
  * 	If debug is on, you can choose wether you wish to have the .debug file
  * 	in the releasedir, or in the mirrored tree created in 'storage'. Please

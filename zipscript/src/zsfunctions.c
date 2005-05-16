@@ -24,40 +24,42 @@ unsigned int	direntriesp = 0;*/
  *        Revision: r1217
  */
 void 
-d_log(char *fmt,...)
+d_log(int level, char *fmt,...)
 {
 #if ( debug_mode == TRUE )
 	time_t		timenow;
 	FILE           *file;
 	va_list		ap;
-#if ( debug_altlog == TRUE )
+# if ( debug_altlog == TRUE )
 	static char	debugpath[PATH_MAX];
 	static char	debugname[PATH_MAX];
-#else
+# else
 	static char	debugname[] = ".debug";
-#endif
+# endif
 #endif
 
-	if (fmt == NULL)
+	if (fmt == NULL || level > debug_level)
 		return;
 #if ( debug_mode == TRUE )
 	va_start(ap, fmt);
 	timenow = time(NULL);
 
-#if ( debug_altlog == TRUE )
+# if ( debug_altlog == TRUE )
 	getcwd(debugpath, PATH_MAX);
 	snprintf(debugname, PATH_MAX, "%s/%s/.debug",
 	         storage, debugpath);
-#endif
+# endif
 
 	if ((file = fopen(debugname, "a+"))) {
 		fprintf(file, "%.24s - %.6d - ", ctime(&timenow), getpid());
 		vfprintf(file, fmt, ap);
 		fclose(file);
 	}
+	
 	chmod(debugname, 0666);
 	va_end(ap);
 #endif
+
 	return;
 }
 
@@ -353,11 +355,11 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 	DIR		*dir;
 	struct dirent *dp;
 
-	d_log("move_progress_bar: del_progressmeter: %s\n", del_progressmeter);
+	d_log(1, "move_progress_bar: del_progressmeter: %s\n", del_progressmeter);
 	delbar = convert5(del_progressmeter);
-	d_log("move_progress_bar: del_progressmeter: %s\n", delbar);
-	//d_log("move_progress_bar: raceI->total.files: %i\n", raceI->total.files);
-	//d_log("move_progress_bar: raceI->total.files_missing: %i\n", raceI->total.files_missing);
+	d_log(1, "move_progress_bar: del_progressmeter: %s\n", delbar);
+	//d_log(1, "move_progress_bar: raceI->total.files: %i\n", raceI->total.files);
+	//d_log(1, "move_progress_bar: raceI->total.files_missing: %i\n", raceI->total.files_missing);
 	regret = regcomp(&preg, delbar, REG_NEWLINE | REG_EXTENDED);
 	if (!regret) {
 		if ((dir = opendir("."))) {
@@ -365,14 +367,14 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 			if (delete) {
 				while ((dp = readdir(dir))) {
 					if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
-						d_log("move_progress_bar: Found progress bar, removing\n");
+						d_log(1, "move_progress_bar: Found progress bar, removing\n");
 						remove(dp->d_name);
 						*dp->d_name = 0;
 						m = 1;
 					}
 				}
 				if (!m)
-					d_log("move_progress_bar: Progress bar could not be deleted, not found!\n");
+					d_log(1, "move_progress_bar: Progress bar could not be deleted, not found!\n");
 			} else {
 				if (!raceI->total.files) {
 					closedir(dir);
@@ -384,11 +386,11 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 				while ((dp = readdir(dir))) {
 					if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
 						if (!m) {
-							d_log("move_progress_bar: Found progress bar, renaming.\n");
+							d_log(1, "move_progress_bar: Found progress bar, renaming.\n");
 							rename(dp->d_name, bar);
 							m = 1;
 						} else {
-							d_log("move_progress_bar: Found (extra) progress bar, removing\n");
+							d_log(1, "move_progress_bar: Found (extra) progress bar, removing\n");
 							remove(dp->d_name);
 							*dp->d_name = 0;
 							m = 2;
@@ -396,17 +398,17 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 					}
 				}
 				if (!m) {
-					d_log("move_progress_bar: Progress bar could not be moved, creating a new one now!\n");
+					d_log(1, "move_progress_bar: Progress bar could not be moved, creating a new one now!\n");
 					createstatusbar(bar);
 				}
 			}
 			closedir(dir);
 		} else
-			d_log("move_progress_bar: opendir() failed : %s\n", strerror(errno));
-		d_log("move_progress_bar: Freeing regpointer\n");
+			d_log(1, "move_progress_bar: opendir() failed : %s\n", strerror(errno));
+		d_log(1, "move_progress_bar: Freeing regpointer\n");
 	} else {
 		regerror(regret, &preg, regbuf, sizeof(regbuf));
-		d_log("move_progress_bar: regex failed: %s\n", regbuf);
+		d_log(1, "move_progress_bar: regex failed: %s\n", regbuf);
 	}
 	regfree(&preg);
 }
@@ -494,7 +496,7 @@ removecomplete()
 #endif
 	
 	mydelbar = convert5(del_completebar);
-	d_log("removecomplete: del_completebar: %s\n", mydelbar);
+	d_log(1, "removecomplete: del_completebar: %s\n", mydelbar);
 	regret = regcomp(&preg, mydelbar, REG_NEWLINE | REG_EXTENDED);
 	if (!regret) {
 		if ((dir = opendir("."))) {
@@ -508,10 +510,10 @@ removecomplete()
 			}
 			closedir(dir);
 		} else
-			d_log("removecomplete: opendir failed : %s\n", strerror(errno));
+			d_log(1, "removecomplete: opendir failed : %s\n", strerror(errno));
 	} else {
 		regerror(regret, &preg, regbuf, sizeof(regbuf));
-		d_log("move_progress_bar: regex failed: %s\n", regbuf);
+		d_log(1, "move_progress_bar: regex failed: %s\n", regbuf);
 	}
 	regfree(&preg);
 }
@@ -682,14 +684,14 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 
 	bzero(dest, sizeof(dest));
 	if (!(dir = opendir(factor1))) {
-		d_log("createlink: Failed to open dir %s : %s\n", factor1, strerror(errno));
+		d_log(1, "createlink: Failed to open dir %s : %s\n", factor1, strerror(errno));
 		closedir(dir);
 		return;
 	}
         while ((dp = readdir(dir))) {
                 if (strlen(dp->d_name) && !strcasecmp(dp->d_name, factor2)) {
                         strncpy(dest, dp->d_name, sizeof(dp->d_name));
-			d_log("createlink: found %s\n", dest);
+			d_log(1, "createlink: found %s\n", dest);
                         break;
                 }
         }
@@ -709,7 +711,7 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 	memcpy(target - 1, "/", 2);
 
 	if (mkdir(org, 0777) == -1 && errno != EEXIST)
-		d_log("createlink: Failed to mkdir %s : %s\n", org, strerror(errno));
+		d_log(1, "createlink: Failed to mkdir %s : %s\n", org, strerror(errno));
 
 #if ( userellink == 1 )
 	abs2rel(source, org, result, MAXPATHLEN);
@@ -804,7 +806,7 @@ execute(char *s)
 	int	i = 0;
 
 	if ((i = system(s)) == -1)
-		d_log("execute (old): %s\n", strerror(errno));
+		d_log(1, "execute (old): %s\n", strerror(errno));
 	return i;
 }
 
@@ -989,18 +991,18 @@ mark_as_bad(char *filename)
 	char	newname[NAME_MAX];
 
 	if (!fileexists(filename)) {
-		d_log("mark_as_bad: \"%s\" doesn't exist\n", filename);
+		d_log(1, "mark_as_bad: \"%s\" doesn't exist\n", filename);
 		return;
 	}
 	sprintf(newname, "%s.bad", filename);
 	if (rename(filename, newname)) {
-		d_log("mark_as_bad: Error - failed to rename %s to %s\n", filename, newname);
+		d_log(1, "mark_as_bad: Error - failed to rename %s to %s\n", filename, newname);
 	} else {
 		createzerofile(filename);
 		chmod(newname, 0644);
 	}
 #endif
-	d_log("mark_as_bad: File (%s) marked as bad\n", filename);
+	d_log(1, "mark_as_bad: File (%s) marked as bad\n", filename);
 }
 
 void 
@@ -1015,7 +1017,7 @@ writelog(GLOBAL *g, char *msg, char *status)
 		timenow = time(NULL);
 		date = ctime(&timenow);
 		if (!(glfile = fopen(log, "a+"))) {
-			d_log("writelog: fopen(%s): %s\n", log, strerror(errno));
+			d_log(1, "writelog: fopen(%s): %s\n", log, strerror(errno));
 			return;
 		}
 		line = newline = msg;
@@ -1079,10 +1081,10 @@ getrelname(GLOBAL *g)
 
 	subc = subcomp(path[1]);
 	
-	d_log("getrelname():\tsubc:\t\t%d\n", subc);
-	d_log("\t\t\tpath[0]:\t%s\n", path[0]);
-	d_log("\t\t\tpath[1]:\t%s\n", path[1]);
-	d_log("\t\t\tg->l_path:\t%s\n", path[1]);
+	d_log(1, "getrelname():\tsubc:\t\t%d\n", subc);
+	d_log(1, "\t\t\tpath[0]:\t%s\n", path[0]);
+	d_log(1, "\t\t\tpath[1]:\t%s\n", path[1]);
+	d_log(1, "\t\t\tg->l_path:\t%s\n", path[1]);
 
 	if (subc) {
 		snprintf(g->v.misc.release_name, PATH_MAX, "%s/%s", path[0], path[1]);
@@ -1100,8 +1102,8 @@ getrelname(GLOBAL *g)
 		g->l.in_cd_dir = 0;
 	}
 	
-	d_log("\t\t\tlink_source:\t%s\n", g->l.link_source);
-	d_log("\t\t\tlink_target:\t%s\n", g->l.link_target);
+	d_log(1, "\t\t\tlink_source:\t%s\n", g->l.link_source);
+	d_log(1, "\t\t\tlink_target:\t%s\n", g->l.link_target);
 }
 
 unsigned char 
@@ -1201,7 +1203,7 @@ ng_realloc(void *mempointer, int memsize, int zero_it, int exit_on_error, struct
 	else
 		mempointer = realloc(mempointer, memsize);
 	if (mempointer == NULL) {
-		d_log("ng_realloc: realloc failed: %s\n", strerror(errno));
+		d_log(1, "ng_realloc: realloc failed: %s\n", strerror(errno));
 		if (exit_on_error) {
 			remove_lock(raceI);
 			exit(EXIT_FAILURE);
@@ -1219,7 +1221,7 @@ ng_realloc2(void *mempointer, int memsize, int zero_it, int exit_on_error, int z
 	else
 		mempointer = realloc(mempointer, memsize);
 	if (mempointer == NULL) {
-		d_log("ng_realloc: realloc failed: %s\n", strerror(errno));
+		d_log(1, "ng_realloc: realloc failed: %s\n", strerror(errno));
 		if (exit_on_error) {
 			exit(EXIT_FAILURE);
 		}

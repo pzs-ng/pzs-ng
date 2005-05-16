@@ -33,66 +33,66 @@ complete(GLOBAL *g)
 
 #if ( write_complete_message == TRUE )
 	if (matchpath(group_dirs, g->l.path) && (write_complete_message_in_group_dirs == FALSE)) {
-		d_log("No message File is written. Directory matched with group_dirs\n");
+		d_log(1, "No message File is written. Directory matched with group_dirs\n");
 	} else {
-		d_log("Writing %s file ...\n", message_file_name);
+		d_log(1, "Writing %s file ...\n", message_file_name);
 
 		if (!(msgfile = fopen(message_file_name, "w"))) {
-			d_log("Couldn't fopen %s: %s\n", message_file_name, strerror(errno));
+			d_log(1, "Couldn't fopen %s: %s\n", message_file_name, strerror(errno));
 			exit(EXIT_FAILURE);
 		}
 		if ((matchpath(group_dirs, g->l.path)) && (custom_group_dirs_complete_message)) {
 			if (custom_group_dirs_complete_message != DISABLED) {
-				d_log("  - Writing custom complete message for group dirs ...\n");
+				d_log(1, "  - Writing custom complete message for group dirs ...\n");
 				fprintf(msgfile, "%s", convert(&g->v, g->ui, g->gi, custom_group_dirs_complete_message));
 			}
 		} else {
 			if (message_header != DISABLED) {
-				d_log("  - Converting message_header ...\n");
+				d_log(1, "  - Converting message_header ...\n");
 				fprintf(msgfile, "%s", convert(&g->v, g->ui, g->gi, message_header));
 			}
 			if (message_user_header != DISABLED) {
-				d_log("  - Converting message_user_header ...\n");
+				d_log(1, "  - Converting message_user_header ...\n");
 				fprintf(msgfile, "%s", convert(&g->v, g->ui, g->gi, message_user_header));
 			}
 			if (message_user_body != DISABLED) {
-				d_log("  - Converting message_user_body ...\n");
+				d_log(1, "  - Converting message_user_body ...\n");
 				for (cnt = 0; cnt < g->v.total.users; cnt++) {
 					pos = g->ui[cnt]->pos;
 					fprintf(msgfile, "%s", convert2(&g->v, g->ui[pos], g->gi, message_user_body, cnt));
 				}
 			}
 			if (message_user_footer != DISABLED) {
-				d_log("  - Converting message_user_footer ...\n");
+				d_log(1, "  - Converting message_user_footer ...\n");
 				fprintf(msgfile, "%s", convert(&g->v, g->ui, g->gi, message_user_footer));
 			}
 			if (message_group_header != DISABLED) {
-				d_log("  - Converting message_group_header ...\n");
+				d_log(1, "  - Converting message_group_header ...\n");
 				fprintf(msgfile, "%s", convert(&g->v, g->ui, g->gi, message_group_header));
 			}
 			if (message_group_body != DISABLED) {
-				d_log("  - Converting message_group_body ...\n");
+				d_log(1, "  - Converting message_group_body ...\n");
 				for (cnt = 0; cnt < g->v.total.groups; cnt++) {
 					pos = g->gi[cnt]->pos;
 					fprintf(msgfile, "%s", convert3(&g->v, g->gi[pos], message_group_body, cnt));
 				}
 			}
 			if (message_group_footer != DISABLED) {
-				d_log("  - Converting message_group_footer ...\n");
+				d_log(1, "  - Converting message_group_footer ...\n");
 				fprintf(msgfile, "%s", convert(&g->v, g->ui, g->gi, message_group_footer));
 			}
 			if (message_mp3 != DISABLED) {
 				if (g->v.misc.release_type == RTYPE_AUDIO) {
-					d_log("  - Converting message_mp3 ...\n");
+					d_log(1, "  - Converting message_mp3 ...\n");
 					fprintf(msgfile, convert(&g->v, g->ui, g->gi, message_mp3));
 				}
 			}
 			if (message_footer != DISABLED) {
-				d_log("  - Converting message_footer ...\n");
+				d_log(1, "  - Converting message_footer ...\n");
 				fprintf(msgfile, "%s", convert(&g->v, g->ui, g->gi, message_footer));
 			}
 		}
-		d_log("  - Converting complete.\n");
+		d_log(1, "  - Converting complete.\n");
 		fclose(msgfile);
 	}
 #endif

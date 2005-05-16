@@ -82,7 +82,7 @@ xlock(struct flock *fl, int fd, short type)
 	fl->l_whence = SEEK_SET;
 	
 	if (fcntl(fd, F_SETLKW, fl) == -1) {
-		d_log("xlock: fcntl: %s\n", strerror(errno));
+		d_log(1, "xlock: fcntl: %s\n", strerror(errno));
 	}
 }	
 
@@ -92,7 +92,7 @@ xunlock(struct flock *fl, int fd)
 {
 	fl->l_type = F_UNLCK;
 	if (fcntl(fd, F_SETLK, fl) == -1) {
-		d_log("xunlock: fcntl: %s\n", strerror(errno));
+		d_log(1, "xunlock: fcntl: %s\n", strerror(errno));
 	}
 }
 
