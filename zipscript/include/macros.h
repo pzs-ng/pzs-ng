@@ -28,14 +28,20 @@
 #if ( incompleteislink == 1 )
 #if ( userellink == 1 )
 #define create_incomplete() symlink(g.v.misc.release_name, g.l.incomplete)
+#define create_incomplete2() symlink(g->v.misc.release_name, g->l.incomplete)
 #define create_incomplete_nfo() symlink(g.v.misc.release_name, g.l.nfo_incomplete)
+#define create_incomplete_nfo2() symlink(g->v.misc.release_name, g->l.nfo_incomplete)
 #else
 #define create_incomplete() symlink(g.l.path, g.l.incomplete)
+#define create_incomplete2() symlink(g->l.path, g->l.incomplete)
 #define create_incomplete_nfo() symlink(g.l.path, g.l.nfo_incomplete)
+#define create_incomplete_nfo2() symlink(g->l.path, g->l.nfo_incomplete)
 #endif
 #else
 #define create_incomplete() createzerofile(g.l.incomplete)
+#define create_incomplete2() createzerofile(g->l.incomplete)
 #define create_incomplete_nfo() createzerofile(g.l.nfo_incomplete)
+#define create_incomplete_nfo2() createzerofile(g->l.nfo_incomplete)
 #endif
 
 /* No race */

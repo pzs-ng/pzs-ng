@@ -85,6 +85,10 @@ int check_banned_file(GLOBAL *, MSG *);
 int process_file(GLOBAL *, MSG *, DIR *, char **, char *, char **, int *);
 void check_release_type(GLOBAL *, MSG *, RACETYPE *, char *[2]);
 
+void execute_script(char *, char *, char *);
+int get_nfo_filetype(unsigned int);
+void create_missing_missing_nfo_ind(GLOBAL *, char *[2], DIR *);
+
 int 
 main(int argc, char **argv)
 {
@@ -93,7 +97,6 @@ main(int argc, char **argv)
 	GDATA		gdata;
 	UDATA		udata;
 	RACETYPE	rtype;
-
 	DIR		*dir, *parent;
 	
 	char           *fileext = NULL, *name_p, *temp_p = NULL;
@@ -387,59 +390,21 @@ main(int argc, char **argv)
 			}
 
 #if ( enable_complete_script == TRUE )
-			if (!fileexists(complete_script))
-				d_log(1, "zipscript-c: Warning - complete_script (%s) - file does not exists\n", complete_script);
-			d_log(1, "zipscript-c: Executing complete script\n");
-			sprintf(target, complete_script " \"%s\"", g.v.file.name);
-			if (execute(target))
-				d_log(1, "zipscript-c: Failed to execute complete_script: %s\n", strerror(errno));
-
+			execute_script(complete_script, g.v.file.name, "complete");
 #endif
 			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
 				/* Creating no-nfo link if needed. */
 				n = 0;
-				if (check_for_missing_nfo_filetypes) {
-					switch (g.v.misc.release_type) {
-						case RTYPE_RAR:
-							if (strcomp(check_for_missing_nfo_filetypes, "rar"))
-								n = 1;
-							break;
-						case RTYPE_OTHER:
-							if (strcomp(check_for_missing_nfo_filetypes, "other"))
-								n = 1;
-							break;
-						case RTYPE_AUDIO:
-							if (strcomp(check_for_missing_nfo_filetypes, "audio"))
-								n = 1;
-							break;
-						case RTYPE_VIDEO:
-							if (strcomp(check_for_missing_nfo_filetypes, "video"))
-								n = 1;
-							break;
-						case RTYPE_NULL:
-							if (strcomp(check_for_missing_nfo_filetypes, "zip"))
-								n = 1;
-							break;
-					}
+				
+				if (check_for_missing_nfo_filetypes)
+					n = get_nfo_filetype(g.v.misc.release_type);
+
+				if ((g.l.nfo_incomplete) && (!findfileext(dir, ".nfo")) &&
+				    (matchpath(check_for_missing_nfo_dirs, g.l.path) || n)) {
+					
+					create_missing_missing_nfo_ind(&g, inc_point, parent);
 				}
-				if ((g.l.nfo_incomplete) && (!findfileext(dir, ".nfo")) && (matchpath(check_for_missing_nfo_dirs, g.l.path) || n) ) {
-					if (!g.l.in_cd_dir) {
-						d_log(1, "zipscript-c: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
-						create_incomplete_nfo();
-					} else if (!findfileextparent(parent, ".nfo")) {
-						d_log(1, "zipscript-c: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
-						/* This is not pretty, but should be functional. */
-						if ((inc_point[0] = find_last_of(g.l.path, "/")) != g.l.path)
-							*inc_point[0] = '\0';
-						if ((inc_point[1] = find_last_of(g.v.misc.release_name, "/")) != g.v.misc.release_name)
-							*inc_point[1] = '\0';
-						create_incomplete_nfo();
-						if (*inc_point[0] == '\0')
-							*inc_point[0] = '/';
-						if (*inc_point[1] == '\0')
-							*inc_point[1] = '/';
-					}
-				}
+
 			}
 		} else {
 
@@ -450,58 +415,43 @@ main(int argc, char **argv)
 
 		}
 	} else {
-		/* File is marked to be deleted */
 
+		/* File is marked to be deleted */
 		d_log(1, "zipscript-c: Logging file as bad\n");
 		remove_from_race(g.l.race, g.v.file.name, &g.v);
-		//writerace(g.l.race, &g.v, 0, F_BAD);
 
 		printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_error));
 	}
-#if ( enable_accept_script == TRUE )
-	if (exit_value == EXIT_SUCCESS) {
-		if (!fileexists(accept_script)) {
-			d_log(1, "zipscript-c: Warning - accept_script (%s) - file does not exists\n", accept_script);
-		}
-		d_log(1, "zipscript-c: Executing accept script\n");
-		sprintf(target, accept_script " \"%s\"", g.v.file.name);
-		if (execute(target) != 0)
-			d_log(1, "zipscript-c: Failed to execute accept_script: %s\n", strerror(errno));
 
-	}
+#if ( enable_accept_script == TRUE )
+	if (exit_value == EXIT_SUCCESS)
+		execute_script(accept_script, g.v.file.name, "accept");
 #endif
+
 #if ( enable_nfo_script == TRUE )
-	if (!nfofound && findfileext(dir, ".nfo")) {
-		if (!fileexists(nfo_script)) {
-			d_log(1, "zipscript-c: Warning - nfo_script (%s) - file does not exists\n", nfo_script);
-		}
-		d_log(1, "zipscript-c: Executing nfo script (%s)\n", nfo_script);
-		sprintf(target, nfo_script " \"%s\"", g.v.file.name);
-		if (execute(target) != 0)
-			d_log(1, "zipscript-c: Failed to execute nfo_script: %s\n", strerror(errno));
-	}
+	if (!nfofound && findfileext(dir, ".nfo"))
+		execute_script(nfo_script, g.v.file.name "nfo");
 #endif
+
 	if ((findfileext(dir, ".nfo") || (findfileextparent(parent, ".nfo"))) && (g.l.nfo_incomplete)) {
 		d_log(1, "zipscript-c: Removing missing-nfo indicator (if any)\n");
 		remove_nfo_indicator(&g);
 	}
 
-#if ( del_banned_release || enable_banned_script )
+#if ( del_banned_release )
 	if (deldir) {
-		if (enable_banned_script) {
-			sprintf(target, banned_script " \"%s\"", g.v.file.name);
-			if (execute(target) != 0)
-				d_log(1, "zipscript-c: Failed to execute banned_script: %s\n", strerror(errno));
-		}
-		if (del_banned_release) {
-			d_log(1, "zipscript-c: del_banned_release is set - removing entire dir.\n");
-			move_progress_bar(1, &g.v, g.ui, g.gi);
-			if (g.l.incomplete)
-				unlink(g.l.incomplete);
-			rewinddir(dir);
-			del_releasedir(dir, g.l.path);
-		}
+		d_log(1, "zipscript-c: del_banned_release is set - removing entire dir.\n");
+		move_progress_bar(1, &g.v, g.ui, g.gi);
+		if (g.l.incomplete)
+			unlink(g.l.incomplete);
+		rewinddir(dir);
+		del_releasedir(dir, g.l.path);
 	}
+#endif
+
+#if ( enable_banned_script )
+	if (deldir)
+		execute_script(banned_script, g.v.file.name, "banned");
 #endif
 
 	d_log(1, "zipscript-c: Releasing memory and removing lock\n");
@@ -1641,3 +1591,68 @@ check_release_type(GLOBAL *g, MSG *msg, RACETYPE *rtype, char *_complete[2])
 
 }
 
+void
+execute_script(char *script, char *arg, char *type)
+{
+
+	static char target[PATH_MAX];
+	
+	if (!fileexists(script))
+		d_log(1, "zipscript-c: Warning - %s_script (%s) - file does not exists\n", type, script);
+
+	d_log(1, "zipscript-c: Executing %s script\n", type);
+	
+	snprintf(target, PATH_MAX, "%s \"%s\"", script, arg);
+	
+	if (execute(target) != 0)
+		d_log(1, "zipscript-c: Failed to execute %s_script: %s\n", type, strerror(errno));
+		
+}
+
+int
+get_nfo_filetype(unsigned int type)
+{
+
+	switch (type) {
+		case RTYPE_RAR:
+			if (strcomp(check_for_missing_nfo_filetypes, "rar"))
+				return 1;
+		case RTYPE_OTHER:
+			if (strcomp(check_for_missing_nfo_filetypes, "other"))
+				return 1;
+		case RTYPE_AUDIO:
+			if (strcomp(check_for_missing_nfo_filetypes, "audio"))
+				return 1;
+		case RTYPE_VIDEO:
+			if (strcomp(check_for_missing_nfo_filetypes, "video"))
+				return 1;
+		case RTYPE_NULL:
+			if (strcomp(check_for_missing_nfo_filetypes, "zip"))
+				return 1;
+	}
+
+	return 0;
+}
+
+void
+create_missing_missing_nfo_ind(GLOBAL *g, char *inc_point[2], DIR *parent)
+{
+
+	if (!g->l.in_cd_dir) {
+		d_log(1, "zipscript-c: Creating missing-nfo indicator %s\n", g->l.nfo_incomplete);
+		create_incomplete_nfo2();
+	} else if (!findfileextparent(parent, ".nfo")) {
+		d_log(1, "zipscript-c: Creating missing-nfo indicator (base) %s\n", g->l.nfo_incomplete);
+		/* This is not pretty, but should be functional. */
+		if ((inc_point[0] = find_last_of(g->l.path, "/")) != g->l.path)
+			*inc_point[0] = '\0';
+		if ((inc_point[1] = find_last_of(g->v.misc.release_name, "/")) != g->v.misc.release_name)
+			*inc_point[1] = '\0';
+		create_incomplete_nfo2();
+		if (*inc_point[0] == '\0')
+			*inc_point[0] = '/';
+		if (*inc_point[1] == '\0')
+			*inc_point[1] = '/';
+	}
+	
+}
