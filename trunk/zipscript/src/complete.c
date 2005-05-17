@@ -130,8 +130,8 @@ writetop(GLOBAL *g, int completetype)
 {
 	int		cnt, mlen, mset;
 	char		templine [FILE_MAX];
-	char	       *buffer;
-	char	       *pbuf;
+	char	       *buffer = 0;
+	char	       *pbuf = 0;
 
 	if (completetype == 1) {
 		if (user_top != NULL) {
