@@ -108,9 +108,9 @@ main(int argc, char **argv)
 	int				no_check = FALSE;
 	int		n = 0;
 	char	*nfofound = 0;
-#if ( del_banned_release || enable_banned_script )
+//#if ( del_banned_release || enable_banned_script )
 	int		deldir = 0;
-#endif
+//#endif
 	struct stat	fileinfo;
 
 #if ( benchmark_mode == TRUE )
