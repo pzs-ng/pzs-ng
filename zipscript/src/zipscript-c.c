@@ -70,7 +70,7 @@ typedef struct _racetype {
 int handle_zip(GLOBAL *, MSG *, DIR *);
 int handle_sfv(GLOBAL *, MSG *, DIR *);
 int handle_nfo(GLOBAL *, MSG *, DIR *);
-int handle_sfv32(GLOBAL *, MSG *, DIR *, char **, char *);
+int handle_sfv32(GLOBAL *, MSG *, DIR *, char **, char *, int *);
 void read_envdata(GLOBAL *, GDATA *, UDATA *, struct stat *);
 void check_filesize(GLOBAL *, const char *, struct stat *);
 void lock_release(GLOBAL *, DIR *, DIR *);
@@ -82,7 +82,7 @@ int match_nocheck_dirs(GLOBAL *);
 int check_zerosize(GLOBAL *, MSG *);
 int check_banned_file(GLOBAL *, MSG *);
 
-int process_file(GLOBAL *, MSG *, DIR *, char **, char *, char **, int *);
+int process_file(GLOBAL *, MSG *, DIR *, char **, char *, char **, int *, int *);
 void check_release_type(GLOBAL *, MSG *, RACETYPE *, char *[2]);
 
 void execute_script(char *, char *, char *);
@@ -199,17 +199,14 @@ main(int argc, char **argv)
 	}
 	name_p++;
 
-#if ( sfv_cleanup_lowercase == TRUE )
-	d_log(1, "zipscript-c: Copying (lowercased version of) extension to memory\n");
-#else
-	d_log(1, "zipscript-c: Copying (unchanged version of) extension to memory\n");
-#endif
-
 	fileext = ng_realloc(fileext, sizeof(name_p), 1, 1, &g.v, 1);
 	memcpy(fileext, name_p, sizeof(name_p));
 	
 #if ( sfv_cleanup_lowercase == TRUE )
+	d_log(1, "zipscript-c: Copying (lowercased version of) extension to memory\n");
 	strtolower(fileext);
+#else
+	d_log(1, "zipscript-c: Copying (unchanged version of) extension to memory\n");
 #endif
 
 	d_log(1, "zipscript-c: Reading directory structure\n");
@@ -246,7 +243,7 @@ main(int argc, char **argv)
 #endif
 
 		if (exit_value < 2)
-			exit_value = process_file(&g, &msg, dir, argv, fileext, &nfofound, &no_check);
+			exit_value = process_file(&g, &msg, dir, argv, fileext, &nfofound, &no_check, &deldir);
 
 	}
 
@@ -327,7 +324,7 @@ main(int argc, char **argv)
 
 #if ( enable_nfo_script == TRUE )
 	if (!nfofound && findfileext(dir, ".nfo"))
-		execute_script(nfo_script, g.v.file.name "nfo");
+		execute_script(nfo_script, g.v.file.name, "nfo");
 #endif
 
 	if ((findfileext(dir, ".nfo") || (findfileextparent(parent, ".nfo"))) && (g.l.nfo_incomplete)) {
@@ -734,7 +731,8 @@ handle_nfo(GLOBAL *g, MSG *msg, DIR *dir) {
 }
 
 int
-handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
+handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext, int *deldir)
+{
 	
 	unsigned int	crc, s_crc = 0;
 	unsigned char	no_check = FALSE;
@@ -847,12 +845,12 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 		d_log(1, "zipscript-c: Storing new race data\n");
 		writerace(g->l.race, &g->v, crc, F_CHECKED);
 	} else {
-#if ( force_sfv_first == TRUE )
-#if (use_partial_on_noforce == TRUE)
+#if (force_sfv_first == TRUE )
+# if (use_partial_on_noforce == TRUE)
 		if (!matchpartialpath(noforce_sfv_first_dirs, g->l.path) && !matchpath(zip_dirs, g->l.path)) {
-#else
+# else
 		if (!matchpath(noforce_sfv_first_dirs, g->l.path) && !matchpath(zip_dirs, g->l.path)) {
-#endif
+# endif
 			d_log(1, "zipscript-c: SFV needs to be uploaded first\n");
 			strlcpy(g->v.misc.error_msg, SFV_FIRST, 80);
 			mark_as_bad(g->v.file.name);
@@ -950,7 +948,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 						exit_value = 2;
 					}
 #if ( del_banned_release || enable_banned_script )
-					deldir = 1;
+					*deldir = 1;
 					exit_value = 2;
 #endif
 					break;
@@ -974,7 +972,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 						exit_value = 2;
 					}
 #if ( del_banned_release || enable_banned_script )
-					deldir = 1;
+					*deldir = 1;
 					exit_value = 2;
 #endif
 					break;
@@ -999,7 +997,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 						exit_value = 2;
 					}
 #if ( del_banned_release || enable_banned_script )
-					deldir = 1;
+					*deldir = 1;
 					exit_value = 2;
 #endif
 					break;
@@ -1025,7 +1023,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 							exit_value = 2;
 						}
 #if ( del_banned_release || enable_banned_script )
-						deldir = 1;
+						*deldir = 1;
 						exit_value = 2;
 #endif
 						break;
@@ -1051,7 +1049,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext) {
 						exit_value = 2;
 					}
 #if ( del_banned_release || enable_banned_script )
-					deldir = 1;
+					*deldir = 1;
 					exit_value = 2;
 #endif
 					break;
@@ -1359,7 +1357,7 @@ check_banned_file(GLOBAL *g, MSG *msg)
 
 /* fuck you, arguments */
 int
-process_file(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext, char **nfofound, int *no_check)
+process_file(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext, char **nfofound, int *no_check, int *deldir)
 {
 		
 	/* Process file */
@@ -1383,7 +1381,7 @@ process_file(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext, char **n
 			break;
 
 		case 3:	/* SFV BASED CRC-32 CHECK */
-			return handle_sfv32(g, msg, dir, argv, fileext);
+			return handle_sfv32(g, msg, dir, argv, fileext, deldir);
 			break;
 
 		case 4:	/* ACCEPTED FILE */
@@ -1560,6 +1558,7 @@ release_complete(GLOBAL *g, MSG *msg, DIR *dir, DIR *parent, char *_complete[2])
 
 	char			*inc_point[2];
 	char			target[NAME_MAX];
+	char			*temp_p = 0;
 	int				n = 0, cnt;
 
 	d_log(1, "zipscript-c: Caching progress bar\n");
