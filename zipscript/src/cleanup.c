@@ -37,24 +37,27 @@ int
 main(int argc, char **argv)
 {
 
-	int		setfree = 1, days = 0;
+	int		setfree = 1, days = 0, arg_set=1;
 	char		startdir[PATH_MAX] = "/", days_char[4];
 
 	if (argc > 1) {
 		if (!strncmp(argv[1], "/", 1)) {
 			setfree = 0;
 			sprintf(startdir, argv[1]);
-		} else if (!strncmp(argv[1], "--days=", 7)) {
-			bzero(days_char, 4);
-			memcpy(days_char, argv[1] + 7, 3);
-			days=atol(days_char);
-			printf("PZS-NG Cleanup: days to cleanup: %i\n", days);
+			if (argc - 1 > arg_set)
+				arg_set++;
 		} else {
 			if (getcwd(startdir, PATH_MAX) == NULL) {
 				printf("PZS-NG Cleanup: ERROR - Failed to getcwd.\n");
 				exit (0);
 			}
 			printf("PZS-NG Cleanup: Running.\n");
+		}
+		if (!strncmp(argv[arg_set], "--days=", 7)) {
+			bzero(days_char, 4);
+			memcpy(days_char, argv[arg_set] + 7, 3);
+			days=atol(days_char);
+			printf("PZS-NG Cleanup: days to cleanup: %i\n", days);
 		}
 	}
 
