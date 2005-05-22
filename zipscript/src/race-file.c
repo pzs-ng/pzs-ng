@@ -1386,9 +1386,9 @@ int
 check_zipfile(const char *dirname, const char *zipfile)
 {
 	int		ret = 0;
+	char		path_buf[PATH_MAX];
 #if (extract_nfo)
 	char		nfo_buf[NAME_MAX];
-	char		path_buf[PATH_MAX];
 	time_t		t = 0;
 	struct stat	filestat;
 	char	       *ext;

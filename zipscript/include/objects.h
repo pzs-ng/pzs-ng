@@ -142,6 +142,7 @@ struct misc {
 	unsigned char	write_log;
 	long		fastest_user[2],
 			slowest_user[2];
+	int		nfofound;
 };
 
 struct LOCK {

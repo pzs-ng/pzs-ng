@@ -2,7 +2,7 @@
 
 ###############################################################################
 #
-# LIBCOPY v1.1 by psxc
+# LIBCOPY v1.2 by psxc
 ######################
 #
 # This small script (ripped from glinstall.sh ;) will copy libs used by files
@@ -24,7 +24,7 @@ needed_bins="unzip zipscript-c postdel racestats cleanup datacleaner rescan ng-u
 # CODEPART - PLEASE DO NOT CHANGE #
 ###################################
 
-version="1.1 (pzs-ng version)"
+version="1.2 (pzs-ng version)"
 
 # Set system type
 case $(uname -s) in
@@ -169,6 +169,9 @@ case $os in
 		;;
 	linux)
 		bsdlibs="/lib/ld-linux.so.2"
+		;;
+	darwin)
+		bsdlibs="/usr/lib/dyld /usr/lib/dylib1.o /usr/lib/system/libmathCommon.A.dylib"
 		;;
 	*)
 		echo "No special library needed on this platform."
