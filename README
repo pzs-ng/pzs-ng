@@ -360,6 +360,7 @@ scripts. Here's a short description of each compiled binary:
                  chroot /glftpd /bin/cleanup --days=XXX
                  (in chroot, in a site dir) /bin/glftpd something
                  /glftpd/bin/cleanup /glftpd
+                 /glftpd/bin/cleanup /glftpd --days=XXX
 
   - datacleaner - This one will remove the racedata of dirs no longer found
     on your site. Please note that this script may be run in crontab (example
