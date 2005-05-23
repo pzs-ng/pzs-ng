@@ -720,7 +720,7 @@ handle_nfo(GLOBAL *g, MSG *msg, DIR *dir) {
 	}
 #endif
 #if ( deny_nfo_upload_in_zip )
-	if (matchpath(zip_dirs, g->l.path) && !matchpath(sfv_dirs, g->l.path && !matchpath(group_dirs, g->l.path)) {
+	if (matchpath(zip_dirs, g->l.path) && !matchpath(sfv_dirs, g->l.path) && !matchpath(group_dirs, g->l.path)) {
 		d_log(1, "handle_nfo: nfo-files not allowed in zip_dirs.\n");
 		sprintf(g->v.misc.error_msg, NFO_DENIED);
 		msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
