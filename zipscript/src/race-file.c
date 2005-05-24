@@ -547,7 +547,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI, const char *
 				skip = 0;
 				lseek(outfd, 0L, SEEK_SET);
 				while (read(outfd, &tempsd, sizeof(SFVDATA)))
-					if (!strcmp(sd.fname, tempsd.fname) && ( sd.crc32 == tempsd.crc32 && sd.crc32))
+					if (!strcmp(sd.fname, tempsd.fname) || ( sd.crc32 == tempsd.crc32 && sd.crc32))
 						skip = 1;
 				lseek(outfd, 0L, SEEK_END);
 
