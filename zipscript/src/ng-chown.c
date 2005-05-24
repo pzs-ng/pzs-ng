@@ -277,9 +277,9 @@ get_gluid(char *passwdfile, char *user_name)
 				while (f_buf[m] != ':' && m > l_start)
 					m--;
 #if (change_spaces_to_underscore_in_ng_chown)
-				if ((m != i) && ((int)strlen(u_name) == (int)strlen(user_name)) && !strcmp(u_name, u_modname)){
+				if ((m != i) && !strcmp(u_name, u_modname)){
 #else
-				if ((m != i) && ((int)strlen(u_name) == (int)strlen(user_name)) && !strcmp(u_name, user_name)){
+				if ((m != i) && !strcmp(u_name, user_name)){
 #endif
 					u_id = strtol(f_buf + m + 1, NULL, 10);
 					break;
@@ -340,9 +340,9 @@ get_glgid(char *groupfile, char *group_name)
 				while (f_buf[m] != ':' && m > l_start)
 					m--;
 #if (change_spaces_to_underscore_in_ng_chown)
-				if ((m != i) && ((int)strlen(g_name) == (int)strlen(group_name)) && !strcmp(g_name, g_modname)){
+				if ((m != i) && !strcmp(g_name, g_modname)){
 #else
-				if ((m != i) && ((int)strlen(g_name) == (int)strlen(group_name)) && !strcmp(g_name, group_name)){
+				if ((m != i) && !strcmp(g_name, group_name)){
 #endif
 					g_id = strtol(f_buf + m + 1, NULL, 10);
 					break;
