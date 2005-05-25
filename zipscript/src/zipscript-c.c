@@ -43,9 +43,12 @@
 #include "../include/zsconfig.defaults.h"
 
 #ifdef _SunOS_
-#include "scandir.h"
-#include "strsep.h"
+# include "scandir.h"
+# include "strsep.h"
 #endif
+
+#define opendirs(x, y) x = opendir("."); y = opendir("..")
+#define closedirs(x, y) closedir(x); closedir(y)
 
 /* Store various message strings here */
 typedef struct _msg {
@@ -67,13 +70,13 @@ typedef struct _racetype {
 	char *norace_halfway;
 } RACETYPE;
 
-int handle_zip(GLOBAL *, MSG *, DIR *);
-int handle_sfv(GLOBAL *, MSG *, DIR *);
-int handle_nfo(GLOBAL *, MSG *, DIR *);
-int handle_sfv32(GLOBAL *, MSG *, DIR *, char **, char *, int *);
+int handle_zip(GLOBAL *, MSG *);
+int handle_sfv(GLOBAL *, MSG *);
+int handle_nfo(GLOBAL *, MSG *);
+int handle_sfv32(GLOBAL *, MSG *, char **, char *, int *);
 void read_envdata(GLOBAL *, GDATA *, UDATA *, struct stat *);
 void check_filesize(GLOBAL *, const char *, struct stat *);
-void lock_release(GLOBAL *, DIR *, DIR *);
+void lock_release(GLOBAL *);
 void set_uid_gid(void);
 void group_dir_users(GLOBAL *); /* call this something else */
 int match_nocheck_dirs(GLOBAL *);
@@ -82,13 +85,13 @@ int match_nocheck_dirs(GLOBAL *);
 int check_zerosize(GLOBAL *, MSG *);
 int check_banned_file(GLOBAL *, MSG *);
 
-int process_file(GLOBAL *, MSG *, DIR *, char **, char *, int *, int *);
+int process_file(GLOBAL *, MSG *, char **, char *, int *, int *);
 void check_release_type(GLOBAL *, MSG *, RACETYPE *, char *[2]);
 
 void execute_script(char *, char *, char *);
 int get_nfo_filetype(unsigned int);
-void create_missing_missing_nfo_ind(GLOBAL *, char *[2], DIR *);
-void release_complete(GLOBAL *, MSG *, DIR *, DIR *, char *[2]);
+void create_missing_missing_nfo_indicator(GLOBAL *, char *[2]);
+void release_complete(GLOBAL *, MSG *, char *[2]);
 void release_incomplete(GLOBAL *, MSG *, RACETYPE *);
 
 int 
@@ -99,7 +102,6 @@ main(int argc, char **argv)
 	GDATA		gdata;
 	UDATA		udata;
 	RACETYPE	rtype;
-	DIR		*dir, *parent;
 	
 	char           *fileext = NULL, *name_p, *temp_p = NULL;
 	char           *target = 0;
@@ -213,10 +215,6 @@ main(int argc, char **argv)
 	d_log(1, "zipscript-c: Copying (unchanged version of) extension to memory\n");
 #endif
 
-	d_log(1, "zipscript-c: Reading directory structure\n");
-	dir = opendir(".");
-	parent = opendir("..");
-
 	d_log(1, "zipscript-c: Caching release name\n");
 	getrelname(&g);
 
@@ -224,11 +222,11 @@ main(int argc, char **argv)
 	maketempdir(g.l.path);
 
 	d_log(1, "zipscript-c: Locking release\n");
-	lock_release(&g, dir, parent);
+	lock_release(&g);
 
 	printf(zipscript_header);
 
-	g.v.misc.nfofound = (int)findfileext(dir, ".nfo");
+	g.v.misc.nfofound = (int)findfileext(".", ".nfo");
 
 	/* Hide users in group_dirs */
 	group_dir_users(&g);
@@ -247,7 +245,7 @@ main(int argc, char **argv)
 #endif
 
 		if (exit_value < 2)
-			exit_value = process_file(&g, &msg, dir, argv, fileext, &no_check, &deldir);
+			exit_value = process_file(&g, &msg, argv, fileext, &no_check, &deldir);
 
 	}
 
@@ -302,7 +300,7 @@ main(int argc, char **argv)
 		if (g.v.total.files_missing > 0)
 			release_incomplete(&g, &msg, &rtype);
 		else if ((g.v.total.files_missing == 0) && (g.v.total.files > 0))
-			release_complete(&g, &msg, dir, parent, _complete);
+			release_complete(&g, &msg, _complete);
 		else {
 
 			/* Release is at unknown state */
@@ -327,11 +325,11 @@ main(int argc, char **argv)
 #endif
 
 #if ( enable_nfo_script == TRUE )
-	if ( !g.v.misc.nfofound && findfileext(dir, ".nfo"))
+	 if ( !g.v.misc.nfofound && findfileext(".", ".nfo"))
 		execute_script(nfo_script, g.v.file.name, "nfo");
 #endif
 
-	if ((findfileext(dir, ".nfo") || (findfileextparent(parent, ".nfo"))) && (g.l.nfo_incomplete)) {
+	if ((findfileext(".", ".nfo") || (findfileext("..", ".nfo"))) && (g.l.nfo_incomplete)) {
 		d_log(1, "zipscript-c: Removing missing-nfo indicator (if any)\n");
 		remove_nfo_indicator(&g);
 	}
@@ -342,8 +340,7 @@ main(int argc, char **argv)
 		move_progress_bar(1, &g.v, g.ui, g.gi);
 		if (g.l.incomplete)
 			unlink(g.l.incomplete);
-		rewinddir(dir);
-		del_releasedir(dir, g.l.path);
+		del_releasedir(".", g.l.path);
 	}
 #endif
 
@@ -353,8 +350,6 @@ main(int argc, char **argv)
 #endif
 
 	d_log(1, "zipscript-c: Releasing memory and removing lock\n");
-	closedir(dir);
-	closedir(parent);
 	remove_lock(&g.v);
 
 	if (fileexists(".delme"))
@@ -390,14 +385,12 @@ main(int argc, char **argv)
 }
 
 int
-handle_zip(GLOBAL *g, MSG *msg, DIR *dir) {
+handle_zip(GLOBAL *g, MSG *msg) {
 
-	//char           *error_msg = 0;
 	unsigned char	exit_value = EXIT_SUCCESS;
-	char			target[strlen(unzip_bin) + 10 + NAME_MAX];
-	char 			*fileext;
+	char		target[strlen(unzip_bin) + 10 + NAME_MAX];
+	char 		*fileext;
 	long		loc;
-	struct dirent	*dp;
 
 	d_log(1, "handle_zip: File type is: ZIP\n");
 	d_log(1, "handle_zip: Testing file integrity with %s\n", unzip_bin);
@@ -412,7 +405,7 @@ handle_zip(GLOBAL *g, MSG *msg, DIR *dir) {
 		return exit_value;
 	} else {
 #if (test_for_password || extract_nfo)
-		if ((!findfileextcount(dir, ".nfo") || findfileextcount(dir, ".zip") == 1) && !mkdir(".unzipped", 0777)) {
+		if ((!findfileextcount(".", ".nfo") || findfileextcount(".", ".zip") == 1) && !mkdir(".unzipped", 0777)) {
 			sprintf(target, "%s -qqjo \"%s\" -d .unzipped", unzip_bin, g->v.file.name);
 		} else
 			sprintf(target, "%s -qqt \"%s\"", unzip_bin, g->v.file.name);
@@ -430,7 +423,7 @@ handle_zip(GLOBAL *g, MSG *msg, DIR *dir) {
 			return exit_value;
 		}
 #if (test_for_password || extract_nfo || zip_clean)
-			if (!findfileextcount(dir, ".nfo") || findfileextcount(dir, ".zip") == 1) {
+			if (!findfileextcount(".", ".nfo") || findfileextcount(".", ".zip") == 1) {
 				if (check_zipfile(".unzipped", g->v.file.name)) {
 					d_log(1, "handle_zip: File is password protected.\n");
 					sprintf(g->v.misc.error_msg, PASSWORD_PROTECTED);
@@ -467,11 +460,8 @@ handle_zip(GLOBAL *g, MSG *msg, DIR *dir) {
 		if (execute(target) != 0)
 			d_log(1, "handle_zip: No file_id.diz found (#%d): %s\n", errno, strerror(errno));
 		else {
-			if ((loc = findfile(dir, "file_id.diz.bad"))) {
-				seekdir(dir, loc);
-				dp = readdir(dir);
-				unlink(dp->d_name);
-			}
+			if ((loc = findfile(".", "file_id.diz.bad")))
+				remove_at_loc(".", loc);
 			chmod("file_id.diz", 0666);
 		}
 	}
@@ -506,14 +496,15 @@ handle_zip(GLOBAL *g, MSG *msg, DIR *dir) {
 }
 
 int
-handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
+handle_sfv(GLOBAL *g, MSG *msg) {
 
-	char			*fileext;
+	char		*fileext;
 	unsigned char	exit_value = EXIT_SUCCESS;
 	struct dirent	*dp;
 	int		cnt, cnt2;
-	char	       *ext = 0;
-	char	       *sfv_type = 0;
+	char		*ext = 0;
+	char		*sfv_type = 0;
+	DIR		*dir;
 
 	d_log(1, "handle_sfv: File type is: SFV\n");
 	if ((matchpath(sfv_dirs, g->l.path)) || (matchpath(group_dirs, g->l.path))  ) {
@@ -533,7 +524,7 @@ handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
 	}
 
 	if (fileexists(g->l.sfv)) {
-		if (deny_double_sfv == TRUE && findfileextcount(dir, ".sfv") > 1 && sfv_compare_size(".sfv", g->v.file.size) > 0) {
+		if (deny_double_sfv == TRUE && findfileextcount(".", ".sfv") > 1 && sfv_compare_size(".sfv", g->v.file.size) > 0) {
 			d_log(1, "handle_sfv: DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g->v.file.size));
 			d_log(1, "handle_sfv: No double sfv allowed\n");
 			msg->error = convert(&g->v, g->ui, g->gi, deny_double_msg);
@@ -542,14 +533,13 @@ handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
 			mark_as_bad(g->v.file.name);
 			exit_value = 2;
 			return exit_value;
-		} else if (findfileextcount(dir, ".sfv") > 1 && sfv_compare_size(".sfv", g->v.file.size) > 0) {
+		} else if (findfileextcount(".", ".sfv") > 1 && sfv_compare_size(".sfv", g->v.file.size) > 0) {
 			d_log(1, "handle_sfv: DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g->v.file.size));
 			d_log(1, "handle_sfv: Reading remainders of old sfv\n");
 			readsfv(g->l.sfv, &g->v, 1);
 			cnt = g->v.total.files - g->v.total.files_missing;
 			cnt2 = g->v.total.files;
 			g->v.total.files_missing = g->v.total.files = 0;
-			//readsfv_ffile(g->v.file.name, g->v.file.size, g->v);
 			readsfv_ffile(&g->v);
 			if ((g->v.total.files <= cnt2) || (g->v.total.files != (cnt + g->v.total.files_missing))) {
 				d_log(1, "handle_sfv: Old sfv seems to match with more files than current one\n");
@@ -567,7 +557,7 @@ handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
 			d_log(1, "handle_sfv: Hmm.. Seems the old .sfv was deleted. Allowing new one.\n");
 			unlink(g->l.race);
 			unlink(g->l.sfv);
-			rewinddir(dir);
+			dir = opendir(".");
 			while ((dp = readdir(dir))) {
 				cnt = cnt2 = (int)strlen(dp->d_name);
 				ext = dp->d_name;
@@ -581,6 +571,7 @@ handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
 				if (!strncmp(ext, "missing", 7))
 					unlink(dp->d_name);
 			}
+			closedir(dir);
 		}
 	}
 	d_log(1, "handle_sfv: Parsing sfv and creating sfv data\n");
@@ -595,7 +586,7 @@ handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
 		unlink(g->l.race);
 		unlink(g->l.sfv);
 
-		rewinddir(dir);
+		dir = opendir(".");
 		while ((dp = readdir(dir))) {
 			cnt = cnt2 = (int)strlen(dp->d_name);
 			ext = dp->d_name;
@@ -609,6 +600,7 @@ handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
 			if (!strncmp(ext, "missing", 7))
 				unlink(dp->d_name);
 		}
+		closedir(dir);
 
 		return exit_value;
 	}
@@ -629,7 +621,7 @@ handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
 
 #if (smart_sfv_write && sfv_cleanup)
 	d_log(1, "handle_sfv: Rewriting sfv file according to smart_sfv_write\n");
-	sfvdata_to_sfv(g->l.sfv, findfileext(dir, ".sfv"));
+	sfvdata_to_sfv(g->l.sfv, findfileext(".", ".sfv"));
 #endif
 	
 	if (g->v.total.files == 0) {
@@ -690,7 +682,7 @@ handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
 	} else {
 		if (g->v.misc.release_type == RTYPE_AUDIO) {
 			d_log(1, "handle_sfv: Reading audio info for completebar\n");
-			get_mpeg_audio_info(findfileext(dir, ".mp3"), &g->v.audio);
+			get_mpeg_audio_info(findfileext(".", ".mp3"), &g->v.audio);
 		}
 	}
 
@@ -698,7 +690,7 @@ handle_sfv(GLOBAL *g, MSG *msg, DIR *dir) {
 }
 
 int
-handle_nfo(GLOBAL *g, MSG *msg, DIR *dir) {
+handle_nfo(GLOBAL *g, MSG *msg) {
 	
 	unsigned char	no_check = FALSE;
 	unsigned char	exit_value = EXIT_SUCCESS;
@@ -706,7 +698,7 @@ handle_nfo(GLOBAL *g, MSG *msg, DIR *dir) {
 	no_check = TRUE;
 	d_log(1, "handle_nfo: File type is: NFO\n");
 #if ( deny_double_nfo )
-	if (findfileextcount(dir, ".nfo") > 1) {
+	if (findfileextcount(".", ".nfo") > 1) {
 		sprintf(g->v.misc.error_msg, DUPE_NFO);
 		msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
 		if (exit_value < 2)
@@ -735,12 +727,12 @@ handle_nfo(GLOBAL *g, MSG *msg, DIR *dir) {
 }
 
 int
-handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext, int *deldir)
+handle_sfv32(GLOBAL *g, MSG *msg, char **argv, char *fileext, int *deldir)
 {
 	
 	unsigned int	crc, s_crc = 0;
 	unsigned char	no_check = FALSE;
-	char           *target = 0;
+	char		*target = 0;
 	unsigned char	exit_value = EXIT_SUCCESS;
 
 	d_log(1, "handle_sfv32: File type is: ANY\n");
@@ -770,13 +762,13 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext, int *del
 			s_crc = calc_crc32(g->v.file.name);
 			update_sfvdata(g->l.sfv, g->v.file.name, s_crc);
 			if (smart_sfv_write && sfv_cleanup)
-				sfvdata_to_sfv(g->l.sfv, findfileext(dir, ".sfv"));
+				sfvdata_to_sfv(g->l.sfv, findfileext(".", ".sfv"));
 		}
 #endif
 		if (!g->v.misc.sfv_match && g->v.misc.in_sfvfile == TRUE) {
 			update_sfvdata(g->l.sfv, g->v.file.name, s_crc);
 #if (smart_sfv_write && sfv_cleanup)
-			sfvdata_to_sfv(g->l.sfv, findfileext(dir, ".sfv"));
+			sfvdata_to_sfv(g->l.sfv, findfileext(".", ".sfv"));
 #endif
 		}
 
@@ -829,12 +821,12 @@ handle_sfv32(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext, int *del
 			s_crc = crc;
 			update_sfvdata(g->l.sfv, g->v.file.name, s_crc);
 #if (smart_sfv_write && sfv_cleanup)
-			sfvdata_to_sfv(g->l.sfv, findfileext(dir, ".sfv"));
+			sfvdata_to_sfv(g->l.sfv, findfileext(".", ".sfv"));
 #endif
 
 		}
 #if (sfv_cleanup_lowercase == TRUE)
-		if (check_dupefile(dir, g->v.file.name)) {
+		if (check_dupefile(".", g->v.file.name)) {
 			d_log(1, "handle_sfv32: dupe detected - same file, different case already exists.\n");
 			strlcpy(g->v.misc.error_msg, DOUBLE_SFV, 80);
 			mark_as_bad(g->v.file.name);
@@ -1189,10 +1181,13 @@ check_filesize(GLOBAL *g, const char *filename, struct stat *fileinfo)
 }
 
 void
-lock_release(GLOBAL *g, DIR *dir, DIR *parent)
+lock_release(GLOBAL *g)
 {
 
-	int		m, n;
+	int	m, n;
+	//DIR	*dir, *parent;
+
+	//opendirs(dir, parent);
 
 	while (1) {
 	
@@ -1251,8 +1246,8 @@ lock_release(GLOBAL *g, DIR *dir, DIR *parent)
 				}
 			}
 
-			rewinddir(dir);
-			rewinddir(parent);
+			//rewinddir(dir);
+			//rewinddir(parent);
 		}
 		
 		usleep(10000);
@@ -1261,6 +1256,8 @@ lock_release(GLOBAL *g, DIR *dir, DIR *parent)
 			break;
 			
 	}
+
+	//closedirs(dir, parent);
 
 }
 
@@ -1361,10 +1358,10 @@ check_banned_file(GLOBAL *g, MSG *msg)
 
 /* fuck you, arguments */
 int
-process_file(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext, int *no_check, int *deldir)
+process_file(GLOBAL *g, MSG *msg, char **argv, char *fileext, int *no_check, int *deldir)
+//process_file(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext, int *no_check, int *deldir)
 {
-		
-	/* Process file */
+
 	d_log(1, "process_file: Verifying old racedata\n");
 	if (!verify_racedata(g->l.race, &g->v))
 		d_log(1, "process_file:   Failed to open racedata - assuming this is a new race.\n");
@@ -1372,20 +1369,20 @@ process_file(GLOBAL *g, MSG *msg, DIR *dir, char **argv, char *fileext, int *no_
 	switch (get_filetype(g, fileext)) {
 
 		case 0:	/* ZIP CHECK */
-			return handle_zip(g, msg, dir);
+			return handle_zip(g, msg);
 			break;
 
 		case 1:	/* SFV CHECK */
-			return handle_sfv(g, msg, dir);
+			return handle_sfv(g, msg);
 			break;
 		
 		case 2:	/* NFO CHECK */
 			g->v.misc.nfofound = 0;
-			return handle_nfo(g, msg, dir);
+			return handle_nfo(g, msg);
 			break;
 
 		case 3:	/* SFV BASED CRC-32 CHECK */
-			return handle_sfv32(g, msg, dir, argv, fileext, deldir);
+			return handle_sfv32(g, msg, argv, fileext, deldir);
 			break;
 
 		case 4:	/* ACCEPTED FILE */
@@ -1534,13 +1531,13 @@ get_nfo_filetype(unsigned int type)
 }
 
 void
-create_missing_missing_nfo_ind(GLOBAL *g, char *inc_point[2], DIR *parent)
+create_missing_missing_nfo_indicator(GLOBAL *g, char *inc_point[2])
 {
 
 	if (!g->l.in_cd_dir) {
 		d_log(1, "create_missing_missing_nfo_ind: Creating missing-nfo indicator %s\n", g->l.nfo_incomplete);
 		create_incomplete_nfo2();
-	} else if (!findfileextparent(parent, ".nfo")) {
+	} else if (!findfileext("..", ".nfo")) {
 		d_log(1, "create_missing_missing_nfo_ind: Creating missing-nfo indicator (base) %s\n", g->l.nfo_incomplete);
 		/* This is not pretty, but should be functional. */
 		if ((inc_point[0] = find_last_of(g->l.path, "/")) != g->l.path)
@@ -1553,17 +1550,16 @@ create_missing_missing_nfo_ind(GLOBAL *g, char *inc_point[2], DIR *parent)
 		if (*inc_point[1] == '\0')
 			*inc_point[1] = '/';
 	}
-	
 }
 
 void
-release_complete(GLOBAL *g, MSG *msg, DIR *dir, DIR *parent, char *_complete[2])
+release_complete(GLOBAL *g, MSG *msg, char *_complete[2])
 {
 
-	char			*inc_point[2];
-	char			target[NAME_MAX];
-	char			*temp_p = 0;
-	int				n = 0, cnt;
+	int	n = 0, cnt;
+	char	*inc_point[2];
+	char	target[NAME_MAX];
+	char	*temp_p = 0;
 
 	d_log(1, "release_complete: Caching progress bar\n");
 	buffer_progress_bar(&g->v);
@@ -1619,9 +1615,9 @@ release_complete(GLOBAL *g, MSG *msg, DIR *dir, DIR *parent, char *_complete[2])
 		}
 		
 #if ( create_m3u == TRUE )
-		if (findfileext(dir, ".sfv")) {
+		if (findfileext(".", ".sfv")) {
 			d_log(1, "release_complete: Creating m3u\n");
-			cnt = sprintf(target, findfileext(dir, ".sfv"));
+			cnt = sprintf(target, findfileext(".", ".sfv"));
 			strlcpy(target + cnt - 3, "m3u", 4);
 			create_indexfile(g->l.race, &g->v, target);
 		} else
@@ -1667,10 +1663,10 @@ release_complete(GLOBAL *g, MSG *msg, DIR *dir, DIR *parent, char *_complete[2])
 		if (check_for_missing_nfo_filetypes)
 			n = get_nfo_filetype(g->v.misc.release_type);
 
-		if ((g->l.nfo_incomplete) && (!findfileext(dir, ".nfo")) &&
+		if ((g->l.nfo_incomplete) && (!findfileext(".", ".nfo")) &&
 			(matchpath(check_for_missing_nfo_dirs, g->l.path) || n)) {
 			
-			create_missing_missing_nfo_ind(g, inc_point, parent);
+			create_missing_missing_nfo_indicator(g, inc_point);
 		}
 
 	}

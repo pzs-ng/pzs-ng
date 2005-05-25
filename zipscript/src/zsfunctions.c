@@ -71,7 +71,7 @@ d_log(int level, char *fmt,...)
 void 
 create_missing(char *f)
 {
-	char		fname[NAME_MAX];
+	char	fname[NAME_MAX];
 
 	snprintf(fname, NAME_MAX, "%s-missing", f);
 	createzerofile(fname);
@@ -83,44 +83,32 @@ create_missing(char *f)
  *         Revision: r1 (2002.01.16)
  */
 char *
-findfileext(DIR *dir, char *fileext)
+findfileext(char *path, char *fileext)
 {
 	int			k;
+	static DIR		*dir;
 	static struct dirent	*dp;
 
-	rewinddir(dir);
+	dir = opendir(path);
+	
 	while ((dp = readdir(dir))) {
 		if ((k = NAMLEN(dp)) < 4)
 			continue;
-		if (strcasecmp(dp->d_name + k - 4, fileext) == 0) {
+		if (strcasecmp(dp->d_name + k - 4, fileext) == 0)
 			return dp->d_name;
-		}
 	}
+
+	closedir(dir);
 
 	return NULL;
 }
-
-int
-check_dupefile(DIR *dir, char *fname)
-{
-	int			 found = 0;
-	static struct dirent	*dp;
-
-	rewinddir(dir);
-	while ((dp = readdir(dir))) {
-		if (strcasecmp(dp->d_name, fname) == 0)
-			found++;
-	}
-	return (found - 1);
-}
-
 
 /*
  * findfilextparent - find a filename with a matching extension in parent dir.
  * Last Modified by: psxc
  *         Revision: ?? (2004.10.06)
  */
-char           *
+/*char           *
 findfileextparent(DIR *dir, char *fileext)
 {
 	int			k;
@@ -135,7 +123,7 @@ findfileextparent(DIR *dir, char *fileext)
 		}
 	}
 	return NULL;
-}
+}*/
 
 /*
  * findfilextcount - count files with given extension
@@ -143,19 +131,42 @@ findfileextparent(DIR *dir, char *fileext)
  *         Revision: ?? (2003.12.11)
  */
 int 
-findfileextcount(DIR *dir, char *fileext)
+findfileextcount(char *path, char *fileext)
 {
-	int		fnamelen, c = 0;
-	struct dirent	*dp;
+	int			fnamelen, c = 0;
+	static struct dirent	*dp;
+	static DIR		*dir;
 	
-	rewinddir(dir);
+	dir = opendir(path);
+
 	while ((dp = readdir(dir))) {
 		if ((fnamelen = NAMLEN(dp)) < 4)
 			continue;
 		if (!strcasecmp((dp->d_name + fnamelen - 4), fileext))
 			c++;
 	}
+
+	closedir(dir);
+	
 	return c;
+}
+
+int
+check_dupefile(char *path, char *fname)
+{
+	int			 found = 0;
+	static struct dirent	*dp;
+	static DIR		*dir;
+
+	dir = opendir(path);
+
+	while ((dp = readdir(dir)))
+		if (strcasecmp(dp->d_name, fname) == 0)
+			found++;
+
+	closedir(dir);
+	
+	return (found - 1);
 }
 
 /*
@@ -214,18 +225,24 @@ selector(struct dirent *d)
 }
 
 /*
- * del_releasedir - remove all files in current dir.
+ * del_releasedir - remove all files in dir path.
  * Last modified by: psxc
  *         Revision: ??
  */
 void 
-del_releasedir(DIR *dir, char *relname)
+del_releasedir(char *path, char *relname)
 {
-	struct dirent *dp;
+	static struct dirent	*dp;
+	static DIR		*dir;
 
+	dir = opendir(path);
+	
 	while ((dp = readdir(dir)))
 		unlink(dp->d_name);
+
 	rmdir(relname);
+
+	closedir(dir);
 }
 
 
@@ -247,41 +264,28 @@ strtolower(char *s)
  *         Revision: r1221
  */
 void 
-unlink_missing(char *s)
+unlink_extra(char *fname, char *end)
 {
-	char		t[NAME_MAX];
+	static char	file[NAME_MAX];
 	long		loc;
-	DIR		*dir;
-	struct dirent	*dp;
 
-	snprintf(t, NAME_MAX, "%s-missing", s);
-	unlink(t);
+	snprintf(file, NAME_MAX, "%s%s", fname, end);
+	unlink(file);
 #if (sfv_cleanup_lowercase)
-	strtolower(t);
-	unlink(t);
+	strtolower(file);
+	unlink(file);
 #endif
-	dir = opendir(".");
-	if ((loc = findfile(dir, t))) {
-		seekdir(dir, loc);
-		dp = readdir(dir);
-		unlink(dp->d_name);
-	}
-
-	snprintf(t, NAME_MAX, "%s.bad", s);
-	unlink(t);
-#if (sfv_cleanup_lowercase)
-	strtolower(t);
-	unlink(t);
-#endif
-	rewinddir(dir);
-	if ((loc = findfile(dir, t))) {
-		seekdir(dir, loc);
-		dp = readdir(dir);
-		unlink(dp->d_name);
-	}
-	closedir(dir);
+	if ((loc = findfile(".", file)))
+		remove_at_loc(".", loc);
 }
 
+void
+unlink_missing(char *fname)
+{
+	unlink_extra(fname, "-missing");
+	unlink_extra(fname, ".bad");
+}
+	
 /*
  * israr - define a file as rar.
  * Last modified by: d1
@@ -417,19 +421,29 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
  * Modified: Unknown
  */
 long
-findfile(DIR *dir, char *filename)
+findfile(char *path, char *filename)
 {
-	struct dirent	*dp;
+	static off_t		dirloc;
+	static struct dirent	*dp;
+	static DIR		*dir;
 
-	rewinddir(dir);
+	dir = opendir(path);
+	
 	while ((dp = readdir(dir))) {
 #if (sfv_cleanup_lowercase)
 		if (!strcasecmp(dp->d_name, filename))
 #else
 		if (!strcmp(dp->d_name, filename))
 #endif
-			return telldir(dir);
+		{
+			dirloc = telldir(dir);
+			closedir(dir);
+			return dirloc;
+		}
 	}
+
+	closedir(dir);
+
 	return 0;
 }
 
@@ -766,7 +780,7 @@ readsfv_ffile(struct VARS *raceI)
 					index_start++;
 					raceI->total.files++;
 					if (!strcomp(ignored_types, fname + ext_start)) {
-						if (findfile(dir, fname)) {
+						if (findfile(".", fname)) {
 							raceI->total.files_missing--;
 						}
 					}
@@ -1238,3 +1252,23 @@ ng_free(void *mempointer)
 	return 0;
 }
 
+int
+remove_at_loc(char *path, off_t loc)
+{
+	static DIR		*dir;
+	static struct dirent	*dp;
+
+	dir = opendir(path);
+	
+	seekdir(dir, loc);
+	dp = readdir(dir);
+
+	if (unlink(dp->d_name) == -1) {
+		d_log(1, "remove_at_loc: unlink(%s) failed: %s\n", dp->d_name, strerror(errno));
+		return -1;
+	}
+
+	closedir(dir);
+
+	return 0;
+}

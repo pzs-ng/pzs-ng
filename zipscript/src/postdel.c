@@ -271,7 +271,7 @@ main(int argc, char **argv)
 		}
 
 		if (!fileexists("file_id.diz")) {
-			temp_p = findfileext(dir, ".zip");
+			temp_p = findfileext(".", ".zip");
 			if (temp_p != NULL) {
 				d_log(1, "postdel: file_id.diz does not exist, trying to extract it from %s\n", temp_p);
 				sprintf(target, "%s -qqjnCLL \"%s\" file_id.diz", unzip_bin, temp_p);
@@ -311,7 +311,7 @@ main(int argc, char **argv)
 				writelog(&g, convert(&g.v, g.ui, g.gi, incompletemsg), general_incomplete_type);
 			}
 			incomplete = 1;
-		} else if (!findfileextcount(dir, ".sfv"))
+		} else if (!findfileextcount(".", ".sfv"))
 			empty_dir = 1;
 		remove_from_race(g.l.race, g.v.file.name, &g.v);
 		break;
@@ -326,7 +326,7 @@ main(int argc, char **argv)
 		d_log(1, "postdel: Caching progress bar\n");
 		buffer_progress_bar(&g.v);
 
-		if ((g.v.total.files_missing == g.v.total.files) && !findfileextcount(dir, ".sfv"))
+		if ((g.v.total.files_missing == g.v.total.files) && !findfileextcount(".", ".sfv"))
 			empty_dir = 1;
 		d_log(1, "postdel: SFV was removed - removing progressbar/completebar and -missing pointers.\n");
 		if (del_completebar)
@@ -362,7 +362,7 @@ main(int argc, char **argv)
 		if (fileexists(g.l.race)) {
 			d_log(1, "postdel: Reading race data from file to memory\n");
 			readrace(g.l.race, &g.v, g.ui, g.gi);
-		} else if (!findfileextcount(dir, ".sfv"))
+		} else if (!findfileextcount(".", ".sfv"))
 			empty_dir = 1;
 		if (fileexists(g.l.sfv)) {
 #if ( create_missing_files == TRUE )
@@ -386,7 +386,7 @@ main(int argc, char **argv)
 		} else {
 			d_log(1, "postdel: Removing old race data\n");
 			unlink(g.l.race);
-			if (!findfileext(dir, ".sfv")) {
+			if (!findfileext(".", ".sfv")) {
 				empty_dir = 1;
 			} else {
 				incomplete = 1;
@@ -395,22 +395,22 @@ main(int argc, char **argv)
 		remove_from_race(g.l.race, g.v.file.name, &g.v);
 		break;
 	case 4:
-		if (!fileexists(g.l.race) && !findfileextcount(dir, ".sfv"))
+		if (!fileexists(g.l.race) && !findfileextcount(".", ".sfv"))
 			empty_dir = 1;
 		break;
 	case 255:
-		if (!fileexists(g.l.race) && !findfileextcount(dir, ".sfv"))
+		if (!fileexists(g.l.race) && !findfileextcount(".", ".sfv"))
 			empty_dir = 1;
 		break;
 	case 2:
-		if (!fileexists(g.l.race) && !findfileextcount(dir, ".sfv"))
+		if (!fileexists(g.l.race) && !findfileextcount(".", ".sfv"))
 			empty_dir = 1;
 		else {
 			d_log(1, "postdel: Reading race data from file to memory\n");
 			readrace(g.l.race, &g.v, g.ui, g.gi);
 			d_log(1, "postdel: Caching progress bar\n");
 			buffer_progress_bar(&g.v);
-			if ((g.v.total.files_missing == g.v.total.files) && !findfileextcount(dir, ".sfv")) {
+			if ((g.v.total.files_missing == g.v.total.files) && !findfileextcount(".", ".sfv")) {
 				empty_dir = 1;
 			}
 		}
@@ -453,7 +453,7 @@ main(int argc, char **argv)
 
 		getrelname(&g);
 		if (g.l.nfo_incomplete) {
-			if (findfileext(dir, ".nfo")) {
+			if (findfileext(".", ".nfo")) {
 				d_log(1, "postdel: Removing missing-nfo indicator (if any)\n");
 				remove_nfo_indicator(&g);
 			} else {
@@ -486,7 +486,7 @@ main(int argc, char **argv)
 						d_log(1, "postdel: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
 					} else {
-						if (findfileextparent(parent, ".nfo")) {
+						if (findfileext("..", ".nfo")) {
 							d_log(1, "postdel: Removing missing-nfo indicator (if any)\n");
 							remove_nfo_indicator(&g);
 						} else {

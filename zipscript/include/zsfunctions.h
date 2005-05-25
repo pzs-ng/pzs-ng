@@ -100,15 +100,15 @@ extern unsigned int direntries;*/
 extern void	d_log(int , char *, ...);
 
 extern void	create_missing(char *);
-extern char    *findfileext(DIR *, char *);
-extern char    *findfileextparent(DIR *, char *);
+extern char    *findfileext(char *, char *);
+//extern char    *findfileextparent(char *);
 
 /* replace these with the ones above everywhere */
 extern char    *findfileext_old_(char *);
 extern char    *findfileext_old_parent(char *);
 /* mkay? */
 
-extern int	findfileextcount(DIR *, char *);
+extern int	findfileextcount(char *, char *);
 extern unsigned int hexstrtodec(char *);
 #if defined(__linux__) || defined(__NetBSD__)
 extern int	selector(const struct dirent *);
@@ -118,15 +118,14 @@ extern int	selector(struct dirent *);
 
 /*extern void	rescandir(int);
 extern void	rescanparent(int);*/
-extern void	del_releasedir(DIR *, char *);
+extern void	del_releasedir(char *, char *);
 extern void	strtolower(char *);
-extern void	unlink_missing(char *);
 extern char	israr(char *);
 extern char	isvideo(char *);
 extern void	buffer_progress_bar(struct VARS *);
 extern void	move_progress_bar(unsigned char, struct VARS *, struct USERINFO **, struct GROUPINFO **);
-extern int	check_dupefile(DIR *, char *);
-extern long	findfile(DIR *, char *);
+extern int	check_dupefile(char *, char *);
+extern long	findfile(char *, char *);
 extern long	findfilenocase(DIR *, char *);
 extern char	*findfilename(char *, char *, struct VARS *);
 extern void	removedotfiles(DIR *);
@@ -162,3 +161,6 @@ extern void    *ng_realloc2(void *, int, int, int, int);
 extern void    *ng_free(void *);
 #endif
 
+extern int remove_at_loc(char *, off_t);
+extern void unlink_missing(char *);
+extern void unlink_extra(char *, char *);

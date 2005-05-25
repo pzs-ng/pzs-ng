@@ -180,7 +180,7 @@ main(int argc, char *argv[])
 	dir = opendir(".");
 	parent = opendir("..");
 
-	if (!((rescan_quick && findfileext(dir, ".sfv")) || *one_name)) {
+	if (!((rescan_quick && findfileext(".", ".sfv")) || *one_name)) {
 		if (g.l.sfv)
 			unlink(g.l.sfv);
 		if (g.l.race)
@@ -188,8 +188,8 @@ main(int argc, char *argv[])
 	}
 	printf("Rescanning files...\n");
 	
-	if (findfileext(dir, ".sfv")) {
-		strlcpy(g.v.file.name, findfileext(dir, ".sfv"), NAME_MAX);
+	if (findfileext(".", ".sfv")) {
+		strlcpy(g.v.file.name, findfileext(".", ".sfv"), NAME_MAX);
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
 
@@ -320,7 +320,7 @@ main(int argc, char *argv[])
 		buffer_progress_bar(&g.v);
 
 		if (g.l.nfo_incomplete) {
-			if (findfileext(dir, ".nfo")) {
+			if (findfileext(".", ".nfo")) {
 				d_log(1, "rescan: Removing missing-nfo indicator (if any)\n");
 				remove_nfo_indicator(&g);
 			} else {
@@ -354,7 +354,7 @@ main(int argc, char *argv[])
 						d_log(1, "rescan: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
 					} else {
-						if (findfileextparent(parent, ".nfo")) {
+						if (findfileext("..", ".nfo")) {
 							d_log(1, "rescan: Removing missing-nfo indicator (if any)\n");
 							remove_nfo_indicator(&g);
 						} else {
@@ -375,7 +375,7 @@ main(int argc, char *argv[])
 			}
 		}
 		if (g.v.misc.release_type == RTYPE_AUDIO)
-			get_mpeg_audio_info(findfileext(dir, ".mp3"), &g.v.audio);
+			get_mpeg_audio_info(findfileext(".", ".mp3"), &g.v.audio);
 
 		if ((g.v.total.files_missing == 0) && (g.v.total.files > 0)) {
 
@@ -389,7 +389,7 @@ main(int argc, char *argv[])
 			case RTYPE_AUDIO:
 				complete_bar = audio_completebar;
 #if ( create_m3u == TRUE )
-				n = sprintf(exec, findfileext(dir, ".sfv"));
+				n = sprintf(exec, findfileext(".", ".sfv"));
 				strcpy(exec + n - 3, "m3u");
 				create_indexfile(g.l.race, &g.v, exec);
 #endif
@@ -414,8 +414,8 @@ main(int argc, char *argv[])
 			}
 				move_progress_bar(0, &g.v, g.ui, g.gi);
 		}
-	} else if (findfileext(dir, ".zip")) {
-		strlcpy(g.v.file.name, findfileext(dir, ".zip"), NAME_MAX);
+	} else if (findfileext(".", ".zip")) {
+		strlcpy(g.v.file.name, findfileext(".", ".zip"), NAME_MAX);
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
 		//n = direntries;
@@ -450,11 +450,8 @@ main(int argc, char *argv[])
 					if (execute(exec) != 0) {
 						d_log(1, "rescan: No file_id.diz found (#%d): %s\n", errno, strerror(errno));
 					} else {
-						if ((loc = findfile(dir, "file_id.diz.bad"))) {
-							seekdir(dir, loc);
-							dp = readdir(dir);
-							unlink(dp->d_name);
-						}
+						if ((loc = findfile(".", "file_id.diz.bad")))
+							remove_at_loc(".", loc);
 						chmod("file_id.diz", 0666);
 					}
 				}
@@ -497,7 +494,7 @@ main(int argc, char *argv[])
 				move_progress_bar(0, &g.v, g.ui, g.gi);
 		}
 		if (g.l.nfo_incomplete) {
-			if (findfileext(dir, ".nfo")) {
+			if (findfileext(".", ".nfo")) {
 				d_log(1, "rescan: Removing missing-nfo indicator (if any)\n");
 				remove_nfo_indicator(&g);
 			} else {
@@ -531,7 +528,7 @@ main(int argc, char *argv[])
 						d_log(1, "rescan: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
 					} else {
-						if (findfileextparent(parent, ".nfo")) {
+						if (findfileext("..", ".nfo")) {
 							d_log(1, "rescan: Removing missing-nfo indicator (if any)\n");
 							remove_nfo_indicator(&g);
 						} else {

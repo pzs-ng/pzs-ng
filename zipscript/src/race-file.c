@@ -115,7 +115,7 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 			}
 		}
 
-		if (getfcount && findfile(dir, sd.fname) && sd.fmatch) {
+		if (getfcount && findfile(".", sd.fname) && sd.fmatch) {
 			raceI->total.files_missing--;
 		}
 	}
@@ -597,7 +597,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI, const char *
 					sd.fmatch = 1;
 
 #if ( create_missing_files == TRUE )
-				if (!findfile(dir, sd.fname) && sd.fmatch)
+				if (!findfile(".", sd.fname) && sd.fmatch)
 					create_missing(sd.fname);
 #endif
 
