@@ -1,30 +1,48 @@
-prefix=@GLPATH@
-datapath=/ftp-data
-storage=/ftp-data/pzs-ng
-bindir=$(prefix)/bin
+prefix		=	@GLPATH@
+datapath	=	/ftp-data
+storage		=	/ftp-data/pzs-ng
+bindir		=	$(prefix)/bin
 
-CC=@CC@
-CFLAGS=@CFLAGS@ @STATIC@ @NOFORMAT@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE @DEFS@ -I../include/ -I../../ -I../../lib/
-LDFLAGS=@LDFLAGS@ -L../../lib/libglufile
-RM=@RM@ -f
-INSTALL=@INSTALL@
-STRLCPY=../../lib/strl/strlcpy.o
+RM		=	@RM@ -f
+INSTALL		=	@INSTALL@
 
-SUNOBJS=@SUNOBJS@
-UNIVERSAL=stats.o convert.o race-file.o helpfunctions.o zsfunctions.o mp3info.o ng-version.o abs2rel.o $(SUNOBJS) $(STRLCPY)
-ZS-OBJECTS=zipscript-c.o dizreader.o complete.o multimedia.o crc.o avinfo.o $(UNIVERSAL)
-PD-OBJECTS=postdel.o dizreader.o multimedia.o crc.o $(UNIVERSAL)
-RS-OBJECTS=racestats.o dizreader.o crc.o $(UNIVERSAL)
-CU-OBJECTS=cleanup.o
-#IL-OBJECTS=incomplete-list.o
-DC-OBJECTS=datacleaner.o
-UD-OBJECTS=ng-undupe.o $(STRLCPY)
-SC-OBJECTS=rescan.o dizreader.o complete.o crc.o multimedia.o $(UNIVERSAL)
-CH-OBJECTS=ng-chown.o
-#ZS-DEPEND=cleanup.o incomplete-list.o complete.o datacleaner.o postdel.o racestats.o rescan.o zipscript-c.o multimedia.o $(UNIVERSAL)
-ZS-DEPEND=cleanup.o complete.o datacleaner.o postdel.o racestats.o rescan.o zipscript-c.o multimedia.o $(UNIVERSAL)
+CC		=	@CC@
+CFLAGS		=	@CFLAGS@ @STATIC@ @NOFORMAT@ -D_FILE_OFFSET_BITS=64 \
+			-D_LARGEFILE_SOURCE @DEFS@ -I../include/ -I../../ -I../../lib/
+LDFLAGS		=	@LDFLAGS@ -L../../lib/libglufile
+STRLCPY		=	../../lib/strl/strlcpy.o
 
-all: ng-undupe zipscript-c postdel racestats cleanup datacleaner rescan ng-chown
+SUNOBJS		=	@SUNOBJS@
+
+UNIVERSAL 	=	stats.o convert.o race-file.o helpfunctions.o \
+			zsfunctions.o mp3info.o ng-version.o abs2rel.o \
+			$(SUNOBJS) $(STRLCPY)
+		
+ZSOBJECTS	=	zipscript-c.o dizreader.o complete.o multimedia.o \
+			handle_sfv.o handle_nfo.o handle_zip.o \
+			crc.o avinfo.o $(UNIVERSAL)
+			
+PDOBJECTS	=	postdel.o dizreader.o multimedia.o crc.o $(UNIVERSAL)
+
+RSOBJECTS	=	racestats.o dizreader.o crc.o $(UNIVERSAL)
+
+CUOBJECTS	=	cleanup.o
+
+DCOBJECTS	=	datacleaner.o
+
+UDOBJECTS	=	ng-undupe.o $(STRLCPY)
+
+SCOBJECTS	=	rescan.o dizreader.o complete.o crc.o multimedia.o \
+			$(UNIVERSAL)
+			
+CHOBJECTS	=	ng-chown.o
+
+ZSDEPEND	=	cleanup.o complete.o datacleaner.o postdel.o \
+			racestats.o rescan.o zipscript-c.o multimedia.o \
+			$(UNIVERSAL)
+
+all: 			ng-undupe zipscript-c postdel racestats cleanup \
+			datacleaner rescan ng-chown
 
 $(ZS-DEPEND): ../conf/zsconfig.h
 
@@ -33,29 +51,29 @@ strsep.o:
 scandir.o:
 	$(CC) $(CFLAGS) -o scandir.o -c scandir.c
 
-zipscript-c: $(ZS-OBJECTS) $(ZS-DEPEND) $(SUNOBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(ZS-OBJECTS) $(SUNOBJS) -lglufile
+zipscript-c: $(ZSOBJECTS) $(ZSDEPEND) $(SUNOBJS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(ZSOBJECTS) $(SUNOBJS) -lglufile
 
-postdel: $(PD-OBJECTS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(PD-OBJECTS) -lglufile
+postdel: $(PDOBJECTS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(PDOBJECTS) -lglufile
 
-racestats: $(RS-OBJECTS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(RS-OBJECTS) -lglufile
+racestats: $(RSOBJECTS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(RSOBJECTS) -lglufile
 
-cleanup: $(CU-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(CU-OBJECTS) $(SUNOBJS)
+cleanup: $(CUOBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(CUOBJECTS) $(SUNOBJS)
 
-datacleaner: $(DC-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(DC-OBJECTS) $(SUNOBJS)
+datacleaner: $(DCOBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(DCOBJECTS) $(SUNOBJS)
 
-ng-undupe: $(UD-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(UD-OBJECTS)
+ng-undupe: $(UDOBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(UDOBJECTS)
 
-ng-chown: $(CH-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(CH-OBJECTS) $(SUNOBJS)
+ng-chown: $(CHOBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(CHOBJECTS) $(SUNOBJS)
 
-rescan: $(SC-OBJECTS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(SC-OBJECTS) -lglufile
+rescan: $(SCOBJECTS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(SCOBJECTS) -lglufile
 
 install:
 	if [ ! -e "$(prefix)$(storage)" ]; then mkdir -p -m777 "$(prefix)$(storage)"; fi

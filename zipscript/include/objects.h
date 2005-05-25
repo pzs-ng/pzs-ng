@@ -195,4 +195,24 @@ typedef struct {
  * should be removed */
 #define sfv_version	18
 
+/* Store various message strings here */
+typedef struct _msg {
+	char *complete;
+	char *update;
+	char *race;
+	char *sfv;
+	char *newleader;
+	char *halfway;
+	char *error;
+} MSG;
+
+/* Race type strings go in here */
+typedef struct _racetype {
+	char *race;
+	char *newleader;
+	char *update;
+	char *race_halfway;
+	char *norace_halfway;
+} RACETYPE;
+
 #endif
