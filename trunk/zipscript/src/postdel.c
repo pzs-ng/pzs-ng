@@ -411,7 +411,7 @@ main(int argc, char **argv)
 		break;
 	}
 
-	if (empty_dir == 1) {
+	if (empty_dir == 1 && !findfileext(dir, ".sfv")) {
 		
 		d_log("postdel: Removing all files and directories created by zipscript\n");
 		if (del_completebar)
