@@ -255,19 +255,20 @@ main(int argc, char **argv)
 	switch (get_filetype_postdel(&g, fileext)) {
 	case 0:
 		d_log(1, "postdel: File type is: ZIP\n");
-		if (matchpath(zip_dirs, g.l.path)) {
+//		if (matchpath(zip_dirs, g.l.path)) {
 //			if (matchpath(group_dirs, g.l.path)) {
 //				g.v.misc.write_log = 0;
 //			} else {
 //				g.v.misc.write_log = 1;
 //			}
-		} else if (matchpath(sfv_dirs, g.l.path) && strict_path_match) {
-			if (matchpath(group_dirs, g.l.path)) {
+//		} else if (matchpath(sfv_dirs, g.l.path) && strict_path_match) {
+		if (!matchpath(sfv_dirs, g.l.path) && !strict_path_match &&
+			!matchpath(group_dirs, g.l.path)) {
 //				g.v.misc.write_log = 0;
-			} else {
-				d_log(1, "postdel: Directory matched with sfv_dirs\n");
-				break;
-			}
+//			} else {
+			d_log(1, "postdel: Directory matched with sfv_dirs\n");
+			break;
+//			}
 		}
 
 		if (!fileexists("file_id.diz")) {
