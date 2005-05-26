@@ -26,6 +26,10 @@
 #include "objects.h"
 #include "avinfo.h"
 
+#ifndef HAVE_STRLCPY
+# include "strl/strl.h"
+#endif
+
 //struct avi vinfo;
 
 const char *fourcc(FOURCC tag)
@@ -195,4 +199,3 @@ int avinfo(char *filename, struct MULTIMEDIA *m)
 //	printf("%s\n", buf);
 	return 0;
 }
-

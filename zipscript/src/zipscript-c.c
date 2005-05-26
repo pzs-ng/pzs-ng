@@ -105,6 +105,11 @@ main(int argc, char **argv)
 		return EXIT_FAILURE;
 	}
 
+	if (!fileexists(argv[1])) {
+		d_log(1, "zipscript-c: File %s does not exist. exiting.\n", argv[1]);
+		return 1;
+	}
+
 #if ( debug_mode == TRUE && debug_announce == TRUE)
 	printf("PZS-NG: Running in debug mode.\n");
 #endif
@@ -156,21 +161,16 @@ main(int argc, char **argv)
 	g.l.sfv = ng_realloc2(g.l.sfv, n, 1, 1, 1);
 	g.l.leader = ng_realloc2(g.l.leader, n, 1, 1, 1);
 	target = ng_realloc2(target, n + 256, 1, 1, 1);
-	g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
-	g.gi = ng_realloc2(g.gi, sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
+	//g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
+	//g.gi = ng_realloc2(g.gi, sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
 
 	d_log(1, "zipscript-c: Copying data g.l into memory\n");
 	sprintf(g.l.sfv, storage "/%s/sfvdata", g.l.path);
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
 	g.v.user.pos = 0;
-	sprintf(g.v.misc.old_leader, "none");
+	snprintf(g.v.misc.old_leader, 24, "none");
 	g.v.file.compression_method = '5';
-
-	if (!fileexists(argv[1])) {
-		d_log(1, "zipscript-c: File %s does not exist. exiting.\n", argv[1]);
-		return 1;
-	}
 
 	/* Get file extension */
 	d_log(1, "zipscript-c: Parsing file extension from filename... (%s)\n", argv[1]);
@@ -256,21 +256,21 @@ main(int argc, char **argv)
 			
 			showstats(&g.v, g.ui, g.gi);
 
-			if (!enable_files_ahead || ((g.v.total.users > 1 && g.ui[g.ui[0]->pos]->files >= (g.ui[g.ui[1]->pos]->files + newleader_files_ahead)) || g.v.total.users == 1)) {
+			if (!enable_files_ahead || ((g.v.total.users > 1 && g.ui[g.ui[0].pos].files >= (g.ui[g.ui[1].pos].files + newleader_files_ahead)) || g.v.total.users == 1)) {
 				d_log(1, "zipscript-c: Writing current leader to file\n");
-				read_write_leader(g.l.leader, &g.v, g.ui[g.ui[0]->pos]);
+				read_write_leader(g.l.leader, &g.v, &g.ui[g.ui[0].pos]);
 			}
 			if (g.v.total.users > 1) {
-				if (g.ui[g.v.user.pos]->files == 1 && msg.race != NULL) {
+				if (g.ui[g.v.user.pos].files == 1 && msg.race != NULL) {
 					d_log(1, "zipscript-c: Writing RACE to %s\n", log);
 					writelog(&g, convert(&g.v, g.ui, g.gi, msg.race), rtype.race);
 				}
-				if (g.v.total.files >= min_newleader_files && ((g.v.total.size * g.v.total.files) >= (min_newleader_size * 1024 * 1024)) && strcmp(g.v.misc.old_leader, g.ui[g.ui[0]->pos]->name) && msg.newleader != NULL && g.ui[g.ui[0]->pos]->files >= (g.ui[g.ui[1]->pos]->files + newleader_files_ahead) && g.v.total.files_missing) {
+				if (g.v.total.files >= min_newleader_files && ((g.v.total.size * g.v.total.files) >= (min_newleader_size * 1024 * 1024)) && strcmp(g.v.misc.old_leader, g.ui[g.ui[0].pos].name) && msg.newleader != NULL && g.ui[g.ui[0].pos].files >= (g.ui[g.ui[1].pos].files + newleader_files_ahead) && g.v.total.files_missing) {
 					d_log(1, "zipscript-c: Writing NEWLEADER to %s\n", log);
 					writelog(&g, convert(&g.v, g.ui, g.gi, msg.newleader), rtype.newleader);
 				}
 			} else {
-				if (g.ui[g.v.user.pos]->files == 1 && g.v.total.files >= min_update_files && ((g.v.total.size * g.v.total.files) >= (min_update_size * 1024 * 1024)) && msg.update) {
+				if (g.ui[g.v.user.pos].files == 1 && g.v.total.files >= min_update_files && ((g.v.total.size * g.v.total.files) >= (min_update_size * 1024 * 1024)) && msg.update) {
 					d_log(1, "zipscript-c: Writing UPDATE to %s\n", log);
 					writelog(&g, convert(&g.v, g.ui, g.gi, msg.update), rtype.update);
 				}
@@ -337,7 +337,7 @@ main(int argc, char **argv)
 
 	buffer_groups(&gdata, GROUPFILE, 1);
 	buffer_users(&udata, PASSWDFILE, 1);
-	updatestats_free(&g);
+	//updatestats_free(&g);
 	ng_free(fileext);
 	ng_free(target);
 	ng_free(g.l.race);
@@ -446,9 +446,6 @@ lock_release(GLOBAL *g)
 {
 
 	int	m, n;
-	//DIR	*dir, *parent;
-
-	//opendirs(dir, parent);
 
 	while (1) {
 	
@@ -507,8 +504,6 @@ lock_release(GLOBAL *g)
 				}
 			}
 
-			//rewinddir(dir);
-			//rewinddir(parent);
 		}
 		
 		usleep(10000);
@@ -517,8 +512,6 @@ lock_release(GLOBAL *g)
 			break;
 			
 	}
-
-	//closedirs(dir, parent);
 
 }
 
@@ -957,4 +950,3 @@ release_incomplete(GLOBAL *g, MSG *msg, RACETYPE *rtype)
 	printf("%s", convert(&g->v, g->ui, g->gi, zipscript_footer_ok));
 
 }
-

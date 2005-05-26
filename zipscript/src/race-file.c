@@ -775,7 +775,7 @@ match_file(char *rname, char *f)
  * 				: "path" is the location of a racedata file.
  */
 void 
-readrace(const char *path, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI)
+readrace(const char *path, struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI)
 {
 	int		fd, rlength = 0;
 
@@ -1288,7 +1288,7 @@ int backup_sfv(const char *from, const char *path, int reverse)
 {
 	int nbytes;
 	int status = -1;
-	int fd1, fd2;
+	int fd1, fd2 = 0;
 	static char buffer[1024];
 	char to[PATH_MAX];
 
@@ -1491,4 +1491,3 @@ filebanned_match(const char *filename)
 	}
 	return 0;
 }
-

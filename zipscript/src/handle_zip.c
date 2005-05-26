@@ -8,7 +8,7 @@
 #include "convert.h"
 #include "race-file.h"
 #include "errors.h"
-
+#include "dizreader.h"
 int
 handle_zip(GLOBAL *g, MSG *msg) {
 

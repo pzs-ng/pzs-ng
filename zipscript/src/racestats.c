@@ -32,10 +32,10 @@ main(int argc, char **argv)
 	g.l.race = malloc(PATH_MAX);
 	g.l.sfv = malloc(PATH_MAX);
 
-	g.ui = malloc(sizeof(struct USERINFO *) * 30);
-	memset(g.ui, 0, sizeof(struct USERINFO *) * 30);
-	g.gi = malloc(sizeof(struct GROUPINFO *) * 30);
-	memset(g.gi, 0, sizeof(struct GROUPINFO *) * 30);
+	//g.ui = malloc(sizeof(struct USERINFO *) * 30);
+	//memset(g.ui, 0, sizeof(struct USERINFO *) * 30);
+	//g.gi = malloc(sizeof(struct GROUPINFO *) * 30);
+	//memset(g.gi, 0, sizeof(struct GROUPINFO *) * 30);
 
 	g.v.misc.slowest_user[0] = 30000;
 	g.v.misc.fastest_user[0] =
@@ -88,8 +88,8 @@ main(int argc, char **argv)
 END:
 	free(g.l.race);
 	free(g.l.sfv);
-	free(g.gi);
-	free(g.ui);
+	//free(g.gi);
+	//free(g.ui);
 
 	exit(EXIT_SUCCESS);
 }

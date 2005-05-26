@@ -348,7 +348,7 @@ buffer_progress_bar(struct VARS *raceI)
  * Modified: 01.16.2002
  */
 void 
-move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI)
+move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI)
 {
 	char           *bar;
 	char	       *delbar = 0, regbuf[100];

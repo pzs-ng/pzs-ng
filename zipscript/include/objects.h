@@ -32,9 +32,9 @@
 #endif
 
 #if NAME_MAX%4
-#define NAMEMAX NAME_MAX+4-NAME_MAX%4
+# define NAMEMAX NAME_MAX+4-NAME_MAX%4
 #else
-#define NAMEMAX NAME_MAX
+# define NAMEMAX NAME_MAX
 #endif
 
 #include "../conf/zsconfig.h"
@@ -183,8 +183,10 @@ struct LOCATIONS {
 /* passing this around is a lot easier than passing
  * a lot of other shit around */
 typedef struct {
-	struct USERINFO		**ui;
-	struct GROUPINFO	**gi;
+	//struct USERINFO		**ui;
+	//struct GROUPINFO	**gi;
+	struct USERINFO		ui[30];
+	struct GROUPINFO	gi[30];
 	struct VARS		v;
 	struct LOCATIONS	l;
 	struct MULTIMEDIA	m;

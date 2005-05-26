@@ -12,10 +12,9 @@
 int
 handle_nfo(GLOBAL *g, MSG *msg) {
 	
-	unsigned char	no_check = FALSE;
-	unsigned char	exit_value = EXIT_SUCCESS;
+	//int	no_check = TRUE;
+	int	exit_value = EXIT_SUCCESS;
 
-	no_check = TRUE;
 	d_log(1, "handle_nfo: File type is: NFO\n");
 #if ( deny_double_nfo )
 	if (findfileextcount(".", ".nfo") > 1) {
@@ -28,7 +27,6 @@ handle_nfo(GLOBAL *g, MSG *msg) {
 			exit_value = 2;
 		} else
 			d_log(1, "handle_nfo: Looks like there already is a nfo uploaded. Warn on -allowing anyway.\n");
-		return exit_value;
 	}
 #endif
 #if ( deny_nfo_upload_in_zip )
@@ -39,7 +37,6 @@ handle_nfo(GLOBAL *g, MSG *msg) {
 		if (exit_value < 2)
 			writelog(g, msg->error, bad_file_nfodenied_type);
 		exit_value = 2;
-		return exit_value;
 	}
 
 #endif

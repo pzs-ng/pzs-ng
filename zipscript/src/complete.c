@@ -58,8 +58,8 @@ complete(GLOBAL *g)
 			if (message_user_body != DISABLED) {
 				d_log(1, "  - Converting message_user_body ...\n");
 				for (cnt = 0; cnt < g->v.total.users; cnt++) {
-					pos = g->ui[cnt]->pos;
-					fprintf(msgfile, "%s", convert2(&g->v, g->ui[pos], g->gi, message_user_body, cnt));
+					pos = g->ui[cnt].pos;
+					fprintf(msgfile, "%s", convert2(&g->v, &g->ui[pos], g->gi, message_user_body, cnt));
 				}
 			}
 			if (message_user_footer != DISABLED) {
@@ -73,8 +73,8 @@ complete(GLOBAL *g)
 			if (message_group_body != DISABLED) {
 				d_log(1, "  - Converting message_group_body ...\n");
 				for (cnt = 0; cnt < g->v.total.groups; cnt++) {
-					pos = g->gi[cnt]->pos;
-					fprintf(msgfile, "%s", convert3(&g->v, g->gi[pos], message_group_body, cnt));
+					pos = g->gi[cnt].pos;
+					fprintf(msgfile, "%s", convert3(&g->v, &g->gi[pos], message_group_body, cnt));
 				}
 			}
 			if (message_group_footer != DISABLED) {
@@ -107,7 +107,7 @@ complete(GLOBAL *g)
 #else
 			for (cnt = 0; cnt < max_users_in_top && cnt < g->v.total.users; cnt++)
 #endif
-				user_p += sprintf(user_p, " %s", convert2(&g->v, g->ui[g->ui[cnt]->pos], g->gi, user_top, cnt));
+				user_p += sprintf(user_p, " %s", convert2(&g->v, &g->ui[g->ui[cnt].pos], g->gi, user_top, cnt));
 		}
 		if (group_top != NULL) {
 #if ( show_stats_from_pos2_only )
@@ -115,8 +115,7 @@ complete(GLOBAL *g)
 #else
 			for (cnt = 0; cnt < max_groups_in_top && cnt < g->v.total.groups; cnt++)
 #endif
-				group_p += sprintf(group_p, " %s", convert3(&g->v, g->gi[g->gi[cnt]->pos], group_top, cnt));
+				group_p += sprintf(group_p, " %s", convert3(&g->v, &g->gi[g->gi[cnt].pos], group_top, cnt));
 		}
 	}
 }
-

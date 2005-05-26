@@ -83,9 +83,9 @@ main(int argc, char *argv[])
 	} else
 		bzero(one_name, NAME_MAX);
 
-	d_log(1, "rescan: Allocating memory for variables\n");
-	g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
-	g.gi = ng_realloc2(g.gi, sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
+	//d_log(1, "rescan: Allocating memory for variables\n");
+	//g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
+	//g.gi = ng_realloc2(g.gi, sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
 
 	getcwd(g.l.path, PATH_MAX);
 
@@ -551,7 +551,7 @@ main(int argc, char *argv[])
 	d_log(1, "rescan: Freeing memory and removing lock.\n");
 	closedir(dir);
 	closedir(parent);
-	updatestats_free(&g);
+	//updatestats_free(&g);
 	ng_free(g.l.race);
 	ng_free(g.l.sfv);
 	ng_free(g.l.leader);

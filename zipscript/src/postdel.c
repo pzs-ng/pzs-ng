@@ -131,10 +131,10 @@ main(int argc, char **argv)
 	if (!*g.v.user.group)
 		memcpy(g.v.user.group, "NoGroup", 8);
 
-	d_log(1, "postdel: Allocating memory for variables\n");
+	//d_log(1, "postdel: Allocating memory for variables\n");
 
-	g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
-	g.gi = ng_realloc2(g.gi,sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
+	//g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
+	//g.gi = ng_realloc2(g.gi,sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
 
 	getcwd(g.l.path, PATH_MAX);
 
@@ -417,7 +417,7 @@ main(int argc, char **argv)
 		break;
 	}
 
-	if (empty_dir == 1 && !findfileext(dir, ".sfv")) {
+	if (empty_dir == 1 && !findfileext(".", ".sfv")) {
 		
 		d_log(1, "postdel: Removing all files and directories created by zipscript\n");
 		if (del_completebar)
@@ -518,7 +518,7 @@ main(int argc, char **argv)
 	d_log(1, "postdel: Releasing memory and removing lock.\n");
 	closedir(dir);
 	closedir(parent);
-	updatestats_free(&g);
+	//updatestats_free(&g);
 	ng_free(target);
 	ng_free(g.l.race);
 	ng_free(g.l.sfv);
@@ -552,4 +552,3 @@ get_filetype_postdel(GLOBAL *g, char *ext)
 
 	return 255;
 }
-

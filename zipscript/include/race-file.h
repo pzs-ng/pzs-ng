@@ -40,7 +40,7 @@ extern unsigned int readsfv(const char *, struct VARS *, int);
 extern void update_sfvdata(const char *, const char *, const unsigned int);
 extern void sfvdata_to_sfv(const char *, const char *);
 extern void delete_sfv(const char *, struct VARS *);
-extern void readrace(const char *, struct VARS *, struct USERINFO **, struct GROUPINFO **);
+extern void readrace(const char *, struct VARS *, struct USERINFO *, struct GROUPINFO *);
 extern void maketempdir(char *);
 extern void read_write_leader(const char *, struct VARS *, struct USERINFO *);
 extern void testfiles(struct LOCATIONS *, struct VARS *, int);
@@ -61,4 +61,3 @@ extern int check_rarfile(const char *);
 extern int check_zipfile(const char *, const char *);
 extern int filebanned_match(const char *);
 #endif
-

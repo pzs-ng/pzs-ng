@@ -11,6 +11,10 @@
 #include "crc.h"
 #include "multimedia.h"
 
+#ifndef HAVE_STRLCPY
+# include "strl/strl.h"
+#endif
+
 int
 handle_sfv(GLOBAL *g, MSG *msg) {
 
@@ -394,7 +398,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, char **argv, char *fileext, int *deldir)
 		get_mpeg_audio_info(g->v.file.name, &g->v.audio);
 		write_bitrate_in_race(g->l.race, &g->v);
 		sprintf(g->v.audio.bitrate, "%i", read_bitrate_in_race(g->l.race, &g->v));
-			if ((enable_mp3_script == TRUE) && (g->ui[g->v.user.pos]->files == 1)) {
+			if ((enable_mp3_script == TRUE) && (g->ui[g->v.user.pos].files == 1)) {
 				if (!fileexists(mp3_script)) {
 					d_log(1, "handle_sfv32: Warning -  mp3_script (%s) - file does not exists\n", mp3_script);
 				}
@@ -409,7 +413,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, char **argv, char *fileext, int *deldir)
 					d_log(1, "handle_sfv32: File is from banned genre\n");
 					sprintf(g->v.misc.error_msg, BANNED_GENRE, g->v.audio.id3_genre);
 					if (audio_genre_warn == TRUE) {
-						if (g->ui[g->v.user.pos]->files == 1) {
+						if (g->ui[g->v.user.pos].files == 1) {
 							d_log(1, "handle_sfv32: warn on - logging to logfile\n");
 							msg->error = convert(&g->v, g->ui, g->gi, audio_genre_warn_msg);
 							writelog(g, msg->error, general_badgenre_type);
@@ -418,7 +422,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, char **argv, char *fileext, int *deldir)
 					} else {
 						mark_as_bad(g->v.file.name);
 						msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
-						if ((g->ui[g->v.user.pos]->files == 1) && (exit_value < 2))
+						if ((g->ui[g->v.user.pos].files == 1) && (exit_value < 2))
 							writelog(g, msg->error, bad_file_genre_type);
 						exit_value = 2;
 					}
@@ -458,7 +462,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, char **argv, char *fileext, int *deldir)
 					d_log(1, "handle_sfv32: File is from banned year\n");
 					sprintf(g->v.misc.error_msg, BANNED_YEAR, g->v.audio.id3_year);
 					if (audio_year_warn == TRUE) {
-						if (g->ui[g->v.user.pos]->files == 1) {
+						if (g->ui[g->v.user.pos].files == 1) {
 							d_log(1, "handle_sfv32: warn on - logging to logfile\n");
 							msg->error = convert(&g->v, g->ui, g->gi, audio_year_warn_msg);
 							writelog(g, msg->error, general_badyear_type);
@@ -467,7 +471,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, char **argv, char *fileext, int *deldir)
 					} else {
 						mark_as_bad(g->v.file.name);
 						msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
-						if ((g->ui[g->v.user.pos]->files == 1) && (exit_value < 2))
+						if ((g->ui[g->v.user.pos].files == 1) && (exit_value < 2))
 							writelog(g, msg->error, bad_file_year_type);
 						exit_value = 2;
 					}
@@ -484,7 +488,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, char **argv, char *fileext, int *deldir)
 						d_log(1, "handle_sfv32: File is encoded using banned bitrate\n");
 						sprintf(g->v.misc.error_msg, BANNED_BITRATE, g->v.audio.bitrate);
 						if (audio_cbr_warn == TRUE) {
-							if (g->ui[g->v.user.pos]->files == 1) {
+							if (g->ui[g->v.user.pos].files == 1) {
 								d_log(1, "handle_sfv32: warn on - logging to logfile\n");
 								msg->error = convert(&g->v, g->ui, g->gi, audio_cbr_warn_msg);
 								writelog(g, msg->error, general_badbitrate_type);
@@ -493,7 +497,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, char **argv, char *fileext, int *deldir)
 						} else {
 							mark_as_bad(g->v.file.name);
 							msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
-							if ((g->ui[g->v.user.pos]->files == 1) && (exit_value < 2))
+							if ((g->ui[g->v.user.pos].files == 1) && (exit_value < 2))
 								writelog(g, msg->error, bad_file_bitrate_type);
 							exit_value = 2;
 						}
@@ -510,7 +514,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, char **argv, char *fileext, int *deldir)
 					d_log(1, "handle_sfv32: File is not in allowed vbr preset list (%s)\n", g->v.audio.vbr_preset);
 					sprintf(g->v.misc.error_msg, BANNED_PRESET, g->v.audio.vbr_preset);
 					if (audio_vbr_preset_warn == TRUE) {
-						if (g->ui[g->v.user.pos]->files == 1) {
+						if (g->ui[g->v.user.pos].files == 1) {
 							d_log(1, "handle_sfv32: warn on - logging to logfile\n");
 							msg->error = convert(&g->v, g->ui, g->gi, audio_vbr_preset_warn_msg);
 							writelog(g, msg->error, general_badpreset_type);
@@ -519,7 +523,7 @@ handle_sfv32(GLOBAL *g, MSG *msg, char **argv, char *fileext, int *deldir)
 					} else {
 						mark_as_bad(g->v.file.name);
 						msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
-						if ((g->ui[g->v.user.pos]->files == 1) && (exit_value < 2))
+						if ((g->ui[g->v.user.pos].files == 1) && (exit_value < 2))
 							writelog(g, msg->error, bad_file_vbr_preset_type);
 						exit_value = 2;
 					}

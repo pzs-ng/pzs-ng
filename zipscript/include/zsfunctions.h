@@ -123,7 +123,7 @@ extern void	strtolower(char *);
 extern char	israr(char *);
 extern char	isvideo(char *);
 extern void	buffer_progress_bar(struct VARS *);
-extern void	move_progress_bar(unsigned char, struct VARS *, struct USERINFO **, struct GROUPINFO **);
+extern void	move_progress_bar(unsigned char, struct VARS *, struct USERINFO *, struct GROUPINFO *);
 extern int	check_dupefile(char *, char *);
 extern long	findfile(char *, char *);
 extern long	findfilenocase(DIR *, char *);
