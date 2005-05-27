@@ -256,10 +256,10 @@ showstats(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI)
 void 
 get_stats(struct VARS *raceI, struct USERINFO *userI)
 {
-	int			u1, n = 0, m, users = 0;
+	int		u1, n = 0, m, users = 0, userbuf=20, o = 0;
 	char		t_buf[PATH_MAX]; /* target buf */
 	char		*lineptr, **strptr;
-	static char		*upstrs[] = { "DAYUP", "WKUP", "MONTHUP", "ALLUP", 0 };
+	static char	*upstrs[] = { "DAYUP", "WKUP", "MONTHUP", "ALLUP", 0 };
 
 	struct userdata	*user = 0;
 	struct stat	fileinfo;
@@ -299,9 +299,11 @@ get_stats(struct VARS *raceI, struct USERINFO *userI)
 				exit(EXIT_FAILURE);
 			}
 
-			user = ng_realloc(user, sizeof(struct userdata)*(n+1), 0, 1, raceI, 0);
-			bzero(&user[n], (sizeof(struct userdata)));
-			
+			if (o * userbuf <= n) {
+				o++;
+				user = ng_realloc(user, sizeof(struct userdata)*((o * userbuf) + 1), 0, 1, raceI, 0);
+				bzero(&user[n], (sizeof(struct userdata)) * userbuf);
+			}
 			sect.n = 0; sect.s = 0;
 
 			for (strptr = upstrs; *strptr; strptr++) {
