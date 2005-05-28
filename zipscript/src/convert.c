@@ -91,8 +91,9 @@ convert_new(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI
 			while (*instr && *instr != '%' && *instr != ' ')
 				*m++ = *instr++;
 			*m = '\0';
-			if (*instr == '%')
-				instr++;
+			if (*instr != '%')
+				continue;
+			instr++;
 
 			if (!strcmp(cmd, "user_tagline"))  //%K
 				out_p += sprintf(out_p, "%s", userI->tagline);
