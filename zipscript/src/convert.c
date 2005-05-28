@@ -43,6 +43,109 @@ hms(char *ttime, int secs)
 }
  */
 
+char           *
+convert_new(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI, char *instr, short int userpos)
+{
+	int		val1;
+	int		val2;
+	char           *out_p;
+	char           *m;
+	char		ctrl [255];
+	char		cmd  [255];
+
+	out_p = output2;
+	bzero(out_p, (int)sizeof(out_p));
+	bzero(ctrl, (int)sizeof(ctrl));
+
+	if (!instr) // This should not happen!
+		return output2;
+	for (; *instr; instr++) {
+		if (*instr == '%') {
+			instr++;
+			m = instr;
+			if (*instr == '-' && isdigit(*(instr + 1)))
+				instr += 2;
+			while (isdigit(*instr))
+				instr++;
+			if (m != instr && instr-m < (int)sizeof(ctrl)) {
+				sprintf(ctrl, "%.*s", (int)(instr - m), m);
+				val1 = strtol(ctrl, NULL, 10);
+			} else
+				val1 = 0;
+			if (*instr == '.') {
+				instr++;
+				m = instr;
+				if (*instr == '-' && isdigit(*(instr + 1)))
+					instr += 2;
+				while (isdigit(*instr))
+					instr++;
+				if (m != instr && instr-m < (int)sizeof(ctrl)) {
+					sprintf(ctrl, "%.*s", (int)(instr - m), m);
+					val2 = strtol(ctrl, NULL, 10);
+				} else
+					val2 = 0;
+			} else
+				val2 = -1;
+
+			m = cmd;
+			while (*instr && *instr != '%' && *instr != ' ')
+				*m++ = *instr++;
+			*m = '\0';
+			if (*instr == '%')
+				instr++;
+
+			if (!strcmp(cmd, "user_tagline"))  //%K
+				out_p += sprintf(out_p, "%s", userI->tagline);
+			else if (!strcmp(cmd, "fastest_speed"))  // %F
+				out_p += sprintf(out_p, "%*i", val1, (unsigned int)raceI->misc.fastest_user[0]);
+			else if (!strcmp(cmd, "slowest_speed")) // %S
+				out_p += sprintf(out_p, "%*i", val1, (unsigned int)raceI->misc.slowest_user[0]);
+			else if (!strcmp(cmd, "user_pos")) // %n
+				out_p += sprintf(out_p, "%*i", val1, (int)userpos + 1);
+			else if (!strcmp(cmd, "user_name")) // %u
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)userI->name);
+			else if (!strcmp(cmd, "user_group_name")) // %g
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)groupI[userI->group].name);
+			else if (!strcmp(cmd, "user_and_group_name")) { // %U
+				sprintf(ctrl, "%s/%s", userI->name, groupI[userI->group].name);
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)ctrl);
+			} else if (!strcmp(cmd, "user_total_bytes_uploaded")) // %b
+				out_p += sprintf(out_p, "%*f", val1, (double)userI->bytes);
+			else if (!strcmp(cmd, "user_total_kilobytes_uploaded")) // %k
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(userI->bytes / 1024.));
+			else if (!strcmp(cmd, "user_total_megabytes_uploaded")) // %m
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((userI->bytes >> 10) / 1024.));
+			else if (!strcmp(cmd, "user_total_percent_uploaded")) // %p
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(userI->bytes * 100. / raceI->total.size));
+			else if (!strcmp(cmd, "user_total_files_uploaded")) // %f
+				out_p += sprintf(out_p, "%*i", val1, (int)userI->files);
+			else if (!strcmp(cmd, "user_speed")) // %s
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(userI->speed / 1024 / userI->bytes));
+			else if (!strcmp(cmd, "user_stats_dayup")) // %D
+				out_p += sprintf(out_p, "%*i", val1, (int)userI->dayup);
+			else if (!strcmp(cmd, "user_stats_weekup")) // %W
+				out_p += sprintf(out_p, "%*i", val1, (int)userI->wkup);
+			else if (!strcmp(cmd, "user_stats_monthup")) // %M
+				out_p += sprintf(out_p, "%*i", val1, (int)userI->monthup);
+			else if (!strcmp(cmd, "user_stats_allup")) // %A
+				out_p += sprintf(out_p, "%*i", val1, (int)userI->allup);
+			else if (!strcmp(cmd, "percent")) // %%
+				*out_p++ = '%';
+			else if (!strcmp(cmd, "winner_loser")) { // %N
+				if ((int)userpos == 0)
+					out_p += sprintf(out_p, winner);
+				else
+					out_p += sprintf(out_p, loser);
+			}
+		} else
+			*out_p++ = *instr;
+	}
+	*out_p = 0;
+	return output2;
+}
+
+
+
 
 /*
  * Modified: 01.16.2002

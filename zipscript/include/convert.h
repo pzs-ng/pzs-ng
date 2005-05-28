@@ -2,6 +2,7 @@
 #define _CONVERT_H_
 
 //char *hms(char *, int);
+char *convert_new(struct VARS *, struct USERINFO *, struct GROUPINFO *, char *, short);
 char *convert(struct VARS *, struct USERINFO *, struct GROUPINFO *, char *);
 char *convert2(struct VARS *, struct USERINFO *, struct GROUPINFO *, char *, short);
 char *convert3(struct VARS *, struct GROUPINFO *, char *, short);
