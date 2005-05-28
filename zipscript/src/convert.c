@@ -44,10 +44,10 @@ hms(char *ttime, int secs)
  */
 
 char           *
-convert_new(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI, char *instr, short int userpos)
+convert_new(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI, char *instr, short int userpos, short int grouppos)
 {
-	int		val1;
-	int		val2;
+	int		val1, val2, n;
+	int		from, to, reverse;
 	char           *out_p;
 	char           *m;
 	char		ctrl [255];
