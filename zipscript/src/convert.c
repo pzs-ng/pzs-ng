@@ -95,7 +95,8 @@ convert_new(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI
 				continue;
 			instr++;
 
-			if (!strcmp(cmd, "user_tagline"))  //%K
+// convert2
+			if (!strcmp(cmd, "tagline"))  //%K
 				out_p += sprintf(out_p, "%s", userI->tagline);
 			else if (!strcmp(cmd, "fastest_speed"))  // %F
 				out_p += sprintf(out_p, "%*i", val1, (unsigned int)raceI->misc.fastest_user[0]);
@@ -110,7 +111,8 @@ convert_new(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI
 			else if (!strcmp(cmd, "user_and_group_name")) { // %U
 				sprintf(ctrl, "%s/%s", userI->name, groupI[userI->group].name);
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)ctrl);
-			} else if (!strcmp(cmd, "user_total_bytes_uploaded")) // %b
+			}
+			else if (!strcmp(cmd, "user_total_bytes_uploaded")) // %b
 				out_p += sprintf(out_p, "%*f", val1, (double)userI->bytes);
 			else if (!strcmp(cmd, "user_total_kilobytes_uploaded")) // %k
 				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(userI->bytes / 1024.));
@@ -132,12 +134,234 @@ convert_new(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI
 				out_p += sprintf(out_p, "%*i", val1, (int)userI->allup);
 			else if (!strcmp(cmd, "percent")) // %%
 				*out_p++ = '%';
-			else if (!strcmp(cmd, "winner_loser")) { // %N
+			else if (!strcmp(cmd, "user_winner_loser")) { // %N
 				if ((int)userpos == 0)
 					out_p += sprintf(out_p, winner);
 				else
 					out_p += sprintf(out_p, loser);
 			}
+// convert3
+			else if (!strcmp(cmd, "group_pos")) // %n
+				out_p += sprintf(out_p, "%*i", val1, (int)grouppos + 1);
+			else if (!strcmp(cmd, "group_winner_loser")) { // %N
+				if ((int)grouppos == 0)
+					out_p += sprintf(out_p, winner);
+				else
+					out_p += sprintf(out_p, loser);
+			}
+			else if (!strcmp(cmd, "group_name")) // %g
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)groupI->name);
+			else if (!strcmp(cmd, "group_total_bytes_uploaded")) // %b
+				out_p += sprintf(out_p, "%*i", val1, (int)groupI->bytes);
+			else if (!strcmp(cmd, "group_total_kilobytes_uploaded")) // %k
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(groupI->bytes / 1024.));
+			else if (!strcmp(cmd, "group_total_megabytes_uploaded")) // %m
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((groupI->bytes >> 10) / 1024.));
+			else if (!strcmp(cmd, "group_total_percent_uploaded")) // %p
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(groupI->bytes * 100.0 / raceI->total.size));
+			else if (!strcmp(cmd, "group_total_files_uploaded")) // %f
+				out_p += sprintf(out_p, "%*i", val1, (int)groupI->files);
+			else if (!strcmp(cmd, "group_speed")) // %s
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(groupI->speed / 1024 / groupI->bytes));
+// WHAT THE BLAZES IS THIS VAR?
+			else if (!strcmp(cmd, "group_number_of_users")) // %u
+				out_p += sprintf(out_p, "%*i", val1, (int)groupI->users);
+
+// convert4
+			else if (!strcmp(cmd, "audio_id3_genre")) // %w
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_genre);
+			else if (!strcmp(cmd, "audio_id3_album")) // %W
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_album);
+			else if (!strcmp(cmd, "audio_id3_artist")) // %x
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_artist);
+			else if (!strcmp(cmd, "audio_id3_title")) // %y
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_title);
+			else if (!strcmp(cmd, "audio_id3_year")) // %Y
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_year);
+			else if (!strcmp(cmd, "audio_bitrate")) // %X
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.bitrate);
+			else if (!strcmp(cmd, "audio_samplingrate")) // %z
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.samplingrate);
+			else if (!strcmp(cmd, "audio_codec")) // %h
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.codec);
+			else if (!strcmp(cmd, "audio_layer")) // %q
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.layer);
+			else if (!strcmp(cmd, "audio_channelmode")) // %Q
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.channelmode);
+			else if (!strcmp(cmd, "audio_vbr_version")) // %i
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.vbr_version_string);
+			else if (!strcmp(cmd, "audio_vbr_preset")) // %I
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.vbr_preset);
+
+// convert5
+			else if (!strcmp(cmd, "short_sitename")) // %Z
+				out_p += sprintf(out_p, "%*s", val1, short_sitename);
+
+// convert
+			else if (!strcmp(cmd, "racetotal_average_speed_per_transfer")) // %a
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.speed / 1024 / raceI->total.size));
+			else if (!strcmp(cmd, "racetotal_average_speed")) // %A
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->total.size / (raceI->total.stop_time - raceI->total.start_time)) / 1024));
+			else if (!strcmp(cmd, "racetotal_bytes_uploaded")) // %b
+				out_p += sprintf(out_p, "%*u", val1, (unsigned int)raceI->total.size);
+			else if (!strcmp(cmd, "racestats_of_group")) { // %c
+				from = to = reverse = 0;
+				instr++;
+				m = instr;
+				if (*instr == '-') {
+					reverse = 1;
+					instr++;
+				}
+				for (; isdigit(*instr); instr++) {
+					from *= 10;
+					from += *instr - 48;
+				}
+
+				if (*instr == '-') {
+					instr++;
+					for (; isdigit(*instr); instr++) {
+						to *= 10;
+						to += *instr - 48;
+					}
+					if (to == 0 || to >= raceI->total.groups) {
+						to = raceI->total.groups - 1;
+					}
+				}
+				if (to < from) {
+					to = from;
+				}
+				if (reverse == 1) {
+					n = from;
+					from = raceI->total.groups - 1 - to;
+					to = raceI->total.groups - 1 - n;
+				}
+				if (from >= raceI->total.groups) {
+					to = -1;
+				}
+				for (n = from; n <= to; n++) {
+					out_p += sprintf(out_p, "%*.*s", val1, val2, convert3(raceI, &groupI[groupI[n].pos], group_info, n));
+				}
+				instr--;
+			}
+			else if (!strcmp(cmd, "racestats_of_user")) { // %C
+				from = to = reverse = 0;
+				instr++;
+				m = instr;
+				if (*instr == '-') {
+					reverse = 1;
+					instr++;
+				}
+				for (; isdigit(*instr); instr++) {
+					from *= 10;
+					from += *instr - 48;
+				}
+
+				if (*instr == '-') {
+					instr++;
+					for (; isdigit(*instr); instr++) {
+						to *= 10;
+						to += *instr - 48;
+					}
+					if (to == 0 || to >= raceI->total.users) {
+						to = raceI->total.users - 1;
+					}
+				}
+				if (to < from) {
+					to = from;
+				}
+				if (reverse == 1) {
+					n = from;
+					from = raceI->total.users - 1 - to;
+					to = raceI->total.users - 1 - n;
+				}
+				if (from >= raceI->total.users) {
+					to = -1;
+				}
+				for (n = from; n <= to; n++) {
+					out_p += sprintf(out_p, "%*.*s", val1, val2, convert2(raceI, &userI[userI[n].pos], groupI, user_info, n));
+					break;
+				}
+				instr--;
+			}
+			else if (!strcmp(cmd, "racetotal_time_used")) // %d
+				out_p += sprintf(out_p, "%*i", val1, raceI->total.stop_time - raceI->total.start_time);
+			else if (!strcmp(cmd, "racetotal_estimated_time_left")) // %$
+				out_p += sprintf(out_p, "%*i", val1, ((((raceI->total.stop_time - raceI->total.start_time) + (raceI->total.files - raceI->total.files_missing)) / (raceI->total.files - raceI->total.files_missing)) * raceI->total.files) - (raceI->total.stop_time - raceI->total.start_time));
+			else if (!strcmp(cmd, "racetotal_estimated_size_in_megabytes")) // %e
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->file.size * raceI->total.files >> 10) / 1024.));
+			else if (!strcmp(cmd, "racetotal_files_in_release")) // %f
+				out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.files);
+			else if (!strcmp(cmd, "racetotal_uploaded_files")) // %F
+				out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.files - (int)raceI->total.files_missing);
+			else if (!strcmp(cmd, "racetotal_number_of_groups")) // %g
+				out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.groups);
+			else if (!strcmp(cmd, "user_primary_group")) // %G
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->user.group);
+			else if (!strcmp(cmd, "racetotal_kilobytes_uploaded")) // %k
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size / 1024.));
+// OBSOLETE
+//			else if (!strcmp(cmd, "")) // %
+//			case 'l':
+//				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)convert2(raceI, &userI[raceI->misc.slowest_user[1]], groupI, slowestfile, 0));
+//				break;
+//			else if (!strcmp(cmd, "")) // %
+//			case 'L':
+//				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)convert2(raceI, &userI[raceI->misc.fastest_user[1]], groupI, fastestfile, 0));
+//				break;
+			else if (!strcmp(cmd, "racetotal_megabytes_uploaded")) // %m
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->total.size >> 10) / 1024.));
+			else if (!strcmp(cmd, "racetotal_files_missing")) // %M
+				out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.files_missing);
+			else if (!strcmp(cmd, "filename")) // %n
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->file.name);
+			else if (!strcmp(cmd, "racetotal_bad_files")) // %o
+				out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.files_bad);
+			else if (!strcmp(cmd, "racetotal_bad_megabytes")) // %O
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->total.bad_size >> 10) / 1024.));
+			else if (!strcmp(cmd, "racetotal_bad_kilobytes")) // %P
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.bad_size / 1024.));
+			else if (!strcmp(cmd, "racetotal_percent_uploaded")) // %p
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->total.files - raceI->total.files_missing) * 100. / raceI->total.files));
+			else if (!strcmp(cmd, "user_speed_in_kilobytes")) // %S
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->file.speed / 1024));
+			else if (!strcmp(cmd, "release_name")) // %r
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.release_name);
+			else if (!strcmp(cmd, "racetotal_list_of_racers_against_user")) // %R
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.racer_list);
+			else if (!strcmp(cmd, "racetotal_list_of_all_racers")) // %B
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.total_racer_list);
+			else if (!strcmp(cmd, "racetotal_group_top_list")) // %t
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.top_messages[1] + 1);
+			else if (!strcmp(cmd, "racetotal_user_top_list")) // %T
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.top_messages[0] + 1);
+			else if (!strcmp(cmd, "racetotal_number_of_users")) // %u
+				out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.users);
+//			else if (!strcmp(cmd, "")) // %U
+//			case 'U':
+//				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->user.name);
+//				break;
+			else if (!strcmp(cmd, "error_msg")) // %v
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.error_msg);
+			else if (!strcmp(cmd, "progress_bar")) // %V
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.progress_bar);
+// THIS IS REALLY OBSOLETE - WE SHOULD PARSE ALL COOKIES AND LET THE BOT FIGURE OUT THE ONES TO USE
+//			else if (!strcmp(cmd, "audio_string")) { // %j
+//				if (raceI->audio.is_vbr == 1)
+//					out_p += sprintf(out_p, "%*.*s", val1, val2, convert_new(raceI, audio_vbr));
+//				else
+//					out_p += sprintf(out_p, "%*.*s", val1, val2, convert_new(raceI, audio_cbr));
+//			}
+			else if (!strcmp(cmd, "video_width")) // %D
+				out_p += sprintf(out_p, "%*i", val1, raceI->video.width);
+			else if (!strcmp(cmd, "video_height")) // %E
+				out_p += sprintf(out_p, "%*i", val1, raceI->video.height);
+			else if (!strcmp(cmd, "video_fps")) // %H
+				out_p += sprintf(out_p, "%*s", val1, raceI->video.fps);
+			else if (!strcmp(cmd, "file_compression")) // %J
+				*out_p++ = raceI->file.compression_method;
+			else if (!strcmp(cmd, "release_dir")) // %?
+				out_p += sprintf(out_p, "%*s", val1, raceI->misc.current_path);
+
 		} else
 			*out_p++ = *instr;
 	}
