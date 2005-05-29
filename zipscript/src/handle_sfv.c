@@ -26,6 +26,8 @@ handle_sfv(GLOBAL *g, MSG *msg) {
 	char		*sfv_type = 0;
 	DIR		*dir;
 
+	dir = opendir(".");
+
 	d_log(1, "handle_sfv: File type is: SFV\n");
 	if ((matchpath(sfv_dirs, g->l.path)) || (matchpath(group_dirs, g->l.path))  ) {
 		d_log(1, "handle_sfv: Directory matched with sfv_dirs/group_dirs\n");
@@ -39,6 +41,7 @@ handle_sfv(GLOBAL *g, MSG *msg) {
 			if (exit_value < 2)
 				writelog(g, msg->error, bad_file_wrongdir_type);
 			exit_value = 2;
+			closedir(dir);
 			return exit_value;
 		}
 	}
@@ -52,6 +55,7 @@ handle_sfv(GLOBAL *g, MSG *msg) {
 			sprintf(g->v.misc.error_msg, DOUBLE_SFV);
 			mark_as_bad(g->v.file.name);
 			exit_value = 2;
+			closedir(dir);
 			return exit_value;
 		} else if (findfileextcount(".", ".sfv") > 1 && sfv_compare_size(".sfv", g->v.file.size) > 0) {
 			d_log(1, "handle_sfv: DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g->v.file.size));
@@ -69,6 +73,7 @@ handle_sfv(GLOBAL *g, MSG *msg) {
 				sprintf(g->v.misc.error_msg, DOUBLE_SFV);
 				mark_as_bad(g->v.file.name);
 				exit_value = 2;
+				closedir(dir);
 				return exit_value;
 			}
 			g->v.total.files = g->v.total.files_missing = 0;
@@ -77,7 +82,7 @@ handle_sfv(GLOBAL *g, MSG *msg) {
 			d_log(1, "handle_sfv: Hmm.. Seems the old .sfv was deleted. Allowing new one.\n");
 			unlink(g->l.race);
 			unlink(g->l.sfv);
-			dir = opendir(".");
+			rewinddir(dir);
 			while ((dp = readdir(dir))) {
 				cnt = cnt2 = (int)strlen(dp->d_name);
 				ext = dp->d_name;
@@ -91,7 +96,6 @@ handle_sfv(GLOBAL *g, MSG *msg) {
 				if (!strncmp(ext, "missing", 7))
 					unlink(dp->d_name);
 			}
-			closedir(dir);
 		}
 	}
 	d_log(1, "handle_sfv: Parsing sfv and creating sfv data\n");
@@ -106,7 +110,7 @@ handle_sfv(GLOBAL *g, MSG *msg) {
 		unlink(g->l.race);
 		unlink(g->l.sfv);
 
-		dir = opendir(".");
+		rewinddir(dir);
 		while ((dp = readdir(dir))) {
 			cnt = cnt2 = (int)strlen(dp->d_name);
 			ext = dp->d_name;
@@ -121,7 +125,6 @@ handle_sfv(GLOBAL *g, MSG *msg) {
 				unlink(dp->d_name);
 		}
 		closedir(dir);
-
 		return exit_value;
 	}
 
@@ -141,7 +144,7 @@ handle_sfv(GLOBAL *g, MSG *msg) {
 
 #if (smart_sfv_write && sfv_cleanup)
 	d_log(1, "handle_sfv: Rewriting sfv file according to smart_sfv_write\n");
-	sfvdata_to_sfv(g->l.sfv, findfileext(".", ".sfv"));
+	sfvdata_to_sfv(g->l.sfv, findfileext_dir(dir, ".sfv"));
 #endif
 	
 	if (g->v.total.files == 0) {
@@ -152,6 +155,7 @@ handle_sfv(GLOBAL *g, MSG *msg) {
 		if (exit_value < 2)
 			writelog(g, msg->error, bad_file_sfv_type);
 		exit_value = 2;
+		closedir(dir);
 		return exit_value;
 	}
 	printf(zipscript_sfv_ok);
@@ -206,9 +210,11 @@ handle_sfv(GLOBAL *g, MSG *msg) {
 		}
 	}
 
+	closedir(dir);
 	return exit_value;
 }
 
+/* handling of a file thats inside a zip dir */
 int
 handle_sfv32(GLOBAL *g, MSG *msg, char **argv, char *fileext, int *deldir)
 {

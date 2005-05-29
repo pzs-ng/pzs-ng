@@ -100,7 +100,8 @@ extern unsigned int direntries;*/
 extern void	d_log(int , char *, ...);
 
 extern void	create_missing(char *);
-extern char    *findfileext(char *, char *);
+extern char	*findfileext(char *, char *);
+extern char	*findfileext_dir(DIR *, char *);
 //extern char    *findfileextparent(char *);
 
 /* replace these with the ones above everywhere */

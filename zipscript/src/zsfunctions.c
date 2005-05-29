@@ -89,16 +89,39 @@ findfileext(char *path, char *fileext)
 	static DIR		*dir;
 	static struct dirent	*dp;
 
-	dir = opendir(path);
+	if (!(dir = opendir(path))) {
+		d_log(1, "opendir(%s): %s\n", path, strerror(errno));
+		return NULL;
+	}
 	
 	while ((dp = readdir(dir))) {
 		if ((k = NAMLEN(dp)) < 4)
 			continue;
-		if (strcasecmp(dp->d_name + k - 4, fileext) == 0)
+		if (strcasecmp(dp->d_name + k - 4, fileext) == 0) {
+			closedir(dir);
 			return dp->d_name;
+		}
 	}
 
 	closedir(dir);
+
+	return NULL;
+}
+
+char *
+findfileext_dir(DIR *dir, char *fileext)
+{
+	int			k;
+	static struct dirent	*dp;
+
+	rewinddir(dir);
+	while ((dp = readdir(dir))) {
+		if ((k = NAMLEN(dp)) < 4)
+			continue;
+		if (strcasecmp(dp->d_name + k - 4, fileext) == 0) {
+			return dp->d_name;
+		}
+	}
 
 	return NULL;
 }
@@ -623,8 +646,8 @@ matchpartialpath(char *instr, char *path)
 short int 
 subcomp(char *directory)
 {
-	int 	k = (int)strlen(directory);
-	int	m = (int)strlen(subdir_list);
+	int 	k = strlen(directory);
+	int	m = strlen(subdir_list);
 	int	pos = 0, l = 0, n = 0, j = 0;
 	char	tstring[m + 1];
 
@@ -690,9 +713,9 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 	char		org	[PATH_MAX];
 	char		dest	[NAME_MAX];
 	char	       *target = org;
-	int		l1 = (int)strlen(factor1) + 1,
-			l2 = (int)strlen(factor2) + 1,
-			l3 = (int)strlen(ltarget) + 1;
+	int		l1 = strlen(factor1) + 1,
+			l2 = strlen(factor2) + 1,
+			l3 = strlen(ltarget) + 1;
 	DIR		*dir;
         struct dirent   *dp;
 
@@ -1265,6 +1288,7 @@ remove_at_loc(char *path, off_t loc)
 
 	if (unlink(dp->d_name) == -1) {
 		d_log(1, "remove_at_loc: unlink(%s) failed: %s\n", dp->d_name, strerror(errno));
+		closedir(dir);
 		return -1;
 	}
 
