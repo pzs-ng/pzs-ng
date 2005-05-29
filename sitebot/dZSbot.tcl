@@ -1122,11 +1122,11 @@ proc ::dZSbot::CmdFree {nick uhost hand chan arg} {
     set devCount 0; set lineCount 0
     set totalFree 0; set totalUsed 0; set totalSize 0
 
-    foreach line [split [exec $binary(DF) "-Pk"] "\n"] {
+    foreach line [split [exec $binary(DF) "-Pkl"] "\n"] {
         foreach {name value} [array get tmpdev] {
             if {[string equal [lindex $line 0] [lindex $value 0]]} {
                 if {[llength $line] < 4} {
-                    WarningMsg Free "Invalid \"df -Pk\" line: $line"
+                    WarningMsg Free "Invalid \"df -Pkl\" line: $line"
                     continue
                 }
                 foreach {devName devSize devUsed devFree} $line {break}
@@ -1162,7 +1162,7 @@ proc ::dZSbot::CmdFree {nick uhost hand chan arg} {
     if {[llength [array names tmpdev]]} {
         set devList ""
         foreach {name value} [array get tmpdev] {lappend devList $value}
-        WarningMsg Free "The following devices had no matching \"df -Pk\" entry: [join $devList {, }]"
+        WarningMsg Free "The following devices had no matching \"df -Pkl\" entry: [join $devList {, }]"
     }
 
     if {$totalSize} {
