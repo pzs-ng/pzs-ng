@@ -19,8 +19,8 @@ UNIVERSAL 	=	stats.o convert.o race-file.o helpfunctions.o \
 			$(SUNOBJS) $(STRLCPY)
 		
 ZSOBJECTS	=	zipscript-c.o dizreader.o complete.o multimedia.o \
-			handle_sfv.o handle_nfo.o handle_zip.o \
-			crc.o avinfo.o $(UNIVERSAL)
+			handle_sfv.o handle_nfo.o handle_zip.o handle_any.o \
+			handling.o crc.o avinfo.o $(UNIVERSAL)
 			
 PDOBJECTS	=	postdel.o dizreader.o multimedia.o crc.o $(UNIVERSAL)
 

@@ -2,7 +2,8 @@
 #define HANDLE_ZIP
 
 #include "objects.h"
+#include "handling.h"
 
-int handle_zip(GLOBAL *, MSG *);
+int handle_zip(HANDLER_ARGS *ha);
 
 #endif

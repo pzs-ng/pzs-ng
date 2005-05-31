@@ -39,6 +39,7 @@
 //#include "video.h"
 //#include "avinfo.h"
 
+#include "handling.h"
 #include "handle_sfv.h"
 #include "handle_nfo.h"
 #include "handle_zip.h"
@@ -229,7 +230,7 @@ main(int argc, char **argv)
 
 	}
 
-	if (no_check == TRUE) {	/* File was not checked */
+	/*if (no_check == TRUE) {	// File was not checked
 		
 		printf(zipscript_any_ok);
 		printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_skip));
@@ -239,8 +240,8 @@ main(int argc, char **argv)
 			writelog(&g, convert(&g.v, g.ui, g.gi, speed_announce), speed_type);
 			exit_value = 2;
 		}
-
-	} else if (exit_value == EXIT_SUCCESS) { /* File was checked */
+	} else */
+	if (exit_value == EXIT_SUCCESS) { /* File was checked */
 
 		check_release_type(&g, &msg, &rtype, _complete);
 		
@@ -614,38 +615,53 @@ check_banned_file(GLOBAL *g, MSG *msg)
 int
 process_file(GLOBAL *g, MSG *msg, char **argv, char *fileext, int *no_check, int *deldir)
 {
-
+	
+	short type;
+	handler_t *handler;
+	HANDLER_ARGS ha;
+	
 	d_log(1, "process_file: Verifying old racedata\n");
 	if (!verify_racedata(g->l.race, &g->v))
 		d_log(1, "process_file:   Failed to open racedata - assuming this is a new race.\n");
 
-	switch (get_filetype(g, fileext)) {
+	type = get_filetype(fileext);
+	handler = get_handler(type);
+		
+	ha.g = g;
+	ha.msg = msg;
+	ha.argv = argv;
+	ha.fileext = fileext;
+	ha.deldir = deldir;
+	
+	return handler(&ha);
+	
+	/*switch (get_filetype(g, fileext)) {
 
-		case 0:	/* ZIP CHECK */
+		case 0:	// ZIP CHECK
 			return handle_zip(g, msg);
 			break;
 
-		case 1:	/* SFV CHECK */
+		case 1:	// SFV CHECK
 			return handle_sfv(g, msg);
 			break;
-		
-		case 2:	/* NFO CHECK */
+
+		case 2:	// NFO CHECK
 			g->v.misc.nfofound = 0;
 			return handle_nfo(g, msg);
 			break;
 
-		case 3:	/* SFV BASED CRC-32 CHECK */
+		case 3:	// SFV BASED CRC-32 CHECK
 			return handle_sfv32(g, msg, argv, fileext, deldir);
 			break;
 
-		case 4:	/* ACCEPTED FILE */
+		case 4:	// ACCEPTED FILE
 			d_log(1, "process_file: File type: NO CHECK\n");
 			*no_check = TRUE;
 			break;
-		/* END OF ACCEPTED FILE CHECK */
+		// END OF ACCEPTED FILE CHECK
 
-		case 255:	/* UNKNOWN - WE DELETE THESE, SINCE IT WAS
-				 * ALSO IGNORED */
+		case 255:	// UNKNOWN - WE DELETE THESE, SINCE IT WAS
+				// ALSO IGNORED
 			d_log(1, "process_file: File type: UNKNOWN [ignored in sfv]\n");
 			sprintf(g->v.misc.error_msg, UNKNOWN_FILE, fileext);
 			mark_as_bad(g->v.file.name);
@@ -653,11 +669,9 @@ process_file(GLOBAL *g, MSG *msg, char **argv, char *fileext, int *no_check, int
 			writelog(g, msg->error, bad_file_disallowed_type);
 			return 2;
 			break;
-			/* END OF UNKNOWN CHECK */
+			// END OF UNKNOWN CHECK
 			
-	}
-
-	return EXIT_SUCCESS;
+	}*/
 
 }
 

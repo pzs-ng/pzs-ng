@@ -152,7 +152,7 @@ extern void writelog(GLOBAL *, char *, char *);
 extern void buffer_paths(GLOBAL *, char [2][PATH_MAX], int *, int);
 extern void remove_nfo_indicator(GLOBAL *);
 extern void getrelname(GLOBAL *);
-extern unsigned char get_filetype(GLOBAL *, char *);
+//extern unsigned char get_filetype(GLOBAL *, char *);
 
 #if ( audio_group_sort == TRUE )
 extern char *remove_pattern(char *, char *, int);

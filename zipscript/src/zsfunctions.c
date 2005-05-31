@@ -1118,10 +1118,10 @@ getrelname(GLOBAL *g)
 
 	subc = subcomp(path[1]);
 	
-	d_log(1, "getrelname():\tsubc:\t\t%d\n", subc);
-	d_log(1, "\t\t\tpath[0]:\t%s\n", path[0]);
-	d_log(1, "\t\t\tpath[1]:\t%s\n", path[1]);
-	d_log(1, "\t\t\tg->l_path:\t%s\n", path[1]);
+	d_log(2, "getrelname():\tsubc:\t\t%d\n", subc);
+	d_log(2, "\t\t\tpath[0]:\t%s\n", path[0]);
+	d_log(2, "\t\t\tpath[1]:\t%s\n", path[1]);
+	d_log(2, "\t\t\tg->l_path:\t%s\n", path[1]);
 
 	if (subc) {
 		snprintf(g->v.misc.release_name, PATH_MAX, "%s/%s", path[0], path[1]);
@@ -1139,11 +1139,11 @@ getrelname(GLOBAL *g)
 		g->l.in_cd_dir = 0;
 	}
 	
-	d_log(1, "\t\t\tlink_source:\t%s\n", g->l.link_source);
-	d_log(1, "\t\t\tlink_target:\t%s\n", g->l.link_target);
+	d_log(2, "\t\t\tlink_source:\t%s\n", g->l.link_source);
+	d_log(2, "\t\t\tlink_target:\t%s\n", g->l.link_target);
 }
 
-unsigned char 
+/*unsigned char 
 get_filetype(GLOBAL *g, char *ext)
 {
 	if (!strcasecmp(ext, "zip"))
@@ -1158,7 +1158,7 @@ get_filetype(GLOBAL *g, char *ext)
 		return 3;
 
 	return 255;
-}
+}*/
 
 #if ( audio_group_sort == TRUE )
 char    *
