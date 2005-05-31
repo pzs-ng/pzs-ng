@@ -67,8 +67,7 @@ get_filetype(char *fileext)
 	regfree(&re);
 
 	/* fileext isn't a defined type,
-	 * a default handler will be used
-	 */
+	 * a default handler will be used */
 	return 0;
 
 }
@@ -86,7 +85,8 @@ get_handler(short type)
 		}
 	}
 
-	/* no handler for specified type */
+	/* no handler for specified type
+	 * should not reach this */
 	return 0;
 
 }
