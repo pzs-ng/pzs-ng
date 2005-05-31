@@ -964,7 +964,7 @@ main(int argc, char **argv)
 #if ( audio_cbr_check == TRUE )
 						if (g.v.audio.is_vbr == 0) {
 							if (!strcomp(allowed_constant_bitrates, g.v.audio.bitrate)) {
-								d_log("zipscript-c: File is encoded using banned bitrate\n");
+								d_log("zipscript-c: File is encoded using banned bitrate (%d)\n", g.v.audio.bitrate);
 								sprintf(g.v.misc.error_msg, BANNED_BITRATE, g.v.audio.bitrate);
 								if (audio_cbr_warn == TRUE) {
 									if (g.ui[g.v.user.pos]->files == 1) {
