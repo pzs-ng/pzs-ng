@@ -86,15 +86,12 @@ main(int argc, char **argv)
 	UDATA		udata;
 	RACETYPE	rtype;
 	
-	char           *fileext = NULL, *name_p, *temp_p = NULL;
-	char           *target = 0;
-	char			*_complete[2] = { 0 }; /* 0 = bar, 1 = announce */
-	int				exit_value = EXIT_SUCCESS;
-	int				no_check = FALSE;
+	char		*fileext = NULL, *name_p, *temp_p = NULL;
+	char		*_complete[2] = { 0 }; /* 0 = bar, 1 = announce */
+	int		exit_value = EXIT_SUCCESS;
+	int		no_check = FALSE;
 	int		n = 0;
-//#if ( del_banned_release || enable_banned_script )
 	int		deldir = 0;
-//#endif
 	struct stat	fileinfo;
 
 #if ( benchmark_mode == TRUE )
@@ -163,9 +160,6 @@ main(int argc, char **argv)
 	g.l.race = ng_realloc2(g.l.race, n += 10 + (g.l.length_zipdatadir = sizeof(storage) - 1), 1, 1, 1);
 	g.l.sfv = ng_realloc2(g.l.sfv, n, 1, 1, 1);
 	g.l.leader = ng_realloc2(g.l.leader, n, 1, 1, 1);
-	target = ng_realloc2(target, n + 256, 1, 1, 1);
-	//g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
-	//g.gi = ng_realloc2(g.gi, sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
 
 	d_log(1, "zipscript-c: Copying data g.l into memory\n");
 	sprintf(g.l.sfv, storage "/%s/sfvdata", g.l.path);
@@ -227,8 +221,12 @@ main(int argc, char **argv)
 		exit_value = check_banned_file(&g, &msg);
 #endif
 
-		if (exit_value < 2)
+		if (exit_value < 2) {
+			d_log(1, "process_file: Verifying old racedata\n");
+			if (!verify_racedata(g.l.race, &g.v))
+				d_log(1, "process_file:   Failed to open racedata - assuming this is a new race.\n");
 			exit_value = process_file(&g, &msg, argv, fileext, &no_check, &deldir);
+		}
 
 	}
 
@@ -340,9 +338,7 @@ main(int argc, char **argv)
 
 	buffer_groups(&gdata, GROUPFILE, 1);
 	buffer_users(&udata, PASSWDFILE, 1);
-	//updatestats_free(&g);
 	ng_free(fileext);
-	ng_free(target);
 	ng_free(g.l.race);
 	ng_free(g.l.sfv);
 	ng_free(g.l.leader);
@@ -371,19 +367,16 @@ void
 read_envdata(GLOBAL *g, GDATA *gdata, UDATA *udata, struct stat *fileinfo)
 {
 	
-	int			n;
+	int		n;
 	char		*temp_p = NULL, *temp_p_free = NULL;
 
 	buffer_groups(gdata, GROUPFILE, 0);
 	buffer_users(udata, PASSWDFILE, 0);
 	
-	if ((getenv("USER") == NULL) || (getenv("GROUP") == NULL) || (getenv("TAGLINE") == NULL) || (getenv("SPEED") ==NULL) || (getenv("SECTION") == NULL)) {
+	if ((getenv("USER") == NULL) || (getenv("GROUP") == NULL) ||
+	    (getenv("TAGLINE") == NULL) || (getenv("SPEED") ==NULL) ||
+	    (getenv("SECTION") == NULL)) {
 		d_log(1, "read_envdata: We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE, $SECTION and $SPEED\n");
-		/*
-		 * strcpy(g->v.user.name, "Unknown");
-		 * strcpy(g->v.user.group, "NoGroup");
-		 */
-
 		fileinfo->st_uid = geteuid();
 		fileinfo->st_gid = getegid();
 		strlcpy(g->v.user.name, get_u_name(udata, fileinfo->st_uid), 24);
@@ -412,7 +405,7 @@ read_envdata(GLOBAL *g, GDATA *gdata, UDATA *udata, struct stat *fileinfo)
 		snprintf(g->v.sectionname, 127, getenv("SECTION"));
 		g->v.section = 0;
 		temp_p_free = temp_p = strdup((const char *)gl_sections);	/* temp_p_free is needed since temp_p is modified by strsep */
-		if ((temp_p) == NULL) {
+		if (temp_p == NULL) {
 			d_log(1, "read_envdata: Can't allocate memory for sections\n");
 		} else {
 			n = 0;
@@ -622,10 +615,6 @@ process_file(GLOBAL *g, MSG *msg, char **argv, char *fileext, int *no_check, int
 	handler_t *handler;
 	HANDLER_ARGS ha;
 	
-	d_log(1, "process_file: Verifying old racedata\n");
-	if (!verify_racedata(g->l.race, &g->v))
-		d_log(1, "process_file:   Failed to open racedata - assuming this is a new race.\n");
-
 	type = get_filetype(fileext);
 	handler = get_handler(type);
 		
