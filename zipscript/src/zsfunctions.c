@@ -10,14 +10,6 @@
 #include <strl/strl.h>
 #include <stdarg.h>
 
-/*struct dirent **dirlist;
-struct dirent **dirlistp;
-unsigned int	direntries = 0;
-unsigned int	direntriesp = 0;*/
-//int		num_groups = 0, num_users = 0;
-//struct USER   **user;
-//struct GROUP  **group;
-
 /*
  * d_log - create/put comments in a .debug file
  * Last revised by: js
@@ -1267,12 +1259,11 @@ ng_realloc2(void *mempointer, int memsize, int zero_it, int exit_on_error, int z
 	return mempointer;
 }
 
-void *
+void
 ng_free(void *mempointer)
 {
 	if (mempointer)
 		free(mempointer);
-	return 0;
 }
 
 int

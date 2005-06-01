@@ -4,7 +4,10 @@
 #include "handling.h"
 
 /* default handler for sfv releases */
-#define def_sfv_handler handle_sfv32
+#ifndef def_sfv_handler
+# define def_sfv_handler handle_sfv32
+# include "handle_sfv.h"
+#endif
 
 int handle_any(HANDLER_ARGS *);
 

@@ -114,7 +114,7 @@ handle_zip(HANDLER_ARGS *ha) {
 	d_log(1, "handle_zip: Setting message pointers\n");
 	ha->msg->race = zip_race;
 	ha->msg->update = zip_update;
-	ha->msg->halfway = CHOOSE3(ha->g->v.total.users, zip_halfway, zip_norace_halfway);
+	ha->msg->halfway = CHOOSE(ha->g->v.total.users, zip_halfway, zip_norace_halfway);
 	ha->msg->newleader = zip_newleader;
 
 	return exit_value;

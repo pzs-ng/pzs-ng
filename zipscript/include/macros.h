@@ -46,19 +46,9 @@
 
 /* No race */
 #if ( announce_norace == 1 )
-#define CHOOSE(a,b,c)	g.v.total.users > 1 ? b : c;
-#define CHOOSE2(a,b,c)	g->v.total.users > 1 ? b : c;
-#define CHOOSE3(a,b,c)	ha->g->v.total.users > 1 ? b : c;
+#define CHOOSE(a, b, c)	a > 1 ? b : c
 #else
 #define CHOOSE(a,b,c)	b;
-#endif
-
-#ifndef alloca
-#define m_alloc(x) malloc(x)
-#define m_free(p) free(p)
-#else
-#define m_alloc(x) alloca(x)
-#define m_free(p)
 #endif
 
 #endif

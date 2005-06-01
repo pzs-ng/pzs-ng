@@ -157,11 +157,14 @@ extern void getrelname(GLOBAL *);
 #if ( audio_group_sort == TRUE )
 extern char *remove_pattern(char *, char *, int);
 #endif
-extern void    *ng_realloc(void *, int, int, int, struct VARS *, int);
-extern void    *ng_realloc2(void *, int, int, int, int);
-extern void    *ng_free(void *);
-#endif
 
-extern int remove_at_loc(char *, off_t);
-extern void unlink_missing(char *);
-extern void unlink_extra(char *, char *);
+extern void	*ng_realloc(void *, int, int, int, struct VARS *, int);
+extern void	*ng_realloc2(void *, int, int, int, int);
+extern void	ng_free(void *);
+
+extern int	remove_at_loc(char *, off_t);
+extern void	unlink_missing(char *);
+extern void	unlink_extra(char *, char *);
+
+#endif /* _ZSFUNCTIONS_H_ */
+

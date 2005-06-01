@@ -636,43 +636,43 @@ check_release_type(GLOBAL *g, MSG *msg, RACETYPE *rtype, char *_complete[2])
 		case RTYPE_RAR:
 			set_rtype_msg(rtype, &__racetype_rar);
 			_complete[0] = rar_completebar;
-			_complete[1] = CHOOSE2(g->v.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
-			msg->complete = CHOOSE2(g->v.total.users, rar_complete, rar_norace_complete);
+			_complete[1] = CHOOSE(g->v.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
+			msg->complete = CHOOSE(g->v.total.users, rar_complete, rar_norace_complete);
 			break;	/* rar */
 		case RTYPE_OTHER:
 			set_rtype_msg(rtype, &__racetype_other);
 			_complete[0] = other_completebar;
-			_complete[1] = CHOOSE2(g->v.total.users, other_announce_race_complete_type, other_announce_norace_complete_type);
-			msg->complete = CHOOSE2(g->v.total.users, other_complete, other_norace_complete);
+			_complete[1] = CHOOSE(g->v.total.users, other_announce_race_complete_type, other_announce_norace_complete_type);
+			msg->complete = CHOOSE(g->v.total.users, other_complete, other_norace_complete);
 			break;	/* other */
 		case RTYPE_AUDIO:
 			_complete[0] = audio_completebar;
 			if (!g->v.audio.is_vbr) {
 				set_rtype_msg(rtype, &__racetype_audio_vbr);
-				_complete[1] = CHOOSE2(g->v.total.users, audio_cbr_announce_race_complete_type, audio_cbr_announce_norace_complete_type);
+				_complete[1] = CHOOSE(g->v.total.users, audio_cbr_announce_race_complete_type, audio_cbr_announce_norace_complete_type);
 			} else {
 				set_rtype_msg(rtype, &__racetype_audio_cbr);
-				_complete[1] = CHOOSE2(g->v.total.users, audio_vbr_announce_race_complete_type, audio_vbr_announce_norace_complete_type);
+				_complete[1] = CHOOSE(g->v.total.users, audio_vbr_announce_race_complete_type, audio_vbr_announce_norace_complete_type);
 			}
-			msg->complete = CHOOSE2(g->v.total.users, audio_complete, audio_norace_complete);
+			msg->complete = CHOOSE(g->v.total.users, audio_complete, audio_norace_complete);
 			break;	/* audio */
 		case RTYPE_VIDEO:
 			set_rtype_msg(rtype, &__racetype_video);
 			_complete[0] = video_completebar;
-			_complete[1] = CHOOSE2(g->v.total.users, video_announce_race_complete_type, video_announce_norace_complete_type);
-			msg->complete = CHOOSE2(g->v.total.users, video_complete, video_norace_complete);
+			_complete[1] = CHOOSE(g->v.total.users, video_announce_race_complete_type, video_announce_norace_complete_type);
+			msg->complete = CHOOSE(g->v.total.users, video_complete, video_norace_complete);
 			break;	/* video */
 		case RTYPE_NULL:
 			set_rtype_msg(rtype, &__racetype_zip);
 			_complete[0] = zip_completebar;
-			_complete[1] = CHOOSE2(g->v.total.users, zip_announce_race_complete_type, zip_announce_norace_complete_type);
-			msg->complete = CHOOSE2(g->v.total.users, zip_complete, zip_norace_complete);
+			_complete[1] = CHOOSE(g->v.total.users, zip_announce_race_complete_type, zip_announce_norace_complete_type);
+			msg->complete = CHOOSE(g->v.total.users, zip_complete, zip_norace_complete);
 			break;	/* zip */
 		default:
 			set_rtype_msg(rtype, &__racetype_rar);
 			_complete[0] = rar_completebar;
-			_complete[1] = CHOOSE2(g->v.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
-			msg->complete = CHOOSE2(g->v.total.users, rar_complete, rar_norace_complete);
+			_complete[1] = CHOOSE(g->v.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
+			msg->complete = CHOOSE(g->v.total.users, rar_complete, rar_norace_complete);
 			d_log(1, "check_release_type: WARNING! Not a known release type - Contact the authors! (3:%d)\n", g->v.misc.release_type);
 			break;	/* rar */
 	}
