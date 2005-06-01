@@ -1,14 +1,16 @@
+/* "handlers" are functions which are executed for a
+ * given file extension
+ *
+ * TODO: the extension and its handler should be defined
+ * the same place/file, to make plugin writing easy
+ */
+
 #ifndef __HANDLING_H
 #define __HANDLING_H
 
-/* all handler functions should take the same arguments
- * and their calls should be determined by a file extension
- */
-
 #include "objects.h"
 
-#define def_sfv_handler handle_sfv32
-
+/* this is what is passed to a handler */
 typedef struct _handler_args {
 
 	GLOBAL *g;
@@ -19,13 +21,20 @@ typedef struct _handler_args {
 	
 } HANDLER_ARGS;
 
+/* the handler function type */
 typedef int handler_t(HANDLER_ARGS *);
 
+/* how file extensions are defined. each 'type' has a matching
+ * 'ext' which is a regular expression used for matching aa
+ * file extension.
+ */
 typedef struct _fext {
-	char *ext;
 	short type;
+	char *ext;
 } FEXT;
 
+/* handlers are defined with a type and matching handler function
+ */
 typedef struct _handler {
 	short type;
 	handler_t *handler;
@@ -34,10 +43,10 @@ typedef struct _handler {
 extern FEXT fexts[];
 extern HANDLER handlers[];
 
+/* get the type of a file extension */
 extern short get_filetype(char *);
+/* return the handler for a specified type */
 extern handler_t *get_handler(short);
-
-#include "handlers.h"
 
 #endif /* __HANDLING_H */
 

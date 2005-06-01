@@ -41,10 +41,10 @@
 
 #include "racetypes.h"
 
-#include "handling.h"
-#include "handle_sfv.h"
+#include "handlers.h"
+/*#include "handle_sfv.h"
 #include "handle_nfo.h"
-#include "handle_zip.h"
+#include "handle_zip.h"*/
 
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"

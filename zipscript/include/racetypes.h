@@ -1,7 +1,10 @@
+/* Definitions of racetype cookies that are printed to
+ * glftpd.log.
+ */
+
 #ifndef __RACETYPES_H
 #define __RACETYPES_H
 
-//#include "../conf/zsconfig.h"
 #include "constants.h"
 
 /* Race type strings go in here */
@@ -13,6 +16,10 @@ typedef struct _racetype {
 	char *norace_halfway;
 } RACETYPE;
 
+/* TODO: the definitions here should be linked to the
+ * file extensions defined in handling.h, for easier
+ * definition of user-specified file handling
+ */
 static const struct _racetype __racetype_rar = {
 	rar_announce_race_type,
 	rar_announce_newleader_type,
@@ -61,6 +68,7 @@ static const struct _racetype __racetype_zip = {
 	zip_announce_race_halfway_type
 };
 
+/* copy the contents of the second argument to the first */
 void set_rtype_msg(struct _racetype *, const struct _racetype *);
 
 #endif /* __RACETYPES_H */

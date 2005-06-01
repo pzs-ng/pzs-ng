@@ -2,39 +2,8 @@
 #include <regex.h>
 
 #include "handling.h"
-#include "handlers.h"
 
 #include "zsfunctions.h"
-
-enum {
-	DEFAULT = 0,
-	RAR,
-	ZIP,
-	SFV,
-	NFO
-	/*...*/
-};
-
-/* regular expressions for file types */
-FEXT fexts[] = {	{ "[Rr][Aa][Rr]", RAR },
-			{ "[Rr][0-9][0-9]", RAR },
-			{ "[0-9][0-9][0-9]", RAR },
-			{ "[Zz][Ii][Pp]", ZIP },
-			{ "[Ss][Ff][Vv]", SFV },
-			{ "[Nn][Ff][Oo]", NFO },
-			{ "", DEFAULT },
-			/*...*/
-			{ 0, 0 }
-};
-
-HANDLER handlers[] = {	{ RAR, handle_sfv32 }, 
-			{ ZIP, handle_zip },
-			{ SFV, handle_sfv },
-			{ NFO, handle_nfo },
-			{ DEFAULT, handle_any },
-			/*...*/
-			{ 0, 0 }
-};
 
 /* returns -1 on fail, so NO FILE TYPE CAN HAVE NUMBER -! */
 short
