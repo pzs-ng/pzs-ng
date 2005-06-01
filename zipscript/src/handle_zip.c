@@ -20,7 +20,7 @@ handle_zip(HANDLER_ARGS *ha) {
 	d_log(1, "handle_zip: File type is: ZIP\n");
 	d_log(1, "handle_zip: Testing file integrity with %s\n", unzip_bin);
 	if (!fileexists(unzip_bin)) {
-		d_log(1, "handle_zip: ERROR! Not able to check zip-files - %s does not exists!\n", unzip_bin);
+		d_log(1, "handle_zip: ERROR! Not able to check zip-files - %s does not exist!\n", unzip_bin);
 		sprintf(ha->g->v.misc.error_msg, BAD_ZIP);
 		mark_as_bad(ha->g->v.file.name);
 		ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);

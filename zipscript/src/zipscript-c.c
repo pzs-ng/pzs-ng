@@ -39,6 +39,8 @@
 //#include "video.h"
 //#include "avinfo.h"
 
+#include "racetypes.h"
+
 #include "handling.h"
 #include "handle_sfv.h"
 #include "handle_nfo.h"
@@ -635,44 +637,6 @@ process_file(GLOBAL *g, MSG *msg, char **argv, char *fileext, int *no_check, int
 	
 	return handler(&ha);
 	
-	/*switch (get_filetype(g, fileext)) {
-
-		case 0:	// ZIP CHECK
-			return handle_zip(g, msg);
-			break;
-
-		case 1:	// SFV CHECK
-			return handle_sfv(g, msg);
-			break;
-
-		case 2:	// NFO CHECK
-			g->v.misc.nfofound = 0;
-			return handle_nfo(g, msg);
-			break;
-
-		case 3:	// SFV BASED CRC-32 CHECK
-			return handle_sfv32(g, msg, argv, fileext, deldir);
-			break;
-
-		case 4:	// ACCEPTED FILE
-			d_log(1, "process_file: File type: NO CHECK\n");
-			*no_check = TRUE;
-			break;
-		// END OF ACCEPTED FILE CHECK
-
-		case 255:	// UNKNOWN - WE DELETE THESE, SINCE IT WAS
-				// ALSO IGNORED
-			d_log(1, "process_file: File type: UNKNOWN [ignored in sfv]\n");
-			sprintf(g->v.misc.error_msg, UNKNOWN_FILE, fileext);
-			mark_as_bad(g->v.file.name);
-			msg->error = convert(&g->v, g->ui, g->gi, bad_file_msg);
-			writelog(g, msg->error, bad_file_disallowed_type);
-			return 2;
-			break;
-			// END OF UNKNOWN CHECK
-			
-	}*/
-
 }
 
 void
@@ -681,70 +645,42 @@ check_release_type(GLOBAL *g, MSG *msg, RACETYPE *rtype, char *_complete[2])
 
 	switch (g->v.misc.release_type) {
 		case RTYPE_RAR:
-			rtype->race = rar_announce_race_type;
-			rtype->newleader = rar_announce_newleader_type;
-			rtype->update = rar_announce_update_type;
-			rtype->norace_halfway = rar_announce_norace_halfway_type;
-			rtype->race_halfway = rar_announce_race_halfway_type;
+			set_rtype_msg(rtype, &__racetype_rar);
 			_complete[0] = rar_completebar;
 			_complete[1] = CHOOSE2(g->v.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
 			msg->complete = CHOOSE2(g->v.total.users, rar_complete, rar_norace_complete);
 			break;	/* rar */
 		case RTYPE_OTHER:
-			rtype->race = other_announce_race_type;
-			rtype->newleader = other_announce_newleader_type;
-			rtype->update = other_announce_update_type;
-			rtype->norace_halfway = other_announce_norace_halfway_type;
-			rtype->race_halfway = other_announce_race_halfway_type;
+			set_rtype_msg(rtype, &__racetype_other);
 			_complete[0] = other_completebar;
 			_complete[1] = CHOOSE2(g->v.total.users, other_announce_race_complete_type, other_announce_norace_complete_type);
 			msg->complete = CHOOSE2(g->v.total.users, other_complete, other_norace_complete);
 			break;	/* other */
 		case RTYPE_AUDIO:
-			rtype->race = audio_announce_race_type;
-			rtype->newleader = audio_announce_newleader_type;
-			if (!g->v.audio.is_vbr)
-				rtype->update = audio_announce_cbr_update_type;
-			else
-				rtype->update = audio_announce_vbr_update_type;
-			rtype->norace_halfway = audio_announce_norace_halfway_type;
-			rtype->race_halfway = audio_announce_race_halfway_type;
 			_complete[0] = audio_completebar;
-			
 			if (!g->v.audio.is_vbr) {
+				set_rtype_msg(rtype, &__racetype_audio_vbr);
 				_complete[1] = CHOOSE2(g->v.total.users, audio_cbr_announce_race_complete_type, audio_cbr_announce_norace_complete_type);
 			} else {
+				set_rtype_msg(rtype, &__racetype_audio_cbr);
 				_complete[1] = CHOOSE2(g->v.total.users, audio_vbr_announce_race_complete_type, audio_vbr_announce_norace_complete_type);
 			}
-
 			msg->complete = CHOOSE2(g->v.total.users, audio_complete, audio_norace_complete);
 			break;	/* audio */
 		case RTYPE_VIDEO:
-			rtype->race = video_announce_race_type;
-			rtype->newleader = video_announce_newleader_type;
-			rtype->update = video_announce_update_type;
-			rtype->norace_halfway = video_announce_norace_halfway_type;
-			rtype->race_halfway = video_announce_race_halfway_type;
+			set_rtype_msg(rtype, &__racetype_video);
 			_complete[0] = video_completebar;
 			_complete[1] = CHOOSE2(g->v.total.users, video_announce_race_complete_type, video_announce_norace_complete_type);
 			msg->complete = CHOOSE2(g->v.total.users, video_complete, video_norace_complete);
 			break;	/* video */
 		case RTYPE_NULL:
-			rtype->race = zip_announce_race_type;
-			rtype->newleader = zip_announce_newleader_type;
-			rtype->update = zip_announce_update_type;
-			rtype->norace_halfway = zip_announce_norace_halfway_type;
-			rtype->race_halfway = zip_announce_race_halfway_type;
+			set_rtype_msg(rtype, &__racetype_zip);
 			_complete[0] = zip_completebar;
 			_complete[1] = CHOOSE2(g->v.total.users, zip_announce_race_complete_type, zip_announce_norace_complete_type);
 			msg->complete = CHOOSE2(g->v.total.users, zip_complete, zip_norace_complete);
 			break;	/* zip */
 		default:
-			rtype->race = rar_announce_race_type;
-			rtype->newleader = rar_announce_newleader_type;
-			rtype->update = rar_announce_update_type;
-			rtype->norace_halfway = rar_announce_norace_halfway_type;
-			rtype->race_halfway = rar_announce_race_halfway_type;
+			set_rtype_msg(rtype, &__racetype_rar);
 			_complete[0] = rar_completebar;
 			_complete[1] = CHOOSE2(g->v.total.users, rar_announce_race_complete_type, rar_announce_norace_complete_type);
 			msg->complete = CHOOSE2(g->v.total.users, rar_complete, rar_norace_complete);

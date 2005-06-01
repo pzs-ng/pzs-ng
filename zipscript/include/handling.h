@@ -31,8 +31,6 @@ typedef struct _handler {
 	handler_t *handler;
 } HANDLER;
 
-/* regular expressions for file types */
-
 extern FEXT fexts[];
 extern HANDLER handlers[];
 

@@ -15,6 +15,7 @@ enum {
 	/*...*/
 };
 
+/* regular expressions for file types */
 FEXT fexts[] = {	{ "[Rr][Aa][Rr]", RAR },
 			{ "[Rr][0-9][0-9]", RAR },
 			{ "[0-9][0-9][0-9]", RAR },

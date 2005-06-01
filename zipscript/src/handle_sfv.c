@@ -84,19 +84,8 @@ handle_sfv(HANDLER_ARGS *ha) {
 			unlink(ha->g->l.race);
 			unlink(ha->g->l.sfv);
 			rewinddir(dir);
-			while ((dp = readdir(dir))) {
-				cnt = cnt2 = (int)strlen(dp->d_name);
-				ext = dp->d_name;
-				while (ext[cnt] != '-' && cnt > 0)
-					cnt--;
-				if (ext[cnt] != '-')
-					cnt = cnt2;
-				else
-					cnt++;
-				ext += cnt;
-				if (!strncmp(ext, "missing", 7))
-					unlink(dp->d_name);
-			}
+			while ((dp = readdir(dir)))
+				unlink_extra(dp->d_name, "-missing");
 		}
 	}
 	d_log(1, "handle_sfv: Parsing sfv and creating sfv data\n");
@@ -112,27 +101,16 @@ handle_sfv(HANDLER_ARGS *ha) {
 		unlink(ha->g->l.sfv);
 
 		rewinddir(dir);
-		while ((dp = readdir(dir))) {
-			cnt = cnt2 = (int)strlen(dp->d_name);
-			ext = dp->d_name;
-			while (ext[cnt] != '-' && cnt > 0)
-				cnt--;
-			if (ext[cnt] != '-')
-				cnt = cnt2;
-			else
-				cnt++;
-			ext += cnt;
-			if (!strncmp(ext, "missing", 7))
-				unlink(dp->d_name);
-		}
+		while ((dp = readdir(dir)))
+			unlink_extra(dp->d_name, "-missing");
 		closedir(dir);
 		return exit_value;
 	}
 
 #if (use_partial_on_noforce == TRUE)
-	if ( (force_sfv_first == FALSE) || matchpartialpath(noforce_sfv_first_dirs, ha->g->l.path))
+	if ((force_sfv_first == FALSE) || matchpartialpath(noforce_sfv_first_dirs, ha->g->l.path))
 #else
-	if ( (force_sfv_first == FALSE) || matchpath(noforce_sfv_first_dirs, ha->g->l.path))
+	if ((force_sfv_first == FALSE) || matchpath(noforce_sfv_first_dirs, ha->g->l.path))
 #endif
 	{
 		if (fileexists(ha->g->l.race)) {

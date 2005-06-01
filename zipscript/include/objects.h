@@ -208,13 +208,4 @@ typedef struct _msg {
 	char *error;
 } MSG;
 
-/* Race type strings go in here */
-typedef struct _racetype {
-	char *race;
-	char *newleader;
-	char *update;
-	char *race_halfway;
-	char *norace_halfway;
-} RACETYPE;
-
 #endif
