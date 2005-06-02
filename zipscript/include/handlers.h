@@ -27,12 +27,12 @@ enum {
 /* ... */
 
 /* regular expressions for file types */
-FEXT fexts[] = {	{ RAR, "[Rr][Aa][Rr]" },
-			{ RAR, "[Rr][0-9][0-9]" },
-			{ RAR, "[0-9][0-9][0-9]" },
-			{ ZIP, "[Zz][Ii][Pp]" },
-			{ SFV, "[Ss][Ff][Vv]" },
-			{ NFO, "[Nn][Ff][Oo]" },
+FEXT fexts[] = {	{ RAR, "[Rr][Aa][Rr]$" },
+			{ RAR, "[Rr][0-9][0-9]$" },
+			{ RAR, "[0-9][0-9][0-9]$" },
+			{ ZIP, "[Zz][Ii][Pp]$" },
+			{ SFV, "[Ss][Ff][Vv]$" },
+			{ NFO, "[Nn][Ff][Oo]$" },
 			{ DEFAULT, "" },
 			/*...*/
 			{ 0, 0 }
