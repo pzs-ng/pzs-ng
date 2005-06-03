@@ -26,7 +26,7 @@ get_filetype(char *fileext)
 		if ((status = regcomp(&re, fext->ext, REG_EXTENDED | REG_NOSUB) != 0)) {
 			regerror(status, &re, errorbuf, sizeof(errorbuf));
 			d_log(1, "get_filetype(%s): regcomp failed: %s\n", fileext, errorbuf);
-			return -1;
+			continue;
 		}
 		
 		if (regexec(&re, fileext, (size_t) 0, NULL, 0) == 0) {

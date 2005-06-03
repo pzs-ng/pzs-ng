@@ -33,7 +33,6 @@ FEXT fexts[] = {	{ RAR, "[Rr][Aa][Rr]$" },
 			{ ZIP, "[Zz][Ii][Pp]$" },
 			{ SFV, "[Ss][Ff][Vv]$" },
 			{ NFO, "[Nn][Ff][Oo]$" },
-			{ DEFAULT, "" },
 			/*...*/
 			{ 0, 0 }
 };
