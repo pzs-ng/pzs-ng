@@ -205,6 +205,8 @@ handle_sfv32(HANDLER_ARGS *ha)
 
 	d_log(1, "handle_sfv32: File type is: ANY\n");
 
+	target = ng_realloc(target, 1024, 1, 1, &ha->g->v, 1);
+
 	if (check_rarfile(ha->g->v.file.name)) {
 		d_log(1, "handle_sfv32: File is password protected.\n");
 		sprintf(ha->g->v.misc.error_msg, PASSWORD_PROTECTED);
@@ -387,11 +389,10 @@ handle_sfv32(HANDLER_ARGS *ha)
 		write_bitrate_in_race(ha->g->l.race, &ha->g->v);
 		sprintf(ha->g->v.audio.bitrate, "%i", read_bitrate_in_race(ha->g->l.race, &ha->g->v));
 		if ((enable_mp3_script == TRUE) && (ha->g->ui[ha->g->v.user.pos].files == 1)) {
-			if (!fileexists(mp3_script)) {
+			if (!fileexists(mp3_script))
 				d_log(1, "handle_sfv32: Warning -  mp3_script (%s) - file does not exists\n", mp3_script);
-			}
-			d_log(1, "handle_sfv32: Executing mp3 script (%s %s)\n", mp3_script, convert(&ha->g->v, ha->g->ui, ha->g->gi, mp3_script_cookies));
 			sprintf(target, "%s %s", mp3_script, convert(&ha->g->v, ha->g->ui, ha->g->gi, mp3_script_cookies));
+			d_log(1, "handle_sfv32: Executing mp3 script (%s %s)\n", mp3_script, convert(&ha->g->v, ha->g->ui, ha->g->gi, mp3_script_cookies));
 			if (execute(target) != 0)
 				d_log(1, "handle_sfv32: Failed to execute mp3_script: %s\n", strerror(errno));
 		}
@@ -570,6 +571,7 @@ handle_sfv32(HANDLER_ARGS *ha)
 		if (target)
 			unlink(target);
 		*/
+		ng_free(target);
 	}
 
 	return exit_value;
