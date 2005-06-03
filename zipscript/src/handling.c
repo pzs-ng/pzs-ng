@@ -22,7 +22,7 @@ get_filetype(char *fileext)
 			regfree(&re);
 		
 		if ((status = regcomp(&re, fext->ext, REG_EXTENDED | REG_NOSUB) != 0)) {
-			d_log(1, "get_filetype(%s): regcomp failed: %s", fileext, strerror(errno));
+			d_log(1, "get_filetype(%s): regcomp failed: %s\n", fileext, strerror(errno));
 			return -1;
 		}
 		
