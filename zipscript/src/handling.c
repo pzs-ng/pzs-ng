@@ -13,7 +13,9 @@ get_filetype(char *fileext)
 	/* let's hope no system defines a regcomp error as -1 */
 	int status = -1;
 
-	regex_t    re;
+	static char errorbuf[512];
+
+	regex_t re;
 	FEXT *fext;
 
 	for (fext = fexts; fext->ext != 0; fext++) {
@@ -22,7 +24,8 @@ get_filetype(char *fileext)
 			regfree(&re);
 		
 		if ((status = regcomp(&re, fext->ext, REG_EXTENDED | REG_NOSUB) != 0)) {
-			d_log(1, "get_filetype(%s): regcomp failed: %s\n", fileext, strerror(errno));
+			regerror(status, &re, errorbuf, sizeof(errorbuf));
+			d_log(1, "get_filetype(%s): regcomp failed: %s\n", fileext, errorbuf);
 			return -1;
 		}
 		
