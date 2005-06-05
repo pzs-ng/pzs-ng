@@ -10,6 +10,8 @@
 #include "errors.h"
 #include "dizreader.h"
 
+void bad_file(HANDLER_ARGS *, char *, char *);
+
 int
 handle_zip(HANDLER_ARGS *ha) {
 
@@ -21,13 +23,15 @@ handle_zip(HANDLER_ARGS *ha) {
 	d_log(1, "handle_zip: Testing file integrity with %s\n", unzip_bin);
 	if (!fileexists(unzip_bin)) {
 		d_log(1, "handle_zip: ERROR! Not able to check zip-files - %s does not exist!\n", unzip_bin);
-		sprintf(ha->g->v.misc.error_msg, BAD_ZIP);
+		bad_file(ha, BAD_ZIP, bad_file_zip_type);
+		return 2;
+		/*sprintf(ha->g->v.misc.error_msg, BAD_ZIP);
 		mark_as_bad(ha->g->v.file.name);
 		ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
 		if (exit_value < 2)
 			writelog(ha->g, ha->msg->error, bad_file_zip_type);
 		exit_value = 2;
-		return exit_value;
+		return exit_value;*/
 	} else {
 #if (test_for_password || extract_nfo)
 		if ((!findfileextcount(".", ".nfo") || findfileextcount(".", ".zip") == 1) && !mkdir(".unzipped", 0777)) {
@@ -39,24 +43,28 @@ handle_zip(HANDLER_ARGS *ha) {
 #endif
 		if (execute(target) != 0) {
 			d_log(1, "handle_zip: Integrity check failed (#%d): %s\n", errno, strerror(errno));
-			sprintf(ha->g->v.misc.error_msg, BAD_ZIP);
+			bad_file(ha, BAD_ZIP, bad_file_zip_type);
+			return 2;
+			/*sprintf(ha->g->v.misc.error_msg, BAD_ZIP);
 			mark_as_bad(ha->g->v.file.name);
 			ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
 			if (exit_value < 2)
 				writelog(ha->g, ha->msg->error, bad_file_zip_type);
 			exit_value = 2;
-			return exit_value;
+			return exit_value;*/
 		}
 #if (test_for_password || extract_nfo || zip_clean)
 			if (!findfileextcount(".", ".nfo") || findfileextcount(".", ".zip") == 1) {
 				if (check_zipfile(".unzipped", ha->g->v.file.name)) {
 					d_log(1, "handle_zip: File is password protected.\n");
-					sprintf(ha->g->v.misc.error_msg, PASSWORD_PROTECTED);
+					bad_file(ha, PASSWORD_PROTECTED, bad_file_password_type);
+					return 2;
+					/*sprintf(ha->g->v.misc.error_msg, PASSWORD_PROTECTED);
 					ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
 					if (exit_value < 2)
 						writelog(ha->g, ha->msg->error, bad_file_password_type);
 					exit_value = 2;
-					return exit_value;
+					return exit_value;*/
 				}
 			}
 #endif
@@ -70,13 +78,15 @@ handle_zip(HANDLER_ARGS *ha) {
 		d_log(1, "handle_zip: WARNING! Directory did not match with zip_dirs/group_dirs\n");
 		if (strict_path_match == TRUE) {
 			d_log(1, "handle_zip: Strict mode on - exiting\n");
-			sprintf(ha->g->v.misc.error_msg, UNKNOWN_FILE, ha->fileext);
+			bad_file(ha, UNKNOWN_FILE, bad_file_wrongdir_type);
+			return 2;
+			/*sprintf(ha->g->v.misc.error_msg, UNKNOWN_FILE, ha->fileext);
 			mark_as_bad(ha->g->v.file.name);
 			ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
 			if (exit_value < 2)
 				writelog(ha->g, ha->msg->error, bad_file_wrongdir_type);
 			exit_value = 2;
-			return exit_value;
+			return exit_value;*/
 		}
 	}
 	if (!fileexists("file_id.diz")) {
@@ -118,4 +128,14 @@ handle_zip(HANDLER_ARGS *ha) {
 	ha->msg->newleader = zip_newleader;
 
 	return exit_value;
+}
+
+void
+bad_file(HANDLER_ARGS *ha, char *error_msg, char *error_type)
+{
+
+	sprintf(ha->g->v.misc.error_msg, error_msg);
+	ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
+	writelog(ha->g, ha->msg->error, error_type);
+	
 }
