@@ -128,7 +128,7 @@ complete(GLOBAL *g, int completetype)
 void 
 writetop(GLOBAL *g, int completetype)
 {
-	int		cnt, mlen, mset;
+	int		cnt, mlen, mset, mtemp;
 	char		templine [FILE_MAX];
 	char	       *buffer = 0;
 	char	       *pbuf = 0;
@@ -143,7 +143,9 @@ writetop(GLOBAL *g, int completetype)
 				mlen = strlen(templine);
 				if ((int)strlen(buffer) + mlen >= FILE_MAX * mset) {
 					mset += 1;
+					mtemp = pbuf - buffer;
 					buffer = ng_realloc(buffer, FILE_MAX * mset, 0, 1, &g->v, 0);
+					pbuf = buffer + mtemp;
 				}
 				memcpy(pbuf, templine, mlen);
 				pbuf += mlen;
