@@ -7,8 +7,10 @@ extern char *find_last_of(char *, const char *);
 extern char *find_first_of(char *, const char *);
 extern char *strip_whitespaces(char *);
 extern char *prestrip_whitespaces(char *);
-extern void xlock(struct flock *, int, short);
-extern void xunlock(struct flock *, int);
+extern int xlock(const char *);
+extern int xunlock(const char *);
+extern FILE *xfopen(const char *, const char *);
+extern int xfclose(const char *, FILE *);
 
-#endif
+#endif /* _HELPFUNCTIONS_H */
 

@@ -199,7 +199,7 @@ main(int argc, char **argv)
 	maketempdir(g.l.path);
 
 	d_log(1, "zipscript-c: Locking release\n");
-	lock_release(&g);
+	//lock_release(&g);
 
 	printf(zipscript_header);
 
@@ -331,7 +331,7 @@ main(int argc, char **argv)
 #endif
 
 	d_log(1, "zipscript-c: Releasing memory and removing lock\n");
-	remove_lock(&g.v);
+	//remove_lock(&g.v);
 
 	if (fileexists(".delme"))
 		unlink(".delme");
@@ -686,7 +686,7 @@ execute_script(char *script, char *arg, char *type)
 	static char target[PATH_MAX];
 	
 	if (!fileexists(script))
-		d_log(1, "execute_script: Warning - %s_script (%s) - file does not exists\n", type, script);
+		d_log(1, "execute_script: Warning - %s_script (%s) - file does not exist\n", type, script);
 
 	d_log(1, "execute_script: Executing %s script\n", type);
 	

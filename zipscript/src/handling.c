@@ -5,7 +5,7 @@
 
 #include "zsfunctions.h"
 
-/* returns -1 on fail, so NO FILE TYPE CAN HAVE NUMBER -! */
+/* returns -1 on fail, so NO FILE TYPE CAN HAVE NUMBER -1 */
 short
 get_filetype(char *fileext)
 {

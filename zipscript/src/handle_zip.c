@@ -25,13 +25,6 @@ handle_zip(HANDLER_ARGS *ha) {
 		d_log(1, "handle_zip: ERROR! Not able to check zip-files - %s does not exist!\n", unzip_bin);
 		bad_file(ha, BAD_ZIP, bad_file_zip_type);
 		return 2;
-		/*sprintf(ha->g->v.misc.error_msg, BAD_ZIP);
-		mark_as_bad(ha->g->v.file.name);
-		ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
-		if (exit_value < 2)
-			writelog(ha->g, ha->msg->error, bad_file_zip_type);
-		exit_value = 2;
-		return exit_value;*/
 	} else {
 #if (test_for_password || extract_nfo)
 		if ((!findfileextcount(".", ".nfo") || findfileextcount(".", ".zip") == 1) && !mkdir(".unzipped", 0777)) {
@@ -45,13 +38,6 @@ handle_zip(HANDLER_ARGS *ha) {
 			d_log(1, "handle_zip: Integrity check failed (#%d): %s\n", errno, strerror(errno));
 			bad_file(ha, BAD_ZIP, bad_file_zip_type);
 			return 2;
-			/*sprintf(ha->g->v.misc.error_msg, BAD_ZIP);
-			mark_as_bad(ha->g->v.file.name);
-			ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
-			if (exit_value < 2)
-				writelog(ha->g, ha->msg->error, bad_file_zip_type);
-			exit_value = 2;
-			return exit_value;*/
 		}
 #if (test_for_password || extract_nfo || zip_clean)
 			if (!findfileextcount(".", ".nfo") || findfileextcount(".", ".zip") == 1) {
@@ -59,12 +45,6 @@ handle_zip(HANDLER_ARGS *ha) {
 					d_log(1, "handle_zip: File is password protected.\n");
 					bad_file(ha, PASSWORD_PROTECTED, bad_file_password_type);
 					return 2;
-					/*sprintf(ha->g->v.misc.error_msg, PASSWORD_PROTECTED);
-					ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
-					if (exit_value < 2)
-						writelog(ha->g, ha->msg->error, bad_file_password_type);
-					exit_value = 2;
-					return exit_value;*/
 				}
 			}
 #endif
@@ -80,13 +60,6 @@ handle_zip(HANDLER_ARGS *ha) {
 			d_log(1, "handle_zip: Strict mode on - exiting\n");
 			bad_file(ha, UNKNOWN_FILE, bad_file_wrongdir_type);
 			return 2;
-			/*sprintf(ha->g->v.misc.error_msg, UNKNOWN_FILE, ha->fileext);
-			mark_as_bad(ha->g->v.file.name);
-			ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
-			if (exit_value < 2)
-				writelog(ha->g, ha->msg->error, bad_file_wrongdir_type);
-			exit_value = 2;
-			return exit_value;*/
 		}
 	}
 	if (!fileexists("file_id.diz")) {

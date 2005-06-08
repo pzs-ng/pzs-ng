@@ -76,16 +76,16 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 	
 	SFVDATA		sd;
 
-	if (!(sfvfile = fopen(path, "r"))) {
-		d_log(1, "readsfv: Failed to open sfv (%s): %s\n", path, strerror(errno));
+	if (!(sfvfile = xfopen(path, "r"))) {
+		d_log(1, "readsfv: xfopen(%s) failed\n", path);
 		return 0;
 	}
 
-	if (!update_lock(raceI, 1, 0)) {
+	/*if (!update_lock(raceI, 1, 0)) {
 		d_log(1, "readsfv: Lock is suggested removed. Will comply and exit\n");
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
-	}
+	}*/
 
 	raceI->misc.release_type = raceI->lock.data_type;
 	raceI->misc.in_sfvfile = FALSE;
@@ -121,7 +121,7 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 	}
 	
 	closedir(dir);
-	fclose(sfvfile);
+	xfclose(path, sfvfile);
 	
 	raceI->total.files_missing += raceI->total.files;
 	
@@ -132,16 +132,25 @@ void
 update_sfvdata(const char *path, const char *filename, const unsigned int crc)
 {
 	int		fd, count;
+	FILE		*sfvfile;
 	
 	SFVDATA		sd;
 
-	if ((fd = open(path, O_RDWR, 0666)) == -1) {
+	/*if ((fd = open(path, O_RDWR, 0666)) == -1) {
 		d_log(1, "update_sfvdata: Failed to open sfvdata (%s): %s\n", path, strerror(errno));
+		return;
+	}*/
+
+	if (!(sfvfile = xfopen(path, "r+"))) {
+		d_log(1, "update_sfvdata: xfopen(%s) failed\n", path);
 		return;
 	}
 
+	chmod(path, 0666);
+	
 	count = 0;
-	while (read(fd, &sd, sizeof(SFVDATA))) {
+	//while (read(fd, &sd, sizeof(SFVDATA))) {
+	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
 		if (!strcasecmp(filename, sd.fname)) {
 			sd.crc32 = crc;
 			sd.fmatch = 1;
@@ -151,10 +160,13 @@ update_sfvdata(const char *path, const char *filename, const unsigned int crc)
 		count++;
 	}
 	
-	lseek(fd, sizeof(SFVDATA) * count, SEEK_SET);
-	if (write(fd, &sd, sizeof(SFVDATA)) != sizeof(SFVDATA))
+	//lseek(fd, sizeof(SFVDATA) * count, SEEK_SET);
+	fseek(sfvfile, sizeof(SFVDATA)*count, SEEK_SET);
+	//if (write(fd, &sd, sizeof(SFVDATA)) != sizeof(SFVDATA))
+	if (fwrite(&sd, sizeof(SFVDATA), 1, sfvfile) == 0)
 		d_log(1, "update_sfvdata: write failed: %s\n", strerror(errno));
-	close(fd);
+	//close(fd);
+	xfclose(path, sfvfile);
 
 }
 
@@ -163,11 +175,12 @@ void
 sfvdata_to_sfv(const char *source, const char *dest)
 {
 	int		infd, outfd;
+	FILE		*infile, *outfile;
 	char		crctmp[8];
 	
 	SFVDATA		sd;
 
-	if ((infd = open(source, O_RDONLY)) == -1) {
+	/*if ((infd = open(source, O_RDONLY)) == -1) {
 		d_log(1, "sfvdata_to_sfv: Failed to open (%s): %s\n", source, strerror(errno));
 		return;
 	}
@@ -175,30 +188,48 @@ sfvdata_to_sfv(const char *source, const char *dest)
 	if ((outfd = open(".tmpsfv", O_CREAT | O_WRONLY, 0644)) == -1) {
 		d_log(1, "sfvdata_to_sfv: Failed to open (.tmpsfv): %s\n", strerror(errno));
 		return;
+	}*/
+
+	if (!(infile = xfopen(source, "r"))) {
+		d_log(1, "sfvdata_to_sfv: xfopen(%s) failed\n", source);
+		return;
 	}
 
+	if (!(outfile = fopen(".tmpsfv", "w"))) {
+		d_log(1, "sfvdata_to_sfv: Failed to fopen(.tmpsfv): %s\n", strerror(errno));
+		return;
+	}
+	
 	d_log(1, "sfvdata_to_sfv: Writing new sfv file (%s)\n", dest);
-	while (read(infd, &sd, sizeof(SFVDATA))) {
+	//while (read(infd, &sd, sizeof(SFVDATA))) {
+	while (fread(&sd, sizeof(SFVDATA), 1, infile)) {
 		
 		if (sd.fmatch) {
 			sprintf(crctmp, "%.8x", sd.crc32);
-			if (write(outfd, sd.fname, strlen(sd.fname)) != (int)strlen(sd.fname))
+			//if (write(outfd, sd.fname, strlen(sd.fname)) != (int)strlen(sd.fname))
+			if (fwrite(sd.fname, strlen(sd.fname), 1, outfile) == 0)
 				d_log(1, "sfvdata_to_sfv: write failed: %s\n", strerror(errno));
-			if (write(outfd, " ", 1) != 1)
+			//if (write(outfd, " ", 1) != 1)
+			if (fwrite(" ", 1, 1, outfile) == 0)
 				d_log(1, "sfvdata_to_sfv: write failed: %s\n", strerror(errno));
-			if (write(outfd, &crctmp, 8) != 8)
+			//if (write(outfd, &crctmp, 8) != 8)
+			if (fwrite(&crctmp, 8, 1, outfile) == 0)
 				d_log(1, "sfvdata_to_sfv: write failed: %s\n", strerror(errno));
 #if (sfv_cleanup_crlf == TRUE )
-			if (write(outfd, "\r", 1) != 1)
+			//if (write(outfd, "\r", 1) != 1)
+			if (fwrite("\r", 1, 1, outfile) == 0)
 				d_log(1, "sfvdata_to_sfv: write failed: %s\n", strerror(errno));
 #endif
-			if (write(outfd, "\n", 1) != 1)
+			//if (write(outfd, "\n", 1) != 1)
+			if (fwrite("\n", 1, 1, outfile) == 0)
 				d_log(1, "sfvdata_to_sfv: write failed: %s\n", strerror(errno));
 		}
 	}
 	
-	close(outfd);
-	close(infd);
+	//close(outfd);
+	//close(infd);
+	xfclose(source, infile);
+	fclose(outfile);
 
 	if (!dest || !strlen(dest))
 		rename(".tmpsfv", "pzs-ng.sfv");
@@ -219,9 +250,14 @@ delete_sfv(const char *path, struct VARS *raceI)
 
 	SFVDATA		sd;
 
-	if (!(sfvfile = fopen(path, "r"))) {
+	/*if (!(sfvfile = fopen(path, "r"))) {
 		d_log(1, "delete_sfv: Couldn't fopen %s: %s\n", path, strerror(errno));
-		remove_lock(raceI);
+		//remove_lock(raceI);
+		exit(EXIT_FAILURE);
+	}*/
+
+	if (!(sfvfile = xfopen(path, "r"))) {
+		d_log(1, "delete_sfv: Couldn't fopen %s: %s\n", path, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 	
@@ -230,8 +266,9 @@ delete_sfv(const char *path, struct VARS *raceI)
 		if ((f = findfilename(missing_fname, f, raceI)))
 			unlink(missing_fname);
 	}
+	
 	ng_free(f);
-	fclose(sfvfile);
+	xfclose(path, sfvfile);
 }
 
 /*
@@ -245,32 +282,43 @@ void
 read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
 {
 	int		fd;
+	FILE		*leader;
 	struct stat	sb;
 
-	if ((fd = open(path, O_CREAT | O_RDWR, 0666)) == -1) {
+	if ((fd = open(path, O_CREAT, 0666)) == -1) {
 		d_log(1, "read_write_leader: open(%s): %s\n", path, strerror(errno));
 		return;
 	}
+	close(fd);
 	
-	if (!update_lock(raceI, 1, 0)) {
+	/*if (!update_lock(raceI, 1, 0)) {
 		d_log(1, "read_write_leader: Lock is suggested removed. Will comply and exit\n");
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
-	}
+	}*/
 
-	fstat(fd, &sb);
+	if (!(leader = xfopen(path, "r+"))) {
+		d_log(1, "read_write_leader: xfopen(%s) failed\n", path);
+		return;
+	}
+	
+	stat(path, &sb);
 
 	if (sb.st_size == 0) {
 		*raceI->misc.old_leader = '\0';
 	} else {
-		read(fd, &raceI->misc.old_leader, 24);
-		lseek(fd, 0L, SEEK_SET);
+		//read(fd, &raceI->misc.old_leader, 24);
+		//lseek(fd, 0L, SEEK_SET);
+		fread(&raceI->misc.old_leader, 24, 1, leader);
+		fseek(leader, 0L, SEEK_SET);
 	}
 
-	if (write(fd, userI->name, 24) != 24)
+	//if (write(fd, userI->name, 24) != 24)
+	if (fwrite(userI->name, 24, 1, leader) == 0)
 		d_log(1, "read_write_leader: write failed: %s\n", strerror(errno));
 	
-	close(fd);
+	//close(fd);
+	xfclose(path, leader);
 }
 
 /*
@@ -284,6 +332,7 @@ void
 testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 {
 	int		fd, lret, count;
+	FILE		*racefile;
 	char		*realfile, *ext, target[256];
 	unsigned int	Tcrc;
 	struct stat	filestat;
@@ -291,14 +340,19 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 
 	RACEDATA	rd;
 
-	if ((fd = open(locations->race, O_CREAT | O_RDWR, 0666)) == -1) {
+	if ((fd = open(locations->race, O_CREAT, 0666)) == -1) {
 		if (errno != EEXIST) {
 			d_log(1, "testfiles: open(%s): %s\n", locations->race, strerror(errno));
-			remove_lock(raceI);
+			//remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
 	}
-	
+	close(fd);
+
+	if (!(racefile = xfopen(locations->race, "r+"))) {
+		d_log(1, "testfiles: xfopen(%s) failed\n", locations->race);
+		exit(EXIT_FAILURE);
+	}
 
 	realfile = raceI->file.name;
 
@@ -306,21 +360,24 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 		printf("\n");
 
 	count = 0;
-	while ((read(fd, &rd, sizeof(RACEDATA)))) {
-		if (!update_lock(raceI, 1, 0)) {
+	//while ((read(fd, &rd, sizeof(RACEDATA)))) {
+	while ((fread(&rd, sizeof(RACEDATA), 1, racefile))) {
+		/*if (!update_lock(raceI, 1, 0)) {
 			d_log(1, "testfiles: Lock is suggested removed. Will comply and exit\n");
 			remove_lock(raceI);
 			exit(EXIT_FAILURE);
-		}
+		}*/
 
 		d_log(1, "testfiles: Checking '%s' (%d)\n", rd.fname, count);
 		ext = find_last_of(realfile, ".");
 		if (*ext == '.')
 			ext++;
+		
 		strlcpy(raceI->file.name, rd.fname, NAME_MAX);
 		Tcrc = readsfv(locations->sfv, raceI, 0);
 		timenow = time(NULL);
 		stat(rd.fname, &filestat);
+		
 		if (fileexists(rd.fname)) {
 			if (S_ISDIR(filestat.st_mode))
 				rd.status = F_IGNORED;
@@ -373,12 +430,14 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 		if (rd.status == F_BAD) {
 			remove_from_race(locations->race, rd.fname, raceI);
 		} else {
-			if ((lret = lseek(fd, sizeof(RACEDATA) * count, SEEK_SET)) == -1) {
-				d_log(1, "testfiles: lseek: %s\n", strerror(errno));
-				remove_lock(raceI);
+			//if ((lret = lseek(fd, sizeof(RACEDATA) * count, SEEK_SET)) == -1) {
+			if ((lret = fseek(racefile, sizeof(RACEDATA) * count, SEEK_SET)) == -1) {
+				d_log(1, "testfiles: fseek: %s\n", strerror(errno));
+				//remove_lock(raceI);
 				exit(EXIT_FAILURE);
 			}
-			if (write(fd, &rd, sizeof(RACEDATA)) != sizeof(RACEDATA))
+			//if (write(fd, &rd, sizeof(RACEDATA)) != sizeof(RACEDATA))
+			if (fwrite(&rd, sizeof(RACEDATA), 1, racefile) == 0)
 				d_log(1, "testfiles: write failed: %s\n", strerror(errno));
 
 			if (!((timenow == filestat.st_ctime) && (filestat.st_mode & 0111)))
@@ -388,7 +447,8 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	}
 	strlcpy(raceI->file.name, realfile, strlen(realfile)+1);
 	raceI->total.files = raceI->total.files_missing = 0;
-	close(fd);
+	//close(fd);
+	xfclose(locations->race, racefile);
 }
 
 /*
@@ -404,10 +464,11 @@ int
 copysfv(const char *source, const char *target, struct VARS *raceI, const char *path, int reverse)
 {
 	int		infd, outfd, i, retval = 0;
+	FILE		*infile, *outfile;
 	short int	music, rars, video, others, type;
 	
 	char		*ptr, fbuf[2048], fcompare[NAME_MAX];
-	FILE		*insfv;
+	//FILE		*insfv;
 
 	DIR		*dir;
 
@@ -420,6 +481,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI, const char *
 	
 #if ( sfv_cleanup == TRUE )
 	int		tmpfd;
+	FILE		*tmpfp;
 	char		crctmp[8];
 	
 	if ((backup_sfv(source, path, reverse)) == -1) {
@@ -427,35 +489,51 @@ copysfv(const char *source, const char *target, struct VARS *raceI, const char *
 		backup_sfv(source, path, 0);
 	}
 
-	if ((tmpfd = open(".tmpsfv", O_CREAT | O_TRUNC | O_RDWR, 0644)) == -1)
-		d_log(1, "copysfv: open(.tmpsfv): %s\n", strerror(errno));
+	/*if ((tmpfd = open(".tmpsfv", O_CREAT | O_TRUNC | O_RDWR, 0644)) == -1)
+		d_log(1, "copysfv: open(.tmpsfv): %s\n", strerror(errno));*/
+	if (!(tmpfp = fopen(".tmpsfv", "w+")))
+		d_log(1, "copysfv: fopen(.tmpsfv): %s\n", strerror(errno));
+
+	chmod(".tmpsfv", 0666);
 #endif
 
-	if ((infd = open(source, O_RDONLY)) == -1) {
+	/*if ((infd = open(source, O_RDONLY)) == -1) {
 		d_log(1, "copysfv: open(%s): %s\n", source, strerror(errno));
-		remove_lock(raceI);
+		//remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
 	
 	if ((outfd = open(target, O_CREAT | O_TRUNC | O_RDWR, 0666)) == -1) {
 		d_log(1, "copysfv: open(%s): %s\n", target, strerror(errno));
-		remove_lock(raceI);
+		//remove_lock(raceI);
+		exit(EXIT_FAILURE);
+	}*/
+
+	if (!(infile = xfopen(source, "r"))) {
+		d_log(1, "copysfv: xfopen(%s) failed\n", source);
 		exit(EXIT_FAILURE);
 	}
+	
+	if (!(outfile = xfopen(target, "w+"))) {
+		d_log(1, "copysfv: xfopen(%s) failed\n", target);
+		exit(EXIT_FAILURE);
+	}
+
+	chmod(target, 0666);
 	
 	video = music = rars = others = type = 0;
 	bzero(fcompare, NAME_MAX);
 
 	dir = opendir(".");
 
-	if (!update_lock(raceI, 1, 0)) {
+	/*if (!update_lock(raceI, 1, 0)) {
 		d_log(1, "copysfv: Lock is suggested removed. Will comply and exit\n");
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
-	}
+	}*/
 
-	insfv = fdopen(infd, "r");
-	while ((fgets(fbuf, sizeof(fbuf), insfv))) {
+	//insfv = fdopen(infd, "r");
+	while ((fgets(fbuf, sizeof(fbuf), infile))) {
 		
 		/* remove comment */
 		if ((ptr = find_first_of(fbuf, ";")))
@@ -545,11 +623,14 @@ copysfv(const char *source, const char *target, struct VARS *raceI, const char *
 //#if ( sfv_dupecheck == TRUE )
 				/* read from sfvdata - no parsing */
 				skip = 0;
-				lseek(outfd, 0L, SEEK_SET);
-				while (read(outfd, &tempsd, sizeof(SFVDATA)))
+				//lseek(outfd, 0L, SEEK_SET);
+				fseek(outfile, 0L, SEEK_SET);
+				//while (read(outfd, &tempsd, sizeof(SFVDATA)))
+				while (fread(&tempsd, sizeof(SFVDATA), 1, outfile))
 					if (!strcmp(sd.fname, tempsd.fname) || ( sd.crc32 == tempsd.crc32 && sd.crc32))
 						skip = 1;
-				lseek(outfd, 0L, SEEK_END);
+				//lseek(outfd, 0L, SEEK_END);
+				fseek(outfile, 0L, SEEK_END);
 
 #if ( sfv_dupecheck == TRUE )
 				if (skip)
@@ -560,19 +641,25 @@ copysfv(const char *source, const char *target, struct VARS *raceI, const char *
 
 #if ( sfv_cleanup == TRUE )
 				/* write good stuff to .tmpsfv */
-				if (tmpfd != -1) {
+				//if (tmpfd != -1) {
+				if (tmpfp != NULL) {
 					sprintf(crctmp, "%.8x", sd.crc32);
-					if (write(tmpfd, sd.fname, strlen(sd.fname)) != (int)strlen(sd.fname))
+					//if (write(tmpfd, sd.fname, strlen(sd.fname)) != (int)strlen(sd.fname))
+					if (fwrite(sd.fname, strlen(sd.fname), 1, tmpfp) == 0)
 						d_log(1, "copysfv: write failed: %s\n", strerror(errno));
-					if (write(tmpfd, " ", 1) != 1)
+					//if (write(tmpfd, " ", 1) != 1)
+					if (fwrite(" ", 1, 1, tmpfp) == 0)
 						d_log(1, "copysfv: write failed: %s\n", strerror(errno));
-					if (write(tmpfd, crctmp, 8) != 8)
+					//if (write(tmpfd, crctmp, 8) != 8)
+					if (fwrite(crctmp, 8, 1, tmpfp) == 0)
 						d_log(1, "copysfv: write failed: %s\n", strerror(errno));
 #if (sfv_cleanup_crlf == TRUE )
-					if (write(tmpfd, "\r", 1) != 1)
+					//if (write(tmpfd, "\r", 1) != 1)
+					if (fwrite("\r", 1, 1, tmpfp) == 0)
 						d_log(1, "copysfv: write failed: %s\n", strerror(errno));
 #endif
-					if (write(tmpfd, "\n", 1) != 1)
+					//if (write(tmpfd, "\n", 1) != 1)
+					if (fwrite("\n", 1, 1, tmpfp) == 0)
 						d_log(1, "copysfv: write failed: %s\n", strerror(errno));
 				}
 #endif
@@ -601,7 +688,8 @@ copysfv(const char *source, const char *target, struct VARS *raceI, const char *
 					create_missing(sd.fname);
 #endif
 
-				if (write(outfd, &sd, sizeof(SFVDATA)) != sizeof(SFVDATA))
+				//if (write(outfd, &sd, sizeof(SFVDATA)) != sizeof(SFVDATA))
+				if (fwrite(&sd, sizeof(SFVDATA), 1, outfile) == 0)
 					d_log(1, "copysfv: write failed: %s\n", strerror(errno));
 			}
 		}
@@ -622,23 +710,27 @@ copysfv(const char *source, const char *target, struct VARS *raceI, const char *
 #if ( sfv_cleanup == FALSE )
 END:
 #endif
-	close(infd);
+	//close(infd);
+	xfclose(source, infile);
 #if ( sfv_cleanup == TRUE )
-	if (tmpfd != -1) {
-		close(tmpfd);
+	//if (tmpfd != -1) {
+	//	close(tmpfd);
+	if (tmpfp != NULL) {
+		fclose(tmpfp);
 		unlink(source);
 		rename(".tmpsfv", source);
 	}
 #endif
 	
 	closedir(dir);
-	close(outfd);
-	if (!update_lock(raceI, 1, type)) {
+	//close(outfd);
+	xfclose(target, outfile);
+	/*if (!update_lock(raceI, 1, type)) {
 		d_log(1, "copysfv: Lock is suggested removed. Will comply and exit\n");
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
-	}
-	raceI->lock.data_type = type;
+	}*/
+	//raceI->lock.data_type = type;
 	return retval;
 }
 
@@ -649,10 +741,10 @@ END:
  * alphabetical order.
  */
 void 
-create_indexfile(const char *racefile, struct VARS *raceI, char *f)
+create_indexfile(const char *path, struct VARS *raceI, char *f)
 {
 	int		fd;
-	FILE		*r;
+	FILE		*r, *racefile;
 	int		l, n, m, c;
 	int		pos[raceI->total.files],
 			t_pos[raceI->total.files];
@@ -660,28 +752,35 @@ create_indexfile(const char *racefile, struct VARS *raceI, char *f)
 	
 	RACEDATA	rd;
 
-	if ((fd = open(racefile, O_RDONLY)) == -1) {
+	/*if ((fd = open(racefile, O_RDONLY)) == -1) {
 		d_log(1, "create_indexfile: open(%s): %s\n", racefile, strerror(errno));
-		remove_lock(raceI);
+		//remove_lock(raceI);
+		exit(EXIT_FAILURE);
+	}*/
+
+	if (!(racefile = xfopen(path, "r"))) {
+		d_log(1, "create_indexfile: xfopen(%s) failed\n", path);
 		exit(EXIT_FAILURE);
 	}
 
-	if (!update_lock(raceI, 1, 0)) {
+	/*if (!update_lock(raceI, 1, 0)) {
 		d_log(1, "create_indexfile: Lock is suggested removed. Will comply and exit\n");
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
-	}
+	}*/
 
 	/* Read filenames from race file */
 	c = 0;
-	while ((read(fd, &rd, sizeof(RACEDATA)))) {
+	//while ((read(fd, &rd, sizeof(RACEDATA)))) {
+	while ((fread(&rd, sizeof(RACEDATA), 1, racefile))) {
 		if (rd.status == F_CHECKED) {
 			strlcpy(fname[c], rd.fname, NAME_MAX);
 			t_pos[c] = 0;
 			c++;
 		}
 	}
-	close(fd);
+	//close(fd);
+	xfclose(path, racefile);
 
 	/* Sort with cache */
 	for (n = 0; n < c; n++) {
@@ -696,12 +795,12 @@ create_indexfile(const char *racefile, struct VARS *raceI, char *f)
 	}
 
 	/* Write to file and free memory */
-	if ((r = fopen(f, "w"))) {
+	if ((r = xfopen(f, "w"))) {
 		for (n = 0; n < c; n++) {
 			m = pos[n];
 			fprintf(r, "%s\n", fname[m]);
 		}
-		fclose(r);
+		xfclose(f, r);
 	}
 }
 
@@ -721,7 +820,7 @@ clear_file(const char *path, char *f)
 
 	RACEDATA	rd;
 
-	if ((file = fopen(path, "r+"))) {
+	if ((file = xfopen(path, "r+"))) {
 		while (fread(&rd, sizeof(RACEDATA), 1, file)) {
 #if (sfv_cleanup_lowercase)
 			if (strncasecmp(rd.fname, f, NAME_MAX) == 0) {
@@ -736,7 +835,7 @@ clear_file(const char *path, char *f)
 			}
 			count++;
 		}
-		fclose(file);
+		xfclose(path, file);
 	}
 
 	return n;
@@ -752,7 +851,7 @@ match_file(char *rname, char *f)
 	RACEDATA	rd;
 
 	n = 0;
-	if ((file = fopen(rname, "r+"))) {
+	if ((file = xfopen(rname, "r+"))) {
 		while (fread(&rd, sizeof(RACEDATA), 1, file)) {
 			if (strncmp(rd.fname, f, NAME_MAX) == 0 && rd.status == F_CHECKED) {
 				d_log(1, "match_file: '%s' == '%s'\n", rd.fname, f);
@@ -760,7 +859,7 @@ match_file(char *rname, char *f)
 				break;
 			}
 		}
-		fclose(file);
+		xfclose(rname, file);
 	} else {
 		d_log(1, "match_file: Error fopen(%s): %s\n", rname, strerror(errno));
 	}
@@ -778,21 +877,24 @@ void
 readrace(const char *path, struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI)
 {
 	int		fd, rlength = 0;
+	FILE		*file;
 
 	RACEDATA	rd;
 
-	if ((fd = open(path, O_RDONLY)) != -1) {
+	//if ((fd = open(path, O_RDONLY)) != -1) {
+	if ((file = xfopen(path, "r"))) {
 
-		if (!update_lock(raceI, 1, 0)) {
+		/*if (!update_lock(raceI, 1, 0)) {
 			d_log(1, "readrace: Lock is suggested removed. Will comply and exit\n");
 			remove_lock(raceI);
 			exit(EXIT_FAILURE);
-		}
+		}*/
 
-		while ((rlength = read(fd, &rd, sizeof(RACEDATA)))) {
-			if (rlength != sizeof(RACEDATA)) {
+		//while ((rlength = read(fd, &rd, sizeof(RACEDATA)))) {
+		while ((rlength = fread(&rd, sizeof(RACEDATA), 1, file))) {
+			if (rlength != 1) {
 				d_log(1, "readrace: Agh! racedata seems to be broken!\n");
-				remove_lock(raceI);
+				//remove_lock(raceI);
 				exit(EXIT_FAILURE);
 			}
 			switch (rd.status) {
@@ -810,7 +912,8 @@ readrace(const char *path, struct VARS *raceI, struct USERINFO *userI, struct GR
 					break;
 			}
 		}
-		close(fd);
+		//close(fd);
+		xfclose(path, file);
 	}
 }
 
@@ -823,38 +926,47 @@ void
 writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char status)
 {
 	int		fd, count, ret;
+	FILE		*racefile;
 
 	RACEDATA	rd;
 
 	/* create file if it doesn't exist */
-	if ((fd = open(path, O_CREAT | O_RDWR, 0666)) == -1) {
+	if ((fd = open(path, O_CREAT, 0666)) == -1) {
 		if (errno != EEXIST) {
 			d_log(1, "writerace: open(%s): %s\n", path, strerror(errno));
-			remove_lock(raceI);
+			//remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
 	}
+	close(fd);
 
-	if (!update_lock(raceI, 1, 0)) {
+	/*if (!update_lock(raceI, 1, 0)) {
 		d_log(1, "writerace: Lock is suggested removed. Will comply and exit\n");
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
-	}
+	}*/
 
+	if (!(racefile = xfopen(path, "r+"))) {
+		d_log(1, "writerace: xfopen(%s) failed\n", path);
+		exit(EXIT_FAILURE);
+	}
+	
 	/* find an existing entry that we will overwrite */
 	count = 0;
-	while ((ret = read(fd, &rd, sizeof(RACEDATA)))) {
-		if (ret == -1) {
+	//while ((ret = read(fd, &rd, sizeof(RACEDATA)))) {
+	while ((fread(&rd, sizeof(RACEDATA), 1, racefile))) {
+		/*if (ret == -1) {
 			d_log(1, "writerace: read(%s): %s\n", path, strerror(errno));
-			remove_lock(raceI);
+			//remove_lock(raceI);
 			exit(EXIT_FAILURE);
-		}
+		}*/
 #if (sfv_cleanup_lowercase)
 		if (strncasecmp(rd.fname, raceI->file.name, NAME_MAX) == 0) {
 #else
 		if (strncmp(rd.fname, raceI->file.name, NAME_MAX) == 0) {
 #endif
-			lseek(fd, sizeof(RACEDATA) * count, SEEK_SET);
+			//lseek(fd, sizeof(RACEDATA) * count, SEEK_SET);
+			fseek(racefile, sizeof(RACEDATA)*count, SEEK_SET);
 			break;
 		}
 		count++;
@@ -873,45 +985,54 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	rd.size = raceI->file.size;
 	rd.speed = raceI->file.speed;
 	rd.start_time = raceI->total.start_time;
-
-	if (write(fd, &rd, sizeof(RACEDATA)) != sizeof(RACEDATA))
+	if (fwrite(&rd, sizeof(RACEDATA), 1, racefile) == 0)
 		d_log(1, "writerace: write failed: %s\n", strerror(errno));
 
-	close(fd);
+	//close(fd);
+	xfclose(path, racefile);
 }
 
 void 
 write_bitrate_in_race(const char *path, struct VARS *raceI)
 {
 	int		fd, count, ret;
+	FILE		*racefile;
 
 	RACEDATA	rd;
 
 	/* create file if it doesn't exist */
-	if ((fd = open(path, O_RDWR, 0666)) == -1) {
+	if ((fd = open(path, O_CREAT, 0666)) == -1) {
 		if (errno != EEXIST) {
 			d_log(1, "write_bitrate_in_race: open(%s): %s\n", path, strerror(errno));
-			remove_lock(raceI);
+			//remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
 	}
+	close(fd);
 
-	if (!update_lock(raceI, 1, 0)) {
+	/*if (!update_lock(raceI, 1, 0)) {
 		d_log(1, "write_bitrate_in_race: Lock is suggested removed. Will comply and exit\n");
 		remove_lock(raceI);
+		exit(EXIT_FAILURE);
+	}*/
+
+	if (!(racefile = xfopen(path, "r+"))) {
+		d_log(1, "write_bitrate_in_race: xfopen(%s) failed\n", path);
 		exit(EXIT_FAILURE);
 	}
 
 	/* find an existing entry that we will overwrite */
 	count = 0;
-	while ((ret = read(fd, &rd, sizeof(RACEDATA)))) {
-		if (ret == -1) {
+	//while ((ret = read(fd, &rd, sizeof(RACEDATA)))) {
+	while ((fread(&rd, sizeof(RACEDATA), 1, racefile))) {
+		/*if (ret == -1) {
 			d_log(1, "write_bitrate_in_race: read(%s): %s\n", path, strerror(errno));
-			remove_lock(raceI);
+			//remove_lock(raceI);
 			exit(EXIT_FAILURE);
-		}
+		}*/
 		if (strncmp(rd.fname, raceI->file.name, NAME_MAX) == 0) {
-			lseek(fd, sizeof(RACEDATA) * count, SEEK_SET);
+			//lseek(fd, sizeof(RACEDATA) * count, SEEK_SET);
+			fseek(racefile, sizeof(RACEDATA)*count, SEEK_SET);
 			break;
 		}
 		count++;
@@ -920,47 +1041,61 @@ write_bitrate_in_race(const char *path, struct VARS *raceI)
 	if (*raceI->audio.bitrate)
 		rd.bitrate = atol(raceI->audio.bitrate);
 
-	if (write(fd, &rd, sizeof(RACEDATA)) != sizeof(RACEDATA))
+	//if (write(fd, &rd, sizeof(RACEDATA)) != sizeof(RACEDATA))
+	if (fwrite(&rd, sizeof(RACEDATA), 1, racefile) == 0)
 		d_log(1, "write_bitrate_in_race: write failed: %s\n", strerror(errno));
 	
-	close(fd);
+	//close(fd);
+	xfclose(path, racefile);
 }
 
 int
 read_bitrate_in_race(const char *path, struct VARS *raceI)
 {
 	int		fd, count, ret, bitrate;
+	FILE		*racefile;
 
 	RACEDATA	rd;
 
-	if ((fd = open(path, O_RDONLY)) == -1) {
+	/*if ((fd = open(path, O_RDONLY)) == -1) {
 		if (errno != EEXIST) {
 			d_log(1, "read_bitrate_in_race: open(%s): %s\n", path, strerror(errno));
-			remove_lock(raceI);
+			//remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
-	}
+	}*/
 
-	if (!update_lock(raceI, 1, 0)) {
+	/*if (!update_lock(raceI, 1, 0)) {
 		d_log(1, "read_bitrate_in_race: Lock is suggested removed. Will comply and exit\n");
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
-	}
+	}*/
 
-	count = 0;
-	bitrate = 0;
-	while ((ret = read(fd, &rd, sizeof(RACEDATA)))) {
-		if (ret == -1) {
+	if (!(racefile = xfopen(path, "r+"))) {
+		d_log(1, "read_bitrate_in_race: xfopen(%s) failed\n", path);
+		exit(EXIT_FAILURE);
+	}
+	
+	count = bitrate = 0;
+	//while ((ret = read(fd, &rd, sizeof(RACEDATA)))) {
+	while ((fread(&rd, sizeof(RACEDATA), 1, racefile))) {
+		/*if (ret == -1) {
 			d_log(1, "read_bitrate_in_race: read(%s): %s\n", path, strerror(errno));
-			remove_lock(raceI);
+			//remove_lock(raceI);
 			exit(EXIT_FAILURE);
-		}
+		}*/
+	
 		if (rd.bitrate)
 			count++;
 		bitrate = bitrate + rd.bitrate;
 	}
-	close(fd);
-	return bitrate / count;
+	//close(fd);
+	xfclose(path, racefile);
+	//printf("ADADS\n");
+	if (count)
+		return bitrate / count;
+	else
+		return 0;
 }
 
 
@@ -969,15 +1104,22 @@ void
 remove_from_race(const char *path, const char *f, struct VARS *raceI)
 {
 	int		fd, i, max;
+	FILE		*racefile;
 	
 	RACEDATA	rd, *tmprd = 0;
 	
-	if ((fd = open(path, O_RDONLY)) == -1) {
+	/*if ((fd = open(path, O_RDONLY)) == -1) {
 		d_log(1, "remove_from_race: open(%s): %s\n", path, strerror(errno));
 		return;
-	}
+	}*/
 	
-	for (i = 0; (read(fd, &rd, sizeof(RACEDATA)));) {
+	if (!(racefile = xfopen(path, "r"))) {
+		d_log(1, "remove_from_race: xfopen(%s) failed\n", path);
+		exit(EXIT_FAILURE);
+	}
+
+	//for (i = 0; (read(fd, &rd, sizeof(RACEDATA)));) {
+	for (i = 0; fread(&rd, sizeof(RACEDATA), 1, racefile); ) {
 #if (sfv_cleanup_lowercase)
 		if (strcasecmp(rd.fname, f) != 0) {
 #else
@@ -989,61 +1131,93 @@ remove_from_race(const char *path, const char *f, struct VARS *raceI)
 		}
 	}
 
-	close(fd);
+	//close(fd);
+	xfclose(path, racefile);
 	
-	if ((fd = open(path, O_TRUNC | O_WRONLY)) == -1) {
+	/*if ((fd = open(path, O_TRUNC | O_WRONLY)) == -1) {
 		d_log(1, "remove_from_race: open(%s): %s\n", path, strerror(errno));
+		ng_free(tmprd);
+		return;
+	}*/
+	
+	if (!(racefile = xfopen(path, "w+"))) {
 		ng_free(tmprd);
 		return;
 	}
 	
 	max = i;
 	for (i = 0; i < max; i++)
-		if (write(fd, &tmprd[i], sizeof(RACEDATA)) != sizeof(RACEDATA))
+		//if (write(fd, &tmprd[i], sizeof(RACEDATA)) != sizeof(RACEDATA))
+		if (fwrite(&tmprd[i], sizeof(RACEDATA), 1, racefile) == 0)
 			d_log(1, "remove_from_race: write failed: %s\n", strerror(errno));
 	
-	close(fd);
+	//close(fd);
 	ng_free(tmprd);
+	xfclose(path, racefile);
 }
 
 int
 verify_racedata(const char *path, struct VARS *raceI)
 {
 	int		fd, i, ret, max;
+	FILE		*racefile;
 	
 	RACEDATA	rd, *tmprd = 0;
 	
-	if ((fd = open(path, O_RDWR, 0666)) == -1) {
+	/*if ((fd = open(path, O_RDWR, 0666)) == -1) {
 		d_log(1, "verify_racedata: open(%s): %s\n", path, strerror(errno));
 		return 0;
+	}*/
+
+	if ((fd = open(path, O_CREAT, 0666)) == -1) {
+		if (errno != EEXIST) {
+			d_log(1, "testfiles: open(%s): %s\n", path, strerror(errno));
+			//remove_lock(raceI);
+			exit(EXIT_FAILURE);
+		}
 	}
 	
-	for (i = 0; (ret = read(fd, &rd, sizeof(RACEDATA)));) {
+	if (!(racefile = xfopen(path, "r+"))) {
+		d_log(1, "verify_racedata: xfopen(%s) failed\n", path);
+		exit(EXIT_FAILURE);
+	}
+	
+	//for (i = 0; (ret = read(fd, &rd, sizeof(RACEDATA)));) {
+	for (i = 0; fread(&rd, sizeof(RACEDATA), 1, racefile); ) {
 		if (fileexists(rd.fname)) {
 			tmprd = ng_realloc(tmprd, sizeof(RACEDATA)*(i+1), 0, 1, raceI, 0);
 			memcpy(&tmprd[i], &rd, sizeof(RACEDATA));
 			i++;
 		} else if (rd.fname) {
-			d_log(1, "verify_racedata: Oops! %s is missing - removing from racedata (ret=%d)\n", rd.fname, ret);
+			//d_log(1, "verify_racedata: Oops! %s is missing - removing from racedata (ret=%d)\n", rd.fname, ret);
+			d_log(1, "verify_racedata: Oops! %s is missing - removing from racedata\n", rd.fname);
 			create_missing(rd.fname);
 		}
 	}
 	
-	close(fd);
+	//close(fd);
+	xfclose(path, racefile);
 	
-	if ((fd = open(path, O_TRUNC | O_WRONLY)) == -1) {
+	/*if ((fd = open(path, O_TRUNC | O_WRONLY)) == -1) {
 		d_log(1, "verify_racedata: open(%s): %s\n", path, strerror(errno));
+		ng_free(tmprd);
+		return 0;
+	}*/
+	
+	if (!(racefile = xfopen(path, "w+"))) {
 		ng_free(tmprd);
 		return 0;
 	}
 	
 	max = i;
 	for (i = 0; i < max; i++)
-		if (write(fd, &tmprd[i], sizeof(RACEDATA)) != sizeof(RACEDATA))
+		//if (write(fd, &tmprd[i], sizeof(RACEDATA)) != sizeof(RACEDATA))
+		if (fwrite(&tmprd[i], sizeof(RACEDATA), 1, racefile) == 0)
 			d_log(1, "verify_racedata: write failed: %s\n", strerror(errno));
 	
-	close(fd);
+	//close(fd);
 	ng_free(tmprd);
+	xfclose(path, racefile);
 
 	return 1;
 }

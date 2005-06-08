@@ -73,26 +73,114 @@ prestrip_whitespaces(char *s)
 	return s;
 }
 
-/* exclusive write lock */
-void
-xlock(struct flock *fl, int fd, short type)
+/* Create a .lock file for "path", which is
+ * the full path to the file.
+ *
+ * returns -1 on failure, 0 on success
+ */
+int
+xlock(const char *path)
 {
-	fl->l_start = fl->l_len = fl->l_pid = 0;
-	fl->l_type = type;
-	fl->l_whence = SEEK_SET;
-	
-	if (fcntl(fd, F_SETLKW, fl) == -1) {
-		d_log(1, "xlock: fcntl: %s\n", strerror(errno));
-	}
-}	
+	static int status, cnt = 0;
+	static struct stat sb;
+	static char *lockfile;
 
-/* unlock exclusive lock */
-void
-xunlock(struct flock *fl, int fd)
-{
-	fl->l_type = F_UNLCK;
-	if (fcntl(fd, F_SETLK, fl) == -1) {
-		d_log(1, "xunlock: fcntl: %s\n", strerror(errno));
+	if (stat(path, &sb) == -1) {
+		d_log(1, "xlock(%s): stat(%s, %p): %s\n",
+				path, path, &sb, strerror(errno));
+		return -1;
 	}
+
+	if (sb.st_nlink == 1) {
+		
+		/* the length of ".lock" is 5, and \0 is 1 => 6 */
+		lockfile = malloc(strlen(path)+6);
+		sprintf(lockfile, "%s.lock", path);
+
+		/* remove .lock file if it exists and is older than
+		 * 1 second */
+		if (stat(lockfile, &sb) != -1)
+			if (time(NULL)-sb.st_mtime > 1)
+				xunlock(path);
+	
+		do {
+			
+			status = link(path, lockfile);
+			
+			/* .lock file created */
+			if (status == 0)
+				break;
+
+			usleep(10);
+			cnt++;
+
+		} while (status == -1 && errno == EEXIST &&
+				cnt < 100);
+		
+		free(lockfile);
+			
+		if (status != 0) {
+			d_log(1, "xlock(%s): link(%s, %s.lock): %s\n",
+					path, path, path, strerror(errno));
+			return -1;
+		}
+	
+	}
+	
+	return 0;
+}
+
+/* remove .lock file for "path".
+ *
+ * to the caller it doesn't matter
+ */
+int
+xunlock(const char *path)
+{
+	int status = 0;
+	char *lockfile;
+	
+	lockfile = malloc(strlen(path)+6);
+	sprintf(lockfile, "%s.lock", path);
+
+	status = unlink(lockfile);
+
+	free(lockfile);
+		
+	if (status == -1)
+		d_log(1, "xunlock(%s): unlink(%s.lock): %s\n",
+				path, path, strerror(errno));
+	
+	return status;
+}
+
+FILE *
+xfopen(const char *path, const char *mode)
+{
+	FILE *fp = NULL;
+
+	if ((fp = fopen(path, mode)) != NULL)
+		xlock(path);
+	else
+		d_log(1, "xfopen(%s, %s): fopen(): %s\n",
+				path, mode, strerror(errno));
+	
+	return fp;
+}
+
+int
+xfclose(const char *path, FILE *fp)
+{
+	int status;
+
+	status = fclose(fp);
+	
+	if (status == 0)
+		xunlock(path);
+	else
+		d_log(1, "xfclose(%s, %p): fclose(): %s\n",
+				path, fp, strerror(errno));
+	
+	return status;
 }
 
