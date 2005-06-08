@@ -1094,6 +1094,7 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 		cnt = 0;
 		while (cnt < 20 && link(raceI->lock.headpath, lockfile)) {
 			d_log(1, "create_lock: waiting for .lock: %s\n", strerror(errno));
+			cnt++;
 			usleep(1000000);
 		}
 		if (cnt == 20 ) {
@@ -1203,7 +1204,7 @@ remove_lock(struct VARS *raceI)
 	struct stat	sp;
 	char		lockfile[PATH_MAX + 1];
 
-	if ((fd = open(raceI->lock.headpath, O_RDWR | O_EXLOCK, 0666)) == -1) {
+	if ((fd = open(raceI->lock.headpath, O_RDWR, 0666)) == -1) {
 		d_log(1, "remove_lock: open(%s): %s\n", raceI->lock.headpath, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
@@ -1214,8 +1215,10 @@ remove_lock(struct VARS *raceI)
 		if (!stat(lockfile, &sp) && (time(NULL) - sp.st_ctime >= max_seconds_wait_for_lock / 2))
 			unlink(lockfile);
 		cnt = 0;
-		while (cnt < 20 && link(raceI->lock.headpath, lockfile))
+		while (cnt < 20 && link(raceI->lock.headpath, lockfile)) {
+			cnt++;
 			usleep(1000000);
+		}
 		if (cnt == 20 ) {
 			d_log(1, "remove_lock: link failed: %s\n", strerror(errno));
 			exit(EXIT_FAILURE);
@@ -1263,7 +1266,7 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 		return 1;
 	}
 
-	if ((fd = open(raceI->lock.headpath, O_RDWR | O_EXLOCK, 0666)) == -1) {
+	if ((fd = open(raceI->lock.headpath, O_RDWR, 0666)) == -1) {
 		d_log(1, "update_lock: open(%s): %s\n", raceI->lock.headpath, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
@@ -1271,8 +1274,10 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 	if (!stat(lockfile, &sp) && (time(NULL) - sp.st_ctime >= max_seconds_wait_for_lock / 2))
 		unlink(lockfile);
 	cnt = 0;
-	while (cnt < 20 && link(raceI->lock.headpath, lockfile))
+	while (cnt < 20 && link(raceI->lock.headpath, lockfile)) {
+		cnt++;
 		usleep(1000000);
+	}
 	if (cnt == 20 ) {
 		d_log(1, "remove_lock: link failed: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
