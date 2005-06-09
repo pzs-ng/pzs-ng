@@ -1,4 +1,5 @@
 v1.xx	:
+	  zipscript: change: replaced the complex file locking mechanism with an easier one, to keep unwanted bugs out. introduced the setting max_age_for_lock_file which specifies how old a lock file can be before it's ignored.
 	  zipscript: new: added the option debug_level which specifies the verbosity of debug messages.
 	  zipscript: change: removed the ss5 specific code from all, except sitewho. This means that the output to the bot is no longer ss5 compatible.
 	  zipscript: new: feature to use filetypes instf dirs when creating no-nfo symlinks.

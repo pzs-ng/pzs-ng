@@ -98,9 +98,9 @@ xlock(const char *path)
 		sprintf(lockfile, "%s.lock", path);
 
 		/* remove .lock file if it exists and is older than
-		 * 1 second */
+		 * max_age_for_lock_file second(s) */
 		if (stat(lockfile, &sb) != -1)
-			if (time(NULL)-sb.st_mtime > 1)
+			if (time(NULL)-sb.st_mtime > max_age_for_lock_file)
 				xunlock(path);
 	
 		do {
@@ -111,7 +111,7 @@ xlock(const char *path)
 			if (status == 0)
 				break;
 
-			usleep(10);
+			usleep(100);
 			cnt++;
 
 		} while (status == -1 && errno == EEXIST &&
