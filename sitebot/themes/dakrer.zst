@@ -108,11 +108,11 @@ announce.WIPE					= "[%b{%section}] [%b{WIPE}] %b{%relname} was wiped by %b{%u_n
 announce.WIPE-r					= "[%b{%section}] [%b{WIPE-r}] %b{%relname} and all subdirectories was wiped by %b{%u_name}"
 
 ## Custom announcements (see dZSbot.defaults.conf for info on how to enable)
-announce.COVERS					= "[%b{%section}] [%c1{COVERS}] %path/%b{%reldir} (created by %b{%u_name})"
-announce.NEWCD					= "[%b{%section}] [%c1{NEW CD}] %path/%b{%reldir} (created by %b{%u_name})"
-announce.NEWDISC				= "[%b{%section}] [%c1{NEW DISC}] %path/%b{%reldir} (created by %b{%u_name})"
-announce.SAMPLE					= "[%b{%section}] [%c1{SAMPLE DIR}] %path/%b{%reldir} (created by %b{%u_name})"
-announce.SUBTITLES				= "[%b{%section}] [%c1{SUBTITLES}] %path/%b{%reldir} (created by %b{%u_name})"
+announce.COVERS					= "[%b{%section}] [%c1{COVERS}] %relfull/%b{%reldir} (created by %b{%u_name})"
+announce.NEWCD					= "[%b{%section}] [%c1{NEW CD}] %relfull/%b{%reldir} (created by %b{%u_name})"
+announce.NEWDISC				= "[%b{%section}] [%c1{NEW DISC}] %relfull/%b{%reldir} (created by %b{%u_name})"
+announce.SAMPLE					= "[%b{%section}] [%c1{SAMPLE DIR}] %relfull/%b{%reldir} (created by %b{%u_name})"
+announce.SUBTITLES				= "[%b{%section}] [%c1{SUBTITLES}] %relfull/%b{%reldir} (created by %b{%u_name})"
 
 ## Special zipscript announcements
 announce.DOUBLESFV				= "[%b{DOUBLE SFV}] %b{%u_name} tried to upload a dupe sfv"
