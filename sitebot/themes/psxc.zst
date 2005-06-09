@@ -241,12 +241,12 @@ announce.UPTIME					= "[%b{UPTIME}] System: %time, %b{%users} user(s), load: %lo
 
 ## IRC Command: !new
 announce.NEW					= "%b{(NEW)} Latest Releases In: %b{%section}"
-announce.NEW_BODY				= "%b{-} %num. %path/%b{%reldir} by %b{%u_name}/%g_name (%b{%files}F/%b{%mbytes}MB/%age)"
+announce.NEW_BODY				= "%b{-} %num. %relfull/%b{%reldir} by %b{%u_name}/%g_name (%b{%files}F/%b{%mbytes}MB/%age)"
 announce.NEW_NONE				= "%b{-} No releases found."
 
 ## IRC Command: !dupe/!search
 announce.SEARCH					= "%b{(SEARCH)} Searching for: %pattern"
-announce.SEARCH_BODY				= "%b{-} %num. %path/%b{%reldir} (%b{%files}F/%b{%mbytes}MB/%age)"
+announce.SEARCH_BODY				= "%b{-} %num. %relfull/%b{%reldir} (%b{%files}F/%b{%mbytes}MB/%age)"
 announce.SEARCH_NONE				= "%b{-} No matching results found."
 
 ## IRC Command: !nukes
