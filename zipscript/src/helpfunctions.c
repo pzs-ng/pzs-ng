@@ -159,9 +159,12 @@ xfopen(const char *path, const char *mode)
 {
 	FILE *fp = NULL;
 
-	if ((fp = fopen(path, mode)) != NULL)
-		xlock(path);
-	else
+	if ((fp = fopen(path, mode)) != NULL) {
+		if (xlock(path) == -1) {
+			fclose(fp);
+			return NULL;
+		}
+	} else
 		d_log(1, "xfopen(%s, %s): fopen(): %s\n",
 				path, mode, strerror(errno));
 	

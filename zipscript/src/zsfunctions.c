@@ -1234,7 +1234,7 @@ ng_realloc(void *mempointer, int memsize, int zero_it, int exit_on_error, struct
 	if (mempointer == NULL) {
 		d_log(1, "ng_realloc: realloc failed: %s\n", strerror(errno));
 		if (exit_on_error) {
-			remove_lock(raceI);
+			//remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
 	} else if (zero_it)

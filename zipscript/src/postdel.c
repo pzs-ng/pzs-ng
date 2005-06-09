@@ -141,7 +141,7 @@ main(int argc, char **argv)
 	d_log(1, "postdel: Creating directory to store racedata in\n");
 	maketempdir(g.l.path);
 
-	d_log(1, "postdel: Locking release\n");
+	/*d_log(1, "postdel: Locking release\n");
 	while(1) {
 		if ((m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 3, 0))) {
 			d_log(1, "postdel: Failed to lock release.\n");
@@ -197,7 +197,7 @@ main(int argc, char **argv)
 		usleep(10000);
 		if (update_lock(&g.v, 1, 0) != -1)
 			break;
-	}
+	}*/
 
 	if (matchpath(nocheck_dirs, g.l.path) || matchpath(speedtest_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
 		d_log(1, "postdel: Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
@@ -208,7 +208,7 @@ main(int argc, char **argv)
 		if (remove_dot_debug_on_delete)
 			unlink(".debug");
 
-		remove_lock(&g.v);
+		//remove_lock(&g.v);
 		return 0;
 
 	}
@@ -525,7 +525,7 @@ main(int argc, char **argv)
 	ng_free(g.l.sfv);
 	ng_free(g.l.leader);
 
-	remove_lock(&g.v);
+	//remove_lock(&g.v);
 
 	d_log(1, "postdel: Exit 0\n");
 

@@ -437,7 +437,7 @@ check_filesize(GLOBAL *g, const char *filename, struct stat *fileinfo)
 
 }
 
-void
+/*void
 lock_release(GLOBAL *g)
 {
 
@@ -509,7 +509,7 @@ lock_release(GLOBAL *g)
 			
 	}
 
-}
+}*/
 
 void
 set_uid_gid(void)

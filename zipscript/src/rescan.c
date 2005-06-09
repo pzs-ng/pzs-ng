@@ -127,7 +127,7 @@ main(int argc, char *argv[])
 	d_log(1, "rescan: Creating directory to store racedata in\n");
  	maketempdir(g.l.path);
 
-	d_log(1, "rescan: Locking release\n");
+	/*d_log(1, "rescan: Locking release\n");
 	while (1) {
 		if ((k = create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 3, 0))) {
 			d_log(1, "rescan: Failed to lock release.\n");
@@ -169,7 +169,7 @@ main(int argc, char *argv[])
 		usleep(10000);
 		if (update_lock(&g.v, 1, 0) != -1)
 			break;
-	}
+	}*/
 
 	move_progress_bar(1, &g.v, g.ui, g.gi);
 	if (g.l.incomplete)
@@ -212,7 +212,7 @@ main(int argc, char *argv[])
 			ng_free(g.l.sfv);
 			ng_free(g.l.leader);
 			
-			remove_lock(&g.v);
+			//remove_lock(&g.v);
 
 			return 0;
 		}
@@ -227,11 +227,11 @@ main(int argc, char *argv[])
 			if (*ext == '.')
 				ext++;
 
-			if (!update_lock(&g.v, 1, 0)) {
+			/*if (!update_lock(&g.v, 1, 0)) {
 				d_log(1, "rescan: Another process wants the lock - will comply and remove lock, then exit.\n");
 				remove_lock(&g.v);
 				exit(EXIT_FAILURE);
-			}
+			}*/
 
 			if (
 				!strcomp(ignored_types, ext) &&
@@ -548,7 +548,7 @@ main(int argc, char *argv[])
 	printf(" Missing: %i\n", (int)g.v.total.files_missing);
 	printf("  Total : %i\n", (int)g.v.total.files);
 
-	d_log(1, "rescan: Freeing memory and removing lock.\n");
+	//d_log(1, "rescan: Freeing memory and removing lock.\n");
 	closedir(dir);
 	closedir(parent);
 	//updatestats_free(&g);
@@ -559,7 +559,7 @@ main(int argc, char *argv[])
 	if (fileexists(".delme"))
 		unlink(".delme");
 
-	remove_lock(&g.v);
+	//remove_lock(&g.v);
 
 	buffer_groups(&gdata, GROUPFILE, 1);
 	buffer_users(&udata, PASSWDFILE, 1);
