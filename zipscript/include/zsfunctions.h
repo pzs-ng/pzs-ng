@@ -128,7 +128,7 @@ extern void	move_progress_bar(unsigned char, struct VARS *, struct USERINFO *, s
 extern int	check_dupefile(char *, char *);
 extern long	findfile(char *, char *);
 extern long	findfilenocase(DIR *, char *);
-extern char	*findfilename(char *, char *, struct VARS *);
+extern char	*findfilename(char *, char *);
 extern void	removedotfiles(DIR *);
 extern void	removecomplete(void);
 extern short	matchpath(char *, char *);
@@ -158,8 +158,7 @@ extern void getrelname(GLOBAL *);
 extern char *remove_pattern(char *, char *, int);
 #endif
 
-extern void	*ng_realloc(void *, int, int, int, struct VARS *, int);
-extern void	*ng_realloc2(void *, int, int, int, int);
+extern void	*ng_realloc(void *, int, int, int, int);
 extern void	ng_free(void *);
 
 extern int	remove_at_loc(char *, off_t);

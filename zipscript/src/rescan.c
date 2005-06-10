@@ -34,7 +34,7 @@
 int 
 main(int argc, char *argv[])
 {
-	int		k, n, m, l;
+	int		n, m, l;
 	char           *ext, exec[4096], *complete_bar = 0, *inc_point[2];
 	unsigned int	crc = 0;
 	struct stat	fileinfo;
@@ -83,10 +83,6 @@ main(int argc, char *argv[])
 	} else
 		bzero(one_name, NAME_MAX);
 
-	//d_log(1, "rescan: Allocating memory for variables\n");
-	//g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
-	//g.gi = ng_realloc2(g.gi, sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
-
 	getcwd(g.l.path, PATH_MAX);
 
 	if ((matchpath(nocheck_dirs, g.l.path) || matchpath(speedtest_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) && rescan_nocheck_dirs_allowed == FALSE) {
@@ -110,9 +106,9 @@ main(int argc, char *argv[])
 		snprintf(g.v.sectionname, 127, getenv("SECTION"));
 	}
 
-	g.l.race = ng_realloc2(g.l.race, n = (int)strlen(g.l.path) + 10 + sizeof(storage), 1, 1, 1);
-	g.l.sfv = ng_realloc2(g.l.sfv, n, 1, 1, 1);
-	g.l.leader = ng_realloc2(g.l.leader, n, 1, 1, 1);
+	g.l.race = ng_realloc(g.l.race, n = (int)strlen(g.l.path) + 10 + sizeof(storage), 1, 1, 1);
+	g.l.sfv = ng_realloc(g.l.sfv, n, 1, 1, 1);
+	g.l.leader = ng_realloc(g.l.leader, n, 1, 1, 1);
 	g.l.length_path = (int)strlen(g.l.path);
 	g.l.length_zipdatadir = sizeof(storage);
 
@@ -126,50 +122,6 @@ main(int argc, char *argv[])
 
 	d_log(1, "rescan: Creating directory to store racedata in\n");
  	maketempdir(g.l.path);
-
-	/*d_log(1, "rescan: Locking release\n");
-	while (1) {
-		if ((k = create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 3, 0))) {
-			d_log(1, "rescan: Failed to lock release.\n");
-			if (k == 1) {
-				d_log(1, "rescan: version mismatch. Exiting.\n");
-				printf("Error. You need to rm -fR ftp-data/pzs-ng/* before rescan will work.\n");
-				exit(EXIT_FAILURE);
-			}
-			if (k == PROGTYPE_POSTDEL) {
-				n = (signed int)g.v.lock.data_incrementor;
-				d_log(1, "rescan: Detected postdel running - sleeping for one second.\n");
-				if (!create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0, g.v.lock.data_queue))
-					break;
-				usleep(1000000);
-				if (!create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0, g.v.lock.data_queue))
-					break;
-				if ( n == (signed int)g.v.lock.data_incrementor) {
-					d_log(1, "rescan: Failed to get lock. Forcing unlock.\n");
-					if (create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 2, g.v.lock.data_queue)) {
-						d_log(1, "rescan: Failed to force a lock.\n");
-						d_log(1, "postdel: Exiting with error.\n");
-						exit(EXIT_FAILURE);
-					}
-					break;
-				}
-			} else {
-				for ( k = 0; k <= max_seconds_wait_for_lock * 10; k++) {
-					d_log(1, "rescan: sleeping for .1 second before trying to get a lock (queue: %d).\n", g.v.lock.data_queue);
-					usleep(100000);
-					if (!create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0, g.v.lock.data_queue))
-						break;
-				}
-				if (k >= max_seconds_wait_for_lock * 10) {
-					d_log(1, "rescan: Failed to get lock. Will not force unlock.\n");
-					exit(EXIT_FAILURE);
-				}
-			}
-		}
-		usleep(10000);
-		if (update_lock(&g.v, 1, 0) != -1)
-			break;
-	}*/
 
 	move_progress_bar(1, &g.v, g.ui, g.gi);
 	if (g.l.incomplete)
@@ -193,7 +145,7 @@ main(int argc, char *argv[])
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
 
-		if (copysfv(g.v.file.name, g.l.sfv, &g.v, g.l.path , 1)) {
+		if (copysfv(g.v.file.name, g.l.sfv, g.l.path , 1)) {
 			printf("rescan: Found invalid entries in SFV - Exiting.\n");
 
 			while ((dp = readdir(dir))) {
@@ -203,7 +155,7 @@ main(int argc, char *argv[])
 					unlink(dp->d_name);
 			}
 
-			d_log(1, "rescan: Freeing memory, removing lock and exiting\n");
+			d_log(1, "rescan: Freeing memory and exiting\n");
 			unlink(g.l.sfv);
 			unlink(g.l.race);
 			ng_free(g.ui);
@@ -212,8 +164,6 @@ main(int argc, char *argv[])
 			ng_free(g.l.sfv);
 			ng_free(g.l.leader);
 			
-			//remove_lock(&g.v);
-
 			return 0;
 		}
 		g.v.total.start_time = 0;
@@ -226,12 +176,6 @@ main(int argc, char *argv[])
 			ext = find_last_of(dp->d_name, ".");
 			if (*ext == '.')
 				ext++;
-
-			/*if (!update_lock(&g.v, 1, 0)) {
-				d_log(1, "rescan: Another process wants the lock - will comply and remove lock, then exit.\n");
-				remove_lock(&g.v);
-				exit(EXIT_FAILURE);
-			}*/
 
 			if (
 				!strcomp(ignored_types, ext) &&
@@ -548,7 +492,7 @@ main(int argc, char *argv[])
 	printf(" Missing: %i\n", (int)g.v.total.files_missing);
 	printf("  Total : %i\n", (int)g.v.total.files);
 
-	//d_log(1, "rescan: Freeing memory and removing lock.\n");
+	//d_log(1, "rescan: Freeing memory and exiting.\n");
 	closedir(dir);
 	closedir(parent);
 	//updatestats_free(&g);
@@ -558,8 +502,6 @@ main(int argc, char *argv[])
 
 	if (fileexists(".delme"))
 		unlink(".delme");
-
-	//remove_lock(&g.v);
 
 	buffer_groups(&gdata, GROUPFILE, 1);
 	buffer_users(&udata, PASSWDFILE, 1);

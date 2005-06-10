@@ -81,7 +81,7 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 		return 0;
 	}
 
-	raceI->misc.release_type = raceI->lock.data_type;
+//	raceI->misc.release_type = raceI->lock.data_type;
 	raceI->misc.in_sfvfile = FALSE;
 
 	d_log(1, "readsfv: Reading data from sfv for (%s)\n", raceI->file.name);
@@ -125,7 +125,7 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 void
 update_sfvdata(const char *path, const char *filename, const unsigned int crc)
 {
-	int		fd, count;
+	int		count;
 	FILE		*sfvfile;
 	
 	SFVDATA		sd;
@@ -159,7 +159,6 @@ update_sfvdata(const char *path, const char *filename, const unsigned int crc)
 void
 sfvdata_to_sfv(const char *source, const char *dest)
 {
-	int		infd, outfd;
 	FILE		*infile, *outfile;
 	char		crctmp[8];
 	
@@ -210,7 +209,7 @@ sfvdata_to_sfv(const char *source, const char *dest)
  * Description	: Deletes all -missing files with preparsed sfv.
  */
 void 
-delete_sfv(const char *path, struct VARS *raceI)
+delete_sfv(const char *path)
 {
 	char		*f = 0, missing_fname[NAME_MAX];
 	FILE		*sfvfile;
@@ -224,7 +223,7 @@ delete_sfv(const char *path, struct VARS *raceI)
 	
 	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
 		snprintf(missing_fname, NAME_MAX, "%s-missing", sd.fname);
-		if ((f = findfilename(missing_fname, f, raceI)))
+		if ((f = findfilename(missing_fname, f)))
 			unlink(missing_fname);
 	}
 	
@@ -372,7 +371,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 			}
 		}
 		if (rd.status == F_BAD) {
-			remove_from_race(locations->race, rd.fname, raceI);
+			remove_from_race(locations->race, rd.fname);
 		} else {
 			if ((lret = fseek(racefile, sizeof(RACEDATA) * count, SEEK_SET)) == -1) {
 				d_log(1, "testfiles: fseek: %s\n", strerror(errno));
@@ -401,9 +400,9 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
  * Totally rewritten by js on 08.02.2005
  */
 int
-copysfv(const char *source, const char *target, struct VARS *raceI, const char *path, int reverse)
+copysfv(const char *source, const char *target, const char *path, int reverse)
 {
-	int		infd, outfd, i, retval = 0;
+	int		i, retval = 0;
 	FILE		*infile, *outfile;
 	short int	music, rars, video, others, type;
 	
@@ -416,7 +415,6 @@ copysfv(const char *source, const char *target, struct VARS *raceI, const char *
 	int		skip = 0;
 	
 #if ( sfv_cleanup == TRUE )
-	int		tmpfd;
 	FILE		*tmpfp;
 	char		crctmp[8];
 	
@@ -638,7 +636,6 @@ END:
 void 
 create_indexfile(const char *path, struct VARS *raceI, char *f)
 {
-	int		fd;
 	FILE		*r, *racefile;
 	int		l, n, m, c;
 	int		pos[raceI->total.files],
@@ -757,7 +754,7 @@ match_file(char *rname, char *f)
 void 
 readrace(const char *path, struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI)
 {
-	int		fd, rlength = 0;
+	int		rlength = 0;
 	FILE		*file;
 
 	RACEDATA	rd;
@@ -796,7 +793,7 @@ readrace(const char *path, struct VARS *raceI, struct USERINFO *userI, struct GR
 void 
 writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char status)
 {
-	int		fd, count, ret;
+	int		fd, count;
 	FILE		*racefile;
 
 	RACEDATA	rd;
@@ -851,7 +848,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 void 
 write_bitrate_in_race(const char *path, struct VARS *raceI)
 {
-	int		fd, count, ret;
+	int		fd, count;
 	FILE		*racefile;
 
 	RACEDATA	rd;
@@ -890,9 +887,9 @@ write_bitrate_in_race(const char *path, struct VARS *raceI)
 }
 
 int
-read_bitrate_in_race(const char *path, struct VARS *raceI)
+read_bitrate_in_race(const char *path)
 {
-	int		fd, count, ret, bitrate;
+	int		count, bitrate;
 	FILE		*racefile;
 
 	RACEDATA	rd;
@@ -919,9 +916,9 @@ read_bitrate_in_race(const char *path, struct VARS *raceI)
 
 /* remove file entry from racedata file */
 void
-remove_from_race(const char *path, const char *f, struct VARS *raceI)
+remove_from_race(const char *path, const char *f)
 {
-	int		fd, i, max;
+	int		i, max;
 	FILE		*racefile;
 	
 	RACEDATA	rd, *tmprd = 0;
@@ -937,7 +934,7 @@ remove_from_race(const char *path, const char *f, struct VARS *raceI)
 #else
 		if (strcmp(rd.fname, f) != 0) {
 #endif
-			tmprd = ng_realloc(tmprd, sizeof(RACEDATA)*(i+1), 0, 1, raceI, 0);
+			tmprd = ng_realloc(tmprd, sizeof(RACEDATA)*(i+1), 0, 1, 0);
 			memcpy(&tmprd[i], &rd, sizeof(RACEDATA));
 			i++;
 		}
@@ -960,19 +957,12 @@ remove_from_race(const char *path, const char *f, struct VARS *raceI)
 }
 
 int
-verify_racedata(const char *path, struct VARS *raceI)
+verify_racedata(const char *path)
 {
-	int		fd, i, ret, max;
+	int		i, max;
 	FILE		*racefile;
 	
 	RACEDATA	rd, *tmprd = 0;
-	
-	if ((fd = open(path, O_CREAT, 0666)) == -1) {
-		if (errno != EEXIST) {
-			d_log(1, "testfiles: open(%s): %s\n", path, strerror(errno));
-			exit(EXIT_FAILURE);
-		}
-	}
 	
 	if (!(racefile = xfopen(path, "r+"))) {
 		d_log(1, "verify_racedata: xfopen(%s) failed\n", path);
@@ -981,7 +971,7 @@ verify_racedata(const char *path, struct VARS *raceI)
 	
 	for (i = 0; fread(&rd, sizeof(RACEDATA), 1, racefile); ) {
 		if (fileexists(rd.fname)) {
-			tmprd = ng_realloc(tmprd, sizeof(RACEDATA)*(i+1), 0, 1, raceI, 0);
+			tmprd = ng_realloc(tmprd, sizeof(RACEDATA)*(i+1), 0, 1, 0);
 			memcpy(&tmprd[i], &rd, sizeof(RACEDATA));
 			i++;
 		} else if (rd.fname) {

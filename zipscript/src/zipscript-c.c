@@ -59,7 +59,6 @@
 
 void read_envdata(GLOBAL *, GDATA *, UDATA *, struct stat *);
 void check_filesize(GLOBAL *, const char *, struct stat *);
-void lock_release(GLOBAL *);
 void set_uid_gid(void);
 void group_dir_users(GLOBAL *); /* call this something else */
 int match_nocheck_dirs(GLOBAL *);
@@ -68,7 +67,7 @@ int match_nocheck_dirs(GLOBAL *);
 int check_zerosize(GLOBAL *, MSG *);
 int check_banned_file(GLOBAL *, MSG *);
 
-int process_file(GLOBAL *, MSG *, char **, char *, int *, int *);
+int process_file(GLOBAL *, MSG *, char **, char *, int *);
 void check_release_type(GLOBAL *, MSG *, RACETYPE *, char *[2]);
 
 void execute_script(char *, char *, char *);
@@ -94,7 +93,7 @@ main(int argc, char **argv)
 	int		deldir = 0;
 	struct stat	fileinfo;
 
-#if ( benchmark_mode == TRUE )
+#if ( benchmark_mode )
 	struct timeval	bstart, bstop;
 	d_log(1, "zipscript-c: Reading time for benchmark\n");
 	gettimeofday(&bstart, (struct timezone *)0);
@@ -110,13 +109,10 @@ main(int argc, char **argv)
 		return 1;
 	}
 
-#if ( debug_mode == TRUE && debug_announce == TRUE)
+#if ( debug_mode && debug_announce )
 	printf("PZS-NG: Running in debug mode.\n");
 #endif
 
-	/*
-	 * Adding version-number to head if .debug message 15.09.2004 - psxc
-	 */
 	d_log(1, "zipscript-c: Project-ZS Next Generation (pzs-ng) v%s debug log.\n", ng_version());
 
 #ifdef _ALT_MAX
@@ -157,9 +153,9 @@ main(int argc, char **argv)
 	n = (g.l.length_path = strlen(g.l.path)) + 1;
 
 	d_log(1, "zipscript-c: Allocating memory for variables\n");
-	g.l.race = ng_realloc2(g.l.race, n += 10 + (g.l.length_zipdatadir = sizeof(storage) - 1), 1, 1, 1);
-	g.l.sfv = ng_realloc2(g.l.sfv, n, 1, 1, 1);
-	g.l.leader = ng_realloc2(g.l.leader, n, 1, 1, 1);
+	g.l.race = ng_realloc(g.l.race, n += 10 + (g.l.length_zipdatadir = sizeof(storage) - 1), 1, 1, 1);
+	g.l.sfv = ng_realloc(g.l.sfv, n, 1, 1, 1);
+	g.l.leader = ng_realloc(g.l.leader, n, 1, 1, 1);
 
 	d_log(1, "zipscript-c: Copying data g.l into memory\n");
 	sprintf(g.l.sfv, storage "/%s/sfvdata", g.l.path);
@@ -182,10 +178,10 @@ main(int argc, char **argv)
 	}
 	name_p++;
 
-	fileext = ng_realloc(fileext, sizeof(name_p), 1, 1, &g.v, 1);
+	fileext = ng_realloc(fileext, sizeof(name_p), 1, 1, 1);
 	memcpy(fileext, name_p, sizeof(name_p));
 	
-#if ( sfv_cleanup_lowercase == TRUE )
+#if ( sfv_cleanup_lowercase )
 	d_log(1, "zipscript-c: Copying (lowercased version of) extension to memory\n");
 	strtolower(fileext);
 #else
@@ -198,9 +194,6 @@ main(int argc, char **argv)
 	d_log(1, "zipscript-c: Creating directory to store racedata in\n");
 	maketempdir(g.l.path);
 
-	d_log(1, "zipscript-c: Locking release\n");
-	//lock_release(&g);
-
 	printf(zipscript_header);
 
 	g.v.misc.nfofound = (int)findfileext(".", ".nfo");
@@ -211,9 +204,9 @@ main(int argc, char **argv)
 	/* No check directories */
 	no_check = match_nocheck_dirs(&g);
 
-	if (no_check == FALSE) {
+	if (!no_check) {
 
-#if (ignore_zero_size == FALSE )
+#if ( !ignore_zero_size )
 		exit_value = check_zerosize(&g, &msg);
 #endif
 
@@ -223,38 +216,22 @@ main(int argc, char **argv)
 
 		if (exit_value < 2) {
 			d_log(1, "process_file: Verifying old racedata\n");
-			if (!verify_racedata(g.l.race, &g.v))
+			if (!verify_racedata(g.l.race))
 				d_log(1, "process_file:   Failed to open racedata - assuming this is a new race.\n");
-			exit_value = process_file(&g, &msg, argv, fileext, &no_check, &deldir);
+			exit_value = process_file(&g, &msg, argv, fileext, &deldir);
 		}
-
 	}
-
-	/*if (no_check == TRUE) {	// File was not checked
-		
-		printf(zipscript_any_ok);
-		printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_skip));
-		
-		if (matchpath(speedtest_dirs, g.l.path)) {
-			d_log(1, "zipscript-c: writing speedtest to channel\n");
-			writelog(&g, convert(&g.v, g.ui, g.gi, speed_announce), speed_type);
-			exit_value = 2;
-		}
-	} else */
 	if (exit_value == EXIT_SUCCESS) { /* File was checked */
-
 		check_release_type(&g, &msg, &rtype, _complete);
-		
 		if (g.v.total.users > 0) {
 			d_log(1, "zipscript-c: Sorting race stats\n");
 			sortstats(&g.v, g.ui, g.gi);
 
-#if ( get_user_stats == TRUE )
+#if ( get_user_stats )
 			d_log(1, "zipscript-c: Reading day/week/month/all stats for racers\n");
 			d_log(1, "zipscript-c: stat section: %i\n", g.v.section);
 			get_stats(&g.v, g.ui);
 #endif
-			
 			showstats(&g.v, g.ui, g.gi);
 
 			if (!enable_files_ahead || ((g.v.total.users > 1 && g.ui[g.ui[0].pos].files >= (g.ui[g.ui[1].pos].files + newleader_files_ahead)) || g.v.total.users == 1)) {
@@ -290,22 +267,19 @@ main(int argc, char **argv)
 			printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_unknown));
 
 		}
-
 	} else {
-
 		/* File is marked to be deleted */
 		d_log(1, "zipscript-c: Logging file as bad\n");
-		remove_from_race(g.l.race, g.v.file.name, &g.v);
-
+		remove_from_race(g.l.race, g.v.file.name);
 		printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_error));
 	}
 
-#if ( enable_accept_script == TRUE )
+#if ( enable_accept_script )
 	if (exit_value == EXIT_SUCCESS)
 		execute_script(accept_script, g.v.file.name, "accept");
 #endif
 
-#if ( enable_nfo_script == TRUE )
+#if ( enable_nfo_script )
 	 if ( !g.v.misc.nfofound && findfileext(".", ".nfo"))
 		execute_script(nfo_script, g.v.file.name, "nfo");
 #endif
@@ -330,9 +304,6 @@ main(int argc, char **argv)
 		execute_script(banned_script, g.v.file.name, "banned");
 #endif
 
-	d_log(1, "zipscript-c: Releasing memory and removing lock\n");
-	//remove_lock(&g.v);
-
 	if (fileexists(".delme"))
 		unlink(".delme");
 
@@ -343,7 +314,7 @@ main(int argc, char **argv)
 	ng_free(g.l.sfv);
 	ng_free(g.l.leader);
 
-#if ( benchmark_mode == TRUE )
+#if ( benchmark_mode )
 	gettimeofday(&bstop, (struct timezone *)0);
 	printf("Checks completed in %0.6f seconds\n", ((bstop.tv_sec - bstart.tv_sec) + (bstop.tv_usec - bstart.tv_usec) / 1000000.));
 	d_log(1, "zipscript-c: Checks completed in %0.6f seconds\n", ((bstop.tv_sec - bstart.tv_sec) + (bstop.tv_usec - bstart.tv_usec) / 1000000.));
@@ -351,11 +322,10 @@ main(int argc, char **argv)
 
 #if ( sleep_on_bad > 0 && sleep_on_bad < 1001 )
 	if (exit_value == 2) {
-		if (sleep_on_bad == 117) {
+		if (sleep_on_bad == 117)
 			exit_value = 126;
-		} else {
+		else
 			exit_value = sleep_on_bad + 10;
-		}
 		d_log(1, "zipscript-c: Sleeping for %d seconds.\n", sleep_on_bad);
 	}
 #endif
@@ -397,7 +367,7 @@ read_envdata(GLOBAL *g, GDATA *gdata, UDATA *udata, struct stat *fileinfo)
 		if (!g->v.file.speed)
 			g->v.file.speed = 1;
 
-#if (debug_announce == TRUE)
+#if ( debug_announce )
 		printf("DEBUG: Speed: %dkb/s (%skb/s)\n",  g->v.file.speed, getenv("SPEED"));
 #endif
 
@@ -437,80 +407,6 @@ check_filesize(GLOBAL *g, const char *filename, struct stat *fileinfo)
 
 }
 
-/*void
-lock_release(GLOBAL *g)
-{
-
-	int	m, n;
-
-	while (1) {
-	
-		if ((m = create_lock(&g->v, g->l.path, PROGTYPE_ZIPSCRIPT, 3, 0))) {
-			d_log(1, "lock_release: Failed to lock release.\n");
-			
-			if (m == 1) {
-				d_log(1, "lock_release: version mismatch. Exiting.\n");
-				printf("Error. You need to rm -fR ftp-data/pzs-ng/* before the zipscript will work.\n");
-				exit(EXIT_FAILURE);
-			}
-			
-			if (m == PROGTYPE_RESCAN) {
-				d_log(1, "lock_release: Detected rescan running - will try to make it quit.\n");
-				update_lock(&g->v, 0, 0);
-			}
-
-			if (m == PROGTYPE_POSTDEL) {
-				n = (signed int)g->v.lock.data_incrementor;
-				d_log(1, "lock_release: Detected postdel running - sleeping for one second.\n");
-				if (!create_lock(&g->v, g->l.path, PROGTYPE_ZIPSCRIPT, 0, g->v.lock.data_queue))
-					break;
-				usleep(1000000);
-				if (!create_lock(&g->v, g->l.path, PROGTYPE_ZIPSCRIPT, 0, g->v.lock.data_queue))
-					break;
-				if ( n == (signed int)g->v.lock.data_incrementor) {
-					d_log(1, "lock_release: Failed to get lock. Forcing unlock.\n");
-					if (create_lock(&g->v, g->l.path, PROGTYPE_ZIPSCRIPT, 2, g->v.lock.data_queue)) {
-						d_log(1, "lock_release: Failed to force a lock.\n");
-						d_log(1, "lock_release: Exiting with error.\n");
-						exit(EXIT_FAILURE);
-					}
-					break;
-				}
-
-			} else {
-			
-				for ( n = 0; n <= max_seconds_wait_for_lock * 10; n++) {
-					d_log(1, "lock_release: sleeping for .1 second before trying to get a lock.\n");
-					usleep(100000);
-					if (!(m = create_lock(&g->v, g->l.path, PROGTYPE_ZIPSCRIPT, 0, g->v.lock.data_queue)))
-						break;	
-				}
-				
-				if (n >= max_seconds_wait_for_lock * 10) {
-					if (m == PROGTYPE_RESCAN) {
-						d_log(1, "lock_release: Failed to get lock. Forcing unlock.\n");
-						if (create_lock(&g->v, g->l.path, PROGTYPE_ZIPSCRIPT, 2, g->v.lock.data_queue))
-							d_log(1, "lock_release: Failed to force a lock.\n");
-					} else
-						d_log(1, "lock_release: Failed to get a lock.\n");
-					if (!g->v.lock.data_in_use && !ignore_lock_timeout) {
-						d_log(1, "lock_release: Exiting with error.\n");
-						exit(EXIT_FAILURE);
-					}
-				}
-			}
-
-		}
-		
-		usleep(10000);
-		
-		if (update_lock(&g->v, 1, 0) != -1)
-			break;
-			
-	}
-
-}*/
-
 void
 set_uid_gid(void)
 {
@@ -533,7 +429,7 @@ void
 group_dir_users(GLOBAL *g)
 {
 
-	if (matchpath(group_dirs, g->l.path) && (hide_group_uploaders == TRUE)) {
+	if (matchpath(group_dirs, g->l.path) && hide_group_uploaders) {
 		d_log(1, "group_dir_users: Hiding user in group-dir:\n");
 		if (strlen(hide_gname) > 0) {
 			snprintf(g->v.user.group, 18, "%s", hide_gname);
@@ -608,7 +504,7 @@ check_banned_file(GLOBAL *g, MSG *msg)
 
 /* fuck you, arguments */
 int
-process_file(GLOBAL *g, MSG *msg, char **argv, char *fileext, int *no_check, int *deldir)
+process_file(GLOBAL *g, MSG *msg, char **argv, char *fileext, int *deldir)
 {
 	
 	short type;
@@ -767,18 +663,18 @@ release_complete(GLOBAL *g, MSG *msg, char *_complete[2])
 
 		if (!matchpath(group_dirs, g->l.path)) {
 
-#if ( audio_genre_sort == TRUE )
+#if ( audio_genre_sort )
 			d_log(1, "release_complete:   Sorting mp3 by genre (%s)\n", g->v.audio.id3_genre);
 			if (g->v.audio.id3_genre)
 				createlink(audio_genre_path, g->v.audio.id3_genre, g->l.link_source, g->l.link_target);
 #endif
 
-#if ( audio_artist_sort == TRUE )
+#if ( audio_artist_sort )
 			d_log(1, "release_complete:   Sorting mp3 by artist\n");
 			if (g->v.audio.id3_artist) {
 				d_log(1, "release_complete:     - artist: %s\n", g->v.audio.id3_artist);
 				if (memcmp(g->v.audio.id3_artist, "VA", 3)) {
-					temp_p = ng_realloc(temp_p, 2, 1, 1, &g->v, 1);
+					temp_p = ng_realloc(temp_p, 2, 1, 1, 1);
 					snprintf(temp_p, 2, "%c", toupper(*g->v.audio.id3_artist));
 					createlink(audio_artist_path, temp_p, g->l.link_source, g->l.link_target);
 					ng_free(temp_p);
@@ -787,13 +683,13 @@ release_complete(GLOBAL *g, MSG *msg, char *_complete[2])
 			}
 #endif
 
-#if ( audio_year_sort == TRUE )
+#if ( audio_year_sort )
 			d_log(1, "release_complete:   Sorting mp3 by year (%s)\n", g->v.audio.id3_year);
 			if (g->v.audio.id3_year)
 				createlink(audio_year_path, g->v.audio.id3_year, g->l.link_source, g->l.link_target);
 #endif
 
-#if ( audio_group_sort == TRUE )
+#if ( audio_group_sort )
 			d_log(1, "release_complete:   Sorting mp3 by group\n");
 			temp_p = remove_pattern(g->l.link_target, "*-", RP_LONG_LEFT);
 			temp_p = remove_pattern(temp_p, "_", RP_SHORT_LEFT);
@@ -806,7 +702,7 @@ release_complete(GLOBAL *g, MSG *msg, char *_complete[2])
 
 		}
 		
-#if ( create_m3u == TRUE )
+#if ( create_m3u )
 		if (findfileext(".", ".sfv")) {
 			d_log(1, "release_complete: Creating m3u\n");
 			cnt = sprintf(target, findfileext(".", ".sfv"));
@@ -844,7 +740,7 @@ release_complete(GLOBAL *g, MSG *msg, char *_complete[2])
 
 	}
 
-#if ( enable_complete_script == TRUE )
+#if ( enable_complete_script )
 	execute_script(complete_script, g->v.file.name, "complete");
 #endif
 

@@ -23,7 +23,6 @@ handle_sfv(HANDLER_ARGS *ha) {
 	unsigned char	exit_value = EXIT_SUCCESS;
 	struct dirent	*dp;
 	int		cnt, cnt2;
-	char		*ext = 0;
 	char		*sfv_type = 0;
 	DIR		*dir;
 
@@ -89,7 +88,7 @@ handle_sfv(HANDLER_ARGS *ha) {
 		}
 	}
 	d_log(1, "handle_sfv: Parsing sfv and creating sfv data\n");
-	if (copysfv(ha->g->v.file.name, ha->g->l.sfv, &ha->g->v, ha->g->l.path, 0)) {
+	if (copysfv(ha->g->v.file.name, ha->g->l.sfv, ha->g->l.path, 0)) {
 		d_log(1, "handle_sfv: Found invalid entries in SFV.\n");
 		ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
 		if (exit_value < 2)
@@ -205,7 +204,7 @@ handle_sfv32(HANDLER_ARGS *ha)
 
 	d_log(1, "handle_sfv32: File type is: ANY\n");
 
-	target = ng_realloc(target, 1024, 1, 1, &ha->g->v, 1);
+	target = ng_realloc(target, 1024, 1, 1, 1);
 
 	if (check_rarfile(ha->g->v.file.name)) {
 		d_log(1, "handle_sfv32: File is password protected.\n");
@@ -387,7 +386,7 @@ handle_sfv32(HANDLER_ARGS *ha)
 		d_log(1, "handle_sfv32: Trying to read audio header and tags\n");
 		get_mpeg_audio_info(ha->g->v.file.name, &ha->g->v.audio);
 		write_bitrate_in_race(ha->g->l.race, &ha->g->v);
-		sprintf(ha->g->v.audio.bitrate, "%i", read_bitrate_in_race(ha->g->l.race, &ha->g->v));
+		sprintf(ha->g->v.audio.bitrate, "%i", read_bitrate_in_race(ha->g->l.race));
 		if ((enable_mp3_script == TRUE) && (ha->g->ui[ha->g->v.user.pos].files == 1)) {
 			if (!fileexists(mp3_script))
 				d_log(1, "handle_sfv32: Warning -  mp3_script (%s) - file does not exists\n", mp3_script);

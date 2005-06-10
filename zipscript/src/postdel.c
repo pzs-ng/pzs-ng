@@ -44,7 +44,7 @@ main(int argc, char **argv)
 	char		*env_user;
 	char		*env_group;
 	char	        *inc_point[2];
-	int		n, m;
+	int		n;
 	unsigned char	empty_dir = 0;
 	unsigned char	incomplete = 0;
 	
@@ -131,91 +131,27 @@ main(int argc, char **argv)
 	if (!*g.v.user.group)
 		memcpy(g.v.user.group, "NoGroup", 8);
 
-	//d_log(1, "postdel: Allocating memory for variables\n");
-
-	//g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
-	//g.gi = ng_realloc2(g.gi,sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
-
 	getcwd(g.l.path, PATH_MAX);
 
 	d_log(1, "postdel: Creating directory to store racedata in\n");
 	maketempdir(g.l.path);
 
-	/*d_log(1, "postdel: Locking release\n");
-	while(1) {
-		if ((m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 3, 0))) {
-			d_log(1, "postdel: Failed to lock release.\n");
-			if (m == 1) {
-				d_log(1, "postdel: version mismatch. Exiting.\n");
-				exit(EXIT_FAILURE);
-			}
-			if (m == PROGTYPE_RESCAN) {
-				d_log(1, "postdel: Detected rescan running - will try to make it quit.\n");
-				update_lock(&g.v, 0, 0);
-			}
-			if (m == PROGTYPE_POSTDEL) {
-				n = (signed int)g.v.lock.data_incrementor;
-				d_log(1, "postdel: Detected postdel running - sleeping for one second.\n");
-				if (!create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0, g.v.lock.data_queue))
-					break;
-				usleep(1000000);
-				if (!create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0, g.v.lock.data_queue))
-					break;
-				if ( n == (signed int)g.v.lock.data_incrementor) {
-					d_log(1, "postdel: Failed to get lock. Forcing unlock.\n");
-					if (create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 2, g.v.lock.data_queue)) {
-						d_log(1, "postdel: Failed to force a lock.\n");
-						d_log(1, "postdel: Exiting with error.\n");
-						exit(EXIT_FAILURE);
-					}
-					break;
-				}
-			} else {
-				for ( n = 0; n <= max_seconds_wait_for_lock * 10; n++) {
-					d_log(1, "postdel: sleeping for .1 second before trying to get a lock.\n");
-					usleep(100000);
-					if (!(m = create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 0, g.v.lock.data_queue)))
-						break;
-
-				}
-				if (n >= max_seconds_wait_for_lock * 10) {
-					if (m == PROGTYPE_RESCAN) {
-						d_log(1, "postdel: Failed to get lock. Forcing unlock.\n");
-						if (create_lock(&g.v, g.l.path, PROGTYPE_POSTDEL, 2, g.v.lock.data_queue))
-						d_log(1, "postdel: Failed to force a lock.\n");
-					} else
-						d_log(1, "postdel: Failed to get a lock.\n");
-					if (!g.v.lock.data_in_use && !ignore_lock_timeout) {
-						d_log(1, "postdel: Exiting with error.\n");
-						exit(EXIT_FAILURE);
-					}
-				}
-			}
-			rewinddir(dir);
-			rewinddir(parent);
-		}
-		usleep(10000);
-		if (update_lock(&g.v, 1, 0) != -1)
-			break;
-	}*/
-
 	if (matchpath(nocheck_dirs, g.l.path) || matchpath(speedtest_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
 		d_log(1, "postdel: Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
-		d_log(1, "postdel: Freeing memory, removing lock and exiting\n");
+		d_log(1, "postdel: Freeing memory and exiting\n");
 		ng_free(g.ui);
 		ng_free(g.gi);
 
 		if (remove_dot_debug_on_delete)
 			unlink(".debug");
 
-		//remove_lock(&g.v);
 		return 0;
 
 	}
-	g.l.race = ng_realloc(g.l.race, n = (int)strlen(g.l.path) + 10 + sizeof(storage), 1, 1, &g.v, 1);
-	g.l.sfv = ng_realloc(g.l.sfv, n, 1, 1, &g.v, 1);
-	g.l.leader = ng_realloc(g.l.leader, n, 1, 1, &g.v, 1);
-	target = ng_realloc(target, 4096, 1, 1, &g.v, 1);
+	g.l.race = ng_realloc(g.l.race, n = (int)strlen(g.l.path) + 10 + sizeof(storage), 1, 1, 1);
+	g.l.sfv = ng_realloc(g.l.sfv, n, 1, 1, 1);
+	g.l.leader = ng_realloc(g.l.leader, n, 1, 1, 1);
+	target = ng_realloc(target, 4096, 1, 1, 1);
 
 	if (getenv("SECTION") == NULL)
 		sprintf(g.v.sectionname, "DEFAULT");
@@ -314,7 +250,7 @@ main(int argc, char **argv)
 			incomplete = 1;
 		} else if (!findfileextcount(".", ".sfv"))
 			empty_dir = 1;
-		remove_from_race(g.l.race, g.v.file.name, &g.v);
+		remove_from_race(g.l.race, g.v.file.name);
 		break;
 	case 1: /* SFV */
 		d_log(1, "postdel: Reading file count from sfvdata\n");
@@ -335,7 +271,7 @@ main(int argc, char **argv)
 
 		d_log(1, "postdel: removing files created\n");
 		if (fileexists(g.l.sfv)) {
-			delete_sfv(g.l.sfv, &g.v);
+			delete_sfv(g.l.sfv);
 			unlink(g.l.sfv);	
 		}
 		if (g.l.nfo_incomplete)
@@ -345,7 +281,7 @@ main(int argc, char **argv)
 #if (sfv_cleanup)
 		d_log(1, "postdel: removing backup sfv.\n");
 		fname = 0;
-		fname = ng_realloc2(fname, PATH_MAX, 1, 1, 1);
+		fname = ng_realloc(fname, PATH_MAX, 1, 1, 1);
 		sprintf(fname, "%s/%s/%s", storage, g.l.path, g.v.file.name);
 		unlink(fname);
 		ng_free(fname);
@@ -358,7 +294,6 @@ main(int argc, char **argv)
 			d_log(1, "postdel: Removing old complete bar, if any\n");
 			removecomplete();
 		}
-//		g.v.misc.write_log = matchpath(sfv_dirs, g.l.path) > 0 ? 1 - matchpath(group_dirs, g.l.path) : 0;
 
 		if (fileexists(g.l.race)) {
 			d_log(1, "postdel: Reading race data from file to memory\n");
@@ -393,7 +328,7 @@ main(int argc, char **argv)
 				incomplete = 1;
 			}
 		}
-		remove_from_race(g.l.race, g.v.file.name, &g.v);
+		remove_from_race(g.l.race, g.v.file.name);
 		break;
 	case 4:
 		if (!fileexists(g.l.race) && !findfileextcount(".", ".sfv"))
@@ -424,7 +359,7 @@ main(int argc, char **argv)
 		if (del_completebar)
 			removecomplete();
 		if (fileexists(g.l.sfv))
-			delete_sfv(g.l.sfv, &g.v);
+			delete_sfv(g.l.sfv);
 		if (g.l.nfo_incomplete)
 			unlink(g.l.nfo_incomplete);
 		if (g.l.incomplete)
@@ -432,7 +367,7 @@ main(int argc, char **argv)
 #if (sfv_cleanup)
 		d_log(1, "postdel: removing backup sfv.\n");
 		fname = 0;
-		fname = ng_realloc2(fname, PATH_MAX, 1, 1, 1);
+		fname = ng_realloc(fname, PATH_MAX, 1, 1, 1);
 		sprintf(fname, "%s/%s/%s", storage, g.l.path, g.v.file.name);
 		unlink(fname);
 		ng_free(fname);
@@ -516,16 +451,13 @@ main(int argc, char **argv)
 		move_progress_bar(0, &g.v, g.ui, g.gi);
 	}
 	
-	d_log(1, "postdel: Releasing memory and removing lock.\n");
+	d_log(1, "postdel: Releasing memory and exiting.\n");
 	closedir(dir);
 	closedir(parent);
-	//updatestats_free(&g);
 	ng_free(target);
 	ng_free(g.l.race);
 	ng_free(g.l.sfv);
 	ng_free(g.l.leader);
-
-	//remove_lock(&g.v);
 
 	d_log(1, "postdel: Exit 0\n");
 

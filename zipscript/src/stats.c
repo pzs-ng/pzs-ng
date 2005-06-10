@@ -72,8 +72,6 @@ updatestats(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI
 				raceI->total.stop_time = raceI->total.start_time + 1;
 		}
 		u_no = raceI->total.users++;
-		//ng_free(userI[u_no]);
-		//userI[u_no] = ng_realloc(userI[u_no], sizeof(struct USERINFO), 1, 1, raceI, 1);
 		memcpy(userI[u_no].name, usern, 24);
 		memcpy(userI[u_no].tagline, usertag, 64);
 		userI[u_no].files = 0;
@@ -87,9 +85,6 @@ updatestats(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI
 
 		if (g_no == -1) {
 			g_no = raceI->total.groups++;
-			//ng_free(groupI[g_no]);
-
-			//groupI[g_no] = ng_realloc(groupI[g_no], sizeof(struct GROUPINFO), 1, 1, raceI, 1);
 			memcpy(groupI[g_no].name, group, 24);
 		}
 		userI[u_no].group = g_no;
@@ -137,7 +132,7 @@ sortstats(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI)
 	char           *r_list;
 	char           *t_list;
 
-	p_array = (int *)ng_realloc(p_array, raceI->total.users * sizeof(int), 1, 1, raceI, 1);
+	p_array = (int *)ng_realloc(p_array, raceI->total.users * sizeof(int), 1, 1, 1);
 	r_list = raceI->misc.racer_list;
 	t_list = raceI->misc.total_racer_list;
 
@@ -293,15 +288,9 @@ get_stats(struct VARS *raceI, struct USERINFO *userI)
 
 		if (S_ISDIR(fileinfo.st_mode) == 0) {
 
-			/*if (!update_lock(raceI, 1, 0)) {
-				d_log(1, "get_stats: Lock is suggested removed. Will comply and exit\n");
-				remove_lock(raceI);
-				exit(EXIT_FAILURE);
-			}*/
-
 			if (o * userbuf <= n) {
 				o++;
-				user = ng_realloc(user, sizeof(struct userdata)*((o * userbuf) + 1), 0, 1, raceI, 0);
+				user = ng_realloc(user, sizeof(struct userdata)*((o * userbuf) + 1), 0, 1, 0);
 				bzero(&user[n], (sizeof(struct userdata)) * userbuf);
 			}
 			sect.n = 0; sect.s = 0;

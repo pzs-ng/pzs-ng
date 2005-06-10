@@ -488,7 +488,7 @@ removedotfiles(DIR *dir)
 }
 
 char *
-findfilename(char *filename, char *dest, struct VARS *raceI)
+findfilename(char *filename, char *dest)
 {
 	DIR		*dir;
 	struct dirent 	*dp;
@@ -496,7 +496,7 @@ findfilename(char *filename, char *dest, struct VARS *raceI)
 	dir = opendir(".");
 	while ((dp = readdir(dir))) {
 		if (strlen(dp->d_name) && !strcasecmp(dp->d_name, filename)) {
-			dest = ng_realloc(dest, sizeof(dp->d_name) + 1, 1, 1, raceI, 0);
+			dest = ng_realloc(dest, sizeof(dp->d_name) + 1, 1, 1, 0);
 			strncpy(dest, dp->d_name, sizeof(dp->d_name));
 			break;
 		}
@@ -766,7 +766,7 @@ readsfv_ffile(struct VARS *raceI)
 	DIR		*dir;
 
 	fd = open(raceI->file.name, O_RDONLY);
-	buf = ng_realloc(buf, raceI->file.size + 2, 1, 1, raceI, 1);
+	buf = ng_realloc(buf, raceI->file.size + 2, 1, 1, 1);
 	read(fd, buf, raceI->file.size);
 	close(fd);
 
@@ -879,14 +879,14 @@ buffer_groups(GDATA *gdata, char *groupfile, int setfree)
 
 	fstat(f, &fileinfo);
 	f_size = fileinfo.st_size;
-	f_buf = ng_realloc2(f_buf, f_size, 1, 1, 1);
+	f_buf = ng_realloc(f_buf, f_size, 1, 1, 1);
 	read(f, f_buf, f_size);
 
 	for (n = 0; n < f_size; n++)
 		if (f_buf[n] == '\n')
 			GROUPS++;
 			
-	gdata->group = ng_realloc2(gdata->group, GROUPS * sizeof(struct GROUP), 1, 1, 1);
+	gdata->group = ng_realloc(gdata->group, GROUPS * sizeof(struct GROUP), 1, 1, 1);
 	gdata->num_groups = 0;
 
 	for (n = 0; n < f_size; n++) {
@@ -939,14 +939,14 @@ buffer_users(UDATA *udata, char *passwdfile, int setfree)
 	f = open(passwdfile, O_NONBLOCK);
 	fstat(f, &fileinfo);
 	f_size = fileinfo.st_size;
-	f_buf = ng_realloc2(f_buf, f_size, 1, 1, 1);
+	f_buf = ng_realloc(f_buf, f_size, 1, 1, 1);
 	read(f, f_buf, f_size);
 
 	for (n = 0; n < f_size; n++)
 		if (f_buf[n] == '\n')
 			USERS++;
 			
-	udata->user = ng_realloc2(udata->user, USERS * sizeof(struct USER), 1, 1, 1);
+	udata->user = ng_realloc(udata->user, USERS * sizeof(struct USER), 1, 1, 1);
 	udata->num_users = 0;
 
 	for (n = 0; n < f_size; n++) {
@@ -1225,25 +1225,7 @@ remove_pattern(param, pattern, op)
 #endif
 
 void *
-ng_realloc(void *mempointer, int memsize, int zero_it, int exit_on_error, struct VARS *raceI, int zero_pointer)
-{
-	if (zero_pointer)
-		mempointer = malloc(memsize);
-	else
-		mempointer = realloc(mempointer, memsize);
-	if (mempointer == NULL) {
-		d_log(1, "ng_realloc: realloc failed: %s\n", strerror(errno));
-		if (exit_on_error) {
-			//remove_lock(raceI);
-			exit(EXIT_FAILURE);
-		}
-	} else if (zero_it)
-		bzero(mempointer, memsize);
-	return mempointer;
-}
-
-void *
-ng_realloc2(void *mempointer, int memsize, int zero_it, int exit_on_error, int zero_pointer)
+ng_realloc(void *mempointer, int memsize, int zero_it, int exit_on_error, int zero_pointer)
 {
 	if (zero_pointer)
 		mempointer = malloc(memsize);
