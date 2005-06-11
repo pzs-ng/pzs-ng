@@ -1025,8 +1025,8 @@
 
 /*
  * debug_level <INTEGER>
- *  This specifies the verbosity of the debug messages printed to .debug.
- *  A higher value means higher verbosity.
+ *	This specifies the verbosity of the debug messages printed to .debug.
+ *	A higher value means higher verbosity.
  */
 #ifndef debug_level
 #define debug_level		1

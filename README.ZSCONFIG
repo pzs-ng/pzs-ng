@@ -629,6 +629,7 @@ debug_mode <TRUE|FALSE>
 debug_level <INTEGER>
 	This specifies the verbosity of the debug messages printed to .debug.
 	A higher value means higher verbosity.
+	DEFAULT: 1
 
 debug_altlog <TRUE|FALSE>
 	If debug is on, you can choose wether you wish to have the .debug file
@@ -688,33 +689,15 @@ Lock Related Settings
 The following is lock related.
 
 
-max_seconds_wait_for_lock <NUMBER>
-	This number representents the maximum number of seconds a process will
-	wait for a lock on release. Usually only a second or two will actually
-	be used, since the only program using time by default is rescan, and it
-	has a low priority, which the other processes will provide a signal to
-	quit.
-	Anyway, not something you should worry too much about, unless your site
-	usually holds files in the 100MB area on a slow/busy server that're
-	rescanned on a regular basis.
-	DEFAULT: 20
-
-lock_optimize <NUMBER>
-	This option is meant to minimize impact the runtime of the locking.
-	The number represents the number of seconds that must pass before the
-	lock is touched/updated. Usually, this is either set to 1 or 0.
-	0 disable this feature.
-	DEFAULT: 1
-
-ignore_lock_timeout <TRUE|FALSE>
-	If a lock cannot be obtained within the time set in
-	max_seconds_wait_for_lock, the zipscript will usually exit with an
-	error. You can, however, bypass this so it checks the file as normal.
-	This can lead to race-conditions, however, so it's set to FALSE by
-	default. Usually such conditions should *never* occur, but may in
-	rare conditions, especially if 3rd party scripts/addons are being
-	used.
-	DEFAULT: FALSE
+max_age_for_lock_file <NUMBER>
+	When critical data is read from and written to, the zipscript needs
+	to make sure things like multiple simultaneous writes to files corrupt
+	them. To prevent this, a file.lock is created, and while that file exists
+	no new process tries to read or write from the file. However, if a
+	process crashes while accessing a data file, the .lock file will still
+	be in the file system. This setting determines how old, in seconds, the
+	.lock file can be before it's ignored and deleted by a new process.
+	DEFAULT: 2
 
 
 

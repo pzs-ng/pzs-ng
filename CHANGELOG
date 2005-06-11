@@ -1,4 +1,7 @@
 v1.xx	:
+	  zipscript: remove: config setting - max_seconds_wait_for_lock
+	  zipscript: remove: config setting - lock_optimize
+	  zipscript: remove: config setting - ignore_lock_timeout
 	  zipscript: change: replaced the complex file locking mechanism with an easier one, to keep unwanted bugs out.
 	  zipscript: new: config setting - max_age_for_lock_file which specifies how old a lock file can be before it's ignored.
 	  zipscript: new: added the option debug_level which specifies the verbosity of debug messages.
