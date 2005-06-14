@@ -1020,8 +1020,8 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 					d_log("create_lock: write failed: %s\n", strerror(errno));
 				close(fd);
 				d_log("create_lock: putting you in queue. (%d/%d)\n", hd.data_qcurrent, hd.data_queue);
-				return -1;
 				unlink(lockfile);
+				return -1;
 			} else if (hd.data_queue && (queue > hd.data_qcurrent) && !force_lock) {
 										/* seems there is a queue, and the calling process' place in */
 										/* the queue is still less than current. */
