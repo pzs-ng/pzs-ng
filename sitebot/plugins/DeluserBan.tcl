@@ -119,7 +119,7 @@ proc ::ngBot::DeluserBan::LogEvent {event section logData} {
     ## Create a ban mask for the user.
     set userHost [getchanhost $ircUser]
     if {[string equal "" $userHost]} {
-        set userHost "$ircUser!*@*"
+        set userHost "*@*"
     }
 
     ## Kick/ban the user from all channels.
@@ -129,7 +129,7 @@ proc ::ngBot::DeluserBan::LogEvent {event section logData} {
             putkick $channel $ircUser $reason
         }
         if {[IsTrue $banUser]} {
-            newchanban $channel $userHost $botnick $reason
+            newchanban $channel $ircUser!$userHost $botnick $reason
         }
     }
 
