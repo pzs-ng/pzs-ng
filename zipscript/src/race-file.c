@@ -1028,8 +1028,8 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 				raceI->data_incrementor = hd.data_incrementor;	/* feed back the current incrementor */
 				raceI->misc.release_type = hd.data_type;
 				close(fd);
-				return -1;
 				unlink(lockfile);
+				return -1;
 			}
 		}
 		if (force_lock == 1) {						/* lock suggested - reseting the incrementor to 0 */
