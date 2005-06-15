@@ -966,7 +966,8 @@ verify_racedata(const char *path)
 	
 	if (!(racefile = xfopen(path, "r+"))) {
 		d_log(1, "verify_racedata: xfopen(%s) failed\n", path);
-		exit(EXIT_FAILURE);
+		return 0;
+//		exit(EXIT_FAILURE);
 	}
 	
 	for (i = 0; fread(&rd, sizeof(RACEDATA), 1, racefile); ) {
