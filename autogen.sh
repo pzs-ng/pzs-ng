@@ -37,6 +37,11 @@ then
 			echo "[FAIL]"
 		fi
 
+		echo ""
+		echo "NOTE:"
+		echo "  This version is NOT considered usable. You will get NO HELP from the devs using this."
+		echo "  Please consider downloading the v1.0 stable version from http://www.pzs-ng.com"
+		echo ""
 		exit 0
 	fi
 	
