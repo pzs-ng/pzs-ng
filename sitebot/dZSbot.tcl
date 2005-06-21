@@ -592,9 +592,10 @@ proc ::dZSbot::FormatDuration {secs} {
 }
 
 proc ::dZSbot::FormatKb {amount} {
+    variable size_divisor
     foreach dec {0 1 2 2 2} unit {KB MB GB TB PB} {
-        if {abs($amount) >= 1024} {
-            set amount [expr {double($amount) / 1024.0}]
+        if {abs($amount) >= $size_divisor} {
+            set amount [expr {double($amount) / double($size_divisor)}]
         } else {break}
     }
     return [format "%.*f%s" $dec $amount $unit]
@@ -602,12 +603,12 @@ proc ::dZSbot::FormatKb {amount} {
 
 proc ::dZSbot::FormatSpeed {value section} {
     variable speedmeasure
-    variable speedthreshold
+    variable speed_divisor
     variable theme
 
     switch -exact -- [string tolower $speedmeasure] {
         "mb" {
-            set value [format "%.2f" [expr {$value / 1024.0}]]
+            set value [format "%.2f" [expr {$value / double($speed_divisor)}]]
             set type $theme(MB)
         }
         "kbit" {
@@ -619,7 +620,7 @@ proc ::dZSbot::FormatSpeed {value section} {
             set type $theme(MBIT)
         }
         "autobit" {
-            if {$value > $speedthreshold} {
+            if {$value > $speed_divisor} {
                 set value [format "%.1f" [expr {$value * 8 / 1000.0}]]
                 set type $theme(MBIT)
             } else {
@@ -628,8 +629,8 @@ proc ::dZSbot::FormatSpeed {value section} {
             }
         }
         "autobyte" {
-            if {$value > $speedthreshold} {
-                set value [format "%.2f" [expr {$value / 1024.0}]]
+            if {$value > $speed_divisor} {
+                set value [format "%.2f" [expr {$value / double($speed_divisor)}]]
                 set type $theme(MB)
             } else {
                 set type $theme(KB)
@@ -1284,6 +1285,7 @@ proc ::dZSbot::CmdNew {nick uhost hand chan argv} {
     variable defaultsection
     variable location
     variable sections
+    variable size_divisor
     variable theme
     CheckChan $nick $chan
 
@@ -1334,7 +1336,7 @@ proc ::dZSbot::CmdNew {nick uhost hand chan argv} {
         set output [ReplaceVar $output "%u_name" $user]
         set output [ReplaceVar $output "%g_name" $group]
         set output [ReplaceVar $output "%files" $files]
-        set output [ReplaceVar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
+        set output [ReplaceVar $output "%mbytes" [format "%.1f" [expr {$kbytes / double($size_divisor)}]]]
         set output [ReplacePath $output $sectionpath $dirpath]
         SendOne $nick [ReplaceBasic $output "NEW"]
     }
@@ -1352,6 +1354,7 @@ proc ::dZSbot::CmdNukes {nick uhost hand chan argv} {
     variable defaultsection
     variable location
     variable sections
+    variable size_divisor
     variable theme
     CheckChan $nick $chan
 
@@ -1390,7 +1393,7 @@ proc ::dZSbot::CmdNukes {nick uhost hand chan argv} {
         set output [ReplaceVar $output "%nukee" $nukee]
         set output [ReplaceVar $output "%multiplier" $multiplier]
         set output [ReplaceVar $output "%reason" $reason]
-        set output [ReplaceVar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
+        set output [ReplaceVar $output "%mbytes" [format "%.1f" [expr {$kbytes / double($size_divisor)}]]]
         set output [ReplacePath $output $sectionpath $dirpath]
         SendOne $nick [ReplaceBasic $output "NUKES"]
     }
@@ -1408,6 +1411,7 @@ proc ::dZSbot::CmdSearch {nick uhost hand chan argv} {
     variable defaultsection
     variable location
     variable search_chars
+    variable size_divisor
     variable theme
     CheckChan $nick $chan
 
@@ -1450,7 +1454,7 @@ proc ::dZSbot::CmdSearch {nick uhost hand chan argv} {
         set output [ReplaceVar $output "%u_name" $user]
         set output [ReplaceVar $output "%g_name" $group]
         set output [ReplaceVar $output "%files" $files]
-        set output [ReplaceVar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
+        set output [ReplaceVar $output "%mbytes" [format "%.1f" [expr {$kbytes / double($size_divisor)}]]]
         set output [ReplacePath $output "/site/*" $dirpath]
         SendOne $nick [ReplaceBasic $output "SEARCH"]
     }
@@ -1468,6 +1472,7 @@ proc ::dZSbot::CmdUnnukes {nick uhost hand chan argv} {
     variable defaultsection
     variable location
     variable sections
+    variable size_divisor
     variable theme
     CheckChan $nick $chan
 
@@ -1507,7 +1512,7 @@ proc ::dZSbot::CmdUnnukes {nick uhost hand chan argv} {
         set output [ReplaceVar $output "%nukee" $nukee]
         set output [ReplaceVar $output "%multiplier" $multiplier]
         set output [ReplaceVar $output "%reason" $reason]
-        set output [ReplaceVar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
+        set output [ReplaceVar $output "%mbytes" [format "%.1f" [expr {$kbytes / double($size_divisor)}]]]
         set output [ReplacePath $output $sectionpath $dirpath]
         SendOne $nick [ReplaceBasic $output "UNNUKES"]
     }

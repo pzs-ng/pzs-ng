@@ -94,8 +94,9 @@ set speed(OUTGOING)     12500
 # disabled - No conversion
 set speedmeasure        "autobyte"
 
-# Threshold used on auto-setting, to move from on to the other. (normally is 1000 or 1024)
-set speedthreshold      1024
+# Divisor to move from one unit to the other (normally is 1000 or 1024).
+set size_divisor        1024
+set speed_divisor       1024
 
 # During !idlers what is the minimum amount of seconds for a user to be shown as idle,
 # set to 0 to show all users who are not currently upload/downloading (may be a lot).
