@@ -1133,7 +1133,7 @@ check_zipfile(const char *dirname, const char *zipfile)
 		if (filebanned_match(dp->d_name)) {
 			d_log(1, "check_zipfile: banned file detected: %s\n", dp->d_name);
 			if (!fileexists(zip_bin))
-				d_log(1, "check_zipfile: ERROR! Not able to remove banned file from zip - zip_bin (%s) does not exists!\n", zip_bin);
+				d_log(1, "check_zipfile: ERROR! Not able to remove banned file from zip - zip_bin (%s) does not exist!\n", zip_bin);
 			else {
 				sprintf(target, "%s -qqd \"%s\" \"%s\" 2>.delme", zip_bin, zipfile, dp->d_name);
 				if (execute(target))
