@@ -531,7 +531,7 @@ int getint(char *s, int *end, int reset)
 		return 0;
 	}
 
-	while (isdigit(*pos) || *p == '-')
+	while (isdigit(*pos) || *pos == '-')
 		pos++;
 
 	return i;
