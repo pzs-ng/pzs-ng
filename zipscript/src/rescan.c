@@ -390,8 +390,7 @@ main(int argc, char *argv[])
 				g.v.total.start_time = 0;
 
 				if (!fileexists("file_id.diz")) {
-					sprintf(exec, "%s -qqjnCLL \"%s\" file_id.diz 2>.delme", unzip_bin, g.v.file.name);
-					if (execute(exec) != 0) {
+					if (execute(unzip_bin, "-qqjnCLL", g.v.file.name, "file_id.diz") != 0) {
 						d_log(1, "rescan: No file_id.diz found (#%d): %s\n", errno, strerror(errno));
 					} else {
 						if ((loc = findfile(".", "file_id.diz.bad")))

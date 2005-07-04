@@ -15,8 +15,9 @@ void bad_file(HANDLER_ARGS *, char *, char *);
 int
 handle_zip(HANDLER_ARGS *ha) {
 
-	char		target[strlen(unzip_bin) + 10 + NAME_MAX];
-	long		loc;
+	int	ret;
+	char	target[strlen(unzip_bin) + 10 + NAME_MAX];
+	long	loc;
 
 	d_log(1, "handle_zip: File type is: ZIP - Testing file integrity with %s\n", unzip_bin);
 	
@@ -32,14 +33,14 @@ handle_zip(HANDLER_ARGS *ha) {
 		if ((!findfileextcount(".", ".nfo") ||
 		     findfileextcount(".", ".zip") == 1) &&
 		     !mkdir(".unzipped", 0777))
-			sprintf(target, "%s -qqjo \"%s\" -d .unzipped", unzip_bin, ha->g->v.file.name);
+			ret = execute(5, unzip_bin, "-qqjo", ha->g->v.file.name, "-d", ".unzipped");
 		else
-			sprintf(target, "%s -qqt \"%s\"", unzip_bin, ha->g->v.file.name);
+			ret = execute(3, unzip_bin, "-qqt", ha->g->v.file.name);
 #else
-		sprintf(target, "%s -qqt \"%s\"", unzip_bin, ha->g->v.file.name);
+		ret = execute(3, unzip_bin, "-qqt", ha->g->v.file.name);
 #endif
 		
-		if (execute(target) != 0) {
+		if (ret != 0) {
 			d_log(1, "handle_zip: Integrity check failed (#%d): %s\n", errno, strerror(errno));
 			bad_file(ha, BAD_ZIP, bad_file_zip_type);
 			return 2;
@@ -77,9 +78,9 @@ handle_zip(HANDLER_ARGS *ha) {
 	if (!fileexists("file_id.diz")) {
 		
 		d_log(1, "handle_zip: file_id.diz does not exist, trying to extract it from %s\n", ha->g->v.file.name);
-		sprintf(target, "%s -qqjnCLL \"%s\" file_id.diz 2>.delme", unzip_bin, ha->g->v.file.name);
 		
-		if (execute(target) != 0)
+		ret = execute(4, unzip_bin, "-qqjnCLL", ha->g->v.file.name, "file_id.diz");
+		if (ret != 0)
 			d_log(1, "handle_zip: No file_id.diz found (#%d): %s\n", errno, strerror(errno));
 		else {
 			if ((loc = findfile(".", "file_id.diz.bad")))

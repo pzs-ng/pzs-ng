@@ -827,9 +827,47 @@ get_rar_info(struct VARS *raceI)
  * Modified   : 27.02.2005 Author     : js
  * 
  * Description: Executes external program and returns return value
+ *
+ * The first argument is the number of args passed
  * 
  */
-int 
+int
+execute(int args, ...)
+{
+	int i, status = -1;
+	pid_t pid;
+	char *cmdv[args+1];
+	va_list ap;
+
+	va_start(ap, args);
+	
+	for (i = 0; i < args; i++)
+		cmdv[i] = strdup(va_arg(ap, char *));
+
+	va_end(ap);
+
+	cmdv[args] = '\0';
+	
+	switch ((pid = fork())) {
+		case -1:
+			break;
+		case 0:
+			close(STDOUT_FILENO);
+			close(STDERR_FILENO); 
+			execv(cmdv[0], cmdv);
+			exit(-1);
+		default:
+			waitpid(pid, &status, WUNTRACED);
+			break;
+	}
+
+	for (i = 0; i < args; i++)
+		free(cmdv[i]);
+
+	return WEXITSTATUS(status);
+}
+
+/*int
 execute(char *s)
 {
 	int	i = 0;
@@ -837,7 +875,7 @@ execute(char *s)
 	if ((i = system(s)) == -1)
 		d_log(1, "execute (old): %s\n", strerror(errno));
 	return i;
-}
+}*/
 
 char           *
 get_g_name(GDATA *gdata, gid_t gid)

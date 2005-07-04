@@ -12,7 +12,6 @@
 int
 handle_nfo(HANDLER_ARGS *ha) {
 	
-	//int	no_check = TRUE;
 	int	exit_value = EXIT_SUCCESS;
 
 	d_log(1, "handle_nfo: File type is: NFO\n");

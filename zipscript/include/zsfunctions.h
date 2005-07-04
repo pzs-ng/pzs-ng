@@ -139,7 +139,8 @@ extern short	fileexists(char *);
 extern void	createlink(char *, char *, char *, char *);
 extern void	readsfv_ffile(struct VARS *);
 extern void	get_rar_info(struct VARS *);
-extern int	execute(char *);
+/*extern int	execute(char *);*/
+extern int	execute(int, ...);
 extern char    *get_g_name(GDATA *, gid_t);
 extern char    *get_u_name(UDATA *, uid_t);
 extern void	buffer_groups(GDATA *, char *, int);

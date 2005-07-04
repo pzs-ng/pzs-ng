@@ -268,8 +268,9 @@ handle_sfv32(HANDLER_ARGS *ha)
 						if (!fileexists(unduper_script)) {
 							d_log(1, "handle_sfv32: Warning - undupe script (%s) does not exist.\n", unduper_script);
 						}
-						sprintf(target, unduper_script " \"%s\"", ha->g->v.file.name);
-						if (execute(target) == 0)
+						//sprintf(target, unduper_script " \"%s\"", ha->g->v.file.name);
+						//if (execute(target) == 0)
+						if (execute(2, unduper_script, ha->g->v.file.name) == 0)
 							d_log(1, "handle_sfv32: undupe of %s successful.\n", ha->g->v.file.name);
 						else
 							d_log(1, "handle_sfv32: undupe of %s failed.\n", ha->g->v.file.name);
@@ -392,7 +393,8 @@ handle_sfv32(HANDLER_ARGS *ha)
 				d_log(1, "handle_sfv32: Warning -  mp3_script (%s) - file does not exists\n", mp3_script);
 			sprintf(target, "%s %s", mp3_script, convert(&ha->g->v, ha->g->ui, ha->g->gi, mp3_script_cookies));
 			d_log(1, "handle_sfv32: Executing mp3 script (%s %s)\n", mp3_script, convert(&ha->g->v, ha->g->ui, ha->g->gi, mp3_script_cookies));
-			if (execute(target) != 0)
+			//if (execute(target) != 0)
+			if (execute(2, mp3_script, convert(&ha->g->v, ha->g->ui, ha->g->gi, mp3_script_cookies)) != 0)
 				d_log(1, "handle_sfv32: Failed to execute mp3_script: %s\n", strerror(errno));
 		}
 		/* TODO: GET RID OF THIS COPY/PASTE */

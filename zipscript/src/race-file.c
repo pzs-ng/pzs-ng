@@ -283,7 +283,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 {
 	int		fd, lret, count;
 	FILE		*racefile;
-	char		*realfile, *ext, target[256];
+	char		*realfile, *ext;
 	unsigned int	Tcrc;
 	struct stat	filestat;
 	time_t		timenow;
@@ -362,8 +362,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 					d_log(1, "Failed to undupe '%s' - '%s' does not exist.\n",
 						  rd.fname, unduper_script);
 				} else {
-					sprintf(target, unduper_script " \"%s\"", rd.fname);
-					if (execute(target) == 0)
+					if (execute(2, unduper_script, rd.fname) == 0)
 						d_log(1, "testfiles: undupe of %s successful.\n", rd.fname);
 					else
 						d_log(1, "testfiles: undupe of %s failed.\n", rd.fname);
@@ -1109,9 +1108,6 @@ check_zipfile(const char *dirname, const char *zipfile)
 	struct stat	filestat;
 	char	       *ext;
 #endif
-#if (zip_clean)
-	char		target[NAME_MAX];
-#endif
 	DIR	       *dir;
 	struct dirent  *dp;
 
@@ -1135,8 +1131,7 @@ check_zipfile(const char *dirname, const char *zipfile)
 			if (!fileexists(zip_bin))
 				d_log(1, "check_zipfile: ERROR! Not able to remove banned file from zip - zip_bin (%s) does not exist!\n", zip_bin);
 			else {
-				sprintf(target, "%s -qqd \"%s\" \"%s\" 2>.delme", zip_bin, zipfile, dp->d_name);
-				if (execute(target))
+				if (execute(4, zip_bin, "-qqd", zipfile, dp->d_name))
 					d_log(1, "check_zipfile: Failed to remove file from zip.\n");
 			}
 			continue;

@@ -579,16 +579,12 @@ void
 execute_script(char *script, char *arg, char *type)
 {
 
-	static char target[PATH_MAX];
-	
 	if (!fileexists(script))
 		d_log(1, "execute_script: Warning - %s_script (%s) - file does not exist\n", type, script);
 
 	d_log(1, "execute_script: Executing %s script\n", type);
 	
-	snprintf(target, PATH_MAX, "%s \"%s\"", script, arg);
-	
-	if (execute(target) != 0)
+	if (execute(2, script, arg) != 0)
 		d_log(1, "execute_script: Failed to execute %s_script: %s\n", type, strerror(errno));
 		
 }
