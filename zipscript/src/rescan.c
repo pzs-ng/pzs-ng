@@ -390,7 +390,7 @@ main(int argc, char *argv[])
 				g.v.total.start_time = 0;
 
 				if (!fileexists("file_id.diz")) {
-					if (execute(unzip_bin, "-qqjnCLL", g.v.file.name, "file_id.diz") != 0) {
+					if (execute(4, unzip_bin, "-qqjnCLL", g.v.file.name, "file_id.diz") != 0) {
 						d_log(1, "rescan: No file_id.diz found (#%d): %s\n", errno, strerror(errno));
 					} else {
 						if ((loc = findfile(".", "file_id.diz.bad")))
