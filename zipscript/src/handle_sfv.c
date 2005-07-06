@@ -313,10 +313,11 @@ handle_sfv32(HANDLER_ARGS *ha)
 	} else {
 #if (force_sfv_first == TRUE )
 # if (use_partial_on_noforce == TRUE)
-		if (!matchpartialpath(noforce_sfv_first_dirs, ha->g->l.path) && !matchpath(zip_dirs, ha->g->l.path)) {
+		if (!matchpartialpath(noforce_sfv_first_dirs, ha->g->l.path) && !matchpath(zip_dirs, ha->g->l.path))
 # else
-		if (!matchpath(noforce_sfv_first_dirs, ha->g->l.path) && !matchpath(zip_dirs, ha->g->l.path)) {
+		if (!matchpath(noforce_sfv_first_dirs, ha->g->l.path) && !matchpath(zip_dirs, ha->g->l.path))
 # endif
+		{
 			d_log(1, "handle_sfv32: SFV needs to be uploaded first\n");
 			strlcpy(ha->g->v.misc.error_msg, SFV_FIRST, 80);
 			mark_as_bad(ha->g->v.file.name);
@@ -364,198 +365,23 @@ handle_sfv32(HANDLER_ARGS *ha)
 		else
 			ha->g->v.misc.release_type = RTYPE_OTHER;	/* OTHER FILE */
 	}
-	switch (ha->g->v.misc.release_type) {
-	/* TODO: set_rtype_msg() should replace a bit here */
-	case RTYPE_RAR:
-		get_rar_info(&ha->g->v);
-		ha->msg->race = rar_race;
-		ha->msg->update = rar_update;
-		ha->msg->halfway = CHOOSE(ha->g->v.total.users, rar_halfway, rar_norace_halfway);
-		ha->msg->newleader = rar_newleader;
-		break;
-	case RTYPE_OTHER:
-		ha->msg->race = other_race;
-		ha->msg->update = other_update;
-		ha->msg->halfway = CHOOSE(ha->g->v.total.users, other_halfway, other_norace_halfway);
-		ha->msg->newleader = other_newleader;
-		break;
-	case RTYPE_AUDIO:
-		ha->msg->race = audio_race;
-		ha->msg->update = audio_update;
-		ha->msg->halfway = CHOOSE(ha->g->v.total.users, audio_halfway, audio_norace_halfway);
-		ha->msg->newleader = audio_newleader;
-		d_log(1, "handle_sfv32: Trying to read audio header and tags\n");
-		get_mpeg_audio_info(ha->g->v.file.name, &ha->g->v.audio);
-		write_bitrate_in_race(ha->g->l.race, &ha->g->v);
-		sprintf(ha->g->v.audio.bitrate, "%i", read_bitrate_in_race(ha->g->l.race));
-		if ((enable_mp3_script == TRUE) && (ha->g->ui[ha->g->v.user.pos].files == 1)) {
-			if (!fileexists(mp3_script))
-				d_log(1, "handle_sfv32: Warning -  mp3_script (%s) - file does not exists\n", mp3_script);
-			sprintf(target, "%s %s", mp3_script, convert(&ha->g->v, ha->g->ui, ha->g->gi, mp3_script_cookies));
-			d_log(1, "handle_sfv32: Executing mp3 script (%s %s)\n", mp3_script, convert(&ha->g->v, ha->g->ui, ha->g->gi, mp3_script_cookies));
-			//if (execute(target) != 0)
-			if (execute(2, mp3_script, convert(&ha->g->v, ha->g->ui, ha->g->gi, mp3_script_cookies)) != 0)
-				d_log(1, "handle_sfv32: Failed to execute mp3_script: %s\n", strerror(errno));
-		}
-		/* TODO: GET RID OF THIS COPY/PASTE */
-		if (!matchpath(audio_nocheck_dirs, ha->g->l.path)) {
-#if ( audio_banned_genre_check )
-			if (strcomp(banned_genres, ha->g->v.audio.id3_genre)) {
-				d_log(1, "handle_sfv32: File is from banned genre\n");
-				sprintf(ha->g->v.misc.error_msg, BANNED_GENRE, ha->g->v.audio.id3_genre);
-				if (audio_genre_warn == TRUE) {
-					if (ha->g->ui[ha->g->v.user.pos].files == 1) {
-						d_log(1, "handle_sfv32: warn on - logging to logfile\n");
-						ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, audio_genre_warn_msg);
-						writelog(ha->g, ha->msg->error, general_badgenre_type);
-					} else
-						d_log(1, "handle_sfv32: warn on - have already logged to logfile\n");
-				} else {
-					mark_as_bad(ha->g->v.file.name);
-					ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
-					if ((ha->g->ui[ha->g->v.user.pos].files == 1) && (exit_value < 2))
-						writelog(ha->g, ha->msg->error, bad_file_genre_type);
-					exit_value = 2;
-				}
-#if ( del_banned_release || enable_banned_script )
-				*ha->deldir = 1;
-				exit_value = 2;
-#endif
-				break;
-			}
-#elif ( audio_allowed_genre_check == TRUE )
-			if (!strcomp(allowed_genres, ha->g->v.audio.id3_genre)) {
-				d_log(1, "handle_sfv32: File is not in allowed genre\n");
-				sprintf(ha->g->v.misc.error_msg, BANNED_GENRE, ha->g->v.audio.id3_genre);
-				if (audio_genre_warn == TRUE) {
-					if (ha->g->ui[ha->g->v.user.pos]->files == 1) {
-						d_log(1, "handle_sfv32: warn on - logging to logfile\n");
-						ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, audio_genre_warn_msg);
-						writelog(ha->g, ha->msg->error, general_badgenre_type);
-					} else
-						d_log(1, "handle_sfv32: warn on - have already logged to logfile\n");
-				} else {
-					mark_as_bad(ha->g->v.file.name);
-					ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
-					if ((ha->g->ui[ha->g->v.user.pos]->files == 1) && (exit_value < 2))
-						writelog(ha->g, ha->msg->error, bad_file_genre_type);
-					exit_value = 2;
-				}
-#if ( del_banned_release || enable_banned_script )
-				*ha->deldir = 1;
-				exit_value = 2;
-#endif
-				break;
-			}
-#endif
-#if ( audio_year_check == TRUE )
-			if (!strcomp(allowed_years, ha->g->v.audio.id3_year)) {
-				d_log(1, "handle_sfv32: File is from banned year\n");
-				sprintf(ha->g->v.misc.error_msg, BANNED_YEAR, ha->g->v.audio.id3_year);
-				if (audio_year_warn == TRUE) {
-					if (ha->g->ui[ha->g->v.user.pos].files == 1) {
-						d_log(1, "handle_sfv32: warn on - logging to logfile\n");
-						ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, audio_year_warn_msg);
-						writelog(ha->g, ha->msg->error, general_badyear_type);
-					} else
-						d_log(1, "handle_sfv32: warn on - have already logged to logfile\n");
-				} else {
-					mark_as_bad(ha->g->v.file.name);
-					ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
-					if ((ha->g->ui[ha->g->v.user.pos].files == 1) && (exit_value < 2))
-						writelog(ha->g, ha->msg->error, bad_file_year_type);
-					exit_value = 2;
-				}
-#if ( del_banned_release || enable_banned_script )
-				*ha->deldir = 1;
-				exit_value = 2;
-#endif
-				break;
-			}
-#endif
-#if ( audio_cbr_check == TRUE )
-			if (ha->g->v.audio.is_vbr == 0) {
-				if (!strcomp(allowed_constant_bitrates, ha->g->v.audio.bitrate)) {
-					d_log(1, "handle_sfv32: File is encoded using banned bitrate\n");
-					sprintf(ha->g->v.misc.error_msg, BANNED_BITRATE, ha->g->v.audio.bitrate);
-					if (audio_cbr_warn == TRUE) {
-						if (ha->g->ui[ha->g->v.user.pos].files == 1) {
-							d_log(1, "handle_sfv32: warn on - logging to logfile\n");
-							ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, audio_cbr_warn_msg);
-							writelog(ha->g, ha->msg->error, general_badbitrate_type);
-						} else
-							d_log(1, "handle_sfv32: warn on - have already logged to logfile\n");
-					} else {
-						mark_as_bad(ha->g->v.file.name);
-						ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
-						if ((ha->g->ui[ha->g->v.user.pos].files == 1) && (exit_value < 2))
-							writelog(ha->g, ha->msg->error, bad_file_bitrate_type);
-						exit_value = 2;
-					}
-#if ( del_banned_release || enable_banned_script )
-					*ha->deldir = 1;
-					exit_value = 2;
-#endif
-					break;
-				}
-			}
-#endif
-#if ( audio_allowed_vbr_preset_check == TRUE )
-			if (ha->g->v.audio.is_vbr && strlen(ha->g->v.audio.vbr_preset) && !strcomp(allowed_vbr_presets, ha->g->v.audio.vbr_preset)) {
-				d_log(1, "handle_sfv32: File is not in allowed vbr preset list (%s)\n", ha->g->v.audio.vbr_preset);
-				sprintf(ha->g->v.misc.error_msg, BANNED_PRESET, ha->g->v.audio.vbr_preset);
-				if (audio_vbr_preset_warn == TRUE) {
-					if (ha->g->ui[ha->g->v.user.pos].files == 1) {
-						d_log(1, "handle_sfv32: warn on - logging to logfile\n");
-						ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, audio_vbr_preset_warn_msg);
-						writelog(ha->g, ha->msg->error, general_badpreset_type);
-					} else
-						d_log(1, "handle_sfv32: warn on - have already logged to logfile\n");
-				} else {
-					mark_as_bad(ha->g->v.file.name);
-					ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
-					if ((ha->g->ui[ha->g->v.user.pos].files == 1) && (exit_value < 2))
-						writelog(ha->g, ha->msg->error, bad_file_vbr_preset_type);
-					exit_value = 2;
-				}
-#if ( del_banned_release || enable_banned_script )
-				*ha->deldir = 1;
-				exit_value = 2;
-#endif
-				break;
-			}
-#endif
-		} else
-			d_log(1, "handle_sfv32: user is in a no audio check dir - skipping checks.\n");
 
-		if (realtime_mp3_info != DISABLED) {
-			d_log(1, "handle_sfv32: Printing realtime_mp3_info.\n");
-			printf("%s", convert(&ha->g->v, ha->g->ui, ha->g->gi, realtime_mp3_info));
-		}
-		break;
-	case RTYPE_VIDEO:
-		d_log(1, "handle_sfv32: Trying to read video header\n");
-		if (!memcmp(ha->fileext, "avi", 3)) {
-			bzero(&ha->g->m, sizeof(struct MULTIMEDIA));
-			avinfo(ha->g->v.file.name, &ha->g->m);
-			d_log(1, "handle_sfv32: avinfo: video - %dx%d * %.0f of %s (%s).\n", ha->g->m.height, ha->g->m.width, ha->g->m.fps, ha->g->m.vids, ha->g->m.audio);
-			avi_video(ha->g->v.file.name, &ha->g->v.video);
-		}
-		else
-			mpeg_video(ha->g->v.file.name, &ha->g->v.video);
-		ha->msg->race = video_race;
-		ha->msg->update = video_update;
-		ha->msg->halfway = CHOOSE(ha->g->v.total.users, video_halfway, video_norace_halfway);
-		ha->msg->newleader = video_newleader;
-		break;
-	default:
-		get_rar_info(&ha->g->v);
-		ha->msg->race = rar_race;
-		ha->msg->update = rar_update;
-		ha->msg->halfway = CHOOSE(ha->g->v.total.users, rar_halfway, rar_norace_halfway);
-		ha->msg->newleader = rar_newleader;
-		d_log(1, "handle_sfv32: WARNING! Not a known release type - Contact the authors! (2:%d)\n", ha->g->v.misc.release_type);
-		break;
+	switch (ha->g->v.misc.release_type) {
+		case RTYPE_RAR:
+			exit_value = __sfv_rar(ha);
+			break;
+		case RTYPE_OTHER:
+			exit_value = __sfv_other(ha);
+			break;
+		case RTYPE_AUDIO:
+			exit_value = __sfv_audio(ha);
+			break;
+		case RTYPE_VIDEO:
+			exit_value = __sfv_video(ha);
+			break;
+		default:
+			exit_value = __sfv_default(ha);
+			break;
 	}
 
 	if (!ha->msg->race)
@@ -564,16 +390,221 @@ handle_sfv32(HANDLER_ARGS *ha)
 	if (exit_value == EXIT_SUCCESS) {
 		d_log(1, "handle_sfv32: Removing missing indicator\n");
 		unlink_missing(ha->g->v.file.name);
-		/*
-		sprintf(target, "%s-missing", ha->g->v.file.name);
-#if (sfv_cleanup_lowercase == TRUE)
-		  strtolower(target);
-#endif
-		if (target)
-			unlink(target);
-		*/
 		ng_free(target);
 	}
 
 	return exit_value;
+}
+
+/* TODO: set_rtype_msg() should replace a bit here */
+int
+__sfv_rar(HANDLER_ARGS *ha)
+{
+	get_rar_info(&ha->g->v);
+	ha->msg->race = rar_race;
+	ha->msg->update = rar_update;
+	ha->msg->halfway = CHOOSE(ha->g->v.total.users, rar_halfway, rar_norace_halfway);
+	ha->msg->newleader = rar_newleader;
+
+	return 0;
+}
+
+int
+__sfv_other(HANDLER_ARGS *ha)
+{
+	ha->msg->race = other_race;
+	ha->msg->update = other_update;
+	ha->msg->halfway = CHOOSE(ha->g->v.total.users, other_halfway, other_norace_halfway);
+	ha->msg->newleader = other_newleader;
+
+	return 0;
+}
+
+int
+__sfv_audio(HANDLER_ARGS *ha)
+{
+	int exit_value = 0;
+
+	ha->msg->race = audio_race;
+	ha->msg->update = audio_update;
+	ha->msg->halfway = CHOOSE(ha->g->v.total.users, audio_halfway, audio_norace_halfway);
+	ha->msg->newleader = audio_newleader;
+	d_log(1, "handle_sfv32: Trying to read audio header and tags\n");
+	get_mpeg_audio_info(ha->g->v.file.name, &ha->g->v.audio);
+	write_bitrate_in_race(ha->g->l.race, &ha->g->v);
+	sprintf(ha->g->v.audio.bitrate, "%i", read_bitrate_in_race(ha->g->l.race));
+	if ((enable_mp3_script == TRUE) && (ha->g->ui[ha->g->v.user.pos].files == 1)) {
+		if (!fileexists(mp3_script))
+			d_log(1, "handle_sfv32: Warning -  mp3_script (%s) - file does not exists\n", mp3_script);
+		//sprintf(target, "%s %s", mp3_script, convert(&ha->g->v, ha->g->ui, ha->g->gi, mp3_script_cookies));
+		d_log(1, "handle_sfv32: Executing mp3 script (%s %s)\n", mp3_script, convert(&ha->g->v, ha->g->ui, ha->g->gi, mp3_script_cookies));
+		//if (execute(target) != 0)
+		if (execute(2, mp3_script, convert(&ha->g->v, ha->g->ui, ha->g->gi, mp3_script_cookies)) != 0)
+			d_log(1, "handle_sfv32: Failed to execute mp3_script: %s\n", strerror(errno));
+	}
+	// TODO: GET RID OF THIS COPY/PASTE
+	if (!matchpath(audio_nocheck_dirs, ha->g->l.path)) {
+#if ( audio_banned_genre_check )
+		if (strcomp(banned_genres, ha->g->v.audio.id3_genre)) {
+			d_log(1, "handle_sfv32: File is from banned genre\n");
+			sprintf(ha->g->v.misc.error_msg, BANNED_GENRE, ha->g->v.audio.id3_genre);
+			if (audio_genre_warn == TRUE) {
+				if (ha->g->ui[ha->g->v.user.pos].files == 1) {
+					d_log(1, "handle_sfv32: warn on - logging to logfile\n");
+					ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, audio_genre_warn_msg);
+					writelog(ha->g, ha->msg->error, general_badgenre_type);
+				} else
+					d_log(1, "handle_sfv32: warn on - have already logged to logfile\n");
+			} else {
+				mark_as_bad(ha->g->v.file.name);
+				ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
+				if ((ha->g->ui[ha->g->v.user.pos].files == 1) && (exit_value < 2))
+					writelog(ha->g, ha->msg->error, bad_file_genre_type);
+				exit_value = 2;
+			}
+#if ( del_banned_release || enable_banned_script )
+			*ha->deldir = 1;
+			return 2;
+#endif
+		}
+#elif ( audio_allowed_genre_check == TRUE )
+		if (!strcomp(allowed_genres, ha->g->v.audio.id3_genre)) {
+			d_log(1, "handle_sfv32: File is not in allowed genre\n");
+			sprintf(ha->g->v.misc.error_msg, BANNED_GENRE, ha->g->v.audio.id3_genre);
+			if (audio_genre_warn == TRUE) {
+				if (ha->g->ui[ha->g->v.user.pos]->files == 1) {
+					d_log(1, "handle_sfv32: warn on - logging to logfile\n");
+					ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, audio_genre_warn_msg);
+					writelog(ha->g, ha->msg->error, general_badgenre_type);
+				} else
+					d_log(1, "handle_sfv32: warn on - have already logged to logfile\n");
+			} else {
+				mark_as_bad(ha->g->v.file.name);
+				ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
+				if ((ha->g->ui[ha->g->v.user.pos]->files == 1) && (exit_value < 2))
+					writelog(ha->g, ha->msg->error, bad_file_genre_type);
+				exit_value = 2;
+			}
+#if ( del_banned_release || enable_banned_script )
+			*ha->deldir = 1;
+			return 2;
+#endif
+		}
+#endif
+#if ( audio_year_check == TRUE )
+		if (!strcomp(allowed_years, ha->g->v.audio.id3_year)) {
+			d_log(1, "handle_sfv32: File is from banned year\n");
+			sprintf(ha->g->v.misc.error_msg, BANNED_YEAR, ha->g->v.audio.id3_year);
+			if (audio_year_warn == TRUE) {
+				if (ha->g->ui[ha->g->v.user.pos].files == 1) {
+					d_log(1, "handle_sfv32: warn on - logging to logfile\n");
+					ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, audio_year_warn_msg);
+					writelog(ha->g, ha->msg->error, general_badyear_type);
+				} else
+					d_log(1, "handle_sfv32: warn on - have already logged to logfile\n");
+			} else {
+				mark_as_bad(ha->g->v.file.name);
+				ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
+				if ((ha->g->ui[ha->g->v.user.pos].files == 1) && (exit_value < 2))
+					writelog(ha->g, ha->msg->error, bad_file_year_type);
+				exit_value = 2;
+			}
+#if ( del_banned_release || enable_banned_script )
+			*ha->deldir = 1;
+			return 2;
+#endif
+		}
+#endif
+#if ( audio_cbr_check == TRUE )
+		if (ha->g->v.audio.is_vbr == 0) {
+			if (!strcomp(allowed_constant_bitrates, ha->g->v.audio.bitrate)) {
+				d_log(1, "handle_sfv32: File is encoded using banned bitrate\n");
+				sprintf(ha->g->v.misc.error_msg, BANNED_BITRATE, ha->g->v.audio.bitrate);
+				if (audio_cbr_warn == TRUE) {
+					if (ha->g->ui[ha->g->v.user.pos].files == 1) {
+						d_log(1, "handle_sfv32: warn on - logging to logfile\n");
+						ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, audio_cbr_warn_msg);
+						writelog(ha->g, ha->msg->error, general_badbitrate_type);
+					} else
+						d_log(1, "handle_sfv32: warn on - have already logged to logfile\n");
+				} else {
+					mark_as_bad(ha->g->v.file.name);
+					ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
+					if ((ha->g->ui[ha->g->v.user.pos].files == 1) && (exit_value < 2))
+						writelog(ha->g, ha->msg->error, bad_file_bitrate_type);
+					exit_value = 2;
+				}
+#if ( del_banned_release || enable_banned_script )
+				*ha->deldir = 1;
+				return 2;
+#endif
+			}
+		}
+#endif
+#if ( audio_allowed_vbr_preset_check == TRUE )
+		if (ha->g->v.audio.is_vbr && strlen(ha->g->v.audio.vbr_preset) && !strcomp(allowed_vbr_presets, ha->g->v.audio.vbr_preset)) {
+			d_log(1, "handle_sfv32: File is not in allowed vbr preset list (%s)\n", ha->g->v.audio.vbr_preset);
+			sprintf(ha->g->v.misc.error_msg, BANNED_PRESET, ha->g->v.audio.vbr_preset);
+			if (audio_vbr_preset_warn == TRUE) {
+				if (ha->g->ui[ha->g->v.user.pos].files == 1) {
+					d_log(1, "handle_sfv32: warn on - logging to logfile\n");
+					ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, audio_vbr_preset_warn_msg);
+					writelog(ha->g, ha->msg->error, general_badpreset_type);
+				} else
+					d_log(1, "handle_sfv32: warn on - have already logged to logfile\n");
+			} else {
+				mark_as_bad(ha->g->v.file.name);
+				ha->msg->error = convert(&ha->g->v, ha->g->ui, ha->g->gi, bad_file_msg);
+				if ((ha->g->ui[ha->g->v.user.pos].files == 1) && (exit_value < 2))
+					writelog(ha->g, ha->msg->error, bad_file_vbr_preset_type);
+				exit_value = 2;
+			}
+#if ( del_banned_release || enable_banned_script )
+			*ha->deldir = 1;
+			return 2;
+#endif
+		}
+#endif
+	} else
+		d_log(1, "handle_sfv32: user is in a no audio check dir - skipping checks.\n");
+
+	if (realtime_mp3_info != DISABLED) {
+		d_log(1, "handle_sfv32: Printing realtime_mp3_info.\n");
+		printf("%s", convert(&ha->g->v, ha->g->ui, ha->g->gi, realtime_mp3_info));
+	}
+
+	return exit_value;
+}
+
+int
+__sfv_video(HANDLER_ARGS *ha)
+{
+	d_log(1, "handle_sfv32: Trying to read video header\n");
+	if (!memcmp(ha->fileext, "avi", 3)) {
+		bzero(&ha->g->m, sizeof(struct MULTIMEDIA));
+		avinfo(ha->g->v.file.name, &ha->g->m);
+		d_log(1, "handle_sfv32: avinfo: video - %dx%d * %.0f of %s (%s).\n", ha->g->m.height, ha->g->m.width, ha->g->m.fps, ha->g->m.vids, ha->g->m.audio);
+		avi_video(ha->g->v.file.name, &ha->g->v.video);
+	} else
+		mpeg_video(ha->g->v.file.name, &ha->g->v.video);
+	
+	ha->msg->race = video_race;
+	ha->msg->update = video_update;
+	ha->msg->halfway = CHOOSE(ha->g->v.total.users, video_halfway, video_norace_halfway);
+	ha->msg->newleader = video_newleader;
+
+	return 0;
+}
+
+int
+__sfv_default(HANDLER_ARGS *ha)
+{
+	get_rar_info(&ha->g->v);
+	ha->msg->race = rar_race;
+	ha->msg->update = rar_update;
+	ha->msg->halfway = CHOOSE(ha->g->v.total.users, rar_halfway, rar_norace_halfway);
+	ha->msg->newleader = rar_newleader;
+	d_log(1, "handle_sfv32: WARNING! Not a known release type - Contact the authors! (2:%d)\n", ha->g->v.misc.release_type);
+
+	return 0;
 }
