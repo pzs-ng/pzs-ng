@@ -123,7 +123,7 @@ findfileext_dir(DIR *dir, char *fileext)
  * Last Modified by: psxc
  *         Revision: ?? (2004.10.06)
  */
-/*char           *
+/*char *
 findfileextparent(DIR *dir, char *fileext)
 {
 	int			k;
@@ -877,7 +877,7 @@ execute(char *s)
 	return i;
 }*/
 
-char           *
+char *
 get_g_name(GDATA *gdata, gid_t gid)
 {
 	int		n;
@@ -887,10 +887,10 @@ get_g_name(GDATA *gdata, gid_t gid)
 	return "NoGroup";
 }
 
-char           *
+char *
 get_u_name(UDATA *udata, uid_t uid)
 {
-	int		n;
+	int	n;
 	for (n = 0; n < udata->num_users; n++)
 		if (udata->user[n].id == uid)
 			return udata->user[n].name;
@@ -901,10 +901,10 @@ get_u_name(UDATA *udata, uid_t uid)
 void 
 buffer_groups(GDATA *gdata, char *groupfile, int setfree)
 {
-	char           *f_buf = NULL, *g_name;
+	char		*f_buf = NULL, *g_name;
 	gid_t		g_id;
 	off_t		f_size;
-	int		f         , n, m, g_n_size, l_start = 0;
+	int		f, n, m, g_n_size, l_start = 0;
 	int		GROUPS = 0;
 	struct stat	fileinfo;
 
@@ -962,7 +962,7 @@ buffer_groups(GDATA *gdata, char *groupfile, int setfree)
 void
 buffer_users(UDATA *udata, char *passwdfile, int setfree)
 {
-	char           *f_buf = NULL, *u_name;
+	char	*f_buf = NULL, *u_name;
 	uid_t		u_id;
 	off_t		f_size;
 	int		f, n, m, l, u_n_size, l_start = 0;
@@ -1191,9 +1191,9 @@ get_filetype(GLOBAL *g, char *ext)
 }*/
 
 #if ( audio_group_sort == TRUE )
-char    *
+char *
 remove_pattern(param, pattern, op)
-	char           *param, *pattern;
+	char	*param, *pattern;
 	int		op;
 {
 	register int	len;

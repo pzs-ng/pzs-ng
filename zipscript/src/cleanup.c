@@ -127,7 +127,7 @@ scandirectory(char *dirname, int setfree)
 	}
 }
 
-char           *
+char *
 replace_cookies(char *s)
 {
 	static char	new_string[PATH_MAX], *pos;

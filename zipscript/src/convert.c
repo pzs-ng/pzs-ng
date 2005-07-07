@@ -43,7 +43,7 @@ hms(char *ttime, int secs)
 }
  */
 
-char           *
+char *
 convert_new(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI, char *instr, short int userpos, short int grouppos)
 {
 	int		val1, val2, n;
@@ -375,7 +375,7 @@ convert_new(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI
 /*
  * Modified: 01.16.2002
  */
-char           *
+char *
 convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI, char *instr, short int userpos)
 {
 	int		val1;
@@ -500,7 +500,7 @@ convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI, c
 /*
  * Modified: 01.16.2002
  */
-char           *
+char *
 convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short int grouppos)
 {
 	int		val1;
@@ -596,7 +596,7 @@ convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short int gr
 	return output2;
 }
 
-char           *
+char *
 convert4(struct VARS *raceI, char *instr)
 {
 	int		val1      , val2;
@@ -685,7 +685,7 @@ convert4(struct VARS *raceI, char *instr)
 	return output2;
 }
 
-char           *
+char *
 convert5(char *instr)
 {
 	int		val1, val2;
@@ -746,7 +746,7 @@ convert5(char *instr)
 /*
  * Modified: 01.23.2002
  */
-char           *
+char *
 convert(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI, char *instr)
 {
 	int		val1, val2, n;
@@ -1055,7 +1055,7 @@ convert(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO *groupI, ch
 
 /* Converts cookies in incomplete indicators */
 char		i_buf     [FILE_MAX];
-char           *
+char *
 c_incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI)
 {
 	char           *buf_p;

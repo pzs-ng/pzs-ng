@@ -56,7 +56,7 @@ char *chanmode_s[] = {"Stereo", "Joint Stereo", "Dual Channel", "Single Channel"
  * Remove whitespace characters from both ends of a copy of '\0' terminated
  * STRING and return the result.
  */
-char           *
+char *
 trim(char *string)
 {
 	char           *result = 0;
@@ -163,7 +163,7 @@ avi_video(char *f, struct video *video)
 	close(fd);
 }
 
-char           *
+char *
 get_preset(char vbr_header[4])
 {
 	int		preset;

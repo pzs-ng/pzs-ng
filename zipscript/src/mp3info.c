@@ -193,13 +193,13 @@ header_frequency(mp3header * h)
 	return frequencies[h->version][h->freq];
 }
 
-char           *
+char *
 header_emphasis(mp3header * h)
 {
 	return emphasis_text[h->emphasis];
 }
 
-char           *
+char *
 header_mode(mp3header * h)
 {
 	return mode_text[h->mode];
@@ -368,7 +368,7 @@ get_id3(mp3info * mp3, struct audio *audio)
 }
 
 /* Remove trailing whitespace from the end of a string */
-char           *
+char *
 unpad(char *string)
 {
 	char           *pos = string + (int)strlen(string) - 1;
