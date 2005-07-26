@@ -1,79 +1,33 @@
-dnl Process this file with autoconf to produce a configure script.
+AC_INIT(src)
+AC_PREFIX_DEFAULT(/glftpd)
+AC_PROG_CC()
+AC_LANG_C()
 
-AC_INIT()
-AC_CONFIG_HEADER(config.h)
-#AC_PREFIX_DEFAULT(/glftpd/)
+AC_ARG_PROGRAM()
+AC_PROG_MAKE_SET()
+AC_PROG_INSTALL()
 
-AC_CANONICAL_BUILD 
-AC_CANONICAL_HOST 
+AM_INIT_AUTOMAKE(project-zs-ng, 1.0)
+AM_DISABLE_SHARED()
+AM_PROG_LIBTOOL()
+AM_CONFIG_HEADER(config.h)
+AM_MAINTAINER_MODE()
 
-dnl Checks for programs.
-AC_PROG_CC
+AC_PATH_PROG(ACLOCAL, aclocal)
+AC_PATH_PROG(AUTOCONF, autoconf)
+AC_PATH_PROG(AUTOMAKE, automake)
+AC_PATH_PROG(AUTOHEADER, autoheader)
 
-AC_CHECK_PROG(GREP, grep, grep)
-if [[ -z "$GREP" ]]; then AC_MSG_ERROR([Couldn't find grep, quitting!]); fi
-AC_CHECK_PROG(STRINGS, strings, strings)
-if [[ -z "$STRINGS" ]]; then AC_MSG_ERROR([Couldn't find strings, quitting!]); fi
-AC_CHECK_PROG(CUT, cut, cut)
-if [[ -z "$CUT" ]]; then AC_MSG_ERROR([Couldn't find cut, quitting!]); fi
-AC_CHECK_PROG(RM, rm, rm)
-if [[ -z "$RM" ]]; then AC_MSG_ERROR([Couldn't find rm, quitting!]); fi
-AC_CHECK_PROG(INSTALL, install, install)
-if [[ -z "$INSTALL" ]]; then AC_MSG_ERROR([Couldn't find install, quitting!]); fi
-AC_CHECK_PROG(MAKE, make, make)
-if [[ -z "$MAKE" ]]; then AC_MSG_ERROR([Couldn't find make, quitting!]); fi
-
-dnl Checks for libraries.
-LCRYPT=""; PASSCHK=""
-if [[ $(uname -s) != "OpenBSD" ]]; then
-	#AC_CHECK_LIB(crypt, crypt, LCRYPT="-lcrypt", AC_MSG_ERROR([[Couldn't find libcrypt, quitting!]]))
-	AC_CHECK_LIB(crypt, crypt, LCRYPT="-lcrypt")
-fi
-
-AH_TEMPLATE([PZSNG_SSL_EXT], [Define to 1 to if you have the required SSL-libs in place])
-PZSNG_SSL
-if [[ -n "$SSL_LIBS" ]]; then
-	PASSCHK="passchk"
-	PASSCHK2="passchk-install"
-fi
-
-dnl Checks for header files.
-AC_HEADER_TIME
-AC_HEADER_DIRENT
-AC_HEADER_STDC
-AC_CHECK_HEADERS(pwd.h regex.h fnmatch.h fcntl.h errno.h, , AC_MSG_ERROR([[Couldn't find required header, quitting!]]))
-AC_CHECK_HEADERS(sys/ipc.h sys/param.h sys/shm.h sys/time.h sys/uio.h sys/wait.h, , AC_MSG_ERROR([[Couldn't find required header, quitting!]]))
-AC_CHECK_HEADERS(hsregex.h, CFLAGS="$CFLAGS -DUSE_HSREGEX")
-
-dnl Checks for library functions.
 AC_CHECK_FUNC(strlcpy, [AC_DEFINE(HAVE_STRLCPY, 1, [Define to 1 if you have the strlcpy() function available])])
+AC_CHECK_FUNC(strsep, [AC_DEFINE(HAVE_STRSEP, 1, [Define to 1 if you have the strsep() function available])])
 
-case $build in
-	x86_64-*) M32="-m32";;
-esac
+dnl check if SSL is available
+AH_TEMPLATE([PZSNG_SSL_EXT], [Define to 1 to if you have the required SSL libraries in place])
+PZSNG_SSL()
 
-
-LD="$CC -shared"
-case $CC in
-	gcc*)
-		CFLAGS="$CFLAGS -W -Wall -Wundef -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline"
-		;;
-esac
-
-case $host in
-	*-solaris*)
-		CFLAGS="$CFLAGS -D_SunOS_"
-		SUNOBJS="strsep.o scandir.o"
-		case $CC in
-			cc)
-				LD="$CC -G"
-				;;
-		esac
-		;;
-	*bsd*|*darwin*)	
-		CFLAGS="$CFLAGS -D_BSD_"
-		;;
-esac
+AM_CONDITIONAL(DONT_HAVE_STRLCPY, test "$ac_cv_func_strlcpy" = no)
+AM_CONDITIONAL(DONT_HAVE_STRSEP, test "$ac_cv_func_strsep" = no)
+AM_CONDITIONAL(DONT_HAVE_SSL, test -z "$SSL_LIBS")
 
 dnl sitestat5
 AC_ARG_ENABLE(ss5, AS_HELP_STRING([--enable-ss5], [compiles the zipscript for use with SiteStat 5]), [
@@ -82,68 +36,174 @@ AC_ARG_ENABLE(ss5, AS_HELP_STRING([--enable-ss5], [compiles the zipscript for us
 	]
 )
 
-dnl noformat
 NOFORMAT="-D_WITH_NOFORMAT"
 AC_ARG_ENABLE(format, AS_HELP_STRING([--enable-format], [compiles the zipscript to format the output]), NOFORMAT="")
 
-dnl noformat
 ALTWHO="-D_WITH_ALTWHO"
 AC_ARG_ENABLE(altwho, AS_HELP_STRING([--disable-altwho], [compiles the sitewho to not use an alternative output on single user who lookups]), ALTWHO="")
 
-dnl Static linking :)
-AC_ARG_ENABLE(static, AS_HELP_STRING([--enable-static], [enable static linking of zs-c]), CFLAGS="$CFLAGS -static"; static="yes")
-if test "$static" = "yes"; then
-  AC_MSG_RESULT([NOTICE: linking statically (--enable-static).])
-else
-  AC_MSG_RESULT([NOTICE: linking dynamically.])
-fi
-
-AC_ARG_WITH(glpath, 
-            AS_HELP_STRING([--with-glpath=PATH],
-                           [specify nondefault path to root glftpd dir (/glftpd per default)]),
-            GLPATH="$withval", GLPATH="/glftpd")
-
-AC_SUBST(SUNOBJS)
 AC_SUBST(NOFORMAT)
 AC_SUBST(ALTWHO)
-AC_SUBST(GLPATH)
-AC_SUBST(GLVERSION)
-AC_SUBST(STATIC)
-AC_SUBST(LCRYPT)
-AC_SUBST(LCRYPTO)
-AC_SUBST(PASSCHK)
-AC_SUBST(PASSCHK2)
-AC_SUBST(MAKE)
-AC_SUBST(M32)
-AC_SUBST(LD)
+AC_SUBST(CFLAGS)
+AC_SUBST(LDFLAGS)
 
 AC_OUTPUT(
 Makefile
-zipscript/src/Makefile
-zipscript/utils/Makefile
-sitebot/src/Makefile
-sitewho/Makefile
-sitewho/sitewho.conf
-lib/Makefile
-lib/strl/Makefile
-lib/libglufile/Makefile
+src/Makefile
+src/zipscript/Makefile
+src/glufile/Makefile
+src/sitewho/Makefile
+src/utils/Makefile
+src/ng-chown/Makefile
+src/ng-undupe/Makefile
 )
 
-! [[ -f zipscript/conf/zsconfig.h ]] && cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h
+dnl Process this file with autoconf to produce a configure script.
 
-if [[ "$PASSCHK" = "" ]]; then
-AC_MSG_RESULT(
-$( echo )
-libcrypt/OpenSSL not found. Not building passchk)
-fi
+#AC_INIT()
+#AC_CONFIG_HEADER(config.h)
+#AC_PREFIX_DEFAULT(/glftpd/)
 
-AC_MSG_RESULT(
-$( echo )
-The makefiles are now configured. Next up you need to edit
-zipscript/conf/zsconfig.h to fit your needs.
+#AC_CANONICAL_BUILD 
+#AC_CANONICAL_HOST 
 
-Also be sure to edit sitewho/sitewho.conf - this holds all
-config options for the sitewho binary.
+dnl Checks for programs.
+#AC_PROG_CC
 
-When done type 'make' to compile.
-)
+#AC_CHECK_PROG(GREP, grep, grep)
+#if [[ -z "$GREP" ]]; then AC_MSG_ERROR([Couldn't find grep, quitting!]); fi
+#AC_CHECK_PROG(STRINGS, strings, strings)
+#if [[ -z "$STRINGS" ]]; then AC_MSG_ERROR([Couldn't find strings, quitting!]); fi
+#AC_CHECK_PROG(CUT, cut, cut)
+#if [[ -z "$CUT" ]]; then AC_MSG_ERROR([Couldn't find cut, quitting!]); fi
+#AC_CHECK_PROG(RM, rm, rm)
+#if [[ -z "$RM" ]]; then AC_MSG_ERROR([Couldn't find rm, quitting!]); fi
+#AC_CHECK_PROG(INSTALL, install, install)
+#if [[ -z "$INSTALL" ]]; then AC_MSG_ERROR([Couldn't find install, quitting!]); fi
+#AC_CHECK_PROG(MAKE, make, make)
+#if [[ -z "$MAKE" ]]; then AC_MSG_ERROR([Couldn't find make, quitting!]); fi
+
+dnl Checks for libraries.
+#LCRYPT=""; PASSCHK=""
+#if [[ $(uname -s) != "OpenBSD" ]]; then
+#	#AC_CHECK_LIB(crypt, crypt, LCRYPT="-lcrypt", AC_MSG_ERROR([[Couldn't find libcrypt, quitting!]]))
+#	AC_CHECK_LIB(crypt, crypt, LCRYPT="-lcrypt")
+#fi
+
+#AH_TEMPLATE([PZSNG_SSL_EXT], [Define to 1 to if you have the required SSL-libs in place])
+#PZSNG_SSL
+#if [[ -n "$SSL_LIBS" ]]; then
+#	PASSCHK="passchk"
+#	PASSCHK2="passchk-install"
+#fi
+
+dnl Checks for header files.
+#AC_HEADER_TIME
+#AC_HEADER_DIRENT
+#AC_HEADER_STDC
+#AC_CHECK_HEADERS(pwd.h regex.h fnmatch.h fcntl.h errno.h, , AC_MSG_ERROR([[Couldn't find required header, quitting!]]))
+#AC_CHECK_HEADERS(sys/ipc.h sys/param.h sys/shm.h sys/time.h sys/uio.h sys/wait.h, , AC_MSG_ERROR([[Couldn't find required header, quitting!]]))
+#AC_CHECK_HEADERS(hsregex.h, CFLAGS="$CFLAGS -DUSE_HSREGEX")
+
+dnl Checks for library functions.
+#AC_CHECK_FUNC(strlcpy, [AC_DEFINE(HAVE_STRLCPY, 1, [Define to 1 if you have the strlcpy() function available])])
+
+#case $build in
+#	x86_64-*) M32="-m32";;
+#esac
+
+
+#LD="$CC -shared"
+#case $CC in
+#	gcc*)
+#		CFLAGS="$CFLAGS -W -Wall -Wundef -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline"
+#		;;
+#esac
+
+#case $host in
+#	*-solaris*)
+#		CFLAGS="$CFLAGS -D_SunOS_"
+#		SUNOBJS="strsep.o scandir.o"
+#		case $CC in
+#			cc)
+#				LD="$CC -G"
+#				;;
+#		esac
+#		;;
+#	*bsd*|*darwin*)	
+#		CFLAGS="$CFLAGS -D_BSD_"
+#		;;
+#esac
+
+dnl sitestat5
+#AC_ARG_ENABLE(ss5, AS_HELP_STRING([--enable-ss5], [compiles the zipscript for use with SiteStat 5]), [
+#	CFLAGS="$CFLAGS -D_WITH_SS5"
+#	! [[ -f zipscript/conf/zsconfig.h ]] && cp -i zipscript/conf/zsconfig.h.ss5.dist zipscript/conf/zsconfig.h
+#	]
+#)
+
+dnl noformat
+#NOFORMAT="-D_WITH_NOFORMAT"
+#AC_ARG_ENABLE(format, AS_HELP_STRING([--enable-format], [compiles the zipscript to format the output]), NOFORMAT="")
+
+dnl noformat
+#ALTWHO="-D_WITH_ALTWHO"
+#AC_ARG_ENABLE(altwho, AS_HELP_STRING([--disable-altwho], [compiles the sitewho to not use an alternative output on single user who lookups]), ALTWHO="")
+
+dnl Static linking :)
+#AC_ARG_ENABLE(static, AS_HELP_STRING([--enable-static], [enable static linking of zs-c]), CFLAGS="$CFLAGS -static"; static="yes")
+#if test "$static" = "yes"; then
+#  AC_MSG_RESULT([NOTICE: linking statically (--enable-static).])
+#else
+#  AC_MSG_RESULT([NOTICE: linking dynamically.])
+#fi
+
+#AC_ARG_WITH(glpath, 
+#            AS_HELP_STRING([--with-glpath=PATH],
+#                           [specify nondefault path to root glftpd dir (/glftpd per default)]),
+#            GLPATH="$withval", GLPATH="/glftpd")
+
+#AC_SUBST(SUNOBJS)
+#AC_SUBST(NOFORMAT)
+#AC_SUBST(ALTWHO)
+#AC_SUBST(GLPATH)
+#AC_SUBST(GLVERSION)
+#AC_SUBST(STATIC)
+#AC_SUBST(LCRYPT)
+#AC_SUBST(LCRYPTO)
+#AC_SUBST(PASSCHK)
+#AC_SUBST(PASSCHK2)
+#AC_SUBST(MAKE)
+#AC_SUBST(M32)
+#AC_SUBST(LD)
+
+#AC_OUTPUT(
+#Makefile
+#zipscript/src/Makefile
+#zipscript/utils/Makefile
+#sitebot/src/Makefile
+#sitewho/Makefile
+#sitewho/sitewho.conf
+#lib/Makefile
+#lib/strl/Makefile
+#lib/libglufile/Makefile
+#)
+
+#! [[ -f zipscript/conf/zsconfig.h ]] && cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h
+
+#if [[ "$PASSCHK" = "" ]]; then
+#AC_MSG_RESULT(
+#$( echo )
+#libcrypt/OpenSSL not found. Not building passchk)
+#fi
+
+#AC_MSG_RESULT(
+#$( echo )
+#The makefiles are now configured. Next up you need to edit
+#zipscript/conf/zsconfig.h to fit your needs.
+
+#Also be sure to edit sitewho/sitewho.conf - this holds all
+#config options for the sitewho binary.
+
+#When done type 'make' to compile.
+#)
