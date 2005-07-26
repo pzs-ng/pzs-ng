@@ -15,10 +15,8 @@ speed_threshold = 1024
 glversion = 0
 debug = 0
 
-##################################################################################################################
 #
 # CONFIG OPTIONS
-################
 #
 # glrootpath = /glftpd/ ... rootpath of glftpd
 # headerfile = /ftp-data/misc/who.head ... shown before the list of users in non-raw mode.
@@ -45,5 +43,4 @@ debug = 0
 # ./sitewho --nbw - show total stats for all users
 # ./sitewho --raw <username> - show username, display in raw format
 # ./sitewho --ss5 <username> - show username, display in ss5 format
-#################################################################################################################
-
+#
