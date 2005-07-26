@@ -24,8 +24,8 @@ static const struct _racetype __racetype_rar = {
 	rar_announce_race_type,
 	rar_announce_newleader_type,
 	rar_announce_update_type,
-	rar_announce_norace_halfway_type,
-	rar_announce_race_halfway_type
+	rar_announce_race_halfway_type,
+	rar_announce_norace_halfway_type
 };
 
 static const struct _racetype __racetype_other = {
