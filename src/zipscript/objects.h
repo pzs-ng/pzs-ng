@@ -37,8 +37,8 @@
 # define NAMEMAX NAME_MAX
 #endif
 
-#include "../conf/zsconfig.h"
-#include "../include/zsconfig.defaults.h"
+#include "zsconfig.h"
+#include "zsconfig.defaults.h"
 
 struct USERINFO {
 	char		name[24];	/* Username */

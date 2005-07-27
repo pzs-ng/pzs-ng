@@ -3,7 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "gluserfile.h"
+#include "glufile.h"
 
 /* glFTPd userfile reader
 
@@ -84,7 +84,7 @@ int gluser_read(GLUSER *glu, char *filename)
 
 				*space = '\0'; space++;
 
-				space = strip_whitespaces(space);
+				space = __strip_whitespaces(space);
 
 				/* this shit makes me puke, it must be replacable
 				   with some kind of loop */
@@ -538,11 +538,11 @@ int getint(char *s, int *end, int reset)
 
 }
 
-/* strip_whitespaces: Removes trailing whitespaces and returns
+/* __strip_whitespaces: Removes trailing whitespaces and returns
                       a pointer to a place in the string without
                       leading whitespaces
 */
-char *strip_whitespaces(char *s)
+char *__strip_whitespaces(char *s)
 {
 
 	size_t len = strlen(s)-1;

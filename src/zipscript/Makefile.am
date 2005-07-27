@@ -6,6 +6,9 @@ bin_PROGRAMS = \
 	datacleaner \
 	rescan
 
+INCLUDES = \
+	-I$(top_srcdir)/src/glufile
+
 zipscript_c_SOURCES = \
 	zipscript-c.c \
 	helpfunctions.c \
@@ -13,6 +16,7 @@ zipscript_c_SOURCES = \
 	abs2rel.c \
 	mp3info.c \
 	ng-version.c \
+	stats.c \
 	zsfunctions.c \
 	dizreader.c \
 	handle_sfv.c \
@@ -23,14 +27,30 @@ zipscript_c_SOURCES = \
 	crc.c \
 	avinfo.c \
 	racetypes.c \
-	cleanup.c \
 	complete.c \
-	datacleaner.c \
-	racestats.c \
+	convert.c \
 	multimedia.c
+
+EXTRA_zipscript_c_SOURCES = \
+	strlcpy.c \
+	strsep.c
+
+if DONT_HAVE_STRLCPY
+zipscript_c_SOURCES += strlcpy.c
+endif
+
+if DONT_HAVE_STRSEP
+zipscript_c_SOURCES += strsep.c
+endif
+
+zipscript_c_DEPENDENCIES = ../glufile/libglufile.la
+
+zipscript_c_LDADD = ../glufile/libglufile.la
 
 postdel_SOURCES = \
 	postdel.c \
+	ng-version.c \
+	abs2rel.c \
 	helpfunctions.c \
 	zsfunctions.c \
 	race-file.c \
@@ -38,6 +58,14 @@ postdel_SOURCES = \
 	dizreader.c \
 	stats.c
         
+if DONT_HAVE_STRLCPY
+postdel_SOURCES += strlcpy.c
+endif
+
+postdel_DEPENDENCIES = ../glufile/libglufile.la
+
+postdel_LDADD = ../glufile/libglufile.la
+
 racestats_SOURCES = \
 	racestats.c \
 	zsfunctions.c \

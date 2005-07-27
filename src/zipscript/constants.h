@@ -1,8 +1,8 @@
-#include "../conf/zsconfig.h"
-#include "../include/zsconfig.defaults.h"
-
 #ifndef __CONSTANTS_H_
 #define __CONSTANTS_H_
+
+#include "zsconfig.h"
+#include "zsconfig.defaults.h"
 
 #define F_IGNORED			254
 #define F_BAD				255

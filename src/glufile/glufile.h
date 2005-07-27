@@ -13,7 +13,7 @@
 /* #define gluser_reset(x) _gluser_reset(x) */
 
 int getint(char *, int *, int);
-char *strip_whitespaces(char *);
+char *__strip_whitespaces(char *);
 AINT *strtointarray(AINT *, char *);
 
 int gluser_read(GLUSER *, char *);

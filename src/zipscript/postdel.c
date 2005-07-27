@@ -20,8 +20,8 @@
 #include "stats.h"
 #include "ng-version.h"
 
-#include "../conf/zsconfig.h"
-#include "../include/zsconfig.defaults.h"
+#include "zsconfig.h"
+#include "zsconfig.defaults.h"
 
 #include "postdel.h"
 
@@ -30,7 +30,7 @@
 #endif
 
 #ifndef HAVE_STRLCPY
-# include "strl/strl.h"
+# include "strlcpy.h"
 #endif
 
 int 

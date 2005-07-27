@@ -20,15 +20,15 @@
 #include "crc.h"
 #include "ng-version.h"
 
-#include "../conf/zsconfig.h"
-#include "../include/zsconfig.defaults.h"
+#include "zsconfig.h"
+#include "zsconfig.defaults.h"
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
 #ifndef HAVE_STRLCPY
-# include "strl/strl.h"
+# include "strlcpy.h"
 #endif
 
 int 

@@ -12,8 +12,8 @@
 
 #include "objects.h"
 #include "macros.h"
-#include "../conf/zsconfig.h"
-#include "../include/zsconfig.defaults.h"
+#include "zsconfig.h"
+#include "zsconfig.defaults.h"
 
 #ifndef PATH_MAX
  #define _LIMITS_H_

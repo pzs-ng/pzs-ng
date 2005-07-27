@@ -13,16 +13,16 @@
 #include "zsfunctions.h"
 #include "race-file.h"
 
-#ifdef _SunOS_
+/*#ifdef _SunOS_
 #include "scandir.h"
-#endif
+#endif*/
 
-#include "../conf/zsconfig.h"
-#include "../include/zsconfig.defaults.h"
+#include "zsconfig.h"
+#include "zsconfig.defaults.h"
 
 #include "stats.h"
 
-#include <libglufile/gluserfile.h>
+#include <glufile.h>
 
 /*void
 updatestats_free(GLOBAL *g)

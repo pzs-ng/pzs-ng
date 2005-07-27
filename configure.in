@@ -18,15 +18,15 @@ AC_PATH_PROG(AUTOCONF, autoconf)
 AC_PATH_PROG(AUTOMAKE, automake)
 AC_PATH_PROG(AUTOHEADER, autoheader)
 
-AC_CHECK_FUNC(strlcpy, [AC_DEFINE(HAVE_STRLCPY, 1, [Define to 1 if you have the strlcpy() function available])])
-AC_CHECK_FUNC(strsep, [AC_DEFINE(HAVE_STRSEP, 1, [Define to 1 if you have the strsep() function available])])
+AC_CHECK_FUNC(strlcpy, AC_DEFINE(HAVE_STRLCPY, 1, [Define to 1 if you have the strlcpy() function available]))
+AM_CONDITIONAL(DONT_HAVE_STRLCPY, test "$ac_cv_func_strlcpy" = no)
+AC_CHECK_FUNC(strsep, AC_DEFINE(HAVE_STRSEP, 1, [Define to 1 if you have the strsep() function available]))
+AM_CONDITIONAL(DONT_HAVE_STRSEP, test "$ac_cv_func_strsep" = no)
 
 dnl check if SSL is available
 AH_TEMPLATE([PZSNG_SSL_EXT], [Define to 1 to if you have the required SSL libraries in place])
 PZSNG_SSL()
 
-AM_CONDITIONAL(DONT_HAVE_STRLCPY, test "$ac_cv_func_strlcpy" = no)
-AM_CONDITIONAL(DONT_HAVE_STRSEP, test "$ac_cv_func_strsep" = no)
 AM_CONDITIONAL(DONT_HAVE_SSL, test -z "$SSL_LIBS")
 
 dnl sitestat5
@@ -41,6 +41,8 @@ AC_ARG_ENABLE(format, AS_HELP_STRING([--enable-format], [compiles the zipscript 
 
 ALTWHO="-D_WITH_ALTWHO"
 AC_ARG_ENABLE(altwho, AS_HELP_STRING([--disable-altwho], [compiles the sitewho to not use an alternative output on single user who lookups]), ALTWHO="")
+
+! [[ -f src/zipscript/zsconfig.h ]] && cp -i src/zipscript/zsconfig.h.dist src/zipscript/zsconfig.h
 
 AC_SUBST(NOFORMAT)
 AC_SUBST(ALTWHO)

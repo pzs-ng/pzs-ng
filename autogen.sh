@@ -1,5 +1,10 @@
 #!/bin/sh
 
+aclocal
+autoheader
+libtoolize --automake
+automake --add-missing
+
 # Add valid autoconf versions here
 autoconf_versions="2.59 2.57 2.5"
 

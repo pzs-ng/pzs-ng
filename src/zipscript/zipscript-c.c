@@ -15,7 +15,11 @@
 #endif
 
 #ifndef HAVE_STRLCPY
-# include "strl/strl.h"
+# include "strlcpy.h"
+#endif
+
+#ifndef HAVE_STRSEP
+# include "strsep.h"
 #endif
 
 #include "helpfunctions.h"
@@ -46,13 +50,13 @@
 #include "handle_nfo.h"
 #include "handle_zip.h"*/
 
-#include "../conf/zsconfig.h"
-#include "../include/zsconfig.defaults.h"
+#include "zsconfig.h"
+#include "zsconfig.defaults.h"
 
-#ifdef _SunOS_
+/*#ifdef _SunOS_
 # include "scandir.h"
 # include "strsep.h"
-#endif
+#endif*/
 
 #define opendirs(x, y) x = opendir("."); y = opendir("..")
 #define closedirs(x, y) closedir(x); closedir(y)

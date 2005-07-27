@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include "objects.h"
 #include "zsfunctions.h"
-#include "../conf/zsconfig.h"
+#include "zsconfig.h"
 #include "zsconfig.defaults.h"
 
 #include "convert.h"

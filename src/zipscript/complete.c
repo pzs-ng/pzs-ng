@@ -8,8 +8,8 @@
 #include "objects.h"
 #include "convert.h"
 
-#include "../conf/zsconfig.h"
-#include "../include/zsconfig.defaults.h"
+#include "zsconfig.h"
+#include "zsconfig.defaults.h"
 
 #include "complete.h"
 

@@ -15,8 +15,8 @@
 #include "dizreader.h"
 #include "stats.h"
 
-#include "../conf/zsconfig.h"
-#include "../include/zsconfig.defaults.h"
+#include "zsconfig.h"
+#include "zsconfig.defaults.h"
 
 int 
 main(int argc, char **argv)

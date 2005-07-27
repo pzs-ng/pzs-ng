@@ -7,7 +7,7 @@
 #include "convert.h"
 #include "race-file.h"
 
-#include <strl/strl.h>
+#include "strlcpy.h"
 #include <stdarg.h>
 
 /*

@@ -26,8 +26,12 @@
 #include "objects.h"
 #include "avinfo.h"
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #ifndef HAVE_STRLCPY
-# include "strl/strl.h"
+# include "strlcpy.h"
 #endif
 
 //struct avi vinfo;
