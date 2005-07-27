@@ -61,8 +61,8 @@ src/glufile/Makefile
 src/sitewho/Makefile
 src/sitewho/sitewho.conf
 src/utils/Makefile
-src/sitebot/Makefile
-src/sitebot/src/Makefile
+sitebot/Makefile
+sitebot/src/Makefile
 )
 
 dnl Process this file with autoconf to produce a configure script.
