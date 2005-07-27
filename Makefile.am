@@ -1,4 +1,4 @@
-SUBDIRS = src
+SUBDIRS = src sitebot
 
 extra_DIST = \
 	FAQ \
