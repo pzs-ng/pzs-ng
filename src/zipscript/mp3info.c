@@ -24,6 +24,7 @@
  * <safemode@voicenet.com> and Johannes Overmann <overmann@iname.com>
  * 
  */
+#include <strings.h>
 
 #include "mp3info.h"
 #include "objects.h"

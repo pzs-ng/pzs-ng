@@ -7,16 +7,23 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#ifndef PATH_MAX
-# ifndef _SunOS_
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#ifdef HAVE_LIMITS_H
+# ifndef _LIMITS_H_
 #  define _LIMITS_H_
-#  ifdef _BSD_
-#   include <sys/syslimits.h>
-#  else
-#   include <limits.h>
-#   include <syslimits.h>
-#  endif
+#  include <limits.h>
 # endif
+#endif
+
+#ifdef HAVE_SYS_LIMITS_H
+# include <sys/limits.h>
+#endif
+
+#ifdef HAVE_SYSLIMITS_H
+# include <syslimits.h>
 #endif
 
 #ifndef PATH_MAX

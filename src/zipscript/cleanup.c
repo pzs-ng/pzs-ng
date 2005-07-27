@@ -9,23 +9,19 @@
 #include <time.h>
 #include <unistd.h>
 #include <errno.h>
+#include <strings.h>
 
 #include "objects.h"
 #include "macros.h"
 #include "zsconfig.h"
 #include "zsconfig.defaults.h"
 
-#ifndef PATH_MAX
- #define _LIMITS_H_
- #ifdef _SunOS_
-  #include <syslimits.h>
- #else
-  #include <sys/syslimits.h>
- #endif
+#ifdef HAVE_CONFIG_H
+# include "config.h"
 #endif
 
-#ifdef _SunOS_
-#include "scandir.h"
+#ifndef HAVE_SCANDIR_
+# include "scandir.h"
 #endif
 
 #include "cleanup.h"

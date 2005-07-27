@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <strings.h>
 
 #include "handle_sfv.h"
 #include "handling.h"

@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <fnmatch.h>
+#include <strings.h>
 
 #include "crc.h"
 #include "race-file.h" 

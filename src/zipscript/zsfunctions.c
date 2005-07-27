@@ -1,5 +1,8 @@
 #include <errno.h>
 #include <fnmatch.h>
+#include <strings.h>
+#include <stdarg.h>
+
 #include "zsfunctions.h"
 
 #include "abs2rel.h"
@@ -7,8 +10,13 @@
 #include "convert.h"
 #include "race-file.h"
 
-#include "strlcpy.h"
-#include <stdarg.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#ifndef HAVE_STRLCPY_H
+# include "strlcpy.h"
+#endif
 
 /*
  * d_log - create/put comments in a .debug file

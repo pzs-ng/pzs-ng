@@ -5,11 +5,13 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <sys/types.h>
-#ifdef	USE_HSREGEX
+
+#ifdef USE_HSREGEX
 # include "hsregex.h"
 #else
 # include <regex.h>
 #endif
+
 #include <time.h>
 #include <string.h>
 #include <fcntl.h>
@@ -19,37 +21,6 @@
 #include <sys/time.h>
 #include <sys/param.h>
 #include <unistd.h>
-
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#ifdef HAVE_LIMITS_H
-# ifndef _LIMITS_H_
-#  define _LIMITS_H_
-#  include <limits.h>
-# endif
-#endif
-
-#ifdef HAVE_SYS_LIMITS_H
-# include <sys/limits.h>
-#endif
-
-#ifdef HAVE_SYSLIMITS_H
-# include <syslimits.h>
-#endif
-
-#ifndef PATH_MAX
-# define PATH_MAX 1024
-# define _ALT_MAX
-#endif
-
-#ifndef NAME_MAX
-# define NAME_MAX 255
-# ifndef _ALT_MAX
-#  define _ALT_MAX
-# endif
-#endif
 
 #include "objects.h"
 #include "macros.h"

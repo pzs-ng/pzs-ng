@@ -6,6 +6,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <strings.h>
 
 #include "zsfunctions.h"
 #include "helpfunctions.h"
