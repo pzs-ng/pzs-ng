@@ -1,14 +1,18 @@
+datapath = /ftp-data
+storage = $(datapath)/pzs-ng
+
 bin_PROGRAMS = \
 	zipscript-c \
 	postdel \
 	racestats \
 	cleanup \
 	datacleaner \
-	rescan
+	rescan \
+	ng-undupe \
+	ng-chown
 
 INCLUDES = \
-	-I$(top_srcdir)/src/glufile \
-	-I$(top_srcdir)/src/strlcpy
+	-I$(top_srcdir)/src/glufile
 
 UNIVERSAL = \
 	stats.c \
@@ -56,10 +60,6 @@ postdel_SOURCES = \
 	dizreader.c \
 	$(UNIVERSAL)
         
-if DONT_HAVE_STRLCPY
-postdel_SOURCES += strlcpy.c
-endif
-
 postdel_DEPENDENCIES = ../glufile/libglufile.la
 
 postdel_LDADD = ../glufile/libglufile.la
@@ -90,6 +90,20 @@ cleanup_SOURCES = \
 
 datacleaner_SOURCES = \
 	datacleaner.c
+
+ng_undupe_SOURCES = \
+	ng-undupe.c
+
+if DONT_HAVE_STRLCPY
+ng_undupe_SOURCES += strlcpy.c
+endif
+
+ng_chown_SOURCES = \
+	ng-chown.c
+
+if DONT_HAVE_SCANDIR
+ng_chown_SOURCES += scandir.c
+endif
 
 noinst_HEADERS = \
 	abs2rel.h \
@@ -125,4 +139,17 @@ noinst_HEADERS = \
 	strsep.h \
 	video.h \
 	zsconfig.defaults.h \
+	ng-chown.h \
 	zsfunctions.h
+
+extra_DIST = \
+	banned_filelist.txt
+
+install-data-local:
+	if [ ! -e "$(prefix)$(storage)" ]; then mkdir -p "$(prefix)$(storage)"; fi
+	chown 0:0 $(prefix)$(storage)
+	chmod 4777 $(prefix)$(storage)
+	if [ -e $(prefix)$(datapath)/logs/glftpd.log ]; then chmod 666 $(prefix)$(datapath)/logs/glftpd.log; fi
+	if [ -e $(bindir) ]; then cp -f zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown $(bindir)/; fi
+	if [ ! -e $(prefix)$(datapath)/misc/banned_filelist.txt ]; then cp banned_filelist.txt $(prefix)$(datapath)/misc/banned_filelist.txt && chmod 444 $(prefix)$(datapath)/misc/banned_filelist.txt; fi
+	

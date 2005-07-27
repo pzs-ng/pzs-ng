@@ -18,10 +18,14 @@ AC_PATH_PROG(AUTOCONF, autoconf)
 AC_PATH_PROG(AUTOMAKE, automake)
 AC_PATH_PROG(AUTOHEADER, autoheader)
 
+AC_CHECK_HEADERS(limits.h syslimits.h sys/limits.h)
+
 AC_CHECK_FUNC(strlcpy, AC_DEFINE(HAVE_STRLCPY, 1, [Define to 1 if you have the strlcpy() function available]))
 AM_CONDITIONAL(DONT_HAVE_STRLCPY, test "$ac_cv_func_strlcpy" = no)
 AC_CHECK_FUNC(strsep, AC_DEFINE(HAVE_STRSEP, 1, [Define to 1 if you have the strsep() function available]))
 AM_CONDITIONAL(DONT_HAVE_STRSEP, test "$ac_cv_func_strsep" = no)
+AC_CHECK_FUNC(scandir, AC_DEFINE(HAVE_SCANDIR, 1, [Define to 1 if you have the scandir() function available]))
+AM_CONDITIONAL(DONT_HAVE_SCANDIR, test "$ac_cv_func_scandir" = no)
 
 dnl check if SSL is available
 AH_TEMPLATE([PZSNG_SSL_EXT], [Define to 1 to if you have the required SSL libraries in place])
@@ -57,8 +61,6 @@ src/glufile/Makefile
 src/sitewho/Makefile
 src/sitewho/sitewho.conf
 src/utils/Makefile
-src/ng-chown/Makefile
-src/ng-undupe/Makefile
 src/sitebot/Makefile
 src/sitebot/src/Makefile
 )

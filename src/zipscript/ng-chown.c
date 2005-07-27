@@ -54,7 +54,7 @@
 # endif
 #endif
 
-#ifndef HAVE_SCANDIR_H 
+#ifndef HAVE_SCANDIR
 # include "scandir.h"
 #endif
 

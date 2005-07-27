@@ -6,11 +6,17 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
+/* Define to 1 if you have the <limits.h> header file. */
+#undef HAVE_LIMITS_H
+
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
 /* Define to 1 if you have the <openssl/ssl.h> header file. */
 #undef HAVE_OPENSSL_SSL_H
+
+/* Define to 1 if you have the scandir() function available */
+#undef HAVE_SCANDIR
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -29,6 +35,12 @@
 
 /* Define to 1 if you have the strsep() function available */
 #undef HAVE_STRSEP
+
+/* Define to 1 if you have the <syslimits.h> header file. */
+#undef HAVE_SYSLIMITS_H
+
+/* Define to 1 if you have the <sys/limits.h> header file. */
+#undef HAVE_SYS_LIMITS_H
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
