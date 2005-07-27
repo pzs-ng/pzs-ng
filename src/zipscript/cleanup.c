@@ -20,7 +20,7 @@
 # include "config.h"
 #endif
 
-#ifndef HAVE_SCANDIR_
+#ifndef HAVE_SCANDIR
 # include "scandir.h"
 #endif
 
