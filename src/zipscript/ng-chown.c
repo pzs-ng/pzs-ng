@@ -35,11 +35,19 @@
 # include "config.h"
 #endif
 
-#ifndef PATH_MAX
-# ifndef _SunOS_
+#ifdef HAVE_LIMITS_H
+# ifndef _LIMITS_H_
 #  define _LIMITS_H_
-#  include <sys/syslimits.h>
+#  include <limits.h>
 # endif
+#endif
+
+#ifdef HAVE_SYS_LIMITS_H
+# include <sys/limits.h>
+#endif
+
+#ifdef HAVE_SYSLIMITS_H
+# include <syslimits.h>
 #endif
 
 #ifndef PATH_MAX
