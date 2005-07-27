@@ -7,7 +7,8 @@ bin_PROGRAMS = \
 	rescan
 
 INCLUDES = \
-	-I$(top_srcdir)/src/glufile
+	-I$(top_srcdir)/src/glufile \
+	-I$(top_srcdir)/src/strlcpy
 
 UNIVERSAL = \
 	stats.c \

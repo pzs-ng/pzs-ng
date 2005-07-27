@@ -1,5 +1,5 @@
 INCLUDES = \
-	-I$(top_srcdir)/src/zipscript
+	-I$(top_srcdir)/src/strlcpy
 	
 bin_PROGRAMS = \
 	ng-undupe
