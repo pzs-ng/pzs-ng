@@ -9,15 +9,26 @@ bin_PROGRAMS = \
 INCLUDES = \
 	-I$(top_srcdir)/src/glufile
 
+UNIVERSAL = \
+	stats.c \
+	convert.c \
+	race-file.c \
+	helpfunctions.c \
+	mp3info.c \
+	zsfunctions.c \
+	ng-version.c \
+	abs2rel.c
+
+if DONT_HAVE_STRLCPY
+UNIVERSAL += strlcpy.c
+endif
+
+if DONT_HAVE_STRSEP
+UNIVERSAL += strsep.c
+endif
+
 zipscript_c_SOURCES = \
 	zipscript-c.c \
-	helpfunctions.c \
-	race-file.c \
-	abs2rel.c \
-	mp3info.c \
-	ng-version.c \
-	stats.c \
-	zsfunctions.c \
 	dizreader.c \
 	handle_sfv.c \
 	handle_nfo.c \
@@ -28,20 +39,12 @@ zipscript_c_SOURCES = \
 	avinfo.c \
 	racetypes.c \
 	complete.c \
-	convert.c \
-	multimedia.c
+	multimedia.c \
+	$(UNIVERSAL)
 
 EXTRA_zipscript_c_SOURCES = \
 	strlcpy.c \
 	strsep.c
-
-if DONT_HAVE_STRLCPY
-zipscript_c_SOURCES += strlcpy.c
-endif
-
-if DONT_HAVE_STRSEP
-zipscript_c_SOURCES += strsep.c
-endif
 
 zipscript_c_DEPENDENCIES = ../glufile/libglufile.la
 
@@ -49,14 +52,8 @@ zipscript_c_LDADD = ../glufile/libglufile.la
 
 postdel_SOURCES = \
 	postdel.c \
-	ng-version.c \
-	abs2rel.c \
-	helpfunctions.c \
-	zsfunctions.c \
-	race-file.c \
-	convert.c \
 	dizreader.c \
-	stats.c
+	$(UNIVERSAL)
         
 if DONT_HAVE_STRLCPY
 postdel_SOURCES += strlcpy.c
@@ -68,23 +65,24 @@ postdel_LDADD = ../glufile/libglufile.la
 
 racestats_SOURCES = \
 	racestats.c \
-	zsfunctions.c \
-	race-file.c \
-	convert.c \
 	dizreader.c \
-	stats.c
+	$(UNIVERSAL)
+
+racestats_DEPENDENCIES = ../glufile/libglufile.la
+
+racestats_LDADD = ../glufile/libglufile.la
 
 rescan_SOURCES = \
 	rescan.c \
-	zsfunctions.c \
-	race-file.c \
 	multimedia.c \
-	convert.c \
 	dizreader.c \
-	stats.c \
 	complete.c \
 	crc.c \
-	ng-version.c
+	$(UNIVERSAL)
+
+rescan_DEPENDENCIES = ../glufile/libglufile.la
+
+rescan_LDADD = ../glufile/libglufile.la
 
 cleanup_SOURCES = \
 	cleanup.c

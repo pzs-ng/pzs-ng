@@ -1,3 +1,6 @@
+INCLUDES = \
+	-I$(top_srcdir)/src/zipscript
+	
 bin_PROGRAMS = sitewho
 
 sitewho_SOURCES = sitewho.c

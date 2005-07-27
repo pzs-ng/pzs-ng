@@ -10,7 +10,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <ctype.h>
-#include "../../zipscript/conf/zsconfig.h"
+#include "zsconfig.h"
 #include "zsconfig.defaults.h"
 
 #include "sitewho.h"

@@ -31,6 +31,10 @@
 #include <stdio.h>
 #include <errno.h>
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #ifndef PATH_MAX
 # ifndef _SunOS_
 #  define _LIMITS_H_
@@ -50,12 +54,12 @@
 # endif
 #endif
 
-#ifdef _SunOS_
-#include "scandir.h"
+#ifndef HAVE_SCANDIR_H 
+# include "scandir.h"
 #endif
 
 #include "objects.h"
-#include "../conf/zsconfig.h"
+#include "zsconfig.h"
 #include "zsconfig.defaults.h"
 
 #include "ng-chown.h"

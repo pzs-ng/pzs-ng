@@ -27,7 +27,7 @@ dnl check if SSL is available
 AH_TEMPLATE([PZSNG_SSL_EXT], [Define to 1 to if you have the required SSL libraries in place])
 PZSNG_SSL()
 
-AM_CONDITIONAL(DONT_HAVE_SSL, test -z "$SSL_LIBS")
+AM_CONDITIONAL(HAVE_SSL, test -n "$SSL_LIBS")
 
 dnl sitestat5
 AC_ARG_ENABLE(ss5, AS_HELP_STRING([--enable-ss5], [compiles the zipscript for use with SiteStat 5]), [
@@ -55,9 +55,12 @@ src/Makefile
 src/zipscript/Makefile
 src/glufile/Makefile
 src/sitewho/Makefile
+src/sitewho/sitewho.conf
 src/utils/Makefile
 src/ng-chown/Makefile
 src/ng-undupe/Makefile
+src/sitebot/Makefile
+src/sitebot/src/Makefile
 )
 
 dnl Process this file with autoconf to produce a configure script.
