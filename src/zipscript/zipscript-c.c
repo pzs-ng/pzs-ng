@@ -284,7 +284,7 @@ main(int argc, char **argv)
 #endif
 
 #if ( enable_nfo_script )
-	 if ( !g.v.misc.nfofound && findfileext(".", ".nfo"))
+	 if ( (!g.v.misc.nfofound || !strncasecmp("nfo", fileext, 3)) && findfileext(".", ".nfo"))
 		execute_script(nfo_script, g.v.file.name, "nfo");
 #endif
 
