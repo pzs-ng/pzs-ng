@@ -273,7 +273,7 @@ proc readlog {} {
 		## The regex pattern to use for the logfile
 		switch -exact -- $logtype {
 			0 {set regex {^.+ \d+:\d+:\d+ \d{4} (\S+): (.+)}}
-			1 - 2 {set regex {^.+ \d+:\d+:\d+ \d{4} \[(.+)\] (.+)}}
+			1 - 2 {set regex {^.+ \d+:\d+:\d+ \d{4} \[(\d+)\s*\] (.+)}}
 			default {putlog "dZSbot error: Internal error, unknown log type ($logtype)."; continue}
 		}
 		## Read the log data
