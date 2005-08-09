@@ -254,7 +254,7 @@ proc ::dZSbot::LogRead {} {
         }
         switch -exact -- $logType {
             0 {set regex {^.+ \d+:\d+:\d+ \d{4} (\S+): (.+)}}
-            1 - 2 {set regex {^.+ \d+:\d+:\d+ \d{4} \[(.+)\] (.+)}}
+            1 - 2 {set regex {^.+ \d+:\d+:\d+ \d{4} \[(\d+)\s*\] (.+)}}
             default {ErrorMsg LogRead "Internal error, unknown log type ($logType)."; continue}
         }
         set logSize [file size $logPath]
