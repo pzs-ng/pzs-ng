@@ -244,8 +244,8 @@ main(int argc, char **argv)
 	name_p++;
 
 	if (temp_p) {
-		if (sizeof(temp_p) - 4 > 0)
-			temp_p = temp_p + sizeof(temp_p) - 4;
+		while ((signed)strlen(temp_p) - 4 > 0)
+			temp_p++;
 		snprintf(fileext, 4, "%s", temp_p);
 	} else
 		*fileext = '\0';
