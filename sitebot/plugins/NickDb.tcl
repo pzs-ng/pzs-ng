@@ -16,7 +16,7 @@
 #    mkdir bld
 #    cd bld
 #    ../configure
-#    FreeBSD users may have to specify the location of tclConfig.sh:
+#    You may have to specify the location of tclConfig.sh:
 #    ../configure --with-tcl=/usr/local/lib/tcl8.4/
 #    make
 #    make install
@@ -51,9 +51,9 @@ namespace eval ::dZSbot::NickDb {
     ## Monitor user events in these channels, usually the invite channels.
     variable monitorChans "#NG #NG-Spam"
     ## or if you're lazy:
-    ##variable monitorChans $::invite_channels
+    ##variable monitorChans $::dZSbot::invite_channels
     ##
-    ## Path to the Tcl binding for SQLite v3.1.
+    ## Path to the Tcl binding for SQLite v3.2.
     variable libSQLite "/usr/local/lib/tcl8.4/sqlite3/libtclsqlite3.so"
     ##
     ##################################################
@@ -226,7 +226,7 @@ proc ::dZSbot::NickDb::OnMonitorChans {ircUser {ignoreChannel ""}} {
 ####
 # NickDb::StripName
 #
-# Strips illegal characters from IRC user names.
+# Strips illegal characters from a user name.
 #
 proc ::dZSbot::NickDb::StripName {name} {
     return [regsub -all {[^\w\[\]\{\}\-\`\^\\]+} $name {}]
