@@ -1,5 +1,6 @@
 #!/bin/sh
 
+PATH=/usr/local/gnu-autotools/bin/:$PATH
 aclocal
 autoheader
 libtoolize --automake
