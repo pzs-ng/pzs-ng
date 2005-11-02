@@ -4,7 +4,7 @@ such stuff. By using this small util you can execute what you want, with the
 uid of your choice.
 
 How to compile:
-gcc -o /glftpd/bin/droproot droproot.c
+gcc -static -o /glftpd/bin/droproot droproot.c
 
 How to run:
 chroot /glftpd /bin/droproot <number> "something to run"
@@ -13,8 +13,8 @@ Number must be between 1 and 65535.
 The "" is only needed if you wish to pass args to the script you wish to
 test.
 Examples:
-chroot /glftpd /bin/droproot /bin/my_script.sh             <- valid - no args
-chroot /glftpd /bin/droproot /bin/my_script.sh l33tuser    <- invalid - arg will not be passed.
-chroot /glftpd /bin/droproot "/bin/my_script.sh l33tuser"  <- valid - arg will be passed.
+chroot /glftpd /bin/droproot 200 /bin/my_script.sh             <- valid - no args
+chroot /glftpd /bin/droproot 200 /bin/my_script.sh l33tuser    <- invalid - arg will not be passed.
+chroot /glftpd /bin/droproot 200 "/bin/my_script.sh l33tuser"  <- valid - arg will be passed.
 
 
