@@ -706,7 +706,7 @@ zipscript_any_ok <STRING>
 	When files are uploaded, some output is shown to the racer uploading.
 	Put here what should be shown as the body of that message on any ok
 	file.
-	Default: "| + File: ok!                                      |\n"
+	Default: "| + File: ok! (allowed w/o any checks)             |\n"
 
 zipscript_SFV_ok <STRING>
 	When files are uploaded, some output is shown to the racer uploading.

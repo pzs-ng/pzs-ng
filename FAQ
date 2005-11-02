@@ -111,3 +111,10 @@ A: glftpd's stats binary probably reports an error. Try to run in from shell:
       /glftpd/bin/stats -r /etc/glftpd.conf -u -a -s <your section here>
    This should give some indication of where the problem is.
 
+Q: (BOT) I get error on !wkup etc. I use a cryptscript.
+-------------------------------------------------------
+A: Change your cryptscript. Currently known working script is mircryption
+   http://mircryption.sourceforge.net
+   Not verified, but told is working is poci's cryptscript.
+   http://poci.u5-inside.de/
+

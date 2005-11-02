@@ -695,7 +695,7 @@
 #define zipscript_sfv_ok	"| + SFV-file: oK!                                  |\n"
 #endif
 #ifndef zipscript_any_ok
-#define zipscript_any_ok	"| + File: ok!                                      |\n"
+#define zipscript_any_ok	"| + File: ok! (allowed w/o any checks)             |\n"
 #endif
 #ifndef zipscript_SFV_ok
 #define zipscript_SFV_ok	"| + CRC-Check: oK!                                 |\n"
