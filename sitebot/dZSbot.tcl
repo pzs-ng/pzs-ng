@@ -2090,10 +2090,11 @@ namespace eval ::dZSbot {
 
     ## Load theme file.
     if {![ThemeLoad $announce(THEMEFILE)]} {
+		set InvalidTheme $announce(THEMEFILE)
         if {[ThemeLoad "themes/default.zst"]} {
-            WarningMsg Theme "Unable to load theme $announce(THEMEFILE), loaded default.zst instead."
+            WarningMsg Theme "Unable to load theme $InvalidTheme, loaded default.zst instead."
         } else {
-            ErrorMsg Theme "Unable to load the themes $announce(THEMEFILE) and default.zst."
+            ErrorMsg Theme "Unable to load the themes $InvalidTheme and default.zst."
             set loadError 1
         }
     }
