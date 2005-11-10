@@ -589,16 +589,16 @@ proc launchnuke2 {type path section info nukees} {
 
 proc format_duration {secs} {
 	set duration ""
-	foreach div {31536000 604800 86400 3600 60 1} mod {0 52 7 24 60 60} unit {y w d h m s} {
+	foreach div {31536000 604800 86400 3600 60 1} unit {y w d h m s} {
 		set num [expr {$secs / $div}]
-		if {$mod > 0} {set num [expr {$num % $mod}]}
 		if {$num > 0} {lappend duration "\002$num\002$unit"}
+		set secs [expr {$secs % $div}]
 	}
 	if {[llength $duration]} {return [join $duration]} else {return "\0020\002s"}
 }
 
 proc format_kb {amount} {
-	foreach dec {0 1 2 2 2} unit {KB MB GB TB PB} {
+	foreach dec {0 1 2 2 2} unit {KB MB GB TB PB EB} {
 		if {abs($amount) >= 1024} {
 			set amount [expr {double($amount) / 1024.0}]
 		} else {break}
