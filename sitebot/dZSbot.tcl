@@ -583,10 +583,10 @@ proc ::dZSbot::LaunchNuke2 {event section sectionPath logData} {
 
 proc ::dZSbot::FormatDuration {secs} {
     set duration ""
-    foreach div {31536000 604800 86400 3600 60 1} mod {0 52 7 24 60 60} unit {y w d h m s} {
+	foreach div {31536000 604800 86400 3600 60 1} unit {y w d h m s} {
         set num [expr {$secs / $div}]
-        if {$mod > 0} {set num [expr {$num % $mod}]}
         if {$num > 0} {lappend duration "[b]$num[b]$unit"}
+		set secs [expr {$secs % $div}]
     }
     if {[llength $duration]} {return [join $duration]} else {return "[b]0[b]s"}
 }
