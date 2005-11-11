@@ -12,10 +12,9 @@ STRLCPY=../../lib/strl/strlcpy.o
 
 SUNOBJS=@SUNOBJS@
 UNIVERSAL=stats.o convert.o race-file.o helpfunctions.o zsfunctions.o mp3info.o ng-version.o abs2rel.o $(SUNOBJS) $(STRLCPY)
-ZS-OBJECTS=zipscript-c.o dizreader.o complete.o multimedia.o audiosort.o crc.o $(UNIVERSAL)
+ZS-OBJECTS=zipscript-c.o dizreader.o complete.o multimedia.o crc.o $(UNIVERSAL)
 PD-OBJECTS=postdel.o dizreader.o multimedia.o crc.o $(UNIVERSAL)
 RS-OBJECTS=racestats.o dizreader.o crc.o $(UNIVERSAL)
-AS-OBJECTS=multimedia.o audiosort.o audiosort-bin.o $(UNIVERSAL)
 CU-OBJECTS=cleanup.o
 #IL-OBJECTS=incomplete-list.o
 DC-OBJECTS=datacleaner.o
@@ -25,7 +24,7 @@ CH-OBJECTS=ng-chown.o
 #ZS-DEPEND=cleanup.o incomplete-list.o complete.o datacleaner.o postdel.o racestats.o rescan.o zipscript-c.o multimedia.o $(UNIVERSAL)
 ZS-DEPEND=cleanup.o complete.o datacleaner.o postdel.o racestats.o rescan.o zipscript-c.o multimedia.o $(UNIVERSAL)
 
-all: ng-undupe zipscript-c postdel racestats cleanup datacleaner rescan ng-chown audiosort
+all: ng-undupe zipscript-c postdel racestats cleanup datacleaner rescan ng-chown
 
 $(ZS-DEPEND): ../conf/zsconfig.h
 
@@ -55,9 +54,6 @@ ng-undupe: $(UD-OBJECTS)
 ng-chown: $(CH-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(CH-OBJECTS) $(SUNOBJS)
 
-audiosort: $(AS-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(AS-OBJECTS)
-
 rescan: $(SC-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(SC-OBJECTS)
 
@@ -71,11 +67,11 @@ install:
 distclean: clean
 
 clean:
-	$(RM) zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown audiosort
+	$(RM) zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown
 
 uninstall:
 	rm -rf "$(prefix)$(storage)"
 	rm -f $(bindir)/{zipscript-c,postdel,racestats,cleanup,datacleaner,rescan,ng-undupe,ng-chown}
 
 strip:
-	strip zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown audiosort
+	strip zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown
