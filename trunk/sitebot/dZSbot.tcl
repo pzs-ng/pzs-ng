@@ -1922,10 +1922,11 @@ if {[istrue $enable_irc_invite]} {
 
 ## Load the theme file
 if {![loadtheme $announce(THEMEFILE)]} {
+	set invalidTheme $announce(THEMEFILE)
 	if {[loadtheme "themes/default.zst"]} {
-		putlog "dZSbot warning: Unable to load theme $announce(THEMEFILE), loaded default.zst instead."
+		putlog "dZSbot warning: Unable to load theme $invalidTheme, loaded default.zst instead."
 	} else {
-		putlog "dZSbot error: Unable to load the themes $announce(THEMEFILE) and default.zst."
+		putlog "dZSbot error: Unable to load the themes $invalidTheme and default.zst."
 		set dzerror 1
 	}
 }
