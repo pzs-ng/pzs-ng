@@ -477,6 +477,16 @@
 #endif
 
 /*
+ * Wether or not we delete any links
+ * with the same name when we try to make
+ * a new link. (If we don't, the old link will stay,
+ * and making a new one will fail)
+ */
+#ifndef delete_old_link
+# define delete_old_link	TRUE
+#endif
+
+/*
  * Audio related checks for quality/type - here you enable/disable the
  * restriction you defined earlier. If warn is true, any banned files will
  * not be deleted, but instead a warning message will be logged to your
