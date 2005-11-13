@@ -450,7 +450,7 @@ audio_year_path <PATH>
 	Default: "/site/incoming/music.by.year/"
 
 audio_group_sort <TRUE|FALSE>
-	If you wish to sort aduio/mp3 releases by group, set this to TRUE.
+	If you wish to sort audio/mp3 releases by group, set this to TRUE.
 	Default: FALSE
 
 audio_group_path <PATH>
@@ -458,6 +458,13 @@ audio_group_path <PATH>
 	where the symlinks will be created. This dir must be created in order
 	for the sorting to work - the zipscript will not create it for you.
 	Default: "/site/incoming/music.by.group/"
+
+delete_old_link <TRUE|FALSE>
+	If you do NOT want to have the zipscript/rescan/audiosort delete any
+	links with the same name when it tries to create a new link, set this 
+	to FALSE. This will cause rescan / audiosort to be useless if there
+	already are sortedlinks for this release.
+	Default: TRUE
 
 allowed_constant_bitrates <STRING>
 	You can restrict uploaded audio/mp3 releases several ways. One is by

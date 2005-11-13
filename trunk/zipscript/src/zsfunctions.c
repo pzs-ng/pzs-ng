@@ -669,6 +669,7 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 	int		l1 = (int)strlen(factor1) + 1,
 			l2 = (int)strlen(factor2) + 1,
 			l3 = (int)strlen(ltarget) + 1;
+	struct stat linkStat;
 
 	memcpy(target, factor1, l1);
 	target += l1 - 1;
@@ -689,8 +690,16 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 	memcpy(target, ltarget, l3);
 
 #if ( userellink == 1 )
+# if ( delete_old_link == TRUE )
+	if (lstat(result, &linkStat) != -1 && S_ISLNK(linkStat.st_mode))
+			unlink(result);
+# endif
 	symlink(result, org);
 #else
+# if ( delete_old_link == TRUE )
+	if (lstat(source, &linkStat) != -1 && S_ISLNK(linkStat.st_mode))
+			unlink(source);
+# endif
 	symlink(source, org);
 #endif
 }
