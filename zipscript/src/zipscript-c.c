@@ -38,6 +38,7 @@
 #include "complete.h"
 #include "crc.h"
 #include "ng-version.h"
+#include "audiosort.h"
 
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
@@ -1293,42 +1294,10 @@ main(int argc, char **argv)
 				if (!strncasecmp(g.l.link_target, "VA", 2) && (g.l.link_target[2] == '-' || g.l.link_target[2] == '_'))
 					memcpy(g.v.audio.id3_artist, "VA", 3);
 
-				if (g.v.misc.write_log == TRUE && !matchpath(group_dirs, g.l.path)) {
-#if ( audio_genre_sort == TRUE )
-					d_log("zipscript-c:   Sorting mp3 by genre (%s)\n", g.v.audio.id3_genre);
-					createlink(audio_genre_path, g.v.audio.id3_genre, g.l.link_source, g.l.link_target);
-#endif
-#if ( audio_artist_sort == TRUE )
-					d_log("zipscript-c:   Sorting mp3 by artist\n");
-					if (*g.v.audio.id3_artist) {
-						d_log("zipscript-c:     - artist: %s\n", g.v.audio.id3_artist);
-						if (memcmp(g.v.audio.id3_artist, "VA", 3)) {
-							temp_p = ng_realloc(temp_p, 2, 1, 1, &g.v, 1);
-							snprintf(temp_p, 2, "%c", toupper(*g.v.audio.id3_artist));
-							createlink(audio_artist_path, temp_p, g.l.link_source, g.l.link_target);
-							ng_free(temp_p);
-						} else {
-							createlink(audio_artist_path, "VA", g.l.link_source, g.l.link_target);
-						}
-					}
-#endif
-#if ( audio_year_sort == TRUE )
-					d_log("zipscript-c:   Sorting mp3 by year (%s)\n", g.v.audio.id3_year);
-					if (*g.v.audio.id3_year != 0) {
-						createlink(audio_year_path, g.v.audio.id3_year, g.l.link_source, g.l.link_target);
-					}
-#endif
-#if ( audio_group_sort == TRUE )
-					d_log("zipscript-c:   Sorting mp3 by group\n");
-					temp_p = remove_pattern(g.l.link_target, "*-", RP_LONG_LEFT);
-					temp_p = remove_pattern(temp_p, "_", RP_SHORT_LEFT);
-					n = (int)strlen(temp_p);
-					if (n > 0 && n < 15) {
-						d_log("zipscript-c:   - Valid groupname found: %s (%i)\n", temp_p, n);
-						createlink(audio_group_path, temp_p, g.l.link_source, g.l.link_target);
-					}
-#endif
-				}
+				/* Sort if we're s'posed to write to log and we're not in a group-dir. */
+				if (g.v.misc.write_log == TRUE && !matchpath(group_dirs, g.l.path))
+						audioSort(&g.v.audio, g.l.link_source, g.l.link_target);
+
 #if ( create_m3u == TRUE )
 				if (findfileext(dir, ".sfv")) {
 					d_log("zipscript-c: Creating m3u\n");

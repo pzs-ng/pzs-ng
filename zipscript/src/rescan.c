@@ -19,6 +19,7 @@
 #include "complete.h"
 #include "crc.h"
 #include "ng-version.h"
+#include "audiosort.h"
 
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
@@ -329,6 +330,8 @@ main(void)
 				strcpy(exec + n - 3, "m3u");
 				create_indexfile(g.l.race, &g.v, exec);
 #endif
+				audioSort(&g.v.audio, g.l.link_source, g.l.link_target);
+				printf(" Resorting release.\n");
 				break;
 			case RTYPE_VIDEO:
 				complete_bar = video_completebar;

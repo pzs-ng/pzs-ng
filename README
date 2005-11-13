@@ -225,7 +225,7 @@ If the make install fails, or you really wish to make the changes by hand,
 here's what to do:
 
            cp -f zipscript-c postdel racestats cleanup datacleaner rescan \
-	         racedebug ng-undupe ng-chown /path/to/your/glftpd/bin/
+	         racedebug ng-undupe ng-chown audiosort /path/to/your/glftpd/bin/
            chmod 666 /path/to/your/glftpd/ftp-data/logs/glftpd.log
            mkdir -pm777 /path/to/your/glftpd/ftp-data/pzs-ng
 (optional) chmod +s /path/to/your/glftpd/bin/zipscript-c
@@ -293,12 +293,17 @@ cscript		SITE[:space:]WIPE	post	/bin/cleanup
 site_cmd	RESCAN			EXEC	/bin/rescan
 custom-rescan	!8	*
 
-The first two will remove dead symlinks. The last two will allow you (and all
+site_cmd	AUDIOSORT		EXEC	/bin/audiosort
+custom-audiosort	!8	*
+
+The first two will remove dead symlinks. The next two will allow you (and all
 users except anon users) to rescan a dir. This comes in handy in places the
 zipscript isn't invoked by default, when you have dirs you wish to check filled
-before you added the zipscript, and a lot of other occations.
+before you added the zipscript, and a lot of other occations. 
 Forget to add this and you will hit yourself hard quite a few times. ;)
-
+The last allows you to only resort the genres/year/group/artist of an mp3-release. 
+(rescan does the same, but audiosort is faster - it doesn't check the crc and 
+such of the release)
 
 Crontab:
 --------
