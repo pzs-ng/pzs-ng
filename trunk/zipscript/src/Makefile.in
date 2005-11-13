@@ -12,19 +12,20 @@ STRLCPY=../../lib/strl/strlcpy.o
 
 SUNOBJS=@SUNOBJS@
 UNIVERSAL=stats.o convert.o race-file.o helpfunctions.o zsfunctions.o mp3info.o ng-version.o abs2rel.o $(SUNOBJS) $(STRLCPY)
-ZS-OBJECTS=zipscript-c.o dizreader.o complete.o multimedia.o crc.o $(UNIVERSAL)
+ZS-OBJECTS=zipscript-c.o dizreader.o complete.o multimedia.o audiosort.o crc.o $(UNIVERSAL)
 PD-OBJECTS=postdel.o dizreader.o multimedia.o crc.o $(UNIVERSAL)
 RS-OBJECTS=racestats.o dizreader.o crc.o $(UNIVERSAL)
+AS-OBJECTS=multimedia.o audiosort.o audiosort-bin.o $(UNIVERSAL)
 CU-OBJECTS=cleanup.o
 #IL-OBJECTS=incomplete-list.o
 DC-OBJECTS=datacleaner.o
 UD-OBJECTS=ng-undupe.o $(STRLCPY)
-SC-OBJECTS=rescan.o dizreader.o complete.o crc.o multimedia.o $(UNIVERSAL)
+SC-OBJECTS=rescan.o dizreader.o complete.o crc.o multimedia.o audiosort.o $(UNIVERSAL)
 CH-OBJECTS=ng-chown.o
 #ZS-DEPEND=cleanup.o incomplete-list.o complete.o datacleaner.o postdel.o racestats.o rescan.o zipscript-c.o multimedia.o $(UNIVERSAL)
 ZS-DEPEND=cleanup.o complete.o datacleaner.o postdel.o racestats.o rescan.o zipscript-c.o multimedia.o $(UNIVERSAL)
 
-all: ng-undupe zipscript-c postdel racestats cleanup datacleaner rescan ng-chown
+all: ng-undupe zipscript-c postdel racestats cleanup datacleaner rescan ng-chown audiosort
 
 $(ZS-DEPEND): ../conf/zsconfig.h
 
@@ -54,6 +55,9 @@ ng-undupe: $(UD-OBJECTS)
 ng-chown: $(CH-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(CH-OBJECTS) $(SUNOBJS)
 
+audiosort: $(AS-OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(AS-OBJECTS)
+
 rescan: $(SC-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(SC-OBJECTS)
 
@@ -62,16 +66,16 @@ install:
 	chown 0:0 $(prefix)$(storage)
 	chmod 4777 $(prefix)$(storage)
 	if [ -e $(prefix)$(datapath)/logs/glftpd.log ]; then chmod 666 $(prefix)$(datapath)/logs/glftpd.log; fi
-	if [ -e $(bindir) ]; then cp -f zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown $(bindir)/; fi
+	if [ -e $(bindir) ]; then cp -f zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown audiosort $(bindir)/; fi
 
 distclean: clean
 
 clean:
-	$(RM) zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown
+	$(RM) zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown audiosort
 
 uninstall:
 	rm -rf "$(prefix)$(storage)"
-	rm -f $(bindir)/{zipscript-c,postdel,racestats,cleanup,datacleaner,rescan,ng-undupe,ng-chown}
+	rm -f $(bindir)/{zipscript-c,postdel,racestats,cleanup,datacleaner,rescan,ng-undupe,ng-chown,audiosort}
 
 strip:
-	strip zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown
+	strip zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown audiosort

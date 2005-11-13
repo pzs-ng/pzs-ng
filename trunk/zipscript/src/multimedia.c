@@ -5,6 +5,7 @@
 #include "mp3info.h"
 #include "objects.h"
 #include "multimedia.h"
+#include "zsfunctions.h"
 
 char *genre_s[] = {
 	"Blues", "Classic Rock", "Country", "Dance",
@@ -240,6 +241,17 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 	int		t1;
 
 	fd = open(f, O_RDONLY);
+	if (fd < 0)
+	{
+		d_log("get_mpeg_audio_info: could not open file '%s': %s\n", f, strerror(errno));
+		strcpy(audio->id3_year, "0000");
+		strcpy(audio->id3_title, "Unknown");
+		strcpy(audio->id3_artist, "Unknown");
+		strcpy(audio->id3_album, "Unknown");
+		audio->id3_genre = genre_s[148];
+
+		return;
+	}
 
 	n = 2;
 	while (read(fd, header + 2 - n, n) == n) {
