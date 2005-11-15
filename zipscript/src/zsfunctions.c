@@ -689,17 +689,14 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 
 	memcpy(target, ltarget, l3);
 
-#if ( userellink == 1 )
 # if ( delete_old_link == TRUE )
-	if (lstat(result, &linkStat) != -1 && S_ISLNK(linkStat.st_mode))
-			unlink(result);
+	if (lstat(org, &linkStat) != -1 && S_ISLNK(linkStat.st_mode))
+		unlink(org);
 # endif
+
+#if ( userellink == 1 )
 	symlink(result, org);
 #else
-# if ( delete_old_link == TRUE )
-	if (lstat(source, &linkStat) != -1 && S_ISLNK(linkStat.st_mode))
-			unlink(source);
-# endif
 	symlink(source, org);
 #endif
 }

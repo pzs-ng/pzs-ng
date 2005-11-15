@@ -1,7 +1,21 @@
 PZS-NG CHANGELOG
 ----------------
 
-v0.6.1	--> 1.00  :	The changes from the original project-zs by d1 is
+v1.0.1  --> 1.0.1b : (r2040
+		- Fixed a silly bug with the deletion of old links.
+
+v1.0.0  --> 1.0.1  : (r2039)
+		- Various ss5 fixes.
+		- Various small zipscript bug-fixes.
+		- Various small dZSbot bug-fixes.
+		- Same checksum & filename in sfv = same file.
+		- Bug #378 fixed (dizreader not picking up x/xx) - reported by chotaire.
+		- Added better handling of audiosorting. 'rescan' now sorts too! (like zipscript does on complete)
+		   There is also a new binary, 'audiosort'. 
+		   This sorts a dir based on the same critera as rescan/zipscript does, but does not require a completed release (or even a release at all, could be used for non-zipscripted sites).
+		   In addition, sorting now deletes any other identically named links, and puts the 'right' one in place of it. :)
+
+v0.6.1	--> 1.0.0  : The changes from the original project-zs by d1 is
 			significant. There is nearly no code that has not been
 			changed. For a full list of new/changed options, i
 			suggest you read README.ZSCONFIG for the zipscript, and
