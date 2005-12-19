@@ -1,8 +1,8 @@
 #!/bin/bash
 
 IFS_ORIG="$IFS"
-IFS="
-"
+IFS=$'\n'
+
 start=0
 for line in `cat zipscript/include/zsconfig.defaults.h | sed "s|^/\*|/:|g" | sed "s|^ \*| :|g"` ; do
   if [[ $start -eq 0 ]]; then
@@ -17,5 +17,5 @@ for line in `cat zipscript/include/zsconfig.defaults.h | sed "s|^/\*|/:|g" | sed
     fi
   fi
 done
-IFS="IFS_ORIG"
+IFS=$IFS_ORIG
 

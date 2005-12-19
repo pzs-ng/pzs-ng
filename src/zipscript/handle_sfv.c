@@ -197,7 +197,7 @@ handle_sfv(HANDLER_ARGS *ha) {
 	return exit_value;
 }
 
-/* handling of a file thats inside a zip dir */
+/* handling of a file thats inside an sfv dir */
 int
 handle_sfv32(HANDLER_ARGS *ha)
 {

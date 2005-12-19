@@ -785,3 +785,4 @@ release_incomplete(GLOBAL *g, MSG *msg, RACETYPE *rtype)
 	printf("%s", convert(&g->v, g->ui, g->gi, zipscript_footer_ok));
 
 }
+
