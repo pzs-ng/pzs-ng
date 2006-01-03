@@ -25,6 +25,7 @@
 #include "objects.h"
 #include "macros.h"
 #include "constants.h"
+#include "racetypes.h"
 
 #if ( debug_mode == TRUE )
 #include <stdarg.h>

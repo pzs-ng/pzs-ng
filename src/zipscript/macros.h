@@ -48,4 +48,7 @@
 #define CHOOSE(a,b,c)	b;
 #endif
 
+#define opendirs(x, y) x = opendir("."); y = opendir("..")
+#define closedirs(x, y) closedir(x); closedir(y)
+
 #endif

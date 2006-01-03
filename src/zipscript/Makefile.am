@@ -45,6 +45,7 @@ zipscript_c_SOURCES = \
 	racetypes.c \
 	complete.c \
 	multimedia.c \
+	processfuncs.c \
 	$(UNIVERSAL)
 
 EXTRA_zipscript_c_SOURCES = \

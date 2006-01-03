@@ -9,6 +9,7 @@
 #include "constants.h"
 #include "convert.h"
 #include "race-file.h"
+#include "errors.h"
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -1315,3 +1316,4 @@ remove_at_loc(char *path, off_t loc)
 
 	return 0;
 }
+
