@@ -184,7 +184,8 @@ header_layer(mp3header * h)
 int 
 header_bitrate(mp3header * h)
 {
-	return bitrate[h->version & 1][3 - h->layer][h->bitrate - 1];
+	int tvar = 0;
+	return bitrate[h->version & 1][3 - h->layer][(tvar = h->bitrate - 1) >= 0 ? tvar : 0 ];
 }
 
 int 
