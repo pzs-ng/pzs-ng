@@ -27,7 +27,7 @@ struct stat	filestat;
 char           *header = 0, *footer = 0, *glpath = 0, *mpaths = 0, *husers = 0, *hgroups = 0, *ipckey = 0, *glgroup = 0, *nocase = 0,
                *def_ipckey = "0x0000DEAD", *def_glgroup = "/etc/group", *def_nocase = "false", 
 	       *def_husers = "pzs-ng", *def_hgroups = "pzs-ng", *def_mpaths = "/ftp-data/pzs-ng", *def_glpath = "/glftpd/",
-	       *def_count_hidden = "true", *count_hidden, *def_header = "/ftp-data/misc/who.head",
+	       *def_count_hidden = "true", *count_hidden = 0, *def_header = "/ftp-data/misc/who.head",
 	       *def_footer = "/ftp-data/misc/who.foot";
 int		maxusers = 20 , showall = 0, uploads = 0, downloads = 0, onlineusers = 0, browsers = 0, idlers = 0, chidden = 1,
 		idle_barrier = -1, def_idle_barrier = 30, threshold = -1, def_threshold = 1024;
