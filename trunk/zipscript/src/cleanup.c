@@ -167,7 +167,7 @@ incomplete_cleanup(char *path, int setfree)
 	DIR		*dir;
 	struct dirent	*dp;
 	
-	int		i;
+	int		i, fd;
 	regex_t		preg[4];
 	regmatch_t	pmatch[1];
 	char		temp[PATH_MAX];
@@ -197,11 +197,16 @@ incomplete_cleanup(char *path, int setfree)
 		
 			while ((dp = readdir(dir)))
 				for (i = 0; i < 4; i++)
-					if (regexec(&preg[i], dp->d_name, 1, pmatch, 0) == 0)
+					if ((fd = open(dp->d_name, O_NDELAY, 0777)) != -1)
+						close(fd);
+					 else if (setfree) {
+						unlink(dp->d_name);
+						printf("Broken symbolic link \"%s\" removed.\n", dp->d_name);
+						i=5;
+					} else if (regexec(&preg[i], dp->d_name, 1, pmatch, 0) == 0)
 						if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dp))
 							if (checklink(path, dp->d_name, setfree))
 								break;
-
 			closedir(dir);
 		
 		} else {
@@ -258,9 +263,9 @@ cleanup(char *pathlist, char *pathlist_dated, int setfree, char *startpath)
 			exit(1);
 		}
 
-
 	if (((int)strlen(startpath) > 1) && (setfree == 1)) {
 		/* Scanning current dir only */
+
 		incomplete_cleanup(startpath, setfree);
 	} else {
 		newentry = pathlist;
