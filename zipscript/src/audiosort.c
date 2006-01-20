@@ -63,6 +63,7 @@ void audioSort(struct audio *info, char *link_source, char *link_target)
 	char *temp_p = NULL;
 	int n = 0;
 #else
+	d_log("audioSort: No audio_*_sort is set to TRUE - skipping sorting of mp3\n");
 	(void)info; (void)link_source; (void)link_target;
 #endif
 
