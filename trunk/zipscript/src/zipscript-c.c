@@ -1296,8 +1296,9 @@ main(int argc, char **argv)
 
 				/* Sort if we're s'posed to write to log and we're not in a group-dir. */
 				if (g.v.misc.write_log == TRUE && !matchpath(group_dirs, g.l.path))
-						audioSort(&g.v.audio, g.l.link_source, g.l.link_target);
-
+					audioSort(&g.v.audio, g.l.link_source, g.l.link_target);
+				else
+					d_log("zipscript-c: Symlinking halted - will not create symlinks for this release.\n");
 #if ( create_m3u == TRUE )
 				if (findfileext(dir, ".sfv")) {
 					d_log("zipscript-c: Creating m3u\n");
