@@ -196,17 +196,19 @@ incomplete_cleanup(char *path, int setfree)
 		if ((dir = opendir("."))) {
 		
 			while ((dp = readdir(dir)))
-				for (i = 0; i < 4; i++)
-					if ((fd = open(dp->d_name, O_NDELAY, 0777)) != -1)
-						close(fd);
-					 else if (setfree) {
-						unlink(dp->d_name);
-						printf("Broken symbolic link \"%s\" removed.\n", dp->d_name);
-						i=5;
-					} else if (regexec(&preg[i], dp->d_name, 1, pmatch, 0) == 0)
+				for (i = 0; i < 4; i++) {
+					if (regexec(&preg[i], dp->d_name, 1, pmatch, 0) == 0)
 						if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dp))
 							if (checklink(path, dp->d_name, setfree))
 								break;
+					if ((fd = open(dp->d_name, O_NDELAY, 0777)) != -1)
+						close(fd);
+					else if (setfree) {
+						unlink(dp->d_name);
+						printf("Broken symbolic link \"%s\" removed.\n", dp->d_name);
+						i=5;
+					}
+				}
 			closedir(dir);
 		
 		} else {

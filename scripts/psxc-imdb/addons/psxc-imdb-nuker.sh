@@ -296,6 +296,7 @@ if [ -z "$IMDBRELPATH" ]; then
  echo "To use a delayed nuke, see NUKE_GRACE and add the"
  echo "following to crontab:"
  echo "* * * * * /glftpd/bin/psxc-imdb-nuker.sh >/dev/null 2>&1"
+ let COMBO=NUKE_COMBO+1
 else
 
 # finally, let's see if the release still exists. Maybe it's already been
