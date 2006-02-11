@@ -631,11 +631,11 @@ readconfig(char *arg)
 			b_w = 0;
 			break;
 		case '=':
-			if (!e_c && !b_w)
+			if (!e_c && !b_w) {
 				e_c = n;	/* Only one '=' char per line
 						 * counts */
-			if (*(buf + n - 1) == ' ')
 				b_w = n + 1;
+			}
 			break;
 		case '\t':
 		case ' ':
