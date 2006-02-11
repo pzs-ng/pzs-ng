@@ -634,7 +634,8 @@ readconfig(char *arg)
 			if (!e_c && !b_w)
 				e_c = n;	/* Only one '=' char per line
 						 * counts */
-			b_w = n + 1;
+			if (*(buf + n - 1) == ' ')
+				b_w = n + 1;
 			break;
 		case '\t':
 		case ' ':
