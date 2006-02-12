@@ -175,7 +175,7 @@ announce.INCOMPLETE                     = "%b{[%c1{%section}]} - %b{%releasename
 announce.IMDB                   = "%msg"
 announce.IMDBFIND               = "%msg"
 announce.IMDBVAR                = "Not implemented"
-announce.PRE                    = "%b{[%c1{%section-PRE}]} + %b{%group} launches %b{%relname} - (with %b{%size}MB in %b{%file_size}F)"
+announce.PRE                    = "%b{[%c1{%section-PRE}]} + %b{%pregroup} launches %b{%relname} - (with %b{%mbytes}MB in %b{%files}F)"
 announce.TURGEN                 = "%msg"
 
 ## Miscellaneous announcements
@@ -211,7 +211,7 @@ announce.SPEEDID                = "%b{[%c1{SPEED}]} + %b{%u_name}/%g_name has be
 announce.SPEEDERROR             = "%b{[%c1{SPEED}]} + The specified user is not online."
 
 ## Misc commands
-announce.FREE                   = "%devices-%b{%sitename}- %b{[%c1{FREE}]} + [TOTAL: %b{%free} free of %b{%total}]"
+announce.FREE                   = "%devices-%b{%sitename}-%b{[%c1{FREE}]} + [TOTAL: %b{%free} free of %b{%total}]"
 announce.FREE-DEV               = "%b{[%c1{FREE}]} + [%section: %b{%free} free of %b{%total}]\n"
 announce.UPTIME                 = "%b{[%c1{UPTIME}]} + %b{system:} %time, %users user(s), load: %load %b{sitebot:} %eggdrop"
 
