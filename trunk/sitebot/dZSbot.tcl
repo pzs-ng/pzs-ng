@@ -1169,7 +1169,7 @@ proc ng_stats {type time nick uhost hand chan argv} {
 		set sections ""
 		foreach {name value} [array get statsection] {
 			if {[string equal -nocase $value [lindex $argv 0]]} {
-				set section $value
+				set section $name
 				set error 0; break
 			}
 			lappend sections $value
