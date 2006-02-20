@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <inttypes.h>
 #include <string.h>
 #include <errno.h>
 #include <sys/time.h>
@@ -10,8 +12,6 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <ctype.h>
-#include "zsconfig.h"
-#include "zsconfig.defaults.h"
 
 #include "sitewho.h"
 
@@ -30,7 +30,7 @@ struct shmid_ds	ipcbuf;
 struct stat	filestat;
 
 char           *header = 0, *footer = 0, *glpath = 0, *mpaths = 0, *husers = 0, *hgroups = 0, *ipckey = 0, *glgroup = 0, *nocase = 0,
-               *def_ipckey = "0x0000DEAD", *def_glgroup = "/etc/group", *def_nocase = "false", 
+               *def_ipckey = "0x0000DEAD", *def_glgroup = "/etc/group", *def_nocase = "false",
 	       *def_husers = "pzs-ng", *def_hgroups = "pzs-ng", *def_mpaths = "/ftp-data/pzs-ng", *def_glpath = "/glftpd/",
 	       *def_count_hidden = "true", *count_hidden, *def_header = "/ftp-data/misc/who.head",
 	       *def_footer = "/ftp-data/misc/who.foot";
@@ -40,7 +40,7 @@ double		total_dn_speed = 0, total_up_speed = 0;
 int		totusers = 0;
 
 /* CORE CODE */
-int 
+int
 main(int argc, char **argv)
 {
 
@@ -307,7 +307,7 @@ check_path(char *filename)
 	return 1;
 }
 
-unsigned long 
+unsigned long
 filesize(char *filename)
 {
 	char           *file;
@@ -348,7 +348,7 @@ get_g_name(unsigned int gid)
 	return "NoGroup";
 }
 
-int 
+int
 strplen(char *strin)
 {
 	int		n = 0;
@@ -359,7 +359,7 @@ strplen(char *strin)
 	return n;
 }
 
-short 
+short
 matchpath(char *instr, char *path)
 {
 	int		cnt, pos, k, ncase = 0;
@@ -382,7 +382,7 @@ matchpath(char *instr, char *path)
 	return 0;
 }
 
-short 
+short
 strcomp(char *instr, char *searchstr)
 {
 	int		cnt, pos, ncase = 0;
@@ -411,7 +411,7 @@ strcomp(char *instr, char *searchstr)
 	return 0;
 }
 
-void 
+void
 showusers(int n, int mode, char *ucomp, char raw)
 {
 	char		status    [20];
@@ -662,7 +662,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 }
 
 /* COMPARE USERFLAGS ON CHECKFLAGS */
-short 
+short
 compareflags(char *flags, char *checkflags)
 {
 	unsigned int	n1 = 0, n2 = 0;
@@ -680,7 +680,7 @@ compareflags(char *flags, char *checkflags)
 }
 
 /* READ CONFIGURATION FILE */
-void 
+void
 readconfig(char *arg)
 {
 	char           *buf, *tmp;
@@ -808,7 +808,7 @@ readconfig(char *arg)
 }
 
 /* PRINT FILE */
-void 
+void
 show(char *filename)
 {
 	int		fd        , n;
@@ -836,7 +836,7 @@ show(char *filename)
 }
 
 /* SHOW TOTALS */
-void 
+void
 showtotals(char raw)
 {
 	if (!raw) {
@@ -872,7 +872,7 @@ showtotals(char raw)
 }
 
 /* Buffer groups file */
-int 
+int
 buffer_groups(char *groupfile, int setfree)
 {
 	char           *f_buf, *g_name, *f_name;
