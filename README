@@ -62,15 +62,8 @@ PZS-NG should compile fine on the following platforms:
 - (AIX - untested, but the original docs say it works there)
 - (Solaris - soon *g*)
 
-64-bit processors - this is still a bit shady. We do try to make it run
-on AMD64 for instance, but have limited ability to test on this platform,
-since none of the devs currently owns one. Feel free to contact us if
-you have a box to share with us.
-As of beta3, pzs-ng should run on AMD64, but makesure it's compiled in 32bit
-mode - ie, you need 32bit libs.
-
-Only the i386 platform is tested, so if you try it on anything else, don't
-hesitate to contact us and inform us of the result.
+Only the i386 and AMD64 platforms are tested, so if you try it on anything
+else, don't hesitate to contact us and inform us of the result.
 
 
 Supported FTP Daemons:

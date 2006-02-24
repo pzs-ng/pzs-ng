@@ -115,11 +115,6 @@ dnl Checks for header files.
 dnl Checks for library functions.
 #AC_CHECK_FUNC(strlcpy, [AC_DEFINE(HAVE_STRLCPY, 1, [Define to 1 if you have the strlcpy() function available])])
 
-#case $build in
-#	x86_64-*) M32="-m32";;
-#esac
-
-
 #LD="$CC -shared"
 #case $CC in
 #	gcc*)
