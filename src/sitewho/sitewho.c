@@ -2,17 +2,19 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <inttypes.h>
-#include <string.h>
+#include <ctype.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/file.h>
+#include <sys/param.h>
+#include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <ctype.h>
-
+#include "glstructs.h"
 #include "sitewho.h"
 
 int		debug = 0;

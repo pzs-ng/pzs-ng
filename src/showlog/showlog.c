@@ -5,28 +5,25 @@
   2005-01-01 - psxc:
                modded to be included in pzs-ng
                fixed some warnings.
-               we may need to look at this later,
-               on 64bit platforms.
 */
 
-#include <sys/file.h>
-#include <sys/param.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <inttypes.h>
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <strings.h>
 #include <unistd.h>
-
-/* Comment this line to compile showlog for glftpd v2.x */
-/* (psxc) - well, we'll do, since it's defined already when compiling in pzs-ng." */
-//#define GLVERSION 132
+#include <sys/file.h>
+#include <sys/param.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include "glstructs.h"
 
 /* Default values */
 #define GLCONF "/etc/glftpd.conf"
@@ -36,56 +33,6 @@ static char ipckey[11] = "0x000DEAD";
 static int max_results = 10;
 static int match_full = 0;
 static int search_mode = 0;
-
-struct dirlog132 {
-	ushort status;		        /* 0 = NEWDIR, 1 = NUKE, 2 = UNNUKE, 3 = DELETED */
-	time_t uptime;                  /* Creation time since epoch (man 2 time) */
-	ushort uploader;                /* The userid of the creator */
-	ushort group;                   /* The groupid of the primary group of the creator */
-	ushort files;                   /* The number of files inside the dir */
-	long bytes;                     /* The number of bytes in the dir */
-	char dirname[255];              /* The name of the dir (fullpath) */
-	struct dirlog132 *nxt;
-	struct dirlog132 *prv;
-};
-struct dirlog200 {
-	ushort status;                  /* 0 = NEWDIR, 1 = NUKE, 2 = UNNUKE, 3 = DELETED */
-	time_t uptime;                  /* Creation time since epoch (man 2 time) */
-	ushort uploader;                /* The userid of the creator */
-	ushort group;                   /* The groupid of the primary group of the creator */
-	ushort files;                   /* The number of files inside the dir */
-	unsigned long long bytes;       /* The number of bytes in the dir */
-	char dirname[255];              /* The name of the dir (fullpath) */
-	struct dirlog200 *nxt;          /* Unused, kept for compatibility reasons */
-	struct dirlog200 *prv;          /* Unused, kept for compatibility reasons */
-};
-
-struct nukelog {
-	ushort status;			/* 0 = NUKED, 1 = UNNUKED */
-	time_t nuketime;		/* The nuke time since epoch (man 2 time) */
-	char nuker[12];			/* The name of the nuker */
-	char unnuker[12];		/* The name of the unnuker */
-	char nukee[12];			/* The name of the nukee */
-	ushort mult;			/* The nuke multiplier */
-	float bytes;			/* The number of bytes nuked */
-	char reason[60];		/* The nuke reason */
-	char dirname[255];		/* The dirname (fullpath) */
-	struct nukelog *nxt;	        /* Unused, kept for compatibility reasons */
-	struct nukelog *prv;	        /* Unused, kept for compatibility reasons */
-};
-
-struct ONLINE_GL132 {
-	char		tagline   [64];		/* The users tagline */
-	char		username  [24];		/* The username of the user */
-	char		status    [256];	/* The status of the user, idle, RETR, etc */
-	char		host      [256];	/* The host the user is coming from (with ident) */
-	char		currentdir[256];	/* The users current dir (fullpath) */
-	long		groupid;		/* The groupid of the users primary group */
-	time_t		login_time;		/* The login time since the epoch (man 2 time) */
-	struct timeval	tstart;			/* Replacement for last_update. */
-	unsigned long	bytes_xfer;		/* Bytes transferred this far. */
-	pid_t		procid;			/* The processor id of the process */
-};
 
 enum {
 	NO_ACTION = 1,
@@ -250,10 +197,10 @@ int get_glversion (int glversion)
 
 	if ((shmid = shmget((key_t) strtoll(ipckey, NULL, 16), 0, 0)) == -1)
 		perror("shmget");
-	
+
 	if (shmctl(shmid, IPC_STAT, &shmval) == -1)
 		perror("shmctl");
-	
+
 	if (shmval.shm_segsz%sizeof(struct ONLINE_GL132))
 		glversion = 200;
 	else
