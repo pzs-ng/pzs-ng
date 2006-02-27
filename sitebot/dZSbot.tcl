@@ -1990,8 +1990,8 @@ namespace eval ::dZSbot {
     variable logList ""
     set context [namespace current]
 
-    if {[catch {source [file join $scriptPath dZSbot.conf.defaults]} error]} {
-        ErrorMsg SourceDefault "Unable to load dZSbot.conf.defaults ($error), cannot continue."
+    if {[catch {source [file join $scriptPath dZSbot.defaults]} error]} {
+        ErrorMsg SourceDefault "Unable to load dZSbot.defaults ($error), cannot continue."
         ErrorMsg SourceDefault "See FAQ for possible solutions/debugging options."
         die
     }
