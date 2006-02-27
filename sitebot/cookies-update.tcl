@@ -1,6 +1,6 @@
 #!/usr/bin/tclsh
 
-source dZSbot.conf.defaults
+source dZSbot.defaults
 source dZSbot.conf.dist
 source dZSbot.vars
 

@@ -7,7 +7,7 @@
 #                          IMPORTANT!!                               #
 #                          -----------                               #
 # This file contains overrides only. You may find that some settings #
-# are missing - search in dZSbot.conf.defaults for the settings you  #
+# are missing - search in dZSbot.defaults      for the settings you  #
 # need and COPY THOSE INTO THIS FILE - do not edit the defaults file #
 # - it will be changed! This file, however, will not, which means    #
 # that when you upgrade your bot, you can keep this file, replace    #
