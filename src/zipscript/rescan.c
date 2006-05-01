@@ -63,7 +63,7 @@ main(int argc, char *argv[])
 
 	umask(0666 & 000);
 
-	d_log(1, "rescan: PZS-NG (rescan) v%s debug log.\n", ng_version());
+	d_log(1, "rescan: PZS-NG (rescan) v%s debug log.\n", NG_VERSION);
 
 #ifdef _ALT_MAX
 	d_log(1, "rescan: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
@@ -77,7 +77,7 @@ main(int argc, char *argv[])
 			if (one_name[strlen(one_name) - 1] == '*')
 				one_name[strlen(one_name) - 1] = '\0';
 			else if (!fileexists(one_name)) {
-				printf("\nPZS-NG Rescan v%s: No file named '%s' exists.\n\n", ng_version(), one_name);
+				printf("\nPZS-NG Rescan v%s: No file named '%s' exists.\n\n", NG_VERSION, one_name);
 				return 1;
 			}
 		}		

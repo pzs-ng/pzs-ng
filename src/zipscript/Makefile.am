@@ -21,7 +21,6 @@ UNIVERSAL = \
 	helpfunctions.c \
 	mp3info.c \
 	zsfunctions.c \
-	ng-version.c \
 	abs2rel.c
 
 if DONT_HAVE_STRLCPY

@@ -4,7 +4,7 @@
 # Also prepends/appends STRING_PRE/POST. :)
 STRING_PRE="0.7.7."
 STRING_POST=" (pre-v1)"
-FILE="zipscript/src/ng-version.c"
+FILE="src/zipscript/ng-version.h"
 REVHIST="../revhistory.log"
 
 
@@ -30,8 +30,11 @@ if [ -z "$REV" ]; then
         exit 1
 fi
 
-echo '#include "ng-version.h"' > $FILE
-echo '' >> $FILE
-echo -n 'const char* ng_version(void) { const char* NG_Version = "' >> $FILE
-echo -n "$STRING_PRE$REV$STRING_POST" >> $FILE
-echo '"; return NG_Version; }' >> $FILE
+cat > $FILE << EOF
+#ifndef _NG_VERSION_H_
+#define _NG_VERSION_H_
+
+#define NG_VERSION "$STRING_PRE$REV$STRING_POST"
+
+#endif /* _NG_VERSION_H_ */
+EOF

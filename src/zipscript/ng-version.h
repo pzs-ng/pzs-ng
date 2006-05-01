@@ -1,7 +1,6 @@
 #ifndef _NG_VERSION_H_
 #define _NG_VERSION_H_
 
-extern const char *ng_version(void);
+#define NG_VERSION "0.7.7.2083 (pre-v1)"
 
-#endif
-
+#endif /* _NG_VERSION_H_ */

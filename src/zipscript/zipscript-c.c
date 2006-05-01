@@ -62,20 +62,21 @@
 int 
 main(int argc, char **argv)
 {
-	GLOBAL		g; /* this motherfucker owns */
+	GLOBAL		g;
 	MSG		msg;
 	GDATA		gdata;
 	UDATA		udata;
 	RACETYPE	rtype;
 	
 	char		*fileext = NULL, *name_p, *temp_p = NULL;
-	char		*_complete[2] = { 0 }; /* 0 = bar, 1 = announce */
+	char		*_complete[2] = { 0 }; // 0 = bar, 1 = announce
 	int		exit_value = EXIT_SUCCESS;
 	int		no_check = FALSE;
 	int		n = 0;
 	int		deldir = 0;
 	struct stat	fileinfo;
 
+	
 #if ( benchmark_mode )
 	struct timeval	bstart, bstop;
 	d_log(1, "zipscript-c: Reading time for benchmark\n");
@@ -83,7 +84,7 @@ main(int argc, char **argv)
 #endif
 
 	if (argc != 4) {
-		printf(" - - PZS-NG ZipScript-C v%s - -\n\nUsage: %s <filename> <path> <crc>\n\n", ng_version(), argv[0]);
+		printf(" - - PZS-NG ZipScript-C v%s - -\n\nUsage: %s <filename> <path> <crc>\n\n", NG_VERSION, argv[0]);
 		return EXIT_FAILURE;
 	}
 
@@ -96,7 +97,7 @@ main(int argc, char **argv)
 	printf("PZS-NG: Running in debug mode.\n");
 #endif
 
-	d_log(1, "zipscript-c: Project-ZS Next Generation (pzs-ng) v%s debug log.\n", ng_version());
+	d_log(1, "zipscript-c: Project-ZS Next Generation (pzs-ng) v%s debug log.\n", NG_VERSION);
 
 #ifdef _ALT_MAX
 	d_log(1, "zipscript-c: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
@@ -148,7 +149,7 @@ main(int argc, char **argv)
 	snprintf(g.v.misc.old_leader, 24, "none");
 	g.v.file.compression_method = '5';
 
-	/* Get file extension */
+	// Get file extension
 	d_log(1, "zipscript-c: Parsing file extension from filename... (%s)\n", argv[1]);
 	name_p = temp_p = find_last_of(argv[1], ".");
 	
@@ -181,10 +182,10 @@ main(int argc, char **argv)
 
 	g.v.misc.nfofound = (int)findfileext(".", ".nfo");
 
-	/* Hide users in group_dirs */
+	// Hide users in group_dirs
 	group_dir_users(&g);
 	
-	/* No check directories */
+	// No check directories
 	no_check = match_nocheck_dirs(&g);
 
 	if (!no_check) {
@@ -204,7 +205,7 @@ main(int argc, char **argv)
 			exit_value = process_file(&g, &msg, argv, fileext, &deldir);
 		}
 	}
-	if (exit_value == EXIT_SUCCESS) { /* File was checked */
+	if (exit_value == EXIT_SUCCESS) { // File was checked
 		check_release_type(&g, &msg, &rtype, _complete);
 		if (g.v.total.users > 0) {
 			d_log(1, "zipscript-c: Sorting race stats\n");
@@ -244,14 +245,14 @@ main(int argc, char **argv)
 			release_complete(&g, &msg, _complete);
 		else {
 
-			/* Release is at unknown state */
+			// Release is at unknown state
 			g.v.total.files = -g.v.total.files_missing;
 			g.v.total.files_missing = 0;
 			printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_unknown));
 
 		}
 	} else {
-		/* File is marked to be deleted */
+		// File is marked to be deleted
 		d_log(1, "zipscript-c: Logging file as bad\n");
 		remove_from_race(g.l.race, g.v.file.name);
 		printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_error));
