@@ -149,7 +149,7 @@ main(int argc, char **argv)
 
 	}
 	g.l.race = ng_realloc(g.l.race, n = (int)strlen(g.l.path) + 10 + sizeof(storage), 1, 1, 1);
-	g.l.sfv = ng_realloc(g.l.sfv, n, 1, 1, 1);
+	//g.l.sfv = ng_realloc(g.l.sfv, n, 1, 1, 1);
 	g.l.leader = ng_realloc(g.l.leader, n, 1, 1, 1);
 	target = ng_realloc(target, 4096, 1, 1, 1);
 

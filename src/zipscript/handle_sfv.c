@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <strings.h>
+#include <stddef.h>
 
 #include "handle_sfv.h"
 #include "handling.h"
@@ -12,6 +13,7 @@
 #include "race-file.h"
 #include "errors.h"
 #include "crc.h"
+#include "helpfunctions.h"
 #include "multimedia.h"
 
 #ifdef HAVE_CONFIG_H
@@ -22,10 +24,140 @@
 # include "strlcpy.h"
 #endif
 
-int
-handle_sfv(HANDLER_ARGS *ha) {
+struct sfvdatalist {
+	SFVDATA *data;
+	struct sfvdatalist *next;
+};
 
-	unsigned char	exit_value = EXIT_SUCCESS;
+/* add item to the SFVDATA list */
+void
+addtosfvdatalist(struct sfvdatalist **head, SFVDATA *data)
+{
+	struct sfvdatalist *temp;
+
+	if ((temp = malloc(sizeof(struct sfvdatalist))) == NULL) {
+		d_log(1, "addtosfvdatalist: malloc(%i) failed: %s\n",
+			sizeof(struct sfvdatalist), strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+
+	temp->data = data;
+	temp->next = *head;
+	*head = temp;
+}
+
+/* free the list aye */
+void
+freesfvdatalist(struct sfvdatalist *head)
+{
+	struct sfvdatalist *temp;
+
+	while (head != NULL) {
+		free(head->data);
+		temp = head->next;
+		free(head);
+		head = temp;
+	}
+}
+
+/* parse the contents of the sfv and put it in an SFVDATA
+   linked list */
+struct sfvdatalist *
+parse_sfv(char *source, struct sfvdatalist *sfv)
+{
+	char fbuf[2048], *ptr;
+	FILE *infile;
+	ptrdiff_t p;
+	SFVDATA *sd;
+
+	if (!(infile = xfopen(source, "r"))) {
+		d_log(1, "parse_sfv: xfopen(%s) failed: %s\n", source,
+			strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+	
+	while ((fgets(fbuf, sizeof(fbuf), infile))) {
+		/* remove comment */
+		if ((ptr = find_first_of(fbuf, ";")))
+			*ptr = '\0';
+
+		if ((ptr = strip_whitespaces(fbuf)) == 0)
+			continue;
+
+		if (!(ptr = find_last_of(fbuf, " \t"))) {
+			d_log(2, "parse_sfv: Malformed SFV line, skipping\n");
+			continue;
+		}
+
+		// go past the last whitespace
+		ptr++;
+
+		// find out if we got an 8 digit
+		// hexadecimal crc number
+		for (p = 0; isxdigit(*(ptr+p)) != 0; p++);
+		
+		if (p != 8)
+			continue;
+
+		sd = malloc(sizeof(SFVDATA));
+
+		sd->crc32 = hexstrtodec(ptr);
+
+		*ptr = '\0';
+		ptr = strip_whitespaces(fbuf);
+
+		snprintf(sd->fname, NAMEMAX, "%s", ptr);
+
+		addtosfvdatalist(&sfv, sd);
+	}
+
+	xfclose(source, infile);
+
+	return sfv;
+}
+
+/* find which files are missing from the release and
+   create -missing files */
+void
+make_missing(struct sfvdatalist *sfv)
+{
+	struct sfvdatalist *temp;
+
+	for (temp = sfv; temp; temp = temp->next)
+		if (!fileexists(temp->data->fname))
+			create_missing(temp->data->fname);
+}
+
+
+void
+sfvdatalist_to_datafile(char *path, struct sfvdatalist *sfv)
+{
+	struct sfvdatalist *temp;
+
+	// uhhh.
+	close(open(path, O_CREAT, 0666));
+
+	for (temp = sfv; temp; temp = temp->next)
+		update_sfvdata(path, temp->data);
+}
+
+
+int
+handle_sfv(HANDLER_ARGS *ha)
+{
+	struct sfvdatalist *sfv = 0;
+	
+	sfv = parse_sfv(ha->filename, sfv);
+
+	snprintf(ha->g->l.sfv, PATH_MAX, "/%s/%s/sfvdata", storage, ha->g->l.path); 
+	maketempdir(ha->g->l.path);
+	sfvdatalist_to_datafile(ha->g->l.sfv, sfv);
+
+	make_missing(sfv);
+	freesfvdatalist(sfv);
+
+	return 0;
+	/*unsigned char	exit_value = EXIT_SUCCESS;
 	struct dirent	*dp;
 	int		cnt, cnt2;
 	char		*sfv_type = 0;
@@ -194,14 +326,15 @@ handle_sfv(HANDLER_ARGS *ha) {
 	}
 
 	closedir(dir);
-	return exit_value;
+	return exit_value;*/
 }
 
 /* handling of a file thats inside an sfv dir */
 int
 handle_sfv32(HANDLER_ARGS *ha)
 {
-	
+	return 0;
+/*	
 	unsigned int	crc, s_crc = 0;
 	unsigned char	no_check = FALSE;
 	char		*target = 0;
@@ -358,17 +491,17 @@ handle_sfv32(HANDLER_ARGS *ha)
 	readrace(ha->g->l.race, &ha->g->v, ha->g->ui, ha->g->gi);
 
 	d_log(1, "handle_sfv32: Setting pointers\n");
-	/* TODO: replace RTYPE_* with whatever is defined in handlers.h.
-	 * replace is{rar,video} etc with get_filetype() */
+	// TODO: replace RTYPE_* with whatever is defined in handlers.h.
+	//  replace is{rar,video} etc with get_filetype()
 	if (ha->g->v.misc.release_type == RTYPE_NULL) {
 		if (israr(ha->fileext))
-			ha->g->v.misc.release_type = RTYPE_RAR;	/* .RAR / .R?? */
+			ha->g->v.misc.release_type = RTYPE_RAR;	// .RAR / .R?? 
 		else if (isvideo(ha->fileext))
-			ha->g->v.misc.release_type = RTYPE_VIDEO;	/* AVI/MPEG */
+			ha->g->v.misc.release_type = RTYPE_VIDEO;	// AVI/MPEG 
 		else if (!memcmp(ha->fileext, "mp3", 4))
-			ha->g->v.misc.release_type = RTYPE_AUDIO;	/* MP3 */
+			ha->g->v.misc.release_type = RTYPE_AUDIO;	// MP3 
 		else
-			ha->g->v.misc.release_type = RTYPE_OTHER;	/* OTHER FILE */
+			ha->g->v.misc.release_type = RTYPE_OTHER;	// OTHER FILE 
 	}
 
 	switch (ha->g->v.misc.release_type) {
@@ -398,11 +531,11 @@ handle_sfv32(HANDLER_ARGS *ha)
 		ng_free(target);
 	}
 
-	return exit_value;
+	return exit_value;*/
 }
 
 /* TODO: set_rtype_msg() should replace a bit here */
-int
+/*int
 __sfv_rar(HANDLER_ARGS *ha)
 {
 	get_rar_info(&ha->g->v);
@@ -612,4 +745,5 @@ __sfv_default(HANDLER_ARGS *ha)
 	d_log(1, "handle_sfv32: WARNING! Not a known release type - Contact the authors! (2:%d)\n", ha->g->v.misc.release_type);
 
 	return 0;
-}
+}*/
+

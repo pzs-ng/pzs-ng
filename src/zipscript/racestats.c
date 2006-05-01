@@ -30,7 +30,7 @@ main(int argc, char **argv)
 	}
 
 	g.l.race = malloc(PATH_MAX);
-	g.l.sfv = malloc(PATH_MAX);
+	//g.l.sfv = malloc(PATH_MAX);
 
 	//g.ui = malloc(sizeof(struct USERINFO *) * 30);
 	//memset(g.ui, 0, sizeof(struct USERINFO *) * 30);

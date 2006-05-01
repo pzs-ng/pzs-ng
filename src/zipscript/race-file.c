@@ -42,7 +42,7 @@
 void 
 maketempdir(char *path)
 {
-	char		full_path[PATH_MAX], *p;
+	char full_path[PATH_MAX], *p;
 
 	snprintf(full_path, PATH_MAX, "%s/%s", storage, path);
 
@@ -122,12 +122,13 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 }
 
 void
-update_sfvdata(const char *path, const char *filename, const unsigned int crc)
+//update_sfvdata(const char *path, const char *filename, const unsigned int crc)
+update_sfvdata(const char *path, SFVDATA *sd)
 {
 	int		count;
 	FILE		*sfvfile;
 	
-	SFVDATA		sd;
+	static SFVDATA	tempsd;
 
 	if (!(sfvfile = xfopen(path, "r+"))) {
 		d_log(1, "update_sfvdata: xfopen(%s) failed\n", path);
@@ -137,18 +138,18 @@ update_sfvdata(const char *path, const char *filename, const unsigned int crc)
 	chmod(path, 0666);
 	
 	count = 0;
-	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
-		if (!strcasecmp(filename, sd.fname)) {
-			sd.crc32 = crc;
-			sd.fmatch = 1;
-			d_log(1, "update_sfvdata: updating sfvdata with file '%s', crc '%8X', fmatch '%d'\n", sd.fname, sd.crc32, sd.fmatch);
+	while (fread(&tempsd, sizeof(SFVDATA), 1, sfvfile)) {
+		if (!strcasecmp(sd->fname, tempsd.fname)) {
+			sd->fmatch = 1;
+			d_log(2, "update_sfvdata: updating sfvdata with file '%s', crc '%8X', fmatch '%d'\n",
+				sd->fname, sd->crc32, sd->fmatch);
 			break;
 		}
 		count++;
 	}
 	
 	fseek(sfvfile, sizeof(SFVDATA)*count, SEEK_SET);
-	if (fwrite(&sd, sizeof(SFVDATA), 1, sfvfile) == 0)
+	if (fwrite(sd, sizeof(SFVDATA), 1, sfvfile) == 0)
 		d_log(1, "update_sfvdata: write failed: %s\n", strerror(errno));
 	xfclose(path, sfvfile);
 
@@ -450,8 +451,7 @@ copysfv(const char *source, const char *target, const char *path, int reverse)
 		if ((ptr = find_first_of(fbuf, ";")))
 			*ptr = '\0';
 
-		strip_whitespaces(fbuf);
-		ptr = prestrip_whitespaces(fbuf);
+		ptr = strip_whitespaces(fbuf);
 		if (ptr != fbuf)
 			d_log(1, "copysfv: prestripped whitespaces (%d chars)\n", ptr - fbuf);
 
@@ -1201,3 +1201,4 @@ filebanned_match(const char *filename)
 	}
 	return 0;
 }
+

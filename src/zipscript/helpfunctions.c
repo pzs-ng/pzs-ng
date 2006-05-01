@@ -57,6 +57,9 @@ strip_whitespaces(char *s)
 			}
 	}
 
+	while (*s == ' ' || *s == '\t')
+		s++;
+
 	return s;
 }
 

@@ -2,7 +2,7 @@
  * given file extension
  *
  * TODO: the extension and its handler should be defined
- * the same place/file, to make plugin writing easy
+ * in the same place/file, to make plugin writing easy
  */
 
 #ifndef __HANDLING_H
@@ -15,7 +15,9 @@ typedef struct _handler_args {
 
 	GLOBAL *g;
 	MSG *msg;
+	char *crc;
 	char **argv;
+	char *filename;
 	char *fileext;
 	int *deldir;
 	

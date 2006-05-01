@@ -52,6 +52,10 @@
 #include "zsconfig.h"
 #include "zsconfig.defaults.h"
 
+#include "constants.h"
+
+#include "handling.h"
+
 /*#ifdef _SunOS_
 # include "scandir.h"
 # include "strsep.h"
@@ -61,37 +65,55 @@ int
 main(int argc, char **argv)
 {
 	GLOBAL		g;
-	MSG		msg;
-	GDATA		gdata;
-	UDATA		udata;
-	RACETYPE	rtype;
+	HANDLER_ARGS	ha;
+	//MSG		msg;
+	//GDATA		gdata;
+	//UDATA		udata;
+	//RACETYPE	rtype;
 	
-	char		*fileext = NULL, *name_p, *temp_p = NULL;
-	char		*_complete[2] = { 0 }; // 0 = bar, 1 = announce
+	handler_t	*handler;
+	
+	//char		*fileext; //, *name_p, *temp_p = NULL;
+	/*char		*_complete[2] = { 0 }; // 0 = bar, 1 = announce
 	int		exit_value = EXIT_SUCCESS;
 	int		no_check = FALSE;
 	int		n = 0;
 	int		deldir = 0;
-	struct stat	fileinfo;
-
-	
-#if ( benchmark_mode )
-	struct timeval	bstart, bstop;
-	d_log(1, "zipscript-c: Reading time for benchmark\n");
-	gettimeofday(&bstart, (struct timezone *)0);
-#endif
+	struct stat	fileinfo;*/
+	short		type;
 
 	if (argc != 4) {
 		printf(" - - PZS-NG ZipScript-C v%s - -\n\nUsage: %s <filename> <path> <crc>\n\n", NG_VERSION, argv[0]);
 		return EXIT_FAILURE;
 	}
+	
+	g.l.path = argv[2];
 
-	if (!fileexists(argv[1])) {
+	ha.fileext = find_last_of(argv[1], ".");
+	type = get_filetype(ha.fileext);
+
+	ha.filename = argv[1];
+	ha.crc = argv[3];
+	ha.g = &g;
+
+	if ((handler = get_handler(type)) == 0) {
+		/* no handler for type */
+		printf("ERROR ERROR, or maybe not\n");
+	} else
+		return handler(&ha);
+
+/*#if ( benchmark_mode )
+	struct timeval	bstart, bstop;
+	d_log(1, "zipscript-c: Reading time for benchmark\n");
+	gettimeofday(&bstart, (struct timezone *)0);
+#endif*/
+
+	/*if (!fileexists(argv[1])) {
 		d_log(1, "zipscript-c: File %s does not exist. exiting.\n", argv[1]);
 		return 1;
-	}
+	}*/
 
-#if ( debug_mode && debug_announce )
+/*#if ( debug_mode && debug_announce )
 	printf("PZS-NG: Running in debug mode.\n");
 #endif
 
@@ -99,9 +121,9 @@ main(int argc, char **argv)
 
 #ifdef _ALT_MAX
 	d_log(1, "zipscript-c: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
-#endif
+#endif*/
 
-	umask(0666 & 000);
+/*	umask(0666 & 000);
 
 	set_uid_gid();
 
@@ -115,8 +137,9 @@ main(int argc, char **argv)
 	strlcpy(g.v.misc.current_path, g.l.path, PATH_MAX);
 	d_log(1, "zipscript-c: Changing directory to %s\n", g.l.path);
 	chdir(g.l.path);
+*/
 
-	d_log(1, "zipscript-c: Reading data from environment variables\n");
+/*	d_log(1, "zipscript-c: Reading data from environment variables\n");
 	read_envdata(&g, &gdata, &udata, &fileinfo);
 	g.v.file.speed *= 1024;
 
@@ -138,17 +161,17 @@ main(int argc, char **argv)
 	g.l.race = ng_realloc(g.l.race, n += 10 + (g.l.length_zipdatadir = sizeof(storage) - 1), 1, 1, 1);
 	g.l.sfv = ng_realloc(g.l.sfv, n, 1, 1, 1);
 	g.l.leader = ng_realloc(g.l.leader, n, 1, 1, 1);
-
-	d_log(1, "zipscript-c: Copying data g.l into memory\n");
+*/
+/*	d_log(1, "zipscript-c: Copying data g.l into memory\n");
 	sprintf(g.l.sfv, storage "/%s/sfvdata", g.l.path);
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
 	g.v.user.pos = 0;
 	snprintf(g.v.misc.old_leader, 24, "none");
-	g.v.file.compression_method = '5';
+	g.v.file.compression_method = '5';*/
 
-	// Get file extension
-	d_log(1, "zipscript-c: Parsing file extension from filename... (%s)\n", argv[1]);
+	// Get file extension TODO: replace with function
+	/*d_log(1, "zipscript-c: Parsing file extension from filename... (%s)\n", argv[1]);
 	name_p = temp_p = find_last_of(argv[1], ".");
 	
 	if (*temp_p != '.') {
@@ -161,9 +184,9 @@ main(int argc, char **argv)
 	name_p++;
 
 	fileext = ng_realloc(fileext, sizeof(name_p), 1, 1, 1);
-	memcpy(fileext, name_p, sizeof(name_p));
+	memcpy(fileext, name_p, sizeof(name_p));*/
 	
-#if ( sfv_cleanup_lowercase )
+/*#if ( sfv_cleanup_lowercase )
 	d_log(1, "zipscript-c: Copying (lowercased version of) extension to memory\n");
 	strtolower(fileext);
 #else
@@ -171,22 +194,22 @@ main(int argc, char **argv)
 #endif
 
 	d_log(1, "zipscript-c: Caching release name\n");
-	getrelname(&g);
+	getrelname(&g);*/
 
-	d_log(1, "zipscript-c: Creating directory to store racedata in\n");
+	/*d_log(1, "zipscript-c: Creating directory to store racedata in\n");
 	maketempdir(g.l.path);
 
-	printf(zipscript_header);
+	printf(zipscript_header);*/
 
-	g.v.misc.nfofound = (int)findfileext(".", ".nfo");
+	/*g.v.misc.nfofound = (int)findfileext(".", ".nfo");
 
 	// Hide users in group_dirs
 	group_dir_users(&g);
 	
 	// No check directories
-	no_check = match_nocheck_dirs(&g);
+	no_check = match_nocheck_dirs(&g);*/
 
-	if (!no_check) {
+	/*if (!no_check) {
 
 #if ( !ignore_zero_size )
 		exit_value = check_zerosize(&g, &msg);
@@ -202,8 +225,8 @@ main(int argc, char **argv)
 				d_log(1, "process_file:   Failed to open racedata - assuming this is a new race.\n");
 			exit_value = process_file(&g, &msg, argv, fileext, &deldir);
 		}
-	}
-	if (exit_value == EXIT_SUCCESS) { // File was checked
+	}*/
+	/*if (exit_value == EXIT_SUCCESS) { // File was checked
 		check_release_type(&g, &msg, &rtype, _complete);
 		if (g.v.total.users > 0) {
 			d_log(1, "zipscript-c: Sorting race stats\n");
@@ -254,8 +277,8 @@ main(int argc, char **argv)
 		d_log(1, "zipscript-c: Logging file as bad\n");
 		remove_from_race(g.l.race, g.v.file.name);
 		printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_error));
-	}
-
+	}*/
+/*
 #if ( enable_accept_script )
 	if (exit_value == EXIT_SUCCESS)
 		execute_script(accept_script, g.v.file.name, "accept");
@@ -294,9 +317,9 @@ main(int argc, char **argv)
 	ng_free(fileext);
 	ng_free(g.l.race);
 	ng_free(g.l.sfv);
-	ng_free(g.l.leader);
+	ng_free(g.l.leader);*/
 
-#if ( benchmark_mode )
+/*#if ( benchmark_mode )
 	gettimeofday(&bstop, (struct timezone *)0);
 	printf("Checks completed in %0.6f seconds\n", ((bstop.tv_sec - bstart.tv_sec) + (bstop.tv_usec - bstart.tv_usec) / 1000000.));
 	d_log(1, "zipscript-c: Checks completed in %0.6f seconds\n", ((bstop.tv_sec - bstart.tv_sec) + (bstop.tv_usec - bstart.tv_usec) / 1000000.));
@@ -311,7 +334,7 @@ main(int argc, char **argv)
 		d_log(1, "zipscript-c: Sleeping for %d seconds.\n", sleep_on_bad);
 	}
 #endif
-	d_log(1, "zipscript-c: Exit %d\n", exit_value);
-	return exit_value;
+	d_log(1, "zipscript-c: Exit %d\n", exit_value);*/
+	//return exit_value;
 }
 

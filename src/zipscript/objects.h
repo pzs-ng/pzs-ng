@@ -137,15 +137,19 @@ struct VARS {
 	char		avi[1024];
 };
 
+struct RACEINFO {
+	
+};
+
 struct LOCATIONS {
 	char		*leader,
 			*nfo_incomplete,
 			*incomplete,
-			*sfv,
 			*race,
-			link_target[PATH_MAX],
-			link_source[PATH_MAX],
-			path[PATH_MAX];
+			sfv[PATH_MAX+1],
+			link_target[PATH_MAX+1],
+			link_source[PATH_MAX+1],
+			*path;
 	unsigned int	length_path,
 			length_zipdatadir,
 			in_cd_dir;
