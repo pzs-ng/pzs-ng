@@ -1,5 +1,5 @@
-#ifndef __CONSTANTS_H_
-#define __CONSTANTS_H_
+#ifndef _CONSTANTS_H_
+#define _CONSTANTS_H_
 
 #include "zsconfig.h"
 #include "zsconfig.defaults.h"
@@ -211,4 +211,4 @@ enum ReleaseTypes {
 	RTYPE_INVALID,
 };
 
-#endif
+#endif /* _CONSTANTS_H_ */
