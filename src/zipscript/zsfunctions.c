@@ -6,7 +6,6 @@
 #include "zsfunctions.h"
 
 #include "abs2rel.h"
-#include "constants.h"
 #include "convert.h"
 #include "race-file.h"
 #include "errors.h"

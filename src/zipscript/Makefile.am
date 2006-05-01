@@ -112,6 +112,7 @@ noinst_HEADERS = \
 	avinfo.h \
 	cleanup.h \
 	complete.h \
+	zsconstants.h \
 	constants.h \
 	convert.h \
 	crc.h \

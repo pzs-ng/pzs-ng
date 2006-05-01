@@ -28,8 +28,6 @@
 #include "objects.h"
 #include "macros.h"
 
-#include "constants.h"
-
 #include "errors.h"
 #include "multimedia.h"
 #include "convert.h"

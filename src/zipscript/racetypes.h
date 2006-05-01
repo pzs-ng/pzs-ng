@@ -5,7 +5,7 @@
 #ifndef __RACETYPES_H
 #define __RACETYPES_H
 
-#include "constants.h"
+#include "zsconstants.h"
 
 /* Race type strings go in here */
 typedef struct _racetype {

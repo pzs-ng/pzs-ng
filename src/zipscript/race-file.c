@@ -16,8 +16,6 @@
 #include "objects.h"
 #include "macros.h"
 
-#include "constants.h"
-
 #include "stats.h"
 #include "zsfunctions.h"
 
