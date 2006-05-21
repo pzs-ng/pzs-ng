@@ -207,7 +207,7 @@ showstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 {
 	int		cnt;
 
-#if ( show_user_info == TRUE )
+#if ( show_user_info == TRUE && max_users_in_top > 0 )
 	d_log("showstats: Showing realtime user stats ...\n");
 	if (realtime_user_header != DISABLED) {
 		d_log("showstats:   - printing realtime_user_header ...\n");
@@ -224,7 +224,7 @@ showstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 		printf("%s", convert(raceI, userI, groupI, realtime_user_footer));
 	}
 #endif
-#if ( show_group_info == TRUE )
+#if ( show_group_info == TRUE && max_groups_in_top > 0 )
 	d_log("showstats: Showing realtime user stats ...\n");
 	if (realtime_group_header != DISABLED) {
 		d_log("showstats:   - printing realtime_group_header ...\n");
