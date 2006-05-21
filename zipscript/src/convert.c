@@ -142,16 +142,16 @@ convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, 
 					break;
 
 				case 'D':
-					out_p += sprintf(out_p, "%*i", val1, (int)userI->dayup);
+					out_p += sprintf(out_p, "%*llu", val1, (unsigned long long)userI->dayup);
 					break;
 				case 'W':
-					out_p += sprintf(out_p, "%*i", val1, (int)userI->wkup);
+					out_p += sprintf(out_p, "%*llu", val1, (unsigned long long)userI->wkup);
 					break;
 				case 'M':
-					out_p += sprintf(out_p, "%*i", val1, (int)userI->monthup);
+					out_p += sprintf(out_p, "%*llu", val1, (unsigned long long)userI->monthup);
 					break;
 				case 'A':
-					out_p += sprintf(out_p, "%*i", val1, (int)userI->allup);
+					out_p += sprintf(out_p, "%*llu", val1, (unsigned long long)userI->allup);
 					break;
 				case '%':
 					*out_p++ = *instr;
