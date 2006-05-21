@@ -51,33 +51,33 @@ complete(GLOBAL *g, int completetype)
 				d_log("  - Converting message_header ...\n");
 				fprintf(msgfile, "%s", convert(&g->v, g->ui, g->gi, message_header));
 			}
-			if (message_user_header != DISABLED) {
+			if (message_user_header != DISABLED && max_users_in_top > 0) {
 				d_log("  - Converting message_user_header ...\n");
 				fprintf(msgfile, "%s", convert(&g->v, g->ui, g->gi, message_user_header));
 			}
-			if (message_user_body != DISABLED) {
+			if (message_user_body != DISABLED && max_users_in_top > 0) {
 				d_log("  - Converting message_user_body ...\n");
 				for (cnt = 0; cnt < g->v.total.users; cnt++) {
 					pos = g->ui[cnt]->pos;
 					fprintf(msgfile, "%s", convert2(&g->v, g->ui[pos], g->gi, message_user_body, cnt));
 				}
 			}
-			if (message_user_footer != DISABLED) {
+			if (message_user_footer != DISABLED && max_users_in_top > 0) {
 				d_log("  - Converting message_user_footer ...\n");
 				fprintf(msgfile, "%s", convert(&g->v, g->ui, g->gi, message_user_footer));
 			}
-			if (message_group_header != DISABLED) {
+			if (message_group_header != DISABLED && max_groups_in_top > 0) {
 				d_log("  - Converting message_group_header ...\n");
 				fprintf(msgfile, "%s", convert(&g->v, g->ui, g->gi, message_group_header));
 			}
-			if (message_group_body != DISABLED) {
+			if (message_group_body != DISABLED && max_groups_in_top > 0) {
 				d_log("  - Converting message_group_body ...\n");
 				for (cnt = 0; cnt < g->v.total.groups; cnt++) {
 					pos = g->gi[cnt]->pos;
 					fprintf(msgfile, "%s", convert3(&g->v, g->gi[pos], message_group_body, cnt));
 				}
 			}
-			if (message_group_footer != DISABLED) {
+			if (message_group_footer != DISABLED && max_groups_in_top > 0) {
 				d_log("  - Converting message_group_footer ...\n");
 				fprintf(msgfile, "%s", convert(&g->v, g->ui, g->gi, message_group_footer));
 			}
@@ -101,7 +101,7 @@ complete(GLOBAL *g, int completetype)
 	group_p = g->v.misc.top_messages[1];
 
 	if (g->v.misc.write_log && completetype == 0) {
-		if (user_top != NULL) {
+		if (user_top != NULL && max_users_in_top > 0) {
 #if ( show_stats_from_pos2_only )
 			for (cnt = 1; cnt < max_users_in_top && cnt < g->v.total.users; cnt++)
 #else
@@ -109,7 +109,7 @@ complete(GLOBAL *g, int completetype)
 #endif
 				user_p += sprintf(user_p, " %s", convert2(&g->v, g->ui[g->ui[cnt]->pos], g->gi, user_top, cnt));
 		}
-		if (group_top != NULL) {
+		if (group_top != NULL && max_groups_in_top > 0) {
 #if ( show_stats_from_pos2_only )
 			for (cnt = 1; cnt < max_groups_in_top && cnt < g->v.total.groups; cnt++)
 #else
@@ -134,7 +134,7 @@ writetop(GLOBAL *g, int completetype)
 	char	       *pbuf = 0;
 
 	if (completetype == 1) {
-		if (user_top != NULL) {
+		if (user_top != NULL && max_users_in_top > 0) {
 			mlen = 0;
 			mset = 1;
 			pbuf = buffer = ng_realloc(buffer, FILE_MAX, 1, 1, &g->v, 1);
@@ -154,7 +154,7 @@ writetop(GLOBAL *g, int completetype)
 			writelog(g, buffer, stat_users_type);
 			ng_free(buffer);
 		}
-		if (group_top != NULL) {
+		if (group_top != NULL && max_groups_in_top > 0) {
 			mlen = 0;
 			mset = 1;
 			pbuf = buffer = ng_realloc(buffer, FILE_MAX, 1, 1, &g->v, 1);
