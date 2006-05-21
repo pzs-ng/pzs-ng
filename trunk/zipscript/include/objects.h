@@ -42,23 +42,23 @@ struct USERINFO {
 	char		name[24];	/* Username */
 	off_t		bytes;	/* Bytes uploaded */
 	double		speed;	/* Time spent uploading (secs) */
-	unsigned char	files;	/* Files uploaded */
-	unsigned char	pos;	/* User position */
-	unsigned char	group;	/* Primary group number */
+	unsigned int	files;	/* Files uploaded */
+	unsigned int	pos;	/* User position */
+	unsigned int	group;	/* Primary group number */
 
-	unsigned int	dayup;	/* Day up stats */
-	unsigned int	wkup;	/* Week */
-	unsigned int	monthup;/* Month */
-	unsigned int	allup;	/* Alltime */
+	unsigned long long	dayup;	/* Day up stats */
+	unsigned long long	wkup;	/* Week */
+	unsigned long long	monthup;/* Month */
+	unsigned long long	allup;	/* Alltime */
 };
 
 struct GROUPINFO {
 	char		name[24];	/* Groupname */
 	off_t		bytes;	/* Bytes uploaded */
 	double		speed;	/* Time spent uploading (secs) */
-	unsigned char	files;	/* Files uploaded */
-	unsigned char	pos;	/* Group position */
-	unsigned char	users;	/* Users in group; */
+	unsigned int	files;	/* Files uploaded */
+	unsigned int	pos;	/* Group position */
+	unsigned int	users;	/* Users in group; */
 };
 
 struct audio {
