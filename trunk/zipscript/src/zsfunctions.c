@@ -833,6 +833,7 @@ buffer_groups(char *groupfile, int setfree)
 
 	if (fstat(f, &fileinfo) == -1) {
 	    d_log("buffer_groups: fstat(%s) failed: %s\n", groupfile, strerror(errno));
+	    close(f);
 	    return 0;
 	}
 	f_buf = ng_realloc2(f_buf, fileinfo.st_size, 1, 1, 1);
@@ -841,6 +842,7 @@ buffer_groups(char *groupfile, int setfree)
 	if (f_buf_len == -1) {
 	    d_log("buffer_groups: read(%s) failed: %s\n", groupfile, strerror(errno));
 	    ng_free(f_buf);
+	    close(f);
 	    return 0;
 	}
 
@@ -911,6 +913,7 @@ buffer_users(char *passwdfile, int setfree)
 
 	if (fstat(f, &fileinfo) == -1) {
 	    d_log("buffer_users: fstat(%s) failed: %s\n", passwdfile, strerror(errno));
+	    close(f);
 	    return 0;
 	}
 	f_buf = ng_realloc2(f_buf, fileinfo.st_size, 1, 1, 1);
@@ -919,6 +922,7 @@ buffer_users(char *passwdfile, int setfree)
 	if (f_buf_len == -1) {
 	    d_log("buffer_users: read(%s) failed: %s\n", passwdfile, strerror(errno));
 	    ng_free(f_buf);
+	    close(f);
 	    return 0;
 	}
 
