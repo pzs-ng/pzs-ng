@@ -811,7 +811,7 @@ buffer_groups(char *groupfile, int setfree)
 {
 	char           *f_buf = NULL, *g_name;
 	gid_t		g_id;
-	off_t		f_size;
+	ssize_t		f_buf_len;
 	int		f, n, m, g_n_size, l_start = 0;
 	int		GROUPS = 0;
 	struct stat	fileinfo;
@@ -826,19 +826,31 @@ buffer_groups(char *groupfile, int setfree)
 	}
 
 	f = open(groupfile, O_NONBLOCK);
+	if (f == -1) {
+	    d_log("buffer_groups: open(%s) failed: %s\n", groupfile, strerror(errno));
+	    return 0;
+	}
 
-	fstat(f, &fileinfo);
-	f_size = fileinfo.st_size;
-	f_buf = ng_realloc2(f_buf, f_size, 1, 1, 1);
-	read(f, f_buf, f_size);
+	if (fstat(f, &fileinfo) == -1) {
+	    d_log("buffer_groups: fstat(%s) failed: %s\n", groupfile, strerror(errno));
+	    return 0;
+	}
+	f_buf = ng_realloc2(f_buf, fileinfo.st_size, 1, 1, 1);
 
-	for (n = 0; n < f_size; n++)
+	f_buf_len = read(f, f_buf, fileinfo.st_size);
+	if (f_buf_len == -1) {
+	    d_log("buffer_groups: read(%s) failed: %s\n", groupfile, strerror(errno));
+	    ng_free(f_buf);
+	    return 0;
+	}
+
+	for (n = 0; n < f_buf_len; n++)
 		if (f_buf[n] == '\n')
 			GROUPS++;
 	group = ng_realloc2(group, GROUPS * sizeof(struct GROUP *), 1, 1, 1);
 
-	for (n = 0; n < f_size; n++) {
-		if (f_buf[n] == '\n' || n == f_size) {
+	for (n = 0; n < f_buf_len; n++) {
+		if (f_buf[n] == '\n' || n == f_buf_len) {
 			f_buf[n] = 0;
 			m = l_start;
 			while (f_buf[m] != ':' && m < n)
@@ -877,7 +889,7 @@ buffer_users(char *passwdfile, int setfree)
 {
 	char           *f_buf = NULL, *u_name;
 	uid_t		u_id;
-	off_t		f_size;
+	ssize_t		f_buf_len;
 	int		f, n, m, l, u_n_size, l_start = 0;
 	int		USERS = 0;
 	struct stat	fileinfo;
@@ -892,18 +904,31 @@ buffer_users(char *passwdfile, int setfree)
 	}
 
 	f = open(passwdfile, O_NONBLOCK);
-	fstat(f, &fileinfo);
-	f_size = fileinfo.st_size;
-	f_buf = ng_realloc2(f_buf, f_size, 1, 1, 1);
-	read(f, f_buf, f_size);
+	if (f == -1) {
+	    d_log("buffer_users: open(%s) failed: %s\n", passwdfile, strerror(errno));
+	    return 0;
+	}
 
-	for (n = 0; n < f_size; n++)
+	if (fstat(f, &fileinfo) == -1) {
+	    d_log("buffer_users: fstat(%s) failed: %s\n", passwdfile, strerror(errno));
+	    return 0;
+	}
+	f_buf = ng_realloc2(f_buf, fileinfo.st_size, 1, 1, 1);
+
+	f_buf_len = read(f, f_buf, fileinfo.st_size);
+	if (f_buf_len == -1) {
+	    d_log("buffer_users: read(%s) failed: %s\n", passwdfile, strerror(errno));
+	    ng_free(f_buf);
+	    return 0;
+	}
+
+	for (n = 0; n < f_buf_len; n++)
 		if (f_buf[n] == '\n')
 			USERS++;
 	user = ng_realloc2(user, USERS * sizeof(struct USER *), 1, 1, 1);
 
-	for (n = 0; n < f_size; n++) {
-		if (f_buf[n] == '\n' || n == f_size) {
+	for (n = 0; n < f_buf_len; n++) {
+		if (f_buf[n] == '\n' || n == f_buf_len) {
 			f_buf[n] = 0;
 			m = l_start;
 			while (f_buf[m] != ':' && m < n)
@@ -935,7 +960,7 @@ buffer_users(char *passwdfile, int setfree)
 
 	close(f);
 	ng_free(f_buf);
-	return(num_users);
+	return num_users;
 }
 
 unsigned long 
@@ -1205,7 +1230,7 @@ ng_realloc2(void *mempointer, int memsize, int zero_it, int exit_on_error, int z
 	else
 		mempointer = realloc(mempointer, memsize);
 	if (mempointer == NULL) {
-		d_log("ng_realloc: realloc failed: %s\n", strerror(errno));
+		d_log("ng_realloc2: realloc failed: %s\n", strerror(errno));
 		if (exit_on_error) {
 			exit(EXIT_FAILURE);
 		}
