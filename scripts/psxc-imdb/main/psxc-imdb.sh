@@ -534,7 +534,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     fi
     CERT=`cat $TMPFILE | grep -a -e "Certification:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $CERTIFICATIONNUM | sed "s/(.*//g" | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//"`
     CERTCLEAN=`echo $CERT | sed "s/Certification: *//" | tr '/' '\n' | grep -a -e "[uU][sS][aA]" | tr -d ' ' | head -n 1`
-    CAST=`cat $TMPFILE | grep -a -e "\ \.\.\.\.\ " | sed s/\"/$QUOTECHAR/g | head -n $CASTNUM`
+    CAST=`cat $TMPFILE | grep -a -e "\ \.\.\.\.\ " | sed s/\"/$QUOTECHAR/g | sed "s|\ \[.*\]||g" | head -n $CASTNUM`
     CASTCLEAN=`echo "$CAST" | sed "s/\.\.\.\..*/|/g" | tr '\n' ' ' | tr -s ' ' | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ |/\,/g" | sed "s/,$//"`
     CASTLEADNAME="`echo "$CAST" | head -n 1 | tr '.' '\n' | sed -e /^$/d | head -n 1 | tr -s ' ' | sed "s/^\ //g" | sed "s/\ $//g"`"
     CASTLEADCHAR="`echo "$CAST" | head -n 1 | tr '.' '\n' | sed -e /^$/d | tail -n 1 | tr -s ' ' | sed "s/^\ //g" | sed "s/\ $//g"`"
