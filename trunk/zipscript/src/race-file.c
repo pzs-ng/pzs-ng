@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "crc.h"
 #include "race-file.h" 
 
 #include "objects.h"
@@ -24,6 +23,10 @@
 #include "zsfunctions.h"
 
 #include "helpfunctions.h"
+
+#ifndef _CRC_H_
+#include "crc.h"
+#endif
 
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
