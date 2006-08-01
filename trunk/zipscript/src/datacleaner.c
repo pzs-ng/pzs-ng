@@ -99,7 +99,7 @@ remove_dir_loop(char *path)
 	
 	dir = opendir(path);
 	while ((dp = readdir(dir))) {
-		if (dp->d_name[0] != '.') {
+		if (dp->d_name[0] != '.' || (dp->d_name[0] == '.' && dp->d_namlen > 2)) {
 			stat(dp->d_name, &sb);
 			if (S_ISDIR(sb.st_mode)) {
 				sprintf(target, "%s/%s", path, dp->d_name);
