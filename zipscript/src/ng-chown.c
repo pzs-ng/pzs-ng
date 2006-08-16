@@ -277,9 +277,9 @@ get_gluid(char *passwdfile, char *user_name)
 				while (f_buf[m] != ':' && m > l_start)
 					m--;
 #if (change_spaces_to_underscore_in_ng_chown)
-				if ((m != i) && !strcmp(u_name, u_modname)){
+				if ((m != i) && m == (int)strlen(u_modname) && !strcmp(u_name, u_modname)) {
 #else
-				if ((m != i) && !strcmp(u_name, user_name)){
+				if ((m != i) && m == (int)strlen(user_name) && !strcmp(u_name, user_name)) {
 #endif
 					u_id = strtol(f_buf + m + 1, NULL, 10);
 					break;
