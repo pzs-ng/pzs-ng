@@ -114,6 +114,7 @@ extern int	selector(struct dirent *);
 extern void	rescanparent(int);*/
 extern void	del_releasedir(DIR *, char *);
 extern void	strtolower(char *);
+extern void	space_to_dot(char *);
 extern void	unlink_missing(char *);
 extern char	israr(char *);
 extern char	isvideo(char *);

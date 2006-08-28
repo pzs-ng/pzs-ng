@@ -56,6 +56,7 @@
  * sfv_dirs - paths where sfv-releases normally are uploaded.
  * nocheck_dirs - paths where no checking of files occur at all. This overrides
  * zip/sfv/group-dirs.
+ * spaces_to_dots - replaces spaces to dots in audio genre dirs.
  * audio_nocheck_dirs - paths where mp3 files are not checked for genre,
  * bitrate etc.
  * allowed_types_exemption_dirs - paths where certain files are not
@@ -84,6 +85,9 @@
 #endif
 #ifndef rescan_nocheck_dirs_allowed
 #define rescan_nocheck_dirs_allowed	TRUE
+#endif
+#ifndef spaces_to_dots
+#define spaces_to_dots			FALSE
 #endif
 #ifndef audio_nocheck_dirs
 #define audio_nocheck_dirs		"/site/groups/ /site/incoming/requests/"
