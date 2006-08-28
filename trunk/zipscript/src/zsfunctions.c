@@ -246,6 +246,22 @@ strtolower(char *s)
 }
 
 /*
+ * space_to_dot - replace spaces with dots
+ * Last modified by: psxc
+ *         Revision: 2113
+ */
+void 
+space_to_dot(char *s)
+{
+char	*p = s;
+	while (*s) {
+		if (*s == ' ')
+			*s = '.';
+		s++;
+		}
+}
+
+/*
  * unlink_missing - remove <filename>-missing and <filename>.bad
  * Last modified by: psxc
  *         Revision: r1221
@@ -681,6 +697,9 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 	target += l2;
 	memcpy(target - 1, "/", 2);
 
+#if (spaces_to_dots)
+	space_to_dot(org);
+#endif
 	mkdir(org, 0777);
 
 #if ( userellink == 1 )

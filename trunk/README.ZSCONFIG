@@ -100,6 +100,10 @@ use_partial_on_noforce <TRUE|FALSE>
 	number of possible wrong hits.
 	Default: FALSE
 
+spaces_to_dots <TRUE|FALSE>
+	This option will replace spaces in mp3-genre dirs to dots.
+	Default: FALSE
+
 audio_nocheck_dirs <PATHS>
 	Audio-files can be checked against a list of allowed/denied genres,
 	years etc. Audio-files found in paths defined in this variable will
