@@ -375,7 +375,10 @@ main(int argc, char **argv)
 		d_log("zipscript-c:   - group_dirs  : '%s'\n", group_dirs);
 		d_log("zipscript-c:   - current path: '%s'\n", g.l.path);
 		no_check = TRUE;
-	} else {
+	}
+	if (exit_value == 2)
+		d_log("File already marked as bad. Will not process further.\n");
+	else {
 		/* Process file */
 		d_log("zipscript-c: Verifying old racedata\n");
 		if (!verify_racedata(g.l.race, &g.v))
