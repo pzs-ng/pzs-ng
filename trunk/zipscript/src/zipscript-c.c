@@ -1378,7 +1378,7 @@ main(int argc, char **argv)
 #endif
 			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
 				/* Creating no-nfo link if needed. */
-				if ((g.l.nfo_incomplete) && (!findfileext(dir, ".nfo")) && (matchpath(check_for_missing_nfo_dirs, g.l.path)) ) {
+				if (((g.l.nfo_incomplete) || (!findfileext(dir, ".nfo"))) && (matchpath(check_for_missing_nfo_dirs, g.l.path)) ) {
 					if (!g.l.in_cd_dir) {
 						d_log("zipscript-c: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
