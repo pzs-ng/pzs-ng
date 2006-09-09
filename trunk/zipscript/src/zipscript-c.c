@@ -532,7 +532,7 @@ main(int argc, char **argv)
 					}
 					g.v.total.files = g.v.total.files_missing = 0;
 				} else {
-					if (!fileexists(g.l.sfv) && sfv_compare_size(".sfv", g.v.file.size) > 0) {
+					if (!fileexists(g.l.sfv)) {
 						d_log("zipscript-c: DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g.v.file.size));
 						d_log("zipscript-c: Hmm.. Seems the old .sfv was deleted. Allowing new one.\n");
 						unlink(g.l.race);
