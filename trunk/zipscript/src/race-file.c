@@ -951,7 +951,8 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 	if (cnt == 10 ) {
 		d_log("create_lock: link failed: %s\n", strerror(errno));
 		return -1;
-	}
+	} else if (cnt)
+		d_log("create_lock: link ok.\n");
 	if (!sb.st_size) {							/* no lock file exists - let's create one with default values. */
 		hd.data_version = sfv_version;
 		raceI->data_type = hd.data_type = 0;

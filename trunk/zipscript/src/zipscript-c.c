@@ -532,9 +532,12 @@ main(int argc, char **argv)
 					}
 					g.v.total.files = g.v.total.files_missing = 0;
 				} else {
-					d_log("zipscript-c: DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g.v.file.size));
-					d_log("zipscript-c: Hmm.. Seems the old .sfv was deleted. Allowing new one.\n");
-					unlink(g.l.race);
+					if (!fileexists(g.l.sfv) && sfv_compare_size(".sfv", g.v.file.size) > 0) {
+						d_log("zipscript-c: DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g.v.file.size));
+						d_log("zipscript-c: Hmm.. Seems the old .sfv was deleted. Allowing new one.\n");
+						unlink(g.l.race);
+					} else
+						d_log("zipscript-c: Allowing the (late) sfv\n");
 					unlink(g.l.sfv);
 					rewinddir(dir);
 					while ((dp = readdir(dir))) {
@@ -590,7 +593,7 @@ main(int argc, char **argv)
 			if ( (force_sfv_first == FALSE) || matchpath(noforce_sfv_first_dirs, g.l.path))
 #endif
 			{
-				if (fileexists(g.l.race)) {
+				if (fileexists(g.l.race) && fileexists(g.l.sfv)) {
 					d_log("zipscript-c: Testing files marked as untested\n");
 					testfiles(&g.l, &g.v, 0);
 				}

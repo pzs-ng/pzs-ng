@@ -480,9 +480,9 @@ showusers(int n, int mode, char *ucomp, char raw)
 				 * / TagLine / Online / Filename / Part
 				 * up/down-loaded / Current dir
 				 */
-				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\" \"%.1f%s\" \"%s\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename, (pct >= 0 ? pct : mb_xfered), (pct >= 0 ? "%" : "MB"), user[x].currentdir);
+				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\" \"%.1f%s\" \"%s\" \"%d\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename, (pct >= 0 ? pct : mb_xfered), (pct >= 0 ? "%" : "MB"), user[x].currentdir, user[x].procid);
 			} else if (showall || (!noshow && !mask && !(maskchar == '*'))) {
-				printf("%s|%s|%s|%s|%s\n", user[x].username, get_g_name(user[x].groupid), user[x].tagline, status, filename);
+				printf("%s|%s|%s|%s|%s|%d\n", user[x].username, get_g_name(user[x].groupid), user[x].tagline, status, filename, user[x].procid);
 			}
 			if ((!noshow && !mask && !(maskchar == '*')) || chidden) {
 				onlineusers++;
@@ -502,9 +502,9 @@ showusers(int n, int mode, char *ucomp, char raw)
 				else
 					printf("%s : %1c%s/%s has been online for %8.8s.\n", status, maskchar, user[x].username, get_g_name(user[x].groupid), online);
 			} else if (raw == 1 && (showall || (!noshow && !mask && !(maskchar == '*')))) {
-				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\" \"%.1f%s\" \"%s\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename, (pct >= 0 ? pct : mb_xfered), (pct >= 0 ? "%" : "MB"), user[x].currentdir);
+				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\" \"%.1f%s\" \"%s\" \"%d\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename, (pct >= 0 ? pct : mb_xfered), (pct >= 0 ? "%" : "MB"), user[x].currentdir, user[x].procid);
 			} else if (showall || (!noshow && !mask && !(maskchar == '*'))) {
-				printf("%s|%s|%s|%s|%s\n", user[x].username, get_g_name(user[x].groupid), user[x].tagline, status, filename);
+				printf("%s|%s|%s|%s|%s|%d\n", user[x].username, get_g_name(user[x].groupid), user[x].tagline, status, filename, user[x].procid);
 			}
 #else
 			if (!onlineusers) {
