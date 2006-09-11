@@ -12,3 +12,19 @@ this option, the binaries are compiled 32-bit instead of 64-bit. However, to
 be able to compile a 32-bit binary, you need 32-bit libraries to link against.
 Some distributions only include 64-bit libraries, so you will therefore need
 to install the 32-bit ones respectively.
+
+Below is a small list of distributions, and the necessary steps needed to make
+pzs-ng compile 32bit - as you can see, there's no "simple" way to find out
+what is needed.
+
+ubuntu: apt-get install make gcc ia32-libs lib32gcc1 lib32z1 lib32z1-dev libc6-dev libc6-dev-i386 libc6-i386 zlib1g-dev binutils cpp cpp-4.0 gcc-4.0 lib32stdc++6 linux-kernel-headers
+
+gentoo: emerge emul-linux-x86-compat emul-linux-x86-baselibs 
+
+debian: apt-get install lib32gcc1 lib32stdc++6 ia32-libs lsb-release gcc-3.4 cpp-3.4 ia32-libs-dev 
+	rm /usr/bin/gcc && ln -s gcc-3.4 /usr/bin/gcc
+
+suse  :
+
+fedora: <none>
+
