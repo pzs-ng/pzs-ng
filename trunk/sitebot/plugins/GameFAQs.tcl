@@ -5,6 +5,8 @@
 #                                                                              #
 ################################################################################
 # Included with pzs-ng by psxc
+# Step 4. below is done (changes done in dZSbot.defaults.tcl and dZSbot.vars)
+# Step 5. is done in the default.zst theme *only*.
 # Any questions must be relayed to the author.
 # Updates and info can be found on http://bugs.pzs-ng.com/view.php?id=385
 #
