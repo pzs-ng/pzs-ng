@@ -25,7 +25,7 @@
 #    set disable(GAMEFAQS)       0
 #    set disable(GAMEFAQS-PRE)   0
 #    set variables(GAMEFAQS)     "%pf %u_name %g_name %u_tagline %gamefaqstitle %gamefaqsrating %gamefaqsgenre %gamefaqsplayers %gamefaqsdeveloper {%gamefaqsalttitle %gamefaqspublisher %gamefaqsdate %gamefaqsregion} %gamefaqsurl %gamefaqssystem %gamefaqsesrb"
-#    set variables(GAMEFAQS-PRE) "%pf %u_name %g_name %u_tagline %gamefaqstitle %gamefaqsrating %gamefaqsgenre %gamefaqsplayers %gamefaqsdeveloper {%gamefaqsalttitle %gamefaqspublisher %gamefaqsdate %gamefaqsregion} %gamefaqsurl %gamefaqssystem %gamefaqsesrb"
+#    set variables(GAMEFAQS-PRE) "$variables(PRE) %gamefaqstitle %gamefaqsrating %gamefaqsgenre %gamefaqsplayers %gamefaqsdeveloper {%gamefaqsalttitle %gamefaqspublisher %gamefaqsdate %gamefaqsregion} %gamefaqsurl %gamefaqssystem %gamefaqsesrb"
 #
 #    set zeroconvert(%gamefaqstitle)     "N/A"
 #    set zeroconvert(%gamefaqsrating)    "-"
