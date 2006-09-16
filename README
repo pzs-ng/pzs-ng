@@ -58,16 +58,14 @@ PZS-NG should compile fine on the following platforms:
 - Linux
 - FreeBSD
 - OpenBSD
-- OSX/Darwin (Feedback say the zipscript work on this platform)
+- OSX/Darwin (the zipscript should work, but sitewho etc may need some
+  makefile options. Contact psxc or one of the devs for help)
 - (AIX - untested, but the original docs say it works there)
 - (Solaris - soon *g*)
 
-64-bit processors - this is still a bit shady. We do try to make it run
-on AMD64 for instance, but have limited ability to test on this platform,
-since none of the devs currently owns one. Feel free to contact us if
-you have a box to share with us.
-As of beta3, pzs-ng should run on AMD64, but makesure it's compiled in 32bit
-mode - ie, you need 32bit libs.
+64-bit processors - should work. Since glftpd is pre-compiled on a 32bit
+platform (usually) certain bins in pzs-ng will be compiled in 32bit mode.
+Make sure you have the 32bit libs installed. For more info, see README.AMD64.
 
 Only the i386 platform is tested, so if you try it on anything else, don't
 hesitate to contact us and inform us of the result.
