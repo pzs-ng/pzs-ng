@@ -401,7 +401,7 @@ main(int argc, char **argv)
 				break;
 			} else {
 				sprintf(target, "%s -qqt \"%s\"", unzip_bin, g.v.file.name);
-				if (execute(target) != 0) {
+				if (execute(target) != 0 || (allow_error2_in_unzip == TRUE && errno != 2 )) {
 					d_log("zipscript-c: Integrity check failed (#%d): %s\n", errno, strerror(errno));
 					sprintf(g.v.misc.error_msg, BAD_ZIP);
 					mark_as_bad(g.v.file.name);

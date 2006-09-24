@@ -1154,7 +1154,7 @@ proc ng_incompletes {nick uhost hand chan arg} {
 		} else {
 			incr newline($line)
 		}
-		puthelp "PRIVMSG $nick :$line\003$newline($line)"
+		puthelp "PRIVMSG $chan :$line\003$newline($line)"
 	}
 	return
 }

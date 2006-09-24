@@ -356,6 +356,15 @@
 #define unzip_bin		"/bin/unzip"
 #endif
 
+/*
+ * If unzip exits with error code 2 (a generic error) - should the file be
+ * allowed anyway? There really shouldn't be any errors, so it's recommended
+ * to leave this setting to the default FALSE. 
+ */
+
+#ifndef allow_error2_in_unzip
+#define allow_error2_in_unzip	FALSE
+#endif
 
 /*
  * SFV Settings ============
