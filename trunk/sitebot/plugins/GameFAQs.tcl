@@ -40,11 +40,11 @@
 #    set zeroconvert(%gamefaqssystem)    "N/A"
 #
 # 5. Add the following to your theme file (.zst).
-#    announce.GAMEFAQS           = "[%b{GAME-INFO}][%section] %b{%g_title} (%g_rating)/10 URL: %g_url\n[%b{GAME-INFO}][%section] Release Date: %loop1"
-#    announce.GAMEFAQS_LOOP1     = "%g_region: %g_date%splitter"
+#    announce.GAMEFAQS           = "[%b{GAME-INFO}][%section] %b{%gamefaqstitle} (%gamefaqsrating)/10 URL: %gamefaqsurl\n[%b{GAME-INFO}][%section] Release Date: %loop1"
+#    announce.GAMEFAQS_LOOP1     = "%gamefaqsregion: %gamefaqsdate%splitter"
 #
-#    announce.GAMEFAQS-PRE       = "[%b{GAME-INFO}][%section] %b{%g_title} (%g_rating)/10 URL: %g_url\n[%b{GAME-INFO}][%section] Release Date: %loop1"
-#    announce.GAMEFAQS-PRE_LOOP1 = "%g_region: %g_date%splitter"
+#    announce.GAMEFAQS-PRE       = "[%b{GAME-INFO}][%section] %b{%gamefaqstitle} (%gamefaqsrating)/10 URL: %gamefaqsurl\n[%b{GAME-INFO}][%section] Release Date: %loop1"
+#    announce.GAMEFAQS-PRE_LOOP1 = "%gamefaqsregion: %gamefaqsdate%splitter"
 #
 # 6. Rehash or restart your eggdrop for the changes to take effect.
 #

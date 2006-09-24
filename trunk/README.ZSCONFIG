@@ -371,6 +371,12 @@ unzip_bin <PATH>
 	This is the location of the unzip binary needed to verify zip-releases.
 	Default: "/bin/unzip"
 
+allow_error2_in_unzip <TRUE|FALSE>
+	If unzip exits with error code 2 (a generic error) - should the file be
+	allowed anyway? There really shouldn't be any errors, so it's recommended
+	to leave this setting to the default FALSE.
+	Default: FALSE
+
 sfv_dupecheck <TRUE|FALSE>
 	Setting this option to TRUE will remove duplicate entries within the
 	uploaded sfv file.
