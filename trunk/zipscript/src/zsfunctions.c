@@ -253,7 +253,6 @@ strtolower(char *s)
 void 
 space_to_dot(char *s)
 {
-char	*p = s;
 	while (*s) {
 		if (*s == ' ')
 			*s = '.';
