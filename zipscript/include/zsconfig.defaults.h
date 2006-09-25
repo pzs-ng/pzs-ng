@@ -86,6 +86,9 @@
 #ifndef rescan_nocheck_dirs_allowed
 #define rescan_nocheck_dirs_allowed	TRUE
 #endif
+#ifndef rescan_default_to_quick
+#define rescan_default_to_quick		TRUE
+#endif
 #ifndef spaces_to_dots
 #define spaces_to_dots			FALSE
 #endif

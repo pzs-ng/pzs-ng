@@ -49,7 +49,7 @@ main(int argc, char *argv[])
 	long		loc;
 	time_t		timenow;
 
-	short		rescan_quick = FALSE;
+	short		rescan_quick = rescan_default_to_quick;
 	char		one_name[NAME_MAX];
 
 	GLOBAL		g;
@@ -71,22 +71,28 @@ main(int argc, char *argv[])
 	g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
 	g.gi = ng_realloc2(g.gi, sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
 
+	bzero(one_name, NAME_MAX);
+
 	if (argc > 1) {
 		if (!strncasecmp(argv[1], "--quick", 7)) {
-printf("Rescanning in QUICK mode\n");
+			printf("PZS-NG Rescan v%s: Rescanning in QUICK mode\n", ng_version());
 			rescan_quick = TRUE;
+			bzero(one_name, NAME_MAX);
+		} else if (!strncasecmp(argv[1], "--normal", 8)) {
+			printf("PZS-NG Rescan v%s: Rescanning in NORMAL mode\n", ng_version());
+			rescan_quick = FALSE;
 			bzero(one_name, NAME_MAX);
 		} else {
 			strncpy(one_name, argv[1], NAME_MAX - 1);
-			if (one_name[strlen(one_name) - 1] == '*')
+			if (one_name[strlen(one_name) - 1] == '*') {
+				printf("PZS-NG Rescan v%s: Rescanning in FILE mode\n", ng_version());
 				one_name[strlen(one_name) - 1] = '\0';
-			else if (!fileexists(one_name)) {
+			} else if (!fileexists(one_name)) {
 				printf("\nPZS-NG Rescan v%s: No file named '%s' exists.\n\n", ng_version(), one_name);
 				return 1;
 			}
 		}		
-	} else
-		bzero(one_name, NAME_MAX);
+	}
 
 	getcwd(g.l.path, PATH_MAX);
 
