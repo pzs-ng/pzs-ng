@@ -117,6 +117,13 @@ rescan_nocheck_dirs_allowed <TRUE|FALSE>
 	option dead in nocheck_dirs areas.
 	Default: TRUE
 
+rescan_default_to_quick <TRUE|FALSE>
+	This option sets the default mode for rescan regarding the quick mode.
+	In quick mode only the files not already marked as good will be
+	rescanned. This is good if some files are uploaded, but not checked by
+	the zipscript.
+	Default: TRUE
+
 strict_path_match <TRUE|FALSE>
 	This setting is used to enforce the filetype (zip/sfv) based on path.
 	When set to TRUE, zip files is not allowed in sfv dirs, and the other

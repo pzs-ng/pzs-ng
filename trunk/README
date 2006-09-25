@@ -394,6 +394,15 @@ scripts. Here's a short description of each compiled binary:
     in your site to a specified used/group. When used it needs the +s bit
     set. Take care, though - using this bin with +s may be a security risk.
 
+  - rescan - Used to re-check a release. Mostly used as a site command. It
+    can take the following arguments (only one allowed):
+    --quick - skips files that are already marked as checked, and crc-checks
+      the ones that are not.
+    --normal - check all files regardless if they previously have been checked
+      and found ok.
+    <NAME><*> - only recheck the file named NAME or all files starting with
+      NAME*. Wildcard can only be at the end, not beginning or in the middle.
+
 The bot:
 --------
 If everything is working smoothly on your site, it's time to add a bot to
