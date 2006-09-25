@@ -1171,3 +1171,27 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 	return retval;
 }
 
+short int
+match_file(char *rname, char *f)
+{
+	int		n;
+	FILE	       *file = NULL;
+
+	RACEDATA	rd;
+
+	n = 0;
+	if ((file = fopen(rname, "r+"))) {
+		while (fread(&rd, sizeof(RACEDATA), 1, file)) {
+			if (strncmp(rd.fname, f, NAME_MAX) == 0	&& rd.status == F_CHECKED) {
+				d_log("match_file: '%s' == '%s'\n", rd.fname, f);
+				n = 1;
+				break;
+			}
+		}
+		fclose(file);
+	} else {
+		d_log("match_file: Error fopen(%s): %s\n", rname, strerror(errno));
+	}
+	return n;
+}
+

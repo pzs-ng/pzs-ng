@@ -51,6 +51,7 @@ extern int verify_racedata(const char *, struct VARS *);
 extern int create_lock(struct VARS *, const char *, unsigned int, unsigned int, unsigned int);
 extern void remove_lock(struct VARS *);
 extern int update_lock(struct VARS *, unsigned int, unsigned int);
+extern short match_file(char *,	char *);
 
 #endif
 
