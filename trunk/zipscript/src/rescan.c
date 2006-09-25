@@ -82,8 +82,15 @@ main(int argc, char *argv[])
 			printf("PZS-NG Rescan v%s: Rescanning in NORMAL mode\n", ng_version());
 			rescan_quick = FALSE;
 			bzero(one_name, NAME_MAX);
+		} else if (!strncasecmp(argv[1], "--help", 6) || !strncasecmp(argv[1], "/?", 2) || !strncasecmp(argv[1], "--?", 3)) {
+			printf("PZS-NG Rescan v%s options:\n\n", ng_version());
+			printf("  --quick   - scan in quick mode - only files not previously marked as ok by the zipscript is scanned\n");
+			printf("  --normal  - scan in normal mode - all files will be rescanned regardless of their status\n");
+			printf("  <FILE><*> - scan only file named FILE or files beginning with FILE*.\n\n");
+			return 0;
 		} else {
 			strncpy(one_name, argv[1], NAME_MAX - 1);
+			rescan_quick = FALSE;
 			if (one_name[strlen(one_name) - 1] == '*') {
 				printf("PZS-NG Rescan v%s: Rescanning in FILE mode\n", ng_version());
 				one_name[strlen(one_name) - 1] = '\0';
