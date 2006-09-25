@@ -33,7 +33,7 @@
 #endif
 
 int 
-main(void)
+main(int argc, char *argv[])
 {
 	int		k, n, m, l, complete_type = 0, gnum = 0, unum = 0;
 	char           *ext, exec[4096], *complete_bar = 0, *inc_point[2];
@@ -49,6 +49,9 @@ main(void)
 	long		loc;
 	time_t		timenow;
 
+	short		rescan_quick = FALSE;
+	char		one_name[NAME_MAX];
+
 	GLOBAL		g;
 
 #if ( program_uid > 0 )
@@ -58,7 +61,7 @@ main(void)
 
 	umask(0666 & 000);
 
-	d_log("rescan: PZS-NG (rescan) v%s debug log.\n", ng_version());
+	d_log("rescan: PZS-NG (rescan v2) v%s debug log.\n", ng_version());
 
 #ifdef _ALT_MAX
 	d_log("rescan: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
@@ -67,6 +70,23 @@ main(void)
 	d_log("rescan: Allocating memory for variables\n");
 	g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
 	g.gi = ng_realloc2(g.gi, sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
+
+	if (argc > 1) {
+		if (!strncasecmp(argv[1], "--quick", 7)) {
+printf("Rescanning in QUICK mode\n");
+			rescan_quick = TRUE;
+			bzero(one_name, NAME_MAX);
+		} else {
+			strncpy(one_name, argv[1], NAME_MAX - 1);
+			if (one_name[strlen(one_name) - 1] == '*')
+				one_name[strlen(one_name) - 1] = '\0';
+			else if (!fileexists(one_name)) {
+				printf("\nPZS-NG Rescan v%s: No file named '%s' exists.\n\n", ng_version(), one_name);
+				return 1;
+			}
+		}		
+	} else
+		bzero(one_name, NAME_MAX);
 
 	getcwd(g.l.path, PATH_MAX);
 
@@ -155,17 +175,21 @@ main(void)
 		unlink(g.l.incomplete);
 	if (del_completebar)
 		removecomplete();
-	if (g.l.race)
-		unlink(g.l.race);
-	if (g.l.sfv)
-		unlink(g.l.sfv);
-	printf("Rescanning files...\n");
 	
 	dir = opendir(".");
 	parent = opendir("..");
 
+	if (!((rescan_quick && findfileext(dir, ".sfv")) || *one_name)) {
+		if (g.l.sfv)
+			unlink(g.l.sfv);
+		if (g.l.race)
+			unlink(g.l.race);
+	}
+	printf("Rescanning files...\n");
+	
 	if (findfileext(dir, ".sfv")) {
 		strlcpy(g.v.file.name, findfileext(dir, ".sfv"), NAME_MAX);
+
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
 
@@ -195,6 +219,9 @@ main(void)
 		g.v.total.start_time = 0;
 		rewinddir(dir);
 		while ((dp = readdir(dir))) {
+			if (*one_name && strncasecmp(one_name, dp->d_name, strlen(one_name)))
+				continue;
+
 			m = l = (int)strlen(dp->d_name);
 
 			ext = find_last_of(dp->d_name, ".");
@@ -259,19 +286,30 @@ main(void)
 					}
 				}
 
-				crc = calc_crc32(dp->d_name);
+				if (!rescan_quick || (fileexists(g.l.race) && !match_file(g.l.race, dp->d_name)))
+					crc = calc_crc32(dp->d_name);
+				else
+ 					crc = 1;
+
 				if (!S_ISDIR(fileinfo.st_mode)) {
 					if (g.v.file.name)
 						unlink_missing(g.v.file.name);
 					if (l > 44) {
-						printf("\nFile: %s %.8x", dp->d_name + l - 44, crc);
+						if (crc == 1)
+							printf("\nFile: %s CHECKED", dp->d_name + l - 44);
+						else
+							printf("\nFile: %s %.8x", dp->d_name + l - 44, crc);
 					} else {
-						printf("\nFile: %-44s %.8x", dp->d_name, crc);
+						if (crc == 1)
+							printf("\nFile: %-44s CHECKED", dp->d_name);
+						else
+							printf("\nFile: %-44s %.8x", dp->d_name, crc);
 					}
 				}
 				if(fflush(stdout))
 					d_log("rescan: ERROR: %s\n", strerror(errno));
-				writerace(g.l.race, &g.v, crc, F_NOTCHECKED);
+				if (!rescan_quick || (g.l.race && !match_file(g.l.race,	dp->d_name)))
+					writerace(g.l.race, &g.v, crc, F_NOTCHECKED);
 			}
 		}
 		printf("\n");
