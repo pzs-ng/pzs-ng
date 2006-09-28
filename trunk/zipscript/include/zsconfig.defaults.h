@@ -1071,3 +1071,7 @@
 #define banned_filelist			"/ftp-data/misc/banned_filelist.txt"
 #endif
 
+#ifndef check_for_banned_files
+#define check_for_banned_files		TRUE
+#endif
+

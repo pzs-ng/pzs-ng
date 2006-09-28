@@ -6,6 +6,7 @@
 #define		DOUBLE_SFV			"SFV-file: DUPE!"
 #define		BAD_ZIP				"ZiP-Integrity: BAD!"
 #define		EMPTY_FILE			"0byte-file: Not allowed!"
+#define		BANNED_FILE			"Banned file: Not allowed!"
 #define		UNKNOWN_FILE			"%s-file: Not allowed!"				/* %s = file extension	 */
 #define 	BANNED_GENRE			"%s is banned here!"				/* %s = genre		 */
 #define		BANNED_YEAR			"Releases from %s are not allowed here!"	/* %s = year		 */

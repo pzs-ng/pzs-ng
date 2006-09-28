@@ -1,7 +1,51 @@
 PZS-NG CHANGELOG
 ----------------
 
-v1.0.1  --> 1.0.1b : (r2040
+v1.0.1b --> 1.0.2  : (r2130)
+		- Fixed a coredump on amd64 in mp3info
+		- Fixed a coredump on amd64 in sitewho
+		- Made cleanup more general - previously it would only cleanup broken
+		  indicators or mp3 symlinks.
+		- Small fix in sitewho (reading-config bug, affecting paths and names with =).
+		- Small bugfix for imdb-nuker.
+		- Fixed statsection support for allup/alldn/etc.
+		- Fixed vars for pre announce.
+		- Fix: dont show user/group stats if max_*_in_top == 0.
+		- Fixed bug 394 - racestats seems to wrap over when alup is over 4TiB.
+		- Fixed small compile error with audiosort and some obscure option.
+		- Added a small mod to the imdb script that fixes the [b.gif] issue seen recently.
+		- Fixed small bugs in dataclean and ng-chown.
+		- Added 'spaces_to_dots' option, which'll replace spaces with dots in audio
+		  genre dirs.
+		- Fixed an obscure bug related to late sfv upload.
+		- Fix: do not process 0byte files - weird shit happens.
+		- Fixed a bug with no-nfo symlink if nfo upload did not go thru zipscript.
+		- Updated README.AMD64 with instructions for ubuntu, gentoo and debian.
+		- Added meij's GameFAQ tcl.
+		- Fixed the problem with strange chars in tagline.
+		- Added rescan mode '--quick' and  'file*' - quickmode will skip already checked
+		  files, and file* will only scan files matching pattern.
+		- Added new setting in conf (rescan_default_to_quick) which is defaulted to TRUE.
+		- Added support for auto-extract nfo from zip.
+		- Added support for checking rar for password protection.
+		- Added support for removal of bannerfiles from zips (aka project-sl support).
+		- Added support for showing pid of user in sitewho (only in --raw mode).
+		- New option in zsconfig.h - zip_clean - removes bannerfiles/banned files from
+		  zipfiles.
+		- New option in zsconfig.h - extract_nfo - will extract the "real" nfo from the
+		  zipfiles uploaded.
+		- New option in zsconfig.h - deny_nfo_upload_in_zip - will deny nfo uploads in
+		  zipdirs - might be a little strict, so this is turned off by default. Meant to
+		  stop multiple (banner) nfo files uploads.
+		- New option in zsconfig.h - test_for_password - deny passwordprotected rarfiles on
+		  site.
+		- New option in zsconfig.h - zip_bin - location of the 'zip' binary (inside chroot).
+		- New option in zsconfig.h - banned_filelist - location of the list of banned files
+		  which is used to remove certain files from zips.
+		- New option in zsconfig.h - check_for_banned_files - will check the banned_filelist
+		  when uploading files - if one is encountered, the zipscript will deny the upload.
+
+v1.0.1  --> 1.0.1b : (r2040)
 		- Fixed a silly bug with the deletion of old links.
 
 v1.0.0  --> 1.0.1  : (r2039)
@@ -10,10 +54,14 @@ v1.0.0  --> 1.0.1  : (r2039)
 		- Various small dZSbot bug-fixes.
 		- Same checksum & filename in sfv = same file.
 		- Bug #378 fixed (dizreader not picking up x/xx) - reported by chotaire.
-		- Added better handling of audiosorting. 'rescan' now sorts too! (like zipscript does on complete)
-		   There is also a new binary, 'audiosort'. 
-		   This sorts a dir based on the same critera as rescan/zipscript does, but does not require a completed release (or even a release at all, could be used for non-zipscripted sites).
-		   In addition, sorting now deletes any other identically named links, and puts the 'right' one in place of it. :)
+		- Added better handling of audiosorting. 'rescan' now sorts too! (like
+		   zipscript does on complete).
+		- New binary, 'audiosort'. 
+		   This sorts a dir based on the same critera as rescan/zipscript does,
+		   but does not require a completed release (or even a release at all,
+		   could be used for non-zipscripted sites).
+		   In addition, sorting now deletes any other identically named links,
+		   and puts the 'right' one in place of it. :)
 
 v0.6.1	--> 1.0.0  : The changes from the original project-zs by d1 is
 			significant. There is nearly no code that has not been
