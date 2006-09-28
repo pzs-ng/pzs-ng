@@ -379,9 +379,9 @@ unzip_bin <PATH>
 	Default: "/bin/unzip"
 
 allow_error2_in_unzip <TRUE|FALSE>
-	If unzip exits with error code 2 (a generic error) - should the file be
-	allowed anyway? There really shouldn't be any errors, so it's recommended
-	to leave this setting to the default FALSE.
+	If unzip exits with error code 1 or 2 (a generic error) - should the file
+	be allowed anyway? There really shouldn't be any errors, so it's
+	recommended to leave this setting to the default FALSE.
 	Default: FALSE
 
 sfv_dupecheck <TRUE|FALSE>
@@ -1206,6 +1206,42 @@ change_spaces_to_underscore_in_ng_chown <TRUE|FALSE>
 	the name (genre) given has a space inside. It is recommended to *NOT*
 	change this value (from TRUE).
 	Default: TRUE
+
+zip_clean <TRUE|FALSE>
+	If you wish to clean zipfiles (remove files based on the list given in
+	banned_filelist), set this to TRUE.
+	DEFAULT: TRUE
+
+extract_nfo <TRUE|FALSE>
+	Should the zipscript extract the "real" nfo from a zip?
+	DEFAULT: TRUE
+
+deny_nfo_upload_in_zip <TRUE|FALSE>
+	Should we deny nfo uploads in zip dirs? Should really only be used in
+	conjuntion with extract_nfo.
+	DEFAULT: FALSE
+
+test_for_password <TRUE|FALSE>
+	Some rarfiles have password protection. If you wish to check for such
+	files, set this to TRUE.
+	DEFAULT: TRUE
+
+zip_bin <PATH>
+	This is the location of the zip binary needed to clean zip-releases for
+	unwanted files.
+	DEFAULT: "/bin/zip"
+
+banned_filelist <PATH>
+	You can ban certain files on site, based on name. The check is not
+	case-sensitive, and wildcards may be used.
+	Put here the path to the text-file with a list of the files you do not
+	want on your site.
+	For more info, or upgraded lists, see http://project-sl.swecheck.net
+	Please note - chars like [ and ] are used in the wildcard scheme - if you
+	search for such chars in the filenames, you need to double-escape them,
+	ie \\[ and \\] and \\( etc.
+	For more info on how wildcards are read, read manpage of fnmatch().
+	DEFAULT: "/ftp-data/misc/banned_filelist.txt"
 
 --END
 

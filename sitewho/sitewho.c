@@ -34,6 +34,14 @@ int		maxusers = 20 , showall = 0, uploads = 0, downloads = 0, onlineusers = 0, b
 double		total_dn_speed = 0, total_up_speed = 0;
 int		totusers = 0;
 
+#if ( GLVERSION == 201 )
+	static int	glversion = 201;
+#elif ( GLVERSION == 200 )
+	static int	glversion = 200;
+#else
+	static int	glversion = 132;
+#endif
+
 /* CORE CODE */
 int 
 main(int argc, char **argv)
@@ -47,7 +55,6 @@ main(int argc, char **argv)
 	int		user_idx = 2;
 #endif
 	int		gnum = 0;
-
 	readconfig(argv[0]);
 	if (!ipckey)
 		ipckey = def_ipckey;
@@ -482,7 +489,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 				 */
 				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\" \"%.1f%s\" \"%s\" \"%d\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename, (pct >= 0 ? pct : mb_xfered), (pct >= 0 ? "%" : "MB"), user[x].currentdir, user[x].procid);
 			} else if (showall || (!noshow && !mask && !(maskchar == '*'))) {
-				printf("%s|%s|%s|%s|%s|%d\n", user[x].username, get_g_name(user[x].groupid), user[x].tagline, status, filename, user[x].procid);
+				printf("%s|%s|%s|%s|%s\n", user[x].username, get_g_name(user[x].groupid), user[x].tagline, status, filename);
 			}
 			if ((!noshow && !mask && !(maskchar == '*')) || chidden) {
 				onlineusers++;
@@ -504,7 +511,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 			} else if (raw == 1 && (showall || (!noshow && !mask && !(maskchar == '*')))) {
 				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\" \"%.1f%s\" \"%s\" \"%d\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename, (pct >= 0 ? pct : mb_xfered), (pct >= 0 ? "%" : "MB"), user[x].currentdir, user[x].procid);
 			} else if (showall || (!noshow && !mask && !(maskchar == '*'))) {
-				printf("%s|%s|%s|%s|%s|%d\n", user[x].username, get_g_name(user[x].groupid), user[x].tagline, status, filename, user[x].procid);
+				printf("%s|%s|%s|%s|%s\n", user[x].username, get_g_name(user[x].groupid), user[x].tagline, status, filename);
 			}
 #else
 			if (!onlineusers) {
@@ -654,7 +661,7 @@ readconfig(char *arg)
 	free(buf);
 
 	if (debug) {
-		printf("DEBUG: header=\"%s\"\nDEBUG: footer=\"%s\"\nDEBUG: mpaths=\"%s\"\nDEBUG: husers=\"%s\"\nDEBUG: hgroups=\"%s\"\nDEBUG: glpath=\"%s\"\nDEBUG: ipckey=\"%s\"\nDEBUG: glgroup=\"%s\"\nDEBUG: nocase=\"%s\"\nDEBUG: count_hidden=\"%s\"\nDEBUG: showall=\"%d\"\nDEBUG: maxusers=\"%d\"\nDEBUG: idle_barrier=\"%d\"\nDEBUG: threshold=\"%d\"\n", header, footer, mpaths, husers, hgroups, glpath, ipckey, glgroup, nocase, count_hidden, showall, maxusers, idle_barrier, threshold);
+		printf("DEBUG: glversion=\"%d\"\nDEBUG: header=\"%s\"\nDEBUG: footer=\"%s\"\nDEBUG: mpaths=\"%s\"\nDEBUG: husers=\"%s\"\nDEBUG: hgroups=\"%s\"\nDEBUG: glpath=\"%s\"\nDEBUG: ipckey=\"%s\"\nDEBUG: glgroup=\"%s\"\nDEBUG: nocase=\"%s\"\nDEBUG: count_hidden=\"%s\"\nDEBUG: showall=\"%d\"\nDEBUG: maxusers=\"%d\"\nDEBUG: idle_barrier=\"%d\"\nDEBUG: threshold=\"%d\"\n", glversion, header, footer, mpaths, husers, hgroups, glpath, ipckey, glgroup, nocase, count_hidden, showall, maxusers, idle_barrier, threshold);
 	}
 
 //	if (filesize("") == 1)
