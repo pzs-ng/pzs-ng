@@ -375,6 +375,19 @@ main(int argc, char **argv)
 		d_log("zipscript-c:   - group_dirs  : '%s'\n", group_dirs);
 		d_log("zipscript-c:   - current path: '%s'\n", g.l.path);
 		no_check = TRUE;
+
+#if (check_for_banned_files == TRUE )
+	} else if (filebanned_match(g.v.file.name)) {
+		d_log("zipscript-c: Banned file detected (%s)\n", g.v.file.name);
+		sprintf(g.v.misc.error_msg, BANNED_FILE);
+		write_log = g.v.misc.write_log;
+		g.v.misc.write_log = 1;
+		mark_as_bad(g.v.file.name);
+		error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
+		if (exit_value < 2)
+			writelog(&g, error_msg, bad_file_0size_type);
+		exit_value = 2;
+#endif
 	}
 	if (exit_value == 2)
 		d_log("File already marked as bad. Will not process further.\n");

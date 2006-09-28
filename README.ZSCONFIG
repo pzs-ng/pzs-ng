@@ -1243,5 +1243,9 @@ banned_filelist <PATH>
 	For more info on how wildcards are read, read manpage of fnmatch().
 	DEFAULT: "/ftp-data/misc/banned_filelist.txt"
 
+check_for_banned_files <TRUE|FALSE>
+	Will check the banned_filelist when uploading files - if one is
+	encountered, the zipscript will deny the upload.
+
 --END
 
