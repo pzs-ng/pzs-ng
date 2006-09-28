@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <fnmatch.h>
 
 #include "race-file.h" 
 
@@ -1193,5 +1194,187 @@ match_file(char *rname, char *f)
 		d_log("match_file: Error fopen(%s): %s\n", rname, strerror(errno));
 	}
 	return n;
+}
+
+/*
+ * check_rarfile - check for password protected rarfiles
+ * psxc r2126 (v1)
+ */
+
+int
+check_rarfile(const char *filename)
+{
+	int             fd;
+	short           HEAD_CRC;
+	char            HEAD_TYPE;
+	short           HEAD_FLAGS;
+	short           HEAD_SIZE;
+	long            ADD_SIZE;
+	long            block_size;
+
+	if ((fd = open(filename, O_RDONLY)) == -1) {
+		d_log("check_rarfile: Failed to open file (%s): %s\n", filename, strerror(errno));
+		return 0;
+	}
+	read(fd, &HEAD_CRC, 2);
+	read(fd, &HEAD_TYPE, 1);
+	read(fd, &HEAD_FLAGS, 2);
+	read(fd, &HEAD_SIZE, 2);
+	if (!(HEAD_CRC == 0x6152 && HEAD_TYPE == 0x72 && HEAD_FLAGS == 0x1a21 && HEAD_SIZE == 0x0007)) {
+		close(fd);
+		return 0;       /* Not a rar file */
+	}
+	if (HEAD_FLAGS & 0x8000) {
+		read(fd, &ADD_SIZE, 4);
+		block_size = HEAD_SIZE + ADD_SIZE;
+		lseek(fd, block_size - 11 + 2, SEEK_CUR);
+	} else {
+		block_size = HEAD_SIZE;
+		lseek(fd, block_size - 7 + 2, SEEK_CUR);
+	}
+	read(fd, &HEAD_TYPE, 1);
+	read(fd, &HEAD_FLAGS, 2);
+	read(fd, &HEAD_SIZE, 2);
+	if (HEAD_TYPE != 0x73) {
+		close(fd);
+		d_log("check_rarfile: Broken file? File has wrong header\n");
+		return 0;       /* wrong header - broken(?) */
+	}
+	if (HEAD_FLAGS & 0x02) {
+		read(fd, &ADD_SIZE, 4);
+		block_size = HEAD_SIZE + ADD_SIZE;
+		lseek(fd, block_size - 11 + 2, SEEK_CUR);
+	} else {
+		block_size = HEAD_SIZE;
+		lseek(fd, block_size - 7 + 2, SEEK_CUR);
+	}
+	read(fd, &HEAD_TYPE, 1);
+	read(fd, &HEAD_FLAGS, 2);
+	if (HEAD_TYPE != 0x74) {
+		close(fd);
+		d_log("check_rarfile: Broken file? File has wrong header\n");
+		return 0;       /* wrong header - broken(?) */
+	}
+	if (HEAD_FLAGS & 0x04) {
+		close(fd);
+		d_log("check_rarfile: %s have pw protection\n", filename);
+		return 1;
+	}
+	d_log("check_rarfile: %s do not have pw protection\n", filename);
+	close(fd);
+	return 0;
+}
+
+
+/*
+ * check_zipfile - check rarfile for pw protection and strips zip for banned files, and extracts .nfo
+ * psxc r2126 (v1)
+ */
+int
+check_zipfile(const char *dirname, const char *zipfile)
+{
+	int             ret = 0;
+	char            path_buf[PATH_MAX], target[PATH_MAX];
+#if (extract_nfo)
+	char            nfo_buf[NAME_MAX];
+	time_t          t = 0;
+	struct stat     filestat;
+	char           *ext;
+#endif
+	DIR            *dir;
+	struct dirent  *dp;
+
+	if (!(dir = opendir(dirname)))
+		return 0;
+	while ((dp = readdir(dir))) {
+		sprintf(path_buf, "%s/%s", dirname, dp->d_name);
+#if (test_for_password)
+		if (!ret)
+			ret = check_rarfile(path_buf);
+#endif
+		if (!strncasecmp("file_id.diz", dp->d_name, 11)) {  	// make lowercase
+			sprintf(path_buf, "%s/%s", dirname, dp->d_name);
+			rename(path_buf, "file_id.diz");
+			chmod("file_id.diz", 0644);
+			continue;
+		}
+#if (zip_clean)
+		if (filebanned_match(dp->d_name)) {
+			d_log("check_zipfile: banned file detected: %s\n", dp->d_name);
+			if (!fileexists(zip_bin))
+				d_log("check_zipfile: ERROR! Not able to remove banned file from zip - zip_bin (%s) does not exist!\n", zip_bin);
+			else {
+				sprintf(target, "%s -qqd \"%s\" \"%s\"", zip_bin, zipfile, dp->d_name);
+				if (execute(target))
+					d_log("check_zipfile: Failed to remove banned (%s) file from zip.\n", dp->d_name);
+			}
+			continue;
+		}
+#endif
+#if (extract_nfo)
+		ext = find_last_of(dp->d_name, ".");
+		if (*ext == '.')
+			ext++;
+		if (strcomp("nfo", ext)) {
+			stat(path_buf, &filestat);
+			if ((t && filestat.st_ctime < t) || !t) {
+				strlcpy(nfo_buf, dp->d_name, NAME_MAX);
+				t = filestat.st_ctime;
+				continue;
+			}
+		}
+#endif
+	}
+#if (extract_nfo)
+	if (t) {
+		sprintf(path_buf, "%s/%s", dirname, nfo_buf);
+		strtolower(nfo_buf);
+		rename(path_buf, nfo_buf);
+		chmod(nfo_buf, 0644);
+		d_log("check_zipfile: nfo extracted - %s\n", nfo_buf);
+	}
+#endif
+	rewinddir(dir);
+	while ((dp = readdir(dir))) {
+		sprintf(path_buf, "%s/%s", dirname, dp->d_name);
+		unlink(path_buf);
+	}
+	closedir(dir);
+	rmdir(dirname);
+	return ret;
+}
+
+int
+filebanned_match(const char *filename)
+{
+	int             fd;
+	char            buf[500];
+	FILE            *fname_fd;
+	char            fbuf[strlen(filename)+1];
+
+	bzero(fbuf, sizeof(fbuf));
+	strcpy(fbuf, filename);
+
+	if ((fd = open(banned_filelist, O_RDONLY)) == -1) {
+		d_log("filebanned_match: failed to open banned_filelist - open(%s): %s\n", banned_filelist, strerror(errno));
+		return 0;
+	}
+	if ((fname_fd = fdopen(fd, "r")) == NULL) {
+		d_log("filebanned_match: failed to open banned_filelist - fdopen(%s): %s\n", banned_filelist, strerror(errno));
+		return 0;
+	}
+	strtolower(fbuf);
+	while ((fgets(buf, sizeof(buf), fname_fd))) {
+		buf[strlen(buf) - 1] = '\0';
+		if ( *buf == '\0' || *buf == ' ' || *buf == '\t' || *buf == '#' )
+			continue;
+		strtolower(buf);
+		if (!fnmatch(buf, fbuf, 0)) {
+			close(fd);
+			d_log("filebanned_match: found match: %s\n", fbuf);
+			return 1;
+		}
+	}
+	return 0;
 }
 

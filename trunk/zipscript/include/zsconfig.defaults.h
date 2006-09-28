@@ -1043,3 +1043,31 @@
 #define change_spaces_to_underscore_in_ng_chown	TRUE
 #endif
 
+/*
+ * Some new settings not yet sorted
+ * --------------------------------
+ */
+#ifndef zip_clean
+#define zip_clean			TRUE
+#endif
+
+#ifndef extract_nfo
+#define extract_nfo			TRUE
+#endif
+
+#ifndef deny_nfo_upload_in_zip
+#define deny_nfo_upload_in_zip		FALSE
+#endif
+
+#ifndef test_for_password
+#define test_for_password		TRUE
+#endif
+
+#ifndef zip_bin
+#define zip_bin				"/bin/zip"
+#endif
+
+#ifndef banned_filelist
+#define banned_filelist			"/ftp-data/misc/banned_filelist.txt"
+#endif
+

@@ -66,6 +66,8 @@ PZS-NG should compile fine on the following platforms:
 64-bit processors - should work. Since glftpd is pre-compiled on a 32bit
 platform (usually) certain bins in pzs-ng will be compiled in 32bit mode.
 Make sure you have the 32bit libs installed. For more info, see README.AMD64.
+The *BSD platforms currently have no support for the -m32 flag. Ask psxc
+or one of the devs if you are stuck on this.
 
 Only the i386 platform is tested, so if you try it on anything else, don't
 hesitate to contact us and inform us of the result.

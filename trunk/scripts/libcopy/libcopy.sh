@@ -17,7 +17,7 @@
 possible_glroot_paths="/glftpd /jail/glftpd /usr/glftpd /usr/jail/glftpd /usr/local/glftpd /usr/local/jail/glftpd /$HOME/glftpd /glftpd/glftpd /opt/glftpd"
 
 # bins needed for pzs-ng to run
-needed_bins="unzip zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown"
+needed_bins="zip unzip zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown"
 
 #
 ###################################

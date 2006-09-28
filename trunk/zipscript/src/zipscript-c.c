@@ -400,8 +400,16 @@ main(int argc, char **argv)
 				exit_value = 2;
 				break;
 			} else {
+#if (test_for_password || extract_nfo)
+				if ((!findfileextcount(dir, ".nfo") ||
+				  findfileextcount(dir, ".zip") == 1) && !mkdir(".unzipped", 0777))
+					sprintf(target, "%s -qqjo \"%s\" -d .unzipped", unzip_bin, g.v.file.name);
+				else
+					sprintf(target, "%s -qqt \"%s\"", unzip_bin, g.v.file.name);
+#else
 				sprintf(target, "%s -qqt \"%s\"", unzip_bin, g.v.file.name);
-				if (execute(target) != 0 || (allow_error2_in_unzip == TRUE && errno != 2 )) {
+#endif
+				if (execute(target) != 0 || (allow_error2_in_unzip == TRUE && errno > 2 )) {
 					d_log("zipscript-c: Integrity check failed (#%d): %s\n", errno, strerror(errno));
 					sprintf(g.v.misc.error_msg, BAD_ZIP);
 					mark_as_bad(g.v.file.name);
@@ -413,6 +421,21 @@ main(int argc, char **argv)
 					exit_value = 2;
 					break;
 				}
+#if (test_for_password || extract_nfo || zip_clean)
+				if ((!findfileextcount(dir, ".nfo") || findfileextcount(dir, ".zip") == 1) && check_zipfile(".unzipped", g.v.file.name)) {
+					d_log("zipscript-c: File %s is password protected.\n", g.v.file.name);
+					sprintf(g.v.misc.error_msg, BAD_ZIP);
+					mark_as_bad(g.v.file.name);
+					write_log = g.v.misc.write_log;
+					g.v.misc.write_log = 1;
+					error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
+					if (exit_value < 2)
+						writelog(&g, error_msg, bad_file_zip_type);
+					exit_value = 2;
+					break;
+
+				}
+#endif
 			}
 			d_log("zipscript-c: Integrity ok\n");
 			printf(zipscript_zip_ok);
