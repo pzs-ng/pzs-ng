@@ -59,9 +59,12 @@ void audioSortDir(char *targetDir)
 
 void audioSort(struct audio *info, char *link_source, char *link_target)
 {
-#if ( audio_genre_sort == TRUE ) || (audio_artist_sort == TRUE) || (audio_year_sort == TRUE) || (audio_group_sort == TRUE)
+#if ( audio_genre_sort == TRUE ) || (audio_artist_sort == TRUE) || (audio_year_sort == TRUE) || (audio_group_sort == TRUE) || (audio_language_sort == TRUE)
 	char *temp_p = NULL;
 	int n = 0;
+#if (audio_language_sort == TRUE)
+	char language[3];
+#endif
 #else
 	d_log("audioSort: No audio_*_sort is set to TRUE - skipping sorting of mp3\n");
 	(void)info; (void)link_source; (void)link_target;
@@ -97,6 +100,27 @@ void audioSort(struct audio *info, char *link_source, char *link_target)
 	if (n > 0 && n < 15) {
 		d_log("audioSort:   - Valid groupname found: %s (%i)\n", temp_p, n);
 		createlink(audio_group_path, temp_p, link_source, link_target);
+	}
+#endif
+#if ( audio_language_sort == TRUE )
+	d_log("audioSort:   Sorting mp3 by country\n");
+	language[0] = '\0';
+	n = (int)strlen(link_target);
+	while ( n > 3) {
+		if (link_target[n] == '-') {
+			if ((unsigned char)link_target[n-3] == '-' && (unsigned char)link_target[n-2] >= 'A' && (unsigned char)link_target[n-2] <= 'Z' && (unsigned char)link_target[n-1] >= 'A' && (unsigned char)link_target[n-1] <= 'Z') {
+				language[0] = link_target[n-2];
+				language[1] = link_target[n-1];
+				language[2] = '\0';
+				temp_p = language;
+				break;
+			}
+		}
+		n--;
+	}
+	if (language[0] != '\0') {
+		d_log("audioSort:   - Valid language found: %s\n", language);
+		createlink(audio_language_path, temp_p, link_source, link_target);
 	}
 #endif
 }

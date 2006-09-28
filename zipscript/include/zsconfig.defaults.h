@@ -457,6 +457,9 @@
 #ifndef audio_group_path
 #define audio_group_path	"/site/incoming/music.by.group/"
 #endif
+#ifndef audio_language_path
+#define audio_language_path	"/site/incoming/music.by.language/"
+#endif
 
 /*
  * It is a good idea to prevent crap from filling your hds. Ignore these
@@ -490,6 +493,9 @@
 #endif
 #ifndef audio_group_sort
 #define audio_group_sort	FALSE
+#endif
+#ifndef audio_language_sort
+#define audio_language_sort	FALSE
 #endif
 
 /*
