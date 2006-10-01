@@ -154,5 +154,6 @@ extern char *remove_pattern(char *, char *, int);
 extern void    *ng_realloc(void *, int, int, int, struct VARS *, int);
 extern void    *ng_realloc2(void *, int, int, int, int);
 extern void    *ng_free(void *);
+extern int	copyfile(char *, char *);
 #endif
 

@@ -223,13 +223,14 @@ main(int argc, char **argv)
 	d_log("zipscript-c: Allocating memory for variables\n");
 	g.l.race = ng_realloc2(g.l.race, n += 10 + (g.l.length_zipdatadir = sizeof(storage) - 1), 1, 1, 1);
 	g.l.sfv = ng_realloc2(g.l.sfv, n, 1, 1, 1);
+	g.l.sfvbackup = ng_realloc2(g.l.sfvbackup, n, 1, 1, 1);
 	g.l.leader = ng_realloc2(g.l.leader, n, 1, 1, 1);
 	target = ng_realloc2(target, n + 256, 1, 1, 1);
 	g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 100, 1, 1, 1);
 	g.gi = ng_realloc2(g.gi, sizeof(struct GROUPINFO *) * 100, 1, 1, 1);
-
 	d_log("zipscript-c: Copying data g.l into memory\n");
 	sprintf(g.l.sfv, storage "/%s/sfvdata", g.l.path);
+	sprintf(g.l.sfvbackup, storage "/%s/sfvbackup", g.l.path);
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
 	g.v.file.compression_method = '5';
@@ -547,6 +548,16 @@ main(int argc, char **argv)
 					exit_value = 2;
 					g.v.misc.write_log = write_log;
 					break;
+				} else if (deny_resume_sfv == TRUE && findfileextcount(dir, ".sfv") == 1) {
+					write_log = g.v.misc.write_log;
+					g.v.misc.write_log = 1;
+					d_log("zipscript-c: Resume of sfv not allowed\n");
+					error_msg = convert(&g.v, g.ui, g.gi, deny_resumesfv_msg);
+					writelog(&g, error_msg, general_resumesfv_type);
+					if (copyfile(g.l.sfvbackup, g.v.file.name))
+						d_log("zipscript-c: failed to copy backed up sfv\n");
+					g.v.misc.write_log = write_log;
+					break;
 				} else if (findfileextcount(dir, ".sfv") > 1 && sfv_compare_size(".sfv", g.v.file.size) > 0) {
 					d_log("zipscript-c: DEBUG: sfv_compare_size=%d\n", sfv_compare_size(".sfv", g.v.file.size));
 					d_log("zipscript-c: Reading remainders of old sfv\n");
@@ -703,6 +714,13 @@ main(int argc, char **argv)
 					d_log("zipscript-c: Reading audio info for completebar\n");
 					get_mpeg_audio_info(findfileext(dir, ".mp3"), &g.v.audio);
 				}
+			}
+
+			if (deny_resume_sfv == TRUE) {
+				if (copyfile(g.v.file.name, g.l.sfvbackup))
+					d_log("zipscript-c: failed to make backup of sfv\n");
+				else
+					d_log("zipscript-c: created backup of sfv\n");
 			}
 			break;
 			/* END OF SFV CHECK */
@@ -1508,6 +1526,7 @@ main(int argc, char **argv)
 	ng_free(target);
 	ng_free(g.l.race);
 	ng_free(g.l.sfv);
+	ng_free(g.l.sfvbackup);
 	ng_free(g.l.leader);
 
 #if ( benchmark_mode == TRUE )

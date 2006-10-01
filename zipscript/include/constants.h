@@ -86,6 +86,7 @@
 #define audio_announce_sfv_type				"SFV_AUDIO"
 #define general_announce_sfv_type			"SFV"
 #define general_doublesfv_type				"DOUBLESFV"
+#define general_resumesfv_type				"RESUMESFV"
 #define general_badgenre_type				"BADGENRE"
 #define general_badyear_type				"BADYEAR"
 #define general_badbitrate_type				"BADBITRATE"
@@ -110,6 +111,7 @@
 
 
 #define deny_double_msg		"{%U} {%G} {%r} {%n}"
+#define deny_resumesfv_msg	"{%U} {%G} {%r} {%n}"
 #define audio_cbr_warn_msg	"{%U} {%G} {%X}"
 #define audio_year_warn_msg	"{%U} {%G} {%Y}"
 #define audio_genre_warn_msg	"{%U} {%G} {%w}"

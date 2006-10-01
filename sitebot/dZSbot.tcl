@@ -1640,6 +1640,7 @@ proc ng_speed {nick uhost hand chan argv} {
 			set output [replacevar $output "%tagline" [lindex $line 6]]
 			set output [replacevar $output "%timeonline" [lindex $line 7]]
 			set output [replacevar $output "%f_name" [lindex $line 8]]
+			set output [replacevar $output "%u_pid" [lindex $line 10]]
 			sndone $chan [replacebasic $output "SPEED"]
 		}
 	} else {

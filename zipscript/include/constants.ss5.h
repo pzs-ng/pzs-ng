@@ -86,6 +86,7 @@
 #define video_announce_race_halfway_type		"HALFWAY"
 #define general_announce_race_halfway_type		"HALFWAY"
 #define general_doublesfv_type				"DOUBLESFV"
+#define general_resumesfv_type				"DOUBLESFV"
 #define audio_announce_sfv_type				"SFV"
 #define rar_announce_sfv_type				"SFV"
 #define other_announce_sfv_type				"SFV"
@@ -111,6 +112,7 @@
 #define bad_file_nfo_type				"BAD_FILE_DUPENFO"
 
 #define deny_double_msg		"{%U} {%G} {%r} {%n}"
+#define deny_resumesfv_msg	"{%U} {%G} {%r} {%n}"
 #define audio_cbr_warn_msg	"{%U} {%G} {%X}"
 #define audio_year_warn_msg	"{%U} {%G} {%Y}"
 #define audio_genre_warn_msg	"{%U} {%G} {%w}"

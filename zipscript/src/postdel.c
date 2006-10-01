@@ -212,6 +212,7 @@ main(int argc, char **argv)
 	}
 	g.l.race = ng_realloc(g.l.race, n = (int)strlen(g.l.path) + 10 + sizeof(storage), 1, 1, &g.v, 1);
 	g.l.sfv = ng_realloc(g.l.sfv, n, 1, 1, &g.v, 1);
+	g.l.sfvbackup = ng_realloc(g.l.sfvbackup, n, 1, 1, &g.v, 1);
 	g.l.leader = ng_realloc(g.l.leader, n, 1, 1, &g.v, 1);
 	target = ng_realloc(target, 4096, 1, 1, &g.v, 1);
 
@@ -223,6 +224,7 @@ main(int argc, char **argv)
 	d_log("postdel: Copying data &g.l into memory\n");
 	strlcpy(g.v.file.name, fname, NAME_MAX);
 	sprintf(g.l.sfv, storage "/%s/sfvdata", g.l.path);
+	sprintf(g.l.sfvbackup, storage "/%s/sfvbackup", g.l.path);
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
 
@@ -335,8 +337,10 @@ main(int argc, char **argv)
 		d_log("postdel: removing files created\n");
 		if (fileexists(g.l.sfv)) {
 			delete_sfv(g.l.sfv, &g.v);
-			unlink(g.l.sfv);	
+			unlink(g.l.sfv);
 		}
+		if (fileexists(g.l.sfvbackup))
+			unlink(g.l.sfvbackup);
 
 		if (g.l.nfo_incomplete)
 			unlink(g.l.nfo_incomplete);
@@ -425,6 +429,8 @@ main(int argc, char **argv)
 			
 		unlink("file_id.diz");
 		unlink(g.l.sfv);
+		if (fileexists(g.l.sfvbackup))
+			unlink(g.l.sfvbackup);
 		unlink(g.l.race);
 		unlink(g.l.leader);
 		
@@ -484,6 +490,7 @@ main(int argc, char **argv)
 	ng_free(target);
 	ng_free(g.l.race);
 	ng_free(g.l.sfv);
+	ng_free(g.l.sfvbackup);
 	ng_free(g.l.leader);
 
 	remove_lock(&g.v);

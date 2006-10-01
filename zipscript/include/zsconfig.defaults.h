@@ -417,6 +417,9 @@
 #ifndef deny_double_sfv
 #define deny_double_sfv		FALSE
 #endif
+#ifndef deny_resume_sfv
+#define deny_resume_sfv		TRUE
+#endif
 #ifndef deny_double_nfo
 #define deny_double_nfo		FALSE
 #endif
