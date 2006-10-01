@@ -92,6 +92,7 @@ announce.WIPE-r                 = "[%b{wipe-r}][%section] %b{%relname} and all s
 
 ## Special zipscript announcements
 announce.DOUBLESFV              = "[%b{notice}] %b{%u_name} of %g_name tried to upload a dupe sfv."
+announce.RESUMESFV              = "[%b{notice}] %b{%u_name} of %g_name tried to resume/overwrite an sfv."
 announce.BADBITRATE             = "[%b{notice}] %b{%u_name} of %g_name is violating rules by uploading shit with bitrate %b{%bitrate}kbps."
 announce.BADGENRE               = "[%b{notice}] %b{%u_name} of %g_name is violating rules by uploading %b{%genre}."
 announce.BADYEAR                = "[%b{notice}] %b{%u_name} of %g_name is violating rules by uploading shit from %b{%year}."
