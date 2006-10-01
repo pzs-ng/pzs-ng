@@ -1269,3 +1269,44 @@ ng_free(void *mempointer)
 	return 0;
 }
 
+int
+copyfile(char *from_name, char *to_name)
+{
+  FILE *from, *to;
+  char ch;
+  int  retvar = 0;
+
+  if((from = fopen(from_name, "rb"))==NULL) {
+    d_log("copyfile: cannot open source file.\n");
+    return 1;
+  }
+  if((to = fopen(to_name, "wb"))==NULL) {
+    d_log("copyfile: cannot open destination file.\n");
+    fclose(from);
+    return 1;
+  }
+  while(!feof(from)) {
+    ch = fgetc(from);
+    if(ferror(from)) {
+      d_log("copyfile: error reading source file.\n");
+      retvar = 1;
+      break;
+    }
+    if(!feof(from)) fputc(ch, to);
+    if(ferror(to)) {
+      d_log("copyfile: error writing destination file.\n");
+      retvar = 1;
+      break;
+    }
+  }
+  if(fclose(from)==EOF) {
+    d_log("copyfile: error closing source file.\n");
+    retvar = 1;
+  }
+  if(fclose(to)==EOF) {
+    d_log("copyfile: error closing destination file.\n");
+    retvar = 1;
+  }
+  return retvar;
+}
+

@@ -159,6 +159,7 @@ struct LOCATIONS {
 	char		*nfo_incomplete;
 	char		*incomplete;
 	char		*sfv;
+	char		*sfvbackup;
 	char		*race;
 	char		link_target[PATH_MAX];
 	char		link_source[PATH_MAX];

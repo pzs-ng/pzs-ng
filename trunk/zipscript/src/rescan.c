@@ -124,6 +124,7 @@ main(int argc, char *argv[])
 
 	g.l.race = ng_realloc2(g.l.race, n = (int)strlen(g.l.path) + 10 + sizeof(storage), 1, 1, 1);
 	g.l.sfv = ng_realloc2(g.l.sfv, n, 1, 1, 1);
+	g.l.sfvbackup = ng_realloc2(g.l.sfvbackup, n, 1, 1, 1);
 	g.l.leader = ng_realloc2(g.l.leader, n, 1, 1, 1);
 	g.l.length_path = (int)strlen(g.l.path);
 	g.l.length_zipdatadir = sizeof(storage);
@@ -133,6 +134,7 @@ main(int argc, char *argv[])
 	unum = buffer_users(PASSWDFILE, 0);
 
 	sprintf(g.l.sfv, storage "/%s/sfvdata", g.l.path);
+	sprintf(g.l.sfvbackup, storage "/%s/sfvbackup", g.l.path);
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
 
@@ -218,11 +220,14 @@ main(int argc, char *argv[])
 
 			d_log("rescan: Freeing memory, removing lock and exiting\n");
 			unlink(g.l.sfv);
+			if (fileexists(g.l.sfvbackup))
+			unlink(g.l.sfvbackup);
 			unlink(g.l.race);
 			ng_free(g.ui);
 			ng_free(g.gi);
 			ng_free(g.l.race);
 			ng_free(g.l.sfv);
+			ng_free(g.l.sfvbackup);
 			ng_free(g.l.leader);
 			
 			remove_lock(&g.v);
@@ -522,6 +527,7 @@ main(int argc, char *argv[])
 	updatestats_free(&g);
 	ng_free(g.l.race);
 	ng_free(g.l.sfv);
+	ng_free(g.l.sfvbackup);
 	ng_free(g.l.leader);
 
 	if (fileexists(".delme"))
