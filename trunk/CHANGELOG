@@ -1,10 +1,17 @@
 PZS-NG CHANGELOG
 ----------------
 
+v1.0.2  --> 1.x.x  :
+		- added support for showing pid of users in sitewho (only in --raw, non-ss5 mode)
+		- added support for denying resumed/overwritten sfv files.
+		- added support for sorting mp3 by language.
+		- New option in zsconfig.h - deny_resume_sfv - deny resumed/overwritten sfv files
+		- New option in zsconfig.h - audio_language_sort - sort mp3 by language
+		- New option in zsconfig.h - audio_language_path - where to put mp3 symlinks
 v1.0.1b --> 1.0.2  : (r2130)
-		- Fixed a coredump on amd64 in mp3info
-		- Fixed a coredump on amd64 in sitewho
-		- Made cleanup more general - previously it would only cleanup broken
+		- Fixed a coredump on amd64 in mp3info.
+		- Fixed a coredump on amd64 in sitewho.
+		- Made cleanup more general - previously it would only cleanup broken.
 		  indicators or mp3 symlinks.
 		- Small fix in sitewho (reading-config bug, affecting paths and names with =).
 		- Small bugfix for imdb-nuker.
