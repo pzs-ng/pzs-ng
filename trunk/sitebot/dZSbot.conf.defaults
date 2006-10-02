@@ -290,6 +290,8 @@ set disable(PRE)                            0
 set disable(TURGEN)                         0
 set disable(GAMEFAQS)                       0
 set disable(GAMEFAQS-PRE)                   0
+set disable(TVRAGE)                         0
+set disable(TVRAGE-PRE)                     0
 
 ## Zipscript announcements
 set disable(BAD_FILE_0SIZE)                 1

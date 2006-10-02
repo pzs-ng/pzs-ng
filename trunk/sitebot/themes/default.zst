@@ -207,6 +207,8 @@ announce.GAMEFAQS               = "[%b{GAME-INFO}][%section] %b{%gamefaqstitle} 
 announce.GAMEFAQS_LOOP1         = "%gamefaqsregion: %gamefaqsdate%splitter"
 announce.GAMEFAQS-PRE           = "[%b{GAME-INFO}][%section] %b{%gamefaqstitle} (%gamefaqsrating)/10 URL: %gamefaqsurl\n[%b{GAME-INFO}][%section] Release Date: %loop1"
 announce.GAMEFAQS-PRE_LOOP1     = "%gamefaqsregion: %gamefaqsdate%splitter"
+announce.TVRAGE                 = "[%b{TV-INFO}][%section] %b{%tvrage_show_name}: %b{%tvrage_episode_title} (%tvrage_show_genres) Aired: %tvrage_episode_original_airdate\n[%b{TV-INFO}][%section] URL: %tvrage_episode_url"
+announce.TVRAGE-PRE             = "[%b{TV-INFO}][%section] %b{%tvrage_show_name}: %b{%tvrage_episode_title} (%tvrage_show_genres) Aired: %tvrage_episode_original_airdate\n[%b{TV-INFO}][%section] URL: %tvrage_episode_url"
 
 ## Miscellaneous announcements
 announce.BADMSGINVITE           = "[%b{%c1{badinv}}] %b{%u_ircnick} (%u_host) tried to invite himself with invalid login!"
