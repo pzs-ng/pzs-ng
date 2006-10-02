@@ -58,3 +58,7 @@ DeluserBan.tcl  - Automatically kick and ban users from your channel
                   on DELUSER or PURGE (requires NickDb).
 
 PreTime.tcl     - Announces the pre time of a release on NEWDIR.
+
+GameFAQs.tcl    - Announces game info from GamqFAQs.com on NEWDIR and PRE.
+
+TVRage.tcl      - Announces TV episode info from TVRage.com on NEWDIR and PRE.
