@@ -304,7 +304,7 @@ main(int argc, char *argv[])
 					}
 				}
 
-				if (!rescan_quick || (fileexists(g.l.race) && !match_file(g.l.race, dp->d_name)))
+				if (!rescan_quick || (g.l.race && !match_file(g.l.race, dp->d_name)))
 					crc = calc_crc32(dp->d_name);
 				else
  					crc = 1;

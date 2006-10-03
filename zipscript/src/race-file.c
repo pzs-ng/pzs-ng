@@ -281,7 +281,8 @@ void
 testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 {
 	int		fd, lret, count;
-	char		*realfile, *ext, target[256];
+	char		*realfile, *ext, target[PATH_MAX];
+	FILE		*racefile;
 	unsigned int	Tcrc;
 	struct stat	filestat;
 	time_t		timenow;
@@ -296,6 +297,11 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 		}
 	}
 	
+	close(fd);
+	if (!(racefile = fopen(locations->race, "r+"))) {
+		d_log("testfiles: fopen(%s) failed\n", locations->race);
+		exit(EXIT_FAILURE);
+	}
 
 	realfile = raceI->file.name;
 
@@ -303,22 +309,22 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 		printf("\n");
 
 	count = 0;
-	while ((read(fd, &rd, sizeof(RACEDATA)))) {
+	rd.status = F_NOTCHECKED;
+	while ((fread(&rd, sizeof(RACEDATA), 1, racefile))) {
 		if (!update_lock(raceI, 1, 0)) {
 			d_log("testfiles: Lock is suggested removed. Will comply and exit\n");
 			remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
-
-		d_log("testfiles: Checking '%s'\n", rd.fname);
 		ext = find_last_of(realfile, ".");
 		if (*ext == '.')
 			ext++;
-		if (rd.status == F_NOTCHECKED) {
-			strlcpy(raceI->file.name, rd.fname, NAME_MAX);
-			Tcrc = readsfv(locations->sfv, raceI, 0);
-			stat(rd.fname, &filestat);
-			timenow = time(NULL);
+		strlcpy(raceI->file.name, rd.fname, NAME_MAX);
+		Tcrc = readsfv(locations->sfv, raceI, 0);
+		timenow = time(NULL);
+		stat(rd.fname, &filestat);
+
+		if (fileexists(rd.fname)) {
 			if (S_ISDIR(filestat.st_mode))
 				rd.status = F_IGNORED;
 			else if (rd.crc32 != 0 && Tcrc == rd.crc32)
@@ -331,58 +337,60 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 					  (strcomp(allowed_types, ext) &&
 					   !matchpath(allowed_types_exemption_dirs, locations->path)))
 				rd.status = F_IGNORED;
-			else if	((timenow == filestat.st_ctime) && (filestat.st_mode & 0111)) {
+			else if ((timenow == filestat.st_ctime) && (filestat.st_mode & 0111)) {
 				d_log("testfiles: Looks like this file (%s) is in the process of being uploaded. Ignoring.\n", rd.fname);
 				rd.status = F_IGNORED;
 				create_missing(rd.fname);
-			} else {
-				d_log("testfiles: Marking file (%s) as bad and removing it.\n", rd.fname);
-				mark_as_bad(rd.fname);
-				if (rd.fname)
-					unlink(rd.fname);
-				rd.status = F_BAD;
+			}
+		} else
+			rd.status = F_NOTCHECKED;
+		if (rd.status == F_NOTCHECKED) {
+			d_log("testfiles: Marking file (%s) as bad and removing it.\n", rd.fname);
+			mark_as_bad(rd.fname);
+			if (rd.fname)
+				unlink(rd.fname);
+			rd.status = F_BAD;
 
 #if ( create_missing_files )
-				if (Tcrc != 0)
-					create_missing(rd.fname);
+			if (Tcrc != 0)
+				create_missing(rd.fname);
 #endif
 
-				if (rstatus)
-					printf("File: %s FAILED!\n", rd.fname);
+			if (rstatus)
+				printf("File: %s FAILED!\n", rd.fname);
 
-				d_log("testfiles: marking %s bad.\n", rd.fname);
-				if (enable_unduper_script == TRUE) {
-					if (!fileexists(unduper_script)) {
-						d_log("Failed to undupe '%s' - '%s' does not exist.\n",
-							  rd.fname, unduper_script);
-					} else {
-						sprintf(target, unduper_script " \"%s\"", rd.fname);
-						if (execute(target) == 0)
-							d_log("testfiles: undupe of %s successful.\n", rd.fname);
-						else
-							d_log("testfiles: undupe of %s failed.\n", rd.fname);
-					}
+			d_log("testfiles: marking %s bad.\n", rd.fname);
+#if (enable_unduper_script == TRUE)
+				if (!fileexists(unduper_script)) {
+					d_log("Failed to undupe '%s' - '%s' does not exist.\n",
+						  rd.fname, unduper_script);
+				} else {
+					sprintf(target, unduper_script " \"%s\"", rd.fname);
+					if (execute(target) == 0)
+						d_log("testfiles: undupe of %s successful.\n", rd.fname);
+					else
+						d_log("testfiles: undupe of %s failed.\n", rd.fname);
 				}
-			}
-			if (rd.status == F_BAD) {
-				remove_from_race(locations->race, rd.fname, raceI);
-			} else {
-				if ((lret = lseek(fd, sizeof(RACEDATA) * count, SEEK_SET)) == -1) {
-					d_log("testfiles: lseek: %s\n", strerror(errno));
-					remove_lock(raceI);
-					exit(EXIT_FAILURE);
-				}
-				if (write(fd, &rd, sizeof(RACEDATA)) != sizeof(RACEDATA))
-					d_log("testfiles: write failed: %s\n", strerror(errno));
-				if (!((timenow == filestat.st_ctime) && (filestat.st_mode & 0111)))
-					unlink_missing(rd.fname);
-			}
-			count++;
+#endif
 		}
+		if (rd.status == F_BAD) {
+			remove_from_race(locations->race, rd.fname, raceI);
+		} else {
+			if ((lret = fseek(racefile, sizeof(RACEDATA) * count, SEEK_SET)) == -1) {
+				d_log("testfiles: fseek: %s\n", strerror(errno));
+				exit(EXIT_FAILURE);
+			}
+			if (fwrite(&rd, sizeof(RACEDATA), 1, racefile) == 0)
+				d_log("testfiles: write failed: %s\n", strerror(errno));
+
+			if (!((timenow == filestat.st_ctime) && (filestat.st_mode & 0111)))
+				unlink_missing(rd.fname);
+		}
+		count++;
 	}
 	strlcpy(raceI->file.name, realfile, strlen(realfile)+1);
 	raceI->total.files = raceI->total.files_missing = 0;
-	close(fd);
+	fclose(racefile);
 }
 
 /*
