@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.2  --> 1.x.x  :
+		- added meij's TVRage plugin (v1.1)
 		- added support for showing pid of users in sitewho (only in --raw, non-ss5 mode)
 		- added support for denying resumed/overwritten sfv files.
 		- added support for sorting mp3 by language.
