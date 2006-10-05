@@ -221,7 +221,7 @@ main(int argc, char **argv)
 	n = (g.l.length_path = (int)strlen(g.l.path)) + 1;
 
 	d_log("zipscript-c: Allocating memory for variables\n");
-	g.l.race = ng_realloc2(g.l.race, n += 10 + (g.l.length_zipdatadir = sizeof(storage) - 1), 1, 1, 1);
+	g.l.race = ng_realloc2(g.l.race, n += 12 + (g.l.length_zipdatadir = sizeof(storage) - 1), 1, 1, 1);
 	g.l.sfv = ng_realloc2(g.l.sfv, n, 1, 1, 1);
 	g.l.sfvbackup = ng_realloc2(g.l.sfvbackup, n, 1, 1, 1);
 	g.l.leader = ng_realloc2(g.l.leader, n, 1, 1, 1);
