@@ -335,7 +335,8 @@ main(int argc, char **argv)
 			break;
 	}
 
-	printf(zipscript_header);
+	if (strlen(zipscript_header))
+		printf(zipscript_header);
 
 	/* Hide users in group_dirs */
 	if (matchpath(group_dirs, g.l.path) && (hide_group_uploaders == TRUE)) {
