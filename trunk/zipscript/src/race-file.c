@@ -1335,14 +1335,14 @@ check_zipfile(const char *dirname, const char *zipfile)
 	}
 #if (extract_nfo)
 	if (t) {
-		if (findfileextcount(dir, ".zip") < 1) {
+		if (!findfileextcount(dir, ".nfo")) {
 			sprintf(path_buf, "%s/%s", dirname, nfo_buf);
 			strtolower(nfo_buf);
 			rename(path_buf, nfo_buf);
 			chmod(nfo_buf, 0644);
 			d_log("check_zipfile: nfo extracted - %s\n", nfo_buf);
 		} else
-			d_log("check_zipfile: nfo NOT extracted - a nfo already exists");
+			d_log("check_zipfile: nfo NOT extracted - a nfo already exists\n");
 	}
 #endif
 	rewinddir(dir);
