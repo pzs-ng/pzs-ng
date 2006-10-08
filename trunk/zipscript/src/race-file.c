@@ -1279,7 +1279,7 @@ check_rarfile(const char *filename)
  * psxc r2126 (v1)
  */
 int
-check_zipfile(const char *dirname, const char *zipfile)
+check_zipfile(const char *dirname, const char *zipfile, int do_nfo)
 {
 	int             ret = 0;
 	char            path_buf[PATH_MAX], target[PATH_MAX];
@@ -1335,14 +1335,14 @@ check_zipfile(const char *dirname, const char *zipfile)
 	}
 #if (extract_nfo)
 	if (t) {
-		if (!findfileextcount(dir, ".nfo")) {
+		if (!do_nfo) {
 			sprintf(path_buf, "%s/%s", dirname, nfo_buf);
 			strtolower(nfo_buf);
 			rename(path_buf, nfo_buf);
 			chmod(nfo_buf, 0644);
 			d_log("check_zipfile: nfo extracted - %s\n", nfo_buf);
 		} else
-			d_log("check_zipfile: nfo NOT extracted - a nfo already exists\n");
+			d_log("check_zipfile: nfo NOT extracted - a nfo already exist in dir\n");
 	}
 #endif
 	rewinddir(dir);
