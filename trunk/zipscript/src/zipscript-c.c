@@ -488,7 +488,8 @@ main(int argc, char **argv)
 				}
 			}
 			d_log("zipscript-c: Reading diskcount from diz:\n");
-			g.v.total.files = read_diz("file_id.diz");
+//			g.v.total.files = read_diz("file_id.diz");
+			g.v.total.files = read_diz();
 			d_log("zipscript-c:    Expecting %d files.\n", g.v.total.files);
 
 			if (g.v.total.files == 0) {
