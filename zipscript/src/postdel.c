@@ -280,7 +280,8 @@ main(int argc, char **argv)
 			}
 		}
 		d_log("postdel: Reading diskcount from diz\n");
-		g.v.total.files = read_diz("file_id.diz");
+//		g.v.total.files = read_diz("file_id.diz");
+		g.v.total.files = read_diz();
 		if (g.v.total.files == 0) {
 			d_log("postdel: Could not get diskcount from diz\n");
 			g.v.total.files = 1;

@@ -69,7 +69,8 @@ main(int argc, char **argv)
 
 	if (!fileexists(g.l.sfv)) {
 		if (fileexists(g.l.sfv)) {
-			g.v.total.files = read_diz("file_id.diz");
+//			g.v.total.files = read_diz("file_id.diz");
+			g.v.total.files = read_diz();
 			g.v.total.files_missing += g.v.total.files;
 		} else {
 			g.v.total.files -= g.v.total.files_missing;

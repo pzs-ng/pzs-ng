@@ -464,7 +464,8 @@ main(int argc, char *argv[])
 				}
 			}
 		}
-		g.v.total.files = read_diz("file_id.diz");
+//		g.v.total.files = read_diz("file_id.diz");
+		g.v.total.files = read_diz();
 		if (!g.v.total.files) {
 			g.v.total.files = 1;
 			unlink("file_id.diz");

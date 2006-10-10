@@ -1364,7 +1364,7 @@ filebanned_match(const char *filename)
 	char            fbuf[strlen(filename)+1];
 
 	bzero(fbuf, sizeof(fbuf));
-	strcpy(fbuf, filename);
+	strncpy(fbuf, filename, sizeof(fbuf) - 1);
 
 	if ((fd = open(banned_filelist, O_RDONLY)) == -1) {
 		d_log("filebanned_match: failed to open banned_filelist - open(%s): %s\n", banned_filelist, strerror(errno));

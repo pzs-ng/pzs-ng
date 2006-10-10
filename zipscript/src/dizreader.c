@@ -30,9 +30,16 @@ char	*search[] = {
 		": ?!/##&/",
 		"xx/##",
 		"<!!/##>",
-		"x/##"};
+		"x/##",
+		"! of #",
+		"? of #",
+		"x of #",
+		"ox of o#",
+		"!! of ##",
+		"?! of ##",
+		"xx of ##"};
 
-int		strings = 16;
+int		strings = 23;
 
 /* REMOVE SPACES FROM STRING */
 void 
@@ -58,14 +65,16 @@ removespaces(char *instr, int l)
 }
 
 int 
-read_diz(char *filename)
+//read_diz(char *filename)
+read_diz(void)
 {
 	int		pos       , fd, diskc, control, tgt, cnt, cnt2;
 	unsigned int	cnt3, matches;
 	char		data      [4096];
 	char		disks     [4];
 
-	fd = open(filename, O_NONBLOCK);
+//	fd = open(filename, O_NONBLOCK);
+	fd = open("file_id.diz", O_NONBLOCK);
 	while ((tgt = read(fd, data, 4096)) > 0) {
 		removespaces(data, tgt);
 		for (cnt = 0; cnt < tgt; cnt++)
