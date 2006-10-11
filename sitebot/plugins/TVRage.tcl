@@ -1,9 +1,10 @@
 ################################################################################
 #                                                                              #
-#             TVRage - TV Show & Episode Pzs-ng Plug-in v1.1                   #
+#             TVRage - TV Show & Episode Pzs-ng Plug-in v1.3                   #
 #                       by Meij <meijie@gmail.com>                             #
 #                                                                              #
 ################################################################################
+#
 # Step 4. below is done (changes done in dZSbot.defaults.tcl and dZSbot.vars)
 # Step 5. is done in the default.zst theme *only*.
 # Any questions must be relayed to the author.
@@ -21,10 +22,14 @@
 #    source pzs-ng/plugins/TVRage.tcl
 #
 # 4. Add the following to dZSbot.conf:
-#    set disable(TVRAGE)       0
-#    set disable(TVRAGE-PRE)   0
-#    set variables(TVRAGE)     "%pf %u_name %g_name %u_tagline %tvrage_show_name %tvrage_show_genres %tvrage_show_country %tvrage_show_status %tvrage_show_latest_title %tvrage_show_latest_episode %tvrage_show_latest_airdate %tvrage_show_next_title %tvrage_show_next_episode %tvrage_show_next_airdate %tvrage_show_url %tvrage_show_classification %tvrage_show_premiered %tvrage_episode_url %tvrage_episode_season_episode %tvrage_episode_season %tvrage_episode_number %tvrage_episode_original_airdate %tvrage_episode_title %tvrage_episode_production_number"
-#    set variables(TVRAGE-PRE) "$variables(PRE) %tvrage_show_name %tvrage_show_genres %tvrage_show_country %tvrage_show_status %tvrage_show_latest_title %tvrage_show_latest_episode %tvrage_show_latest_airdate %tvrage_show_next_title %tvrage_show_next_episode %tvrage_show_next_airdate %tvrage_show_url %tvrage_show_classification %tvrage_show_premiered %tvrage_episode_url %tvrage_episode_season_episode %tvrage_episode_season %tvrage_episode_number %tvrage_episode_original_airdate %tvrage_episode_title %tvrage_episode_production_number"
+#    set disable(TVRAGE)           0
+#    set disable(TVRAGE-PRE)       0
+#    set disable(TVRAGE-MSGFULL)   0
+#    set disable(TVRAGE-MSGSHOW)   0
+#    set variables(TVRAGE)         "$variables(NEWDIR) %tvrage_show_name %tvrage_show_genres %tvrage_show_country %tvrage_show_status %tvrage_show_latest_title %tvrage_show_latest_episode %tvrage_show_latest_airdate %tvrage_show_next_title %tvrage_show_next_episode %tvrage_show_next_airdate %tvrage_show_url %tvrage_show_classification %tvrage_show_premiered %tvrage_episode_url %tvrage_episode_season_episode %tvrage_episode_season %tvrage_episode_number %tvrage_episode_original_airdate %tvrage_episode_title %tvrage_episode_production_number %tvrage_episode_score"
+#    set variables(TVRAGE-PRE)     "$variables(PRE) %tvrage_show_name %tvrage_show_genres %tvrage_show_country %tvrage_show_status %tvrage_show_latest_title %tvrage_show_latest_episode %tvrage_show_latest_airdate %tvrage_show_next_title %tvrage_show_next_episode %tvrage_show_next_airdate %tvrage_show_url %tvrage_show_classification %tvrage_show_premiered %tvrage_episode_url %tvrage_episode_season_episode %tvrage_episode_season %tvrage_episode_number %tvrage_episode_original_airdate %tvrage_episode_title %tvrage_episode_production_number %tvrage_episode_score"
+#    set variables(TVRAGE-MSGFULL) "%tvrage_show_name %tvrage_show_genres %tvrage_show_country %tvrage_show_status %tvrage_show_latest_title %tvrage_show_latest_episode %tvrage_show_latest_airdate %tvrage_show_next_title %tvrage_show_next_episode %tvrage_show_next_airdate %tvrage_show_url %tvrage_show_classification %tvrage_show_premiered %tvrage_episode_url %tvrage_episode_season_episode %tvrage_episode_season %tvrage_episode_number %tvrage_episode_original_airdate %tvrage_episode_title %tvrage_episode_production_number %tvrage_episode_score"
+#    set variables(TVRAGE-MSGSHOW) $variables(TVRAGE-MSGFULL)
 #
 #    set zeroconvert(%tvrage_show_name)                 "N/A"
 #    set zeroconvert(%tvrage_show_genres)               "N/A"
@@ -46,12 +51,15 @@
 #    set zeroconvert(%tvrage_episode_original_airdate)  "N/A"
 #    set zeroconvert(%tvrage_episode_title)             "N/A"
 #    set zeroconvert(%tvrage_episode_production_number) "N/A"
+#    set zeroconvert(%tvrage_episode_score)             "-"
 #
 # 5. Add the following to your theme file (.zst).
 #    announce.TVRAGE           = "[%b{TV-INFO}][%section] %b{%tvrage_show_name}: %b{%tvrage_episode_title} (%tvrage_show_genres) Aired: %tvrage_episode_original_airdate\n[%b{TV-INFO}][%section] URL: %tvrage_episode_url"
 #
 #    announce.TVRAGE-PRE       = "[%b{TV-INFO}][%section] %b{%tvrage_show_name}: %b{%tvrage_episode_title} (%tvrage_show_genres) Aired: %tvrage_episode_original_airdate\n[%b{TV-INFO}][%section] URL: %tvrage_episode_url"
 #
+#    announce.TVRAGE-MSGFULL   = "[%b{TV-INFO}] %b{%tvrage_show_name}: %b{%tvrage_episode_title} (%tvrage_show_genres) Aired: %tvrage_episode_original_airdate\n[%b{TV-INFO}] URL: %tvrage_episode_url"
+#    announce.TVRAGE-MSGSHOW   = "[%b{TV-INFO}] %b{%tvrage_show_name} (%tvrage_show_genres)\n[%b{TV-INFO}] Last Episode: %b{%tvrage_show_latest_episode: %tvrage_show_latest_title} (%tvrage_show_latest_airdate)\n[%b{TV-INFO}] Next Episode: %b{%tvrage_show_next_episode: %tvrage_show_next_title} (%tvrage_show_next_airdate)\n[%b{TV-INFO}] URL: %tvrage_show_url"
 #
 # 6. Rehash or restart your eggdrop for the changes to take effect.
 #
@@ -68,8 +76,17 @@ namespace eval ::ngBot::TVRage {
 	## Timeout in milliseconds.
 	set tvrage(timeout)  10000
 	##
-	## Date format (URL: http://tcl.tk/man/tcl8.3/TclCmd/clock.htm)
+	## Channel trigger (Leave blank to disable)
+	set tvrage(ctrigger) "!tv"
+	##
+	## Private message trigger (Leave blank to disable)
+	set tvrage(ptrigger) ""
+	##
+	## Date format (URL: http://tcl.tk/man/tcl8.4/TclCmd/clock.htm)
 	set tvrage(date)     "%Y-%m-%d"
+	##
+	## Skip announce for these directories.
+	set tvrage(ignore_dirs) {cd[0-9] dis[ck][0-9] dvd[0-9] codec cover covers extra extras sample subs vobsub vobsubs}
 	##
 	## Genre splitter
 	set tvrage(splitter) " / "
@@ -104,13 +121,20 @@ proc ::ngBot::TVRage::Init {args} {
 
 	if {[catch {package require http}] != 0} {
 		[namespace current]::Error "\"http\" package not found, unloading script."
-		::ngBot::TVRage::DeInit
+		[namespace current]::DeInit
 		return
 	}
 
 	## Register the event handler.
 	foreach event $events {
 		lappend postcommand($event) $scriptName
+	}
+
+	if {([info exists tvrage(ctrigger)]) && (![string equal $tvrage(ctrigger) ""])} {
+		bind pub -|- $tvrage(ctrigger) [namespace current]::Trigger
+	}
+	if {([info exists tvrage(ptrigger)]) && (![string equal $tvrage(ptrigger) ""])} {
+		bind msg -|- $tvrage(ptrigger) [namespace current]::Trigger
 	}
 
 	putlog "\[ngBot\] TVRage :: Loaded successfully."
@@ -130,6 +154,8 @@ proc ::ngBot::TVRage::DeInit {args} {
 		}
 	}
 
+	catch {unbind pub -|- $tvrage(ctrigger) [namespace current]::Trigger}
+	catch {unbind msg -|- $tvrage(ptrigger) [namespace current]::Trigger}
 	catch {unbind evnt -|- prerehash [namespace current]::DeInit}
 
 	namespace delete [namespace current]
@@ -139,10 +165,48 @@ proc ::ngBot::TVRage::Error {error} {
 	putlog "\[ngBot\] TVRage :: Error: $error"
 }
 
-proc ::ngBot::TVRage::LogEvent {event section logData} {
+proc ::ngBot::TVRage::ConvertDate {string} {
 	variable tvrage
 
-	set output_order [list show_name show_genre show_country show_status show_latest_title show_latest_episode show_latest_airdate show_next_title show_next_episode show_next_airdate show_url show_classification show_premiered episode_url episode_season_episode episode_season episode_number episode_original_airdate episode_title episode_production_number]
+	if {[catch {clock format [clock scan $string] -format $tvrage(date)} result] == 0} {
+		set string $result
+	}
+
+	return $string
+}
+
+proc ::ngBot::TVRage::Trigger {args} {
+	global lastbind
+
+	if {[llength $args] == 5} {
+		checkchan [lindex $args 2] [lindex $args 3]
+	}
+
+	set text [lindex $args [expr { [llength $args] - 1 }]]
+	set target [lindex $args [expr { [llength $args] - 2 }]]
+
+	if {[string equal $text ""]} {
+		sndone $target "TVRage Syntax :: $lastbind <string> (eg: $lastbind Stargate SG-1 S02E10)"
+		return 1
+	}
+
+	if {[catch {[namespace current]::FindInfo $text [list] "false"} logData] != 0} {
+		sndone $target "TVRage Error :: \"$logData\""
+		return 0
+	}
+
+	## Display full series/episode info if episode_url exists
+	if {![string equal [lindex $logData 13] ""]} {
+		sndone $target [ng_format "TVRAGE-MSGFULL" "none" $logData]
+	} else {
+		sndone $target [ng_format "TVRAGE-MSGSHOW" "none" $logData]
+	}
+
+	return 1
+}
+
+proc ::ngBot::TVRage::LogEvent {event section logData} {
+	variable tvrage
 
 	if {[string compare -nocase $event "NEWDIR"] == 0} {
 		set target "TVRAGE"
@@ -172,50 +236,21 @@ proc ::ngBot::TVRage::LogEvent {event section logData} {
 		}
 	}
 
+	## Check the release directory is ignored.
+	foreach ignore [split $tvrage(ignore_dirs) " "] {
+		if {[string match -nocase $ignore [file tail $release]]} {
+			return 1
+		}
+	}
+
 	foreach path $tvrage(sections) {
 		if {[string match -nocase "$path*" $release]} {
-			if {[regexp -- {^(.*?)(\d+x\d+|[sS]\d+[eE]\d+).*$} [file tail $release] -> show_str episode_str]} {
-				regexp -- {^(\d+)x(\d+)$} $episode_str -> episode_season episode_number
-				regexp -- {^[sS](\d+)[eE](\d+)$} $episode_str -> episode_season episode_number
-
-				regsub -all -- {[\._]} $show_str " " show_str
-				set show_str [string trim $show_str]
-
-				::http::config -useragent "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.0.7) Gecko/20060909 Firefox/1.5.0.7"
-
-				if {[catch {[namespace current]::GetShow $show_str} error] != 0} {
-					[namespace current]::Error "$error ($release)."
-					return 0
-				}
-
-				array set info $error
-
-				if {[catch {[namespace current]::FindEpisode $info(show_url) $episode_season $episode_number} error]} {
-					[namespace current]::Error "$error ($release)."
-					return 0
-				}
-
-				array set info $error
-
-				if {[catch {[namespace current]::GetEpisode $info(episode_url)} error]} {
-					[namespace current]::Error "$error ($release)."
-					return 0
-				}
-
-				array set info $error
-
-				foreach key $output_order {
-					if {![info exists info($key)]} {
-						set info($key) ""
-					}
-
-					lappend logData $info($key)
-				}
-
-				sndall $target $section [ng_format $target $section $logData]
-			} else {
-				[namespace current]::Error "Unable to parse TV info from \"$release\"."
+			if {[catch {[namespace current]::FindInfo [file tail $release] $logData} logData] != 0} {
+				[namespace current]::Error "$logData. ($release)"
+				return 0
 			}
+
+			sndall $target $section [ng_format $target $section $logData]
 
 			break
 		}
@@ -226,19 +261,66 @@ proc ::ngBot::TVRage::LogEvent {event section logData} {
 	return 1
 }
 
+proc ::ngBot::TVRage::FindInfo {string logData {strict true}} {
+	set output_order [list show_name show_genre show_country show_status \
+	                       show_latest_title show_latest_episode \
+	                       show_latest_airdate show_next_title \
+	                       show_next_episode show_next_airdate show_url \
+	                       show_classification show_premiered episode_url \
+	                       episode_season_episode episode_season \
+	                       episode_number episode_original_airdate \
+	                       episode_title episode_production_number \
+	                       episode_score]
+
+	set show_str $string
+	if {(![regexp -- {^(.*?)(\d+x\d+|[sS]\d+[eE]\d+).*$} $string -> show_str episode_str]) && \
+	    ([string is true -strict $strict])} {
+		error "Unable to parse season and episode info from \"$string\""
+	}
+
+	catch {regexp -- {^(\d+)x(\d+)$} $episode_str -> episode_season episode_number}
+	catch {regexp -- {^[sS](\d+)[eE](\d+)$} $episode_str -> episode_season episode_number}
+
+	regsub -all -- {[\._]} $show_str " " show_str
+	set show_str [string trim $show_str]
+
+	::http::config -useragent "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.0.7) Gecko/20060909 Firefox/1.5.0.7"
+
+	array set info [[namespace current]::GetShow $show_str]
+	if {([info exists episode_season]) && ([info exists episode_number]) && \
+	    ([info exists info(show_url)])} {
+		array set info [[namespace current]::FindEpisode $info(show_url) $episode_season $episode_number]
+
+		if {[info exists info(episode_url)]} {
+			array set info [[namespace current]::GetEpisode $info(episode_url)]
+		}
+	}
+
+	foreach key $output_order {
+		if {(![info exists info($key)]) || \
+		    ([string equal -nocase $info($key) "&nbsp;"])} {
+			set info($key) ""
+		}
+
+		lappend logData $info($key)
+	}
+
+	return $logData
+}
+
 proc ::ngBot::TVRage::GetShow {show} {
 	variable tvrage
 
 	set token [::http::geturl "http://www.tvrage.com/quickinfo.php?show=[::http::formatQuery $show]" -timeout $tvrage(timeout)]
 
-	# Its pointless checking the http status, its always 200. Errors are
-	# redirected on the server to an 'Unknown Page' error page.
+	## Its pointless checking the http status, its always 200. Errors are
+	## redirected on the server to an 'Unknown Page' error page.
 
 	set data [::http::data $token]
 	set matches [regexp -inline -nocase -all -- {(.[^@]+)@(.[^\n\r]+)(?:[\n\r]*)} $data]
 
 	if {[string length $matches] == 0} {
-		error "No results found for \"$show\""
+		return -code error "No results found for \"$show\""
 	}
 
 	foreach {junk key value} $matches {
@@ -251,11 +333,10 @@ proc ::ngBot::TVRage::GetShow {show} {
 
 				regexp -- {(.[^\^]+)\^(.[^\^]+)\^(.*)} $value -> info(show_$key\_episode) info(show_$key\_title) info(show_$key\_airdate)
 
-				if {[regexp -- {[0-9]{2}/\w+/[0-9]{2}} $info(show_$key\_airdate)]} {
-					set info(show_$key\_airdate) [string map { "/" "" } $info(show_$key\_airdate)]
+				# {^((0|)[1-9]|(1|2|3)[0-9])/\w+/[0-9]+$}
+				set info(show_$key\_airdate) [string map { "/" " " } $info(show_$key\_airdate)]
 
-					set info(show_$key\_airdate) [clock format [clock scan $info(show_$key\_airdate)] -format $tvrage(date)]
-				}
+				set info(show_$key\_airdate) [[namespace current]::ConvertDate $info(show_$key\_airdate)]
 			}
 			genres {
 				set info(show_genre) [list]
@@ -276,7 +357,7 @@ proc ::ngBot::TVRage::GetShow {show} {
 	}
 
 	if {![info exists info(show_url)]} {
-		error "Invalid results found for \"$show\""
+		return -code error "Invalid results found for \"$show\""
 	}
 
 	return [array get info]
@@ -287,14 +368,14 @@ proc ::ngBot::TVRage::FindEpisode {url season episode} {
 
 	set token [::http::geturl "$url/episode_list/$season" -timeout $tvrage(timeout)]
 
-	# Its pointless checking the http status, its always 200. Errors are
-	# redirected on the server to an 'Unknown Page' error page.
+	## Its pointless checking the http status, its always 200. Errors are
+	## redirected on the server to an 'Unknown Page' error page.
 
 	set data [::http::data $token]
 
 	regexp -- {<font size=.?4.?>Season (\d+)</font>} $data -> tmp_season
 
-	if {$season != $tmp_season} {
+	if {[string trimleft $season "0"] != $tmp_season} {
 		error "Invalid season information. Website returned season $tmp_season, we were expecting $season"
 	}
 
@@ -328,27 +409,24 @@ proc ::ngBot::TVRage::GetEpisode {url} {
 
 	set token [::http::geturl $url -timeout $tvrage(timeout)]
 
-	# Its pointless checking the http status, its always 200. Errors are
-	# redirected on the server to an 'Unknown Page' error page.
+	## Its pointless checking the http status, its always 200. Errors are
+	## redirected on the server to an 'Unknown Page' error page.
 
 	set data [::http::data $token]
 
-	if {[set edata [regexp -inline -nocase -- {<table align='left' cellpadding='2'>.+?</table>} $data]] != ""} {
+	if {[set edata [regexp -inline -nocase -- {<table class='b' width='100%' cellspacing='0'>.+?</table>} $data]] != ""} {
 		set matches [regexp -inline -nocase -all -- {<b>(.+?): </b></td><td.*?>(.+?)</td>} $edata]
 
 		foreach {junk key value} $matches {
 			set key [string trim [string map { "#" "" } $key]]
 			set key [string map { " " "_" } [string tolower $key]]
+			set key [string trimright $key "._"]
 
 			switch -glob $key {
 				original_airdate {
-					set info(episode_$key) $value
+					set info(episode_$key) [string map { "/" " " } $value]
 
-					if {[regexp -- {[0-9]{2}/\w+/[0-9]{2}} $info(episode_$key)]} {
-						set info(episode_$key) [string map { "/" "" } $info(episode_$key)]
-
-						set info(episode_$key) [clock format [clock scan $info(episode_$key)] -format $tvrage(date)]
-					}
+					set info(episode_$key) [[namespace current]::ConvertDate $info(episode_$key)]
 				}
 				writer -
 				director {
@@ -363,6 +441,10 @@ proc ::ngBot::TVRage::GetEpisode {url} {
 				episode_* {
 					set info($key) $value
 				}
+				score {
+					## TODO
+					set info(episode_score) ""
+				}
 				default {
 					set info(episode_$key) $value
 				}
@@ -371,7 +453,7 @@ proc ::ngBot::TVRage::GetEpisode {url} {
 	}
 
 	if {![info exists info]} {
-		error "Invalid results found"
+		error "Unable to parse episode information"
 	}
 
 	return [array get info]

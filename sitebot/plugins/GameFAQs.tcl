@@ -154,7 +154,7 @@ proc ::ngBot::GameFAQs::Init {args} {
 
 	if {[catch {package require http}] != 0} {
 		[namespace current]::Error "\"http\" package not found, unloading script."
-		::ngBot::GameFAQs::DeInit
+		[namespace current]::DeInit
 		return
 	}
 
