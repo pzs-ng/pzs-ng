@@ -211,6 +211,8 @@ announce.GAMEFAQS-MSG           = "[%b{game-info}] %b{%gamefaqs_title} %gamefaqs
 announce.GAMEFAQS-MSG_LOOP1     = "%gamefaqs_region: %gamefaqs_region_date%splitter"
 announce.TVRAGE                 = "[%b{tv-info}][%section] %b{%tvrage_show_name}: %b{%tvrage_episode_title} (%tvrage_show_genres) Aired: %tvrage_episode_original_airdate\n[%b{tv-info}][%section] URL: %tvrage_episode_url"
 announce.TVRAGE-PRE             = "[%b{tv-info}][%section] %b{%tvrage_show_name}: %b{%tvrage_episode_title} (%tvrage_show_genres) Aired: %tvrage_episode_original_airdate\n[%b{tv-info}][%section] URL: %tvrage_episode_url"
+announce.TVRAGE-MSGFULL         = "[%b{tv-info}] %b{%tvrage_show_name}: %b{%tvrage_episode_title} (%tvrage_show_genres) Aired: %tvrage_episode_original_airdate\n[%b{tv-info}] URL: %tvrage_episode_url"
+announce.TVRAGE-MSGSHOW         = "[%b{tv-info}] %b{%tvrage_show_name} (%tvrage_show_genres)\n[%b{tv-info}] Last Episode: %b{%tvrage_show_latest_episode: %tvrage_show_latest_title} (%tvrage_show_latest_airdate)\n[%b{tv-info}] Next Episode: %b{%tvrage_show_next_episode: %tvrage_show_next_title} (%tvrage_show_next_airdate)\n[%b{tv-info}] URL: %tvrage_show_url"
 
 ## Miscellaneous announcements
 announce.BADMSGINVITE           = "[%b{%c1{badinv}}] %b{%u_ircnick} (%u_host) tried to invite himself with invalid login!"
