@@ -1,7 +1,14 @@
 PZS-NG CHANGELOG
 ----------------
 
-v1.0.2  --> 1.x.x  :
+v1.0.3  --> 1.0.4  : (r2149)
+		- fixed a malloc()/free() bug introduced with v1.0.3 that made the zs segfault.
+		- don't print zipscript_header if it's zero in length.
+		- do not extract nfo from zip if an nfo already exists in dir.
+		- added more .diz types to be recognized.
+		- updated meij's GameFAQ plugin to v.1.5
+		- updated meij's TVRage plugin to v1.3
+v1.0.2  --> 1.0.3  : (r2137)
 		- added meij's TVRage plugin (v1.1)
 		- added support for showing pid of users in sitewho (only in --raw, non-ss5 mode)
 		- added support for denying resumed/overwritten sfv files.
