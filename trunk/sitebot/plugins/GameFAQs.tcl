@@ -1,6 +1,6 @@
 ################################################################################
 #                                                                              #
-#                 GameFAQs - Game Info Pzs-ng Plug-in v1.5                     #
+#                 GameFAQs - Game Info Pzs-ng Plug-in v1.5a                    #
 #                       by Meij <meijie@gmail.com>                             #
 #                                                                              #
 ################################################################################
@@ -209,10 +209,14 @@ proc ::ngBot::GameFAQs::ConvertDate {string} {
 }
 
 proc ::ngBot::GameFAQs::Trigger {args} {
-	global lastbind
+	variable gamefaqs
 
 	if {[llength $args] == 5} {
 		checkchan [lindex $args 2] [lindex $args 3]
+
+		set trigger $gamefaqs(ctrigger)
+	} else {
+		set trigger $gamefaqs(ptrigger)
 	}
 
 	set text [lindex $args [expr { [llength $args] - 1 }]]
@@ -225,7 +229,7 @@ proc ::ngBot::GameFAQs::Trigger {args} {
 	}
 
 	if {[string equal $text ""]} {
-		sndone $target "GameFAQs Syntax :: $lastbind \[platform\] <string> (eg: $lastbind pc diablo 2)"
+		sndone $target "GameFAQs Syntax :: $trigger \[platform\] <string> (eg: $trigger pc diablo 2)"
 		return 1
 	}
 

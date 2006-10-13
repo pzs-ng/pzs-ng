@@ -1,6 +1,6 @@
 ################################################################################
 #                                                                              #
-#             TVRage - TV Show & Episode Pzs-ng Plug-in v1.3                   #
+#             TVRage - TV Show & Episode Pzs-ng Plug-in v1.3a                  #
 #                       by Meij <meijie@gmail.com>                             #
 #                                                                              #
 ################################################################################
@@ -176,17 +176,21 @@ proc ::ngBot::TVRage::ConvertDate {string} {
 }
 
 proc ::ngBot::TVRage::Trigger {args} {
-	global lastbind
+	variable tvrage
 
 	if {[llength $args] == 5} {
 		checkchan [lindex $args 2] [lindex $args 3]
+
+		set trigger $tvrage(ctrigger)
+	} else {
+		set trigger $tvrage(ptrigger)
 	}
 
 	set text [lindex $args [expr { [llength $args] - 1 }]]
 	set target [lindex $args [expr { [llength $args] - 2 }]]
 
 	if {[string equal $text ""]} {
-		sndone $target "TVRage Syntax :: $lastbind <string> (eg: $lastbind Stargate SG-1 S02E10)"
+		sndone $target "TVRage Syntax :: $trigger <string> (eg: $trigger Stargate SG-1 S02E10)"
 		return 1
 	}
 
