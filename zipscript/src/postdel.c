@@ -210,7 +210,7 @@ main(int argc, char **argv)
 		return 0;
 
 	}
-	g.l.race = ng_realloc(g.l.race, n = (int)strlen(g.l.path) + 10 + sizeof(storage), 1, 1, &g.v, 1);
+	g.l.race = ng_realloc(g.l.race, n = (int)strlen(g.l.path) + 12 + sizeof(storage), 1, 1, &g.v, 1);
 	g.l.sfv = ng_realloc(g.l.sfv, n, 1, 1, &g.v, 1);
 	g.l.sfvbackup = ng_realloc(g.l.sfvbackup, n, 1, 1, &g.v, 1);
 	g.l.leader = ng_realloc(g.l.leader, n, 1, 1, &g.v, 1);

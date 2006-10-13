@@ -122,7 +122,7 @@ main(int argc, char *argv[])
 		snprintf(g.v.sectionname, 127, getenv("SECTION"));
 	}
 
-	g.l.race = ng_realloc2(g.l.race, n = (int)strlen(g.l.path) + 10 + sizeof(storage), 1, 1, 1);
+	g.l.race = ng_realloc2(g.l.race, n = (int)strlen(g.l.path) + 12 + sizeof(storage), 1, 1, 1);
 	g.l.sfv = ng_realloc2(g.l.sfv, n, 1, 1, 1);
 	g.l.sfvbackup = ng_realloc2(g.l.sfvbackup, n, 1, 1, 1);
 	g.l.leader = ng_realloc2(g.l.leader, n, 1, 1, 1);
