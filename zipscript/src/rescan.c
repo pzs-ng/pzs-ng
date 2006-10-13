@@ -74,15 +74,11 @@ main(int argc, char *argv[])
 	bzero(one_name, NAME_MAX);
 
 	if (argc > 1) {
-		if (!strncasecmp(argv[1], "--quick", 7)) {
-			printf("PZS-NG Rescan v%s: Rescanning in QUICK mode\n", ng_version());
+		if (!strncasecmp(argv[1], "--quick", 7))
 			rescan_quick = TRUE;
-			bzero(one_name, NAME_MAX);
-		} else if (!strncasecmp(argv[1], "--normal", 8)) {
-			printf("PZS-NG Rescan v%s: Rescanning in NORMAL mode\n", ng_version());
+		else if (!strncasecmp(argv[1], "--normal", 8))
 			rescan_quick = FALSE;
-			bzero(one_name, NAME_MAX);
-		} else if (!strncasecmp(argv[1], "--help", 6) || !strncasecmp(argv[1], "/?", 2) || !strncasecmp(argv[1], "--?", 3)) {
+		else if (!strncasecmp(argv[1], "--help", 6) || !strncasecmp(argv[1], "/?", 2) || !strncasecmp(argv[1], "--?", 3)) {
 			printf("PZS-NG Rescan v%s options:\n\n", ng_version());
 			printf("  --quick   - scan in quick mode - only files not previously marked as ok by the zipscript is scanned\n");
 			printf("  --normal  - scan in normal mode - all files will be rescanned regardless of their status\n");
@@ -92,14 +88,23 @@ main(int argc, char *argv[])
 			strncpy(one_name, argv[1], NAME_MAX - 1);
 			rescan_quick = FALSE;
 			if (one_name[strlen(one_name) - 1] == '*') {
-				printf("PZS-NG Rescan v%s: Rescanning in FILE mode\n", ng_version());
 				one_name[strlen(one_name) - 1] = '\0';
 			} else if (!fileexists(one_name)) {
-				printf("\nPZS-NG Rescan v%s: No file named '%s' exists.\n\n", ng_version(), one_name);
+				printf("PZS-NG Rescan v%s: No file named '%s' exists.\n", ng_version(), one_name);
+				printf("PZS-NG Rescan v%s: Use --help for options.\n\n", ng_version());
 				return 1;
 			}
+			printf("PZS-NG Rescan v%s: Rescanning in FILE mode\n", ng_version());
 		}		
+	} 
+	if (one_name[0] == '\0') {
+		if (rescan_quick == TRUE) {
+			printf("PZS-NG Rescan v%s: Rescanning in QUICK mode.\n", ng_version());
+		} else {
+			printf("PZS-NG Rescan v%s: Rescanning in NORMAL mode.\n", ng_version());
+		}
 	}
+	printf("PZS-NG Rescan v%s: Use --help for options.\n\n", ng_version());
 
 	getcwd(g.l.path, PATH_MAX);
 
