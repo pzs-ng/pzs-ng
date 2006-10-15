@@ -9,6 +9,9 @@ NOTE: If you use a different GLROOT than /glftpd, you most
       are taken and all actions questioned.
 NOTE: Where I say "replace" below here, you can also patch.
 
+2.7f -> 2.7g - replace psxc-imdb.sh
+2.7e -> 2.7f - replace psxc-imdb.sh
+2.7d -> 2.7e - replace psxc-imdb.sh
 2.7c -> 2.7d - Nothing, unless you get warnings when running the script.
 		If you do, you should replace psxc-imdb.sh,
 		psxc-imdb-sanity.sh, psxc-symlink-maker.sh.
