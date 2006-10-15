@@ -1310,3 +1310,19 @@ copyfile(char *from_name, char *to_name)
   return retvar;
 }
 
+int
+extractDirname(char *dirname, char *absoluteDirname)
+{
+        int cnt, n = 0;
+        for (cnt = strlen(absoluteDirname); cnt; cnt--) {
+                if (absoluteDirname[cnt] == '/') {
+                        strncpy(dirname, absoluteDirname + cnt + 1, n + 1);
+                        dirname[n] = 0;
+                        break;
+                } else {
+                        n++;
+                }
+        }
+        return cnt;
+}
+
