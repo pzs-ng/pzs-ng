@@ -1,5 +1,7 @@
 PSXC-IMDB CHANGELOG:
 --------------------
+- v2.7g - Oct. 15th, 2006 - fixed a bug with MYOWNFORMAT and rescanning multiple
+			     dirs (thanx iwi).
 - v2.7f - Jul. 27th, 2006 - fixed issues with imdb.com's credited cast and the
                             pictures now used in the list.
 - v2.7e - Apr. 02nd, 2005 - Changed default NEWLINE char to \\\\n, in order to
