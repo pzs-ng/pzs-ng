@@ -36,15 +36,7 @@ void audioSortDir(char *targetDir)
  * readsfv(sfv_data, &g.v, 0);
  */
 	
-	for (cnt = strlen(targetDir); cnt; cnt--) {
-		if (targetDir[cnt] == '/') {
-			strlcpy(link_target, targetDir + cnt + 1, n + 1);
-			link_target[n] = 0;
-			break;
-		} else {
-			n++;
-		}
-	}
+	cnt = extractDirname(&link_target, targetDir);
 	strlcpy(link_source, targetDir, PATH_MAX);
 	
 	chdir(targetDir);
@@ -69,6 +61,19 @@ void audioSort(struct audio *info, char *link_source, char *link_target)
 	d_log("audioSort: No audio_*_sort is set to TRUE - skipping sorting of mp3\n");
 	(void)info; (void)link_source; (void)link_target;
 #endif
+
+if (subcomp(link_target)) {
+        int i, pos;
+        pos = 0;
+        for (i = strlen(link_source); i > 0; i--) {
+                if (link_source[i] == '/')  {  pos = i; break; }
+        }
+        char sourceDir[PATH_MAX];
+        strcpy(sourceDir, link_source);
+        strlcpy(link_source, sourceDir, pos + 1);
+        extractDirname(link_target, link_source);
+}
+
 
 #if ( audio_genre_sort == TRUE )
 	d_log("audioSort:   Sorting mp3 by genre (%s)\n", info->id3_genre);

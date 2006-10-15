@@ -140,6 +140,7 @@ extern int	buffer_groups(char *, int);
 extern int	buffer_users(char *, int);
 extern unsigned long sfv_compare_size(char *, unsigned long);
 extern void	mark_as_bad(char *);
+extern int	extractDirname(char *dirname, char *absoluteDirname);
 
 /* split from zsipscript-c.c */
 extern void writelog(GLOBAL *, char *, char *);
