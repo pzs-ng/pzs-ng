@@ -14,7 +14,7 @@
 
 void audioSortDir(char *targetDir)
 {
-	int cnt, n = 0;
+	int cnt = 0;
 	char link_source[PATH_MAX], link_target[PATH_MAX], *file_target;
 	struct audio info;
 	DIR *ourDir; 
@@ -36,7 +36,7 @@ void audioSortDir(char *targetDir)
  * readsfv(sfv_data, &g.v, 0);
  */
 	
-	cnt = extractDirname(&link_target, targetDir);
+	cnt = extractDirname(&link_target[0], targetDir);
 	strlcpy(link_source, targetDir, PATH_MAX);
 	
 	chdir(targetDir);
