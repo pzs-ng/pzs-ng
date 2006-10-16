@@ -109,22 +109,25 @@ namespace eval ::ngBot::GameFAQs {
 	##  is path of the section (wildcards accepted).
 	set gamefaqs(sections) { {12 /site/incoming/gba/} {13 /site/incoming/xbox} {7 /site/incoming/ps2} {0 /site/requests/} }
 	##
-	## Timeout in milliseconds.
+	## Timeout in milliseconds. (default: 3000)
 	set gamefaqs(timeout)  3000
 	##
-	## Channel trigger (Leave blank to disable)
+	## Announce when no data was found. (default: false)
+	set gamefaqs(announce-empty) false
+	##
+	## Channel trigger. (Leave blank to disable)
 	set gamefaqs(ctrigger) "!game"
 	##
-	## Private message trigger (Leave blank to disable)
+	## Private message trigger. (Leave blank to disable)
 	set gamefaqs(ptrigger) ""
 	##
-	## Date format (URL: http://tcl.tk/man/tcl8.3/TclCmd/clock.htm)
+	## Date format. (URL: http://tcl.tk/man/tcl8.3/TclCmd/clock.htm)
 	set gamefaqs(date)     "%Y-%m-%d"
 	##
 	## Skip announce for these directories.
 	set gamefaqs(ignore_dirs) {cd[0-9] dis[ck][0-9] dvd[0-9] codec cover covers extra extras sample subs vobsub vobsubs}
 	##
-	## Pre line regexp
+	## Pre line regexp.
 	##  We need to reconstruct the full path to the release. Since not all
 	##  pre scripts use the same format we'll use regexp to extract what we
 	##  need from the pre logline and reconstuct it ourselves.
@@ -283,12 +286,25 @@ proc ::ngBot::GameFAQs::LogEvent {event section logData} {
 
 	foreach {platform path} [join $gamefaqs(sections)] {
 		if {[string match -nocase "$path*" $release]} {
+			set logLen [llength $logData]
+
 			if {[catch {[namespace current]::FindInfo [file tail $release] $platform $logData} logData] != 0} {
 				[namespace current]::Error "$logData. ($release)"
 				return 0
 			}
 
-			sndall $target $section [ng_format $target $section $logData]
+			set empty 1
+			foreach piece [lrange $logData $logLen end] {
+				if {![string equal $piece ""]} {
+					set empty 0
+
+					break
+				}
+			}
+
+			if {($empty == 0) || ([string is true -strict $gamefaqs(announce-empty)])} {
+				sndall $target $section [ng_format $target $section $logData]
+			}
 
 			break
 		}
