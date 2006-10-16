@@ -2,6 +2,8 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.4  --> 1.0.X  :
+		- added cr0que's fix for a bug regarding mp3 releases with subdirs, and how the
+		  the symlinks got puckered.
 		- added meij's plugin-rewrite of psxc-imdb.tcl with support for directed imdb
 		  lookups (previously only the "main" channel(s) would get the result).
 		- fixed the malloc()/free() bug introduced with v1.0.3 completely.
