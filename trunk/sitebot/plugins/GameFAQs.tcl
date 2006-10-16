@@ -1,6 +1,6 @@
 ################################################################################
 #                                                                              #
-#                 GameFAQs - Game Info Pzs-ng Plug-in v1.5a                    #
+#                 GameFAQs - Game Info Pzs-ng Plug-in v1.5b                    #
 #                       by Meij <meijie@gmail.com>                             #
 #                                                                              #
 ################################################################################
@@ -110,7 +110,7 @@ namespace eval ::ngBot::GameFAQs {
 	set gamefaqs(sections) { {12 /site/incoming/gba/} {13 /site/incoming/xbox} {7 /site/incoming/ps2} {0 /site/requests/} }
 	##
 	## Timeout in milliseconds.
-	set gamefaqs(timeout)  10000
+	set gamefaqs(timeout)  3000
 	##
 	## Channel trigger (Leave blank to disable)
 	set gamefaqs(ctrigger) "!game"
@@ -234,7 +234,7 @@ proc ::ngBot::GameFAQs::Trigger {args} {
 	}
 
 	if {[catch {[namespace current]::FindInfo $text $platform [list]} logData] != 0} {
-		sndone $target "GameFAQs Error :: \"$logData\""
+		sndone $target "GameFAQs Error :: $logData"
 		return 0
 	}	
 
@@ -331,11 +331,15 @@ proc ::ngBot::GameFAQs::FindInfo {string platform logData} {
 proc ::ngBot::GameFAQs::FindGame {string platform} {
 	variable gamefaqs
 
-	set token [::http::geturl "http://www.gamefaqs.com/search/index.html?[::http::formatQuery platform $platform game $string]" -timeout $gamefaqs(timeout)]
+	set token [::http::geturl "http://www.gamefaqs.com/search/index.html?[::http::formatQuery game $string platform $platform]" -timeout $gamefaqs(timeout)]
+
+	if {![string equal -nocase [::http::status $token] "ok"]} {
+		return -code error "Connection [::http::status $token]"
+	}
 
 	set data [::http::data $token]
 	if {![regexp -indices -nocase -- {<div class="head"><h1>Best Matches</h1></div>} $data pos]} {
-		return -code error "No results found"
+		return -code error "No results found for \"$string\""
 	}
 
 	array set info [list]

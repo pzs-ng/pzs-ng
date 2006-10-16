@@ -74,7 +74,7 @@ namespace eval ::ngBot::TVRage {
 	set tvrage(sections) { "/site/incoming/tv" }
 	##
 	## Timeout in milliseconds.
-	set tvrage(timeout)  10000
+	set tvrage(timeout)  3000
 	##
 	## Channel trigger (Leave blank to disable)
 	set tvrage(ctrigger) "!tv"
@@ -195,7 +195,7 @@ proc ::ngBot::TVRage::Trigger {args} {
 	}
 
 	if {[catch {[namespace current]::FindInfo $text [list] "false"} logData] != 0} {
-		sndone $target "TVRage Error :: \"$logData\""
+		sndone $target "TVRage Error :: $logData"
 		return 0
 	}
 
@@ -316,6 +316,10 @@ proc ::ngBot::TVRage::GetShow {show} {
 	variable tvrage
 
 	set token [::http::geturl "http://www.tvrage.com/quickinfo.php?show=[::http::formatQuery $show]" -timeout $tvrage(timeout)]
+
+	if {![string equal -nocase [::http::status $token] "ok"]} {
+		return -code error "Connection [::http::status $token]"
+	}
 
 	## Its pointless checking the http status, its always 200. Errors are
 	## redirected on the server to an 'Unknown Page' error page.
