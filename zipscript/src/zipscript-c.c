@@ -1353,8 +1353,6 @@ main(int argc, char **argv)
 				}
 
 				d_log("zipscript-c: Symlinking audio\n");
-				if (!strncasecmp(g.l.link_target, "VA", 2) && (g.l.link_target[2] == '-' || g.l.link_target[2] == '_'))
-					memcpy(g.v.audio.id3_artist, "VA", 3);
 
 				/* Sort if we're s'posed to write to log and we're not in a group-dir. */
 				if (g.v.misc.write_log == TRUE && !matchpath(group_dirs, g.l.path))
