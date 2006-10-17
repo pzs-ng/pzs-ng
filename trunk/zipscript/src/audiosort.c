@@ -36,7 +36,7 @@ void audioSortDir(char *targetDir)
  * readsfv(sfv_data, &g.v, 0);
  */
 	
-	cnt = extractDirname(&link_target[0], targetDir);
+	cnt = extractDirname(link_target, targetDir);
 	strlcpy(link_source, targetDir, PATH_MAX);
 	
 	chdir(targetDir);
@@ -83,6 +83,8 @@ if (subcomp(link_target)) {
 	d_log("audioSort:   Sorting mp3 by artist\n");
 	if (*info->id3_artist) {
 		d_log("audioSort:     - artist: %s\n", info->id3_artist);
+		if (!strncasecmp(link_target, "VA", 2) && (link_target[2] == '-' || link_target[2] == '_'))
+			memcpy(info->id3_artist, "VA", 3);
 		if (memcmp(info->id3_artist, "VA", 3)) {
 			temp_p = ng_realloc(temp_p, 2, 1, 0, NULL, 1);
 			snprintf(temp_p, 2, "%c", toupper(*info->id3_artist));

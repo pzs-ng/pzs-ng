@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.4  --> 1.0.X  :
+		- added cr0que's mod to move detection of VA mp3 artist to audiosort.c.
 		- added cr0que's fix for a bug regarding mp3 releases with subdirs, and how the
 		  the symlinks got puckered.
 		- added meij's plugin-rewrite of psxc-imdb.tcl with support for directed imdb
