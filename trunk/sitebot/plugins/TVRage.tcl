@@ -171,7 +171,12 @@ proc ::ngBot::TVRage::Error {error} {
 proc ::ngBot::TVRage::ConvertDate {string} {
 	variable tvrage
 
-	if {[catch {clock format [clock scan $string] -format $tvrage(date)} result] == 0} {
+	set tmp [string map { "/" " " } $string]
+	if {[set i [string last " " $tmp]] != -1} {
+		set tmp [string replace $tmp $i $i ", "]
+	}
+
+	if {[catch {clock format [clock scan $tmp] -format $tvrage(date)} result] == 0} {
 		set string $result
 	}
 
@@ -357,9 +362,6 @@ proc ::ngBot::TVRage::GetShow {show} {
 
 				regexp -- {(.[^\^]+)\^(.[^\^]+)\^(.*)} $value -> info(show_$key\_episode) info(show_$key\_title) info(show_$key\_airdate)
 
-				# {^((0|)[1-9]|(1|2|3)[0-9])/\w+/[0-9]+$}
-				set info(show_$key\_airdate) [string map { "/" " " } $info(show_$key\_airdate)]
-
 				set info(show_$key\_airdate) [[namespace current]::ConvertDate $info(show_$key\_airdate)]
 			}
 			genres {
@@ -448,8 +450,6 @@ proc ::ngBot::TVRage::GetEpisode {url} {
 
 			switch -glob $key {
 				original_airdate {
-					set info(episode_$key) [string map { "/" " " } $value]
-
 					set info(episode_$key) [[namespace current]::ConvertDate $info(episode_$key)]
 				}
 				writer -
