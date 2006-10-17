@@ -450,7 +450,7 @@ proc ::ngBot::TVRage::GetEpisode {url} {
 
 			switch -glob $key {
 				original_airdate {
-					set info(episode_$key) [[namespace current]::ConvertDate $info(episode_$key)]
+					set info(episode_$key) [[namespace current]::ConvertDate $value]
 				}
 				writer -
 				director {
