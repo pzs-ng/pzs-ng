@@ -1,4 +1,5 @@
 #include <string.h>
+#include <errno.h>
 
 #ifndef HAVE_STRLCPY
 # include "strl/strl.h"
@@ -40,13 +41,16 @@ void audioSortDir(char *targetDir)
 	strlcpy(link_source, targetDir, PATH_MAX);
 	
 	chdir(targetDir);
-	ourDir = opendir(targetDir);
+	if ((ourDir = opendir(targetDir)) == NULL) {
+		printf("Error: Failed to open dir \"%s\" : %s\n", targetDir, strerror(errno));
+		return;
+	}
 	file_target = findfileext(ourDir, ".mp3");
-	closedir(ourDir);
 
 	get_mpeg_audio_info(file_target, &info);
-	
 	audioSort(&info, link_source, link_target);
+
+	closedir(ourDir);
 }
 
 void audioSort(struct audio *info, char *link_source, char *link_target)
