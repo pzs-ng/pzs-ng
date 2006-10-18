@@ -23,6 +23,7 @@
 #include <unistd.h>
 
 #include "zsconfig.h"
+#include "zsconfig.defaults.h"
 
 //#undef group_dirs
 //#define group_dirs                      "/site/groups/"
