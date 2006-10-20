@@ -478,9 +478,27 @@ findfilename(char *filename, char *dest, struct VARS *raceI)
 			break;
 		}
 	}
-	
 	closedir(dir);
 	return dest;
+}
+
+char *
+check_nocase_linkname(char *dirname, char *linkname)
+{
+	DIR		*dir;
+	struct dirent 	*dp;
+	int		namelength = strlen(linkname);
+
+	dir = opendir(dirname);
+	while ((dp = readdir(dir))) {
+		if ((int)strlen(dp->d_name) == namelength && !strcasecmp(dp->d_name, linkname)) {
+			linkname = ng_realloc(linkname, (int)sizeof(dp->d_name) + 1, 1, 1, NULL, 1);
+			strncpy(linkname, dp->d_name, sizeof(dp->d_name));
+			break;
+		}
+	}
+	closedir(dir);
+	return linkname;
 }
 
 /*
@@ -629,9 +647,8 @@ subcomp(char *directory)
 			break;
 		case ',':
 			tstring[j] = '\0';
-			if (k <= j && !strncasecmp(tstring, directory, j - n)) {
+			if (k <= j && !strncasecmp(tstring, directory, j - n))
 				return 1;
-			}
 			pos = l;
 			n = 0;
 			j=0;
