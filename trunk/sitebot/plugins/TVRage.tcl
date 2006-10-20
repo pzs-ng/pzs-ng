@@ -26,9 +26,9 @@
 #    set disable(TVRAGE-PRE)       0
 #    set disable(TVRAGE-MSGFULL)   0
 #    set disable(TVRAGE-MSGSHOW)   0
-#    set variables(TVRAGE)         "$variables(NEWDIR) %tvrage_show_name %tvrage_show_genres %tvrage_show_country %tvrage_show_status %tvrage_show_latest_title %tvrage_show_latest_episode %tvrage_show_latest_airdate %tvrage_show_next_title %tvrage_show_next_episode %tvrage_show_next_airdate %tvrage_show_url %tvrage_show_classification %tvrage_show_premiered %tvrage_episode_url %tvrage_episode_season_episode %tvrage_episode_season %tvrage_episode_number %tvrage_episode_original_airdate %tvrage_episode_title %tvrage_episode_production_number %tvrage_episode_score"
-#    set variables(TVRAGE-PRE)     "$variables(PRE) %tvrage_show_name %tvrage_show_genres %tvrage_show_country %tvrage_show_status %tvrage_show_latest_title %tvrage_show_latest_episode %tvrage_show_latest_airdate %tvrage_show_next_title %tvrage_show_next_episode %tvrage_show_next_airdate %tvrage_show_url %tvrage_show_classification %tvrage_show_premiered %tvrage_episode_url %tvrage_episode_season_episode %tvrage_episode_season %tvrage_episode_number %tvrage_episode_original_airdate %tvrage_episode_title %tvrage_episode_production_number %tvrage_episode_score"
-#    set variables(TVRAGE-MSGFULL) "%tvrage_show_name %tvrage_show_genres %tvrage_show_country %tvrage_show_status %tvrage_show_latest_title %tvrage_show_latest_episode %tvrage_show_latest_airdate %tvrage_show_next_title %tvrage_show_next_episode %tvrage_show_next_airdate %tvrage_show_url %tvrage_show_classification %tvrage_show_premiered %tvrage_episode_url %tvrage_episode_season_episode %tvrage_episode_season %tvrage_episode_number %tvrage_episode_original_airdate %tvrage_episode_title %tvrage_episode_production_number %tvrage_episode_score"
+#    set variables(TVRAGE)         "$variables(NEWDIR) %tvrage_show_name %tvrage_show_genres %tvrage_show_country %tvrage_show_status %tvrage_show_latest_title %tvrage_show_latest_episode %tvrage_show_latest_airdate %tvrage_show_next_title %tvrage_show_next_episode %tvrage_show_next_airdate %tvrage_show_url %tvrage_show_classification %tvrage_show_premiered %tvrage_episode_url %tvrage_episode_season_episode %tvrage_episode_season %tvrage_episode_number %tvrage_episode_original_airdate %tvrage_episode_title %tvrage_episode_production_number %tvrage_episode_score %tvrage_episode_votes"
+#    set variables(TVRAGE-PRE)     "$variables(PRE) %tvrage_show_name %tvrage_show_genres %tvrage_show_country %tvrage_show_status %tvrage_show_latest_title %tvrage_show_latest_episode %tvrage_show_latest_airdate %tvrage_show_next_title %tvrage_show_next_episode %tvrage_show_next_airdate %tvrage_show_url %tvrage_show_classification %tvrage_show_premiered %tvrage_episode_url %tvrage_episode_season_episode %tvrage_episode_season %tvrage_episode_number %tvrage_episode_original_airdate %tvrage_episode_title %tvrage_episode_production_number %tvrage_episode_score %tvrage_episode_votes"
+#    set variables(TVRAGE-MSGFULL) "%tvrage_show_name %tvrage_show_genres %tvrage_show_country %tvrage_show_status %tvrage_show_latest_title %tvrage_show_latest_episode %tvrage_show_latest_airdate %tvrage_show_next_title %tvrage_show_next_episode %tvrage_show_next_airdate %tvrage_show_url %tvrage_show_classification %tvrage_show_premiered %tvrage_episode_url %tvrage_episode_season_episode %tvrage_episode_season %tvrage_episode_number %tvrage_episode_original_airdate %tvrage_episode_title %tvrage_episode_production_number %tvrage_episode_score %tvrage_episode_votes"
 #    set variables(TVRAGE-MSGSHOW) $variables(TVRAGE-MSGFULL)
 #
 #    set zeroconvert(%tvrage_show_name)                 "N/A"
@@ -52,6 +52,7 @@
 #    set zeroconvert(%tvrage_episode_title)             "N/A"
 #    set zeroconvert(%tvrage_episode_production_number) "N/A"
 #    set zeroconvert(%tvrage_episode_score)             "-"
+#    set zeroconvert(%tvrage_episode_votes)             "0"
 #
 # 5. Add the following to your theme file (.zst).
 #    announce.TVRAGE           = "[%b{TV-INFO}][%section] %b{%tvrage_show_name}: %b{%tvrage_episode_title} (%tvrage_show_genres) Aired: %tvrage_episode_original_airdate\n[%b{TV-INFO}][%section] URL: %tvrage_episode_url"
@@ -295,7 +296,7 @@ proc ::ngBot::TVRage::FindInfo {string logData {strict true}} {
 	                       episode_season_episode episode_season \
 	                       episode_number episode_original_airdate \
 	                       episode_title episode_production_number \
-	                       episode_score]
+	                       episode_score episode_votes]
 
 	set show_str $string
 	if {(![regexp -- {^(.*?)(\d+x\d+|[sS]\d+[eE]\d+).*$} $string -> show_str episode_str]) && \
@@ -466,8 +467,7 @@ proc ::ngBot::TVRage::GetEpisode {url} {
 					set info($key) $value
 				}
 				score {
-					## TODO
-					set info(episode_score) ""
+					regexp -nocase -- {(\d+) vote(?:s|) \(([\d\.]+) / 10\)<br>} $value -> info(episode_votes) info(episode_score)
 				}
 				default {
 					set info(episode_$key) $value
