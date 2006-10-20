@@ -1,7 +1,8 @@
 PZS-NG CHANGELOG
 ----------------
 
-v1.0.4  --> 1.0.X  :
+v1.0.4  --> 1.0.5  : (2170)
+		- additions/fixes in meij's plugins.
 		- added cr0que's mod to move detection of VA mp3 artist to audiosort.c.
 		- added cr0que's fix for a bug regarding mp3 releases with subdirs, and how the
 		  the symlinks got puckered.
