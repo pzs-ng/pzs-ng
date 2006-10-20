@@ -110,6 +110,8 @@ if (subcomp(link_target)) {
 	n = (int)strlen(temp_p);
 	if (n > 0 && n < 15) {
 		d_log("audioSort:   - Valid groupname found: %s (%i)\n", temp_p, n);
+		temp_p = check_nocase_linkname(audio_group_path, temp_p);
+		d_log("audioSort:   - Valid groupname found: %s (%i)\n", temp_p, n);
 		createlink(audio_group_path, temp_p, link_source, link_target);
 	}
 #endif
