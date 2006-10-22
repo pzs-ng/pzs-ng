@@ -721,15 +721,24 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 }
 
 /* Converts cookies in incomplete indicators */
-char		i_buf     [FILE_MAX];
+char		normal_buf	[FILE_MAX];
+char		nfo_buf		[FILE_MAX];
+char		sfv_buf		[FILE_MAX];
 char           *
-c_incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI)
+incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI, int l_type)
 {
 	char           *buf_p;
 
-	buf_p = i_buf;
+	if (l_type == INCOMPLETE_NORMAL)
+		buf_p = normal_buf;
+	else if (l_type == INCOMPLETE_NFO)
+		buf_p = nfo_buf;
+	else if (l_type == INCOMPLETE_SFV)
+		buf_p = sfv_buf;
+	else
+		return NULL;
 
-	bzero(buf_p, (int)sizeof(i_buf));
+	bzero(buf_p, FILE_MAX);
 
 	for (; *instr; instr++)
 		if (*instr == '%') {
@@ -752,76 +761,13 @@ c_incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI)
 			*buf_p++ = *instr;
 		}
 	*buf_p = 0;
-	return i_buf;
-}
-
-/* Converts cookies in nfo-incomplete indicators */
-char		j_buf     [FILE_MAX];
-char *
-i_incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI)
-{
-	char           *buf_p;
-
-	buf_p = j_buf;
-
-	bzero(buf_p, (int)sizeof(j_buf));
-
-	for (; *instr; instr++)
-		if (*instr == '%') {
-			instr++;
-			switch (*instr) {
-			case '2':
-				buf_p += sprintf(buf_p, "%s", raceI->sectionname);
-				break;
-			case '1':
-				buf_p += sprintf(buf_p, "%s", path[0]);
-				break;
-			case '0':
-				buf_p += sprintf(buf_p, "%s", path[1]);
-				break;
-			case '%':
-				*buf_p++ = '%';
-				break;
-			}
-		} else {
-			*buf_p++ = *instr;
-		}
-	*buf_p = 0;
-	return j_buf;
-}
-
-/* Converts cookies in sfv-incomplete indicators */
-char		k_buf     [FILE_MAX];
-char *
-s_incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI)
-{
-	char           *buf_p;
-
-	buf_p = k_buf;
-
-	bzero(buf_p, (int)sizeof(k_buf));
-
-	for (; *instr; instr++)
-		if (*instr == '%') {
-			instr++;
-			switch (*instr) {
-			case '2':
-				buf_p += sprintf(buf_p, "%s", raceI->sectionname);
-				break;
-			case '1':
-				buf_p += sprintf(buf_p, "%s", path[0]);
-				break;
-			case '0':
-				buf_p += sprintf(buf_p, "%s", path[1]);
-				break;
-			case '%':
-				*buf_p++ = '%';
-				break;
-			}
-		} else {
-			*buf_p++ = *instr;
-		}
-	*buf_p = 0;
-	return k_buf;
+	if (l_type == INCOMPLETE_NORMAL)
+		return normal_buf;
+	else if (l_type == INCOMPLETE_NFO)
+		return nfo_buf;
+	else if (l_type == INCOMPLETE_SFV)
+		return sfv_buf;
+	else
+		return NULL;
 }
 

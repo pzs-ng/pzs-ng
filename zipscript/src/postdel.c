@@ -46,7 +46,7 @@ main(int argc, char **argv)
 	char	        *inc_point[2];
 	int		n, m;
 	unsigned char	empty_dir = 0;
-	unsigned char	incomplete = 0;
+	unsigned char	_incomplete = 0;
 	
 	GLOBAL		g;
 	
@@ -311,7 +311,7 @@ main(int argc, char **argv)
 				d_log("postdel: Writing INCOMPLETE to %s\n", log);
 				writelog(&g, convert(&g.v, g.ui, g.gi, incompletemsg), general_incomplete_type);
 			}
-			incomplete = 1;
+			_incomplete = 1;
 		} else {
 			empty_dir = 1;
 		}
@@ -381,14 +381,14 @@ main(int argc, char **argv)
 				d_log("postdel: Writing INCOMPLETE to %s\n", log);
 				writelog(&g, convert(&g.v, g.ui, g.gi, incompletemsg), general_incomplete_type);
 			}
-			incomplete = 1;
+			_incomplete = 1;
 		} else {
 			d_log("postdel: Removing old race data\n");
 			unlink(g.l.race);
 			if (findfileext(dir, ".sfv") == NULL) {
 				empty_dir = 1;
 			} else {
-				incomplete = 1;
+				_incomplete = 1;
 			}
 		}
 		remove_from_race(g.l.race, g.v.file.name, &g.v);
@@ -443,7 +443,7 @@ main(int argc, char **argv)
 
 	}
 
-	if (incomplete == 1 && g.v.total.files > 0) {
+	if (_incomplete == 1 && g.v.total.files > 0) {
 
 		getrelname(&g);
 		if (g.l.nfo_incomplete) {
