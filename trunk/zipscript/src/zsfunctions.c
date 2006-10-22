@@ -550,8 +550,10 @@ matchpath(char *instr, char *path)
 {
 	int		pos = 0;
 
-	if ( (int)strlen(instr) < 2 || (int)strlen(path) < 2 )
+	if ( (int)strlen(instr) < 2 || (int)strlen(path) < 2 ) {
+		d_log("matchpath: pathlength(s) too short - returning nomatch\n");
 		return 0;
+	}
 	do {
 		switch (*instr) {
 		case 0:
@@ -1140,6 +1142,7 @@ getrelname(GLOBAL *g)
 		strlcpy(g->l.link_target, path[1], PATH_MAX);
 		g->l.incomplete = c_incomplete(incomplete_cd_indicator, path, &g->v);
 		g->l.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &g->v);
+		g->l.sfv_incomplete = s_incomplete(incomplete_base_sfv_indicator, path, &g->v);
 		g->l.in_cd_dir = 1;
 	} else {
 		strlcpy(g->v.misc.release_name, path[1], PATH_MAX);
@@ -1147,6 +1150,7 @@ getrelname(GLOBAL *g)
 		strlcpy(g->l.link_target, path[1], PATH_MAX);
 		g->l.incomplete = c_incomplete(incomplete_indicator, path, &g->v);
 		g->l.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &g->v);
+		g->l.sfv_incomplete = s_incomplete(incomplete_sfv_indicator, path, &g->v);
 		g->l.in_cd_dir = 0;
 	}
 	
