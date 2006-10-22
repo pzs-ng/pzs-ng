@@ -25,6 +25,10 @@
 #define PROGTYPE_DATACLEANER		16
 #define PROGTYPE_RESCAN			32
 
+#define INCOMPLETE_NORMAL		3
+#define INCOMPLETE_NFO			7
+#define INCOMPLETE_SFV			15
+
 #define video_announce_norace_complete_type		"COMPLETE_VIDEO"
 #define zip_announce_norace_complete_type		"COMPLETE_ZIP"
 #define rar_announce_norace_complete_type		"COMPLETE_RAR"

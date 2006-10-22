@@ -1113,10 +1113,10 @@ remove_nfo_indicator(GLOBAL *g)
 
 	buffer_paths(g, path, &k, ((int)strlen(g->l.path)-1));
 
-	g->l.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &g->v);
+	g->l.nfo_incomplete = incomplete(incomplete_nfo_indicator, path, &g->v, INCOMPLETE_NORMAL);
 	if (fileexists(g->l.nfo_incomplete))
 		unlink(g->l.nfo_incomplete);
-	g->l.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &g->v);
+	g->l.nfo_incomplete = incomplete(incomplete_base_nfo_indicator, path, &g->v, INCOMPLETE_NORMAL);
 	if (fileexists(g->l.nfo_incomplete))
 		unlink(g->l.nfo_incomplete);
 }
@@ -1140,17 +1140,17 @@ getrelname(GLOBAL *g)
 		snprintf(g->v.misc.release_name, PATH_MAX, "%s/%s", path[0], path[1]);
 		strlcpy(g->l.link_source, g->l.path, PATH_MAX);
 		strlcpy(g->l.link_target, path[1], PATH_MAX);
-		g->l.incomplete = c_incomplete(incomplete_cd_indicator, path, &g->v);
-		g->l.nfo_incomplete = i_incomplete(incomplete_base_nfo_indicator, path, &g->v);
-		g->l.sfv_incomplete = s_incomplete(incomplete_base_sfv_indicator, path, &g->v);
+		g->l.incomplete = incomplete(incomplete_cd_indicator, path, &g->v, INCOMPLETE_NORMAL);
+		g->l.nfo_incomplete = incomplete(incomplete_base_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+		g->l.sfv_incomplete = incomplete(incomplete_base_sfv_indicator, path, &g->v, INCOMPLETE_SFV);
 		g->l.in_cd_dir = 1;
 	} else {
 		strlcpy(g->v.misc.release_name, path[1], PATH_MAX);
 		strlcpy(g->l.link_source, g->l.path, PATH_MAX);
 		strlcpy(g->l.link_target, path[1], PATH_MAX);
-		g->l.incomplete = c_incomplete(incomplete_indicator, path, &g->v);
-		g->l.nfo_incomplete = i_incomplete(incomplete_nfo_indicator, path, &g->v);
-		g->l.sfv_incomplete = s_incomplete(incomplete_sfv_indicator, path, &g->v);
+		g->l.incomplete = incomplete(incomplete_indicator, path, &g->v, INCOMPLETE_NORMAL);
+		g->l.nfo_incomplete = incomplete(incomplete_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+		g->l.sfv_incomplete = incomplete(incomplete_sfv_indicator, path, &g->v, INCOMPLETE_SFV);
 		g->l.in_cd_dir = 0;
 	}
 	
