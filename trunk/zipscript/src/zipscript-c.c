@@ -899,7 +899,7 @@ main(int argc, char **argv)
 				writerace(g.l.race, &g.v, crc, F_NOTCHECKED);
 #endif
 #if ( create_missing_sfv_link == TRUE )
-				if ((!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) && (g.l.sfv_incomplete) && (!findfileext(dir, ".zip"))) {
+				if ((!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) && g.l.sfv_incomplete && !findfileext(dir, ".zip") && !matchpath(nocheck_dirs, g.l.path) && !matchpath(allowed_types_exemption_dirs, g.l.path)) {
 					d_log("zipscript-c: Creating missing-sfv indicator %s.\n", g.l.sfv_incomplete);
 					create_incomplete_sfv();
 				}
