@@ -2,6 +2,10 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.5  --> 1.0.X  :
+		- added support for missing-sfv.
+		- New option in zsconfig.h - create_missing_sfv_link - check for missing sfv.
+		- New option in zsconfig.h - incomplete_base_sfv_indicator - missing-indicator.
+		- New option in zsconfig.h - incomplete_sfv_indicator - missing-indicator.
 		- sort by group fixed - but GRPNaME and grpNAME in the same dir. Groupname from
 		  the first release sets the default.
 v1.0.4  --> 1.0.5  : (2170)
