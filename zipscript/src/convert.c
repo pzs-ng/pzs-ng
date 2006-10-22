@@ -790,3 +790,38 @@ i_incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI)
 	return j_buf;
 }
 
+/* Converts cookies in sfv-incomplete indicators */
+char		k_buf     [FILE_MAX];
+char *
+s_incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI)
+{
+	char           *buf_p;
+
+	buf_p = k_buf;
+
+	bzero(buf_p, (int)sizeof(k_buf));
+
+	for (; *instr; instr++)
+		if (*instr == '%') {
+			instr++;
+			switch (*instr) {
+			case '2':
+				buf_p += sprintf(buf_p, "%s", raceI->sectionname);
+				break;
+			case '1':
+				buf_p += sprintf(buf_p, "%s", path[0]);
+				break;
+			case '0':
+				buf_p += sprintf(buf_p, "%s", path[1]);
+				break;
+			case '%':
+				*buf_p++ = '%';
+				break;
+			}
+		} else {
+			*buf_p++ = *instr;
+		}
+	*buf_p = 0;
+	return k_buf;
+}
+

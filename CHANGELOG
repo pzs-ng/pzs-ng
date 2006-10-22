@@ -1,6 +1,9 @@
 PZS-NG CHANGELOG
 ----------------
 
+v1.0.5  --> 1.0.X  :
+		- sort by group fixed - but GRPNaME and grpNAME in the same dir. Groupname from
+		  the first release sets the default.
 v1.0.4  --> 1.0.5  : (2170)
 		- additions/fixes in meij's plugins.
 		- added cr0que's mod to move detection of VA mp3 artist to audiosort.c.

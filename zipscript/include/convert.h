@@ -9,5 +9,6 @@ char *convert4(struct VARS *, char *);
 char *convert5(char *);
 char *c_incomplete(char *, char [2][PATH_MAX], struct VARS *);
 char *i_incomplete(char *, char [2][PATH_MAX], struct VARS *);
+char *s_incomplete(char *, char [2][PATH_MAX], struct VARS *);
 
 #endif

@@ -101,6 +101,9 @@
 #ifndef check_for_missing_nfo_dirs
 #define check_for_missing_nfo_dirs	"/site/incoming/games/ /site/incoming/apps/"
 #endif
+#ifndef create_missing_sfv_link
+#define create_missing_sfv_link         TRUE
+#endif
 #ifndef create_incomplete_links_in_group_dirs
 #define create_incomplete_links_in_group_dirs	TRUE
 #endif
@@ -799,6 +802,12 @@
 #endif
 #ifndef incomplete_base_nfo_indicator
 #define incomplete_base_nfo_indicator	"../../(no-nfo)-%1"
+#endif
+#ifndef incomplete_sfv_indicator
+#define incomplete_sfv_indicator	"../(no-sfv)-%0"
+#endif
+#ifndef incomplete_base_sfv_indicator
+#define incomplete_base_sfv_indicator	"../../(no-sfv)-%1"
 #endif
 #ifndef progressmeter
 #define progressmeter			"[%V] - %3.0p%% Complete - [%Z]"

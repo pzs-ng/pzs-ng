@@ -225,6 +225,7 @@ main(int argc, char **argv)
 	g.l.sfv = ng_realloc2(g.l.sfv, n, 1, 1, 1);
 	g.l.sfvbackup = ng_realloc2(g.l.sfvbackup, n, 1, 1, 1);
 	g.l.leader = ng_realloc2(g.l.leader, n, 1, 1, 1);
+	g.l.sfv_incomplete = 0;
 	target = ng_realloc2(target, n + 256, 1, 1, 1);
 	g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 100, 1, 1, 1);
 	g.gi = ng_realloc2(g.gi, sizeof(struct GROUPINFO *) * 100, 1, 1, 1);
@@ -514,6 +515,13 @@ main(int argc, char **argv)
 			halfway_msg = CHOOSE(g.v.total.users, zip_halfway, zip_norace_halfway);
 			newleader_msg = zip_newleader;
 
+#if ( create_missing_sfv_link == TRUE )
+			if (g.l.sfv_incomplete) {
+				d_log("zipscript-c: Removing missing-sfv indicator (if any)\n");
+				unlink(g.l.sfv_incomplete);
+			}
+#endif
+
 			break;
 			/* END OF ZIP CHECK */
 
@@ -638,6 +646,13 @@ main(int argc, char **argv)
 
 				break;
 			}
+
+#if ( create_missing_sfv_link == TRUE )
+			if (g.l.sfv_incomplete) {
+				d_log("zipscript-c: Removing missing-sfv indicator (if any)\n");
+				unlink(g.l.sfv_incomplete);
+			}
+#endif
 
 #if (use_partial_on_noforce == TRUE)
 			if ( (force_sfv_first == FALSE) || matchpartialpath(noforce_sfv_first_dirs, g.l.path))
@@ -882,6 +897,12 @@ main(int argc, char **argv)
 				printf(zipscript_SFV_skip);
 				d_log("zipscript-c: Storing new race data\n");
 				writerace(g.l.race, &g.v, crc, F_NOTCHECKED);
+#endif
+#if ( create_missing_sfv_link == TRUE )
+				if ((!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) && (g.l.sfv_incomplete) && (!findfileext(dir, ".zip"))) {
+					d_log("zipscript-c: Creating missing-sfv indicator %s.\n", g.l.sfv_incomplete);
+					create_incomplete_sfv();
+				}
 #endif
 			}
 
