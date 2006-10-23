@@ -55,6 +55,6 @@ extern short match_file(char *,	char *);
 extern int check_rarfile(const char *);
 extern int check_zipfile(const char *, const char *, int);
 extern int filebanned_match(const char *);
-
+extern int lenient_compare(char *, char *);
 #endif
 

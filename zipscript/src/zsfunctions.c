@@ -442,11 +442,12 @@ findfile(DIR *dir, char *filename)
 
 	rewinddir(dir);
 	while ((dp = readdir(dir))) {
-#if (sfv_cleanup_lowercase)
-		if (!strcasecmp(dp->d_name, filename))
-#else
-		if (!strcmp(dp->d_name, filename))
-#endif
+//#if (sfv_cleanup_lowercase)
+//		if (!strcasecmp(dp->d_name, filename))
+//#else
+//		if (!strcmp(dp->d_name, filename))
+//#endif
+		if (lenient_compare(dp->d_name, filename))
 			return telldir(dir);
 	}
 	return 0;
