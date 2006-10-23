@@ -75,16 +75,18 @@ main(int argc, char *argv[])
 
 	bzero(one_name, NAME_MAX);
 
-	strncpy(myflags, getenv("FLAGS"), sizeof(myflags));
-	myflags[sizeof(myflags) - 1] = '\0';
-	n = strlen(myflags);
-	while (n > 0) {
-		n--;
-		m = strlen(rescan_chdir_flags);
-		while(m > 0) {
-			m--;
-			if (myflags[n] == rescan_chdir_flags[m])
-				chdir_allowed = 1;
+	if (getenv("FLAGS")) {
+		strncpy(myflags, getenv("FLAGS"), sizeof(myflags));
+		myflags[sizeof(myflags) - 1] = '\0';
+		n = strlen(myflags);
+		while (n > 0) {
+			n--;
+			m = strlen(rescan_chdir_flags);
+			while(m > 0) {
+				m--;
+				if (myflags[n] == rescan_chdir_flags[m])
+					chdir_allowed = 1;
+			}
 		}
 	}
 	if (!geteuid())
@@ -96,10 +98,16 @@ main(int argc, char *argv[])
 			rescan_quick = FALSE;
 		else if (!strncasecmp(argv[1], "--dir=", 5) && (strlen(argv[1]) > 6) && chdir_allowed) {
 			temp_p = argv[1] + 6;
-			if (chdir(temp_p)) {
-				printf("Failed to chdir() to %s : %s\n", temp_p, strerror(errno));
+			if ((!matchpath(nocheck_dirs, temp_p)) && (matchpath(zip_dirs, temp_p) || matchpath(sfv_dirs, temp_p) || matchpath(group_dirs, temp_p))) {
+				if (chdir(temp_p)) {
+					printf("Failed to chdir() to %s : %s\n", temp_p, strerror(errno));
+					exit(1);
+				}
+			} else {
+				printf("Not allowed to chdir() to %s\n", temp_p);
 				exit(1);
 			}
+			printf("PZS-NG Rescan v%s: Rescanning %s\n", ng_version(), temp_p);
 		} else if (!strncasecmp(argv[1], "--help", 6) || !strncasecmp(argv[1], "/?", 2) || !strncasecmp(argv[1], "--?", 3)) {
 			printf("PZS-NG Rescan v%s options:\n\n", ng_version());
 			printf("  --quick      - scan in quick mode - only files not previously marked as ok by the zipscript is scanned\n");
@@ -132,7 +140,7 @@ main(int argc, char *argv[])
 
 	getcwd(g.l.path, PATH_MAX);
 
-	if ((matchpath(nocheck_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) && rescan_nocheck_dirs_allowed == FALSE) {
+	if ((matchpath(nocheck_dirs, g.l.path) && rescan_nocheck_dirs_allowed == FALSE) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
 		d_log("rescan: Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
 		d_log("rescan: Freeing memory, and exiting\n");
 		ng_free(g.ui);
