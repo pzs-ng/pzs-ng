@@ -106,7 +106,7 @@ main(int argc, char *argv[])
 				}
 			} else {
 				printf("Not allowed to chdir() to %s\n", temp_p);
-				not_allowed = 1;
+				return 1;
 			}
 			printf("PZS-NG Rescan v%s: Rescanning %s\n", ng_version(), temp_p);
 			argv_mode = 1;
@@ -121,7 +121,7 @@ main(int argc, char *argv[])
 			} else {
 				temp_p = argv[argnum] + 9;
 				printf("Not allowed to chroot() to %s\n", temp_p);
-				not_allowed = 1;
+				return 1;
 			}
 			printf("PZS-NG Rescan v%s: Chroot'ing to %s\n", ng_version(), temp_p);
 			argv_mode = 1;
@@ -142,11 +142,10 @@ main(int argc, char *argv[])
 			if (one_name[strlen(one_name) - 1] == '*') {
 				one_name[strlen(one_name) - 1] = '\0';
 			} else if (!fileexists(one_name)) {
-				printf("PZS-NG Rescan v%s: No file named '%s' exists.\n", ng_version(), one_name);
-				printf("PZS-NG Rescan v%s: Use --help for options.\n\n", ng_version());
+				d_log("PZS-NG Rescan v%s: No file named '%s' exists.\n", ng_version(), one_name);
 				one_name[0] = '\0';
-				not_allowed = 1;
 			}
+			not_allowed = 1;
 			argv_mode = 1;
 		}		
 		argnum++;
