@@ -60,7 +60,14 @@ d_log(char *fmt,...)
 		fprintf(file, "%.24s - %.6d - ", ctime(&timenow), getpid());
 		vfprintf(file, fmt, ap);
 		fclose(file);
+#if ( debug_announce == TRUE)
+	} else {
+		printf("DEBUG: ");
+		vprintf(fmt, ap);
 	}
+#else
+	}
+#endif
 	chmod(debugname, 0666);
 	va_end(ap);
 #endif
