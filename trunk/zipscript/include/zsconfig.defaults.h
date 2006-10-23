@@ -414,6 +414,13 @@
 #endif
 
 /*
+ * Allow rewritten files on site - sees certain chars as the same
+ */
+#ifndef sfv_lenient
+#define sfv_lenient		TRUE
+#endif
+
+/*
  * Should new sfv files be denied in dir? If not, the new sfv will be checked
  * and denied/allowed depending on the content of the sfv.
  */
