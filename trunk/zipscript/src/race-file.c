@@ -104,19 +104,16 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 	raceI->total.files = 0;
 	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
 		raceI->total.files++;
-#if (sfv_cleanup_lowercase)
-		if (!strcasecmp(raceI->file.name, sd.fname))
-#else
-		if (!strcmp(raceI->file.name, sd.fname))
-#endif
-		{
+#if (sfv_lenient || sfv_cleanup_lowercase)
+		if (lenient_compare(raceI->file.name, sd.fname)) {
 			d_log("readsfv: crc read from sfv-file (%s): %.8x\n", sd.fname, sd.crc32);
 			crc = sd.crc32;
 			insfv = 1;
+			strncpy(raceI->file.unlink, sd.fname, sizeof(raceI->file.unlink));
 		}
-		if (getfcount && findfile(dir, sd.fname)) {
+#endif
+		if (getfcount && findfile(dir, sd.fname))
 			raceI->total.files_missing--;
-		}
 	}
 	
 	closedir(dir);
@@ -1387,5 +1384,43 @@ filebanned_match(const char *filename)
 		}
 	}
 	return 0;
+}
+
+/*
+ * lenient_compare - compare two filenames - ignore case and mix certain chars depending on config.
+ * psxc r2173 (v1)
+ */
+int
+lenient_compare(char *name1, char *name2)
+{
+	int x = strlen(name1);
+	char a[2];
+	char b[2];
+
+	a[1] = b[1] = '\0';
+
+	if (strlen(name1) != strlen(name2))
+		return 0;
+
+	while (x) {
+		a[0] = name1[x];
+		b[0] = name2[x];
+		if (a[0] != b[0]) {
+#if (sfv_cleanup_lowercase)
+			strtolower(a);
+			strtolower(b);
+#endif
+#if (sfv_lenient)
+			if (a[0] == ' ' || a[0] == ',' || a[0] == '.' || a[0] == '-' || a[0] == '_')
+				a[0] = '*';
+			if (b[0] == ' ' || b[0] == ',' || b[0] == '.' || b[0] == '-' || a[0] == '_')
+				b[0] = '*';
+#endif
+			if (a[0] != b[0])
+				return 0;
+		}
+		x--;
+	}
+	return 1;
 }
 

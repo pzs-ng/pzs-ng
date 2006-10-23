@@ -1113,7 +1113,7 @@ main(int argc, char **argv)
 
 			if (exit_value == EXIT_SUCCESS) {
 				d_log("zipscript-c: Removing missing indicator\n");
-				unlink_missing(g.v.file.name);
+				unlink_missing(g.v.file.unlink);
 
 				/*
 				sprintf(target, "%s-missing", g.v.file.name);

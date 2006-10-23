@@ -2,6 +2,8 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.5  --> 1.0.X  :
+		- added support for sfv_lenient.
+		- New option in zsconfig.h - sfv_lenient - see certain delimeter chars as the same
 		- added support for missing-sfv.
 		- New option in zsconfig.h - create_missing_sfv_link - check for missing sfv.
 		- New option in zsconfig.h - incomplete_base_sfv_indicator - missing-indicator.

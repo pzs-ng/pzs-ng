@@ -413,6 +413,12 @@ sfv_cleanup_crlf <TRUE|FALSE>
 	to TRUE, using windows style (<cr><lf>).
 	Default: TRUE
 
+sfv_lenient <TRUE|FALSE>
+	If this is set to true, the chars '_' , '-' , '.' , ' ' and ',' are
+	recognized as the same char. Ie, if you have in sfv 'file.name' and
+	upload 'file_name' - the file will be allowed.
+	Default: TRUE
+
 deny_double_sfv <TRUE|FALSE>
 	With sfv releases, there should be only one sfv file allowed. This can
 	be done two ways - either by force or by being 'smart'. Setting this
