@@ -22,6 +22,10 @@
 #define PROGTYPE_DATACLEANER            16
 #define PROGTYPE_RESCAN                 32
 
+#define INCOMPLETE_NORMAL		3
+#define INCOMPLETE_NFO			7
+#define INCOMPLETE_SFV			15
+
 #ifndef O_SYNC
 #define O_SYNC O_FSYNC
 #endif
