@@ -53,7 +53,7 @@ main(int argc, char *argv[])
 	char		one_name[NAME_MAX];
 	char		*temp_p = NULL;
 	char		myflags[20];
-	int		chdir_allowed = 0;
+	int		chdir_allowed = 0, argnum = 0;
 	GLOBAL		g;
 
 #if ( program_uid > 0 )
@@ -91,13 +91,14 @@ main(int argc, char *argv[])
 	}
 	if (!geteuid())
 		chdir_allowed = 1;
-	if (argc > 1) {
-		if (!strncasecmp(argv[1], "--quick", 7))
+	argnum = 1;
+	while ((argnum < argc) && argc > 1) {
+		if (!strncasecmp(argv[argnum], "--quick", 7))
 			rescan_quick = TRUE;
-		else if (!strncasecmp(argv[1], "--normal", 8))
+		else if (!strncasecmp(argv[argnum], "--normal", 8))
 			rescan_quick = FALSE;
-		else if (!strncasecmp(argv[1], "--dir=", 5) && (strlen(argv[1]) > 6) && chdir_allowed) {
-			temp_p = argv[1] + 6;
+		else if (!strncasecmp(argv[argnum], "--dir=", 6) && (strlen(argv[argnum]) > 7) && chdir_allowed) {
+			temp_p = argv[argnum] + 6;
 			if ((!matchpath(nocheck_dirs, temp_p)) && (matchpath(zip_dirs, temp_p) || matchpath(sfv_dirs, temp_p) || matchpath(group_dirs, temp_p))) {
 				if (chdir(temp_p)) {
 					printf("Failed to chdir() to %s : %s\n", temp_p, strerror(errno));
@@ -108,16 +109,34 @@ main(int argc, char *argv[])
 				exit(1);
 			}
 			printf("PZS-NG Rescan v%s: Rescanning %s\n", ng_version(), temp_p);
-		} else if (!strncasecmp(argv[1], "--help", 6) || !strncasecmp(argv[1], "/?", 2) || !strncasecmp(argv[1], "--?", 3)) {
+
+
+		} else if (!strncasecmp(argv[argnum], "--chroot=", 9) && (strlen(argv[argnum]) > 10) && chdir_allowed) {
+			if (temp_p == NULL) {
+				temp_p = argv[argnum] + 9;
+				if (chroot(temp_p) == -1) {
+					printf("Failed to chroot() to %s : %s\n", temp_p, strerror(errno));
+					exit(1);
+				}
+			} else {
+				temp_p = argv[argnum] + 9;
+				printf("Not allowed to chroot() to %s\n", temp_p);
+				exit(1);
+			}
+			printf("PZS-NG Rescan v%s: Chroot'ing to %s\n", ng_version(), temp_p);
+
+
+		} else if (!strncasecmp(argv[argnum], "--help", 6) || !strncasecmp(argv[argnum], "/?", 2) || !strncasecmp(argv[argnum], "--?", 3)) {
 			printf("PZS-NG Rescan v%s options:\n\n", ng_version());
-			printf("  --quick      - scan in quick mode - only files not previously marked as ok by the zipscript is scanned\n");
-			printf("  --normal     - scan in normal mode - all files will be rescanned regardless of their status\n");
+			printf("  --quick         - scan in quick mode - only files not previously marked as ok by the zipscript is scanned\n");
+			printf("  --normal        - scan in normal mode - all files will be rescanned regardless of their status\n");
 			if (chdir_allowed)
-				printf("  --dir=<PATH> - cd to PATH before beginning to rescan.\n\n");
+				printf("  --chroot=<PATH> - chroot to PATH before beginning to rescan.\n");
+				printf("  --dir=<PATH>    - cd to (chroot'ed) PATH before beginning to rescan.\n");
 			printf("  <FILE><*>    - scan only file named FILE or files beginning with FILE*.\n\n");
 			return 0;
 		} else {
-			strncpy(one_name, argv[1], NAME_MAX - 1);
+			strncpy(one_name, argv[argnum], NAME_MAX - 1);
 			rescan_quick = FALSE;
 			if (one_name[strlen(one_name) - 1] == '*') {
 				one_name[strlen(one_name) - 1] = '\0';
@@ -128,6 +147,7 @@ main(int argc, char *argv[])
 			}
 			printf("PZS-NG Rescan v%s: Rescanning in FILE mode\n", ng_version());
 		}		
+		argnum++;
 	} 
 	if (one_name[0] == '\0') {
 		if (rescan_quick == TRUE) {

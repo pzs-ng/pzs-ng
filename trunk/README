@@ -402,9 +402,13 @@ scripts. Here's a short description of each compiled binary:
       the ones that are not.
     --normal - check all files regardless if they previously have been checked
       and found ok.
+    --chroot=<DIRNAME> - chroot() to DIRNAME before starting the rescan.
     --dir=<DIRNAME> - chdir() to DIRNAME before starting the rescan.
     <NAME><*> - only recheck the file named NAME or all files starting with
       NAME*. Wildcard can only be at the end, not beginning or in the middle.
+    How to test: /glftpd/bin/rescan --chroot=/glftpd --dir=/site/linux/suse15 --normal
+                 site rescan --dir=/site/linux/suse15
+                 site rescan --quick
 
 The bot:
 --------
