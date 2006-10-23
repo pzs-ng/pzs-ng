@@ -197,7 +197,7 @@ main(int argc, char **argv)
 			break;
 	}
 
-	if (matchpath(nocheck_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
+	if ((matchpath(nocheck_dirs, g.l.path) && rescan_nocheck_dirs_allowed == FALSE) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
 		d_log("postdel: Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
 		d_log("postdel: Freeing memory, removing lock and exiting\n");
 		ng_free(g.ui);
