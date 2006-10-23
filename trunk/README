@@ -402,6 +402,7 @@ scripts. Here's a short description of each compiled binary:
       the ones that are not.
     --normal - check all files regardless if they previously have been checked
       and found ok.
+    --dir=<DIRNAME> - chdir() to DIRNAME before starting the rescan.
     <NAME><*> - only recheck the file named NAME or all files starting with
       NAME*. Wildcard can only be at the end, not beginning or in the middle.
 

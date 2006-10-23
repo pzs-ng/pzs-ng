@@ -51,7 +51,9 @@ main(int argc, char *argv[])
 
 	short		rescan_quick = rescan_default_to_quick;
 	char		one_name[NAME_MAX];
-
+	char		*temp_p = NULL;
+	char		myflags[20];
+	int		chdir_allowed = 0;
 	GLOBAL		g;
 
 #if ( program_uid > 0 )
@@ -73,16 +75,38 @@ main(int argc, char *argv[])
 
 	bzero(one_name, NAME_MAX);
 
+	strncpy(myflags, getenv("FLAGS"), sizeof(myflags));
+	myflags[sizeof(myflags) - 1] = '\0';
+	n = strlen(myflags);
+	while (n > 0) {
+		n--;
+		m = strlen(rescan_chdir_flags);
+		while(m > 0) {
+			m--;
+			if (myflags[n] == rescan_chdir_flags[m])
+				chdir_allowed = 1;
+		}
+	}
+	if (!geteuid())
+		chdir_allowed = 1;
 	if (argc > 1) {
 		if (!strncasecmp(argv[1], "--quick", 7))
 			rescan_quick = TRUE;
 		else if (!strncasecmp(argv[1], "--normal", 8))
 			rescan_quick = FALSE;
-		else if (!strncasecmp(argv[1], "--help", 6) || !strncasecmp(argv[1], "/?", 2) || !strncasecmp(argv[1], "--?", 3)) {
+		else if (!strncasecmp(argv[1], "--dir=", 5) && (strlen(argv[1]) > 6) && chdir_allowed) {
+			temp_p = argv[1] + 6;
+			if (chdir(temp_p)) {
+				printf("Failed to chdir() to %s : %s\n", temp_p, strerror(errno));
+				exit(1);
+			}
+		} else if (!strncasecmp(argv[1], "--help", 6) || !strncasecmp(argv[1], "/?", 2) || !strncasecmp(argv[1], "--?", 3)) {
 			printf("PZS-NG Rescan v%s options:\n\n", ng_version());
-			printf("  --quick   - scan in quick mode - only files not previously marked as ok by the zipscript is scanned\n");
-			printf("  --normal  - scan in normal mode - all files will be rescanned regardless of their status\n");
-			printf("  <FILE><*> - scan only file named FILE or files beginning with FILE*.\n\n");
+			printf("  --quick      - scan in quick mode - only files not previously marked as ok by the zipscript is scanned\n");
+			printf("  --normal     - scan in normal mode - all files will be rescanned regardless of their status\n");
+			if (chdir_allowed)
+				printf("  --dir=<PATH> - cd to PATH before beginning to rescan.\n\n");
+			printf("  <FILE><*>    - scan only file named FILE or files beginning with FILE*.\n\n");
 			return 0;
 		} else {
 			strncpy(one_name, argv[1], NAME_MAX - 1);
