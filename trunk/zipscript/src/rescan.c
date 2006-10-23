@@ -35,7 +35,7 @@
 int 
 main(int argc, char *argv[])
 {
-	int		k, n, m, l, complete_type = 0, gnum = 0, unum = 0;
+	int		k, n, m, l, complete_type = 0, gnum = 0, unum = 0, not_allowed = 0, argv_mode = 0;
 	char           *ext, exec[4096], *complete_bar = 0, *inc_point[2];
 	unsigned int	crc;
 	struct stat	fileinfo;
@@ -99,32 +99,32 @@ main(int argc, char *argv[])
 			rescan_quick = FALSE;
 		else if (!strncasecmp(argv[argnum], "--dir=", 6) && (strlen(argv[argnum]) > 7) && chdir_allowed) {
 			temp_p = argv[argnum] + 6;
-			if ((!matchpath(nocheck_dirs, temp_p)) && (matchpath(zip_dirs, temp_p) || matchpath(sfv_dirs, temp_p) || matchpath(group_dirs, temp_p))) {
+			if ((!matchpath(nocheck_dirs, temp_p)) && (matchpath(zip_dirs, temp_p) || matchpath(sfv_dirs, temp_p)) && !matchpath(group_dirs, temp_p)) {
 				if (chdir(temp_p)) {
-					printf("Failed to chdir() to %s : %s\n", temp_p, strerror(errno));
-					exit(1);
+					d_log("rescan: Failed to chdir() to %s : %s\n", temp_p, strerror(errno));
+					not_allowed = 1;
 				}
 			} else {
 				printf("Not allowed to chdir() to %s\n", temp_p);
-				exit(1);
+				not_allowed = 1;
 			}
 			printf("PZS-NG Rescan v%s: Rescanning %s\n", ng_version(), temp_p);
-
+			argv_mode = 1;
 
 		} else if (!strncasecmp(argv[argnum], "--chroot=", 9) && (strlen(argv[argnum]) > 10) && chdir_allowed) {
 			if (temp_p == NULL) {
 				temp_p = argv[argnum] + 9;
 				if (chroot(temp_p) == -1) {
-					printf("Failed to chroot() to %s : %s\n", temp_p, strerror(errno));
-					exit(1);
+					d_log("rescan: Failed to chroot() to %s : %s\n", temp_p, strerror(errno));
+					not_allowed = 1;
 				}
 			} else {
 				temp_p = argv[argnum] + 9;
 				printf("Not allowed to chroot() to %s\n", temp_p);
-				exit(1);
+				not_allowed = 1;
 			}
 			printf("PZS-NG Rescan v%s: Chroot'ing to %s\n", ng_version(), temp_p);
-
+			argv_mode = 1;
 
 		} else if (!strncasecmp(argv[argnum], "--help", 6) || !strncasecmp(argv[argnum], "/?", 2) || !strncasecmp(argv[argnum], "--?", 3)) {
 			printf("PZS-NG Rescan v%s options:\n\n", ng_version());
@@ -138,14 +138,16 @@ main(int argc, char *argv[])
 		} else {
 			strncpy(one_name, argv[argnum], NAME_MAX - 1);
 			rescan_quick = FALSE;
+			printf("PZS-NG Rescan v%s: Rescanning in FILE mode\n", ng_version());
 			if (one_name[strlen(one_name) - 1] == '*') {
 				one_name[strlen(one_name) - 1] = '\0';
 			} else if (!fileexists(one_name)) {
 				printf("PZS-NG Rescan v%s: No file named '%s' exists.\n", ng_version(), one_name);
 				printf("PZS-NG Rescan v%s: Use --help for options.\n\n", ng_version());
-				return 1;
+				one_name[0] = '\0';
+				not_allowed = 1;
 			}
-			printf("PZS-NG Rescan v%s: Rescanning in FILE mode\n", ng_version());
+			argv_mode = 1;
 		}		
 		argnum++;
 	} 
@@ -158,14 +160,17 @@ main(int argc, char *argv[])
 	}
 	printf("PZS-NG Rescan v%s: Use --help for options.\n\n", ng_version());
 
+	if (not_allowed)
+		return 1;
+
 	getcwd(g.l.path, PATH_MAX);
 
-	if ((matchpath(nocheck_dirs, g.l.path) && rescan_nocheck_dirs_allowed == FALSE) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
+	if ((matchpath(nocheck_dirs, g.l.path) && !rescan_nocheck_dirs_allowed) || (matchpath(group_dirs, g.l.path) && argv_mode) || (!matchpath(nocheck_dirs, g.l.path) && !matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
 		d_log("rescan: Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
 		d_log("rescan: Freeing memory, and exiting\n");
 		ng_free(g.ui);
 		ng_free(g.gi);
-		return 0;
+		return 1;
 	}
 	g.v.misc.slowest_user[0] = 30000;
 
