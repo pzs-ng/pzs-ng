@@ -2,6 +2,9 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.5  --> 1.0.X  :
+		- added option to chdir() before rescan.
+		- New option in zsconfig.h - rescan_chdir_flags - flags needed by the user to
+		  chdir() before rescanning a dir. Note: root (uid 0) is always allowed.
 		- added support for sfv_lenient.
 		- New option in zsconfig.h - sfv_lenient - see certain delimeter chars as the same
 		- added support for missing-sfv.

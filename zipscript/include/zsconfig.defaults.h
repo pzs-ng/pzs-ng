@@ -1100,3 +1100,7 @@
 #define check_for_banned_files		TRUE
 #endif
 
+#ifndef rescan_chdir_flags
+#define rescan_chdir_flags		"17ABC"
+#endif
+

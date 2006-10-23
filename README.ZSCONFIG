@@ -1284,6 +1284,14 @@ banned_filelist <PATH>
 check_for_banned_files <TRUE|FALSE>
 	Will check the banned_filelist when uploading files - if one is
 	encountered, the zipscript will deny the upload.
+	DEFAULT: TRUE
 
+rescan_chdir_flags <STRING>
+	The rescan binary can chdir() to a specified dir before starting the
+	rescan. The flags needed by the user to have access to this option is
+	listed in this option.
+	Please note that root (uid 0) are allowed as well, no matter what flags
+	he have or doesn't have. This is to help rescanning from shell.
+	DEFAULT: "17ABC"
 --END
 
