@@ -822,6 +822,12 @@
 #ifndef del_progressmeter
 #define del_progressmeter		"^\\[.*] - .*%% Complete - \\[.*]$"
 #endif
+#ifndef progressmeter_mp3
+#define progressmeter_mp3		"[%V] - %3.0p%% Complete - (%w) [%Z]"
+#endif
+#ifndef del_progressmeter_mp3
+#define del_progressmeter_mp3		"^\\[.*] - .*%% Complete - (.*) \\[.*]$"
+#endif
 
 
 /*
@@ -1101,6 +1107,6 @@
 #endif
 
 #ifndef rescan_chdir_flags
-#define rescan_chdir_flags		"17ABC"
+#define rescan_chdir_flags		""
 #endif
 

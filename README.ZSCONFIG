@@ -342,6 +342,8 @@ debug_announce <TRUE|FALSE>
 	which means that it should give some output no matter what, if it
 	manages to start. Good to find out if the script has actually been
 	executed.
+	If the script(s) are unable to write to .debug and debug_announce is
+	on, the debug msg's will be pasted to the client instead.
 	Default: FALSE
 
 benchmark_mode <TRUE|FALSE>
@@ -890,6 +892,19 @@ del_progressmeter <STRING>
 	that bar - the file(s) matching this will be deleted.
 	Default: "^\\[.*] - .*%% Complete - \\[.*]$"
 
+progressmeter_mp3 <STRING>
+	On upload a complete-bar is created after each file, to show how
+	complete the release is. Put here how that indicator will look.
+	This is for mp3 releases only.
+	Default: "[%V] - %3.0p%% Complete - (%w) [%Z]"
+
+del_progressmeter_mp3 <STRING>
+	On upload a complete-bar is created after each file, to show how
+	complete the release is. Put here what to search for when updating
+	that bar - the file(s) matching this will be deleted.
+	This is for mp3 releases only.
+	Default: "^\\[.*] - .*%% Complete - (.*) \\[.*]$"
+
 charbar_missing <CHAR>
 	The progressbar consist of two chars, which together marks the progress
 	of the release. Put here the char to be used to mark missing files.
@@ -1288,10 +1303,12 @@ check_for_banned_files <TRUE|FALSE>
 
 rescan_chdir_flags <STRING>
 	The rescan binary can chdir() to a specified dir before starting the
-	rescan. The flags needed by the user to have access to this option is
-	listed in this option.
+	rescan. List here the flags needed by the user to be allowed to use this
+	option, for instance "17ABC".
 	Please note that root (uid 0) are allowed as well, no matter what flags
 	he have or doesn't have. This is to help rescanning from shell.
-	DEFAULT: "17ABC"
+	Group-dirs cannot be rescanned this way - they'll have to be rescanned
+	the 'normal' way.
+	DEFAULT: ""
 --END
 

@@ -2,6 +2,11 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.5  --> 1.0.X  :
+		- added special mp3 progressmeter.
+		- New option in zsconfig.h - progressmeter_mp3 - how mp3 progressmeter looks
+		  like.
+		- New option in zsconfig.h - del_progressmeter_mp3 - how mp3 del_progressmeter
+		  looks like.
 		- added option to chdir() before rescan.
 		- New option in zsconfig.h - rescan_chdir_flags - flags needed by the user to
 		  chdir() before rescanning a dir. Note: root (uid 0) is always allowed.

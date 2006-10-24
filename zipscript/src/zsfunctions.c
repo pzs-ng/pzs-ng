@@ -381,11 +381,14 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 	DIR		*dir;
 	struct dirent *dp;
 
-	d_log("move_progress_bar: del_progressmeter: %s\n", del_progressmeter);
-	delbar = convert5(del_progressmeter);
+	if (raceI->misc.release_type == RTYPE_AUDIO) {
+		d_log("move_progress_bar: del_progressmeter_mp3: %s\n", del_progressmeter_mp3);
+		delbar = convert5(del_progressmeter_mp3);
+	} else {
+		d_log("move_progress_bar: del_progressmeter: %s\n", del_progressmeter);
+		delbar = convert5(del_progressmeter);
+	}
 	d_log("move_progress_bar: del_progressmeter: %s\n", delbar);
-	//d_log("move_progress_bar: raceI->total.files: %i\n", raceI->total.files);
-	//d_log("move_progress_bar: raceI->total.files_missing: %i\n", raceI->total.files_missing);
 	regret = regcomp(&preg, delbar, REG_NEWLINE | REG_EXTENDED);
 	if (!regret) {
 		if ((dir = opendir("."))) {
@@ -408,7 +411,10 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 					return;
 				}
 	
-				bar = convert(raceI, userI, groupI, progressmeter);
+				if (raceI->misc.release_type == RTYPE_AUDIO)
+					bar = convert(raceI, userI, groupI, progressmeter_mp3);
+				else
+					bar = convert(raceI, userI, groupI, progressmeter);
 				while ((dp = readdir(dir))) {
 					if ((int)strlen(dp->d_name) && regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
 						if (!m) {
