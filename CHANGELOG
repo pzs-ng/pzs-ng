@@ -4,6 +4,7 @@ PZS-NG CHANGELOG
 v1.0.5  --> 1.0.X  :
 		- added support for speedtesting.
 		- New option in zsconfig.h - speedtest_dirs - dirs dedicated to speedtesting.
+		- New option in zsconfig.h - speedtest_delfile - keep or delete uploaded file.
 		- added special mp3 progressmeter.
 		- New option in zsconfig.h - progressmeter_mp3 - how mp3 progressmeter looks
 		  like.
