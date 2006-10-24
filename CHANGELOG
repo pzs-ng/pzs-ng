@@ -2,6 +2,8 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.5  --> 1.0.X  :
+		- fixed a bug in rescan --quick which did not detect if a previously checked
+		  file was missing.
 		- added support for speedtesting.
 		- New option in zsconfig.h - speedtest_dirs - dirs dedicated to speedtesting.
 		- New option in zsconfig.h - speedtest_delfile - keep or delete uploaded file.

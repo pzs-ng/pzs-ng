@@ -387,7 +387,7 @@ main(int argc, char *argv[])
 				}
 				if(fflush(stdout))
 					d_log("rescan: ERROR: %s\n", strerror(errno));
-				if (!rescan_quick || (g.l.race && !match_file(g.l.race,	dp->d_name)))
+				if (!rescan_quick || (g.l.race && !match_file(g.l.race,	dp->d_name)) || !fileexists(dp->d_name))
 					writerace(g.l.race, &g.v, crc, F_NOTCHECKED);
 			}
 		}
