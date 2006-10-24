@@ -77,6 +77,9 @@
 #ifndef nocheck_dirs
 #define nocheck_dirs			"/site/private/"
 #endif
+#ifndef speedtest_dirs
+#define speedtest_dirs			"/site/speedtest/"
+#endif
 #ifndef noforce_sfv_first_dirs
 #define noforce_sfv_first_dirs		"/site/incoming/requests/"
 #endif

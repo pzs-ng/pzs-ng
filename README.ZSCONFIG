@@ -92,6 +92,12 @@ noforce_sfv_first_dirs <PATHS>
 	the force.
 	Default: "/site/incoming/requests/"
 
+speedtest_dirs <PATHS>
+	On sites it is common with special dirs dedicated to speedtesting. You
+	can define here the dirs dedicated to speedtesting. Notice that files
+	uploaded in these dirs will be deleted automatically.
+	Default: "/site/speedtest/"
+
 use_partial_on_noforce <TRUE|FALSE>
 	Usually all pathmatches are full paths. You can change this on what
 	you put in noforce_sfv_first_dirs to make it match parts of a dir,

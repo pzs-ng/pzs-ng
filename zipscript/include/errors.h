@@ -12,3 +12,5 @@
 #define		BANNED_YEAR			"Releases from %s are not allowed here!"	/* %s = year		 */
 #define		BANNED_BITRATE			"%s kbit codec is not allowed here!"		/* %s = bitrate		 */
 #define		DUPE_NFO			"NFO-File: DUPE!"
+#define		SPEEDTEST			"Speedtest: Uploaded %.1fMB @ %.2fMB/s."
+
