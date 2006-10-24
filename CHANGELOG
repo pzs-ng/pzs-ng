@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.5  --> 1.0.X  :
+		- added dl_speedtest - a new binary to measure download speeds.
 		- fixed a bug in rescan --quick which did not detect if a previously checked
 		  file was missing.
 		- added support for speedtesting.

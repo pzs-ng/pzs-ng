@@ -114,7 +114,7 @@
 #define	bad_file_bitrate_type				"BAD_FILE_BITRATE"
 #define	bad_file_disallowed_type			"BAD_FILE_DISALLOWED"
 #define bad_file_nfo_type				"BAD_FILE_DUPENFO"
-#define bad_file_speedtest_type				"SPEEDTEST"
+#define bad_file_speedtest_type				"DLTEST"
 
 #define deny_double_msg		"{%U} {%G} {%r} {%n}"
 #define deny_resumesfv_msg	"{%U} {%G} {%r} {%n}"
