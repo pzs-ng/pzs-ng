@@ -355,30 +355,19 @@ main(int argc, char **argv)
 			snprintf(g.v.user.name, 18, "%s", g.v.user.group);
 		}
 	}
-	/* Empty file recieved */
-#if (ignore_zero_size == FALSE )
-	if (g.v.file.size == 0) {
-		d_log("zipscript-c: File seems to be 0\n");
-		sprintf(g.v.misc.error_msg, EMPTY_FILE);
+
+	/* Test to see if we are in a speedtest dir */
+	if (matchpath(speedtest_dirs, g.l.path)) {
+		d_log("zipscript-c: Dir matched speedtest_dirs\n");
+		sprintf(g.v.misc.error_msg, SPEEDTEST, ((float)g.v.file.size/1024/1024), ((float)g.v.file.speed/1024/1024));
 		write_log = g.v.misc.write_log;
 		g.v.misc.write_log = 1;
 		mark_as_bad(g.v.file.name);
-		error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
+		g.v.total.size = g.v.file.size;
+		error_msg = convert(&g.v, g.ui, g.gi, speedtest_msg);
 		if (exit_value < 2)
-			writelog(&g, error_msg, bad_file_0size_type);
+			writelog(&g, error_msg, bad_file_speedtest_type);
 		exit_value = 2;
-	}
-#endif
-	/* No check directories */
-	if (matchpath(nocheck_dirs, g.l.path) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
-		d_log("zipscript-c: Directory matched with nocheck_dirs, or is not among sfv/zip/group dirs\n");
-		d_log("zipscript-c:   - nocheck_dirs: '%s'\n", nocheck_dirs);
-		d_log("zipscript-c:   - zip_dirs    : '%s'\n", zip_dirs);
-		d_log("zipscript-c:   - sfv_dirs    : '%s'\n", sfv_dirs);
-		d_log("zipscript-c:   - group_dirs  : '%s'\n", group_dirs);
-		d_log("zipscript-c:   - current path: '%s'\n", g.l.path);
-		no_check = TRUE;
-
 #if (check_for_banned_files == TRUE )
 	} else if (filebanned_match(g.v.file.name)) {
 		d_log("zipscript-c: Banned file detected (%s)\n", g.v.file.name);
@@ -391,6 +380,29 @@ main(int argc, char **argv)
 			writelog(&g, error_msg, bad_file_0size_type);
 		exit_value = 2;
 #endif
+#if (ignore_zero_size == FALSE )
+	/* Empty file recieved */
+	} else if (g.v.file.size == 0) {
+		d_log("zipscript-c: File seems to be 0\n");
+		sprintf(g.v.misc.error_msg, EMPTY_FILE);
+		write_log = g.v.misc.write_log;
+		g.v.misc.write_log = 1;
+		mark_as_bad(g.v.file.name);
+		error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
+		if (exit_value < 2)
+			writelog(&g, error_msg, bad_file_0size_type);
+		exit_value = 2;
+#endif
+	/* No check directories */
+	} else if (matchpath(nocheck_dirs, g.l.path) || (!matchpath(nocheck_dirs, g.l.path) && !matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
+		d_log("zipscript-c: Directory matched with nocheck_dirs, or is not among sfv/zip/group/speedtest dirs\n");
+		d_log("zipscript-c:   - nocheck_dirs  : '%s'\n", nocheck_dirs);
+		d_log("zipscript-c:   - zip_dirs      : '%s'\n", zip_dirs);
+		d_log("zipscript-c:   - sfv_dirs      : '%s'\n", sfv_dirs);
+		d_log("zipscript-c:   - group_dirs    : '%s'\n", group_dirs);
+		d_log("zipscript-c:   - speedtest_dirs: '%s'\n", speedtest_dirs);
+		d_log("zipscript-c:   - current path  : '%s'\n", g.l.path);
+		no_check = TRUE;
 	}
 	if (exit_value == 2)
 		d_log("File already marked as bad. Will not process further.\n");
@@ -1487,8 +1499,6 @@ main(int argc, char **argv)
 
 		d_log("zipscript-c: Logging file as bad\n");
 		remove_from_race(g.l.race, g.v.file.name, &g.v);
-		//writerace(g.l.race, &g.v, 0, F_BAD);
-
 		printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_error));
 	}
 #if ( enable_accept_script == TRUE )

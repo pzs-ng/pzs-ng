@@ -112,6 +112,7 @@
 #define bad_file_bitrate_type				"BAD_FILE_BITRATE"
 #define bad_file_disallowed_type			"BAD_FILE_DISALLOWED"
 #define bad_file_nfo_type				"BAD_FILE_DUPENFO"
+#define bad_file_speedtest_type				"SPEEDTEST"
 
 
 #define deny_double_msg		"{%U} {%G} {%r} {%n}"
@@ -368,6 +369,7 @@
 #define incompletemsg		"{%U} {%G} {%r}"
 
 #define bad_file_msg		"{%r} {%U} {%G} {%n}"
+#define speedtest_msg		"{%U} {%G} {%.0S} {%.1m}"
 
 enum ReleaseTypes {
 	RTYPE_NULL = 0,
