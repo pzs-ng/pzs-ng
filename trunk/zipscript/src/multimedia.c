@@ -199,6 +199,18 @@ get_preset(char vbr_header[4])
 	case 1007:
 		strcpy(returnval, "FAPM");
 		break;		/* fast medium   */
+	case 320:
+		strcpy(returnval, "INSANE");
+		break;		/* insane        */
+	case 460:
+		strcpy(returnval, "MEDIUM");
+		break;		/* medium        */
+	case 480:
+		strcpy(returnval, "STANDARD");
+		break;		/* standard      */
+	case 500:
+		strcpy(returnval, "EXTREME");
+		break;		/* extreme       */
 	}
 	return returnval;
 }
