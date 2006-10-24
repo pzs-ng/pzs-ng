@@ -6,8 +6,8 @@ CFLAGS=@CFLAGS@ @GLVERSION@
 LDFLAGS=@LDFLAGS@
 INSTALL=@INSTALL@
 
-targets=@PASSCHK@ showlog
-install_targets=@PASSCHK2@ showlog-install
+targets=@PASSCHK@ showlog dl_speedtest
+install_targets=@PASSCHK2@ showlog-install dl_speedtest-install
 
 all: $(targets)
 
@@ -20,6 +20,9 @@ passchk: passchk.c
 showlog: showlog.c
 	$(CC) $(LDFLAGS) @M32@ $(CFLAGS) -I../../zipscript/conf/ -I../../zipscript/include/ -o showlog showlog.c
 
+dl_speedtest: dl_speedtest.c
+	$(CC) $(LDFLAGS) @M32@ $(CFLAGS) -I../../zipscript/conf/ -I../../zipscript/include/ -o dl_speedtest dl_speedtest.c
+
 install: $(install_targets)
 
 #ng-bw-install: ng-bw
@@ -31,9 +34,12 @@ passchk-install: passchk
 showlog-install: showlog
 	$(INSTALL) -m755 showlog $(prefix)/bin
 
+dl_speedtest-install: dl_speedtest
+	$(INSTALL) -m755 dl_speedtest $(prefix)/bin
+
 distclean: clean
 
 clean:
 #	$(RM) ng-bw passchk showlog
-	$(RM) passchk showlog
+	$(RM) passchk showlog dl_speedtest
 

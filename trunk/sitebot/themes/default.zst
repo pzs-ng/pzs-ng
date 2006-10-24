@@ -77,7 +77,8 @@ announce.UNNUKE                 = "[%b{unnuke}][%section] %b{%relname} factor %b
 announce.NUKEES                 = "%b{%u_name} (%b{%size}MB)"
 announce.WIPE                   = "[%b{wipe  }][%section] %b{%relname} by %b{%u_name} of %g_name."
 announce.WIPE-r                 = "[%b{wipe-r}][%section] %b{%relname} and all subdirectories by %b{%u_name} of %g_name."
-announce.SPEEDTEST              = "[%b{speed }][%section] %b{%u_name} of %g_name speedtested with a %b{%mbits}MiB file @ %b{%mbps}Mbps."
+announce.ULTEST                 = "[%b{speed }][%section] %b{%u_name} of %g_name tested ul-speed with a %b{%mbits}MiB file @ %b{%mbps}Mbps."
+announce.DLTEST                 = "[%b{speed }][%section] %b{%u_name} of %g_name tested dl-speed with a %b{%mbits}MiB file @ %b{%mbps}Mbps."
 
 ## Custom announcements (see dZSbot.defaults.conf for info on how to enable)
 #announce.COVERS                = "[%b{covers}][%section] %b{%relname} by %b{%u_name} of %g_name."
