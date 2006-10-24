@@ -593,6 +593,9 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 			case 'm':
 				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->total.size >> 10) / 1024.));
 				break;
+			case 'N':
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->total.size >> 10) * 1024. / 1000. /1000.));
+				break;
 			case 'M':
 				out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.files_missing);
 				break;
@@ -612,7 +615,10 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.bad_size / 1024.));
 				break;
 			case 'S':
-				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->file.speed / 1024));
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->file.speed / 1024.));
+				break;	/* kbps */
+			case 's':
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->file.speed * 8 / 1000. / 1000.));
 				break;	/* kbps */
 			case 'r':
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.release_name);

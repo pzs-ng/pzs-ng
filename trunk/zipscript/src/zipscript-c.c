@@ -359,7 +359,7 @@ main(int argc, char **argv)
 	/* Test to see if we are in a speedtest dir */
 	if (matchpath(speedtest_dirs, g.l.path)) {
 		d_log("zipscript-c: Dir matched speedtest_dirs\n");
-		sprintf(g.v.misc.error_msg, SPEEDTEST, ((float)g.v.file.size/1024/1024), ((float)g.v.file.speed/1024/1024));
+		sprintf(g.v.misc.error_msg, SPEEDTEST, ((double)g.v.file.size/1000./1000.), ((double)g.v.file.speed*8/1000./1000.));
 		write_log = g.v.misc.write_log;
 		g.v.misc.write_log = 1;
 		mark_as_bad(g.v.file.name);
@@ -367,7 +367,13 @@ main(int argc, char **argv)
 		error_msg = convert(&g.v, g.ui, g.gi, speedtest_msg);
 		if (exit_value < 2)
 			writelog(&g, error_msg, bad_file_speedtest_type);
+		if (!speedtest_delfile) {
+			sprintf(target, "%.1fMiB", ((float)g.v.file.size/1000./1000.));
+			if (rename(g.v.file.name, target) == -1)
+				d_log("zipscript-c: Unable to rename speedtest file: %s (not considered an error in this case)\n", strerror(errno));
+			}
 		exit_value = 2;
+
 #if (check_for_banned_files == TRUE )
 	} else if (filebanned_match(g.v.file.name)) {
 		d_log("zipscript-c: Banned file detected (%s)\n", g.v.file.name);

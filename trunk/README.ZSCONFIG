@@ -94,9 +94,14 @@ noforce_sfv_first_dirs <PATHS>
 
 speedtest_dirs <PATHS>
 	On sites it is common with special dirs dedicated to speedtesting. You
-	can define here the dirs dedicated to speedtesting. Notice that files
-	uploaded in these dirs will be deleted automatically.
+	can define here the dirs dedicated to speedtesting.
 	Default: "/site/speedtest/"
+
+speedtest_delfile <TRUE|FALSE>
+	With speedtest you can choose if you wish to keep the uploaded files or
+	remove them immediatly. If you choose to keep them, the files will be
+	renamed to xx.xMiB
+	Default: FALSE
 
 use_partial_on_noforce <TRUE|FALSE>
 	Usually all pathmatches are full paths. You can change this on what

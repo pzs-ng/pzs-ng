@@ -369,7 +369,7 @@
 #define incompletemsg		"{%U} {%G} {%r}"
 
 #define bad_file_msg		"{%r} {%U} {%G} {%n}"
-#define speedtest_msg		"{%U} {%G} {%.0S} {%.1m}"
+#define speedtest_msg		"{%U} {%G} {%.2s} {%.1N} {%.1m}"
 
 enum ReleaseTypes {
 	RTYPE_NULL = 0,
