@@ -237,6 +237,8 @@ main(int argc, char **argv)
 	g.v.file.compression_method = '5';
 	g.v.user.pos = 0;
 	sprintf(g.v.misc.old_leader, "none");
+	g.v.id3_artist[0] = '\0';
+	g.v.id3_genre[0] = '\0';
 
 	/* Get file extension */
 
@@ -336,6 +338,12 @@ main(int argc, char **argv)
 			break;
 	}
 
+	if (!memcmp(fileext, "mp3", 4)) {
+		d_log("zipscript-c: Trying to read audio header and tags\n");
+		get_mpeg_audio_info(findfileext(dir, ".mp3"), &g.v.audio);
+		strlcpy(g.v.id3_artist, g.v.audio.id3_artist, sizeof(g.v.id3_artist));
+		strlcpy(g.v.id3_genre, g.v.audio.id3_genre, sizeof(g.v.id3_genre));
+	}
 	if (strlen(zipscript_header))
 		printf(zipscript_header);
 
@@ -747,7 +755,9 @@ main(int argc, char **argv)
 			} else {
 				if (g.v.misc.release_type == RTYPE_AUDIO) {
 					d_log("zipscript-c: Reading audio info for completebar\n");
-					get_mpeg_audio_info(findfileext(dir, ".mp3"), &g.v.audio);
+//					get_mpeg_audio_info(findfileext(dir, ".mp3"), &g.v.audio);
+//					strlcpy(g.v.id3_artist, g.v.audio.id3_artist, sizeof(g.v.id3_artist));
+//					strlcpy(g.v.id3_genre, g.v.audio.id3_genre, sizeof(g.v.id3_genre));
 				}
 			}
 
@@ -960,7 +970,9 @@ main(int argc, char **argv)
 				halfway_msg = CHOOSE(g.v.total.users, audio_halfway, audio_norace_halfway);
 				newleader_msg = audio_newleader;
 				d_log("zipscript-c: Trying to read audio header and tags\n");
-				get_mpeg_audio_info(g.v.file.name, &g.v.audio);
+//				get_mpeg_audio_info(g.v.file.name, &g.v.audio);
+//				strlcpy(g.v.id3_artist, g.v.audio.id3_artist, sizeof(g.v.id3_artist));
+//				strlcpy(g.v.id3_genre, g.v.audio.id3_genre, sizeof(g.v.id3_genre));
 #if ( exclude_non_sfv_dirs )
 				if (g.v.misc.write_log == TRUE) {
 #endif

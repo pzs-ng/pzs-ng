@@ -5,6 +5,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <time.h>
 #include "zsconfig.h"
 #include "zsconfig.defaults.h"
 
@@ -38,7 +39,7 @@ matchpath(char *instr, char *path)
 int
 main (int argc, char **argv)
 {
-	char		filename[NAME_MAX], wdir[PATH_MAX];
+	char		filename[NAME_MAX], wdir[PATH_MAX], user[25], group[25];
 	char	       *p = NULL;
 	struct stat	fileinfo;
 	double		mbit, mbyte, mbps;
@@ -54,6 +55,12 @@ main (int argc, char **argv)
 	if (!matchpath(speedtest_dirs, wdir))
 		return 0;
 	if (getenv("USER") && getenv("GROUP") && getenv("SPEED")) {
+		snprintf(user, sizeof(user) - 1, getenv("USER"));
+		if (!strlen(user))
+			sprintf(user, "NoUser");
+		snprintf(group, sizeof(group) - 1, getenv("GROUP"));
+		if (!strlen(group))
+			sprintf(group, "NoGroup");
 		mbps = (double)strtol(getenv("SPEED"), NULL, 0) * 1024. * 8. / 1000. / 1000.;
 		if (stat(filename, &fileinfo))
 			return 0;
@@ -61,7 +68,7 @@ main (int argc, char **argv)
 		mbit = (double)fileinfo.st_size / 1000. / 1000.;
 		if (!(glfile = fopen(log, "a+")))
 			return 0;
-		fprintf(glfile, "%.24s DLTEST: \"%s\" {%s} {%s} {%.1f} {%.2f} {%.2f}\n", ctime(&timenow), wdir, getenv("USER"), getenv("GROUP"), mbit, mbyte, mbps);
+		fprintf(glfile, "%.24s DLTEST: \"%s\" {%s} {%s} {%.2f} {%.1f} {%.1f}\n", ctime(&timenow), wdir, user, group, mbps, mbit, mbyte);
 		fclose(glfile);
 	}
 	return 0;

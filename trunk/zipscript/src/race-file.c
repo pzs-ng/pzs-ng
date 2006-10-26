@@ -320,7 +320,14 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 		Tcrc = readsfv(locations->sfv, raceI, 0);
 		timenow = time(NULL);
 		stat(rd.fname, &filestat);
-
+		if (raceI->audio.id3_artist[0] == '\0') {
+			strlcpy(raceI->id3_artist, rd.id3_artist, sizeof(raceI->id3_artist));
+			strlcpy(raceI->audio.id3_artist, rd.id3_artist, sizeof(raceI->audio.id3_artist));
+		}
+		if (!raceI->audio.id3_genre) {
+			strlcpy(raceI->id3_genre, rd.id3_genre,sizeof( raceI->id3_genre));
+		}
+		d_log("testfiles: raceI->id3_genre='%s' - raceI->audio.id3_artist='%s'\n", raceI->id3_genre, raceI->audio.id3_artist);
 		if (fileexists(rd.fname)) {
 			if (S_ISDIR(filestat.st_mode))
 				rd.status = F_IGNORED;
@@ -758,6 +765,12 @@ readrace(const char *path, struct VARS *raceI, struct USERINFO **userI, struct G
 				case F_CHECKED:
 					updatestats(raceI, userI, groupI, rd.uname, rd.group,
 						    rd.size, rd.speed, rd.start_time);
+					if (raceI->id3_genre[0] == '\0')
+						strlcpy(raceI->id3_genre, rd.id3_genre, sizeof(raceI->id3_genre));
+					if (raceI->id3_artist[0] == '\0') {
+						strlcpy(raceI->audio.id3_artist, rd.id3_artist, sizeof(raceI->audio.id3_artist));
+						strlcpy(raceI->id3_artist, rd.id3_artist, sizeof(raceI->id3_artist));
+					}
 					break;
 				case F_BAD:
 					raceI->total.files_bad++;
@@ -825,7 +838,10 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	strlcpy(rd.fname, raceI->file.name, NAMEMAX);
 	strlcpy(rd.uname, raceI->user.name, 24);
 	strlcpy(rd.group, raceI->user.group, 24);
-	
+	strlcpy(rd.id3_artist, raceI->id3_artist, sizeof(rd.id3_artist));
+	strlcpy(rd.id3_genre, raceI->id3_genre, sizeof(rd.id3_genre));
+	d_log("writerace: raceI->id3_genre='%s' - raceI->audio.id3_artist='%s'\n", raceI->id3_genre, raceI->audio.id3_artist);
+
 	rd.size = raceI->file.size;
 	rd.speed = raceI->file.speed;
 	rd.start_time = raceI->total.start_time;

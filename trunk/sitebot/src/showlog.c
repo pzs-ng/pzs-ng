@@ -329,13 +329,13 @@ void show_newdirs(const char *pattern)
 
 if (!matchpath(group_dirs, buffer.dirname)) {
 #ifndef USE_GLFTPD132
-			printf("%d|%u|%d|%d|%d|%lld|",
+			printf("%d|%u|%d|%d|%d|%.0f|",
 				buffer.status, (unsigned int)buffer.uptime, buffer.uploader, buffer.group,
-				buffer.files, buffer.bytes/1024);
+				buffer.files, (float)buffer.bytes/1024.);
 #else
-			printf("%d|%u|%d|%d|%d|%ld|",
+			printf("%d|%u|%d|%d|%d|%.0f|",
 				buffer.status, (unsigned int)buffer.uptime, buffer.uploader, buffer.group,
-				buffer.files, buffer.bytes/1024);
+				buffer.files, (float)buffer.bytes/1024.);
 #endif
 			puts(buffer.dirname);
 			i++;
