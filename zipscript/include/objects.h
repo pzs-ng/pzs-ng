@@ -153,6 +153,8 @@ struct VARS {
 	unsigned int	data_in_use;
 	unsigned int	data_queue;
 	unsigned int	data_type;
+	char		id3_artist[31];
+	char		id3_genre[31];
 };
 
 struct LOCATIONS {
@@ -183,6 +185,6 @@ typedef struct {
 /* sfv_version - must be > 5. Should not be any need to add a version
  * for racedata - if either sfv_data or racedata changes, they both
  * should be removed */
-#define sfv_version	15
+#define sfv_version	16
 
 #endif

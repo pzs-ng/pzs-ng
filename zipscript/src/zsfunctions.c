@@ -388,7 +388,7 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 		d_log("move_progress_bar: del_progressmeter: %s\n", del_progressmeter);
 		delbar = convert5(del_progressmeter);
 	}
-	d_log("move_progress_bar: del_progressmeter: %s\n", delbar);
+	d_log("move_progress_bar: delbar: %s\n", delbar);
 	regret = regcomp(&preg, delbar, REG_NEWLINE | REG_EXTENDED);
 	if (!regret) {
 		if ((dir = opendir("."))) {
@@ -1127,10 +1127,10 @@ remove_nfo_indicator(GLOBAL *g)
 
 	buffer_paths(g, path, &k, ((int)strlen(g->l.path)-1));
 
-	g->l.nfo_incomplete = incomplete(incomplete_nfo_indicator, path, &g->v, INCOMPLETE_NORMAL);
+	g->l.nfo_incomplete = incomplete(incomplete_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
 	if (fileexists(g->l.nfo_incomplete))
 		unlink(g->l.nfo_incomplete);
-	g->l.nfo_incomplete = incomplete(incomplete_base_nfo_indicator, path, &g->v, INCOMPLETE_NORMAL);
+	g->l.nfo_incomplete = incomplete(incomplete_base_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
 	if (fileexists(g->l.nfo_incomplete))
 		unlink(g->l.nfo_incomplete);
 }
@@ -1170,6 +1170,7 @@ getrelname(GLOBAL *g)
 	
 	d_log("\t\t\tlink_source:\t%s\n", g->l.link_source);
 	d_log("\t\t\tlink_target:\t%s\n", g->l.link_target);
+	d_log("\t\t\tg->l.incomplete:\t%s\n", g->l.incomplete);
 }
 
 unsigned char 

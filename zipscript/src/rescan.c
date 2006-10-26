@@ -198,7 +198,8 @@ main(int argc, char *argv[])
 	sprintf(g.l.sfvbackup, storage "/%s/sfvbackup", g.l.path);
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
-
+	g.v.id3_artist[0] = '\0';
+	g.v.id3_genre[0] = '\0';
 	d_log("rescan: Creating directory to store racedata in\n");
  	maketempdir(g.l.path);
 
@@ -428,9 +429,11 @@ main(int argc, char *argv[])
 				}
 			}
 		}
-		if (g.v.misc.release_type == RTYPE_AUDIO)
+		if (g.v.misc.release_type == RTYPE_AUDIO) {
 			get_mpeg_audio_info(findfileext(dir, ".mp3"), &g.v.audio);
-
+			strlcpy(g.v.id3_artist, g.v.audio.id3_artist, 31);
+			strlcpy(g.v.id3_genre, g.v.audio.id3_genre, 31);
+		}
 		if ((g.v.total.files_missing == 0) && (g.v.total.files > 0)) {
 
 			switch (g.v.misc.release_type) {

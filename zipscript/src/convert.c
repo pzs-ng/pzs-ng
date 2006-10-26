@@ -313,7 +313,10 @@ convert4(struct VARS *raceI, char *instr)
 
 			switch (*instr) {
 			case 'w':
-				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_genre);
+				if (raceI->audio.id3_genre)
+					out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_genre);
+				else
+					out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->id3_genre);
 				break;
 			case 'W':
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_album);
@@ -651,7 +654,10 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				/* Audio */
 
 			case 'w':
-				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_genre);
+				if (raceI->audio.id3_genre)
+					out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_genre);
+				else
+					out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->id3_genre);
 				break;
 			case 'W':
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_album);

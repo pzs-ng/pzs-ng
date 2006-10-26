@@ -44,7 +44,7 @@ main(int argc, char **argv)
 	char		*env_user;
 	char		*env_group;
 	char	        *inc_point[2];
-	int		n, m;
+	int		n, m, ftype = 0;
 	unsigned char	empty_dir = 0;
 	unsigned char	_incomplete = 0;
 	
@@ -227,7 +227,8 @@ main(int argc, char **argv)
 	sprintf(g.l.sfvbackup, storage "/%s/sfvbackup", g.l.path);
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
-
+	g.v.id3_artist[0] = '\0';
+	g.v.id3_genre[0] = '\0';
 	d_log("postdel: Caching release name\n");
 	getrelname(&g);
 	d_log("postdel: DEBUG 0: incomplete: '%s', path: '%s'\n", g.l.incomplete, g.l.path);
@@ -252,8 +253,10 @@ main(int argc, char **argv)
 	} else
 		*fileext = '\0';
 
+	g.v.misc.release_type = 0;
 	switch (get_filetype_postdel(&g, fileext)) {
 	case 0:
+		ftype = g.v.misc.release_type;
 		d_log("postdel: File type is: ZIP\n");
 		if (matchpath(zip_dirs, g.l.path)) {
 			if (matchpath(group_dirs, g.l.path)) {
@@ -318,6 +321,7 @@ main(int argc, char **argv)
 		remove_from_race(g.l.race, g.v.file.name, &g.v);
 		break;
 	case 1: /* SFV */
+		ftype = g.v.misc.release_type;
 		d_log("postdel: Reading file count from sfvdata\n");
 		readsfv(g.l.sfv, &g.v, 0);
 
@@ -348,9 +352,11 @@ main(int argc, char **argv)
 		if (g.l.incomplete)
 			unlink(g.l.incomplete);
 		d_log("postdel: removing progressbar, if any\n");
+		g.v.misc.release_type = ftype;
 		move_progress_bar(1, &g.v, g.ui, g.gi);
 		break;
 	case 3:
+		ftype = g.v.misc.release_type;
 		if (del_completebar) {
 			d_log("postdel: Removing old complete bar, if any\n");
 			removecomplete();
@@ -394,14 +400,17 @@ main(int argc, char **argv)
 		remove_from_race(g.l.race, g.v.file.name, &g.v);
 		break;
 	case 4:
+		ftype = g.v.misc.release_type;
 		if (!fileexists(g.l.race))
 			empty_dir = 1;
 		break;
 	case 255:
+		ftype = g.v.misc.release_type;
 		if (!fileexists(g.l.race))
 			empty_dir = 1;
 		break;
 	case 2:
+		ftype = g.v.misc.release_type;
 		if (!fileexists(g.l.race)) {
 			empty_dir = 1;
 		} else {
@@ -409,9 +418,8 @@ main(int argc, char **argv)
 			readrace(g.l.race, &g.v, g.ui, g.gi);
 			d_log("postdel: Caching progress bar\n");
 			buffer_progress_bar(&g.v);
-			if (g.v.total.files_missing == g.v.total.files) {
+			if (g.v.total.files_missing == g.v.total.files)
 				empty_dir = 1;
-			}
 		}
 		break;
 	}
@@ -435,6 +443,7 @@ main(int argc, char **argv)
 		unlink(g.l.race);
 		unlink(g.l.leader);
 		
+		g.v.misc.release_type = ftype;
 		move_progress_bar(1, &g.v, g.ui, g.gi);
 		
 #if (remove_dot_files_on_delete == TRUE)
@@ -480,7 +489,8 @@ main(int argc, char **argv)
 			d_log("postdel:    incomplete: '%s', path: '%s'\n", g.l.incomplete, g.l.path);
 			create_incomplete();
 		}
-		d_log("postdel: Moving progress bar\n");
+		d_log("postdel: Moving progress bar (%d)\n", g.v.misc.release_type);
+		g.v.misc.release_type = ftype;
 		move_progress_bar(0, &g.v, g.ui, g.gi);
 	}
 	
@@ -509,6 +519,9 @@ get_filetype_postdel(GLOBAL *g, char *ext)
 {
 	if (!(*ext))
 		return 255;
+	if (!strcasecmp(ext, "mp3")) {
+		g->v.misc.release_type = RTYPE_AUDIO;
+	}
 	if (!strcasecmp(ext, "sfv"))
 		return 1;
 	if (!clear_file(g->l.race, g->v.file.name))
@@ -519,7 +532,6 @@ get_filetype_postdel(GLOBAL *g, char *ext)
 		return 2;
 	if (!strcomp(ignored_types, ext) || !strcomp(allowed_types, ext))
 		return 3;
-
 	return 255;
 }
 
