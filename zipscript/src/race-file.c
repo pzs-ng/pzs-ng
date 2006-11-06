@@ -1425,8 +1425,8 @@ lenient_compare(char *name1, char *name2)
 		return 0;
 
 	while (x) {
-		a[0] = name1[x];
-		b[0] = name2[x];
+		a[0] = name1[x - 1];
+		b[0] = name2[x - 1];
 		if (a[0] != b[0]) {
 #if (sfv_cleanup_lowercase)
 			strtolower(a);
