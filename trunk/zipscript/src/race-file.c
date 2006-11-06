@@ -489,6 +489,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 				/* we didn't get an 8 digit crc number */
 #if (sfv_cleanup == TRUE)
 				/* do stuff  */
+				d_log("copysfv: We did not get a 8 digit crc number for %s - trying to continue anyway\n", sd.fname);
 #else
 				retval = 1;
 				goto END;
@@ -508,6 +509,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 			/* we have a filename only. */
 #if (sfv_cleanup == TRUE)
 			/* do stuff  */
+			d_log("copysfv: We did not find a crc number for %s - trying to continue anyway\n", sd.fname);
 #else
 			retval = 1;
 			goto END;
@@ -528,12 +530,16 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 				break;
 			}
 
-#if (sfv_calc_single_fname == TRUE)
 			if (sd.crc32 == 0) {
+#if (sfv_calc_single_fname == TRUE)
 				d_log("copysfv: Got filename (%s) without crc, trying to calculate.\n", sd.fname);
 				sd.crc32 = calc_crc32(sd.fname);
-			}
+#else
+				d_log("copysfv: Got filename (%s) without crc - ignoring file.\n", sd.fname);
+				continue;
 #endif
+			}
+
 			
 			/* get file extension */
 			ptr = find_last_of(fbuf, ".");

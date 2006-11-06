@@ -348,7 +348,7 @@ main(int argc, char **argv)
 		printf(zipscript_header);
 
 	/* Hide users in group_dirs */
-	if (matchpath(group_dirs, g.l.path) && (hide_group_uploaders == TRUE)) {
+	if (hide_group_uploaders && matchpath(group_dirs, g.l.path)) {
 		d_log("zipscript-c: Hiding user in group-dir:\n");
 		if ((int)strlen(hide_gname) > 0) {
 			snprintf(g.v.user.group, 18, "%s", hide_gname);
@@ -591,7 +591,9 @@ main(int argc, char **argv)
 					error_msg = convert(&g.v, g.ui, g.gi, deny_resumesfv_msg);
 					writelog(&g, error_msg, general_resumesfv_type);
 					if (copyfile(g.l.sfvbackup, g.v.file.name))
-						d_log("zipscript-c: failed to copy backed up sfv\n");
+						d_log("zipscript-c: failed to copy backed up sfv (%s)\n", g.v.file.name);
+					else
+						d_log("zipscript-c: created backup of sfv (%s)\n", g.v.file.name);
 					g.v.misc.write_log = write_log;
 					break;
 				} else if (findfileextcount(dir, ".sfv") > 1 && sfv_compare_size(".sfv", g.v.file.size) > 0) {
@@ -763,9 +765,9 @@ main(int argc, char **argv)
 
 			if (deny_resume_sfv == TRUE) {
 				if (copyfile(g.v.file.name, g.l.sfvbackup))
-					d_log("zipscript-c: failed to make backup of sfv\n");
+					d_log("zipscript-c: failed to make backup of sfv (%s)\n", g.v.file.name);
 				else
-					d_log("zipscript-c: created backup of sfv\n");
+					d_log("zipscript-c: created backup of sfv (%s)\n", g.v.file.name);
 			}
 			break;
 			/* END OF SFV CHECK */
@@ -773,10 +775,24 @@ main(int argc, char **argv)
 		case 2:	/* NFO CHECK */
 			no_check = TRUE;
 			d_log("zipscript-c: File type is: NFO\n");
+#if ( deny_nfo_upload_in_zip )
+			if (matchpath(zip_dirs, g.l.path)) {
+				d_log("zipscript-c: NFO upload in zip dir not allowed.\n");
+				strlcpy(g.v.misc.error_msg, ZIP_NFO, 80);
+				mark_as_bad(g.v.file.name);
+				write_log = g.v.misc.write_log;
+				g.v.misc.write_log = 1;
+				error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
+				if (exit_value < 2)
+					writelog(&g, error_msg, bad_file_zipnfo_type);
+				exit_value = 2;
+				break;
+			}
+#endif
 #if ( deny_double_nfo )
 			if (findfileextcount(dir, ".nfo") > 1) {
 				d_log("zipscript-c: Looks like there already is a nfo uploaded. Denying this one.\n");
-				sprintf(g.v.misc.error_msg, DUPE_NFO);
+				strlcpy(g.v.misc.error_msg, DUPE_NFO, 80);
 				//mark_as_bad(g.v.file.name);
 				write_log = g.v.misc.write_log;
 				g.v.misc.write_log = 1;
@@ -1179,7 +1195,7 @@ main(int argc, char **argv)
 		}
 	}
 
-	if (no_check == TRUE) {	/* File was not checked */
+	if (no_check == TRUE && exit_value < 2) {	/* File was not checked */
 		printf(zipscript_any_ok);
 		printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_skip));
 	} else if (exit_value == EXIT_SUCCESS) {	/* File was checked */

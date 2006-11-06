@@ -508,9 +508,12 @@ main(int argc, char **argv)
 
 	d_log("postdel: Exit 0\n");
 
-	if ((empty_dir == 1) && (fileexists(".debug")) && (remove_dot_debug_on_delete == TRUE))
-		unlink(".debug");
-
+	if (empty_dir) {
+		d_log("zipscript-c: Removing missing-sfv indicator (if any)\n");
+		unlink(g.l.sfv_incomplete);
+		if (fileexists(".debug") && remove_dot_debug_on_delete)
+			unlink(".debug");
+	}
 	return 0;
 }
 

@@ -2,6 +2,10 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.5  --> 1.0.X  :
+		- fixed a bug re: broken sfv files, that had files with no crc at the end.
+		- fixed a bug re: deny_nfo_upload_in_zip.
+		- fixed a bug re: wrong msg to client on certain cases in zipscript-c.
+		- added support for lame 3.97 presets.
 		- fixed a bug re: uploads to nocheck_dirs.
 		- added dl_speedtest - a new binary to measure download speeds.
 		- fixed a bug in rescan --quick which did not detect if a previously checked
