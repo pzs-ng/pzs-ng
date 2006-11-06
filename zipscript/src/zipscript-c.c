@@ -176,7 +176,7 @@ main(int argc, char **argv)
 			g.v.file.speed = 1;
 
 #if (debug_announce == TRUE)
-		printf("DEBUG: Speed: %dkb/s (%skb/s)\n",  g.v.file.speed, getenv("SPEED"));
+		printf("zipscript-c: DEBUG: Speed: %dkb/s (%skb/s)\n",  g.v.file.speed, getenv("SPEED"));
 #endif
 
 		d_log("zipscript-c: Reading section from env (%s)\n", getenv("SECTION"));
@@ -239,7 +239,9 @@ main(int argc, char **argv)
 	sprintf(g.v.misc.old_leader, "none");
 	g.v.id3_artist[0] = '\0';
 	g.v.id3_genre[0] = '\0';
-
+	g.v.file.unlink[0] = '\0';
+	g.v.audio.id3_artist[0] = '\0';
+	g.v.audio.id3_genre = NULL;
 	/* Get file extension */
 
 	d_log("zipscript-c: Parsing file extension from filename... (%s)\n", argv[1]);
@@ -593,7 +595,7 @@ main(int argc, char **argv)
 					if (copyfile(g.l.sfvbackup, g.v.file.name))
 						d_log("zipscript-c: failed to copy backed up sfv (%s)\n", g.v.file.name);
 					else
-						d_log("zipscript-c: created backup of sfv (%s)\n", g.v.file.name);
+						d_log("zipscript-c: copied backup of sfv to releasedir (%s)\n", g.v.file.name);
 					g.v.misc.write_log = write_log;
 					break;
 				} else if (findfileextcount(dir, ".sfv") > 1 && sfv_compare_size(".sfv", g.v.file.size) > 0) {
@@ -1157,7 +1159,7 @@ main(int argc, char **argv)
 			if (!race_msg)
 				d_log("zipscript-c: Something's messed up - race_msg not set!\n");
 
-			if (exit_value == EXIT_SUCCESS) {
+			if (exit_value == EXIT_SUCCESS && *g.v.file.unlink) {
 				d_log("zipscript-c: Removing missing indicator\n");
 				unlink_missing(g.v.file.unlink);
 

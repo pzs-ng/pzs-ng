@@ -278,7 +278,7 @@ void
 testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 {
 	int		fd, lret, count;
-	char		*realfile, *ext, target[PATH_MAX];
+	char		*ext, target[PATH_MAX], real_file[PATH_MAX];
 	FILE		*racefile;
 	unsigned int	Tcrc;
 	struct stat	filestat;
@@ -300,7 +300,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 		exit(EXIT_FAILURE);
 	}
 
-	realfile = raceI->file.name;
+	strlcpy(real_file, raceI->file.name, sizeof(real_file));
 
 	if (rstatus)
 		printf("\n");
@@ -313,7 +313,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 			remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
-		ext = find_last_of(realfile, ".");
+		ext = find_last_of(raceI->file.name, ".");
 		if (*ext == '.')
 			ext++;
 		strlcpy(raceI->file.name, rd.fname, NAME_MAX);
@@ -392,7 +392,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 		}
 		count++;
 	}
-	strlcpy(raceI->file.name, realfile, strlen(realfile)+1);
+	strlcpy(raceI->file.name, real_file, strlen(real_file)+1);
 	raceI->total.files = raceI->total.files_missing = 0;
 	fclose(racefile);
 }
