@@ -109,6 +109,7 @@ announce.BAD_FILE_SFV           = "[%b{notice}] %b{%u_name} of %g_name uploaded 
 announce.BAD_FILE_WRONGDIR      = "[%b{notice}] %b{%u_name} of %g_name uploaded a bad file (wrong dir) in %b{%releasename}."
 announce.BAD_FILE_YEAR          = "[%b{notice}] %b{%u_name} of %g_name uploaded a bad file (banned year) in %b{%releasename}."
 announce.BAD_FILE_ZIP           = "[%b{notice}] %b{%u_name} of %g_name uploaded a bad file (zip integrity failed) in %b{%releasename}."
+announce.BAD_FILE_ZIPNFO        = "[%b{notice}] %b{%u_name} of %g_name uploaded a bad file (nfo no allowed in zip-dirs) in %b{%releasename}."
 
 ## Loop variables, these format the racers and stats
 announce.RACE_AUDIO_LOOP1                   = "%b{%a_name}/%a_gname%splitter"

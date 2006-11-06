@@ -485,7 +485,7 @@ findfilename(char *filename, char *dest, struct VARS *raceI)
 	struct dirent 	*dp;
 
 	dir = opendir(".");
-	while ((dp = readdir(dir))) {
+	while ((dp = readdir(dir)) != NULL) {
 		if ((int)strlen(dp->d_name) && !strcasecmp(dp->d_name, filename)) {
 			dest = ng_realloc(dest, (int)sizeof(dp->d_name) + 1, 1, 1, raceI, 0);
 			strncpy(dest, dp->d_name, sizeof(dp->d_name));
@@ -503,8 +503,9 @@ check_nocase_linkname(char *dirname, char *linkname)
 	struct dirent 	*dp;
 	int		namelength = strlen(linkname);
 
-	dir = opendir(dirname);
-	while ((dp = readdir(dir))) {
+	if ((dir = opendir(dirname)) == NULL)
+		return linkname;
+	while ((dp = readdir(dir)) != NULL) {
 		if ((int)strlen(dp->d_name) == namelength && !strcasecmp(dp->d_name, linkname)) {
 			linkname = ng_realloc(linkname, (int)sizeof(dp->d_name) + 1, 1, 1, NULL, 1);
 			strncpy(linkname, dp->d_name, sizeof(dp->d_name));
@@ -1343,6 +1344,10 @@ copyfile(char *from_name, char *to_name)
     d_log("copyfile: error closing destination file.\n");
     retvar = 1;
   }
+  if (retvar)
+	d_log("copyfile: Encountered errors while copying %s to %s\n", from_name, to_name);
+  else
+	d_log("copyfile: Copied %s to %s\n", from_name, to_name);
   return retvar;
 }
 

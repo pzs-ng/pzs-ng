@@ -202,15 +202,36 @@ get_preset(char vbr_header[4])
 	case 320:
 		strcpy(returnval, "INSANE");
 		break;		/* insane        */
+	case 410:
+		strcpy(returnval, "V9");
+		break;          /* V9   */
+	case 420:
+		strcpy(returnval, "V8");
+		break;          /* V8   */
+	case 430:
+		strcpy(returnval, "V7");
+		break;          /* V7   */
+	case 440:
+		strcpy(returnval, "V6");
+		break;          /* V6   */
+	case 450:
+		strcpy(returnval, "V5");
+		break;          /* V5   */
 	case 460:
-		strcpy(returnval, "MEDIUM");
-		break;		/* medium        */
+		strcpy(returnval, "V4");
+		break;          /* V4   */
+	case 470:
+		strcpy(returnval, "V3");
+		break;          /* V3   */
 	case 480:
-		strcpy(returnval, "STANDARD");
-		break;		/* standard      */
+		strcpy(returnval, "V2");
+		break;          /* V2   */
+	case 490:
+		strcpy(returnval, "V1");
+		break;          /* V1   */
 	case 500:
-		strcpy(returnval, "EXTREME");
-		break;		/* extreme       */
+		strcpy(returnval, "V0");
+		break;          /* V0   */
 	}
 	return returnval;
 }
