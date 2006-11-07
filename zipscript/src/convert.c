@@ -619,10 +619,13 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				break;
 			case 'S':
 				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->file.speed / 1024.));
-				break;	/* kbps */
+				break;	/* KB/s */
+			case '#':
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->file.speed / 1024. / 1024.));
+				break;	/* MB/s */
 			case 's':
 				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->file.speed * 8 / 1000. / 1000.));
-				break;	/* kbps */
+				break;	/* Mbps */
 			case 'r':
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.release_name);
 				break;

@@ -2,6 +2,8 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.5  --> 1.0.X  :
+		- fixed a bug with lenient compare, which mostly affected mp3-releases.
+		- fixed a bug re: testing files when sfv was uploaded after releasefile(s).
 		- fixed a bug re: broken sfv files, that had files with no crc at the end.
 		- fixed a bug re: deny_nfo_upload_in_zip.
 		- fixed a bug re: wrong msg to client on certain cases in zipscript-c.

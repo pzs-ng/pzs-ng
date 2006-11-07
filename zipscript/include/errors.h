@@ -13,5 +13,5 @@
 #define		BANNED_BITRATE			"%s kbit codec is not allowed here!"		/* %s = bitrate		 */
 #define		DUPE_NFO			"NFO-File: DUPE!"
 #define		ZIP_NFO				"NFO-File: Not allowed here!"
-#define		SPEEDTEST			"Speedtest: Uploaded %.1fMbits @ %.2fMbps."
+#define		SPEEDTEST			"BW: %.1fMiB (%.1fMB) @ %.2fMbps (%.2fMB/s)."
 

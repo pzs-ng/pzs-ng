@@ -44,7 +44,7 @@ main (int argc, char **argv)
 	char		filename[NAME_MAX], wdir[PATH_MAX], user[25], group[25];
 	char	       *p = NULL;
 	struct stat	fileinfo;
-	double		mbit, mbyte, mbps;
+	double		mbit, mbyte, mbps, mbytesps;
 	FILE		*glfile;
 	time_t          timenow = time(NULL);
 	long long	speed, size;
@@ -75,10 +75,13 @@ main (int argc, char **argv)
 		snprintf(group, sizeof(group) - 1, getenv("GROUP"));
 		if (!strlen(group))
 			sprintf(group, "NoGroup");
-		if ((speed = strtol(getenv("SPEED"), NULL, 10)) == 0)
+		if ((speed = strtol(getenv("SPEED"), NULL, 10)) == 0) {
 			mbps = 1 * 1024. * 8. / 1000. / 1000.;
-		else
+			mbytesps = 1 * 1024. / 1024. / 1024.;
+		} else {
 			mbps = speed * 1024. * 8. / 1000. / 1000.;
+			mbytesps = speed * 1024. / 1024. / 1024.;
+		}
 		if (stat(filename, &fileinfo)) {
 #if (debug_mode)
 				printf("%s: Could not stat() file %s.\n", argv[0], filename);
@@ -98,7 +101,7 @@ main (int argc, char **argv)
 #endif
 			return 0;
 		}
-		fprintf(glfile, "%.24s DLTEST: \"%s\" {%s} {%s} {%.2f} {%.1f} {%.1f}\n", ctime(&timenow), wdir, user, group, mbps, mbit, mbyte);
+		fprintf(glfile, "%.24s DLTEST: \"%s\" {%s} {%s} {%.2f} {%.2f} {%.1f} {%.1f}\n", ctime(&timenow), wdir, user, group, mbps, mbytesps, mbit, mbyte);
 		fclose(glfile);
 	}
 	return 0;

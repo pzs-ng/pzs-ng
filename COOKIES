@@ -31,6 +31,7 @@
 #
  %U  = Name
  %S  = Speed (kb/sec)
+ %#  = Speed (MB/s)
  %s  = Speed (Mbps)
  %G  = Primary group
 #
