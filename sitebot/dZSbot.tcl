@@ -1123,14 +1123,21 @@ proc ::dZSbot::CmdFree {nick uhost hand chan arg} {
     set devCount 0; set lineCount 0
     set totalFree 0; set totalUsed 0; set totalSize 0
 
-    foreach line [split [exec $binary(DF) "-Pkl"] "\n"] {
+    if {[catch {exec $binary(DF) -Pkl} output] != 0} {
+        ErrorMsg Free "\"df -Pkl\" failed:"
+        foreach line [split $output "\n"] {
+            ErrorMsg Free "   $line"
+        }
+        return
+    }
+
+    foreach line [split $output "\n"] {
         foreach {name value} [array get tmpdev] {
             if {[string equal [lindex $line 0] [lindex $value 0]]} {
-                if {[llength $line] < 4} {
+                if {[scan $line "%s %d %d %d" devName devSize devUsed devFree] != 4} {
                     WarningMsg Free "Invalid \"df -Pkl\" line: $line"
                     continue
                 }
-                foreach {devName devSize devUsed devFree} $line {break}
                 set devPercFree [format "%.1f" [expr {(double($devFree) / double($devSize)) * 100}]]
                 set devPercUsed [format "%.1f" [expr {(double($devUsed) / double($devSize)) * 100}]]
 
