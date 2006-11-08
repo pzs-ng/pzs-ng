@@ -23,7 +23,7 @@ void audioSortDir(char *targetDir)
 
 	if (*targetDir != '/')
 	{
-		d_log("audioSort: not an absolute path. (%s)\n", targetDir);
+		d_log("audioSortDir: not an absolute path. (%s)\n", targetDir);
 		return;
 	}
 
@@ -66,7 +66,7 @@ void audioSort(struct audio *info, char *link_source, char *link_target)
 	(void)info; (void)link_source; (void)link_target;
 #endif
 
-if (subcomp(link_target)) {
+if (subcomp(link_target, NULL)) {
         int i, pos;
         pos = 0;
         for (i = strlen(link_source); i > 0; i--) {

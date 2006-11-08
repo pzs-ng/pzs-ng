@@ -485,7 +485,7 @@ findfilename(char *filename, char *dest, struct VARS *raceI)
 	struct dirent 	*dp;
 
 	dir = opendir(".");
-	while ((dp = readdir(dir)) != NULL) {
+	while ((dp = readdir(dir))) {
 		if ((int)strlen(dp->d_name) && !strcasecmp(dp->d_name, filename)) {
 			dest = ng_realloc(dest, (int)sizeof(dp->d_name) + 1, 1, 1, raceI, 0);
 			strncpy(dest, dp->d_name, sizeof(dp->d_name));
@@ -503,9 +503,8 @@ check_nocase_linkname(char *dirname, char *linkname)
 	struct dirent 	*dp;
 	int		namelength = strlen(linkname);
 
-	if ((dir = opendir(dirname)) == NULL)
-		return linkname;
-	while ((dp = readdir(dir)) != NULL) {
+	dir = opendir(dirname);
+	while ((dp = readdir(dir))) {
 		if ((int)strlen(dp->d_name) == namelength && !strcasecmp(dp->d_name, linkname)) {
 			linkname = ng_realloc(linkname, (int)sizeof(dp->d_name) + 1, 1, 1, NULL, 1);
 			strncpy(linkname, dp->d_name, sizeof(dp->d_name));
@@ -648,24 +647,47 @@ matchpartialpath(char *instr, char *path)
    psxc - 2004-12-18
  */
 short int 
-subcomp(char *directory)
+subcomp(char *directory, char *basepath)
 {
 	int 	k = (int)strlen(directory);
 	int	m = (int)strlen(subdir_list);
 	int	pos = 0, l = 0, n = 0, j = 0;
 	char	tstring[m + 1];
+	char	bstring[k + 1];
+//	char	basepath[k + 1];
+	char	*tpos;
 
 	if ( k < 2 )
 		return 0;
 
+	if (basepath)
+		bzero(basepath, k + 1);
+	if ( directory[0] == '/') {
+		while (n < k) {
+			if (directory[n] == '/')
+				pos = n + 1;
+			n++;
+		}
+		tpos = directory + pos;
+		strncpy(bstring, tpos, k);
+		pos = 0;
+		n = 0;
+	} else
+		strncpy(bstring, directory, k + 1);
 	do {
 		switch (subdir_list[l]) {
 		case 0:
 			break;
 		case ',':
 			tstring[j] = '\0';
-			if (k <= j && !strncasecmp(tstring, directory, j - n))
+			if (n <= j && !strncasecmp(tstring, bstring, j - n)) {
+				if (basepath && ((k - (j -n + 1)) > 0))
+					strncpy(basepath, directory, k - (j - n + 1));
+				else if (basepath)
+					basepath[0] = '\0';
+				d_log("subcomp: we are in a subdir.\n");
 				return 1;
+			}
 			pos = l;
 			n = 0;
 			j=0;
@@ -683,12 +705,20 @@ subcomp(char *directory)
 			j++;
 			break;
 		}
-	m--;
-	l++;
+		m--;
+		l++;
 	} while (m);
-	if (k <= j && !strncasecmp(tstring, directory, j - n)) {
+	if (n <= j && !strncasecmp(tstring, bstring, j - n)) {
+		if (basepath && ((k - (j -n + 1)) > 0))
+			strncpy(basepath, directory, k - (j - n + 1));
+		else if (basepath)
+			basepath[0] = '\0';
+		d_log("subcomp: we are in a subdir.\n");
 		return 1;
 	}
+	if (basepath)
+		basepath[0] = '\0';
+	d_log("subcomp: not in subdir.\n");
 	return 0;
 }
 
@@ -1144,7 +1174,7 @@ getrelname(GLOBAL *g)
 
 	buffer_paths(g, path, &k, ((int)strlen(g->l.path)-1));
 
-	subc = subcomp(path[1]);
+	subc = subcomp(path[1], g->l.basepath);
 	
 	d_log("getrelname():\tsubc:\t\t%d\n", subc);
 	d_log("\t\t\tpath[0]:\t%s\n", path[0]);
@@ -1344,10 +1374,6 @@ copyfile(char *from_name, char *to_name)
     d_log("copyfile: error closing destination file.\n");
     retvar = 1;
   }
-  if (retvar)
-	d_log("copyfile: Encountered errors while copying %s to %s\n", from_name, to_name);
-  else
-	d_log("copyfile: Copied %s to %s\n", from_name, to_name);
   return retvar;
 }
 

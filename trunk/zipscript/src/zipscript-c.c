@@ -143,6 +143,11 @@ main(int argc, char **argv)
 	d_log("zipscript-c: Changing directory to %s\n", g.l.path);
 	chdir(g.l.path);
 
+	if (subcomp(g.l.path, g.l.basepath) && (g.l.basepath[0] == '\0'))
+		strlcpy(g.l.basepath, g.l.path, PATH_MAX);
+	if (strncmp(g.l.path, g.l.basepath, PATH_MAX))
+		d_log("zipscript-c: We are in subdir of %s\n", g.l.basepath);
+
 	d_log("zipscript-c: Reading data from environment variables\n");
 	if ((getenv("USER") == NULL) || (getenv("GROUP") == NULL) || (getenv("TAGLINE") == NULL) || (getenv("SPEED") ==NULL) || (getenv("SECTION") == NULL)) {
 		d_log("zipscript-c: We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE, $SECTION and $SPEED\n");
