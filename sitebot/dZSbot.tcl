@@ -1134,7 +1134,7 @@ proc ::dZSbot::CmdFree {nick uhost hand chan arg} {
     foreach line [split $output "\n"] {
         foreach {name value} [array get tmpdev] {
             if {[string equal [lindex $line 0] [lindex $value 0]]} {
-                if {[scan $line "%s %d %d %d" devName devSize devUsed devFree] != 4} {
+                if {[scan $line "%s %u %u %u" devName devSize devUsed devFree] != 4} {
                     WarningMsg Free "Invalid \"df -Pkl\" line: $line"
                     continue
                 }
