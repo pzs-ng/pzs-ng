@@ -168,6 +168,7 @@ struct LOCATIONS {
 	char		link_target[PATH_MAX];
 	char		link_source[PATH_MAX];
 	char		path[PATH_MAX];
+	char		basepath[PATH_MAX];
 	unsigned int	length_path;
 	unsigned int	length_zipdatadir;
 	unsigned int	in_cd_dir;
