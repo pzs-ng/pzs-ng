@@ -1,65 +1,32 @@
 ################################################################################
 #                                                                              #
-#                 GameFAQs - Game Info Pzs-ng Plug-in v1.5b                    #
+#                 GameFAQs - Game Info Pzs-ng Plug-in v2.0                     #
 #                       by Meij <meijie@gmail.com>                             #
 #                                                                              #
 ################################################################################
 #
-# Step 4. below is done (changes done in dZSbot.defaults.tcl and dZSbot.vars)
-# Step 5. is done in the default.zst theme *only*.
-# Any questions must be relayed to the author.
-# Updates and info can be found on http://bugs.pzs-ng.com/view.php?id=385
+# Report bugs to: http://bugs.pzs-ng.com/view.php?id=385
 #
 # Description:
 # - Announce information obtained from gamefaqs.com on new releases.
 #
 # Installation:
-# 1. Copy this file (GameFAQs.tcl) into your pzs-ng sitebots 'plugins' folder.
+# 1. Copy this file (GameFAQs.tcl) and the plugin theme (GameFAQs.zpt) into your
+#    pzs-ng sitebots 'plugins' folder.
 #
 # 2. Edit the configuration options below.
 #
 # 3. Add the following to your eggdrop.conf:
 #    source pzs-ng/plugins/GameFAQs.tcl
 #
-# 4. Add the following to dZSbot.conf:
-#    set disable(GAMEFAQS)       0
-#    set disable(GAMEFAQS-PRE)   0
-#    set disable(GAMEFAQS-MSG)   0
-#    set variables(GAMEFAQS)     "$variables(NEWDIR) %gamefaqs_title %gamefaqs_rating_users %gamefaqs_rating_internet %gamefaqs_rating %gamefaqs_genre %gamefaqs_players %gamefaqs_developer {%gamefaqs_region_title %gamefaqs_region_publisher %gamefaqs_region_date %gamefaqs_region} %gamefaqs_url %gamefaqs_system %gamefaqs_esrb"
-#    set variables(GAMEFAQS-PRE) "$variables(PRE) %gamefaqs_title %gamefaqs_rating_users %gamefaqs_rating_internet %gamefaqs_rating %gamefaqs_genre %gamefaqs_players %gamefaqs_developer {%gamefaqs_region_title %gamefaqs_region_publisher %gamefaqs_region_date %gamefaqs_region} %gamefaqs_url %gamefaqs_system %gamefaqs_esrb"
-#    set variables(GAMEFAQS-MSG) "%gamefaqs_title %gamefaqs_rating_users %gamefaqs_rating_internet %gamefaqs_rating %gamefaqs_genre %gamefaqs_players %gamefaqs_developer {%gamefaqs_region_title %gamefaqs_region_publisher %gamefaqs_region_date %gamefaqs_region} %gamefaqs_url %gamefaqs_system %gamefaqs_esrb"
+# 4. Rehash or restart your eggdrop for the changes to take effect.
 #
-#    set zeroconvert(%gamefaqs_title)            "N/A"
-#    set zeroconvert(%gamefaqs_rating_users)     "-"
-#    set zeroconvert(%gamefaqs_rating_internet)  "-"
-#    set zeroconvert(%gamefaqs_rating)           "-"
-#    set zeroconvert(%gamefaqs_genre)            "N/A"
-#    set zeroconvert(%gamefaqs_players)          "?"
-#    set zeroconvert(%gamefaqs_developer)        "N/A"
-#    set zeroconvert(%gamefaqs_region_title)     "N/A"
-#    set zeroconvert(%gamefaqs_region_publisher) "N/A"
-#    set zeroconvert(%gamefaqs_region_date)      "N/A"
-#    set zeroconvert(%gamefaqs_region)           "N/A"
-#    set zeroconvert(%gamefaqs_url)              "N/A"
-#    set zeroconvert(%gamefaqs_system)           "N/A"
-#
-# 5. Add the following to your theme file (.zst).
-#    announce.GAMEFAQS           = "[%b{GAME-INFO}][%section] %b{%gamefaqs_title} %gamefaqs_rating_internet/10 URL: %gamefaqs_url\n[%b{GAME-INFO}][%section] Release Date: %loop1"
-#    announce.GAMEFAQS_LOOP1     = "%gamefaqs_region: %gamefaqs_region_date%splitter"
-#
-#    announce.GAMEFAQS-PRE       = "[%b{GAME-INFO}][%section] %b{%gamefaqs_title} %gamefaqs_rating_internet/10 URL: %gamefaqs_url\n[%b{GAME-INFO}][%section] Release Date: %loop1"
-#    announce.GAMEFAQS-PRE_LOOP1 = "%gamefaqs_region: %gamefaqs_region_date%splitter"
-#
-#    announce.GAMEFAQS-MSG       = "[%b{GAME-INFO}] %b{%gamefaqs_title} %gamefaqs_rating_internet/10 URL: %gamefaqs_url\n[%b{GAME-INFO}][%section] Release Date: %loop1"
-#    announce.GAMEFAQS-MSG_LOOP1 = "%gamefaqs_region: %gamefaqs_region_date%splitter"
-#
-# 6. Rehash or restart your eggdrop for the changes to take effect.
-#
+################################################################################
 #
 # System Names & Numbers:
 #
 # Num  System              | Num  System              | Num  System
-#--------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # 0    All Platforms       | 1    Dreamcast           | 2    Game Boy
 # 3    NeoGeo Pocket Color | 4    Nintendo 64         | 5    PC
 # 6    PlayStation         | 7    PlayStation 2       | 8    Saturn
@@ -94,11 +61,12 @@
 # 1044 CPS Changer         | 1045 RCA Studio II       | 1046 LaserActive
 # 1047 Interton VC4000     | 1048 CreatiVision
 #
-#################################################################################
+################################################################################
 
 
 namespace eval ::ngBot::GameFAQs {
-	variable events
+	global zeroconvert disable
+
 	variable gamefaqs
 
 	## Config Settings ###############################
@@ -132,33 +100,65 @@ namespace eval ::ngBot::GameFAQs {
 	##  pre scripts use the same format we'll use regexp to extract what we
 	##  need from the pre logline and reconstuct it ourselves.
 	##
-	##  Default f00-pre example:
+	## Default f00-pre example:
 	set gamefaqs(pre-regexp) {^"(.[^"]+)" ".[^"]*" ".[^"]*" "(.[^"]+)"}
 	set gamefaqs(pre-path)   "%2/%1"
 	##
-	##  Default eur0-pre example:
+	## Default eur0-pre example:
 	#set gamefaqs(pre-regexp) {^"(.[^"]+)"}
 	#set gamefaqs(pre-path)   "%1"
 	##
+	## Disable announces. (0 = No, 1 = Yes)
+	set disable(GAMEFAQS)     0
+	set disable(GAMEFAQS-PRE) 0
+	set disable(GAMEFAQS-MSG) 0
+	##
+	## Convert empty or zero variables into something else.
+	set zeroconvert(%gamefaqs_title)            "N/A"
+	set zeroconvert(%gamefaqs_rating_users)     "-"
+	set zeroconvert(%gamefaqs_rating_internet)  "-"
+	set zeroconvert(%gamefaqs_rating)           "-"
+	set zeroconvert(%gamefaqs_genre)            "N/A"
+	set zeroconvert(%gamefaqs_players)          "?"
+	set zeroconvert(%gamefaqs_developer)        "N/A"
+	set zeroconvert(%gamefaqs_region_title)     "N/A"
+	set zeroconvert(%gamefaqs_region_publisher) "N/A"
+	set zeroconvert(%gamefaqs_region_date)      "N/A"
+	set zeroconvert(%gamefaqs_region)           "N/A"
+	set zeroconvert(%gamefaqs_url)              "N/A"
+	set zeroconvert(%gamefaqs_system)           "N/A"
+	##
 	##################################################
 
-	set events [list "NEWDIR" "PRE"]
+	variable events [list "NEWDIR" "PRE"]
 
+	variable scriptFile [info script]
 	variable scriptName [namespace current]::LogEvent
+
 	bind evnt -|- prerehash [namespace current]::DeInit
 }
 
 proc ::ngBot::GameFAQs::Init {args} {
-	global postcommand
+	global postcommand variables
 
 	variable events
 	variable gamefaqs
 	variable scriptName
+	variable scriptFile
 
 	if {[catch {package require http}] != 0} {
 		[namespace current]::Error "\"http\" package not found, unloading script."
 		[namespace current]::DeInit
 		return
+	}
+
+	set variables(GAMEFAQS) "$variables(NEWDIR) %gamefaqs_title %gamefaqs_rating_users %gamefaqs_rating_internet %gamefaqs_rating %gamefaqs_genre %gamefaqs_players %gamefaqs_developer {%gamefaqs_region_title %gamefaqs_region_publisher %gamefaqs_region_date %gamefaqs_region} %gamefaqs_url %gamefaqs_system %gamefaqs_esrb"
+	set variables(GAMEFAQS-PRE) "$variables(PRE) %gamefaqs_title %gamefaqs_rating_users %gamefaqs_rating_internet %gamefaqs_rating %gamefaqs_genre %gamefaqs_players %gamefaqs_developer {%gamefaqs_region_title %gamefaqs_region_publisher %gamefaqs_region_date %gamefaqs_region} %gamefaqs_url %gamefaqs_system %gamefaqs_esrb"
+	set variables(GAMEFAQS-MSG) "%gamefaqs_title %gamefaqs_rating_users %gamefaqs_rating_internet %gamefaqs_rating %gamefaqs_genre %gamefaqs_players %gamefaqs_developer {%gamefaqs_region_title %gamefaqs_region_publisher %gamefaqs_region_date %gamefaqs_region} %gamefaqs_url %gamefaqs_system %gamefaqs_esrb"
+
+	set theme_file [file normalize "[pwd]/[file rootname $scriptFile].zpt"]
+	if {[file isfile $theme_file]} {
+		loadtheme $theme_file true
 	}
 
 	## Register the event handler.

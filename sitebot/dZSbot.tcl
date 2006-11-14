@@ -1727,16 +1727,20 @@ proc ng_who {nick uhost hand chan argv} {
 # Theme Loading and Replacement                                                 #
 #################################################################################
 
-proc loadtheme {file} {
+proc loadtheme {file {plugin false}} {
 	global announce random scriptpath theme theme_fakes variables
-	unset -nocomplain announce random
 
-	if {[string index $file 0] != "/"} {
-		set file "$scriptpath/$file"
+	if {![istrue $plugin]} {
+		unset -nocomplain announce random
+
+		if {[string index $file 0] != "/"} {
+			set file "$scriptpath/$file"
+		}
+
+		set announce(THEMEFILE) [file normalize $file]
+
+		putlog "dZSbot: Loading theme \"$file\"."
 	}
-	set announce(THEMEFILE) [file normalize $file]
-
-	putlog "dZSbot: Loading theme \"$file\"."
 
 	if {[catch {set handle [open $file r]} error]} {
 		putlog "dZSbot error: Unable to read the theme file ($error)."
@@ -1747,24 +1751,31 @@ proc loadtheme {file} {
 
 	foreach line [split $data "\n"] {
 		if {[string index $line 0] != "#"} {
-#			if {[regexp -nocase -- {announce\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-#				set announce($setting) $value
-#			} elseif {[regexp -nocase -- {fakesection\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-#				set theme_fakes($setting) $value
-#			} elseif {[regexp -nocase -- {random\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-#				set random($setting) $value
-#			} elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
-#				set theme($setting) $value
-#			}
 			if {[regexp -- {(\S+)\.(\S+)\s*=\s*(['\"])(.+)\3} $line dud type setting quote value]} {
 				switch -exact -- [string tolower $type] {
-					"announce"    {set announce($setting) $value}
-					"fakesection" {set theme_fakes($setting) $value}
-					"random"      {set random($setting) $value}
-					default       {putlog "dZSbot warning: Invalid theme setting \"$type.$setting\"."}
+					"announce" {
+						if {(![info exists announce($setting)]) || (![istrue $plugin])} {
+							set announce($setting) $value
+						}
+					}
+					"fakesection" {
+						if {(![info exists theme_fakes($setting)]) || (![istrue $plugin])} {
+							set theme_fakes($setting) $value
+						}
+					}
+					"random" {
+						if {(![info exists random($setting)]) || (![istrue $plugin])} {
+							set random($setting) $value
+						}
+					}
+					default {
+						putlog "dZSbot warning: Invalid theme setting \"$type.$setting\"."
+					}
 				}
 			} elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
-				set theme($setting) $value
+				if {(![info exists theme($setting)]) || (![istrue $plugin])} {
+					set theme($setting) $value
+				}
 			}
 		}
 	}
@@ -1782,18 +1793,21 @@ proc loadtheme {file} {
 	foreach name [array names theme] {set theme($name) [themereplace_startup $theme($name)]}
 	foreach name [array names theme_fakes] {set theme_fakes($name) [themereplace_startup $theme_fakes($name)]}
 
-	## Sanity checks
-	foreach type {COLOR1 COLOR2 COLOR3 PREFIX KB KBIT MB MBIT} {
-		if {[lsearch -exact [array names theme] $type] == -1} {
-			putlog "dZSbot error: Missing required theme setting \"$type\", failing."
-			return 0
+	if {![istrue $plugin]} {
+		## Sanity checks
+		foreach type {COLOR1 COLOR2 COLOR3 PREFIX KB KBIT MB MBIT} {
+			if {[lsearch -exact [array names theme] $type] == -1} {
+				putlog "dZSbot error: Missing required theme setting \"$type\", failing."
+				return 0
+			}
+		}
+		foreach type [concat [array names variables] NUKE UNNUKE NUKEES] {
+			if {[lsearch -exact [array names announce] $type] == -1} {
+				putlog "dZSbot warning: Missing announce setting \"announce.$type\" in the theme file."
+			}
 		}
 	}
-	foreach type [concat [array names variables] NUKE UNNUKE NUKEES] {
-		if {[lsearch -exact [array names announce] $type] == -1} {
-			putlog "dZSbot warning: Missing announce setting \"announce.$type\" in the theme file."
-		}
-	}
+
 	return 1
 }
 

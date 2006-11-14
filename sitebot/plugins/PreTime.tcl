@@ -15,21 +15,13 @@
 # 3. Add the following to your eggdrop.conf:
 #    source pzs-ng/plugins/PreTime.tcl
 #
-# 4. Add the following to dZSbot.conf:
-#    set disable(NEWPRETIME) 0
-#    set disable(OLDPRETIME) 0
-#    set variables(NEWPRETIME) "%pf %u_name %g_name %u_tagline %preage %predate %pretime"
-#    set variables(OLDPRETIME) "%pf %u_name %g_name %u_tagline %preage %predate %pretime"
-#
-# 5. Add the following to your theme file (.zst):
-#    announce.NEWPRETIME = "[%b{NEW}][%section] %b{%relname} by %b{%u_name} of %g_name :: released %preage ago :: %predate %pretime."
-#    announce.OLDPRETIME = "[%b{OLD}][%section] %b{%relname} by %b{%u_name} of %g_name :: released %preage ago :: %predate %pretime."
-#
-# 6. Rehash or restart your eggdrop for the changes to take effect.
+# 4. Rehash or restart your eggdrop for the changes to take effect.
 #
 #################################################################################
 
 namespace eval ::ngBot::PreTime {
+    global disable
+
     variable mysql
 
     ## Config Settings ###############################
@@ -52,9 +44,14 @@ namespace eval ::ngBot::PreTime {
     ## Path to the MySQLTcl v3.0 library.
     variable libMySQLTcl "/usr/local/lib/tcl8.4/mysqltcl/mysqltcl3.so"
     ##
+    ## Disable announces. (0 = No, 1 = Yes)
+    set disable(NEWPRETIME) 0
+    set disable(OLDPRETIME) 0
+    ##
     ##################################################
 
     set mysql(handle) ""
+    variable scriptFile [info script]
     variable scriptName [namespace current]::LogEvent
     bind evnt -|- prerehash [namespace current]::DeInit
 }
@@ -65,10 +62,20 @@ namespace eval ::ngBot::PreTime {
 # Called on initialization; registers the event handler.
 #
 proc ::ngBot::PreTime::Init {args} {
-    global precommand
+    global precommand variables
+
     variable libMySQLTcl
     variable mysql
     variable scriptName
+    variable scriptFile
+
+    set variables(NEWPRETIME) "%pf %u_name %g_name %u_tagline %preage %predate %pretime"
+    set variables(OLDPRETIME) "%pf %u_name %g_name %u_tagline %preage %predate %pretime"
+
+    set theme_file [file normalize "[pwd]/[file rootname $scriptFile].zpt"]
+    if {[file isfile $theme_file]} {
+        loadtheme $theme_file true
+    }
 
     ## Load the MySQLTcl library.
     if {[catch {load $libMySQLTcl Mysqltcl} errorMsg]} {
