@@ -290,13 +290,6 @@ set disable(IMDBFIND)                       0
 set disable(IMDBVAR)                        0
 set disable(PRE)                            0
 set disable(TURGEN)                         0
-set disable(GAMEFAQS)                       0
-set disable(GAMEFAQS-PRE)                   0
-set disable(GAMEFAQS-MSG)                   0
-set disable(TVRAGE)                         0
-set disable(TVRAGE-PRE)                     0
-set disable(TVRAGE-MSGFULL)                 0
-set disable(TVRAGE-MSGSHOW)                 0
 
 ## Zipscript announcements
 set disable(BAD_FILE_0SIZE)                 1

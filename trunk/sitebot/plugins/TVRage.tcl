@@ -1,73 +1,31 @@
 ################################################################################
 #                                                                              #
-#             TVRage - TV Show & Episode Pzs-ng Plug-in v1.3b                  #
+#             TVRage - TV Show & Episode Pzs-ng Plug-in v2.0                   #
 #                       by Meij <meijie@gmail.com>                             #
 #                                                                              #
 ################################################################################
 #
-# Step 4. below is done (changes done in dZSbot.defaults.tcl and dZSbot.vars)
-# Step 5. is done in the default.zst theme *only*.
-# Any questions must be relayed to the author.
-# Updates and info can be found on http://bugs.pzs-ng.com/view.php?id=407
+# Report bugs to: http://bugs.pzs-ng.com/view.php?id=407
 #
 # Description:
 # - Announce information obtained from tvrage.com on pre and new releases.
 #
 # Installation:
-# 1. Copy this file (TVRage.tcl) into your pzs-ng sitebots 'plugins' folder.
+# 1. Copy this file (TVRage.tcl) and the plugin theme (TVRage.zpt) into your
+#    pzs-ng sitebots 'plugins' folder.
 #
 # 2. Edit the configuration options below.
 #
 # 3. Add the following to your eggdrop.conf:
 #    source pzs-ng/plugins/TVRage.tcl
 #
-# 4. Add the following to dZSbot.conf:
-#    set disable(TVRAGE)           0
-#    set disable(TVRAGE-PRE)       0
-#    set disable(TVRAGE-MSGFULL)   0
-#    set disable(TVRAGE-MSGSHOW)   0
-#    set variables(TVRAGE)         "$variables(NEWDIR) %tvrage_show_name %tvrage_show_genres %tvrage_show_country %tvrage_show_status %tvrage_show_latest_title %tvrage_show_latest_episode %tvrage_show_latest_airdate %tvrage_show_next_title %tvrage_show_next_episode %tvrage_show_next_airdate %tvrage_show_url %tvrage_show_classification %tvrage_show_premiered %tvrage_episode_url %tvrage_episode_season_episode %tvrage_episode_season %tvrage_episode_number %tvrage_episode_original_airdate %tvrage_episode_title %tvrage_episode_production_number %tvrage_episode_score %tvrage_episode_votes"
-#    set variables(TVRAGE-PRE)     "$variables(PRE) %tvrage_show_name %tvrage_show_genres %tvrage_show_country %tvrage_show_status %tvrage_show_latest_title %tvrage_show_latest_episode %tvrage_show_latest_airdate %tvrage_show_next_title %tvrage_show_next_episode %tvrage_show_next_airdate %tvrage_show_url %tvrage_show_classification %tvrage_show_premiered %tvrage_episode_url %tvrage_episode_season_episode %tvrage_episode_season %tvrage_episode_number %tvrage_episode_original_airdate %tvrage_episode_title %tvrage_episode_production_number %tvrage_episode_score %tvrage_episode_votes"
-#    set variables(TVRAGE-MSGFULL) "%tvrage_show_name %tvrage_show_genres %tvrage_show_country %tvrage_show_status %tvrage_show_latest_title %tvrage_show_latest_episode %tvrage_show_latest_airdate %tvrage_show_next_title %tvrage_show_next_episode %tvrage_show_next_airdate %tvrage_show_url %tvrage_show_classification %tvrage_show_premiered %tvrage_episode_url %tvrage_episode_season_episode %tvrage_episode_season %tvrage_episode_number %tvrage_episode_original_airdate %tvrage_episode_title %tvrage_episode_production_number %tvrage_episode_score %tvrage_episode_votes"
-#    set variables(TVRAGE-MSGSHOW) $variables(TVRAGE-MSGFULL)
-#
-#    set zeroconvert(%tvrage_show_name)                 "N/A"
-#    set zeroconvert(%tvrage_show_genres)               "N/A"
-#    set zeroconvert(%tvrage_show_country)              "N/A"
-#    set zeroconvert(%tvrage_show_status)               "N/A"
-#    set zeroconvert(%tvrage_show_latest_title)         "N/A"
-#    set zeroconvert(%tvrage_show_latest_episode)       "N/A"
-#    set zeroconvert(%tvrage_show_latest_airdate)       "N/A"
-#    set zeroconvert(%tvrage_show_next_title)           "N/A"
-#    set zeroconvert(%tvrage_show_next_episode)         "N/A"
-#    set zeroconvert(%tvrage_show_next_airdate)         "N/A"
-#    set zeroconvert(%tvrage_show_url)                  "N/A"
-#    set zeroconvert(%tvrage_show_classification)       "N/A"
-#    set zeroconvert(%tvrage_show_premiered)            "N/A"
-#    set zeroconvert(%tvrage_episode_url)               "N/A"
-#    set zeroconvert(%tvrage_episode_season_episode)    "N/A"
-#    set zeroconvert(%tvrage_episode_season)            "N/A"
-#    set zeroconvert(%tvrage_episode_number)            "N/A"
-#    set zeroconvert(%tvrage_episode_original_airdate)  "N/A"
-#    set zeroconvert(%tvrage_episode_title)             "N/A"
-#    set zeroconvert(%tvrage_episode_production_number) "N/A"
-#    set zeroconvert(%tvrage_episode_score)             "-"
-#    set zeroconvert(%tvrage_episode_votes)             "0"
-#
-# 5. Add the following to your theme file (.zst).
-#    announce.TVRAGE           = "[%b{TV-INFO}][%section] %b{%tvrage_show_name}: %b{%tvrage_episode_title} (%tvrage_show_genres) Aired: %tvrage_episode_original_airdate\n[%b{TV-INFO}][%section] URL: %tvrage_episode_url"
-#
-#    announce.TVRAGE-PRE       = "[%b{TV-INFO}][%section] %b{%tvrage_show_name}: %b{%tvrage_episode_title} (%tvrage_show_genres) Aired: %tvrage_episode_original_airdate\n[%b{TV-INFO}][%section] URL: %tvrage_episode_url"
-#
-#    announce.TVRAGE-MSGFULL   = "[%b{TV-INFO}] %b{%tvrage_show_name}: %b{%tvrage_episode_title} (%tvrage_show_genres) Aired: %tvrage_episode_original_airdate\n[%b{TV-INFO}] URL: %tvrage_episode_url"
-#    announce.TVRAGE-MSGSHOW   = "[%b{TV-INFO}] %b{%tvrage_show_name} (%tvrage_show_genres)\n[%b{TV-INFO}] Last Episode: %b{%tvrage_show_latest_episode: %tvrage_show_latest_title} (%tvrage_show_latest_airdate)\n[%b{TV-INFO}] Next Episode: %b{%tvrage_show_next_episode: %tvrage_show_next_title} (%tvrage_show_next_airdate)\n[%b{TV-INFO}] URL: %tvrage_show_url"
-#
-# 6. Rehash or restart your eggdrop for the changes to take effect.
+# 4. Rehash or restart your eggdrop for the changes to take effect.
 #
 #################################################################################
 
 namespace eval ::ngBot::TVRage {
-	variable events
+	global zeroconvert disable
+
 	variable tvrage
 
 	## Config Settings ###############################
@@ -100,33 +58,76 @@ namespace eval ::ngBot::TVRage {
 	##  pre scripts use the same format we'll use regexp to extract what we
 	##  need from the pre logline and reconstuct it ourselves.
 	##
-	##  Default f00-pre example:
+	## Default f00-pre example:
 	set tvrage(pre-regexp) {^"(.[^"]+)" ".[^"]*" ".[^"]*" "(.[^"]+)"}
 	set tvrage(pre-path)   "%2/%1"
 	##
-	##  Default eur0-pre example:
+	## Default eur0-pre example:
 	#set tvrage(pre-regexp) {^"(.[^"]+)"}
 	#set tvrage(pre-path)   "%1"
 	##
+	## Disable announces. (0 = No, 1 = Yes)
+	set disable(TVRAGE)         0
+	set disable(TVRAGE-PRE)     0
+	set disable(TVRAGE-MSGFULL) 0
+	set disable(TVRAGE-MSGSHOW) 0
+	##
+	## Convert empty or zero variables into something else.
+	set zeroconvert(%tvrage_show_name)                 "N/A"
+	set zeroconvert(%tvrage_show_genres)               "N/A"
+	set zeroconvert(%tvrage_show_country)              "N/A"
+	set zeroconvert(%tvrage_show_status)               "N/A"
+	set zeroconvert(%tvrage_show_latest_title)         "N/A"
+	set zeroconvert(%tvrage_show_latest_episode)       "N/A"
+	set zeroconvert(%tvrage_show_latest_airdate)       "N/A"
+	set zeroconvert(%tvrage_show_next_title)           "N/A"
+	set zeroconvert(%tvrage_show_next_episode)         "N/A"
+	set zeroconvert(%tvrage_show_next_airdate)         "N/A"
+	set zeroconvert(%tvrage_show_url)                  "N/A"
+	set zeroconvert(%tvrage_show_classification)       "N/A"
+	set zeroconvert(%tvrage_show_premiered)            "N/A"
+	set zeroconvert(%tvrage_episode_url)               "N/A"
+	set zeroconvert(%tvrage_episode_season_episode)    "N/A"
+	set zeroconvert(%tvrage_episode_season)            "N/A"
+	set zeroconvert(%tvrage_episode_number)            "N/A"
+	set zeroconvert(%tvrage_episode_original_airdate)  "N/A"
+	set zeroconvert(%tvrage_episode_title)             "N/A"
+	set zeroconvert(%tvrage_episode_production_number) "N/A"
+	set zeroconvert(%tvrage_episode_score)             "-"
+	set zeroconvert(%tvrage_episode_votes)             "0"
+	##
 	##################################################
 
-	set events [list "NEWDIR" "PRE"]
+	variable events [list "NEWDIR" "PRE"]
 
+	variable scriptFile [info script]
 	variable scriptName [namespace current]::LogEvent
+
 	bind evnt -|- prerehash [namespace current]::DeInit
 }
 
 proc ::ngBot::TVRage::Init {args} {
-	global postcommand
+	global postcommand variables
 
 	variable events
 	variable tvrage
 	variable scriptName
+	variable scriptFile
 
 	if {[catch {package require http}] != 0} {
 		[namespace current]::Error "\"http\" package not found, unloading script."
 		[namespace current]::DeInit
 		return
+	}
+
+	set variables(TVRAGE) "$variables(NEWDIR) %tvrage_show_name %tvrage_show_genres %tvrage_show_country %tvrage_show_status %tvrage_show_latest_title %tvrage_show_latest_episode %tvrage_show_latest_airdate %tvrage_show_next_title %tvrage_show_next_episode %tvrage_show_next_airdate %tvrage_show_url %tvrage_show_classification %tvrage_show_premiered %tvrage_episode_url %tvrage_episode_season_episode %tvrage_episode_season %tvrage_episode_number %tvrage_episode_original_airdate %tvrage_episode_title %tvrage_episode_production_number %tvrage_episode_score %tvrage_episode_votes"
+	set variables(TVRAGE-PRE) "$variables(PRE) %tvrage_show_name %tvrage_show_genres %tvrage_show_country %tvrage_show_status %tvrage_show_latest_title %tvrage_show_latest_episode %tvrage_show_latest_airdate %tvrage_show_next_title %tvrage_show_next_episode %tvrage_show_next_airdate %tvrage_show_url %tvrage_show_classification %tvrage_show_premiered %tvrage_episode_url %tvrage_episode_season_episode %tvrage_episode_season %tvrage_episode_number %tvrage_episode_original_airdate %tvrage_episode_title %tvrage_episode_production_number %tvrage_episode_score %tvrage_episode_votes"
+	set variables(TVRAGE-MSGFULL) "%tvrage_show_name %tvrage_show_genres %tvrage_show_country %tvrage_show_status %tvrage_show_latest_title %tvrage_show_latest_episode %tvrage_show_latest_airdate %tvrage_show_next_title %tvrage_show_next_episode %tvrage_show_next_airdate %tvrage_show_url %tvrage_show_classification %tvrage_show_premiered %tvrage_episode_url %tvrage_episode_season_episode %tvrage_episode_season %tvrage_episode_number %tvrage_episode_original_airdate %tvrage_episode_title %tvrage_episode_production_number %tvrage_episode_score %tvrage_episode_votes"
+	set variables(TVRAGE-MSGSHOW) $variables(TVRAGE-MSGFULL)
+
+	set theme_file [file normalize "[pwd]/[file rootname $scriptFile].zpt"]
+	if {[file isfile $theme_file]} {
+		loadtheme $theme_file true
 	}
 
 	## Register the event handler.
