@@ -13,6 +13,8 @@ putlog "Launching dZSbot for project-zs-ng..."
 set dzerror 0
 set scriptpath [file dirname [info script]]
 
+unset -nocomplain variables
+
 if {[catch {package require Tcl 8.4} error]} {
 	die "dZSbot error: You must be using Tcl v8.4, or newer, with dZSbot."
 }
