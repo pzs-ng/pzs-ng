@@ -926,7 +926,11 @@ main(int argc, char **argv)
 						writelog(&g, error_msg, bad_file_nosfv_type);
 					exit_value = 2;
 					break;
-				} else if (matchpath(zip_dirs, g.l.path) && (!fileexists(g.l.sfv))) {
+#if (use_partial_on_noforce == TRUE)
+				} else if (matchpath(zip_dirs, g.l.path) && !fileexists(g.l.sfv) && !matchpartialpath(noforce_sfv_first_dirs, g.l.path)) {
+#else
+				} else if (matchpath(zip_dirs, g.l.path) && !fileexists(g.l.sfv)) {
+#endif
 					d_log("zipscript-c: This looks like a file uploaded the wrong place - Not allowing it.\n");
 					strlcpy(g.v.misc.error_msg, SFV_FIRST, 80);
 					mark_as_bad(g.v.file.name);
