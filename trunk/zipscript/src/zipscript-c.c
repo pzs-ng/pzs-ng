@@ -1566,7 +1566,7 @@ main(int argc, char **argv)
 #endif
 	}
 #endif
-	if ((findfileext(dir, ".nfo") || (findfileextparent(parent, ".nfo"))) && (g.l.nfo_incomplete)) {
+	if ((findfileext(dir, ".nfo") || (g.l.in_cd_dir && findfileextparent(parent, ".nfo"))) && g.l.nfo_incomplete) {
 		d_log("zipscript-c: Removing missing-nfo indicator (if any)\n");
 		remove_nfo_indicator(&g);
 	}

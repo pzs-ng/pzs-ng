@@ -66,10 +66,7 @@ install:
 	chown 0:0 $(prefix)$(storage)
 	chmod 4777 $(prefix)$(storage)
 	if [ -e $(prefix)$(datapath)/logs/glftpd.log ]; then chmod 666 $(prefix)$(datapath)/logs/glftpd.log; fi
-	if [ -e $(bindir) ]; then 
-		(cd $(bindir) && rm -f zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown audiosort)
-		cp -f zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown audiosort $(bindir)/
-	fi
+	if [ -e $(bindir) ]; then (cd $(bindir) && rm -f zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown audiosort); cp -f zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown audiosort $(bindir)/; fi
 	if [ -d "$(prefix)$(datapath)/misc" ] && [ ! -e "$(prefix)$(datapath)/misc/banned_filelist.txt" ]; then cp -f banned_filelist.txt $(prefix)$(datapath)/misc/; fi
 
 distclean: clean
