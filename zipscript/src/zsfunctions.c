@@ -619,19 +619,20 @@ short int
 matchpartialpath(char *instr, char *path)
 {
 	int	pos = 0;
-	char	partstring[PATH_MAX + 2];
+	char	partstring[strlen(path) + 2];
 
 	if ( (int)strlen(instr) < 2 || (int)strlen(path) < 2 )
 		return 0;
 
-	sprintf(partstring, "%s/", path);
+	sprintf(partstring, "%s", path);
 	do {
 		switch (*instr) {
 		case 0:
 		case ' ':
-			if (!strncasecmp(instr - pos, partstring + (int)strlen(partstring) - pos, pos)) {
+			if (!strncasecmp(instr - pos, partstring + (int)strlen(partstring) - pos, pos))
 				return 1;
-			}
+			if ((pos > 1) && (*(instr - 1) == '/') && (!strncasecmp(instr - pos, partstring + (int)strlen(partstring) + 1 - pos, pos - 1)))
+				return 1;
 			pos = 0;
 			break;
 		default:
