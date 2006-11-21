@@ -2,6 +2,9 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.6  --> 1.0.X  :
+		- added option to ignore certain languages in the mp3 sorting.
+		- New option in zsconfig.h - audio_ignored_languages - list of ignored
+		  languages.
 		- fixed a bug in partial_on_noforce.
 		- fixed a bug with no-nfo symlinks and false parentdir.
 v1.0.5  --> 1.0.6  : (2195)

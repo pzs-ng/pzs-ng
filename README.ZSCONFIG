@@ -568,6 +568,12 @@ allowed_genres <STRING>
 	Put here a comma-separated list of allowed genres.
 	Default: "Top 40,Pop Funk,Rock,Pop"
 
+audio_ignored_languages <STRING>
+	To prevent mp3 language sorting of languages that isn't, well,
+	languages, list here what should be ignored. Not case sensitive, and
+	the list is comma separated.
+	Default: "md,cd,lp,ep,va"
+
 audio_banned_genre_check <TRUE|FALSE>
 	Should the audio/mp3 release be checked against your defined genres?
 	Only audio_banned_genre_check OR audio_allowed_genre_check should be
