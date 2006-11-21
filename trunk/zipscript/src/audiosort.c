@@ -116,7 +116,7 @@ if (subcomp(link_target, NULL)) {
 	}
 #endif
 #if ( audio_language_sort == TRUE )
-	d_log("audioSort:   Sorting mp3 by country\n");
+	d_log("audioSort:   Sorting mp3 by language\n");
 	language[0] = '\0';
 	n = (int)strlen(link_target);
 	while ( n > 3) {
@@ -131,10 +131,12 @@ if (subcomp(link_target, NULL)) {
 		}
 		n--;
 	}
-	if (language[0] != '\0') {
+	if (language[0] != '\0' && !strcomp(audio_ignored_languages, language)) {
 		d_log("audioSort:   - Valid language found: %s\n", language);
 		createlink(audio_language_path, temp_p, link_source, link_target);
-	}
+	} else
+		d_log("audioSort:   - No valid language found.\n");
+
 #endif
 }
 

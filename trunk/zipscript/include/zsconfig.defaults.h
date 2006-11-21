@@ -496,7 +496,9 @@
 #ifndef allowed_genres
 #define allowed_genres		"Top 40,Pop Funk,Rock,Pop"
 #endif
-
+#ifndef audio_ignored_languages
+#define audio_ignored_languages	"md,cd,lp,ep,va"
+#endif
 /*
  * Audio related symlinks - set to TRUE if you wish to sort/symlink releases,
  * or FALSE if not.
