@@ -503,7 +503,8 @@ check_nocase_linkname(char *dirname, char *linkname)
 	struct dirent 	*dp;
 	int		namelength = strlen(linkname);
 
-	dir = opendir(dirname);
+	if ((dir = opendir(dirname)) == NULL)
+		return linkname;
 	while ((dp = readdir(dir))) {
 		if ((int)strlen(dp->d_name) == namelength && !strcasecmp(dp->d_name, linkname)) {
 			linkname = ng_realloc(linkname, (int)sizeof(dp->d_name) + 1, 1, 1, NULL, 1);

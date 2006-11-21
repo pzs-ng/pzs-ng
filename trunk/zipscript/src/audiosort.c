@@ -57,6 +57,7 @@ void audioSort(struct audio *info, char *link_source, char *link_target)
 {
 #if ( audio_genre_sort == TRUE ) || (audio_artist_sort == TRUE) || (audio_year_sort == TRUE) || (audio_group_sort == TRUE) || (audio_language_sort == TRUE)
 	char *temp_p = NULL;
+	char *temp_q = NULL;
 	int n = 0;
 #if (audio_language_sort == TRUE)
 	char language[3];
@@ -109,6 +110,13 @@ if (subcomp(link_target, NULL)) {
 	temp_p = remove_pattern(temp_p, "_", RP_SHORT_LEFT);
 	n = (int)strlen(temp_p);
 	if (n > 0 && n < 15) {
+		if (n > 4) {
+			temp_q = temp_p + n - 4;
+			if (!strncasecmp(temp_q, "_INT", 4)) {
+				d_log("audioSort:   - Internal release detected\n");
+				*temp_q = '\0';
+			}
+		}
 		d_log("audioSort:   - Valid groupname found: %s (%i)\n", temp_p, n);
 		temp_p = check_nocase_linkname(audio_group_path, temp_p);
 		d_log("audioSort:   - Valid groupname found: %s (%i)\n", temp_p, n);
