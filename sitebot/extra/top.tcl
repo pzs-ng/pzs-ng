@@ -6,9 +6,6 @@ namespace eval ::ngBot::Top {
 	## Interval between announces in seconds (default: 7200 - 2 hours)
 	set top(interval)   7200
 	##
-	## Path to the glftpd stats executable
-	set top(stats-exec) "/glftpd/bin/stats"
-	##
 	## Section to display (0 = DEFAULT)
 	set top(sect)       0
 	##
@@ -55,11 +52,13 @@ proc ::ngBot::Top::startTimer {} {
 }
 
 proc ::ngBot::Top::showTop {args} {
+	global location binary
+
 	variable top
 
 	[namespace current]::startTimer
 
-	if {[catch {exec $top(stats-exec) -u -w -x $top(users) -s $top(sect)} output] != 0} {
+	if {[catch {exec $binary(STATS) -r location(GLCONF) -u -w -x $top(users) -s $top(sect)} output] != 0} {
 		putlog "\[ngBot\] Top :: Error: Problem executing stats-exec \"$output\""
 		return
 	}
