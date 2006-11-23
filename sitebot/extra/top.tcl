@@ -58,7 +58,7 @@ proc ::ngBot::Top::showTop {args} {
 
 	[namespace current]::startTimer
 
-	if {[catch {exec $binary(STATS) -r location(GLCONF) -u -w -x $top(users) -s $top(sect)} output] != 0} {
+	if {[catch {exec $binary(STATS) -r $location(GLCONF) -u -w -x $top(users) -s $top(sect)} output] != 0} {
 		putlog "\[ngBot\] Top :: Error: Problem executing stats-exec \"$output\""
 		return
 	}
