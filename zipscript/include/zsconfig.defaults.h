@@ -77,6 +77,9 @@
 #ifndef nocheck_dirs
 #define nocheck_dirs			"/site/private/"
 #endif
+#ifndef audio_nosort_dirs
+#define audio_nosort_dirs		"/site/incoming/requests/"
+#endif
 #ifndef speedtest_dirs
 #define speedtest_dirs			"/site/speedtest/"
 #endif
@@ -479,7 +482,6 @@
 #ifndef audio_language_path
 #define audio_language_path	"/site/incoming/music.by.language/"
 #endif
-
 /*
  * It is a good idea to prevent crap from filling your hds. Ignore these
  * settings if you do not plan to restrict your uploads.
@@ -518,7 +520,6 @@
 #ifndef audio_language_sort
 #define audio_language_sort	FALSE
 #endif
-
 /*
  * Wether or not we delete any links
  * with the same name when we try to make

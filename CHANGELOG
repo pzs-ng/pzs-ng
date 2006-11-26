@@ -2,6 +2,9 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.6  --> 1.0.X  :
+		- added support for not sorting audio in certain dirs.
+		- New option in zsconfig.h - audio_nosort_dirs - list of dirs where no
+		  audiosorting should take place.
 		- remove _INT from groupname in audio_group sorting.
 		- added option to ignore certain languages in the mp3 sorting.
 		- New option in zsconfig.h - audio_ignored_languages - list of ignored
