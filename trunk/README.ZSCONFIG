@@ -122,6 +122,12 @@ audio_nocheck_dirs <PATHS>
 	separated by a space character.
 	Default: "/site/groups/ /site/incoming/requests/"
 
+audio_nosort_dirs <PATHS>
+	If you do not want to sort the audio-files in certain dirs (but still
+	want to check for validity and announce them in chan) you can define a
+	list of dirs in this variable.
+	Default: "/site/incoming/requests/"
+
 rescan_nocheck_dirs_allowed <TRUE|FALSE>
 	If you need to check a dir placed in a nocheck_dirs area, you must
 	set this variable to TRUE. Setting this to FALSE will render the rescan
