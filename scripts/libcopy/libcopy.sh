@@ -2,7 +2,7 @@
 
 ###############################################################################
 #
-# LIBCOPY v1.1 by psxc
+# LIBCOPY v1.2 by psxc
 ######################
 #
 # This small script (ripped from glinstall.sh ;) will copy libs used by files
@@ -24,7 +24,7 @@ needed_bins="zip unzip zipscript-c postdel racestats cleanup datacleaner rescan 
 # CODEPART - PLEASE DO NOT CHANGE #
 ###################################
 
-version="1.1 (pzs-ng version)"
+version="1.2 (pzs-ng version)"
 
 # Set system type
 case $(uname -s) in
@@ -125,7 +125,12 @@ echo -n "" > "$glroot/etc/ld.so.conf"
 case $os in
     openbsd)
       openrel=`uname -r | tr -cd '0-9' | cut -b 1-2`
-      if [ $openrel -ge 34 ]; then
+      if [ $openrel -ge 40 ]; then
+        ldd $glroot/bin/* 2>/dev/null | awk '{print $7, $1}' | grep -e "^/" | grep -v "00000000$" | awk '{print $1}' |
+        sort | uniq | while read lib; do
+            lddsequence
+        done
+      elif [ $openrel -ge 34 ]; then
         ldd $glroot/bin/* 2>/dev/null | awk '{print $5, $1}' | grep -e "^/" | grep -v "00000000$" | awk '{print $1}' |
         sort | uniq | while read lib; do
             lddsequence
