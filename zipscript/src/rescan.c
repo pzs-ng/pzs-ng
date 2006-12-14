@@ -189,6 +189,7 @@ main(int argc, char *argv[])
 	g.l.leader = ng_realloc2(g.l.leader, n, 1, 1, 1);
 	g.l.length_path = (int)strlen(g.l.path);
 	g.l.length_zipdatadir = sizeof(storage);
+	g.l.sfv_incomplete = 0;
 
 	getrelname(&g);
 	gnum = buffer_groups(GROUPFILE, 0);
@@ -265,6 +266,10 @@ main(int argc, char *argv[])
 	printf("Rescanning files...\n");
 	
 	if (findfileext(dir, ".sfv")) {
+#if ( create_missing_sfv_link == TRUE )
+		d_log("rescan: Removing missing-sfv indicator (if any)\n");
+		unlink(g.l.sfv_incomplete);
+#endif
 		strlcpy(g.v.file.name, findfileext(dir, ".sfv"), NAME_MAX);
 
 		maketempdir(g.l.path);
