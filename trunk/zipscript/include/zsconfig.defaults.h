@@ -175,7 +175,7 @@
  * Here is a list of subdirs (not case sensitive). Use ? as wildcard.
  */
 #ifndef subdir_list
-#define subdir_list	"cd??,disc??,disk??,dvd??,extra?,sub?,subtitle?,vobsub?,sample?,subpack?"
+#define subdir_list	"cd??,disc??,disk??,dvd??,extra?,sub?,subtitle?,vobsub?,sample?,subpack?,ac3,audioaddon,addon,ac3addon"
 #endif
 
 /*
