@@ -161,7 +161,7 @@ subdir_list <STRING>
 	at the end of a dirname. Ie, cd?? will match cdA, cd12, but not cd123.
 	Do not put '?' at the beginning or in the middle - it will not work.
 	The string is not case-sensitive (dVd == DvD).
-	Default: "cd??,disc??,disk??,dvd??,extra?,sub?,subtitles,vobsub?,sample?,subpack?"
+	Default: "cd??,disc??,disk??,dvd??,extra?,sub?,subtitles,vobsub?,sample?,subpack?,ac3,audioaddon,addon,ac3addon"
 
 gl_sections <STRING>
 	Here you should put a list of all sections on your site. Sections is
