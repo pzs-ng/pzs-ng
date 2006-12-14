@@ -229,6 +229,7 @@ main(int argc, char **argv)
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
 	g.v.id3_artist[0] = '\0';
 	g.v.id3_genre[0] = '\0';
+	g.l.sfv_incomplete = 0;
 	d_log("postdel: Caching release name\n");
 	getrelname(&g);
 	d_log("postdel: DEBUG 0: incomplete: '%s', path: '%s'\n", g.l.incomplete, g.l.path);
