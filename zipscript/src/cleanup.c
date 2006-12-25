@@ -44,7 +44,7 @@ main(int argc, char **argv)
 		if (!strncmp(argv[1], "/", 1)) {
 			setfree = 0;
 			printf("PZS-NG Cleanup: Running script in view mode only.\n");
-			sprintf(startdir, argv[1]);
+			snprintf(startdir, PATH_MAX, argv[1]);
 		} else {
 			if (getcwd(startdir, PATH_MAX) == NULL) {
 				printf("PZS-NG Cleanup: ERROR - Failed to getcwd.\n");
@@ -162,7 +162,7 @@ replace_cookies(char *s)
 }
 
 void 
-incomplete_cleanup(char *path, int setfree)
+incomplete_cleanup(char *path, int setfree, char *startupdir)
 {
 	DIR		*dir;
 	struct dirent	*dp;
@@ -199,7 +199,11 @@ incomplete_cleanup(char *path, int setfree)
 				for (i = 0; i < 4; i++) {
 					if (regexec(&preg[i], dp->d_name, 1, pmatch, 0) == 0)
 						if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dp))
+#if (userellink)
 							if (checklink(path, dp->d_name, setfree))
+#else
+							if (checklink(startupdir, dp->d_name, setfree))
+#endif
 								break;
 					if ((fd = open(dp->d_name, O_NDELAY, 0777)) != -1)
 						close(fd);
@@ -230,13 +234,20 @@ checklink(char *path, char *link_, int setfree)
 {
 	int		size, retval;
 	static char	temp[PATH_MAX];
+	static char	lnk[PATH_MAX];
 	struct stat	fileinfo;
-					
+
 	size = readlink(link_, temp, PATH_MAX);
+#if (userellink)
+	snprintf(lnk, PATH_MAX, "%s", link_);
+#else
+	snprintf(lnk, PATH_MAX, "%s/%s", path, temp);
+#endif
+
 	if (size < 0) return 0;
 	temp[size] = '\0';
 	retval = 0;
-	if (stat(link_, &fileinfo)) {
+	if (stat(lnk, &fileinfo)) {
 		if (setfree) {
 			unlink(link_);
 			printf("Broken symbolic link \"%s\" removed.\n", temp);
@@ -268,13 +279,13 @@ cleanup(char *pathlist, char *pathlist_dated, int setfree, char *startpath)
 	if (((int)strlen(startpath) > 1) && (setfree == 1)) {
 		/* Scanning current dir only */
 
-		incomplete_cleanup(startpath, setfree);
+		incomplete_cleanup(startpath, setfree, startpath);
 	} else {
 		newentry = pathlist;
 		while (1) {
 			for (entry = newentry; *newentry != ' ' && *newentry != 0; newentry++);
 			sprintf(path, "%s%.*s", startpath, (int)(newentry - entry), entry);
-			incomplete_cleanup(path, setfree);
+			incomplete_cleanup(path, setfree, startpath);
 			if (!*newentry)
 				break;
 			newentry++;
@@ -287,7 +298,7 @@ cleanup(char *pathlist, char *pathlist_dated, int setfree, char *startpath)
 				for (entry = newentry; *newentry != ' ' && *newentry != 0; newentry++);
 				sprintf(path, "%s%.*s", startpath, (int)(newentry - entry), entry);
 				strftime(data_day, PATH_MAX, path, time_day);
-				incomplete_cleanup(data_day, setfree);
+				incomplete_cleanup(data_day, setfree, startpath);
 				if (!*newentry)
 					break;
 				newentry++;
