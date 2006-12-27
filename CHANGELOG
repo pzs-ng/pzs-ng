@@ -12,6 +12,8 @@ v1.0.6  --> 1.0.X  :
 		  languages.
 		- fixed a bug in partial_on_noforce.
 		- fixed a bug with no-nfo symlinks and false parentdir.
+		- added a new option to incomplete-list.sh.
+		- fixed a bug in cleanup where syms with absolute paths was ignored.
 v1.0.5  --> 1.0.6  : (2195)
 		- fixed a bug with lenient compare, which mostly affected mp3-releases.
 		- fixed a bug re: testing files when sfv was uploaded after releasefile(s).
