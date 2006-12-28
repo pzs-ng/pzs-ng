@@ -705,6 +705,7 @@ main(int argc, char **argv)
 
 			if (g.v.total.files == 0) {
 				d_log("zipscript-c: SFV seems to have no files of accepted types, or has errors.\n");
+				unlink(g.l.sfv);
 				sprintf(g.v.misc.error_msg, EMPTY_SFV);
 				mark_as_bad(g.v.file.name);
 				write_log = g.v.misc.write_log;

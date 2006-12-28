@@ -546,7 +546,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 			if (*ptr == '.')
 				ptr++;
 			
-			if (!strcomp(ignored_types, ptr) && !strcomp(allowed_types, ptr)) {
+			if (!strcomp(ignored_types, ptr) && !(strcomp(allowed_types, ptr) && !matchpath(allowed_types_exemption_dirs, raceI->misc.current_path))) {
 
 //#if ( sfv_dupecheck == TRUE )
 				/* read from sfvdata - no parsing */
@@ -595,7 +595,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 					others++;
 				
 #if ( create_missing_files == TRUE )
-				if (!findfile(dir, sd.fname))
+				if (!findfile(dir, sd.fname) && !(matchpath(allowed_types_exemption_dirs, raceI->misc.current_path) && strcomp(allowed_types, ptr)))
 					create_missing(sd.fname);
 #endif
 
