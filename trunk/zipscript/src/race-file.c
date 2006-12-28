@@ -546,7 +546,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 			if (*ptr == '.')
 				ptr++;
 			
-			if (!strcomp(ignored_types, ptr)) {
+			if (!strcomp(ignored_types, ptr) && !strcomp(allowed_types, ptr)) {
 
 //#if ( sfv_dupecheck == TRUE )
 				/* read from sfvdata - no parsing */
