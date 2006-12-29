@@ -201,9 +201,6 @@ announce.COMPLETE_STAT_RACE_ZIP         = "[%b{done  }][%section] %b{%reldir} wi
 announce.INCOMPLETE             = "[%b{d0h!  }][%section] %b{%releasename} is now incomplete thanks to %b{%u_name} of %b{%g_name}."
 
 ## Third party scripts
-announce.IMDB                   = "%msg"
-announce.IMDBFIND               = "%msg"
-announce.IMDBVAR                = "[%b{imdb  }][%section] %b{%imdbname} (%imdburl), a %imdbdirector movie which scored %b{%imdbscore of 10} (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.\n%b{%sitename} :: [%b{imdb  }][%section] %b{%imdbname} plot summary: %imdbplot \[%imdbbar\]"
 announce.PRE                    = "[%b{%c1{pre}   }][%section] %b{%relname} by %b{%pregroup} in %b{%files} files (%b{%mbytes}MB)."
 announce.TURGEN                 = "%msg"
 
