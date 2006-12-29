@@ -344,18 +344,27 @@ proc readlog {} {
 			continue
 		}
 
-		## If a pre-event script returns false, skip the announce.
-		if {![eventhandler precommand $event [list $section $line]] || ([info exists disable($event)] && $disable($event) == 1)} {
-			ng_debug "Announce skipped, \"$event\" is disabled or a pre-command script returned false."
+		## If the event is disabled, skip the announce.
+		if {([info exists disable($event)] && $disable($event) == 1)} {
+			ng_debug "Announce skipped, \"$event\" is disabled."
 			continue
 		}
 
-		if {![info exists variables($event)]} {
-			putlog "dZSbot error: \"variables($event)\" not defined in the config, type becomes \"$defaultsection\"."
-			set event $defaultsection
+		## If a pre-event script returns false, skip the announce.
+		if {[eventhandler precommand $event [list $section $line]]} {
+			if {![info exists variables($event)]} {
+				putlog "dZSbot error: \"variables($event)\" not defined in the config, type becomes \"$defaultsection\"."
+				set event $defaultsection
+			}
+
+			if {![eventcheck $section $event]} {
+				sndall $event $section [ng_format $event $section $line]
+			}
+		} else {
+			ng_debug "Default announce skipped, \"$event\" pre-command script returned false."
 		}
+
 		if {![eventcheck $section $event]} {
-			sndall $event $section [ng_format $event $section $line]
 			eventhandler postcommand $event [list $section $line]
 		}
 	}
