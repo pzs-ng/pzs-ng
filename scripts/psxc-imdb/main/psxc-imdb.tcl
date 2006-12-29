@@ -10,7 +10,8 @@
 ## Require: dZSbot.vars from pzs-ng v1.0.4 or newer.
 
 namespace eval ::ngBot::psxc-IMDb {
-        variable events
+        global zeroconvert disable
+ 
         variable psxc
  
         ## Config Settings ###############################
@@ -89,21 +90,70 @@ namespace eval ::ngBot::psxc-IMDb {
         set psxc(NODEFUNCT) "NO"
         ##
         ##################################################
+        ##
+        ## Disable announces. (0 = No, 1 = Yes)
+        set disable(IMDB)                   0
+        set disable(IMDBFIND)               0
+        set disable(IMDBVAR)                0
+        ##
+        ## Convert empty or zero variables into something else.
+        set zeroconvert(%imdbdirname)       "N/A"
+        set zeroconvert(%imdburl)           "N/A"
+        set zeroconvert(%imdbtitle)         "N/A"
+        set zeroconvert(%imdbgenre)         "N/A"
+        set zeroconvert(%imdbrating)        "N/A"
+        set zeroconvert(%imdbcountry)       "N/A"
+        set zeroconvert(%imdblanguage)      "N/A"
+        set zeroconvert(%imdbcertification) "N/A"
+        set zeroconvert(%imdbruntime)       "N/A"
+        set zeroconvert(%imdbdirector)      "N/A"
+        set zeroconvert(%imdbbusinessdata)  "N/A"
+        set zeroconvert(%imdbpremiereinfo)  "N/A"
+        set zeroconvert(%imdblimitedinfo)   "N/A"
+        set zeroconvert(%imdbvotes)         "Less than 5"
+        set zeroconvert(%imdbscore)         "0"
+        set zeroconvert(%imdbname)          "N/A"
+        set zeroconvert(%imdbyear)          "N/A"
+        set zeroconvert(%imdbnumscreens)    "N/A"
+        set zeroconvert(%imdbislimited)     "No idea."
+        set zeroconvert(%imdbcastleadname)  "Uknown"
+        set zeroconvert(%imdbcastleadchar)  "Uknown"
+        set zeroconvert(%imdbtagline)       "No info found."
+        set zeroconvert(%imdbplot)          "No info found."
+        set zeroconvert(%imdbbar)           ".........."
+        set zeroconvert(%imdbcasting)       "N/A"
+        set zeroconvert(%imdbcommentshort)  "N/A"
+        ##
+        ##################################################
  
         set psxc(VERSION) "2.7"
  
-        set events [list "IMDB" "IMDBFIND" "IMDBVAR"]
+        variable events [list "IMDB" "IMDBVAR" "IMDBFIND"]
  
+        variable scriptFile [info script]
         variable scriptName [namespace current]::LogEvent
+ 
         bind evnt -|- prerehash [namespace current]::DeInit
 }
  
 proc ::ngBot::psxc-IMDb::Init {args} {
-        global precommand psxcimdb
+        global precommand variables msgtypes psxcimdb
  
         variable psxc
         variable events
         variable scriptName
+        variable scriptFile
+ 
+        lappend msgtypes(SECTION) "IMDB" "IMDBVAR"
+        lappend msgtypes(DEFAULT) "IMDBFIND"
+        set variables(IMDB)       "%pf %msg %imdbdestination"
+        set variables(IMDBFIND)   "%pf %msg %imdbdestination"
+        set variables(IMDBVAR)    "%pf %imdbdirname %imdburl %imdbtitle %imdbgenre %imdbrating %imdbcountry %imdblanguage %imdbcertification %imdbruntime %imdbdirector %imdbbusinessdata %imdbpremiereinfo %imdblimitedinfo %imdbvotes %imdbscore %imdbname %imdbyear %imdbnumscreens %imdbislimited %imdbcastleadname %imdbcastleadchar %imdbtagline %imdbplot %imdbbar %imdbcasting %imdbcommentshort %imdbdestination"
+ 
+        set theme_file [file normalize "[pwd]/[file rootname $scriptFile].zpt"]
+        if {[file isfile $theme_file]} {
+                loadtheme $theme_file true
+        }
  
         ## Register the event handler.
         foreach event $events {
@@ -166,7 +216,7 @@ proc ::ngBot::psxc-IMDb::Init {args} {
                 if {$psxc(ERROR) == 0} { 
                         if {![info exists psxcimdb(prelog)]} {
                                 set psxcimdb(prelog) 0
- 
+
                                 [namespace current]::PreIMDb
                         }
  
@@ -198,7 +248,7 @@ proc ::ngBot::psxc-IMDb::Init {args} {
                 [namespace current]::Debug "Loaded successfully. (Modes Enabled: [join $psxc(MODES) ", "])"
         }
 }
- 
+
 proc ::ngBot::psxc-IMDb::DeInit {args} {
         global precommand
  
