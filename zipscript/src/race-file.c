@@ -292,7 +292,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 				rd.status = F_CHECKED;
 			else if (rd.crc32 != 0 && strcomp(ignored_types, ext))
 				rd.status = F_IGNORED;
-			else if (rd.crc32 != 0 && Tcrc == 0 && strcomp(allowed_types, ext))
+			else if (rd.crc32 != 0 && Tcrc == 0 && (strcomp(allowed_types, ext) && !matchpath(allowed_types_exemption_dirs, locations->path)))
 				rd.status = F_IGNORED;
 			else if ((rd.crc32 != 0) && (Tcrc != rd.crc32) &&
 					  (strcomp(allowed_types, ext) &&
@@ -494,7 +494,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 			}
 
 			if (sd.crc32 == 0) {
-#if (sfv_calc_single_fname == TRUE)
+#if (sfv_calc_single_fname == TRUE || create_missing_sfv == TRUE)
 				d_log("copysfv: Got filename (%s) without crc, trying to calculate.\n", sd.fname);
 				sd.crc32 = calc_crc32(sd.fname);
 #else
@@ -511,9 +511,9 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 			
 			if (!strcomp(ignored_types, ptr) && !(strcomp(allowed_types, ptr) && !matchpath(allowed_types_exemption_dirs, raceI->misc.current_path))) {
 
+				skip = 0;
 //#if ( sfv_dupecheck == TRUE )
 				/* read from sfvdata - no parsing */
-				skip = 0;
 				lseek(outfd, 0L, SEEK_SET);
 				while (read(outfd, &tempsd, sizeof(SFVDATA)))
 //					if (!strcmp(sd.fname, tempsd.fname) || (sd.crc32 == tempsd.crc32 && sd.crc32))

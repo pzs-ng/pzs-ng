@@ -316,6 +316,11 @@ allow_files_not_in_sfv <TRUE|FALSE>
 	this option allows on your site...
 	Default: FALSE
 
+create_missing_sfv <TRUE|FALSE>
+	If this option is set to TRUE, the rescan binary will create sfv files
+	if none is found in the dir.
+	Default: FALSE
+
 strict_sfv_check <TRUE|FALSE>
 	Whenever "bad" entries are found in the sfv, they are usually ignored.
 	Setting this settingto true will mark the entire sfv as bad if such

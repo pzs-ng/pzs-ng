@@ -169,6 +169,25 @@ findfileextcount(DIR *dir, char *fileext)
 	return c;
 }
 
+int 
+file_count(DIR *dir)
+{
+	int		c = 0;
+	struct dirent	*dp;
+	char		*fp;
+	
+	rewinddir(dir);
+	while ((dp = readdir(dir))) {
+		fp = dp->d_name + dp->d_namlen -4;
+		if (*dp->d_name == '.')
+			continue;
+		if (strcomp(ignored_types, fp) || strcomp(allowed_types, fp))
+			continue;
+		c++;
+	}
+	return c;
+}
+
 /*
  * hexstrtodec - make sure a valid hex number is present in sfv
  * Last modified by: psxc
@@ -825,6 +844,7 @@ readsfv_ffile(struct VARS *raceI)
 					index_start++;
 					raceI->total.files++;
 					if (!strcomp(ignored_types, fname + ext_start)) {
+//					if (!strcomp(ignored_types, fname + ext_start) && !(strcomp(allowed_types, fname + ext_start) && matchpath(allowed_types_exemption_dirs, raceI->misc.current_path))) {
 						if (findfile(dir, fname)) {
 							raceI->total.files_missing--;
 						}
@@ -1393,5 +1413,49 @@ extractDirname(char *dirname, char *absoluteDirname)
                 }
         }
         return cnt;
+}
+
+int make_sfv(char *reldir) {
+	static struct dirent	*dp;
+	DIR			*dirp;
+	int			fd, fcount = 0;
+	static char		buf[PATH_MAX + 3];
+	char			*fp;
+
+	if (!(dirp = opendir("."))) {
+		d_log("make_sfv: Failed to open current dir: %s\n", strerror(errno));
+		return 1;
+	}
+	if ((fd = open("pzs-ng.sfv", O_WRONLY|O_CREAT|O_TRUNC, 0666)) == -1) {
+		d_log("make_sfv: Failed to create pzs-ng.sfv: %s\n", strerror(errno));
+		(void)closedir(dirp);
+		return 1;
+	}
+	while ((dp = readdir(dirp)) != NULL) {
+		fp = dp->d_name + dp->d_namlen - 3;
+		if (dp->d_namlen > 2 && *dp->d_name != '.' &&
+		    !strcomp(ignored_types, fp) &&
+		    (!strcomp(allowed_types, fp) || (strcomp(allowed_types, fp) && matchpath(allowed_types_exemption_dirs, reldir))) &&
+		    strcmp(dp->d_name, "pzs-ng.sfv") &&
+		    dp->d_type == DT_REG &&
+		    strcmp(fp, "nfo")) {
+			d_log("make_sfv: Adding \"%-20s 00000000\" to sfv\n", dp->d_name);
+			snprintf(buf, sizeof(buf), "%-20s 00000000\n", dp->d_name);
+			fcount++;
+		        if ((write(fd, buf, strlen(buf))) == -1) {
+		                d_log("make_sfv: write failed: %s\n", strerror(errno));
+				(void)close(fd);
+				(void)closedir(dirp);
+				return 1;
+			}
+		}
+	}
+	if (!fcount) {
+		d_log("make_sfv: Did not find anything to put in the sfv - removing sfv\n");
+		unlink("pzs-ng.sfv");
+	}
+	(void)close(fd);
+	(void)closedir(dirp);
+	return 0;
 }
 

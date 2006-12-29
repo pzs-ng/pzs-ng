@@ -147,6 +147,7 @@ main(int argc, char **argv)
 		strlcpy(g.l.basepath, g.l.path, PATH_MAX);
 	if (strncmp(g.l.path, g.l.basepath, PATH_MAX))
 		d_log("zipscript-c: We are in subdir of %s\n", g.l.basepath);
+	strncpy(g.v.misc.current_path, g.l.path, sizeof(g.v.misc.current_path));
 
 	d_log("zipscript-c: Reading data from environment variables\n");
 	if ((getenv("USER") == NULL) || (getenv("GROUP") == NULL) || (getenv("TAGLINE") == NULL) || (getenv("SPEED") ==NULL) || (getenv("SECTION") == NULL)) {
