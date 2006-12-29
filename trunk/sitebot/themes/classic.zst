@@ -172,9 +172,6 @@ announce.COMPLETE_STAT_RACE_ZIP         = "%b{[%c1{%section}]} - %b{%reldir} [%b
 announce.INCOMPLETE                     = "%b{[%c1{%section}]} - %b{%releasename} is now incomplete thanks to %b{%u_name}/%g_name"
 
 ## Third party scripts
-announce.IMDB                   = "%msg"
-announce.IMDBFIND               = "%msg"
-announce.IMDBVAR                = "Not implemented"
 announce.PRE                    = "%b{[%c1{%section-PRE}]} + %b{%pregroup} launches %b{%relname} - (with %b{%mbytes}MB in %b{%files}F)"
 announce.TURGEN                 = "%msg"
 
