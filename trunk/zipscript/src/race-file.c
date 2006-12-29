@@ -157,49 +157,6 @@ update_sfvdata(const char *path, const char *fname, const unsigned int crc)
 	close(fd);
 }
 
-/* convert the sfvdata file source to the sfv dest */
-void
-sfvdata_to_sfv(const char *source, const char *dest)
-{
-	int		infd, outfd;
-	char		crctmp[8];
-	
-	SFVDATA		sd;
-
-	if ((infd = open(source, O_RDONLY)) == -1) {
-		d_log("sfvdata_to_sfv: Failed to open (%s): %s\n", source, strerror(errno));
-		return;
-	}
-
-	if ((outfd = open(source, O_CREAT | O_WRONLY, 0644)) == -1) {
-		d_log("sfvdata_to_sfv: Failed to open (.tmpsfv): %s\n", strerror(errno));
-		return;
-	}
-
-	while (read(infd, &sd, sizeof(SFVDATA))) {
-		
-		sprintf(crctmp, "%.8x", sd.crc32);
-		
-		if (write(outfd, sd.fname, NAME_MAX) != NAME_MAX)
-			d_log("update_sfvdata: write failed: %s\n", strerror(errno));
-		if (write(outfd, " ", 1) != 1)
-			d_log("update_sfvdata: write failed: %s\n", strerror(errno));
-		if (write(outfd, &crctmp, 8) != 8)
-#if (sfv_cleanup_crlf == TRUE )
-		if (write(outfd, "\r", 1) != 1)
-			d_log("update_sfvdata: write failed: %s\n", strerror(errno));
-#endif
-		if (write(outfd, "\n", 1) != 1)
-			d_log("update_sfvdata: write failed: %s\n", strerror(errno));
-
-	}
-	
-	close(infd);
-	close(outfd);
-
-	rename(".tmpsfv", dest);	
-}
-
 /*
  * Modified	: 01.16.2002 Author	: Dark0n3
  * 
