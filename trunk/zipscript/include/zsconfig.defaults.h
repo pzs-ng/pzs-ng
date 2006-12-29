@@ -113,6 +113,9 @@
 #ifndef create_missing_sfv_link
 #define create_missing_sfv_link         TRUE
 #endif
+#ifndef create_missing_sfv
+#define create_missing_sfv		FALSE
+#endif
 #ifndef create_incomplete_links_in_group_dirs
 #define create_incomplete_links_in_group_dirs	TRUE
 #endif

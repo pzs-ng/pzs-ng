@@ -103,6 +103,7 @@ extern char    *findfileext_old_parent(char *);
 /* mkay? */
 
 extern int	findfileextcount(DIR *, char *);
+extern int	file_count(DIR *);
 extern unsigned int hexstrtodec(char *);
 #if defined(__linux__) || defined(__NetBSD__)
 extern int	selector(const struct dirent *);
@@ -157,5 +158,6 @@ extern void    *ng_realloc(void *, int, int, int, struct VARS *, int);
 extern void    *ng_realloc2(void *, int, int, int, int);
 extern void    *ng_free(void *);
 extern int	copyfile(char *, char *);
+extern int	make_sfv(char *);
 #endif
 
