@@ -521,11 +521,17 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 		if (ptr != fbuf)
 			d_log("copysfv: prestripped whitespaces (%d chars)\n", ptr - fbuf);
 
+#if (allow_slash_in_sfv == TRUE)
+		if (ptr != find_last_of(ptr, "/")) {
+			ptr = find_last_of(ptr, "/") + 1;
+			d_log("copysfv: found '/' in filename - adjusting.\n");
+		}
+#endif
 		if (strlen(ptr) > 0 && strlen(ptr) < NAME_MAX-9 ) {
 			strlcpy(sd.fname, ptr, NAME_MAX-9);
 
 			if (sd.fname != find_last_of(sd.fname, "\t/") || *sd.fname == '/') {
-				d_log("copysfv: found '/' or TAB as part of filename in sfv - logging file as bad.\n");
+				d_log("copysfv: found '/' or <TAB> as part of filename in sfv - logging file as bad.\n");
 				retval = 1;
 				break;
 			}

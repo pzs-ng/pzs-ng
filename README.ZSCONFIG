@@ -474,6 +474,11 @@ force_sfv_first <TRUE|FALSE>
 	to TRUE will do the latter.
 	Default: FALSE
 
+allow_slash_in_sfv <TRUE|FALSE>
+	Allow slashes '/' in sfv? If TRUE whatever is behind the last slash is
+	taken as the filename. If FALSE, the sfv is rejected.
+	Default: TRUE
+
 audio_genre_sort <TRUE|FALSE>
 	If you wish to sort audio/mp3 releases by genre, set this to TRUE.
 	Default: FALSE
