@@ -1846,6 +1846,7 @@ proc themereplace {targetString section} {
 
 		regsub -all {%b\{([^\{\}]+)\}} $targetString {\\002\1\\002} targetString
 		regsub -all {%u\{([^\{\}]+)\}} $targetString {\\037\1\\037} targetString
+		regsub -all {(%c\d\{[^\{\}]+\})(\d)} $targetString {\1\\002\\002\2} targetString
 
 		set colorString [format "COLOR_%s_1" $section]
 		if {[lsearch -exact [array names theme] $colorString] != -1} {
