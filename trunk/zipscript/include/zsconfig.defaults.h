@@ -457,6 +457,13 @@
 #define force_sfv_first		FALSE
 #endif
 
+/*
+ * Allow slashes '/' in sfv? If TRUE whatever is behind the last
+ * slash is taken as the filename.
+ */
+#ifndef allow_slash_in_sfv
+#define allow_slash_in_sfv	TRUE
+#endif
 
 /*
  * MP3 Settings ============

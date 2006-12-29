@@ -16,6 +16,9 @@ v1.0.6  --> 1.0.X  :
 		- fixed a bug in cleanup where syms with absolute paths was ignored.
 		- fix: ignore allowed_types when scanning an sfv.
 		- fix: remove sfvdata when encountering a 'bad' sfv.
+		- added option to allow slashes in filenames listed in the sfv.
+		- New option in zsconfig.h - allow_slash_in_sfv - allow slashes in sfv.
+
 v1.0.5  --> 1.0.6  : (2195)
 		- fixed a bug with lenient compare, which mostly affected mp3-releases.
 		- fixed a bug re: testing files when sfv was uploaded after releasefile(s).
