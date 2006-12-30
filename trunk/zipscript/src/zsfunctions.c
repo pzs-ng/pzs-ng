@@ -178,7 +178,7 @@ file_count(DIR *dir)
 	
 	rewinddir(dir);
 	while ((dp = readdir(dir))) {
-		fp = dp->d_name + dp->d_namlen -4;
+		fp = dp->d_name + NAMLEN(dp) - 4;
 		if (*dp->d_name == '.')
 			continue;
 		if (strcomp(ignored_types, fp) || strcomp(allowed_types, fp))
@@ -1432,8 +1432,8 @@ int make_sfv(char *reldir) {
 		return 1;
 	}
 	while ((dp = readdir(dirp)) != NULL) {
-		fp = dp->d_name + dp->d_namlen - 3;
-		if (dp->d_namlen > 2 && *dp->d_name != '.' &&
+		fp = dp->d_name + NAMLEN(dp) - 3;
+		if (NAMLEN(dp) > 2 && *dp->d_name != '.' &&
 		    !strcomp(ignored_types, fp) &&
 		    (!strcomp(allowed_types, fp) || (strcomp(allowed_types, fp) && matchpath(allowed_types_exemption_dirs, reldir))) &&
 		    strcmp(dp->d_name, "pzs-ng.sfv") &&
