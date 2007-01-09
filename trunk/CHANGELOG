@@ -1,7 +1,9 @@
 PZS-NG CHANGELOG
 ----------------
 
-v1.0.6  --> 1.0.X  :
+v1.0.7  --> 1.0.X  :
+		- added more options to zsconfig - error msgs and benchmark output.
+v1.0.6  --> 1.0.7  : (r2230)
 		- updated libcopy to v1.2 - fix for openbsd4.0.
 		- added support for not sorting audio in certain dirs.
 		- New option in zsconfig.h - audio_nosort_dirs - list of dirs where no
@@ -21,7 +23,7 @@ v1.0.6  --> 1.0.X  :
 		- added option to create sfv files on rescan.
 		- New option in zsconfig.h - create_missing_sfv - option to create sfv files.
 
-v1.0.5  --> 1.0.6  : (2195)
+v1.0.5  --> 1.0.6  : (r2195)
 		- fixed a bug with lenient compare, which mostly affected mp3-releases.
 		- fixed a bug re: testing files when sfv was uploaded after releasefile(s).
 		- fixed a bug re: broken sfv files, that had files with no crc at the end.
@@ -51,7 +53,7 @@ v1.0.5  --> 1.0.6  : (2195)
 		- New option in zsconfig.h - incomplete_sfv_indicator - missing-indicator.
 		- sort by group fixed - but GRPNaME and grpNAME in the same dir. Groupname from
 		  the first release sets the default.
-v1.0.4  --> 1.0.5  : (2170)
+v1.0.4  --> 1.0.5  : (r2170)
 		- additions/fixes in meij's plugins.
 		- added cr0que's mod to move detection of VA mp3 artist to audiosort.c.
 		- added cr0que's fix for a bug regarding mp3 releases with subdirs, and how the

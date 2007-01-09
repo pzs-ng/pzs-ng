@@ -1609,8 +1609,8 @@ main(int argc, char **argv)
 
 #if ( benchmark_mode == TRUE )
 	gettimeofday(&bstop, (struct timezone *)0);
-	printf("Checks completed in %0.6f seconds\n", ((bstop.tv_sec - bstart.tv_sec) + (bstop.tv_usec - bstart.tv_usec) / 1000000.));
-	d_log("zipscript-c: Checks completed in %0.6f seconds\n", ((bstop.tv_sec - bstart.tv_sec) + (bstop.tv_usec - bstart.tv_usec) / 1000000.));
+	printf(zsinternal_checks_completed, ((bstop.tv_sec - bstart.tv_sec) + (bstop.tv_usec - bstart.tv_usec) / 1000000.));
+	d_log("zipscript-c: Checks completed in %0.6f seconds.\n", ((bstop.tv_sec - bstart.tv_sec) + (bstop.tv_usec - bstart.tv_usec) / 1000000.));
 #endif
 
 #if ( sleep_on_bad > 0 && sleep_on_bad < 1001 )
@@ -1625,5 +1625,4 @@ main(int argc, char **argv)
 #endif
 	d_log("zipscript-c: Exit %d\n", exit_value);
 	return exit_value;
-		d_log("zipscript-c: del_banned_release is set - removing entire dir.\n");
 }
