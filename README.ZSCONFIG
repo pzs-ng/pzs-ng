@@ -1346,5 +1346,72 @@ rescan_chdir_flags <STRING>
 	Group-dirs cannot be rescanned this way - they'll have to be rescanned
 	the 'normal' way.
 	DEFAULT: ""
+
+zsinternal_checks_completed <STRING>
+	Output in benchmark mode.
+	DEFAULT: "Checks completed in %0.6f seconds.\n"		*/ %0.6f = six digits number of seconds */
+
+SFV_FIRST <STRING>
+	Error msg when sfv_first is enabled, and no sfv is uploaded prior to
+	"normal" files.
+	DEFAULT: "CRC-Check: SFV first!"
+
+BAD_CRC <STRING>
+	Error msg when crc check fails.
+	DEFAULT: "CRC-Check: BAD!"
+
+NOT_IN_SFV <STRING>
+	Error msg when uploaded file is not found in the sfv.
+	Default: "CRC-Check: Not in sfv!"
+
+EMPTY_SFV <STRING>
+	Error msg when uploaded sfv does not contain any parsable lines.
+	DEFAULT: "SFV-file: BAD!"
+
+DOUBLE_SFV <STRING>
+	Error msg when a second sfv file is uploaded.
+	DEFAULT: "SFV-file: DUPE!"
+
+BAD_ZIP <STRING>
+	Error msg when zip integrity fails.
+	DEFAULT: "ZiP-Integrity: BAD!"
+
+EMPTY_FILE <STRING>
+	Error msg when an empty (0byte) file is uploaded.
+	DEFAULT: "0byte-file: Not allowed!"
+
+BANNED_FILE <STRING>
+	Error msg when file is listed as banned.
+	DEFAULT: "Banned file: Not allowed!"
+
+UNKNOWN_FILE <STRING>
+	Error msg when filetype is not recognized or is listed as unwanted.
+	DEFAULT: "%s-file: Not allowed!"                         /* %s = file extension   */
+
+BANNED_GENRE <STRING>
+	Error msg when musicfile is of a banned genre.
+	DEFAULT: "%s is banned here!"                            /* %s = genre            */
+
+BANNED_YEAR <STRING>
+	Error msg when musicfile is from a banned year.
+	DEFAULT: "Releases from %s are not allowed here!"        /* %s = year             */
+
+BANNED_BITRATE <STRING>
+	Error msg when bitrate of musicfile is banned.
+	DEFAULT: "%s kbit codec is not allowed here!"            /* %s = bitrate          */
+
+DUPE_NFO <STRING>
+	Error msg when a 2nd nfo is uploaded.
+	DEFAULT: "NFO-File: DUPE!"
+
+ZIP_NFO <STRING>
+	Error msg when nfo file is uploaded in a zipdir.
+	DEFAULT: "NFO-File: Not allowed here!"
+
+SPEEDTEST <STRING>
+	Output when file is uploaded in a speedtest dir.
+	DEFAULT: "BW: %.1fMiB (%.1fMB) @ %.2fMbps (%.2fMB/s)."
+
+
 --END
 

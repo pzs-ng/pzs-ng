@@ -119,7 +119,7 @@ main(int argc, char *argv[])
 		printf("\t- allow_gid_change_in_ng_chown : %s - flag set to %d (was %d)\n", !allow_gid_change_in_ng_chown ? "FALSE" : "TRUE ", group_flag, (int)strtol(argv[4], NULL, 10));
 		printf("\t- allow_files_chown_in_ng_chown: %s - flag set to %d (was %d)\n", !allow_files_chown_in_ng_chown ? "FALSE" : "TRUE ", files_flag, (int)strtol(argv[5], NULL, 10));
 		printf("\t- allow_dir_chown_in_ng_chown  : %s - flag set to %d (was %d)\n", !allow_dir_chown_in_ng_chown ? "FALSE" : "TRUE ", dir_flag, (int)strtol(argv[6], NULL, 10));
-		
+		printf("If you see a allow_* setting above here as FALSE where you have it TRUE in the zsconfig.h - please do:\nmake distclean; ./configure && make install && chmod +s /glftpd/bin/ng-chown\n(or have your op/sitetech/whoever do it) and try again.\n");
 	}
 	
 	return my_result;

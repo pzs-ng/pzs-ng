@@ -1129,3 +1129,7 @@
 #define rescan_chdir_flags		""
 #endif
 
+#ifndef zsinternal_checks_completed
+#define zsinternal_checks_completed	"Checks completed in %0.6f seconds.\n"
+#endif
+
