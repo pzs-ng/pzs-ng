@@ -498,6 +498,14 @@ audio_artist_sort <TRUE|FALSE>
 	If you wish to sort audio/mp3 releases by artist, set this to TRUE.
 	Default: FALSE
 
+audio_artist_nosub <TRUE|FALSE>
+	If you sort audio by artist, a dir with the first char in the artist is
+	created under audio_artist_path, and then a link to the actual release
+	is made. audio_artist_nosub, if set to TRUE, will instead create dirs
+	based on the full name of the artist, and then put a link in that dir
+	instead.
+	Default: FALSE
+
 audio_artist_path <PATH>
 	If you choose to sort audio/mp3 releases by artist, this is the place
 	where the symlinks will be created. This dir must be created in order
