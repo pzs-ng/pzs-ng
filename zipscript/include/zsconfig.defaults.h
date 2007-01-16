@@ -483,6 +483,9 @@
 #ifndef audio_artist_path
 #define audio_artist_path	"/site/incoming/music.by.artist/"
 #endif
+#ifndef audio_artist_nosub
+#define audio_artist_nosub	FALSE
+#endif
 #ifndef audio_year_path
 #define audio_year_path		"/site/incoming/music.by.year/"
 #endif
