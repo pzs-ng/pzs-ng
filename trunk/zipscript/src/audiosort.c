@@ -99,6 +99,7 @@ if (subcomp(link_target, NULL)) {
 			temp_p = ng_realloc(temp_p, strlen(info->id3_artist)+1, 1, 0, NULL, 1);
 			snprintf(temp_p, strlen(info->id3_artist)+1, "%s", info->id3_artist);
 			temp_p = check_nocase_linkname(audio_artist_path, temp_p);
+			space_to_dot(temp_p);
 			createlink(audio_artist_path, temp_p, link_source, link_target);
 #endif
 			ng_free(temp_p);
