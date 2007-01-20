@@ -128,6 +128,8 @@
 #define post_stats		DISABLED
 #define winner			"Winner: "
 #define loser			"Loser: "
+#define vbrnew			"vbr-new"
+#define vbrold			"vbr-old"
 
 #define user_top		"%n/%u/%g/%.1m/%f/%.1p/%.0s"
 #define user_info		"%u/%g/%.1m/%f/%.1p/%.0s"

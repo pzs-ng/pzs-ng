@@ -115,6 +115,8 @@
 #define bad_file_zipnfo_type				"BAD_FILE_ZIPNFO"
 #define bad_file_speedtest_type				"ULTEST"
 
+#define vbrnew						"vbr-new"
+#define vbrold						"vbr-old"
 
 #define deny_double_msg		"{%U} {%G} {%r} {%n}"
 #define deny_resumesfv_msg	"{%U} {%G} {%r} {%n}"
@@ -152,8 +154,8 @@
 #ifndef racersmsg
 #define racersmsg		"{%u} {%g}"	/* Put in %R cookie */
 #endif
-#define audio_vbr		"{%w} {%Y} {%X} {%z} {%Q} {VBR} {%I} {%i} {%x} {%W} {%y} {%h} {%q}"	/* Put in %j cookie */
-#define audio_cbr		"{%w} {%Y} {%X} {%z} {%Q} {CBR} {%x} {%W} {%y} {%h} {%q}"		/* Put in %j cookie */
+#define audio_vbr		"{%w} {%Y} {%X} {%z} {%Q} {VBR} {%I} {%i} {%x} {%W} {%y} {%h} {%q} {%@}"	/* Put in %j cookie */
+#define audio_cbr		"{%w} {%Y} {%X} {%z} {%Q} {CBR} {%x} {%W} {%y} {%h} {%q}"			/* Put in %j cookie */
 
 /*
  * Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 &

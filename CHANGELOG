@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.7  --> 1.0.X  :
+		- added support for vbr-old/vbr-new.
 		- added more options to zsconfig - error msgs and benchmark output.
 v1.0.6  --> 1.0.7  : (r2230)
 		- updated libcopy to v1.2 - fix for openbsd4.0.

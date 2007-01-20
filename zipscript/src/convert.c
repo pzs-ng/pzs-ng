@@ -339,7 +339,12 @@ convert4(struct VARS *raceI, char *instr)
 			case 'h':
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.codec);
 				break;
-
+			case '@':
+				if (*raceI->audio.vbr_oldnew == 1)
+					out_p += sprintf(out_p, "%*.*s", val1, val2, vbrold);
+				else
+					out_p += sprintf(out_p, "%*.*s", val1, val2, vbrold);
+				break;
 			case 'q':
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.layer);
 				break;
@@ -688,6 +693,12 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				break;
 			case 'Q':
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.channelmode);
+				break;
+			case '@':
+				if (*raceI->audio.vbr_oldnew == 1)
+					out_p += sprintf(out_p, "%*.*s", val1, val2, vbrold);
+				else
+					out_p += sprintf(out_p, "%*.*s", val1, val2, vbrold);
 				break;
 			case 'j':
 				if (raceI->audio.is_vbr == 1)

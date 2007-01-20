@@ -272,6 +272,7 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 	unsigned int	sr_v25[] = {11025, 12000, 8000, 0};
 	int		vbr_offset = 0;
 	int		t1;
+	short int	vbr_oldnew;
 
 	fd = open(f, O_RDONLY);
 	if (fd < 0)
@@ -400,6 +401,12 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 		    memcmp(xing_header2, "LAME", 4) == 0 ||
 		    memcmp(xing_header3, "Xing", 4) == 0 ||
 		    memcmp(fraunhofer_header, "VBRI", 4) == 0) {
+
+			lseek(fd, 165 + vbr_offset, SEEK_SET);
+			read(fd, audio->vbr_oldnew, 1);
+			vbr_oldnew = (*audio->vbr_oldnew & 4) >> 2;
+			
+printf("vbr_oldnew=%d\n", vbr_oldnew);
 
 			lseek(fd, 156 + vbr_offset, SEEK_SET);
 			read(fd, audio->vbr_version_string, 9);

@@ -31,7 +31,7 @@
 
 #if NAME_MAX%4
  #define NAMEMAX NAME_MAX+4-NAME_MAX%4
-#else
+#else 
  #define NAMEMAX NAME_MAX
 #endif
 
@@ -75,6 +75,7 @@ struct audio {
 	char		vbr_version_string[10];
 	char		vbr_preset[15];
 	int		is_vbr;
+	char		vbr_oldnew[1];
 };
 
 struct video {
