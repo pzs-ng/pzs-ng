@@ -79,7 +79,7 @@ Quickreference of cookies:
 # COMPLETE_AUDIO_VBR:
 %releasename, %t_mbytes, %t_files, %t_avgspeed, %r_avgspeed, %t_duration, %u_name
 %g_name, %genre, %year, %bitrate, %sampling, %mode, %audio, %a_stream, %a_version
-%artist, %album, %title, %codec, %layer, %filename, %u_tagline, %g_racer_position
+%artist, %album, %title, %codec, %layer, %vbr_oldnew %filename, %u_tagline, %g_racer_position
 %g_racer_name, %g_racer_mbytes, %g_racer_files, %g_racer_percent, %g_racer_avgspeed
 %u_racer_position, %u_racer_name, %g_racer_name, %u_racer_mbytes, %u_racer_files
 %u_racer_percent, %u_racer_avgspeed, %u_racer_dayup, %u_racer_wkup, %u_racer_monthup
@@ -113,7 +113,7 @@ Quickreference of cookies:
 # COMPLETE_STAT_RACE_AUDIO_VBR:
 %releasename, %t_mbytes, %t_files, %t_avgspeed, %r_avgspeed, %t_duration, %u_count
 %g_count, %genre, %year, %bitrate, %sampling, %mode, %audio, %a_stream, %a_version
-%artist, %album, %title, %codec, %layer, %u_slowest_name, %u_slowest_gname, %u_slowest_speed
+%artist, %album, %title, %codec, %layer, %vbr_oldnew %u_slowest_name, %u_slowest_gname, %u_slowest_speed
 %u_fastest_name, %u_fastest_gname, %u_fastest_speed, %u_winner_name, %u_winner_gname
 %u_winner_mbytes, %u_winner_files, %u_winner_percent, %u_winner_avgspeed, %g_winner_name
 %g_winner_mbytes, %g_winner_files, %g_winner_percent, %g_winner_avgspeed, %filename
@@ -420,7 +420,7 @@ Quickreference of cookies:
 # UPDATE_VBR:
 %u_name, %g_name, %t_files, %u_speed, %t_mbytes, %filename, %releasename, %u_tagline
 %genre, %year, %bitrate, %sampling, %mode, %audio, %a_stream, %a_version, %artist
-%album, %title, %codec, %layer, %t_timeleft
+%album, %title, %codec, %layer %vbr_oldnew, %t_timeleft
 
 # UPDATE_VIDEO:
 %u_name, %g_name, %t_files, %u_speed, %t_mbytes, %filename, %releasename, %u_tagline
