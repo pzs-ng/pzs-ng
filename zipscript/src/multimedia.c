@@ -405,8 +405,6 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 			lseek(fd, 165 + vbr_offset, SEEK_SET);
 			read(fd, audio->vbr_oldnew, 1);
 			vbr_oldnew = (*audio->vbr_oldnew & 4) >> 2;
-			
-printf("vbr_oldnew=%d\n", vbr_oldnew);
 
 			lseek(fd, 156 + vbr_offset, SEEK_SET);
 			read(fd, audio->vbr_version_string, 9);

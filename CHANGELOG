@@ -4,6 +4,7 @@ PZS-NG CHANGELOG
 v1.0.7  --> 1.0.X  :
 		- added support for vbr-old/vbr-new.
 		- added more options to zsconfig - error msgs and benchmark output.
+		- fix a bug in rescan when scanning new (not previously scanned) dirs.
 v1.0.6  --> 1.0.7  : (r2230)
 		- updated libcopy to v1.2 - fix for openbsd4.0.
 		- added support for not sorting audio in certain dirs.

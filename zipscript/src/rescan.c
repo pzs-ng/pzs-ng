@@ -370,7 +370,7 @@ main(int argc, char *argv[])
 			}
 		}
 	} else if (findfileext(dir, ".sfv") || (create_missing_sfv && file_count(dir))) {
-		if (create_missing_sfv && file_count(dir)) {
+		if (!findfileext(dir, ".sfv") && create_missing_sfv && file_count(dir)) {
 			d_log("rescan: No sfv found - creating one.\n");
 			make_sfv(g.l.path);
 			if (!findfileext(dir, ".sfv")) {
