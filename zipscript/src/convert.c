@@ -341,7 +341,7 @@ convert4(struct VARS *raceI, char *instr)
 				break;
 			case '@':
 				if (*raceI->audio.vbr_oldnew == 1)
-					out_p += sprintf(out_p, "%*.*s", val1, val2, vbrold);
+					out_p += sprintf(out_p, "%*.*s", val1, val2, vbrnew);
 				else
 					out_p += sprintf(out_p, "%*.*s", val1, val2, vbrold);
 				break;
@@ -696,7 +696,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				break;
 			case '@':
 				if (*raceI->audio.vbr_oldnew == 1)
-					out_p += sprintf(out_p, "%*.*s", val1, val2, vbrold);
+					out_p += sprintf(out_p, "%*.*s", val1, val2, vbrnew);
 				else
 					out_p += sprintf(out_p, "%*.*s", val1, val2, vbrold);
 				break;
