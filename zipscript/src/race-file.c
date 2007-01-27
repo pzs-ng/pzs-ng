@@ -766,6 +766,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 
 	RACEDATA	rd;
 
+	d_log("writerace: extra debug info - raceI->id3_genre='%s' - raceI->audio.id3_artist='%s'\n", raceI->id3_genre, raceI->audio.id3_artist);
 	/* create file if it doesn't exist */
 	if ((fd = open(path, O_CREAT | O_RDWR, 0666)) == -1) {
 		if (errno != EEXIST) {
