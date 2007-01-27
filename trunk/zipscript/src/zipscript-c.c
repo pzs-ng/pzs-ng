@@ -351,6 +351,7 @@ main(int argc, char **argv)
 		get_mpeg_audio_info(findfileext(dir, ".mp3"), &g.v.audio);
 		strlcpy(g.v.id3_artist, g.v.audio.id3_artist, sizeof(g.v.id3_artist));
 		strlcpy(g.v.id3_genre, g.v.audio.id3_genre, sizeof(g.v.id3_genre));
+		d_log("zipscript-c: g.v.id3_artist='%s' - g.v.id3_genre='%s'\n", g.v.id3_artist, g.v.id3_genre);
 	}
 	if (strlen(zipscript_header))
 		printf(zipscript_header);
@@ -534,7 +535,7 @@ main(int argc, char **argv)
 			}
 			g.v.total.files_missing = g.v.total.files;
 
-			d_log("zipscript-c: Storing new race data\n");
+			d_log("zipscript-c: Storing new race data (F_CHECKED)\n");
 			writerace(g.l.race, &g.v, 0, F_CHECKED);
 			d_log("zipscript-c: Reading race data from file to memory\n");
 			readrace(g.l.race, &g.v, g.ui, g.gi);
@@ -766,9 +767,9 @@ main(int argc, char **argv)
 			} else {
 				if (g.v.misc.release_type == RTYPE_AUDIO) {
 					d_log("zipscript-c: Reading audio info for completebar\n");
-//					get_mpeg_audio_info(findfileext(dir, ".mp3"), &g.v.audio);
-//					strlcpy(g.v.id3_artist, g.v.audio.id3_artist, sizeof(g.v.id3_artist));
-//					strlcpy(g.v.id3_genre, g.v.audio.id3_genre, sizeof(g.v.id3_genre));
+					get_mpeg_audio_info(findfileext(dir, ".mp3"), &g.v.audio);
+					strlcpy(g.v.id3_artist, g.v.audio.id3_artist, sizeof(g.v.id3_artist));
+					strlcpy(g.v.id3_genre, g.v.audio.id3_genre, sizeof(g.v.id3_genre));
 				}
 			}
 
@@ -909,7 +910,7 @@ main(int argc, char **argv)
 				}
 #endif
 				printf(zipscript_SFV_ok);
-				d_log("zipscript-c: Storing new race data\n");
+				d_log("zipscript-c: Storing new race data (F_CHECKED)\n");
 				writerace(g.l.race, &g.v, crc, F_CHECKED);
 			} else {
 #if ( force_sfv_first == TRUE )
@@ -946,13 +947,13 @@ main(int argc, char **argv)
 				} else {
 					d_log("zipscript-c: path matched with noforce_sfv_first or zip_dirs - allowing file.\n");
 					printf(zipscript_SFV_skip);
-					d_log("zipscript-c: Storing new race data\n");
+					d_log("zipscript-c: Storing new race data (F_NOTCHECKED)\n");
 					writerace(g.l.race, &g.v, crc, F_NOTCHECKED);
 				}
 #else
 				d_log("zipscript-c: Could not check file yet - SFV is not present\n");
 				printf(zipscript_SFV_skip);
-				d_log("zipscript-c: Storing new race data\n");
+				d_log("zipscript-c: Storing new race data (F_NOTCHECKED)\n");
 				writerace(g.l.race, &g.v, crc, F_NOTCHECKED);
 #endif
 #if ( create_missing_sfv_link == TRUE )
@@ -999,9 +1000,9 @@ main(int argc, char **argv)
 				halfway_msg = CHOOSE(g.v.total.users, audio_halfway, audio_norace_halfway);
 				newleader_msg = audio_newleader;
 				d_log("zipscript-c: Trying to read audio header and tags\n");
-//				get_mpeg_audio_info(g.v.file.name, &g.v.audio);
-//				strlcpy(g.v.id3_artist, g.v.audio.id3_artist, sizeof(g.v.id3_artist));
-//				strlcpy(g.v.id3_genre, g.v.audio.id3_genre, sizeof(g.v.id3_genre));
+				get_mpeg_audio_info(g.v.file.name, &g.v.audio);
+				strlcpy(g.v.id3_artist, g.v.audio.id3_artist, sizeof(g.v.id3_artist));
+				strlcpy(g.v.id3_genre, g.v.audio.id3_genre, sizeof(g.v.id3_genre));
 #if ( exclude_non_sfv_dirs )
 				if (g.v.misc.write_log == TRUE) {
 #endif
