@@ -72,6 +72,7 @@
  %i  = VBR version string
  %I  = VBR preset
  %j  = vbr/cbr info
+ %@  = vbr-old/vbr-new
 #
 #### Movie AVI/MPG/MPEG/M2V cookies
 #

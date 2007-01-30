@@ -113,6 +113,10 @@ updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **grou
 		raceI->misc.slowest_user[1] = u_no;
 		raceI->misc.slowest_user[0] = speed;
 	}
+	if (raceI->total.files_missing < 0) {
+		d_log("updatestats: GAKK! raceI->total.files_missing < 0\n");
+		raceI->total.files_missing = 0;
+	}
 }
 
 /*
