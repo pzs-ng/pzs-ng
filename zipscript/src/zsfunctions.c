@@ -855,6 +855,10 @@ readsfv_ffile(struct VARS *raceI)
 		}
 	}
 	raceI->total.files_missing = raceI->total.files + raceI->total.files_missing;
+	if (raceI->total.files_missing < 0) {
+		d_log("readsfv_ffile: GAKK! raceI->total.files_missing < 0\n");
+		raceI->total.files_missing = 0;
+	}
 	ng_free(buf);
 	closedir(dir);
 }

@@ -126,6 +126,10 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 	else
 		errno = 0;
 
+	if (raceI->total.files_missing < 0) {
+		d_log("readsfv: GAKK! raceI->total.files_missing < 0\n");
+		raceI->total.files_missing = 0;
+	}
 	return crc;
 }
 
