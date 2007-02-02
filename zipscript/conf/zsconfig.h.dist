@@ -43,7 +43,7 @@
 #define audio_year_path			"/site/incoming/music.by.year/"
 #define audio_group_path		"/site/incoming/music.by.group/"
 #define allowed_constant_bitrates	"160,192"
-#define allowed_years			"2003,2004,2005,2006"
+#define allowed_years			"2004,2005,2006,2007"
 #define banned_genres			"Christian Rap,Christian Rock,Christian Gangsta Rap,Contemporary Christian"
 #define allowed_genres			"Rock,Ethnic,Indie,Instrumental Rock,Soundtrack"
 #define audio_genre_sort		FALSE
