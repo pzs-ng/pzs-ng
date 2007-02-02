@@ -58,6 +58,7 @@ void audioSort(struct audio *info, char *link_source, char *link_target)
 #if ( audio_genre_sort == TRUE ) || (audio_artist_sort == TRUE) || (audio_year_sort == TRUE) || (audio_group_sort == TRUE) || (audio_language_sort == TRUE)
 	char *temp_p = NULL;
 	char *temp_q = NULL;
+	char temp_nam[NAME_MAX];
 	int n = 0;
 #if (audio_language_sort == TRUE)
 	char language[3];
@@ -116,19 +117,20 @@ if (subcomp(link_target, NULL)) {
 	d_log("audioSort:   Sorting mp3 by group\n");
 	temp_p = remove_pattern(link_target, "*-", RP_LONG_LEFT);
 	temp_p = remove_pattern(temp_p, "_", RP_SHORT_LEFT);
+	strncpy(temp_nam, temp_p, sizeof(temp_nam));
 	n = (int)strlen(temp_p);
 	if (n > 0 && n < 15) {
 		if (n > 4) {
-			temp_q = temp_p + n - 4;
+			temp_q = temp_nam + n - 4;
 			if (!strncasecmp(temp_q, "_INT", 4)) {
 				d_log("audioSort:   - Internal release detected\n");
 				*temp_q = '\0';
 			}
 		}
-		d_log("audioSort:   - Valid groupname found: %s (%i)\n", temp_p, n);
+		d_log("audioSort:   - Valid groupname found: %s (%i)\n", temp_nam, n);
 		temp_p = check_nocase_linkname(audio_group_path, temp_p);
-		d_log("audioSort:   - Valid groupname found: %s (%i)\n", temp_p, n);
-		createlink(audio_group_path, temp_p, link_source, link_target);
+		d_log("audioSort:   - Valid groupname found: %s (%i)\n", temp_nam, n);
+		createlink(audio_group_path, temp_nam, link_source, link_target);
 	}
 #endif
 #if ( audio_language_sort == TRUE )
