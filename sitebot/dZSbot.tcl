@@ -619,6 +619,11 @@ proc format_kb {amount} {
 
 proc format_speed {value section} {
 	global speedmeasure speedthreshold theme
+
+	if {![string is double $value]} {
+		return $value
+	}
+
 	switch -exact -- [string tolower $speedmeasure] {
 		"mb" {
 			set value [format "%.2f" [expr {$value / 1024.0}]]
@@ -656,6 +661,7 @@ proc format_speed {value section} {
 			set type $theme(KB)
 		}
 	}
+
 	return [themereplace [replacevar $type "%value" $value] $section]
 }
 
