@@ -76,6 +76,7 @@ main(int argc, char **argv)
 	char	       *race_halfway_type = 0;
 	char	       *norace_halfway_type = 0;
 	char	       *inc_point[2];
+	unsigned int	release_completed = 0;
 #ifdef _WITH_SS5
 	unsigned char	complete_type = 1;
 #else
@@ -761,8 +762,12 @@ main(int argc, char **argv)
 			g.v.misc.write_log = matchpath(sfv_dirs, g.l.path);
 			if (g.v.total.files_missing > 0) {
 				if (sfv_msg != NULL) {
-					d_log("zipscript-c: Writing SFV message to %s\n", log);
-					writelog(&g, convert(&g.v, g.ui, g.gi, sfv_msg), sfv_type);
+					if (g.v.misc.data_completed)
+						d_log("zipscript-c: This release has previously been announced complete - skipping announce\n");
+					else {
+						d_log("zipscript-c: Writing SFV message to %s\n", log);
+						writelog(&g, convert(&g.v, g.ui, g.gi, sfv_msg), sfv_type);
+					}
 				}
 			} else {
 				if (g.v.misc.release_type == RTYPE_AUDIO) {
@@ -1264,7 +1269,10 @@ main(int argc, char **argv)
 					if (!race_type)
 						d_log("zipscript-c: Something's messed up - race_type not set!\n");
 
-					writelog(&g, convert(&g.v, g.ui, g.gi, race_msg), race_type);
+					if (g.v.misc.data_completed)
+						d_log("zipscript-c: This release has previously been announced complete - skipping announce\n");
+					else
+						writelog(&g, convert(&g.v, g.ui, g.gi, race_msg), race_type);
 				}
 
 				/*
@@ -1300,7 +1308,10 @@ main(int argc, char **argv)
 					if (!newleader_type)
 						d_log("zipscript-c: Something's messed up - newleader_type not set!\n");
 
-					writelog(&g, convert(&g.v, g.ui, g.gi, newleader_msg), newleader_type);
+					if (g.v.misc.data_completed)
+						d_log("zipscript-c: This release has previously been announced complete - skipping announce\n");
+					else
+						writelog(&g, convert(&g.v, g.ui, g.gi, newleader_msg), newleader_type);
 				}
 			} else {
 
@@ -1335,7 +1346,10 @@ main(int argc, char **argv)
 					if (!update_type)
 						d_log("zipscript-c: Something's messed up - update_type not set!\n");
 
-					writelog(&g, convert(&g.v, g.ui, g.gi, update_msg), update_type);
+					if (g.v.misc.data_completed)
+						d_log("zipscript-c: This release has previously been announced complete - skipping announce\n");
+					else
+						writelog(&g, convert(&g.v, g.ui, g.gi, update_msg), update_type);
 				}
 			}
 		}
@@ -1378,7 +1392,10 @@ main(int argc, char **argv)
 				if (!race_halfway_type)
 					d_log("zipscript-c: Something's messed up - race_halfway_type not set!\n");
 
-				writelog(&g, convert(&g.v, g.ui, g.gi, halfway_msg), (g.v.total.users > 1 ? race_halfway_type : norace_halfway_type));
+				if (g.v.misc.data_completed)
+					d_log("zipscript-c: This release has previously been announced complete - skipping announce\n");
+				else
+					writelog(&g, convert(&g.v, g.ui, g.gi, halfway_msg), (g.v.total.users > 1 ? race_halfway_type : norace_halfway_type));
 			}
 			/*
 			 * It is _very_ unlikely that halfway would be
@@ -1473,9 +1490,14 @@ main(int argc, char **argv)
 			//complete(&g.l, &g.v, g.ui, g.gi, complete_type);
 
 			if (complete_msg != NULL) {
-				d_log("zipscript-c: Writing COMPLETE and STATS to %s\n", log);
-				writelog(&g, convert(&g.v, g.ui, g.gi, complete_msg), complete_announce);
-				writetop(&g, complete_type);
+				if (g.v.misc.data_completed)
+					d_log("zipscript-c: This release has previously been announced complete - skipping announce\n");
+				else {
+					d_log("zipscript-c: Writing COMPLETE and STATS to %s\n", log);
+					writelog(&g, convert(&g.v, g.ui, g.gi, complete_msg), complete_announce);
+					writetop(&g, complete_type);
+					g.v.misc.data_completed = 1;
+				}
 			}
 			if (complete_bar) {
 				d_log("zipscript-c: Creating complete bar\n");
@@ -1627,3 +1649,4 @@ main(int argc, char **argv)
 	d_log("zipscript-c: Exit %d\n", exit_value);
 	return exit_value;
 }
+

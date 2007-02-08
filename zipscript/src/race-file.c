@@ -956,6 +956,7 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 		raceI->data_incrementor = hd.data_incrementor = 1;
 		raceI->data_queue = hd.data_queue = 1;
 		hd.data_qcurrent = 0;
+		raceI->misc.data_completed = hd.data_completed = 0;
 		hd.data_pid = (unsigned int)getpid();
 		if (write(fd, &hd, sizeof(HEADDATA)) != sizeof(HEADDATA))
 			d_log("create_lock: write failed: %s\n", strerror(errno));
@@ -976,6 +977,7 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 			raceI->data_incrementor = hd.data_incrementor = 1;
 			raceI->data_queue = hd.data_queue = 1;
 			hd.data_qcurrent = 0;
+			raceI->misc.data_completed = hd.data_completed;
 			hd.data_pid = (unsigned int)getpid();
 			lseek(fd, 0L, SEEK_SET);
 			if (write(fd, &hd, sizeof(HEADDATA)) != sizeof(HEADDATA))
@@ -999,6 +1001,7 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 					d_log("create_lock: lock active - putting you in queue. (%d/%d)\n", hd.data_qcurrent, hd.data_queue);
 				}
 				raceI->misc.release_type = hd.data_type;
+				raceI->misc.data_completed = hd.data_completed;
 				close(fd);
 				return hd.data_in_use;
 			}
@@ -1015,6 +1018,7 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 				hd.data_queue++;				/* we increment the number in the queue */
 				raceI->data_incrementor = hd.data_incrementor;
 				raceI->misc.release_type = hd.data_type;
+				raceI->misc.data_completed = hd.data_completed;
 				lseek(fd, 0L, SEEK_SET);
 				if (write(fd, &hd, sizeof(HEADDATA)) != sizeof(HEADDATA))
 					d_log("create_lock: write failed: %s\n", strerror(errno));
@@ -1027,6 +1031,7 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 										/* the queue is still less than current. */
 				raceI->data_incrementor = hd.data_incrementor;	/* feed back the current incrementor */
 				raceI->misc.release_type = hd.data_type;
+				raceI->misc.data_completed = hd.data_completed;
 				close(fd);
 				unlink(lockfile);
 				return -1;
@@ -1040,6 +1045,7 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 			hd.data_in_use = progtype;
 		}
 		raceI->data_incrementor = hd.data_incrementor;
+		raceI->misc.data_completed = hd.data_completed;
 		raceI->misc.release_type = hd.data_type;
 		hd.data_pid = (unsigned int)getpid();
 		lseek(fd, 0L, SEEK_SET);
@@ -1072,6 +1078,7 @@ remove_lock(struct VARS *raceI)
 		read(fd, &hd, sizeof(HEADDATA));
 		hd.data_in_use = 0;
 		hd.data_pid = 0;
+		hd.data_completed = raceI->misc.data_completed;
 		hd.data_incrementor = 0;
 		if (hd.data_queue)							/* if queue, increase the number in current so the next */
 			hd.data_qcurrent++;						/* process can start. */
@@ -1142,6 +1149,7 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 		retval = hd.data_incrementor;
 	}
 	raceI->misc.release_type = hd.data_type;
+	raceI->misc.data_completed = hd.data_completed;
 	if (hd.data_pid != (unsigned int)getpid() && hd.data_incrementor) {
 		d_log("update_lock: Oops! Race condition - another process has the lock. pid: %d != %d\n", hd.data_pid, (unsigned int)getpid());
 		hd.data_queue = raceI->data_queue - 1;

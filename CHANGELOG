@@ -7,6 +7,10 @@ v1.0.7  --> 1.0.X  :
 		- fix a bug in rescan when scanning new (not previously scanned) dirs.
 		- fix a bug with rescan in 'quick' mode.
 		- added '2007' and removed '2003' from list of allowed years in mp3.
+		- on mp3 group-sort internal releases will not be renamed - only the
+		  groupdir will.
+		- the zipscript will no longer announce a release twice - dupe uploads
+		  will be marked correctly, but no announce will happen in glftpd.log.
 v1.0.6  --> 1.0.7  : (r2230)
 		- updated libcopy to v1.2 - fix for openbsd4.0.
 		- added support for not sorting audio in certain dirs.
