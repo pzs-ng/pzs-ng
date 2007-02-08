@@ -27,13 +27,14 @@ typedef struct {
 
 /* this is what we put in a special 'head' file for version control, lock etc */
 typedef struct {
-	unsigned int	data_version;		// version control.
-	unsigned int	data_type;		// type of release.
-	unsigned int	data_in_use;		// which program currently holds the lock.
-	unsigned int	data_incrementor;	// a check to see if nothing else wants the lock.
-	unsigned int	data_queue;		// positions in queue.
-	unsigned int	data_qcurrent;		// current position in queue.
-	unsigned int	data_pid;		// the pid of the process holding the lock.
+	unsigned int	data_version,		// version control.
+			data_type,		// type of release.
+			data_in_use,		// which program currently holds the lock.
+			data_incrementor,	// a check to see if nothing else wants the lock.
+			data_queue,		// positions in queue.
+			data_qcurrent,		// current position in queue.
+			data_pid,		// the pid of the process holding the lock.
+			data_completed;		// flag to mark release as complete.
 } HEADDATA;
 
 extern unsigned int readsfv(const char *, struct VARS *, int);

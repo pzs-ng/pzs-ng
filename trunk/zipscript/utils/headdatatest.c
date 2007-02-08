@@ -22,12 +22,13 @@ int main(int argc, char **argv)
 
 	
 	fread(&sd, sizeof(HEADDATA), 1, f);
-	printf("data version: %d\n", sd.data_version);
-	printf("release type: %d\n", sd.data_type);
-	printf("locked      : %d\n", sd.data_in_use);
-	printf("data inc.   : %d\n", sd.data_incrementor);
-	printf("queue       : %d/%d\n", sd.data_qcurrent, sd.data_queue);
-	printf("process pid : %d\n", sd.data_pid);
+	printf("data version  : %d\n", sd.data_version);
+	printf("release type  : %d\n", sd.data_type);
+	printf("locked        : %d\n", sd.data_in_use);
+	printf("data inc.     : %d\n", sd.data_incrementor);
+	printf("queue         : %d/%d\n", sd.data_qcurrent, sd.data_queue);
+	printf("process pid   : %d\n", sd.data_pid);
+	printf("completed flag: %d\n", sd.data_completed);
 
 	fclose(f);
 

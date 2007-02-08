@@ -58,7 +58,7 @@ void audioSort(struct audio *info, char *link_source, char *link_target)
 #if ( audio_genre_sort == TRUE ) || (audio_artist_sort == TRUE) || (audio_year_sort == TRUE) || (audio_group_sort == TRUE) || (audio_language_sort == TRUE)
 	char *temp_p = NULL;
 	char *temp_q = NULL;
-	char temp_nam[NAME_MAX];
+	char temp_nam[16];
 	int n = 0;
 #if (audio_language_sort == TRUE)
 	char language[3];
@@ -117,9 +117,9 @@ if (subcomp(link_target, NULL)) {
 	d_log("audioSort:   Sorting mp3 by group\n");
 	temp_p = remove_pattern(link_target, "*-", RP_LONG_LEFT);
 	temp_p = remove_pattern(temp_p, "_", RP_SHORT_LEFT);
-	strncpy(temp_nam, temp_p, sizeof(temp_nam));
 	n = (int)strlen(temp_p);
 	if (n > 0 && n < 15) {
+		strncpy(temp_nam, temp_p, sizeof(temp_nam));
 		if (n > 4) {
 			temp_q = temp_nam + n - 4;
 			if (!strncasecmp(temp_q, "_INT", 4)) {

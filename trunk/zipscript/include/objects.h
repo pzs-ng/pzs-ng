@@ -138,6 +138,7 @@ struct misc {
 	unsigned char	write_log;
 	long		fastest_user[2];
 	long		slowest_user[2];
+	unsigned int	data_completed;
 };
 
 struct VARS {
@@ -187,6 +188,6 @@ typedef struct {
 /* sfv_version - must be > 5. Should not be any need to add a version
  * for racedata - if either sfv_data or racedata changes, they both
  * should be removed */
-#define sfv_version	16
+#define sfv_version	17
 
 #endif
