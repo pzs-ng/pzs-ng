@@ -159,5 +159,6 @@ extern void    *ng_realloc2(void *, int, int, int, int);
 extern void    *ng_free(void *);
 extern int	copyfile(char *, char *);
 extern int	make_sfv(char *);
+extern unsigned int match_lenient(DIR *, char *);
 #endif
 

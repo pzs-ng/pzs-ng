@@ -12,6 +12,7 @@
 
 #include "convert.h"
 #include "race-file.h"
+#include "crc.h"
 
 #include <strl/strl.h>
 #include <stdarg.h>
@@ -1460,6 +1461,22 @@ int make_sfv(char *reldir) {
 	}
 	(void)close(fd);
 	(void)closedir(dirp);
+	return 0;
+}
+
+unsigned int
+match_lenient(DIR *dir, char *fname)
+{
+	unsigned int		crc = 0;
+	static struct dirent   *dp;
+
+	rewinddir(dir);
+	while ((dp = readdir(dir))) {
+		if (lenient_compare(dp->d_name, fname)) {
+			crc = calc_crc32(dp->d_name);
+			return crc;
+		}
+	}
 	return 0;
 }
 

@@ -6,6 +6,7 @@
 #include <errno.h>
 
 #include "crc.h"
+#include "zsfunctions.h"
 
 unsigned int	crc32_table[256] = {
 	0x00000000, 0x77073096, 0xee0e612c, 0x990951ba,
@@ -83,10 +84,11 @@ calc_crc32(char *f)
 	size_t		i, j;
 	int		k;
 
-	if (!(in = fopen(f, "r")))
+	if (!(in = fopen(f, "r"))) {
+		d_log("calc_crc32: Error opening %s: %s\n", f, strerror(errno));
 		return 0;
 		//fprintf(stderr, "Error opening %s: %s\n", f, strerror(errno));
-
+	}
 	crc = 0xFFFFFFFF;
 	while ((i = fread(buf, 1, sizeof(buf), in)) > 0) {
 		for (j = 0; j < i; j++) {
@@ -95,5 +97,6 @@ calc_crc32(char *f)
 		}
 	}
 	fclose(in);
+	d_log("calc_crc32: crc for %s calculated to %X\n", f, ~crc);
 	return ~crc;
 }
