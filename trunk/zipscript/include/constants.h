@@ -113,6 +113,7 @@
 #define bad_file_disallowed_type			"BAD_FILE_DISALLOWED"
 #define bad_file_nfo_type				"BAD_FILE_DUPENFO"
 #define bad_file_zipnfo_type				"BAD_FILE_ZIPNFO"
+#define bad_file_duperelease_type			"BAD_FILE_DUPERELEASE"
 #define bad_file_speedtest_type				"ULTEST"
 
 #define vbrnew						"vbr-new"
