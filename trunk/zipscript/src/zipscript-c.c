@@ -763,6 +763,7 @@ main(int argc, char **argv)
 				if (sfv_msg != NULL) {
 					if (g.v.misc.data_completed) {
 						d_log("zipscript-c: This release has previously been announced complete - skipping announce\n");
+						error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 						writelog(&g, error_msg, bad_file_duperelease_type);
 					} else {
 						d_log("zipscript-c: Writing SFV message to %s\n", log);
@@ -1271,6 +1272,7 @@ main(int argc, char **argv)
 
 					if (g.v.misc.data_completed) {
 						d_log("zipscript-c: This release has previously been announced complete - skipping announce\n");
+						error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 						writelog(&g, error_msg, bad_file_duperelease_type);
 					} else
 						writelog(&g, convert(&g.v, g.ui, g.gi, race_msg), race_type);
@@ -1311,6 +1313,7 @@ main(int argc, char **argv)
 
 					if (g.v.misc.data_completed) {
 						d_log("zipscript-c: This release has previously been announced complete - skipping announce\n");
+						error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 						writelog(&g, error_msg, bad_file_duperelease_type);
 					} else
 						writelog(&g, convert(&g.v, g.ui, g.gi, newleader_msg), newleader_type);
@@ -1350,7 +1353,8 @@ main(int argc, char **argv)
 
 					if (g.v.misc.data_completed) {
 						d_log("zipscript-c: This release has previously been announced complete - skipping announce\n");
-					writelog(&g, error_msg, bad_file_duperelease_type);
+						error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
+						writelog(&g, error_msg, bad_file_duperelease_type);
 					} else
 						writelog(&g, convert(&g.v, g.ui, g.gi, update_msg), update_type);
 				}
@@ -1397,6 +1401,7 @@ main(int argc, char **argv)
 
 				if (g.v.misc.data_completed) {
 					d_log("zipscript-c: This release has previously been announced complete - skipping announce\n");
+					error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 					writelog(&g, error_msg, bad_file_duperelease_type);
 				} else
 					writelog(&g, convert(&g.v, g.ui, g.gi, halfway_msg), (g.v.total.users > 1 ? race_halfway_type : norace_halfway_type));
@@ -1496,6 +1501,7 @@ main(int argc, char **argv)
 			if (complete_msg != NULL) {
 				if (g.v.misc.data_completed) {
 					d_log("zipscript-c: This release has previously been announced complete - skipping announce\n");
+					error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
 					writelog(&g, error_msg, bad_file_duperelease_type);
 				} else {
 					d_log("zipscript-c: Writing COMPLETE and STATS to %s\n", log);

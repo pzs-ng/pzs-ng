@@ -3,6 +3,7 @@
 
 #include <sys/stat.h>
 #include "objects.h"
+#include "zsfunctions.h"
 
 /* this is what we write to racedata files */
 typedef struct {

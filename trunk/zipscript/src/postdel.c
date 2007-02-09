@@ -383,6 +383,8 @@ main(int argc, char **argv)
 			d_log("postdel: Caching progress bar\n");
 			buffer_progress_bar(&g.v);
 		}
+d_log("g.v.total.files_missing=%d\n", g.v.total.files_missing);
+d_log("g.v.total.files=%d\n", g.v.total.files);
 		if (g.v.total.files_missing < g.v.total.files) {
 			if (g.v.total.files_missing == 1) {
 				d_log("postdel: Writing INCOMPLETE to %s\n", log);
@@ -455,6 +457,7 @@ main(int argc, char **argv)
 
 	if (_incomplete == 1 && g.v.total.files > 0) {
 
+		g.v.misc.data_completed = 0;
 		getrelname(&g);
 		if (g.l.nfo_incomplete) {
 			if (findfileext(dir, ".nfo")) {

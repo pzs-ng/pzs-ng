@@ -106,8 +106,8 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 		raceI->total.files++;
 #if (sfv_lenient || sfv_cleanup_lowercase)
 		if (lenient_compare(raceI->file.name, sd.fname)) {
-			d_log("readsfv: crc read from sfv-file (%s): %.8x\n", sd.fname, sd.crc32);
-			crc = sd.crc32;
+			d_log("readsfv: crc read from sfv-file (%s): %.8x\n", sd.fname, (unsigned int)sd.crc32);
+			crc = (unsigned int)sd.crc32;
 			insfv = 1;
 			strncpy(raceI->file.unlink, sd.fname, sizeof(raceI->file.unlink));
 		}
@@ -127,7 +127,7 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 		errno = 0;
 
 	if (raceI->total.files_missing < 0) {
-		d_log("readsfv: GAKK! raceI->total.files_missing < 0\n");
+		d_log("readsfv: GAKK! raceI->total.files_missing %d < 0\n", raceI->total.files_missing);
 		raceI->total.files_missing = 0;
 	}
 	return crc;
@@ -499,8 +499,8 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 
 			if (sd.crc32 == 0) {
 #if (sfv_calc_single_fname == TRUE || create_missing_sfv == TRUE)
-				d_log("copysfv: Got filename (%s) without crc, trying to calculate.\n", sd.fname);
-				sd.crc32 = calc_crc32(sd.fname);
+				sd.crc32 = match_lenient(dir, sd.fname);
+				d_log("copysfv: Got filename (%s) without crc, calculated to %X.\n", sd.fname, sd.crc32);
 #else
 				d_log("copysfv: Got filename (%s) without crc - ignoring file.\n", sd.fname);
 				continue;
