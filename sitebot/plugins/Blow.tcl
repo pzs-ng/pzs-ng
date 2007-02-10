@@ -323,7 +323,7 @@ proc ::ngBot::Blow::encryptedIncomingHandler {nick host hand chan arg} {
         if {![string equal [lindex $item 1] "-|-"] && ![matchattr $hand [lindex $item 1] $chan]} { continue }
     	set ::blowEncryptedMessage 1
         ## execute bound proc
-        if {[string equal [lindex $item 2] [lindex $tmp 0]]} { [lindex $item 4] $nick $host $hand $chan [lrange $tmp 1 end] }
+        if {[string equal [lindex $item 2] [lindex $tmp 0]]} { [lindex $item 4] $nick $host $hand $chan [join [lrange $tmp 1 end]] }
         unset ::blowEncryptedMessage
     }
 }
@@ -597,7 +597,7 @@ proc ::ngBot::Blow::Init {args} {
 # Called on rehash; unregisters the event handler.
 #
 proc ::ngBot::Blow::DeInit {args} {
-    global msgtypes
+    global msgtypes cmdpre
     variable events
     ## Remove event callbacks.
     catch {rename ::putquick  {}}
