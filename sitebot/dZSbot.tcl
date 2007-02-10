@@ -173,9 +173,10 @@ proc ng_error {args} {
 }
 
 proc ng_preview {handle idx text} {
-	global announce defaultsection lastbind
+	global announce defaultsection lastbind mclastbind
 
 	if {[string equal "" $text]} {
+		if {[info exist mclastbind]} {set lastbind $mclastbind}
 		putdcc $idx "\002Preview Usage:\002"
 		putdcc $idx "- .$lastbind <event pattern>"
 		putdcc $idx "- Only events matching the pattern are shown (* for all)."
@@ -901,8 +902,9 @@ proc ng_welcome {nick uhost hand chan} {
 ################################################################################
 
 proc checkchan {nick chan} {
-	global disable lastbind mainchan
+	global disable mainchan lastbind mclastbind
 	if {$disable(TRIGINALLCHAN) == 1 && ![string equal -nocase $chan $mainchan]} {
+		if {[info exist mclastbind]} {set lastbind $mclastbind}
 		putlog "dZSbot: \002$nick\002 tried to use \002$lastbind\002 from an invalid channel ($chan)."
 		return -code return
 	}
@@ -1250,10 +1252,11 @@ proc ng_uptime {nick uhost hand chan argv} {
 ################################################################################
 
 proc ng_new {nick uhost hand chan argv} {
-	global announce binary defaultsection lastbind location sections theme
+	global announce binary defaultsection location sections theme lastbind mclastbind
 	checkchan $nick $chan
 
 	if {![getoptions $argv results section]} {
+		if {[info exist mclastbind]} {set lastbind $mclastbind}
 		## By displaying the command syntax in the channel (opposed to private message), we can inform others
 		## at the same time. There's this recurring phenomena, every time a user types an "uncommon" command, half
 		## a dozen others will as well...to learn about this command. So, let's kill a few idiots with one stone.
@@ -1313,10 +1316,10 @@ proc ng_new {nick uhost hand chan argv} {
 }
 
 proc ng_nukes {nick uhost hand chan argv} {
-	global announce binary defaultsection lastbind location sections theme
+	global announce binary defaultsection location sections theme lastbind mclastbind
 	checkchan $nick $chan
-
 	if {![getoptions $argv results section]} {
+		if {[info exist mclastbind]} {set lastbind $mclastbind}
 		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] \[section\]"
 		return
 	}
@@ -1364,10 +1367,11 @@ proc ng_nukes {nick uhost hand chan argv} {
 }
 
 proc ng_search {nick uhost hand chan argv} {
-	global announce binary defaultsection lastbind location search_chars theme
+	global announce binary defaultsection location search_chars theme lastbind mclastbind
 	checkchan $nick $chan
 
 	if {![getoptions $argv results pattern] || [string equal "" $pattern]} {
+		if {[info exist mclastbind]} {set lastbind $mclastbind}
 		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] <pattern>"
 		return
 	}
@@ -1419,10 +1423,11 @@ proc ng_search {nick uhost hand chan argv} {
 }
 
 proc ng_unnukes {nick uhost hand chan argv} {
-	global announce binary defaultsection lastbind location sections theme
+	global announce binary defaultsection location sections theme lastbind mclastbind
 	checkchan $nick $chan
 
 	if {![getoptions $argv results section]} {
+		if {[info exist mclastbind]} {set lastbind $mclastbind}
 		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] \[section\]"
 		return
 	}
