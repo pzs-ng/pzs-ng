@@ -179,14 +179,8 @@ proc ::ngBot::NickDb::NickChange {nick host handle channel newNick} {
 # no matches are found, an empty string is returned.
 #
 proc ::ngBot::NickDb::GetIrcUser {ftpUser} {
-    set ircUser ""
-    set ftpUser [subst $ftpUser]
     ## Since the ftpUser column is unique, the query is simplier.
-    db eval {SELECT ircUser FROM UserNames WHERE ftpUser=$ftpUser} values {
-        set ircUser $values(ircUser)
-    }
-
-    return $ircUser
+    return [db eval {SELECT ircUser FROM UserNames WHERE ftpUser=$ftpUser}]
 }
 
 ####
@@ -196,14 +190,8 @@ proc ::ngBot::NickDb::GetIrcUser {ftpUser} {
 # no matches are found, an empty string is returned.
 #
 proc ::ngBot::NickDb::GetFtpUser {ircUser} {
-    set ftpUser ""
-    set ircUser [subst $ircUser]
     ## IRC user names are case-insensitive.
-    db eval {SELECT ftpUser FROM UserNames WHERE StrCaseEq(ircUser,$ircUser) ORDER BY time DESC LIMIT 1} values {
-        set ftpUser $values(ftpUser)
-    }
-
-    return $ftpUser
+    return [db eval {SELECT ftpUser FROM UserNames WHERE StrCaseEq(ircUser,$ircUser) ORDER BY time DESC LIMIT 1}]
 }
 
 ::ngBot::NickDb::Init
