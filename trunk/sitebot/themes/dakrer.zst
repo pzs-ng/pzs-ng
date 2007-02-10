@@ -105,7 +105,7 @@ announce.NUKE					= "[%b{%section}] [%c2{%b{NUKED}}] %b{%relname} was nuked %b{%
 announce.UNNUKE					= "[%b{%section}] [%b{UNNUKE}] %b{%relname} was unnuked by %bold%nuker%bold. Reason: %reason. Nukees: %nukees"
 announce.NUKEES					= "%b{%u_name} (%b{%size}MB)"
 announce.WIPE					= "[%b{%section}] [%b{WIPE}] %b{%relname} was wiped by %b{%u_name}"
-announce.WIPE-r					= "[%b{%section}] [%b{WIPE-r}] %b{%relname} and all subdirectories was wiped by %b{%u_name}"
+announce.WIPE-r					= "[%b{%section}] [%b{WIPE-r}] %b{%relname} and all subdirectories were wiped by %b{%u_name}"
 
 ## Custom announcements (see dZSbot.defaults.conf for info on how to enable)
 announce.COVERS					= "[%b{%section}] [%c1{COVERS}] %path/%b{%reldir} (created by %b{%u_name})"
