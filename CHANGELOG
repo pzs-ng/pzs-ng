@@ -1,7 +1,10 @@
 PZS-NG CHANGELOG
 ----------------
 
-v1.0.7  --> 1.0.X  :
+v1.0.8  --> 1.0.X  :
+		- maziah fixed nfs.zst themefile.
+
+v1.0.7  --> 1.0.8  : (r2252)
 		- added support for vbr-old/vbr-new.
 		- added more options to zsconfig - error msgs and benchmark output.
 		- fix a bug in rescan when scanning new (not previously scanned) dirs.
@@ -10,7 +13,11 @@ v1.0.7  --> 1.0.X  :
 		- on mp3 group-sort internal releases will not be renamed - only the
 		  groupdir will.
 		- the zipscript will no longer announce a release twice - dupe uploads
-		  will be marked correctly, but no announce will happen in glftpd.log.
+		  will be marked correctly, but no (normal) announce will happen in
+		  glftpd.log.
+		- added new variable/announce in bot on dupe releaseupload.
+		- fixed bug on sfv creation/rescanning when case in sfv does not match
+		  case of files.
 v1.0.6  --> 1.0.7  : (r2230)
 		- updated libcopy to v1.2 - fix for openbsd4.0.
 		- added support for not sorting audio in certain dirs.
