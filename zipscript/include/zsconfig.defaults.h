@@ -1136,3 +1136,6 @@
 #define zsinternal_checks_completed	"Checks completed in %0.6f seconds.\n"
 #endif
 
+#ifndef wzdftpd_compatible
+#define wzdftpd_compatible              FALSE
+#endif
