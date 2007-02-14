@@ -58,6 +58,7 @@ main(int argc, char **argv)
 	char           *fileext = NULL, *name_p, *temp_p = NULL, *temp_p_free = NULL;
 	char           *target = 0;
 	char	       *ext = 0;
+        char           *crc_arg = NULL;
 	char           *complete_msg = 0;
 	char           *update_msg = 0;
 	char           *race_msg = 0;
@@ -125,20 +126,37 @@ main(int argc, char **argv)
 		if (seteuid(getuid()) == -1)
 			d_log("zipscript-c: failed to change uid: %s\n", strerror(errno));
 	}
-	if (argc != 4) {
+
+#if ( wzdftpd_compatible == TRUE )
+	if (argc < 3) {
+		d_log("zipscript-c: Wrong number of arguments used (wzdftpd compatible)\n");
+		printf(" - - PZS-NG ZipScript-C v%s - -\n\nUsage: %s <absolute filepath> <crc>\n\n", ng_version(), argv[0]);
+		exit(1);
+	}
+        crc_arg = argv[2];
+#else
+	if (argc < 4) {
 		d_log("zipscript-c: Wrong number of arguments used\n");
 		printf(" - - PZS-NG ZipScript-C v%s - -\n\nUsage: %s <filename> <path> <crc>\n\n", ng_version(), argv[0]);
 		exit(1);
 	}
+        crc_arg = argv[3];
+#endif
+
 	d_log("zipscript-c: Clearing arrays\n");
 	bzero(&g.v.total, sizeof(struct race_total));
 	g.v.misc.slowest_user[0] = 30000;
 	g.v.misc.fastest_user[0] = g.v.misc.release_type = RTYPE_NULL;
 
 	/* gettimeofday(&g.v.transfer_stop, (struct timezone *)0 ); */
-
+#if ( wzdftpd_compatible == TRUE )
+	strlcpy(g.l.path, argv[1], MIN(PATH_MAX, strrchr(argv[1], '/') - argv[1] + 1));
+	strlcpy(g.v.file.name, strrchr(argv[1], '/') + 1, NAME_MAX);
+#else
 	strlcpy(g.v.file.name, argv[1], NAME_MAX);
 	strlcpy(g.l.path, argv[2], PATH_MAX);
+#endif
+
 	strlcpy(g.v.misc.current_path, g.l.path, PATH_MAX);
 	d_log("zipscript-c: Changing directory to %s\n", g.l.path);
 	chdir(g.l.path);
@@ -837,8 +855,8 @@ main(int argc, char **argv)
 		case 3:	/* SFV BASED CRC-32 CHECK */
 			d_log("zipscript-c: File type is: ANY\n");
 
-			d_log("zipscript-c: Converting crc (%s) from string to integer\n", argv[3]);
-			crc = hexstrtodec(argv[3]);
+			d_log("zipscript-c: Converting crc (%s) from string to integer\n", crc_arg);
+			crc = hexstrtodec(crc_arg);
 			if (crc == 0) {
 				d_log("zipscript-c: We did not get crc from ftp daemon, calculating crc for %s now.\n", g.v.file.name);
 				crc = calc_crc32(g.v.file.name);
@@ -871,7 +889,7 @@ main(int argc, char **argv)
 						}
 					} else {
 						d_log("zipscript-c: CRC-32 check failed\n");
-						if (!hexstrtodec(argv[3]) && allow_file_resume) {
+						if (!hexstrtodec(crc_arg) && allow_file_resume) {
 							d_log("zipscript-c: Broken xfer detected - allowing file.\n");
 							no_check = TRUE;
 							write_log = g.v.misc.write_log;
