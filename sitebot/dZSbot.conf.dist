@@ -54,6 +54,7 @@ set speed(INCOMING)         12500
 set speed(OUTGOING)         12500
 set device(0)               "/dev/da0s1f MP3"
 set device(1)               "/dev/ad0s1e ISO"
+set local_devices_only      "TRUE"
 
 ######################
 # Bouncers           #

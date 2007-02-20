@@ -110,6 +110,11 @@ set maximum_results     25
 # Required number of alphanumeric characters for the !search pattern.
 set search_chars        3
 
+# Wether or not we should only care about local devices, ignoring network devices.
+# This speeds up !df-output, and prevents stalling of the script if NFS/smb/etc-mounts
+# are dead/hung.
+set local_devices_only  "TRUE"
+
 # Definition of hd devices, for free space. Format: "disk sections"
 # The 'sections' are purely for cosmetic use.
 set device(0)           "/dev/ad0s1f MP3"
