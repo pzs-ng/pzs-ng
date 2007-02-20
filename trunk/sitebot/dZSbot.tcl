@@ -1094,8 +1094,10 @@ proc ng_free {nick uhost hand chan arg} {
 	set devCount 0; set lineCount 0
 	set totalFree 0; set totalUsed 0; set totalSize 0
 
-	if {[catch {exec $binary(DF) -Pkl} output] != 0} {
-		putlog "dZSbot error: \"df -Pkl\" failed:"
+        set flags "Pk"
+        if {[istrue $::local_devices_only]} { set flags "Pkl" }
+	if {[catch {exec $binary(DF) -$flags} output] != 0} {
+		putlog "dZSbot error: \"df -$flags\" failed:"
 		foreach line [split $output "\n"] {
 			putlog "dZSbot error:   $line"
 		}
@@ -1106,7 +1108,7 @@ proc ng_free {nick uhost hand chan arg} {
 		foreach {name value} [array get tmpdev] {
 			if {[string equal [lindex $line 0] [lindex $value 0]]} {
 				if {[scan $line "%s %lu %lu %lu" devName devSize devUsed devFree] != 4} {
-					putlog "dZSbot warning: Invalid \"df -Pkl\" line: $line"
+					putlog "dZSbot warning: Invalid \"df -$flags\" line: $line"
 					continue
 				}
 				set devPercFree [format "%.1f" [expr {(double($devFree) / double($devSize)) * 100}]]
@@ -1141,7 +1143,7 @@ proc ng_free {nick uhost hand chan arg} {
 	if {[llength [array names tmpdev]]} {
 		set devList ""
 		foreach {name value} [array get tmpdev] {lappend devList $value}
-		putlog "dZSbot warning: The following devices had no matching \"df -Pkl\" entry: [join $devList {, }]"
+		putlog "dZSbot warning: The following devices had no matching \"df -$flags\" entry: [join $devList {, }]"
 	}
 
 	if {$totalSize} {
