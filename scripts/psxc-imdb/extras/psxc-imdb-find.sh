@@ -144,7 +144,7 @@ IMDBSEARCHTITLB=`echo $IMDBSEARCHTITLA`
 
 IMDBLOCAL="$LOCALURL"
 if [ -z "$IMDBLOCAL" ]; then
- IMDBLOCAL="us"
+ IMDBLOCAL="www"
 fi
 
 if [ -z "$IMDBNOURL" ]; then
@@ -161,7 +161,7 @@ fi
 
 MYLYNXFLAGS=`echo $LYNXFLAGS | sed "s| -nolist||"`
 if [ -z "$URLTOUSE" ]; then
- CONTENT=`lynx $MYLYNXFLAGS http://us.imdb.com/Tsearch?title=$IMDBSEARCHTITLE 2>/dev/null`
+ CONTENT=`lynx $MYLYNXFLAGS http://former.imdb.com/Tsearch?title=$IMDBSEARCHTITLE 2>/dev/null`
  if [ $? -gt 0 ]; then
   echo "$PREWORD Internal Error. www.imdb.com may be down, or not answering. Try again later."
   exit 0
@@ -187,7 +187,7 @@ if [ -z "$URLTOUSE" ]; then
       echo "$PREWORD Listing up to $IMDBLIST hits (duplicates removed)..."
       URLORIG="$URLTOUSE"
      fi
-     echo "$PREWORD $b"". (""$URLTOUSE"") $LINKNAME" | sed "s|/us.|/$IMDBLOCAL.|"
+     echo "$PREWORD $b"". (""$URLTOUSE"") $LINKNAME" | sed "s|/former.|/$IMDBLOCAL.|"
      let b=b+1
     fi
    URLS="$URLS $URLTOUSE"
@@ -202,12 +202,12 @@ if [ -z "$URLTOUSE" ]; then
 
 # Just in case there's only one hit, imdb redirects us to the page. this will check to see if this is the case.
  if [ -z "$URLTOUSE" ]; then
-  WGETOUT=`wget -U "Internet Explorer" -O /dev/null --timeout=10 http://us.imdb.com/Tsearch?title=$IMDBSEARCHTITLE 2>&1`
+  WGETOUT=`wget -U "Internet Explorer" -O /dev/null --timeout=10 http://former.imdb.com/Tsearch?title=$IMDBSEARCHTITLE 2>&1`
   URLTOUSE=`echo "$WGETOUT" | tr ' ' '\n' | grep -e "imdb" | tr '><&' '\n' | grep -i -e "\/title\/" | tr '\?' '\n' | head -n 1`
  fi
 fi
 if [ ! -z "$URLTOUSE" ]; then
- URLTOSHOW=`echo $URLTOUSE | sed "s|/us.|/$IMDBLOCAL.|"`
+ URLTOSHOW=`echo $URLTOUSE | sed "s|/former.|/$IMDBLOCAL.|"`
  if [ -z "$VERBOSE" ] && [ -z "$IMDBPRIVATE" ]; then
   if [ -z "$IMDBLIST" ]; then
    echo -n "$PREWORD '$IMDBSEARCHTITLB' found @ ""$BOLD""$URLTOSHOW""$BOLD"". "

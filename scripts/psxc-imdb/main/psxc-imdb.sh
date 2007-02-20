@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.7f"
+VERSION="v2.7i"
 
 ######################################################################################################
 
@@ -118,7 +118,7 @@ if [ ! -z "$RECVDARGS" ]; then
 # Level 0 search
    IMDBURLS="`grep -a [Ii][Mm][Dd][Bb] $FILENAME | tr ' \|' '\n' | sed -n /[hH][tT][tT][pP]:[/][/].*[.][iI][mM][dD][bB][.].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?'`"
    if [ ! -z "`echo $IMDBURLS | grep -a "imdb\."`" ]; then
-    IMDBURL="http://us.imdb.com/title/tt""`echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]'`"
+    IMDBURL="http://former.imdb.com/title/tt""`echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]'`"
     if [ -z `echo $IMDBURL | tr -cd '0-9'` ]; then
      IMDBURL=""
     fi
@@ -128,7 +128,7 @@ if [ ! -z "$RECVDARGS" ]; then
    if [ -z "$IMDBURL" ] && [ $RELAXEDURLS -ge 1 ]; then
     IMDBURLS="`grep -a [Ii][Mm][Dd][Bb] $FILENAME | tr ' \|' '\n' | sed -n /[hH][tT][tT][pP]:[/][/].*[iI][mM][dD][bB][.].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?'`"
     if [ ! -z "`echo $IMDBURLS | grep -a "imdb\."`" ]; then
-     IMDBURL="http://us.imdb.com/title/tt""`echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]'`"
+     IMDBURL="http://former.imdb.com/title/tt""`echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]'`"
      if [ -z `echo $IMDBURL | tr -cd '0-9'` ]; then
       IMDBURL=""
      fi
@@ -139,7 +139,7 @@ if [ ! -z "$RECVDARGS" ]; then
    if [ -z "$IMDBURL" ] && [ $RELAXEDURLS -ge 2 ]; then
     IMDBURLS="`grep -a [Ii][Mm][Dd][Bb] $FILENAME | tr ' \|' '\n' | sed -n /.*[iI][mM][dD][bB][.].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?'`"
     if [ ! -z "`echo $IMDBURLS | grep -a "imdb\."`" ]; then
-     IMDBURL="http://us.imdb.com/title/tt""`echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]'`"
+     IMDBURL="http://former.imdb.com/title/tt""`echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]'`"
      if [ -z `echo $IMDBURL | tr -cd '0-9'` ]; then
       IMDBURL=""
      fi
@@ -157,7 +157,7 @@ if [ ! -z "$RECVDARGS" ]; then
      fi
     done
     if [ ! -z "$IMDBURL" ]; then
-     IMDBURL="http://us.imdb.com/title/tt""$IMDBURL"
+     IMDBURL="http://former.imdb.com/title/tt""$IMDBURL"
     fi
    fi
 
@@ -170,7 +170,7 @@ if [ ! -z "$RECVDARGS" ]; then
      fi
     done
     if [ ! -z "$IMDBURL" ]; then
-     IMDBURL="http://us.imdb.com/title/tt""$IMDBURL"
+     IMDBURL="http://former.imdb.com/title/tt""$IMDBURL"
     fi
    fi
 
@@ -273,7 +273,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
    FILENAME=`ls -1 $GLROOT$DIRNAME | grep -a "\.[Nn][Ff][Oo]$" | head -n 1`
     IMDBURL="`grep -a [Ii][Mm][Dd][Bb] $GLROOT$DIRNAME/$FILENAME | tr ' ' '\n' | sed -n /[hH][tT][tT][pP]:[/][/].*[.][iI][mM][dD][bB].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?'`"
    if [ ! -z "`echo $IMDBURL | grep -a "\.imdb\."`" ]; then
-     IMDBURL="http://us.imdb.com/title/tt""`echo $IMDBURL | sed "s/=/-/g" | sed "s/.imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]'`"
+     IMDBURL="http://former.imdb.com/title/tt""`echo $IMDBURL | sed "s/=/-/g" | sed "s/.imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]'`"
    fi
     if [ ! -z "$IMDBURL" ]; then
      a="`tail -n 5 $GLLOG | grep -a "$TRIGGER" | grep -a "$DIRNAME" | tail -n 1`"
@@ -712,7 +712,9 @@ echo "BIZNUM : $BUSINESSSCREENSNUMBER ( $BUSINESSSCREENS )" >/tmp/imdebug.log
 ###############################################
 
     if [ ! -z "$LOCALURL" ]; then
-     IMDBURL="`echo $IMDBURL | sed "s|/us.|/$LOCALURL.|g" | tr 'A-Z' 'a-z'`"
+     IMDBURL="`echo $IMDBURL | sed "s|/former.|/$LOCALURL.|g" | tr 'A-Z' 'a-z'`"
+    else
+     IMDBURL="`echo $IMDBURL | sed "s|/former.|/www.|g" | tr 'A-Z' 'a-z'`"
     fi
     HEADTMP="Title........: $BOLD$TITLE$BOLD"
     if [ ! -z "$COUNTRY" ]; then
