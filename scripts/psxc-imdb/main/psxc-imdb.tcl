@@ -1,3 +1,17 @@
+# Installation:
+# 1. Copy this file (psxc-imdb.tcl) and the plugin theme (psxc-imdb.zpt) into your
+#    pzs-ng sitebots 'plugins' folder.
+#
+# 2. Edit the configuration options below.
+#
+# 3. Add the following to your eggdrop.conf:
+#    source pzs-ng/plugins/psxc-imdb.tcl
+#
+# 4. Rehash or restart your eggdrop for the changes to take effect.
+#
+################################################################################
+
+
 ##
 ## Addon for psxc-imdb, done/converted by meij.
 ##
