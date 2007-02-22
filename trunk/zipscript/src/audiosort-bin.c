@@ -10,6 +10,7 @@
 int main(int argc, char *argv[])
 {
 	char targetDir[PATH_MAX];
+	char cwdDir[PATH_MAX];
 
 #if ( program_uid > 0 )
 	setegid(program_gid);
@@ -27,8 +28,22 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			snprintf(targetDir, PATH_MAX, "%s/%s", getenv("PWD"), argv[1]);
-			d_log("audioSort: using PWD + argv[1].\n");
+			getcwd(cwdDir, PATH_MAX);
+			d_log("audioSort-bin: argv[1] = '%s'\n", argv[1]);
+			d_log("audioSort-bin: PWD = '%s'\n", getenv("PWD"));
+			d_log("audioSort-bin: getcwd() = '%s'\n", cwdDir);
+			if (getenv("PWD") != NULL) {
+				snprintf(targetDir, PATH_MAX, "%s/%s", getenv("PWD"), argv[1]);
+				d_log("audioSort: using PWD + argv[1].\n");
+			} else {
+				d_log("audioSort: using getcwd() + argv[1].\n");
+				if (getcwd(cwdDir, PATH_MAX) == NULL) {
+					d_log("audioSort: could not get current working dir: %s\n", strerror(errno));
+					printf("Something bad happened when trying to decide what dir to resort.\n");
+					return 1;
+				}
+				snprintf(targetDir, PATH_MAX, "%s/%s", cwdDir, argv[1]);
+			}
 		}
 	}
 	else

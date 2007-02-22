@@ -289,10 +289,11 @@ Optionally, add the following:
 
 cscript		SITE[:space:]NUKE	post	/bin/cleanup
 cscript		SITE[:space:]WIPE	post	/bin/cleanup
-cscript		RETR			post	/bin/dl_speedtest
 
 site_cmd	RESCAN			EXEC	/bin/rescan
 custom-rescan	!8	*
+
+cscript		RETR			post	/bin/dl_speedtest
 
 site_cmd	AUDIOSORT		EXEC	/bin/audiosort
 custom-audiosort	!8	*
@@ -302,6 +303,8 @@ users except anon users) to rescan a dir. This comes in handy in places the
 zipscript isn't invoked by default, when you have dirs you wish to check filled
 before you added the zipscript, and a lot of other occations. 
 Forget to add this and you will hit yourself hard quite a few times. ;)
+The fifth line add support for speedtesting (ignored in all dirs execpt the ones
+defined in zsconfig.h).
 The last allows you to only resort the genres/year/group/artist of an mp3-release. 
 (rescan does the same, but audiosort is faster - it doesn't check the crc and 
 such of the release)
