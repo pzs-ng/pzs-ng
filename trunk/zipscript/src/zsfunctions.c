@@ -755,7 +755,7 @@ fileexists(char *f)
 }
 
 /* Create symbolic link (related to mp3 genre/year/group etc)
- * Last midified by: psxc
+ * Last modified by: psxc
  *         Revision: r1228
  */
 void 
@@ -785,7 +785,8 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 #if (spaces_to_dots)
 	space_to_dot(org);
 #endif
-	mkdir(org, 0777);
+	if (mkdir(org, 0777) == -1)
+		d_log("createlink: Failed to mkdir -m777 %s : %s\n", org, strerror(errno));
 
 #if ( userellink == 1 )
 	abs2rel(source, org, result, MAXPATHLEN);
@@ -795,13 +796,16 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 
 # if ( delete_old_link == TRUE )
 	if (lstat(org, &linkStat) != -1 && S_ISLNK(linkStat.st_mode))
-		unlink(org);
+		if (unlink(org) == -1)
+			d_log("createlink: Failed to unlink '%s' : %s\n", org, strerror(errno));
 # endif
 
 #if ( userellink == 1 )
-	symlink(result, org);
+	if (symlink(result, org) == -1)
+		d_log("createlink: Failed to symlink %s -> %s : %s\n", result, org, strerror(errno));
 #else
-	symlink(source, org);
+	if (symlink(source, org) == -1)
+		d_log("createlink: Failed to symlink %s -> %s : %s\n", source, org, strerror(errno));
 #endif
 }
 

@@ -29,9 +29,15 @@ int main(int argc, char *argv[])
 		else
 		{
 			getcwd(cwdDir, PATH_MAX);
+#if (debug_announce)
+			printf("debug info: argv[1] = '%s'\n", argv[1]);
+			printf("debug info: PWD = '%s'\n", getenv("PWD"));
+			printf("debug info: getcwd() = '%s'\n", cwdDir);
+#else
 			d_log("audioSort-bin: argv[1] = '%s'\n", argv[1]);
 			d_log("audioSort-bin: PWD = '%s'\n", getenv("PWD"));
 			d_log("audioSort-bin: getcwd() = '%s'\n", cwdDir);
+#endif
 			if (getenv("PWD") != NULL) {
 				snprintf(targetDir, PATH_MAX, "%s/%s", getenv("PWD"), argv[1]);
 				d_log("audioSort: using PWD + argv[1].\n");
