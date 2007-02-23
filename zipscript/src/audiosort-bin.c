@@ -21,6 +21,9 @@ int main(int argc, char *argv[])
 
 	if (argc > 1)
 	{
+		if (argv[1][strlen(argv[1])-1] == '/')
+			argv[1][strlen(argv[1])-1] = '\0';
+
 		if (*argv[1] == '/')
 		{
 			snprintf(targetDir, PATH_MAX, "%s", argv[1]);
