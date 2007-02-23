@@ -787,10 +787,11 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 	if (lstat(org, &linkStat) == -1) {
 		if (mkdir(org, 0777) == -1)
 			d_log("createlink: Failed to mkdir -m777 %s : %s\n", org, strerror(errno));
-	} else if (!S_ISDIR(linkStat.st_mode)) {
-		if (mkdir(org, 0777) == -1)
-			d_log("createlink: Failed to mkdir -m777 %s : %s\n", org, strerror(errno));
-	}
+	} else
+		d_log("createlink: Looks like %s already exists - will not create it.\n", org);
+
+if (access(org, W_OK) == -1)
+	d_log("createlink: Warning: May be a problem with linking to %s : %s\n", org, strerror(errno));
 
 #if ( userellink == 1 )
 	abs2rel(source, org, result, MAXPATHLEN);
@@ -803,6 +804,7 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 		if (unlink(org) == -1)
 			d_log("createlink: Failed to unlink '%s' : %s\n", org, strerror(errno));
 # endif
+
 
 #if ( userellink == 1 )
 	if (symlink(result, org) == -1)
