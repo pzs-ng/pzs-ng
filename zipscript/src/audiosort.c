@@ -127,9 +127,9 @@ if (subcomp(link_target, NULL)) {
 				*temp_q = '\0';
 			}
 		}
-		d_log("audioSort:   - Valid groupname found: %s (%i)\n", temp_nam, n);
+		d_log("audioSort:   - Valid groupname found: %s (%i) - checking for exisiting sort-dir.\n", temp_nam, n);
 		temp_p = check_nocase_linkname(audio_group_path, temp_p);
-		d_log("audioSort:   - Valid groupname found: %s (%i)\n", temp_nam, n);
+		d_log("audioSort:   - Valid groupname found: %s (%i) - using this.\n", temp_nam, n);
 		createlink(audio_group_path, temp_nam, link_source, link_target);
 	}
 #endif
@@ -153,7 +153,7 @@ if (subcomp(link_target, NULL)) {
 		d_log("audioSort:   - Valid language found: %s\n", language);
 		createlink(audio_language_path, temp_p, link_source, link_target);
 	} else
-		d_log("audioSort:   - No valid language found.\n");
+		d_log("audioSort:   - No valid language found - skipping.\n");
 
 #endif
 }
