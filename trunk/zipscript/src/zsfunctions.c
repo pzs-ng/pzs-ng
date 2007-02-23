@@ -377,8 +377,7 @@ buffer_progress_bar(struct VARS *raceI)
 {
 	int		n;
 
-	raceI->misc.progress_bar[14] = 0;
-	if (raceI->total.files > 0) {
+	raceI->misc.progress_bar[14] = 0;	if (raceI->total.files > 0) {
 		for (n = 0; n < (raceI->total.files - raceI->total.files_missing) * 14 / raceI->total.files; n++)
 			raceI->misc.progress_bar[n] = *charbar_filled;
 		for (; n < 14; n++)
@@ -785,8 +784,13 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 #if (spaces_to_dots)
 	space_to_dot(org);
 #endif
-	if (mkdir(org, 0777) == -1)
-		d_log("createlink: Failed to mkdir -m777 %s : %s\n", org, strerror(errno));
+	if (lstat(org, &linkStat) == -1) {
+		if (mkdir(org, 0777) == -1)
+			d_log("createlink: Failed to mkdir -m777 %s : %s\n", org, strerror(errno));
+	} else if (!S_ISDIR(linkStat.st_mode)) {
+		if (mkdir(org, 0777) == -1)
+			d_log("createlink: Failed to mkdir -m777 %s : %s\n", org, strerror(errno));
+	}
 
 #if ( userellink == 1 )
 	abs2rel(source, org, result, MAXPATHLEN);
