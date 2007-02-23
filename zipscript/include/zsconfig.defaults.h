@@ -780,7 +780,7 @@
 #define realtime_user_header	"+-=[UserTop]=-------------------===----------------+\n"
 #endif
 #ifndef realtime_user_body
-#define realtime_user_body	"| %2n. %-15u %8.1mmB %4fF %7.0skB/s |\n"
+#define realtime_user_body	"| %2n. %-15u %8.1mMB %4fF %7.0skB/s |\n"
 #endif
 #ifndef realtime_user_footer
 #define realtime_user_footer	""
@@ -789,7 +789,7 @@
 #define realtime_group_header	"+-=[GroupTop]=--------------------===--------------+\n"
 #endif
 #ifndef realtime_group_body
-#define realtime_group_body	"| %2n. %-15g %8.1mmB %4fF %7.0skB/s |\n"
+#define realtime_group_body	"| %2n. %-15g %8.1mMB %4fF %7.0skB/s |\n"
 #endif
 #ifndef realtime_group_footer
 #define realtime_group_footer	""

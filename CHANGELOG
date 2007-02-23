@@ -5,6 +5,7 @@ v1.0.8  --> 1.0.X  :
 		- maziah fixed nfs.zst themefile.
 		- added debug output in audiosort-bin and in createlink().
 		- psxc-imdb v2.7i.
+		- zyrex noticed a typo in stat announce - changed 'mB' to 'MB'.
 
 v1.0.7  --> 1.0.8  : (r2252)
 		- added support for vbr-old/vbr-new.
