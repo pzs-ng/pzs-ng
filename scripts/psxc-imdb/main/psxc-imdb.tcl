@@ -332,6 +332,8 @@ proc ::ngBot::psxc-IMDb::ReadIMDb {} {
                 [namespace current]::Error $psxcaout
         }
  
+        set psxcimdb(log) [file size $psxc(IMDBLOG)]
+ 
         return 0
 }
  
