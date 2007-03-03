@@ -471,7 +471,7 @@ main(int argc, char **argv)
 			} else {
 #if (test_for_password || extract_nfo)
 				if ((!findfileextcount(dir, ".nfo") ||
-				  findfileextcount(dir, ".zip") == 1) && !mkdir(".unzipped", 0777))
+				  findfileextcount(dir, ".zip")) && !mkdir(".unzipped", 0777))
 					sprintf(target, "%s -qqjo \"%s\" -d .unzipped", unzip_bin, g.v.file.name);
 				else
 					sprintf(target, "%s -qqt \"%s\"", unzip_bin, g.v.file.name);
@@ -491,7 +491,7 @@ main(int argc, char **argv)
 					break;
 				}
 #if (test_for_password || extract_nfo || zip_clean)
-				if ((!findfileextcount(dir, ".nfo") || findfileextcount(dir, ".zip") == 1) && check_zipfile(".unzipped", g.v.file.name, findfileextcount(dir, ".nfo"))) {
+				if ((!findfileextcount(dir, ".nfo") || findfileextcount(dir, ".zip")) && check_zipfile(".unzipped", g.v.file.name, findfileextcount(dir, ".nfo"))) {
 					d_log("zipscript-c: File %s is password protected.\n", g.v.file.name);
 					sprintf(g.v.misc.error_msg, BAD_ZIP);
 					mark_as_bad(g.v.file.name);
