@@ -1139,3 +1139,17 @@
 #ifndef wzdftpd_compatible
 #define wzdftpd_compatible              FALSE
 #endif
+
+#ifndef hide_affil_groups
+#define hide_affil_groups		""
+#endif
+#ifndef hide_affil_users
+#define hide_affil_users		""
+#endif
+#ifndef hide_affil_gname
+#define hide_affil_gname		"NoGroup"
+#endif
+#ifndef hide_affil_uname
+#define hide_affil_uname		"NoUser"
+#endif
+

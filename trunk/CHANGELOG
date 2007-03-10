@@ -2,10 +2,14 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.8  --> 1.0.X  :
+		- added support for hiding affils.
 		- maziah fixed nfs.zst themefile.
 		- added debug output in audiosort-bin and in createlink().
 		- psxc-imdb v2.7i.
 		- zyrex noticed a typo in stat announce - changed 'mB' to 'MB'.
+		- small bug in psxc-imdb.tcl was fixed - resulted in it not working in
+		  certain instances.
+		- fixed bug with zip_clean only having effect on first uploaded zipfile.
 
 v1.0.7  --> 1.0.8  : (r2252)
 		- added support for vbr-old/vbr-new.
