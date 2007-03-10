@@ -377,17 +377,47 @@ main(int argc, char **argv)
 	/* Hide users in group_dirs */
 	if (hide_group_uploaders && matchpath(group_dirs, g.l.path)) {
 		d_log("zipscript-c: Hiding user in group-dir:\n");
-		if ((int)strlen(hide_gname) > 0) {
+		if ((int)strlen(hide_gname)) {
 			snprintf(g.v.user.group, 18, "%s", hide_gname);
 			d_log("zipscript-c:    Changing groupname\n");
 		}
-		if ((int)strlen(hide_uname) > 0) {
+		if ((int)strlen(hide_uname)) {
 			snprintf(g.v.user.name, 18, "%s", hide_uname);
 			d_log("zipscript-c:    Changing username\n");
 		}
-		if ((int)strlen(hide_uname) == 0) {
+		if (!(int)strlen(hide_uname)) {
 			d_log("zipscript-c:    Making username = groupname\n");
 			snprintf(g.v.user.name, 18, "%s", g.v.user.group);
+		}
+	} else {
+	/* Hide affills */
+		if (strlen(hide_affil_groups) && strcomp(hide_affil_groups, g.v.user.group)) {
+			d_log("zipscript-c: Hiding affil group:\n");
+			if ((int)strlen(hide_affil_gname)) {
+				d_log("zipscript-c:    Changing groupname.\n");
+				snprintf(g.v.user.group, 18, "%s", hide_affil_gname);
+			} else
+				d_log("zipscript-c:    No hidegroup given.\n");
+
+			if ((int)strlen(hide_affil_uname)) {
+				d_log("zipscript-c:    Changing username.\n");
+				snprintf(g.v.user.name, 18, "%s", hide_affil_uname);
+			} else if (!strlen(hide_affil_groups)) {
+				d_log("zipscript-c:    Making username = groupname.\n");
+				snprintf(g.v.user.name, 18, "%s", g.v.user.group);
+			} else
+				d_log("zipscript-c:    No hidename given.\n");
+		}
+		if (strlen(hide_affil_users) && strcomp(hide_affil_users, g.v.user.name)) {
+			d_log("zipscript-c: Hiding affil user:\n");
+			if ((int)strlen(hide_affil_uname)) {
+				d_log("zipscript-c:    Changing username.\n");
+				snprintf(g.v.user.name, 18, "%s", hide_affil_uname);
+			} else if (!strlen(hide_affil_groups)) {
+				d_log("zipscript-c:    Making username = groupname.\n");
+				snprintf(g.v.user.name, 18, "%s", g.v.user.group);
+			} else
+				d_log("zipscript-c:    No hidename given.\n");
 		}
 	}
 

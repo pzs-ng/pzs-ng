@@ -1359,6 +1359,25 @@ zsinternal_checks_completed <STRING>
 	Output in benchmark mode.
 	DEFAULT: "Checks completed in %0.6f seconds.\n"		*/ %0.6f = six digits number of seconds */
 
+hide_affil_groups <STRING>
+	Comma separated list of groups to hide. Will replace the groupname with
+	the string in hide_affil_gname if non-empty, and replace the username
+	with hide_affil_uname if non-empty.
+	DEFAULT: ""
+
+hide_affil_users <STRING>
+	Comma separated list of users to hide. Will replace the username with
+	the string in hide_affil_uname if non-empty.
+	DEFAULT: ""
+
+hide_affil_gname <STRING>
+	What to replace hidden affil groupnames with.
+	DEFAULT: "NoGroup"
+
+hide_affil_uname <STRING>
+	What to replace hidden affil usernames with.
+	DEFAULT: "NoUser"
+
 SFV_FIRST <STRING>
 	Error msg when sfv_first is enabled, and no sfv is uploaded prior to
 	"normal" files.
@@ -1419,7 +1438,6 @@ ZIP_NFO <STRING>
 SPEEDTEST <STRING>
 	Output when file is uploaded in a speedtest dir.
 	DEFAULT: "BW: %.1fMiB (%.1fMB) @ %.2fMbps (%.2fMB/s)."
-
 
 --END
 
