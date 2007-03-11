@@ -78,6 +78,7 @@ main(int argc, char **argv)
 	char	       *norace_halfway_type = 0;
 	char	       *inc_point[2];
 	char	       *affillist = 0;
+	unsigned char	affil_upload = FALSE;
 #ifdef _WITH_SS5
 	unsigned char	complete_type = 1;
 #else
@@ -392,7 +393,31 @@ main(int argc, char **argv)
 		}
 	} else {
 	/* Hide affills */
+		if (use_group_dirs_as_affil_list) {
+			affillist = ng_realloc2(affillist, 5000, 1, 1, 1);
+			create_dirlist(group_dirs, affillist, 5000);
+			if (strlen(affillist) && strcomp(affillist, g.v.user.group)) {
+				affil_upload = TRUE;
+				d_log("zipscript-c: Hiding affil group based on group_dirs:\n");
+				if ((int)strlen(hide_affil_gname)) {
+					d_log("zipscript-c:    Changing groupname.\n");
+					snprintf(g.v.user.group, 18, "%s", hide_affil_gname);
+				} else
+					d_log("zipscript-c:    No hidegroup given.\n");
+
+				if ((int)strlen(hide_affil_uname)) {
+					d_log("zipscript-c:    Changing username.\n");
+					snprintf(g.v.user.name, 18, "%s", hide_affil_uname);
+				} else if (!strlen(hide_affil_groups)) {
+					d_log("zipscript-c:    Making username = groupname.\n");
+					snprintf(g.v.user.name, 18, "%s", g.v.user.group);
+				} else
+					d_log("zipscript-c:    No hidename given.\n");
+			}
+			ng_free(affillist);
+		}
 		if (strlen(hide_affil_groups) && strcomp(hide_affil_groups, g.v.user.group)) {
+			affil_upload = TRUE;
 			d_log("zipscript-c: Hiding affil group:\n");
 			if ((int)strlen(hide_affil_gname)) {
 				d_log("zipscript-c:    Changing groupname.\n");
@@ -410,6 +435,7 @@ main(int argc, char **argv)
 				d_log("zipscript-c:    No hidename given.\n");
 		}
 		if (strlen(hide_affil_users) && strcomp(hide_affil_users, g.v.user.name)) {
+			affil_upload = TRUE;
 			d_log("zipscript-c: Hiding affil user:\n");
 			if ((int)strlen(hide_affil_uname)) {
 				d_log("zipscript-c:    Changing username.\n");
@@ -419,11 +445,6 @@ main(int argc, char **argv)
 				snprintf(g.v.user.name, 18, "%s", g.v.user.group);
 			} else
 				d_log("zipscript-c:    No hidename given.\n");
-		}
-		if (use_group_dirs_as_affil_list) {
-			affillist = ng_realloc2(affillist, 5000, 1, 1, 1);
-			create_dirlist("/site/groups", affillist, 5000);
-			ng_free(affillist);
 		}
 	}
 
@@ -1665,6 +1686,17 @@ main(int argc, char **argv)
 		d_log("zipscript-c: Removing missing-nfo indicator (if any)\n");
 		remove_nfo_indicator(&g);
 	}
+#if (enable_affil_script == TRUE )
+	if (affil_upload == TRUE) {
+		if (!fileexists(affil_script)) {
+			d_log("zipscript-c: Warning - affil_script (%s) - file does not exist!\n", affil_script);
+		}
+		d_log("zipscript-c: Executing affil script\n");
+		sprintf(target, affil_script " \"%s\"", g.v.file.name);
+		if (execute(target) != 0)
+			d_log("zipscript-c: Failed to execute affil_script: %s\n", strerror(errno));
+	}
+#endif
 
 #if ( del_banned_release )
 	if (deldir) {
