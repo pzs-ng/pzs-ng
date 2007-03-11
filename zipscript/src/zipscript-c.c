@@ -77,6 +77,7 @@ main(int argc, char **argv)
 	char	       *race_halfway_type = 0;
 	char	       *norace_halfway_type = 0;
 	char	       *inc_point[2];
+	char	       *affillist = 0;
 #ifdef _WITH_SS5
 	unsigned char	complete_type = 1;
 #else
@@ -418,6 +419,11 @@ main(int argc, char **argv)
 				snprintf(g.v.user.name, 18, "%s", g.v.user.group);
 			} else
 				d_log("zipscript-c:    No hidename given.\n");
+		}
+		if (use_group_dirs_as_affil_list) {
+			affillist = ng_realloc2(affillist, 5000, 1, 1, 1);
+			create_dirlist("/site/groups", affillist, 5000);
+			ng_free(affillist);
 		}
 	}
 

@@ -1368,6 +1368,41 @@ void removedir(const char *dirname)
 	return;
 }
 
+/* create a comma separated list of dirnames - used for affils
+ * needs a bit of work yet...
+ */
+void create_dirlist(const char *dirname, char *affillist, const int limit)
+{
+	DIR            *dir;
+	struct dirent  *dp;
+	char		*p = 0;
+	int		n = 0;
+
+	if (!(dir = opendir(dirname)))
+		return;
+	rewinddir(dir);
+	while ((dp = readdir(dir))) {
+		if (!strncmp(dp->d_name, ".", 1))
+			continue;
+		n = strlen(affillist);
+		if ((unsigned)(n + strlen(dp->d_name)) < (unsigned)limit) {
+			p = affillist + n;
+			if (n) {
+				*p = ',';
+				p++;
+			}
+			memcpy(p, dp->d_name, strlen(dp->d_name));
+		} else {
+			d_log("create_dirlist: Too many dirs - unable to add more.\n");
+			d_log("create_dirlist: List so far = '%s'\n", affillist);
+			return;
+		}
+	}
+	closedir(dir);
+	d_log("create_dirlist: List so far = '%s'\n", affillist);
+	return;
+}
+
 int
 filebanned_match(const char *filename)
 {
