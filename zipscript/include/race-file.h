@@ -57,6 +57,7 @@ extern int update_lock(struct VARS *, unsigned int, unsigned int);
 extern short match_file(char *,	char *);
 extern int check_rarfile(const char *);
 extern int check_zipfile(const char *, const char *, int);
+extern void removedir(const char *);
 extern int filebanned_match(const char *);
 extern int lenient_compare(char *, char *);
 #endif
