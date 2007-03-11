@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.8  --> 1.0.X  :
+		- fixed a cleanup bug when zipfile integrity failed.
 		- added support for hiding affils.
 		- maziah fixed nfs.zst themefile.
 		- added debug output in audiosort-bin and in createlink().

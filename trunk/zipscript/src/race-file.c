@@ -1350,6 +1350,24 @@ check_zipfile(const char *dirname, const char *zipfile, int do_nfo)
 	return ret;
 }
 
+void removedir(const char *dirname)
+{
+	DIR            *dir;
+	struct dirent  *dp;
+	char            path_buf[PATH_MAX];
+
+	if (!(dir = opendir(dirname)))
+		return;
+	rewinddir(dir);
+	while ((dp = readdir(dir))) {
+		sprintf(path_buf, "%s/%s", dirname, dp->d_name);
+		unlink(path_buf);
+	}
+	closedir(dir);
+	rmdir(dirname);
+	return;
+}
+
 int
 filebanned_match(const char *filename)
 {

@@ -518,6 +518,7 @@ main(int argc, char **argv)
 					if (exit_value < 2)
 						writelog(&g, error_msg, bad_file_zip_type);
 					exit_value = 2;
+					removedir(".unzipped");
 					break;
 				}
 #if (test_for_password || extract_nfo || zip_clean)
