@@ -22,7 +22,6 @@
 
 #include "stats.h"
 #include "zsfunctions.h"
-
 #include "helpfunctions.h"
 
 #ifndef _CRC_H_
@@ -1371,35 +1370,56 @@ void removedir(const char *dirname)
 /* create a comma separated list of dirnames - used for affils
  * needs a bit of work yet...
  */
-void create_dirlist(const char *dirname, char *affillist, const int limit)
+void create_dirlist(const char *dirnames, char *affillist, const int limit)
 {
 	DIR            *dir;
 	struct dirent  *dp;
-	char		*p = 0;
-	int		n = 0;
+	char		*p = 0, *s = 0, *t = 0;
+	int		n = 0, m = 0, q = strlen(dirnames);
+	char		*dlist = NULL;
 
-	if (!(dir = opendir(dirname)))
-		return;
-	rewinddir(dir);
-	while ((dp = readdir(dir))) {
-		if (!strncmp(dp->d_name, ".", 1))
-			continue;
-		n = strlen(affillist);
-		if ((unsigned)(n + strlen(dp->d_name)) < (unsigned)limit) {
-			p = affillist + n;
-			if (n) {
-				*p = ',';
-				p++;
+	dlist = ng_realloc2(dlist, q+4, 1, 1, 1);
+//	dlist = malloc(q+4);
+//	bzero(dlist, q+4);
+	s = dlist;
+	t = dlist;
+
+	memcpy(dlist, dirnames, q);
+	while (m <= q) {
+		if (*s == '\0' || *s == ' ') {
+			*s = '\0';
+			if (!strlen(t) || !(dir = opendir(t))) {
+				ng_free(dlist);
+				return;
 			}
-			memcpy(p, dp->d_name, strlen(dp->d_name));
-		} else {
-			d_log("create_dirlist: Too many dirs - unable to add more.\n");
+			rewinddir(dir);
+			while ((dp = readdir(dir))) {
+				if (!strncmp(dp->d_name, ".", 1))
+					continue;
+				n = strlen(affillist);
+				if ((unsigned)(n + strlen(dp->d_name)) < (unsigned)limit) {
+					p = affillist + n;
+					if (n) {
+						*p = ',';
+						p++;
+					}
+					memcpy(p, dp->d_name, strlen(dp->d_name));
+				} else {
+					d_log("create_dirlist: Too many dirs - unable to add more.\n");
+					d_log("create_dirlist: List so far = '%s'\n", affillist);
+					ng_free(dlist);
+					return;
+				}
+			}
+			closedir(dir);
 			d_log("create_dirlist: List so far = '%s'\n", affillist);
-			return;
+			s++;
+			t = s;
 		}
+		s++;
+		m++;
 	}
-	closedir(dir);
-	d_log("create_dirlist: List so far = '%s'\n", affillist);
+	ng_free(dlist);
 	return;
 }
 

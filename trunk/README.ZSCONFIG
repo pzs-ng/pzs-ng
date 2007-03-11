@@ -1378,6 +1378,20 @@ hide_affil_uname <STRING>
 	What to replace hidden affil usernames with.
 	DEFAULT: "NoUser"
 
+use_group_dirs_as_affil_list <TRUE|FALSE>
+	Use the group_dirs as base for getting the list of affils to hide.
+	DEFAULT: FALSE
+ 
+enable_affil_script <TRUE|FALSE>
+	If you wish to do something on affil upload (not in group_dirs) like
+	chown'ing the file, you can enable the this here.
+	DEFAULT: FALSE
+
+affil_script <STRING>
+	Enter here the name of the affil_script to be executed on affil
+	uploads (not in group_dirs). The script will get the filename as arg.
+	DEFAULT: "/bin/affilscript.sh"
+
 SFV_FIRST <STRING>
 	Error msg when sfv_first is enabled, and no sfv is uploaded prior to
 	"normal" files.

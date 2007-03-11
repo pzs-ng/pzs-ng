@@ -1152,4 +1152,13 @@
 #ifndef hide_affil_uname
 #define hide_affil_uname		"NoUser"
 #endif
+#ifndef use_group_dirs_as_affil_list
+#define use_group_dirs_as_affil_list	FALSE
+#endif
+#ifndef enable_affil_script
+#define enable_affil_script		FALSE
+#endif
+#ifndef affil_script
+#define affil_script			"/bin/affilscript.sh"
+#endif
 
