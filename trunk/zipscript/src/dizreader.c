@@ -21,6 +21,7 @@ char	*search[] = {
 		"[?/#]",
 		"(?/#)",
 		"[disk:!!/##]",
+		"[disk:?!/##]",
 		"o?/o#",
 		"disks[!!/##",
 		" !/# ",
@@ -39,7 +40,7 @@ char	*search[] = {
 		"?! of ##",
 		"xx of ##"};
 
-int		strings = 23;
+int		strings = 24;
 
 /* REMOVE SPACES FROM STRING */
 void 
@@ -84,7 +85,9 @@ read_diz(void)
 				for (cnt3 = 0; (unsigned int)cnt3 <= ((unsigned int)strlen(search[cnt2]) - control); cnt3++)
 					switch (search[cnt2][cnt3 + control]) {
 					case '#':
-						if (isdigit(data[cnt + cnt3]) || data[cnt + cnt3] == ' ') {
+						if (isdigit(data[cnt + cnt3]) || data[cnt + cnt3] == ' ' || data[cnt + cnt3] == 'o') {
+							if (data[cnt + cnt3] == 'o')
+								data[cnt + cnt3] = '0';
 							matches++;
 							pos += sprintf(disks + pos, "%c", data[cnt + cnt3]);
 						} break;
