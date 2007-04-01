@@ -345,6 +345,24 @@ convert4(struct VARS *raceI, char *instr)
 				else
 					out_p += sprintf(out_p, "%*.*s", val1, val2, vbrold);
 				break;
+			case '_':
+				out_p += sprintf(out_p, "%*i", val1, (int)raceI->audio.vbr_quality);
+				break;
+			case '/':
+				out_p += sprintf(out_p, "%*i", val1, (int)raceI->audio.vbr_minimum_bitrate);
+				break;
+			case '\\':
+				out_p += sprintf(out_p, "%*i", val1, (int)raceI->audio.vbr_noiseshaping);
+				break;
+			case '(':
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.vbr_stereo_mode);
+				break;
+			case ')':
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.vbr_unwise);
+				break;
+			case '|':
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.vbr_source);
+				break;
 			case 'q':
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.layer);
 				break;
@@ -699,6 +717,24 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 					out_p += sprintf(out_p, "%*.*s", val1, val2, vbrnew);
 				else
 					out_p += sprintf(out_p, "%*.*s", val1, val2, vbrold);
+				break;
+			case '_':
+				out_p += sprintf(out_p, "%*i", val1, (int)raceI->audio.vbr_quality);
+				break;
+			case '/':
+				out_p += sprintf(out_p, "%*i", val1, (int)raceI->audio.vbr_minimum_bitrate);
+				break;
+			case '\\':
+				out_p += sprintf(out_p, "%*i", val1, (int)raceI->audio.vbr_noiseshaping);
+				break;
+			case '(':
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.vbr_stereo_mode);
+				break;
+			case ')':
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.vbr_unwise);
+				break;
+			case '|':
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.vbr_source);
 				break;
 			case 'j':
 				if (raceI->audio.is_vbr == 1)
