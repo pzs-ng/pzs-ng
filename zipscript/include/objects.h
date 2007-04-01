@@ -75,7 +75,13 @@ struct audio {
 	char		vbr_version_string[10];
 	char		vbr_preset[15];
 	int		is_vbr;
-	char		vbr_oldnew[1];
+	int		vbr_oldnew;
+	int		vbr_quality;
+	int		vbr_minimum_bitrate;
+	int		vbr_noiseshaping;
+	char		vbr_stereo_mode[10];
+	char		vbr_unwise[4];
+	char		vbr_source[10];
 };
 
 struct video {
