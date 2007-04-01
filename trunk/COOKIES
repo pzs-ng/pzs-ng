@@ -73,6 +73,12 @@
  %I  = VBR preset
  %j  = vbr/cbr info
  %@  = vbr-old/vbr-new
+ %_  = vbr quality (1-100, 100 = lowest)
+ %/  = vbr minimum bitrate (on APS this is average bitrate)
+ %\\ = vbr noiseshaping (1-3)
+ %(  = vbr stereomode (joint, stereo, mono, forced etc)
+ %)  = vbr unwise (1 = yes)
+ %|  = vbr source (<32.000Hz, 44.100Hz, 48.000Hz, >48.000Hz)
 #
 #### Movie AVI/MPG/MPEG/M2V cookies
 #

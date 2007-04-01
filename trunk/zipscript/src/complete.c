@@ -35,7 +35,7 @@ complete(GLOBAL *g, int completetype)
 	if (matchpath(group_dirs, g->l.path) && (write_complete_message_in_group_dirs == FALSE))
 		d_log("complete: No message File is written. Directory matched with group_dirs\n");
 	else if (message_file_name == DISABLED || !message_file_name)
-		d_log("complete: No message File is written. message_file_name not set.\n");
+		d_log("complete: No message file is written. 'message_file_name' not set.\n");
 	else {
 		d_log("complete: Writing %s file ...\n", message_file_name);
 

@@ -75,7 +75,7 @@ struct audio {
 	char		vbr_version_string[10];
 	char		vbr_preset[15];
 	int		is_vbr;
-	int		vbr_oldnew;
+	char		vbr_oldnew[1];
 	int		vbr_quality;
 	int		vbr_minimum_bitrate;
 	int		vbr_noiseshaping;

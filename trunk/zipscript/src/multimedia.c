@@ -405,13 +405,9 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 		    memcmp(xing_header3, "Xing", 4) == 0 ||
 		    memcmp(fraunhofer_header, "VBRI", 4) == 0) {
 
-			audio->vbr_oldnew = 0;
-			audio->vbr_minimum_bitrate = 0;
-			audio->vbr_quality = 0;
-			
 			lseek(fd, 165 + vbr_offset, SEEK_SET);
 			read(fd, vbr_oldnew, 1);
-			audio->vbr_oldnew = (*vbr_oldnew & 4) >> 2;     // vbr method (vbr-old, vbr-new)
+			audio->vbr_oldnew[0] = (*vbr_oldnew & 4) >> 2;     // vbr method (vbr-old, vbr-new)
 
 			lseek(fd, 180 + vbr_offset, SEEK_SET);
 			read(fd, vbr_misc, 1);
@@ -465,7 +461,7 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 				}
 				audio->vbr_version_string[t1] = 0;
 			}
-printf("vbr-method=%d\nvbr-minimum-bitrate=%d\nvbr-quality=%d\nvbr-version=%s\nvbr_noise=%d\nvbr_stereo=%s\nvbr_unwise=%s\nvbr_source=%s\nvbr-misc=%X", (short)audio->vbr_oldnew, (short)audio->vbr_minimum_bitrate, (short)audio->vbr_quality, audio->vbr_version_string, audio->vbr_noiseshaping, audio->vbr_stereo_mode, audio->vbr_unwise, audio->vbr_source, (short)*vbr_misc);
+//printf("vbr-method=%d\nvbr-minimum-bitrate=%d\nvbr-quality=%d\nvbr-version=%s\nvbr_noise=%d\nvbr_stereo=%s\nvbr_unwise=%s\nvbr_source=%s\nvbr-misc=%X", (short)audio->vbr_oldnew, (short)audio->vbr_minimum_bitrate, (short)audio->vbr_quality, audio->vbr_version_string, audio->vbr_noiseshaping, audio->vbr_stereo_mode, audio->vbr_unwise, audio->vbr_source, (short)*vbr_misc);
 
 			audio->is_vbr = 1;
 			if (memcmp(audio->vbr_version_string, "LAME", 4) == 0) {

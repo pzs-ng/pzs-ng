@@ -2,7 +2,9 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.8  --> 1.0.X  :
-		- added some more mp3 settings (not finished).
+		- added some more mp3 settings.
+		- new vars in dzsbot.vars: %vbr_quality %vbr_minimum_bitrate %vbr_noiseshaping
+		                           %vbr_stereomode %vbr_unwise %vbr_source
 		- disable allow message_file_name if set to "".
 		- fixed a cleanup bug when zipfile integrity failed.
 		- added support for hiding affils.
