@@ -273,6 +273,9 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 	int		vbr_offset = 0;
 	int		t1;
 	unsigned char	vbr_oldnew[1];
+	unsigned char	vbr_quality[1];
+	unsigned char	vbr_minimum_bitrate[1];
+	unsigned char	vbr_misc[1];
 
 	fd = open(f, O_RDONLY);
 	if (fd < 0)
@@ -402,13 +405,59 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 		    memcmp(xing_header3, "Xing", 4) == 0 ||
 		    memcmp(fraunhofer_header, "VBRI", 4) == 0) {
 
+			audio->vbr_oldnew = 0;
+			audio->vbr_minimum_bitrate = 0;
+			audio->vbr_quality = 0;
+			
 			lseek(fd, 165 + vbr_offset, SEEK_SET);
 			read(fd, vbr_oldnew, 1);
-			audio->vbr_oldnew[0] = (*vbr_oldnew & 4) >> 2;
-//			audio->vbr_oldnew[0] = vbr_oldnew;
+			audio->vbr_oldnew = (*vbr_oldnew & 4) >> 2;     // vbr method (vbr-old, vbr-new)
+
+			lseek(fd, 180 + vbr_offset, SEEK_SET);
+			read(fd, vbr_misc, 1);
+			audio->vbr_noiseshaping = (*vbr_misc & 3);      // vbr noiseshaping
+			if (((*vbr_misc & 28) >> 2) == 0)
+				sprintf(audio->vbr_stereo_mode, "Mono");
+			else if (((*vbr_misc & 28) >> 2) == 1)
+				sprintf(audio->vbr_stereo_mode, "Stereo");
+			else if (((*vbr_misc & 28) >> 2) == 2)
+				sprintf(audio->vbr_stereo_mode, "Dual");
+			else if (((*vbr_misc & 28) >> 2) == 3)
+				sprintf(audio->vbr_stereo_mode, "Joint");
+			else if (((*vbr_misc & 28) >> 2) == 4)
+				sprintf(audio->vbr_stereo_mode, "Force");
+			else if (((*vbr_misc & 28) >> 2) == 5)
+				sprintf(audio->vbr_stereo_mode, "Auto");
+			else if (((*vbr_misc & 28) >> 2) == 6)
+				sprintf(audio->vbr_stereo_mode, "Intensity");
+			else
+				sprintf(audio->vbr_stereo_mode, "Undefined");
+//			audio->vbr_stereo_mode = (*vbr_misc & 28) >> 2; // vbr stereo mode
+			if (((*vbr_misc & 32) >> 5))
+				sprintf(audio->vbr_unwise, "Yes");
+			else
+				sprintf(audio->vbr_unwise, "No");
+//			audio->vbr_unwise = (*vbr_misc & 32) >> 5;      // vbr unwise setting
+			if (((*vbr_misc & 192) >> 6) == 0)
+				sprintf(audio->vbr_source, "<32.000Hz");
+			else if (((*vbr_misc & 192) >> 6) == 1)
+				sprintf(audio->vbr_source, "44.100Hz");
+			else if (((*vbr_misc & 192) >> 6) == 2)
+				sprintf(audio->vbr_source, "48.000Hz");
+			else
+				sprintf(audio->vbr_source, ">48.000Hz");
+//			audio->vbr_source = (*vbr_misc & 192) >> 6;     // vbr source sample frequency
+
+			lseek(fd, 176 + vbr_offset, SEEK_SET);
+			read(fd, vbr_minimum_bitrate, 1);               // minimumvbr bitrate, or abr bitrate
+			audio->vbr_minimum_bitrate = *vbr_minimum_bitrate;
+
+			lseek(fd, 155 + vbr_offset, SEEK_SET);
+			read(fd, vbr_quality, 1);                       // vbr quality setting
+			audio->vbr_quality = *vbr_quality;
 
 			lseek(fd, 156 + vbr_offset, SEEK_SET);
-			read(fd, audio->vbr_version_string, 9);
+			read(fd, audio->vbr_version_string, 9);         // vbr version, short string
 			audio->vbr_version_string[9] = 0;
 			for (t1 = 9; t1 > 0; t1--) {
 				if (audio->vbr_version_string[t1] > 32) {
@@ -416,6 +465,8 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 				}
 				audio->vbr_version_string[t1] = 0;
 			}
+printf("vbr-method=%d\nvbr-minimum-bitrate=%d\nvbr-quality=%d\nvbr-version=%s\nvbr_noise=%d\nvbr_stereo=%s\nvbr_unwise=%s\nvbr_source=%s\nvbr-misc=%X", (short)audio->vbr_oldnew, (short)audio->vbr_minimum_bitrate, (short)audio->vbr_quality, audio->vbr_version_string, audio->vbr_noiseshaping, audio->vbr_stereo_mode, audio->vbr_unwise, audio->vbr_source, (short)*vbr_misc);
+
 			audio->is_vbr = 1;
 			if (memcmp(audio->vbr_version_string, "LAME", 4) == 0) {
 				lseek(fd, 182 + vbr_offset, SEEK_SET);
