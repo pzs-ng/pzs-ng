@@ -24,6 +24,16 @@ ie, add '#define" in front, and the option(s) behind.
 
 -------------------------------------------------------------------------------
 
+wzdftpd_compatible <TRUE|FALSE>
+	** DO NOT ENABLE THIS UNLESS YOU KNOW WHAT YOU'RE DOING. **
+
+	Specify this if you're running under wzdftpd (http://wzdftpd.net)
+	This support is *EXPERIMENTAL*. It does not use env variables - and 
+	assumes you pass them via the commandline instead. In addition, it will
+	resolve any symlinks in the paths the zs is passed.
+	Read the wzdftpd.net webpage for more information. (Specifically
+	http://wzdftpd.net/trac/wiki/Documentation/ThirdPartyScripts/pzs-ng)
+	Default: FALSE
 
 sitepath_dir <PATH>
 	This is used as a base for datacleaner, when it's run as a cscript.
