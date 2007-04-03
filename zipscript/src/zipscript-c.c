@@ -55,6 +55,9 @@ main(int argc, char **argv)
 	DIR		*dir, *parent;
 	struct dirent	*dp;
 	
+#if ( wzdftpd_compatible == TRUE )
+        char            temp_path[PATH_MAX];
+#endif
 	char           *fileext = NULL, *name_p, *temp_p = NULL, *temp_p_free = NULL;
 	char           *target = 0;
 	char	       *ext = 0;
@@ -130,9 +133,9 @@ main(int argc, char **argv)
 	}
 
 #if ( wzdftpd_compatible == TRUE )
-	if (argc < 3) {
+	if (argc < 8) {
 		d_log("zipscript-c: Wrong number of arguments used (wzdftpd compatible)\n");
-		printf(" - - PZS-NG ZipScript-C v%s - -\n\nUsage: %s <absolute filepath> <crc>\n\n", ng_version(), argv[0]);
+		printf(" - - PZS-NG ZipScript-C v%s - -\n\nUsage: %s <absolute filepath> <crc> <user> <group> <tagline> <speed> <section>\n\n", ng_version(), argv[0]);
 		exit(1);
 	}
         crc_arg = argv[2];
@@ -152,8 +155,13 @@ main(int argc, char **argv)
 
 	/* gettimeofday(&g.v.transfer_stop, (struct timezone *)0 ); */
 #if ( wzdftpd_compatible == TRUE )
-	strlcpy(g.l.path, argv[1], MIN(PATH_MAX, strrchr(argv[1], '/') - argv[1] + 1));
-	strlcpy(g.v.file.name, strrchr(argv[1], '/') + 1, NAME_MAX);
+        if (realpath(argv[1], temp_path) != temp_path)
+        {
+            d_log("zipscript-c: Could not realpath(\"%s\", temp_path): %s\n", temp_path, strerror(errno));
+            strlcpy(temp_path, argv[1], PATH_MAX);
+        }
+	strlcpy(g.l.path, temp_path, MIN(PATH_MAX, strrchr(temp_path, '/') - temp_path + 1));
+	strlcpy(g.v.file.name, strrchr(temp_path, '/') + 1, NAME_MAX);
 #else
 	strlcpy(g.v.file.name, argv[1], NAME_MAX);
 	strlcpy(g.l.path, argv[2], PATH_MAX);
@@ -169,6 +177,48 @@ main(int argc, char **argv)
 		d_log("zipscript-c: We are in subdir of %s\n", g.l.basepath);
 	strncpy(g.v.misc.current_path, g.l.path, sizeof(g.v.misc.current_path));
 
+#if ( wzdftpd_compatible == TRUE )
+        d_log("zipscript-c: Reading data from commandline (wzdftpd compatible)\n");
+        
+        sprintf(g.v.user.name, argv[3]);
+        sprintf(g.v.user.group, argv[4]);
+        if (!(int)strlen(g.v.user.group))
+                memcpy(g.v.user.group, "NoGroup", 8);
+        sprintf(g.v.user.tagline, argv[5]);
+        if (!(int)strlen(g.v.user.tagline))
+                memcpy(g.v.user.tagline, "No Tagline Set", 15);
+        g.v.file.speed = (unsigned int)strtol(argv[6], NULL, 0);
+        if (!g.v.file.speed)
+                g.v.file.speed = 1;
+
+#if (debug_announce == TRUE)
+        printf("zipscript-c: DEBUG: Speed: %dkb/s (%skb/s)\n",  g.v.file.speed, getenv("SPEED"));
+#endif
+
+        d_log("zipscript-c: Reading section from arg (%s)\n", argv[7]);
+        snprintf(g.v.sectionname, 127, argv[7]);
+        g.v.section = 0;
+
+        /* XXX We need a better way to handle this. wzd supports sections too.. ;-)
+         * (But without userfile reading etc, it's all futile!) */
+#if 0
+        temp_p_free = temp_p = strdup((const char *)gl_sections);	/* temp_p_free is needed since temp_p is modified by strsep */
+        if ((temp_p) == NULL) {
+                d_log("zipscript-c: Can't allocate memory for sections\n");
+        } else {
+            n = 0;
+            while (temp_p) {
+                    if (!strcmp(strsep(&temp_p, " "), argv[7])) {
+                            g.v.section = (unsigned char)n;
+                            break;
+                    } else
+                            n++;
+            }
+            ng_free(temp_p_free);
+        }
+#endif
+
+#else /* below here: wzdftpd_compatible != TRUE */
 	d_log("zipscript-c: Reading data from environment variables\n");
 	if ((getenv("USER") == NULL) || (getenv("GROUP") == NULL) || (getenv("TAGLINE") == NULL) || (getenv("SPEED") ==NULL) || (getenv("SECTION") == NULL)) {
 		d_log("zipscript-c: We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE, $SECTION and $SPEED\n");
@@ -224,6 +274,7 @@ main(int argc, char **argv)
 		}
 	}
 	g.v.file.speed *= 1024;
+#endif /* wzdftpd_compatible == TRUE */
 
 	d_log("zipscript-c: Checking the file size of %s\n", g.v.file.name);
 	if (stat(g.v.file.name, &fileinfo)) {
