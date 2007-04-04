@@ -7,6 +7,11 @@
                fixed some warnings.
                we may need to look at this later,
                on 64bit platforms.
+  2007-04-04 - psxc:
+               do not include unwanted cruft like cd1,
+               sample, subs etc. We use the subdir_list
+               option from zsconfig.h for this.
+
 */
 
 #include <sys/file.h>
@@ -95,6 +100,7 @@ void show_nukes(const ushort status, const char *pattern);
 char *trim(char *str);
 void usage(const char *binary);
 int wildcasecmp(const char *wild, const char *string);
+short int subcomp(char *directory);
 
 int main(int argc, char *argv[])
 {
@@ -300,34 +306,31 @@ void show_newdirs(const char *pattern)
 
     	fseek(fp, 0L, SEEK_END);
     	while(i < max_results) {
-			if (fseek(fp, -(sizeof(struct dirlog)), SEEK_CUR) != 0) {
-				break;
-			}
-			if (fread(&buffer, sizeof(struct dirlog), 1, fp) < 1) {
-				break;
-			} else {
-				fseek(fp, -(sizeof(struct dirlog)), SEEK_CUR);
-			}
+		if (fseek(fp, -(sizeof(struct dirlog)), SEEK_CUR) != 0) {
+			break;
+		}
+		if (fread(&buffer, sizeof(struct dirlog), 1, fp) < 1) {
+			break;
+		} else {
+			fseek(fp, -(sizeof(struct dirlog)), SEEK_CUR);
+		}
 
-			/* Only display newdirs unless search_mode is specified (-s) */
-			if (!search_mode && buffer.status != 0) {
+		/* Only display newdirs unless search_mode is specified (-s) */
+		if (!search_mode && buffer.status != 0) {
+			continue;
+		}
+		if (pattern != NULL) {
+			/* Pointer to the base of the directory path */
+			if (!match_full && (p = strrchr(buffer.dirname, '/')) != NULL)
+				*p++;
+			else
+				p = buffer.dirname;
+			if (!wildcasecmp(pattern, p))
 				continue;
-			}
+		}
 
-			if (pattern != NULL) {
-				/* Pointer to the base of the directory path */
-				if (!match_full && (p = strrchr(buffer.dirname, '/')) != NULL) {
-					*p++;
-				} else {
-					p = buffer.dirname;
-				}
-				if (!wildcasecmp(pattern, p)) {
-					continue;
-				}
-			}
-			/* Format: status|uptime|uploader|group|files|kilobytes|dirname */
-
-if (!matchpath(group_dirs, buffer.dirname)) {
+		/* Format: status|uptime|uploader|group|files|kilobytes|dirname */
+		if (!matchpath(group_dirs, buffer.dirname) && !subcomp(buffer.dirname)) {
 #ifndef USE_GLFTPD132
 			printf("%d|%u|%d|%d|%d|%.0f|",
 				buffer.status, (unsigned int)buffer.uptime, buffer.uploader, buffer.group,
@@ -339,7 +342,7 @@ if (!matchpath(group_dirs, buffer.dirname)) {
 #endif
 			puts(buffer.dirname);
 			i++;
-}
+		}
     	}
     	fclose(fp);
     }
@@ -459,3 +462,80 @@ int wildcasecmp(const char *wild, const char *string)
 	}
 	return !*wild;
 }
+
+/* check for matching subpath
+   psxc - 2004-12-18
+ */
+short int
+subcomp(char *directory)
+{
+	int     k = (int)strlen(directory);
+	int     m = (int)strlen(subdir_list);
+	int     pos = 0, l = 0, n = 0, j = 0;
+	char    tstring[m + 1];
+	char    bstring[k + 1];
+	char    *tpos;
+	char	basepath[PATH_MAX];
+
+	if ( k < 2 )
+		return 0;
+
+	if (basepath)
+		bzero(basepath, k + 1);
+	if ( directory[0] == '/') {
+		while (n < k) {
+			if (directory[n] == '/')
+				pos = n + 1;
+			n++;
+		}
+		tpos = directory + pos;
+		strncpy(bstring, tpos, k);
+		pos = 0;
+		n = 0;
+	} else
+		strncpy(bstring, directory, k + 1);
+	do {
+		switch (subdir_list[l]) {
+		case 0:
+			break;
+		case ',':
+			tstring[j] = '\0';
+			if (n <= j && !strncasecmp(tstring, bstring, j - n)) {
+				if (basepath && ((k - (j -n + 1)) > 0))
+					strncpy(basepath, directory, k - (j - n + 1));
+				else if (basepath)
+					basepath[0] = '\0';
+				return 1;
+			}
+			pos = l;
+			n = 0;
+			j=0;
+			break;
+		case '?':
+			tstring[j] = subdir_list[l];
+			tstring[j+1] = '\0';
+			n++;
+			j++;
+			break;
+		default:
+			tstring[j] = subdir_list[l];
+			tstring[j+1] = '\0';
+			pos++;
+			j++;
+			break;
+		}
+		m--;
+		l++;
+	} while (m);
+	if (n <= j && !strncasecmp(tstring, bstring, j - n)) {
+		if (basepath && ((k - (j -n + 1)) > 0))
+			strncpy(basepath, directory, k - (j - n + 1));
+		else if (basepath)
+			basepath[0] = '\0';
+		return 1;
+	}
+	if (basepath)
+		basepath[0] = '\0';
+	return 0;
+}
+

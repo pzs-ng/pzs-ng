@@ -2,6 +2,8 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.8  --> 1.0.X  :
+		- do not show subdir on !new (showlog binary).
+		- more compat with wzdftpd added.
 		- added some more mp3 settings.
 		- new vars in dzsbot.vars: %vbr_quality %vbr_minimum_bitrate %vbr_noiseshaping
 		                           %vbr_stereomode %vbr_unwise %vbr_source
