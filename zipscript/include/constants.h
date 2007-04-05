@@ -206,7 +206,7 @@
 
 /* Video files - supports mpeg1/mpeg2 and various avi formats */
 #if ( disable_video_race == FALSE )
-#define video_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} \"%K\" {%B} {%$}"
+#define video_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} \"%K\" {%B} {%$} {%D} {%E} {%H}"
 #else
 #define video_race		DISABLED
 #endif
@@ -216,32 +216,32 @@
 #define video_sfv		DISABLED
 #endif
 #if ( disable_video_update == FALSE )
-#define video_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r} \"%K\" {%$}"
+#define video_update		"{%U} {%G} {%f} {%.0S} {%.1e} {%n} {%r} \"%K\" {%$} {%D} {%E} {%H}"
 #else
 #define video_update		DISABLED
 #endif
 #if ( disable_video_halfway == FALSE )
-#define video_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%B} {%$}"
+#define video_halfway		"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} {%B} {%$} {%D} {%E} {%H}"
 #else
 #define video_halfway		DISABLED
 #endif
 #if ( disable_video_newleader == FALSE )
-#define video_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 \"%K\" {%R} {%$}"
+#define video_newleader		"{%U} {%G} {%.0S} {%d} {%F} {%.1p} {%.0m} {%r} {%n} {%u} {%g} {%f} {%M} %C0 %c0 \"%K\" {%R} {%$} {%D} {%E} {%H}"
 #else
 #define video_newleader		DISABLED
 #endif
 #if ( disable_video_complete == FALSE )
-#define video_complete		"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%u} {%g} %l %L %C0 %c0 {%n} {%B} {%t} {%T}"
+#define video_complete		"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%u} {%g} %l %L %C0 %c0 {%n} {%B} {%t} {%T} {%D} {%E} {%H}"
 #else
 #define video_complete		DISABLED
 #endif
 #if ( disable_video_norace_halfway == FALSE )
-#define video_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} \"%K\" {%$}"
+#define video_norace_halfway	"{%r} %C0 %c0 {%.0m} {%F} {%.1p} {%.0A} {%.0a} {%M} {%n} {%u} {%g} {%U} {%G} {%f} \"%K\" {%$} {%D} {%E} {%H}"
 #else
 #define video_norace_halfway	DISABLED
 #endif
 #if ( disable_video_norace_complete == FALSE )
-#define video_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%U} {%G} {%n} \"%K\" %t %T"
+#define video_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%U} {%G} {%n} \"%K\" %t %T {%D} {%E} {%H}"
 #else
 #define video_norace_complete	DISABLED
 #endif

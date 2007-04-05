@@ -94,12 +94,12 @@ struct VIDEO {
 	int		height;
 	int		width;
 	double		fps;
-	char	       *vids;
-	char	       *fourcc;
+	char		vids[30];
+	char		fourcc[15];
 	long		hz;
 	int		ch;
-	char	       *audio;
-	char	       *audiotype;
+	char		audio[30];
+	char		audiotype[30];
 };
 
 struct current_user {
@@ -154,6 +154,7 @@ struct VARS {
 	struct misc	misc;
 	struct audio	audio;
 	struct video	video;
+	struct VIDEO	avinfo;
 	unsigned char	section;
 	char		sectionname[128];
 	char		headpath[PATH_MAX];

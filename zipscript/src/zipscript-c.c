@@ -60,6 +60,7 @@ main(int argc, char **argv)
 #endif
 	char           *fileext = NULL, *name_p, *temp_p = NULL, *temp_p_free = NULL;
 	char           *target = 0;
+	char	       *vinfo = 0;
 	char	       *ext = 0;
         char           *crc_arg = NULL;
 	char           *complete_msg = 0;
@@ -304,6 +305,7 @@ main(int argc, char **argv)
 	g.l.leader = ng_realloc2(g.l.leader, n, 1, 1, 1);
 	g.l.sfv_incomplete = 0;
 	target = ng_realloc2(target, n + 256, 1, 1, 1);
+	vinfo = ng_realloc2(vinfo, sizeof(struct VIDEO *), 1, 1, 1);
 	g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 100, 1, 1, 1);
 	g.gi = ng_realloc2(g.gi, sizeof(struct GROUPINFO *) * 100, 1, 1, 1);
 	d_log("zipscript-c: Copying data g.l into memory\n");
@@ -1286,6 +1288,7 @@ main(int argc, char **argv)
 					avi_video(g.v.file.name, &g.v.video);
 				else
 					mpeg_video(g.v.file.name, &g.v.video);
+				avinfo(g.v.file.name, &g.v.avinfo);
 				race_msg = video_race;
 				update_msg = video_update;
 				halfway_msg = CHOOSE(g.v.total.users, video_halfway, video_norace_halfway);
