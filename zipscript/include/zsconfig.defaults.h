@@ -1161,4 +1161,7 @@
 #ifndef affil_script
 #define affil_script			"/bin/affilscript.sh"
 #endif
+#ifndef sample_list
+#define sample_list			"sample vobsample"
+#endif
 

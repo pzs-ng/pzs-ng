@@ -1489,4 +1489,28 @@ match_lenient(DIR *dir, char *fname)
 	}
 	return 0;
 }
+unsigned int
+insampledir(char *dirname)
+{
+	char	*t = strrchr(dirname, '/');
+	char	sample[sizeof(sample_list)+1];
+	char	*p = NULL;
+
+	if (t == NULL)
+		t = dirname;
+	else
+		t++;
+	strncpy(sample, sample_list, sizeof(sample_list));
+	while (p != sample) {
+		p = strrchr(sample, ' ');
+		if (p != NULL) {
+			*p = '\0';
+			p++;
+		} else
+			p = sample;
+		if (!strncasecmp(t,p,strlen(p)))
+			return 1;
+	}
+	return 0;
+}
 

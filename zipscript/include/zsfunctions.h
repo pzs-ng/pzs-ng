@@ -160,5 +160,6 @@ extern void    *ng_free(void *);
 extern int	copyfile(char *, char *);
 extern int	make_sfv(char *);
 extern unsigned int match_lenient(DIR *, char *);
+extern unsigned int insampledir(char *);
 #endif
 
