@@ -559,7 +559,9 @@ main(int argc, char **argv)
 		d_log("File already marked as bad. Will not process further.\n");
 	else if (!matchpath(nocheck_dirs, g.l.path)) {
 		/* Process file */
-		d_log("zipscript-c: Verifying old racedata\n");
+		d_log("zipscript-c: Verifying old racedata..\n");
+		d_log("zipscript-c:   If this is the first file in the sfv, this will fail (which is normal).\n");
+		d_log("zipscript-c:   Also please note that multiple slashes in the dir is NORMAL - NOT AN ERROR!\n");
 		if (!verify_racedata(g.l.race, &g.v))
 			d_log("zipscript-c:   Failed to open racedata - assuming this is a new race.\n");
 
@@ -1292,6 +1294,14 @@ main(int argc, char **argv)
 				if (insampledir(g.l.path)) {
 					d_log("zipscript-c: Writing SAMPLE announce to %s.\n", log);
 					writelog(&g, convert(&g.v, g.ui, g.gi, sample_msg), sample_announce_type);
+					if (enable_sample_script == TRUE) {
+						d_log("zipscript-c: Executing sample_script (%s).\n", sample_script);
+						if (!fileexists(sample_script))
+							d_log("zipscript-c: Warning - sample_script (%s) - file does not exist!\n", sample_script);
+						sprintf(target, sample_script " \"%s\"", g.v.file.name);
+						if (execute(target) != 0)
+							d_log("zipscript-c: Failed to execute sample_script: %s\n", strerror(errno));
+					}
 				}
 				race_msg = video_race;
 				update_msg = video_update;

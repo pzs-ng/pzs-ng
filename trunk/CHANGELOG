@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.8  --> 1.0.X  :
+		- add support for sample_script.
 		- new var in zsconfig.h - sample_list - list of sample dirs.
 		- added support for special announce on sample upload.
 		- some new avinfo settings added.
