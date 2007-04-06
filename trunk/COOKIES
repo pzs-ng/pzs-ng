@@ -85,6 +85,13 @@
  %D  = Width
  %E  = Height
  %H  = Frame rate (fps) 
+ %;  = Aspect Ratio
+ %:  = Video Type (long)
+ %,  = Video Type (short)
+ %`  = Audio Hz
+ %=  = Audio Channels
+ %>  = Audio Type (name - AC3 etc)
+ %<  = Audio Type (code - 0x2000 etc)
 #
 #
  %J  = RAR Compression method (!! SHOULD NOT BE USED ATM !!)

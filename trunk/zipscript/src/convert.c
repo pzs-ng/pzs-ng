@@ -752,13 +752,37 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				/* Video */
 
 			case 'D':
-				out_p += sprintf(out_p, "%*i", val1, raceI->video.width);
+//				out_p += sprintf(out_p, "%*i", val1, raceI->video.width);
+				out_p += sprintf(out_p, "%*i", val1, raceI->avinfo.width);
 				break;
 			case 'E':
-				out_p += sprintf(out_p, "%*i", val1, raceI->video.height);
+//				out_p += sprintf(out_p, "%*i", val1, raceI->video.height);
+				out_p += sprintf(out_p, "%*i", val1, raceI->avinfo.height);
 				break;
 			case 'H':
-				out_p += sprintf(out_p, "%*s", val1, raceI->video.fps);
+//				out_p += sprintf(out_p, "%*s", val1, raceI->video.fps);
+				out_p += sprintf(out_p, "%*.*f", val1, val2, raceI->avinfo.fps);
+				break;
+			case ';':
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)raceI->avinfo.width/raceI->avinfo.height);
+				break;
+			case ':':
+				out_p += sprintf(out_p, "%*s", val1, raceI->avinfo.vids);
+				break;
+			case ',':
+				out_p += sprintf(out_p, "%*s", val1, raceI->avinfo.fourcc);
+				break;
+			case '`':
+				out_p += sprintf(out_p, "%*lu", val1, raceI->avinfo.hz);
+				break;
+			case '=':
+				out_p += sprintf(out_p, "%*i", val1, (int)raceI->avinfo.ch);
+				break;
+			case '>':
+				out_p += sprintf(out_p, "%*s", val1, raceI->avinfo.audio);
+				break;
+			case '<':
+				out_p += sprintf(out_p, "%*s", val1, raceI->avinfo.audiotype);
 				break;
 
 				/* Other */

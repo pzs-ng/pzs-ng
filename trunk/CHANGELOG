@@ -2,6 +2,11 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.8  --> 1.0.X  :
+		- some new avinfo settings added.
+		- New vars in dzsbot.vars: %video_width %video_height %video_fps %video_aspect
+		                           %video_type_long %video_type_short %video_audio_hz
+		                           %video_audio_channels %video_audio_name
+		                           %video_audio_code
 		- do not show subdir on !new (showlog binary).
 		- more compat with wzdftpd added.
 		- added some more mp3 settings.
