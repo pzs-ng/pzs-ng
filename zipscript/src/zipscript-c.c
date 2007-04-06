@@ -1110,7 +1110,8 @@ main(int argc, char **argv)
 			if (g.v.misc.release_type == RTYPE_NULL) {
 				if (israr(fileext))
 					g.v.misc.release_type = RTYPE_RAR;	/* .RAR / .R?? */
-				else if (isvideo(fileext))
+//				else if (isvideo(fileext))
+				else if (strcomp(video_types, fileext))
 					g.v.misc.release_type = RTYPE_VIDEO;	/* AVI/MPEG */
 				else if (!memcmp(fileext, "mp3", 4))
 					g.v.misc.release_type = RTYPE_AUDIO;	/* MP3 */
@@ -1290,8 +1291,7 @@ main(int argc, char **argv)
 //					avi_video(g.v.file.name, &g.v.video);
 //				else
 //					mpeg_video(g.v.file.name, &g.v.video);
-				avinfo(g.v.file.name, &g.v.avinfo);
-				if (insampledir(g.l.path)) {
+				if (!avinfo(g.v.file.name, &g.v.avinfo) && insampledir(g.l.path)) {
 					d_log("zipscript-c: Writing SAMPLE announce to %s.\n", log);
 					writelog(&g, convert(&g.v, g.ui, g.gi, sample_msg), sample_announce_type);
 					if (enable_sample_script == TRUE) {
