@@ -693,7 +693,7 @@ int avinfo(char *filename, struct VIDEO *vinfo)
 	for (i = 0; video_formats[i].tag; i++)
 		if (!strcasecmp(video_formats[i].tag, fourcc_vids))
 			_vids = video_formats[i].descr;
-/*
+
 	if (hz || ch || auds)
 		sprintf(buf,
 			"Video: %dx%d (%.2f), %.3f fps, %s [%s] - "
@@ -705,8 +705,7 @@ int avinfo(char *filename, struct VIDEO *vinfo)
 			"Video: %dx%d (%.2f), %.3f fps, %s [%s] - "
 			"No audio",
 			width, height, (double)width/height, fps, _vids, fourcc(vids));
-	printf("%s\n", buf);
- */
+	d_log("avinfo: %s\n", buf);
 	vinfo->width = width;
 	vinfo->height = height;
 	vinfo->fps = fps;
