@@ -349,6 +349,8 @@ israr(char *fileext)
  * 
  * Description: Checks if file is known mpeg/avi file
  */
+/*
+ * Obsolete - commented out - will be removed.
 char 
 isvideo(char *fileext)
 {
@@ -368,6 +370,7 @@ isvideo(char *fileext)
 
 	return 0;
 }
+ */
 
 /*
  * Modified: 2004-11-17 (psxc) - added support to modify the chars used in the progressbar

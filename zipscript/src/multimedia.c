@@ -595,8 +595,6 @@ int avinfo(char *filename, struct VIDEO *vinfo)
 	int width = 0, height = 0, i;
 	char buf[1024], fourcc_vids[5];
 	const char *_vids = "Unknown codec", *_auds = "Unknown codec";
-	char *vidnfo = 0;
-	vidnfo = malloc(1024);
 
 	f = fopen(filename, "rb");
 

@@ -118,7 +118,7 @@ extern void	strtolower(char *);
 extern void	space_to_dot(char *);
 extern void	unlink_missing(char *);
 extern char	israr(char *);
-extern char	isvideo(char *);
+//extern char	isvideo(char *);
 extern void	buffer_progress_bar(struct VARS *);
 extern void	move_progress_bar(unsigned char, struct VARS *, struct USERINFO **, struct GROUPINFO **);
 extern int	check_dupefile(DIR *, char *);
