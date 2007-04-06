@@ -1,3 +1,4 @@
+
 /*
  * zsconfig.defaults.h - ZipScript-C default config file
  * 
@@ -910,6 +911,17 @@
 #ifndef unduper_script
 #define unduper_script		"/bin/ng-undupe"
 #endif
+
+/*
+ * Enable/disable sample script (only run in sample dirs (see sample_list))
+ */
+#ifndef enable_sample_script
+#define enable_sample_script	FALSE
+#endif
+#ifndef sample_script
+#define sample_script		"/bin/sample_script.sh"
+#endif
+
 
 /*
  * The following settings allow you to disable certain announces. This should
