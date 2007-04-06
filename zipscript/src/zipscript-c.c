@@ -1339,6 +1339,18 @@ main(int argc, char **argv)
 
 		case 4:	/* ACCEPTED FILE */
 			d_log("zipscript-c: File type: NO CHECK\n");
+			if (!matchpath(group_dirs, g.l.path) && !matchpath(nocheck_dirs, g.l.path) && insampledir(g.l.path) && strcomp(video_types, fileext) && !avinfo(g.v.file.name, &g.v.avinfo)) {
+				d_log("zipscript-c: Writing SAMPLE announce to %s.\n", log);
+				writelog(&g, convert(&g.v, g.ui, g.gi, sample_msg), sample_announce_type);
+				if (enable_sample_script == TRUE) {
+					d_log("zipscript-c: Executing sample_script (%s).\n", sample_script);
+					if (!fileexists(sample_script))
+						d_log("zipscript-c: Warning - sample_script (%s) - file does not exist!\n", sample_script);
+					sprintf(target, sample_script " \"%s\"", g.v.file.name);
+					if (execute(target) != 0)
+						d_log("zipscript-c: Failed to execute sample_script: %s\n", strerror(errno));
+				}
+			}
 			no_check = TRUE;
 			break;
 			/* END OF ACCEPTED FILE CHECK */
