@@ -555,7 +555,8 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 					music++;
 				else if (israr(ptr))
 					rars++;
-				else if (isvideo(ptr))
+//				else if (isvideo(ptr))
+				else if (strcomp(video_types, ptr))
 					video++;
 				else
 					others++;

@@ -323,6 +323,12 @@ ignored_types <STRING>
 	commonly make, like .imdb, .html, .url, .m3u etc.
 	Default: ",diz,debug,message,imdb,html,url"
 
+video_types <STRING>
+	Comma-separated list of files considered to be video files. Should
+	usually not be changed, but may need to be if a 3rd party script handle
+	sample info.
+	Default: "mpg,mpeg,m2v,m2p,avi"
+
 allow_files_not_in_sfv <TRUE|FALSE>
 	Should we allow files uploaded that is not in the sfv? This is only
 	valid on upload (not rescan etc), and is normally not used. Please

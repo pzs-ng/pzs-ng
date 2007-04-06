@@ -298,6 +298,13 @@
 #endif
 
 /*
+ * These file types are considered 'video' files.
+ */
+#ifndef video_types
+#define video_types		"mpg,mpeg,m2v,m2p,avi"
+#endif
+
+/*
  * Should we allow files uploaded that is not in the sfv? This is only valid
  * on upload (not rescan etc), and is normally not used.
  */
