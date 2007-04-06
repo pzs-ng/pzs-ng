@@ -202,6 +202,8 @@ announce.COMPLETE_STAT_RACE_ZIP         = "[%b{done  }][%section] %b{%reldir} wi
 ## Postdel announce
 announce.INCOMPLETE             = "[%b{d0h!  }][%section] %b{%releasename} is now incomplete thanks to %b{%u_name} of %b{%g_name}."
 
+announce.SAMPLEDIR              = "[%b{sample}][%section] %b{%relname} recieved sample with the following specs: %b{%video_width}x%b{%video_height} (%b{video_aspect}) / %b{%video_fps}fps of %b{%video_type_short} with %b{video_audio_name} (%b{%video_audio_hz}Hz/%b{%video_audio_channels} channels)"
+
 ## Third party scripts
 announce.PRE                    = "[%b{%c1{pre}   }][%section] %b{%relname} by %b{%pregroup} in %b{%files} files (%b{%mbytes}MB)."
 announce.TURGEN                 = "%msg"
@@ -258,3 +260,4 @@ announce.NUKES_NONE             = "%b{-} No nukes found."
 announce.UNNUKES                = "%b{(UNNUKES)} Latest Unnukes In: %b{%section}"
 announce.UNNUKES_BODY           = "%b{-} %date %b{%reldir} was unnuked %b{%multiplier}x by %b{%unnuker}. Reason: %b{%reason}"
 announce.UNNUKES_NONE           = "%b{-} No unnukes found."
+

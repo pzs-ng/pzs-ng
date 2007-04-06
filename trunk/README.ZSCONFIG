@@ -173,6 +173,10 @@ subdir_list <STRING>
 	The string is not case-sensitive (dVd == DvD).
 	Default: "cd??,disc??,disk??,dvd??,extra?,sub?,subtitles,vobsub?,sample?,subpack?,ac3,audioaddon,addon,ac3addon"
 
+sample_list <STRING>
+	This is a list of sample-dirs. The list is not case-sensitive.
+	Default: "sample vobsample"
+
 gl_sections <STRING>
 	Here you should put a list of all sections on your site. Sections is
 	not the same as dirs, but is what you have defined as sections in

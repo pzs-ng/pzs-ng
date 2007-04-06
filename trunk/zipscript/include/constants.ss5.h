@@ -117,12 +117,15 @@
 #define bad_file_zipnfo_type				"BAD_FILE_ZIPNFO"
 #define bad_file_duperelease_type			"BAD_FILE_DUPERELEASE"
 #define bad_file_speedtest_type				"ULTEST"
+#define sample_announce_type				"SAMPLEDIR"
 
 #define deny_double_msg		"{%U} {%G} {%r} {%n}"
 #define deny_resumesfv_msg	"{%U} {%G} {%r} {%n}"
 #define audio_cbr_warn_msg	"{%U} {%G} {%X}"
 #define audio_year_warn_msg	"{%U} {%G} {%Y}"
 #define audio_genre_warn_msg	"{%U} {%G} {%w}"
+
+#define sample_msg		"{%u} {%g} {%D} {%E} {%.3H} {%.2;} {%:} {%,} {%`} {%=} {%>} {%<}"
 
 #define pre_stats		"UserTop: "
 #define between_stats		"GroupTop: "

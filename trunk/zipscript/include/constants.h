@@ -115,6 +115,7 @@
 #define bad_file_zipnfo_type				"BAD_FILE_ZIPNFO"
 #define bad_file_duperelease_type			"BAD_FILE_DUPERELEASE"
 #define bad_file_speedtest_type				"ULTEST"
+#define sample_announce_type				"SAMPLEDIR"
 
 #define vbrnew						"vbr-new"
 #define vbrold						"vbr-old"
@@ -124,6 +125,8 @@
 #define audio_cbr_warn_msg	"{%U} {%G} {%X}"
 #define audio_year_warn_msg	"{%U} {%G} {%Y}"
 #define audio_genre_warn_msg	"{%U} {%G} {%w}"
+
+#define sample_msg		"{%U} {%G} {%D} {%E} {%.3H} {%.2;} {%:} {%,} {%`} {%=} {%>} {%<}"
 
 #define pre_stats		"dummy_pre_stats"
 #define between_stats		"dummy_between_stats"

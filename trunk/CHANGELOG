@@ -2,6 +2,8 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.8  --> 1.0.X  :
+		- new var in zsconfig.h - sample_list - list of sample dirs.
+		- added support for special announce on sample upload.
 		- some new avinfo settings added.
 		- New vars in dzsbot.vars: %video_width %video_height %video_fps %video_aspect
 		                           %video_type_long %video_type_short %video_audio_hz

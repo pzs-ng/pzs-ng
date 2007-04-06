@@ -1283,12 +1283,16 @@ main(int argc, char **argv)
 				}
 				break;
 			case RTYPE_VIDEO:
-				d_log("zipscript-c: Trying to read video header\n");
+				d_log("zipscript-c: Trying to read video header.\n");
 //				if (!memcmp(fileext, "avi", 3))
 //					avi_video(g.v.file.name, &g.v.video);
 //				else
 //					mpeg_video(g.v.file.name, &g.v.video);
 				avinfo(g.v.file.name, &g.v.avinfo);
+				if (insampledir(g.l.path)) {
+					d_log("zipscript-c: Writing SAMPLE announce to %s.\n", log);
+					writelog(&g, convert(&g.v, g.ui, g.gi, sample_msg), sample_announce_type);
+				}
 				race_msg = video_race;
 				update_msg = video_update;
 				halfway_msg = CHOOSE(g.v.total.users, video_halfway, video_norace_halfway);
