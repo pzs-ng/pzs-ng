@@ -129,6 +129,7 @@ set redirect(BADPASSWORD)   $staffchan
 set redirect(BANNEDHOST)    $staffchan
 set redirect(DELETED)       $staffchan
 set redirect(IPNOTADDED)    $staffchan
+set redirect(WHOIS)         $staffchan
 
 ## Script announcements
 set disable(DEFAULT)        0
@@ -153,3 +154,5 @@ set disable(IMDBFIND)       0
 set disable(IMDBVAR)        0
 set disable(PRE)            0
 set disable(TURGEN)         0
+set disable(WHOIS)          0
+
