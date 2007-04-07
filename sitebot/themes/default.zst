@@ -1,4 +1,3 @@
-#######
 # This is the default theme for pzs-ng's dZSbot.
 # For a list of variables you can use, please see sitebot/COOKIES
 #
@@ -207,6 +206,7 @@ announce.SAMPLEDIR              = "[%b{sample}][%section] %b{%path} has the foll
 ## Third party scripts
 announce.PRE                    = "[%b{%c1{pre}   }][%section] %b{%relname} by %b{%pregroup} in %b{%files} files (%b{%mbytes}MB)."
 announce.TURGEN                 = "%msg"
+announce.WHOIS                  = "[%b{whois }] %msg"
 
 ## Miscellaneous announcements
 announce.BADMSGINVITE           = "[%b{%c1{badinv}}] %b{%u_ircnick} (%u_host) tried to invite himself with invalid login!"

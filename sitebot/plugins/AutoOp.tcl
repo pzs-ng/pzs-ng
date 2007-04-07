@@ -14,13 +14,16 @@
 #    source pzs-ng/plugins/AutoOp.tcl
 #
 # 2. Add the following lines to your dZSbot.conf:
+#    (NOTE BY PSXC: This is already done)
 #    set variables(WHOIS)   "%msg"
 #    set redirect(WHOIS)    $staffchan
 #    set disable(WHOIS)     0
 #
 #    and add "WHOIS" at the end of your msgtypes(DEFAULT) line.
+#    (NOTE BY PSXC: This is already done)
 #
 # 4. Add the following line to your theme file:
+#    (NOTE BY PSXC: This is already done)
 #    announce.WHOIS = "%b{[WHOIS]} %msg"
 #
 # 5. Rehash or restart your eggdrop for the changes to take effect.
