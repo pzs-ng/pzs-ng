@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.8  --> 1.0.X  :
+		- added Pee's AutoOp.tcl plugin (untested).
 		- added option video_types in zsconfig.h - list of video types.
 		- added support for sample_script.
 		- new var in zsconfig.h - sample_list - list of sample dirs.
