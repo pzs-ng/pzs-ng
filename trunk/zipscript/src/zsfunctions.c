@@ -1160,7 +1160,7 @@ writelog(GLOBAL *g, char *msg, char *status)
 		while (1) {
 			switch (*newline++) {
 			case 0:
-				fprintf(glfile, "%.24s %s: \"%s\" %s\n", g->l.path, date, status, line);
+				fprintf(glfile, "%.24s %s: \"%s\" %s\n", date, status, g->l.path, line);
 				fclose(glfile);
 				return;
 			case '\n':
