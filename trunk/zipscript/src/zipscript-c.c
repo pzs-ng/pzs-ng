@@ -177,6 +177,7 @@ main(int argc, char **argv)
 	if (strncmp(g.l.path, g.l.basepath, PATH_MAX))
 		d_log("zipscript-c: We are in subdir of %s\n", g.l.basepath);
 	strncpy(g.v.misc.current_path, g.l.path, sizeof(g.v.misc.current_path));
+	strncpy(g.v.misc.basepath, g.l.basepath, sizeof(g.v.misc.basepath));
 
 #if ( wzdftpd_compatible == TRUE )
         d_log("zipscript-c: Reading data from commandline (wzdftpd compatible)\n");
@@ -202,8 +203,7 @@ main(int argc, char **argv)
 
         /* XXX We need a better way to handle this. wzd supports sections too.. ;-)
          * (But without userfile reading etc, it's all futile!) */
-#if 0
-        temp_p_free = temp_p = strdup((const char *)gl_sections);	/* temp_p_free is needed since temp_p is modified by strsep */
+#if 0        temp_p_free = temp_p = strdup((const char *)gl_sections);	/* temp_p_free is needed since temp_p is modified by strsep */
         if ((temp_p) == NULL) {
                 d_log("zipscript-c: Can't allocate memory for sections\n");
         } else {
@@ -506,7 +506,7 @@ main(int argc, char **argv)
 		d_log("zipscript-c: Dir matched speedtest_dirs\n");
 		sprintf(g.v.misc.error_msg, SPEEDTEST, ((double)g.v.file.size/1000./1000.), ((double)g.v.file.size/1024./1024.), ((double)g.v.file.speed*8/1000./1000.), ((double)g.v.file.speed/1024./1024.));
 		write_log = g.v.misc.write_log;
-		g.v.misc.write_log = 1;
+		g.v.misc.write_log = TRUE;
 		mark_as_bad(g.v.file.name);
 		g.v.total.size = g.v.file.size;
 		error_msg = convert(&g.v, g.ui, g.gi, speedtest_msg);
@@ -1292,8 +1292,11 @@ main(int argc, char **argv)
 //				else
 //					mpeg_video(g.v.file.name, &g.v.video);
 				if (!avinfo(g.v.file.name, &g.v.avinfo) && insampledir(g.l.path)) {
-					d_log("zipscript-c: Writing SAMPLE announce to %s.\n", log);
+					d_log("zipscript-c: Writing %s announce to %s.\n", sample_announce_type, log);
+					write_log = g.v.misc.write_log;
+					g.v.misc.write_log = TRUE;
 					writelog(&g, convert(&g.v, g.ui, g.gi, sample_msg), sample_announce_type);
+					g.v.misc.write_log = write_log;
 					if (enable_sample_script == TRUE) {
 						d_log("zipscript-c: Executing sample_script (%s).\n", sample_script);
 						if (!fileexists(sample_script))
@@ -1340,8 +1343,11 @@ main(int argc, char **argv)
 		case 4:	/* ACCEPTED FILE */
 			d_log("zipscript-c: File type: NO CHECK\n");
 			if (!matchpath(group_dirs, g.l.path) && !matchpath(nocheck_dirs, g.l.path) && insampledir(g.l.path) && strcomp(video_types, fileext) && !avinfo(g.v.file.name, &g.v.avinfo)) {
-				d_log("zipscript-c: Writing SAMPLE announce to %s.\n", log);
+				d_log("zipscript-c: Writing %s announce to %s.\n", sample_announce_type, log);
+				write_log = g.v.misc.write_log;
+				g.v.misc.write_log = TRUE;
 				writelog(&g, convert(&g.v, g.ui, g.gi, sample_msg), sample_announce_type);
+				g.v.misc.write_log = write_log;
 				if (enable_sample_script == TRUE) {
 					d_log("zipscript-c: Executing sample_script (%s).\n", sample_script);
 					if (!fileexists(sample_script))

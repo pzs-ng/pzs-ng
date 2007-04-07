@@ -94,6 +94,8 @@ trim(char *string)
  * 
  * Description : Reads height, width and fps from mpeg file.
  */
+/*
+ * obsolete - will be removed
 void 
 mpeg_video(char *f, struct video *video)
 {
@@ -136,12 +138,15 @@ mpeg_video(char *f, struct video *video)
 
 	close(fd);
 }
+ */
 
 /*
  * Updated     : 01.22.2002 Author      : Dark0n3
  * 
  * Description : Reads height, width and fps from avi file.
  */
+/*
+ * obsolete - will be removed
 char		fps_t     [10];
 void 
 avi_video(char *f, struct video *video)
@@ -167,7 +172,7 @@ avi_video(char *f, struct video *video)
 	}
 	close(fd);
 }
-
+ */
 char           *
 get_preset(char vbr_header[4])
 {
