@@ -84,11 +84,11 @@ struct audio {
 	char		vbr_source[10];
 };
 
-struct video {
-	int		height;
-	int		width;
-	char	       *fps;
-};
+//struct video {
+//	int		height;
+//	int		width;
+//	char	       *fps;
+//};
 
 struct VIDEO {
 	int		height;
@@ -135,6 +135,7 @@ struct misc {
 	char		old_leader[24];
 	char            release_name[PATH_MAX];
 	char	        current_path[PATH_MAX];
+	char		basepath[PATH_MAX];
 	char		racer_list[1024];
 	char		total_racer_list[1024];
 	char		top_messages[2][1024];
@@ -145,25 +146,6 @@ struct misc {
 	long		fastest_user[2];
 	long		slowest_user[2];
 	unsigned int	data_completed;
-};
-
-struct VARS {
-	struct current_user user;
-	struct current_file file;
-	struct race_total total;
-	struct misc	misc;
-	struct audio	audio;
-	struct video	video;
-	struct VIDEO	avinfo;
-	unsigned char	section;
-	char		sectionname[128];
-	char		headpath[PATH_MAX];
-	unsigned int	data_incrementor;
-	unsigned int	data_in_use;
-	unsigned int	data_queue;
-	unsigned int	data_type;
-	char		id3_artist[31];
-	char		id3_genre[31];
 };
 
 struct LOCATIONS {
@@ -181,6 +163,25 @@ struct LOCATIONS {
 	unsigned int	length_path;
 	unsigned int	length_zipdatadir;
 	unsigned int	in_cd_dir;
+};
+
+struct VARS {
+	struct current_user user;
+	struct current_file file;
+	struct race_total total;
+	struct misc	misc;
+	struct audio	audio;
+//	struct video	video;
+	struct VIDEO	avinfo;
+	unsigned char	section;
+	char		sectionname[128];
+	char		headpath[PATH_MAX];
+	unsigned int	data_incrementor;
+	unsigned int	data_in_use;
+	unsigned int	data_queue;
+	unsigned int	data_type;
+	char		id3_artist[31];
+	char		id3_genre[31];
 };
 
 /* passing this around is a lot easier than passing

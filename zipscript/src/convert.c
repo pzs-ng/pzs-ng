@@ -155,6 +155,12 @@ convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, 
 					break;
 				case '%':
 					*out_p++ = *instr;
+				case '~':
+					out_p += sprintf(out_p, "%*s", val1, raceI->misc.current_path);
+					break;
+				case '^':
+					out_p += sprintf(out_p, "%*s", val1, raceI->misc.basepath);
+					break;
 				}
 			} else {
 				*out_p++ = *instr;
@@ -260,6 +266,13 @@ convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short int gr
 				break;
 			case '%':
 				*out_p++ = *instr;
+				break;
+			case '~':
+				out_p += sprintf(out_p, "%*s", val1, raceI->misc.current_path);
+				break;
+			case '^':
+				out_p += sprintf(out_p, "%*s", val1, raceI->misc.basepath);
+				break;
 			}
 		} else
 			*out_p++ = *instr;
@@ -375,6 +388,12 @@ convert4(struct VARS *raceI, char *instr)
 			case 'I':
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.vbr_preset);
 				break;
+			case '~':
+				out_p += sprintf(out_p, "%*s", val1, raceI->misc.current_path);
+				break;
+			case '^':
+				out_p += sprintf(out_p, "%*s", val1, raceI->misc.basepath);
+				break;
 			}
 		} else
 			*out_p++ = *instr;
@@ -432,6 +451,7 @@ convert5(char *instr)
 				break;
 			case '%':
 				*out_p++ = *instr;
+				break;
 			}
 		} else
 			*out_p++ = *instr;
@@ -798,6 +818,12 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				break;
 			case '?':
 				out_p += sprintf(out_p, "%*s", val1, raceI->misc.current_path);
+				break;
+			case '~':
+				out_p += sprintf(out_p, "%*s", val1, raceI->misc.current_path);
+				break;
+			case '^':
+				out_p += sprintf(out_p, "%*s", val1, raceI->misc.basepath);
 				break;
 			}
 		} else

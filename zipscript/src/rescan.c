@@ -163,7 +163,13 @@ main(int argc, char *argv[])
 		return 1;
 
 	getcwd(g.l.path, PATH_MAX);
-	strncpy(g.v.misc.current_path, g.l.path, sizeof(g.v.misc.current_path));
+
+	if (subcomp(g.l.path, g.l.basepath) && (g.l.basepath[0] == '\0'))
+		strlcpy(g.l.basepath, g.l.path, PATH_MAX);
+	if (strncmp(g.l.path, g.l.basepath, PATH_MAX))
+		d_log("rescan: We are in subdir of %s\n", g.l.basepath);
+        strncpy(g.v.misc.current_path, g.l.path, sizeof(g.v.misc.current_path));
+        strncpy(g.v.misc.basepath, g.l.basepath, sizeof(g.v.misc.basepath));
 
 	if ((matchpath(nocheck_dirs, g.l.path) && !rescan_nocheck_dirs_allowed) || (matchpath(group_dirs, g.l.path) && argv_mode) || (!matchpath(nocheck_dirs, g.l.path) && !matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
 		d_log("rescan: Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
