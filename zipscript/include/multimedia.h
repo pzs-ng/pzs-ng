@@ -11,7 +11,7 @@ char *trim(char *);
 char *get_preset(char[4]);
 void get_mpeg_audio_info(char *, struct audio *);
 
-const char *fourcc(FOURCC);
+const unsigned char *fourcc(FOURCC);
 void avierror(const char *);
 DWORD get32(FILE *);
 WORD get16(FILE *);

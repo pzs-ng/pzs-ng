@@ -546,7 +546,7 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 //	sprintf(audio->bitrate, "%.0f", get_mp3_info(f));
 }
 
-const char *fourcc(FOURCC tag)
+const unsigned char *fourcc(FOURCC tag)
 {
 	static unsigned char buf[5];
 	int i;
@@ -691,7 +691,7 @@ int avinfo(char *filename, struct VIDEO *vinfo)
 		if (audio_formats[i].tag == auds)
 			_auds = audio_formats[i].descr;
 
-	strcpy(fourcc_vids, fourcc(vids));
+	strcpy(fourcc_vids, (char *)fourcc(vids));
 
 	for (i = 0; video_formats[i].tag; i++)
 		if (!strcasecmp(video_formats[i].tag, fourcc_vids))
