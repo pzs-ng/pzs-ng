@@ -7,4 +7,4 @@
  * So just leave this, so that you can identify a svn revision versus a normal release. :-)
  ***/
 
-const char* ng_version(void) { const char* NG_Version = "svn-checkout"; return NG_Version; }
+const char* ng_version = "svn-checkout";

@@ -66,7 +66,7 @@ main(int argc, char **argv)
 		return 0;
 	}
 
-	d_log("postdel: Project-ZS Next Generation (pzs-ng) %s debug log for postdel.\n", ng_version());
+	d_log("postdel: Project-ZS Next Generation (pzs-ng) %s debug log for postdel.\n", ng_version);
 
 #ifdef _ALT_MAX
 	d_log("postdel: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
