@@ -43,3 +43,6 @@ clean:
 #	$(RM) ng-bw passchk showlog
 	$(RM) passchk showlog dl_speedtest
 
+strip:
+	strip passchk showlog dl_speedtest
+

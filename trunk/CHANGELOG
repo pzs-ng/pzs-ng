@@ -2,6 +2,8 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.8  --> 1.0.X  :
+		- fixed a bug in showlog.
+		- fixed a bug with no-nfo symlinks being created if if nfo existed.
 		- added Pee's AutoOp.tcl plugin (untested).
 		- added option video_types in zsconfig.h - list of video types.
 		- added support for sample_script.
