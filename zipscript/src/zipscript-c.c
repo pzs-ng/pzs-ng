@@ -113,7 +113,7 @@ main(int argc, char **argv)
 	/*
 	 * Adding version-number to head if .debug message 15.09.2004 - psxc
 	 */
-	d_log("zipscript-c: Project-ZS Next Generation (pzs-ng) v%s debug log.\n", ng_version());
+	d_log("zipscript-c: Project-ZS Next Generation (pzs-ng) %s debug log.\n", ng_version());
 
 #ifdef _ALT_MAX
 	d_log("zipscript-c: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
@@ -136,14 +136,14 @@ main(int argc, char **argv)
 #if ( wzdftpd_compatible == TRUE )
 	if (argc < 8) {
 		d_log("zipscript-c: Wrong number of arguments used (wzdftpd compatible)\n");
-		printf(" - - PZS-NG ZipScript-C v%s - -\n\nUsage: %s <absolute filepath> <crc> <user> <group> <tagline> <speed> <section>\n\n", ng_version(), argv[0]);
+		printf(" - - PZS-NG ZipScript-C %s - -\n\nUsage: %s <absolute filepath> <crc> <user> <group> <tagline> <speed> <section>\n\n", ng_version(), argv[0]);
 		exit(1);
 	}
         crc_arg = argv[2];
 #else
 	if (argc < 4) {
 		d_log("zipscript-c: Wrong number of arguments used\n");
-		printf(" - - PZS-NG ZipScript-C v%s - -\n\nUsage: %s <filename> <path> <crc>\n\n", ng_version(), argv[0]);
+		printf(" - - PZS-NG ZipScript-C %s - -\n\nUsage: %s <filename> <path> <crc>\n\n", ng_version(), argv[0]);
 		exit(1);
 	}
         crc_arg = argv[3];
