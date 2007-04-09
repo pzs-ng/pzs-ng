@@ -155,7 +155,7 @@ AC_ARG_WITH(glpath,
 
 if [[ "$GLVERSION" = "detect" ]]; then
   if [[ ! -d "$GLPATH" ] || [ ! -x "${GLPATH}/bin/glftpd" ]]; then
-    AC_MSG_ERROR([Invalid glpath "$GLPATH". Use ./configure --with-glpath=PATH with a valid path! (or --enable-gl(132|200) to disable autodetect). Quitting!])
+    AC_MSG_ERROR([Invalid glpath "$GLPATH". Use ./configure --with-glpath=PATH with a valid path! (or --enable-gl(132|200|201) to disable autodetect). Quitting!])
   fi
   glversion="`strings $GLPATH/bin/glftpd | grep -i '^glftpd ' | cut -c8-11 | tr -d '.'`"
   #echo "$v" | grep -E "^(132)|(200)|(201)$"

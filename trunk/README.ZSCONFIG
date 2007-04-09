@@ -378,6 +378,8 @@ debug_altlog <TRUE|FALSE>
 	note that if you choose to put the debug file in the 'storage' path,
 	some debug-info may be lost. Setting this to TRUE will use the
 	'storage' path, while FALSE will use the upload-dir.
+        Note that this also uses different name. It will be named 'debug' and not
+        'debug'.
 	Default: TRUE
 
 debug_announce <TRUE|FALSE>

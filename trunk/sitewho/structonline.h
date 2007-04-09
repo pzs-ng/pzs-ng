@@ -1,5 +1,5 @@
 #if ( GLVERSION == 201 )
-#warning :compiling for glftpd 2.01rc1
+#warning :compiling for glftpd 2.01
 struct ONLINE {
   char   tagline[64];             /* The users tagline */
   char   username[24];            /* The username of the user */

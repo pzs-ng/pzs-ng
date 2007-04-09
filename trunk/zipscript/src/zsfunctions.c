@@ -2,6 +2,8 @@
 #include <fnmatch.h>
 #include "zsfunctions.h"
 
+#include "ng-version.h"
+
 #include "abs2rel.h"
 
 #ifdef _WITH_SS5
@@ -17,10 +19,6 @@
 #include <strl/strl.h>
 #include <stdarg.h>
 
-/*struct dirent **dirlist;
-struct dirent **dirlistp;
-unsigned int	direntries = 0;
-unsigned int	direntriesp = 0;*/
 int		num_groups = 0, num_users = 0;
 struct USER   **user;
 struct GROUP  **group;
@@ -53,12 +51,12 @@ d_log(char *fmt,...)
 
 #if ( debug_altlog == TRUE )
 	getcwd(debugpath, PATH_MAX);
-	snprintf(debugname, PATH_MAX, "%s/%s/.debug",
+	snprintf(debugname, PATH_MAX, "%s/%s/debug",
 	         storage, debugpath);
 #endif
 
 	if ((file = fopen(debugname, "a+"))) {
-		fprintf(file, "%.24s - %.6d - ", ctime(&timenow), getpid());
+		fprintf(file, "%.24s - %.6d - %s - ", ctime(&timenow), getpid(), ng_version);
 		vfprintf(file, fmt, ap);
 		fclose(file);
 #if ( debug_announce == TRUE)
