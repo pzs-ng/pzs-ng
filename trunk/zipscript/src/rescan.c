@@ -63,7 +63,7 @@ main(int argc, char *argv[])
 
 	umask(0666 & 000);
 
-	d_log("rescan: PZS-NG (rescan v2) v%s debug log.\n", ng_version());
+	d_log("rescan: PZS-NG (rescan v2) %s debug log.\n", ng_version());
 
 #ifdef _ALT_MAX
 	d_log("rescan: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
@@ -108,7 +108,7 @@ main(int argc, char *argv[])
 				printf("Not allowed to chdir() to %s\n", temp_p);
 				return 1;
 			}
-			printf("PZS-NG Rescan v%s: Rescanning %s\n", ng_version(), temp_p);
+			printf("PZS-NG Rescan %s: Rescanning %s\n", ng_version(), temp_p);
 			argv_mode = 1;
 
 		} else if (!strncasecmp(argv[argnum], "--chroot=", 9) && (strlen(argv[argnum]) > 10) && chdir_allowed) {
@@ -123,11 +123,11 @@ main(int argc, char *argv[])
 				printf("Not allowed to chroot() to %s\n", temp_p);
 				return 1;
 			}
-			printf("PZS-NG Rescan v%s: Chroot'ing to %s\n", ng_version(), temp_p);
+			printf("PZS-NG Rescan %s: Chroot'ing to %s\n", ng_version(), temp_p);
 			argv_mode = 1;
 
 		} else if (!strncasecmp(argv[argnum], "--help", 6) || !strncasecmp(argv[argnum], "/?", 2) || !strncasecmp(argv[argnum], "--?", 3)) {
-			printf("PZS-NG Rescan v%s options:\n\n", ng_version());
+			printf("PZS-NG Rescan %s options:\n\n", ng_version());
 			printf("  --quick         - scan in quick mode - only files not previously marked as ok by the zipscript is scanned\n");
 			printf("  --normal        - scan in normal mode - all files will be rescanned regardless of their status\n");
 			if (chdir_allowed)
@@ -138,11 +138,11 @@ main(int argc, char *argv[])
 		} else {
 			strncpy(one_name, argv[argnum], NAME_MAX - 1);
 			rescan_quick = FALSE;
-			printf("PZS-NG Rescan v%s: Rescanning in FILE mode\n", ng_version());
+			printf("PZS-NG Rescan %s: Rescanning in FILE mode\n", ng_version());
 			if (one_name[strlen(one_name) - 1] == '*') {
 				one_name[strlen(one_name) - 1] = '\0';
 			} else if (!fileexists(one_name)) {
-				d_log("PZS-NG Rescan v%s: No file named '%s' exists.\n", ng_version(), one_name);
+				d_log("PZS-NG Rescan %s: No file named '%s' exists.\n", ng_version(), one_name);
 				one_name[0] = '\0';
 			}
 			not_allowed = 1;
@@ -152,12 +152,12 @@ main(int argc, char *argv[])
 	} 
 	if (one_name[0] == '\0') {
 		if (rescan_quick == TRUE) {
-			printf("PZS-NG Rescan v%s: Rescanning in QUICK mode.\n", ng_version());
+			printf("PZS-NG Rescan %s: Rescanning in QUICK mode.\n", ng_version());
 		} else {
-			printf("PZS-NG Rescan v%s: Rescanning in NORMAL mode.\n", ng_version());
+			printf("PZS-NG Rescan %s: Rescanning in NORMAL mode.\n", ng_version());
 		}
 	}
-	printf("PZS-NG Rescan v%s: Use --help for options.\n\n", ng_version());
+	printf("PZS-NG Rescan %s: Use --help for options.\n\n", ng_version());
 
 	if (not_allowed)
 		return 1;
