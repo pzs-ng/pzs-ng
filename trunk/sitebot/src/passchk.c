@@ -173,10 +173,10 @@ pw_encrypt_new(const unsigned char *pw_pwd, unsigned char *encryp, char *digest)
 		salt++;
 		hexconvert[1] = (*salt);
 		salt++;
-		real_salt[i] = strtol(hexconvert, NULL, 16);
+		real_salt[i] = strtol((char *)hexconvert, NULL, 16);
 	}
 
-	PKCS5_PBKDF2_HMAC_SHA1(pw_pwd, (int)strlen(pw_pwd), real_salt, SHA_SALT_LEN, 100,
+	PKCS5_PBKDF2_HMAC_SHA1((char *)pw_pwd, (int)strlen((char *)pw_pwd), real_salt, SHA_SALT_LEN, 100,
 			       mdlen, md);
 
 	*digest = '$';
@@ -239,8 +239,8 @@ main(int argc, char *argv[])
 					 (SHA_DIGEST_LENGTH * 2 + 1));
 				return 1;
 			}
-			pw_encrypt_new((unsigned char *)argv[2], buf->pw_passwd,
-				       crypted);
+			pw_encrypt_new((unsigned char *)argv[2], (unsigned char *)buf->pw_passwd,
+					crypted);
 		} else {
 			printf
 				("Ooops, password is of invalid length! (not gl1 nor gl2).\n");

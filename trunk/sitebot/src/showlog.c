@@ -322,7 +322,7 @@ void show_newdirs(const char *pattern)
 		if (pattern != NULL) {
 			/* Pointer to the base of the directory path */
 			if (!match_full && (p = strrchr(buffer.dirname, '/')) != NULL)
-				*p++;
+				p++;
 			else
 				p = buffer.dirname;
 			if (!wildcasecmp(pattern, p))
@@ -384,7 +384,7 @@ void show_nukes(const ushort status, const char *pattern)
 			if (pattern != NULL) {
 				/* Pointer to the base of the directory path */
 				if (!match_full && (p = strrchr(buffer.dirname, '/')) != NULL) {
-					*p++;
+					p++;
 				} else {
 					p = buffer.dirname;
 				}

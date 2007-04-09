@@ -172,6 +172,9 @@ incomplete_cleanup(char *path, int setfree, char *startupdir)
 	regmatch_t	pmatch[1];
 	char		temp[PATH_MAX];
 	char		*locator;
+#if (userellink)
+	(void)startupdir; // To choke a warning ;-)
+#endif
 
 	snprintf(temp, PATH_MAX, "%s", incomplete_cd_indicator);
 	locator = replace_cookies(temp);
