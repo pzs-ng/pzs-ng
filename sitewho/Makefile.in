@@ -24,3 +24,6 @@ distclean: clean
 
 clean:
 	$(RM) sitewho
+
+strip:
+	strip sitewho
