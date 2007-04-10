@@ -673,74 +673,60 @@ subcomp(char *directory, char *basepath)
 {
 	int 	k = (int)strlen(directory);
 	int	m = (int)strlen(subdir_list);
-	int	pos = 0, l = 0, n = 0, j = 0;
 	char	tstring[m + 1];
 	char	bstring[k + 1];
-//	char	basepath[k + 1];
-	char	*tpos;
+	char	*tpos, *startpos, *endpos, *midpos;
+	int	sublen = 0, dirlen = 0, seeklen = 0;
 
 	if ( k < 2 )
 		return 0;
 
 	if (basepath)
 		bzero(basepath, k + 1);
-	if ( directory[0] == '/') {
-		while (n < k) {
-			if (directory[n] == '/')
-				pos = n + 1;
-			n++;
-		}
-		tpos = directory + pos;
-		strncpy(bstring, tpos, k);
-		pos = 0;
-		n = 0;
-	} else
+	else
+		return 0;
+
+	tpos = strrchr(directory, '/');
+	if (tpos)
+		strncpy(bstring, tpos + 1, k + 1);
+	else
 		strncpy(bstring, directory, k + 1);
+
+	dirlen = strlen(bstring);
+	strncpy(tstring, subdir_list, m + 1);
+	startpos = tstring;
 	do {
-		switch (subdir_list[l]) {
-		case 0:
+		endpos = strchr(startpos, ',');
+		if (endpos)
+			*endpos = '\0';
+		else
+			endpos = strchr(startpos, '\0');
+
+		seeklen = strlen(startpos);
+		if (!seeklen)
 			break;
-		case ',':
-			tstring[j] = '\0';
-			if (n <= j && !strncasecmp(tstring, bstring, j - n)) {
-				if (basepath && ((k - (j -n + 1)) > 0))
-					strncpy(basepath, directory, k - (j - n + 1));
-				else if (basepath)
-					basepath[0] = '\0';
-				d_log("subcomp: we are in a subdir.\n");
-				return 1;
-			}
-			pos = l;
-			n = 0;
-			j=0;
+
+		midpos = strchr(startpos, '?');
+		if (midpos)
+			*midpos = '\0';
+
+		sublen = strlen(startpos);
+		if (!sublen)
 			break;
-		case '?':
-			tstring[j] = subdir_list[l];
-			tstring[j+1] = '\0';
-			n++;
-			j++;
-			break;
-		default:
-			tstring[j] = subdir_list[l];
-			tstring[j+1] = '\0';
-			pos++;
-			j++;
-			break;
+		if ((sublen <= dirlen) && (dirlen <= seeklen) && !strncasecmp(bstring, startpos, sublen)) {
+			d_log("subcomp: we are in a subdir.\n");
+			if (tpos)
+				strncpy(basepath, directory, tpos - directory);
+			else
+				strncpy(basepath, directory, k + 1);
+			return 1;
 		}
-		m--;
-		l++;
-	} while (m);
-	if (n <= j && !strncasecmp(tstring, bstring, j - n)) {
-		if (basepath && ((k - (j -n + 1)) > 0))
-			strncpy(basepath, directory, k - (j - n + 1));
-		else if (basepath)
-			basepath[0] = '\0';
-		d_log("subcomp: we are in a subdir.\n");
-		return 1;
-	}
-	if (basepath)
-		basepath[0] = '\0';
+		startpos = endpos + 1;
+		if (startpos >= (tstring + m))
+			break;
+	} while (1);
 	d_log("subcomp: not in subdir.\n");
+	strncpy(basepath, directory, k + 1);
 	return 0;
 }
 
