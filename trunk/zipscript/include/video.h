@@ -19,7 +19,7 @@
 #define __VIDEO_H
 
 /* fourcc list from from http://www.fourcc.org/ */
-
+/* maybe use http://xmm.sourceforge.net/DivX5-6_Xvid_Bitstream_version.php for avi? */
 struct video_format {
 	const char *tag;
 	const char *descr;
@@ -331,9 +331,8 @@ struct video_format {
 	{ "YV92", "Intel YVU9" },
 	{ "ZPEG", "Video Zipper" },
 	{ "ZyGo", "ZyGoVideo" },
-
 	{ "divf", "DivX 4.12" },	/* ??? */
-
+	{ "yv12", "XVID YUV 4:2:0 Planar" },
 	{ NULL, NULL },
 };
 
