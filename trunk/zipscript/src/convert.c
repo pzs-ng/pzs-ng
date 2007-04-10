@@ -155,6 +155,7 @@ convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, 
 					break;
 				case '%':
 					*out_p++ = *instr;
+					break;
 				case '~':
 					out_p += sprintf(out_p, "%*s", val1, raceI->misc.current_path);
 					break;

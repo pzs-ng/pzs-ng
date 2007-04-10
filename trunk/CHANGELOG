@@ -1,6 +1,11 @@
 PZS-NG CHANGELOG
 ----------------
 
+v1.0.9  --> 1.0.x  :
+		- fixed a bug with userstats over 2TB.
+		- added support for (xvid) yv12 codec.
+		- fixed a bug where .message showed full path to releasedir in stats.
+
 v1.0.8  --> 1.0.9  : (r2291)
 		- fixed a bug in showlog.
 		- fixed a bug with no-nfo symlinks being created if if nfo existed.
