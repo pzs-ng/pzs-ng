@@ -174,7 +174,7 @@ main(int argc, char **argv)
 
 	if (subcomp(g.l.path, g.l.basepath) && (g.l.basepath[0] == '\0'))
 		strlcpy(g.l.basepath, g.l.path, PATH_MAX);
-	if (strncmp(g.l.path, g.l.basepath, PATH_MAX))
+	if (strlen(g.l.basepath) && strncmp(g.l.path, g.l.basepath, PATH_MAX))
 		d_log("zipscript-c: We are in subdir of %s\n", g.l.basepath);
 	strncpy(g.v.misc.current_path, g.l.path, sizeof(g.v.misc.current_path));
 	strncpy(g.v.misc.basepath, g.l.basepath, sizeof(g.v.misc.basepath));
