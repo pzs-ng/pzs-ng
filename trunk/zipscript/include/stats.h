@@ -2,10 +2,10 @@
 #define _STATS_H_
 
 struct userdata {
-	int		allup_bytes;
-	int		monthup_bytes;
-	int		wkup_bytes;
-	int		dayup_bytes;
+	unsigned long long		allup_bytes;
+	unsigned long long		monthup_bytes;
+	unsigned long long		wkup_bytes;
+	unsigned long long		dayup_bytes;
 	short		name;
 };
 
