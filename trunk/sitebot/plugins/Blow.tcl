@@ -75,7 +75,9 @@ namespace eval ::ngBot::Blow {
     ##################################################
     
     set events [list "SETTOPIC" "GETTOPIC"]
-    namespace import ::ngBot::NickDb::*
+    if {![string equal $trustedUsers "*"] || ![string equal $topicUsers "*"]} {
+        namespace import ::ngBot::NickDb::*
+    }
     bind evnt -|- prerehash [namespace current]::DeInit
 }
 interp alias {} IsTrue {} string is true -strict
@@ -297,8 +299,10 @@ proc ::ngBot::Blow::IrcTopic {nick host handle channel text} {
 	sndall GETTOPIC DEFAULT [ng_format "GETTOPIC" "DEFAULT" \"$topic\"]
     } else {
         set ftpUser [[namespace current]::GetFtpUser $nick]
-	if {[string equal $topicUsers "*"] && [IsTrue [[namespace current]::SetTopic $channel "$text"]]} {
-	    [namespace current]::PutLog "Topic for $channel set: $text"
+	if {[string equal $topicUsers "*"]} {
+            if {[IsTrue [[namespace current]::SetTopic $channel "$text"]]} {
+	        [namespace current]::PutLog "Topic for $channel set: $text"
+            }
 	} elseif {[[namespace current]::GetInfo $ftpUser ftpGroup ftpFlags] && [rightscheck $topicUsers $ftpUser $ftpGroup $ftpFlags] && [IsTrue [[namespace current]::SetTopic $channel "$text"]]} {
 	    [namespace current]::PutLog "Topic for $channel set: $text"
 	} else {
@@ -339,7 +343,7 @@ proc ::ngBot::Blow::unencryptedIncomingHandler {from keyword text} {
 #    [namespace current]::PutLog "unencryptedIncomingHandler {$from $keyword $text} allowUnencrypted: $allowUnencrypted"
     
     if { [IsTrue $allowUnencrypted] || [string match ":+OK *" [string range $text [string first : $text] end]] } {
-        if {![string equal $trustedUsers ""]} {
+        if {![string equal $trustedUsers "*"]} {
     	    set nick [lindex [split $from "!"] 0]
     	    set host [lindex [split $from "!"] 1]
     	    set chan [lindex $text 0]
