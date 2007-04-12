@@ -610,7 +610,7 @@ proc format_duration {secs} {
 }
 
 proc format_kb {amount} {
-	foreach dec {0 1 2 2 2} unit {KB MB GB TB PB EB} {
+	foreach dec {0 1 2 2 2 2} unit {KB MB GB TB PB EB} {
 		if {abs($amount) >= 1024} {
 			set amount [expr {double($amount) / 1024.0}]
 		} else {break}
