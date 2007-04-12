@@ -179,18 +179,30 @@ incomplete_cleanup(char *path, int setfree, char *startupdir)
 	snprintf(temp, PATH_MAX, "%s", incomplete_cd_indicator);
 	locator = replace_cookies(temp);
 	regcomp(&preg[0], locator, REG_NEWLINE | REG_EXTENDED);
+#if (debug_mode && debug_announce)
+	printf("DEBUG: locator for preg[0]='%s'\n", locator);
+#endif
 
 	snprintf(temp, PATH_MAX, "%s", incomplete_indicator);
 	locator = replace_cookies(temp);
 	regcomp(&preg[1], locator, REG_NEWLINE | REG_EXTENDED);
+#if (debug_mode && debug_announce)
+	printf("DEBUG: locator for preg[1]='%s'\n", locator);
+#endif
 
 	snprintf(temp, PATH_MAX, "%s", incomplete_base_nfo_indicator);
 	locator = replace_cookies(temp);
 	regcomp(&preg[2], locator, REG_NEWLINE | REG_EXTENDED);
+#if (debug_mode && debug_announce)
+	printf("DEBUG: locator for preg[2]='%s'\n", locator);
+#endif
 
 	snprintf(temp, PATH_MAX, "%s", incomplete_nfo_indicator);
 	locator = replace_cookies(temp);
 	regcomp(&preg[3], locator, REG_NEWLINE | REG_EXTENDED);
+#if (debug_mode && debug_announce)
+	printf("DEBUG: locator for preg[3]='%s'\n", locator);
+#endif
 
 	printf("[%s]\n", path);
 
@@ -198,7 +210,10 @@ incomplete_cleanup(char *path, int setfree, char *startupdir)
 
 		if ((dir = opendir("."))) {
 		
-			while ((dp = readdir(dir)))
+			while ((dp = readdir(dir))) {
+#if (debug_mode && debug_announce)
+				printf("DEBUG: dp->d_name='%s'\n", dp->d_name);
+#endif
 				for (i = 0; i < 4; i++) {
 					if (regexec(&preg[i], dp->d_name, 1, pmatch, 0) == 0)
 						if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dp))
@@ -216,6 +231,7 @@ incomplete_cleanup(char *path, int setfree, char *startupdir)
 						i=5;
 					}
 				}
+			}
 			closedir(dir);
 		
 		} else {
