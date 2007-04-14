@@ -1,0 +1,54 @@
+## Makefile for MediaInfo
+## Copyright (C) 2002-2006 Jerome Martinez, Zen@MediaArea.net
+## Copyright (C) 2006-2006 Richard Buteau
+##
+## This library is free software; you can redistribute it and/or
+## modify it under the terms of the GNU Lesser General Public
+## License as published by the Free Software Foundation; either
+## version 2.1 of the License, or (at your option) any later version.
+##
+## This library is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public
+## License along with this library; if not, write to the Free Software
+## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+##
+#############################################################################
+#############################################################################
+
+#############################################################################
+### Local configuration
+MI_CC              = gcc
+MI_CPP             = g++
+MI_LD              = g++
+MI_LIB             = ar
+MI_RESCOMP         = windres
+MI_GLOBAL_CFLAGS   =
+MI_GLOBAL_LDFLAGS  =
+MI_GLOBAL_INCS     =
+MI_GLOBAL_LIBDIRS  =
+MI_GLOBAL_LIBS     = -lwsock32 -lctl3d32 -ladvapi32 -lcomctl32 -lcomdlg32 -lkernel32 -lgdi32 -lodbc32 -lole32 -loleaut32 -lrpcrt4 -lshell32 -luser32 -luuid -lwinmm -lwinspool
+
+#############################################################################
+### Project configuration
+MI_PROJECT_CFLAGS  =
+MI_PROJECT_LDFLAGS =
+MI_PROJECT_INCS    = -I../../../Source/Example
+MI_PROJECT_LIBDIRS = -L../../../Release/GCC_MinGW32/Dll
+MI_PROJECT_LIBS    = -lMediaInfo.dll
+MI_BIN             = Example.exe
+
+#############################################################################
+### Do no edit after this line
+include ../../GCC/Example/Main.mak
+
+# Some cleanup
+default: $(MI_BIN)
+cleandefault: clean
+clean:
+	del /S ..\..\..\*.o
+	del /S ..\..\..\*.d
+	del $(MI_BIN)

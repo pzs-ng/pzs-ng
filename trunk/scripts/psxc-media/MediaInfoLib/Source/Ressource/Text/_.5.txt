@@ -1,0 +1,1 @@
+    Info.push_back(_T("%Line%"));

@@ -1291,12 +1291,14 @@ main(int argc, char **argv)
 //					avi_video(g.v.file.name, &g.v.video);
 //				else
 //					mpeg_video(g.v.file.name, &g.v.video);
-				if (!avinfo(g.v.file.name, &g.v.avinfo) && insampledir(g.l.path)) {
-					d_log("zipscript-c: Writing %s announce to %s.\n", sample_announce_type, log);
-					write_log = g.v.misc.write_log;
-					g.v.misc.write_log = TRUE;
-					writelog(&g, convert(&g.v, g.ui, g.gi, sample_msg), sample_announce_type);
-					g.v.misc.write_log = write_log;
+				if (insampledir(g.l.path)) {
+					if (!avinfo(g.v.file.name, &g.v.avinfo)) {
+						d_log("zipscript-c: Writing %s announce to %s.\n", sample_announce_type, log);
+						write_log = g.v.misc.write_log;
+						g.v.misc.write_log = TRUE;
+						writelog(&g, convert(&g.v, g.ui, g.gi, sample_msg), sample_announce_type);
+						g.v.misc.write_log = write_log;
+					}
 					if (enable_sample_script == TRUE) {
 						d_log("zipscript-c: Executing sample_script (%s).\n", sample_script);
 						if (!fileexists(sample_script))

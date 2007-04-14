@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<PersonalityInfo>
+		<Option>
+			<Option Name="Personality">Default.Personality</Option>
+			<Option Name="ProjectType"></Option>
+			<Option Name="Version">1.0</Option>
+			<Option Name="GUID">{CB477B61-C405-4F84-8955-1B8FAF034A66}</Option>
+		</Option>
+	</PersonalityInfo>
+	<Default.Personality>  <Projects>
+      <Projects Name="ZenLib.lib">Library\ZenLib.bdsproj</Projects>
+      <Projects Name="ZenLib_Test.exe">Example\ZenLib_Test.bdsproj</Projects>
+      <Projects Name="Targets">ZenLib.lib ZenLib_Test.exe</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
+</BorlandProject>
