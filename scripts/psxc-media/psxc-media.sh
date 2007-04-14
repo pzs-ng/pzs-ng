@@ -50,7 +50,6 @@ mediainfo=/bin/MediaInfo.exe
 #########################################################
 
 filename=$1
-family=general
 
 while read line; do
 	key=$(echo "$line" | cut -d ':' -f 1 | tr -cd 'a-zA-Z0-9\#')
@@ -99,7 +98,7 @@ while read line; do
 			esac
 		;;
 	esac
-done < <($mediainfo $filename)
+done < <($mediainfo $filename 2>/dev/null)
 date="$(date "+%a %b %d %H:%M:%S %Y")"
 
 case $family in
@@ -115,7 +114,7 @@ case $family in
 	qt)
 		echo "$date SAMPLE_QT: "$PWD" {$USER} {$GROUP} {$v_codec} {$v_framerate} {$v_bitrate} {$v_height} {$v_width} {$v_aspectratio} {$v_interlacement} {$a_codec} {$a_bitrate} {$a_bitratemode} {$a_channels} {$a_samplingrate} {$a_resolution}"
 		;;
-	*)
+	general)
 		echo "$date SAMPLE_GENERAL: "$PWD" {$USER} {$GROUP} {$v_codec} {$v_framerate} {$v_bitrate} {$v_height} {$v_width} {$v_aspectratio} {$a_codec} {$a_bitrate} {$a_bitratemode} {$a_channels} {$a_samplingrate} {$a_resolution}"
 		;;
 esac
