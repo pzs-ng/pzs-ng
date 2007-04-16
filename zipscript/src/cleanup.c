@@ -74,6 +74,14 @@ main(int argc, char **argv)
 		scandirectory((char *)audio_group_path, setfree);
 #endif
 
+#if ( audio_artist_sort == TRUE )
+		scandirectory((char *)audio_artist_path, setfree);
+#endif
+
+#if ( audio_language_sort == TRUE )
+		scandirectory((char *)audio_language_path, setfree);
+#endif
+
 		printf("Finished successfully.\n");
 	}
 	exit(EXIT_SUCCESS);
