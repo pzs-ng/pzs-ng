@@ -214,7 +214,7 @@
 /* Output of postdel binary */
 #define incompletemsg		"%U/%G/%r"
 #define bad_file_msg		"%r/%U/%G/%n"
-#define speedtest_msg		"%U/%G/%.2s/%.1N/%.1m"
+#define speedtest_msg		"%U/%G/%.2s/%.1m/%.1n"
 
 enum ReleaseTypes {
 	RTYPE_NULL = 0,
