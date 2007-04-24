@@ -169,6 +169,24 @@ replace_cookies(char *s)
 	return new_string;
 }
 
+int
+regcomp_error(int regcomp_return, regex_t *preg, char *expression)
+{
+        char *regex_error;
+        int size;
+        if (regcomp_return != 0)
+        {
+            size = regerror(regcomp_return, preg, NULL, 0);
+            regex_error = malloc(size);
+            regerror(regcomp_return, preg, regex_error, size);
+	    fprintf(stderr, "regcomp(.., %s, ..): %s\n", expression, regex_error);
+            free(regex_error);
+            return 1;
+        }
+
+        return 0;
+}
+
 void 
 incomplete_cleanup(char *path, int setfree, char *startupdir)
 {
@@ -186,28 +204,44 @@ incomplete_cleanup(char *path, int setfree, char *startupdir)
 
 	snprintf(temp, PATH_MAX, "%s", incomplete_cd_indicator);
 	locator = replace_cookies(temp);
-	regcomp(&preg[0], locator, REG_NEWLINE | REG_EXTENDED);
+	if (regcomp_error(regcomp(&preg[0], locator, REG_NEWLINE | REG_EXTENDED), &preg[0], locator))
+            return;
 #if (debug_mode && debug_announce)
 	printf("DEBUG: locator for preg[0]='%s'\n", locator);
 #endif
 
 	snprintf(temp, PATH_MAX, "%s", incomplete_indicator);
 	locator = replace_cookies(temp);
-	regcomp(&preg[1], locator, REG_NEWLINE | REG_EXTENDED);
+        if (regcomp_error(regcomp(&preg[1], locator, REG_NEWLINE | REG_EXTENDED), &preg[1], locator))
+        {
+            regfree(&preg[0]);
+            return;
+        }
 #if (debug_mode && debug_announce)
 	printf("DEBUG: locator for preg[1]='%s'\n", locator);
 #endif
 
 	snprintf(temp, PATH_MAX, "%s", incomplete_base_nfo_indicator);
 	locator = replace_cookies(temp);
-	regcomp(&preg[2], locator, REG_NEWLINE | REG_EXTENDED);
+        if (regcomp_error(regcomp(&preg[2], locator, REG_NEWLINE | REG_EXTENDED), &preg[2], locator))
+        {
+            regfree(&preg[0]);
+            regfree(&preg[1]);
+            return;
+        }
 #if (debug_mode && debug_announce)
 	printf("DEBUG: locator for preg[2]='%s'\n", locator);
 #endif
 
 	snprintf(temp, PATH_MAX, "%s", incomplete_nfo_indicator);
 	locator = replace_cookies(temp);
-	regcomp(&preg[3], locator, REG_NEWLINE | REG_EXTENDED);
+        if (regcomp_error(regcomp(&preg[3], locator, REG_NEWLINE | REG_EXTENDED), &preg[3], locator))
+        {
+            regfree(&preg[0]);
+            regfree(&preg[1]);
+            regfree(&preg[2]);
+            return;
+        }
 #if (debug_mode && debug_announce)
 	printf("DEBUG: locator for preg[3]='%s'\n", locator);
 #endif
