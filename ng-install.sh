@@ -17,7 +17,7 @@ glpath=
 sslpath=
 
 # If you wish to install the bot, enter a valid path below.
-eggpath="/home/eggbot/eggdrop/"
+eggpath="/home/sitebot/"
 
 # Do you use ss5? Leave empty if not.
 use_ss5=
