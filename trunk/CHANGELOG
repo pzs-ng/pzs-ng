@@ -6,6 +6,7 @@ v1.0.9  --> 1.0.x  :
 		- added support for (xvid) yv12 codec.
 		- fixed a bug where .message showed full path to releasedir in stats.
 		- fixed a bug in the subdir detection routine.
+		- never search for sfv in a sample dir.
 
 v1.0.8  --> 1.0.9  : (r2291)
 		- fixed a bug in showlog.
