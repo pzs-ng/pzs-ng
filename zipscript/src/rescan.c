@@ -171,12 +171,12 @@ main(int argc, char *argv[])
         strncpy(g.v.misc.current_path, g.l.path, sizeof(g.v.misc.current_path));
         strncpy(g.v.misc.basepath, g.l.basepath, sizeof(g.v.misc.basepath));
 
-	if ((matchpath(nocheck_dirs, g.l.path) && !rescan_nocheck_dirs_allowed) || (matchpath(group_dirs, g.l.path) && argv_mode) || (!matchpath(nocheck_dirs, g.l.path) && !matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
-		d_log("rescan: Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
-		d_log("rescan: Freeing memory, and exiting\n");
+	if ((matchpath(nocheck_dirs, g.l.path) && !rescan_nocheck_dirs_allowed) || (matchpath(group_dirs, g.l.path) && argv_mode) || (!matchpath(nocheck_dirs, g.l.path) && !matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path)) || insampledir(g.l.path)) {
+		d_log("rescan: Dir matched with nocheck_dirs/sample_list, or is not in the zip/sfv/group-dirs.\n");
+		d_log("rescan: Freeing memory, and exiting.\n");
 		ng_free(g.ui);
 		ng_free(g.gi);
-		return 1;
+		return 0;
 	}
 	g.v.misc.slowest_user[0] = 30000;
 
