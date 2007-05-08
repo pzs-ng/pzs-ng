@@ -47,7 +47,7 @@ hms(char *ttime, int secs)
  * Modified: 01.16.2002
  */
 char           *
-convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, char *instr, short int userpos)
+convert_user(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, char *instr, short int userpos)
 {
 	int		val1;
 	int		val2;
@@ -179,7 +179,7 @@ convert2(struct VARS *raceI, struct USERINFO *userI, struct GROUPINFO **groupI, 
  * Modified: 01.16.2002
  */
 char           *
-convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short int grouppos)
+convert_group(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short int grouppos)
 {
 	int		val1;
 	int		val2;
@@ -282,7 +282,7 @@ convert3(struct VARS *raceI, struct GROUPINFO *groupI, char *instr, short int gr
 }
 
 char           *
-convert4(struct VARS *raceI, char *instr)
+convert_audio(struct VARS *raceI, char *instr)
 {
 	int		val1      , val2;
 	char           *out_p;
@@ -403,7 +403,7 @@ convert4(struct VARS *raceI, char *instr)
 }
 
 char           *
-convert5(char *instr)
+convert_sitename(char *instr)
 {
 	int		val1, val2;
 	char           *out_p;
@@ -562,7 +562,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 					to = -1;
 				}
 				for (n = from; n <= to; n++) {
-					out_p += sprintf(out_p, "%*.*s", val1, val2, convert3(raceI, groupI[groupI[n]->pos], group_info, n));
+					out_p += sprintf(out_p, "%*.*s", val1, val2, convert_group(raceI, groupI[groupI[n]->pos], group_info, n));
 				}
 				instr--;
 				break;
@@ -601,7 +601,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 					to = -1;
 				}
 				for (n = from; n <= to; n++) {
-					out_p += sprintf(out_p, "%*.*s", val1, val2, convert2(raceI, userI[userI[n]->pos], groupI, user_info, n));
+					out_p += sprintf(out_p, "%*.*s", val1, val2, convert_user(raceI, userI[userI[n]->pos], groupI, user_info, n));
 					break;
 				}
 				instr--;
@@ -632,10 +632,10 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size / 1024.));
 				break;
 			case 'l':
-				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)convert2(raceI, userI[raceI->misc.slowest_user[1]], groupI, slowestfile, 0));
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)convert_user(raceI, userI[raceI->misc.slowest_user[1]], groupI, slowestfile, 0));
 				break;
 			case 'L':
-				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)convert2(raceI, userI[raceI->misc.fastest_user[1]], groupI, fastestfile, 0));
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)convert_user(raceI, userI[raceI->misc.fastest_user[1]], groupI, fastestfile, 0));
 				break;
 			case 'm':
 				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->total.size >> 10) / 1024.));
@@ -759,9 +759,9 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				break;
 			case 'j':
 				if (raceI->audio.is_vbr == 1)
-					out_p += sprintf(out_p, "%*.*s", val1, val2, convert4(raceI, audio_vbr));
+					out_p += sprintf(out_p, "%*.*s", val1, val2, convert_audio(raceI, audio_vbr));
 				else
-					out_p += sprintf(out_p, "%*.*s", val1, val2, convert4(raceI, audio_cbr));
+					out_p += sprintf(out_p, "%*.*s", val1, val2, convert_audio(raceI, audio_cbr));
 				break;
 			case 'i':
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.vbr_version_string);

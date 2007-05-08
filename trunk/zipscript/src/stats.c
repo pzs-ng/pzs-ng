@@ -156,16 +156,16 @@ sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 		if ( (strncmp(raceI->user.name, userI[n]->name, (int)strlen(raceI->user.name) < (int)strlen(userI[n]->name) ? (int)strlen(raceI->user.name) : (int)strlen(userI[n]->name))) || (((int)strlen(raceI->user.name) != (int)strlen(userI[n]->name)) && (!strncmp(raceI->user.name, userI[n]->name, (int)strlen(raceI->user.name) < (int)strlen(userI[n]->name) ? (int)strlen(raceI->user.name) : (int)strlen(userI[n]->name))))) {
 			if (t2 > 0) {
 				if ((int)strlen(racersplit)) {
-					r_list += sprintf(r_list, " %s %s", racersplit, convert2(raceI, userI[n], groupI, racersmsg, t));
+					r_list += sprintf(r_list, " %s %s", racersplit, convert_user(raceI, userI[n], groupI, racersmsg, t));
 				} else {
-					r_list += sprintf(r_list, " %s", convert2(raceI, userI[n], groupI, racersmsg, t));
+					r_list += sprintf(r_list, " %s", convert_user(raceI, userI[n], groupI, racersmsg, t));
 				}
 			} else if ((int)strlen(racersplit_prior)) {
 				t2 = 1;
-				r_list += sprintf(r_list, "%s %s", racersplit_prior, convert2(raceI, userI[n], groupI, racersmsg, t));
+				r_list += sprintf(r_list, "%s %s", racersplit_prior, convert_user(raceI, userI[n], groupI, racersmsg, t));
 			} else {
 				t2 = 1;
-				r_list += sprintf(r_list, "%s", convert2(raceI, userI[n], groupI, racersmsg, t));
+				r_list += sprintf(r_list, "%s", convert_user(raceI, userI[n], groupI, racersmsg, t));
 			}
 		} else {
 			raceI->user.pos = n;
@@ -178,16 +178,16 @@ sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 	for (n = 1; n < raceI->total.users; n++) {
 		if (t3 > 0) {
 			if ((int)strlen(racersplit)) {
-				t_list += sprintf(t_list, " %s %s", racersplit, convert2(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
+				t_list += sprintf(t_list, " %s %s", racersplit, convert_user(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
 			} else {
-				t_list += sprintf(t_list, " %s", convert2(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
+				t_list += sprintf(t_list, " %s", convert_user(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
 			}
 		} else if ((int)strlen(racersplit_prior)) {
 			t3 = 1;
-			t_list += sprintf(t_list, "%s %s", racersplit_prior, convert2(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
+			t_list += sprintf(t_list, "%s %s", racersplit_prior, convert_user(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
 		} else {
 			t3 = 1;
-			t_list += sprintf(t_list, "%s", convert2(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
+			t_list += sprintf(t_list, "%s", convert_user(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
 		}
 	}
 	bzero(p_array, raceI->total.groups * sizeof(int));
@@ -220,7 +220,7 @@ showstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 	if (realtime_user_body != DISABLED) {
 		d_log("showstats:   - printing realtime_user_body ...\n");
 		for (cnt = 0; cnt < raceI->total.users; cnt++) {
-			printf("%s", convert2(raceI, userI[userI[cnt]->pos], groupI, realtime_user_body, cnt));
+			printf("%s", convert_user(raceI, userI[userI[cnt]->pos], groupI, realtime_user_body, cnt));
 		}
 	}
 	if (realtime_user_footer != DISABLED) {
@@ -237,7 +237,7 @@ showstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
 	if (realtime_group_body != DISABLED) {
 		d_log("showstats:   - printing realtime_group_body ...\n");
 		for (cnt = 0; cnt < raceI->total.groups; cnt++) {
-			printf("%s", convert3(raceI, groupI[groupI[cnt]->pos], realtime_group_body, cnt));
+			printf("%s", convert_group(raceI, groupI[groupI[cnt]->pos], realtime_group_body, cnt));
 		}
 	}
 	if (realtime_group_footer != DISABLED) {

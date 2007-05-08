@@ -403,10 +403,10 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 
 	if (raceI->misc.release_type == RTYPE_AUDIO) {
 		d_log("move_progress_bar: del_progressmeter_mp3: %s\n", del_progressmeter_mp3);
-		delbar = convert5(del_progressmeter_mp3);
+		delbar = convert_sitename(del_progressmeter_mp3);
 	} else {
 		d_log("move_progress_bar: del_progressmeter: %s\n", del_progressmeter);
-		delbar = convert5(del_progressmeter);
+		delbar = convert_sitename(del_progressmeter);
 	}
 	d_log("move_progress_bar: delbar: %s\n", delbar);
 	regret = regcomp(&preg, delbar, REG_NEWLINE | REG_EXTENDED);
@@ -554,7 +554,7 @@ removecomplete()
 		unlink(message_file_name);
 #endif
 	
-	mydelbar = convert5(del_completebar);
+	mydelbar = convert_sitename(del_completebar);
 	d_log("removecomplete: del_completebar: %s\n", mydelbar);
 	regret = regcomp(&preg, mydelbar, REG_NEWLINE | REG_EXTENDED);
 	if (!regret) {

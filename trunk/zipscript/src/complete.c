@@ -61,7 +61,7 @@ complete(GLOBAL *g, int completetype)
 				d_log("complete:   - Converting message_user_body ...\n");
 				for (cnt = 0; cnt < g->v.total.users; cnt++) {
 					pos = g->ui[cnt]->pos;
-					fprintf(msgfile, "%s", convert2(&g->v, g->ui[pos], g->gi, message_user_body, cnt));
+					fprintf(msgfile, "%s", convert_user(&g->v, g->ui[pos], g->gi, message_user_body, cnt));
 				}
 			}
 			if (message_user_footer != DISABLED && max_users_in_top > 0) {
@@ -76,7 +76,7 @@ complete(GLOBAL *g, int completetype)
 				d_log("complete:   - Converting message_group_body ...\n");
 				for (cnt = 0; cnt < g->v.total.groups; cnt++) {
 					pos = g->gi[cnt]->pos;
-					fprintf(msgfile, "%s", convert3(&g->v, g->gi[pos], message_group_body, cnt));
+					fprintf(msgfile, "%s", convert_group(&g->v, g->gi[pos], message_group_body, cnt));
 				}
 			}
 			if (message_group_footer != DISABLED && max_groups_in_top > 0) {
@@ -109,7 +109,7 @@ complete(GLOBAL *g, int completetype)
 #else
 			for (cnt = 0; cnt < max_users_in_top && cnt < g->v.total.users; cnt++)
 #endif
-				user_p += sprintf(user_p, " %s", convert2(&g->v, g->ui[g->ui[cnt]->pos], g->gi, user_top, cnt));
+				user_p += sprintf(user_p, " %s", convert_user(&g->v, g->ui[g->ui[cnt]->pos], g->gi, user_top, cnt));
 		}
 		if (group_top != NULL && max_groups_in_top > 0) {
 #if ( show_stats_from_pos2_only )
@@ -117,7 +117,7 @@ complete(GLOBAL *g, int completetype)
 #else
 			for (cnt = 0; cnt < max_groups_in_top && cnt < g->v.total.groups; cnt++)
 #endif
-				group_p += sprintf(group_p, " %s", convert3(&g->v, g->gi[g->gi[cnt]->pos], group_top, cnt));
+				group_p += sprintf(group_p, " %s", convert_group(&g->v, g->gi[g->gi[cnt]->pos], group_top, cnt));
 		}
 	}
 }
@@ -141,7 +141,7 @@ writetop(GLOBAL *g, int completetype)
 			mset = 1;
 			pbuf = buffer = ng_realloc(buffer, FILE_MAX, 1, 1, &g->v, 1);
 			for (cnt = 0; cnt < max_users_in_top && cnt < g->v.total.users; cnt++) {
-				snprintf(templine, FILE_MAX, "%s ", convert2(&g->v, g->ui[g->ui[cnt]->pos], g->gi, user_top, cnt));
+				snprintf(templine, FILE_MAX, "%s ", convert_user(&g->v, g->ui[g->ui[cnt]->pos], g->gi, user_top, cnt));
 				mlen = strlen(templine);
 				if ((int)strlen(buffer) + mlen >= FILE_MAX * mset) {
 					mset += 1;
@@ -161,7 +161,7 @@ writetop(GLOBAL *g, int completetype)
 			mset = 1;
 			pbuf = buffer = ng_realloc(buffer, FILE_MAX, 1, 1, &g->v, 1);
 			for (cnt = 0; cnt < max_groups_in_top && cnt < g->v.total.groups; cnt++) {
-				snprintf(templine, FILE_MAX, "%s ", convert3(&g->v, g->gi[g->gi[cnt]->pos], group_top, cnt));
+				snprintf(templine, FILE_MAX, "%s ", convert_group(&g->v, g->gi[g->gi[cnt]->pos], group_top, cnt));
 				mlen = strlen(templine);
 				if ((int)strlen(buffer) + mlen >= FILE_MAX * mset) {
 					mset += 1;
