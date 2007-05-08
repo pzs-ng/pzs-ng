@@ -3,10 +3,10 @@
 
 char *hms(char *, int);
 char *convert(struct VARS *, struct USERINFO **, struct GROUPINFO **, char *);
-char *convert2(struct VARS *, struct USERINFO *, struct GROUPINFO **, char *, short);
-char *convert3(struct VARS *, struct GROUPINFO *, char *, short);
-char *convert4(struct VARS *, char *);
-char *convert5(char *);
+char *convert_user(struct VARS *, struct USERINFO *, struct GROUPINFO **, char *, short);
+char *convert_group(struct VARS *, struct GROUPINFO *, char *, short);
+char *convert_audio(struct VARS *, char *);
+char *convert_sitename(char *);
 char *incomplete(char *, char [2][PATH_MAX], struct VARS *, int);
 
 #endif
