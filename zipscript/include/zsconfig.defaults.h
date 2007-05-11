@@ -286,7 +286,7 @@
  * These file types are allowed without any checks
  */
 #ifndef allowed_types
-#define allowed_types		"jpg,cue,m3u,mpg,mpeg,avi,txt,mov,vob"
+#define allowed_types           "jpg,cue,m3u,mpg,mpeg,avi,txt,mov,vob,mkv"
 #endif
 
 /*
