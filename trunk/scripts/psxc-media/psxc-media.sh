@@ -2,18 +2,18 @@
 
 ###########################################
 #
-# psxc-media.sh v0.2
+# psxc-media.sh v0.3
 # ==================
 # A small wrapper to MediaInfo to announce sample info.
 # Supported formats are divx/xvid, vcd/svcd, quicktime, mp3 -
 # and probably some others.
 #
-# The following changes is needed on pzs-ng installs prior to r2320:
+# The following changes is needed on pzs-ng installs prior to r2321:
 #
 # Add the following to dZSbot.vars:
 #	set variables(SAMPLE_AVI)                   "%pf %u_name %g_name %video_codec %video_framerate %video_bitrate %video_height %video_width %video_aspect %video_interlacement %audio_codec %audio_bitrate %audio_mode %audio_channels %audio_samplerate %audio_resolution %audio_codecprofile"
 #	set variables(SAMPLE_MPEG2)                 "%pf %u_name %g_name %video_codec %video_framerate %video_bitrate %video_bitratemode %video_standard %video_height %video_width %video_aspect %video_interlacement %audio_codec %audio_bitrate %audio_mode %audio_channels %audio_samplerate %audio_resolution"
-#	set variables(SAMPLE_MPEG1)                 "%pf %u_name %g_name %audio_codec %audio_bitrate %audio_mode %audio_channels %audio_samplerate %audio_resolution %audio_genre %audio_year"
+#	set variables(SAMPLE_MPEG1)                 "%pf %u_name %g_name %audio_codec %audio_bitrate %audio_mode %audio_channels %audio_samplerate %audio_resolution %audio_genre %audio_year %audio_codecprofile"
 #	set variables(SAMPLE_QT)                    "%pf %u_name %g_name %video_codec %video_framerate %video_bitrate %video_height %video_width %video_aspect %video_interlacement %audio_codec %audio_bitrate %audio_mode %audio_channels %audio_samplerate %audio_resolution"
 #	set variables(SAMPLE_GENERAL)               "%pf %u_name %g_name %video_codec %video_framerate %video_bitrate %video_height %video_width %video_aspect %audio_codec %audio_bitrate %audio_mode %audio_channels %audio_samplerate %audio_resolution"
 #
@@ -32,7 +32,7 @@
 #	announce.SAMPLE_MPEG2             = "[%b{sample}][%section] %b{%path} has the following specs: Video: %b{%video_codec} %b{%video_width}x%b{%video_height} pixels (aspectratio: %b{%video_aspect}) @%b{%video_framerate} - Audio: %b{%audio_codec} (%b{%audio_samplerate}/%b{%audio_channels} @ %audio_bitrate)"
 #	announce.SAMPLE_QT             = "[%b{sample}][%section] %b{%path} has the following specs: Video: %b{%video_codec} %b{%video_width}x%b{%video_height} pixels (aspectratio: %b{%video_aspect}) @%b{%video_framerate} - Audio: %b{%audio_codec} (%b{%audio_samplerate}/%b{%audio_channels} @ %audio_bitrate)"
 #	announce.SAMPLE_GENERAL             = "[%b{sample}][%section] %b{%path} has the following specs: Video: %b{%video_codec} %b{%video_width}x%b{%video_height} pixels (aspectratio: %b{%video_aspect}) @%b{%video_framerate} - Audio: %b{%audio_codec} (%b{%audio_samplerate}/%b{%audio_channels} @ %audio_bitrate)"
-#	announce.SAMPLE_MPEG1             = "[%b{sample}][%section] %b{%path} has the following specs: Audio: %b{%audio_codec} (%b{%audio_samplerate}/%b{%audio_channels} @ %audio_bitrate) - %b{%audio_genre} from %audio_year"
+#	announce.SAMPLE_MPEG1             = "[%b{sample}][%section] %b{%path} has the following specs: Audio: %b{%audio_codec %audio_codecprofile} (%b{%audio_samplerate}/%b{%audio_channels} @ %audio_bitrate) - %b{%audio_genre} from %audio_year"
 #
 #########################################################
 #
@@ -127,7 +127,7 @@ case $family in
 		echo "$date SAMPLE_MPEG2: "$PWD" {$USER} {$GROUP} {$v_codec} {$v_framerate} {$v_bitrate} {$v_bitratemode} {$v_standard} {$v_height} {$v_width} {$v_aspectratio} {$v_interlacement} {$a_codec} {$a_bitrate} {$a_bitratemode} {$a_channels} {$a_samplingrate} {$a_resolution}"
 		;;
 	mpeg1)
-		echo "$date SAMPLE_MPEG1: "$PWD" {$USER} {$GROUP} {$a_codec} {$a_bitrate} {$a_bitratemode} {$a_channels} {$a_samplingrate} {$a_resolution} {$a_genre} {$a_year}"
+		echo "$date SAMPLE_MPEG1: "$PWD" {$USER} {$GROUP} {$a_codec} {$a_bitrate} {$a_bitratemode} {$a_channels} {$a_samplingrate} {$a_resolution} {$a_genre} {$a_year} {$a_codecprofile}"
 		;;
 	qt)
 		echo "$date SAMPLE_QT: "$PWD" {$USER} {$GROUP} {$v_codec} {$v_framerate} {$v_bitrate} {$v_height} {$v_width} {$v_aspectratio} {$v_interlacement} {$a_codec} {$a_bitrate} {$a_bitratemode} {$a_channels} {$a_samplingrate} {$a_resolution}"

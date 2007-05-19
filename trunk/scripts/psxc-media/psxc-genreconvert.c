@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
 	if (argc < 2)
 		return 0;
 	genre = strtol(argv[1], (char **)NULL, 10);
-	printf("%s\n", genre_s[genre < 149 ? genre : 13 ]);
+	printf("%s\n", genre_s[genre < 149 ? genre : 148 ]);
 	return 0;
 }
 
