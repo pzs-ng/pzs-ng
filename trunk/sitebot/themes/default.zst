@@ -207,7 +207,7 @@ announce.SAMPLE_AVI             = "[%b{sample}][%section] %b{%path} has the foll
 announce.SAMPLE_MPEG2             = "[%b{sample}][%section] %b{%path} has the following specs: Video: %b{%video_codec} %b{%video_width}x%b{%video_height} pixels (aspectratio: %b{%video_aspect}) @%b{%video_framerate} - Audio: %b{%audio_codec} (%b{%audio_samplerate}/%b{%audio_channels} @ %audio_bitrate)"
 announce.SAMPLE_QT             = "[%b{sample}][%section] %b{%path} has the following specs: Video: %b{%video_codec} %b{%video_width}x%b{%video_height} pixels (aspectratio: %b{%video_aspect}) @%b{%video_framerate} - Audio: %b{%audio_codec} (%b{%audio_samplerate}/%b{%audio_channels} @ %audio_bitrate)"
 announce.SAMPLE_GENERAL             = "[%b{sample}][%section] %b{%path} has the following specs: Video: %b{%video_codec} %b{%video_width}x%b{%video_height} pixels (aspectratio: %b{%video_aspect}) @%b{%video_framerate} - Audio: %b{%audio_codec} (%b{%audio_samplerate}/%b{%audio_channels} @ %audio_bitrate)"
-announce.SAMPLE_MPEG1             = "[%b{sample}][%section] %b{%path} has the following specs: Audio: %b{%audio_codec} (%b{%audio_samplerate}/%b{%audio_channels} @ %audio_bitrate)"
+announce.SAMPLE_MPEG1             = "[%b{sample}][%section] %b{%path} has the following specs: Audio: %b{%audio_codec} (%b{%audio_samplerate}/%b{%audio_channels} @ %audio_bitrate) - %b{%audio_genre} from %audio_year"
 
 ## Third party scripts
 announce.PRE                    = "[%b{%c1{pre}   }][%section] %b{%relname} by %b{%pregroup} in %b{%files} files (%b{%mbytes}MB)."
