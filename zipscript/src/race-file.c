@@ -65,7 +65,7 @@ maketempdir(char *path)
 
 	/* the final entry */
 	if (mkdir(full_path, 0777) == -1 && errno != EEXIST)
-		d_log("maketempdir: Failed to create tempdir: %s\n", strerror(errno));
+		d_log("maketempdir: Failed to create tempdir (%s): %s\n", full_path, strerror(errno));
 }
 
 /*

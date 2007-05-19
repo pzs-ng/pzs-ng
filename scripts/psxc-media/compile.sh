@@ -104,3 +104,5 @@ cd MediaInfo/Project/GCC/CLI
 $make
 cd ../../../..
 cp MediaInfo/Release/GCC_Linux_i386/CLI/MediaInfo MediaInfo.exe
+gcc -static -O2 -Wall -o psxc-genreconvert psxc-genreconvert.c
+

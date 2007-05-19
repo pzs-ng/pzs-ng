@@ -176,6 +176,7 @@ main(int argc, char *argv[])
 		d_log("rescan: Freeing memory, and exiting.\n");
 		ng_free(g.ui);
 		ng_free(g.gi);
+		printf("Notice: Unable to rescan this dir - check config.\n\n");
 		return 0;
 	}
 	g.v.misc.slowest_user[0] = 30000;
