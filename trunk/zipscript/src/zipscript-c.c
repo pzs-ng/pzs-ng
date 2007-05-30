@@ -166,9 +166,13 @@ main(int argc, char **argv)
 #else
 	if (combine_path == TRUE && strrchr(argv[1], '/')) {
 		strlcpy(g.v.file.name, strrchr(argv[1], '/') + 1, NAME_MAX);
-		strlcpy(g.l.path, argv[2], PATH_MAX);
+		if (*argv[1] != '/')
+			strlcpy(g.l.path, argv[2], PATH_MAX);
+		else
+			strlcpy(g.l.path, sitepath_dir, PATH_MAX);
 		temp_p = strrchr(g.l.path, '\0');
-		strlcpy(temp_p, argv[1], PATH_MAX - strlen(argv[1]));
+		*temp_p = '/';
+		strlcpy(temp_p + 1, argv[1], PATH_MAX - strlen(argv[1]) + 1);
 		temp_p = strrchr(g.l.path, '/');
 		*temp_p = '\0';
 		d_log("zipscript-c: combined path used - g.v.file.name='%s' - g.l.path='%s'\n", g.v.file.name, g.l.path);
