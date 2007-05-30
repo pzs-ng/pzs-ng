@@ -1183,4 +1183,7 @@
 #ifndef sample_list
 #define sample_list			"sample vobsample"
 #endif
+#ifndef combine_path
+#define combine_path			FALSE
+#endif
 

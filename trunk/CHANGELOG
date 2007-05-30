@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.9  --> 1.0.x  :
+		- added option combine_path to allow clients that does not cwd into reldir.
 		- fixed a bug with userstats over 2TB.
 		- added support for (xvid) yv12 codec.
 		- fixed a bug where .message showed full path to releasedir in stats.

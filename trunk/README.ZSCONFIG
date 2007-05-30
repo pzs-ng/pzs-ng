@@ -223,6 +223,11 @@ PASSWDFILE <PATH>
 	This is the location of glftpd's passwd file.
 	Default: "/etc/passwd"
 
+combine_path <TRUE|FALSE>
+	Some clients do not cwd into the releasedir before uploading file(s).
+	To allow such clients this option must be set to TRUE.
+	Default: FALSE
+
 days_back_cleanup <NUMBER>
 	This setting defines how many days backward should be scanned on
 	cleanup. 0=disabled, 1=today only, 2=yesterday and today etc.
