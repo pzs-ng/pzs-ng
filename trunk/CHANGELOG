@@ -8,6 +8,7 @@ v1.0.9  --> 1.0.x  :
 		- fixed a bug where .message showed full path to releasedir in stats.
 		- fixed a bug in the subdir detection routine.
 		- never search for sfv in a sample dir.
+		- make sitewho and showlog compile in native 64bit.
 
 v1.0.8  --> 1.0.9  : (r2291)
 		- fixed a bug in showlog.

@@ -15,10 +15,10 @@ passchk: passchk.c
 	$(CC) $(LDFLAGS) $(CFLAGS) -o passchk passchk.c @SSL_INCLUDE@ @SSL_LIBS@ @LCRYPT@
 
 #ng-bw: ng-bw.c
-#	$(CC) $(LDFLAGS) @M32@ $(CFLAGS) -o ng-bw ng-bw.c
+#	$(CC) $(LDFLAGS) $(CFLAGS) -o ng-bw ng-bw.c
 
 showlog: showlog.c
-	$(CC) $(LDFLAGS) @M32@ $(CFLAGS) -I../../zipscript/conf/ -I../../zipscript/include/ -o showlog showlog.c
+	$(CC) $(LDFLAGS) $(CFLAGS) -I../../zipscript/conf/ -I../../zipscript/include/ -o showlog showlog.c
 
 dl_speedtest: dl_speedtest.c
 	$(CC) $(LDFLAGS) $(CFLAGS) -I../../zipscript/conf/ -I../../zipscript/include/ -o dl_speedtest dl_speedtest.c

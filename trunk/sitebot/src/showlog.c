@@ -26,6 +26,8 @@
 #include <string.h>
 #include <strings.h>
 #include <unistd.h>
+#include <stdint.h>
+#include <inttypes.h>
 
 #include "zsconfig.h"
 #include "zsconfig.defaults.h"
@@ -46,45 +48,56 @@ static int max_results = 10;
 static int match_full = 0;
 static int search_mode = 0;
 
+/* Force structure alignment to 4 bytes (for 64bit support). */
+#pragma pack(push, 4)
+
+/* 32-bit time values (for 64bit support). */
+typedef int32_t time32_t;
+
+typedef struct {
+    int32_t     tv_sec;
+    int32_t     tv_usec;
+} timeval32_t;
+
 #if ( GLVERSION == 132 )
 struct dirlog {
-	ushort status;		            /* 0 = NEWDIR, 1 = NUKE, 2 = UNNUKE, 3 = DELETED */
-	time_t uptime;                  /* Creation time since epoch (man 2 time) */
-	ushort uploader;                /* The userid of the creator */
-	ushort group;                   /* The groupid of the primary group of the creator */
-	ushort files;                   /* The number of files inside the dir */
-	long bytes;                     /* The number of bytes in the dir */
-	char dirname[255];              /* The name of the dir (fullpath) */
-	struct dirlog *nxt;
-	struct dirlog *prv;
+    uint16_t    status;          /* 0 = NEWDIR, 1 = NUKE, 2 = UNNUKE, 3 = DELETED */
+    time32_t    uptime;          /* Creation time since epoch (man 2 time) */
+    uint16_t    uploader;        /* The userid of the creator */
+    uint16_t    group;           /* The groupid of the primary group of the creator */
+    uint16_t    files;           /* The number of files inside the dir */
+    int32_t     bytes;           /* The number of bytes in the dir */
+    char        dirname[255];    /* The name of the dir (fullpath) */
+    char        dummy[8];        /* Unused, kept for compatibility reasons */
 } __attribute__((deprecated));
 #else
 struct dirlog {
-	ushort status;                  /* 0 = NEWDIR, 1 = NUKE, 2 = UNNUKE, 3 = DELETED */
-	time_t uptime;                  /* Creation time since epoch (man 2 time) */
-	ushort uploader;                /* The userid of the creator */
-	ushort group;                   /* The groupid of the primary group of the creator */
-	ushort files;                   /* The number of files inside the dir */
-	unsigned long long bytes;       /* The number of bytes in the dir */
-	char dirname[255];              /* The name of the dir (fullpath) */
-	struct dirlog *nxt;             /* Unused, kept for compatibility reasons */
-	struct dirlog *prv;             /* Unused, kept for compatibility reasons */
+    uint16_t    status;          /* 0 = NEWDIR, 1 = NUKE, 2 = UNNUKE, 3 = DELETED */
+    time32_t    uptime;          /* Creation time since epoch (man 2 time) */
+    uint16_t    uploader;        /* The userid of the creator */
+    uint16_t    group;           /* The groupid of the primary group of the creator */
+    uint16_t    files;           /* The number of files inside the dir */
+    uint64_t    bytes;           /* The number of bytes in the dir */
+    char        dirname[255];    /* The name of the dir (fullpath) */
+    char        dummy[8];        /* Unused, kept for compatibility reasons */
 };
 #endif
 
 struct nukelog {
-	ushort status;			/* 0 = NUKED, 1 = UNNUKED */
-	time_t nuketime;		/* The nuke time since epoch (man 2 time) */
-	char nuker[12];			/* The name of the nuker */
-	char unnuker[12];		/* The name of the unnuker */
-	char nukee[12];			/* The name of the nukee */
-	ushort mult;			/* The nuke multiplier */
-	float bytes;			/* The number of bytes nuked */
-	char reason[60];		/* The nuke reason */
-	char dirname[255];		/* The dirname (fullpath) */
-	struct nukelog *nxt;	/* Unused, kept for compatibility reasons */
-	struct nukelog *prv;	/* Unused, kept for compatibility reasons */
+    uint16_t    status;          /* 0 = NUKED, 1 = UNNUKED */
+    time32_t    nuketime;        /* The nuke time since epoch (man 2 time) */
+    char        nuker[12];       /* The name of the nuker */
+    char        unnuker[12];     /* The name of the unnuker */
+    char        nukee[12];       /* The name of the nukee */
+    uint16_t    mult;            /* The nuke multiplier */
+    float       bytes;           /* The number of bytes nuked */
+    char        reason[60];      /* The nuke reason */
+    char        dirname[255];    /* The dirname (fullpath) */
+    char        dummy[8];        /* Unused, kept for compatibility reasons */
 };
+
+/* Restore default structure alignment for non-critical structures. */
+#pragma pack(pop)
 
 enum {
 	NO_ACTION = 1,
