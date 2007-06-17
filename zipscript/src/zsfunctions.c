@@ -1153,7 +1153,8 @@ writelog(GLOBAL *g, char *msg, char *status)
 				break;
 			}
 		}
-	}
+	} else
+			d_log("writelog: not writing to %s - path matched with group_dirs: %s\n", log, group_dirs);
 }
 
 void

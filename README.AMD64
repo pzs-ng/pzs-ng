@@ -1,3 +1,10 @@
+NOTE!
+NOTE! This doc should now be obsolete!
+NOTE! pzs-ng will compile the bins with the correct
+NOTE! struct sizes necessary for 64bit processors.
+NOTE!
+
+
 Special notes for sitewho and ng-bw on the AMD64 platform
 ---------------------------------------------------------
 
