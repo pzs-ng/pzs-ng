@@ -32,7 +32,6 @@
 #define status_bar_type			1
 #define incompleteislink		1
 
-#define allowed_types			"jpg,cue,m3u,mpg,mpeg,avi,txt,mov,vob,mkv,wmv"
 #define ignored_types			",diz,debug,message,imdb"
 
 #define deny_double_sfv			FALSE
@@ -42,6 +41,7 @@
 #define audio_artist_path		"/site/incoming/music.by.artist/"
 #define audio_year_path			"/site/incoming/music.by.year/"
 #define audio_group_path		"/site/incoming/music.by.group/"
+#define audio_language_path		"/site/incoming/music.by.language/"
 #define allowed_constant_bitrates	"160,192"
 #define allowed_years			"2004,2005,2006,2007"
 #define banned_genres			"Christian Rap,Christian Rock,Christian Gangsta Rap,Contemporary Christian"
@@ -50,6 +50,7 @@
 #define audio_year_sort			FALSE
 #define audio_artist_sort		FALSE
 #define audio_group_sort		FALSE
+#define audio_language_sort		FALSE
 #define audio_cbr_check			TRUE
 #define audio_cbr_warn			TRUE
 #define audio_year_check		TRUE
