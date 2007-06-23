@@ -135,9 +135,14 @@ main(int argc, char **argv)
 			d_log("zipscript-c: failed to change uid: %s\n", strerror(errno));
 	}
 
+        if (argc == 2 && strcmp("fullconfig", argv[1]) == 0)
+        {
+            print_full_config();
+            exit(0);
+        }
         if (argc == 2 && strcmp("config", argv[1]) == 0)
         {
-            print_config();
+            print_nondefault_config();
             exit(0);
         }
 
