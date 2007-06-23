@@ -30,7 +30,6 @@
 #include "constants.h"
 #endif
 
-#include "errors.h"
 #include "multimedia.h"
 #include "convert.h"
 #include "dizreader.h"
@@ -38,10 +37,13 @@
 #include "complete.h"
 #include "crc.h"
 #include "ng-version.h"
+#include "print_config.h"
 #include "audiosort.h"
 
 #include "../conf/zsconfig.h"
-#include "../include/zsconfig.defaults.h"
+
+#include "zsconfig.defaults.h"
+#include "errors.h"
 
 #ifdef _SunOS_
 #include "scandir.h"
@@ -132,6 +134,12 @@ main(int argc, char **argv)
 		if (seteuid(getuid()) == -1)
 			d_log("zipscript-c: failed to change uid: %s\n", strerror(errno));
 	}
+
+        if (argc == 2 && strcmp("config", argv[1]) == 0)
+        {
+            print_config();
+            exit(0);
+        }
 
 #if ( wzdftpd_compatible == TRUE )
 	if (argc < 8) {

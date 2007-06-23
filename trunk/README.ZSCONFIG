@@ -12,8 +12,8 @@ Here follow a summary of all settings. I hope this will provide some idea on
 what the different things does. The format is as follow:
 
 <define> <option(s)>
-	Description
-	Default: <value>
+        Description
+        Default: <value>
 
 To add a define, for instance sitepath_dir, put the following in you zsconfig.h
 
@@ -24,315 +24,110 @@ ie, add '#define" in front, and the option(s) behind.
 
 -------------------------------------------------------------------------------
 
-wzdftpd_compatible <TRUE|FALSE>
-	** DO NOT ENABLE THIS UNLESS YOU KNOW WHAT YOU'RE DOING. **
+BAD_CRC <STRING>
+	Error msg when crc check fails.
+	Default: "CRC-Check: BAD!"
 
-	Specify this if you're running under wzdftpd (http://wzdftpd.net)
-	This support is *EXPERIMENTAL*. It does not use env variables - and 
-	assumes you pass them via the commandline instead. In addition, it will
-	resolve any symlinks in the paths the zs is passed.
-	Read the wzdftpd.net webpage for more information. (Specifically
-	http://wzdftpd.net/trac/wiki/Documentation/ThirdPartyScripts/pzs-ng)
-	Default: FALSE
+BAD_ZIP <STRING>
+	Error msg when zip integrity fails.
+	Default: "ZiP-Integrity: BAD!"
 
-sitepath_dir <PATH>
-	This is used as a base for datacleaner, when it's run as a cscript.
-	It is normally set to /site/, which is the common location in which all
-	your site's public dirs reside.
-	Default: "/site/"
+BANNED_BITRATE <STRING>
+	Error msg when bitrate of musicfile is banned.
+	%s = bitrate
+	Default: "%s kbit codec is not allowed here!"
 
-log <PATH>
-	This setting should point to a file where all logging will occur. The
-	usual place is glftpd's glftpd.log. This file must be world read/
-	writable (+rw).
-	Default: "/ftp-data/logs/glftpd.log"
+BANNED_FILE <STRING>
+	Error msg when file is listed as banned.
+	Default: "Banned file: Not allowed!"
 
-storage <PATH>
-	This is the place where the zipscript keeps a 'mirror' of your site's
-	setup. Here stats for racers and releases are stored. This storage
-	should not be accessible to your site's users, but must be world
-	read/writable (+rwx).
-	Default: "/ftp-data/pzs-ng/"
+BANNED_GENRE <STRING>
+	Error msg when musicfile is of a banned genre.
+	%s = genre
+	Default: "%s is banned here!"
 
-gl_userfiles <PATH>
-	This is the place where userfiles are stored. The files must be world
-	readable (+r).
-	Default: "/ftp-data/users/"
+BANNED_YEAR <STRING>
+	Error msg when musicfile is from a banned year.
+	%s = year
+	Default: "Releases from %s are not allowed here!"
 
-dupepath <PATH>
-	This is the location of glftpd's dupefile. The file must be world
-	read/writable (+rw), and so must the containing dir (+rwx).
-	Default: "/ftp-data/logs/dupefile"
+DOUBLE_SFV <STRING>
+	Error msg when a second sfv file is uploaded.
+	Default: "SFV-file: DUPE!"
 
-group_dirs <PATHS>
-	This is the place(s) where your site's groups/affilliates have space
-	provided. Normally each (release-)group have a designated area
-	accessible only to the group's members, in which they upload a new
-	release and 'pre' it (release it) simultanously on several sites.
-	Uploads and races in these dirs will not be logged. Dirs are separated
-	with the space character.
-	Default: "/site/groups/"
+DUPE_NFO <STRING>
+	Error msg when a 2nd nfo is uploaded.
+	Default: "NFO-File: DUPE!"
 
-zip_dirs <PATHS>
-	This variable should hold a list of dirs where you expect zip-releases.
-	Dirs listed here will be logged. Dirs are separated by a space
-	character.
-	Default: "/site/test/ /site/incoming/0day/"
+EMPTY_FILE <STRING>
+	Error msg when an empty (0byte) file is uploaded.
+	Default: "0byte-file: Not allowed!"
 
-sfv_dirs <PATHS>
-	Similar to zip_dirs, this holds a list of dirs you expect to get sfv-
-	releases. Typical releases that use sfv is anything that is not zipped,
-	like rar, mp3, avi etc. Dirs listed here will be logged. Dirs are
-	separated by a space character.
-	Default: "/site/test/ /site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/requests/"
-
-nocheck_dirs <PATHS>
-	Normally dirs in group/zip/sfv dirs are checked for corruption and
-	completeness. The dirs listed in this varaible will override paths
-	inside the previous dirs, and not check the files uploaded.
-	Unlike the original zipscript-c, pzs-ng will only check dirs listed
-	in group/zip/sfv dirs, and not the entire site. Dirs are separated
-	by a space character.
-	Default: "/site/private/"
-
-noforce_sfv_first_dirs <PATHS>
-	The option 'force_sfv_first' forces sfv to be uploaded first in a
-	release. In some dirs, this may not be desiarable. To the rescue come
-	this option, which allow you to enter dirs that will be excluded from
-	the force.
-	Default: "/site/incoming/requests/"
-
-speedtest_dirs <PATHS>
-	On sites it is common with special dirs dedicated to speedtesting. You
-	can define here the dirs dedicated to speedtesting.
-	Default: "/site/speedtest/"
-
-speedtest_delfile <TRUE|FALSE>
-	With speedtest you can choose if you wish to keep the uploaded files or
-	remove them immediatly. If you choose to keep them, the files will be
-	renamed to xx.xMiB
-	Default: FALSE
-
-use_partial_on_noforce <TRUE|FALSE>
-	Usually all pathmatches are full paths. You can change this on what
-	you put in noforce_sfv_first_dirs to make it match parts of a dir,
-	like 'sample' or something. Please be careful to include a slash after
-	the dirs if this setting is on - like '/sample/', to minimize the
-	number of possible wrong hits.
-	Default: FALSE
-
-spaces_to_dots <TRUE|FALSE>
-	This option will replace spaces in mp3-genre dirs to dots.
-	Default: FALSE
-
-audio_nocheck_dirs <PATHS>
-	Audio-files can be checked against a list of allowed/denied genres,
-	years etc. Audio-files found in paths defined in this variable will
-	not be checked against these defines, thus allowing them. Dirs are
-	separated by a space character.
-	Default: "/site/groups/ /site/incoming/requests/"
-
-audio_nosort_dirs <PATHS>
-	If you do not want to sort the audio-files in certain dirs (but still
-	want to check for validity and announce them in chan) you can define a
-	list of dirs in this variable.
-	Default: "/site/incoming/requests/"
-
-rescan_nocheck_dirs_allowed <TRUE|FALSE>
-	If you need to check a dir placed in a nocheck_dirs area, you must
-	set this variable to TRUE. Setting this to FALSE will render the rescan
-	option dead in nocheck_dirs areas.
-	Default: TRUE
-
-rescan_default_to_quick <TRUE|FALSE>
-	This option sets the default mode for rescan regarding the quick mode.
-	In quick mode only the files not already marked as good will be
-	rescanned. This is good if some files are uploaded, but not checked by
-	the zipscript.
-	Default: TRUE
-
-strict_path_match <TRUE|FALSE>
-	This setting is used to enforce the filetype (zip/sfv) based on path.
-	When set to TRUE, zip files is not allowed in sfv dirs, and the other
-	way around. group dirs are not affected, as they can be both.
-	Default: FALSE
-
-sfv_calc_single_fname <TRUE|FALSE>
-	Setting this to TRUE enables the zipscript to calculate a crc checksum
-	for filenames listed in the sfv, which do not have a corresponding crc.
-	Normally only broken sfv's should have a missing crc after a filename.
-	Default: FALSE
-
-subdir_list <STRING>
-	This is a list of what is defined as subdirs. Dirs matching these
-	patterns will be considered subdirs, and follow a different pattern
-	regarding symlinks and nfo-rules etc.
-	Put the char '?' where a number or char may or may not be, but *only*
-	at the end of a dirname. Ie, cd?? will match cdA, cd12, but not cd123.
-	Do not put '?' at the beginning or in the middle - it will not work.
-	The string is not case-sensitive (dVd == DvD).
-	Default: "cd??,disc??,disk??,dvd??,extra?,sub?,subtitles,vobsub?,sample?,subpack?,ac3,audioaddon,addon,ac3addon"
-
-sample_list <STRING>
-	This is a list of sample-dirs. The list is not case-sensitive.
-	Default: "sample vobsample"
-
-gl_sections <STRING>
-	Here you should put a list of all sections on your site. Sections is
-	not the same as dirs, but is what you have defined as sections in
-	glftpd.conf. See glftpd's docs for more info on sections.
-	First section is normally named 'DEFAULT'. The order in which you put
-	the names of the sections are important. Separate sections with a
-	space character.
-	Default: "DEFAULT"
-
-short_sitename <STRING>
-	Insert here the name of your site, short format. This will be used on
-	progressbars, completebars etc. This can be used in a cookie (%Z).
-	Default: "NG"
-
-allowed_types_exemption_dirs <PATHS>
-	In allowed_types we define filetypes that are allowed on site w/o
-	any checks. Define here paths where these filetypes should be checked
-	*if* an sfv is uploaded.
-	Default: "/site/incoming/musicvideos/"
-
-check_for_missing_nfo_dirs <PATHS>
-	Normally each release has a .nfo included. It has info about the
-	release written by the release-group, and may contain vital info
-	like serials etc. The paths defined in this value will be checked
-	for missing nfo after the release is marked as 'complete'. Separate
-	dirs with a space character.
-	Default: "/site/incoming/games/ /site/incoming/apps/"
-
-create_missing_sfv_link <TRUE|FALSE>
-	normally releases have a sfv, unless they are zip releases. This
-	setting will check for missing sfv in releases.
-
-create_incomplete_links_in_group_dirs <TRUE|FALSE>
-	Should incomplete indicators be created in groupdirs? With the default
-	settings this should be no problem, but if you change the location of
-	the links, it may very well be.
-	Default: TRUE
+EMPTY_SFV <STRING>
+	Error msg when uploaded sfv does not contain any parsable lines.
+	Default: "SFV-file: BAD!"
 
 GROUPFILE <PATH>
 	This is the location of glftpd's groupfile.
 	Default: "/etc/group"
 
+NOT_IN_SFV <STRING>
+	Error msg when uploaded file is not found in the sfv.
+	Default: "CRC-Check: Not in sfv!"
+
 PASSWDFILE <PATH>
 	This is the location of glftpd's passwd file.
 	Default: "/etc/passwd"
 
-combine_path <TRUE|FALSE>
-	Some clients do not cwd into the releasedir before uploading file(s).
-	To allow such clients this option must be set to TRUE.
+SFV_FIRST <STRING>
+	Error msg when sfv_first is enabled, and no sfv is uploaded prior to
+	"normal" files.
+	Default: "CRC-Check: SFV first!"
+
+SPEEDTEST <STRING>
+	Output when file is uploaded in a speedtest dir.
+	Default: "BW: %.1fMiB (%.1fMB) @ %.2fMbps (%.2fMB/s)."
+
+UNKNOWN_FILE <STRING>
+	Error msg when filetype is not recognized or is listed as unwanted.
+	%s = file extension
+	Default: "%s-file: Not allowed!"
+
+ZIP_NFO <STRING>
+	Error msg when nfo file is uploaded in a zipdir.
+	Default: "NFO-File: Not allowed here!"
+
+accept_script <PATH>
+	Put here the path to the external script which should be run after
+	a file is verified and ok.
+	Default: "/bin/imdb_parse.sh"
+
+affil_script <STRING>
+	Enter here the name of the affil_script to be executed on affil
+	uploads (not in group_dirs). The script will get the filename as arg.
+	Default: "/bin/affilscript.sh"
+
+allow_dir_chown_in_ng_chown <TRUE|FALSE>
+	In ng-chown you have to specify a dir or a file to chmod. This setting
+	allows/denies to change the ownership of that file/dir.
 	Default: FALSE
 
-days_back_cleanup <NUMBER>
-	This setting defines how many days backward should be scanned on
-	cleanup. 0=disabled, 1=today only, 2=yesterday and today etc.
-	Default: 2
-cleanupdirs <PATHS>
-	To keep your site tidy and free from stale/dead symlinks created by the
-	zipscript, you should put here a list of dirs to scan for dead links.
-	The list is not recursive, and does not take wildcards.
-	Default: "/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/"
-
-cleanupdirs_dated <PATHS>
-	To keep your site tidy and free from stale/dead symlinks created by the
-	zipscript, you should put here a list of dirs to scan for dead links.
-	The list is not recursive, and does not take wildcards. This list can
-	contain format cookies for dated directories, refer to 'man strftime' 
-	for a list of available date cookies.
-	Default: "/site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
-
-always_scan_audio_syms <TRUE|FALSE>
-	On cleanup symlinks are removed. However, if cleanup is used as a
-	cscript, only current dir will be checked. You can make sure to
-	clean up broken audio-symlinks as well, by setting this variable to
-	TRUE. Because audio archives can get huge, this is not on by default.
+allow_error2_in_unzip <TRUE|FALSE>
+	If unzip exits with error code 1 or 2 (a generic error) - should the file
+	be allowed anyway? There really shouldn't be any errors, so it's
+	recommended to leave this setting to the default FALSE.
 	Default: FALSE
 
-write_complete_message_in_group_dirs <TRUE|FALSE>
-	Should a .message file be created in the group-dirs?
-	Default: TRUE
+allow_file_resume <TRUE|FALSE>
+	Broken transfers may be a problem on some sites. Glftpd2 and pzs-ng
+	allow you to resume such files by setting this to TRUE.
+	Default: FALSE
 
-hide_group_uploaders <TRUE|FALSE>
-	If you wish to hide the names of the member of a releasegroup in the
-	.message file, this option will 'hide' the uploader.
-	Default: TRUE
-
-hide_gname <STRING>
-	Set here something you wish to use instead of the groupname when
-	hiding users. Setting this empty will not change groupname.
-	Default: ""
-
-hide_uname <STRING>
-	Set here something you wish to use instead of the username when
-	hiding users. Setting this empty will make the username the same
-	as groupname.
-	Default: ""
-
-custom_group_dirs_complete_message <STRING|DISABLED>
-	If you rather would like to put in a predefined message in the
-	.message in group-dirs, define here what that message should be.
-	Setting this variable to DISABLED disables it.
-	Default: "... Looks like this is a pre. :)"
-
-create_missing_files <TRUE|FALSE>
-	To easily see what files are missing in a release, the zipscript can
-	create a 0-byte file of each missing file (filename-missing). This
-	file will be removed when the file is uploaded and found free of
-	errors.
-	Default: TRUE
-
-status_bar_type <0|1>
-	In each dir there will be a statusbar. Here you define if you wish
-	to make it as a file (0) or as a dir (1).
-	Default: 1
-
-incompleteislink <0|1>
-	While a release is incomplete, a link will be created pointing to
-	the releasedir. You can define if it will be a file (0) or a
-	symbolic link (1).
-	Default: 1
-
-userellink <0|1>
-	With symbolic links you have an option of it being absolute (0) or
-	relative (1).
-	Default: 1
-
-program_uid <NUMBER>
-	Some may want to run zipscript-c as a special user, which will be
-	set as 'owner' of links, missing files etc. Setting this to anything
-	but 0 will force the zipscript to change uid to the number you put
-	here. In order for this to work, zipscript-c needs the suid bit set.
-	Default: 0
-	
-program_gid <NUMBER>
-	Same as with program_uid, only this is with the group.
-	Default: 0
-
-allowed_types <STRING>
-	This variable holds a comma-separated list of extensions. All files
-	with any of these extensions are allowed and not checked.
-	Default: "jpg,cue,m3u,mpg,mpeg,avi,txt,mov,vob,mkv,wmv"
-
-ignored_types <STRING>
-	Files found with an extension listed in this variable are denied on
-	upload, and ignored on rescan/postdel/etc. The list is comma-separated.
-	Defining a file with no extension can be done by starting the list
-	with a comma. The dot before the extension should not be added.
-	.diz, .message and .debug is normally generated by the zipscript, so
-	these types should be listed here. Also add types 3rd party scripts
-	commonly make, like .imdb, .html, .url, .m3u etc.
-	Default: ",diz,debug,message,imdb,html,url"
-
-video_types <STRING>
-	Comma-separated list of files considered to be video files. Should
-	usually not be changed, but may need to be if a 3rd party script handle
-	sample info.
-	Default: "mpg,mpeg,m2v,m2p,avi"
+allow_files_chown_in_ng_chown <TRUE|FALSE>
+	In ng-chown you have to specify a dir or a file to chmod. If you specify
+	a dir, this setting will chown the files in that dir, but not the dir
+	itself.
+	Default: FALSE
 
 allow_files_not_in_sfv <TRUE|FALSE>
 	Should we allow files uploaded that is not in the sfv? This is only
@@ -341,169 +136,8 @@ allow_files_not_in_sfv <TRUE|FALSE>
 	this option allows on your site...
 	Default: FALSE
 
-create_missing_sfv <TRUE|FALSE>
-	If this option is set to TRUE, the rescan binary will create sfv files
-	if none is found in the dir.
-	Default: FALSE
-
-strict_sfv_check <TRUE|FALSE>
-	Whenever "bad" entries are found in the sfv, they are usually ignored.
-	Setting this settingto true will mark the entire sfv as bad if such
-	entries are found, forcing the user to upload a valid sfv file.
-	Bad entries consist of lines containing the NULL char, or lines without
-	a valid crc code.
-	Default: FALSE
-
-mark_file_as_bad <TRUE|FALSE>
-	Normally files marked as bad are deleted. You can change this by setting
-	the following value to TRUE - instead of the file being deleted, it will
-	be renamed <filename>.bad. Bad files are ignored on rescan.
-	Default: FALSE
-
-allow_file_resume <TRUE|FALSE>
-	Broken transfers may be a problem on some sites. Glftpd2 and pzs-ng
-	allow you to resume such files by setting this to TRUE.
-	Default: FALSE
-
-sleep_on_bad <NUMBER>
-	Whenever a bad file is encountered, you can add a delay for the user
-	between 1 and 1000 seconds. Put the number of seconds glftpd should
-	sleep. Setting this to 0 ( or >1000) will disable this feature.
-	Default: 0
-
-debug_mode <TRUE|FALSE>
-	If something seems weird/doesn't work, you should debug. Setting this
-	variable to TRUE will turn on debugging. A file named .debug will be
-	created, normally in the same dir as the upload-dir.
-	Default: FALSE
-
-debug_altlog <TRUE|FALSE>
-	If debug is on, you can choose wether you wish to have the .debug file
-	in the releasedir, or in the mirrored tree created in 'storage'. Please
-	note that if you choose to put the debug file in the 'storage' path,
-	some debug-info may be lost. Setting this to TRUE will use the
-	'storage' path, while FALSE will use the upload-dir.
-        Note that this also uses different name. It will be named 'debug' and not
-        'debug'.
-	Default: TRUE
-
-debug_announce <TRUE|FALSE>
-	If this variable is set to TRUE, and debug_mode is set to TRUE the
-	zipscript will announce to the uploader that the script is running in
-	debug mode. The announce is done at the very beginning of the script,
-	which means that it should give some output no matter what, if it
-	manages to start. Good to find out if the script has actually been
-	executed.
-	If the script(s) are unable to write to .debug and debug_announce is
-	on, the debug msg's will be pasted to the client instead.
-	Default: FALSE
-
-benchmark_mode <TRUE|FALSE>
-	This option will show the user uploading an estimate of how long it
-	took the zipscript to scan the uploaded file.
-	Default: TRUE
-
-ignore_zero_size <TRUE|FALSE>
-	This option is for debugging purposes only. Normally files of size
-	0 bytes are logged as bad, meaning glftpd will delete them. This
-	option makes it possible to allow such files.
-	Default: FALSE
-
-ignore_zero_size_on_rescan <TRUE|FALSE>
-	Sometimes a release is approved, which usually is not according to
-	site rules. One of the ways to approve a dir is to create a 0-sized
-	file in the dir, with the word APPROVED or ALLOWED somewhere.
-	This setting will ignore all zero-sized files on rescan.
-	Default: FALSE
-
-remove_dot_debug_on_delete <TRUE|FALSE>
-	If you have debug mode on, users may or may not be able to see the
-	hidden files in the dir, and glftpd may be set up to deny the user
-	to delete other people's files (the .debug may be owned by a different
-	racer). Setting this to TRUE will try to remove the .debug file if
-	the dir itself is removed. Previously, people had to have access to
-	the wipe-command to be able to do this.
-	Default: TRUE
-
-remove_dot_files_on_delete <TRUE|FALSE>
-	If your site hides hidden files (files starting with a dot (''.''),
-	your users may have problems deleting dirs completely. Setting this
-	option to TRUE will remove all hidden files, when all other files of
-	the release is deleted.
-	Default: FALSE
-
-unzip_bin <PATH>
-	This is the location of the unzip binary needed to verify zip-releases.
-	Default: "/bin/unzip"
-
-allow_error2_in_unzip <TRUE|FALSE>
-	If unzip exits with error code 1 or 2 (a generic error) - should the file
-	be allowed anyway? There really shouldn't be any errors, so it's
-	recommended to leave this setting to the default FALSE.
-	Default: FALSE
-
-sfv_dupecheck <TRUE|FALSE>
-	Setting this option to TRUE will remove duplicate entries within the
-	uploaded sfv file.
-	Default: TRUE
-
-sfv_cleanup <TRUE|FALSE>
-	Setting this to true will cleanup the uploaded sfv, removing
-	comments etc. from it.
-	Default: TRUE
-
-sfv_cleanup_lowercase <TRUE|FALSE>
-	If sfv_cleanup is set to TRUE, this setting will also convert all
-	entries in the sfv to lowercase.
-	If sfv_cleanup is set to FALSE, this setting will only make -missing
-	pointers and the internal sfv database lowercased.
-	Either way, if set to TRUE you in effect turn winblows mode on, and the
-	zipscript will not separate case on filenames.
-	Default: TRUE
-
-sfv_cleanup_crlf <TRUE|FALSE>
-	If sfv_cleanup is set to TRUE, this option defines if you use windows
-	or *nix version of linefeeds. The recommended option is to leave this
-	to TRUE, using windows style (<cr><lf>).
-	Default: TRUE
-
-sfv_lenient <TRUE|FALSE>
-	If this is set to true, the chars '_' , '-' , '.' , ' ' and ',' are
-	recognized as the same char. Ie, if you have in sfv 'file.name' and
-	upload 'file_name' - the file will be allowed.
-	Default: TRUE
-
-deny_double_sfv <TRUE|FALSE>
-	With sfv releases, there should be only one sfv file allowed. This can
-	be done two ways - either by force or by being 'smart'. Setting this
-	option to TRUE will deny any new sfv in the dir, if a sfv already has
-	been uploaded. Setting it to FALSE will make the zipscript check the
-	new sfv first, compare it to the old sfv file and make a decision
-	based on the content of the sfv. If the new sfv contains more files
-	than the old one, and they match with what is already uploaded in the
-	dir, it will be allowed and used. If it does not, it will be denied.
-	Default: FALSE
-
-deny_resume_sfv <TRUE|FALSE>
-	This option works like deny_double_sfv, only it will deny even resumed
-	or overwritten sfv files. If that happens, a backup of the original sfv
-	will be copied back to the release.
-	Default: TRUE
-
-deny_double_nfo <TRUE|FALSE>
-	This is usually done (better) with a 3rd party app, but ... You can
-	deny a nfo upload if one already exists in the same dir.
-	Default: FALSE
-
-exclude_non_sfv_dirs <TRUE|FALSE>
-	Applies only to audio/mp3 releases - NEEDS MORE INFO HERE!!!!!
-	Default: TRUE
-
-force_sfv_first <TRUE|FALSE>
-	In sfv_dirs, you can either allow files to be uploaded by default and
-	checked later when the sfv arrives, or you can force the uploader to
-	first provide a sfv before any other filetype is allowed. Setting this
-	to TRUE will do the latter.
+allow_gid_change_in_ng_chown <TRUE|FALSE>
+	Same as with allow_uid_change_in_ng_chown, only with gid.
 	Default: FALSE
 
 allow_slash_in_sfv <TRUE|FALSE>
@@ -511,18 +145,56 @@ allow_slash_in_sfv <TRUE|FALSE>
 	taken as the filename. If FALSE, the sfv is rejected.
 	Default: TRUE
 
-audio_genre_sort <TRUE|FALSE>
-	If you wish to sort audio/mp3 releases by genre, set this to TRUE.
+allow_uid_change_in_ng_chown <TRUE|FALSE>
+	ng-chown is a binary that changes the uid/gid of files dirs. In
+	order for it to work you have to enable a few things. This variable
+	will let ng-chown change the uid of files/dirs. ng-chown need to be
+	chmod'ed +s for it to work too.
 	Default: FALSE
 
-audio_genre_path <PATH>
-	If you choose to sort audio/mp3 releases by genre, this is the place
-	where the symlinks will be created. This dir must be created in order
-	for the sorting to work - the zipscript will not create it for you.
-	Default: "/site/incoming/music.by.genre/"
+allowed_constant_bitrates <STRING>
+	You can restrict uploaded audio/mp3 releases several ways. One is by
+	bitrate. Only CBR (Constant Bit Rate) mp3-files is of interest this
+	way. The list you define should be comma-separated.
+	Default: "160,192"
 
-audio_artist_sort <TRUE|FALSE>
-	If you wish to sort audio/mp3 releases by artist, set this to TRUE.
+allowed_genres <STRING>
+	Instead of listing all denied genres, you can list all allowed genres.
+	Put here a comma-separated list of allowed genres.
+	Default: "Top 40,Pop Funk,Rock,Pop"
+
+allowed_types <STRING>
+	This variable holds a comma-separated list of extensions. All files
+	with any of these extensions are allowed and not checked.
+	Default: "jpg,cue,m3u,mpg,mpeg,avi,txt,mov,vob,mkv,wmv"
+
+allowed_types_exemption_dirs <PATHS>
+	In allowed_types we define filetypes that are allowed on site w/o
+	any checks. Define here paths where these filetypes should be checked
+	*if* an sfv is uploaded.
+	Default: "/site/incoming/musicvideos/"
+
+allowed_years <STRING>
+	Another way to restrict mp3-releases is by year. Define here a list
+	of years allowed on site. The list should be comma-separated.
+	Default: "2004,2005,2006,2007"
+
+always_scan_audio_syms <TRUE|FALSE>
+	On cleanup symlinks are removed. However, if cleanup is used as a
+	cscript, only current dir will be checked. You can make sure to
+	clean up broken audio-symlinks as well, by setting this variable to
+	TRUE. Because audio archives can get huge, this is not on by default.
+	Default: FALSE
+
+announce_norace <TRUE|FALSE>
+	If this variable is set to FALSE, announces with only one racer will
+	not be announced.
+	Default: TRUE
+
+audio_allowed_genre_check <TRUE|FALSE>
+	Should the audio/mp3 release be checked against your defined genres?
+	Only audio_banned_genre_check OR audio_allowed_genre_check should be
+	set to TRUE - not both.
 	Default: FALSE
 
 audio_artist_nosub <TRUE|FALSE>
@@ -539,48 +211,15 @@ audio_artist_path <PATH>
 	for the sorting to work - the zipscript will not create it for you.
 	Default: "/site/incoming/music.by.artist/"
 
-audio_year_sort <TRUE|FALSE>
-	If you wish to sort audio/mp3 releases by year, set this to TRUE.
+audio_artist_sort <TRUE|FALSE>
+	If you wish to sort audio/mp3 releases by artist, set this to TRUE.
 	Default: FALSE
 
-audio_year_path <PATH>
-	If you choose to sort audio/mp3 releases by year, this is the place
-	where the symlinks will be created. This dir must be created in order
-	for the sorting to work - the zipscript will not create it for you.
-	Default: "/site/incoming/music.by.year/"
-
-audio_group_sort <TRUE|FALSE>
-	If you wish to sort audio/mp3 releases by group, set this to TRUE.
-	Default: FALSE
-
-audio_group_path <PATH>
-	If you choose to sort audio/mp3 releases by group, this is the place
-	where the symlinks will be created. This dir must be created in order
-	for the sorting to work - the zipscript will not create it for you.
-	Default: "/site/incoming/music.by.group/"
-
-audio_language_sort <TRUE|FALSE>
-	If you wish to sort audio/mp3 releases by language, set this to TRUE.
-	Default: FALSE
-
-audio_language_path <PATH>
-	If you choose to sort audio/mp3 releases by language, this is the place
-	where the symlinks will be created. This dir must be created in order
-	for the sorting to work - the zipscript will not create it for you.
-	Default: "/site/incoming/music.by.language/"
-
-delete_old_link <TRUE|FALSE>
-	If you do NOT want to have the zipscript/rescan/audiosort delete any
-	links with the same name when it tries to create a new link, set this 
-	to FALSE. This will cause rescan / audiosort to be useless if there
-	already are sortedlinks for this release.
+audio_banned_genre_check <TRUE|FALSE>
+	Should the audio/mp3 release be checked against your defined genres?
+	Only audio_banned_genre_check OR audio_allowed_genre_check should be
+	set to TRUE - not both.
 	Default: TRUE
-
-allowed_constant_bitrates <STRING>
-	You can restrict uploaded audio/mp3 releases several ways. One is by
-	bitrate. Only CBR (Constant Bit Rate) mp3-files is of interest this
-	way. The list you define should be comma-separated.
-	Default: "160,192"
 
 audio_cbr_check <TRUE|FALSE>
 	Should the zipscript check for allowed bitrate on cbr audio/mp3
@@ -593,48 +232,19 @@ audio_cbr_warn <TRUE|FALSE>
 	to TRUE if yes.
 	Default: TRUE
 
-allowed_years <STRING>
-	Another way to restrict mp3-releases is by year. Define here a list
-	of years allowed on site. The list should be comma-separated.
-	Default: "2000,2001,2002,2003,2004,2005"
+audio_completebar <STRING|DISABLED>
+	When a release is complete, a 'complete bar' will be created. Define
+	here how it should look like on audio releases.
+	Default: "[%Z] - ( %.0mM %fF - COMPLETE - %w %Y ) - [%Z]"
 
-audio_year_check <TRUE|FALSE>
-	Should the zipscript check for allowed years on audio/mp3 releases? Set
-	to TRUE if yes.
-	Default: TRUE
+audio_genre_path <PATH>
+	If you choose to sort audio/mp3 releases by genre, this is the place
+	where the symlinks will be created. This dir must be created in order
+	for the sorting to work - the zipscript will not create it for you.
+	Default: "/site/incoming/music.by.genre/"
 
-audio_year_warn <TRUE|FALSE>
-	If the audio-release is not in the list of allowed years, should the
-	zipscript log a warning message instead of deleting the file? Set to
-	TRUE if yes.
-	Default: TRUE
-
-banned_genres <STRING>
-	You can also restrict by genre. Use this variable to define genres
-	not allowed on your site. Genres are separated by a comma.
-	Default: "Christian Rap,Christian Gangsta Rap,Contemporary Christian,Christian Rock"
-
-allowed_genres <STRING>
-	Instead of listing all denied genres, you can list all allowed genres.
-	Put here a comma-separated list of allowed genres.
-	Default: "Top 40,Pop Funk,Rock,Pop"
-
-audio_ignored_languages <STRING>
-	To prevent mp3 language sorting of languages that isn't, well,
-	languages, list here what should be ignored. Not case sensitive, and
-	the list is comma separated.
-	Default: "md,cd,lp,ep,va"
-
-audio_banned_genre_check <TRUE|FALSE>
-	Should the audio/mp3 release be checked against your defined genres?
-	Only audio_banned_genre_check OR audio_allowed_genre_check should be
-	set to TRUE - not both.
-	Default: TRUE
-
-audio_allowed_genre_check <TRUE|FALSE>
-	Should the audio/mp3 release be checked against your defined genres?
-	Only audio_banned_genre_check OR audio_allowed_genre_check should be
-	set to TRUE - not both.
+audio_genre_sort <TRUE|FALSE>
+	If you wish to sort audio/mp3 releases by genre, set this to TRUE.
 	Default: FALSE
 
 audio_genre_warn <TRUE|FALSE>
@@ -642,7 +252,215 @@ audio_genre_warn <TRUE|FALSE>
 	zipscript log a warning message instead of deleting the file? Set to
 	TRUE if yes.
 	Default: TRUE
-	
+
+audio_group_path <PATH>
+	If you choose to sort audio/mp3 releases by group, this is the place
+	where the symlinks will be created. This dir must be created in order
+	for the sorting to work - the zipscript will not create it for you.
+	Default: "/site/incoming/music.by.group/"
+
+audio_group_sort <TRUE|FALSE>
+	If you wish to sort audio/mp3 releases by group, set this to TRUE.
+	Default: FALSE
+
+audio_ignored_languages <STRING>
+	To prevent mp3 language sorting of languages that isn't, well,
+	languages, list here what should be ignored. Not case sensitive, and
+	the list is comma separated.
+	Default: "md,cd,lp,ep,va"
+
+audio_language_path <PATH>
+	If you choose to sort audio/mp3 releases by language, this is the place
+	where the symlinks will be created. This dir must be created in order
+	for the sorting to work - the zipscript will not create it for you.
+	Default: "/site/incoming/music.by.language/"
+
+audio_language_sort <TRUE|FALSE>
+	If you wish to sort audio/mp3 releases by language, set this to TRUE.
+	Default: FALSE
+
+audio_nocheck_dirs <PATHS>
+	Audio-files can be checked against a list of allowed/denied genres,
+	years etc. Audio-files found in paths defined in this variable will
+	not be checked against these defines, thus allowing them. Dirs are
+	separated by a space character.
+	Default: "/site/groups/ /site/incoming/requests/"
+
+audio_nosort_dirs <PATHS>
+	If you do not want to sort the audio-files in certain dirs (but still
+	want to check for validity and announce them in chan) you can define a
+	list of dirs in this variable.
+	Default: "/site/incoming/requests/"
+
+audio_year_check <TRUE|FALSE>
+	Should the zipscript check for allowed years on audio/mp3 releases? Set
+	to TRUE if yes.
+	Default: TRUE
+
+audio_year_path <PATH>
+	If you choose to sort audio/mp3 releases by year, this is the place
+	where the symlinks will be created. This dir must be created in order
+	for the sorting to work - the zipscript will not create it for you.
+	Default: "/site/incoming/music.by.year/"
+
+audio_year_sort <TRUE|FALSE>
+	If you wish to sort audio/mp3 releases by year, set this to TRUE.
+	Default: FALSE
+
+audio_year_warn <TRUE|FALSE>
+	If the audio-release is not in the list of allowed years, should the
+	zipscript log a warning message instead of deleting the file? Set to
+	TRUE if yes.
+	Default: TRUE
+
+banned_filelist <PATH>
+	You can ban certain files on site, based on name. The check is not
+	case-sensitive, and wildcards may be used.
+	Put here the path to the text-file with a list of the files you do not
+	want on your site.
+	For more info, or upgraded lists, see http://project-sl.swecheck.net
+	Please note - chars like [ and ] are used in the wildcard scheme - if you
+	search for such chars in the filenames, you need to double-escape them,
+	ie \\[ and \\] and \\( etc.
+	For more info on how wildcards are read, read manpage of fnmatch().
+	Default: "/ftp-data/misc/banned_filelist.txt"
+
+banned_genres <STRING>
+	You can also restrict by genre. Use this variable to define genres
+	not allowed on your site. Genres are separated by a comma.
+	Default: "Christian Rap,Christian Gangsta Rap,Contemporary Christian,Christian Rock"
+
+benchmark_mode <TRUE|FALSE>
+	This option will show the user uploading an estimate of how long it
+	took the zipscript to scan the uploaded file.
+	Default: TRUE
+
+change_spaces_to_underscore_in_ng_chown <TRUE|FALSE>
+	Some ftp-clients have trouble reading the names of uid/gid if they have
+	spaces in them. This will search for a uid/gid with a underscore, if
+	the name (genre) given has a space inside. It is recommended to *NOT*
+	change this value (from TRUE).
+	Default: TRUE
+
+charbar_filled <CHAR>
+	The progressbar consist of two chars, which together marks the progress
+	of the release. Put here the char to be used to mark uploaded files.
+	Default: "#"
+
+charbar_missing <CHAR>
+	The progressbar consist of two chars, which together marks the progress
+	of the release. Put here the char to be used to mark missing files.
+	Default: ":"
+
+check_for_banned_files <TRUE|FALSE>
+	Will check the banned_filelist when uploading files - if one is
+	encountered, the zipscript will deny the upload.
+	Default: TRUE
+
+check_for_missing_nfo_dirs <PATHS>
+	Normally each release has a .nfo included. It has info about the
+	release written by the release-group, and may contain vital info
+	like serials etc. The paths defined in this value will be checked
+	for missing nfo after the release is marked as 'complete'. Separate
+	dirs with a space character.
+	Default: "/site/incoming/games/ /site/incoming/apps/"
+
+chmod_completebar <TRUE|FALSE>
+	When TRUE, the permissions on the file/dir is changed to 0222. This is
+	to prevent it from being transfered on download/fxp.
+	Note that this will not happen in group-dirs.
+	Default: FALSE
+
+cleanupdirs <PATHS>
+	To keep your site tidy and free from stale/dead symlinks created by the
+	zipscript, you should put here a list of dirs to scan for dead links.
+	The list is not recursive, and does not take wildcards.
+	Default: "/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/"
+
+cleanupdirs_dated <PATHS>
+	To keep your site tidy and free from stale/dead symlinks created by the
+	zipscript, you should put here a list of dirs to scan for dead links.
+	The list is not recursive, and does not take wildcards. This list can
+	contain format cookies for dated directories, refer to 'man strftime' 
+	for a list of available date cookies.
+	Default: "/site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
+
+combine_path <TRUE|FALSE>
+	Some clients do not cwd into the releasedir before uploading file(s).
+	To allow such clients this option must be set to TRUE.
+	Default: FALSE
+
+complete_script <PATH>
+	Put here the path to the external script which should be run after a
+	release is marked complete.
+	Default: "/bin/nfo_copy.sh"
+
+create_incomplete_links_in_group_dirs <TRUE|FALSE>
+	Should incomplete indicators be created in groupdirs? With the default
+	settings this should be no problem, but if you change the location of
+	the links, it may very well be.
+	Default: TRUE
+
+create_m3u <TRUE|FALSE>
+	If you wish to create .m3u files on complete mp3-releases, set this to
+	TRUE.
+	Default: TRUE
+
+create_missing_files <TRUE|FALSE>
+	To easily see what files are missing in a release, the zipscript can
+	create a 0-byte file of each missing file (filename-missing). This
+	file will be removed when the file is uploaded and found free of
+	errors.
+	Default: TRUE
+
+create_missing_sfv <TRUE|FALSE>
+	If this option is set to TRUE, the rescan binary will create sfv files
+	if none is found in the dir.
+	Default: FALSE
+
+create_missing_sfv_link <TRUE|FALSE>
+	normally releases have a sfv, unless they are zip releases. This
+	setting will check for missing sfv in releases.
+	Default: TRUE
+
+custom_group_dirs_complete_message <STRING|DISABLED>
+	If you rather would like to put in a predefined message in the
+	.message in group-dirs, define here what that message should be.
+	Setting this variable to DISABLED disables it.
+	Default: "... Looks like this is a pre. :)\n"
+
+days_back_cleanup <NUMBER>
+	This setting defines how many days backward should be scanned on
+	cleanup. 0=disabled, 1=today only, 2=yesterday and today etc.
+	Default: 2
+
+debug_altlog <TRUE|FALSE>
+	If debug is on, you can choose wether you wish to have the .debug file
+	in the releasedir, or in the mirrored tree created in 'storage'. Please
+	note that if you choose to put the debug file in the 'storage' path,
+	some debug-info may be lost. Setting this to TRUE will use the
+	'storage' path, while FALSE will use the upload-dir.
+	    Note that this also uses different name. It will be named 'debug' and not
+	    'debug'.
+	Default: TRUE
+
+debug_announce <TRUE|FALSE>
+	If this variable is set to TRUE, and debug_mode is set to TRUE the
+	zipscript will announce to the uploader that the script is running in
+	debug mode. The announce is done at the very beginning of the script,
+	which means that it should give some output no matter what, if it
+	manages to start. Good to find out if the script has actually been
+	executed.
+	If the script(s) are unable to write to .debug and debug_announce is
+	on, the debug msg's will be pasted to the client instead.
+	Default: FALSE
+
+debug_mode <TRUE|FALSE>
+	If something seems weird/doesn't work, you should debug. Setting this
+	variable to TRUE will turn on debugging. A file named .debug will be
+	created, normally in the same dir as the upload-dir.
+	Default: FALSE
+
 del_banned_release <TRUE|FALSE>
 	If you want to make absolutely sure the banned release does not take up
 	more bandwith or space than necessary, you can choose to completely
@@ -651,323 +469,16 @@ del_banned_release <TRUE|FALSE>
 	announce, but the file along with the entire dir will be removed.
 	Default: FALSE
 
-create_m3u <TRUE|FALSE>
-	If you wish to create .m3u files on complete mp3-releases, set this to
-	TRUE.
-	Default: TRUE
-
-enable_files_ahead <TRUE|FALSE>
-	To limit the amount of logging on races, you can choose to only report
-	a new leader in a race if a racer is leading with a certain amount of
-	files. Set to TRUE to enable this feature.
-	Default: TRUE
-
-newleader_files_ahead <NUMBER>
-	Define here how many files ahead a racer must be before the zipscript
-	announces him as new leader.
-	Default: 2
-
-min_newleader_files <NUMBER>
-	Define here the minimum number of files in the RELEASE to announce a
-	new leader in a race.
-	Default: 1
-
-min_update_files <NUMBER>
-	Define here the minimum number of files in the RELEASE to announce an
-	update message.
-	Default: 2
-
-min_halfway_files <NUMBER>
-	Define here the minimum number of files in the RELEASE to announce a
-	halfway message.
-	Default: 10
-
-min_newleader_size <NUMBER>
-	Define here the minimum estimated total size (in MB) of RELEASE to
-	announce a new leader in a race.
-	Default: 10
-
-min_update_size <NUMBER>
-	Define here the minimum estimated total size (in MB) of RELEASE to
-	announce an update message.
-	Default: 1
-
-min_halfway_size <NUMBER>
-	Define here the minimum estimated total size (in MB) of RELEASE to
-	announce a halfway message.
-	Default: 10
-	
-max_users_in_top <NUMBER>
-	Put here the maximum number of users to be logged in a race, when a
-	release is complete.
-	Default: 7
-
-max_groups_in_top <NUMBER>
-	Put here the maximum number of groups to be logged in a race, when a
-	release is complete.
-	Default: 7
-
-announce_norace <TRUE|FALSE>
-	If this variable is set to FALSE, announces with only one racer will
-	not be announced.
-	Default: TRUE
-
-get_competitor_list <TRUE|FALSE>
-	This setting, if set to TRUE, will put a list of all racers
-	excluding the current user into a special cookie.
-	Default: TRUE
-
-get_user_stats <TRUE|FALSE>
-	If this is set to true, the zipscript will try to fetch stats from the
-	racers userfiles.
-	Default: TRUE
-
-show_stats_from_pos2_only <TRUE|FALSE>
-	If this is set to true, only racers in position 2 and below is shown
-	in the %T and %t cookies - this affects the LOOP variables in the bot.
-	Default: FALSE
-
-show_user_info <TRUE|FALSE>
-	If you wish to print stat info after a file is uploaded to the racer,
-	set this to true. It will display racers (usernames) and stats on the
-	current race in the client's ftp program.
-	Default: TRUE
-	
-show_group_info <TRUE|FALSE>
-	If you wish to print stat info after a file is uploaded to the racer,
-	set this to true. It will display racers (groupnames) and stats on the
-	current race in the client's ftp program.
-	Default: TRUE
-
-write_complete_message <TRUE|FALSE>
-	Should a file be created in the releasedir, containing race-info etc?
-	Default: TRUE
-
-message_file_name <STRING>
-	What name should the complete_message file have?
-	Default: ".message"
-
-message_header <STRING|DISABLED>
-	Define here what should be put in the top of the complete_message.
-	Default: ".--== PZS-NG v1.0 ====-----------------------------------------------.\n"
-
-message_user_header <STRING|DISABLED>
-	Define here what should be put above a list of racers (users).
-	Default: "|                          U S E R T O P                             |\n+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n"
-	    
-message_user_body <STRING|DISABLED>
-	Define here the body of the list of racers (users).
-	Default: "| %3n %-29U %7.1mM %4fF %5.1p%% %7.0sKBs |\n"
-
-message_user_footer <STRING|DISABLED>
-	Define here the footer of the list of racers (users).
-	Default: "+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n| %3u Total %31.1mM %4fF 100.0%% %7.0aKBs |\n"
-	    
-message_group_header <STRING|DISABLED>
-	Define here what should be put above a list of racers (groups).
-	Default: "|                                                                    |\n|                                                                    |\n|      G R O U P T O P                           |\n+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n"
-
-message_group_body <STRING|DISABLED>
-	Define here the body of the list of racers (groups).
-	Default: "| %3n %-29g %7.1mM %4fF %5.1p%% %7.0sKBs |\n"
-
-message_group_footer <STRING|DISABLED>
-	Define here the footer of the list of racers (groups).
-	Default: "+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n| %3g Total %31.1mM %4fF 100.0%% %7.0aKBs |\n"
-	    
-message_mp3 <STRING|DISABLED>
-	Define here a special complete_message for mp3-releases.
-	Default: "|                                                                    |\n|                                                                    |\n|       I D 3 - T A G                            |\n+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n| Artist : %-57x |\n| Album  : %-57W |\n| Genre  : %-34w Rate  : %3Xkbit/s     |\n| Tracks : %-34f Year  : %-14Y |\n| Encoder: %-34i Preset: %-14I |\n"
-	
-message_footer <STRING|DISABLED>
-	Define here what should be put at the bottom of the complete_message
-	file.
-	Default: "`-------------------------------------------------------===========--'\n"
-
-video_completebar <STRING|DISABLED>
-	When a release is complete, a 'complete bar' will be created. Define
-	here how it should look like on video releases.
-	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
-
-audio_completebar <STRING|DISABLED>
-	When a release is complete, a 'complete bar' will be created. Define
-	here how it should look like on audio releases.
-	Default: "[%Z] - ( %.0mM %fF - COMPLETE - %w %Y ) - [%Z]"
-
-rar_completebar <STRING|DISABLED>
-	When a release is complete, a 'complete bar' will be created. Define
-	here how it should look like on rar releases.
-	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
-
-zip_completebar <STRING|DISABLED>
-	When a release is complete, a 'complete bar' will be created. Define
-	here how it should look like on zip releases.
-	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
-
-other_completebar <STRING|DISABLED>
-	When a release is complete, a 'complete bar' will be created. Define
-	here how it should look like on other releases.
-	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
-
 del_completebar <STRING|DISABLED>
 	This setting is what the zipscript will search for (and delete) when
 	it updates the complete bar.
 	Default: "^\\[.*] - \\( .*F - COMPLETE.*) - \\[.*]$"
-
-zipscript_header <STRING>
-	When files are uploaded, some output is shown to the racer uploading.
-	Put here what should be shown as the head of that message.
-	Default: ".-== PZS-NG Zipscript-C ==-------------------------.\n""
-
-zipscript_sfv_ok <STRING>
-	When files are uploaded, some output is shown to the racer uploading.
-	Put here what should be shown as the body of that message on sfv-file-
-	upload.
-	Default: "| + SFV-file: oK!                                  |\n"
-
-zipscript_any_ok <STRING>
-	When files are uploaded, some output is shown to the racer uploading.
-	Put here what should be shown as the body of that message on any ok
-	file.
-	Default: "| + File: ok! (allowed w/o any checks)             |\n"
-
-zipscript_SFV_ok <STRING>
-	When files are uploaded, some output is shown to the racer uploading.
-	Put here what should be shown as the body of that message on sfv-
-	checked file.
-	Default: "| + CRC-Check: oK!                                 |\n"
-
-zipscript_SFV_skip <STRING>
-	When files are uploaded, some output is shown to the racer uploading.
-	Put here what should be shown as the body of that message when sfv
-	has not yet been uploaded.
-	Default: "| + CRC-Check: SKIPPED!                            |\n"
-
-zipscript_zip_ok <STRING>
-	When files are uploaded, some output is shown to the racer uploading.
-	Put here what should be shown as the body of that message on zipfile
-	upload.
-	Default: "| + ZiP integrity: oK!                             |\n"
-
-realtime_mp3_info <STRING|DISABLED>
-	When files are uploaded, some output is shown to the racer uploading.
-	Put here what should be shown as the body of that message on mp3-file
-	upload.
-	Default: "+-=[ID3tag]=------------------------===------------+\n| Title  : %-39y |\n| Artist : %-39x |\n| Album  : %-39W |\n| Genre  : %-39w |\n| Year   : %-39Y |\n"
-	
-realtime_user_header <STRING|DISABLED>
-	When files are uploaded, some output is shown to the racer uploading.
-	Put here what should be shown in the body of that message, head of
-	user-stats.
-	Default: "+-=[UserTop]=-------------------===----------------+\n"
-
-realtime_user_body <STRING|DISABLED>
-	When files are uploaded, some output is shown to the racer uploading.
-	Put here what should be shown in the body of that message, body of
-	user-stats.
-	Default: "| %2n. %-15u %8.1mmB %4fF %7.0skB/s |\n"
-
-realtime_user_footer <STRING|DISABLED>
-	When files are uploaded, some output is shown to the racer uploading.
-	Put here what should be shown in the body of that message, footer of
-	user-stats.
-	Default: ""
-
-realtime_group_header <STRING|DISABLED>
-	When files are uploaded, some output is shown to the racer uploading.
-	Put here what should be shown in the body of that message, head of
-	group-stats.
-	Default: "+-=[GroupTop]=--------------------===--------------+\n"
-
-realtime_group_body <STRING|DISABLED>
-	When files are uploaded, some output is shown to the racer uploading.
-	Put here what should be shown in the body of that message, body of
-	group-stats.
-	Default: "| %2n. %-15g %8.1mmB %4fF %7.0skB/s |\n"
-
-realtime_group_footer <STRING|DISABLED>
-	When files are uploaded, some output is shown to the racer uploading.
-	Put here what should be shown in the body of that message, footer of
-	group-stats.
-	Default: ""
-
-zipscript_footer_unknown <STRING>
-	When files are uploaded, some output is shown to the racer uploading.
-	Put here what should be shown in the footer of that message, on uploads
-	where no sfv is uploaded yet.
-	Default: "`-[ - NO - SFV - ]----------------------[%3F/???]--'\n"
-
-zipscript_footer_ok <STRING>
-	When files are uploaded, some output is shown to the racer uploading.
-	Put here what should be shown in the footer of that message, on uploads
-	where the file is verified ok.
-	Default: "`-[%V]----------------------[%3F/%-3f]--'\n"
-
-zipscript_footer_error <STRING>
-	When files are uploaded, some output is shown to the racer uploading.
-	Put here what should be shown in the footer of that message, on uploads
-	where the file has error.
-	Default: "| - %-46v |\n" \
-		 "`-----------------------------------========-------'\n"
-
-zipscript_footer_skip <STRING>
-  	When files are uploaded, some output is shown to the racer uploading.
-	Put here what should be shown in the footer of that message, on uploads
-	where the file has skipped checking.
-	"`--------------------------------=====-------------'\n"
-
-incomplete_cd_indicator <STRING>
-	On upload an indicator is created after each file, to show still
-	incomplete releases. Put here how that indicator will look.
-	This variable defines indicators on multi-cd releases.
-	Default: "../../(incomplete)-(%0)-%1"
-
-incomplete_indicator <STRING>
-	On upload an indicator is created after each file, to show still
-	incomplete releases. Put here how that indicator will look.
-	This variable defines indicators on normal releases.
-	Default: "../(incomplete)-%0"
-
-incomplete_base_nfo_indicator <STRING>
-	On upload an indicator is created after each file, to show still
-	incomplete releases. Put here how that indicator will look.
-	This variable defines indicators on missing nfo in multi-cd releases.
-	Default: "../../(no-nfo)-%1"
-
-incomplete_nfo_indicator <STRING>
-	On upload an indicator is created after each file, to show still
-	incomplete releases. Put here how that indicator will look.
-	This variable defines indicators on missing nfo in normal releases.
-	Default: "../(no-nfo)-%0"
-
-incomplete_base_sfv_indicator <STRING>
-	On upload an indicator is created after each file, to show still
-	incomplete releases. Put here how that indicator will look.
-	This variable defines indicators on missing sfv in multi-cd releases.
-	Default: "../../(no-sfv)-%1"
-
-incomplete_sfv_indicator <STRING>
-	On upload an indicator is created after each file, to show still
-	incomplete releases. Put here how that indicator will look.
-	This variable defines indicators on missing sfv in normal releases.
-	Default: "../(no-sfv)-%0"
-
-progressmeter <STRING>
-	On upload a complete-bar is created after each file, to show how
-	complete the release is. Put here how that indicator will look.
-	Default: "[%V] - %3.0p%% Complete - [%Z]"
 
 del_progressmeter <STRING>
 	On upload a complete-bar is created after each file, to show how
 	complete the release is. Put here what to search for when updating
 	that bar - the file(s) matching this will be deleted.
 	Default: "^\\[.*] - .*%% Complete - \\[.*]$"
-
-progressmeter_mp3 <STRING>
-	On upload a complete-bar is created after each file, to show how
-	complete the release is. Put here how that indicator will look.
-	This is for mp3 releases only.
-	Default: "[%V] - %3.0p%% Complete - (%w) [%Z]"
 
 del_progressmeter_mp3 <STRING>
 	On upload a complete-bar is created after each file, to show how
@@ -976,83 +487,64 @@ del_progressmeter_mp3 <STRING>
 	This is for mp3 releases only.
 	Default: "^\\[.*] - .*%% Complete - (.*) \\[.*]$"
 
-charbar_missing <CHAR>
-	The progressbar consist of two chars, which together marks the progress
-	of the release. Put here the char to be used to mark missing files.
-	Default: ":"
-
-charbar_filled <CHAR>
-	The progressbar consist of two chars, which together marks the progress
-	of the release. Put here the char to be used to mark uploaded files.
-	Default: "#"
-
-enable_accept_script <TRUE|FALSE>
-	An external script can be run after a file is verified and ok. Put
-	this to TRUE to run the external script.
-	Default: FALSE
-
-accept_script <PATH>
-	Put here the path to the external script which should be run after
-	a file is verified and ok.
-	Default: "/bin/imdb_parse.sh"
-
-enable_nfo_script <TRUE|FALSE>
-	An external script can be run after a nfo upload. Put his to TRUE to
-	run the external script.
-	Default: FALSE
-
-nfo_script <PATH>
-	Put here the path to the external script which should be run after a
-	nfo upload.
-	Default: "/bin/psxc-imdb.sh"
-
-enable_complete_script <TRUE|FALSE>
-	An external script can be run after a release is complete. Put his to
-	TRUE to run the external script.
-	Default: FALSE
-
-complete_script <PATH>
-	Put here the path to the external script which should be run after a
-	release is marked complete.
-	Default: "/bin/nfo_copy.sh"
-
-enable_mp3_script <TRUE|FALSE>
-	Put here the path to the external script which should be run after
-	first uploaded mp3 in an audio-release.
-	Default: FALSE
-
-mp3_script <PATH>
-	Put here the path to the external script which should be run after
-	first uploaded mp3 in an audio release.
-	Default: "/bin/ng-chown"
-
-mp3_script_cookies <STRING>
-	Put here what should be used as args for the external script after
-	first uploaded mp3 in an audio release.
-	Default: "0 0 0 1 0 1 - \"%w\" \"%?\""
-
-enable_unduper_script <TRUE|FALSE>
-	If you allow sfv to be uploaded after other files, some files may be
-	marked as bad when the sfv is read and compared to the crc of the file.
-	The file is then deleted, and a new one needs be uploaded. In order
-	for that to happen, the file needs to be unduped, or it will be denied
-	by glftpd. Set this variable to TRUE to run an external script after
-	a file has been marked as bad, and which undupes it.
+delete_old_link <TRUE|FALSE>
+	If you do NOT want to have the zipscript/rescan/audiosort delete any
+	links with the same name when it tries to create a new link, set this 
+	to FALSE. This will cause rescan / audiosort to be useless if there
+	already are sortedlinks for this release.
 	Default: TRUE
 
-unduper_script <PATH>
-	Enter the name of the script doing the actual unduping of the file.
-	Default: "/bin/ng-undupe"
-
-enable_sample_script <TRUE|FALSE>
-	Should a script be executed after sample uploads? Only valid on uploads
-	in sample dirs (see sample_list for info), and only if file is a
-	video file.
+deny_double_nfo <TRUE|FALSE>
+	This is usually done (better) with a 3rd party app, but ... You can
+	deny a nfo upload if one already exists in the same dir.
 	Default: FALSE
 
-sample_script <PATH>
-	Enter the name of the script you wish to execute on sample uploads.
-	Default: "/bin/sample_script.sh"
+deny_double_sfv <TRUE|FALSE>
+	With sfv releases, there should be only one sfv file allowed. This can
+	be done two ways - either by force or by being 'smart'. Setting this
+	option to TRUE will deny any new sfv in the dir, if a sfv already has
+	been uploaded. Setting it to FALSE will make the zipscript check the
+	new sfv first, compare it to the old sfv file and make a decision
+	based on the content of the sfv. If the new sfv contains more files
+	than the old one, and they match with what is already uploaded in the
+	dir, it will be allowed and used. If it does not, it will be denied.
+	Default: FALSE
+
+deny_nfo_upload_in_zip <TRUE|FALSE>
+	Should we deny nfo uploads in zip dirs? Should really only be used in
+	conjuntion with extract_nfo.
+	Default: FALSE
+
+deny_resume_sfv <TRUE|FALSE>
+	This option works like deny_double_sfv, only it will deny even resumed
+	or overwritten sfv files. If that happens, a backup of the original sfv
+	will be copied back to the release.
+	Default: TRUE
+
+disable_audio_complete <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_audio_halfway <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_audio_newleader <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_audio_norace_complete <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_audio_norace_halfway <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
 
 disable_audio_race <TRUE|FALSE>
 	You can choose to disable some announces. Set to TRUE to disable the
@@ -1069,147 +561,27 @@ disable_audio_update <TRUE|FALSE>
 	announce.
 	Default: FALSE
 
-disable_audio_halfway <TRUE|FALSE>
+disable_other_complete <TRUE|FALSE>
 	You can choose to disable some announces. Set to TRUE to disable the
 	announce.
 	Default: FALSE
 
-disable_audio_newleader <TRUE|FALSE>
+disable_other_halfway <TRUE|FALSE>
 	You can choose to disable some announces. Set to TRUE to disable the
 	announce.
 	Default: FALSE
 
-disable_audio_complete <TRUE|FALSE>
+disable_other_newleader <TRUE|FALSE>
 	You can choose to disable some announces. Set to TRUE to disable the
 	announce.
 	Default: FALSE
 
-disable_audio_norace_halfway <TRUE|FALSE>
+disable_other_norace_complete <TRUE|FALSE>
 	You can choose to disable some announces. Set to TRUE to disable the
 	announce.
 	Default: FALSE
 
-disable_audio_norace_complete <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_video_race <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_video_sfv <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_video_update <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_video_halfway <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_video_newleader <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_video_complete <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_video_norace_halfway <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_video_norace_complete <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_rar_race <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_rar_sfv <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_rar_update <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_rar_halfway <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_rar_newleader <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_rar_complete <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_rar_norace_halfway <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_rar_norace_complete <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_zip_race <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_zip_sfv <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_zip_update <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_zip_halfway <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_zip_newleader <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_zip_complete <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_zip_norace_halfway <TRUE|FALSE>
-	You can choose to disable some announces. Set to TRUE to disable the
-	announce.
-	Default: FALSE
-
-disable_zip_norace_complete <TRUE|FALSE>
+disable_other_norace_halfway <TRUE|FALSE>
 	You can choose to disable some announces. Set to TRUE to disable the
 	announce.
 	Default: FALSE
@@ -1229,30 +601,513 @@ disable_other_update <TRUE|FALSE>
 	announce.
 	Default: FALSE
 
-disable_other_halfway <TRUE|FALSE>
+disable_rar_complete <TRUE|FALSE>
 	You can choose to disable some announces. Set to TRUE to disable the
 	announce.
 	Default: FALSE
 
-disable_other_newleader <TRUE|FALSE>
+disable_rar_halfway <TRUE|FALSE>
 	You can choose to disable some announces. Set to TRUE to disable the
 	announce.
 	Default: FALSE
 
-disable_other_complete <TRUE|FALSE>
+disable_rar_newleader <TRUE|FALSE>
 	You can choose to disable some announces. Set to TRUE to disable the
 	announce.
 	Default: FALSE
 
-disable_other_norace_halfway <TRUE|FALSE>
+disable_rar_norace_complete <TRUE|FALSE>
 	You can choose to disable some announces. Set to TRUE to disable the
 	announce.
 	Default: FALSE
 
-disable_other_norace_complete <TRUE|FALSE>
+disable_rar_norace_halfway <TRUE|FALSE>
 	You can choose to disable some announces. Set to TRUE to disable the
 	announce.
 	Default: FALSE
+
+disable_rar_race <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_rar_sfv <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_rar_update <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_video_complete <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_video_halfway <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_video_newleader <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_video_norace_complete <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_video_norace_halfway <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_video_race <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_video_sfv <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_video_update <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_zip_complete <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_zip_halfway <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_zip_newleader <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_zip_norace_complete <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_zip_norace_halfway <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_zip_race <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_zip_sfv <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+disable_zip_update <TRUE|FALSE>
+	You can choose to disable some announces. Set to TRUE to disable the
+	announce.
+	Default: FALSE
+
+dupepath <PATH>
+	This is the location of glftpd's dupefile. The file must be world
+	read/writable (+rw), and so must the containing dir (+rwx).
+	Default: "/ftp-data/logs/dupefile"
+
+enable_accept_script <TRUE|FALSE>
+	An external script can be run after a file is verified and ok. Put
+	this to TRUE to run the external script.
+	Default: FALSE
+
+enable_affil_script <TRUE|FALSE>
+	If you wish to do something on affil upload (not in group_dirs) like
+	chown'ing the file, you can enable the this here.
+	Default: FALSE
+
+enable_complete_script <TRUE|FALSE>
+	An external script can be run after a release is complete. Put his to
+	TRUE to run the external script.
+	Default: FALSE
+
+enable_files_ahead <TRUE|FALSE>
+	To limit the amount of logging on races, you can choose to only report
+	a new leader in a race if a racer is leading with a certain amount of
+	files. Set to TRUE to enable this feature.
+	Default: TRUE
+
+enable_mp3_script <TRUE|FALSE>
+	Put here the path to the external script which should be run after
+	first uploaded mp3 in an audio-release.
+	Default: FALSE
+
+enable_nfo_script <TRUE|FALSE>
+	An external script can be run after a nfo upload. Put his to TRUE to
+	run the external script.
+	Default: FALSE
+
+enable_sample_script <TRUE|FALSE>
+	Should a script be executed after sample uploads? Only valid on uploads
+	in sample dirs (see sample_list for info), and only if file is a
+	video file.
+	Default: FALSE
+
+enable_unduper_script <TRUE|FALSE>
+	If you allow sfv to be uploaded after other files, some files may be
+	marked as bad when the sfv is read and compared to the crc of the file.
+	The file is then deleted, and a new one needs be uploaded. In order
+	for that to happen, the file needs to be unduped, or it will be denied
+	by glftpd. Set this variable to TRUE to run an external script after
+	a file has been marked as bad, and which undupes it.
+	Default: TRUE
+
+exclude_non_sfv_dirs <TRUE|FALSE>
+	Applies only to audio/mp3 releases - NEEDS MORE INFO HERE!!!!!
+	Default: TRUE
+
+extract_nfo <TRUE|FALSE>
+	Should the zipscript extract the "real" nfo from a zip?
+	Default: TRUE
+
+force_sfv_first <TRUE|FALSE>
+	In sfv_dirs, you can either allow files to be uploaded by default and
+	checked later when the sfv arrives, or you can force the uploader to
+	first provide a sfv before any other filetype is allowed. Setting this
+	to TRUE will do the latter.
+	Default: FALSE
+
+get_competitor_list <TRUE|FALSE>
+	This setting, if set to TRUE, will put a list of all racers
+	excluding the current user into a special cookie.
+	Default: TRUE
+
+get_user_stats <TRUE|FALSE>
+	If this is set to true, the zipscript will try to fetch stats from the
+	racers userfiles.
+	Default: TRUE
+
+gl_sections <STRING>
+	Here you should put a list of all sections on your site. Sections is
+	not the same as dirs, but is what you have defined as sections in
+	glftpd.conf. See glftpd's docs for more info on sections.
+	First section is normally named 'DEFAULT'. The order in which you put
+	the names of the sections are important. Separate sections with a
+	space character.
+	Default: "DEFAULT"
+
+gl_userfiles <PATH>
+	This is the place where userfiles are stored. The files must be world
+	readable (+r).
+	Default: "/ftp-data/users/"
+
+group_dirs <PATHS>
+	This is the place(s) where your site's groups/affilliates have space
+	provided. Normally each (release-)group have a designated area
+	accessible only to the group's members, in which they upload a new
+	release and 'pre' it (release it) simultanously on several sites.
+	Uploads and races in these dirs will not be logged. Dirs are separated
+	with the space character.
+	Default: "/site/groups/"
+
+hide_affil_gname <STRING>
+	What to replace hidden affil groupnames with.
+	Default: "NoGroup"
+
+hide_affil_groups <STRING>
+	Comma separated list of groups to hide. Will replace the groupname with
+	the string in hide_affil_gname if non-empty, and replace the username
+	with hide_affil_uname if non-empty.
+	Default: ""
+
+hide_affil_uname <STRING>
+	What to replace hidden affil usernames with.
+	Default: "NoUser"
+
+hide_affil_users <STRING>
+	Comma separated list of users to hide. Will replace the username with
+	the string in hide_affil_uname if non-empty.
+	Default: ""
+
+hide_gname <STRING>
+	Set here something you wish to use instead of the groupname when
+	hiding users. Setting this empty will not change groupname.
+	Default: ""
+
+hide_group_uploaders <TRUE|FALSE>
+	If you wish to hide the names of the member of a releasegroup in the
+	.message file, this option will 'hide' the uploader.
+	Default: TRUE
+
+hide_uname <STRING>
+	Set here something you wish to use instead of the username when
+	hiding users. Setting this empty will make the username the same
+	as groupname.
+	Default: ""
+
+ignore_lock_timeout <TRUE|FALSE>
+	If a lock cannot be obtained within the time set in
+	max_seconds_wait_for_lock, the zipscript will usually exit with an
+	error. You can, however, bypass this so it checks the file as normal.
+	This can lead to race-conditions, however, so it's set to FALSE by
+	default. Usually such conditions should *never* occur, but may in
+	rare conditions, especially if 3rd party scripts/addons are being
+	used.
+	Default: FALSE
+
+ignore_zero_size <TRUE|FALSE>
+	This option is for debugging purposes only. Normally files of size
+	0 bytes are logged as bad, meaning glftpd will delete them. This
+	option makes it possible to allow such files.
+	Default: FALSE
+
+ignore_zero_sized_on_rescan <TRUE|FALSE>
+	Sometimes a release is approved, which usually is not according to
+	site rules. One of the ways to approve a dir is to create a 0-sized
+	file in the dir, with the word APPROVED or ALLOWED somewhere.
+	This setting will ignore all zero-sized files on rescan.
+	Default: FALSE
+
+ignored_types <STRING>
+	Files found with an extension listed in this variable are denied on
+	upload, and ignored on rescan/postdel/etc. The list is comma-separated.
+	Defining a file with no extension can be done by starting the list
+	with a comma. The dot before the extension should not be added.
+	.diz, .message and .debug is normally generated by the zipscript, so
+	these types should be listed here. Also add types 3rd party scripts
+	commonly make, like .imdb, .html, .url, .m3u etc.
+	Default: ",diz,debug,message,imdb"
+
+incomplete_base_nfo_indicator <STRING>
+	On upload an indicator is created after each file, to show still
+	incomplete releases. Put here how that indicator will look.
+	This variable defines indicators on missing nfo in multi-cd releases.
+	Default: "../../(no-nfo)-%1"
+
+incomplete_base_sfv_indicator <STRING>
+	On upload an indicator is created after each file, to show still
+	incomplete releases. Put here how that indicator will look.
+	This variable defines indicators on missing sfv in multi-cd releases.
+	Default: "../../(no-sfv)-%1"
+
+incomplete_cd_indicator <STRING>
+	On upload an indicator is created after each file, to show still
+	incomplete releases. Put here how that indicator will look.
+	This variable defines indicators on multi-cd releases.
+	Default: "../../(incomplete)-(%0)-%1"
+
+incomplete_indicator <STRING>
+	On upload an indicator is created after each file, to show still
+	incomplete releases. Put here how that indicator will look.
+	This variable defines indicators on normal releases.
+	Default: "../(incomplete)-%0"
+
+incomplete_nfo_indicator <STRING>
+	On upload an indicator is created after each file, to show still
+	incomplete releases. Put here how that indicator will look.
+	This variable defines indicators on missing nfo in normal releases.
+	Default: "../(no-nfo)-%0"
+
+incomplete_sfv_indicator <STRING>
+	On upload an indicator is created after each file, to show still
+	incomplete releases. Put here how that indicator will look.
+	This variable defines indicators on missing sfv in normal releases.
+	Default: "../(no-sfv)-%0"
+
+incompleteislink <0|1>
+	While a release is incomplete, a link will be created pointing to
+	the releasedir. You can define if it will be a file (0) or a
+	symbolic link (1).
+	Default: 1
+
+lock_optimize <NUMBER>
+	This option is meant to minimize impact the runtime of the locking.
+	The number represents the number of seconds that must pass before the
+	lock is touched/updated. Usually, this is either set to 1 or 0.
+	0 disable this feature.
+	Default: 1
+
+log <PATH>
+	This setting should point to a file where all logging will occur. The
+	usual place is glftpd's glftpd.log. This file must be world read/
+	writable (+rw).
+	Default: "/ftp-data/logs/glftpd.log"
+
+mark_empty_dirs_as_incomplete_on_rescan <TRUE|FALSE>
+	If you wish to mark an empty dir as incomplete, set this to TRUE. Empty
+	dirs that are rescanned will then be marked as incomplete
+	Default: FALSE
+
+mark_file_as_bad <TRUE|FALSE>
+	Normally files marked as bad are deleted. You can change this by setting
+	the following value to TRUE - instead of the file being deleted, it will
+	be renamed <filename>.bad. Bad files are ignored on rescan.
+	Default: FALSE
+
+max_groups_in_top <NUMBER>
+	Put here the maximum number of groups to be logged in a race, when a
+	release is complete.
+	Default: 7
+
+max_seconds_wait_for_lock <NUMBER>
+	This number representents the maximum number of seconds a process will
+	wait for a lock on release. Usually only a second or two will actually
+	be used, since the only program using time by default is rescan, and it
+	has a low priority, which the other processes will provide a signal to
+	quit.
+	Anyway, not something you should worry too much about, unless your site
+	usually holds files in the 100MB area on a slow/busy server that're
+	rescanned on a regular basis.
+	Default: 20
+
+max_users_in_top <NUMBER>
+	Put here the maximum number of users to be logged in a race, when a
+	release is complete.
+	Default: 7
+
+message_file_name <STRING>
+	What name should the complete_message file have?
+	Default: ".message"
+
+message_footer <STRING|DISABLED>
+	Define here what should be put at the bottom of the complete_message
+	file.
+	Default: "`-----================---------------------------==------------------'\n"
+
+message_group_body <STRING|DISABLED>
+	Define here the body of the list of racers (groups).
+	Default: "| %3n %-29g %7.1mM %4fF %5.1p%% %7.0sKBs |\n"
+
+message_group_footer <STRING|DISABLED>
+	Define here the footer of the list of racers (groups).
+	Default: "|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |\n| %3g Total %31.1mM %4fF 100.0%% %7.0aKBs |\n"
+
+message_group_header <STRING|DISABLED>
+	Define here what should be put above a list of racers (groups).
+	Default: "|                                                                    |\n|-=[ G R O U P T O P ]=-------------.                                |\n|                                    `--------------===--------------|\n"
+
+message_header <STRING|DISABLED>
+	Define here what should be put in the top of the complete_message.
+	Default: ".-----------------====---------------------------== PZS-NG v1.0 ===--.\n"
+
+message_mp3 <STRING|DISABLED>
+	Define here a special complete_message for mp3-releases.
+	Default: "|                                                                    |\n|-=[ I D 3 - T A G ]=---------------.                                |\n|                                    `-----==-------------===--------|\n| Artist : %-57x |\n| Album  : %-57W |\n| Genre  : %-34w Rate  : %3Xkbit/s      |\n| Tracks : %-34f Year  : %-14Y |\n| Encoder: %-34i Preset: %-14I |\n"
+
+message_user_body <STRING|DISABLED>
+	Define here the body of the list of racers (users).
+	Default: "| %3n %-29U %7.1mM %4fF %5.1p%% %7.0sKBs |\n"
+
+message_user_footer <STRING|DISABLED>
+	Define here the footer of the list of racers (users).
+	Default: "|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |\n| %3u Total %31.1mM %4fF 100.0%% %7.0aKBs |\n"
+
+message_user_header <STRING|DISABLED>
+	Define here what should be put above a list of racers (users).
+	Default: "|-=[ U S E R T O P ]=---------------.                                |\n|                                    `-----------------====----------|\n"
+
+min_halfway_files <NUMBER>
+	Define here the minimum number of files in the RELEASE to announce a
+	halfway message.
+	Default: 10
+
+min_halfway_size <NUMBER>
+	Define here the minimum estimated total size (in MB) of RELEASE to
+	announce a halfway message.
+	Default: 10
+
+min_newleader_files <NUMBER>
+	Define here the minimum number of files in the RELEASE to announce a
+	new leader in a race.
+	Default: 1
+
+min_newleader_size <NUMBER>
+	Define here the minimum estimated total size (in MB) of RELEASE to
+	announce a new leader in a race.
+	Default: 10
+
+min_update_files <NUMBER>
+	Define here the minimum number of files in the RELEASE to announce an
+	update message.
+	Default: 2
+
+min_update_size <NUMBER>
+	Define here the minimum estimated total size (in MB) of RELEASE to
+	announce an update message.
+	Default: 1
+
+mp3_script <PATH>
+	Put here the path to the external script which should be run after
+	first uploaded mp3 in an audio release.
+	Default: "/bin/ng-chown"
+
+mp3_script_cookies <STRING>
+	Put here what should be used as args for the external script after
+	first uploaded mp3 in an audio release.
+	Default: "0 0 0 1 0 1 - \"%w\" \"%?\""
+
+newleader_files_ahead <NUMBER>
+	Define here how many files ahead a racer must be before the zipscript
+	announces him as new leader.
+	Default: 2
+
+nfo_script <PATH>
+	Put here the path to the external script which should be run after a
+	nfo upload.
+	Default: "/bin/psxc-imdb.sh"
+
+nocheck_dirs <PATHS>
+	Normally dirs in group/zip/sfv dirs are checked for corruption and
+	completeness. The dirs listed in this varaible will override paths
+	inside the previous dirs, and not check the files uploaded.
+	Unlike the original zipscript-c, pzs-ng will only check dirs listed
+	in group/zip/sfv dirs, and not the entire site. Dirs are separated
+	by a space character.
+	Default: "/site/private/"
+
+noforce_sfv_first_dirs <PATHS>
+	The option 'force_sfv_first' forces sfv to be uploaded first in a
+	release. In some dirs, this may not be desiarable. To the rescue come
+	this option, which allow you to enter dirs that will be excluded from
+	the force.
+	Default: "/site/incoming/requests/"
+
+other_completebar <STRING|DISABLED>
+	When a release is complete, a 'complete bar' will be created. Define
+	here how it should look like on other releases.
+	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
+
+program_gid <NUMBER>
+	Same as with program_uid, only this is with the group.
+	Default: 0
+
+program_uid <NUMBER>
+	Some may want to run zipscript-c as a special user, which will be
+	set as 'owner' of links, missing files etc. Setting this to anything
+	but 0 will force the zipscript to change uid to the number you put
+	here. In order for this to work, zipscript-c needs the suid bit set.
+	Default: 0
+
+progressmeter <STRING>
+	On upload a complete-bar is created after each file, to show how
+	complete the release is. Put here how that indicator will look.
+	Default: "[%V] - %3.0p%% Complete - [%Z]"
+
+progressmeter_mp3 <STRING>
+	On upload a complete-bar is created after each file, to show how
+	complete the release is. Put here how that indicator will look.
+	This is for mp3 releases only.
+	Default: "[%V] - %3.0p%% Complete - (%w) [%Z]"
 
 racersmsg <STRING>
 	This is a cookie formatted string containing info of the racers. This
@@ -1273,114 +1128,68 @@ racersplit_prior <STRING>
 	Splitting of the racers are usually done by the bot.
 	Default: ""
 
-chmod_completebar <TRUE|FALSE>
-	When TRUE, the permissions on the file/dir is changed to 0222. This is
-	to prevent it from being transfered on download/fxp.
-	Note that this will not happen in group-dirs.
-	Default: FALSE
+rar_completebar <STRING|DISABLED>
+	When a release is complete, a 'complete bar' will be created. Define
+	here how it should look like on rar releases.
+	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 
-mark_empty_dirs_as_incomplete_on_rescan <TRUE|FALSE>
-	If you wish to mark an empty dir as incomplete, set this to TRUE. Empty
-	dirs that are rescanned will then be marked as incomplete
-	Default: FALSE
+realtime_group_body <STRING|DISABLED>
+	When files are uploaded, some output is shown to the racer uploading.
+	Put here what should be shown in the body of that message, body of
+	group-stats.
+	Default: "| %2n. %-15g %8.1mMB %4fF %7.0skB/s |\n"
 
-max_seconds_wait_for_lock <NUMBER>
-	This number representents the maximum number of seconds a process will
-	wait for a lock on release. Usually only a second or two will actually
-	be used, since the only program using time by default is rescan, and it
-	has a low priority, which the other processes will provide a signal to
-	quit.
-	Anyway, not something you should worry too much about, unless your site
-	usually holds files in the 100MB area on a slow/busy server that're
-	rescanned on a regular basis.
-	Default: 20
+realtime_group_footer <STRING|DISABLED>
+	When files are uploaded, some output is shown to the racer uploading.
+	Put here what should be shown in the body of that message, footer of
+	group-stats.
+	Default: ""
 
-lock_optimize <NUMBER>
-	This option is meant to minimize impact the runtime of the locking.
-	The number represents the number of seconds that must pass before the
-	lock is touched/updated. Usually, this is either set to 1 or 0.
-	0 disable this feature.
-	Default: 1
+realtime_group_header <STRING|DISABLED>
+	When files are uploaded, some output is shown to the racer uploading.
+	Put here what should be shown in the body of that message, head of
+	group-stats.
+	Default: "+-=[GroupTop]=--------------------===--------------+\n"
 
-ignore_lock_timeout <TRUE|FALSE>
-	If a lock cannot be obtained within the time set in
-	max_seconds_wait_for_lock, the zipscript will usually exit with an
-	error. You can, however, bypass this so it checks the file as normal.
-	This can lead to race-conditions, however, so it's set to FALSE by
-	default. Usually such conditions should *never* occur, but may in
-	rare conditions, especially if 3rd party scripts/addons are being
-	used.
-	Default: FALSE
+realtime_mp3_info <STRING|DISABLED>
+	When files are uploaded, some output is shown to the racer uploading.
+	Put here what should be shown as the body of that message on mp3-file
+	upload.
+	Default: "+-=[ID3tag]=------------------------===------------+\n| Title  : %-39y |\n| Artist : %-39x |\n| Album  : %-39W |\n| Genre  : %-39w |\n| Year   : %-39Y |\n"
 
-allow_uid_change_in_ng_chown <TRUE|FALSE>
-	ng-chown is a binary that changes the uid/gid of files dirs. In
-	order for it to work you have to enable a few things. This variable
-	will let ng-chown change the uid of files/dirs. ng-chown need to be
-	chmod'ed +s for it to work too.
-	Default: FALSE
+realtime_user_body <STRING|DISABLED>
+	When files are uploaded, some output is shown to the racer uploading.
+	Put here what should be shown in the body of that message, body of
+	user-stats.
+	Default: "| %2n. %-15u %8.1mMB %4fF %7.0skB/s |\n"
 
-allow_gid_change_in_ng_chown <TRUE|FALSE>
-	Same as with allow_uid_change_in_ng_chown, only with gid.
-	Default: FALSE
+realtime_user_footer <STRING|DISABLED>
+	When files are uploaded, some output is shown to the racer uploading.
+	Put here what should be shown in the body of that message, footer of
+	user-stats.
+	Default: ""
 
-allow_dir_chown_in_ng_chown <TRUE|FALSE>
-	In ng-chown you have to specify a dir or a file to chmod. This setting
-	allows/denies to change the ownership of that file/dir.
-	Default: FALSE
+realtime_user_header <STRING|DISABLED>
+	When files are uploaded, some output is shown to the racer uploading.
+	Put here what should be shown in the body of that message, head of
+	user-stats.
+	Default: "+-=[UserTop]=-------------------===----------------+\n"
 
-allow_files_chown_in_ng_chown <TRUE|FALSE>
-	In ng-chown you have to specify a dir or a file to chmod. If you specify
-	a dir, this setting will chown the files in that dir, but not the dir
-	itself.
-	Default: FALSE
-
-change_spaces_to_underscore_in_ng_chown <TRUE|FALSE>
-	Some ftp-clients have trouble reading the names of uid/gid if they have
-	spaces in them. This will search for a uid/gid with a underscore, if
-	the name (genre) given has a space inside. It is recommended to *NOT*
-	change this value (from TRUE).
+remove_dot_debug_on_delete <TRUE|FALSE>
+	If you have debug mode on, users may or may not be able to see the
+	hidden files in the dir, and glftpd may be set up to deny the user
+	to delete other people's files (the .debug may be owned by a different
+	racer). Setting this to TRUE will try to remove the .debug file if
+	the dir itself is removed. Previously, people had to have access to
+	the wipe-command to be able to do this.
 	Default: TRUE
 
-zip_clean <TRUE|FALSE>
-	If you wish to clean zipfiles (remove files based on the list given in
-	banned_filelist), set this to TRUE.
-	DEFAULT: TRUE
-
-extract_nfo <TRUE|FALSE>
-	Should the zipscript extract the "real" nfo from a zip?
-	DEFAULT: TRUE
-
-deny_nfo_upload_in_zip <TRUE|FALSE>
-	Should we deny nfo uploads in zip dirs? Should really only be used in
-	conjuntion with extract_nfo.
-	DEFAULT: FALSE
-
-test_for_password <TRUE|FALSE>
-	Some rarfiles have password protection. If you wish to check for such
-	files, set this to TRUE.
-	DEFAULT: TRUE
-
-zip_bin <PATH>
-	This is the location of the zip binary needed to clean zip-releases for
-	unwanted files.
-	DEFAULT: "/bin/zip"
-
-banned_filelist <PATH>
-	You can ban certain files on site, based on name. The check is not
-	case-sensitive, and wildcards may be used.
-	Put here the path to the text-file with a list of the files you do not
-	want on your site.
-	For more info, or upgraded lists, see http://project-sl.swecheck.net
-	Please note - chars like [ and ] are used in the wildcard scheme - if you
-	search for such chars in the filenames, you need to double-escape them,
-	ie \\[ and \\] and \\( etc.
-	For more info on how wildcards are read, read manpage of fnmatch().
-	DEFAULT: "/ftp-data/misc/banned_filelist.txt"
-
-check_for_banned_files <TRUE|FALSE>
-	Will check the banned_filelist when uploading files - if one is
-	encountered, the zipscript will deny the upload.
-	DEFAULT: TRUE
+remove_dot_files_on_delete <TRUE|FALSE>
+	If your site hides hidden files (files starting with a dot (''.''),
+	your users may have problems deleting dirs completely. Setting this
+	option to TRUE will remove all hidden files, when all other files of
+	the release is deleted.
+	Default: FALSE
 
 rescan_chdir_flags <STRING>
 	The rescan binary can chdir() to a specified dir before starting the
@@ -1390,105 +1199,300 @@ rescan_chdir_flags <STRING>
 	he have or doesn't have. This is to help rescanning from shell.
 	Group-dirs cannot be rescanned this way - they'll have to be rescanned
 	the 'normal' way.
-	DEFAULT: ""
+	Default: ""
 
-zsinternal_checks_completed <STRING>
-	Output in benchmark mode.
-	DEFAULT: "Checks completed in %0.6f seconds.\n"		*/ %0.6f = six digits number of seconds */
+rescan_default_to_quick <TRUE|FALSE>
+	This option sets the default mode for rescan regarding the quick mode.
+	In quick mode only the files not already marked as good will be
+	rescanned. This is good if some files are uploaded, but not checked by
+	the zipscript.
+	Default: TRUE
 
-hide_affil_groups <STRING>
-	Comma separated list of groups to hide. Will replace the groupname with
-	the string in hide_affil_gname if non-empty, and replace the username
-	with hide_affil_uname if non-empty.
-	DEFAULT: ""
+rescan_nocheck_dirs_allowed <TRUE|FALSE>
+	If you need to check a dir placed in a nocheck_dirs area, you must
+	set this variable to TRUE. Setting this to FALSE will render the rescan
+	option dead in nocheck_dirs areas.
+	Default: TRUE
 
-hide_affil_users <STRING>
-	Comma separated list of users to hide. Will replace the username with
-	the string in hide_affil_uname if non-empty.
-	DEFAULT: ""
+sample_list <STRING>
+	This is a list of sample-dirs. The list is not case-sensitive.
+	Default: "sample vobsample"
 
-hide_affil_gname <STRING>
-	What to replace hidden affil groupnames with.
-	DEFAULT: "NoGroup"
+sample_script <PATH>
+	Enter the name of the script you wish to execute on sample uploads.
+	Default: "/bin/sample_script.sh"
 
-hide_affil_uname <STRING>
-	What to replace hidden affil usernames with.
-	DEFAULT: "NoUser"
+sfv_calc_single_fname <TRUE|FALSE>
+	Setting this to TRUE enables the zipscript to calculate a crc checksum
+	for filenames listed in the sfv, which do not have a corresponding crc.
+	Normally only broken sfv's should have a missing crc after a filename.
+	Default: FALSE
+
+sfv_cleanup <TRUE|FALSE>
+	Setting this to true will cleanup the uploaded sfv, removing
+	comments etc. from it.
+	Default: TRUE
+
+sfv_cleanup_crlf <TRUE|FALSE>
+	If sfv_cleanup is set to TRUE, this option defines if you use windows
+	or *nix version of linefeeds. The recommended option is to leave this
+	to TRUE, using windows style (<cr><lf>).
+	Default: TRUE
+
+sfv_cleanup_lowercase <TRUE|FALSE>
+	If sfv_cleanup is set to TRUE, this setting will also convert all
+	entries in the sfv to lowercase.
+	If sfv_cleanup is set to FALSE, this setting will only make -missing
+	pointers and the internal sfv database lowercased.
+	Either way, if set to TRUE you in effect turn winblows mode on, and the
+	zipscript will not separate case on filenames.
+	Default: TRUE
+
+sfv_dirs <PATHS>
+	Similar to zip_dirs, this holds a list of dirs you expect to get sfv-
+	releases. Typical releases that use sfv is anything that is not zipped,
+	like rar, mp3, avi etc. Dirs listed here will be logged. Dirs are
+	separated by a space character.
+	Default: "/site/test/ /site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/requests/"
+
+sfv_dupecheck <TRUE|FALSE>
+	Setting this option to TRUE will remove duplicate entries within the
+	uploaded sfv file.
+	Default: TRUE
+
+sfv_lenient <TRUE|FALSE>
+	If this is set to true, the chars '_' , '-' , '.' , ' ' and ',' are
+	recognized as the same char. Ie, if you have in sfv 'file.name' and
+	upload 'file_name' - the file will be allowed.
+	Default: TRUE
+
+short_sitename <STRING>
+	Insert here the name of your site, short format. This will be used on
+	progressbars, completebars etc. This can be used in a cookie (%Z).
+	Default: "NG"
+
+show_group_info <TRUE|FALSE>
+	If you wish to print stat info after a file is uploaded to the racer,
+	set this to true. It will display racers (groupnames) and stats on the
+	current race in the client's ftp program.
+	Default: TRUE
+
+show_stats_from_pos2_only <TRUE|FALSE>
+	If this is set to true, only racers in position 2 and below is shown
+	in the %T and %t cookies - this affects the LOOP variables in the bot.
+	Default: FALSE
+
+show_user_info <TRUE|FALSE>
+	If you wish to print stat info after a file is uploaded to the racer,
+	set this to true. It will display racers (usernames) and stats on the
+	current race in the client's ftp program.
+	Default: TRUE
+
+sitepath_dir <PATH>
+	This is used as a base for datacleaner, when it's run as a cscript.
+	It is normally set to /site/, which is the common location in which all
+	your site's public dirs reside.
+	Default: "/site/"
+
+sleep_on_bad <NUMBER>
+	Whenever a bad file is encountered, you can add a delay for the user
+	between 1 and 1000 seconds. Put the number of seconds glftpd should
+	sleep. Setting this to 0 ( or >1000) will disable this feature.
+	Default: 0
+
+spaces_to_dots <TRUE|FALSE>
+	This option will replace spaces in mp3-genre dirs to dots.
+	Default: FALSE
+
+speedtest_delfile <TRUE|FALSE>
+	With speedtest you can choose if you wish to keep the uploaded files or
+	remove them immediatly. If you choose to keep them, the files will be
+	renamed to xx.xMiB
+	Default: FALSE
+
+speedtest_dirs <PATHS>
+	On sites it is common with special dirs dedicated to speedtesting. You
+	can define here the dirs dedicated to speedtesting.
+	Default: "/site/speedtest/"
+
+status_bar_type <0|1>
+	In each dir there will be a statusbar. Here you define if you wish
+	to make it as a file (0) or as a dir (1).
+	Default: 1
+
+storage <PATH>
+	This is the place where the zipscript keeps a 'mirror' of your site's
+	setup. Here stats for racers and releases are stored. This storage
+	should not be accessible to your site's users, but must be world
+	read/writable (+rwx).
+	Default: "/ftp-data/pzs-ng/"
+
+strict_path_match <TRUE|FALSE>
+	This setting is used to enforce the filetype (zip/sfv) based on path.
+	When set to TRUE, zip files is not allowed in sfv dirs, and the other
+	way around. group dirs are not affected, as they can be both.
+	Default: FALSE
+
+strict_sfv_check <TRUE|FALSE>
+	Whenever "bad" entries are found in the sfv, they are usually ignored.
+	Setting this settingto true will mark the entire sfv as bad if such
+	entries are found, forcing the user to upload a valid sfv file.
+	Bad entries consist of lines containing the NULL char, or lines without
+	a valid crc code.
+	Default: FALSE
+
+subdir_list <STRING>
+	This is a list of what is defined as subdirs. Dirs matching these
+	patterns will be considered subdirs, and follow a different pattern
+	regarding symlinks and nfo-rules etc.
+	Put the char '?' where a number or char may or may not be, but *only*
+	at the end of a dirname. Ie, cd?? will match cdA, cd12, but not cd123.
+	Do not put '?' at the beginning or in the middle - it will not work.
+	The string is not case-sensitive (dVd == DvD).
+	Default: "cd??,disc??,disk??,dvd??,extra?,sub?,subtitle?,vobsub?,sample?,subpack?,ac3,audioaddon,addon,ac3addon"
+
+test_for_password <TRUE|FALSE>
+	Some rarfiles have password protection. If you wish to check for such
+	files, set this to TRUE.
+	Default: TRUE
+
+unduper_script <PATH>
+	Enter the name of the script doing the actual unduping of the file.
+	Default: "/bin/ng-undupe"
+
+unzip_bin <PATH>
+	This is the location of the unzip binary needed to verify zip-releases.
+	Default: "/bin/unzip"
 
 use_group_dirs_as_affil_list <TRUE|FALSE>
 	Use the group_dirs as base for getting the list of affils to hide.
-	DEFAULT: FALSE
- 
-enable_affil_script <TRUE|FALSE>
-	If you wish to do something on affil upload (not in group_dirs) like
-	chown'ing the file, you can enable the this here.
-	DEFAULT: FALSE
+	Default: FALSE
 
-affil_script <STRING>
-	Enter here the name of the affil_script to be executed on affil
-	uploads (not in group_dirs). The script will get the filename as arg.
-	DEFAULT: "/bin/affilscript.sh"
+use_partial_on_noforce <TRUE|FALSE>
+	Usually all pathmatches are full paths. You can change this on what
+	you put in noforce_sfv_first_dirs to make it match parts of a dir,
+	like 'sample' or something. Please be careful to include a slash after
+	the dirs if this setting is on - like '/sample/', to minimize the
+	number of possible wrong hits.
+	Default: FALSE
 
-SFV_FIRST <STRING>
-	Error msg when sfv_first is enabled, and no sfv is uploaded prior to
-	"normal" files.
-	DEFAULT: "CRC-Check: SFV first!"
+userellink <0|1>
+	With symbolic links you have an option of it being absolute (0) or
+	relative (1).
+	Default: 1
 
-BAD_CRC <STRING>
-	Error msg when crc check fails.
-	DEFAULT: "CRC-Check: BAD!"
+video_completebar <STRING|DISABLED>
+	When a release is complete, a 'complete bar' will be created. Define
+	here how it should look like on video releases.
+	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 
-NOT_IN_SFV <STRING>
-	Error msg when uploaded file is not found in the sfv.
-	Default: "CRC-Check: Not in sfv!"
+video_types <STRING>
+	Comma-separated list of files considered to be video files. Should
+	usually not be changed, but may need to be if a 3rd party script handle
+	sample info.
+	Default: "mpg,mpeg,m2v,m2p,avi"
 
-EMPTY_SFV <STRING>
-	Error msg when uploaded sfv does not contain any parsable lines.
-	DEFAULT: "SFV-file: BAD!"
+write_complete_message <TRUE|FALSE>
+	Should a file be created in the releasedir, containing race-info etc?
+	Default: TRUE
 
-DOUBLE_SFV <STRING>
-	Error msg when a second sfv file is uploaded.
-	DEFAULT: "SFV-file: DUPE!"
+write_complete_message_in_group_dirs <TRUE|FALSE>
+	Should a .message file be created in the group-dirs?
+	Default: TRUE
 
-BAD_ZIP <STRING>
-	Error msg when zip integrity fails.
-	DEFAULT: "ZiP-Integrity: BAD!"
+wzdftpd_compatible <TRUE|FALSE>
+	** DO NOT ENABLE THIS UNLESS YOU KNOW WHAT YOU'RE DOING. **
+	
+	Specify this if you're running under wzdftpd (http://wzdftpd.net)
+	This support is *EXPERIMENTAL*. It does not use env variables - and 
+	assumes you pass them via the commandline instead. In addition, it will
+	resolve any symlinks in the paths the zs is passed.
+	Read the wzdftpd.net webpage for more information. (Specifically
+	http://wzdftpd.net/trac/wiki/Documentation/ThirdPartyScripts/pzs-ng)
+	Default: FALSE
 
-EMPTY_FILE <STRING>
-	Error msg when an empty (0byte) file is uploaded.
-	DEFAULT: "0byte-file: Not allowed!"
+zip_bin <PATH>
+	This is the location of the zip binary needed to clean zip-releases for
+	unwanted files.
+	Default: "/bin/zip"
 
-BANNED_FILE <STRING>
-	Error msg when file is listed as banned.
-	DEFAULT: "Banned file: Not allowed!"
+zip_clean <TRUE|FALSE>
+	If you wish to clean zipfiles (remove files based on the list given in
+	banned_filelist), set this to TRUE.
+	Default: TRUE
 
-UNKNOWN_FILE <STRING>
-	Error msg when filetype is not recognized or is listed as unwanted.
-	DEFAULT: "%s-file: Not allowed!"                         /* %s = file extension   */
+zip_completebar <STRING|DISABLED>
+	When a release is complete, a 'complete bar' will be created. Define
+	here how it should look like on zip releases.
+	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 
-BANNED_GENRE <STRING>
-	Error msg when musicfile is of a banned genre.
-	DEFAULT: "%s is banned here!"                            /* %s = genre            */
+zip_dirs <PATHS>
+	This variable should hold a list of dirs where you expect zip-releases.
+	Dirs listed here will be logged. Dirs are separated by a space
+	character.
+	Default: "/site/test/ /site/incoming/0day/"
 
-BANNED_YEAR <STRING>
-	Error msg when musicfile is from a banned year.
-	DEFAULT: "Releases from %s are not allowed here!"        /* %s = year             */
+zipscript_SFV_ok <STRING>
+	When files are uploaded, some output is shown to the racer uploading.
+	Put here what should be shown as the body of that message on sfv-
+	checked file.
+	Default: "| + CRC-Check: oK!                                 |\n"
 
-BANNED_BITRATE <STRING>
-	Error msg when bitrate of musicfile is banned.
-	DEFAULT: "%s kbit codec is not allowed here!"            /* %s = bitrate          */
+zipscript_SFV_skip <STRING>
+	When files are uploaded, some output is shown to the racer uploading.
+	Put here what should be shown as the body of that message when sfv
+	has not yet been uploaded.
+	Default: "| + CRC-Check: SKIPPED!                            |\n"
 
-DUPE_NFO <STRING>
-	Error msg when a 2nd nfo is uploaded.
-	DEFAULT: "NFO-File: DUPE!"
+zipscript_any_ok <STRING>
+	When files are uploaded, some output is shown to the racer uploading.
+	Put here what should be shown as the body of that message on any ok
+	file.
+	Default: "| + File: ok! (allowed w/o any checks)             |\n"
 
-ZIP_NFO <STRING>
-	Error msg when nfo file is uploaded in a zipdir.
-	DEFAULT: "NFO-File: Not allowed here!"
+zipscript_footer_error <STRING>
+	When files are uploaded, some output is shown to the racer uploading.
+	Put here what should be shown in the footer of that message, on uploads
+	where the file has error.
+	Default: "| - %-46v |\n`-----------------------------------========-------'\n"
 
-SPEEDTEST <STRING>
-	Output when file is uploaded in a speedtest dir.
-	DEFAULT: "BW: %.1fMiB (%.1fMB) @ %.2fMbps (%.2fMB/s)."
+zipscript_footer_ok <STRING>
+	When files are uploaded, some output is shown to the racer uploading.
+	Put here what should be shown in the footer of that message, on uploads
+	where the file is verified ok.
+	Default: "`-[%V]----------------------[%3F/%-3f]--'\n"
 
---END
+zipscript_footer_skip <STRING>
+	When files are uploaded, some output is shown to the racer uploading.
+	Put here what should be shown in the footer of that message, on uploads
+	where the file has skipped checking.
+	Default: "`--------------------------------=====-------------'\n"
+
+zipscript_footer_unknown <STRING>
+	When files are uploaded, some output is shown to the racer uploading.
+	Put here what should be shown in the footer of that message, on uploads
+	where no sfv is uploaded yet.
+	Default: "`-[ - NO - SFV - ]----------------------[%3F/???]--'\n"
+
+zipscript_header <STRING>
+	When files are uploaded, some output is shown to the racer uploading.
+	Put here what should be shown as the head of that message.
+	Default: ".-== PZS-NG Zipscript-C ==-------------------------.\n"
+
+zipscript_sfv_ok <STRING>
+	When files are uploaded, some output is shown to the racer uploading.
+	Put here what should be shown as the body of that message on sfv-file-
+	upload.
+	Default: "| + SFV-file: oK!                                  |\n"
+
+zipscript_zip_ok <STRING>
+	When files are uploaded, some output is shown to the racer uploading.
+	Put here what should be shown as the body of that message on zipfile
+	upload.
+	Default: "| + ZiP integrity: oK!                             |\n"
+
+zsinternal_checks_completed <STRING>
+	Output in benchmark mode.
+	In default value, %0.6f = six digits number of seconds.
+	Default: "Checks completed in %0.6f seconds.\n"
 
