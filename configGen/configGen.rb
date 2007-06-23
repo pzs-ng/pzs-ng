@@ -32,6 +32,15 @@ def get_readme_typestring(option)
     
     type
 end
+def get_config_printf(name, info, max_length)
+    string = "printf(\"#define #{sprintf "% -#{max_length}s", name} %s\\n\", "
+    if info['type'] == 'boolean'
+        string += "(#{name} == FALSE ? \"FALSE\" : \"TRUE\")"
+    else
+        string += "stringify(#{name})"
+    end
+    string += ");"
+end
 
 config = YAML::load_file 'config.yaml'
 
@@ -50,13 +59,19 @@ File.open('../zipscript/include/zsconfig.defaults.h', 'w') do |file|
     file.puts config['defaults_header']
     config['options'].sort.each do |name, info|
         next if config['err_options'].include? name
-        file.puts "#ifndef #{name}", "#define #{sprintf "% -#{max_length}s", name} #{get_default info}", "#endif", ''
+        file.puts "#ifndef #{name}"
+        file.puts "#define #{name}_is_defaulted"
+        file.puts "#define #{sprintf "% -#{max_length}s", name} #{get_default info}"
+        file.puts "#endif", ''
     end
 end
 File.open('../zipscript/include/errors.h', 'w') do |file|
     config['err_options'].each do |name|
         info = config['options'][name]
-        file.puts "#ifndef #{name}", "#define #{sprintf "% -#{max_length_err}s", name} #{get_default info}", "#endif", ''
+        file.puts "#ifndef #{name}"
+        file.puts "#define #{name}_is_defaulted"
+        file.puts "#define #{sprintf "% -#{max_length_err}s", name} #{get_default info}"
+        file.puts "#endif", ''
     end
 end
 File.open('../zipscript/conf/zsconfig.h.dist', 'w') do |file|
@@ -84,15 +99,17 @@ File.open('../zipscript/src/print_config.c', 'w') do |file|
     file.puts '#define stringize(x) expand(#x)'
     file.puts '#define stringify(x) stringize(x)'
 
-    file.puts 'void print_config(void)', '{'
+    file.puts 'void print_nondefault_config(void)', '{'
     config['options'].sort.each do |name, info|
-        file.print "    printf(\"#define #{sprintf "% -#{max_length}s", name} %s\\n\", "
-        if info['type'] == 'boolean'
-            file.print "(#{name} == FALSE ? \"FALSE\" : \"TRUE\")"
-        else
-            file.print "stringify(#{name})"
-        end
-        file.puts ");"
+        file.puts "#ifndef #{name}_is_defaulted"
+        file.puts get_config_printf(name, info, max_length)
+        file.puts "#endif"
+    end
+    file.puts '}', ''
+
+    file.puts 'void print_full_config(void)', '{'
+    config['options'].sort.each do |name, info|
+        file.puts get_config_printf(name, info, max_length)
     end
     file.puts '}'
 end
