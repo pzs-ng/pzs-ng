@@ -135,12 +135,12 @@ main(int argc, char **argv)
 			d_log("zipscript-c: failed to change uid: %s\n", strerror(errno));
 	}
 
-        if (argc == 2 && strcmp("fullconfig", argv[1]) == 0)
+        if (argc == 2 && strcmp("--fullconfig", argv[1]) == 0)
         {
             print_full_config();
             exit(0);
         }
-        if (argc == 2 && strcmp("config", argv[1]) == 0)
+        if (argc == 2 && strcmp("--config", argv[1]) == 0)
         {
             print_nondefault_config();
             exit(0);
@@ -149,14 +149,16 @@ main(int argc, char **argv)
 #if ( wzdftpd_compatible == TRUE )
 	if (argc < 8) {
 		d_log("zipscript-c: Wrong number of arguments used (wzdftpd compatible)\n");
-		printf(" - - PZS-NG ZipScript-C %s - -\n\nUsage: %s <absolute filepath> <crc> <user> <group> <tagline> <speed> <section>\n\n", ng_version, argv[0]);
+		printf(" - - PZS-NG ZipScript-C %s - -\n\nUsage: %s <absolute filepath> <crc> <user> <group> <tagline> <speed> <section>\n", ng_version, argv[0]);
+		printf(" Usage: %s --(full)config - shows (full) config compiled.\n\n", argv[0]);
 		exit(1);
 	}
         crc_arg = argv[2];
 #else
 	if (argc < 4) {
 		d_log("zipscript-c: Wrong number of arguments used\n");
-		printf(" - - PZS-NG ZipScript-C %s - -\n\nUsage: %s <filename> <path> <crc>\n\n", ng_version, argv[0]);
+		printf(" - - PZS-NG ZipScript-C %s - -\n\nUsage: %s <filename> <path> <crc>\n", ng_version, argv[0]);
+		printf("Usage: %s --(full)config - shows (full) config compiled.\n\n", argv[0]);
 		exit(1);
 	}
         crc_arg = argv[3];

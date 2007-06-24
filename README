@@ -400,8 +400,8 @@ scripts. Here's a short description of each compiled binary:
     etc, according to your config.
     How to test: chroot /glftpd /bin/zipscript-c <filename> <path> <crc-code>
     You can recover (or check) your compiled config by the following syntax:
-    chroot /glftpd /bin/zipscript-c config
-    chroot /glftpd /bin/zipscript-c fullconfig # Also shows defaulted values
+    chroot /glftpd /bin/zipscript-c --config
+    chroot /glftpd /bin/zipscript-c --fullconfig # Also shows defaulted values
 
   - ng-chown - currently not used. It's a bin designed to chown files/dirs
     in your site to a specified used/group. When used it needs the +s bit
