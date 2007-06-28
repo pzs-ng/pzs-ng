@@ -360,7 +360,9 @@ proc ::ngBot::GameFAQs::FindGame {string platform} {
 
 	array set info [list]
 
-	regexp -nocase -start [lindex $pos 1] -- {<a href="(.*?)">(.*?)</a></td>} $data -> info(url) info(title)
+	if {[regexp -nocase -start [lindex $pos 1] -- {<a href="(.*?)">(.*?)</a></td>} $data -> info(url) info(title)]} {
+		regsub -all -- {[\t\n\r]+} $info(title) "" info(title)
+	}
 
 	return [array get info]
 }
@@ -470,31 +472,6 @@ proc ::ngBot::GameFAQs::ToTitle {text} {
 
 	return [join $result " "]
 }
-
-#proc ::ngBot::GameFAQs::Cleanup {release} {
-#	set release [split $release "-"]
-
-#	if {[llength $release] > 1} {
-#		set release [lrange $release 0 [expr { [llength $release] - 2 }]]
-#	}
-#	set release [join [split [join [split [join $release] "."]] "_"]]
-#	set search ""
-#	set list {
-#		"multi??" "multi?" "mu?" "euro" "eur" "jpn" "jap" "usa" "internal" "trainer" "gba" "beta"
-#		"cracked" "nokia" "gba" "symbianos?" "proper" "multilanguage" "pal" "ntsc" "ps2" "xbox"
-#		"readnfo" "plus??" "plus?" "repack" "gba" "patch" "ngage" "retail" "arena" "crack" "french"
-#		"psp" "nds" "gbc" "wsx" "ws" "ngp" "ngpx" "dvd" "xboxdvd" "ps2dvd" "ps2rip" "xboxrip"
-#	}
-
-#	set search [list]
-#	foreach segment $release {
-#		set retval [catch { foreach check $list { if {[string match -nocase $check $segment]} { error beep } } }]
-#		if {$retval == 1} { break }
-#		lappend search $segment
-#	}
-
-#	return [join $search " "]
-#}
 
 proc ::ngBot::GameFAQs::Cleanup {string} {
 	set string [split [string tolower $string] "-"]
