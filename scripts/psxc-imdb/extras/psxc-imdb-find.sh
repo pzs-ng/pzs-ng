@@ -213,11 +213,11 @@ done <$PSXCFINDTEMPA
   LINKNO=`cat "$PSXCFINDTEMPC" | head -n 1 | cut -d "[" -f 2 | cut -d "]" -f 1`
   if [ ! -z "$LINKNO" ]; then
 
-echo "$LINKNO"
+#echo "$LINKNO"
 
    URLTOUSE=`cat "$PSXCFINDTEMPA" | grep -e "\ $LINKNO\.\ " | tail -n 3 | tr ' ' '\n' | grep -e "imdb" | grep -e "title/tt" | tr '\?' '\n' | head -n 1`
 
-echo "$URLTOUSE"
+#echo "$URLTOUSE"
 
   else
    URLTOUSE=""
