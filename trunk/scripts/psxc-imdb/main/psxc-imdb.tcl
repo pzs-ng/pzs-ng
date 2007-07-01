@@ -140,7 +140,7 @@ namespace eval ::ngBot::psxc-IMDb {
         ##
         ##################################################
  
-        set psxc(VERSION) "2.7i"
+        set psxc(VERSION) "2.8"
  
         variable events [list "IMDB" "IMDBVAR" "IMDBFIND"]
  

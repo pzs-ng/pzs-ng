@@ -28,13 +28,15 @@
 #        (user or channel)
 # v2.7c imdb.com changed url-style. Changed script
 #        to match.
+# v2.8  imdb.com changed html layout. Changed
+#	 script to match.
 ##################################################
 
 ########
 # CONFIG
 
 # Version. No need to change.
-VERSION=2.7
+VERSION=2.8
 
 # (full) path to psxc-imdb.conf
 PSXC_IMDB_CONF=/glftpd/etc/psxc-imdb.conf
@@ -80,11 +82,20 @@ VERBOSE=""
 # OBS! Please - turn off DEBUG! It should only be used if you have problems
 #      Having DEBUG on may cause problems!
 
+# temp dir - should exist inside and outside chroot and must be 777
+TEMPDIR=/tmp
 
 # END OF CONFIG
 ###############
 
 DESTINATION=$1
+PSXCFINDTEMPA=$TEMPDIR/PSXCFINDTEMPA.tmp$$
+PSXCFINDTEMPB=$TEMPDIR/PSXCFINDTEMPB.tmp$$
+PSXCFINDTEMPC=$TEMPDIR/PSXCFINDTEMPC.tmp$$
+[[ ! -d $TEMPDIR || ! -w $TEMPDIR ]] && {
+	echo "Error - could not find/write to tempdir"
+	exit 1
+}
 shift
 IMDBSEARCHORIGA=`echo -n "$@" | tr -cd 'A-Za-z0-9\-\,+\=\.\ '`
 IMDBSEARCHORIG="`echo $IMDBSEARCHORIGA | tr ' \.' '\n' | grep -v "^-" | grep -v "^$" | tr '\n' ' '`"
@@ -166,10 +177,48 @@ if [ -z "$URLTOUSE" ]; then
   echo "$PREWORD Internal Error. www.imdb.com may be down, or not answering. Try again later."
   exit 0
  fi
+
+:>$PSXCFINDTEMPA
+:>$PSXCFINDTEMPB
+:>$PSXCFINDTEMPC
+
+echo "$CONTENT" >$PSXCFINDTEMPA
+
+found=0
+linknumber=0
+while read a; do
+	b="$(echo "$a" | tr 'a-zA-Z' ' ' | cut -d ' ' -f 1 | grep -v "^\[" | grep "\.")"
+	[[ ! -z "$b" && found -eq 0 ]] && {
+		echo "$a" >$PSXCFINDTEMPB
+		found=1
+		let linknumber=linknumber+1
+		continue
+	}
+	[[ ! -z "$b" && found -eq 1 ]] && {
+		while read c; do
+			[[ "$(echo "$c" | grep -v "\[.*gif\]" | grep "\[")" ]] && {
+				echo "$linknumber. $c" >>$PSXCFINDTEMPC
+			}
+		done <$PSXCFINDTEMPB
+		echo "$a" >$PSXCFINDTEMPB
+		found=1
+		let linknumber=linknumber+1
+		continue
+	}	
+	echo "$a" >>$PSXCFINDTEMPB
+done <$PSXCFINDTEMPA
+
+
  if [ -z "$IMDBLIST" ]; then
-  LINKNO=`echo "$CONTENT" | grep -e "\ 1\.\ " | head -n 1 | cut -d "[" -f 2 | cut -d "]" -f 1`
+  LINKNO=`cat "$PSXCFINDTEMPC" | head -n 1 | cut -d "[" -f 2 | cut -d "]" -f 1`
   if [ ! -z "$LINKNO" ]; then
-   URLTOUSE=`echo "$CONTENT" | grep -e "\ $LINKNO\.\ " | tail -n 3 | tr ' ' '\n' | grep -e "imdb" | grep -e "title/tt" | tr '\?' '\n' | head -n 1`
+
+echo "$LINKNO"
+
+   URLTOUSE=`cat "$PSXCFINDTEMPA" | grep -e "\ $LINKNO\.\ " | tail -n 3 | tr ' ' '\n' | grep -e "imdb" | grep -e "title/tt" | tr '\?' '\n' | head -n 1`
+
+echo "$URLTOUSE"
+
   else
    URLTOUSE=""
   fi
@@ -178,21 +227,21 @@ if [ -z "$URLTOUSE" ]; then
   b=1
   URLS=""
   while [ $a -le $IMDBLIST ]; do
-   LINKNAME=`echo "$CONTENT" | grep -e "\ $a\.\ " | head -n 1 | cut -d "[" -f 2 | cut -d "]" -f 2`
-   LINKNO=`echo "$CONTENT" | grep -e "\ $a\.\ " | head -n 1 | cut -d "[" -f 2 | cut -d "]" -f 1`
-   if [ ! -z "$LINKNO" ]; then
-    URLTOUSE=`echo "$CONTENT" | grep -e "\ $LINKNO\.\ " | tail -n 1 | tr ' ' '\n' | grep -e "imdb" | grep -e "title/tt" | tr '\?' '\n' | head -n 1`
+   LINKNAME=`cat "$PSXCFINDTEMPC" | grep -e "^$a\.\ " | head -n 1 | cut -d "[" -f 2 | cut -d "]" -f 2`
+   LINKNO=`cat "$PSXCFINDTEMPC" | grep -e "^$a\.\ " | head -n 1 | cut -d "[" -f 2 | cut -d "]" -f 1`
+   if [ ! -z "$(echo $LINKNO | tr -d ' ')" ]; then
+    URLTOUSE=`cat "$PSXCFINDTEMPA" | grep -e "\ $LINKNO\.\ " | tail -n 1 | tr ' ' '\n' | grep -e "imdb" | grep -e "title/tt" | tr '\?' '\n' | head -n 1`
     if [ ! -z "$URLTOUSE" ] && [ -z "`echo "$URLS" | grep -e "$URLTOUSE"`" ]; then
      if [ $a -eq 1 ]; then
       echo "$PREWORD Listing up to $IMDBLIST hits (duplicates removed)..."
       URLORIG="$URLTOUSE"
      fi
-     echo "$PREWORD $b"". (""$URLTOUSE"") $LINKNAME" | sed "s|/former.|/$IMDBLOCAL.|"
+     echo "$PREWORD $b"". ( ""$URLTOUSE"" ) $LINKNAME" | sed "s|/former.|/$IMDBLOCAL.|"
      let b=b+1
     fi
    URLS="$URLS $URLTOUSE"
-   let a=a+1
    fi
+   let a=a+1
   done
   if [ $b -gt 2 ]; then
    exit 0
@@ -206,6 +255,9 @@ if [ -z "$URLTOUSE" ]; then
   URLTOUSE=`echo "$WGETOUT" | tr ' ' '\n' | grep -e "imdb" | tr '><&' '\n' | grep -i -e "\/title\/" | tr '\?' '\n' | head -n 1`
  fi
 fi
+rm -f $PSXCFINDTEMPA
+rm -f $PSXCFINDTEMPB
+rm -f $PSXCFINDTEMPC
 if [ ! -z "$URLTOUSE" ]; then
  URLTOSHOW=`echo $URLTOUSE | sed "s|/former.|/$IMDBLOCAL.|"`
  if [ -z "$VERBOSE" ] && [ -z "$IMDBPRIVATE" ]; then
@@ -226,3 +278,4 @@ else
  echo "$PREWORD Sorry, nothing found on '""$BOLD""$IMDBSEARCHWORDS""$BOLD""'."
 fi
 exit 0
+
