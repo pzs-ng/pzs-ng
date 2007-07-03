@@ -13,6 +13,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <errno.h>
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
 
@@ -96,7 +97,8 @@ main(int argc, char *argv[])
 	fclose(fp);
 	fclose(fp2);
 
-	chmod(dupefile, 0666);
+	if (chmod(dupefile, 0666))
+		printf("WARNING: Failed to chmod %s: %s\n", dupefile, strerror(errno));
 	if (unlink(data2) > 0) {
 		printf("FATAL ERROR: Unable to delete tempfile (%s)\n", data2);
 		return 1;
