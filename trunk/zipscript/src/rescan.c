@@ -64,6 +64,7 @@ main(int argc, char *argv[])
 	umask(0666 & 000);
 
 	d_log("rescan: PZS-NG (rescan v2) %s debug log.\n", ng_version);
+	d_log("rescan: Rescan executed by: (uid/gid) %d/%d\n", geteuid(), getegid());
 
 #ifdef _ALT_MAX
 	d_log("rescan: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
@@ -314,7 +315,8 @@ main(int argc, char *argv[])
 							dp = readdir(dir);
 							unlink(dp->d_name);
 						}
-						chmod("file_id.diz", 0666);
+						if (chmod("file_id.diz", 0666))
+							d_log("rescan: Failed to chmod %s: %s\n", "file_id.diz", strerror(errno));
 					}
 				}
 				sprintf(exec, "%s -qqt \"%s\" >.delme", unzip_bin, g.v.file.name);
@@ -347,7 +349,8 @@ main(int argc, char *argv[])
 			createstatusbar(convert(&g.v, g.ui, g.gi, zip_completebar));
 #if (chmod_completebar)
 			if (!matchpath(group_dirs, g.l.path)) {
-				chmod(convert(&g.v, g.ui, g.gi, zip_completebar), 0222);
+				if (chmod(convert(&g.v, g.ui, g.gi, zip_completebar), 0222))
+					d_log("rescan: Failed to chmod %s: %s\n", convert(&g.v, g.ui, g.gi, zip_completebar), strerror(errno));
 			}
 #endif
 
@@ -599,7 +602,8 @@ main(int argc, char *argv[])
 				createstatusbar(convert(&g.v, g.ui, g.gi, complete_bar));
 #if (chmod_completebar)
 				if (!matchpath(group_dirs, g.l.path)) {
-					chmod(convert(&g.v, g.ui, g.gi, complete_bar), 0222);
+					if (chmod(convert(&g.v, g.ui, g.gi, complete_bar), 0222))
+						d_log("rescan: Failed to chmod %s: %s\n", convert(&g.v, g.ui, g.gi, completebar), strerror(errno));
 				}
 #endif
 			}

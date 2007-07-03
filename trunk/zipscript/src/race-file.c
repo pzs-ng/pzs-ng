@@ -1298,7 +1298,8 @@ check_zipfile(const char *dirname, const char *zipfile, int do_nfo)
 		if (!strncasecmp("file_id.diz", dp->d_name, 11)) {  	// make lowercase
 			sprintf(path_buf, "%s/%s", dirname, dp->d_name);
 			rename(path_buf, "file_id.diz");
-			chmod("file_id.diz", 0644);
+			if (chmod("file_id.diz", 0644))
+				d_log("check_zipfile: Failed to chmod %s: %s\n", "file_id.diz", strerror(errno));
 			continue;
 		}
 #if (zip_clean)
@@ -1334,7 +1335,8 @@ check_zipfile(const char *dirname, const char *zipfile, int do_nfo)
 			sprintf(path_buf, "%s/%s", dirname, nfo_buf);
 			strtolower(nfo_buf);
 			rename(path_buf, nfo_buf);
-			chmod(nfo_buf, 0644);
+			if (chmod(nfo_buf, 0644))
+				d_log("check_zipfile: Failed to chmod %s: %s\n", nfo_buf, strerror(errno));
 			d_log("check_zipfile: nfo extracted - %s\n", nfo_buf);
 		} else
 			d_log("check_zipfile: nfo NOT extracted - a nfo already exist in dir\n");

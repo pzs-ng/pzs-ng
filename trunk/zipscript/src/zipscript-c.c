@@ -123,6 +123,7 @@ main(int argc, char **argv)
 
 	umask(0666 & 000);
 
+	d_log("zipscript-c: Zipscript executed by: (uid/gid) %d/%d\n", geteuid(), getegid());
 	if ( program_uid > 0 ) {
 		d_log("zipscript-c: Trying to change effective uid/gid\n");
 		setegid(program_gid);
@@ -681,7 +682,8 @@ main(int argc, char **argv)
 						dp = readdir(dir);
 						unlink(dp->d_name);
 					}
-					chmod("file_id.diz", 0666);
+					if (chmod("file_id.diz", 0666))
+						d_log("zipscript-c: Failed to chmod %s: %s\n", "file_id.diz", strerror(errno));
 				}
 			}
 			d_log("zipscript-c: Reading diskcount from diz:\n");
@@ -1709,7 +1711,8 @@ main(int argc, char **argv)
 				createstatusbar(convert(&g.v, g.ui, g.gi, complete_bar));
 #if (chmod_completebar)
 				if (!matchpath(group_dirs, g.l.path)) {
-					chmod(convert(&g.v, g.ui, g.gi, complete_bar), 0222);
+					if (chmod(convert(&g.v, g.ui, g.gi, complete_bar), 0222))
+						d_log("zipscript-c: Failed to chmod %s: %s\n", convert(&g.v, g.ui, g.gi, complete_bar), strerror(errno));
 				} else {
 					d_log("zipscript-c: we are in a group_dir - will not chmod the complete bar.\n");
 				}

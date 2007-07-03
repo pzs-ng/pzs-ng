@@ -67,6 +67,7 @@ main(int argc, char **argv)
 	}
 
 	d_log("postdel: Project-ZS Next Generation (pzs-ng) %s debug log for postdel.\n", ng_version);
+	d_log("postdel: Postdel executed by: (uid/gid) %d/%d\n", geteuid(), getegid());
 
 #ifdef _ALT_MAX
 	d_log("postdel: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
@@ -287,7 +288,8 @@ main(int argc, char **argv)
 				d_log("postdel: file_id.diz does not exist, trying to extract it from %s\n", temp_p);
 				sprintf(target, "%s -qqjnCLL \"%s\" file_id.diz", unzip_bin, temp_p);
 				execute(target);
-				chmod("file_id.diz", 0666);
+				if (chmod("file_id.diz", 0666))
+					d_log("postdel: Failed to chmod %s: %s\n", "file_id.diz", strerror(errno));
 			}
 		}
 		d_log("postdel: Reading diskcount from diz\n");
