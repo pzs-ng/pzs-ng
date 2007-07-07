@@ -56,7 +56,7 @@ dist_header: |+
 options:
     wzdftpd_compatible:
         type: boolean
-        default: FALSE
+        default: false
         comment: |-
             ** DO NOT ENABLE THIS UNLESS YOU KNOW WHAT YOU'RE DOING. **
 
@@ -166,7 +166,7 @@ options:
             With speedtest you can choose if you wish to keep the uploaded files or
             remove them immediatly. If you choose to keep them, the files will be
             renamed to xx.xMiB
-        default: FALSE
+        default: false
 
     use_partial_on_noforce:
         type: boolean
@@ -176,13 +176,13 @@ options:
             like 'sample' or something. Please be careful to include a slash after
             the dirs if this setting is on - like '/sample/', to minimize the
             number of possible wrong hits.
-        default: FALSE
+        default: false
 
     spaces_to_dots:
         type: boolean
         comment: |-
             This option will replace spaces in mp3-genre dirs to dots.
-        default: FALSE
+        default: false
 
     audio_nocheck_dirs:
         type: paths
@@ -207,7 +207,7 @@ options:
             If you need to check a dir placed in a nocheck_dirs area, you must
             set this variable to TRUE. Setting this to FALSE will render the rescan
             option dead in nocheck_dirs areas.
-        default: TRUE
+        default: true
 
     rescan_default_to_quick:
         type: boolean
@@ -216,7 +216,7 @@ options:
             In quick mode only the files not already marked as good will be
             rescanned. This is good if some files are uploaded, but not checked by
             the zipscript.
-        default: TRUE
+        default: true
 
     strict_path_match:
         type: boolean
@@ -224,7 +224,7 @@ options:
             This setting is used to enforce the filetype (zip/sfv) based on path.
             When set to TRUE, zip files is not allowed in sfv dirs, and the other
             way around. group dirs are not affected, as they can be both.
-        default: FALSE
+        default: false
 
     sfv_calc_single_fname:
         type: boolean
@@ -232,7 +232,7 @@ options:
             Setting this to TRUE enables the zipscript to calculate a crc checksum
             for filenames listed in the sfv, which do not have a corresponding crc.
             Normally only broken sfv's should have a missing crc after a filename.
-        default: FALSE
+        default: false
 
     subdir_list:
         type: string
@@ -293,7 +293,7 @@ options:
         comment: |-
             normally releases have a sfv, unless they are zip releases. This
             setting will check for missing sfv in releases.
-        default: TRUE
+        default: true
 
     create_incomplete_links_in_group_dirs:
         type: boolean
@@ -301,7 +301,7 @@ options:
             Should incomplete indicators be created in groupdirs? With the default
             settings this should be no problem, but if you change the location of
             the links, it may very well be.
-        default: TRUE
+        default: true
 
     GROUPFILE:
         type: path
@@ -320,7 +320,7 @@ options:
         comment: |-
             Some clients do not cwd into the releasedir before uploading file(s).
             To allow such clients this option must be set to TRUE.
-        default: FALSE
+        default: false
 
     days_back_cleanup:
         type: integer
@@ -353,20 +353,20 @@ options:
             cscript, only current dir will be checked. You can make sure to
             clean up broken audio-symlinks as well, by setting this variable to
             TRUE. Because audio archives can get huge, this is not on by default.
-        default: FALSE
+        default: false
 
     write_complete_message_in_group_dirs:
         type: boolean
         comment: |-
             Should a .message file be created in the group-dirs?
-        default: TRUE
+        default: true
 
     hide_group_uploaders:
         type: boolean
         comment: |-
             If you wish to hide the names of the member of a releasegroup in the
             .message file, this option will 'hide' the uploader.
-        default: TRUE
+        default: true
 
     hide_gname:
         type: string
@@ -399,7 +399,7 @@ options:
             create a 0-byte file of each missing file (filename-missing). This
             file will be removed when the file is uploaded and found free of
             errors.
-        default: TRUE
+        default: true
 
     status_bar_type:
         type: integer
@@ -481,14 +481,14 @@ options:
             valid on upload (not rescan etc), and is normally not used. Please
             note that this is a override option - you may be not like everything
             this option allows on your site...
-        default: FALSE
+        default: false
 
     create_missing_sfv:
         type: boolean
         comment: |-
             If this option is set to TRUE, the rescan binary will create sfv files
             if none is found in the dir.
-        default: FALSE
+        default: false
 
     strict_sfv_check:
         type: boolean
@@ -498,7 +498,7 @@ options:
             entries are found, forcing the user to upload a valid sfv file.
             Bad entries consist of lines containing the NULL char, or lines without
             a valid crc code.
-        default: FALSE
+        default: false
 
     mark_file_as_bad:
         type: boolean
@@ -506,14 +506,14 @@ options:
             Normally files marked as bad are deleted. You can change this by setting
             the following value to TRUE - instead of the file being deleted, it will
             be renamed <filename>.bad. Bad files are ignored on rescan.
-        default: FALSE
+        default: false
 
     allow_file_resume:
         type: boolean
         comment: |-
             Broken transfers may be a problem on some sites. Glftpd2 and pzs-ng
             allow you to resume such files by setting this to TRUE.
-        default: FALSE
+        default: false
 
     sleep_on_bad:
         type: integer
@@ -529,7 +529,7 @@ options:
             If something seems weird/doesn't work, you should debug. Setting this
             variable to TRUE will turn on debugging. A file named .debug will be
             created, normally in the same dir as the upload-dir.
-        default: FALSE
+        default: false
 
     debug_altlog:
         type: boolean
@@ -541,7 +541,7 @@ options:
             'storage' path, while FALSE will use the upload-dir.
             Note that this also uses different name. It will be named 'debug' and not
             'debug'.
-        default: TRUE
+        default: true
 
     debug_announce:
         type: boolean
@@ -554,14 +554,14 @@ options:
             executed.
             If the script(s) are unable to write to .debug and debug_announce is
             on, the debug msg's will be pasted to the client instead.
-        default: FALSE
+        default: false
 
     benchmark_mode:
         type: boolean
         comment: |-
             This option will show the user uploading an estimate of how long it
             took the zipscript to scan the uploaded file.
-        default: TRUE
+        default: true
 
     ignore_zero_size:
         type: boolean
@@ -569,7 +569,7 @@ options:
             This option is for debugging purposes only. Normally files of size
             0 bytes are logged as bad, meaning glftpd will delete them. This
             option makes it possible to allow such files.
-        default: FALSE
+        default: false
 
     ignore_zero_sized_on_rescan:
         type: boolean
@@ -578,7 +578,7 @@ options:
             site rules. One of the ways to approve a dir is to create a 0-sized
             file in the dir, with the word APPROVED or ALLOWED somewhere.
             This setting will ignore all zero-sized files on rescan.
-        default: FALSE
+        default: false
 
     remove_dot_debug_on_delete:
         type: boolean
@@ -589,7 +589,7 @@ options:
             racer). Setting this to TRUE will try to remove the .debug file if
             the dir itself is removed. Previously, people had to have access to
             the wipe-command to be able to do this.
-        default: TRUE
+        default: true
 
     remove_dot_files_on_delete:
         type: boolean
@@ -598,7 +598,7 @@ options:
             your users may have problems deleting dirs completely. Setting this
             option to TRUE will remove all hidden files, when all other files of
             the release is deleted.
-        default: FALSE
+        default: false
 
     unzip_bin:
         type: path
@@ -612,21 +612,21 @@ options:
             If unzip exits with error code 1 or 2 (a generic error) - should the file
             be allowed anyway? There really shouldn't be any errors, so it's
             recommended to leave this setting to the default FALSE.
-        default: FALSE
+        default: false
 
     sfv_dupecheck:
         type: boolean
         comment: |-
             Setting this option to TRUE will remove duplicate entries within the
             uploaded sfv file.
-        default: TRUE
+        default: true
 
     sfv_cleanup:
         type: boolean
         comment: |-
             Setting this to true will cleanup the uploaded sfv, removing
             comments etc. from it.
-        default: TRUE
+        default: true
 
     sfv_cleanup_lowercase:
         type: boolean
@@ -637,7 +637,7 @@ options:
             pointers and the internal sfv database lowercased.
             Either way, if set to TRUE you in effect turn winblows mode on, and the
             zipscript will not separate case on filenames.
-        default: TRUE
+        default: true
 
     sfv_cleanup_crlf:
         type: boolean
@@ -645,7 +645,7 @@ options:
             If sfv_cleanup is set to TRUE, this option defines if you use windows
             or *nix version of linefeeds. The recommended option is to leave this
             to TRUE, using windows style (<cr><lf>).
-        default: TRUE
+        default: true
 
     sfv_lenient:
         type: boolean
@@ -653,7 +653,7 @@ options:
             If this is set to true, the chars '_' , '-' , '.' , ' ' and ',' are
             recognized as the same char. Ie, if you have in sfv 'file.name' and
             upload 'file_name' - the file will be allowed.
-        default: TRUE
+        default: true
 
     deny_double_sfv:
         type: boolean
@@ -666,7 +666,7 @@ options:
             based on the content of the sfv. If the new sfv contains more files
             than the old one, and they match with what is already uploaded in the
             dir, it will be allowed and used. If it does not, it will be denied.
-        default: FALSE
+        default: false
 
     deny_resume_sfv:
         type: boolean
@@ -674,20 +674,20 @@ options:
             This option works like deny_double_sfv, only it will deny even resumed
             or overwritten sfv files. If that happens, a backup of the original sfv
             will be copied back to the release.
-        default: TRUE
+        default: true
 
     deny_double_nfo:
         type: boolean
         comment: |-
             This is usually done (better) with a 3rd party app, but ... You can
             deny a nfo upload if one already exists in the same dir.
-        default: FALSE
+        default: false
 
     exclude_non_sfv_dirs:
         type: boolean
         comment: |-
             Applies only to audio/mp3 releases - NEEDS MORE INFO HERE!!!!!
-        default: TRUE
+        default: true
 
     force_sfv_first:
         type: boolean
@@ -696,20 +696,20 @@ options:
             checked later when the sfv arrives, or you can force the uploader to
             first provide a sfv before any other filetype is allowed. Setting this
             to TRUE will do the latter.
-        default: FALSE
+        default: false
 
     allow_slash_in_sfv:
         type: boolean
         comment: |-
             Allow slashes '/' in sfv? If TRUE whatever is behind the last slash is
             taken as the filename. If FALSE, the sfv is rejected.
-        default: TRUE
+        default: true
 
     audio_genre_sort:
         type: boolean
         comment: |-
             If you wish to sort audio/mp3 releases by genre, set this to TRUE.
-        default: FALSE
+        default: false
 
     audio_genre_path:
         type: path
@@ -723,7 +723,7 @@ options:
         type: boolean
         comment: |-
             If you wish to sort audio/mp3 releases by artist, set this to TRUE.
-        default: FALSE
+        default: false
 
     audio_artist_nosub:
         type: boolean
@@ -733,7 +733,7 @@ options:
             is made. audio_artist_nosub, if set to TRUE, will instead create dirs
             based on the full name of the artist, and then put a link in that dir
             instead.
-        default: FALSE
+        default: false
 
     audio_artist_path:
         type: path
@@ -747,7 +747,7 @@ options:
         type: boolean
         comment: |-
             If you wish to sort audio/mp3 releases by year, set this to TRUE.
-        default: FALSE
+        default: false
 
     audio_year_path:
         type: path
@@ -761,7 +761,7 @@ options:
         type: boolean
         comment: |-
             If you wish to sort audio/mp3 releases by group, set this to TRUE.
-        default: FALSE
+        default: false
 
     audio_group_path:
         type: path
@@ -775,7 +775,7 @@ options:
         type: boolean
         comment: |-
             If you wish to sort audio/mp3 releases by language, set this to TRUE.
-        default: FALSE
+        default: false
 
     audio_language_path:
         type: path
@@ -792,7 +792,7 @@ options:
             links with the same name when it tries to create a new link, set this 
             to FALSE. This will cause rescan / audiosort to be useless if there
             already are sortedlinks for this release.
-        default: TRUE
+        default: true
 
     allowed_constant_bitrates:
         type: string
@@ -807,7 +807,7 @@ options:
         comment: |-
             Should the zipscript check for allowed bitrate on cbr audio/mp3
             releases? Set to TRUE if yes.
-        default: TRUE
+        default: true
 
     audio_cbr_warn:
         type: boolean
@@ -815,7 +815,7 @@ options:
             If the audio-release is not in the list of allowed cbr bitrates, should
             the zipscript log a warning message instead of deleting the file? Set
             to TRUE if yes.
-        default: TRUE
+        default: true
 
     allowed_years:
         type: string
@@ -829,7 +829,7 @@ options:
         comment: |-
             Should the zipscript check for allowed years on audio/mp3 releases? Set
             to TRUE if yes.
-        default: TRUE
+        default: true
 
     audio_year_warn:
         type: boolean
@@ -837,7 +837,7 @@ options:
             If the audio-release is not in the list of allowed years, should the
             zipscript log a warning message instead of deleting the file? Set to
             TRUE if yes.
-        default: TRUE
+        default: true
 
     banned_genres:
         type: string
@@ -867,7 +867,7 @@ options:
             Should the audio/mp3 release be checked against your defined genres?
             Only audio_banned_genre_check OR audio_allowed_genre_check should be
             set to TRUE - not both.
-        default: TRUE
+        default: true
 
     audio_allowed_genre_check:
         type: boolean
@@ -875,7 +875,7 @@ options:
             Should the audio/mp3 release be checked against your defined genres?
             Only audio_banned_genre_check OR audio_allowed_genre_check should be
             set to TRUE - not both.
-        default: FALSE
+        default: false
 
     audio_genre_warn:
         type: boolean
@@ -883,7 +883,7 @@ options:
             If the audio-release is not part of allowed genres, should the
             zipscript log a warning message instead of deleting the file? Set to
             TRUE if yes.
-        default: TRUE
+        default: true
 
     del_banned_release:
         type: boolean
@@ -893,14 +893,14 @@ options:
             remove the releasedir.
             NOTE: This will override the *_warn setting - ie, you will get a warning
             announce, but the file along with the entire dir will be removed.
-        default: FALSE
+        default: false
 
     create_m3u:
         type: boolean
         comment: |-
             If you wish to create .m3u files on complete mp3-releases, set this to
             TRUE.
-        default: TRUE
+        default: true
 
     enable_files_ahead:
         type: boolean
@@ -908,7 +908,7 @@ options:
             To limit the amount of logging on races, you can choose to only report
             a new leader in a race if a racer is leading with a certain amount of
             files. Set to TRUE to enable this feature.
-        default: TRUE
+        default: true
 
     newleader_files_ahead:
         type: integer
@@ -978,28 +978,28 @@ options:
         comment: |-
             If this variable is set to FALSE, announces with only one racer will
             not be announced.
-        default: TRUE
+        default: true
 
     get_competitor_list:
         type: boolean
         comment: |-
             This setting, if set to TRUE, will put a list of all racers
             excluding the current user into a special cookie.
-        default: TRUE
+        default: true
 
     get_user_stats:
         type: boolean
         comment: |-
             If this is set to true, the zipscript will try to fetch stats from the
             racers userfiles.
-        default: TRUE
+        default: true
 
     show_stats_from_pos2_only:
         type: boolean
         comment: |-
             If this is set to true, only racers in position 2 and below is shown
             in the %T and %t cookies - this affects the LOOP variables in the bot.
-        default: FALSE
+        default: false
 
     show_user_info:
         type: boolean
@@ -1007,7 +1007,7 @@ options:
             If you wish to print stat info after a file is uploaded to the racer,
             set this to true. It will display racers (usernames) and stats on the
             current race in the client's ftp program.
-        default: TRUE
+        default: true
 
     show_group_info:
         type: boolean
@@ -1015,13 +1015,13 @@ options:
             If you wish to print stat info after a file is uploaded to the racer,
             set this to true. It will display racers (groupnames) and stats on the
             current race in the client's ftp program.
-        default: TRUE
+        default: true
 
     write_complete_message:
         type: boolean
         comment: |-
             Should a file be created in the releasedir, containing race-info etc?
-        default: TRUE
+        default: true
 
     message_file_name:
         type: string
@@ -1382,7 +1382,7 @@ options:
         comment: |-
             An external script can be run after a file is verified and ok. Put
             this to TRUE to run the external script.
-        default: FALSE
+        default: false
 
     accept_script:
         type: path
@@ -1396,7 +1396,7 @@ options:
         comment: |-
             An external script can be run after a nfo upload. Put his to TRUE to
             run the external script.
-        default: FALSE
+        default: false
 
     nfo_script:
         type: path
@@ -1410,7 +1410,7 @@ options:
         comment: |-
             An external script can be run after a release is complete. Put his to
             TRUE to run the external script.
-        default: FALSE
+        default: false
 
     complete_script:
         type: path
@@ -1424,7 +1424,7 @@ options:
         comment: |-
             Put here the path to the external script which should be run after
             first uploaded mp3 in an audio-release.
-        default: FALSE
+        default: false
 
     mp3_script:
         type: path
@@ -1449,7 +1449,7 @@ options:
             for that to happen, the file needs to be unduped, or it will be denied
             by glftpd. Set this variable to TRUE to run an external script after
             a file has been marked as bad, and which undupes it.
-        default: TRUE
+        default: true
 
     unduper_script:
         type: path
@@ -1463,7 +1463,7 @@ options:
             Should a script be executed after sample uploads? Only valid on uploads
             in sample dirs (see sample_list for info), and only if file is a
             video file.
-        default: FALSE
+        default: false
 
     sample_script:
         type: path
@@ -1476,280 +1476,280 @@ options:
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_audio_sfv:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_audio_update:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_audio_halfway:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_audio_newleader:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_audio_complete:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_audio_norace_halfway:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_audio_norace_complete:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_video_race:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_video_sfv:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_video_update:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_video_halfway:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_video_newleader:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_video_complete:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_video_norace_halfway:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_video_norace_complete:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_rar_race:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_rar_sfv:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_rar_update:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_rar_halfway:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_rar_newleader:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_rar_complete:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_rar_norace_halfway:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_rar_norace_complete:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_zip_race:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_zip_sfv:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_zip_update:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_zip_halfway:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_zip_newleader:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_zip_complete:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_zip_norace_halfway:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_zip_norace_complete:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_other_race:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_other_sfv:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_other_update:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_other_halfway:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_other_newleader:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_other_complete:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_other_norace_halfway:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     disable_other_norace_complete:
         type: boolean
         comment: |-
             You can choose to disable some announces. Set to TRUE to disable the
             announce.
-        default: FALSE
+        default: false
 
     racersmsg:
         type: string
@@ -1782,14 +1782,14 @@ options:
             When TRUE, the permissions on the file/dir is changed to 0222. This is
             to prevent it from being transfered on download/fxp.
             Note that this will not happen in group-dirs.
-        default: FALSE
+        default: false
 
     mark_empty_dirs_as_incomplete_on_rescan:
         type: boolean
         comment: |-
             If you wish to mark an empty dir as incomplete, set this to TRUE. Empty
             dirs that are rescanned will then be marked as incomplete
-        default: FALSE
+        default: false
 
     max_seconds_wait_for_lock:
         type: integer
@@ -1823,7 +1823,7 @@ options:
             default. Usually such conditions should *never* occur, but may in
             rare conditions, especially if 3rd party scripts/addons are being
             used.
-        default: FALSE
+        default: false
 
     allow_uid_change_in_ng_chown:
         type: boolean
@@ -1832,20 +1832,20 @@ options:
             order for it to work you have to enable a few things. This variable
             will let ng-chown change the uid of files/dirs. ng-chown need to be
             chmod'ed +s for it to work too.
-        default: FALSE
+        default: false
 
     allow_gid_change_in_ng_chown:
         type: boolean
         comment: |-
             Same as with allow_uid_change_in_ng_chown, only with gid.
-        default: FALSE
+        default: false
 
     allow_dir_chown_in_ng_chown:
         type: boolean
         comment: |-
             In ng-chown you have to specify a dir or a file to chmod. This setting
             allows/denies to change the ownership of that file/dir.
-        default: FALSE
+        default: false
 
     allow_files_chown_in_ng_chown:
         type: boolean
@@ -1853,7 +1853,7 @@ options:
             In ng-chown you have to specify a dir or a file to chmod. If you specify
             a dir, this setting will chown the files in that dir, but not the dir
             itself.
-        default: FALSE
+        default: false
 
     change_spaces_to_underscore_in_ng_chown:
         type: boolean
@@ -1862,34 +1862,34 @@ options:
             spaces in them. This will search for a uid/gid with a underscore, if
             the name (genre) given has a space inside. It is recommended to *NOT*
             change this value (from TRUE).
-        default: TRUE
+        default: true
 
     zip_clean:
         type: boolean
         comment: |-
             If you wish to clean zipfiles (remove files based on the list given in
             banned_filelist), set this to TRUE.
-        default: TRUE
+        default: true
 
     extract_nfo:
         type: boolean
         comment: |-
             Should the zipscript extract the "real" nfo from a zip?
-        default: TRUE
+        default: true
 
     deny_nfo_upload_in_zip:
         type: boolean
         comment: |-
             Should we deny nfo uploads in zip dirs? Should really only be used in
             conjuntion with extract_nfo.
-        default: FALSE
+        default: false
 
     test_for_password:
         type: boolean
         comment: |-
             Some rarfiles have password protection. If you wish to check for such
             files, set this to TRUE.
-        default: TRUE
+        default: true
 
     zip_bin:
         type: path
@@ -1917,7 +1917,7 @@ options:
         comment: |-
             Will check the banned_filelist when uploading files - if one is
             encountered, the zipscript will deny the upload.
-        default: TRUE
+        default: true
 
     rescan_chdir_flags:
         type: string
@@ -1969,14 +1969,14 @@ options:
         type: boolean
         comment: |-
             Use the group_dirs as base for getting the list of affils to hide.
-        default: FALSE
+        default: false
 
     enable_affil_script:
         type: boolean
         comment: |-
             If you wish to do something on affil upload (not in group_dirs) like
             chown'ing the file, you can enable the this here.
-        default: FALSE
+        default: false
 
     affil_script:
         type: string
