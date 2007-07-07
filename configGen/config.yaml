@@ -529,6 +529,7 @@ options:
             If something seems weird/doesn't work, you should debug. Setting this
             variable to TRUE will turn on debugging. A file named .debug will be
             created, normally in the same dir as the upload-dir.
+            Related option(s): debug_altlog debug_announce
         default: false
 
     debug_altlog:
@@ -541,6 +542,7 @@ options:
             'storage' path, while FALSE will use the upload-dir.
             Note that this also uses different name. It will be named 'debug' and not
             'debug'.
+            Related option(s): debug_mode debug_announce
         default: true
 
     debug_announce:
@@ -554,6 +556,7 @@ options:
             executed.
             If the script(s) are unable to write to .debug and debug_announce is
             on, the debug msg's will be pasted to the client instead.
+            Related option(s): debug_mode debug_altlog
         default: false
 
     benchmark_mode:
@@ -589,6 +592,7 @@ options:
             racer). Setting this to TRUE will try to remove the .debug file if
             the dir itself is removed. Previously, people had to have access to
             the wipe-command to be able to do this.
+            Related option(s): remove_dot_files_on_delete
         default: true
 
     remove_dot_files_on_delete:
@@ -598,6 +602,7 @@ options:
             your users may have problems deleting dirs completely. Setting this
             option to TRUE will remove all hidden files, when all other files of
             the release is deleted.
+            Related option(s): remove_dot_debug_on_delete
         default: false
 
     unzip_bin:
@@ -619,6 +624,9 @@ options:
         comment: |-
             Setting this option to TRUE will remove duplicate entries within the
             uploaded sfv file.
+            Related option(s): sfv_cleanup sfv_cleanup_lowercase sfv_cleanup_crlf
+                               sfv_lenient deny_double_sfv deny_resume_sfv
+                               allow_slash_in_sfv
         default: true
 
     sfv_cleanup:
@@ -626,6 +634,9 @@ options:
         comment: |-
             Setting this to true will cleanup the uploaded sfv, removing
             comments etc. from it.
+            Related option(s): sfv_dupecheck sfv_cleanup_lowercase sfv_cleanup_crlf
+                               sfv_lenient deny_double_sfv deny_resume_sfv
+                               allow_slash_in_sfv
         default: true
 
     sfv_cleanup_lowercase:
@@ -637,6 +648,9 @@ options:
             pointers and the internal sfv database lowercased.
             Either way, if set to TRUE you in effect turn winblows mode on, and the
             zipscript will not separate case on filenames.
+            Related option(s): sfv-dupecheck sfv_cleanup sfv_cleanup_crlf
+                               sfv_lenient deny_double_sfv deny_resume_sfv
+                               allow_slash_in_sfv
         default: true
 
     sfv_cleanup_crlf:
@@ -645,6 +659,9 @@ options:
             If sfv_cleanup is set to TRUE, this option defines if you use windows
             or *nix version of linefeeds. The recommended option is to leave this
             to TRUE, using windows style (<cr><lf>).
+            Related option(s): sfv-dupecheck sfv_cleanup sfv_cleanup_lowercase
+                               sfv_lenient deny_double_sfv deny_resume_sfv
+                               allow_slash_in_sfv
         default: true
 
     sfv_lenient:
@@ -653,6 +670,9 @@ options:
             If this is set to true, the chars '_' , '-' , '.' , ' ' and ',' are
             recognized as the same char. Ie, if you have in sfv 'file.name' and
             upload 'file_name' - the file will be allowed.
+            Related option(s): sfv-dupecheck sfv_cleanup sfv_cleanup_lowercase
+                               sfv_cleanup_crlf deny_double_sfv deny_resume_sfv
+                               allow_slash_in_sfv
         default: true
 
     deny_double_sfv:
@@ -666,6 +686,9 @@ options:
             based on the content of the sfv. If the new sfv contains more files
             than the old one, and they match with what is already uploaded in the
             dir, it will be allowed and used. If it does not, it will be denied.
+            Related option(s): sfv-dupecheck sfv_cleanup sfv_cleanup_lowercase
+                               sfv_cleanup_crlf sfv_lenient deny_resume_sfv
+                               allow_slash_in_sfv
         default: false
 
     deny_resume_sfv:
@@ -674,6 +697,9 @@ options:
             This option works like deny_double_sfv, only it will deny even resumed
             or overwritten sfv files. If that happens, a backup of the original sfv
             will be copied back to the release.
+            Related option(s): sfv-dupecheck sfv_cleanup sfv_cleanup_lowercase
+                               sfv_cleanup_crlf sfv_lenient deny_double_sfv
+                               allow_slash_in_sfv
         default: true
 
     deny_double_nfo:
@@ -703,6 +729,9 @@ options:
         comment: |-
             Allow slashes '/' in sfv? If TRUE whatever is behind the last slash is
             taken as the filename. If FALSE, the sfv is rejected.
+            Related option(s): sfv-dupecheck sfv_cleanup sfv_cleanup_lowercase
+                               sfv_cleanup_crlf sfv_lenient deny_double_sfv
+                               deny_resume_sfv
         default: true
 
     audio_genre_sort:
