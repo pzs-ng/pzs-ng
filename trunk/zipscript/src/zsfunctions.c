@@ -1421,6 +1421,7 @@ extractDirname(char *dirname, char *absoluteDirname)
 
 int make_sfv(char *reldir) {
 	static struct dirent	*dp;
+	static struct stat	stat_buf;
 	DIR			*dirp;
 	int			fd, fcount = 0;
 	static char		buf[PATH_MAX + 3];
@@ -1441,7 +1442,7 @@ int make_sfv(char *reldir) {
 		    !strcomp(ignored_types, fp) &&
 		    (!strcomp(allowed_types, fp) || (strcomp(allowed_types, fp) && matchpath(allowed_types_exemption_dirs, reldir))) &&
 		    strcmp(dp->d_name, "pzs-ng.sfv") &&
-		    dp->d_type == DT_REG &&
+		    (dp->d_type == DT_REG || (!stat(dp->d_name, &stat_buf) && S_ISREG(stat_buf.st_mode) )) &&
 		    strcmp(fp, "nfo")) {
 			d_log("make_sfv: Adding \"%-20s 00000000\" to sfv\n", dp->d_name);
 			snprintf(buf, sizeof(buf), "%-20s 00000000\n", dp->d_name);
@@ -1452,7 +1453,8 @@ int make_sfv(char *reldir) {
 				(void)closedir(dirp);
 				return 1;
 			}
-		}
+		} else
+			d_log("make_sfv: Ignoring %s (check allowed_types and ignored_types if this is wrong)\n", dp->d_name);
 	}
 	if (!fcount) {
 		d_log("make_sfv: Did not find anything to put in the sfv - removing sfv\n");
