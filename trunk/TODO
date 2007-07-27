@@ -4,6 +4,3 @@ Thank you. :-)
 zipscript-c : //                                    if (!strcomp(ignored_types, fname + ext_start) && !(strcomp(allowed_types, fname + ext_start) && matchpath(allowed_types_exemption_dirs, raceI->misc.current_path))) {
    - is this correct? Why is this commented?
 
-zsfunctions.c : dirent.h - DT_REG
-   - any alternative to check for regular files? some distros do not support the bsd extension
-
