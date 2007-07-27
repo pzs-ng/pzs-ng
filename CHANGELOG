@@ -1,7 +1,11 @@
 PZS-NG CHANGELOG
 ----------------
 
-v1.0.9  --> 1.0.10 :
+v1.0.10 --> 1.0.xx :
+		- compat-fix in the create_sfv routine - BSD extension was not supported on
+		  all distros.
+		- fix a bug with sample checks and exemption dirs.
+v1.0.9  --> 1.0.10 : (r2339)
 		- psxc-imdb v2.8.
 		- added option combine_path to allow clients that does not cwd into reldir.
 		- fixed a bug with userstats over 2TB.
@@ -9,7 +13,7 @@ v1.0.9  --> 1.0.10 :
 		- fixed a bug where .message showed full path to releasedir in stats.
 		- fixed a bug in the subdir detection routine.
 		- never search for sfv in a sample dir.
-		- make sitewho and showlog compile in native 64bit.
+		- made sitewho and showlog compile in native 64bit.
 		- added option to list compiled config in zipscript-c.
 
 v1.0.8  --> 1.0.9  : (r2291)
