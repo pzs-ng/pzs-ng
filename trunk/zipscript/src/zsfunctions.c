@@ -1184,10 +1184,20 @@ remove_nfo_indicator(GLOBAL *g)
 
 	buffer_paths(g, path, &k, ((int)strlen(g->l.path)-1));
 
-	g->l.nfo_incomplete = incomplete(incomplete_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+	if (matchpath(incomplete_generic1_path, g->l.path))
+		g->l.nfo_incomplete = incomplete(incomplete_generic1_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+	else if (matchpath(incomplete_generic2_path, g->l.path))
+		g->l.nfo_incomplete = incomplete(incomplete_generic2_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+	else
+		g->l.nfo_incomplete = incomplete(incomplete_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
 	if (fileexists(g->l.nfo_incomplete))
 		unlink(g->l.nfo_incomplete);
-	g->l.nfo_incomplete = incomplete(incomplete_base_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+	if (matchpath(incomplete_generic1_path, g->l.path))
+		g->l.nfo_incomplete = incomplete(incomplete_generic1_base_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+	else if (matchpath(incomplete_generic2_path, g->l.path))
+		g->l.nfo_incomplete = incomplete(incomplete_generic2_base_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+	else
+		g->l.nfo_incomplete = incomplete(incomplete_base_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
 	if (fileexists(g->l.nfo_incomplete))
 		unlink(g->l.nfo_incomplete);
 }
@@ -1211,17 +1221,37 @@ getrelname(GLOBAL *g)
 		snprintf(g->v.misc.release_name, PATH_MAX, "%s/%s", path[0], path[1]);
 		strlcpy(g->l.link_source, g->l.path, PATH_MAX);
 		strlcpy(g->l.link_target, path[1], PATH_MAX);
-		g->l.incomplete = incomplete(incomplete_cd_indicator, path, &g->v, INCOMPLETE_NORMAL);
-		g->l.nfo_incomplete = incomplete(incomplete_base_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
-		g->l.sfv_incomplete = incomplete(incomplete_base_sfv_indicator, path, &g->v, INCOMPLETE_SFV);
+		if (matchpath(incomplete_generic1_path, g->l.path)) {
+			g->l.incomplete = incomplete(incomplete_generic1_cd_indicator, path, &g->v, INCOMPLETE_NORMAL);
+			g->l.nfo_incomplete = incomplete(incomplete_generic1_base_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+			g->l.sfv_incomplete = incomplete(incomplete_generic1_base_sfv_indicator, path, &g->v, INCOMPLETE_SFV);
+		} else if (matchpath(incomplete_generic2_path, g->l.path)) {
+			g->l.incomplete = incomplete(incomplete_generic2_cd_indicator, path, &g->v, INCOMPLETE_NORMAL);
+			g->l.nfo_incomplete = incomplete(incomplete_generic2_base_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+			g->l.sfv_incomplete = incomplete(incomplete_generic2_base_sfv_indicator, path, &g->v, INCOMPLETE_SFV);
+		} else {
+			g->l.incomplete = incomplete(incomplete_cd_indicator, path, &g->v, INCOMPLETE_NORMAL);
+			g->l.nfo_incomplete = incomplete(incomplete_base_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+			g->l.sfv_incomplete = incomplete(incomplete_base_sfv_indicator, path, &g->v, INCOMPLETE_SFV);
+		}
 		g->l.in_cd_dir = 1;
 	} else {
 		strlcpy(g->v.misc.release_name, path[1], PATH_MAX);
 		strlcpy(g->l.link_source, g->l.path, PATH_MAX);
 		strlcpy(g->l.link_target, path[1], PATH_MAX);
-		g->l.incomplete = incomplete(incomplete_indicator, path, &g->v, INCOMPLETE_NORMAL);
-		g->l.nfo_incomplete = incomplete(incomplete_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
-		g->l.sfv_incomplete = incomplete(incomplete_sfv_indicator, path, &g->v, INCOMPLETE_SFV);
+		if (matchpath(incomplete_generic1_path, g->l.path)) {
+			g->l.incomplete = incomplete(incomplete_generic1_indicator, path, &g->v, INCOMPLETE_NORMAL);
+			g->l.nfo_incomplete = incomplete(incomplete_generic1_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+			g->l.sfv_incomplete = incomplete(incomplete_generic1_sfv_indicator, path, &g->v, INCOMPLETE_SFV);
+		} else if (matchpath(incomplete_generic2_path, g->l.path)) {
+			g->l.incomplete = incomplete(incomplete_generic2_indicator, path, &g->v, INCOMPLETE_NORMAL);
+			g->l.nfo_incomplete = incomplete(incomplete_generic2_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+			g->l.sfv_incomplete = incomplete(incomplete_generic2_sfv_indicator, path, &g->v, INCOMPLETE_SFV);
+		} else {
+			g->l.incomplete = incomplete(incomplete_indicator, path, &g->v, INCOMPLETE_NORMAL);
+			g->l.nfo_incomplete = incomplete(incomplete_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+			g->l.sfv_incomplete = incomplete(incomplete_sfv_indicator, path, &g->v, INCOMPLETE_SFV);
+		}
 		g->l.in_cd_dir = 0;
 	}
 	

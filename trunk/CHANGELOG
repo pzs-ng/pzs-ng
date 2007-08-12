@@ -2,6 +2,8 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.10 --> 1.0.xx :
+		- fixed a bug with chmod_completebar.
+		- added option for two sets of generic incomplete indicators.
 		- compat-fix in the create_sfv routine - BSD extension was not supported on
 		  all distros.
 		- fix a bug with sample checks and exemption dirs.

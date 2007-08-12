@@ -490,6 +490,48 @@ printf("#define incomplete_base_sfv_indicator           %s\n", stringify(incompl
 #ifndef incomplete_cd_indicator_is_defaulted
 printf("#define incomplete_cd_indicator                 %s\n", stringify(incomplete_cd_indicator));
 #endif
+#ifndef incomplete_generic1_base_nfo_indicator_is_defaulted
+printf("#define incomplete_generic1_base_nfo_indicator  %s\n", stringify(incomplete_generic1_base_nfo_indicator));
+#endif
+#ifndef incomplete_generic1_base_sfv_indicator_is_defaulted
+printf("#define incomplete_generic1_base_sfv_indicator  %s\n", stringify(incomplete_generic1_base_sfv_indicator));
+#endif
+#ifndef incomplete_generic1_cd_indicator_is_defaulted
+printf("#define incomplete_generic1_cd_indicator        %s\n", stringify(incomplete_generic1_cd_indicator));
+#endif
+#ifndef incomplete_generic1_indicator_is_defaulted
+printf("#define incomplete_generic1_indicator           %s\n", stringify(incomplete_generic1_indicator));
+#endif
+#ifndef incomplete_generic1_nfo_indicator_is_defaulted
+printf("#define incomplete_generic1_nfo_indicator       %s\n", stringify(incomplete_generic1_nfo_indicator));
+#endif
+#ifndef incomplete_generic1_path_is_defaulted
+printf("#define incomplete_generic1_path                %s\n", stringify(incomplete_generic1_path));
+#endif
+#ifndef incomplete_generic1_sfv_indicator_is_defaulted
+printf("#define incomplete_generic1_sfv_indicator       %s\n", stringify(incomplete_generic1_sfv_indicator));
+#endif
+#ifndef incomplete_generic2_base_nfo_indicator_is_defaulted
+printf("#define incomplete_generic2_base_nfo_indicator  %s\n", stringify(incomplete_generic2_base_nfo_indicator));
+#endif
+#ifndef incomplete_generic2_base_sfv_indicator_is_defaulted
+printf("#define incomplete_generic2_base_sfv_indicator  %s\n", stringify(incomplete_generic2_base_sfv_indicator));
+#endif
+#ifndef incomplete_generic2_cd_indicator_is_defaulted
+printf("#define incomplete_generic2_cd_indicator        %s\n", stringify(incomplete_generic2_cd_indicator));
+#endif
+#ifndef incomplete_generic2_indicator_is_defaulted
+printf("#define incomplete_generic2_indicator           %s\n", stringify(incomplete_generic2_indicator));
+#endif
+#ifndef incomplete_generic2_nfo_indicator_is_defaulted
+printf("#define incomplete_generic2_nfo_indicator       %s\n", stringify(incomplete_generic2_nfo_indicator));
+#endif
+#ifndef incomplete_generic2_path_is_defaulted
+printf("#define incomplete_generic2_path                %s\n", stringify(incomplete_generic2_path));
+#endif
+#ifndef incomplete_generic2_sfv_indicator_is_defaulted
+printf("#define incomplete_generic2_sfv_indicator       %s\n", stringify(incomplete_generic2_sfv_indicator));
+#endif
 #ifndef incomplete_indicator_is_defaulted
 printf("#define incomplete_indicator                    %s\n", stringify(incomplete_indicator));
 #endif
@@ -962,6 +1004,20 @@ printf("#define ignored_types                           %s\n", stringify(ignored
 printf("#define incomplete_base_nfo_indicator           %s\n", stringify(incomplete_base_nfo_indicator));
 printf("#define incomplete_base_sfv_indicator           %s\n", stringify(incomplete_base_sfv_indicator));
 printf("#define incomplete_cd_indicator                 %s\n", stringify(incomplete_cd_indicator));
+printf("#define incomplete_generic1_base_nfo_indicator  %s\n", stringify(incomplete_generic1_base_nfo_indicator));
+printf("#define incomplete_generic1_base_sfv_indicator  %s\n", stringify(incomplete_generic1_base_sfv_indicator));
+printf("#define incomplete_generic1_cd_indicator        %s\n", stringify(incomplete_generic1_cd_indicator));
+printf("#define incomplete_generic1_indicator           %s\n", stringify(incomplete_generic1_indicator));
+printf("#define incomplete_generic1_nfo_indicator       %s\n", stringify(incomplete_generic1_nfo_indicator));
+printf("#define incomplete_generic1_path                %s\n", stringify(incomplete_generic1_path));
+printf("#define incomplete_generic1_sfv_indicator       %s\n", stringify(incomplete_generic1_sfv_indicator));
+printf("#define incomplete_generic2_base_nfo_indicator  %s\n", stringify(incomplete_generic2_base_nfo_indicator));
+printf("#define incomplete_generic2_base_sfv_indicator  %s\n", stringify(incomplete_generic2_base_sfv_indicator));
+printf("#define incomplete_generic2_cd_indicator        %s\n", stringify(incomplete_generic2_cd_indicator));
+printf("#define incomplete_generic2_indicator           %s\n", stringify(incomplete_generic2_indicator));
+printf("#define incomplete_generic2_nfo_indicator       %s\n", stringify(incomplete_generic2_nfo_indicator));
+printf("#define incomplete_generic2_path                %s\n", stringify(incomplete_generic2_path));
+printf("#define incomplete_generic2_sfv_indicator       %s\n", stringify(incomplete_generic2_sfv_indicator));
 printf("#define incomplete_indicator                    %s\n", stringify(incomplete_indicator));
 printf("#define incomplete_nfo_indicator                %s\n", stringify(incomplete_nfo_indicator));
 printf("#define incomplete_sfv_indicator                %s\n", stringify(incomplete_sfv_indicator));

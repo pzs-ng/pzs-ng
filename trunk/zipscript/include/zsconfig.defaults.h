@@ -730,6 +730,76 @@
 #define incomplete_cd_indicator                 "../../(incomplete)-(%0)-%1"
 #endif
 
+#ifndef incomplete_generic1_base_nfo_indicator
+#define incomplete_generic1_base_nfo_indicator_is_defaulted
+#define incomplete_generic1_base_nfo_indicator  "/site/incompletes/(no-nfo)-%1"
+#endif
+
+#ifndef incomplete_generic1_base_sfv_indicator
+#define incomplete_generic1_base_sfv_indicator_is_defaulted
+#define incomplete_generic1_base_sfv_indicator  "/site/incompletes/(no-sfv)-%1"
+#endif
+
+#ifndef incomplete_generic1_cd_indicator
+#define incomplete_generic1_cd_indicator_is_defaulted
+#define incomplete_generic1_cd_indicator        "/site/incompletes/(incomplete)-(%0)-%1"
+#endif
+
+#ifndef incomplete_generic1_indicator
+#define incomplete_generic1_indicator_is_defaulted
+#define incomplete_generic1_indicator           "/site/incompletes/(incomplete)-%0"
+#endif
+
+#ifndef incomplete_generic1_nfo_indicator
+#define incomplete_generic1_nfo_indicator_is_defaulted
+#define incomplete_generic1_nfo_indicator       "/site/incompletes/(no-nfo)-%0"
+#endif
+
+#ifndef incomplete_generic1_path
+#define incomplete_generic1_path_is_defaulted
+#define incomplete_generic1_path                ""
+#endif
+
+#ifndef incomplete_generic1_sfv_indicator
+#define incomplete_generic1_sfv_indicator_is_defaulted
+#define incomplete_generic1_sfv_indicator       "/site/incompletes/(no-sfv)-%0"
+#endif
+
+#ifndef incomplete_generic2_base_nfo_indicator
+#define incomplete_generic2_base_nfo_indicator_is_defaulted
+#define incomplete_generic2_base_nfo_indicator  "/site/incompletes/(no-nfo)-%1"
+#endif
+
+#ifndef incomplete_generic2_base_sfv_indicator
+#define incomplete_generic2_base_sfv_indicator_is_defaulted
+#define incomplete_generic2_base_sfv_indicator  "/site/incompletes/(no-sfv)-%1"
+#endif
+
+#ifndef incomplete_generic2_cd_indicator
+#define incomplete_generic2_cd_indicator_is_defaulted
+#define incomplete_generic2_cd_indicator        "/site/incompletes/(incomplete)-(%0)-%1"
+#endif
+
+#ifndef incomplete_generic2_indicator
+#define incomplete_generic2_indicator_is_defaulted
+#define incomplete_generic2_indicator           "/site/incompletes/(incomplete)-%0"
+#endif
+
+#ifndef incomplete_generic2_nfo_indicator
+#define incomplete_generic2_nfo_indicator_is_defaulted
+#define incomplete_generic2_nfo_indicator       "/site/incompletes/(no-nfo)-%0"
+#endif
+
+#ifndef incomplete_generic2_path
+#define incomplete_generic2_path_is_defaulted
+#define incomplete_generic2_path                ""
+#endif
+
+#ifndef incomplete_generic2_sfv_indicator
+#define incomplete_generic2_sfv_indicator_is_defaulted
+#define incomplete_generic2_sfv_indicator       "/site/incompletes/(no-sfv)-%0"
+#endif
+
 #ifndef incomplete_indicator
 #define incomplete_indicator_is_defaulted
 #define incomplete_indicator                    "../(incomplete)-%0"

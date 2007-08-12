@@ -603,7 +603,7 @@ main(int argc, char *argv[])
 #if (chmod_completebar)
 				if (!matchpath(group_dirs, g.l.path)) {
 					if (chmod(convert(&g.v, g.ui, g.gi, complete_bar), 0222))
-						d_log("rescan: Failed to chmod %s: %s\n", convert(&g.v, g.ui, g.gi, completebar), strerror(errno));
+						d_log("rescan: Failed to chmod %s: %s\n", convert(&g.v, g.ui, g.gi, complete_bar), strerror(errno));
 				}
 #endif
 			}

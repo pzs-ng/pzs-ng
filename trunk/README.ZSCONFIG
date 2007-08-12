@@ -918,6 +918,88 @@ incomplete_cd_indicator <STRING>
 	This variable defines indicators on multi-cd releases.
 	Default: "../../(incomplete)-(%0)-%1"
 
+incomplete_generic1_base_nfo_indicator <STRING>
+	On upload an indicator is created after each file, to show still
+	incomplete releases. Put here how that indicator will look.
+	This variable defines indicators on missing nfo in multi-cd releases.
+	Default: "/site/incompletes/(no-nfo)-%1"
+
+incomplete_generic1_base_sfv_indicator <STRING>
+	On upload an indicator is created after each file, to show still
+	incomplete releases. Put here how that indicator will look.
+	This variable defines indicators on missing sfv in multi-cd releases.
+	Default: "/site/incompletes/(no-sfv)-%1"
+
+incomplete_generic1_cd_indicator <STRING>
+	On upload an indicator is created after each file, to show still
+	incomplete releases. Put here how that indicator will look.
+	This variable defines indicators on multi-cd releases.
+	Default: "/site/incompletes/(incomplete)-(%0)-%1"
+
+incomplete_generic1_indicator <STRING>
+	On upload an indicator is created after each file, to show still
+	incomplete releases. Put here how that indicator will look.
+	This variable defines indicators on normal releases.
+	Default: "/site/incompletes/(incomplete)-%0"
+
+incomplete_generic1_nfo_indicator <STRING>
+	On upload an indicator is created after each file, to show still
+	incomplete releases. Put here how that indicator will look.
+	This variable defines indicators on missing nfo in normal releases.
+	Default: "/site/incompletes/(no-nfo)-%0"
+
+incomplete_generic1_path <PATH>
+	If dir matches this string, the generic1 indicators will be used
+	to create the incomplete indicators.
+	Default: ""
+
+incomplete_generic1_sfv_indicator <STRING>
+	On upload an indicator is created after each file, to show still
+	incomplete releases. Put here how that indicator will look.
+	This variable defines indicators on missing sfv in normal releases.
+	Default: "/site/incompletes/(no-sfv)-%0"
+
+incomplete_generic2_base_nfo_indicator <STRING>
+	On upload an indicator is created after each file, to show still
+	incomplete releases. Put here how that indicator will look.
+	This variable defines indicators on missing nfo in multi-cd releases.
+	Default: "/site/incompletes/(no-nfo)-%1"
+
+incomplete_generic2_base_sfv_indicator <STRING>
+	On upload an indicator is created after each file, to show still
+	incomplete releases. Put here how that indicator will look.
+	This variable defines indicators on missing sfv in multi-cd releases.
+	Default: "/site/incompletes/(no-sfv)-%1"
+
+incomplete_generic2_cd_indicator <STRING>
+	On upload an indicator is created after each file, to show still
+	incomplete releases. Put here how that indicator will look.
+	This variable defines indicators on multi-cd releases.
+	Default: "/site/incompletes/(incomplete)-(%0)-%1"
+
+incomplete_generic2_indicator <STRING>
+	On upload an indicator is created after each file, to show still
+	incomplete releases. Put here how that indicator will look.
+	This variable defines indicators on normal releases.
+	Default: "/site/incompletes/(incomplete)-%0"
+
+incomplete_generic2_nfo_indicator <STRING>
+	On upload an indicator is created after each file, to show still
+	incomplete releases. Put here how that indicator will look.
+	This variable defines indicators on missing nfo in normal releases.
+	Default: "/site/incompletes/(no-nfo)-%0"
+
+incomplete_generic2_path <PATH>
+	If dir matches this string, the generic2 indicators will be used
+	to create the incomplete indicators.
+	Default: ""
+
+incomplete_generic2_sfv_indicator <STRING>
+	On upload an indicator is created after each file, to show still
+	incomplete releases. Put here how that indicator will look.
+	This variable defines indicators on missing sfv in normal releases.
+	Default: "/site/incompletes/(no-sfv)-%0"
+
 incomplete_indicator <STRING>
 	On upload an indicator is created after each file, to show still
 	incomplete releases. Put here how that indicator will look.
