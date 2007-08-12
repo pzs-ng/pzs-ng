@@ -268,6 +268,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	count = 0;
 	rd.status = F_NOTCHECKED;
 	while ((fread(&rd, sizeof(RACEDATA), 1, racefile))) {
+d_log("TOP: count=%d\n", count);
 		if (!update_lock(raceI, 1, 0)) {
 			d_log("testfiles: Lock is suggested removed. Will comply and exit\n");
 			remove_lock(raceI);
@@ -289,6 +290,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 		}
 		d_log("testfiles: raceI->id3_genre='%s' - raceI->audio.id3_artist='%s'\n", raceI->id3_genre, raceI->audio.id3_artist);
 		if (fileexists(rd.fname)) {
+			d_log("testfiles: Processing %s\n", rd.fname);
 			if (S_ISDIR(filestat.st_mode))
 				rd.status = F_IGNORED;
 			else if (rd.crc32 != 0 && Tcrc == rd.crc32)
@@ -300,6 +302,8 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 			else if ((rd.crc32 != 0) && (Tcrc != rd.crc32) &&
 					  (strcomp(allowed_types, ext) &&
 					   !matchpath(allowed_types_exemption_dirs, locations->path)))
+				rd.status = F_IGNORED;
+			else if ((rd.crc32 == 0) && strcomp(allowed_types, ext))
 				rd.status = F_IGNORED;
 			else if ((timenow == filestat.st_ctime) && (filestat.st_mode & 0111)) {
 				d_log("testfiles: Looks like this file (%s) is in the process of being uploaded. Ignoring.\n", rd.fname);
@@ -350,6 +354,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 			if (!((timenow == filestat.st_ctime) && (filestat.st_mode & 0111)))
 				unlink_missing(rd.fname);
 		}
+d_log("BOTTOM: count=%d\n", count);
 		count++;
 	}
 	strlcpy(raceI->file.name, real_file, strlen(real_file)+1);
