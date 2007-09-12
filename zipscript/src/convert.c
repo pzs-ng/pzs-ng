@@ -611,7 +611,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				break;
 			case '$':
 				out_p += sprintf(out_p, "%*.*s", val1, val2,
-						 (char *)hms(ttime, ((((raceI->total.stop_time - raceI->total.start_time) + (raceI->total.files - raceI->total.files_missing)) / (raceI->total.files - raceI->total.files_missing)) * raceI->total.files) - (raceI->total.stop_time - raceI->total.start_time)));
+						 (char *)hms(ttime, (((((raceI->total.stop_time - raceI->total.start_time) + (raceI->total.files - raceI->total.files_missing) > 0 ? (raceI->total.stop_time - raceI->total.start_time) + (raceI->total.files - raceI->total.files_missing) : 1 )) / (raceI->total.files - raceI->total.files_missing)) * raceI->total.files) - (raceI->total.stop_time - raceI->total.start_time)));
 				break;
 			case 'e':
 				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->file.size * raceI->total.files >> 10) / 1024.));
@@ -629,7 +629,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->user.group);
 				break;
 			case 'k':
-				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)(raceI->total.size / 1024.));
+				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->total.size > 0 ? raceI->total.size : 1) / 1024.));
 				break;
 			case 'l':
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)convert_user(raceI, userI[raceI->misc.slowest_user[1]], groupI, slowestfile, 0));

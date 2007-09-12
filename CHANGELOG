@@ -2,6 +2,8 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.10 --> 1.0.xx :
+		- don't use the '$' cookie in the zipscript statusbars (fixed a segfault in
+		  in case you do - thanx sked for the report)
 		- fixed a bug with chmod_completebar.
 		- added option for two sets of generic incomplete indicators.
 		- compat-fix in the create_sfv routine - BSD extension was not supported on
