@@ -69,12 +69,11 @@ void audioSort(struct audio *info, char *link_source, char *link_target)
 #endif
 
 if (subcomp(link_target, NULL)) {
-        int i, pos;
-        pos = 0;
+        int i, pos = 0;
+        char sourceDir[PATH_MAX];
         for (i = strlen(link_source); i > 0; i--) {
                 if (link_source[i] == '/')  {  pos = i; break; }
         }
-        char sourceDir[PATH_MAX];
         strcpy(sourceDir, link_source);
         strlcpy(link_source, sourceDir, pos + 1);
         extractDirname(link_target, link_source);
