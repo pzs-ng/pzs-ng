@@ -26,7 +26,7 @@
 #include <string.h>
 #include <strings.h>
 #include <unistd.h>
-#include <stdint.h>
+//#include <stdint.h>
 #include <inttypes.h>
 
 #include "zsconfig.h"
