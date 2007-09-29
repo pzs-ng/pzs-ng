@@ -233,7 +233,8 @@ main(int argc, char **argv)
 
         /* XXX We need a better way to handle this. wzd supports sections too.. ;-)
          * (But without userfile reading etc, it's all futile!) */
-#if 0        temp_p_free = temp_p = strdup((const char *)gl_sections);	/* temp_p_free is needed since temp_p is modified by strsep */
+#if 0
+        temp_p_free = temp_p = strdup((const char *)gl_sections);	/* temp_p_free is needed since temp_p is modified by strsep */
         if ((temp_p) == NULL) {
                 d_log("zipscript-c: Can't allocate memory for sections\n");
         } else {
