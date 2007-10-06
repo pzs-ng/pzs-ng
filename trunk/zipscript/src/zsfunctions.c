@@ -1517,6 +1517,8 @@ insampledir(char *dirname)
 	char	sample[sizeof(sample_list)+1];
 	char	*p = NULL;
 
+	if (strlen(sample_list) < 2)
+		return 0;
 	if (t == NULL)
 		t = dirname;
 	else
