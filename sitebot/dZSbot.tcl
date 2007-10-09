@@ -322,7 +322,7 @@ proc readlog {} {
 		## Invite users to public and private channels.
 		if {[string equal $event "INVITE"]} {
 			foreach {nick user group flags} $line {break}
-			ng_inviteuser $nick $user [list $group] $flags
+			ng_inviteuser $nick $user $group $flags
 		}
 		if {[lsearch -exact $msgtypes(SECTION) $event] != -1} {
 			set path [lindex $line 0]
@@ -820,24 +820,21 @@ proc ng_invitechan {nick chan} {
 	}
 }
 
-proc ng_inviteuser {nick user groups flags} {
+proc ng_inviteuser {nick user group flags} {
 	global invite_channels privchannel
-	if {![eventhandler precommand INVITEUSER [list $nick $user $groups $flags]]} {return}
+	if {![eventhandler precommand INVITEUSER [list $nick $user $group $flags]]} {return}
 
 	## Invite the user to the defined channels.
 	foreach chan $invite_channels {
 		ng_invitechan $nick $chan
 	}
 	foreach {chan rights} [array get privchannel] {
-                foreach {group} $groups {
-                    if {[rightscheck $rights $user $group $flags]} {
-                        ng_invitechan $nick $chan
-                        break
-                    }
-                }
+		if {[rightscheck $rights $user $group $flags]} {
+			ng_invitechan $nick $chan
+		}
 	}
 
-	eventhandler postcommand INVITEUSER [list $nick $user $groups $flags]
+	eventhandler postcommand INVITEUSER [list $nick $user $group $flags]
 	return
 }
 
@@ -848,7 +845,7 @@ proc ng_invite {nick host hand argv} {
 		set user [lindex $argv 0]
 		set pass [lindex $argv 1]
 		set result [exec $binary(PASSCHK) $user $pass $location(PASSWD)]
-		set groups [list]; set flags ""
+		set group ""; set flags ""
 
 		if {[string equal $result "MATCH"]} {
 			set output "$theme(PREFIX)$announce(MSGINVITE)"
@@ -859,13 +856,13 @@ proc ng_invite {nick host hand argv} {
 				foreach line [split $data "\n"] {
 					switch -exact -- [lindex $line 0] {
 						"FLAGS" {set flags [lindex $line 1]}
-						"GROUP" {lappend groups [lindex $line 1]}
+						"GROUP" {set group [lindex $line 1]}
 					}
 				}
 			} else {
 				putlog "dZSbot error: Unable to open user file for \"$user\" ($error)."
 			}
-			ng_inviteuser $nick $user $groups $flags
+			ng_inviteuser $nick $user $group $flags
 		} else {
 			set output "$theme(PREFIX)$announce(BADMSGINVITE)"
 		}
