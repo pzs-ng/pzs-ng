@@ -8,11 +8,11 @@
 # - Thanks to compieter for the idea.
 #
 # Installation:
-# 1. Compile and install the SQLite v3.1.x Tcl binding:
+# 1. Compile and install the SQLite v3 Tcl binding:
 #    http://www.sqlite.org/download.html
 #
-#    tar zxf sqlite-3.1.x.tar.gz
-#    cd sqlite-3.1.x
+#    tar zxf sqlite-3.x.x.tar.gz
+#    cd sqlite-3.x.x
 #    mkdir bld
 #    cd bld
 #    ../configure
