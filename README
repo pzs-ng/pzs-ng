@@ -288,6 +288,7 @@ to add this, and you end up with a rather shabby site.
 Optionally, add the following:
 
 cscript		SITE[:space:]NUKE	post	/bin/cleanup
+cscript		SITE[:space:]UNNUKE	post	/bin/postunnuke
 cscript		SITE[:space:]WIPE	post	/bin/cleanup
 
 site_cmd	RESCAN			EXEC	/bin/rescan
@@ -379,6 +380,14 @@ scripts. Here's a short description of each compiled binary:
     Please note that this script will *only* work as a cscript to the DELE
     command.
     How to test: chroot /glftpd /bin/postdel "DELE /site/path/to/filename"
+
+  - postunnuke - Should be run after you unnuke something (as a cscript). Will
+    re-check the full release and update the racedata accordingly.
+    Please note that this script will *only* work as a cscript to the site
+    UNNUKE command.
+    How to test: chroot /glftpd
+                 cd site/archive/something
+                 /bin/postunnuke "site UNNUKE some.release-here sorry.erroneus.nuke"
  
   - dl_speedtest - used to measure download speeds. It will write the output
     to glftpd.log only.
