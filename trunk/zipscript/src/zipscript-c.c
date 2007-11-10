@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -382,6 +383,12 @@ main(int argc, char **argv)
 #endif
 	d_log("zipscript-c: Reading directory structure\n");
 	dir = opendir(".");
+        rewinddir(dir);
+        d_log("zipscript-c: main() - findfileext %s\n", findfileext(dir, ".nfo"));
+        rewinddir(dir);
+        rewinddir(dir);
+        d_log("zipscript-c: main() - findfileext2 %s\n", findfileext(dir, ".nfo"));
+        d_log("zipscript-c: dir = 0x%08X\n", dir);
 	parent = opendir("..");
 
 	d_log("zipscript-c: Caching release name\n");
@@ -1759,8 +1766,14 @@ main(int argc, char **argv)
 #endif
 #endif
 			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
+                                d_log("zipscript-c: dir = 0x%08X\n", dir);
 				/* Creating no-nfo link if needed. */
 				if (g.l.nfo_incomplete && matchpath(check_for_missing_nfo_dirs, g.l.path) && !findfileext(dir, ".nfo")) {
+                                        char *cwd = get_current_dir_name();
+					d_log("zipscript-c: Missing nfo, g.l.nfo_incomplete = %s, !findfileext(dir, \".nfo\") = %s, matchpath(check_for_missing_nfo_dirs, g.l.path) = %s, cwd = %s\n",
+						(g.l.nfo_incomplete) ? "true" : "false", (!findfileext(dir, ".nfo")) ? "true" : "false",
+						(matchpath(check_for_missing_nfo_dirs, g.l.path)) ? "true" : "false", cwd);
+                                        free(cwd);
 					if (!g.l.in_cd_dir) {
 						d_log("zipscript-c: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();

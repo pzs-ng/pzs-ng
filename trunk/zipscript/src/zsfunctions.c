@@ -98,14 +98,22 @@ findfileext(DIR *dir, char *fileext)
 	int			k;
 	static struct dirent	*dp;
 
+        errno = 0;
 	rewinddir(dir);
+        d_log("zipscript-c: findfileext(0x%08X, '%s');\n", dir, fileext);
 	while ((dp = readdir(dir))) {
+                d_log("zipscript-c: findfileext() - looking at dp->d_name: '%s'\n", dp->d_name);
 		if ((k = NAMLEN(dp)) < 4)
 			continue;
+                d_log("zipscript-c: findfileext() comparing '%s' to '%s'.\n", dp->d_name + k - 4, fileext);
 		if (strcasecmp(dp->d_name + k - 4, fileext) == 0) {
+			d_log("zipscript-c: findfileext() found a match. ^^\n");
 			return dp->d_name;
 		}
 	}
+
+        if (errno)
+            d_log("zipscript-c: findfileext() - readdir(dir) returned an error: %s\n", strerror(errno));
 
 	return NULL;
 }
@@ -116,11 +124,17 @@ check_dupefile(DIR *dir, char *fname)
 	int			 found = 0;
 	static struct dirent	*dp;
 
+        errno = 0;
+
 	rewinddir(dir);
 	while ((dp = readdir(dir))) {
 		if (strcasecmp(dp->d_name, fname) == 0)
 			found++;
 	}
+
+        if (errno)
+            d_log("zipscript-c: check_dupefile() - readdir(dir) returned an error: %s\n", strerror(errno));
+
 	return (found - 1);
 }
 
@@ -136,6 +150,8 @@ findfileextparent(DIR *dir, char *fileext)
 	int			k;
 	static struct dirent	*dp;
 
+        errno = 0;
+
 	rewinddir(dir);
 	while ((dp = readdir(dir))) {
 		if ((k = NAMLEN(dp)) < 4)
@@ -144,6 +160,10 @@ findfileextparent(DIR *dir, char *fileext)
 			return dp->d_name;
 		}
 	}
+
+        if (errno)
+            d_log("zipscript-c: findfileextparent() - readdir(dir) returned an error: %s\n", strerror(errno));
+
 	return NULL;
 }
 
@@ -157,7 +177,9 @@ findfileextcount(DIR *dir, char *fileext)
 {
 	int		fnamelen, c = 0;
 	struct dirent	*dp;
-	
+
+        errno = 0;
+
 	rewinddir(dir);
 	while ((dp = readdir(dir))) {
 		if ((fnamelen = NAMLEN(dp)) < 4)
@@ -165,6 +187,10 @@ findfileextcount(DIR *dir, char *fileext)
 		if (!strcasecmp((dp->d_name + fnamelen - 4), fileext))
 			c++;
 	}
+
+        if (errno)
+            d_log("zipscript-c: findfileextparent() - readdir(dir) returned an error: %s\n", strerror(errno));
+
 	return c;
 }
 

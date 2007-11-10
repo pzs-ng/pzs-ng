@@ -21,11 +21,12 @@ CU-OBJECTS=cleanup.o
 DC-OBJECTS=datacleaner.o
 UD-OBJECTS=ng-undupe.o $(STRLCPY)
 SC-OBJECTS=rescan.o dizreader.o complete.o crc.o multimedia.o audiosort.o $(UNIVERSAL)
+PU-OBJECTS=postunnuke.o dizreader.o complete.o crc.o multimedia.o audiosort.o $(UNIVERSAL)
 CH-OBJECTS=ng-chown.o
 #ZS-DEPEND=cleanup.o incomplete-list.o complete.o datacleaner.o postdel.o racestats.o rescan.o zipscript-c.o multimedia.o $(UNIVERSAL)
 ZS-DEPEND=cleanup.o complete.o datacleaner.o postdel.o racestats.o rescan.o zipscript-c.o multimedia.o $(UNIVERSAL)
 
-all: ng-undupe zipscript-c postdel racestats cleanup datacleaner rescan ng-chown audiosort
+all: postunnuke ng-undupe zipscript-c postdel racestats cleanup datacleaner rescan ng-chown audiosort
 
 $(ZS-DEPEND): ../conf/zsconfig.h
 
@@ -61,6 +62,9 @@ audiosort: $(AS-OBJECTS)
 rescan: $(SC-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(SC-OBJECTS)
 
+postunnuke: $(PU-OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(PU-OBJECTS)
+
 install:
 	if [ ! -e "$(prefix)$(storage)" ]; then mkdir -p -m777 "$(prefix)$(storage)"; fi
 	chown 0:0 $(prefix)$(storage)
@@ -75,10 +79,9 @@ install:
 	install -m0755 rescan $(bindir)
 	install -m0755 ng-undupe $(bindir)
 	install -m0755 audiosort $(bindir)
+	install -m0755 postunnuke $(bindir)
 	install -m4755 ng-chown $(bindir)
-#	if [ -e $(bindir) ]; then (cd $(bindir) && rm -f zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown audiosort); cp -f zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown audiosort $(bindir)/; fi
 	if [ -d "$(prefix)$(datapath)/misc" ] && [ ! -e "$(prefix)$(datapath)/misc/banned_filelist.txt" ]; then cp -f banned_filelist.txt $(prefix)$(datapath)/misc/; fi
-#	if [ -e $(bindir)/ng-chown ]; then chmod +s $(bindir)/ng-chown; fi
 
 distclean: clean
 

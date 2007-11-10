@@ -310,8 +310,11 @@ d_log("TOP: count=%d\n", count);
 				rd.status = F_IGNORED;
 				create_missing(rd.fname);
 			}
-		} else
+		} else {
+                        d_log("testfiles: File doesnt exist (%s), marking as F_NOTCHECKED.\n", rd.fname);
 			rd.status = F_NOTCHECKED;
+                }
+
 		if (rd.status == F_NOTCHECKED) {
 			d_log("testfiles: Marking file (%s) as bad and removing it.\n", rd.fname);
 			mark_as_bad(rd.fname);
