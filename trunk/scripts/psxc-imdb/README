@@ -1,0 +1,548 @@
+PSXC-IMDB README:
+-----------------
+
+
+
+CONTENTS:
+---------
+  - AUTHORS NOTES AND ADVICES - Read it!
+  - DESCRIPTION - a quick description on what this script is capable of.
+  - NEEDED BINARIES - what's needed to make the script work.
+  - QUICK SETUP - The basic steps needed for the script to run.
+  - DETAILED SETUP - A few examples of ftp setups, and how to best implement
+       the imdb script in each case.
+  - VERBOSE SETUP - Here is a detailed look on how to set up the different parts
+       of the script.
+      - ADDING SITEBOT SUPPORT - Describes how to edit your settings to support
+           a bot.
+      - SETTING UP THE BOT - How to set up the included tcl files.
+      - ADDING PRE SUPPORT - What to do to make preing work.
+      - ADDING YOUR OWN FORMATTED BOT-OUTPUT - Choices and what to do to give
+           your output that personal touch.
+      - USING THE "FULL" FEATURE - What to do when your regular botscript
+           doesn't do what you want it to do.
+  - ADDONS - What else can we do with the extracted imdb info? A lot!
+  - EXTRAS - What can be found in the extras/ dir?
+  - OTHER - What can be found in the other/ dir?
+  - HOW IT WORKS - The inner workings.
+  - KNOWN BUGS - bugs? heaven forbid!
+  - CONTACT - the author can actually be reached!
+  - GUARANTEE/LICENSE - The license it's released under.
+
+
+
+AUTHORS NOTES AND ADVICES:
+--------------------------
+  I've used a lot of time to generate docs and commenting the scripts and
+  their variables. Please do not skim these documents - read them. It got a
+  lot of important information, including extensive instructions on debugging
+  (should that be required.)
+  Also *read* the comments inside the script. Especially if you change some default
+  variables. The script is meant to work almost out-of-the-box, so very few changes
+  is indeed necessary.
+  A big *THANX* to kantele for pointing out and helping me use post_check instead
+  of zs-c's accept_script. Also thanx to the people in #psxc for helping to debug
+  the script - I could not have done this without you.
+
+  Users of this script upgrading to v2.2 or later really should focus on point
+  4. under QUICK SETUP below. There has been a fundamental change on how to
+  call this script.
+
+  Below are a few example setups. Some people will find the config huge, and
+  be scared off. Others will try to tweak every setting they find by default,
+  needed or not. Please, just check the examples under "DETAILED SETUP" and find
+  one that (sort-of) matches your setup. Then follow the steps. Don't do more,
+  don't skip a step. Once it works, you're free to explore the different options
+  and tweak to your hearts content.
+
+
+
+DESCRIPTION:
+------------
+This script will (like a great deal of other scripts) read the imdb-url in a
+.nfo and paste parts of what it finds in the IRC channel. So, what's different
+with this script?
+Well, unlike the others, this do not require tcl or perl in able to work, but it
+do support some external scripts to accomodate for pre-support and speedier irc-
+channel output. In it's basic form, it's a single, small(?) file.
+
+- It will output imdb information in irc-channel(s).
+- It supports pre/group/private dirs and pre'ing of releases.
+- It supports output of imdb info into a file inside the releasedir, making it
+  possible to auto-view on entering the dir.
+- It can generate an Internet Explorer .url or .html, for easy click-n-view.
+- Supports links to international ( German, Italian, French and others)
+  versions of imdb.com - will show the US data however.
+- Very stable - will extract a valid imdb link from almost any .nfo (unlike
+  others I've seen)
+- Support for addons - three example addons is currently included. One which create
+  symlinks to releases based on different information (genre, year, top250, score,
+  title, releasedate), an auto-nuker/nukewarner, and a re-formatter of the .imdb
+  file put in the release-dir.
+- Rescan ability - included is an advanced rescan feature.
+- Sanity-check - this will help you set things up, and check your environment when
+  doing upgrades.
+- Easy upgrading - the configs are in separate files, so an upgrade can be done
+  without the need to reconfigure. The CHANGELOG, UPGRADING and diff-files (found
+  in the diff/ directory) will help you, depending on the level you know *nix.
+- Versatile - run the script from crontab or a sitebot, or totally within glftpd's
+  chroot'ed environment.
+- An extra feature is the ability to extract release dates of releases from
+  .nfo-files. This is so far only a BETA feature, but should work with 85-90
+   percent of all .nfo files. This feature is currently *ENABLED* by default.
+- Do !imdb in your channel and get info on a movie. It is also possible to /msg
+   the bot and have the results pasted in private.
+- Extensive formatting options - you are virtually free to make the output of
+   your choice.
+
+All features are configurable to a certain extent, or possible to turn
+off altogether.
+
+
+
+NEEDED BINARIES:
+----------------
+There is a few binaries that needs to be availible in your path, and in glftpd's
+/bin directory. Running psxc-imdb-sanity.sh (found in the extras/ directory) will
+check to see if you have them all. It will also check to see if you have all the
+needed libs the bins need, and copy them if needed.
+
+
+
+QUICK SETUP:
+------------
+The following steps is needed to set things up. Step 4 and 6 have more than one
+way to do things - choose the one (a, b or c) that fits your setup.
+
+THE INSTALLER will help you do step 1, 2, 3, and parts of 6b. It is NO SUBSTITUTE
+for following this guide - in fact, it is encouraged to go over all of these
+steps to make sure the installer did the right thing. It will help you set up
+paths etc, which can be tediuos.
+
+1.  Edit psxc-imdb.sh and psxc-imdb.conf.
+
+2.  Copy psxc-imdb.sh and psxc-imdb.conf:
+
+     cp psxc-imdb.sh /glftpd/bin && chmod +x /glftpd/bin/psxc-imdb.sh
+     cp psxc-imdb.conf /glftpd/etc && chmod +r /glftpd/etc/psxc-imdb.conf
+
+3.  Run psxc-imdb-sanity.sh - this will set up a few files and check your setup.
+
+4.  Select *ONE* of the following options (a, b or c). Option b. is the
+     preferred method if you zipscript-c (project-zs).
+ a. THE FOLLOWING IS DISCOURAGED. USE METHOD 4b or 4c INSTEAD.
+    Add/edit the following in zipscript-c's zsconfig.h (Project-ZS):
+
+     #define enable_accept_script    TRUE
+     #define accept_script           "/bin/psxc-imdb.sh"
+
+    (then "./configure && make && make install" or whatever)
+
+ b. Add/edit the following in zsconfig.h
+
+     #define enable_nfo_script       TRUE
+     #define nfo_script              "/bin/psxc-imdb.sh"
+
+    (then "./configure && make && make install" or whatever)
+
+ c. Add the following to glftpd.conf:
+
+    post_check /bin/psxc-imdb.sh /site/SECTION/*/*/*.*.*.*.*.*.nfo
+    post_check /bin/psxc-imdb.sh /site/SECTION/*/*/*.*.*.*.*.nfo
+    post_check /bin/psxc-imdb.sh /site/SECTION/*/*/*.*.*.*.nfo
+    post_check /bin/psxc-imdb.sh /site/SECTION/*/*/*.*.*.nfo
+    post_check /bin/psxc-imdb.sh /site/SECTION/*/*/*.*.nfo
+    post_check /bin/psxc-imdb.sh /site/SECTION/*/*.*.*.*.*.*.nfo
+    post_check /bin/psxc-imdb.sh /site/SECTION/*/*.*.*.*.*.nfo
+    post_check /bin/psxc-imdb.sh /site/SECTION/*/*.*.*.*.nfo
+    post_check /bin/psxc-imdb.sh /site/SECTION/*/*.*.*.nfo
+    post_check /bin/psxc-imdb.sh /site/SECTION/*/*.*.nfo
+    post_check /bin/psxc-imdb.sh /site/SECTION/*/*.nfo
+
+    This should be done before any other post_check lines
+    in glftpd.conf - it's first match wins, and we want
+    .nfo files to be handled by the script, not by the
+    generic zipscript. So do not remove any other
+    post_check lines you find.
+    Replace SECTION with the names of your sections -
+    if you have several sections, put several post_check
+    lines in glftpd.conf
+    Why so many? It seems there is a feature/bug in glftpd,
+    which affect how glftpd read the path. I seems if that
+    if it finds a dot (.) and the rest of the line do not
+    match, it just skips that post_check line entirely, and
+    goes down to the next one. The above should be sufficient
+    (very few nfo's have more than 6 dots, but they do exist),
+    but if you are uncertain, feel free to add more. 
+    A small tip - If you're feeling lazy/have many sections,
+    change "SECTION" to "*" ;)
+
+5.  Add/edit the following in glftpd.conf:
+
+     show_diz        .message .imdb .date
+
+    (the .imdb/.date part being what's added)
+    This step is not required for the script to work, but it is recommended
+     if you wish to let people see the content of the .imdb and .date files.
+
+6.  Select *ONE* of the following options (a, b or c). Option b. is the
+     preferred method if you use a bot.
+ a. THE FOLLOWING IS DISCOURAGED. USE METHOD 6b INSTEAD.
+     Add the following to your crontab (slow):
+
+     * * * * * /glftpd/bin/psxc-imdb.sh
+
+ b. Set up psxc-imdb.tcl.
+    Add the following in your eggdrop.conf:
+
+    source pzs-ng/plugins/psxc-imdb.tcl
+
+ c. THE FOLLOWING IS DISCOURAGED. USE METHOD 6b INSTEAD.
+    Edit psxc-imdb.conf and set RUNCONTINOUS to "yes".
+    This will probalby only work if you run everything chrooted.
+
+
+
+DETAILED SETUP:
+---------------
+
+The following is 4 examples of setups. Please read them all, and find out
+what is closest to your setup.
+
+1. TYPICAL.
+..........
+   Your site has an irc-channel, and you use a bot to announce new releases
+   etc. You use zipscript-c, aka Project-ZS, and the included botscript. You
+   have no preing on your site. You yourself do not know tcl all that well,
+   or how the botscript actually work, so you have not edited more in
+   dZSbot.tcl than you actually need. You just wish to set things up quick.
+
+   Do step 1 (see below as well), 2, 3, 4b and 5 as described above.
+
+   In psxc-imdb.conf, verify that GLROOT is correct, set KEEPURLS to 0. Leave
+   the rest for now.
+
+   In psxc-imdb.tcl, verify that psxc(IMDBSCRIPT) and psxc(IMDBCHANNEL)
+   are correct. Leave the rest for now.
+
+   Then add the tcl's:
+
+     1. Copy the tcl files to your eggdrop's scripts-dir:
+          cp *.tcl /glftpd/sitebot/pzs-ng/plugins/
+     
+     2. Add the following in your eggdrop.conf:
+          source pzs-ng/plugins/psxc-imdb.tcl
+     
+     3. Edit the new tcl files (yes, both. At least check to see if the
+        variables are okay for your setup).
+     
+     4. Restart the bot.
+
+   Things should now Just Work. When you have verified that your setup is
+   okay, change KEEPURLS back to 10.
+
+2. L33T
+.......
+   Your site has one or more irc channels. You use a bot to announce new
+   releases etc. You use zipscript-c, aka Project-ZS, and the included
+   botscript. You pre movies on your site. You may or may not know tcl, but
+   you are very familiar with the settings in dZSbot.tcl. Adding new stuff
+   there or editing that file should not pose a problem.
+
+   Do step 1 (see below as well), 2, 3, 4b and 5 as described above.
+
+   In psxc-imdb.conf, verify that GLROOT is correct, set KEEPURLS to 0.
+   Change TRIGGER to "IMDB:", verify that your affil dir(s) are listed in
+   BOTEXEMPT. Verify that your prescript logs to the path listed in
+   GLPRELOG, and that the PRETRIGGER is correct. Also look over the rest
+   of the pre-settings. Change LOGFORMAT to "SPECIAL".
+
+   In psxc-imdb.tcl, verify that psxc(IMDBSCRIPT), psxc(IMDBCHANNEL),
+   psxc(PRELOG) and psxc(PRESCRIPT) are correct. Change psxc(USEPRE) to
+   "YES".
+
+   Read the doc named README.use.of.special.format, and change dZSbot.tcl
+   accordingly to your wishes.
+
+   Add the tcl's:
+
+     1. Copy the tcl files to your eggdrop's scripts-dir:
+          cp *.tcl /glftpd/sitebot/pzs-ng/plugins/
+     
+     2. Add the following in your eggdrop.conf:
+          source pzs-ng/plugins/psxc-imdb.tcl
+     
+     3. Edit the new tcl files (yes, both. At least check to see if the
+        variables are okay for your setup).
+     
+     4. Restart the bot.
+
+   Test your setup. When you are satisfied everything is okay, change
+   KEEPURLS back to 10.
+
+3. OUTSIDER
+...........
+   Your site has one or more irc channels. You use a bot to announce new
+   releases etc. You do not use dZSbot.tcl found in zipscript-c/Project-ZS.
+   You may or may not pre movies on your site. You may or may not know tcl,
+   but you are used to changing your bot's config. However, for some reason,
+   you do not wish to use glftpd.log to log movie-info.
+
+   Do step 1 (see below as well), 2, 3, 4b and 5 as described above.
+
+   In psxc-imdb.conf, verify that GLROOT is correct, set KEEPURLS to 0.
+   Verify that your affil dir(s) are listed in BOTEXEMPT. Verify that your
+   prescript (if you pre on the site) logs to the path listed in GLPRELOG,
+   and that the PRETRIGGER is correct. Also look over the rest of the
+   pre-settings. Change GLLOG to your alternative logfile.
+
+   In psxc-imdb-bot.tcl, verify that psxc(IMDBSCRIPT), psxc(IMDBCHANNEL),
+   psxc(PRELOG) and psxc(PRESCRIPT) are correct. Change psxc(USEPRE) and
+   psxc(USEFULL) to "YES". Change psxc(IMDBMOVIE) to what you set GLLOG
+   to in psxc-imdb.conf.
+
+   Add the tcl's:
+
+     1. Copy the tcl files to your eggdrop's scripts-dir:
+          cp old/*.tcl /glftpd/sitebot/scripts/
+     
+     2. Add the following in your eggdrop.conf:
+          source scripts/psxc-imdb-bot.tcl
+     
+     3. Edit the new tcl files (yes, both. At least check to see if the
+        variables are okay for your setup).
+     
+     4. Restart the bot.
+
+   There should be no need to change your botscript.
+
+   Test your setup, including running psxc-imdb-sanity.sh again. When you
+   are satisfied everything is okay, change KEEPURLS back to 10.
+
+4. SMALL
+........
+   You are relatively new to glftpd, or have just a small site. You have
+   no special channel on irc, and do not use a bot at all.
+   
+   Do step 1 (see below as well), 2, 3, 4b, 5 and 6a as described above.
+
+   In psxc-imdb.conf, verify that GLROOT is correct, set USEBOT to "". Leave
+   the rest for now.
+
+   Test your setup.
+
+
+VERBOSE SETUP:
+--------------
+
+Here follows a generic explanation on how you can set things up, if the above
+did not go into enough details, or you did not find a setting matching yours.
+
+ADDING SITEBOT SUPPORT (OPTIONAL):
+..................................
+   Bot support is always nice. There are many ways to include bot support, and
+   the default is probably the easiest for most people. I will not go into detail
+   about this because there are way to many botscripts out there, but I will
+   try to describe the procedure in a more or less generic way.
+   
+   The normal approach is to use a trigger for output. The default way (using
+   the UPDATE: trigger) will be sufficient for most I believe.
+   
+   For those with skills on their bot it's possible to change the trigger and
+   add a special one for imdb output. Info on how this should be done is described
+   a bit further down.
+   DO NOT CHANGE THE TRIGGER TO IMDB: (or whatever) unless you know what you are
+   doing!
+   
+   If you prefer to log imdb-info to a special file, or are unable to use the
+   default glftpd.log for some reason, you should use the "full" feature.
+   Instructions for usage are described further down.
+
+SETTING UP THE BOT (OPTIONAL):
+..............................
+   If you wish to use the included tcl-files in your bot, to either replace the
+   crontab entry, add support for pre'ing, use the script as the main output of
+   imdb-info, or any combination of the 3, you must do the following:
+   
+   1. Copy the tcl files to your eggdrop's scripts-dir:
+        cp *.tcl /glftpd/sitebot/pzs-ng/plugins/
+   
+   2. Add the following in your eggdrop.conf:
+        source scripts/psxc-imdb.tcl
+   
+   3. Edit the new tcl files (yes, both. At least check to see if the variables are
+      okay for your setup).
+   
+   4. Restart the bot.
+
+ADDING PRE SUPPORT (OPTIONAL):
+..............................
+   Normally when files are uploaded in group-dirs, there is no announce in channel
+   about the movie (would rather spoil the pre, now, wouldn't it? ;) It will
+   however make the DOTIMDB (if DOTIMDB is used).
+   When the release is finally PRE'd, there's no IMDb info announced in channel.
+   So, how to fix that?
+   
+   psxc-imdb.sh is able to handle this as well, but special care must be taken to
+   make it work. Since you're most likely using a bot already, I'll not get into
+   other methods of usage (cscript, crontab, modified prescript) beside the normal
+   approach, which is to add the support from within the bot.
+   Whatever prescript you use, and to whatever file this logs, the included support
+   for pre'ing of imdb-releases *require* the path to the DESTINATION of the pre.
+   Various methods for grabbing this info is included, and is fairly documented within
+   the config.
+   
+   Setting it up:
+   
+   If you've already used psxc-imdb-sanity.sh, the following is not necessary - the
+   script will already have done this for you:
+   
+     cd /glftpd/bin
+     ln -s psxc-imdb.sh psxc-imdb-pre.sh
+   
+   This will make a symlink of the original script. (I may change this in the future,
+   but for now this is the way.) The script checks under what name it is run, and if
+   it is named psxc-imdb-pre.sh it will execute a special part of itself. The name
+   of the -pre.sh can be whatever you wish - it's editable in the config. You may even
+   use a separate script if you like.
+   If a file or symlink already exists, psxc-imdb-sanity.sh will not delete/replace
+   it, so it is safe if you decide to use a different imdb-pre script than psxc-imdb.sh.
+   Then edit psxc-imdb.conf and psxc-imdb.tcl to add pre support.
+
+ADDING YOUR OWN FORMATTED BOT-OUTPUT (OPTIONAL):
+................................................
+   Someone in the know often like to personalize everything on their site. This
+   is, ofcourse, possible, and quite easy in most cases. You have basically 4
+   options - you can use the default output which paste a pre-formatted output
+   in your chan. You can choose to use the oneline option, which, instead of
+   putting several lines in your channel, outputs one line with specific,
+   pre-formatted output. Your 3rd and 4th option involves the LOGFORMAT
+   variable. You can either format your output from within the script itself,
+   or choose to export all variables so that the bot may handle the format.
+   There should be enough instructions within the config file to see how to
+   set up the internal formatting, and the external formatting can be explored
+   in the file "README.use.of.special.format".
+
+USING THE "FULL" FEATURE (OPTIONAL):
+....................................
+   At times your default botscript cannot handle the imdb output. Or you might decide
+   to use a different logfile for imdb output for the bot(s) for different reasons.
+   For whatever reason, the included .tcl's can handle the output generated by the
+   script. This is known as "full" mode. It is quite easy to set up - just edit the
+   described variables in the psxc-imdb.tcl, and make sure you are not using
+   glftpd.log as the logfile.
+   Using "full" mode does not require you to run everything through the bot-addon.
+   It is quite possible to have just the !imdb output handled by the bot-addon,
+   and the main output taken care of by your main botscript.
+   Should all other options fail for you, the "full" mode might be your solution.
+
+
+
+ADDONS:
+-------
+Addons can be used to a lot of things. Included in addons/ is three scripts (for now)
+which will enhance your site in different ways.
+
+psxc-imdb-nuker.sh    - This script can be used to either nuke a release outright, log
+                        the offending release to a logfile, or send out a nukewarning
+                        in your irc-channel. What qualifies as a nuke is up to you.
+
+psxc-symlink-maker.sh - Sort your movie-releases based on a number of things, from
+                        type of movie (genre) to ranking on imdb (top250). Symlinks
+                        will be created in special dirs.
+                        
+psxc-dotimdb.pl       - This perl addon will reformat your .imdb output. See
+                        README.psxc-imdb-dotimdb for example outputs.
+
+With the example script found in addons/ you should be able to write your own addon,
+if you're a scripter. The variables extracted from iMDB is passed along to the addon,
+making it easy to use the variables in any way you see fit.
+
+
+
+EXTRAS:
+-------
+In the extras folder you'll find a few goodies you probably would like to use.
+psxc-imdb-rescan.sh - this is a site script used to rescan a dir, or a whole
+                      section.
+psxc-imdb-sanity.sh - you have probably used this already - it sets up and
+                      verifies your environment and settings.
+psxc-imdb-parser.sh - not a real script - it just shows how you can grab the
+                      variables sent from psxc-imdb.sh to the addons.
+psxc-imdb-find.sh   - This files is needed for your bot to answer to
+                      !imdb calls. There is a readme (README.psxc-imdb-find) - I
+                      suggest you read it before setting this up.
+
+
+
+OTHER:
+------
+makeclean.sh        - just a small script removing empty lines and comments from
+                      files, and output the content to screen (STDOUT).
+makediff.sh         - this is what I use to make the patch-files under diff/.
+psxc-depcheck       - This will check library dependencies in glftpd's bin dir
+                      and copy the missing libs to glftpd's chroot. A similar
+                      feature is included in psxc-imdb-sanity.sh.
+psxc-zs-c-patches   - A patch for DarkOne's Project-ZS which will execute a
+                      script on .nfo uploads.
+xl-genrefind        - A bot-addon which searches .imdb files and outputs what
+                      it finds to the user. This script is done by xoLax.
+dZS-patch           - A blurb about rehashing bots, and the effect of it.
+
+
+
+HOW IT WORKS:
+-------------
+The script (psxc-imdb.sh) is actually 3 scripts in one - one to grab and log
+the url and path of the release, the second to check for imdb info when someone
+does a pre, and the third to do all the hard work - getting imdb info and do
+the logging.
+
+So, why 3 parts?
+When the first part is run, IMDB url and path is extracted and put in a logfile,
+and an empty .imdb, .date, .url/.html and/or a .imdbinfoname is created in
+(normally) the same folder as the .nfo. zipscript-c, if you choose to use it to
+call psxc-imdb.sh, cannot handle any more. And you really do not wish to do more
+at that time either. If the one uploading the .nfo has to wait for the imdb info
+to be looked up and parsed, (s)he would probably upload the nfo last, or else (s)he
+is likely to loose the race. There is also a chance of a timeout. So the idea
+is to do things quick, and let the racer upload files instead of sitting idle
+waiting.
+
+The same can be said when a person pre a release, though the same issue with the
+race being lost does not qualify :) Instead it will just be annoying.
+
+When run from crontab, from a bot, or, heaven forbid, while uploading the nfo
+(delay, as mentioned above) it will read the log it created earlier, look the
+imdb-url up, and parse stuff into the .imdb and glftpd.log and any other files.
+It will also call up any addons you've selected, sending the variables to them.
+
+
+
+KNOWN BUGS:
+-----------
+None as far as I know. I have not tested it extensively on international movies,
+and it may fail on movies using chars not in the ASCII-table. If you find a movie
+it fails on, or a .info it cannot extract the url, please let me know.
+
+
+
+CONTACT:
+--------
+Should you scratch your head a bit too much, or require some extra functionality,
+do not hesitate to contact me.
+I can be emailed @ psxc@psxc.com
+I'm also known to be on #glftpd, #glhelp, #psxc and a few other chans on EFNet
+w/the nick psxc.
+
+
+
+GUARANTEE/LICENSE:
+------------------
+There is none. This script is releases "as is", and the user must take full
+responsibility of setting it up correctly before use. The author cannot be held
+responsible for any losses, material or otherwise caused by this program.
+Whatever you wish to do with this script, you're free to do. Set it on fire, turn
+it into a imdb-fetching virus, delete every other line.. You're free to do so.
+I imagine the license called "Public Domain" covers it pretty much.
+

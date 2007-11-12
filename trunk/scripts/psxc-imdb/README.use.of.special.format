@@ -1,0 +1,121 @@
+# This file describes how to get your own formatted style on imdb output. This
+# readme has been significantly altered in v2.7 of the imdb script.
+#
+# You have now several options on how to format your output. You can format
+# your output using dZSbot.tcl, which require some knowledge on how to add and
+# set up specialized output. You can also format your output from with the
+# imdb script, which require a lot less work and should work better in other
+# bots that dZSbot.
+#
+# To get support for your own formatted output using dZSbot.tcl, here's a list
+# of variables you should add/change. Since this is something you should only
+# try if you really know what you're doing, I'm not going into details on this,
+# but it should not be too hard to figure things out. An example output is
+# included last in this doc.
+
+1. edit psxc-imdb.conf:
+   - GLLOG - This variable should be set to the path to glftpd.log
+   - TRIGGER - Set this to whatever you like, but remember it. In this example
+                 I will use "IMDB:" as TRIGGER.
+   - LOGFORMAT - Here you have 3 options. The default (empty) will use the
+                 standard formatting options. "SPECIAL" will send all
+                 variables out in a list, which makes it easy for the bot
+                 to pick them up and format them in the order you like.
+                 "MYOWN" will format the output within psxc-imdb.sh, and
+                 paste one long string of output.
+                 If LOGFORMAT is set to "" or "MYOWN", there should be no
+                 special need to change your dZSbot.tcl, unless the default
+                 TRIGGER (UPDATE:) doesn't work.
+                 (In all cases, the last variable passed is the name of the
+                 channel or person/nick who requested the information, if
+                 the !imdb addon was used. This is of little or no interest
+                 to most people, but developers and coders can take advantage
+                 of this when they write/edit their own bot.)
+
+2. edit dZSbot.tcl:
+
+# Add your TRIGGER (IMDB:) to msgtypes
+set msgtypes(DEFAULT)	"IMDB MSGINVITE BADMSGINVITE INVITE LOGIN LOGOUT"
+
+# Enable output
+set disable(IMDB)       0
+
+# Specify channel to output to
+set chanlist(IMDB)      "#mychannel"
+
+# this line should not be edited. Just use the variables listed here. %pf is
+# the pathfilter, a standard variable in dZSbot.tcl. The others are named so
+# they're easy to understand/grab hold of what does.
+set variables(IMDB)     "%pf %imdbdirname %imdburl %imdbtitle %imdbgenre %imdbrating %imdbcountry %imdblanguage %imdbcertification %imdbruntime %imdbdirector %imdbbusinessdata %imdbpremiereinfo %imdblimitedinfo %imdbvotes %imdbscore %imdbname %imdbyear %imdbnumscreens %imdbislimited %imdbcastleadname %imdbcastleadchar %imdbtagline %imdbplot %imdbbar %imdbcasting %imdbcommentshort %imdbdestination"
+
+# When some variable turn up empty, change to N/A (or whatever)
+set zeroconvert(%imdbdirname)		"N/A"
+set zeroconvert(%imdburl)               "N/A"
+set zeroconvert(%imdbtitle)             "N/A"
+set zeroconvert(%imdbgenre)             "N/A"
+set zeroconvert(%imdbrating)            "N/A"
+set zeroconvert(%imdbcountry)           "N/A"
+set zeroconvert(%imdblanguage)          "N/A"
+set zeroconvert(%imdbcertification)     "N/A"
+set zeroconvert(%imdbruntime)           "N/A"
+set zeroconvert(%imdbdirector)          "N/A"
+set zeroconvert(%imdbbusinessdata)      "N/A"
+set zeroconvert(%imdbpremiereinfo)      "N/A"
+set zeroconvert(%imdblimitedinfo)       "N/A"
+set zeroconvert(%imdbvotes)             "Less than 5"
+set zeroconvert(%imdbscore)             "0"
+set zeroconvert(%imdbname)              "N/A"
+set zeroconvert(%imdbyear)              "N/A"
+set zeroconvert(%imdbnumscreens)        "N/A"
+set zeroconvert(%imdbislimited)         "No idea."
+set zeroconvert(%imdbcastleadname)      "Uknown"
+set zeroconvert(%imdbcastleadchar)      "Uknown"
+set zeroconvert(%imdbtagline)           "No info found."
+set zeroconvert(%imdbplot)              "No info found."
+set zeroconvert(%imdbbar)               "\[..........\]"
+set zeroconvert(%imdbcasting)           "N/A"
+set zeroconvert(%imdbcommentshort)      "N/A"
+
+# This is what is announced in your channel. %section is a standard
+# dZSbot.tcl variable. "|" is used as delimeter, to split lines, which also
+# is a standard variable. You can change it by editing the
+# set splitter(CHAR) "|"
+# See below how this will be shown in channel.
+set announce(IMDB)      "-%sitename- \[\00304%section\003\] - %boldIMDB:%bold %bold%imdbname%bold (%imdburl), a %imdbdirector movie which scored %bold%imdbscore of 10%bold (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %bold%imdbnumscreens screens%bold on the opening weekend.|-%sitename- \[\00304%section\003\] - %boldIMDB:%bold %bold%imdbname%bold plot summary: %imdbplot %imdbbar"
+
+############################################################################
+
+# Example from the movie "Ken Park"
+
+# %imdbdirname       = "Ken.Park.2002.Limited.DVDRip.XviD-EPiC"
+# %imdburl           = "http://us.imdb.com/Title?0209077"
+# %imdbtitle         = "Ken Park (2002)"
+# %imdbname          = "Ken Park"
+# %imdbyear          = "2002"
+# %imdbgenre         = "Action / Drama / Adventure"
+# %imdbrating        = "6.1/10 (495 votes)"
+# %imdbscore         = "6.1"
+# %imdbvotes         = "495"
+# %imdbcountry       = "USA / Netherlands / France"
+# %imdblanguage      = "English"
+# %imdbcertification = "Australia:Classification refused / Hong Kong:III / Italy:VM18"
+# %imdbruntime       = "96 min"
+# %imdbdirector      = "Larry Clark (I)"
+# %imdbbusinessdata  = "EUR29,301 (Italy) (6 July 2003) (22 Screens)"
+# %imdbpremiereinfo  = "USA 31 August 2002"
+# %imdblimitedinfo   = "" (will be "N/A" after zeroconvert above)
+# %imdbnumscreens    = "22"
+# %imdbislimited     = "Yes."
+# %imdbcastleadname  = "James Ransone"
+# %imdbcastleadchar  = "Tate"
+# %imdbtagline       = "Who are you?"
+# %imdbplot          = "It's about several Californian skateboarder's life and relationships with and without their parents."
+# %imdbbar           = "******----"
+# %imdbcasting       = "James Ransone, Tiffany Limos, Stephen Jasso, James Bullard, Mike Apaletegui."
+# %imdbcommentshort  = "Approximation of Life"
+
+# Using the line above, your bot would announce the following in channel (ignoring sitename, colors and bold settings):
+
+# - IMDB: Ken Park (http://us.imdb.com/Title?0209077), a Larry Clark (I) movie which scored 6.1 of 10 (495 people voted). It premiered in USA 31 August 2002, with 22 screens on the opening weekend.
+# - IMDB: Ken Park plot summary: It's about several Californian skateboarder's life and relationships with and without their parents.
+

@@ -1,0 +1,8 @@
+PSXC-IMDB TODO:
+---------------
+
+remove .imdbinfofile (etc)
+imdb.sh: add something to announce debug mode on.
+add even more example configs in the perl addon.
+add support for tvtome in the -find addon (or a new addon).
+

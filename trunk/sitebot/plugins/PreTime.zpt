@@ -1,0 +1,8 @@
+##############################################################################
+#                                                                            #
+#  PreTime.zpt  -  Pre Time Plug-in (Default Theme)                          #
+#                                                                            #
+##############################################################################
+
+announce.NEWPRETIME = "[%b{NEW}][%section] %b{%relname} by %b{%u_name} of %g_name :: released %preage ago :: %predate %pretime."
+announce.OLDPRETIME = "[%b{OLD}][%section] %b{%relname} by %b{%u_name} of %g_name :: released %preage ago :: %predate %pretime."

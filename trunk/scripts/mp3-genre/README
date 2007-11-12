@@ -1,0 +1,43 @@
+MP3-GENRES
+----------
+
+pzs-ng allows you to change the uid/gid of files/dirs with a bin called ng-chown.
+By default this binary is disabled in all aspects.
+You may use it to change the groupname in a dirlisting to match the genre of a
+mp3-release, by adding the following in your zsconfig.h:
+
+#define enable_mp3_script               TRUE
+#define mp3_script                      "/bin/ng-chown"
+#define mp3_script_cookies              "0 0 0 1 0 1 - \"%w\" \"%?\""
+#define allow_gid_change_in_ng_chown    TRUE
+#define allow_dir_chown_in_ng_chown     TRUE
+
+Please copy/paste the exact lines above. This will enable the mp3-script, and
+make ng-chown able to modify the group id of the releasedir.
+
+You must also chmod +s ng-chown:
+   chmod +s /glftpd/bin/ng-chown
+
+Last, you'll have to add the genres into glftpd's groupfile. This is what the
+script named mp3-genre-create.sh does. Just run it and it will modify the group
+file (after creating a backup).
+
+For those wanting an explanation of the cookies/variables passed:
+  0      - uid set to 0 - this disable the uid setting.
+  0      - gid set to 0 - this disable the gid setting.
+  0      - do not change uid of files/dirs. We only wants to change group.
+  1      - change gid of the file/dirs.
+  0      - do not change ownership of files in a dir we specify.
+  1      - change ownership of dir/file we specify.
+  -      - disable user name lookup.
+  \"%w\" - genre name used as group-name. This will be used since gid = 0
+           earlier. We use quotes since the name may have space chars.
+  \"%?\" - current path - this is the dir we wish to chown.
+
+--------
+SOOO... WHAT'S THE USE OF THIS?
+
+Well, changing the gid of a mp3-dir to the genre allows you to easily sort dirs
+accordingly. Somesites only allow certain genres, or does not allow some. To the
+rescue comes this little handt script. :) Make your curries/leechers happy.
+

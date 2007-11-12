@@ -1,0 +1,359 @@
+PSXC-IMDB CHANGELOG:
+--------------------
+- v2.8  - Jul. 01st, 2007 - fix psxc-imdb-find.sh to the new imdb.com html format.
+- v2.7i - Feb. 20th, 2007 - temporary fix for the new imdb.com layout.
+- v2.7h - Jan. 15th, 2007 - changed some code to fetch the title of a movie (iwi).
+- v2.7g - Oct. 15th, 2006 - fixed a bug with MYOWNFORMAT and rescanning multiple
+			     dirs (thanx iwi).
+- v2.7f - Jul. 27th, 2006 - fixed issues with imdb.com's credited cast and the
+                            pictures now used in the list.
+- v2.7e - Apr. 02nd, 2005 - Changed default NEWLINE char to \\\\n, in order to
+			     work with the default dZSbot config. Also fixed a
+			     bug related to MYOWN format and the NEWLINE char.
+- v2.7d - Jan. 08th, 2005 - Changed some head/tail -<number> to head/tail -n <number>
+			     thanx to Tomcsi for giving me the heads up.
+			  - pzs-ng reacts on $ signs in the output. A quick-fix is
+			     applied, until that can be fixed in the bot.
+- v2.7c - Dec. 30th, 2004 - Changed installer to work with glftpd2.
+			  - Made installer modify crontab by default.
+			  - Changed some wording in the README.
+                          - Fixed a bug psxc-imdb-find - imdb.com changed url
+                             style again.
+                          - Changed some defaults in psxc-imdb.conf so it works
+                             by default with pzs-ng.
+- v2.7b - Jun. 11th, 2004 - Changed all 'grep' to 'grep -a' - should fix probs
+                             with some nfo's on openbsd (and maybe others).
+                          - Fixed a bug with the ampersand ''&'' char and MYOWN
+                             formatted output.
+- v2.7  - Mar. 16th, 2004 - (Hopefully) fixed some problems with locale
+                             settings.
+                          - Improved the sanity checker a bit.
+                          - Fixed a bug w/channel output when someone uploaded
+                             in the root of a BOTEXEMPT dir.
+                          - Added support for destination specific output.
+                          - Added support for formatted output in "full" mode.
+                          - Added better handling of pasted releasenames in the
+                             !imdb addon.
+                          - Cleaned up the docs (hopefully).
+- v2.6  - Dec. 18th, 2003 - Made some changes in psxc-imdb-bot.tcl - added
+                             detection of rehashing as this is a cause for
+                             some 'odd' problems. Should be fixed now.
+                          - Fixed a problem with sort.by.KEYWORD in the
+                             symlink-addon.
+                          - Added two new .imdb-looks in psxc-imdb-dotimdb.pl -
+                             thanx ruzz for the design!
+                          - Fixed a small bug re: empty usercomments.
+                          - Changed the debug-flag - added levels of debugging.
+                          - Added a small patch for dZSbot.tcl - dunno if it's
+                             useful, but shouldn't hurt..
+                          - Did some changes to the installer.
+- v2.5c - Dec. 15th, 2003 - Fixed a bug re: double output.
+                          - Did a couple of small changes in the installer.
+                          - Fixed a minor bug w/oneline output.
+                          - In debug mode the !find addon now works as
+                             normal.
+                          - Made the script stop the output if it considered
+                             the information garbage.
+- v2.5b - Dec. 13th, 2003 - Fixed some bugs in the installer.
+                          - Fixed a bug re: pre and scandirs.
+- v2.5  - Dec. 13th, 2003 - Added a new addon - psxc-imdb-dotimdb.pl.
+                          - Added xoLax' GenreFind to the extras/ dir -
+                             a great bot-addon!
+                          - Fixed a small bug with imdb titles having
+                             "..." in them.
+                          - Fixed and enhanced psxc-imdb-find.sh - now it
+                             got support for listing hits.
+                          - Did some internal changes in psxc-imdb.sh.
+                          - Added comma-separated list of cast-members and
+                             short usercomment to the "special" logformat
+                             and the addon-variables, and the full user-
+                             comment to the addon-comments.
+                          - Did some changes in psxc-imdb-bot.tcl. Config-
+                             errors should be picked up, and the bot will
+                             not die if they are...
+                          - Fixed a bug in the nuker-addon.
+                          - Added support for "combo-nuking" in the nuker-
+                             addon.
+                          - Added support for keyword symlinking in the
+                             symlink-addon.
+                          - Fixed/changed some internal code in the symlink-
+                             added which should fix problems with stale/dead
+                             symlinks on some linux distros.
+                          - Added (better) support for separate output on
+                             uploads and !imdb.
+                          - Added better support for finding an imdb url in
+                             !imdb, and an option to turn this feature off.
+                          - psxc-imdb.sh does a quicker exit when garbage is
+                             collected (in lynx/wget).
+                          - Added support for /msg in the !imdb addon.
+                          - Moved/renamed the README's to the main dir.
+                          - Some dir/file changes in the archive-directory.
+                          - Redid the installer.
+                          - Changed the DEBUG flag - now you *really* get
+                             some debug information.
+                          - Changed psxc-imdb-bot.tcl even more - it should
+                             now be a bit quicker and use less resources. I
+                             also added an option which will remove those
+                             <defunct> processes some people are having probs
+                             with - however, using this option is *not*
+                             reccommended used.
+- v2.4  - Nov. 28th, 2003 - Added support for non-dZSbot output with the
+                             !imdb addon.
+                          - Added support for nuking by genre in the
+                             nuker-addon.
+                          - Modified/fixed one of the garbage-finders -
+                             previously a movie would be considered garbage
+                             if no director was found.
+                          - Added support for imdb score bar in addons and
+                             the "special" logformat.
+                          - Added a patch for zipscript-c in extras/.
+                          - Added diff files for versions earlier than last
+                             release - people not upgrading from release to
+                             release may find this okay ;)
+                          - Fixed a small bug re: premiere info.
+- v2.3f - Nov. 20th, 2003 - Fixed a bug in psxc-imdb.sh re: output when
+                             not finding info.
+                          - Added the variable psxc(FINDSCRIPT) in
+                             psxc-imdb-conf.tcl. 
+                          - Fixed some bugs in psxc-imdb-bot.tcl.
+                          - Added support for iMDB IDs in psxc-imdb-find.sh.
+                          - Fixed a problem with !imdb not working for people
+                             which did not have /glftpd as GLROOT.
+                          - Added an installer/upgrader - beta!
+- v2.3  - Nov. 19th, 2003 - Fixed a bug in psxc-imdb-nuker.sh re: logging.
+                          - Added more garbage control.
+                          - Fixed a bug with showing starring person.
+                          - Added even more garbage control.
+                          - Added psxc-imdb-find to extras/.
+                          - Added capability to skip approved releases in
+                             the psxc-imdb-nuker addon.
+                          - Added capability to skip nuking/warning if the
+                             .nfo is within a cd/dvd/disc/disk dir in the
+                             psxc-imdb-nuker addon.
+                          - Moved psxc-imdb-find.tcl into the existing tcl's.
+                          - Added support for delayed nuking in the nuker-
+                             addon.
+                          - Improved psxc-imdb-find.
+                          - Fixed a bug in the rescanner.
+                          - Fixed a bug in psxc-imdb-bot.tcl.
+- v2.2f - Nov. 14th, 2003 - Changed/added some text in the README.
+- v2.2  - Nov. 13th, 2003 - Removed dependency of zipscript-c. It still works
+                             works under zs-c, though.
+                          - Added support for post_check in glftp.conf.
+                          - Updated the docs - please read.
+                          - Added support for html files instf. url-files.
+                          - Fixed some bugs in the symlinker.
+                          - Added better handling of the Sort.by.Date option.
+                          - Added more rescan options.
+                          - Removed an obsolete imdb lookup from psxc-imdb.sh.
+                          - Exit more quickly on imdb lookup failures.
+                          - Added support for running completely under
+                             glftpd's chroot.
+                          - Added workaround for random post_check failures.
+                          - Script now restores the releasedir's date based on
+                             the uploaded .nfo's date.
+                          - Updated and improved psxc-imdb-sanity.sh
+- v2.1  - Nov. 09th, 2003 - Fixed a major bug in psxc-imdb.sh which at times 
+                             caused the script to behave strange.
+                          - Added nuke-warning capability to the nuke-addon.
+                          - Added sorting by (upload)date in the symlink-addon.
+                          - Added support for spaces in names.
+                          - Added optional usage of wget - lookups will probably
+                             go a bit faster, and be more reliable.
+                          - Added psxc-imdb-rescan.sh in the extras/ dir - this
+                             should help rescanning moviedirs with bad info.
+                          - Changed the url-extracting routine again.
+                          - Removed lynx quality control - it did not work as
+                             is was intended.
+                          - Added sorting by imdb top 250 in the symlink-addon.
+- v2.0k - Nov. 06th, 2003 - Fixed a number of bugs in psxc-symlimk-maker.sh.
+                          - Added several better ways to control symlinks in
+                             the symlink-addon, and some other enhancements.
+                          - Fixed an issue with special years.
+                          - Added a "quality control" for lynx - this should help
+                             keep those strange lookups from appearing.
+                          - Added a new addon script - psxc-imdb-nuker.sh. This will
+                             autonuke releases based on several criterias.
+                          - Added support for several addons (EXTERNALSCRIPTNAME).
+                          - Changed psxc-imdb-parser.sh to only grab variables - the
+                             examples in the addons/ directory should suffice.
+- v2.0j - Nov. 03rd, 2003 - Added 'pwd' as a dependency in psxc-imdb-sanity.sh.
+                          - Fixed some issues with the execution of external scripts.
+                          - Fixed a couple of issues with RELAXEDURLS level 3 and 4.
+                          - Added an example external script in /addons. This will
+                             create symbolic links based on score, genre, year and/or
+                             title. It will also clean up dead symlinks automagically.
+- v2.0i - Oct. 29th, 2003 - Improved the routine for finding imdb info. You can now
+                             select the level of strictness of what is considered a
+                             valid imdb url/id.
+                          - Fixed a problem with stale pid's - it will now do a ps
+                             and make sure the pid in the pidfile is valid.
+                          - Added better control over where to scan for imdb urls.
+                          - Made sure no .date file is created unless some date info
+                             is found.
+                          - Added support for international imdb urls in the output.
+- v2.0h - Oct. 24th, 2003 - The pre'ing of releases didn't work correctly - a minor
+                             glitch in the script caused the wrong path to be used.
+                          - Fixed a small issue with pre'ing and using the number
+                            '0' in KEEPURLS (mostly used with debugging). Thanx kiji
+                            for finding it.
+                          - Fixed another issue with pre'ing - this time in the bot's
+                             partyline (there was a mv error displayed).
+                          - Fixed an issue with some imdb urls.
+                          - Added a new config option which will allow the script to
+                             search for more generic imdb urls. I need feedback on
+                             this.
+- v2.0g - Aug. 29th, 2003 - Ooops! Seems I forgot to fully check the script after the
+                             change. New formattet urls did not work. Now both old
+                             and new urls resolve okay.
+- v2.0f - Aug. 28th, 2003 - The Internet Movie Database (imdb) changed the structure
+                             of their web. So I changed the script.
+                          - various bugfixes.
+                          - psxc-imdb-sanity.sh now checks for /bin/bash outside
+                             /glftpd as well (yes, you need it in /bin)
+- v2.0e - Aug. 14th, 2003 - Fixed a bug on the handling of certification if you used
+                             the "special" feature.
+                          - Removed the useless variable INFOSPACE, and changed the
+                             variable INFOVALID to reflect the change.
+                          - Fixed a bug with the runtime variable in the bot, if you
+                             used the "special" feature.
+                          - Added a feature to show the person starring in the lead
+                             role of the movie.
+                          - Various bugfixes with the new file/dir creation.
+- v2.0d - Aug. 09th, 2003 - Fixed a bug with the selection of Tagline and Plot.
+                             Even if you selected both, only Plot was shown.
+                          - Added %imdbdirname to the list of variables availible
+                             to bot and external script.
+                          - Fixed it so that if you select the "special" logformat,
+                             you do not need to bother with BOTONELINE, TAGPLOT and
+                             BOTHEAD - they will be set correctly automatically.
+                          - Changed the name of the variable DOTIMDBPROG to
+                             EXTERNALSCRIPTNAME to better show what it is. You no
+                             longer need to select whether to create a .imdb or use
+                             an external shell-script - both are possible.
+                          - Added a feature to make a dir/file within the releasedir
+                             with some imdb variables in the name.
+                          - Did some internal cleanup.
+                          - Fixed a bug with the creation of .url files. The file
+                             created was not a valid url file.
+- v2.0c - Aug. 06th, 2003 - Some bugs introduced in v2.0b found and fixed.
+                          - Better handling of old cruft in the pidfile.
+                          - Put the tcl-config in a separate file.
+                          - Fixed a bug in the tcl which could lead to delayed
+                             output.
+                          - Edited the imdb-tcl-addon.txt to help ppl understand
+                             the options better.
+                          - Moved the check for files out of the main script into
+                             a "sanity" script called psxc-imdb-sanity.sh.
+                          - Added the sanity script for creating/checking the
+                            needed files.
+
+- v2.0b - Aug. 03rd, 2003 - By request I added a few more options for external
+                             scripts. People formatting their bot-output are the
+                             ones gaining most on this. People using it the
+                             "standard" way need not upgrade. The new variables
+                             will be included in the standard output by next
+                             release.
+                            Removed the info behind country and date in premiere-
+                             info.
+                            Added a /diff directory, which will hold .diff files
+                             for people who wish to manually upgrade.
+
+- v2.0a - Aug. 01th, 2003 - First (beta) release of the 2.0 version. This is a
+                             major upgrade (as in, very different in setup, not
+                             in how it works/outputs)
+                            Fixed a compatibilty bug with dev. versions of lynx.
+                            Fixed a oneline bug re: stats
+                            Redid the outputhandling - should take care of
+                             malformed output in the .imdb file.
+                            Added pidfile - make sure you create this and chmod
+                             it 666
+                            Moved the config to a separate file.
+                            Added support for external channel-formatted output.
+                            Added support for external .imdb formatting.
+                            Reduced the number of scripts to 2 (instead of 5).
+
+- v1.32 - June 10th, 2003 - Final Final FINAL release. Jeez. I thought I had got
+                             rid of all bugs. This one was subtle, but nasty.
+                            If your bot becomes unresponsive, or drops out off the
+                             channel (timeouts etc), this version might have the
+                             fix. Changed all .tcl files, and the main psxc-imdb.sh,
+                             so please upgrade. There's a new parameter in the
+                             config for you to mess with.
+
+- v1.31 - June  9th, 2003 - Final FINAL release of v1 of this script. There was a
+                             bug in psxc-imdb-full.tcl which prevented any output.
+                            Also made a minor change in psxc-imdb.sh - no need to
+                             upgrade this one if you got a working version (I know
+                             it's a bitch redoing all the config).
+                            Added more debug info in this file (below).
+
+- v1.3  - May  22nd, 2003 - Final release of v1 of this script, unless some nasty
+                             nasty bugs surface. Will be working on v2 from now
+                             on. No ETA.
+                            Fixed a small bug which occured on some systems that
+                             could lead to error messages and 2-3 variables not
+                             being shown. Changed some settings in the tcls, to
+                             prevent bots from being overworked (I think ;).
+
+- v1.2f - May   8th, 2003 - (not publicly released) Fixed some bugs in the tcls
+                             and in psxc-imdb-pre.sh. Added support for f00-pre.
+
+- v1.2e - May   7th, 2003 - Fixed a typo in the new URL file, which prevented
+                             it from running in IExplorer.
+
+- v1.2d - May   6th, 2003 - Fixed a bug which prevented *any* output whatsoever
+                             to .imdb or channel in certain scenarios.
+                            Added support for a separate URL file.
+
+- v1.2c - May   3rd, 2003 - Fixed a bug in the premiere/limited/business
+                             lookup. Added support for more than one channel
+                             in psxc-imdb-full.tcl.
+
+- v1.2b - May   2nd, 2003 - Added better debug support. Added better handling
+                             of failed imdb-lookups.
+
+- v1.2  - Apr. 29th, 2003 - Added support for showing of premiere and limited
+                             dates.
+
+- v1.1  - Apr. 28th, 2003 - Fixed another bug with imdb-link extraction.
+
+- v1.0  - Apr. 28th, 2003 - Fixed a bug in the imdb link-extraction. Added
+                             support for showing some opening weekend business
+                             data.
+
+- v0.9  - Apr. 28th, 2003 - Added better handling of url extraction. The link
+                             must be *really* mangled for the script not to
+                             pick it now. Previously it failed if the url
+                             started or ended with a char not part of the link.
+                            Fixed a bug in psxc-imdb-pre.tcl.
+
+- v0.8  - Apr. 26th, 2003 - Added PRE support. Fixed some bugs in the tcl-
+                             scripts - ppl using them are urged to upgrade and
+                             .restart the bot.
+
+- v0.7p - Apr. 23rd, 2003 - Not publicly released.
+
+- v0.7  - Apr. 21th, 2003 - Debug support added.
+                            Included two small tcl scripts as alternatives
+                             to crontab and "normal" botsupport.
+                            Changed some output.
+                            Added more instructions in README.
+
+- v0.6  - Apr. 13th, 2003 - Small (cosmetic) bugfix in .imdb output.
+                            Added support for one-line-only for bot.
+
+- v0.5  - Apr. 13th, 2003 - Added ability to test environment and set up
+                             needed files.
+                            Added support for backlog of imdb urls.
+                            Other changes.
+
+- v0.4  - Apr. 12th, 2003 - v0.3 didn't work. Bugfixes.
+
+- v0.3  - Apr. 12th, 2003 - Added support for group-dirs.
+                            Fixed a few bugs which prevented output.
+
+- v0.2  - Apr.  9th, 2003 - Added imdb url to output.
+
+- v0.1  - Apr.  4th, 2003 - First official release.
+

@@ -1,0 +1,29 @@
+prefix=@GLPATH@
+CC=@CC@
+RM=@RM@ -f
+MAKE=@MAKE@
+INSTALL=@INSTALL@
+
+CFLAGS=@CFLAGS@ @GLVERSION@ @ALTWHO@
+
+all: sitewho
+
+sitewho: sitewho.c
+	$(CC) $(CFLAGS) -o sitewho sitewho.c
+
+install: all
+	$(INSTALL) -m755 sitewho $(prefix)/bin
+	@(echo -e "\nInstalling sitewho head/foot/conf files...")
+	@([ -f "$(prefix)/ftp-data/misc/who.foot" ] && echo "$(prefix)/ftp-data/misc/who.foot already exists. NOT overwriting it." || $(INSTALL) -m644 who.foot $(prefix)/ftp-data/misc)
+	@([ -f "$(prefix)/ftp-data/misc/who.head" ] && echo "$(prefix)/ftp-data/misc/who.head already exists. NOT overwriting it." || $(INSTALL) -m644 who.head $(prefix)/ftp-data/misc)
+	@([ -f "$(prefix)/bin/sitewho.conf" ] && echo "$(prefix)/bin/sitewho.conf already exists. NOT overwriting it." || $(INSTALL) -m644 sitewho.conf $(prefix)/bin)
+	@(echo)
+
+distclean: clean
+	$(RM) sitewho.conf
+
+clean:
+	$(RM) sitewho
+
+strip:
+	strip sitewho

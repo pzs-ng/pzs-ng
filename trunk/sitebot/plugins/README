@@ -1,0 +1,64 @@
+###############################################################
+# dZSbot Plug-ins                                             #
+###############################################################
+
+# Usage
+###############################################################
+
+- The plug-ins can be used by sourcing them in your eggdrop.conf;
+  and make they are loaded AFTER dZSbot.tcl.
+
+Example:
+ source pzs-ng/dZSbot.tcl
+ source pzs-ng/plugins/Example.tcl
+
+# Notes
+###############################################################
+
+- A pre-command and post-command script interface was added to
+  dZSbot in revision 1428.
+
+- This interface allows end-users with Tcl knowledge to add custom
+  features without having to directly edit the dZSbot.tcl file.
+
+- The plug-ins included can be used as an example on how to use
+  this functionality.
+
+- ALL scripts must return a boolean value (0/FALSE or 1/TRUE).
+
+- If a pre-command script returns 0/FALSE, the remaining portion
+  of that event will be cancelled (i.e. skipping the channel output
+  for announcements).
+
+# Announce Events
+###############################################################
+
+- Announce events are when a new log entry is read from glftpd.log,
+  login.log, or sysop.log.
+
+- Arguments passed to the script: event section logData.
+
+
+# Special Events
+###############################################################
+
+- INVITEUSER
+ Trigged: On !invite and and SITE INIVITE.
+    Args: event ircUser ftpUser ftpGroup ftpFlags
+
+- More to come...
+
+
+# Plug-ins
+###############################################################
+
+NickDb.tcl      - Keeps track of IRC nick names and their FTP user names.
+
+DeluserBan.tcl  - Automatically kick and ban users from your channel
+                  on DELUSER or PURGE (requires NickDb).
+
+PreTime.tcl     - Announces the pre time of a release on NEWDIR.
+
+GameFAQs.tcl    - Announces game info from GamqFAQs.com on NEWDIR and PRE.
+
+TVRage.tcl      - Announces TV episode info from TVRage.com on NEWDIR and PRE.
