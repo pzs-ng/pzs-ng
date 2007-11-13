@@ -1735,8 +1735,8 @@ main(int argc, char **argv)
 				createstatusbar(convert(&g.v, g.ui, g.gi, complete_bar));
 #if (chmod_completebar)
 				if (!matchpath(group_dirs, g.l.path)) {
-					if (chmod(convert(&g.v, g.ui, g.gi, complete_bar), 0222))
-						d_log("zipscript-c: Failed to chmod %s: %s\n", convert(&g.v, g.ui, g.gi, complete_bar), strerror(errno));
+					if (chmod_each(convert(&g.v, g.ui, g.gi, complete_bar), 0222))
+						d_log("zipscript-c: Failed to chmod a completebar: %s\n", strerror(errno));
 				} else {
 					d_log("zipscript-c: we are in a group_dir - will not chmod the complete bar.\n");
 				}

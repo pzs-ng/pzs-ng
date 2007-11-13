@@ -1563,3 +1563,50 @@ insampledir(char *dirname)
 	return 0;
 }
 
+void
+createstatusbar(const char *bar)
+{
+#if ( status_bar_type == 2 )
+    (void)bar;
+#else
+    char *newbar, *tmp;
+    tmp = newbar = malloc(strlen(bar) + 1);
+    strcpy(newbar, bar);
+
+    tmp = strtok(newbar, "\n");
+    while (tmp != NULL)
+    {
+/* Creates status bar file */
+#if ( status_bar_type == 0 )
+        createzerofile(tmp);
+#endif
+#if ( status_bar_type == 1 )
+        mkdir(tmp, 0777);
+#endif
+
+        tmp = strtok(NULL, "\n");
+    }
+    free(newbar);
+}
+
+
+/* chmods each file in a newline-separated list. */
+int
+chmod_each(const char *list, mode_t mode)
+{
+    int fail = 0;
+    char *newlist, *item;
+    item = newlist = malloc(strlen(list) + 1);
+    strcpy(newbar, bar);
+
+    item = strtok(newlist, "\n");
+    while (item != NULL)
+    {
+        if (chmod(item, mode) != 0)
+            fail = -1;
+        item = strtok(NULL, "\n");
+    }
+    free(newlist);
+
+    return fail;
+}

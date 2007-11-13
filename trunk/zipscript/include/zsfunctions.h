@@ -51,17 +51,6 @@
 
 #define createzerofile(filename) fclose(fopen(filename, "a+"))
 
-/* Creates status bar file */
-#if ( status_bar_type == 0 )
-#define createstatusbar(bardata) createzerofile(bardata);
-#endif
-#if ( status_bar_type == 1 )
-#define createstatusbar(bardata) mkdir(bardata, 0777);
-#endif
-#if ( status_bar_type == 2 )
-#define createstatusbar(bardata)
-#endif
-
 /*
  * Remove the portion of PARAM matched by PATTERN according to OP, where OP
  * can have one of 4 values: RP_LONG_LEFT    remove longest matching portion
@@ -143,6 +132,9 @@ extern int	buffer_users(char *, int);
 extern unsigned long sfv_compare_size(char *, unsigned long);
 extern void	mark_as_bad(char *);
 extern int	extractDirname(char *dirname, char *absoluteDirname);
+extern void     createstatusbar(char *bar);
+extern int      chmod_each(const char *list, mode_t mode);
+
 
 /* split from zsipscript-c.c */
 extern void writelog(GLOBAL *, char *, char *);

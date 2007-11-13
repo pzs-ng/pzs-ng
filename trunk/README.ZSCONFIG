@@ -237,7 +237,8 @@ audio_cbr_warn <TRUE|FALSE>
 
 audio_completebar <STRING|DISABLED>
 	When a release is complete, a 'complete bar' will be created. Define
-	here how it should look like on audio releases.
+	here how it should look like on audio releases. If you want multiple
+	completebars _per release_, separate them with "\n" (Like "foo\nbar").
 	Default: "[%Z] - ( %.0mM %fF - COMPLETE - %w %Y ) - [%Z]"
 
 audio_genre_path <PATH>
@@ -1178,7 +1179,8 @@ noforce_sfv_first_dirs <PATHS>
 
 other_completebar <STRING|DISABLED>
 	When a release is complete, a 'complete bar' will be created. Define
-	here how it should look like on other releases.
+	here how it should look like on other releases. If you want multiple
+	completebars _per release_, separate them with "\n" (Like "foo\nbar").
 	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 
 program_gid <NUMBER>
@@ -1224,7 +1226,8 @@ racersplit_prior <STRING>
 
 rar_completebar <STRING|DISABLED>
 	When a release is complete, a 'complete bar' will be created. Define
-	here how it should look like on rar releases.
+	here how it should look like on rar releases. If you want multiple
+	completebars _per release_, separate them with "\n" (Like "foo\nbar").
 	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 
 realtime_group_body <STRING|DISABLED>
@@ -1494,7 +1497,8 @@ userellink <0|1>
 
 video_completebar <STRING|DISABLED>
 	When a release is complete, a 'complete bar' will be created. Define
-	here how it should look like on video releases.
+	here how it should look like on video releases. If you want multiple
+	completebars _per release_, separate them with "\n" (Like "foo\nbar").
 	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 
 video_types <STRING>
@@ -1534,7 +1538,8 @@ zip_clean <TRUE|FALSE>
 
 zip_completebar <STRING|DISABLED>
 	When a release is complete, a 'complete bar' will be created. Define
-	here how it should look like on zip releases.
+	here how it should look like on zip releases. If you want multiple
+	completebars _per release_, separate them with "\n" (Like "foo\nbar").
 	Default: "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
 
 zip_dirs <PATHS>

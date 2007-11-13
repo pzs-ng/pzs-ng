@@ -295,8 +295,8 @@ main(int argc, char *argv[])
 			createstatusbar(convert(&g.v, g.ui, g.gi, zip_completebar));
 #if (chmod_completebar)
 			if (!matchpath(group_dirs, g.l.path)) {
-				if (chmod(convert(&g.v, g.ui, g.gi, zip_completebar), 0222))
-					d_log("ng-post_unnuke: Failed to chmod %s: %s\n", convert(&g.v, g.ui, g.gi, zip_completebar), strerror(errno));
+                                if (chmod(convert(&g.v, g.ui, g.gi, zip_completebar), 0222))
+                                        d_log("ng-post_unnuke: Failed to chmod a statusbar: %s\n", strerror(errno));
 			}
 #endif
 
@@ -529,8 +529,8 @@ main(int argc, char *argv[])
 				createstatusbar(convert(&g.v, g.ui, g.gi, complete_bar));
 #if (chmod_completebar)
 				if (!matchpath(group_dirs, g.l.path)) {
-					if (chmod(convert(&g.v, g.ui, g.gi, complete_bar), 0222))
-						d_log("ng-post_unnuke: Failed to chmod %s: %s\n", convert(&g.v, g.ui, g.gi, complete_bar), strerror(errno));
+                                        if (chmod(convert(&g.v, g.ui, g.gi, complete_bar), 0222))
+                                                d_log("rescan: Failed to chmod a statusbar: %s\n", strerror(errno));
 				}
 #endif
 			}

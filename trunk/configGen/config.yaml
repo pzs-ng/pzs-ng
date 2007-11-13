@@ -1127,7 +1127,8 @@ options:
         can_disable: true
         comment: |-
             When a release is complete, a 'complete bar' will be created. Define
-            here how it should look like on video releases.
+            here how it should look like on video releases. If you want multiple
+            completebars _per release_, separate them with "\n" (Like "foo\nbar").
         default: '"[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"'
 
     audio_completebar:
@@ -1135,7 +1136,8 @@ options:
         can_disable: true
         comment: |-
             When a release is complete, a 'complete bar' will be created. Define
-            here how it should look like on audio releases.
+            here how it should look like on audio releases. If you want multiple
+            completebars _per release_, separate them with "\n" (Like "foo\nbar").
         default: '"[%Z] - ( %.0mM %fF - COMPLETE - %w %Y ) - [%Z]"'
 
     rar_completebar:
@@ -1143,7 +1145,8 @@ options:
         can_disable: true
         comment: |-
             When a release is complete, a 'complete bar' will be created. Define
-            here how it should look like on rar releases.
+            here how it should look like on rar releases. If you want multiple
+            completebars _per release_, separate them with "\n" (Like "foo\nbar").
         default: '"[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"'
 
     zip_completebar:
@@ -1151,7 +1154,8 @@ options:
         can_disable: true
         comment: |-
             When a release is complete, a 'complete bar' will be created. Define
-            here how it should look like on zip releases.
+            here how it should look like on zip releases. If you want multiple
+            completebars _per release_, separate them with "\n" (Like "foo\nbar").
         default: '"[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"'
 
     other_completebar:
@@ -1159,7 +1163,8 @@ options:
         can_disable: true
         comment: |-
             When a release is complete, a 'complete bar' will be created. Define
-            here how it should look like on other releases.
+            here how it should look like on other releases. If you want multiple
+            completebars _per release_, separate them with "\n" (Like "foo\nbar").
         default: '"[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"'
 
     del_completebar:
