@@ -1,11 +1,10 @@
-prefix=@GLPATH@
 datapath=/ftp-data
 storage=/ftp-data/pzs-ng
 bindir=$(prefix)/bin
 
 CC=@CC@
 CFLAGS=@CFLAGS@ @STATIC@ @NOFORMAT@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE @DEFS@ -I../include/ -I../../ -I../../lib/
-LDFLAGS=@LDFLAGS@
+LDFLAGS=@LDFLAGS@ -lwzd_core
 RM=@RM@ -f
 INSTALL=@INSTALL@
 STRLCPY=../../lib/strl/strlcpy.o
@@ -36,34 +35,34 @@ scandir.o:
 	$(CC) $(CFLAGS) -o scandir.o -c scandir.c
 
 zipscript-c: $(ZS-OBJECTS) $(ZS-DEPEND) $(SUNOBJS)
-	$(CC) $(CFLAGS) -o $@ $(ZS-OBJECTS) $(SUNOBJS)
+	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(ZS-OBJECTS) $(SUNOBJS)
 
 postdel: $(PD-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(PD-OBJECTS)
+	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(PD-OBJECTS)
 
 racestats: $(RS-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(RS-OBJECTS)
+	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(RS-OBJECTS)
 
 cleanup: $(CU-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(CU-OBJECTS) $(SUNOBJS)
+	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(CU-OBJECTS) $(SUNOBJS)
 
 datacleaner: $(DC-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(DC-OBJECTS) $(SUNOBJS)
+	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(DC-OBJECTS) $(SUNOBJS)
 
 ng-undupe: $(UD-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(UD-OBJECTS)
+	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(UD-OBJECTS)
 
 ng-chown: $(CH-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(CH-OBJECTS) $(SUNOBJS)
+	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(CH-OBJECTS) $(SUNOBJS)
 
 audiosort: $(AS-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(AS-OBJECTS)
+	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(AS-OBJECTS)
 
 rescan: $(SC-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(SC-OBJECTS)
+	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(SC-OBJECTS)
 
 postunnuke: $(PU-OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(PU-OBJECTS)
+	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(PU-OBJECTS)
 
 install:
 	if [ ! -e "$(prefix)$(storage)" ]; then mkdir -p -m777 "$(prefix)$(storage)"; fi

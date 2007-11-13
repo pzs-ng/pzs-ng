@@ -1,8 +1,8 @@
-prefix=@GLPATH@
+prefix=/wzdftpd ## FIXME
 CC=@CC@
 RM=@RM@ -f
 
-CFLAGS=@CFLAGS@ @GLVERSION@
+CFLAGS=@CFLAGS@
 LDFLAGS=@LDFLAGS@
 INSTALL=@INSTALL@
 

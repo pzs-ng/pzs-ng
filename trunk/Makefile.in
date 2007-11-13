@@ -1,4 +1,5 @@
-prefix=@GLPATH@
+#prefix=@GLPATH@
+prefix=/wzdftpd/lib/wzdftpd ## FIXME
 
 CFLAGS=-Wall -g
 CC=@CC@

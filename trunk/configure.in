@@ -2,7 +2,6 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT()
 AC_CONFIG_HEADER(config.h)
-#AC_PREFIX_DEFAULT(/glftpd/)
 
 AC_CANONICAL_BUILD 
 AC_CANONICAL_HOST 
@@ -34,6 +33,9 @@ if [[ $(uname -s) != "OpenBSD" ]]; then
 	AC_CHECK_LIB(crypt, crypt, LCRYPT="-lcrypt")
 fi
 
+dnl Check for libwzd-core!
+AC_CHECK_LIB(wzd_core, getlib_mainConfig, , AC_MSG_ERROR([[Couldn't find libwzd-core, quitting!]]))
+
 AH_TEMPLATE([PZSNG_SSL_EXT], [Define to 1 to if you have the required SSL-libs in place])
 PZSNG_SSL
 if [[ -n "$SSL_LIBS" ]]; then
@@ -45,6 +47,12 @@ dnl Checks for header files.
 AC_HEADER_TIME
 AC_HEADER_DIRENT
 AC_HEADER_STDC
+AC_CHECK_HEADERS(libwzd-core/wzd_structs.h libwzd-core/wzd_types.h libwzd-core/wzd_libmain.h libwzd-core/wzd_mod.h, , AC_MSG_ERROR([[Couldn't find libwzd-core headers, quitting!]]), [[#ifdef HAVE_LIBWZD_CORE_WZD_TYPES_H
+#include <libwzd-core/wzd_types.h>
+#endif
+#ifdef HAVE_LIBWZD_CORE_WZD_STRUCTS_H
+#include <libwzd-core/wzd_structs.h>
+#endif]])
 AC_CHECK_HEADERS(pwd.h regex.h fnmatch.h fcntl.h errno.h, , AC_MSG_ERROR([[Couldn't find required header, quitting!]]))
 AC_CHECK_HEADERS(sys/ipc.h sys/param.h sys/shm.h sys/time.h sys/uio.h sys/wait.h, , AC_MSG_ERROR([[Couldn't find required header, quitting!]]))
 AC_CHECK_HEADERS(hsregex.h, CFLAGS="$CFLAGS -DUSE_HSREGEX")
@@ -131,48 +139,9 @@ else
   AC_MSG_RESULT([NOTICE: linking dynamically.])
 fi
 
-dnl GL version =)
-AC_ARG_ENABLE(gl132, AS_HELP_STRING([--enable-gl132], [disable autodetect of glversion, and compile bot binaries for glftpd 1.32]),
-              GLVERSION="-DGLVERSION=132"
-              AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd 1.32. (--enable-gl132).]),
-              GLVERSION="detect")
-
-if [[ "$GLVERSION" = "detect" ]]; then
-  AC_ARG_ENABLE(gl200, AS_HELP_STRING([--enable-gl200], [disable autodetect of glversion, and compile bot binaries for glftpd 2.00]),
-                GLVERSION="-DGLVERSION=200"
-                AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd 2.00. (--enable-gl200).]),
-                GLVERSION="detect")
-  AC_ARG_ENABLE(gl201, AS_HELP_STRING([--enable-gl201], [disable autodetect of glversion, and compile bot binaries for glftpd 2.01]),
-                GLVERSION="-DGLVERSION=201"
-                AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd 2.01. (--enable-gl201).]),
-                GLVERSION="detect")
-fi
-
-AC_ARG_WITH(glpath, 
-            AS_HELP_STRING([--with-glpath=PATH],
-                           [specify nondefault path to root glftpd dir (/glftpd per default)]),
-            GLPATH="$withval", GLPATH="/glftpd")
-
-if [[ "$GLVERSION" = "detect" ]]; then
-  if [[ ! -d "$GLPATH" ] || [ ! -x "${GLPATH}/bin/glftpd" ]]; then
-    AC_MSG_ERROR([Invalid glpath "$GLPATH". Use ./configure --with-glpath=PATH with a valid path! (or --enable-gl(132|200|201) to disable autodetect). Quitting!])
-  fi
-  glversion="`strings $GLPATH/bin/glftpd | grep -i '^glftpd ' | cut -c8-11 | tr -d '.'`"
-  #echo "$v" | grep -E "^(132)|(200)|(201)$"
-  if [[ "$glversion" = "132" ] || [ "$glversion" = "200" ] || [ "$glversion" = "201" ]]; then
-    GLVERSION="-DGLVERSION=$glversion"
-    glversion="`echo "$glversion" | sed 's/^\(.\)/\1\./'`"
-    AC_MSG_RESULT([NOTICE: detected glversion, compiling bot binaries for glftpd $glversion.])
-  else
-    AC_MSG_ERROR([Couldn't detect glversion, please run ./configure --enable-gl132 or ./configure --enable-gl200 or ./configure --enable-gl201. Quitting!])
-  fi
-fi
-
 AC_SUBST(SUNOBJS)
 AC_SUBST(NOFORMAT)
 AC_SUBST(ALTWHO)
-AC_SUBST(GLPATH)
-AC_SUBST(GLVERSION)
 AC_SUBST(STATIC)
 AC_SUBST(LCRYPT)
 AC_SUBST(LCRYPTO)

@@ -1,10 +1,11 @@
-prefix=@GLPATH@
+#prefix=@GLPATH@
+prefix=/wzdftpd ## FIXME
 CC=@CC@
 RM=@RM@ -f
 MAKE=@MAKE@
 INSTALL=@INSTALL@
 
-CFLAGS=@CFLAGS@ @GLVERSION@ @ALTWHO@
+CFLAGS=@CFLAGS@ @ALTWHO@
 
 all: sitewho
 
