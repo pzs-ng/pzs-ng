@@ -21,8 +21,12 @@
 %cmdprewkdn [stat section]    - Shows top week downloaders
 %cmdprewkup [stat section]    - Shows top week uploaders
 %cmdpregpad [stat section]    - Shows top downloading groups of alltime
-%cmdpregpal [stat section]    - Shows top uploading groups of alltime
-%cmdpregpwk [stat section]    - Shows top uploading groups of the week
-%cmdpregwpd [stat section]    - Shows top downloading groups of the week
+%cmdpregpau [stat section]    - Shows top uploading groups of alltime
+%cmdpregpwu [stat section]    - Shows top uploading groups of the week
+%cmdpregpwd [stat section]    - Shows top downloading groups of the week
+%cmdpregpmd [stat section]    - Shows top downloading groups of the month
+%cmdpregpmu [stat section]    - Shows top uploading groups of the month
+%cmdpregpdd [stat section]    - Shows top downloading groups of the day
+%cmdpregpdu [stat section]    - Shows top uploading groups of the day
 Sections: %sections
 Stat Sections: %statsections
