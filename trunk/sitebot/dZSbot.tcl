@@ -791,6 +791,19 @@ proc flagcheck {currentflags needflags} {
 }
 
 proc rightscheck {rights user group flags} {
+	global privchannel location
+	set groups [list]
+	if {![catch {set handle [open "$location(USERS)/$user" r]} error]} {
+		set data [read $handle]
+		close $handle
+		foreach line [split $data "\n"] {
+			switch -exact -- [lindex $line 0] {
+				"GROUP" {lappend groups [lindex $line 1]}
+			}
+		}
+	} else {
+		putlog "dZSbot error: Unable to open user file for \"$user\" ($error)."
+	}
 	foreach right $rights {
 		set prefix [string index $right 0]
 		if {[string equal "!" $prefix]} {
@@ -803,7 +816,9 @@ proc rightscheck {rights user group flags} {
 				if {[string match $right $user]} {return 0}
 			} elseif {[string equal "=" $prefix]} {
 				set right [string range $right 1 end]
-				if {[string match $right $group]} {return 0}
+				foreach g $groups {
+					if {[string match $right $g]} {return 0}
+				}
 			} elseif {[flagcheck $flags $right]} {return 0}
 
 		## Regular matching
@@ -812,7 +827,9 @@ proc rightscheck {rights user group flags} {
 			if {[string match $right $user]} {return 1}
 		} elseif {[string equal "=" $prefix]} {
 			set right [string range $right 1 end]
-			if {[string match $right $group]} {return 1}
+			foreach g $groups {
+				if {[string match $right $g]} {return 1}
+			}
 		} elseif {[flagcheck $flags $right]} {return 1}
 	}
 	return 0
