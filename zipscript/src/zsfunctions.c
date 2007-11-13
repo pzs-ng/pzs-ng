@@ -1587,6 +1587,7 @@ createstatusbar(const char *bar)
         tmp = strtok(NULL, "\n");
     }
     free(newbar);
+#endif
 }
 
 
@@ -1597,7 +1598,7 @@ chmod_each(const char *list, mode_t mode)
     int fail = 0;
     char *newlist, *item;
     item = newlist = malloc(strlen(list) + 1);
-    strcpy(newbar, bar);
+    strcpy(newlist, list);
 
     item = strtok(newlist, "\n");
     while (item != NULL)
