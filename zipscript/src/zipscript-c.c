@@ -1681,7 +1681,7 @@ main(int argc, char **argv)
 
 				d_log("zipscript-c: Symlinking audio\n");
 
-				/* Sort if we're s'posed to write to log and we're not in a group-dir. */
+				/* Sort if we're s'posed to write to log and we're not in a group-dir/nosort-dir. */
 				if (g.v.misc.write_log == TRUE && !matchpath(group_dirs, g.l.path) && !matchpath(audio_nosort_dirs, g.l.path))
 					audioSort(&g.v.audio, g.l.link_source, g.l.link_target);
 				else
