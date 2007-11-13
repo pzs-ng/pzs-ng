@@ -94,9 +94,13 @@ proc bindcommands {cmdpre} {
 	bind pub -|- [set cmdpre]who         ng_who
 
 	bind pub -|- [set cmdpre]gpad    [list ng_stats "-d" "-A"]
-	bind pub -|- [set cmdpre]gpal    [list ng_stats "-u" "-A"]
-	bind pub -|- [set cmdpre]gpwk    [list ng_stats "-d" "-W"]
-	bind pub -|- [set cmdpre]gwpd    [list ng_stats "-u" "-W"]
+	bind pub -|- [set cmdpre]gpau    [list ng_stats "-u" "-A"]
+	bind pub -|- [set cmdpre]gpwd    [list ng_stats "-d" "-W"]
+	bind pub -|- [set cmdpre]gpwu    [list ng_stats "-u" "-W"]
+	bind pub -|- [set cmdpre]gpmd    [list ng_stats "-d" "-M"]
+	bind pub -|- [set cmdpre]gpmu    [list ng_stats "-u" "-M"]
+	bind pub -|- [set cmdpre]gpdd    [list ng_stats "-d" "-T"]
+	bind pub -|- [set cmdpre]gpdu    [list ng_stats "-u" "-T"]
 
 	bind pub -|- [set cmdpre]alldn   [list ng_stats "-d" "-a"]
 	bind pub -|- [set cmdpre]allup   [list ng_stats "-u" "-a"]
@@ -139,9 +143,13 @@ if {[istrue $bindnopre]} {
 	catch {unbind pub -|- !who         ng_who}
 
 	catch {unbind pub -|- !gpad    [list ng_stats "-d" "-A"]}
-	catch {unbind pub -|- !gpal    [list ng_stats "-u" "-A"]}
-	catch {unbind pub -|- !gpwk    [list ng_stats "-d" "-W"]}
-	catch {unbind pub -|- !gwpd    [list ng_stats "-u" "-W"]}
+	catch {unbind pub -|- !gpau    [list ng_stats "-u" "-A"]}
+	catch {unbind pub -|- !gpwd    [list ng_stats "-d" "-W"]}
+	catch {unbind pub -|- !gpwu    [list ng_stats "-u" "-W"]}
+	catch {unbind pub -|- !gpmd    [list ng_stats "-d" "-M"]}
+	catch {unbind pub -|- !gpmu    [list ng_stats "-u" "-M"]}
+	catch {unbind pub -|- !gpdd    [list ng_stats "-d" "-T"]}
+	catch {unbind pub -|- !gpdu    [list ng_stats "-u" "-T"]}
 	catch {unbind pub -|- !alldn   [list ng_stats "-d" "-a"]}
 	catch {unbind pub -|- !allup   [list ng_stats "-u" "-a"]}
 	catch {unbind pub -|- !daydn   [list ng_stats "-d" "-t"]}
