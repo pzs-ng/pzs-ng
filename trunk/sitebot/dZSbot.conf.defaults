@@ -160,8 +160,8 @@ set statsection(0)      "DEFAULT"
 #set statsection(1)     "0DAY"
 #set statsection(2)     "ISO"
 
-# Which one of the sections above will be used as default
-set statdefault         "DEFAULT"
+# Which one of the sections above will be used as default (by index)
+set statdefault         "0"
 
 # What sections are we announcing for?
 set sections            ""
