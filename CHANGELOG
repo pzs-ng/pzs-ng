@@ -14,6 +14,7 @@ v1.0.10 --> 1.0.xx :
 		- rescan of an mp3 release in a audio_nosort_dir should no longer result in a symlink.
 		- IRC groupstats triggers changed for consistency (!gp*), see http://bugs.pzs-ng.com/view.php?id=448 for details.
 		- You can now have multiple completebars. In config, separate them by newline.
+		- Privchannel invites now work correctly for users with multiple groups.
 
 v1.0.9  --> 1.0.10 : (r2339)
 		- psxc-imdb v2.8.
