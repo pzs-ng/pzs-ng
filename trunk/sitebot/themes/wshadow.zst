@@ -262,7 +262,7 @@ announce.SEARCH_NONE                            = "( %c8{%b{SEARCH}} )-( %c2{%b{
  
 ## Bouncer status
 announce.BNC                                    = "( %c8{%b{BNC}} )-( Bouncer status check )"
-announce.BNC_ONLINE                             = "( %c8{%b{BNC}} )-( %c1{%b{UP}} )-( %ip:%port )-( login: %b{%response}ms ping: %b{%ping}ms) "
+announce.BNC_ONLINE                             = "( %c8{%b{BNC}} )-( %c1{%b{UP}} )-( %ip:%port )-( login: %b{%response}ms ping: %b{%ping}) "
 announce.BNC_OFFLINE                            = "( %c8{%b{BNC}} )-( %c2{%b{DOWN}} )-( %ip:%port )-( %error )"
 announce.BNC_PING                               = "( %c8{%b{BNC}} )-( %c2{%b{DOWN}} )-( %ip:%port )-( no ping reply )"
  

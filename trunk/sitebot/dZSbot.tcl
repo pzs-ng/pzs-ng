@@ -1018,7 +1018,7 @@ proc ng_bnc {nick uhost hand chan arg} {
 			}
 			set reply [lindex [split $reply "\n"] 1]
 			if {[regexp {.+time=(\S+) ms} $reply reply ping]} {
-				set ping [format "%.1f" $ping]
+				set ping [format "%.1fms" $ping]
 			} else {
 				putlog "dZSbot error: Unable to parse ping reply \"$reply\", please report to pzs-ng developers."
 			}

@@ -186,7 +186,7 @@ announce.WELCOME                = "Welcome to %b{%sitename}'s sitechan. Type %cm
 ## Bouncer status
 announce.BNC                    = "%b{[%c1{BNC}]} + Checking bouncer status..."
 announce.BNC_PING               = "%b{[%c1{BNC}]} + %ip:%port - %b{DOWN} (can't ping host)"
-announce.BNC_ONLINE             = "%b{[%c1{BNC}]} + %ip:%port - %b{UP} (response: %b{%response}ms)"
+announce.BNC_ONLINE             = "%b{[%c1{BNC}]} + %ip:%port - %b{UP} (login: %b{%response}ms, ping: %b{%ping})"
 announce.BNC_OFFLINE            = "%b{[%c1{BNC}]} + %ip:%port - %b{DOWN} (%error)"
 
 ## Stats Commands
