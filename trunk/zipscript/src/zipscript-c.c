@@ -1335,7 +1335,7 @@ main(int argc, char **argv)
 				}
 				break;
 			case RTYPE_VIDEO:
-				d_log("zipscript-c: Trying to read video header.\n");
+//				d_log("zipscript-c: Trying to read video header.\n");
 //				if (!memcmp(fileext, "avi", 3))
 //					avi_video(g.v.file.name, &g.v.video);
 //				else
