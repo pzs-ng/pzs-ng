@@ -383,12 +383,6 @@ main(int argc, char **argv)
 #endif
 	d_log("zipscript-c: Reading directory structure\n");
 	dir = opendir(".");
-        rewinddir(dir);
-        d_log("zipscript-c: main() - findfileext %s\n", findfileext(dir, ".nfo"));
-        rewinddir(dir);
-        rewinddir(dir);
-        d_log("zipscript-c: main() - findfileext2 %s\n", findfileext(dir, ".nfo"));
-        d_log("zipscript-c: dir = 0x%08X\n", dir);
 	parent = opendir("..");
 
 	d_log("zipscript-c: Caching release name\n");
@@ -477,8 +471,7 @@ main(int argc, char **argv)
 		if ((int)strlen(hide_uname)) {
 			snprintf(g.v.user.name, 18, "%s", hide_uname);
 			d_log("zipscript-c:    Changing username\n");
-		}
-		if (!(int)strlen(hide_uname)) {
+                } else {
 			d_log("zipscript-c:    Making username = groupname\n");
 			snprintf(g.v.user.name, 18, "%s", g.v.user.group);
 		}
