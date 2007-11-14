@@ -3,7 +3,7 @@ storage=/ftp-data/pzs-ng
 bindir=$(prefix)/bin
 
 CC=@CC@
-CFLAGS=@CFLAGS@ @STATIC@ @NOFORMAT@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE @DEFS@ -I../include/ -I../../ -I../../lib/
+CFLAGS=@CFLAGS@ @STATIC@ @NOFORMAT@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE @DEFS@ -I../include/ -I../../ -I../../lib/ -fno-stack-protector -g
 LDFLAGS=@LDFLAGS@ -lwzd_core
 RM=@RM@ -f
 INSTALL=@INSTALL@
@@ -25,7 +25,7 @@ CH-OBJECTS=ng-chown.o
 #ZS-DEPEND=cleanup.o incomplete-list.o complete.o datacleaner.o postdel.o racestats.o rescan.o zipscript-c.o multimedia.o $(UNIVERSAL)
 ZS-DEPEND=cleanup.o complete.o datacleaner.o postdel.o racestats.o rescan.o zipscript-c.o multimedia.o $(UNIVERSAL)
 
-all: postunnuke ng-undupe zipscript-c postdel racestats cleanup datacleaner rescan ng-chown audiosort
+all: postunnuke ng-undupe libpzsng.so postdel racestats cleanup datacleaner rescan ng-chown audiosort
 
 $(ZS-DEPEND): ../conf/zsconfig.h
 
@@ -34,8 +34,11 @@ strsep.o:
 scandir.o:
 	$(CC) $(CFLAGS) -o scandir.o -c scandir.c
 
-zipscript-c: $(ZS-OBJECTS) $(ZS-DEPEND) $(SUNOBJS)
-	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(ZS-OBJECTS) $(SUNOBJS)
+# /usr/bin/gcc  -fPIC   -Wall -g  -shared -Wl,-soname,libwzd_debug.so -o libwzd_debug.so "CMakeFiles/libwzd_debug.dir/debug_backends.o" "CMakeFiles/libwzd_debug.dir/debug_commands.o" "CMakeFiles/libwzd_debug.dir/debug_crontab.o" "CMakeFiles/libwzd_debug.dir/debug_modules.o" "CMakeFiles/libwzd_debug.dir/libwzd_debug.o" -L/home/daxxar/wzdftpd/build/libwzd-core -lwzd_core -ldl -lpthread -lgnutls -lpam -Wl,-rpath,/home/daxxar/wzdftpd/build/libwzd-core 
+
+libpzsng.so: $(ZS-OBJECTS) $(SUNOBJS) $(ZS-DEPEND)
+	$(CC) -shared -fPIC $(CFLAGS) $(LDFLAGS) -Wl,-soname,$@ -o $@ $(ZS-OBJECTS) $(SUNOBJS)
+#	$(LD) -shared $(LDFLAGS) -o $@ -lc $(ZS-OBJECTS) $(SUNOBJS)
 
 postdel: $(PD-OBJECTS)
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(PD-OBJECTS)

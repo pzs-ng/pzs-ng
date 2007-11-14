@@ -51,16 +51,70 @@
 #include "strsep.h"
 #endif
 
-int 
-main(int argc, char **argv)
+#include <libwzd-core/wzd_structs.h>
+#include <libwzd-core/wzd_log.h>
+#include <libwzd-core/wzd_misc.h>
+#include <libwzd-core/wzd_events.h>
+#include <libwzd-core/wzd_libmain.h>
+#include <libwzd-core/wzd_mod.h> /* WZD_MODULE_INIT */
+#include <libwzd-core/wzd_configfile.h>
+#include <libwzd-core/wzd_file.h>
+
+/*
+ * Shit we might want to reimplement for wzd later.
+	d_log("zipscript-c: Zipscript executed by: (uid/gid) %d/%d\n", geteuid(), getegid());
+	if ( program_uid > 0 ) {
+		d_log("zipscript-c: Trying to change effective uid/gid\n");
+		setegid(program_gid);
+		seteuid(program_uid);
+	} else if (!geteuid()) {
+		d_log("zipscript-c: +s mode detected - trying to change effective uid/gid to !root\n");
+		if (setegid(getgid()) == -1)
+			d_log("zipscript-c: failed to change gid: %s\n", strerror(errno));
+		if (seteuid(getuid()) == -1)
+			d_log("zipscript-c: failed to change uid: %s\n", strerror(errno));
+	}
+
+        if (argc == 2 && strcmp("--fullconfig", argv[1]) == 0)
+        {
+            print_full_config();
+            exit(0);
+        }
+        if (argc == 2 && strcmp("--config", argv[1]) == 0)
+        {
+            print_nondefault_config();
+            exit(0);
+        }
+
+        <SNIP>
+
+#if ( wzdftpd_compatible == TRUE )
+	if (argc < 8) {
+		d_log("zipscript-c: Wrong number of arguments used (wzdftpd compatible)\n");
+		printf(" - - PZS-NG ZipScript-C %s - -\n\nUsage: %s <absolute filepath> <crc> <user> <group> <tagline> <speed> <section>\n", ng_version, argv[0]);
+		printf(" Usage: %s --(full)config - shows (full) config compiled.\n\n", argv[0]);
+		exit(1);
+	}
+        crc_arg = argv[2];
+#else
+	if (argc < 4) {
+		d_log("zipscript-c: Wrong number of arguments used\n");
+		printf(" - - PZS-NG ZipScript-C %s - -\n\nUsage: %s <filename> <path> <crc>\n", ng_version, argv[0]);
+		printf("Usage: %s --(full)config - shows (full) config compiled.\n\n", argv[0]);
+		exit(1);
+	}
+        crc_arg = argv[3];
+#endif
+
+ */
+
+static event_reply_t pzsng_event_postupload(const char * args)
 {
 	GLOBAL		g; /* this motherfucker owns */
 	DIR		*dir, *parent;
 	struct dirent	*dp;
 	
-#if ( wzdftpd_compatible == TRUE )
         char            temp_path[PATH_MAX];
-#endif
 	char           *fileext = NULL, *name_p, *temp_p = NULL, *temp_p_free = NULL;
 	char           *target = 0;
 	char	       *vinfo = 0;
@@ -103,6 +157,8 @@ main(int argc, char **argv)
 #endif
 	struct stat	fileinfo;
 
+        char *args_dup, *filename, *username, *speed;
+
 #if ( benchmark_mode == TRUE )
 	struct timeval	bstart, bstop;
 	d_log("zipscript-c: Reading time for benchmark\n");
@@ -124,80 +180,24 @@ main(int argc, char **argv)
 
 	umask(0666 & 000);
 
-	d_log("zipscript-c: Zipscript executed by: (uid/gid) %d/%d\n", geteuid(), getegid());
-	if ( program_uid > 0 ) {
-		d_log("zipscript-c: Trying to change effective uid/gid\n");
-		setegid(program_gid);
-		seteuid(program_uid);
-	} else if (!geteuid()) {
-		d_log("zipscript-c: +s mode detected - trying to change effective uid/gid to !root\n");
-		if (setegid(getgid()) == -1)
-			d_log("zipscript-c: failed to change gid: %s\n", strerror(errno));
-		if (seteuid(getuid()) == -1)
-			d_log("zipscript-c: failed to change uid: %s\n", strerror(errno));
-	}
-
-        if (argc == 2 && strcmp("--fullconfig", argv[1]) == 0)
-        {
-            print_full_config();
-            exit(0);
-        }
-        if (argc == 2 && strcmp("--config", argv[1]) == 0)
-        {
-            print_nondefault_config();
-            exit(0);
-        }
-
-#if ( wzdftpd_compatible == TRUE )
-	if (argc < 8) {
-		d_log("zipscript-c: Wrong number of arguments used (wzdftpd compatible)\n");
-		printf(" - - PZS-NG ZipScript-C %s - -\n\nUsage: %s <absolute filepath> <crc> <user> <group> <tagline> <speed> <section>\n", ng_version, argv[0]);
-		printf(" Usage: %s --(full)config - shows (full) config compiled.\n\n", argv[0]);
-		exit(1);
-	}
-        crc_arg = argv[2];
-#else
-	if (argc < 4) {
-		d_log("zipscript-c: Wrong number of arguments used\n");
-		printf(" - - PZS-NG ZipScript-C %s - -\n\nUsage: %s <filename> <path> <crc>\n", ng_version, argv[0]);
-		printf("Usage: %s --(full)config - shows (full) config compiled.\n\n", argv[0]);
-		exit(1);
-	}
-        crc_arg = argv[3];
-#endif
+        args_dup = strdup(args); //FIXME: Memleak.
+        crc_arg = strtok(args_dup, " ");
+        speed = strtok(NULL, " ");
+        username = strtok(NULL, " ");
+        filename = strtok(NULL, " ");
 
 	d_log("zipscript-c: Clearing arrays\n");
 	bzero(&g.v.total, sizeof(struct race_total));
 	g.v.misc.slowest_user[0] = 30000;
 	g.v.misc.fastest_user[0] = g.v.misc.release_type = RTYPE_NULL;
 
-	/* gettimeofday(&g.v.transfer_stop, (struct timezone *)0 ); */
-#if ( wzdftpd_compatible == TRUE )
-        if (realpath(argv[1], temp_path) != temp_path)
+        if (realpath(filename, temp_path) != temp_path)
         {
             d_log("zipscript-c: Could not realpath(\"%s\", temp_path): %s\n", temp_path, strerror(errno));
-            strlcpy(temp_path, argv[1], PATH_MAX);
+            strlcpy(temp_path, filename, PATH_MAX);
         }
 	strlcpy(g.l.path, temp_path, MIN(PATH_MAX, strrchr(temp_path, '/') - temp_path + 1));
 	strlcpy(g.v.file.name, strrchr(temp_path, '/') + 1, NAME_MAX);
-#else
-	if (combine_path == TRUE && strrchr(argv[1], '/')) {
-		strlcpy(g.v.file.name, strrchr(argv[1], '/') + 1, NAME_MAX);
-		if (*argv[1] != '/')
-			strlcpy(g.l.path, argv[2], PATH_MAX);
-		else
-			strlcpy(g.l.path, sitepath_dir, PATH_MAX);
-		temp_p = strrchr(g.l.path, '\0');
-		*temp_p = '/';
-		strlcpy(temp_p + 1, argv[1], PATH_MAX - strlen(argv[1]) + 1);
-		temp_p = strrchr(g.l.path, '/');
-		*temp_p = '\0';
-		d_log("zipscript-c: combined path used - g.v.file.name='%s' - g.l.path='%s'\n", g.v.file.name, g.l.path);
-	} else {
-		strlcpy(g.v.file.name, argv[1], NAME_MAX);
-		strlcpy(g.l.path, argv[2], PATH_MAX);
-	}
-#endif
 
 	strlcpy(g.v.misc.current_path, g.l.path, PATH_MAX);
 	d_log("zipscript-c: Changing directory to %s\n", g.l.path);
@@ -210,17 +210,17 @@ main(int argc, char **argv)
 	strncpy(g.v.misc.current_path, g.l.path, sizeof(g.v.misc.current_path));
 	strncpy(g.v.misc.basepath, g.l.basepath, sizeof(g.v.misc.basepath));
 
-#if ( wzdftpd_compatible == TRUE )
         d_log("zipscript-c: Reading data from commandline (wzdftpd compatible)\n");
         
-        sprintf(g.v.user.name, argv[3]);
-        sprintf(g.v.user.group, argv[4]);
+        sprintf(g.v.user.name, username);
+        sprintf(g.v.user.group, ""); //FIXME: (was argv[4]))
         if (!(int)strlen(g.v.user.group))
                 memcpy(g.v.user.group, "NoGroup", 8);
-        sprintf(g.v.user.tagline, argv[5]);
+        sprintf(g.v.user.tagline, ""); //FIXME: (was argv[5]))
         if (!(int)strlen(g.v.user.tagline))
                 memcpy(g.v.user.tagline, "No Tagline Set", 15);
-        g.v.file.speed = (unsigned int)strtol(argv[6], NULL, 0);
+        
+        g.v.file.speed = (unsigned int)strtol(speed, NULL, 0);
         if (!g.v.file.speed)
                 g.v.file.speed = 1;
 
@@ -228,8 +228,10 @@ main(int argc, char **argv)
         printf("zipscript-c: DEBUG: Speed: %dkb/s (%skb/s)\n",  g.v.file.speed, getenv("SPEED"));
 #endif
 
+        /* FIXME:
         d_log("zipscript-c: Reading section from arg (%s)\n", argv[7]);
-        snprintf(g.v.sectionname, 127, argv[7]);
+        snprintf(g.v.sectionname, 127, argv[7]);*/
+        sprintf(g.v.sectionname, "DEFAULT");
         g.v.section = 0;
 
         /* XXX We need a better way to handle this. wzd supports sections too.. ;-)
@@ -250,64 +252,6 @@ main(int argc, char **argv)
             ng_free(temp_p_free);
         }
 #endif
-
-#else /* below here: wzdftpd_compatible != TRUE */
-	d_log("zipscript-c: Reading data from environment variables\n");
-	if ((getenv("USER") == NULL) || (getenv("GROUP") == NULL) || (getenv("TAGLINE") == NULL) || (getenv("SPEED") ==NULL) || (getenv("SECTION") == NULL)) {
-		d_log("zipscript-c: We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE, $SECTION and $SPEED\n");
-		/*
-		 * strcpy(g.v.user.name, "Unknown");
-		 * strcpy(g.v.user.group, "NoGroup");
-		 */
-
-		gnum = buffer_groups(GROUPFILE, 0);
-		unum = buffer_users(PASSWDFILE, 0);
-		fileinfo.st_uid = geteuid();
-		fileinfo.st_gid = getegid();
-		strlcpy(g.v.user.name, get_u_name(fileinfo.st_uid), 24);
-		strlcpy(g.v.user.group, get_g_name(fileinfo.st_gid), 24);
-		memcpy(g.v.user.tagline, "No Tagline Set", 15);
-		g.v.file.speed = 2005;
-		g.v.section = 0;
-		sprintf(g.v.sectionname, "DEFAULT");
-	} else {
-		gnum = buffer_groups(GROUPFILE, 0);
-		unum = buffer_users(PASSWDFILE, 0);
-		sprintf(g.v.user.name, getenv("USER"));
-		sprintf(g.v.user.group, getenv("GROUP"));
-		if (!(int)strlen(g.v.user.group))
-			memcpy(g.v.user.group, "NoGroup", 8);
-		sprintf(g.v.user.tagline, getenv("TAGLINE"));
-		if (!(int)strlen(g.v.user.tagline))
-			memcpy(g.v.user.tagline, "No Tagline Set", 15);
-		g.v.file.speed = (unsigned int)strtol(getenv("SPEED"), NULL, 0);
-		if (!g.v.file.speed)
-			g.v.file.speed = 1;
-
-#if (debug_announce == TRUE)
-		printf("zipscript-c: DEBUG: Speed: %dkb/s (%skb/s)\n",  g.v.file.speed, getenv("SPEED"));
-#endif
-
-		d_log("zipscript-c: Reading section from env (%s)\n", getenv("SECTION"));
-		snprintf(g.v.sectionname, 127, getenv("SECTION"));
-		g.v.section = 0;
-		temp_p_free = temp_p = strdup((const char *)gl_sections);	/* temp_p_free is needed since temp_p is modified by strsep */
-		if ((temp_p) == NULL) {
-			d_log("zipscript-c: Can't allocate memory for sections\n");
-		} else {
-			n = 0;
-			while (temp_p) {
-				if (!strcmp(strsep(&temp_p, " "), getenv("SECTION"))) {
-					g.v.section = (unsigned char)n;
-					break;
-				} else
-					n++;
-			}
-			ng_free(temp_p_free);
-		}
-	}
-	g.v.file.speed *= 1024;
-#endif /* wzdftpd_compatible == TRUE */
 
 	d_log("zipscript-c: Checking the file size of %s\n", g.v.file.name);
 	if (stat(g.v.file.name, &fileinfo)) {
@@ -355,8 +299,8 @@ main(int argc, char **argv)
 	g.v.audio.id3_genre = NULL;
 	/* Get file extension */
 
-	d_log("zipscript-c: Parsing file extension from filename... (%s)\n", argv[1]);
-	for (temp_p = name_p = argv[1]; *name_p != 0; name_p++) {
+	d_log("zipscript-c: Parsing file extension from filename... (%s)\n", filename);
+	for (temp_p = name_p = filename; *name_p != 0; name_p++) {
 		if (*name_p == '.') {
 			temp_p = name_p;
 		}
@@ -1899,3 +1843,19 @@ main(int argc, char **argv)
 	return exit_value;
 }
 
+int WZD_MODULE_INIT (void)
+{
+    wzd_string_t *params;
+    params = STR("%lastfilecrc %lastfilespeed");
+
+    event_connect_function(getlib_mainConfig()->event_mgr, EVENT_POSTUPLOAD, pzsng_event_postupload, params);
+
+    out_log(LEVEL_CRITICAL, "libpzsng.so: loaded!\n");
+    return 0;
+}
+
+int WZD_MODULE_CLOSE (void)
+{
+    out_log(LEVEL_CRITICAL,"libpzsng.so: closed!\n");
+    return 0;
+}
