@@ -1762,11 +1762,6 @@ main(int argc, char **argv)
                                 d_log("zipscript-c: dir = 0x%08X\n", dir);
 				/* Creating no-nfo link if needed. */
 				if (g.l.nfo_incomplete && matchpath(check_for_missing_nfo_dirs, g.l.path) && !findfileext(dir, ".nfo")) {
-                                        char *cwd = get_current_dir_name();
-					d_log("zipscript-c: Missing nfo, g.l.nfo_incomplete = %s, !findfileext(dir, \".nfo\") = %s, matchpath(check_for_missing_nfo_dirs, g.l.path) = %s, cwd = %s\n",
-						(g.l.nfo_incomplete) ? "true" : "false", (!findfileext(dir, ".nfo")) ? "true" : "false",
-						(matchpath(check_for_missing_nfo_dirs, g.l.path)) ? "true" : "false", cwd);
-                                        free(cwd);
 					if (!g.l.in_cd_dir) {
 						d_log("zipscript-c: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						create_incomplete_nfo();
