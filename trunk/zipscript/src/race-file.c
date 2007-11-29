@@ -182,7 +182,10 @@ delete_sfv(const char *path, struct VARS *raceI)
 	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
 		snprintf(missing_fname, NAME_MAX, "%s-missing", sd.fname);
 		if ((f = findfilename(missing_fname, f, raceI)))
-			unlink(missing_fname);
+                {
+			if (unlink(missing_fname) < 0)
+                            d_log("delete_sfv: Couldn't unlink missing-indicator '%s': %s\n", missing_fname, strerror(errno));
+                }
 	}
 	ng_free(f);
 	fclose(sfvfile);
