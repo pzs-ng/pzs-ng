@@ -100,12 +100,10 @@ findfileext(DIR *dir, char *fileext)
 
         errno = 0;
 	rewinddir(dir);
-        d_log("zipscript-c: findfileext(0x%08X, '%s');\n", dir, fileext);
 	while ((dp = readdir(dir))) {
 		if ((k = NAMLEN(dp)) < 4)
 			continue;
 		if (strcasecmp(dp->d_name + k - 4, fileext) == 0) {
-                        d_log("zipscript-c: findfileext() found match: '%s'.\n", dp->d_name);
 			return dp->d_name;
 		}
 	}
