@@ -37,7 +37,7 @@ main(int argc, char *argv[])
 {
 	int		k, n, m, l, complete_type = 0;
 
-#if ( wzdftpd_compatible != TRUE )
+#ifdef USING_GLFTPD
         int             gnum = 0, unum = 0;
 	char		myflags[20];
 #endif
@@ -76,7 +76,7 @@ main(int argc, char *argv[])
 	g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
 	g.gi = ng_realloc2(g.gi, sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
 
-#if ( wzdftpd_compatible != TRUE )
+#ifdef USING_GLFTPD
         if (argc < 4)
         {
             printf("This should only be run as a cscript. Read the README!\n");
@@ -88,13 +88,13 @@ main(int argc, char *argv[])
             exit(EXIT_FAILURE);
         }
 #else
-        // NOTE: Order of new arguments for wzdftpd (for README or whatever) is the same as rescan:
+        // NOTE: Order of new arguments for non-glftpd (for README or whatever) is the same as rescan:
         // argv:   4      5         6        7        8
         //       <user> <group> <tagline> <speed> <section>, these are after normal arguments.
-        // TODO: Find out how this would be run under non-glftpd (wzdftpd), and change behaviour.
+        // TODO: Find out how this would be run under wzdftpd, and change behaviour.
         if (argc < 9)
         {
-            printf("This should only be run as a cscript with valid paramters (wzdftpd_compatible). Read the README!\n");
+            printf("This should only be run as a cscript with valid parameters (non-glftpd specific). Read the README!\n");
         }
         // ??
         if (strncasecmp(argv[1], "site unnuke ", strlen("site unnuke ")) != 0)
@@ -104,7 +104,7 @@ main(int argc, char *argv[])
         }
 #endif
 
-        // TODO: Figure out how we would get the param if wzdftpd_compatible.
+        // TODO: Figure out how we would get the param if under wzdftpd or whatever.
 
         // We skip everything after the release, so that:
         //  site unnuke foo.bar baz
@@ -143,7 +143,7 @@ main(int argc, char *argv[])
 	g.v.misc.fastest_user[0] = 0;
 	g.v.misc.release_type = RTYPE_NULL;
 
-#if ( wzdftpd_compatible != TRUE )
+#ifdef USING_GLFTPD
 	if (getenv("SECTION") == NULL) {
 		sprintf(g.v.sectionname, "DEFAULT");
 	} else {
@@ -163,7 +163,7 @@ main(int argc, char *argv[])
 
 	getrelname(&g);
 
-#if ( wzdftpd_compatible != TRUE )
+#ifdef USING_GLFTPD
 	gnum = buffer_groups(GROUPFILE, 0);
 	unum = buffer_users(PASSWDFILE, 0);
 #endif
@@ -262,7 +262,7 @@ main(int argc, char *argv[])
 					continue;
 				}
 
-#if ( wzdftpd_compatible != TRUE )
+#ifdef USING_GLFTPD
 				strcpy(g.v.user.name, get_u_name(f_uid));
 				strcpy(g.v.user.group, get_g_name(f_gid));
 #else
@@ -437,7 +437,7 @@ main(int argc, char *argv[])
 				f_uid = fileinfo.st_uid;
 				f_gid = fileinfo.st_gid;
 
-#if ( wzdftpd_compatible != TRUE )
+#ifdef USING_GLFTPD
 				strcpy(g.v.user.name, get_u_name(f_uid));
 				strcpy(g.v.user.group, get_g_name(f_gid));
 #else
@@ -588,7 +588,7 @@ main(int argc, char *argv[])
 
 	remove_lock(&g.v);
 
-#if ( wzdftpd_compatible != TRUE )
+#ifdef USING_GLFTPD
 	buffer_groups(GROUPFILE, gnum);
 	buffer_users(PASSWDFILE, unum);
 #endif

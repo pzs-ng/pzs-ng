@@ -52,20 +52,8 @@ dist_header: |+
      */
 
 
-    /* DO NOT USE WILDCARDS HERE - only cleanupdirs use wildcards! */
+    /* DO NOT USE WILDCARDS HERE! */
 options:
-    wzdftpd_compatible:
-        type: boolean
-        default: false
-        comment: |-
-            ** DO NOT ENABLE THIS UNLESS YOU KNOW WHAT YOU'RE DOING. **
-
-            Specify this if you're running under wzdftpd (http://wzdftpd.net)
-            This support is *EXPERIMENTAL*. It does not use env variables - and 
-            assumes you pass them via the commandline instead. In addition, it will
-            resolve any symlinks in the paths the zs is passed.
-            Read the wzdftpd.net webpage for more information. (Specifically
-            http://wzdftpd.net/trac/wiki/Documentation/ThirdPartyScripts/pzs-ng)
     sitepath_dir:
         type: path
         comment: |-

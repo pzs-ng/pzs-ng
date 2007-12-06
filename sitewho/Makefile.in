@@ -1,4 +1,4 @@
-prefix=@GLPATH@
+prefix=@INSTALLPATH@
 CC=@CC@
 RM=@RM@ -f
 MAKE=@MAKE@

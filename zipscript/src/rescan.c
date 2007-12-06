@@ -39,7 +39,7 @@ main(int argc, char *argv[])
 {
 	int		k, n, m, l, complete_type = 0, not_allowed = 0, argv_mode = 0;
 
-#if ( wzdftpd_compatible != TRUE )
+#ifdef USING_GLFTPD
         int             gnum = 0, unum = 0
 	char		myflags[20];
 #endif
@@ -83,7 +83,7 @@ main(int argc, char *argv[])
 
 	bzero(one_name, NAME_MAX);
 
-#if ( wzdftpd_compatible != TRUE )
+#ifdef USING_GLFTPD
 	if (getenv("FLAGS")) {
 		strncpy(myflags, getenv("FLAGS"), sizeof(myflags));
 		myflags[sizeof(myflags) - 1] = '\0';
@@ -102,7 +102,8 @@ main(int argc, char *argv[])
 		chdir_allowed = 1;
 #endif
 
-#if ( wzdftpd_compatible == TRUE )
+        /* With glftpd we can use env vars, rest of the world: commandline. */
+#ifndef USING_GLFTPD
         if (argc < 7)
         {
             print_syntax(chdir_allowed);
@@ -200,7 +201,7 @@ main(int argc, char *argv[])
 	g.v.misc.fastest_user[0] = 0;
 	g.v.misc.release_type = RTYPE_NULL;
 
-#if ( wzdftpd_compatible != TRUE )
+#ifdef USING_GLFTPD
 	if (getenv("SECTION") == NULL) {
 		sprintf(g.v.sectionname, "DEFAULT");
 	} else {
@@ -220,7 +221,7 @@ main(int argc, char *argv[])
 
 	getrelname(&g);
 
-#if ( wzdftpd_compatible != TRUE )
+#ifdef USING_GLFTPD
 	gnum = buffer_groups(GROUPFILE, 0);
 	unum = buffer_users(PASSWDFILE, 0);
 #endif
@@ -319,7 +320,7 @@ main(int argc, char *argv[])
 					d_log("rescan.c: Seems this file (%s) is in the process of being uploaded. Ignoring for now.\n", dp->d_name);
 					continue;
 				}
-#if ( wzdftpd_compatible != TRUE )
+#ifdef USING_GLFTPD
 				strcpy(g.v.user.name, get_u_name(f_uid));
 				strcpy(g.v.user.group, get_g_name(f_gid));
 #else
@@ -498,7 +499,7 @@ main(int argc, char *argv[])
 				f_uid = fileinfo.st_uid;
 				f_gid = fileinfo.st_gid;
 
-#if ( wzdftpd_compatible != TRUE )
+#ifdef USING_GLFTPD
 				strcpy(g.v.user.name, get_u_name(f_uid));
 				strcpy(g.v.user.group, get_g_name(f_gid));
 #else
@@ -673,7 +674,7 @@ main(int argc, char *argv[])
 
 	remove_lock(&g.v);
 
-#if ( wzdftpd_compatible != TRUE )
+#ifdef USING_GLFTPD
 	buffer_groups(GROUPFILE, gnum);
 	buffer_users(PASSWDFILE, unum);
 #endif
@@ -684,8 +685,8 @@ main(int argc, char *argv[])
 void print_syntax(int chdir_allowed)
 {
     printf("PZS-NG Rescan %s options:\n\n", ng_version);
-#if ( wzdftpd_compatible == TRUE )
-    printf("  [wzdftpd_compatible] The first 5 arguments must be: <user> <group> <tagline> <speed> <section>, after that - normal options (or none)\n");
+#ifndef USING_GLFTPD
+    printf("  [non-glftpd] The first 5 arguments must be: <user> <group> <tagline> <speed> <section>, after that - normal options (or none)\n");
 #endif
     printf("  --quick         - scan in quick mode - only files not previously marked as ok by the zipscript is scanned\n");
     printf("  --normal        - scan in normal mode - all files will be rescanned regardless of their status\n");

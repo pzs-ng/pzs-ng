@@ -674,11 +674,13 @@ CPP
 EGREP
 SSL_LIBS
 SSL_INCLUDE
+GLVERSION
+USING_GLFTPD
+SITEWHO
 SUNOBJS
 NOFORMAT
 ALTWHO
-GLPATH
-GLVERSION
+INSTALLPATH
 STATIC
 LCRYPT
 LCRYPTO
@@ -1270,6 +1272,9 @@ Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-ss5            compiles the zipscript for use with SiteStat 5
+  --disable-glftpd-specific
+                          Disable glftpd-specific features, so that it works
+                          under wzdftpd/cuftpd
   --enable-format         compiles the zipscript to format the output
   --enable-expert         expert mode - uses full config
   --disable-altwho        compiles the sitewho to not use an alternative
@@ -1286,8 +1291,11 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-ssl=PATH         Include SSL support (DIR is OpenSSL's install dir).
-  --with-glpath=PATH      specify nondefault path to root glftpd dir (/glftpd
+  --with-install-path=PATH
+                          specify nondefault path to install software (/glftpd
                           per default)
+  --with-glpath=PATH      specify nondefault path to install software (/glftpd
+                          per default) (USE --with-install-path INSTEAD!)
 
 Some influential environment variables:
   CC          C compiler command
@@ -5067,38 +5075,10 @@ fi
 
 
 
-#os=unknown
-#static=no
-#case $(uname -s) in
-#    [[Ll][Ii][Nn][Uu][Xx]])
-#		os=linux
-#		static=no
-#        ;;
-#	[oO][pP][eE][nN][bB][sS][dD])
-#		LCRYPT=""
-#		;;
-#    [*[bB][sS][dD]*])
-#		os=bsd
-#		AC_MSG_RESULT([NOTICE: BSD flavour detected, linking statically.])
-#		static=yes
-#        ;;
-#    [Ss][Uu][Nn][Oo][Ss])
-#		os=sunos
-#		static=no
-#        ;;
-#
-#esac
-
-#if test "$os" = "unknown" ; then
-# AC_MSG_ERROR([Couldn't identify OS, quitting!])
-#fi
-
-
 case $build in
 	x86_64-*) M32="-m32";;
 esac
 
-#if [[ $(uname -s) = "SunOS" ]]; then
 case $host in
 	*-solaris*)
 		CFLAGS="$CFLAGS -D_SunOS_"
@@ -5108,7 +5088,6 @@ case $host in
 		CFLAGS="$CFLAGS -D_BSD_"
 		;;
 esac
-#fi
 
 # Check whether --enable-ss5 was given.
 if test "${enable_ss5+set}" = set; then
@@ -5116,6 +5095,15 @@ if test "${enable_ss5+set}" = set; then
 	CFLAGS="$CFLAGS -D_WITH_SS5"
 	! [ -f zipscript/conf/zsconfig.h ] && cp -i zipscript/conf/zsconfig.h.ss5.dist zipscript/conf/zsconfig.h
 
+
+fi
+
+
+# Check whether --enable-glftpd-specific was given.
+if test "${enable_glftpd_specific+set}" = set; then
+  enableval=$enable_glftpd_specific; GLFTPD_SPECIFIC="$enableval"
+else
+  GLFTPD_SPECIFIC="yes"
 
 fi
 
@@ -5156,66 +5144,83 @@ else
 echo "${ECHO_T}NOTICE: linking dynamically." >&6; }
 fi
 
-# Check whether --enable-gl132 was given.
+
+# Check whether --with-install-path was given.
+if test "${with_install_path+set}" = set; then
+  withval=$with_install_path; INSTALLPATH="$withval"
+else
+  INSTALLPATH="/glftpd"
+fi
+
+
+# Check whether --with-glpath was given.
+if test "${with_glpath+set}" = set; then
+  withval=$with_glpath; INSTALLPATH="$withval"
+else
+  INSTALLPATH="/glftpd"
+fi
+
+
+if [ "x$GLFTPD_SPECIFIC" = "xyes" ]; then
+    # Check whether --enable-gl132 was given.
 if test "${enable_gl132+set}" = set; then
   enableval=$enable_gl132; GLVERSION="-DGLVERSION=132"
-              { echo "$as_me:$LINENO: result: NOTICE: compiling bot binaries for glftpd 1.32. (--enable-gl132)." >&5
+                  { echo "$as_me:$LINENO: result: NOTICE: compiling bot binaries for glftpd 1.32. (--enable-gl132)." >&5
 echo "${ECHO_T}NOTICE: compiling bot binaries for glftpd 1.32. (--enable-gl132)." >&6; }
 else
   GLVERSION="detect"
 fi
 
 
-if [ "$GLVERSION" = "detect" ]; then
-  # Check whether --enable-gl200 was given.
+    if [ "$GLVERSION" = "detect" ]; then
+      # Check whether --enable-gl200 was given.
 if test "${enable_gl200+set}" = set; then
   enableval=$enable_gl200; GLVERSION="-DGLVERSION=200"
-                { echo "$as_me:$LINENO: result: NOTICE: compiling bot binaries for glftpd 2.00. (--enable-gl200)." >&5
+                    { echo "$as_me:$LINENO: result: NOTICE: compiling bot binaries for glftpd 2.00. (--enable-gl200)." >&5
 echo "${ECHO_T}NOTICE: compiling bot binaries for glftpd 2.00. (--enable-gl200)." >&6; }
 else
   GLVERSION="detect"
 fi
 
-  if [ "$GLVERSION" = "detect" ]; then
-      # Check whether --enable-gl201 was given.
+      if [ "$GLVERSION" = "detect" ]; then
+          # Check whether --enable-gl201 was given.
 if test "${enable_gl201+set}" = set; then
   enableval=$enable_gl201; GLVERSION="-DGLVERSION=201"
-                    { echo "$as_me:$LINENO: result: NOTICE: compiling bot binaries for glftpd 2.01. (--enable-gl201)." >&5
+                        { echo "$as_me:$LINENO: result: NOTICE: compiling bot binaries for glftpd 2.01. (--enable-gl201)." >&5
 echo "${ECHO_T}NOTICE: compiling bot binaries for glftpd 2.01. (--enable-gl201)." >&6; }
 else
   GLVERSION="detect"
 fi
 
-  fi
-fi
+      fi
+    fi
 
-
-# Check whether --with-glpath was given.
-if test "${with_glpath+set}" = set; then
-  withval=$with_glpath; GLPATH="$withval"
-else
-  GLPATH="/glftpd"
-fi
-
-
-if [ "$GLVERSION" = "detect" ]; then
-  if [ ! -d "$GLPATH" ] || [ ! -x "${GLPATH}/bin/glftpd" ]; then
-    { { echo "$as_me:$LINENO: error: Invalid glpath \"$GLPATH\". Use ./configure --with-glpath=PATH with a valid path! (or --enable-gl(132|200|201) to disable autodetect). Quitting!" >&5
-echo "$as_me: error: Invalid glpath \"$GLPATH\". Use ./configure --with-glpath=PATH with a valid path! (or --enable-gl(132|200|201) to disable autodetect). Quitting!" >&2;}
+    if [ "$GLVERSION" = "detect" ]; then
+      if [ ! -d "$INSTALLPATH" ] || [ ! -x "${INSTALLPATH}/bin/glftpd" ]; then
+        { { echo "$as_me:$LINENO: error: Invalid glpath \"$INSTALLPATH\". Use ./configure --with-install-path=PATH with a valid path! (or --enable-gl(132|200|201) to disable autodetect).
+               If you're NOT using glftpd, use --disable-glftpd-specific. Quitting!" >&5
+echo "$as_me: error: Invalid glpath \"$INSTALLPATH\". Use ./configure --with-install-path=PATH with a valid path! (or --enable-gl(132|200|201) to disable autodetect).
+               If you're NOT using glftpd, use --disable-glftpd-specific. Quitting!" >&2;}
    { (exit 1); exit 1; }; }
-  fi
-  glversion="`strings $GLPATH/bin/glftpd | grep -i '^glftpd ' | cut -c8-11 | tr -d '.'`"
-  #echo "$v" | grep -E "^(132)|(200)|(201)$"
-  if [ "$glversion" = "132" ] || [ "$glversion" = "200" ] || [ "$glversion" = "201" ]; then
-    GLVERSION="-DGLVERSION=$glversion"
-    glversion="`echo "$glversion" | sed 's/^\(.\)/\1\./'`"
-    { echo "$as_me:$LINENO: result: NOTICE: detected glversion, compiling bot binaries for glftpd $glversion." >&5
+      fi
+      glversion="`strings $INSTALLPATH/bin/glftpd | grep -i '^glftpd ' | cut -c8-11 | tr -d '.'`"
+      #echo "$v" | grep -E "^(132)|(200)|(201)$"
+      if [ "$glversion" = "132" ] || [ "$glversion" = "200" ] || [ "$glversion" = "201" ]; then
+        GLVERSION="-DGLVERSION=$glversion"
+        glversion="`echo "$glversion" | sed 's/^\(.\)/\1\./'`"
+        { echo "$as_me:$LINENO: result: NOTICE: detected glversion, compiling bot binaries for glftpd $glversion." >&5
 echo "${ECHO_T}NOTICE: detected glversion, compiling bot binaries for glftpd $glversion." >&6; }
-  else
-    { { echo "$as_me:$LINENO: error: Couldn't detect glversion, please run ./configure --enable-gl132 or ./configure --enable-gl200 or ./configure --enable-gl201. Quitting!" >&5
+      else
+        { { echo "$as_me:$LINENO: error: Couldn't detect glversion, please run ./configure --enable-gl132 or ./configure --enable-gl200 or ./configure --enable-gl201. Quitting!" >&5
 echo "$as_me: error: Couldn't detect glversion, please run ./configure --enable-gl132 or ./configure --enable-gl200 or ./configure --enable-gl201. Quitting!" >&2;}
    { (exit 1); exit 1; }; }
-  fi
+      fi
+    fi
+
+    USING_GLFTPD=-DUSING_GLFTPD=1
+
+    SITEWHO=swho
+
 fi
 
 
@@ -5924,11 +5929,13 @@ CPP!$CPP$ac_delim
 EGREP!$EGREP$ac_delim
 SSL_LIBS!$SSL_LIBS$ac_delim
 SSL_INCLUDE!$SSL_INCLUDE$ac_delim
+GLVERSION!$GLVERSION$ac_delim
+USING_GLFTPD!$USING_GLFTPD$ac_delim
+SITEWHO!$SITEWHO$ac_delim
 SUNOBJS!$SUNOBJS$ac_delim
 NOFORMAT!$NOFORMAT$ac_delim
 ALTWHO!$ALTWHO$ac_delim
-GLPATH!$GLPATH$ac_delim
-GLVERSION!$GLVERSION$ac_delim
+INSTALLPATH!$INSTALLPATH$ac_delim
 STATIC!$STATIC$ac_delim
 LCRYPT!$LCRYPT$ac_delim
 LCRYPTO!$LCRYPTO$ac_delim
@@ -5939,7 +5946,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 75; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 77; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -6377,6 +6384,15 @@ fi
 The makefiles are now configured. Next up you need to edit
 zipscript/conf/zsconfig.h to fit your needs. Please see
 README.ZSCONFIG for a complete list of options.
+" >&5
+echo "${ECHO_T}$( echo )
+The makefiles are now configured. Next up you need to edit
+zipscript/conf/zsconfig.h to fit your needs. Please see
+README.ZSCONFIG for a complete list of options.
+" >&6; }
+
+if [ "x$GLFTPD_SPECIFIC" = "xyes" ]; then
+{ echo "$as_me:$LINENO: result: $( echo )
 
 Also be sure to edit sitewho/sitewho.conf. The conf has
 all config options for the sitewho binary.
@@ -6384,12 +6400,17 @@ all config options for the sitewho binary.
 When done type 'make' to compile.
 " >&5
 echo "${ECHO_T}$( echo )
-The makefiles are now configured. Next up you need to edit
-zipscript/conf/zsconfig.h to fit your needs. Please see
-README.ZSCONFIG for a complete list of options.
 
 Also be sure to edit sitewho/sitewho.conf. The conf has
 all config options for the sitewho binary.
 
 When done type 'make' to compile.
 " >&6; }
+else
+{ echo "$as_me:$LINENO: result: $( echo )
+
+You've compiled pzs-ng in \"ftpd-agnostic\" mode" >&5
+echo "${ECHO_T}$( echo )
+
+You've compiled pzs-ng in \"ftpd-agnostic\" mode" >&6; }
+fi

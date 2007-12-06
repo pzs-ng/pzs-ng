@@ -1235,11 +1235,6 @@
 #define write_complete_message_in_group_dirs    TRUE
 #endif
 
-#ifndef wzdftpd_compatible
-#define wzdftpd_compatible_is_defaulted
-#define wzdftpd_compatible                      FALSE
-#endif
-
 #ifndef zip_bin
 #define zip_bin_is_defaulted
 #define zip_bin                                 "/bin/zip"
