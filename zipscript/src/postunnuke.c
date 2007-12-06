@@ -35,7 +35,13 @@
 int 
 main(int argc, char *argv[])
 {
-	int		k, n, m, l, complete_type = 0, gnum = 0, unum = 0;
+	int		k, n, m, l, complete_type = 0;
+
+#if ( wzdftpd_compatible != TRUE )
+        int             gnum = 0, unum = 0;
+	char		myflags[20];
+#endif
+
 	char           *ext, exec[4096], *complete_bar = 0, *inc_point[2];
 	unsigned int	crc;
 	struct stat	fileinfo;
@@ -50,7 +56,6 @@ main(int argc, char *argv[])
 	time_t		timenow;
 
 	char		*temp_p = NULL, *temp_p2 = NULL;
-	char		myflags[20];
 	GLOBAL		g;
 
 #if ( program_uid > 0 )
@@ -71,19 +76,7 @@ main(int argc, char *argv[])
 	g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
 	g.gi = ng_realloc2(g.gi, sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
 
-	if (getenv("FLAGS")) {
-            strncpy(myflags, getenv("FLAGS"), sizeof(myflags));
-            myflags[sizeof(myflags) - 1] = '\0';
-            n = strlen(myflags);
-            while (n > 0) {
-                n--;
-                m = strlen(rescan_chdir_flags);
-                while(m > 0) {
-                    m--;
-                }
-            }
-	}
-
+#if ( wzdftpd_compatible != TRUE )
         if (argc < 4)
         {
             printf("This should only be run as a cscript. Read the README!\n");
@@ -94,8 +87,25 @@ main(int argc, char *argv[])
             printf("You're supposed to use this as a cscript to site unnuke. Read the README!\n");
             exit(EXIT_FAILURE);
         }
-        
-        
+#else
+        // NOTE: Order of new arguments for wzdftpd (for README or whatever) is the same as rescan:
+        // argv:   4      5         6        7        8
+        //       <user> <group> <tagline> <speed> <section>, these are after normal arguments.
+        // TODO: Find out how this would be run under non-glftpd (wzdftpd), and change behaviour.
+        if (argc < 9)
+        {
+            printf("This should only be run as a cscript with valid paramters (wzdftpd_compatible). Read the README!\n");
+        }
+        // ??
+        if (strncasecmp(argv[1], "site unnuke ", strlen("site unnuke ")) != 0)
+        {
+            printf("You're supposed to use this as a cscript to site unnuke. Read the README!\n");
+            exit(EXIT_FAILURE);
+        }
+#endif
+
+        // TODO: Figure out how we would get the param if wzdftpd_compatible.
+
         // We skip everything after the release, so that:
         //  site unnuke foo.bar baz
         // yields temp_p = "foo.bar". :-)
@@ -133,11 +143,15 @@ main(int argc, char *argv[])
 	g.v.misc.fastest_user[0] = 0;
 	g.v.misc.release_type = RTYPE_NULL;
 
+#if ( wzdftpd_compatible != TRUE )
 	if (getenv("SECTION") == NULL) {
 		sprintf(g.v.sectionname, "DEFAULT");
 	} else {
 		snprintf(g.v.sectionname, 127, getenv("SECTION"));
 	}
+#else
+        snprintf(g.v.sectionname, 127, argv[8]);
+#endif
 
 	g.l.race = ng_realloc2(g.l.race, n = (int)strlen(g.l.path) + 12 + sizeof(storage), 1, 1, 1);
 	g.l.sfv = ng_realloc2(g.l.sfv, n, 1, 1, 1);
@@ -149,8 +163,10 @@ main(int argc, char *argv[])
 
 	getrelname(&g);
 
+#if ( wzdftpd_compatible != TRUE )
 	gnum = buffer_groups(GROUPFILE, 0);
 	unum = buffer_users(PASSWDFILE, 0);
+#endif
 
 	sprintf(g.l.sfv, storage "/%s/sfvdata", g.l.path);
 	sprintf(g.l.sfvbackup, storage "/%s/sfvbackup", g.l.path);
@@ -245,8 +261,15 @@ main(int argc, char *argv[])
 					d_log("rescan.c: Seems this file (%s) is in the process of being uploaded. Ignoring for now.\n", dp->d_name);
 					continue;
 				}
+
+#if ( wzdftpd_compatible != TRUE )
 				strcpy(g.v.user.name, get_u_name(f_uid));
 				strcpy(g.v.user.group, get_g_name(f_gid));
+#else
+                                strncpy(g.v.user.name, argv[4], sizeof(g.v.user.name));
+                                strncpy(g.v.user.group, argv[5], sizeof(g.v.user.group));
+#endif
+
 				strlcpy(g.v.file.name, dp->d_name, NAME_MAX);
 				g.v.file.speed = 2005 * 1024;
 				g.v.file.size = fileinfo.st_size;
@@ -414,8 +437,14 @@ main(int argc, char *argv[])
 				f_uid = fileinfo.st_uid;
 				f_gid = fileinfo.st_gid;
 
+#if ( wzdftpd_compatible != TRUE )
 				strcpy(g.v.user.name, get_u_name(f_uid));
 				strcpy(g.v.user.group, get_g_name(f_gid));
+#else
+                                strncpy(g.v.user.name, argv[4], sizeof(g.v.user.name));
+                                strncpy(g.v.user.group, argv[5], sizeof(g.v.user.group));
+#endif
+
 				strlcpy(g.v.file.name, dp->d_name, NAME_MAX);
 				g.v.file.speed = 2005 * 1024;
 				g.v.file.size = fileinfo.st_size;
@@ -559,8 +588,10 @@ main(int argc, char *argv[])
 
 	remove_lock(&g.v);
 
+#if ( wzdftpd_compatible != TRUE )
 	buffer_groups(GROUPFILE, gnum);
 	buffer_users(PASSWDFILE, unum);
+#endif
 
 	exit(0);
 }
