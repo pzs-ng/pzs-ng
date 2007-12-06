@@ -32,10 +32,18 @@
 # include "strl/strl.h"
 #endif
 
+void print_syntax(int chdir_allowed); /* Defined at the bottom of this file. */
+
 int 
 main(int argc, char *argv[])
 {
-	int		k, n, m, l, complete_type = 0, gnum = 0, unum = 0, not_allowed = 0, argv_mode = 0;
+	int		k, n, m, l, complete_type = 0, not_allowed = 0, argv_mode = 0;
+
+#if ( wzdftpd_compatible != TRUE )
+        int             gnum = 0, unum = 0
+	char		myflags[20];
+#endif
+
 	char           *ext, exec[4096], *complete_bar = 0, *inc_point[2];
 	unsigned int	crc;
 	struct stat	fileinfo;
@@ -52,7 +60,6 @@ main(int argc, char *argv[])
 	short		rescan_quick = rescan_default_to_quick;
 	char		one_name[NAME_MAX];
 	char		*temp_p = NULL;
-	char		myflags[20];
 	int		chdir_allowed = 0, argnum = 0;
 	GLOBAL		g;
 
@@ -76,6 +83,7 @@ main(int argc, char *argv[])
 
 	bzero(one_name, NAME_MAX);
 
+#if ( wzdftpd_compatible != TRUE )
 	if (getenv("FLAGS")) {
 		strncpy(myflags, getenv("FLAGS"), sizeof(myflags));
 		myflags[sizeof(myflags) - 1] = '\0';
@@ -92,7 +100,19 @@ main(int argc, char *argv[])
 	}
 	if (!geteuid())
 		chdir_allowed = 1;
+#endif
+
+#if ( wzdftpd_compatible == TRUE )
+        if (argc < 7)
+        {
+            print_syntax(chdir_allowed);
+            return 0;
+        }
+        argnum = 6;
+#else
 	argnum = 1;
+#endif
+
 	while ((argnum < argc) && argc > 1) {
 		if (!strncasecmp(argv[argnum], "--quick", 7))
 			rescan_quick = TRUE;
@@ -128,14 +148,8 @@ main(int argc, char *argv[])
 			argv_mode = 1;
 
 		} else if (!strncasecmp(argv[argnum], "--help", 6) || !strncasecmp(argv[argnum], "/?", 2) || !strncasecmp(argv[argnum], "--?", 3)) {
-			printf("PZS-NG Rescan %s options:\n\n", ng_version);
-			printf("  --quick         - scan in quick mode - only files not previously marked as ok by the zipscript is scanned\n");
-			printf("  --normal        - scan in normal mode - all files will be rescanned regardless of their status\n");
-			if (chdir_allowed)
-				printf("  --chroot=<PATH> - chroot to PATH before beginning to rescan.\n");
-				printf("  --dir=<PATH>    - cd to (chroot'ed) PATH before beginning to rescan.\n");
-			printf("  <FILE><*>    - scan only file named FILE or files beginning with FILE*.\n\n");
-			return 0;
+                        print_syntax(chdir_allowed);
+                        return 0;
 		} else {
 			strncpy(one_name, argv[argnum], NAME_MAX - 1);
 			rescan_quick = FALSE;
@@ -186,11 +200,15 @@ main(int argc, char *argv[])
 	g.v.misc.fastest_user[0] = 0;
 	g.v.misc.release_type = RTYPE_NULL;
 
+#if ( wzdftpd_compatible != TRUE )
 	if (getenv("SECTION") == NULL) {
 		sprintf(g.v.sectionname, "DEFAULT");
 	} else {
 		snprintf(g.v.sectionname, 127, getenv("SECTION"));
 	}
+#else
+        snprintf(g.v.sectionname, 127, argv[5]);
+#endif
 
 	g.l.race = ng_realloc2(g.l.race, n = (int)strlen(g.l.path) + 12 + sizeof(storage), 1, 1, 1);
 	g.l.sfv = ng_realloc2(g.l.sfv, n, 1, 1, 1);
@@ -201,8 +219,11 @@ main(int argc, char *argv[])
 	g.l.sfv_incomplete = 0;
 
 	getrelname(&g);
+
+#if ( wzdftpd_compatible != TRUE )
 	gnum = buffer_groups(GROUPFILE, 0);
 	unum = buffer_users(PASSWDFILE, 0);
+#endif
 
 	sprintf(g.l.sfv, storage "/%s/sfvdata", g.l.path);
 	sprintf(g.l.sfvbackup, storage "/%s/sfvbackup", g.l.path);
@@ -298,8 +319,13 @@ main(int argc, char *argv[])
 					d_log("rescan.c: Seems this file (%s) is in the process of being uploaded. Ignoring for now.\n", dp->d_name);
 					continue;
 				}
+#if ( wzdftpd_compatible != TRUE )
 				strcpy(g.v.user.name, get_u_name(f_uid));
 				strcpy(g.v.user.group, get_g_name(f_gid));
+#else
+				strncpy(g.v.user.name, argv[1], sizeof(g.v.user.name));
+				strncpy(g.v.user.group, argv[2], sizeof(g.v.user.group));
+#endif
 				strlcpy(g.v.file.name, dp->d_name, NAME_MAX);
 				g.v.file.speed = 2005 * 1024;
 				g.v.file.size = fileinfo.st_size;
@@ -472,8 +498,14 @@ main(int argc, char *argv[])
 				f_uid = fileinfo.st_uid;
 				f_gid = fileinfo.st_gid;
 
+#if ( wzdftpd_compatible != TRUE )
 				strcpy(g.v.user.name, get_u_name(f_uid));
 				strcpy(g.v.user.group, get_g_name(f_gid));
+#else
+				strncpy(g.v.user.name, argv[1], sizeof(g.v.user.name));
+				strncpy(g.v.user.group, argv[2], sizeof(g.v.user.group));
+#endif
+
 				strlcpy(g.v.file.name, dp->d_name, NAME_MAX);
 				g.v.file.speed = 2005 * 1024;
 				g.v.file.size = fileinfo.st_size;
@@ -641,8 +673,24 @@ main(int argc, char *argv[])
 
 	remove_lock(&g.v);
 
+#if ( wzdftpd_compatible != TRUE )
 	buffer_groups(GROUPFILE, gnum);
 	buffer_users(PASSWDFILE, unum);
+#endif
 
 	exit(0);
+}
+
+void print_syntax(int chdir_allowed)
+{
+    printf("PZS-NG Rescan %s options:\n\n", ng_version);
+#if ( wzdftpd_compatible == TRUE )
+    printf("  [wzdftpd_compatible] The first 5 arguments must be: <user> <group> <tagline> <speed> <section>, after that - normal options (or none)\n");
+#endif
+    printf("  --quick         - scan in quick mode - only files not previously marked as ok by the zipscript is scanned\n");
+    printf("  --normal        - scan in normal mode - all files will be rescanned regardless of their status\n");
+    if (chdir_allowed)
+        printf("  --chroot=<PATH> - chroot to PATH before beginning to rescan.\n");
+    printf("  --dir=<PATH>    - cd to (chroot'ed) PATH before beginning to rescan.\n");
+    printf("  <FILE><*>    - scan only file named FILE or files beginning with FILE*.\n\n");
 }
