@@ -148,6 +148,7 @@ main(int argc, char *argv[])
 	g.l.sfv_incomplete = 0;
 
 	getrelname(&g);
+
 	gnum = buffer_groups(GROUPFILE, 0);
 	unum = buffer_users(PASSWDFILE, 0);
 

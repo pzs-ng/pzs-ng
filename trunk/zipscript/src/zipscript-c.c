@@ -81,6 +81,7 @@ main(int argc, char **argv)
 #if ( wzdftpd_compatible != TRUE )
         unsigned int gnum = 0, unum = 0;
 #endif
+
 	unsigned int	crc, s_crc = 0;
 	unsigned char	exit_value = EXIT_SUCCESS;
 	unsigned char	no_check = FALSE;
