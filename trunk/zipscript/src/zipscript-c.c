@@ -60,8 +60,10 @@ main(int argc, char **argv)
 	
 #if ( wzdftpd_compatible == TRUE )
         char            temp_path[PATH_MAX];
+#else
+        char            *temp_p_free = NULL;
 #endif
-	char           *fileext = NULL, *name_p, *temp_p = NULL, *temp_p_free = NULL;
+	char           *fileext = NULL, *name_p, *temp_p = NULL;
 	char           *target = 0;
 	char	       *vinfo = 0;
 	char	       *ext = 0;
@@ -75,7 +77,11 @@ main(int argc, char **argv)
 	char           *halfway_msg = 0;
 	char           *complete_bar = 0;
 	char           *error_msg = 0;
-	unsigned int	crc, gnum = 0, unum = 0, s_crc = 0;
+
+#if ( wzdftpd_compatible != TRUE )
+        unsigned int gnum = 0, unum = 0;
+#endif
+	unsigned int	crc, s_crc = 0;
 	unsigned char	exit_value = EXIT_SUCCESS;
 	unsigned char	no_check = FALSE;
 	char	       *sfv_type = 0;
@@ -1436,7 +1442,7 @@ main(int argc, char **argv)
 		if (g.v.total.users > 0) {
 			d_log("zipscript-c: Sorting race stats\n");
 			sortstats(&g.v, g.ui, g.gi);
-#if ( get_user_stats == TRUE )
+#if ( get_user_stats == TRUE || wzdftpd_compatible == TRUE)
 			d_log("zipscript-c: Reading day/week/month/all stats for racers\n");
 			d_log("zipscript-c: stat section: %i\n", g.v.section);
 			get_stats(&g.v, g.ui);
@@ -1857,8 +1863,13 @@ main(int argc, char **argv)
 	if (fileexists(".delme"))
 		unlink(".delme");
 
+#if (wzdftpd_compatible != TRUE)
+        /* On wzdftpd we do not have a uid/gid-lookup, so these
+         * are left undefined. */
 	buffer_groups(GROUPFILE, gnum);
 	buffer_users(PASSWDFILE, unum);
+#endif
+
 	updatestats_free(&g);
 	ng_free(fileext);
 	ng_free(target);

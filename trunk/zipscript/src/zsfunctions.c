@@ -20,8 +20,13 @@
 #include <stdarg.h>
 
 int		num_groups = 0, num_users = 0;
+
+#if (wzdftpd_compatible != TRUE)
+        /* On wzdftpd we do not have a uid/gid-lookup, so these
+         * are left undefined. */
 struct USER   **user;
 struct GROUP  **group;
+#endif
 
 /*
  * d_log - create/put comments in a .debug file
@@ -913,6 +918,9 @@ execute(char *s)
 	return i;
 }
 
+#if (wzdftpd_compatible != TRUE)
+/* On wzdftpd we do not have a uid/gid-lookup, so these
+ * are left undefined. */
 char           *
 get_g_name(int gid)
 {
@@ -932,6 +940,11 @@ get_u_name(int uid)
 			return user[n]->name;
 	return "Unknown";
 }
+#endif
+
+#if (wzdftpd_compatible != TRUE)
+/* On wzdftpd we do not have a uid/gid-lookup, so these
+ * are left undefined. */
 
 /* Buffer groups file */
 int 
@@ -1016,7 +1029,7 @@ buffer_groups(char *groupfile, int setfree)
 /* Buffer users file */
 int
 buffer_users(char *passwdfile, int setfree)
-{
+{ 
 	char           *f_buf = NULL, *u_name;
 	uid_t		u_id;
 	ssize_t		f_buf_len;
@@ -1094,6 +1107,7 @@ buffer_users(char *passwdfile, int setfree)
 	ng_free(f_buf);
 	return num_users;
 }
+#endif
 
 unsigned long 
 sfv_compare_size(char *fileext, unsigned long fsize)
