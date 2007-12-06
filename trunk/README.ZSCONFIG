@@ -1515,17 +1515,6 @@ write_complete_message_in_group_dirs <TRUE|FALSE>
 	Should a .message file be created in the group-dirs?
 	Default: TRUE
 
-wzdftpd_compatible <TRUE|FALSE>
-	** DO NOT ENABLE THIS UNLESS YOU KNOW WHAT YOU'RE DOING. **
-	
-	Specify this if you're running under wzdftpd (http://wzdftpd.net)
-	This support is *EXPERIMENTAL*. It does not use env variables - and 
-	assumes you pass them via the commandline instead. In addition, it will
-	resolve any symlinks in the paths the zs is passed.
-	Read the wzdftpd.net webpage for more information. (Specifically
-	http://wzdftpd.net/trac/wiki/Documentation/ThirdPartyScripts/pzs-ng)
-	Default: FALSE
-
 zip_bin <PATH>
 	This is the location of the zip binary needed to clean zip-releases for
 	unwanted files.

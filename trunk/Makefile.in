@@ -1,10 +1,10 @@
-prefix=@GLPATH@
+prefix=@INSTALLPATH@
 
 CFLAGS=-Wall -g
 CC=@CC@
 LIBS=@LIBS@
 
-all: zs bot swho
+all: zs bot @SITEWHO@
 	@(echo -e "\n\tProject-ZS-NG is now compiled!\n\tType 'make install' to install it into $(prefix).\n")
 
 install: all

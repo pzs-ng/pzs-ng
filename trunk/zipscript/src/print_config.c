@@ -793,9 +793,6 @@ printf("#define write_complete_message                  %s\n", (write_complete_m
 #ifndef write_complete_message_in_group_dirs_is_defaulted
 printf("#define write_complete_message_in_group_dirs    %s\n", (write_complete_message_in_group_dirs == FALSE ? "FALSE" : "TRUE"));
 #endif
-#ifndef wzdftpd_compatible_is_defaulted
-printf("#define wzdftpd_compatible                      %s\n", (wzdftpd_compatible == FALSE ? "FALSE" : "TRUE"));
-#endif
 #ifndef zip_bin_is_defaulted
 printf("#define zip_bin                                 %s\n", stringify(zip_bin));
 #endif
@@ -840,6 +837,11 @@ printf("#define zipscript_zip_ok                        %s\n", stringify(zipscri
 #endif
 #ifndef zsinternal_checks_completed_is_defaulted
 printf("#define zsinternal_checks_completed             %s\n", stringify(zsinternal_checks_completed));
+#endif
+#ifdef USING_GLFTPD
+printf("  Compiled for glftpd!\n");
+#else
+printf("  Compiled for generic ftpd!\n");
 #endif
 }
 
@@ -1105,7 +1107,6 @@ printf("#define video_completebar                       %s\n", stringify(video_c
 printf("#define video_types                             %s\n", stringify(video_types));
 printf("#define write_complete_message                  %s\n", (write_complete_message == FALSE ? "FALSE" : "TRUE"));
 printf("#define write_complete_message_in_group_dirs    %s\n", (write_complete_message_in_group_dirs == FALSE ? "FALSE" : "TRUE"));
-printf("#define wzdftpd_compatible                      %s\n", (wzdftpd_compatible == FALSE ? "FALSE" : "TRUE"));
 printf("#define zip_bin                                 %s\n", stringify(zip_bin));
 printf("#define zip_clean                               %s\n", (zip_clean == FALSE ? "FALSE" : "TRUE"));
 printf("#define zip_completebar                         %s\n", stringify(zip_completebar));
@@ -1121,4 +1122,9 @@ printf("#define zipscript_header                        %s\n", stringify(zipscri
 printf("#define zipscript_sfv_ok                        %s\n", stringify(zipscript_sfv_ok));
 printf("#define zipscript_zip_ok                        %s\n", stringify(zipscript_zip_ok));
 printf("#define zsinternal_checks_completed             %s\n", stringify(zsinternal_checks_completed));
+#ifdef USING_GLFTPD
+printf("  Compiled for glftpd!\n");
+#else
+printf("  Compiled for generic ftpd!\n");
+#endif
 }

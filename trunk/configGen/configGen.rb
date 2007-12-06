@@ -3,6 +3,14 @@ require 'yaml'
 
 Dir.chdir(File.dirname(__FILE__))
 
+def print_for_glftpd(file)
+    file.puts '#ifdef USING_GLFTPD'
+    file.puts 'printf("  Compiled for glftpd!\n");'
+    file.puts '#else'
+    file.puts 'printf("  Compiled for generic ftpd!\n");'
+    file.puts '#endif'
+end
+
 def get_default(option)
     if option['type'] == 'boolean'
         option['default'].to_s.upcase
@@ -105,11 +113,13 @@ File.open('../zipscript/src/print_config.c', 'w') do |file|
         file.puts get_config_printf(name, info, max_length)
         file.puts "#endif"
     end
+    print_for_glftpd(file)
     file.puts '}', ''
 
     file.puts 'void print_full_config(void)', '{'
     config['options'].sort.each do |name, info|
         file.puts get_config_printf(name, info, max_length)
     end
+    print_for_glftpd(file)
     file.puts '}'
 end

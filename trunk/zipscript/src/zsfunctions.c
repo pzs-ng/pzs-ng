@@ -21,9 +21,9 @@
 
 int		num_groups = 0, num_users = 0;
 
-#if (wzdftpd_compatible != TRUE)
-        /* On wzdftpd we do not have a uid/gid-lookup, so these
-         * are left undefined. */
+#ifdef USING_GLFTPD
+        /* Only under glftpd do we have a uid/gid-lookup, so these
+         * are only needed there. */
 struct USER   **user;
 struct GROUP  **group;
 #endif
@@ -918,9 +918,9 @@ execute(char *s)
 	return i;
 }
 
-#if (wzdftpd_compatible != TRUE)
-/* On wzdftpd we do not have a uid/gid-lookup, so these
- * are left undefined. */
+#ifdef USING_GLFTPD
+/* Only under glftpd do we have a uid/gid-lookup, so these
+ * are only needed there. */
 char           *
 get_g_name(int gid)
 {
@@ -942,9 +942,9 @@ get_u_name(int uid)
 }
 #endif
 
-#if (wzdftpd_compatible != TRUE)
-/* On wzdftpd we do not have a uid/gid-lookup, so these
- * are left undefined. */
+#ifdef USING_GLFTPD
+/* Only under glftpd do we have a uid/gid-lookup, so these
+ * are only needed there. */
 
 /* Buffer groups file */
 int 

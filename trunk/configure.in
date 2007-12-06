@@ -59,38 +59,10 @@ dnl Features
 
 dnl OS :)
 
-#os=unknown
-#static=no
-#case $(uname -s) in
-#    [[Ll][Ii][Nn][Uu][Xx]])
-#		os=linux
-#		static=no
-#        ;;
-#	[oO][pP][eE][nN][bB][sS][dD])
-#		LCRYPT=""
-#		;;
-#    [*[bB][sS][dD]*])
-#		os=bsd
-#		AC_MSG_RESULT([NOTICE: BSD flavour detected, linking statically.])
-#		static=yes
-#        ;;
-#    [Ss][Uu][Nn][Oo][Ss])
-#		os=sunos
-#		static=no
-#        ;;
-#
-#esac
-
-#if test "$os" = "unknown" ; then
-# AC_MSG_ERROR([Couldn't identify OS, quitting!])
-#fi
-
-
 case $build in
 	x86_64-*) M32="-m32";;
 esac
 
-#if [[ $(uname -s) = "SunOS" ]]; then
 case $host in
 	*-solaris*)
 		CFLAGS="$CFLAGS -D_SunOS_"
@@ -100,13 +72,19 @@ case $host in
 		CFLAGS="$CFLAGS -D_BSD_"
 		;;
 esac
-#fi
 
 dnl sitestat5
 AC_ARG_ENABLE(ss5, AS_HELP_STRING([--enable-ss5], [compiles the zipscript for use with SiteStat 5]), [
 	CFLAGS="$CFLAGS -D_WITH_SS5"
 	! [[ -f zipscript/conf/zsconfig.h ]] && cp -i zipscript/conf/zsconfig.h.ss5.dist zipscript/conf/zsconfig.h
 	]
+)
+
+dnl glftpd-specific
+AC_ARG_ENABLE(glftpd-specific,
+        AS_HELP_STRING([--disable-glftpd-specific], [Disable glftpd-specific features, so that it works under wzdftpd/cuftpd]),
+        [GLFTPD_SPECIFIC="$enableval"],
+        [GLFTPD_SPECIFIC="yes"]
 )
 
 dnl noformat
@@ -131,50 +109,65 @@ else
   AC_MSG_RESULT([NOTICE: linking dynamically.])
 fi
 
-dnl GL version =)
-AC_ARG_ENABLE(gl132, AS_HELP_STRING([--enable-gl132], [disable autodetect of glversion, and compile bot binaries for glftpd 1.32]),
-              GLVERSION="-DGLVERSION=132"
-              AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd 1.32. (--enable-gl132).]),
-              GLVERSION="detect")
-
-if [[ "$GLVERSION" = "detect" ]]; then
-  AC_ARG_ENABLE(gl200, AS_HELP_STRING([--enable-gl200], [disable autodetect of glversion, and compile bot binaries for glftpd 2.00]),
-                GLVERSION="-DGLVERSION=200"
-                AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd 2.00. (--enable-gl200).]),
-                GLVERSION="detect")
-  if [[ "$GLVERSION" = "detect" ]]; then
-      AC_ARG_ENABLE(gl201, AS_HELP_STRING([--enable-gl201], [disable autodetect of glversion, and compile bot binaries for glftpd 2.01]),
-                    GLVERSION="-DGLVERSION=201"
-                    AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd 2.01. (--enable-gl201).]),
-                    GLVERSION="detect")
-  fi
-fi
-
+dnl Install-path
+AC_ARG_WITH(install-path,
+            AS_HELP_STRING([--with-install-path=PATH],
+                           [specify nondefault path to install software (/glftpd per default)]),
+            INSTALLPATH="$withval", INSTALLPATH="/glftpd")
+dnl for compatability
 AC_ARG_WITH(glpath, 
             AS_HELP_STRING([--with-glpath=PATH],
-                           [specify nondefault path to root glftpd dir (/glftpd per default)]),
-            GLPATH="$withval", GLPATH="/glftpd")
+                           [specify nondefault path to install software (/glftpd per default) (USE --with-install-path INSTEAD!)]),
+            INSTALLPATH="$withval", INSTALLPATH="/glftpd")
 
-if [[ "$GLVERSION" = "detect" ]]; then
-  if [[ ! -d "$GLPATH" ] || [ ! -x "${GLPATH}/bin/glftpd" ]]; then
-    AC_MSG_ERROR([Invalid glpath "$GLPATH". Use ./configure --with-glpath=PATH with a valid path! (or --enable-gl(132|200|201) to disable autodetect). Quitting!])
-  fi
-  glversion="`strings $GLPATH/bin/glftpd | grep -i '^glftpd ' | cut -c8-11 | tr -d '.'`"
-  #echo "$v" | grep -E "^(132)|(200)|(201)$"
-  if [[ "$glversion" = "132" ] || [ "$glversion" = "200" ] || [ "$glversion" = "201" ]]; then
-    GLVERSION="-DGLVERSION=$glversion"
-    glversion="`echo "$glversion" | sed 's/^\(.\)/\1\./'`"
-    AC_MSG_RESULT([NOTICE: detected glversion, compiling bot binaries for glftpd $glversion.])
-  else
-    AC_MSG_ERROR([Couldn't detect glversion, please run ./configure --enable-gl132 or ./configure --enable-gl200 or ./configure --enable-gl201. Quitting!])
-  fi
+dnl GL version =)
+if [[ "x$GLFTPD_SPECIFIC" = "xyes" ]]; then
+    AC_ARG_ENABLE(gl132, AS_HELP_STRING([--enable-gl132], [disable autodetect of glversion, and compile bot binaries for glftpd 1.32]),
+                  GLVERSION="-DGLVERSION=132"
+                  AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd 1.32. (--enable-gl132).]),
+                  GLVERSION="detect")
+
+    if [[ "$GLVERSION" = "detect" ]]; then
+      AC_ARG_ENABLE(gl200, AS_HELP_STRING([--enable-gl200], [disable autodetect of glversion, and compile bot binaries for glftpd 2.00]),
+                    GLVERSION="-DGLVERSION=200"
+                    AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd 2.00. (--enable-gl200).]),
+                    GLVERSION="detect")
+      if [[ "$GLVERSION" = "detect" ]]; then
+          AC_ARG_ENABLE(gl201, AS_HELP_STRING([--enable-gl201], [disable autodetect of glversion, and compile bot binaries for glftpd 2.01]),
+                        GLVERSION="-DGLVERSION=201"
+                        AC_MSG_RESULT([NOTICE: compiling bot binaries for glftpd 2.01. (--enable-gl201).]),
+                        GLVERSION="detect")
+      fi
+    fi
+
+    if [[ "$GLVERSION" = "detect" ]]; then
+      if [[ ! -d "$INSTALLPATH" ] || [ ! -x "${INSTALLPATH}/bin/glftpd" ]]; then
+        AC_MSG_ERROR([Invalid glpath "$INSTALLPATH". Use ./configure --with-install-path=PATH with a valid path! (or --enable-gl(132|200|201) to disable autodetect).
+               If you're NOT using glftpd, use --disable-glftpd-specific. Quitting!])
+      fi
+      glversion="`strings $INSTALLPATH/bin/glftpd | grep -i '^glftpd ' | cut -c8-11 | tr -d '.'`"
+      #echo "$v" | grep -E "^(132)|(200)|(201)$"
+      if [[ "$glversion" = "132" ] || [ "$glversion" = "200" ] || [ "$glversion" = "201" ]]; then
+        GLVERSION="-DGLVERSION=$glversion"
+        glversion="`echo "$glversion" | sed 's/^\(.\)/\1\./'`"
+        AC_MSG_RESULT([NOTICE: detected glversion, compiling bot binaries for glftpd $glversion.])
+      else
+        AC_MSG_ERROR([Couldn't detect glversion, please run ./configure --enable-gl132 or ./configure --enable-gl200 or ./configure --enable-gl201. Quitting!])
+      fi
+    fi
+    AC_SUBST(GLVERSION)
+    AC_SUBST([USING_GLFTPD], [-DUSING_GLFTPD=1])
+    AC_SUBST([SITEWHO], [swho])
 fi
+
+dnl else
+dnl    AC_SUBST([USING_GLFTPD], [])
+dnl    AC_SUBST([SITEWHO], [])
 
 AC_SUBST(SUNOBJS)
 AC_SUBST(NOFORMAT)
 AC_SUBST(ALTWHO)
-AC_SUBST(GLPATH)
-AC_SUBST(GLVERSION)
+AC_SUBST(INSTALLPATH)
 AC_SUBST(STATIC)
 AC_SUBST(LCRYPT)
 AC_SUBST(LCRYPTO)
@@ -205,9 +198,22 @@ $( echo )
 The makefiles are now configured. Next up you need to edit
 zipscript/conf/zsconfig.h to fit your needs. Please see
 README.ZSCONFIG for a complete list of options.
+)
+
+if [[ "x$GLFTPD_SPECIFIC" = "xyes" ]]; then
+AC_MSG_RESULT(
+$( echo )
 
 Also be sure to edit sitewho/sitewho.conf. The conf has
 all config options for the sitewho binary.
 
 When done type 'make' to compile.
 )
+else
+AC_MSG_RESULT(
+$( echo )
+
+You've compiled pzs-ng in "ftpd-agnostic" mode, this means
+that all glftpd-specific features have been disabled. Good luck!
+)
+fi

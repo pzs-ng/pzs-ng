@@ -58,7 +58,7 @@ main(int argc, char **argv)
 	DIR		*dir, *parent;
 	struct dirent	*dp;
 	
-#if ( wzdftpd_compatible == TRUE )
+#ifndef USING_GLFTPD
         char            temp_path[PATH_MAX];
 #else
         char            *temp_p_free = NULL;
@@ -78,7 +78,7 @@ main(int argc, char **argv)
 	char           *complete_bar = 0;
 	char           *error_msg = 0;
 
-#if ( wzdftpd_compatible != TRUE )
+#ifdef USING_GLFTPD
         unsigned int gnum = 0, unum = 0;
 #endif
 
@@ -155,15 +155,7 @@ main(int argc, char **argv)
             exit(0);
         }
 
-#if ( wzdftpd_compatible == TRUE )
-	if (argc < 8) {
-		d_log("zipscript-c: Wrong number of arguments used (wzdftpd compatible)\n");
-		printf(" - - PZS-NG ZipScript-C %s - -\n\nUsage: %s <absolute filepath> <crc> <user> <group> <tagline> <speed> <section>\n", ng_version, argv[0]);
-		printf(" Usage: %s --(full)config - shows (full) config compiled.\n\n", argv[0]);
-		exit(1);
-	}
-        crc_arg = argv[2];
-#else
+#ifdef USING_GLFTPD
 	if (argc < 4) {
 		d_log("zipscript-c: Wrong number of arguments used\n");
 		printf(" - - PZS-NG ZipScript-C %s - -\n\nUsage: %s <filename> <path> <crc>\n", ng_version, argv[0]);
@@ -171,6 +163,14 @@ main(int argc, char **argv)
 		exit(1);
 	}
         crc_arg = argv[3];
+#else
+	if (argc < 8) {
+		d_log("zipscript-c: Wrong number of arguments used (ftpd-agnostic)\n");
+		printf(" - - PZS-NG ZipScript-C %s - -\n\nUsage: %s <absolute filepath> <crc> <user> <group> <tagline> <speed> <section>\n", ng_version, argv[0]);
+		printf(" Usage: %s --(full)config - shows (full) config compiled.\n\n", argv[0]);
+		exit(1);
+	}
+        crc_arg = argv[2];
 #endif
 
 	d_log("zipscript-c: Clearing arrays\n");
@@ -179,15 +179,7 @@ main(int argc, char **argv)
 	g.v.misc.fastest_user[0] = g.v.misc.release_type = RTYPE_NULL;
 
 	/* gettimeofday(&g.v.transfer_stop, (struct timezone *)0 ); */
-#if ( wzdftpd_compatible == TRUE )
-        if (realpath(argv[1], temp_path) != temp_path)
-        {
-            d_log("zipscript-c: Could not realpath(\"%s\", temp_path): %s\n", temp_path, strerror(errno));
-            strlcpy(temp_path, argv[1], PATH_MAX);
-        }
-	strlcpy(g.l.path, temp_path, MIN(PATH_MAX, strrchr(temp_path, '/') - temp_path + 1));
-	strlcpy(g.v.file.name, strrchr(temp_path, '/') + 1, NAME_MAX);
-#else
+#ifdef USING_GLFTPD
 	if (combine_path == TRUE && strrchr(argv[1], '/')) {
 		strlcpy(g.v.file.name, strrchr(argv[1], '/') + 1, NAME_MAX);
 		if (*argv[1] != '/')
@@ -204,6 +196,14 @@ main(int argc, char **argv)
 		strlcpy(g.v.file.name, argv[1], NAME_MAX);
 		strlcpy(g.l.path, argv[2], PATH_MAX);
 	}
+#else
+        if (realpath(argv[1], temp_path) != temp_path)
+        {
+            d_log("zipscript-c: Could not realpath(\"%s\", temp_path): %s\n", temp_path, strerror(errno));
+            strlcpy(temp_path, argv[1], PATH_MAX);
+        }
+	strlcpy(g.l.path, temp_path, MIN(PATH_MAX, strrchr(temp_path, '/') - temp_path + 1));
+	strlcpy(g.v.file.name, strrchr(temp_path, '/') + 1, NAME_MAX);
 #endif
 
 	strlcpy(g.v.misc.current_path, g.l.path, PATH_MAX);
@@ -217,8 +217,9 @@ main(int argc, char **argv)
 	strncpy(g.v.misc.current_path, g.l.path, sizeof(g.v.misc.current_path));
 	strncpy(g.v.misc.basepath, g.l.basepath, sizeof(g.v.misc.basepath));
 
-#if ( wzdftpd_compatible == TRUE )
-        d_log("zipscript-c: Reading data from commandline (wzdftpd compatible)\n");
+        /* glftpd gives us it in env vars, rest of the world; cmdline. */
+#ifndef USING_GLFTPD
+        d_log("zipscript-c: Reading data from commandline (ftpd-agnostic)\n");
         
         sprintf(g.v.user.name, argv[3]);
         sprintf(g.v.user.group, argv[4]);
@@ -258,7 +259,7 @@ main(int argc, char **argv)
         }
 #endif
 
-#else /* below here: wzdftpd_compatible != TRUE */
+#else /* below here: glftpd specific */
 	d_log("zipscript-c: Reading data from environment variables\n");
 	if ((getenv("USER") == NULL) || (getenv("GROUP") == NULL) || (getenv("TAGLINE") == NULL) || (getenv("SPEED") ==NULL) || (getenv("SECTION") == NULL)) {
 		d_log("zipscript-c: We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE, $SECTION and $SPEED\n");
@@ -314,7 +315,7 @@ main(int argc, char **argv)
 		}
 	}
 	g.v.file.speed *= 1024;
-#endif /* wzdftpd_compatible == TRUE */
+#endif
 
 	d_log("zipscript-c: Checking the file size of %s\n", g.v.file.name);
 	if (stat(g.v.file.name, &fileinfo)) {
@@ -1443,7 +1444,7 @@ main(int argc, char **argv)
 		if (g.v.total.users > 0) {
 			d_log("zipscript-c: Sorting race stats\n");
 			sortstats(&g.v, g.ui, g.gi);
-#if ( get_user_stats == TRUE || wzdftpd_compatible == TRUE)
+#if ( get_user_stats == TRUE && defined(USE_GLFTPD) )
 			d_log("zipscript-c: Reading day/week/month/all stats for racers\n");
 			d_log("zipscript-c: stat section: %i\n", g.v.section);
 			get_stats(&g.v, g.ui);
@@ -1864,9 +1865,9 @@ main(int argc, char **argv)
 	if (fileexists(".delme"))
 		unlink(".delme");
 
-#if (wzdftpd_compatible != TRUE)
-        /* On wzdftpd we do not have a uid/gid-lookup, so these
-         * are left undefined. */
+#ifdef USING_GLFTPD
+        /* Only under glftpd do we have a uid/gid-lookup, so these
+         * are only needed there. */
 	buffer_groups(GROUPFILE, gnum);
 	buffer_users(PASSWDFILE, unum);
 #endif
