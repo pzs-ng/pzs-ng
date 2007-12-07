@@ -207,19 +207,14 @@ README.ZSCONFIG for a complete list of options.
 )
 
 if [[ "x$GLFTPD_SPECIFIC" = "xyes" ]]; then
-AC_MSG_RESULT(
-$( echo )
-
-Also be sure to edit sitewho/sitewho.conf. The conf has
+RESULT="Also be sure to edit sitewho/sitewho.conf. The conf has
 all config options for the sitewho binary.
 
 When done type 'make' to compile.
-)
+"
 else
-AC_MSG_RESULT(
-$( echo )
-
-You've compiled pzs-ng in "ftpd-agnostic" mode, this means
+RESULT="You've compiled pzs-ng in "ftpd-agnostic" mode, this means
 that all glftpd-specific features have been disabled. Good luck!
-)
+"
 fi
+AC_MSG_RESULT($RESULT)

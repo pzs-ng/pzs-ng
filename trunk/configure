@@ -6401,25 +6401,15 @@ README.ZSCONFIG for a complete list of options.
 " >&6; }
 
 if [ "x$GLFTPD_SPECIFIC" = "xyes" ]; then
-{ echo "$as_me:$LINENO: result: $( echo )
-
-Also be sure to edit sitewho/sitewho.conf. The conf has
+RESULT="Also be sure to edit sitewho/sitewho.conf. The conf has
 all config options for the sitewho binary.
 
 When done type 'make' to compile.
-" >&5
-echo "${ECHO_T}$( echo )
-
-Also be sure to edit sitewho/sitewho.conf. The conf has
-all config options for the sitewho binary.
-
-When done type 'make' to compile.
-" >&6; }
+"
 else
-{ echo "$as_me:$LINENO: result: $( echo )
-
-You've compiled pzs-ng in \"ftpd-agnostic\" mode" >&5
-echo "${ECHO_T}$( echo )
-
-You've compiled pzs-ng in \"ftpd-agnostic\" mode" >&6; }
+RESULT="You've compiled pzs-ng in "ftpd-agnostic" mode, this means
+that all glftpd-specific features have been disabled. Good luck!
+"
 fi
+{ echo "$as_me:$LINENO: result: $RESULT" >&5
+echo "${ECHO_T}$RESULT" >&6; }
