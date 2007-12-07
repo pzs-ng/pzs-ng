@@ -9,7 +9,7 @@ all: zs bot @SITEWHO@
 
 install: all
 	cd zipscript/src ; $(MAKE) install
-	cd sitewho ; $(MAKE) install
+	if [[ "x@SITEWHO@" != "x" ]]; then cd sitewho ; $(MAKE) install; fi
 	cd sitebot/src ; $(MAKE) install
 
 distclean: clean

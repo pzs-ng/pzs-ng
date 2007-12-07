@@ -113,12 +113,14 @@ dnl Install-path
 AC_ARG_WITH(install-path,
             AS_HELP_STRING([--with-install-path=PATH],
                            [specify nondefault path to install software (/glftpd per default)]),
-            INSTALLPATH="$withval", INSTALLPATH="/glftpd")
+            INSTALLPATH="$withval")
 dnl for compatability
-AC_ARG_WITH(glpath, 
-            AS_HELP_STRING([--with-glpath=PATH],
-                           [specify nondefault path to install software (/glftpd per default) (USE --with-install-path INSTEAD!)]),
-            INSTALLPATH="$withval", INSTALLPATH="/glftpd")
+if [[ "x$INSTALLPATH" = "x" ]]; then
+    AC_ARG_WITH(glpath, 
+                AS_HELP_STRING([--with-glpath=PATH],
+                               [specify nondefault path to install software (/glftpd per default) (USE --with-install-path INSTEAD!)]),
+                INSTALLPATH="$withval", INSTALLPATH="/glftpd")
+fi
 
 dnl GL version =)
 if [[ "x$GLFTPD_SPECIFIC" = "xyes" ]]; then
@@ -156,13 +158,17 @@ if [[ "x$GLFTPD_SPECIFIC" = "xyes" ]]; then
       fi
     fi
     AC_SUBST(GLVERSION)
-    AC_SUBST([USING_GLFTPD], [-DUSING_GLFTPD=1])
-    AC_SUBST([SITEWHO], [swho])
+
+    USING_GLFTPD="-DUSING_GLFTPD=1"
+    SITEWHO="swho"
+    SHOWLOG="showlog"
+    SHOWLOG_INSTALL="showlog_install"
 fi
 
-dnl else
-dnl    AC_SUBST([USING_GLFTPD], [])
-dnl    AC_SUBST([SITEWHO], [])
+AC_SUBST(USING_GLFTPD)
+AC_SUBST(SITEWHO)
+AC_SUBST(SHOWLOG)
+AC_SUBST(SHOWLOG_INSTALL)
 
 AC_SUBST(SUNOBJS)
 AC_SUBST(NOFORMAT)
