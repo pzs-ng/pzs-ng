@@ -5223,7 +5223,7 @@ echo "$as_me: error: Couldn't detect glversion, please run ./configure --enable-
     USING_GLFTPD="-DUSING_GLFTPD=1"
     SITEWHO="swho"
     SHOWLOG="showlog"
-    SHOWLOG_INSTALL="showlog_install"
+    SHOWLOG_INSTALL="showlog-install"
 fi
 
 
