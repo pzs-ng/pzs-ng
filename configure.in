@@ -162,7 +162,7 @@ if [[ "x$GLFTPD_SPECIFIC" = "xyes" ]]; then
     USING_GLFTPD="-DUSING_GLFTPD=1"
     SITEWHO="swho"
     SHOWLOG="showlog"
-    SHOWLOG_INSTALL="showlog_install"
+    SHOWLOG_INSTALL="showlog-install"
 fi
 
 AC_SUBST(USING_GLFTPD)

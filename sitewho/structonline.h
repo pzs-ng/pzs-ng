@@ -13,7 +13,6 @@ typedef struct {
 } timeval32_t;
 
 #if ( GLVERSION == 201 )
-#warning :compiling for glftpd 2.01
 struct ONLINE {
     char        tagline[64];     /* The users tagline */
     char        username[24];    /* The username of the user */
@@ -31,7 +30,7 @@ struct ONLINE {
 };
 
 #elif ( GLVERSION == 200 )
-#warning :compiling for glftpd 2.00
+#warning Compiling for glftpd 2.00
 struct ONLINE {
     char        tagline[64];     /* The users tagline */
     char        username[24];    /* The username of the user */
@@ -47,7 +46,7 @@ struct ONLINE {
     int32_t     procid;          /* The processor id of the process */
 };
 #else
-#warning :compiling for glftpd 1.32
+#warning Compiling for glftpd 1.32
 struct ONLINE {
     char        tagline[64];     /* The users tagline */
     char        username[24];    /* The username of the user */

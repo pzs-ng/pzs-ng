@@ -39,7 +39,6 @@ main(int argc, char *argv[])
 
 #ifdef USING_GLFTPD
         int             gnum = 0, unum = 0;
-	char		myflags[20];
 #endif
 
 	char           *ext, exec[4096], *complete_bar = 0, *inc_point[2];

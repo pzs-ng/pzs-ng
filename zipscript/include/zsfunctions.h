@@ -126,7 +126,7 @@ extern void	readsfv_ffile(struct VARS *);
 extern void	get_rar_info(struct VARS *);
 extern int	execute(char *);
 
-#if (wzdftpd_compatible != TRUE)
+#ifdef USING_GLFTPD
 extern char    *get_g_name(int);
 extern char    *get_u_name(int);
 extern int	buffer_groups(char *, int);

@@ -40,7 +40,7 @@ main(int argc, char *argv[])
 	int		k, n, m, l, complete_type = 0, not_allowed = 0, argv_mode = 0;
 
 #ifdef USING_GLFTPD
-        int             gnum = 0, unum = 0
+        int             gnum = 0, unum = 0;
 	char		myflags[20];
 #endif
 
