@@ -6,8 +6,8 @@ CFLAGS=@CFLAGS@ @GLVERSION@
 LDFLAGS=@LDFLAGS@
 INSTALL=@INSTALL@
 
-targets=@PASSCHK@ showlog dl_speedtest
-install_targets=@PASSCHK2@ showlog-install dl_speedtest-install
+targets=@PASSCHK@ @SHOWLOG@ dl_speedtest
+install_targets=@PASSCHK2@ @SHOWLOG_INSTALL@ dl_speedtest-install
 
 all: $(targets)
 

@@ -677,6 +677,8 @@ SSL_INCLUDE
 GLVERSION
 USING_GLFTPD
 SITEWHO
+SHOWLOG
+SHOWLOG_INSTALL
 SUNOBJS
 NOFORMAT
 ALTWHO
@@ -5148,10 +5150,9 @@ fi
 # Check whether --with-install-path was given.
 if test "${with_install_path+set}" = set; then
   withval=$with_install_path; INSTALLPATH="$withval"
-else
-  INSTALLPATH="/glftpd"
 fi
 
+if [ "x$INSTALLPATH" = "x" ]; then
 
 # Check whether --with-glpath was given.
 if test "${with_glpath+set}" = set; then
@@ -5160,6 +5161,7 @@ else
   INSTALLPATH="/glftpd"
 fi
 
+fi
 
 if [ "x$GLFTPD_SPECIFIC" = "xyes" ]; then
     # Check whether --enable-gl132 was given.
@@ -5217,11 +5219,16 @@ echo "$as_me: error: Couldn't detect glversion, please run ./configure --enable-
       fi
     fi
 
-    USING_GLFTPD=-DUSING_GLFTPD=1
 
-    SITEWHO=swho
-
+    USING_GLFTPD="-DUSING_GLFTPD=1"
+    SITEWHO="swho"
+    SHOWLOG="showlog"
+    SHOWLOG_INSTALL="showlog_install"
 fi
+
+
+
+
 
 
 
@@ -5932,6 +5939,8 @@ SSL_INCLUDE!$SSL_INCLUDE$ac_delim
 GLVERSION!$GLVERSION$ac_delim
 USING_GLFTPD!$USING_GLFTPD$ac_delim
 SITEWHO!$SITEWHO$ac_delim
+SHOWLOG!$SHOWLOG$ac_delim
+SHOWLOG_INSTALL!$SHOWLOG_INSTALL$ac_delim
 SUNOBJS!$SUNOBJS$ac_delim
 NOFORMAT!$NOFORMAT$ac_delim
 ALTWHO!$ALTWHO$ac_delim
@@ -5946,7 +5955,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 77; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 79; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
