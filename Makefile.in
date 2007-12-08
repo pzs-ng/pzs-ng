@@ -3,12 +3,13 @@ prefix=@INSTALLPATH@
 CFLAGS=-Wall -g
 CC=@CC@
 LIBS=@LIBS@
+INSTALL=@INSTALL@
 
 all: zs bot @SITEWHO@
 	@(echo -e "\n\tProject-ZS-NG is now compiled!\n\tType 'make install' to install it into $(prefix).\n")
 
 install: all
-	$(INSTALL) -m755  -d $(prefix)/bin
+	$(INSTALL) -m755 -d $(prefix)/bin
 	cd zipscript/src ; $(MAKE) install
 	if [ "x@SITEWHO@" != "x" ]; then cd sitewho ; $(MAKE) install; fi
 	cd sitebot/src ; $(MAKE) install
