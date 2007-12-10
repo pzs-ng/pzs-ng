@@ -69,22 +69,30 @@ main(int argc, char **argv)
 		printf(" - thank you. (remember the quotes!)\n");
 		return 0;
 	}
+
+	fname = argv[1] + 5;	/* This way we simply skip the required
+				 * 'DELE'-part of the argument (so we get
+				 * filename) */
 #else
-	if (argc < 7) {
+	if (argc < 6) {
                 printf("[running in ftpd-agnostic mode]\n");
                 printf("Missing arguments! Syntax:\n");
-                printf(" %s <user> <group> <tagline> <speed> <section> <DELE command>\n", argv[0]);
+                printf(" %s <user> <group> <tagline> <section> <DELE command>\n", argv[0]);
 		return 0;
 	}
 
-	if ((int)strlen(argv[6]) < 6 || strncmp(argv[6], "DELE ", 5)) {
+	if ((int)strlen(argv[5]) < 6 || strncmp(argv[5], "DELE ", 5)) {
 		printf("pzs-ng postdel script.\n");
 		printf(" - this is supposed to be run from glftpd.\n");
 		printf(" - if you wish to run it yourself from chroot, \n");
-		printf(" - use /bin/postdel <user> <group> \"<tagline>\" <speed> <section> \"DELE <filename>\"\n");
+		printf(" - use /bin/postdel <user> <group> \"<tagline>\" <section> \"DELE <filename>\"\n");
 		printf(" - thank you. (remember the quotes!)\n");
 		return 0;
 	}
+
+	fname = argv[5] + 5;	/* This way we simply skip the required
+				 * 'DELE'-part of the argument (so we get
+				 * filename) */
 #endif
 
 	d_log("postdel: Project-ZS Next Generation (pzs-ng) %s debug log for postdel.\n", ng_version);
@@ -93,10 +101,6 @@ main(int argc, char **argv)
 #ifdef _ALT_MAX
 	d_log("postdel: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
 #endif
-
-	fname = argv[1] + 5;	/* This way we simply skip the required
-				 * 'DELE'-part of the argument (so we get
-				 * filename) */
 
 #ifdef USING_GLFTPD
 	d_log("postdel: Reading user name from env\n");
