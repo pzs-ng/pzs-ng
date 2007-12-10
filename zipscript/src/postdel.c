@@ -41,8 +41,11 @@ main(int argc, char **argv)
 	char		*temp_p;
 	char		*target = NULL;
 	char		*fname;
-	char		*env_user;
-	char		*env_group;
+
+#ifdef USING_GLFTPD
+	char		*env_user, *env_group;
+#endif
+
 	char	        *inc_point[2];
 	int		n, m, ftype = 0;
 	unsigned char	empty_dir = 0;
@@ -52,6 +55,7 @@ main(int argc, char **argv)
 	
 	DIR		*dir, *parent;
 
+#ifdef USING_GLFTPD
 	if (argc == 1) {
 		d_log("postdel: no param specified\n");
 		return 0;
@@ -65,6 +69,23 @@ main(int argc, char **argv)
 		printf(" - thank you. (remember the quotes!)\n");
 		return 0;
 	}
+#else
+	if (argc < 7) {
+                printf("[running in ftpd-agnostic mode]\n");
+                printf("Missing arguments! Syntax:\n");
+                printf(" %s <user> <group> <tagline> <speed> <section> <DELE command>\n", argv[0]);
+		return 0;
+	}
+
+	if ((int)strlen(argv[6]) < 6 || strncmp(argv[6], "DELE ", 5)) {
+		printf("pzs-ng postdel script.\n");
+		printf(" - this is supposed to be run from glftpd.\n");
+		printf(" - if you wish to run it yourself from chroot, \n");
+		printf(" - use /bin/postdel <user> <group> \"<tagline>\" <speed> <section> \"DELE <filename>\"\n");
+		printf(" - thank you. (remember the quotes!)\n");
+		return 0;
+	}
+#endif
 
 	d_log("postdel: Project-ZS Next Generation (pzs-ng) %s debug log for postdel.\n", ng_version);
 	d_log("postdel: Postdel executed by: (uid/gid) %d/%d\n", geteuid(), getegid());
@@ -77,6 +98,7 @@ main(int argc, char **argv)
 				 * 'DELE'-part of the argument (so we get
 				 * filename) */
 
+#ifdef USING_GLFTPD
 	d_log("postdel: Reading user name from env\n");
 	if ((env_user = getenv("USER")) == NULL) {
 		d_log("postdel: postdel: Could not find environment variable 'USER', setting value to 'Nobody'\n");
@@ -87,6 +109,8 @@ main(int argc, char **argv)
 		d_log("postdel: Could not find environment variable 'GROUP', setting value to 'NoGroup'\n");
 		env_group = "NoGroup";
 	}
+#endif
+
 #if ( program_uid > 0 )
 	d_log("postdel: Trying to change effective gid\n");
 	setegid(program_gid);
@@ -117,13 +141,19 @@ main(int argc, char **argv)
 	g.v.misc.slowest_user[0] = 30000;
 	g.v.misc.fastest_user[0] = 0;
 
+#ifdef USING_GLFTPD
 	/* YARR; THE PAIN OF MAGIC NUMBERS! */
 	d_log("postdel: Copying env/predefined username to g.v. (%s)\n", env_user);
-	strlcpy(g.v.user.name, env_user, 24);
+	strlcpy(g.v.user.name, env_user, sizeof(g.v.user.name));
 	
 	d_log("postdel: Copying env/predefined groupname to g.v. (%s)\n", env_group);
-	strlcpy(g.v.user.group, env_group, 24);
-	g.v.user.group[23] = 0;
+	strlcpy(g.v.user.group, env_group, sizeof(g.v.user.group));
+#else
+	d_log("postdel: Copying argv[1] (username) to g.v. (%s)\n", argv[1]);
+	strlcpy(g.v.user.name, argv[1], sizeof(g.v.user.name));
+	d_log("postdel: Copying argv[2] (groupname) to g.v. (%s)\n", argv[2]);
+	strlcpy(g.v.user.group, argv[2], sizeof(g.v.user.group));
+#endif
 
 	d_log("postdel: File to remove is: %s\n", fname);
 
