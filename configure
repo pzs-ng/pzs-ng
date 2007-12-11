@@ -5243,13 +5243,6 @@ fi
 
 
 
-#if [[ "`ls zipscript/conf/zsconfig.h`" = "" ]]; then
-#	cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h  /dev/null 2>&1
-#else
-#	echo "ERROR: You need zsconfig.h in the 'zipscript/conf' directory."
-#	exit 1
-#fi
-
 ac_config_files="$ac_config_files Makefile zipscript/src/Makefile zipscript/utils/Makefile sitebot/src/Makefile sitewho/Makefile sitewho/sitewho.conf lib/Makefile lib/strl/Makefile"
 
 cat >confcache <<\_ACEOF
@@ -6380,7 +6373,13 @@ if test "$no_create" != yes; then
 fi
 
 
-! [ -f zipscript/conf/zsconfig.h ] && cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h
+if [ ! -f zipscript/conf/zsconfig.h ]; then
+    if [ "x$USING_GLFTPD" == "x" ]; then
+        cp -i zipscript/conf/zsconfig.h.dist-nonglftpd zipscript/conf/zsconfig.h
+    else
+        cp -i zipscript/conf/zsconfig.h.dist zipscript/conf/zsconfig.h
+    fi
+fi
 
 if [ "$PASSCHK" = "" ]; then
 { echo "$as_me:$LINENO: result: $( echo )

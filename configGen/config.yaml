@@ -53,6 +53,12 @@ dist_header: |+
 
 
     /* DO NOT USE WILDCARDS HERE! */
+dist_nongl_header: |+
+    /* These are settings that are especially relevant when you're not running under glftpd.
+     * Make sure that all paths are absolute and _real_, e.g. set log to /home/myuser/wzd/var/log/wzdftpd/wzd.log 
+     *
+     * You should probably also create these two first dirs using:
+     *  mkdir -p -m777 /home/myuser/wzd/var/lib/pzs-ng */
 options:
     sitepath_dir:
         type: path
@@ -2281,3 +2287,11 @@ dist_options:
     - nfo_script
     - enable_complete_script
     - complete_script
+dist_nongl_options:
+    - ~
+    - log 
+    - storage 
+    - banned_filelist
+    - ~
+    - zip_bin
+    - unzip_bin

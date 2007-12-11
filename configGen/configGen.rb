@@ -82,14 +82,31 @@ File.open('../zipscript/include/errors.h', 'w') do |file|
         file.puts "#endif", ''
     end
 end
-File.open('../zipscript/conf/zsconfig.h.dist', 'w') do |file|
-    file.puts config['dist_header']
-    config['dist_options'].each do |name|
+File.open('../zipscript/conf/zsconfig.h.dist-nonglftpd', 'w') do |nonglfile|
+    File.open('../zipscript/conf/zsconfig.h.dist', 'w') do |file|
+        file.puts config['dist_header']
+        nonglfile.puts config['dist_header']
+
+        config['dist_options'].each do |name|
+            if name.nil?
+                file.puts ''
+                nonglfile.puts ''
+            else
+                info = config['options'][name]
+                file.puts "#define #{sprintf "% -#{max_length_dist}s", name} #{get_default info}"
+                nonglfile.puts "#define #{sprintf "% -#{max_length_dist}s", name} #{get_default info}"
+            end
+        end
+    end
+
+    nonglfile.puts ''
+    nonglfile.puts config['dist_nongl_header']
+    config['dist_nongl_options'].each do |name|
         if name.nil?
-            file.puts ''
+            nonglfile.puts ''
         else
             info = config['options'][name]
-            file.puts "#define #{sprintf "% -#{max_length_dist}s", name} #{get_default info}"
+            nonglfile.puts "#define #{sprintf "% -#{max_length_dist}s", name} #{get_default info}"
         end
     end
 end
