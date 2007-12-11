@@ -91,7 +91,7 @@ main(int argc, char **argv)
         }
         else
         {
-            strlcpy(dirname, argv[5], fname - argv[5]);
+            strlcpy(dirname, argv[5], fname - argv[5] + 1);
             fname++;
         }
 
