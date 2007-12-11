@@ -44,6 +44,8 @@ main(int argc, char **argv)
 
 #ifdef USING_GLFTPD
 	char		*env_user, *env_group;
+#else
+        char            dirname[PATH_MAX];
 #endif
 
 	char	        *inc_point[2];
@@ -77,22 +79,24 @@ main(int argc, char **argv)
 	if (argc < 6) {
                 printf("[running in ftpd-agnostic mode]\n");
                 printf("Missing arguments! Syntax:\n");
-                printf(" %s <user> <group> <tagline> <section> <DELE command>\n", argv[0]);
+                printf(" %s <user> <group> <tagline> <section> <filepath>\n", argv[0]);
 		return 0;
 	}
 
-	if ((int)strlen(argv[5]) < 6 || strncmp(argv[5], "DELE ", 5)) {
-		printf("pzs-ng postdel script.\n");
-		printf(" - this is supposed to be run from glftpd.\n");
-		printf(" - if you wish to run it yourself from chroot, \n");
-		printf(" - use /bin/postdel <user> <group> \"<tagline>\" <section> \"DELE <filename>\"\n");
-		printf(" - thank you. (remember the quotes!)\n");
-		return 0;
-	}
+        fname = strrchr(argv[5], '/');
+        if (fname == NULL)
+        {
+            fname = argv[5];
+            strcpy(dirname, "./");
+        }
+        else
+        {
+            strlcpy(dirname, argv[5], fname - argv[5]);
+            fname++;
+        }
 
-	fname = argv[5] + 5;	/* This way we simply skip the required
-				 * 'DELE'-part of the argument (so we get
-				 * filename) */
+        chdir(dirname);
+        d_log("postdel: Got a 'DELE %s' in '%s'\n", fname, dirname);
 #endif
 
 	d_log("postdel: Project-ZS Next Generation (pzs-ng) %s debug log for postdel.\n", ng_version);
