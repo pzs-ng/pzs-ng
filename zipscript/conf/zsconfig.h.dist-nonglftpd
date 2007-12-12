@@ -32,7 +32,7 @@
 #define status_bar_type              1
 #define incompleteislink             1
 
-#define ignored_types                ",diz,debug,message,imdb,html,url,m3u"
+#define ignored_types                ",diz,debug,message,imdb,html,url,m3u,metadata"
 
 #define deny_double_sfv              FALSE
 #define force_sfv_first              FALSE
