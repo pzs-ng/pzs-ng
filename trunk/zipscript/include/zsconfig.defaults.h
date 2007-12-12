@@ -712,7 +712,7 @@
 
 #ifndef ignored_types
 #define ignored_types_is_defaulted
-#define ignored_types                           ",diz,debug,message,imdb,html,url,m3u"
+#define ignored_types                           ",diz,debug,message,imdb,html,url,m3u,metadata"
 #endif
 
 #ifndef incomplete_base_nfo_indicator
