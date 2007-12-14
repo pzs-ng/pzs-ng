@@ -374,8 +374,15 @@ options:
         comment: |-
             Set here something you wish to use instead of the username when
             hiding users. Setting this empty will make the username the same
-            as groupname.
+            as groupname, unless show_users_in_group_dirs is set to TRUE.
         default: '""'
+
+    show_users_in_group_dirs:
+        type: boolean
+        comment: |-
+            Setting this to TRUE will disable the hiding of usernames. This
+            option is discouraged.
+        default: false
 
     custom_group_dirs_complete_message:
         type: string

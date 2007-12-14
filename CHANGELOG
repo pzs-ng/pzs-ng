@@ -9,12 +9,15 @@ v1.0.10 --> 1.0.xx :
 		- compat-fix in the create_sfv routine - BSD extension was not supported on
 		  all distros.
 		- fix a bug with sample checks and exemption dirs.
-		- default statdefault value changed to something valid. (note: statdefault is index, not name, of section).
+		- default statdefault value changed to something valid. (note: statdefault is
+		  index, not name, of section).
 		- no longer says N/Ams if you disable ping-check of BNCs.
 		- rescan of an mp3 release in a audio_nosort_dir should no longer result in a symlink.
-		- IRC groupstats triggers changed for consistency (!gp*), see http://bugs.pzs-ng.com/view.php?id=448 for details.
+		- IRC groupstats triggers changed for consistency (!gp*), see
+		  http://bugs.pzs-ng.com/view.php?id=448 for details.
 		- You can now have multiple completebars. In config, separate them by newline.
 		- Privchannel invites now work correctly for users with multiple groups.
+		- new option by request: show_users_in_group_dirs - option to not hide usernames.
 
 v1.0.9  --> 1.0.10 : (r2339)
 		- psxc-imdb v2.8.
