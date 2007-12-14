@@ -468,10 +468,12 @@ main(int argc, char *argv[])
 						snprintf(g.v.user.name, 18, "%s", hide_uname);
 						d_log("ng-post_unnuke:    Changing username\n");
 					}
+#if (show_users_in_group_dirs == FALSE)
 					if ((int)strlen(hide_uname) == 0) {
 						d_log("ng-post_unnuke:    Making username = groupname\n");
 						snprintf(g.v.user.name, 18, "%s", g.v.user.group);
 					}
+#endif
 				}
 
 				if (g.l.race && !match_file(g.l.race, dp->d_name))

@@ -865,7 +865,7 @@ hide_group_uploaders <TRUE|FALSE>
 hide_uname <STRING>
 	Set here something you wish to use instead of the username when
 	hiding users. Setting this empty will make the username the same
-	as groupname.
+	as groupname, unless show_users_in_group_dirs is set to TRUE.
 	Default: ""
 
 ignore_lock_timeout <TRUE|FALSE>
@@ -1401,6 +1401,11 @@ show_user_info <TRUE|FALSE>
 	set this to true. It will display racers (usernames) and stats on the
 	current race in the client's ftp program.
 	Default: TRUE
+
+show_users_in_group_dirs <TRUE|FALSE>
+	Setting this to TRUE will disable the hiding of usernames. This
+	option is discouraged.
+	Default: FALSE
 
 sitepath_dir <PATH>
 	This is used as a base for datacleaner, when it's run as a cscript.

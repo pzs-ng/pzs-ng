@@ -733,6 +733,9 @@ printf("#define show_stats_from_pos2_only               %s\n", (show_stats_from_
 #ifndef show_user_info_is_defaulted
 printf("#define show_user_info                          %s\n", (show_user_info == FALSE ? "FALSE" : "TRUE"));
 #endif
+#ifndef show_users_in_group_dirs_is_defaulted
+printf("#define show_users_in_group_dirs                %s\n", (show_users_in_group_dirs == FALSE ? "FALSE" : "TRUE"));
+#endif
 #ifndef sitepath_dir_is_defaulted
 printf("#define sitepath_dir                            %s\n", stringify(sitepath_dir));
 #endif
@@ -1087,6 +1090,7 @@ printf("#define short_sitename                          %s\n", stringify(short_s
 printf("#define show_group_info                         %s\n", (show_group_info == FALSE ? "FALSE" : "TRUE"));
 printf("#define show_stats_from_pos2_only               %s\n", (show_stats_from_pos2_only == FALSE ? "FALSE" : "TRUE"));
 printf("#define show_user_info                          %s\n", (show_user_info == FALSE ? "FALSE" : "TRUE"));
+printf("#define show_users_in_group_dirs                %s\n", (show_users_in_group_dirs == FALSE ? "FALSE" : "TRUE"));
 printf("#define sitepath_dir                            %s\n", stringify(sitepath_dir));
 printf("#define sleep_on_bad                            %s\n", stringify(sleep_on_bad));
 printf("#define spaces_to_dots                          %s\n", (spaces_to_dots == FALSE ? "FALSE" : "TRUE"));

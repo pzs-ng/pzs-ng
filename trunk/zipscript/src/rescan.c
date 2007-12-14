@@ -531,10 +531,12 @@ main(int argc, char *argv[])
 						snprintf(g.v.user.name, 18, "%s", hide_uname);
 						d_log("rescan:    Changing username\n");
 					}
+#if (show_users_in_group_dirs == FALSE)
 					if ((int)strlen(hide_uname) == 0) {
 						d_log("rescan:    Making username = groupname\n");
 						snprintf(g.v.user.name, 18, "%s", g.v.user.group);
 					}
+#endif
 				}
 
 				if (!rescan_quick || (g.l.race && !match_file(g.l.race, dp->d_name)))

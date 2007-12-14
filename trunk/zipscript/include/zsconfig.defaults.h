@@ -1135,6 +1135,11 @@
 #define show_user_info                          TRUE
 #endif
 
+#ifndef show_users_in_group_dirs
+#define show_users_in_group_dirs_is_defaulted
+#define show_users_in_group_dirs                FALSE
+#endif
+
 #ifndef sitepath_dir
 #define sitepath_dir_is_defaulted
 #define sitepath_dir                            "/site/"
