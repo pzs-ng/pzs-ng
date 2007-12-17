@@ -5,6 +5,8 @@
  * Fixed USAGE spelling error - Turranius 2004-01-04
  *
  * Modded/stripped for use with pzs-ng - psxc 2004-07-14
+ * Fixed issues on 64bit - DuReX 2007-12-17
+ *
  */
 
 #include <stdio.h>
@@ -25,11 +27,20 @@
 # include "strl/strl.h"
 #endif
 
+/* Force structure alignment to 4 bytes (for 64bit support). */
+#pragma pack(push, 4)
+
+/* 32-bit time values (for 64bit support). */
+typedef int32_t time32_t;
+
 struct dupeentry {
 	char		filename  [256];
-	time_t		timeup;
+	time32_t		timeup;
 	char		uploader  [25];
 };
+
+/* Restore default structure alignment for non-critical structures. */
+#pragma pack(pop)
 
 int 
 main(int argc, char *argv[])
