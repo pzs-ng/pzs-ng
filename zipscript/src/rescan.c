@@ -110,6 +110,13 @@ main(int argc, char *argv[])
             return 0;
         }
         argnum = 6;
+        
+        if (chdir(argv[5]) != 0)
+        {
+            printf("Could not chdir to <cwd = '%s'>, ftpd agnostic mode: %s\n", argv[5], strerror(errno));
+            d_log("Could not chdir to <cwd = '%s'>, ftpd agnostic mode: %s\n", argv[5], strerror(errno));
+            return 1;
+        }
 #else
 	argnum = 1;
 #endif
@@ -208,7 +215,7 @@ main(int argc, char *argv[])
 		snprintf(g.v.sectionname, 127, getenv("SECTION"));
 	}
 #else
-        snprintf(g.v.sectionname, 127, argv[5]);
+        snprintf(g.v.sectionname, 127, argv[4]);
 #endif
 
 	g.l.race = ng_realloc2(g.l.race, n = (int)strlen(g.l.path) + 12 + sizeof(storage), 1, 1, 1);
@@ -688,7 +695,7 @@ void print_syntax(int chdir_allowed)
 {
     printf("PZS-NG Rescan %s options:\n\n", ng_version);
 #ifndef USING_GLFTPD
-    printf("  [non-glftpd] The first 5 arguments must be: <user> <group> <tagline> <speed> <section>, after that - normal options (or none)\n");
+    printf("  [non-glftpd] The first 4 arguments must be: <user> <group> <tagline> <section> <current working dir>, after that - normal options (or none)\n");
 #endif
     printf("  --quick         - scan in quick mode - only files not previously marked as ok by the zipscript is scanned\n");
     printf("  --normal        - scan in normal mode - all files will be rescanned regardless of their status\n");
