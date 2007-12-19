@@ -18,6 +18,8 @@ v1.0.10 --> 1.0.xx :
 		- You can now have multiple completebars. In config, separate them by newline.
 		- Privchannel invites now work correctly for users with multiple groups.
 		- new option by request: show_users_in_group_dirs - option to not hide usernames.
+                - pzs-ng should now work fine under wzdftpd and cuftpd. Use the following to configure:
+                  ./configure --with-install-path=/path/to/install --disable-glftpd-specific
 
 v1.0.9  --> 1.0.10 : (r2339)
 		- psxc-imdb v2.8.
