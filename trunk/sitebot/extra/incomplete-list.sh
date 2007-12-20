@@ -26,6 +26,9 @@ MV:/site/incoming/musicvideos/
 # uncomment the ''botconf='' directive below.
 #botconf=/path/to/sitebot/pzs-ng/dZSbot.conf
 
+# Set this to your complete line (non-dynamic part)
+releaseComplete="Complete -"
+
 # set this to 1 if you wish to announce sections where no incompletes are found.
 verbose=0
 
@@ -62,11 +65,19 @@ for section in $sections; do
     else
       for result in $results; do
         secrel="`echo $result/ | sed "s|$glroot$path||" | tr -s '/'`"
+        comp="`ls -1 $result/ | grep "$releaseComplete"`"
+        percent="`echo $comp | cut -d ' ' -f 4` complete"
+
+        if [ $percent == " complete" ]; then
+           percent="incomplete"
+        fi
+
 	if [ $no_strict ] || [ "`dirname $secrel`/" = "`echo $secpath/ | tr -s '/'`" ]; then 
-          echo "$secname: ${bold}${secrel}${bold} is incomplete."
+          echo "$secname: ${bold}${secrel}${bold} is $percent."
 	fi
       done
     fi
  done
 done
+echo "No more incompletes found."
 IFS="$IFSORIG"
