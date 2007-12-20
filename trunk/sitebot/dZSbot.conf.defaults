@@ -117,8 +117,10 @@ set local_devices_only  "TRUE"
 
 # Definition of hd devices, for free space. Format: "disk sections"
 # The 'sections' are purely for cosmetic use.
+# HINT: You can also use the mountpoint instead of the device name (see section ARCHIVE below).
 set device(0)           "/dev/ad0s1f MP3"
 #set device(1)          "/dev/ad0s1e ISO"
+#set device(2)          "/glftpd/site/archive ARCHIVE"
 
 # Max length of devices before splitting to new line (note: you need to take
 # the rest of the announce.FREE into account) Also, it will output the total
