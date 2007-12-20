@@ -2,6 +2,8 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.10 --> 1.0.xx :
+    - Improved !incompletes to show percent missing.
+    - Fix to ng_free for using mountpoint along with device.
 		- don't use the '$' cookie in the zipscript statusbars (fixed a segfault in
 		  in case you do - thanx sked for the report)
 		- fixed a bug with chmod_completebar.
@@ -75,6 +77,7 @@ v1.0.7  --> 1.0.8  : (r2252)
 		- added new variable/announce in bot on dupe releaseupload.
 		- fixed bug on sfv creation/rescanning when case in sfv does not match
 		  case of files.
+
 v1.0.6  --> 1.0.7  : (r2230)
 		- updated libcopy to v1.2 - fix for openbsd4.0.
 		- added support for not sorting audio in certain dirs.
@@ -125,6 +128,7 @@ v1.0.5  --> 1.0.6  : (r2195)
 		- New option in zsconfig.h - incomplete_sfv_indicator - missing-indicator.
 		- sort by group fixed - but GRPNaME and grpNAME in the same dir. Groupname from
 		  the first release sets the default.
+
 v1.0.4  --> 1.0.5  : (r2170)
 		- additions/fixes in meij's plugins.
 		- added cr0que's mod to move detection of VA mp3 artist to audiosort.c.
@@ -134,6 +138,7 @@ v1.0.4  --> 1.0.5  : (r2170)
 		  lookups (previously only the "main" channel(s) would get the result).
 		- fixed the malloc()/free() bug introduced with v1.0.3 completely.
 		- fixed lastbind problem in GameFAQ and TVRage plugins with encrypted sitechans.
+
 v1.0.3  --> 1.0.4  : (r2149)
 		- fixed a malloc()/free() bug introduced with v1.0.3 that made the zs segfault.
 		- don't print zipscript_header if it's zero in length.
@@ -141,6 +146,7 @@ v1.0.3  --> 1.0.4  : (r2149)
 		- added more .diz types to be recognized.
 		- updated meij's GameFAQ plugin to v.1.5
 		- updated meij's TVRage plugin to v1.3
+
 v1.0.2  --> 1.0.3  : (r2137)
 		- added meij's TVRage plugin (v1.1)
 		- added support for showing pid of users in sitewho (only in --raw, non-ss5 mode)
@@ -149,6 +155,7 @@ v1.0.2  --> 1.0.3  : (r2137)
 		- New option in zsconfig.h - deny_resume_sfv - deny resumed/overwritten sfv files
 		- New option in zsconfig.h - audio_language_sort - sort mp3 by language
 		- New option in zsconfig.h - audio_language_path - where to put mp3 symlinks
+
 v1.0.1b --> 1.0.2  : (r2130)
 		- Fixed a coredump on amd64 in mp3info.
 		- Fixed a coredump on amd64 in sitewho.
@@ -522,11 +529,6 @@ v0.6.1	--> 1.0.0  : The changes from the original project-zs by d1 is
 
 			A few scripts have been removed, other added and some
 			revised/rewritten/replaced.
-
-
-
-
-
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
