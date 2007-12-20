@@ -1131,8 +1131,8 @@ proc ng_free {nick uhost hand chan arg} {
 
 	foreach line [split $output "\n"] {
 		foreach {name value} [array get tmpdev] {
-			if {[string equal [lindex $line 0] [lindex $value 0]]} {
-				if {[scan $line "%s %lu %lu %lu" devName devSize devUsed devFree] != 4} {
+			if {([string equal [lindex $line 0] [lindex $value 0]]) || ([string equal [lindex $line 5] [lindex $value 0]])} {
+				if {[scan $line "%s %lu %lu %lu %s %s" devName devSize devUsed devFree devPercent devMount] != 6} {
 					putlog "dZSbot warning: Invalid \"df -$flags\" line: $line"
 					continue
 				}
