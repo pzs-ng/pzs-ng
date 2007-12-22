@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.10 --> 1.0.xx :
+		- fixed a typo with complete_bar and chmod_completebar (tnx losty)
 		- new dZSbot.conf option: ftpd_type. this should be set to "other" if you're
 		  running something other than glftpd.
 		- added improvements to !incompletes showing percent missing.
