@@ -232,10 +232,6 @@ main(int argc, char **argv)
         if (!g.v.file.speed)
                 g.v.file.speed = 1;
 
-#if (debug_announce == TRUE)
-        printf("zipscript-c: DEBUG: Speed: %dkb/s (%skb/s)\n",  g.v.file.speed, getenv("SPEED"));
-#endif
-
         d_log("zipscript-c: Reading section from arg (%s)\n", argv[7]);
         snprintf(g.v.sectionname, 127, argv[7]);
         g.v.section = 0;
@@ -314,8 +310,8 @@ main(int argc, char **argv)
 			ng_free(temp_p_free);
 		}
 	}
-	g.v.file.speed *= 1024;
 #endif
+	g.v.file.speed *= 1024;
 
 	d_log("zipscript-c: Checking the file size of %s\n", g.v.file.name);
 	if (stat(g.v.file.name, &fileinfo)) {
