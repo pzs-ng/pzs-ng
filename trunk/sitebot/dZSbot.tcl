@@ -293,10 +293,9 @@ proc readlog {} {
 			continue
 		}
 		## The regex pattern to use for the logfile
+		## - means "use next regex"
 		switch -exact -- $logtype {
 			0 {set regex {^.+ \d+:\d+:\d+ \d{4} (\S+): (.+)}}
-			# A dash means "use next patterns command", i.e. what 
-			# 2 has in {}
 			1 -
 			2 {set regex {^.+ \d+:\d+:\d+ \d{4} \[(\d+)\s*\] (.+)}}
 			default {putlog "dZSbot error: Internal error, unknown log type ($logtype)."; continue}
