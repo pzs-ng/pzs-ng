@@ -66,23 +66,33 @@ interp alias {} isfalse {} string is false -strict
 bind join -|- * ng_welcome
 
 proc bindcommands {cmdpre} {
+	global ftpd_type 
+
 	bind pub -|- [set cmdpre]bnc         ng_bnc
+	bind pub -|- [set cmdpre]df          ng_free
+	bind pub -|- [set cmdpre]free        ng_free
+	bind pub -|- [set cmdpre]help        ng_help
+	bind pub -|- [set cmdpre]inc         ng_incompletes
+	bind pub -|- [set cmdpre]incomplete  ng_incompletes
+	bind pub -|- [set cmdpre]incompletes ng_incompletes
+	bind pub -|- [set cmdpre]uptime      ng_uptime
+
+	# The binds below here are only working under glftpd :(
+	# We need to find / create equivilant tools & TCL-snippets
+	# to fetch relevant information for other $ftpd_types.
+	# Perhaps if you can assign a namespace to a variable, 
+	# then we can have namespace per ftpd.
+	if {![string equal -nocase "glftpd" $ftpd_type]} { return; }
+
 	bind pub -|- [set cmdpre]bw          ng_bw
 	bind pub -|- [set cmdpre]bwdn        ng_bwdn
 	bind pub -|- [set cmdpre]bwup        ng_bwup
-	bind pub -|- [set cmdpre]df          ng_free
-	bind pub -|- [set cmdpre]free        ng_free
 	bind pub -|- [set cmdpre]dn          ng_leechers
 	bind pub -|- [set cmdpre]down        ng_leechers
 	bind pub -|- [set cmdpre]downloaders ng_leechers
 	bind pub -|- [set cmdpre]leechers    ng_leechers
-	bind pub -|- [set cmdpre]dupe        ng_search
-	bind pub -|- [set cmdpre]help        ng_help
 	bind pub -|- [set cmdpre]idle        ng_idlers
 	bind pub -|- [set cmdpre]idlers      ng_idlers
-	bind pub -|- [set cmdpre]inc         ng_incompletes
-	bind pub -|- [set cmdpre]incomplete  ng_incompletes
-	bind pub -|- [set cmdpre]incompletes ng_incompletes
 	bind pub -|- [set cmdpre]new         ng_new
 	bind pub -|- [set cmdpre]nukes       ng_nukes
 	bind pub -|- [set cmdpre]search      ng_search
@@ -90,7 +100,6 @@ proc bindcommands {cmdpre} {
 	bind pub -|- [set cmdpre]unnukes     ng_unnukes
 	bind pub -|- [set cmdpre]up          ng_uploaders
 	bind pub -|- [set cmdpre]uploaders   ng_uploaders
-	bind pub -|- [set cmdpre]uptime      ng_uptime
 	bind pub -|- [set cmdpre]who         ng_who
 
 	bind pub -|- [set cmdpre]gpad    [list ng_stats "-d" "-A"]
@@ -286,7 +295,10 @@ proc readlog {} {
 		## The regex pattern to use for the logfile
 		switch -exact -- $logtype {
 			0 {set regex {^.+ \d+:\d+:\d+ \d{4} (\S+): (.+)}}
-			1 - 2 {set regex {^.+ \d+:\d+:\d+ \d{4} \[(\d+)\s*\] (.+)}}
+			# A dash means "use next patterns command", i.e. what 
+			# 2 has in {}
+			1 -
+			2 {set regex {^.+ \d+:\d+:\d+ \d{4} \[(\d+)\s*\] (.+)}}
 			default {putlog "dZSbot error: Internal error, unknown log type ($logtype)."; continue}
 		}
 		## Read the log data
@@ -1931,6 +1943,19 @@ foreach {filename filepath} [array get binary] {
 		if {[string equal "PING" $filename] && ![istrue $bnc(PING)]} {continue}
 	}
 	if {![istrue $enable_irc_invite] && [string equal "PASSCHK" $filename]} {continue}
+        if {![string equal -nocase "glftpd" $ftpd_type]} {
+            # This means we skip checking everything
+            # that isn't matched. (because they're not
+            # used on non-glftpd)
+            switch -- $filename {
+                "CURL" -
+                "DF" -
+                "INCOMPLETE" -
+                "PING" -
+                "UPTIME" { }
+                default { continue; }
+            }
+        }
 
 	if {![file executable $filepath]} {
 		putlog "dZSbot error: Invalid path/permissions for $filename ($filepath)."
@@ -1938,11 +1963,13 @@ foreach {filename filepath} [array get binary] {
 	}
 }
 
-foreach {filename filepath} [array get location] {
-	if {![file exists $filepath]} {
-		putlog "dZSbot error: Invalid path for for $filename ($filepath)."
-		set dzerror 1
-	}
+if {[string equal -nocase "glftpd" $ftpd_type]} {
+    foreach {filename filepath} [array get location] {
+            if {![file exists $filepath]} {
+                    putlog "dZSbot error: Invalid path for for $filename ($filepath)."
+                    set dzerror 1
+            }
+    }
 }
 
 ## Logs to parse
@@ -1966,7 +1993,7 @@ if {!$logid} {
 }
 
 ## Detect glftpd version
-if {[string equal -nocase "AUTO" $use_glftpd2]} {
+if {[string equal -nocase "glftpd" $ftpd_type] && [string equal -nocase "AUTO" $use_glftpd2]} {
 	if {![info exists binary(GLFTPD)]} {
 		die "dZSbot: you did not thoroughly edit the $scriptpath/dZSbot.conf file (hint: binary(GLFTPD))."
 	}
@@ -1992,7 +2019,7 @@ if {![info exists invite_channels] && [info exists chanlist(INVITE)]} {
 	set invite_channels $chanlist(INVITE)
 }
 
-if {[istrue $enable_irc_invite]} {
+if {[istrue $enable_irc_invite] && [string equal -nocase "glftpd" $ftpd_type]} {
 	bind msg -|- !invite ng_invite
 }
 
