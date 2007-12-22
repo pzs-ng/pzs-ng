@@ -161,7 +161,9 @@ if {[istrue $bindnopre]} {
 }
 
 ## Bind the user defined command prefix.
-bindcommands $cmdpre
+foreach pre $cmdpre {
+    bindcommands $pre
+}
 
 #################################################################################
 # Internal Commands                                                             #
@@ -718,7 +720,9 @@ proc glgroupids {} {
 
 proc replacebasic {message section} {
 	global cmdpre sitename
-	return [string map [list "%cmdpre" $cmdpre "%section" $section\
+        set pre $cmdpre
+        if {[llength $cmdpre] > 1} { set pre "<[join $cmdpre |]>" }
+	return [string map [list "%cmdpre" $pre "%section" $section\
 		"%sitename" $sitename "%bold" \002 "%uline" \037 "%color" \003] $message]
 }
 
@@ -908,7 +912,7 @@ proc ng_invite {nick host hand argv} {
 #################################################################################
 
 proc ng_welcome {nick uhost hand chan} {
-	global announce disable chanlist sitename cmdpre
+	global announce disable chanlist
 	if {$disable(WELCOME) == 1 || [isbotnick $nick]} {return}
 
 	foreach c_chan $chanlist(WELCOME) {
@@ -1197,7 +1201,7 @@ proc ng_free {nick uhost hand chan arg} {
 }
 
 proc ng_incompletes {nick uhost hand chan arg} {
-	global sitename binary
+	global binary
 	checkchan $nick $chan
 
 	#puthelp "PRIVMSG $chan :Processing incomplete list for $nick."
