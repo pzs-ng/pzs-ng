@@ -62,6 +62,9 @@ set enable_irc_invite   "TRUE"
 # it to "TRUE" or "FALSE".
 set use_glftpd2         "AUTO"
 
+# Are you using something other than glftpd?
+set ftpd_type           "glftpd"
+
 # Sitename is for the %sitename-cookie in announces.
 set sitename            "pzs-ng"
 

@@ -2,6 +2,8 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.0.10 --> 1.0.xx :
+		- new dZSbot.conf option: ftpd_type. this should be set to "other" if you're
+		  running something other than glftpd.
 		- added improvements to !incompletes showing percent missing.
 		- added feature to ng_free for using mountpoint along with device.
 		- don't use the '$' cookie in the zipscript statusbars (fixed a segfault in
