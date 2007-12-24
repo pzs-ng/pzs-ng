@@ -1,7 +1,9 @@
 PZS-NG CHANGELOG
 ----------------
 
-v1.0.10 --> 1.0.xx :
+v1.1.0 --> 1.1.xx :
+
+v1.0.10 --> 1.1.0 :
 		- fixed a typo with complete_bar and chmod_completebar (tnx losty)
 		- new dZSbot.conf option: ftpd_type. this should be set to "other" if you're
 		  running something other than glftpd.
