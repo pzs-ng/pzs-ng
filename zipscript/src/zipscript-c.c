@@ -1448,7 +1448,7 @@ main(int argc, char **argv)
 		if (g.v.total.users > 0) {
 			d_log("zipscript-c: Sorting race stats\n");
 			sortstats(&g.v, g.ui, g.gi);
-#if ( get_user_stats == TRUE && defined(USE_GLFTPD) )
+#if ( get_user_stats == TRUE && defined(USING_GLFTPD) )
 			d_log("zipscript-c: Reading day/week/month/all stats for racers\n");
 			d_log("zipscript-c: stat section: %i\n", g.v.section);
 			get_stats(&g.v, g.ui);
