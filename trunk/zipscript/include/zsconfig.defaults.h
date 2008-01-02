@@ -882,7 +882,7 @@
 
 #ifndef message_header
 #define message_header_is_defaulted
-#define message_header                          ".-----------------====---------------------------== PZS-NG v1.0 ===--.\n"
+#define message_header                          ".-----------------====---------------------------== PZS-NG v1.1 ===--.\n"
 #endif
 
 #ifndef message_mp3
