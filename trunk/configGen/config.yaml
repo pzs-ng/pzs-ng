@@ -852,7 +852,7 @@ options:
         comment: |-
             Another way to restrict mp3-releases is by year. Define here a list
             of years allowed on site. The list should be comma-separated.
-        default: '"2004,2005,2006,2007"'
+        default: '"2005,2006,2007,2008"'
 
     audio_year_check:
         type: boolean

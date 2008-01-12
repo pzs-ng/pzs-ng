@@ -180,7 +180,7 @@ allowed_types_exemption_dirs <PATHS>
 allowed_years <STRING>
 	Another way to restrict mp3-releases is by year. Define here a list
 	of years allowed on site. The list should be comma-separated.
-	Default: "2004,2005,2006,2007"
+	Default: "2005,2006,2007,2008"
 
 always_scan_audio_syms <TRUE|FALSE>
 	On cleanup symlinks are removed. However, if cleanup is used as a
