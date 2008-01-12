@@ -92,7 +92,7 @@
 
 #ifndef allowed_years
 #define allowed_years_is_defaulted
-#define allowed_years                           "2004,2005,2006,2007"
+#define allowed_years                           "2005,2006,2007,2008"
 #endif
 
 #ifndef always_scan_audio_syms
@@ -882,7 +882,7 @@
 
 #ifndef message_header
 #define message_header_is_defaulted
-#define message_header                          ".-----------------====---------------------------== PZS-NG v1.1 ===--.\n"
+#define message_header                          ".-----------------====---------------------------== PZS-NG v1.0 ===--.\n"
 #endif
 
 #ifndef message_mp3

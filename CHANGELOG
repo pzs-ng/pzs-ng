@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.1.0 --> 1.1.xx :
+		- changed default allowed_years to include 2008 and exclude 2004
 
 v1.0.10 --> 1.1.0 :
 		- fixed a typo with complete_bar and chmod_completebar (tnx losty)
