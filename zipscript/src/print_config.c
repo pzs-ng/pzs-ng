@@ -646,15 +646,6 @@ printf("#define progressmeter                           %s\n", stringify(progres
 #ifndef progressmeter_mp3_is_defaulted
 printf("#define progressmeter_mp3                       %s\n", stringify(progressmeter_mp3));
 #endif
-#ifndef racersmsg_is_defaulted
-printf("#define racersmsg                               %s\n", stringify(racersmsg));
-#endif
-#ifndef racersplit_is_defaulted
-printf("#define racersplit                              %s\n", stringify(racersplit));
-#endif
-#ifndef racersplit_prior_is_defaulted
-printf("#define racersplit_prior                        %s\n", stringify(racersplit_prior));
-#endif
 #ifndef rar_completebar_is_defaulted
 printf("#define rar_completebar                         %s\n", stringify(rar_completebar));
 #endif
@@ -1061,9 +1052,6 @@ printf("#define program_gid                             %s\n", stringify(program
 printf("#define program_uid                             %s\n", stringify(program_uid));
 printf("#define progressmeter                           %s\n", stringify(progressmeter));
 printf("#define progressmeter_mp3                       %s\n", stringify(progressmeter_mp3));
-printf("#define racersmsg                               %s\n", stringify(racersmsg));
-printf("#define racersplit                              %s\n", stringify(racersplit));
-printf("#define racersplit_prior                        %s\n", stringify(racersplit_prior));
 printf("#define rar_completebar                         %s\n", stringify(rar_completebar));
 printf("#define realtime_group_body                     %s\n", stringify(realtime_group_body));
 printf("#define realtime_group_footer                   %s\n", stringify(realtime_group_footer));

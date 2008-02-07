@@ -1205,25 +1205,6 @@ progressmeter_mp3 <STRING>
 	This is for mp3 releases only.
 	Default: "[%V] - %3.0p%% Complete - (%w) [%Z]"
 
-racersmsg <STRING>
-	This is a cookie formatted string containing info of the racers. This
-	string will be used for each racer in a race.
-	THIS OPTION IS DEPRICATED - only edit if you know what you're doing.
-	Formatting of the racers are usually done by the bot.
-	Default: "{%u} {%g}"
-
-racersplit <STRING>
-	This is used to split racers in a race announce.
-	THIS OPTION IS DEPRICATED - only edit if you know what you're doing.
-	Splitting of the racers are usually done by the bot.
-	Default: ""
-
-racersplit_prior <STRING>
-	Used before any racers when listing the racers.
-	THIS OPTION IS DEPRICATED - only edit if you know what you're doing.
-	Splitting of the racers are usually done by the bot.
-	Default: ""
-
 rar_completebar <STRING|DISABLED>
 	When a release is complete, a 'complete bar' will be created. Define
 	here how it should look like on rar releases. If you want multiple
