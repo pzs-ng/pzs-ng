@@ -121,7 +121,7 @@
 #define vbrold						"vbr-old"
 
 /* This is just a shorthand to not have to repeat everything for each announce. */
-#define video_info "width: %D, height: %E, fps: %.3H, aspect: %.2;, type_long: \"%:\", type_short: \"%,\", audio_freq: \"{%`}\", audio_channels: \"{%=}\", audio_name: \"{%>}\", audio_codec: \"{%<}\""
+#define video_info "width: %D, height: %E, fps: %.3H, aspect: %.2;, type_long: \"%:\", type_short: \"%,\", audio_freq: \"%`\", audio_channels: \"%=\", audio_name: \"%>\", audio_codec: \"%<\""
 
 #define deny_double_msg		"{user: \"%U\", group: \"%G\", release: \"%r\", filename: \"%n\"}"
 #define deny_resumesfv_msg	"{user: \"%U\", group: \"%G\", release: \"%r\", filename: \"%n\"}"
@@ -160,9 +160,9 @@
 #define racersplit		", "	/* Put between racers in the %R cookie */
 #define racersmsg		"{user: \"%u\", group: \"%g\"}"	/* Put in %R cookie */
 
-#define audio_common            "genre: \"%w\", year: %Y, bitrate: %X, sampling: %z, mode: \"%Q\", artist: \"%x\", album: \"%W\", title: \"%y\", codec: \"%h\", layer: \"%q\"" /* Helper define only, not used in zipscript directly. */
-#define audio_vbr		"{" audio_common ", audio: \"VBR\", a_stream: \"%I\", a_version: \"%i\", vbr_oldnew: \"%@\", vbr_quality: \"%_\", vbr_minimum_bitrate: \"%/\", vbr_noiseshaping: \"%\\\", vbr_steremode: \"%(\", vbr_unwise: \"%)\", vbr_source: \"%|\"}"	/* Put in %j cookie */
-#define audio_cbr		"{" audio_common "}"			/* Put in %j cookie */
+#define audio_info              "genre: \"%w\", year: %Y, bitrate: %X, sampling: %z, mode: \"%Q\", artist: \"%x\", album: \"%W\", title: \"%y\", codec: \"%h\", layer: \"%q\"" /* Helper define only, not used in zipscript directly. */
+#define audio_vbr		"{" audio_info ", audio: \"VBR\", a_stream: \"%I\", a_version: \"%i\", vbr_oldnew: \"%@\", vbr_quality: \"%_\", vbr_minimum_bitrate: \"%/\", vbr_noiseshaping: \"%\\\", vbr_steremode: \"%(\", vbr_unwise: \"%)\", vbr_source: \"%|\"}"	/* Put in %j cookie */
+#define audio_cbr		"{" audio_info "}"			/* Put in %j cookie */
 
 /*
  * Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 &
@@ -179,7 +179,7 @@
 #define audio_sfv		DISABLED
 #endif
 #if ( disable_audio_update == FALSE )
-#define audio_update		"{user: \"%U\", group: \"%G\", expected_files: %f, speed: %.0S, {%.1e} filename: \"%n\", release: \"%r\", tagline: \"%K\", audio_info: %j, eta: \"%$\"}"
+#define audio_update		"{user: \"%U\", group: \"%G\", expected_files: %f, speed: %.0S, estimated_size: %.1e, filename: \"%n\", release: \"%r\", tagline: \"%K\", audio_info: %j, eta: \"%$\"}"
 #else
 #define audio_update		DISABLED
 #endif
@@ -222,7 +222,7 @@
 #define video_sfv		DISABLED
 #endif
 #if ( disable_video_update == FALSE )
-#define video_update		"{user: \"%U\", group: \"%G\", expected_files: %f, speed: %.0S, {%.1e} filename: \"%n\", release: \"%r\", tagline: \"%K\", eta: \"%$\", video_info: {" video_info "}}"
+#define video_update		"{user: \"%U\", group: \"%G\", expected_files: %f, speed: %.0S, estimated_size: %.1e, filename: \"%n\", release: \"%r\", tagline: \"%K\", eta: \"%$\", video_info: {" video_info "}}"
 #else
 #define video_update		DISABLED
 #endif
@@ -264,7 +264,7 @@
 #define rar_sfv			DISABLED
 #endif
 #if ( disable_rar_update == FALSE )
-#define rar_update		"{user: \"%U\", group: \"%G\", expected_files: %f, speed: %.0S, {%.1e} filename: \"%n\", release: \"%r\", tagline: \"%K\", compression: \"%J\", eta: \"%$\"}"
+#define rar_update		"{user: \"%U\", group: \"%G\", expected_files: %f, speed: %.0S, estimated_size: %.1e, filename: \"%n\", release: \"%r\", tagline: \"%K\", compression: \"%J\", eta: \"%$\"}"
 #else
 #define rar_update		DISABLED
 #endif
@@ -306,7 +306,7 @@
 #define other_sfv		DISABLED
 #endif
 #if ( disable_other_update == FALSE )
-#define other_update		"{user: \"%U\", group: \"%G\", expected_files: %f, speed: %.0S, {%.1e} filename: \"%n\", release: \"%r\", tagline: \"%K\", eta: \"%$\"}"
+#define other_update		"{user: \"%U\", group: \"%G\", expected_files: %f, speed: %.0S, estimated_size: %.1e, filename: \"%n\", release: \"%r\", tagline: \"%K\", eta: \"%$\"}"
 #else
 #define other_update		DISABLED
 #endif
@@ -343,7 +343,7 @@
 #define zip_race		DISABLED
 #endif
 #if ( disable_zip_update == FALSE )
-#define zip_update		"{user: \"%U\", group: \"%G\", expected_files: %f, speed: %.0S, {%.1e} filename: \"%n\", release: \"%r\", tagline: \"%K\", eta: \"%$\"}"
+#define zip_update		"{user: \"%U\", group: \"%G\", expected_files: %f, speed: %.0S, estimated_size: %.1e, filename: \"%n\", release: \"%r\", tagline: \"%K\", eta: \"%$\"}"
 #else
 #define zip_update		DISABLED
 #endif
