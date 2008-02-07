@@ -149,15 +149,12 @@
 /* Special reformat cookies */
 #define fastestfile		"{%u} {%g} {%.3F}"	/* Put in %l cookie */
 #define slowestfile		"{%u} {%g} {%.3S}"	/* Put in %L cookie */
-#ifndef racersplit
-#define racersplit		""	/* Put between racers in the %R cookie */
-#endif
-#ifndef racersplit_prior
-#define racersplit_prior	""
-#endif
-#ifndef racersmsg
+
+#define racersplit		" "	/* Put between racers in the %R cookie */
+#define racersplit_prefix	""      /* Put before the first racer in the %R cookie */
+#define racersplit_postfix	""	/* Put after the last racer in the %R cookie */
 #define racersmsg		"{%u} {%g}"	/* Put in %R cookie */
-#endif
+
 #define audio_vbr		"{%w} {%Y} {%X} {%z} {%Q} {VBR} {%I} {%i} {%x} {%W} {%y} {%h} {%q} {%@} {%_} {%/} {%\\} {%(} {%)} {%|}"	/* Put in %j cookie */
 //#define audio_vbr		"{%w} {%Y} {%X} {%z} {%Q} {VBR} {%I} {%i} {%x} {%W} {%y} {%h} {%q} {%@} {%_} {%(} {%)} {%|}"	/* Put in %j cookie */
 #define audio_cbr		"{%w} {%Y} {%X} {%z} {%Q} {CBR} {%x} {%W} {%y} {%h} {%q}"			/* Put in %j cookie */

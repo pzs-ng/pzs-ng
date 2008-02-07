@@ -990,21 +990,6 @@
 #define progressmeter_mp3                       "[%V] - %3.0p%% Complete - (%w) [%Z]"
 #endif
 
-#ifndef racersmsg
-#define racersmsg_is_defaulted
-#define racersmsg                               "{%u} {%g}"
-#endif
-
-#ifndef racersplit
-#define racersplit_is_defaulted
-#define racersplit                              ""
-#endif
-
-#ifndef racersplit_prior
-#define racersplit_prior_is_defaulted
-#define racersplit_prior                        ""
-#endif
-
 #ifndef rar_completebar
 #define rar_completebar_is_defaulted
 #define rar_completebar                         "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"

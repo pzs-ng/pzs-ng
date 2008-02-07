@@ -1896,31 +1896,6 @@ options:
             announce.
         default: false
 
-    racersmsg:
-        type: string
-        comment: |-
-            This is a cookie formatted string containing info of the racers. This
-            string will be used for each racer in a race.
-            THIS OPTION IS DEPRICATED - only edit if you know what you're doing.
-            Formatting of the racers are usually done by the bot.
-        default: '"{%u} {%g}"'
-
-    racersplit:
-        type: string
-        comment: |-
-            This is used to split racers in a race announce.
-            THIS OPTION IS DEPRICATED - only edit if you know what you're doing.
-            Splitting of the racers are usually done by the bot.
-        default: '""'
-
-    racersplit_prior:
-        type: string
-        comment: |-
-            Used before any racers when listing the racers.
-            THIS OPTION IS DEPRICATED - only edit if you know what you're doing.
-            Splitting of the racers are usually done by the bot.
-        default: '""'
-
     chmod_completebar:
         type: boolean
         comment: |-

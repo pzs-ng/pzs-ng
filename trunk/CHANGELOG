@@ -1,10 +1,20 @@
 PZS-NG CHANGELOG
 ----------------
 
-v1.1.0 --> 1.1.xx :
+v1.1.0a --> 1.1.x :
 		- changed default allowed_years to include 2008 and exclude 2004
+                - we no longer manually add spaces between racers in sortstats()/racer_list,
+                  so racersplit is now per default " ". Neither do we add a space after
+                  racersplit_prior.
+                - renamed racersplit_prior to racersplit_prefix, and removed it from conf 
+                  (it's been deprecated for a while).
+                - removed racersplit & racersmsg from conf. (it's been deprecated for a while)
+                - added racersplit_postfix.
 
-v1.0.10 --> 1.1.0 :
+v1.1.0 --> 1.1.0a : (r2414)
+		- stats in announces were broken in v1.1.0, ``hotfix''.
+
+v1.0.10 --> 1.1.0 : (r2412)
 		- fixed a typo with complete_bar and chmod_completebar (tnx losty)
 		- new dZSbot.conf option: ftpd_type. this should be set to "other" if you're
 		  running something other than glftpd.
