@@ -121,7 +121,7 @@
 #define vbrold						"vbr-old"
 
 /* This is just a shorthand to not have to repeat everything for each announce. */
-#define video_info "width: %D, height: %E, fps: %.3H, aspect: %.2;, type_long: \"%:\", type_short: \"%,\", audio_freq: \"%`\", audio_channels: \"%=\", audio_name: \"%>\", audio_codec: \"%<\""
+#define video_info "width: %D, height: %E, fps: %.3H, aspect: %.2;, type_long: \"%:\", type_short: \"%,\", audio_freq: %`, audio_channels: %=, audio_name: \"%>\", audio_codec: \"%<\""
 
 #define deny_double_msg		"{user: \"%U\", group: \"%G\", release: \"%r\", filename: \"%n\"}"
 #define deny_resumesfv_msg	"{user: \"%U\", group: \"%G\", release: \"%r\", filename: \"%n\"}"
@@ -161,7 +161,7 @@
 #define racersmsg		"{user: \"%u\", group: \"%g\"}"	/* Put in %R cookie */
 
 #define audio_info              "genre: \"%w\", year: %Y, bitrate: %X, sampling: %z, mode: \"%Q\", artist: \"%x\", album: \"%W\", title: \"%y\", codec: \"%h\", layer: \"%q\"" /* Helper define only, not used in zipscript directly. */
-#define audio_vbr		"{" audio_info ", audio: \"VBR\", a_stream: \"%I\", a_version: \"%i\", vbr_oldnew: \"%@\", vbr_quality: \"%_\", vbr_minimum_bitrate: \"%/\", vbr_noiseshaping: \"%\\\", vbr_steremode: \"%(\", vbr_unwise: \"%)\", vbr_source: \"%|\"}"	/* Put in %j cookie */
+#define audio_vbr		"{" audio_info ", audio: \"VBR\", a_stream: \"%I\", a_version: \"%i\", vbr_oldnew: \"%@\", vbr_quality: %_, vbr_minimum_bitrate: \"%/\", vbr_noiseshaping: \"%\\\", vbr_steremode: \"%(\", vbr_unwise: \"%)\", vbr_source: \"%|\"}"	/* Put in %j cookie */
 #define audio_cbr		"{" audio_info "}"			/* Put in %j cookie */
 
 /*
