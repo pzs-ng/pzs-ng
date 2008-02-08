@@ -121,47 +121,47 @@
 #define vbrold						"vbr-old"
 
 /* This is just a shorthand to not have to repeat everything for each announce. */
-#define video_info "width: %D, height: %E, fps: %.3H, aspect: %.2;, type_long: \"%:\", type_short: \"%,\", audio_freq: %`, audio_channels: %=, audio_name: \"%>\", audio_codec: \"%<\""
+#define video_info "\"width\": %D, \"height\": %E, \"fps\": %.3H, \"aspect\": %.2;, \"type_long\": \"%:\", \"type_short\": \"%,\", \"audio_freq\": %`, \"audio_channels\": %=, \"audio_name\": \"%>\", \"audio_codec\": \"%<\""
 
-#define deny_double_msg		"{user: \"%U\", group: \"%G\", release: \"%r\", filename: \"%n\"}"
-#define deny_resumesfv_msg	"{user: \"%U\", group: \"%G\", release: \"%r\", filename: \"%n\"}"
-#define audio_cbr_warn_msg	"{user: \"%U\", group: \"%G\", bitrate: %X}"
-#define audio_year_warn_msg	"{user: \"%U\", group: \"%G\", year: %Y}"
-#define audio_genre_warn_msg	"{user: \"%U\", group: \"%G\", genre: %w}"
+#define deny_double_msg		"{\"user\": \"%U\", \"group\": \"%G\", \"release\": \"%r\", \"filename\": \"%n\"}"
+#define deny_resumesfv_msg	"{\"user\": \"%U\", \"group\": \"%G\", \"release\": \"%r\", \"filename\": \"%n\"}"
+#define audio_cbr_warn_msg	"{\"user\": \"%U\", \"group\": \"%G\", \"bitrate\": %X}"
+#define audio_year_warn_msg	"{\"user\": \"%U\", \"group\": \"%G\", \"year\": %Y}"
+#define audio_genre_warn_msg	"{\"user\": \"%U\", \"group\": \"%G\", \"genre\": %w}"
 
-#define sample_msg		"{user: \"%U\", group: \"%G\", " video_info "}"
+#define sample_msg		"{\"user\": \"%U\", \"group\": \"%G\", " video_info "}"
 
 #define pre_stats		"dummy_pre_stats"
 #define between_stats		"dummy_between_stats"
-#define post_stats		"{num_users: \"%u\", num_groups: \"%g\", num_files: %F, mbytes: %.1m, duration: \"%d\", average_speed: %.0A, average_speed_or_dontknow: %.0a, slowest_user: %l, fastest_user: %L, winning_user: %C0, winning_group: %c0}"
+#define post_stats		"{\"num_users\": \"%u\", \"num_groups\": \"%g\", \"num_files\": %F, \"mbytes\": %.1m, \"duration\": \"%d\", \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"slowest_user\": %l, \"fastest_user\": %L, \"winning_user\": %C0, \"winning_group\": %c0}"
 #define winner			"dummy_winner"
 #define loser			"dummy_loser"
 
 // %T: %u_racer_position %u_racer_name %g_racer_name %u_racer_mbytes %u_racer_files %u_racer_percent %u_racer_avgspeed %u_racer_dayup %u_racer_wkup %u_racer_monthup %u_racer_allup
 // %t: %g_racer_position %g_racer_name %g_racer_mbytes %g_racer_files %g_racer_percent %g_racer_avgspeed
 #ifdef _WITH_NOFORMAT
-#define user_top		"{position: %n, user: \"%u\", group: \"%g\", mbytes: %.1m, files: %f, percent: %.1p, speed: %.0s, dayup: %D, weekup: %W, monthup: %M, allup: %A}" /* Put in %T cookie (convert_user) */
-#define user_info		"{user: \"%u\", group: \"%g\", mbytes: %.1m, files: %f, percent: %.1p, speed: %.0s}" /* Put in %C[num]-cookie (convert_user) */
-#define group_top		"{position: %n, group: \"%g\", mbytes: %.1m, files: %f, percent: %.1p, speed: %.0s}" /* Put in %t cookie (convert_group) */
-#define group_info		"{group: \"%g\", mbytes: %.1m, files: %f, percent: %.1p, speed: %.0s}" /* Put in %c[num]-cookie (convert_group) */
+#define user_top		"{\"position\": %n, \"user\": \"%u\", \"group\": \"%g\", \"mbytes\": %.1m, \"files\": %f, \"percent\": %.1p, \"speed\": %.0s, \"dayup\": %D, \"weekup\": %W, \"monthup\": %M, \"allup\": %A}" /* Put in %T cookie (convert_user) */
+#define user_info		"{\"user\": \"%u\", \"group\": \"%g\", \"mbytes\": %.1m, \"files\": %f, \"percent\": %.1p, \"speed\": %.0s}" /* Put in %C[num]-cookie (convert_user) */
+#define group_top		"{\"position\": %n, \"group\": \"%g\", \"mbytes\": %.1m, \"files\": %f, \"percent\": %.1p, \"speed\": %.0s}" /* Put in %t cookie (convert_group) */
+#define group_info		"{\"group\": \"%g\", \"mbytes\": %.1m, \"files\": %f, \"percent\": %.1p, \"speed\": %.0s}" /* Put in %c[num]-cookie (convert_group) */
 #else
-#define user_top		"{position: %n, user: \"%-9u\", group: \"%-9g\", mbytes: %5.1m, files: %2f, percent: %5.1p, speed: %5.0s, dayup: %2D, weekup: %2W, monthup: %2M, allup: %2A}" /* Put in %T cookie (convert_user) */
-#define user_info		"{user: \"%u\", group: \"%g\", mbytes: %.1m, files: %f, percent: %.1p, speed: %.0s}" /* Put in %C[num]-cookie (convert_user) */
-#define group_top		"{position: %n, group: \"%-9g\", mbytes: %.1m, files: %f, percent: %.1p, speed: %5.0s}" /* Put in %t cookie (convert_group) */
-#define group_info		"{group: \"%g\", mbytes: %.1m, files: %-2f, percent: %.1p, speed: %5.0s}"
+#define user_top		"{\"position\": %n, \"user\": \"%-9u\", \"group\": \"%-9g\", \"mbytes\": %5.1m, \"files\": %2f, \"percent\": %5.1p, \"speed\": %5.0s, \"dayup\": %2D, \"weekup\": %2W, \"monthup\": %2M, \"allup\": %2A}" /* Put in %T cookie (convert_user) */
+#define user_info		"{\"user\": \"%u\", \"group\": \"%g\", \"mbytes\": %.1m, \"files\": %f, \"percent\": %.1p, \"speed\": %.0s}" /* Put in %C[num]-cookie (convert_user) */
+#define group_top		"{\"position\": %n, \"group\": \"%-9g\", \"mbytes\": %.1m, \"files\": %f, \"percent\": %.1p, \"speed\": %5.0s}" /* Put in %t cookie (convert_group) */
+#define group_info		"{\"group\": \"%g\", \"mbytes\": %.1m, \"files\": %-2f, \"percent\": %.1p, \"speed\": %5.0s}"
 #endif
 
 /* Special reformat cookies */
-#define fastestfile		"{user: \"%u\", group: \"%g\", speed: \"%.3F\"}"	/* Put in %l cookie */
-#define slowestfile		"{user: \"%u\", group: \"%g\", speed: \"%.3S\"}"	/* Put in %L cookie */
+#define fastestfile		"{\"user\": \"%u\", \"group\": \"%g\", \"speed\": \"%.3F\"}"	/* Put in %l cookie */
+#define slowestfile		"{\"user\": \"%u\", \"group\": \"%g\", \"speed\": \"%.3S\"}"	/* Put in %L cookie */
 
 #define racersplit_prefix	"" /* Put after the last racer in the %R cookie */
 #define racersplit_postfix	"" /* Put before the first racer in the %R cookie */
 #define racersplit		", "	/* Put between racers in the %R cookie */
-#define racersmsg		"{user: \"%u\", group: \"%g\"}"	/* Put in %R cookie */
+#define racersmsg		"{\"user\": \"%u\", \"group\": \"%g\"}"	/* Put in %R cookie */
 
-#define audio_info              "genre: \"%w\", year: %Y, bitrate: %X, sampling: %z, mode: \"%Q\", artist: \"%x\", album: \"%W\", title: \"%y\", codec: \"%h\", layer: \"%q\"" /* Helper define only, not used in zipscript directly. */
-#define audio_vbr		"{" audio_info ", audio: \"VBR\", a_stream: \"%I\", a_version: \"%i\", vbr_oldnew: \"%@\", vbr_quality: %_, vbr_minimum_bitrate: \"%/\", vbr_noiseshaping: \"%\\\", vbr_steremode: \"%(\", vbr_unwise: \"%)\", vbr_source: \"%|\"}"	/* Put in %j cookie */
+#define audio_info              "\"genre\": \"%w\", \"year\": %Y, \"bitrate\": %X, \"sampling\": %z, \"mode\": \"%Q\", \"artist\": \"%x\", \"album\": \"%W\", \"title\": \"%y\", \"codec\": \"%h\", \"layer\": \"%q\"" /* Helper define only, not used in zipscript directly. */
+#define audio_vbr		"{" audio_info ", \"audio\": \"VBR\", \"a_stream\": \"%I\", \"a_version\": \"%i\", \"vbr_oldnew\": \"%@\", \"vbr_quality\": %_, \"vbr_minimum_bitrate\": \"%/\", \"vbr_noiseshaping\": \"%\\\", \"vbr_steremode\": \"%(\", \"vbr_unwise\": \"%)\", \"vbr_source\": \"%|\"}"	/* Put in %j cookie */
 #define audio_cbr		"{" audio_info "}"			/* Put in %j cookie */
 
 /*
@@ -169,42 +169,42 @@
  * mpeg2.5 + layer1 & 2 can be added if needed
  */
 #if ( disable_audio_race == FALSE )
-#define audio_race		"{user: \"%U\", group: \"%G\", competitors: [%R], release: \"%r\", speed: %.0S, filename: \"%n\", duration: \"%d\", percent: %.1p, num_users: %u, num_groups: %g, num_files: %F, expected_files: %f, missing_files: %M, tagline: \"%K\", racers: [%B], eta: \"%$\"}"
+#define audio_race		"{\"user\": \"%U\", \"group\": \"%G\", \"competitors\": [%R], \"release\": \"%r\", \"speed\": %.0S, \"filename\": \"%n\", \"duration\": \"%d\", \"percent\": %.1p, \"num_users\": %u, \"num_groups\": %g, \"num_files\": %F, \"expected_files\": %f, \"missing_files\": %M, \"tagline\": \"%K\", \"racers\": [%B], \"eta\": \"%$\"}"
 #else
 #define audio_race		DISABLED
 #endif
 #if ( disable_audio_sfv == FALSE )
-#define audio_sfv		"{release: \"%r\", expected_files: %f, user: \"%U\", group: \"%G\", filename: \"%n\", tagline: \"%K\"}"
+#define audio_sfv		"{\"release\": \"%r\", \"expected_files\": %f, \"user\": \"%U\", \"group\": \"%G\", \"filename\": \"%n\", \"tagline\": \"%K\"}"
 #else
 #define audio_sfv		DISABLED
 #endif
 #if ( disable_audio_update == FALSE )
-#define audio_update		"{user: \"%U\", group: \"%G\", expected_files: %f, speed: %.0S, estimated_size: %.1e, filename: \"%n\", release: \"%r\", tagline: \"%K\", audio_info: %j, eta: \"%$\"}"
+#define audio_update		"{\"user\": \"%U\", \"group\": \"%G\", \"expected_files\": %f, \"speed\": %.0S, \"estimated_size\": %.1e, \"filename\": \"%n\", \"release\": \"%r\", \"tagline\": \"%K\", \"audio_info\": %j, \"eta\": \"%$\"}"
 #else
 #define audio_update		DISABLED
 #endif
 #if ( disable_audio_halfway == FALSE )
-#define audio_halfway		"{release: \"%r\", winning_user: %C0, winning_group: %c0, total_mbytes: %.0m, num_files: %F, percent: %.1p, average_speed: %.0A, average_speed_or_dontknow: %.0a, missing_files: %M, filename: \"%n\", num_users: %u, num_groups: %g, user: \"%U\", group: \"%G\", expected_files: %f, racers: [%B], eta: \"%$\"}"
+#define audio_halfway		"{\"release\": \"%r\", \"winning_user\": %C0, \"winning_group\": %c0, \"total_mbytes\": %.0m, \"num_files\": %F, \"percent\": %.1p, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"missing_files\": %M, \"filename\": \"%n\", \"num_users\": %u, \"num_groups\": %g, \"user\": \"%U\", \"group\": \"%G\", \"expected_files\": %f, \"racers\": [%B], \"eta\": \"%$\"}"
 #else
 #define audio_halfway		DISABLED
 #endif
 #if ( disable_audio_newleader == FALSE )
-#define audio_newleader		"{user: \"%U\", group: \"%G\", speed: %.0S, duration: \"%d\", num_files: %F, percent: %.1p, total_mbytes: %.0m, release: \"%r\", filename: \"%n\", num_users: %u, num_groups: %g, expected_files: %f, missing_files: %M, winning_user: %C0, winning_group: %c0, tagline: \"%K\", competitors: [%R], eta: \"%$\"}"
+#define audio_newleader		"{\"user\": \"%U\", \"group\": \"%G\", \"speed\": %.0S, \"duration\": \"%d\", \"num_files\": %F, \"percent\": %.1p, \"total_mbytes\": %.0m, \"release\": \"%r\", \"filename\": \"%n\", \"num_users\": %u, \"num_groups\": %g, \"expected_files\": %f, \"missing_files\": %M, \"winning_user\": %C0, \"winning_group\": %c0, \"tagline\": \"%K\", \"competitors\": [%R], \"eta\": \"%$\"}"
 #else
 #define audio_newleader		DISABLED
 #endif
 #if ( disable_audio_complete == FALSE )
-#define audio_complete		"{release: \"%r\", total_mbytes: %.0m, expected_files: %f, average_speed: %.0A, average_speed_or_dontknow: %.0a, duration: \"%d\", num_users: %u, num_groups: %g, audio_info: %j, slowest_user: %l, fastest_user: %L, winning_user: %C0, winning_group: %c0, filename: \"%n\", racers: [%B], racer_group: %t, racer_user: %T}"
+#define audio_complete		"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"num_users\": %u, \"num_groups\": %g, \"audio_info\": %j, \"slowest_user\": %l, \"fastest_user\": %L, \"winning_user\": %C0, \"winning_group\": %c0, \"filename\": \"%n\", \"racers\": [%B], \"racer_group\": %t, \"racer_user\": %T}"
 #else
 #define audio_complete		DISABLED
 #endif
 #if ( disable_audio_norace_halfway == FALSE )
-#define audio_norace_halfway	"{release: \"%r\", winning_user: %C0, winning_group: %c0, total_mbytes: %.0m, num_files: %F, percent: %.1p, average_speed: %.0A, average_speed_or_dontknow: %.0a, missing_files: %M, filename: \"%n\", num_users: %u, num_groups: %g, user: \"%U\", group: \"%G\", expected_files: %f, tagline: \"%K\", eta: \"%$\"}"
+#define audio_norace_halfway	"{\"release\": \"%r\", \"winning_user\": %C0, \"winning_group\": %c0, \"total_mbytes\": %.0m, \"num_files\": %F, \"percent\": %.1p, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"missing_files\": %M, \"filename\": \"%n\", \"num_users\": %u, \"num_groups\": %g, \"user\": \"%U\", \"group\": \"%G\", \"expected_files\": %f, \"tagline\": \"%K\", \"eta\": \"%$\"}"
 #else
 #define audio_norace_halfway	DISABLED
 #endif
 #if ( disable_audio_norace_complete == FALSE )
-#define audio_norace_complete	"{release: \"%r\", total_mbytes: %.0m, expected_files: %f, average_speed: %.0A, average_speed_or_dontknow: %.0a, duration: \"%d\", user: \"%U\", group: \"%G\", audio_info: %j, filename: \"%n\", tagline: \"%K\", racer_group: %t, racer_user: %T}"
+#define audio_norace_complete	"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"user\": \"%U\", \"group\": \"%G\", \"audio_info\": %j, \"filename\": \"%n\", \"tagline\": \"%K\", \"racer_group\": %t, \"racer_user\": %T}"
 #else
 #define audio_norace_complete	DISABLED
 #endif
@@ -212,175 +212,175 @@
 /* Video files - supports mpeg1/mpeg2 and various avi formats */
 
 #if ( disable_video_race == FALSE )
-#define video_race		"{user: \"%U\", group: \"%G\", competitors: [%R], release: \"%r\", speed: %.0S, filename: \"%n\", duration: \"%d\", percent: %.1p, num_users: %u, num_groups: %g, num_files: %F, expected_files: %f, missing_files: %M, tagline: \"%K\", racers: [%B], eta: \"%$\", video_info: {" video_info "}}"
+#define video_race		"{\"user\": \"%U\", \"group\": \"%G\", \"competitors\": [%R], \"release\": \"%r\", \"speed\": %.0S, \"filename\": \"%n\", \"duration\": \"%d\", \"percent\": %.1p, \"num_users\": %u, \"num_groups\": %g, \"num_files\": %F, \"expected_files\": %f, \"missing_files\": %M, \"tagline\": \"%K\", \"racers\": [%B], \"eta\": \"%$\", \"video_info\": {" video_info "}}"
 #else
 #define video_race		DISABLED
 #endif
 #if ( disable_video_sfv == FALSE )
-#define video_sfv		"{release: \"%r\", expected_files: %f, user: \"%U\", group: \"%G\", filename: \"%n\", tagline: \"%K\"}"
+#define video_sfv		"{\"release\": \"%r\", \"expected_files\": %f, \"user\": \"%U\", \"group\": \"%G\", \"filename\": \"%n\", \"tagline\": \"%K\"}"
 #else
 #define video_sfv		DISABLED
 #endif
 #if ( disable_video_update == FALSE )
-#define video_update		"{user: \"%U\", group: \"%G\", expected_files: %f, speed: %.0S, estimated_size: %.1e, filename: \"%n\", release: \"%r\", tagline: \"%K\", eta: \"%$\", video_info: {" video_info "}}"
+#define video_update		"{\"user\": \"%U\", \"group\": \"%G\", \"expected_files\": %f, \"speed\": %.0S, \"estimated_size\": %.1e, \"filename\": \"%n\", \"release\": \"%r\", \"tagline\": \"%K\", \"eta\": \"%$\", \"video_info\": {" video_info "}}"
 #else
 #define video_update		DISABLED
 #endif
 #if ( disable_video_halfway == FALSE )
-#define video_halfway		"{release: \"%r\", winning_user: %C0, winning_group: %c0, total_mbytes: %.0m, num_files: %F, percent: %.1p, average_speed: %.0A, average_speed_or_dontknow: %.0a, missing_files: %M, filename: \"%n\", num_users: %u, num_groups: %g, user: \"%U\", group: \"%G\", expected_files: %f, racers: [%B], eta: \"%$\", video_info: {" video_info "}}"
+#define video_halfway		"{\"release\": \"%r\", \"winning_user\": %C0, \"winning_group\": %c0, \"total_mbytes\": %.0m, \"num_files\": %F, \"percent\": %.1p, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"missing_files\": %M, \"filename\": \"%n\", \"num_users\": %u, \"num_groups\": %g, \"user\": \"%U\", \"group\": \"%G\", \"expected_files\": %f, \"racers\": [%B], \"eta\": \"%$\", \"video_info\": {" video_info "}}"
 #else
 #define video_halfway		DISABLED
 #endif
 #if ( disable_video_newleader == FALSE )
-#define video_newleader		"{user: \"%U\", group: \"%G\", speed: %.0S, duration: \"%d\", num_files: %F, percent: %.1p, total_mbytes: %.0m, release: \"%r\", filename: \"%n\", num_users: %u, num_groups: %g, expected_files: %f, missing_files: %M, winning_user: %C0, winning_group: %c0, tagline: \"%K\", competitors: [%R], eta: \"%$\", video_info: {" video_info "}}"
+#define video_newleader		"{\"user\": \"%U\", \"group\": \"%G\", \"speed\": %.0S, \"duration\": \"%d\", \"num_files\": %F, \"percent\": %.1p, \"total_mbytes\": %.0m, \"release\": \"%r\", \"filename\": \"%n\", \"num_users\": %u, \"num_groups\": %g, \"expected_files\": %f, \"missing_files\": %M, \"winning_user\": %C0, \"winning_group\": %c0, \"tagline\": \"%K\", \"competitors\": [%R], \"eta\": \"%$\", \"video_info\": {" video_info "}}"
 #else
 #define video_newleader		DISABLED
 #endif
 #if ( disable_video_complete == FALSE )
-#define video_complete		"{release: \"%r\", total_mbytes: %.0m, expected_files: %f, average_speed: %.0A, average_speed_or_dontknow: %.0a, duration: \"%d\", num_users: %u, num_groups: %g, slowest_user: %l, fastest_user: %L, winning_user: %C0, winning_group: %c0, filename: \"%n\", racers: [%B], racer_group: %t, racer_user: %T, video_info: {" video_info "}}"
+#define video_complete		"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"num_users\": %u, \"num_groups\": %g, \"slowest_user\": %l, \"fastest_user\": %L, \"winning_user\": %C0, \"winning_group\": %c0, \"filename\": \"%n\", \"racers\": [%B], \"racer_group\": %t, \"racer_user\": %T, \"video_info\": {" video_info "}}"
 #else
 #define video_complete		DISABLED
 #endif
 #if ( disable_video_norace_halfway == FALSE )
-#define video_norace_halfway	"{release: \"%r\", winning_user: %C0, winning_group: %c0, total_mbytes: %.0m, num_files: %F, percent: %.1p, average_speed: %.0A, average_speed_or_dontknow: %.0a, missing_files: %M, filename: \"%n\", num_users: %u, num_groups: %g, user: \"%U\", group: \"%G\", expected_files: %f, tagline: \"%K\", eta: \"%$\", video_info: {" video_info "}}"
+#define video_norace_halfway	"{\"release\": \"%r\", \"winning_user\": %C0, \"winning_group\": %c0, \"total_mbytes\": %.0m, \"num_files\": %F, \"percent\": %.1p, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"missing_files\": %M, \"filename\": \"%n\", \"num_users\": %u, \"num_groups\": %g, \"user\": \"%U\", \"group\": \"%G\", \"expected_files\": %f, \"tagline\": \"%K\", \"eta\": \"%$\", \"video_info\": {" video_info "}}"
 #else
 #define video_norace_halfway	DISABLED
 #endif
 #if ( disable_video_norace_complete == FALSE )
-#define video_norace_complete	"{release: \"%r\", total_mbytes: %.0m, expected_files: %f, average_speed: %.0A, average_speed_or_dontknow: %.0a, duration: \"%d\", user: \"%U\", group: \"%G\", filename: \"%n\", tagline: \"%K\", racer_group: %t, racer_user: %T, video_info: {" video_info "}}"
+#define video_norace_complete	"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"user\": \"%U\", \"group\": \"%G\", \"filename\": \"%n\", \"tagline\": \"%K\", \"racer_group\": %t, \"racer_user\": %T, \"video_info\": {" video_info "}}"
 #else
 #define video_norace_complete	DISABLED
 #endif
 
 /* RAR - allows usage of compression mode cookie (%J) for rarred releases */
 #if ( disable_rar_race == FALSE )
-#define rar_race		"{user: \"%U\", group: \"%G\", competitors: [%R], release: \"%r\", speed: %.0S, filename: \"%n\", duration: \"%d\", percent: %.1p, num_users: %u, num_groups: %g, num_files: %F, expected_files: %f, missing_files: %M, tagline: tagline: \"%K\", racers: [%B], compression: \"%J\", eta: \"%$\"}"
+#define rar_race		"{\"user\": \"%U\", \"group\": \"%G\", \"competitors\": [%R], \"release\": \"%r\", \"speed\": %.0S, \"filename\": \"%n\", \"duration\": \"%d\", \"percent\": %.1p, \"num_users\": %u, \"num_groups\": %g, \"num_files\": %F, \"expected_files\": %f, \"missing_files\": %M, \"tagline\": \"tagline\": \"%K\", \"racers\": [%B], \"compression\": \"%J\", \"eta\": \"%$\"}"
 #else
 #define rar_race		DISABLED
 #endif
 #if ( disable_rar_sfv == FALSE )
-#define rar_sfv			"{release: \"%r\", expected_files: %f, user: \"%U\", group: \"%G\", filename: \"%n\", tagline: \"%K\"}"
+#define rar_sfv			"{\"release\": \"%r\", \"expected_files\": %f, \"user\": \"%U\", \"group\": \"%G\", \"filename\": \"%n\", \"tagline\": \"%K\"}"
 #else
 #define rar_sfv			DISABLED
 #endif
 #if ( disable_rar_update == FALSE )
-#define rar_update		"{user: \"%U\", group: \"%G\", expected_files: %f, speed: %.0S, estimated_size: %.1e, filename: \"%n\", release: \"%r\", tagline: \"%K\", compression: \"%J\", eta: \"%$\"}"
+#define rar_update		"{\"user\": \"%U\", \"group\": \"%G\", \"expected_files\": %f, \"speed\": %.0S, \"estimated_size\": %.1e, \"filename\": \"%n\", \"release\": \"%r\", \"tagline\": \"%K\", \"compression\": \"%J\", \"eta\": \"%$\"}"
 #else
 #define rar_update		DISABLED
 #endif
 #if ( disable_rar_halfway == FALSE )
-#define rar_halfway		"{release: \"%r\", winning_user: %C0, winning_group: %c0, total_mbytes: %.0m, num_files: %F, percent: %.1p, average_speed: %.0A, average_speed_or_dontknow: %.0a, missing_files: %M, filename: \"%n\", num_users: %u, num_groups: %g, user: \"%U\", group: \"%G\", expected_files: %f, racers: [%B], compression: \"%J\", eta: \"%$\"}"
+#define rar_halfway		"{\"release\": \"%r\", \"winning_user\": %C0, \"winning_group\": %c0, \"total_mbytes\": %.0m, \"num_files\": %F, \"percent\": %.1p, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"missing_files\": %M, \"filename\": \"%n\", \"num_users\": %u, \"num_groups\": %g, \"user\": \"%U\", \"group\": \"%G\", \"expected_files\": %f, \"racers\": [%B], \"compression\": \"%J\", \"eta\": \"%$\"}"
 #else
 #define rar_halfway		DISABLED
 #endif
 #if ( disable_rar_newleader == FALSE )
-#define rar_newleader		"{user: \"%U\", group: \"%G\", speed: %.0S, duration: \"%d\", num_files: %F, percent: %.1p, total_mbytes: %.0m, release: \"%r\", filename: \"%n\", num_users: %u, num_groups: %g, expected_files: %f, missing_files: %M, winning_user: %C0, winning_group: %c0, tagline: \"%K\", competitors: [%R], compression: \"%J\", eta: \"%$\"}"
+#define rar_newleader		"{\"user\": \"%U\", \"group\": \"%G\", \"speed\": %.0S, \"duration\": \"%d\", \"num_files\": %F, \"percent\": %.1p, \"total_mbytes\": %.0m, \"release\": \"%r\", \"filename\": \"%n\", \"num_users\": %u, \"num_groups\": %g, \"expected_files\": %f, \"missing_files\": %M, \"winning_user\": %C0, \"winning_group\": %c0, \"tagline\": \"%K\", \"competitors\": [%R], \"compression\": \"%J\", \"eta\": \"%$\"}"
 #else
 #define rar_newleader		DISABLED
 #endif
 #if ( disable_rar_complete == FALSE )
-#define rar_complete		"{release: \"%r\", total_mbytes: %.0m, expected_files: %f, average_speed: %.0A, average_speed_or_dontknow: %.0a, duration: \"%d\", num_users: %u, num_groups: %g, slowest_user: %l, fastest_user: %L, winning_user: %C0, winning_group: %c0, filename: \"%n\", racers: [%B], compression: \"%J\", racer_group: %t, racer_user: %T}"
+#define rar_complete		"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"num_users\": %u, \"num_groups\": %g, \"slowest_user\": %l, \"fastest_user\": %L, \"winning_user\": %C0, \"winning_group\": %c0, \"filename\": \"%n\", \"racers\": [%B], \"compression\": \"%J\", \"racer_group\": %t, \"racer_user\": %T}"
 #else
 #define rar_complete		DISABLED
 #endif
 #if ( disable_rar_norace_halfway == FALSE )
-#define rar_norace_halfway	"{release: \"%r\", winning_user: %C0, winning_group: %c0, total_mbytes: %.0m, num_files: %F, percent: %.1p, average_speed: %.0A, average_speed_or_dontknow: %.0a, missing_files: %M, filename: \"%n\", num_users: %u, num_groups: %g, user: \"%U\", group: \"%G\", expected_files: %f, tagline: \"%K\", compression: \"%J\", eta: \"%$\"}"
+#define rar_norace_halfway	"{\"release\": \"%r\", \"winning_user\": %C0, \"winning_group\": %c0, \"total_mbytes\": %.0m, \"num_files\": %F, \"percent\": %.1p, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"missing_files\": %M, \"filename\": \"%n\", \"num_users\": %u, \"num_groups\": %g, \"user\": \"%U\", \"group\": \"%G\", \"expected_files\": %f, \"tagline\": \"%K\", \"compression\": \"%J\", \"eta\": \"%$\"}"
 #else
 #define rar_norace_halfway	DISABLED
 #endif
 #if ( disable_rar_norace_complete == FALSE )
-#define rar_norace_complete	"{release: \"%r\", total_mbytes: %.0m, expected_files: %f, average_speed: %.0A, average_speed_or_dontknow: %.0a, duration: \"%d\", user: \"%U\", group: \"%G\", filename: \"%n\", tagline: \"%K\", compression: \"%J\", racer_group: %t, racer_user: %T}"
+#define rar_norace_complete	"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"user\": \"%U\", \"group\": \"%G\", \"filename\": \"%n\", \"tagline\": \"%K\", \"compression\": \"%J\", \"racer_group\": %t, \"racer_user\": %T}"
 #else
 #define rar_norace_complete	DISABLED
 #endif
 
 /* Rest of the stuff inside sfv */
 #if ( disable_other_race == FALSE )
-#define other_race		"{user: \"%U\", group: \"%G\", competitors: [%R], release: \"%r\", speed: %.0S, filename: \"%n\", duration: \"%d\", percent: %.1p, num_users: %u, num_groups: %g, num_files: %F, expected_files: %f, missing_files: %M, tagline: \"%K\", racers: [%B], eta: \"%$\"}"
+#define other_race		"{\"user\": \"%U\", \"group\": \"%G\", \"competitors\": [%R], \"release\": \"%r\", \"speed\": %.0S, \"filename\": \"%n\", \"duration\": \"%d\", \"percent\": %.1p, \"num_users\": %u, \"num_groups\": %g, \"num_files\": %F, \"expected_files\": %f, \"missing_files\": %M, \"tagline\": \"%K\", \"racers\": [%B], \"eta\": \"%$\"}"
 #else
 #define other_race		DISABLED
 #endif
 #if ( disable_other_sfv == FALSE )
-#define other_sfv		"{release: \"%r\", expected_files: %f, user: \"%U\", group: \"%G\", filename: \"%n\", tagline: \"%K\"}"
+#define other_sfv		"{\"release\": \"%r\", \"expected_files\": %f, \"user\": \"%U\", \"group\": \"%G\", \"filename\": \"%n\", \"tagline\": \"%K\"}"
 #else
 #define other_sfv		DISABLED
 #endif
 #if ( disable_other_update == FALSE )
-#define other_update		"{user: \"%U\", group: \"%G\", expected_files: %f, speed: %.0S, estimated_size: %.1e, filename: \"%n\", release: \"%r\", tagline: \"%K\", eta: \"%$\"}"
+#define other_update		"{\"user\": \"%U\", \"group\": \"%G\", \"expected_files\": %f, \"speed\": %.0S, \"estimated_size\": %.1e, \"filename\": \"%n\", \"release\": \"%r\", \"tagline\": \"%K\", \"eta\": \"%$\"}"
 #else
 #define other_update		DISABLED
 #endif
 #if ( disable_other_halfway == FALSE )
-#define other_halfway		"{release: \"%r\", winning_user: %C0, winning_group: %c0, total_mbytes: %.0m, num_files: %F, percent: %.1p, average_speed: %.0A, average_speed_or_dontknow: %.0a, missing_files: %M, filename: \"%n\", num_users: %u, num_groups: %g, user: \"%U\", group: \"%G\", expected_files: %f, racers: [%B], eta: \"%$\"}"
+#define other_halfway		"{\"release\": \"%r\", \"winning_user\": %C0, \"winning_group\": %c0, \"total_mbytes\": %.0m, \"num_files\": %F, \"percent\": %.1p, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"missing_files\": %M, \"filename\": \"%n\", \"num_users\": %u, \"num_groups\": %g, \"user\": \"%U\", \"group\": \"%G\", \"expected_files\": %f, \"racers\": [%B], \"eta\": \"%$\"}"
 #else
 #define other_halfway		DISABLED
 #endif
 #if ( disable_other_newleader == FALSE )
-#define other_newleader		"{user: \"%U\", group: \"%G\", speed: %.0S, duration: \"%d\", num_files: %F, percent: %.1p, total_mbytes: %.0m, release: \"%r\", filename: \"%n\", num_users: %u, num_groups: %g, expected_files: %f, missing_files: %M, winning_user: %C0, winning_group: %c0, tagline: \"%K\", competitors: [%R], eta: \"%$\"}"
+#define other_newleader		"{\"user\": \"%U\", \"group\": \"%G\", \"speed\": %.0S, \"duration\": \"%d\", \"num_files\": %F, \"percent\": %.1p, \"total_mbytes\": %.0m, \"release\": \"%r\", \"filename\": \"%n\", \"num_users\": %u, \"num_groups\": %g, \"expected_files\": %f, \"missing_files\": %M, \"winning_user\": %C0, \"winning_group\": %c0, \"tagline\": \"%K\", \"competitors\": [%R], \"eta\": \"%$\"}"
 #else
 #define other_newleader		DISABLED
 #endif
 #if ( disable_other_complete == FALSE )
-#define other_complete		"{release: \"%r\", total_mbytes: %.0m, expected_files: %f, average_speed: %.0A, average_speed_or_dontknow: %.0a, duration: \"%d\", num_users: %u, num_groups: %g, slowest_user: %l, fastest_user: %L, winning_user: %C0, winning_group: %c0, filename: \"%n\", racers: [%B], racer_group: %t, racer_user: %T}"
+#define other_complete		"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"num_users\": %u, \"num_groups\": %g, \"slowest_user\": %l, \"fastest_user\": %L, \"winning_user\": %C0, \"winning_group\": %c0, \"filename\": \"%n\", \"racers\": [%B], \"racer_group\": %t, \"racer_user\": %T}"
 #else
 #define other_complete		DISABLED
 #endif
 #if ( disable_other_norace_halfway == FALSE )
-#define other_norace_halfway	"{release: \"%r\", winning_user: %C0, winning_group: %c0, total_mbytes: %.0m, num_files: %F, percent: %.1p, average_speed: %.0A, average_speed_or_dontknow: %.0a, missing_files: %M, filename: \"%n\", num_users: %u, num_groups: %g, user: \"%U\", group: \"%G\", expected_files: %f, tagline: \"%K\", eta: \"%$\"}"
+#define other_norace_halfway	"{\"release\": \"%r\", \"winning_user\": %C0, \"winning_group\": %c0, \"total_mbytes\": %.0m, \"num_files\": %F, \"percent\": %.1p, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"missing_files\": %M, \"filename\": \"%n\", \"num_users\": %u, \"num_groups\": %g, \"user\": \"%U\", \"group\": \"%G\", \"expected_files\": %f, \"tagline\": \"%K\", \"eta\": \"%$\"}"
 #else
 #define other_norace_halfway	DISABLED
 #endif
 #if ( disable_other_norace_complete == FALSE )
-#define other_norace_complete	"{release: \"%r\", total_mbytes: %.0m, expected_files: %f, average_speed: %.0A, average_speed_or_dontknow: %.0a, duration: \"%d\", user: \"%U\", group: \"%G\", filename: \"%n\", tagline: \"%K\", racer_group: %t, racer_user: %T}"
+#define other_norace_complete	"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"user\": \"%U\", \"group\": \"%G\", \"filename\": \"%n\", \"tagline\": \"%K\", \"racer_group\": %t, \"racer_user\": %T}"
 #else
 #define other_norace_complete	DISABLED
 #endif
 
 /* Zipped files */
 #if ( disable_zip_race == FALSE )
-#define zip_race		"{user: \"%U\", group: \"%G\", competitors: [%R], release: \"%r\", speed: %.0S, filename: \"%n\", duration: \"%d\", percent: %.1p, num_users: %u, num_groups: %g, num_files: %F, expected_files: %f, missing_files: %M, tagline: \"%K\", racers: [%B], eta: \"%$\"}"
+#define zip_race		"{\"user\": \"%U\", \"group\": \"%G\", \"competitors\": [%R], \"release\": \"%r\", \"speed\": %.0S, \"filename\": \"%n\", \"duration\": \"%d\", \"percent\": %.1p, \"num_users\": %u, \"num_groups\": %g, \"num_files\": %F, \"expected_files\": %f, \"missing_files\": %M, \"tagline\": \"%K\", \"racers\": [%B], \"eta\": \"%$\"}"
 #else
 #define zip_race		DISABLED
 #endif
 #if ( disable_zip_update == FALSE )
-#define zip_update		"{user: \"%U\", group: \"%G\", expected_files: %f, speed: %.0S, estimated_size: %.1e, filename: \"%n\", release: \"%r\", tagline: \"%K\", eta: \"%$\"}"
+#define zip_update		"{\"user\": \"%U\", \"group\": \"%G\", \"expected_files\": %f, \"speed\": %.0S, \"estimated_size\": %.1e, \"filename\": \"%n\", \"release\": \"%r\", \"tagline\": \"%K\", \"eta\": \"%$\"}"
 #else
 #define zip_update		DISABLED
 #endif
 #if ( disable_zip_halfway == FALSE )
-#define zip_halfway		"{release: \"%r\", winning_user: %C0, winning_group: %c0, total_mbytes: %.0m, num_files: %F, percent: %.1p, average_speed: %.0A, average_speed_or_dontknow: %.0a, missing_files: %M, filename: \"%n\", num_users: %u, num_groups: %g, user: \"%U\", group: \"%G\", expected_files: %f, racers: [%B], eta: \"%$\"}"
+#define zip_halfway		"{\"release\": \"%r\", \"winning_user\": %C0, \"winning_group\": %c0, \"total_mbytes\": %.0m, \"num_files\": %F, \"percent\": %.1p, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"missing_files\": %M, \"filename\": \"%n\", \"num_users\": %u, \"num_groups\": %g, \"user\": \"%U\", \"group\": \"%G\", \"expected_files\": %f, \"racers\": [%B], \"eta\": \"%$\"}"
 #else
 #define zip_halfway		DISABLED
 #endif
 #if ( disable_zip_newleader == FALSE )
-#define zip_newleader		"{user: \"%U\", group: \"%G\", speed: %.0S, duration: \"%d\", num_files: %F, percent: %.1p, total_mbytes: %.0m, release: \"%r\", filename: \"%n\", num_users: %u, num_groups: %g, expected_files: %f, missing_files: %M, winning_user: %C0, winning_group: %c0, tagline: \"%K\", competitors: [%R], eta: \"%$\"}"
+#define zip_newleader		"{\"user\": \"%U\", \"group\": \"%G\", \"speed\": %.0S, \"duration\": \"%d\", \"num_files\": %F, \"percent\": %.1p, \"total_mbytes\": %.0m, \"release\": \"%r\", \"filename\": \"%n\", \"num_users\": %u, \"num_groups\": %g, \"expected_files\": %f, \"missing_files\": %M, \"winning_user\": %C0, \"winning_group\": %c0, \"tagline\": \"%K\", \"competitors\": [%R], \"eta\": \"%$\"}"
 #else
 #define zip_newleader		DISABLED
 #endif
 #if ( disable_zip_complete == FALSE )
-#define zip_complete		"{release: \"%r\", total_mbytes: %.0m, expected_files: %f, average_speed: %.0A, average_speed_or_dontknow: %.0a, duration: \"%d\", num_users: %u, num_groups: %g, slowest_user: %l, fastest_user: %L, winning_user: %C0, winning_group: %c0, filename: \"%n\", racers: [%B], racer_group: %t, racer_user: %T}"
+#define zip_complete		"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"num_users\": %u, \"num_groups\": %g, \"slowest_user\": %l, \"fastest_user\": %L, \"winning_user\": %C0, \"winning_group\": %c0, \"filename\": \"%n\", \"racers\": [%B], \"racer_group\": %t, \"racer_user\": %T}"
 #else
 #define zip_complete		DISABLED
 #endif
 #if ( disable_zip_norace_halfway == FALSE )
-#define zip_norace_halfway	"{release: \"%r\", winning_user: %C0, winning_group: %c0, total_mbytes: %.0m, num_files: %F, percent: %.1p, average_speed: %.0A, average_speed_or_dontknow: %.0a, missing_files: %M, filename: \"%n\", num_users: %u, num_groups: %g, user: \"%U\", group: \"%G\", expected_files: %f, tagline: \"%K\", eta: \"%$\"}"
+#define zip_norace_halfway	"{\"release\": \"%r\", \"winning_user\": %C0, \"winning_group\": %c0, \"total_mbytes\": %.0m, \"num_files\": %F, \"percent\": %.1p, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"missing_files\": %M, \"filename\": \"%n\", \"num_users\": %u, \"num_groups\": %g, \"user\": \"%U\", \"group\": \"%G\", \"expected_files\": %f, \"tagline\": \"%K\", \"eta\": \"%$\"}"
 #else
 #define zip_norace_halfway	DISABLED
 #endif
 #if ( disable_zip_norace_complete == FALSE )
-#define zip_norace_complete	"{release: \"%r\", total_mbytes: %.0m, expected_files: %f, average_speed: %.0A, average_speed_or_dontknow: %.0a, duration: \"%d\", user: \"%U\", group: \"%G\", filename: \"%n\", tagline: \"%K\", racer_group: %t, racer_user: %T}"
+#define zip_norace_complete	"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"user\": \"%U\", \"group\": \"%G\", \"filename\": \"%n\", \"tagline\": \"%K\", \"racer_group\": %t, \"racer_user\": %T}"
 #else
 #define zip_norace_complete	DISABLED
 #endif
 
 /* Output of racestats binary */
-#define stats_line		"{release: \"%r\", num_files: %F, expected_files: %f, num_users: %u, num_groups: %g, winning_user: %C0, winning_group: %c0}"
+#define stats_line		"{\"release\": \"%r\", \"num_files\": %F, \"expected_files\": %f, \"num_users\": %u, \"num_groups\": %g, \"winning_user\": %C0, \"winning_group\": %c0}"
 
 /* Output of postdel binary */
-#define incompletemsg		"{user: \"%U\", group: \"%G\", release: \"%r\"}"
+#define incompletemsg		"{\"user\": \"%U\", \"group\": \"%G\", \"release\": \"%r\"}"
 
-#define bad_file_msg		"{release: \"%r\", user: \"%U\", group: \"%G\", filename: \"%n\"}"
-#define speedtest_msg		"{user: \"%U\", group: \"%G\", unk: [%.2s, %.2#, %.1m, %.1N]}"
+#define bad_file_msg		"{\"release\": \"%r\", \"user\": \"%U\", \"group\": \"%G\", \"filename\": \"%n\"}"
+#define speedtest_msg		"{\"user\": \"%U\", \"group\": \"%G\", \"speed_mbit\": %.2s, \"speed_mbyte\": %.2#, \"mibytes\": %.1m, \"mbytes\": %.1N}"
 
 enum ReleaseTypes {
 	RTYPE_NULL = 0,
