@@ -10,6 +10,7 @@ v1.1.0a --> 1.1.x :
                   (it's been deprecated for a while).
                 - removed racersplit & racersmsg from conf. (it's been deprecated for a while)
                 - added racersplit_postfix.
+                - %T/%t now users racersplit* too.
 
 v1.1.0 --> 1.1.0a : (r2414)
 		- stats in announces were broken in v1.1.0, ``hotfix''.
