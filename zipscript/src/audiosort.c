@@ -128,8 +128,8 @@ if (subcomp(link_target, NULL)) {
 		}
 		d_log("audioSort:   - Valid groupname found: %s (%i) - checking for exisiting sort-dir.\n", temp_nam, n);
 		temp_p = check_nocase_linkname(audio_group_path, temp_p);
-		d_log("audioSort:   - Valid groupname found: %s (%i) - using this.\n", temp_nam, n);
-		createlink(audio_group_path, temp_nam, link_source, link_target);
+		d_log("audioSort:   - Valid groupname found: %s (%i) - using this.\n", temp_p, n);
+		createlink(audio_group_path, temp_p, link_source, link_target);
 	}
 #endif
 #if ( audio_language_sort == TRUE )
