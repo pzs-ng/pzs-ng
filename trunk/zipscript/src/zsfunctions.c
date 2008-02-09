@@ -556,14 +556,14 @@ check_nocase_linkname(char *dirname, char *linkname)
 	}
 	while ((dp = readdir(dir))) {
 		if ((int)strlen(dp->d_name) == namelength && !strcasecmp(dp->d_name, linkname)) {
-			d_log("check_nocase_linkname: found matching groupname \"%s\" == \"%s\"\n", dp->d_name, linkname);
+			d_log("check_nocase_linkname: found match: %s ~= %s\n", dp->d_name, linkname);
 			linkname = ng_realloc(linkname, (int)sizeof(dp->d_name) + 1, 1, 1, NULL, 1);
 			strncpy(linkname, dp->d_name, sizeof(dp->d_name));
 			break;
 		}
 	}
 	closedir(dir);
-	d_log("check_nocase_linkname: returning groupname \"%s\"\n", linkname);
+	d_log("check_nocase_linkname: returning %s\n", linkname);
 	return linkname;
 }
 
