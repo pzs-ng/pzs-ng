@@ -680,10 +680,10 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.total_racer_list);
 				break;
 			case 't':
-				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.top_messages[1] + 1);
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.top_messages[1]);
 				break;
 			case 'T':
-				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.top_messages[0] + 1);
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->misc.top_messages[0]);
 				break;
 			case 'u':
 				out_p += sprintf(out_p, "%*i", val1, (int)raceI->total.users);
