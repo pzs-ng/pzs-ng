@@ -254,7 +254,7 @@
 
 /* RAR - allows usage of compression mode cookie (%J) for rarred releases */
 #if ( disable_rar_race == FALSE )
-#define rar_race		"{\"user\": \"%U\", \"group\": \"%G\", \"competitors\": [%R], \"release\": \"%r\", \"speed\": %.0S, \"filename\": \"%n\", \"duration\": \"%d\", \"percent\": %.1p, \"num_users\": %u, \"num_groups\": %g, \"num_files\": %F, \"expected_files\": %f, \"missing_files\": %M, \"tagline\": \"tagline\": \"%K\", \"racers\": [%B], \"compression\": \"%J\", \"eta\": \"%$\"}"
+#define rar_race		"{\"user\": \"%U\", \"group\": \"%G\", \"competitors\": [%R], \"release\": \"%r\", \"speed\": %.0S, \"filename\": \"%n\", \"duration\": \"%d\", \"percent\": %.1p, \"num_users\": %u, \"num_groups\": %g, \"num_files\": %F, \"expected_files\": %f, \"missing_files\": %M, \"tagline\": \"%K\", \"racers\": [%B], \"compression\": \"%J\", \"eta\": \"%$\"}"
 #else
 #define rar_race		DISABLED
 #endif
