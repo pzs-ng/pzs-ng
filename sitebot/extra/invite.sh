@@ -13,5 +13,5 @@ if [ ! -z "$badchars" ]; then
  exit 0
 fi
 
-echo `/bin/date '+%a %b %d %X %Y'` INVITE: \"$1\" \"$USER\" \"$GROUP\" \"$FLAGS\" >> "$log"
+echo `/bin/date '+%a %b %d %X %Y'` INVITE: \"$1\" \"$USER\" \"$GROUP\" \"$FLAGS\" \"$TAGLINE\" >> "$log"
 echo -e "\nInvited $USER with nick $1 \n"

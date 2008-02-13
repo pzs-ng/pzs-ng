@@ -12,16 +12,14 @@
 #
 # 2. Edit the configuration options below.
 #
-# 3. Load this script in eggdrop.conf after dZSbot.tcl and NickDb.tcl, for example:
-#    source pzs-ng/dZSbot.tcl
-#    source pzs-ng/plugins/NickDb.tcl
+# 3. Add the following to your eggdrop.conf (load AFTER NickDb):
 #    source pzs-ng/plugins/DeluserBan.tcl
 #
 # 4. Rehash or restart your eggdrop for the changes to take effect.
 #
 #################################################################################
 
-namespace eval ::dZSbot::DeluserBan {
+namespace eval ::ngBot::DeluserBan {
 
     ## Config Settings ###############################
     ##
@@ -38,25 +36,28 @@ namespace eval ::dZSbot::DeluserBan {
     ##
     ##################################################
 
-    namespace import -force ::dZSbot::*
-    namespace import -force ::dZSbot::NickDb::*
+    namespace import ::ngBot::NickDb::*
     variable scriptName [namespace current]::LogEvent
     bind evnt -|- prerehash [namespace current]::DeInit
 }
+
+interp alias {} IsTrue {} string is true -strict
+interp alias {} IsFalse {} string is false -strict
 
 ####
 # DeluserBan::Init
 #
 # Called on initialization; registers the event handler.
 #
-proc ::dZSbot::DeluserBan::Init {args} {
+proc ::ngBot::DeluserBan::Init {args} {
+    global precommand
     variable scriptName
 
-    ## Register event handler.
-    EventRegister precommand DELUSER $scriptName
-    EventRegister precommand PURGED $scriptName
+    ## Register the event handler.
+    lappend precommand(DELUSER) $scriptName
+    lappend precommand(PURGED) $scriptName
 
-    InfoMsg "DeluserBan - Loaded successfully."
+    putlog "\[ngBot\] DeluserBan :: Loaded successfully."
     return
 }
 
@@ -65,12 +66,17 @@ proc ::dZSbot::DeluserBan::Init {args} {
 #
 # Called on rehash; unregisters the event handler.
 #
-proc ::dZSbot::DeluserBan::DeInit {args} {
+proc ::ngBot::DeluserBan::DeInit {args} {
+    global precommand
     variable scriptName
 
-    ## Remove script events and callbacks.
-    EventRegister precommand DELUSER $scriptName
-    EventRegister precommand PURGED $scriptName
+    ## Remove the script events from precommand.
+    foreach type {DELUSER PURGED} {
+        if {[info exists precommand($type)] && [set pos [lsearch -exact $precommand($type) $scriptName]] !=  -1} {
+            set precommand($type) [lreplace $precommand($type) $pos $pos]
+        }
+    }
+
     catch {unbind evnt -|- prerehash [namespace current]::DeInit}
 
     namespace delete [namespace current]
@@ -83,7 +89,7 @@ proc ::dZSbot::DeluserBan::DeInit {args} {
 # Called by the sitebot's event handler on the
 # "DELUSER" and "PURGED" announces.
 #
-proc ::dZSbot::DeluserBan::LogEvent {event section sectionPath logData} {
+proc ::ngBot::DeluserBan::LogEvent {event section logData} {
     global botnick
     variable banUser
     variable killUser
@@ -98,7 +104,7 @@ proc ::dZSbot::DeluserBan::LogEvent {event section sectionPath logData} {
     ## Retrieve the IRC user name.
     set ircUser [GetIrcUser $ftpUser]
     if {[string equal "" $ircUser]} {
-        ErrorMsg DeluserBan "Unable to retrieve the IRC user for \"$ftpUser\", you will have to kick them manually."
+        putlog "\[ngBot\] DeluserBan :: Unable to retrieve the IRC user for \"$ftpUser\", you will have to kick them manually."
         return 1
     }
 
@@ -106,7 +112,7 @@ proc ::dZSbot::DeluserBan::LogEvent {event section sectionPath logData} {
 
     ## Kill the user, die you bastard!
     if {[IsTrue $killUser]} {
-        InfoMsg "DeluserBan - Killing IRC user \"$ircUser\"."
+        putlog "\[ngBot\] DeluserBan :: Killing IRC user \"$ircUser\"."
         putquick "KILL $ircUser :$reason"
     }
 
@@ -117,7 +123,7 @@ proc ::dZSbot::DeluserBan::LogEvent {event section sectionPath logData} {
     }
 
     ## Kick/ban the user from all channels.
-    InfoMsg "DeluserBan - Kicking/banning IRC user \"$ircUser\" from all channels."
+    putlog "\[ngBot\] DeluserBan :: Kicking/banning IRC user \"$ircUser\" from all channels."
     foreach channel [channels] {
         if {[botisop $channel] && [onchan $ircUser $channel]} {
             putkick $channel $ircUser $reason
@@ -130,4 +136,4 @@ proc ::dZSbot::DeluserBan::LogEvent {event section sectionPath logData} {
     return 1
 }
 
-::dZSbot::DeluserBan::Init
+::ngBot::DeluserBan::Init

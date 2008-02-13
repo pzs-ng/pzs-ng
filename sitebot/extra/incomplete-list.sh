@@ -26,12 +26,18 @@ MV:/site/incoming/musicvideos/
 # uncomment the ''botconf='' directive below.
 #botconf=/path/to/sitebot/pzs-ng/dZSbot.conf
 
+# Set this to your complete line (non-dynamic part)
+releaseComplete="Complete -"
+
 # set this to 1 if you wish to announce sections where no incompletes are found.
 verbose=0
 
 #bold char
 bold=""
 
+# set this to one if you have sections in subdirs of one another - ie,
+# if you have defined in $sections "A:/site/DIR" and "B:/site/DIR/SUBDIR"
+no_strict=0
 
 #############################
 # END OF CONFIG             #
@@ -51,17 +57,27 @@ for section in $sections; do
   secpaths="`echo "$section" | cut -d ':' -f 2- | tr ' ' '\n'`"
 
   for secpath in $secpaths; do
-   results="`$cleanup $glroot 2>/dev/null | grep -e "^Incomplete" | tr '\"' '\n' | grep -e "$secpath" | tr -s '/'`"
-   if [ -z "$results" ]; then
-     if [ $verbose -eq 1 ]; then
-       echo "$secname: No incomplete releases found."
-     fi
-   else
-     for result in $results; do
-       secrel="`echo $result | sed "s|$glroot$secpath||" | tr -s '/'`"
-       echo "$secname: ${bold}${secrel}${bold} is incomplete."
-     done
-   fi
+    results="`$cleanup $glroot 2>/dev/null | grep -e "^Incomplete" | tr '\"' '\n' | grep -e "$secpath" | tr -s '/'`"
+    if [ -z "$results" ]; then
+      if [ $verbose -eq 1 ]; then
+        echo "$secname: No incomplete releases found."
+      fi
+    else
+      for result in $results; do
+        secrel="`echo $result/ | sed "s|$glroot$path||" | tr -s '/'`"
+        comp="`ls -1 $result/ | grep "$releaseComplete"`"
+        percent="`echo $comp | cut -d ' ' -f 4` complete"
+
+        if [ $percent == " complete" ]; then
+           percent="incomplete"
+        fi
+
+	if [ $no_strict ] || [ "`dirname $secrel`/" = "`echo $secpath/ | tr -s '/'`" ]; then 
+          echo "$secname: ${bold}${secrel}${bold} is $percent."
+	fi
+      done
+    fi
  done
 done
+echo "No more incompletes found."
 IFS="$IFSORIG"

@@ -1,0 +1,60 @@
+prefix=@INSTALLPATH@
+
+CFLAGS=-Wall -g
+CC=@CC@
+LIBS=@LIBS@
+INSTALL=@INSTALL@
+
+all: zs bot @SITEWHO@
+	@(echo -e "\n\tProject-ZS-NG is now compiled!\n\tType 'make install' to install it into $(prefix).\n")
+
+install: all
+	$(INSTALL) -m755 -d $(prefix)/bin
+	cd zipscript/src ; $(MAKE) install
+	if [ "x@SITEWHO@" != "x" ]; then cd sitewho ; $(MAKE) install; fi
+	cd sitebot/src ; $(MAKE) install
+
+distclean: clean
+	rm -f *~ config.cache config.log config.status config.h
+	rm -rf autom4te.cache/
+	cd zipscript/src ; $(MAKE) distclean
+	cd sitebot/src ; $(MAKE) distclean
+	cd sitewho ; $(MAKE) distclean
+	cd lib ; $(MAKE) distclean
+	find . -name Makefile | xargs rm -f
+
+clean:
+	find . -name '*.o' | xargs rm -f
+	cd zipscript/src ; $(MAKE) clean
+	cd sitebot/src ; $(MAKE) clean
+	cd sitewho ; $(MAKE) clean
+	cd lib ; $(MAKE) clean
+
+uninstall:
+	cd zipscript/src ; $(MAKE) uninstall
+
+zs: libs
+	@(echo -e "\n\033[1;37mCompiling the zipscript\033[0m")
+	cd zipscript/src ; $(MAKE) all
+
+bot:
+	@(echo -e "\n\033[1;37mCompiling the bot binaries\033[0m")
+	cd sitebot/src ; $(MAKE) all
+
+swho:
+	@(echo -e "\n\033[1;37mCompiling the sitewho\033[0m")
+	cd sitewho/ ; $(MAKE) all
+
+libs:
+	@(echo -e "\n\033[1;37mCompiling the additional libraries\033[0m")
+	cd lib/ ; $(MAKE) all
+
+utils:
+	@(echo -e "\n\033[1;37mCompiling the extra utilities\033[0m")
+	cd zipscript/utils ; $(MAKE) all
+
+strip:
+	cd zipscript/src ; $(MAKE) strip
+	cd sitewho ; $(MAKE) strip
+	cd sitebot/src ; $(MAKE) strip
+

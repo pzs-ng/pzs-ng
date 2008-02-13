@@ -7,7 +7,7 @@
 #                          IMPORTANT!!                               #
 #                          -----------                               #
 # This file contains overrides only. You may find that some settings #
-# are missing - search in dZSbot.defaults      for the settings you  #
+# are missing - search in dZSbot.conf.defaults for the settings you  #
 # need and COPY THOSE INTO THIS FILE - do not edit the defaults file #
 # - it will be changed! This file, however, will not, which means    #
 # that when you upgrade your bot, you can keep this file, replace    #
@@ -54,6 +54,7 @@ set speed(INCOMING)         12500
 set speed(OUTGOING)         12500
 set device(0)               "/dev/da0s1f MP3"
 set device(1)               "/dev/ad0s1e ISO"
+set local_devices_only      "TRUE"
 
 ######################
 # Bouncers           #
@@ -128,6 +129,7 @@ set redirect(BADPASSWORD)   $staffchan
 set redirect(BANNEDHOST)    $staffchan
 set redirect(DELETED)       $staffchan
 set redirect(IPNOTADDED)    $staffchan
+set redirect(WHOIS)         $staffchan
 
 ## Script announcements
 set disable(DEFAULT)        0
@@ -152,3 +154,5 @@ set disable(IMDBFIND)       0
 set disable(IMDBVAR)        0
 set disable(PRE)            0
 set disable(TURGEN)         0
+set disable(WHOIS)          0
+

@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.7e"
+VERSION="v2.8"
 
 ######################################################################################################
 
@@ -118,7 +118,7 @@ if [ ! -z "$RECVDARGS" ]; then
 # Level 0 search
    IMDBURLS="`grep -a [Ii][Mm][Dd][Bb] $FILENAME | tr ' \|' '\n' | sed -n /[hH][tT][tT][pP]:[/][/].*[.][iI][mM][dD][bB][.].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?'`"
    if [ ! -z "`echo $IMDBURLS | grep -a "imdb\."`" ]; then
-    IMDBURL="http://us.imdb.com/title/tt""`echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]'`"
+    IMDBURL="http://former.imdb.com/title/tt""`echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]'`"
     if [ -z `echo $IMDBURL | tr -cd '0-9'` ]; then
      IMDBURL=""
     fi
@@ -128,7 +128,7 @@ if [ ! -z "$RECVDARGS" ]; then
    if [ -z "$IMDBURL" ] && [ $RELAXEDURLS -ge 1 ]; then
     IMDBURLS="`grep -a [Ii][Mm][Dd][Bb] $FILENAME | tr ' \|' '\n' | sed -n /[hH][tT][tT][pP]:[/][/].*[iI][mM][dD][bB][.].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?'`"
     if [ ! -z "`echo $IMDBURLS | grep -a "imdb\."`" ]; then
-     IMDBURL="http://us.imdb.com/title/tt""`echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]'`"
+     IMDBURL="http://former.imdb.com/title/tt""`echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]'`"
      if [ -z `echo $IMDBURL | tr -cd '0-9'` ]; then
       IMDBURL=""
      fi
@@ -139,7 +139,7 @@ if [ ! -z "$RECVDARGS" ]; then
    if [ -z "$IMDBURL" ] && [ $RELAXEDURLS -ge 2 ]; then
     IMDBURLS="`grep -a [Ii][Mm][Dd][Bb] $FILENAME | tr ' \|' '\n' | sed -n /.*[iI][mM][dD][bB][.].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?'`"
     if [ ! -z "`echo $IMDBURLS | grep -a "imdb\."`" ]; then
-     IMDBURL="http://us.imdb.com/title/tt""`echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]'`"
+     IMDBURL="http://former.imdb.com/title/tt""`echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]'`"
      if [ -z `echo $IMDBURL | tr -cd '0-9'` ]; then
       IMDBURL=""
      fi
@@ -157,7 +157,7 @@ if [ ! -z "$RECVDARGS" ]; then
      fi
     done
     if [ ! -z "$IMDBURL" ]; then
-     IMDBURL="http://us.imdb.com/title/tt""$IMDBURL"
+     IMDBURL="http://former.imdb.com/title/tt""$IMDBURL"
     fi
    fi
 
@@ -170,7 +170,7 @@ if [ ! -z "$RECVDARGS" ]; then
      fi
     done
     if [ ! -z "$IMDBURL" ]; then
-     IMDBURL="http://us.imdb.com/title/tt""$IMDBURL"
+     IMDBURL="http://former.imdb.com/title/tt""$IMDBURL"
     fi
    fi
 
@@ -273,7 +273,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
    FILENAME=`ls -1 $GLROOT$DIRNAME | grep -a "\.[Nn][Ff][Oo]$" | head -n 1`
     IMDBURL="`grep -a [Ii][Mm][Dd][Bb] $GLROOT$DIRNAME/$FILENAME | tr ' ' '\n' | sed -n /[hH][tT][tT][pP]:[/][/].*[.][iI][mM][dD][bB].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?'`"
    if [ ! -z "`echo $IMDBURL | grep -a "\.imdb\."`" ]; then
-     IMDBURL="http://us.imdb.com/title/tt""`echo $IMDBURL | sed "s/=/-/g" | sed "s/.imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]'`"
+     IMDBURL="http://former.imdb.com/title/tt""`echo $IMDBURL | sed "s/=/-/g" | sed "s/.imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]'`"
    fi
     if [ ! -z "$IMDBURL" ]; then
      a="`tail -n 5 $GLLOG | grep -a "$TRIGGER" | grep -a "$DIRNAME" | tail -n 1`"
@@ -488,7 +488,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
 
 # Check for a movie-title. This *must* be present, else the script will just exit.
 ##################################################################################
-    TITLE=`cat "$TMPFILE" | grep -a -e "^[a-zA-Z0-9\"\.]" | sed "s/\"//g" | head -n 1`
+    TITLE=`cat "$TMPFILE" | grep -a -e "^[a-zA-Z0-9\"\.]" | sed "s/\"//g" | tail -n 1`
     if [ -z "$TITLE" ]; then
      # a new version of lynx? let's try a diff. approach.
      TITLE=`cat "$TMPFILE" | grep -a -e "([12][089][0-9][0-9])" | head -n 1 | sed "s/PageFlicker//" | sed "s/\"//g"`
@@ -534,7 +534,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     fi
     CERT=`cat $TMPFILE | grep -a -e "Certification:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $CERTIFICATIONNUM | sed "s/(.*//g" | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//"`
     CERTCLEAN=`echo $CERT | sed "s/Certification: *//" | tr '/' '\n' | grep -a -e "[uU][sS][aA]" | tr -d ' ' | head -n 1`
-    CAST=`cat $TMPFILE | grep -a -e "\ \.\.\.\.\ " | sed s/\"/$QUOTECHAR/g | head -n $CASTNUM`
+    CAST=`cat $TMPFILE | grep -a -e "\ \.\.\.\.\ " | sed s/\"/$QUOTECHAR/g | sed "s|\ \[.*\]||g" | head -n $CASTNUM`
     CASTCLEAN=`echo "$CAST" | sed "s/\.\.\.\..*/|/g" | tr '\n' ' ' | tr -s ' ' | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ |/\,/g" | sed "s/,$//"`
     CASTLEADNAME="`echo "$CAST" | head -n 1 | tr '.' '\n' | sed -e /^$/d | head -n 1 | tr -s ' ' | sed "s/^\ //g" | sed "s/\ $//g"`"
     CASTLEADCHAR="`echo "$CAST" | head -n 1 | tr '.' '\n' | sed -e /^$/d | tail -n 1 | tr -s ' ' | sed "s/^\ //g" | sed "s/\ $//g"`"
@@ -712,7 +712,9 @@ echo "BIZNUM : $BUSINESSSCREENSNUMBER ( $BUSINESSSCREENS )" >/tmp/imdebug.log
 ###############################################
 
     if [ ! -z "$LOCALURL" ]; then
-     IMDBURL="`echo $IMDBURL | sed "s|/us.|/$LOCALURL.|g" | tr 'A-Z' 'a-z'`"
+     IMDBURL="`echo $IMDBURL | sed "s|/former.|/$LOCALURL.|g" | tr 'A-Z' 'a-z'`"
+    else
+     IMDBURL="`echo $IMDBURL | sed "s|/former.|/www.|g" | tr 'A-Z' 'a-z'`"
     fi
     HEADTMP="Title........: $BOLD$TITLE$BOLD"
     if [ ! -z "$COUNTRY" ]; then
@@ -776,17 +778,18 @@ echo "BIZNUM : $BUSINESSSCREENSNUMBER ( $BUSINESSSCREENS )" >/tmp/imdebug.log
      elif [ "$LOGFORMAT" = "MYOWN" ]; then
 #      NEWLINE="|"
       MYOWNPAIRS="%imdbdirname|IMDBDIR %imdburl|IMDBURL %imdbtitle|TITLE %imdbgenre|GENRECLEAN %imdbrating|RATINGCLEAN %imdbcountry|COUNTRYCLEAN %imdblanguage|LANGUAGECLEAN %imdbcertification|CERTCLEAN %imdbruntime|RUNTIMECLEAN %imdbdirector|DIRECTORCLEAN %imdbbusinessdata|BUSINESSSHORT %imdbpremiereinfo|PREMIERE %imdblimitedinfo|LIMITED %imdbvotes|RATINGVOTES %imdbscore|RATINGSCORE %imdbname|TITLENAME %imdbyear|TITLEYEAR %imdbnumscreens|BUSINESSSCREENS %imdbislimited|ISLIMITED %imdbcastleadname|CASTLEADNAME %imdbcastleadchar|CASTLEADCHAR %imdbtagline|TAGLINECLEAN %imdbplot|PLOTCLEAN %imdbbar|RATINGBAR %imdbcasting|CASTCLEAN %imdbcommentshort|COMMENTSHORTCLEAN %newline|NEWLINE %bold|BOLD"
+      MYOWNFORMAT1="$MYOWNFORMAT"
       for OWNPAIR in $MYOWNPAIRS; do
        MYOWNSTRING="`echo "$OWNPAIR" | cut -d '|' -f 1`"
        MYOWNVAR="`echo "$OWNPAIR" | cut -d '|' -f 2`"
        if [ ! -z "${!MYOWNVAR}" ]; then
         MYTEMPVAR="`echo "${!MYOWNVAR}" | tr '\&' '\`'`"
-        MYOWNFORMAT="`echo "$MYOWNFORMAT" | sed "s^$MYOWNSTRING^$MYTEMPVAR^g" | tr '\`' '\&'`"
+        MYOWNFORMAT1="`echo "${MYOWNFORMAT1}" | sed "s^$MYOWNSTRING^$MYTEMPVAR^g" | tr '\`' '\&'`"
        else
-        MYOWNFORMAT="`echo "$MYOWNFORMAT" | sed "s^$MYOWNSTRING^$MYOWNEMPTY^g"`"
+        MYOWNFORMAT1="`echo "${MYOWNFORMAT1}" | sed "s^$MYOWNSTRING^$MYOWNEMPTY^g"`"
        fi
       done
-      echo "$DATE $TRIGGER \"$IMDBLKL\" \"$MYOWNFORMAT\" \"$IMDBDST\"" | tr '[=$=]' '¤' | sed "s|¤|USD|g" >> $GLLOG
+      echo "$DATE $TRIGGER \"$IMDBLKL\" \"${MYOWNFORMAT1}\" \"$IMDBDST\"" | tr '[=$=]' '¤' | sed "s|¤|USD|g" >> $GLLOG
      else
       echo "$DATE $TRIGGER \"$IMDBLKL\" \"$IMDBDIR\" \"$IMDBURL\" \"$TITLE\" \"$GENRECLEAN\" \"$RATINGCLEAN\" \"$COUNTRYCLEAN\" \"$LANGUAGECLEAN\" \"$CERTCLEAN\" \"$RUNTIMECLEAN\" \"$DIRECTORCLEAN\" \"$BUSINESSSHORT\" \"$PREMIERE\" \"$LIMITED\" \"$RATINGVOTES\" \"$RATINGSCORE\" \"$TITLENAME\" \"$TITLEYEAR\" \"$BUSINESSSCREENS\" \"$ISLIMITED\" \"$CASTLEADNAME\" \"$CASTLEADCHAR\" \"$TAGLINECLEAN\" \"$PLOTCLEAN\" \"$RATINGBAR\" \"$CASTCLEAN\" \"$COMMENTSHORTCLEAN\" \"$IMDBDST\"" | tr '[=$=]' '¤' | sed "s|¤|USD|g" >> $GLLOG
      fi

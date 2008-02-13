@@ -1,39 +1,84 @@
-# Small eggdrop script to announce the $top_users weektop uploaders of
-# current week for $top_sect section to $top_chan each $top_interval seconds
-set top_interval    [expr 2 * 60 * 60]
-set top_stats       "/glftpd/bin/stats"
-set top_sect        0
-set top_users       10
-set top_chan        "#pzs-ng"
+namespace eval ::ngBot::Top {
+	variable top
 
+	## Config Settings ###############################
+	##
+	## Interval between announces in seconds (default: 7200 - 2 hours)
+	set top(interval)   7200
+	##
+	## Section to display (0 = DEFAULT)
+	set top(sect)       0
+	##
+	## Maximum number of users to display
+	set top(users)      10
+	##
+	## Message prefix
+	set top(prefix)     "Week Top (Up) "
+	##
+	## Output channels
+	set top(chan)       "#pzs-ng"
+	##
+	##################################################
 
-proc show_usertop {} {
-    global top_interval top_sect top_stats top_users top_chan toptimer
+	variable timer
 
-    set bold "\002"
-    set top_line " Week Top (Up)"
-    set cnt 0
-
-    set toptimer [utimer $top_interval "show_usertop"]
-    foreach line [split [exec $top_stats -u -w -x $top_users -s $top_sect] "\n"] {
-        set cnt [expr $cnt + 1]
-        if {$cnt > 4} {
-            set pos      [string range $line 1 2]
-            set username [string trimright [string range $line 5 14]]
-            set tagline  [string trimright [string range $line 16 46]]
-            set files    [string trimleft [string range $line 48 55]]
-            set bytes    [expr [string range $line 57 65] + 0]
-            set speed    [expr [string range $line 69 [expr [string length $line] - 4]] + 0]
-
-            append top_line " \[$pos. $username $bold$bytes$bold\M\]"
-        }
-    }
-    puthelp "PRIVMSG $top_chan :[string range $top_line 1 end]"
+	bind evnt -|- prerehash [namespace current]::DeInit
 }
 
-if {[info exists toptimer]} {
-    if {[catch {killutimer $toptimer} err]} {
-        putlog "top.tcl: killutimer failed ($err)"
-    }
+proc ::ngBot::Top::Init {args} {
+	[namespace current]::startTimer
+
+	putlog "\[ngBot\] Top :: Loaded successfully."
 }
-set toptimer [utimer $top_interval "show_usertop"]
+
+proc ::ngBot::Top::DeInit {args} {
+	[namespace current]::killTimer
+
+	namespace delete [namespace current]
+}
+
+proc ::ngBot::Top::killTimer {} {
+	variable timer
+
+	if {[catch {killutimer $timer} error] != 0} {
+		putlog "\[ngBot\] Top :: Warning: Unable to kill announce timer \"$error\""
+	}
+}
+
+proc ::ngBot::Top::startTimer {} {
+	variable top
+
+	variable timer [utimer $top(interval) "[namespace current]::showTop"]
+}
+
+proc ::ngBot::Top::showTop {args} {
+	global location binary
+
+	variable top
+
+	[namespace current]::startTimer
+
+	if {[catch {exec $binary(STATS) -r $location(GLCONF) -u -w -x $top(users) -s $top(sect)} output] != 0} {
+		putlog "\[ngBot\] Top :: Error: Problem executing stats-exec \"$output\""
+		return
+	}
+
+	set msg [list]
+	foreach line [split $output "\n"] {
+		regsub -all -- {(\s+)\s} $line " " line
+
+		if {[regexp -- {^\[(\d+)\] (\w+) (.*?) (\d+) (\d+)\w+ (\S+)} $line -> pos username tagline files bytes speed]} {
+			lappend msg "\[$pos. $username \002$bytes\002M\]"
+		}
+	}
+
+	if {[llength $msg] == 0} {
+		set msg "Empty..."
+	}
+
+	foreach chan [split $top(chan)] {
+		puthelp "PRIVMSG $chan :$top(prefix)[join $msg " "]"
+	}
+}
+
+::ngBot::Top::Init

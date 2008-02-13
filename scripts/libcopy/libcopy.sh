@@ -17,7 +17,7 @@
 possible_glroot_paths="/glftpd /jail/glftpd /usr/glftpd /usr/jail/glftpd /usr/local/glftpd /usr/local/jail/glftpd /$HOME/glftpd /glftpd/glftpd /opt/glftpd"
 
 # bins needed for pzs-ng to run
-needed_bins="unzip zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown zip"
+needed_bins="zip unzip zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown"
 
 #
 ###################################
@@ -125,7 +125,12 @@ echo -n "" > "$glroot/etc/ld.so.conf"
 case $os in
     openbsd)
       openrel=`uname -r | tr -cd '0-9' | cut -b 1-2`
-      if [ $openrel -ge 34 ]; then
+      if [ $openrel -ge 40 ]; then
+        ldd $glroot/bin/* 2>/dev/null | awk '{print $7, $1}' | grep -e "^/" | grep -v "00000000$" | awk '{print $1}' |
+        sort | uniq | while read lib; do
+            lddsequence
+        done
+      elif [ $openrel -ge 34 ]; then
         ldd $glroot/bin/* 2>/dev/null | awk '{print $5, $1}' | grep -e "^/" | grep -v "00000000$" | awk '{print $1}' |
         sort | uniq | while read lib; do
             lddsequence
@@ -169,9 +174,6 @@ case $os in
 		;;
 	linux)
 		bsdlibs="/lib/ld-linux.so.2"
-		;;
-	darwin)
-		bsdlibs="/usr/lib/dyld /usr/lib/dylib1.o /usr/lib/system/libmathCommon.A.dylib"
 		;;
 	*)
 		echo "No special library needed on this platform."

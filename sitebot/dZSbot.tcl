@@ -8,2126 +8,2075 @@
 #################################################################################
 # Read The Config Files                                                         #
 #################################################################################
+putlog "Launching dZSbot for project-zs-ng..."
 
-putlog "\[dZSbot\] Loading..."
+set dzerror 0
+set scriptpath [file dirname [info script]]
 
-namespace eval ::dZSbot {
-    variable scriptPath [file dirname [info script]]
-    namespace export *
-    set defaultsection "DEFAULT"
-    set variables(NUKE)   ""
-    set variables(UNNUKE) ""
-}
+unset -nocomplain variables
 
-## This Tcl version check is here for a reason - don't remove it. If you think
-## removing this check in order for dZSbot to work on an older Tcl is clever,
-## it's not. In fact, you're a moron. dZSbot uses several features which are specific
-## to Tcl 8.4, don't even think of complaining about backwards compatibility either.
 if {[catch {package require Tcl 8.4} error]} {
-    die "\[dZSbot\] Error :: You must be using Tcl v8.4, or newer, with dZSbot."
+	die "dZSbot error: You must be using Tcl v8.4, or newer, with dZSbot."
+}
+if {[catch {source $scriptpath/dZSbot.conf.defaults} error]} {
+	putlog "dZSbot error: Unable to load dZSbot.conf.defaults ($error), cannot continue."
+	putlog "dZSbot error: See FAQ for possible solutions/debugging options."
+	die
+}
+if {[catch {source $scriptpath/dZSbot.vars} error]} {
+	putlog "dZSbot error: Unable to load dZSbot.vars ($error), cannot continue."
+	putlog "dZSbot error: See FAQ for possible solutions/debugging options."
+	die
+}
+if {[catch {source $scriptpath/dZSbot.conf} error]} {
+	putlog "dZSbot warning: Unable to load dZSbot.conf, using default values."
+	if {[file exists $scriptpath/dZSbot.conf]} {
+		putlog "dZSbot warning: Config error:\n$errorInfo"
+	} else {
+		putlog "dZSbot warning: Since this is your first install, do: cp dZSbot.conf.dist dZSbot.conf"
+	}
+	set dzerror 1
 }
 
 #################################################################################
-# Miscellaneous Commands                                                        #
+# Important Global Variables                                                    #
 #################################################################################
 
-proc ::dZSbot::DebugMsg {section text} {
-    variable debugmode
-    if {[IsTrue $debugmode]} {putlog "\[dZSbot\] Debug :: $section - $text"}
+proc ng_debug {text} {
+	if {[istrue $::debugmode]} {
+		putlog "dZSbot debug: $text"
+	}
 }
 
-proc ::dZSbot::InfoMsg {text} {
-    putlog "\[dZSbot\] $text"
+set mpath ""
+set defaultsection "DEFAULT"
+set nuke(LASTDIR) ""
+set nuke(LASTTYPE) ""
+set nuke(SHOWN) 1
+set variables(NUKE)   ""
+set variables(UNNUKE) ""
+
+interp alias {} istrue {} string is true -strict
+interp alias {} isfalse {} string is false -strict
+
+#################################################################################
+# Bind Commands                                                                 #
+#################################################################################
+
+bind join -|- * ng_welcome
+
+proc bindcommands {cmdpre} {
+	global ftpd_type 
+
+	bind pub -|- [set cmdpre]bnc         ng_bnc
+	bind pub -|- [set cmdpre]df          ng_free
+	bind pub -|- [set cmdpre]free        ng_free
+	bind pub -|- [set cmdpre]help        ng_help
+	bind pub -|- [set cmdpre]inc         ng_incompletes
+	bind pub -|- [set cmdpre]incomplete  ng_incompletes
+	bind pub -|- [set cmdpre]incompletes ng_incompletes
+	bind pub -|- [set cmdpre]uptime      ng_uptime
+
+	# The binds below here are only working under glftpd :(
+	# We need to find / create equivilant tools & TCL-snippets
+	# to fetch relevant information for other $ftpd_types.
+	# Perhaps if you can assign a namespace to a variable, 
+	# then we can have namespace per ftpd.
+	if {![string equal -nocase "glftpd" $ftpd_type]} { return; }
+
+	bind pub -|- [set cmdpre]bw          ng_bw
+	bind pub -|- [set cmdpre]bwdn        ng_bwdn
+	bind pub -|- [set cmdpre]bwup        ng_bwup
+	bind pub -|- [set cmdpre]dn          ng_leechers
+	bind pub -|- [set cmdpre]down        ng_leechers
+	bind pub -|- [set cmdpre]downloaders ng_leechers
+	bind pub -|- [set cmdpre]leechers    ng_leechers
+	bind pub -|- [set cmdpre]idle        ng_idlers
+	bind pub -|- [set cmdpre]idlers      ng_idlers
+	bind pub -|- [set cmdpre]new         ng_new
+	bind pub -|- [set cmdpre]nukes       ng_nukes
+	bind pub -|- [set cmdpre]search      ng_search
+	bind pub -|- [set cmdpre]speed       ng_speed
+	bind pub -|- [set cmdpre]unnukes     ng_unnukes
+	bind pub -|- [set cmdpre]up          ng_uploaders
+	bind pub -|- [set cmdpre]uploaders   ng_uploaders
+	bind pub -|- [set cmdpre]who         ng_who
+
+	bind pub -|- [set cmdpre]gpad    [list ng_stats "-d" "-A"]
+	bind pub -|- [set cmdpre]gpau    [list ng_stats "-u" "-A"]
+	bind pub -|- [set cmdpre]gpwd    [list ng_stats "-d" "-W"]
+	bind pub -|- [set cmdpre]gpwu    [list ng_stats "-u" "-W"]
+	bind pub -|- [set cmdpre]gpmd    [list ng_stats "-d" "-M"]
+	bind pub -|- [set cmdpre]gpmu    [list ng_stats "-u" "-M"]
+	bind pub -|- [set cmdpre]gpdd    [list ng_stats "-d" "-T"]
+	bind pub -|- [set cmdpre]gpdu    [list ng_stats "-u" "-T"]
+
+	bind pub -|- [set cmdpre]alldn   [list ng_stats "-d" "-a"]
+	bind pub -|- [set cmdpre]allup   [list ng_stats "-u" "-a"]
+	bind pub -|- [set cmdpre]daydn   [list ng_stats "-d" "-t"]
+	bind pub -|- [set cmdpre]dayup   [list ng_stats "-u" "-t"]
+	bind pub -|- [set cmdpre]monthdn [list ng_stats "-d" "-m"]
+	bind pub -|- [set cmdpre]monthup [list ng_stats "-u" "-m"]
+	bind pub -|- [set cmdpre]wkdn    [list ng_stats "-d" "-w"]
+	bind pub -|- [set cmdpre]wkup    [list ng_stats "-u" "-w"]
 }
 
-proc ::dZSbot::ErrorMsg {section text} {
-    putlog "\[dZSbot\] Error :: $section - $text"
+if {[istrue $bindnopre]} {
+	bindcommands "!"
+} elseif {![string equal "!" $cmdpre]} {
+	catch {unbind pub -|- !bnc         ng_bnc}
+	catch {unbind pub -|- !bw          ng_bw}
+	catch {unbind pub -|- !bwdn        ng_bwdn}
+	catch {unbind pub -|- !bwup        ng_bwup}
+	catch {unbind pub -|- !df          ng_free}
+	catch {unbind pub -|- !free        ng_free}
+	catch {unbind pub -|- !dn          ng_leechers}
+	catch {unbind pub -|- !down        ng_leechers}
+	catch {unbind pub -|- !downloaders ng_leechers}
+	catch {unbind pub -|- !leechers    ng_leechers}
+	catch {unbind pub -|- !dupe        ng_search}
+	catch {unbind pub -|- !help        ng_help}
+	catch {unbind pub -|- !idle        ng_idlers}
+	catch {unbind pub -|- !idlers      ng_idlers}
+	catch {unbind pub -|- !inc         ng_incompletes}
+	catch {unbind pub -|- !incomplete  ng_incompletes}
+	catch {unbind pub -|- !incompletes ng_incompletes}
+	catch {unbind pub -|- !new         ng_new}
+	catch {unbind pub -|- !nukes       ng_nukes}
+	catch {unbind pub -|- !search      ng_search}
+	catch {unbind pub -|- !speed       ng_speed}
+	catch {unbind pub -|- !unnukes     ng_unnukes}
+	catch {unbind pub -|- !up          ng_uploaders}
+	catch {unbind pub -|- !uploaders   ng_uploaders}
+	catch {unbind pub -|- !uptime      ng_uptime}
+	catch {unbind pub -|- !who         ng_who}
+
+	catch {unbind pub -|- !gpad    [list ng_stats "-d" "-A"]}
+	catch {unbind pub -|- !gpau    [list ng_stats "-u" "-A"]}
+	catch {unbind pub -|- !gpwd    [list ng_stats "-d" "-W"]}
+	catch {unbind pub -|- !gpwu    [list ng_stats "-u" "-W"]}
+	catch {unbind pub -|- !gpmd    [list ng_stats "-d" "-M"]}
+	catch {unbind pub -|- !gpmu    [list ng_stats "-u" "-M"]}
+	catch {unbind pub -|- !gpdd    [list ng_stats "-d" "-T"]}
+	catch {unbind pub -|- !gpdu    [list ng_stats "-u" "-T"]}
+	catch {unbind pub -|- !alldn   [list ng_stats "-d" "-a"]}
+	catch {unbind pub -|- !allup   [list ng_stats "-u" "-a"]}
+	catch {unbind pub -|- !daydn   [list ng_stats "-d" "-t"]}
+	catch {unbind pub -|- !dayup   [list ng_stats "-u" "-t"]}
+	catch {unbind pub -|- !monthdn [list ng_stats "-d" "-m"]}
+	catch {unbind pub -|- !monthup [list ng_stats "-u" "-m"]}
+	catch {unbind pub -|- !wkdn    [list ng_stats "-d" "-w"]}
+	catch {unbind pub -|- !wkup    [list ng_stats "-u" "-w"]}
 }
 
-proc ::dZSbot::WarningMsg {section text} {
-    putlog "\[dZSbot\] Warning :: $section - $text"
+## Bind the user defined command prefix.
+foreach pre $cmdpre {
+    bindcommands $pre
 }
-
-proc ::dZSbot::b {} {return \002}
-proc ::dZSbot::c {} {return \003}
-proc ::dZSbot::u {} {return \037}
-proc ::dZSbot::r {} {return \026}
-proc ::dZSbot::o {} {return \015}
-
-interp alias {} IsTrue {} string is true -strict
-interp alias {} IsFalse {} string is false -strict
 
 #################################################################################
 # Internal Commands                                                             #
 #################################################################################
 
-proc ::dZSbot::BindCommands {prefix} {
-    set context [namespace current]
-    bind pub -|- ${prefix}bnc         ${context}::CmdBnc
-    bind pub -|- ${prefix}bw          ${context}::CmdBw
-    bind pub -|- ${prefix}bwdn        ${context}::CmdBwDn
-    bind pub -|- ${prefix}bwup        ${context}::CmdBwUp
-    bind pub -|- ${prefix}df          ${context}::CmdFree
-    bind pub -|- ${prefix}free        ${context}::CmdFree
-    bind pub -|- ${prefix}dn          ${context}::CmdLeechers
-    bind pub -|- ${prefix}down        ${context}::CmdLeechers
-    bind pub -|- ${prefix}downloaders ${context}::CmdLeechers
-    bind pub -|- ${prefix}leechers    ${context}::CmdLeechers
-    bind pub -|- ${prefix}dupe        ${context}::CmdSearch
-    bind pub -|- ${prefix}help        ${context}::CmdHelp
-    bind pub -|- ${prefix}idle        ${context}::CmdIdlers
-    bind pub -|- ${prefix}idlers      ${context}::CmdIdlers
-    bind pub -|- ${prefix}inc         ${context}::CmdIncompletes
-    bind pub -|- ${prefix}incomplete  ${context}::CmdIncompletes
-    bind pub -|- ${prefix}incompletes ${context}::CmdIncompletes
-    bind pub -|- ${prefix}new         ${context}::CmdNew
-    bind pub -|- ${prefix}nukes       ${context}::CmdNukes
-    bind pub -|- ${prefix}search      ${context}::CmdSearch
-    bind pub -|- ${prefix}speed       ${context}::CmdSpeed
-    bind pub -|- ${prefix}unnukes     ${context}::CmdUnnukes
-    bind pub -|- ${prefix}up          ${context}::CmdUploaders
-    bind pub -|- ${prefix}uploaders   ${context}::CmdUploaders
-    bind pub -|- ${prefix}uptime      ${context}::CmdUptime
-    bind pub -|- ${prefix}who         ${context}::CmdWho
+bind dcc n errorinfo ng_error
+bind dcc n preview ng_preview
 
-    bind pub -|- ${prefix}gpad    [list ${context}::CmdStats "-d" "-A"]
-    bind pub -|- ${prefix}gpal    [list ${context}::CmdStats "-u" "-A"]
-    bind pub -|- ${prefix}gpwk    [list ${context}::CmdStats "-d" "-W"]
-    bind pub -|- ${prefix}gwpd    [list ${context}::CmdStats "-u" "-W"]
-
-    bind pub -|- ${prefix}alldn   [list ${context}::CmdStats "-d" "-a"]
-    bind pub -|- ${prefix}allup   [list ${context}::CmdStats "-u" "-a"]
-    bind pub -|- ${prefix}daydn   [list ${context}::CmdStats "-d" "-t"]
-    bind pub -|- ${prefix}dayup   [list ${context}::CmdStats "-u" "-t"]
-    bind pub -|- ${prefix}monthdn [list ${context}::CmdStats "-d" "-m"]
-    bind pub -|- ${prefix}monthup [list ${context}::CmdStats "-u" "-m"]
-    bind pub -|- ${prefix}wkdn    [list ${context}::CmdStats "-d" "-w"]
-    bind pub -|- ${prefix}wkup    [list ${context}::CmdStats "-u" "-w"]
+proc ng_error {args} {
+	global errorInfo tcl_patchLevel tcl_platform
+	putlog "--\[\002Error Info\002\]------------------------------------------"
+	putlog "Tcl: $tcl_patchLevel"
+	putlog "Box: $tcl_platform(os) $tcl_platform(osVersion)"
+	putlog "Message:"
+	foreach line [split $errorInfo "\n"] {putlog $line}
+	putlog "--------------------------------------------------------"
 }
 
-proc ::dZSbot::UnbindCommands {prefix} {
-    set context [namespace current]
-    catch {unbind pub -|- ${prefix}bnc         ${context}::CmdBnc}
-    catch {unbind pub -|- ${prefix}bw          ${context}::CmdBw}
-    catch {unbind pub -|- ${prefix}bwdn        ${context}::CmdBwDn}
-    catch {unbind pub -|- ${prefix}bwup        ${context}::CmdBwUp}
-    catch {unbind pub -|- ${prefix}df          ${context}::CmdFree}
-    catch {unbind pub -|- ${prefix}free        ${context}::CmdFree}
-    catch {unbind pub -|- ${prefix}dn          ${context}::CmdLeechers}
-    catch {unbind pub -|- ${prefix}down        ${context}::CmdLeechers}
-    catch {unbind pub -|- ${prefix}downloaders ${context}::CmdLeechers}
-    catch {unbind pub -|- ${prefix}leechers    ${context}::CmdLeechers}
-    catch {unbind pub -|- ${prefix}dupe        ${context}::CmdSearch}
-    catch {unbind pub -|- ${prefix}help        ${context}::CmdHelp}
-    catch {unbind pub -|- ${prefix}idle        ${context}::CmdIdlers}
-    catch {unbind pub -|- ${prefix}idlers      ${context}::CmdIdlers}
-    catch {unbind pub -|- ${prefix}inc         ${context}::CmdIncompletes}
-    catch {unbind pub -|- ${prefix}incomplete  ${context}::CmdIncompletes}
-    catch {unbind pub -|- ${prefix}incompletes ${context}::CmdIncompletes}
-    catch {unbind pub -|- ${prefix}new         ${context}::CmdNew}
-    catch {unbind pub -|- ${prefix}nukes       ${context}::CmdNukes}
-    catch {unbind pub -|- ${prefix}search      ${context}::CmdSearch}
-    catch {unbind pub -|- ${prefix}speed       ${context}::CmdSpeed}
-    catch {unbind pub -|- ${prefix}unnukes     ${context}::CmdUnnukes}
-    catch {unbind pub -|- ${prefix}up          ${context}::CmdUploaders}
-    catch {unbind pub -|- ${prefix}uploaders   ${context}::CmdUploaders}
-    catch {unbind pub -|- ${prefix}uptime      ${context}::CmdUptime}
-    catch {unbind pub -|- ${prefix}who         ${context}::CmdWho}
+proc ng_preview {handle idx text} {
+	global announce defaultsection lastbind mclastbind
 
-    catch {unbind pub -|- ${prefix}gpad    [list ${context}::CmdStats "-d" "-A"]}
-    catch {unbind pub -|- ${prefix}gpal    [list ${context}::CmdStats "-u" "-A"]}
-    catch {unbind pub -|- ${prefix}gpwk    [list ${context}::CmdStats "-d" "-W"]}
-    catch {unbind pub -|- ${prefix}gwpd    [list ${context}::CmdStats "-u" "-W"]}
+	if {[string equal "" $text]} {
+		if {[info exist mclastbind]} {set lastbind $mclastbind}
+		putdcc $idx "\002Preview Usage:\002"
+		putdcc $idx "- .$lastbind <event pattern>"
+		putdcc $idx "- Only events matching the pattern are shown (* for all)."
+		return
+	}
 
-    catch {unbind pub -|- ${prefix}alldn   [list ${context}::CmdStats "-d" "-a"]}
-    catch {unbind pub -|- ${prefix}allup   [list ${context}::CmdStats "-u" "-a"]}
-    catch {unbind pub -|- ${prefix}daydn   [list ${context}::CmdStats "-d" "-t"]}
-    catch {unbind pub -|- ${prefix}dayup   [list ${context}::CmdStats "-u" "-t"]}
-    catch {unbind pub -|- ${prefix}monthdn [list ${context}::CmdStats "-d" "-m"]}
-    catch {unbind pub -|- ${prefix}monthup [list ${context}::CmdStats "-u" "-m"]}
-    catch {unbind pub -|- ${prefix}wkdn    [list ${context}::CmdStats "-d" "-w"]}
-    catch {unbind pub -|- ${prefix}wkup    [list ${context}::CmdStats "-u" "-w"]}
-}
+	if {[catch {set handle [open $announce(THEMEFILE) r]} error]} {
+		putlog "dZSbot error: Unable to read the theme file ($error)."
+		return
+	}
+	set data [read -nonewline $handle]
+	close $handle
 
-proc ::dZSbot::ShowError {args} {
-    global errorInfo tcl_platform
-    putlog "--\[[b]Error Info[b]\]------------------------------------------"
-    putlog "Tcl: [info patchlevel]"
-    putlog "Box: $tcl_platform(os) $tcl_platform(osVersion), $tcl_platform(machine) $tcl_platform(byteOrder)"
-    putlog "Message:"
-    foreach line [split $errorInfo "\n"] {putlog $line}
-    putlog "--------------------------------------------------------"
-}
-
-#################################################################################
-# Event Handling                                                                #
-#################################################################################
-
-proc ::dZSbot::EventHandler {type event args} {
-    variable $type
-    set varName "${type}($event)"
-    if {![info exists $varName]} {return 1}
-
-    foreach script [set $varName] {
-        if {[catch {set retval [eval [list $script $event] $args]} error]} {
-            ErrorMsg EventHandler "Error evaluating the script \"$script\" for \"$varName\" ($error)."
-        } elseif {[IsFalse $retval]} {
-            DebugMsg EventHandler "The script \"$script\" for \"$varName\" returned false."
-            return 0
-        } elseif {![IsTrue $retval]} {
-            WarningMsg EventHandler "The script \"$script\" for \"$varName\" must return a boolean value (0/FALSE or 1/TRUE)."
-        }
-    }
-    return 1
-}
-
-proc ::dZSbot::EventRegister {type event script} {
-    variable $type
-    set varName "${type}($event)"
-    if {![info exists $varName] || [lsearch -exact [set $varName] $script] == -1} {
-        lappend $varName $script
-    }
-    return
-}
-
-proc ::dZSbot::EventUnregister {type event script} {
-    variable $type
-    set varName "${type}($event)"
-    if {[info exists $varName] && [set pos [lsearch -exact [set $varName] $script]] != -1} {
-        set $varName [lreplace [set $varName] $pos $pos]
-    }
-    return
+	putdcc $idx "\002Previewing:\002 $announce(THEMEFILE)"
+	putdcc $idx ""
+	foreach line [split $data "\n"] {
+		if {![string equal "" $line] && [string index $line 0] != "#"} {
+			if {[regexp -nocase -- {announce\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+				set prefix "announce."
+			} elseif {[regexp -nocase -- {random\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
+				set prefix "random."
+			} elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
+				set prefix ""
+			} else {
+				continue
+			}
+			if {[string match -nocase $text $setting]} {
+				set value [themereplace [replacebasic $value $defaultsection] $defaultsection]
+				putdcc $idx "$prefix$setting = $value"
+			}
+		}
+	}
+	return
 }
 
 #################################################################################
 # Log Parsing for glFTPd and Login Logs                                         #
 #################################################################################
 
-proc ::dZSbot::IsPathDenied {release} {
-    variable denypost
-    foreach deny $denypost {
-        if {[string match $deny $release]} {
-            DebugMsg PathDenied "Announce skipped, \"$release\" matched \"$deny\" (denypost)."
-            return 1
-        }
-    }
-    return 0
+proc denycheck {release} {
+	global denypost
+	foreach deny $denypost {
+		if {[string match $deny $release]} {
+			ng_debug "Announce skipped, \"$release\" matched \"$deny\" (denypost)."
+			return 1
+		}
+	}
+	return 0
 }
 
-proc ::dZSbot::IsEventDenied {section event} {
-    variable disabletypes
-    if {![info exists disabletypes($section)]} {return 0}
-
-    foreach deny $disabletypes($section) {
-        if {[string match $deny $event]} {
-            DebugMsg EventDenied "Announce skipped, \"$event\" disabled, check \"disabletypes($section)\"."
-            return 1
-        }
-    }
-    return 0
+proc eventcheck {section event} {
+	global disabletypes
+	if {![info exists disabletypes($section)]} {return 0}
+	foreach deny $disabletypes($section) {
+		if {[string match $deny $event]} {
+			ng_debug "Announce skipped, \"$event\" is disabled in \"disabletypes($section)\"."
+			return 1
+		}
+	}
+	return 0
 }
 
-proc ::dZSbot::LogTimer {} {
-    variable logTimerId
-    if {[catch {LogRead}]} {
-        ErrorMsg LogTimer "Unhandled error, please report to developers:\n$::errorInfo"
-    }
-    set logTimerId [utimer 1 [namespace current]::LogTimer]
+proc eventhandler {type event argv} {
+	global $type
+	set varname "$type\($event)"
+	if {![info exists $varname]} {return 1}
+	foreach script [set $varname] {
+		if {[catch {set retval [eval $script $event $argv]} error]} {
+			putlog "dZSbot error: Error evaluating the script \"$script\" for \"$varname\" ($error)."
+		} elseif {[isfalse $retval]} {
+			ng_debug "The script \"$script\" for \"$varname\" returned false."
+			return 0
+		} elseif {![istrue $retval]} {
+			putlog "dZSbot warning: The script \"$script\" for \"$varname\" must return a boolean value (0/FALSE or 1/TRUE)."
+		}
+	}
+	return 1
 }
 
-proc ::dZSbot::LogRead {} {
-    variable defaultsection
-    variable disable
-    variable glVersion
-    variable lastread
-    variable logList
-    variable max_log_change
-    variable msgreplace
-    variable msgtypes
-    variable variables
-
-    set lines ""
-    foreach {logType logId logPath} $logList {
-        if {![file readable $logPath]} {
-            ErrorMsg LogRead "Unable to read log file \"$logPath\"."
-            continue
-        }
-        switch -exact -- $logType {
-            0 {set regex {^.+ \d+:\d+:\d+ \d{4} (\S+): (.+)}}
-            1 - 2 {set regex {^.+ \d+:\d+:\d+ \d{4} \[(\d+)\s*\] (.+)}}
-            default {ErrorMsg LogRead "Internal error, unknown log type ($logType)."; continue}
-        }
-        set logSize [file size $logPath]
-        if {$lastread($logId) < $logSize && ($logSize - $lastread($logId) - $max_log_change) < 0} {
-            if {![catch {set handle [open $logPath r]} error]} {
-                seek $handle $lastread($logId)
-                set data [read -nonewline $handle]
-                set logSize [tell $handle]
-                close $handle
-
-                foreach line [split $data "\n"] {
-                    ## Remove the date and time from the log line.
-                    if {[regexp $regex $line result event line]} {
-                        lappend lines $logType $event $line
-                    } else {
-                        WarningMsg LogRead "Invalid log line: $line"
-                    }
-                }
-            } else {
-                ErrorMsg LogRead "Unable to open log file \"$logPath\" ($error)."
-            }
-        }
-        set lastread($logId) $logSize
-    }
-
-    foreach {type event line} $lines {
-        ## Login and sysop log specific parsing.
-        if {$type == 1 && ![LogParseLogin $line event line]} {
-            ErrorMsg LogRead "Unknown login.log line: $line"
-            continue
-        } elseif {$type == 2 && ![LogParseSysop $line event line]} {
-            set event "SYSOP"
-            set line [list $line]
-        }
-        DebugMsg LogRead "Received event: $event (log: $type)."
-
-        ## Check that the log line is a valid Tcl list.
-        if {[catch {llength $line} error]} {
-            ErrorMsg LogRead "Invalid log line (not a tcl list): $line"
-            continue
-        }
-
-        if {[string equal $event "INVITE"]} {
-            foreach {nick user group flags} $line {break}
-            InviteUser $nick $user $group $flags
-        }
-
-        if {[lsearch -exact $msgtypes(SECTION) $event] != -1} {
-            set path [lindex $line 0]
-            if {[IsPathDenied $path]} {continue}
-            GetSectionName $path section sectionPath
-
-            # Replace messages with custom messages
-            foreach {name value} [array get msgreplace] {
-                set value [split $value ":"]
-                if {[string equal $event [lindex $value 0]]} {
-                    if {[string match -nocase [lindex $value 1] $path]} {
-                        set event [lindex $value 2]
-                    }
-                }
-            }
-        } elseif {[lsearch -exact $msgtypes(DEFAULT) $event] != -1} {
-            set section $defaultsection
-            set sectionPath ""
-        } else {
-            ErrorMsg LogRead "Undefined message type \"$event\", check \"msgtypes(SECTION)\" and \"msgtypes(DEFAULT)\" in the config."
-            continue
-        }
-
-        ## If a pre-event script returns false, skip the announce.
-        if {![EventHandler precommand $event $section $sectionPath $line] || ([info exists disable($event)] && $disable($event) == 1)} {
-            DebugMsg LogRead "Announce skipped, \"$event\" is disabled or a pre-command script returned false."
-            continue
-        }
-
-        if {![info exists variables($event)]} {
-            ErrorMsg LogRead "\"variables($event)\" not defined in the config, type becomes \"$defaultsection\"."
-            set event $defaultsection
-        }
-        if {![IsEventDenied $section $event]} {
-            SendAll $event $section [LogFormat $event $section $sectionPath $line]
-            EventHandler postcommand $event $section $sectionPath $line
-        }
-    }
-    if {$glVersion == 1} {
-        LaunchNuke
-    }
-    return
+proc readlogtimer {} {
+	global dZStimer errorInfo
+	if {[catch {readlog}]} {
+		putlog "dZSbot error: Unhandled error, please report to developers:\n$errorInfo"
+	}
+	set dZStimer [utimer 1 readlogtimer]
 }
 
-proc ::dZSbot::LogParseLogin {line eventVar dataVar} {
-    upvar $eventVar event $dataVar data
+proc readlog {} {
+	global defaultsection disable glversion lastread loglist max_log_change msgreplace msgtypes variables
+	set lines ""
 
-    ## The data in login.log is not at all consistent,
-    ## which makes it fun for us to parse.
-    if {[regexp {^'(.+)' killed a ghost with PID (\d+)\.$} $line result user pid]} {
-        set event "KILLGHOST"
-        set data [list $user $pid]
-    } elseif {[regexp {^(.+@.+) \((.+)\): connection refused: .+$} $line result hostmask ip]} {
-        set event "IPNOTADDED"
-        set data [list $hostmask $ip]
-    } elseif {[regexp {^(\S+): (.+@.+) \((.+)\): (.+)} $line result user hostmask ip error]} {
-        switch -exact -- $error {
-            "Bad user@host."    {set event "BADHOSTMASK"}
-            "Banned user@host." {set event "BANNEDHOST"}
-            "Deleted."          {set event "DELETED"}
-            "Login failure."    {set event "BADPASSWORD"}
-            default {return 0}
-        }
-        set data [list $user $hostmask $ip]
-    } elseif {![regexp {^(\S+): (.+)$} $line result event data]} {
-        return 0
-    }
-    return 1
+	foreach {logtype logid logpath} $loglist {
+		if {![file readable $logpath]} {
+			putlog "dZSbot error: Unable to read log file \"$logpath\"."
+			continue
+		}
+		## The regex pattern to use for the logfile
+		## - means "use next regex"
+		switch -exact -- $logtype {
+			0 {set regex {^.+ \d+:\d+:\d+ \d{4} (\S+): (.+)}}
+			1 -
+			2 {set regex {^.+ \d+:\d+:\d+ \d{4} \[(\d+)\s*\] (.+)}}
+			default {putlog "dZSbot error: Internal error, unknown log type ($logtype)."; continue}
+		}
+		## Read the log data
+		set logsize [file size $logpath]
+		if {$lastread($logid) < $logsize && ($logsize - $lastread($logid) - $max_log_change) < 0} {
+			if {![catch {set handle [open $logpath r]} error]} {
+				seek $handle $lastread($logid)
+				set data [read -nonewline $handle]
+				set logsize [tell $handle]
+				close $handle
+
+				foreach line [split $data "\n"] {
+					## Remove the date and time from the log line.
+					if {[regexp $regex $line result event line]} {
+						lappend lines $logtype $event $line
+					} else {
+						putlog "dZSbot warning: Invalid log line: $line"
+					}
+				}
+			} else {
+				putlog "dZSbot error: Unable to open log file \"$logpath\" ($error)."
+			}
+		}
+		set lastread($logid) $logsize
+	}
+
+	foreach {type event line} $lines {
+		## Login and sysop log specific parsing.
+		if {$type == 1 && ![parselogin $line event line]} {
+			putlog "dZSbot error: Unknown login.log line: $line"
+			continue
+		} elseif {$type == 2 && ![parsesysop $line event line]} {
+			set event "SYSOP"
+			set line [list $line]
+		}
+		ng_debug "Received event: $event (log: $type)."
+
+		## Check that the log line is a valid Tcl list.
+		if {[catch {llength $line} error]} {
+			putlog "dZSbot error: Invalid log line (not a tcl list): $line"
+			continue
+		}
+		## Invite users to public and private channels.
+		if {[string equal $event "INVITE"]} {
+			foreach {nick user group flags} $line {break}
+			ng_inviteuser $nick $user $group $flags
+		}
+		if {[lsearch -exact $msgtypes(SECTION) $event] != -1} {
+			set path [lindex $line 0]
+			if {[denycheck $path]} {continue}
+			set section [getsectionname $path]
+
+			# Replace messages with custom messages
+			foreach {name value} [array get msgreplace] {
+				set value [split $value ":"]
+				if {[string equal $event [lindex $value 0]]} {
+					if {[string match -nocase [lindex $value 1] $path]} {
+						set event [lindex $value 2]
+					}
+				}
+			}
+		} elseif {[lsearch -exact $msgtypes(DEFAULT) $event] != -1} {
+			set section $defaultsection
+		} else {
+			putlog "dZSbot error: Undefined message type \"$event\", check \"msgtypes(SECTION)\" and \"msgtypes(DEFAULT)\" in the config."
+			continue
+		}
+
+		## If the event is disabled, skip the announce.
+		if {([info exists disable($event)] && $disable($event) == 1)} {
+			ng_debug "Announce skipped, \"$event\" is disabled."
+			continue
+		}
+
+		## If a pre-event script returns false, skip the announce.
+		if {[eventhandler precommand $event [list $section $line]]} {
+			if {![info exists variables($event)]} {
+				putlog "dZSbot error: \"variables($event)\" not defined in the config, type becomes \"$defaultsection\"."
+				set event $defaultsection
+			}
+
+			if {![eventcheck $section $event]} {
+				sndall $event $section [ng_format $event $section $line]
+			}
+		} else {
+			ng_debug "Default announce skipped, \"$event\" pre-command script returned false."
+		}
+
+		if {![eventcheck $section $event]} {
+			eventhandler postcommand $event [list $section $line]
+		}
+	}
+	if {$glversion == 1} {
+		launchnuke
+	}
+	return
 }
 
-proc ::dZSbot::LogParseSysop {line eventVar dataVar} {
-    upvar $eventVar event $dataVar newdata
-    set patterns [list \
-        ADDUSER  {^'(\S+)' added user '(\S+)'\.$} \
-        GADDUSER {^'(\S+)' added user '(\S+)' to group '(\S+)'\.$} \
-        CHGRPADD {^'(\S+)': successfully added to '(\S+)' by (\S+)$} \
-        CHGRPDEL {^'(\S+)': successfully removed from '(\S+)' by (\S+)$} \
-        ADDIP    {^'(\S+)' added ip '(\S+)' to '(\S+)'$} \
-        DELIP    {^'(\S+)' .*removed ip '(\S+)' from '(\S+)'$} \
-        READDED  {^'(\S+)' readded '(\S+)'\.$} \
-        DELUSER  {^'(\S+)' deleted user '(\S+)'\.$} \
-        PURGED   {^'(\S+)' purged '(\S+)'$} \
-        KILLED   {^'(\S+)' killed PID (\d+) \((\S+)\)\.$} \
-    ]
-    foreach {event pattern} $patterns {
-        if {[llength [set data [regexp -inline -- $pattern $line]]]} {
-            set newdata [lrange $data 1 end]
-            return 1
-        }
-    }
-    return 0
+proc parselogin {line eventvar datavar} {
+	upvar $eventvar event $datavar data
+	## The data in login.log is not at all consistent,
+	## which makes it fun for us to parse.
+	if {[regexp {^'(.+)' killed a ghost with PID (\d+)\.$} $line result user pid]} {
+		set event "KILLGHOST"
+		set data [list $user $pid]
+	} elseif {[regexp {^(.+@.+) \((.+)\): connection refused: .+$} $line result hostmask ip]} {
+		set event "IPNOTADDED"
+		set data [list $hostmask $ip]
+	} elseif {[regexp {^(\S+): (.+@.+) \((.+)\): (.+)} $line result user hostmask ip error]} {
+		switch -exact -- $error {
+			"Bad user@host."    {set event "BADHOSTMASK"}
+			"Banned user@host." {set event "BANNEDHOST"}
+			"Deleted."          {set event "DELETED"}
+			"Login failure."    {set event "BADPASSWORD"}
+			default {return 0}
+		}
+		set data [list $user $hostmask $ip]
+	} elseif {![regexp {^(\S+): (.+)$} $line result event data]} {
+		return 0
+	}
+	return 1
 }
 
-proc ::dZSbot::LogRandom {event randVar} {
-    upvar $randVar randEvent
-    variable random
-    ## Select a random announce theme.
-    set randList [array names random "${event}-*"]
-    if {[set randCount [llength $randList]]} {
-        set randEvent [lindex $randList [rand $randCount]]
-        return 1
-    }
-    return 0
+proc parsesysop {line eventvar datavar} {
+	upvar $eventvar event $datavar newdata
+	set patterns [list \
+		ADDUSER  {^'(\S+)' added user '(\S+)'\.$} \
+		GADDUSER {^'(\S+)' added user '(\S+)' to group '(\S+)'\.$} \
+		CHGRPADD {^'(\S+)': successfully added to '(\S+)' by (\S+)$} \
+		CHGRPDEL {^'(\S+)': successfully removed from '(\S+)' by (\S+)$} \
+		ADDIP    {^'(\S+)' added ip '(\S+)' to '(\S+)'$} \
+		DELIP    {^'(\S+)' .*removed ip '(\S+)' from '(\S+)'$} \
+		READDED  {^'(\S+)' readded '(\S+)'\.$} \
+		DELUSER  {^'(\S+)' deleted user '(\S+)'\.$} \
+		PURGED   {^'(\S+)' purged '(\S+)'$} \
+		KILLED   {^'(\S+)' killed PID (\d+) \((\S+)\)\.$} \
+	]
+	foreach {event pattern} $patterns {
+		if {[llength [set data [regexp -inline -- $pattern $line]]]} {
+			set newdata [lrange $data 1 end]
+			return 1
+		}
+	}
+	return 0
 }
 
-proc ::dZSbot::LogFormat {event section sectionPath line} {
-    variable announce
-    variable defaultsection
-    variable disable
-    variable glVersion
-    variable random
-    variable sitename
-    variable theme
-    variable theme_fakes
-    variable variables
+proc ng_random {event rndvar} {
+	upvar $rndvar rndevent
+	global random
 
-    if {[string equal $event "NUKE"] || [string equal $event "UNNUKE"]} {
-        if {$glVersion == 1} {
-            FuelNuke $event $section $sectionPath $line
-        } elseif {$glVersion == 2} {
-            LaunchNuke2 $event $section $sectionPath $line
-        } else {
-            ErrorMsg LogFormat "Internal error, unknown glftpd version ($glVersion)."
-        }
-        return ""
-    }
+	## Select a random announce theme
+	set eventlist [array names random "${event}-*"]
+	if {[set items [llength $eventlist]]} {
+		set rndevent [lindex $eventlist [rand $items]]
+		return 1
+	}
+	return 0
+}
 
-    if {![info exists announce($event)]} {
-        ErrorMsg LogFormat "\"announce($event)\" not set in theme, event becomes \"$defaultsection\"."
-        set event $defaultsection
-    }
-    set output $theme(PREFIX)
+proc ng_format {event section line} {
+	global announce defaultsection disable glversion mpath random sitename theme theme_fakes variables
 
-    ## Random announce themes.
-    if {[string equal "random" $announce($event)] && [LogRandom $event randEvent]} {
-        append output $random($randEvent)
-    } else {
-        append output $announce($event)
-    }
+	if {[string equal $event "NUKE"] || [string equal $event "UNNUKE"]} {
+		if {$glversion == 1} {
+			fuelnuke $event [lindex $line 0] $section $line
+		} elseif {$glversion == 2} {
+			launchnuke2 $event [lindex $line 0] $section [lrange $line 1 3] [lrange $line 4 end]
+		} else {
+			putlog "dZSbot error: Internal error, unknown glftpd version ($glversion)."
+		}
+		return ""
+	}
 
-    if {[string equal $section $defaultsection] && [info exists theme_fakes($event)]} {
-        set section $theme_fakes($event)
-    }
-    set output [ReplaceBasic $output $section]
+	if {![info exists announce($event)]} {
+		putlog "dZSbot error: \"announce($event)\" not set in theme, event becomes \"$defaultsection\"."
+		set event $defaultsection
+	}
+	set vars $variables($event)
+	set output $theme(PREFIX)
 
-    ## Substitute all cookies with their corresponding values.
-    set loop 1
-    foreach varName $variables($event) value $line {
-        if {[string equal "%pf" $varName]} {
-            set output [ReplacePath $output $sectionPath $value]
-        } elseif {[set varCount [llength $varName]] > 1} {
-            set outputLoop ""
-            set varIndex 0
-            foreach subValue $value {
-                if {!$varIndex} {
-                    append outputLoop "$announce(${event}_LOOP${loop})"
-                }
-                ## Special cookie formatting.
-                set subVarName [lindex $varName $varIndex]
-                switch -glob -- $subVarName {
-                    {%*_avgspeed} -
-                    {%*_speed}    {set subValue [FormatSpeed $subValue $section]}
-                    {%*_duration} {set subValue [FormatDuration $subValue]}
-                }
-                set outputLoop [ReplaceVar $outputLoop $subVarName $subValue]
+	## Random announce messages
+	if {[string equal "random" $announce($event)] && [ng_random $event rndevent]} {
+		append output $random($rndevent)
+	} else {
+		append output $announce($event)
+	}
 
-                ## Reset the index and proceed to the next data set once
-                ## we have processed all cookies for the current data.
-                if {[incr varIndex] == $varCount} {
-                    set varIndex 0
-                }
-            }
-            set outputLoop [ReplaceBasic $outputLoop $section]
-            set outputLoop [ReplaceVar $outputLoop "%splitter" $theme(SPLITTER)]
-            set outputLoop [TrimTail $outputLoop $theme(SPLITTER)]
-            set output [ReplaceVar $output "%loop$loop" $outputLoop]
-            incr loop
-        } else {
-            ## Special cookie formatting.
-            switch -glob -- $varName {
-                {%*_avgspeed} -
-                {%*_speed}    {set value [FormatSpeed $value $section]}
-                {%*_duration} {set value [FormatDuration $value]}
-            }
-            set output [ReplaceVar $output $varName $value]
-        }
-    }
-    return $output
+	if {[string equal $section $defaultsection] && [info exists theme_fakes($event)]} {
+		set section $theme_fakes($event)
+	}
+	set output [replacebasic $output $section]
+	set cnt 0
+
+	## Path filter parsing
+	if {[string equal "%pf" [lindex $vars 0]]} {
+		set output [replacepath $output $mpath [lindex $line 0]]
+		set vars [lreplace $vars 0 0]
+		incr cnt
+	}
+
+	## Replace variables and format the %loop cookies
+	set loop 1
+	foreach vari $vars {
+		if {[llength $vari] > 1} {
+			set cnt2 0
+			set cnt3 1
+			set values [lindex $line $cnt]
+			set output2 ""
+			foreach value $values {
+				if {$cnt2 == 0} {
+					append output2 "$announce(${event}_LOOP${loop})"
+				}
+				if {[string match "*speed" [lindex $vari $cnt2]]} {
+					set output2 [replacevar $output2 [lindex $vari $cnt2] [format_speed $value $section]]
+				} else {
+					set output2 [replacevar $output2 [lindex $vari $cnt2] $value]
+				}
+				incr cnt2
+				if {[string equal "" [lindex $vari $cnt2]]} {
+					incr cnt3
+					set cnt2 0
+				}
+			}
+			set output2 [replacevar $output2 "%section" $section]
+			set output2 [replacevar $output2 "%sitename" $sitename]
+			set output2 [replacevar $output2 "%splitter" $theme(SPLITTER)]
+			set output2 [trimtail $output2 $theme(SPLITTER)]
+			set output [replacevar $output "%loop$loop" $output2]
+			incr loop
+		} else {
+			if {[string match "*speed" $vari]} {
+				set output [replacevar $output $vari [format_speed [lindex $line $cnt] $section]]
+			} else {
+				set output [replacevar $output $vari [lindex $line $cnt]]
+			}
+		}
+		incr cnt
+	}
+	return $output
 }
 
 #################################################################################
 # Nuke and Unnuke Handlers                                                      #
 #################################################################################
 
-proc ::dZSbot::FuelNuke {event section sectionPath logData} {
-    variable announce
-    variable hidenuke
-    variable nuke
+proc fuelnuke {type path section line} {
+	global hidenuke nuke
 
-    ## Log Data:
-    ## NUKE   - path nuker nukee "multi amount" reason
-    ## UNNUKE - path nuker nukee "multi amount" reason
-    foreach {path nuker nukee info reason} $logData {break}
-    set multi [lindex $info 0]
-    set size [lindex $info 1]
-
-    if {[info exists nuke($path)]} {
-        set nukeeList [lindex $nuke($path) end]
-    } else {
-        set nukeeList ""
-    }
-
-    ## Format nuked user and append to the list.
-    if {[lsearch -exact $hidenuke $nukee] == -1} {
-        set output $announce(NUKEES)
-        set output [ReplaceVar $output "%u_name" $nukee]
-        set output [ReplaceVar $output "%size" $size]
-        lappend nukeeList $output
-    }
-
-    set nuke($path) [list $event $section $sectionPath $nuker $multi $reason $nukeeList]
+	if {$type == $nuke(LASTTYPE) && $path == $nuke(LASTDIR) && $nuke(SHOWN) == 0} {
+		if {[lsearch -exact $hidenuke [lindex $line 2]] == -1} {
+			append nuke(NUKEE) "\002[lindex $line 2]\002 (\002[lindex $line 3 1]\002MB), "
+		}
+	} else {
+		launchnuke
+		if {[lsearch -exact $hidenuke [lindex $line 2]] == -1} {
+			set nuke(TYPE) $type
+			set nuke(PATH) $path
+			set nuke(SECTION) $section
+			set nuke(NUKER) [lindex $line 1]
+			set nuke(NUKEE) "\002[lindex $line 2]\002 (\002[lindex $line 3 1]\002MB) "
+			set nuke(MULT) [lindex $line 3 0]
+			set nuke(REASON) [lindex $line 4]
+			set nuke(SHOWN) 0
+		}
+	}
+	set nuke(LASTTYPE) $type
+	set nuke(LASTDIR) $path
 }
 
-proc ::dZSbot::LaunchNuke {} {
-    variable announce
-    variable nuke
-    variable theme
+proc launchnuke {} {
+	global announce mpath nuke theme
+	if {$nuke(SHOWN) == 1} {return 0}
+	set nuke(NUKEE) [trimtail $nuke(NUKEE) $theme(SPLITTER)]
 
-    foreach {path info} [array get nuke] {
-        foreach {event section sectionPath nuker multi reason nukeeList} $info {break}
-        set nukees [join $nukeeList $theme(SPLITTER)]
-
-        set output [ReplaceBasic "$theme(PREFIX)$announce($event)" $section]
-        set output [ReplaceVar $output "%nuker" $nuker]
-        set output [ReplaceVar $output "%multiplier" $multi]
-        set output [ReplaceVar $output "%reason" $reason]
-        set output [ReplaceVar $output "%nukees" $nukees]
-        set output [ReplacePath $output $sectionPath $path]
-
-        SendAll $event $section $output
-        unset nuke($path)
-    }
+	set output "$theme(PREFIX)$announce($nuke(TYPE))"
+	set output [replacebasic $output $nuke(SECTION)]
+	set output [replacevar $output "%nuker" $nuke(NUKER)]
+	set output [replacevar $output "%nukees" $nuke(NUKEE)]
+	set output [replacevar $output "%type" $nuke(TYPE)]
+	set output [replacevar $output "%multiplier" $nuke(MULT)]
+	set output [replacevar $output "%reason" $nuke(REASON)]
+	set output [replacepath $output $mpath $nuke(PATH)]
+	sndall $nuke(TYPE) $nuke(SECTION) $output
+	set nuke(SHOWN) 1
 }
 
-proc ::dZSbot::LaunchNuke2 {event section sectionPath logData} {
-    variable announce
-    variable hidenuke
-    variable theme
+proc launchnuke2 {type path section info nukees} {
+	global nuke hidenuke announce sitename theme mpath
 
-    ## Log Data:
-    ## NUKE   - path nuker multi reason "nukee amount ..."
-    ## UNNUKE - path nuker multi reason "nukee amount ..."
-    foreach {path nuker multi reason nukees} $logData {break}
+	set nuke(TYPE) $type
+	set nuke(PATH) $path
+	set nuke(SECTION) $section
+	set nuke(NUKER) [lindex $info 0]
+	set nuke(MULT) [lindex $info 1]
+	set nuke(REASON) [lindex $info 2]
+	set nuke(NUKEE) {}
 
-    ## Format nuked user list.
-    set nukeeList ""
-    foreach {user size} $nukees {
-        if {[lsearch -exact $hidenuke $user] == -1} {
-            set size [format "%.1f" [expr {$size / 1024}]]
-            set output $announce(NUKEES)
-            set output [ReplaceVar $output "%u_name" $user]
-            set output [ReplaceVar $output "%size" $size]
-            lappend nukeeList $output
-        }
-    }
-    set nukees [join $nukeeList $theme(SPLITTER)]
-
-    set output [ReplaceBasic "$theme(PREFIX)$announce($event)" $section]
-    set output [ReplaceVar $output "%nuker" $nuker]
-    set output [ReplaceVar $output "%multiplier" $multi]
-    set output [ReplaceVar $output "%reason" $reason]
-    set output [ReplaceVar $output "%nukees" $nukees]
-    set output [ReplacePath $output $sectionPath $path]
-    SendAll $event $section $output
+	foreach entry $nukees {
+		if {[lsearch -exact $hidenuke [lindex $entry 0]] == -1} {
+			set mb [format "%.1f" [expr [lindex $entry 1] / 1024]]
+			set nukee $announce(NUKEES)
+			set nukee [replacevar $nukee "%u_name" [lindex $entry 0]]
+			set nukee [replacevar $nukee "%size" $mb]
+			append nuke(NUKEE) $nukee $theme(SPLITTER)
+		}
+	}
+	set nuke(NUKEE) [trimtail $nuke(NUKEE) $theme(SPLITTER)]
+	set output "$theme(PREFIX)$announce($nuke(TYPE))"
+	set output [replacebasic $output $nuke(SECTION)]
+	set output [replacevar $output "%nuker" $nuke(NUKER)]
+	set output [replacevar $output "%nukees" $nuke(NUKEE)]
+	set output [replacevar $output "%type" $nuke(TYPE)]
+	set output [replacevar $output "%multiplier" $nuke(MULT)]
+	set output [replacevar $output "%reason" $nuke(REASON)]
+	set output [replacepath $output $mpath $nuke(PATH)]
+	sndall $nuke(TYPE) $nuke(SECTION) $output
 }
 
 #################################################################################
 # Format Size, Speed and Time Units                                             #
 #################################################################################
 
-proc ::dZSbot::FormatDuration {secs} {
-    set duration ""
+proc format_duration {secs} {
+	set duration ""
 	foreach div {31536000 604800 86400 3600 60 1} unit {y w d h m s} {
-        set num [expr {$secs / $div}]
-        if {$num > 0} {lappend duration "[b]$num[b]$unit"}
+		set num [expr {$secs / $div}]
+		if {$num > 0} {lappend duration "\002$num\002$unit"}
 		set secs [expr {$secs % $div}]
-    }
-    if {[llength $duration]} {return [join $duration]} else {return "[b]0[b]s"}
+	}
+	if {[llength $duration]} {return [join $duration]} else {return "\0020\002s"}
 }
 
-proc ::dZSbot::FormatKb {amount} {
-    variable size_divisor
-    foreach dec {0 1 2 2 2} unit {KB MB GB TB PB} {
-        if {abs($amount) >= $size_divisor} {
-            set amount [expr {double($amount) / double($size_divisor)}]
-        } else {break}
-    }
-    return [format "%.*f%s" $dec $amount $unit]
+proc format_kb {amount} {
+	foreach dec {0 1 2 2 2 2} unit {KB MB GB TB PB EB} {
+		if {abs($amount) >= 1024} {
+			set amount [expr {double($amount) / 1024.0}]
+		} else {break}
+	}
+	return [format "%.*f%s" $dec $amount $unit]
 }
 
-proc ::dZSbot::FormatSpeed {value section} {
-    variable speedmeasure
-    variable speed_divisor
-    variable theme
+proc format_speed {value section} {
+	global speedmeasure speedthreshold theme
 
-    switch -exact -- [string tolower $speedmeasure] {
-        "mb" {
-            set value [format "%.2f" [expr {$value / double($speed_divisor)}]]
-            set type $theme(MB)
-        }
-        "kbit" {
-            set value [expr {$value * 8}]
-            set type $theme(KBIT)
-        }
-        "mbit" {
-            set value [format "%.1f" [expr {$value * 8 / 1000.0}]]
-            set type $theme(MBIT)
-        }
-        "autobit" {
-            if {$value > $speed_divisor} {
-                set value [format "%.1f" [expr {$value * 8 / 1000.0}]]
-                set type $theme(MBIT)
-            } else {
-                set value [expr {$value * 8}]
-                set type $theme(KBIT)
-            }
-        }
-        "autobyte" {
-            if {$value > $speed_divisor} {
-                set value [format "%.2f" [expr {$value / double($speed_divisor)}]]
-                set type $theme(MB)
-            } else {
-                set type $theme(KB)
-            }
-        }
-        "disabled" {
-            return $value
-        }
-        default {
-            set type $theme(KB)
-        }
-    }
-    return [ThemeReplace [ReplaceVar $type "%value" $value] $section]
+	if {![string is double $value]} {
+		return $value
+	}
+
+	switch -exact -- [string tolower $speedmeasure] {
+		"mb" {
+			set value [format "%.2f" [expr {$value / 1024.0}]]
+			set type $theme(MB)
+		}
+		"kbit" {
+			set value [expr {$value * 8}]
+			set type $theme(KBIT)
+		}
+		"mbit" {
+			set value [format "%.1f" [expr {$value * 8 / 1000.0}]]
+			set type $theme(MBIT)
+		}
+		"autobit" {
+			if {$value > $speedthreshold} {
+				set value [format "%.1f" [expr {$value * 8 / 1000.0}]]
+				set type $theme(MBIT)
+			} else {
+				set value [expr {$value * 8}]
+				set type $theme(KBIT)
+			}
+		}
+		"autobyte" {
+			if {$value > $speedthreshold} {
+				set value [format "%.2f" [expr {$value / 1024.0}]]
+				set type $theme(MB)
+			} else {
+				set type $theme(KB)
+			}
+		}
+		"disabled" {
+			return $value
+		}
+		default {
+			set type $theme(KB)
+		}
+	}
+
+	return [themereplace [replacevar $type "%value" $value] $section]
 }
 
 #################################################################################
 # glFTPd Users and Groups                                                       #
 #################################################################################
 
-proc ::dZSbot::GetUserIds {} {
-    variable location
-    set userList ""
-    if {![catch {set handle [open $location(PASSWD) r]} error]} {
-        while {![eof $handle]} {
-            ## Format: user:password:uid:gid:date:homedir:irrelevant
-            set line [split [gets $handle] ":"]
-            if {[llength $line] != 7} {continue}
-            lappend userList [lindex $line 2] [lindex $line 0]
-        }
-        close $handle
-    } else {
-        ErrorMsg UserIds "Could not open passwd ($error)."
-    }
-    return $userList
+proc gluserids {} {
+	global location
+	set userlist ""
+	if {![catch {set fh [open $location(PASSWD) r]} error]} {
+		while {![eof $fh]} {
+			## user:password:uid:gid:date:homedir:irrelevant
+			set line [split [gets $fh] ":"]
+			if {[llength $line] != 7} {continue}
+			lappend userlist [lindex $line 2] [lindex $line 0]
+		}
+		close $fh
+	} else {
+		putlog "dZSbot error: Could not open passwd ($error)."
+	}
+	return $userlist
 }
 
-proc ::dZSbot::GetGroupIds {} {
-    variable location
-    set groupList ""
-    if {![catch {set handle [open $location(GROUP) r]} error]} {
-        while {![eof $handle]} {
-            ## Format: group:description:gid:irrelevant
-            set line [split [gets $handle] ":"]
-            if {[llength $line] != 4} {continue}
-            lappend groupList [lindex $line 2] [lindex $line 0]
-        }
-        close $handle
-    } else {
-        ErrorMsg GroupIds "Could not open group ($error)."
-    }
-    return $groupList
+proc glgroupids {} {
+	global location
+	set grouplist ""
+	if {![catch {set fh [open $location(GROUP) r]} error]} {
+		while {![eof $fh]} {
+			## group:description:gid:irrelevant
+			set line [split [gets $fh] ":"]
+			if {[llength $line] != 4} {continue}
+			lappend grouplist [lindex $line 2] [lindex $line 0]
+		}
+		close $fh
+	} else {
+		putlog "dZSbot error: Could not open group ($error)."
+	}
+	return $grouplist
 }
 
 #################################################################################
 # Replace Text                                                                  #
 #################################################################################
 
-proc ::dZSbot::ReplaceBasic {message section} {
-    variable cmdpre
-    variable sitename
-    return [string map [list "%cmdpre" $cmdpre "%section" $section \
-        "%sitename" $sitename "%bold" [b] "%uline" \037 "%color" [c]] $message]
+proc replacebasic {message section} {
+	global cmdpre sitename
+        set pre $cmdpre
+        if {[llength $cmdpre] > 1} { set pre "<[join $cmdpre |]>" }
+	return [string map [list "%cmdpre" $pre "%section" $section\
+		"%sitename" $sitename "%bold" \002 "%uline" \037 "%color" \003] $message]
 }
 
-proc ::dZSbot::ReplacePath {message basePath fullPath} {
-    variable subdirs
+proc replacepath {message basepath path} {
+	set path [split $path "/"]
+	set pathitems [llength $path]
+	set basepath [split $basepath "/"]
+	set baseitems [llength $basepath]
+	set relname [join [lrange $path [expr {$baseitems - 1}] end] "/"]
 
-    set basePath [file split $basePath]
-    set fullPath [file split $fullPath]
-    set fullPath [lrange $fullPath [expr {[llength $basePath] - 1}] end]
-
-    set relDir [lindex $fullPath end]
-    set relFull [join [lrange $fullPath 0 end-1] "/"]
-
-    set isSubDir 0
-    foreach subDir $subdirs {
-        if {[string match -nocase $subDir $relDir]} {
-            set isSubDir 1; break
-        }
-    }
-    if {$isSubDir && [llength $fullPath] > 1} {
-        set relName "[lindex $fullPath end-1] ([lindex $fullPath end])"
-        set relPath [join [lrange $fullPath 0 end-2] "/"]
-    } else {
-        set relName $relDir
-        set relPath $relFull
-    }
-
-    set message [ReplaceVar $message "%reldir" $relDir]
-    set message [ReplaceVar $message "%relfull" $relFull]
-    set message [ReplaceVar $message "%relname" $relName]
-    set message [ReplaceVar $message "%relpath" $relPath]
-    return $message
+	set message [replacevar $message "%relname" $relname]
+	set message [replacevar $message "%reldir" [lindex $path [expr {$pathitems - 1}]]]
+	set message [replacevar $message "%path" [lindex $path [expr {$pathitems - 2}]]]
+	return $message
 }
 
-proc ::dZSbot::ReplaceVar {string cookie value} {
-    variable zeroconvert
-    if {[string length $value] == 0 && [info exists zeroconvert($cookie)]} {
-        set value $zeroconvert($cookie)
-    }
-    return [string map [list $cookie $value] $string]
+proc replacevar {string cookie value} {
+	global zeroconvert
+	if {[string length $value] == 0 && [info exists zeroconvert($cookie)]} {
+		set value $zeroconvert($cookie)
+	}
+	return [string map [list $cookie $value] $string]
 }
 
-proc ::dZSbot::TrimTail {base tail} {
-    if {([string length $base] - [string length $tail]) == [string last $tail $base]} {
-        return [string range $base 0 [expr {[string length $base] - [string length $tail] - 1}]]
-    }
-    return $base
+proc trimtail {strsrc strrm} {
+	if { [expr [string length $strsrc] - [string length $strrm]] == [string last $strrm $strsrc] } {
+		return [string range $strsrc 0 [expr [string length $strsrc] - [string length $strrm] - 1]]
+	}
+	return $strsrc
 }
 
 #################################################################################
 # Send Messages                                                                 #
 #################################################################################
 
-proc ::dZSbot::SendAll {event section text} {
-    variable chanlist
-    variable redirect
+proc sndall {event section text} {
+	global chanlist redirect
 
-    if {[info exists redirect($event)]} {
-        set channels $redirect($event)
-        DebugMsg SendAll "Redirecting the \"$event\" event to \"$channels\"."
-    } elseif {[info exists chanlist($section)]} {
-        set channels $chanlist($section)
-    } else {
-        ErrorMsg SendAll "\"chanlist($section)\" not defined in the config."
-        return
-    }
-    foreach chan $channels {
-        SendOne $chan $text $section
-    }
+	if {[info exists redirect($event)]} {
+		set channels $redirect($event)
+		ng_debug "Redirecting the \"$event\" event to \"$channels\"."
+	} elseif {[info exists chanlist($section)]} {
+		set channels $chanlist($section)
+	} else {
+		putlog "dZSbot error: \"chanlist($section)\" not defined in the config."
+		return
+	}
+	foreach chan $channels {
+		sndone $chan $text $section
+	}
 }
 
-proc ::dZSbot::SendOne {chan text {section "none"}} {
-    variable splitter
-    foreach line [split $text $splitter(CHAR)] {
-        putquick "PRIVMSG $chan :[ThemeReplace $line $section]"
-    }
+proc sndone {chan text {section "none"}} {
+	global splitter
+	foreach line [split $text $splitter(CHAR)] {
+		putquick "PRIVMSG $chan :[themereplace $line $section]"
+	}
 }
 
 #################################################################################
 # Invite User                                                                   #
 #################################################################################
 
-proc ::dZSbot::RightsFlagCheck {currentflags needflags} {
-    set currentflags [split $currentflags ""]
-    foreach needflag [split $needflags ""] {
-        if {![string equal "" $needflag] && [lsearch -glob $currentflags $needflag] != -1} {return 1}
-    }
-    return 0
+proc flagcheck {currentflags needflags} {
+	set currentflags [split $currentflags ""]
+	foreach needflag [split $needflags ""] {
+		if {![string equal "" $needflag] && [lsearch -glob $currentflags $needflag] != -1} {return 1}
+	}
+	return 0
 }
 
-proc ::dZSbot::RightsCheck {rights user group flags} {
-    foreach right $rights {
-        set prefix [string index $right 0]
-        if {[string equal "!" $prefix]} {
-            ## 'Not' matching (!)
-            set right [string range $right 1 end]
-            set prefix [string index $right 0]
+proc rightscheck {rights user group flags} {
+	global privchannel location
+	set groups [list]
+	if {![catch {set handle [open "$location(USERS)/$user" r]} error]} {
+		set data [read $handle]
+		close $handle
+		foreach line [split $data "\n"] {
+			switch -exact -- [lindex $line 0] {
+				"GROUP" {lappend groups [lindex $line 1]}
+			}
+		}
+	} else {
+		putlog "dZSbot error: Unable to open user file for \"$user\" ($error)."
+	}
+	foreach right $rights {
+		set prefix [string index $right 0]
+		if {[string equal "!" $prefix]} {
+			## 'Not' matching (!)
+			set right [string range $right 1 end]
+			set prefix [string index $right 0]
 
-            if {[string equal "-" $prefix]} {
-                set right [string range $right 1 end]
-                if {[string match $right $user]} {return 0}
-            } elseif {[string equal "=" $prefix]} {
-                set right [string range $right 1 end]
-                if {[string match $right $group]} {return 0}
-            } elseif {[RightsFlagCheck $flags $right]} {return 0}
+			if {[string equal "-" $prefix]} {
+				set right [string range $right 1 end]
+				if {[string match $right $user]} {return 0}
+			} elseif {[string equal "=" $prefix]} {
+				set right [string range $right 1 end]
+				foreach g $groups {
+					if {[string match $right $g]} {return 0}
+				}
+			} elseif {[flagcheck $flags $right]} {return 0}
 
-        ## Regular matching
-        } elseif {[string equal "-" $prefix]} {
-            set right [string range $right 1 end]
-            if {[string match $right $user]} {return 1}
-        } elseif {[string equal "=" $prefix]} {
-            set right [string range $right 1 end]
-            if {[string match $right $group]} {return 1}
-        } elseif {[RightsFlagCheck $flags $right]} {return 1}
-    }
-    return 0
+		## Regular matching
+		} elseif {[string equal "-" $prefix]} {
+			set right [string range $right 1 end]
+			if {[string match $right $user]} {return 1}
+		} elseif {[string equal "=" $prefix]} {
+			set right [string range $right 1 end]
+			foreach g $groups {
+				if {[string match $right $g]} {return 1}
+			}
+		} elseif {[flagcheck $flags $right]} {return 1}
+	}
+	return 0
 }
 
-proc ::dZSbot::InviteChan {nick chan} {
-    if {![validchan $chan] || ![botonchan $chan]} {
-        ErrorMsg InviteChan "Unable to invite \"$nick\" to \"$chan\", I'm not in the channel."
-    } elseif {![botisop $chan]} {
-        ErrorMsg InviteChan "Unable to invite \"$nick\" to \"$chan\", I'm not opped."
-    } else {
-        putquick "INVITE $nick $chan"
-    }
+proc ng_invitechan {nick chan} {
+	if {![validchan $chan] || ![botonchan $chan]} {
+		putlog "dZSbot error: Unable to invite \"$nick\" to \"$chan\", I'm not in the channel."
+	} elseif {![botisop $chan]} {
+		putlog "dZSbot error: Unable to invite \"$nick\" to \"$chan\", I'm not opped."
+	} else {
+		putquick "INVITE $nick $chan"
+	}
 }
 
-proc ::dZSbot::InviteUser {nick user group flags} {
-    variable invite_channels
-    variable privchannel
-    if {![EventHandler precommand INVITEUSER $nick $user $group $flags]} {return}
+proc ng_inviteuser {nick user group flags} {
+	global invite_channels privchannel
+	if {![eventhandler precommand INVITEUSER [list $nick $user $group $flags]]} {return}
 
-    ## Invite the user to the defined channels.
-    foreach chan $invite_channels {
-        InviteChan $nick $chan
-    }
-    foreach {chan rights} [array get privchannel] {
-        if {[RightsCheck $rights $user $group $flags]} {
-            InviteChan $nick $chan
-        }
-    }
+	## Invite the user to the defined channels.
+	foreach chan $invite_channels {
+		ng_invitechan $nick $chan
+	}
+	foreach {chan rights} [array get privchannel] {
+		if {[rightscheck $rights $user $group $flags]} {
+			ng_invitechan $nick $chan
+		}
+	}
 
-    EventHandler postcommand INVITEUSER $nick $user $group $flags
-    return
+	eventhandler postcommand INVITEUSER [list $nick $user $group $flags]
+	return
 }
 
-proc ::dZSbot::CmdInvite {nick host hand argv} {
-    variable announce
-    variable binary
-    variable disable
-    variable invite_channel
-    variable location
-    variable theme
+proc ng_invite {nick host hand argv} {
+	global location binary announce theme invite_channels disable
 
-    if {[llength $argv] > 1} {
-        set user [lindex $argv 0]
-        set pass [lindex $argv 1]
-        set result [exec $binary(PASSCHK) $user $pass $location(PASSWD)]
-        set group ""
-        set flags ""
+	if {[llength $argv] > 1} {
+		set user [lindex $argv 0]
+		set pass [lindex $argv 1]
+		set result [exec $binary(PASSCHK) $user $pass $location(PASSWD)]
+		set group ""; set flags ""
 
-        if {[string equal $result "MATCH"]} {
-            set output "$theme(PREFIX)$announce(MSGINVITE)"
-            ## Check the user file for the user's group.
-            if {![catch {set handle [open "$location(USERS)/$user" r]} error]} {
-                set data [read $handle]
-                close $handle
-                foreach line [split $data "\n"] {
-                    switch -exact -- [lindex $line 0] {
-                        "FLAGS" {set flags [lindex $line 1]}
-                        "GROUP" {set group [lindex $line 1]}
-                    }
-                }
-            } else {
-                ErrorMsg Invite "Unable to open user file for \"$user\" ($error)."
-            }
-            InviteUser $nick $user $group $flags
-        } else {
-            set output "$theme(PREFIX)$announce(BADMSGINVITE)"
-        }
+		if {[string equal $result "MATCH"]} {
+			set output "$theme(PREFIX)$announce(MSGINVITE)"
+			## Check the user file for the user's group.
+			if {![catch {set handle [open "$location(USERS)/$user" r]} error]} {
+				set data [read $handle]
+				close $handle
+				foreach line [split $data "\n"] {
+					switch -exact -- [lindex $line 0] {
+						"FLAGS" {set flags [lindex $line 1]}
+						"GROUP" {set group [lindex $line 1]}
+					}
+				}
+			} else {
+				putlog "dZSbot error: Unable to open user file for \"$user\" ($error)."
+			}
+			ng_inviteuser $nick $user $group $flags
+		} else {
+			set output "$theme(PREFIX)$announce(BADMSGINVITE)"
+		}
 
-        if {$disable(MSGINVITE) != 1} {
-            set output [ReplaceVar $output "%u_ircnick" $nick]
-            set output [ReplaceVar $output "%u_name" $user]
-            set output [ReplaceVar $output "%u_host" $host]
-            set output [ReplaceVar $output "%g_name" $group]
-            SendAll "MSGINVITE" "DEFAULT" [ReplaceBasic $output "INVITE"]
-        }
-    }
-    return
+		if {$disable(MSGINVITE) != 1} {
+			set output [replacevar $output "%u_ircnick" $nick]
+			set output [replacevar $output "%u_name" $user]
+			set output [replacevar $output "%u_host" $host]
+			set output [replacevar $output "%g_name" $group]
+			sndall "MSGINVITE" "DEFAULT" [replacebasic $output "INVITE"]
+		}
+	}
+	return
 }
 
 #################################################################################
 # Show Welcome Message                                                          #
 #################################################################################
 
-proc ::dZSbot::ShowWelcome {nick uhost hand chan} {
-    variable announce
-    variable chanlist
-    variable cmdpre
-    variable disable
-    variable sitename
-    if {$disable(WELCOME) == 1 || [isbotnick $nick]} {return}
+proc ng_welcome {nick uhost hand chan} {
+	global announce disable chanlist
+	if {$disable(WELCOME) == 1 || [isbotnick $nick]} {return}
 
-    foreach allowed $chanlist(WELCOME) {
-        if {![string equal -nocase $allowed $chan]} {continue}
-        set output [ReplaceBasic $announce(WELCOME) "WELCOME"]
-        set output [ReplaceVar $output "%ircnick" $nick]
-        set output [ThemeReplace $output "none"]
-        puthelp "NOTICE $nick :$output"
-        break
-    }
-    return
+	foreach c_chan $chanlist(WELCOME) {
+		if {[string match -nocase $c_chan $chan]} {
+			set output [replacebasic $announce(WELCOME) "WELCOME"]
+			set output [replacevar $output "%ircnick" $nick]
+			set output [themereplace $output "none"]
+			puthelp "NOTICE $nick :$output"
+		}
+	}
+	return
 }
 
 ################################################################################
 # Command Utilities                                                            #
 ################################################################################
 
-proc ::dZSbot::CheckChan {nick chan} {
-    variable disable
-    variable mainchan
-
-    if {$disable(TRIGINALLCHAN) == 1 && ![string equal -nocase $chan $mainchan]} {
-        WarningMsg CheckChan "[b]$nick[b] tried to use [b]$::lastbind[b] from an invalid channel ($chan)."
-        return -code return
-    }
+proc checkchan {nick chan} {
+	global disable mainchan lastbind mclastbind
+	if {$disable(TRIGINALLCHAN) == 1 && ![string equal -nocase $chan $mainchan]} {
+		if {[info exist mclastbind]} {set lastbind $mclastbind}
+		putlog "dZSbot: \002$nick\002 tried to use \002$lastbind\002 from an invalid channel ($chan)."
+		return -code return
+	}
 }
 
-proc ::dZSbot::GetOptions {argv resultsVar otherVar} {
-    upvar $resultsVar results $otherVar other
-    variable default_results
-    variable maximum_results
+proc getoptions {argv p_results p_other} {
+	global default_results maximum_results
+	upvar $p_results results $p_other other
 
-    set results $default_results
-    set other ""
+	set results $default_results
+	set other ""
 
-    ## Arguments should be "split" to form a valid list, this avoids any issues when performing
-    ## list operations (lindex,lrange,llength etc.) on "reserved" characters (i.e. curly braces).
-    set argv [split $argv]
-    set argc [llength $argv]
+	## Arguments should be "split" to form a valid list, this avoids any issues when performing
+	## list operations (lindex,lrange,llength etc.) on "reserved" characters (i.e. curly braces).
+	set argv [split $argv]
+	set argc [llength $argv]
 
-    for {set i 0} {$i < $argc} {incr i} {
-        set arg [lindex $argv $i]
-        if {[string equal -nocase "-h" $arg] || [string equal -nocase "-help" $arg]} {
-            return 0
-        } elseif {[string equal -nocase "-m" $arg] || [string equal -nocase "-max" $arg]} {
-            set arg [lindex $argv [incr i]]
-            if {![string is digit -strict $arg]} {return 0}
-            set results [expr {$arg < $maximum_results ? $arg : $maximum_results}]
-        } elseif {![string equal -length 1 "-" $arg] || $i == ($argc - 1)} {
-            ## The lrange result must be joined to reverse the effect of the "split".
-            set other [join [lrange $argv $i end]]
-            return 1
-        } else {
-            return 0
-        }
-    }
-    return 1
+	for {set i 0} {$i < $argc} {incr i} {
+		set arg [lindex $argv $i]
+		if {[string equal -nocase "-h" $arg] || [string equal -nocase "-help" $arg]} {
+			return 0
+		} elseif {[string equal -nocase "-m" $arg] || [string equal -nocase "-max" $arg]} {
+			set arg [lindex $argv [incr i]]
+			if {![string is digit -strict $arg]} {return 0}
+			set results [expr {$arg < $maximum_results ? $arg : $maximum_results}]
+		} elseif {![string equal -length 1 "-" $arg] || $i == ($argc - 1)} {
+			## The lrange result must be joined to reverse the effect of the "split".
+			set other [join [lrange $argv $i end]]
+			return 1
+		} else {
+			return 0
+		}
+	}
+	return 1
 }
 
-proc ::dZSbot::GetSectionName {fullPath sectionVar secionPathVar} {
-    upvar $sectionVar sectionName $secionPathVar sectionPath
-    variable defaultsection
-    variable paths
-    variable sections
+proc getsectionname {checkpath} {
+	global defaultsection mpath paths sections
+	set bestmatch 0
+	set returnval $defaultsection
 
-    set bestMatch 0
-    set sectionName $defaultsection
-    set sectionPath ""
+	foreach section $sections {
+		if {![info exists paths($section)]} {
+			putlog "dZSbot error: \"paths($section)\" is not defined in the config."
+			continue
+		}
 
-    foreach section $sections {
-        if {![info exists paths($section)]} {
-            ErrorMsg SectionName "\"paths($section)\" is not defined in the config."
-            continue
-        }
-        foreach path $paths($section) {
-            ## Compare the path length of the previous match (best match wins).
-            if {[string match $path $fullPath] && [set pathLength [string length $path]] > $bestMatch} {
-                set bestMatch $pathLength
-                set sectionName $section
-                set sectionPath $path
-            }
-        }
-    }
-    return
+		foreach path $paths($section) {
+			## Compare the path length of the previous match (best match wins)
+			if {[string match $path $checkpath] && [set pathlen [string length $path]] > $bestmatch} {
+				set mpath $path
+				set bestmatch $pathlen
+				set returnval $section
+			}
+		}
+	}
+	return $returnval
 }
 
-proc ::dZSbot::GetSectionPath {getsection} {
-    variable paths
-    variable sections
-
-    foreach section $sections {
-        if {![info exists paths($section)]} {
-            ErrorMsg SectionPath "\"paths($section)\" not set in config."
-        } elseif {[string equal -nocase $getsection $section]} {
-            return [list $section $paths($section)]
-        }
-    }
-    return ""
+proc getsectionpath {getsection} {
+	global paths sections
+	foreach section $sections {
+		if {![info exists paths($section)]} {
+			putlog "dZSbot error: \"paths($section)\" not set in config."
+		} elseif {[string equal -nocase $getsection $section]} {
+			return [list $section $paths($section)]
+		}
+	}
+	return ""
 }
 
 ################################################################################
 # General Commands                                                             #
 ################################################################################
 
-proc ::dZSbot::CmdBnc {nick uhost hand chan arg} {
-    global errorCode
-    variable announce
-    variable binary
-    variable bnc
-    variable theme
-    CheckChan $nick $chan
-    if {![IsTrue $bnc(ENABLED)]} {return}
+proc ng_bnc {nick uhost hand chan arg} {
+	global announce binary bnc errorCode theme
+	checkchan $nick $chan
+	if {![istrue $bnc(ENABLED)]} {return}
 
-    set output "$theme(PREFIX)$announce(BNC)"
-    SendOne $nick [ReplaceBasic $output "BNC"]
+	set output "$theme(PREFIX)$announce(BNC)"
+	sndone $nick [replacebasic $output "BNC"]
 
-    set num 0
-    foreach entry $bnc(LIST) {
-        set entrysplit [split $entry ":"]
-        if {[llength $entrysplit] != 3} {
-            ErrorMsg BncList "Invalid bouncer line \"$entry\" (check bnc(LIST))."
-            continue
-        }
-        incr num; set ping "N/A"
-        foreach {desc ip port} $entrysplit {break}
+	set num 0
+	foreach entry $bnc(LIST) {
+		set entrysplit [split $entry ":"]
+		if {[llength $entrysplit] != 3} {
+			putlog "dZSbot error: Invalid bouncer line \"$entry\" (check bnc(LIST))."
+			continue
+		}
+		incr num; set ping "N/A"
+		foreach {desc ip port} $entrysplit {break}
 
-        if {[IsTrue $bnc(PING)]} {
-            if {[catch {exec $binary(PING) -c 1 -t $bnc(TIMEOUT) $ip} reply]} {
-                set output "$theme(PREFIX)$announce(BNC_PING)"
-                set output [ReplaceVar $output "%num" $num]
-                set output [ReplaceVar $output "%desc" $desc]
-                set output [ReplaceVar $output "%ip" $ip]
-                set output [ReplaceVar $output "%port" $port]
-                SendOne $nick [ReplaceBasic $output "BNC"]
-                continue
-            }
-            set reply [lindex [split $reply "\n"] 1]
-            if {[regexp {.+time=(\S+) ms} $reply reply ping]} {
-                set ping [format "%.1f" $ping]
-            } else {
-                ErrorMsg BncPing "Unable to parse ping reply \"$reply\", please report to pzs-ng developers."
-            }
-        }
+		if {[istrue $bnc(PING)]} {
+			if {[catch {exec $binary(PING) -c 1 -t $bnc(TIMEOUT) $ip} reply]} {
+				set output "$theme(PREFIX)$announce(BNC_PING)"
+				set output [replacevar $output "%num" $num]
+				set output [replacevar $output "%desc" $desc]
+				set output [replacevar $output "%ip" $ip]
+				set output [replacevar $output "%port" $port]
+				sndone $nick [replacebasic $output "BNC"]
+				continue
+			}
+			set reply [lindex [split $reply "\n"] 1]
+			if {[regexp {.+time=(\S+) ms} $reply reply ping]} {
+				set ping [format "%.1fms" $ping]
+			} else {
+				putlog "dZSbot error: Unable to parse ping reply \"$reply\", please report to pzs-ng developers."
+			}
+		}
 
-        set response [clock clicks -milliseconds]
-        if {[IsTrue $bnc(SECURE)]} {
-            set status [catch {exec $binary(CURL) --connect-timeout $bnc(TIMEOUT) --ftp-ssl --insecure -u $bnc(USER):$bnc(PASS) ftp://$ip:$port 2>@stdout} reply]
-        } else {
-            set status [catch {exec $binary(CURL) --connect-timeout $bnc(TIMEOUT) -u $bnc(USER):$bnc(PASS) ftp://$ip:$port 2>@stdout} reply]
-        }
-        set response [expr {[clock clicks -milliseconds] - $response}]
+		set response [clock clicks -milliseconds]
+		if {[istrue $bnc(SECURE)]} {
+			set status [catch {exec $binary(CURL) --connect-timeout $bnc(TIMEOUT) --ftp-ssl --insecure -u $bnc(USER):$bnc(PASS) ftp://$ip:$port 2>@stdout} reply]
+		} else {
+			set status [catch {exec $binary(CURL) --connect-timeout $bnc(TIMEOUT) -u $bnc(USER):$bnc(PASS) ftp://$ip:$port 2>@stdout} reply]
+		}
+		set response [expr {[clock clicks -milliseconds] - $response}]
 
-        if {!$status} {
-            set output "$theme(PREFIX)$announce(BNC_ONLINE)"
-            set output [ReplaceVar $output "%ping" $ping]
-            set output [ReplaceVar $output "%response" $response]
-        } else {
-            set error "unknown error"
-            ## Check curl's exit code (stored in errorCode).
-            if {[string equal "CHILDSTATUS" [lindex $errorCode 0]]} {
-                set code [lindex $errorCode 2]
-                switch -exact -- $code {
-                    6 {set error "couldn't resolve host"}
-                    7 {set error "connection refused"}
-                    9 - 10 {set error "couldn't login"}
-                    28 {set error "timed out"}
-                    default {ErrorMsg BncCurl "Unknown curl exit code \"$code\", check the \"exit codes\" section of curl's man page."}
-                }
-            } else {
-                ## If the first list item in errorCode is not "CHILDSTATUS",
-                ## Tcl was unable to execute the binary.
-                ErrorMsg BncCurl "Unable to execute curl ($reply)."
-            }
-            set output "$theme(PREFIX)$announce(BNC_OFFLINE)"
-            set output [ReplaceVar $output "%error" $error]
-        }
+		if {!$status} {
+			set output "$theme(PREFIX)$announce(BNC_ONLINE)"
+			set output [replacevar $output "%ping" $ping]
+			set output [replacevar $output "%response" $response]
+		} else {
+			set error "unknown error"
+			## Check curl's exit code (stored in errorCode).
+			if {[string equal "CHILDSTATUS" [lindex $errorCode 0]]} {
+				set code [lindex $errorCode 2]
+				switch -exact -- $code {
+					6 {set error "couldn't resolve host"}
+					7 {set error "connection refused"}
+					9 - 10 {set error "couldn't login"}
+					28 {set error "timed out"}
+					default {putlog "dZSbot error: Unknown curl exit code \"$code\", check the \"exit codes\" section of curl's man page."}
+				}
+			} else {
+				## If the first list item in errorCode is not "CHILDSTATUS",
+				## Tcl was unable to execute the binary.
+				putlog "dZSbot error: Unable to execute curl ($reply)."
+			}
+			set output "$theme(PREFIX)$announce(BNC_OFFLINE)"
+			set output [replacevar $output "%error" $error]
+		}
 
-        set output [ReplaceVar $output "%num" $num]
-        set output [ReplaceVar $output "%desc" $desc]
-        set output [ReplaceVar $output "%ip" $ip]
-        set output [ReplaceVar $output "%port" $port]
-        SendOne $nick [ReplaceBasic $output "BNC"]
-    }
-    return
+		set output [replacevar $output "%num" $num]
+		set output [replacevar $output "%desc" $desc]
+		set output [replacevar $output "%ip" $ip]
+		set output [replacevar $output "%port" $port]
+		sndone $nick [replacebasic $output "BNC"]
+	}
+	return
 }
 
-proc ::dZSbot::CmdHelp {nick uhost hand chan arg} {
-    variable scriptPath
-    variable sections
-    variable statsection
-    CheckChan $nick $chan
+proc ng_help {nick uhost hand chan arg} {
+	global scriptpath sections statsection
+	checkchan $nick $chan
 
-    if {[catch {set handle [open [file join $scriptPath dZSbot.help] r]} error]} {
-        ErrorMsg Help "Unable to read the help file ($error)."
-        puthelp "PRIVMSG $nick :Unable to read the help file, please contact a siteop."
-        return
-    }
-    set data [read -nonewline $handle]
-    close $handle
+	if {[catch {set handle [open "$scriptpath/dZSbot.help" r]} error]} {
+		putlog "dZSbot error: Unable to read the help file ($error)."
+		puthelp "PRIVMSG $nick :Unable to read the help file, please contact a siteop."
+		return
+	}
+	set data [read -nonewline $handle]
+	close $handle
 
-    set statlist ""
-    foreach {name value} [array get statsection] {
-        lappend statlist $value
-    }
-    set sectlist [join [lsort -ascii $sections] {, }]
-    set statlist [join [lsort -ascii $statlist] {, }]
+	set statlist ""
+	foreach {name value} [array get statsection] {
+		lappend statlist $value
+	}
+	set sectlist [join [lsort -ascii $sections] {, }]
+	set statlist [join [lsort -ascii $statlist] {, }]
 
-    foreach line [split $data "\n"] {
-        set line [ReplaceVar $line "%sections" $sectlist]
-        set line [ReplaceVar $line "%statsections" $statlist]
-        puthelp "PRIVMSG $nick :[ThemeReplace [ReplaceBasic $line "HELP"] "none"]"
-    }
-    return
+	foreach line [split $data "\n"] {
+		set line [replacevar $line "%sections" $sectlist]
+		set line [replacevar $line "%statsections" $statlist]
+		puthelp "PRIVMSG $nick :[themereplace [replacebasic $line "HELP"] "none"]"
+	}
+	return
 }
 
-proc ::dZSbot::CmdFree {nick uhost hand chan arg} {
-    variable announce
-    variable binary
-    variable dev_max_length
-    variable device
-    variable theme
-    CheckChan $nick $chan
+proc ng_free {nick uhost hand chan arg} {
+	global binary announce device theme dev_max_length
+	checkchan $nick $chan
 
-    array set tmpdev [array get device]
-    set devices(0) ""
-    set devCount 0; set lineCount 0
-    set totalFree 0; set totalUsed 0; set totalSize 0
+	array set tmpdev [array get device]
+	set devices(0) ""
+	set devCount 0; set lineCount 0
+	set totalFree 0; set totalUsed 0; set totalSize 0
 
-    if {[catch {exec $binary(DF) -Pkl} output] != 0} {
-        ErrorMsg Free "\"df -Pkl\" failed:"
-        foreach line [split $output "\n"] {
-            ErrorMsg Free "   $line"
-        }
-        return
-    }
+        set flags "Pk"
+        if {[istrue $::local_devices_only]} { set flags "Pkl" }
+	if {[catch {exec $binary(DF) -$flags} output] != 0} {
+		putlog "dZSbot error: \"df -$flags\" failed:"
+		foreach line [split $output "\n"] {
+			putlog "dZSbot error:   $line"
+		}
+		return
+	}
 
-    foreach line [split $output "\n"] {
-        foreach {name value} [array get tmpdev] {
-            if {[string equal [lindex $line 0] [lindex $value 0]]} {
-                if {[scan $line "%s %u %u %u" devName devSize devUsed devFree] != 4} {
-                    WarningMsg Free "Invalid \"df -Pkl\" line: $line"
-                    continue
-                }
-                set devPercFree [format "%.1f" [expr {(double($devFree) / double($devSize)) * 100}]]
-                set devPercUsed [format "%.1f" [expr {(double($devUsed) / double($devSize)) * 100}]]
+	foreach line [split $output "\n"] {
+		foreach {name value} [array get tmpdev] {
+			if {([string equal [lindex $line 0] [lindex $value 0]]) || ([string equal [lindex $line 5] [lindex $value 0]])} {
+				if {[scan $line "%s %lu %lu %lu %s %s" devName devSize devUsed devFree devPercent devMount] != 6} {
+					putlog "dZSbot warning: Invalid \"df -$flags\" line: $line"
+					continue
+				}
+				set devPercFree [format "%.1f" [expr {(double($devFree) / double($devSize)) * 100}]]
+				set devPercUsed [format "%.1f" [expr {(double($devUsed) / double($devSize)) * 100}]]
 
-                set output $announce(FREE-DEV)
-                set output [ReplaceVar $output "%free" [FormatKb $devFree]]
-                set output [ReplaceVar $output "%used" [FormatKb $devUsed]]
-                set output [ReplaceVar $output "%total" [FormatKb $devSize]]
-                set output [ReplaceVar $output "%perc_free" $devPercFree]
-                set output [ReplaceVar $output "%perc_used" $devPercUsed]
-                set output [ReplaceVar $output "%section" [lrange $value 1 end]]
+				set output $announce(FREE-DEV)
+				set output [replacevar $output "%free" [format_kb $devFree]]
+				set output [replacevar $output "%used" [format_kb $devUsed]]
+				set output [replacevar $output "%total" [format_kb $devSize]]
+				set output [replacevar $output "%perc_free" $devPercFree]
+				set output [replacevar $output "%perc_used" $devPercUsed]
+				set output [replacevar $output "%section" [lrange $value 1 end]]
 
-                if {$dev_max_length > 0 && ([string length $devices($lineCount)] + [string length $output]) > $dev_max_length} {
-                    incr lineCount
-                    set devices($lineCount) ""
-                }
-                append devices($lineCount) $output
+				if {$dev_max_length > 0 && ([string length $devices($lineCount)] + [string length $output]) > $dev_max_length} {
+					incr lineCount
+					set devices($lineCount) ""
+				}
+				append devices($lineCount) $output
 
-                set totalFree [expr {double($totalFree) + double($devFree)}]
-                set totalUsed [expr {double($totalUsed) + double($devUsed)}]
-                set totalSize [expr {double($totalSize) + double($devSize)}]
+				set totalFree [expr {double($totalFree) + double($devFree)}]
+				set totalUsed [expr {double($totalUsed) + double($devUsed)}]
+				set totalSize [expr {double($totalSize) + double($devSize)}]
 
-                incr devCount
-                unset tmpdev($name)
+				incr devCount
+				unset tmpdev($name)
 
-                ## End the device match loop (not the df output loop)
-                break
-            }
-        }
-    }
-    if {[llength [array names tmpdev]]} {
-        set devList ""
-        foreach {name value} [array get tmpdev] {lappend devList $value}
-        WarningMsg Free "The following devices had no matching \"df -Pkl\" entry: [join $devList {, }]"
-    }
+				## End the device match loop (not the df output loop)
+				break
+			}
+		}
+	}
+	if {[llength [array names tmpdev]]} {
+		set devList ""
+		foreach {name value} [array get tmpdev] {lappend devList $value}
+		putlog "dZSbot warning: The following devices had no matching \"df -$flags\" entry: [join $devList {, }]"
+	}
 
-    if {$totalSize} {
-        set percFree [format "%.1f" [expr {(double($totalFree) / double($totalSize)) * 100}]]
-        set percUsed [format "%.1f" [expr {(double($totalUsed) / double($totalSize)) * 100}]]
-    } else {
-        set percFree 0.0; set percUsed 0.0
-    }
-    set totalFree [FormatKb $totalFree]
-    set totalUsed [FormatKb $totalUsed]
-    set totalSize [FormatKb $totalSize]
+	if {$totalSize} {
+		set percFree [format "%.1f" [expr {(double($totalFree) / double($totalSize)) * 100}]]
+		set percUsed [format "%.1f" [expr {(double($totalUsed) / double($totalSize)) * 100}]]
+	} else {
+		set percFree 0.0; set percUsed 0.0
+	}
+	set totalFree [format_kb $totalFree]
+	set totalUsed [format_kb $totalUsed]
+	set totalSize [format_kb $totalSize]
 
-    set index 0
-    while {$index < ($lineCount + 1)} {
-        set output "$theme(PREFIX)$announce(FREE)"
-        set output [ReplaceVar $output "%free" $totalFree]
-        set output [ReplaceVar $output "%used" $totalUsed]
-        set output [ReplaceVar $output "%total" $totalSize]
-        set output [ReplaceVar $output "%perc_free" $percFree]
-        set output [ReplaceVar $output "%perc_used" $percUsed]
-        set output [ReplaceVar $output "%devices" $devices($index)]
-        SendOne $chan [ReplaceBasic $output "FREE"]
-        incr index
-    }
-    return
+	set index 0
+	while {$index < $lineCount + 1} {
+		set output "$theme(PREFIX)$announce(FREE)"
+		set output [replacevar $output "%free" $totalFree]
+		set output [replacevar $output "%used" $totalUsed]
+		set output [replacevar $output "%total" $totalSize]
+		set output [replacevar $output "%perc_free" $percFree]
+		set output [replacevar $output "%perc_used" $percUsed]
+		set output [replacevar $output "%devices" $devices($index)]
+		sndone $chan [replacebasic $output "FREE"]
+		incr index
+	}
+	return
 }
 
-proc ::dZSbot::CmdIncompletes {nick uhost hand chan arg} {
-    variable binary
-    CheckChan $nick $chan
+proc ng_incompletes {nick uhost hand chan arg} {
+	global binary
+	checkchan $nick $chan
 
-    foreach line [split [exec $binary(INCOMPLETE)] "\n"] {
-        if {![info exists newline($line)]} {
-            set newline($line) 0
-        } else {
-            incr newline($line)
-        }
-        puthelp "PRIVMSG $nick :$line[c]$newline($line)"
-    }
-    return
+	#puthelp "PRIVMSG $chan :Processing incomplete list for $nick."
+	foreach line [split [exec $binary(INCOMPLETE)] "\n"] {
+		if {![info exists newline($line)]} {
+			set newline($line) 0
+		} else {
+			incr newline($line)
+		}
+		puthelp "PRIVMSG $chan :$line\003$newline($line)"
+	}
+	return
 }
 
-proc ::dZSbot::CmdStats {type time nick uhost hand chan argv} {
-    variable binary
-    variable statsection
-    variable statdefault
-    variable location
-    CheckChan $nick $chan
+proc ng_stats {type time nick uhost hand chan argv} {
+	global binary statsection statdefault location
+	checkchan $nick $chan
 
-    set section $statdefault
-    if {[string length [lindex $argv 0]]} {
-        set error 1
-        set sections ""
-        foreach {name value} [array get statsection] {
-            if {[string equal -nocase $value [lindex $argv 0]]} {
-                set section $value
-                set error 0; break
-            }
-            lappend sections $value
-        }
-        if {$error} {
-            puthelp "PRIVMSG $nick :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
-            return
-        }
-    }
+	set section $statdefault
+	if {[string length [lindex $argv 0]]} {
+		set error 1
+		set sections ""
+		foreach {name value} [array get statsection] {
+			if {[string equal -nocase $value [lindex $argv 0]]} {
+				set section $name
+				set error 0; break
+			}
+			lappend sections $value
+		}
+		if {$error} {
+			puthelp "PRIVMSG $nick :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
+			return
+		}
+	}
 
-    if {[catch {set output [exec $binary(STATS) -r $location(GLCONF) $type $time -s $section]} error]} {
-        ErrorMsg Stats "Unable to retrieve stats ($error)."
-        return
-    }
+	if {[catch {set output [exec $binary(STATS) -r $location(GLCONF) $type $time -s $section]} error]} {
+		putlog "dZSbot error: Unable to retrieve stats ($error)."
+		return
+	}
 
-    foreach line [split $output "\n"] {
-        if {![info exists newline($line)]} {
-            set newline($line) 0
-        } else {
-            incr newline($line)
-        }
-        puthelp "PRIVMSG $nick :$line[c]$newline($line)"
-    }
-    puthelp "PRIVMSG $nick :------------------------------------------------------------------------"
-    return
+	foreach line [split $output "\n"] {
+		if {![info exists newline($line)]} {
+			set newline($line) 0
+		} else {
+			incr newline($line)
+		}
+		puthelp "PRIVMSG $nick :$line\003$newline($line)"
+	}
+	puthelp "PRIVMSG $nick :------------------------------------------------------------------------"
+	return
 }
 
-proc ::dZSbot::CmdUptime {nick uhost hand chan argv} {
-    global uptime
-    variable announce
-    variable binary
-    variable theme
-    CheckChan $nick $chan
+proc ng_uptime {nick uhost hand chan argv} {
+	global announce binary theme uptime
+	checkchan $nick $chan
 
-    if {[catch {exec $binary(UPTIME)} reply]} {
-        ErrorMsg Uptime "Unable to execute uptime ($reply)."
-    }
-    ## The linux 'uptime' pads the output with spaces, so we'll remove them.
-    regsub -all {\s+} $reply { } reply
+	if {[catch {exec $binary(UPTIME)} reply]} {
+		putlog "dZSbot error: Unable to execute uptime ($reply)."
+	}
+	## The linux 'uptime' pads the output with spaces, so we'll trim it.
+	regsub -all {\s+} $reply { } reply
+	if {![regexp {.+ up (.+), (.+) users?, load averages?: (.+)} $reply reply time users load]} {
+		set load "N/A"; set time "N/A"; set users "N/A"
+		putlog "dZSbot error: Unable to parse uptime reply \"$reply\", please report to pzs-ng developers."
+	}
+	set eggup [format_duration [expr {[clock seconds] - $uptime}]]
 
-    if {![regexp {.+ up (.+), (.+) users?, load averages?: (.+)} $reply reply time users load]} {
-        set load "N/A"; set time "N/A"; set users "N/A"
-        ErrorMsg Uptime "Unable to parse uptime reply \"$reply\", please report to pzs-ng developers."
-    }
-    set eggup [FormatDuration [expr {[clock seconds] - $uptime}]]
-
-    set output "$theme(PREFIX)$announce(UPTIME)"
-    set output [ReplaceVar $output "%eggdrop" $eggup]
-    set output [ReplaceVar $output "%time" $time]
-    set output [ReplaceVar $output "%users" $users]
-    set output [ReplaceVar $output "%load" $load]
-    SendOne $chan [ReplaceBasic $output "UPTIME"]
-    return
+	set output "$theme(PREFIX)$announce(UPTIME)"
+	set output [replacevar $output "%eggdrop" $eggup]
+	set output [replacevar $output "%time" $time]
+	set output [replacevar $output "%users" $users]
+	set output [replacevar $output "%load" $load]
+	sndone $chan [replacebasic $output "UPTIME"]
+	return
 }
 
 ################################################################################
 # Latest Dirs/Nukes Commands                                                   #
 ################################################################################
 
-proc ::dZSbot::CmdNew {nick uhost hand chan argv} {
-    variable announce
-    variable binary
-    variable defaultsection
-    variable location
-    variable sections
-    variable size_divisor
-    variable theme
-    CheckChan $nick $chan
+proc ng_new {nick uhost hand chan argv} {
+	global announce binary defaultsection location sections theme lastbind mclastbind
+	checkchan $nick $chan
 
-    if {![GetOptions $argv results section]} {
-        ## By displaying the command syntax in the channel (opposed to private message), we can inform others
-        ## at the same time. There's this recurring phenomena, every time a user types an "uncommon" command, half
-        ## a dozen others will as well...to learn about this command. So, let's kill a few idiots with one stone.
-        puthelp "PRIVMSG $chan :[b]Usage:[b] $::lastbind \[-max <num>\] \[section\]"
-        return
-    }
-    if {[string equal "" $section]} {
-        set section $defaultsection
-        set sectionpath "/site/*"
-        set lines [exec $binary(SHOWLOG) -l -m $results -r $location(GLCONF)]
-    } else {
-        if {[set sectiondata [GetSectionPath $section]] == ""} {
-            puthelp "PRIVMSG $nick :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
-            return
-        }
-        foreach {section sectionpath} $sectiondata {break}
-        set lines [exec $binary(SHOWLOG) -f -l -m $results -p $sectionpath -r $location(GLCONF)]
-    }
+	if {![getoptions $argv results section]} {
+		if {[info exist mclastbind]} {set lastbind $mclastbind}
+		## By displaying the command syntax in the channel (opposed to private message), we can inform others
+		## at the same time. There's this recurring phenomena, every time a user types an "uncommon" command, half
+		## a dozen others will as well...to learn about this command. So, let's kill a few idiots with one stone.
+		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] \[section\]"
+		return
+	}
+	if {[string equal "" $section]} {
+		set section $defaultsection
+		set sectionpath "/site/*"
+		set lines [exec $binary(SHOWLOG) -l -m $results -r $location(GLCONF)]
+	} else {
+		if {[set sectiondata [getsectionpath $section]] == ""} {
+			puthelp "PRIVMSG $nick :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
+			return
+		}
+		foreach {section sectionpath} $sectiondata {break}
+		set lines [exec $binary(SHOWLOG) -f -l -m $results -p $sectionpath -r $location(GLCONF)]
+	}
 
-    ## Retrieve a list of UIDs/users and GIDs/groups
-    array set uid [GetUserIds]
-    array set gid [GetGroupIds]
+	## Retrieve a list of UIDs/users and GIDs/groups
+	array set uid [gluserids]
+	array set gid [glgroupids]
 
-    set output "$theme(PREFIX)$announce(NEW)"
-    set output [ReplaceVar $output "%section" $section]
-    SendOne $nick [ReplaceBasic $output "NEW"]
-    set body "$theme(PREFIX)$announce(NEW_BODY)"
-    set num 0
+	set output "$theme(PREFIX)$announce(NEW)"
+	set output [replacevar $output "%section" $section]
+	sndone $nick [replacebasic $output "NEW"]
+	set body "$theme(PREFIX)$announce(NEW_BODY)"
+	set num 0
 
-    foreach line [split $lines "\n"] {
-        ## Format: status|uptime|uploader|group|files|kilobytes|dirpath
-        if {[llength [set line [split $line "|"]]] != 7} {continue}
-        foreach {status ctime userid groupid files kbytes dirpath} $line {break}
+	foreach line [split $lines "\n"] {
+		## Format: status|uptime|uploader|group|files|kilobytes|dirpath
+		if {[llength [set line [split $line "|"]]] != 7} {continue}
+		foreach {status ctime userid groupid files kbytes dirpath} $line {break}
 
-        ## If array get returns "", zeroconvert will replace the value with NoOne/NoGroup.
-        set user [lindex [array get uid $userid] 1]
-        set group [lindex [array get gid $groupid] 1]
+		## If array get returns "", zeroconvert will replace the value with NoOne/NoGroup.
+		set user [lindex [array get uid $userid] 1]
+		set group [lindex [array get gid $groupid] 1]
 
-        set output [ReplaceVar $body "%num" [format "%02d" [incr num]]]
-        set age [lrange [FormatDuration [expr {[clock seconds] - $ctime}]] 0 1]
-        set output [ReplaceVar $output "%age" $age]
-        set output [ReplaceVar $output "%date" [clock format $ctime -format "%m-%d-%y"]]
-        set output [ReplaceVar $output "%time" [clock format $ctime -format "%H:%M:%S"]]
-        set output [ReplaceVar $output "%u_name" $user]
-        set output [ReplaceVar $output "%g_name" $group]
-        set output [ReplaceVar $output "%files" $files]
-        set output [ReplaceVar $output "%mbytes" [format "%.1f" [expr {$kbytes / double($size_divisor)}]]]
-        set output [ReplacePath $output $sectionpath $dirpath]
-        SendOne $nick [ReplaceBasic $output "NEW"]
-    }
+		set output [replacevar $body "%num" [format "%02d" [incr num]]]
+		set age [lrange [format_duration [expr {[clock seconds] - $ctime}]] 0 1]
+		set output [replacevar $output "%age" $age]
+		set output [replacevar $output "%date" [clock format $ctime -format "%m-%d-%y"]]
+		set output [replacevar $output "%time" [clock format $ctime -format "%H:%M:%S"]]
+		set output [replacevar $output "%u_name" $user]
+		set output [replacevar $output "%g_name" $group]
+		set output [replacevar $output "%files" $files]
+		set output [replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
+		set output [replacepath $output $sectionpath $dirpath]
+		sndone $nick [replacebasic $output "NEW"]
+	}
 
-    if {!$num} {
-        set output "$theme(PREFIX)$announce(NEW_NONE)"
-        SendOne $nick [ReplaceBasic $output "NEW"]
-    }
-    return
+	if {!$num} {
+		set output "$theme(PREFIX)$announce(NEW_NONE)"
+		sndone $nick [replacebasic $output "NEW"]
+	}
+	return
 }
 
-proc ::dZSbot::CmdNukes {nick uhost hand chan argv} {
-    variable announce
-    variable binary
-    variable defaultsection
-    variable location
-    variable sections
-    variable size_divisor
-    variable theme
-    CheckChan $nick $chan
+proc ng_nukes {nick uhost hand chan argv} {
+	global announce binary defaultsection location sections theme lastbind mclastbind
+	checkchan $nick $chan
+	if {![getoptions $argv results section]} {
+		if {[info exist mclastbind]} {set lastbind $mclastbind}
+		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] \[section\]"
+		return
+	}
+	if {[string equal "" $section]} {
+		set section $defaultsection
+		set sectionpath "/site/*"
+		set lines [exec $binary(SHOWLOG) -n -m $results -r $location(GLCONF)]
+	} else {
+		if {[set sectiondata [getsectionpath $section]] == ""} {
+			puthelp "PRIVMSG $nick :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
+			return
+		}
+		foreach {section sectionpath} $sectiondata {break}
+		set lines [exec $binary(SHOWLOG) -f -n -m $results -p $sectionpath -r $location(GLCONF)]
+	}
 
-    if {![GetOptions $argv results section]} {
-        puthelp "PRIVMSG $chan :[b]Usage:[b] $::lastbind \[-max <num>\] \[section\]"
-        return
-    }
-    if {[string equal "" $section]} {
-        set section $defaultsection
-        set sectionpath "/site/*"
-        set lines [exec $binary(SHOWLOG) -n -m $results -r $location(GLCONF)]
-    } else {
-        if {[set sectiondata [GetSectionPath $section]] == ""} {
-            puthelp "PRIVMSG $nick :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
-            return
-        }
-        foreach {section sectionpath} $sectiondata {break}
-        set lines [exec $binary(SHOWLOG) -f -n -m $results -p $sectionpath -r $location(GLCONF)]
-    }
+	set output "$theme(PREFIX)$announce(NUKES)"
+	set output [replacevar $output "%section" $section]
+	sndone $nick [replacebasic $output "NUKES"]
+	set body "$theme(PREFIX)$announce(NUKES_BODY)"
+	set num 0
 
-    set output "$theme(PREFIX)$announce(NUKES)"
-    set output [ReplaceVar $output "%section" $section]
-    SendOne $nick [ReplaceBasic $output "NUKES"]
-    set body "$theme(PREFIX)$announce(NUKES_BODY)"
-    set num 0
+	foreach line [split $lines "\n"] {
+		## Format: status|nuketime|nuker|unnuker|nukee|multiplier|reason|kilobytes|dirpath
+		if {[llength [set line [split $line "|"]]] != 9} {continue}
+		foreach {status nuketime nuker unnuker nukee multiplier reason kbytes dirpath} $line {break}
 
-    foreach line [split $lines "\n"] {
-        ## Format: status|nuketime|nuker|unnuker|nukee|multiplier|reason|kilobytes|dirpath
-        if {[llength [set line [split $line "|"]]] != 9} {continue}
-        foreach {status nuketime nuker unnuker nukee multiplier reason kbytes dirpath} $line {break}
+		set output [replacevar $body "%num" [format "%02d" [incr num]]]
+		set output [replacevar $output "%date" [clock format $nuketime -format "%m-%d-%y"]]
+		set output [replacevar $output "%time" [clock format $nuketime -format "%H:%M:%S"]]
+		set output [replacevar $output "%nuker" $nuker]
+		set output [replacevar $output "%nukee" $nukee]
+		set output [replacevar $output "%multiplier" $multiplier]
+		set output [replacevar $output "%reason" $reason]
+		set output [replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
+		set output [replacepath $output $sectionpath $dirpath]
+		sndone $nick [replacebasic $output "NUKES"]
+	}
 
-        set output [ReplaceVar $body "%num" [format "%02d" [incr num]]]
-        set output [ReplaceVar $output "%date" [clock format $nuketime -format "%m-%d-%y"]]
-        set output [ReplaceVar $output "%time" [clock format $nuketime -format "%H:%M:%S"]]
-        set output [ReplaceVar $output "%nuker" $nuker]
-        set output [ReplaceVar $output "%nukee" $nukee]
-        set output [ReplaceVar $output "%multiplier" $multiplier]
-        set output [ReplaceVar $output "%reason" $reason]
-        set output [ReplaceVar $output "%mbytes" [format "%.1f" [expr {$kbytes / double($size_divisor)}]]]
-        set output [ReplacePath $output $sectionpath $dirpath]
-        SendOne $nick [ReplaceBasic $output "NUKES"]
-    }
-
-    if {!$num} {
-        set output "$theme(PREFIX)$announce(NUKES_NONE)"
-        SendOne $nick [ReplaceBasic $output "NUKES"]
-    }
-    return
+	if {!$num} {
+		set output "$theme(PREFIX)$announce(NUKES_NONE)"
+		sndone $nick [replacebasic $output "NUKES"]
+	}
+	return
 }
 
-proc ::dZSbot::CmdSearch {nick uhost hand chan argv} {
-    variable announce
-    variable binary
-    variable defaultsection
-    variable location
-    variable search_chars
-    variable size_divisor
-    variable theme
-    CheckChan $nick $chan
+proc ng_search {nick uhost hand chan argv} {
+	global announce binary defaultsection location search_chars theme lastbind mclastbind
+	checkchan $nick $chan
 
-    if {![GetOptions $argv results pattern] || [string equal "" $pattern]} {
-        puthelp "PRIVMSG $chan :[b]Usage:[b] $::lastbind \[-max <num>\] <pattern>"
-        return
-    }
-    if {$search_chars > 0 && [regexp -all {[a-zA-Z0-9]} $pattern] < $search_chars} {
-        puthelp "PRIVMSG $nick :The search pattern must at be at least [b]$search_chars[b] alphanumeric characters."
-        return
-    }
-    ## Retrieve matching dirlog entries
-    regsub -all {[\s\*]+} "*${pattern}*" {*} pattern
-    set lines [exec $binary(SHOWLOG) -l -s -m $results -p $pattern -r $location(GLCONF)]
+	if {![getoptions $argv results pattern] || [string equal "" $pattern]} {
+		if {[info exist mclastbind]} {set lastbind $mclastbind}
+		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] <pattern>"
+		return
+	}
+	if {$search_chars > 0 && [regexp -all {[a-zA-Z0-9]} $pattern] < $search_chars} {
+		puthelp "PRIVMSG $nick :The search pattern must at be at least \002$search_chars\002 alphanumeric characters."
+		return
+	}
+	## Retrieve matching dirlog entries
+	regsub -all {[\s\*]+} "*${pattern}*" {*} pattern
+	set lines [exec $binary(SHOWLOG) -l -s -m $results -p $pattern -r $location(GLCONF)]
 
-    ## Retrieve a list of UIDs/users and GIDs/groups
-    array set uid [GetUserIds]
-    array set gid [GetGroupIds]
+	## Retrieve a list of UIDs/users and GIDs/groups
+	array set uid [gluserids]
+	array set gid [glgroupids]
 
-    set output "$theme(PREFIX)$announce(SEARCH)"
-    set output [ReplaceVar $output "%pattern" $pattern]
-    SendOne $nick [ReplaceBasic $output "SEARCH"]
-    set body "$theme(PREFIX)$announce(SEARCH_BODY)"
-    set num 0
+	set output "$theme(PREFIX)$announce(SEARCH)"
+	set output [replacevar $output "%pattern" $pattern]
+	sndone $nick [replacebasic $output "SEARCH"]
+	set body "$theme(PREFIX)$announce(SEARCH_BODY)"
+	set num 0
 
-    foreach line [split $lines "\n"] {
-        ## Format: status|uptime|uploader|group|files|kilobytes|dirpath
-        if {[llength [set line [split $line "|"]]] != 7} {continue}
-        foreach {status ctime userid groupid files kbytes dirpath} $line {break}
+	foreach line [split $lines "\n"] {
+		## Format: status|uptime|uploader|group|files|kilobytes|dirpath
+		if {[llength [set line [split $line "|"]]] != 7} {continue}
+		foreach {status ctime userid groupid files kbytes dirpath} $line {break}
 
-        ## If array get returns "", zeroconvert will replace the value with NoOne/NoGroup.
-        set user [lindex [array get uid $userid] 1]
-        set group [lindex [array get gid $groupid] 1]
+		## If array get returns "", zeroconvert will replace the value with NoOne/NoGroup.
+		set user [lindex [array get uid $userid] 1]
+		set group [lindex [array get gid $groupid] 1]
 
-        set output [ReplaceVar $body "%num" [format "%02d" [incr num]]]
-        set age [lrange [FormatDuration [expr {[clock seconds] - $ctime}]] 0 1]
-        set output [ReplaceVar $output "%age" $age]
-        set output [ReplaceVar $output "%date" [clock format $ctime -format "%m-%d-%y"]]
-        set output [ReplaceVar $output "%time" [clock format $ctime -format "%H:%M:%S"]]
-        set output [ReplaceVar $output "%u_name" $user]
-        set output [ReplaceVar $output "%g_name" $group]
-        set output [ReplaceVar $output "%files" $files]
-        set output [ReplaceVar $output "%mbytes" [format "%.1f" [expr {$kbytes / double($size_divisor)}]]]
-        set output [ReplacePath $output "/site/*" $dirpath]
-        SendOne $nick [ReplaceBasic $output "SEARCH"]
-    }
+		set output [replacevar $body "%num" [format "%02d" [incr num]]]
+		set age [lrange [format_duration [expr {[clock seconds] - $ctime}]] 0 1]
+		set output [replacevar $output "%age" $age]
+		set output [replacevar $output "%date" [clock format $ctime -format "%m-%d-%y"]]
+		set output [replacevar $output "%time" [clock format $ctime -format "%H:%M:%S"]]
+		set output [replacevar $output "%u_name" $user]
+		set output [replacevar $output "%g_name" $group]
+		set output [replacevar $output "%files" $files]
+		set output [replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
+		set output [replacepath $output "/site/*" $dirpath]
+		sndone $nick [replacebasic $output "SEARCH"]
+	}
 
-    if {!$num} {
-        set output "$theme(PREFIX)$announce(SEARCH_NONE)"
-        SendOne $nick [ReplaceBasic $output "SEARCH"]
-    }
-    return
+	if {!$num} {
+		set output "$theme(PREFIX)$announce(SEARCH_NONE)"
+		sndone $nick [replacebasic $output "SEARCH"]
+	}
+	return
 }
 
-proc ::dZSbot::CmdUnnukes {nick uhost hand chan argv} {
-    variable announce
-    variable binary
-    variable defaultsection
-    variable location
-    variable sections
-    variable size_divisor
-    variable theme
-    CheckChan $nick $chan
+proc ng_unnukes {nick uhost hand chan argv} {
+	global announce binary defaultsection location sections theme lastbind mclastbind
+	checkchan $nick $chan
 
-    if {![GetOptions $argv results section]} {
-        puthelp "PRIVMSG $chan :[b]Usage:[b] $::lastbind \[-max <num>\] \[section\]"
-        return
-    }
-    if {[string equal "" $section]} {
-        set section $defaultsection
-        set sectionpath "/site/*"
-        set lines [exec $binary(SHOWLOG) -u -m $results -r $location(GLCONF)]
-    } else {
-        if {[set sectiondata [GetSectionPath $section]] == ""} {
-            puthelp "PRIVMSG $nick :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
-            return
-        }
-        foreach {section sectionpath} $sectiondata {break}
-        set lines [exec $binary(SHOWLOG) -f -u -m $results -p $sectionpath -r $location(GLCONF)]
-    }
+	if {![getoptions $argv results section]} {
+		if {[info exist mclastbind]} {set lastbind $mclastbind}
+		puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] \[section\]"
+		return
+	}
+	if {[string equal "" $section]} {
+		set section $defaultsection
+		set sectionpath "/site/*"
+		set lines [exec $binary(SHOWLOG) -u -m $results -r $location(GLCONF)]
+	} else {
+		if {[set sectiondata [getsectionpath $section]] == ""} {
+			puthelp "PRIVMSG $nick :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
+			return
+		}
+		foreach {section sectionpath} $sectiondata {break}
+		set lines [exec $binary(SHOWLOG) -f -u -m $results -p $sectionpath -r $location(GLCONF)]
+	}
 
-    set output "$theme(PREFIX)$announce(UNNUKES)"
-    set output [ReplaceVar $output "%section" $section]
-    SendOne $nick [ReplaceBasic $output "UNNUKES"]
-    set body "$theme(PREFIX)$announce(UNNUKES_BODY)"
-    set num 0
+	set output "$theme(PREFIX)$announce(UNNUKES)"
+	set output [replacevar $output "%section" $section]
+	sndone $nick [replacebasic $output "UNNUKES"]
+	set body "$theme(PREFIX)$announce(UNNUKES_BODY)"
+	set num 0
 
-    foreach line [split $lines "\n"] {
-        ## Format: status|nuketime|nuker|unnuker|nukee|multiplier|reason|kilobytes|dirpath
-        if {[llength [set line [split $line "|"]]] != 9} {continue}
-        foreach {status nuketime nuker unnuker nukee multiplier reason kbytes dirpath} $line {break}
+	foreach line [split $lines "\n"] {
+		## Format: status|nuketime|nuker|unnuker|nukee|multiplier|reason|kilobytes|dirpath
+		if {[llength [set line [split $line "|"]]] != 9} {continue}
+		foreach {status nuketime nuker unnuker nukee multiplier reason kbytes dirpath} $line {break}
 
-        set output [ReplaceVar $body "%num" [format "%02d" [incr num]]]
-        set output [ReplaceVar $output "%date" [clock format $nuketime -format "%m-%d-%y"]]
-        set output [ReplaceVar $output "%time" [clock format $nuketime -format "%H:%M:%S"]]
-        set output [ReplaceVar $output "%nuker" $nuker]
-        set output [ReplaceVar $output "%unnuker" $unnuker]
-        set output [ReplaceVar $output "%nukee" $nukee]
-        set output [ReplaceVar $output "%multiplier" $multiplier]
-        set output [ReplaceVar $output "%reason" $reason]
-        set output [ReplaceVar $output "%mbytes" [format "%.1f" [expr {$kbytes / double($size_divisor)}]]]
-        set output [ReplacePath $output $sectionpath $dirpath]
-        SendOne $nick [ReplaceBasic $output "UNNUKES"]
-    }
+		set output [replacevar $body "%num" [format "%02d" [incr num]]]
+		set output [replacevar $output "%date" [clock format $nuketime -format "%m-%d-%y"]]
+		set output [replacevar $output "%time" [clock format $nuketime -format "%H:%M:%S"]]
+		set output [replacevar $output "%nuker" $nuker]
+		set output [replacevar $output "%unnuker" $unnuker]
+		set output [replacevar $output "%nukee" $nukee]
+		set output [replacevar $output "%multiplier" $multiplier]
+		set output [replacevar $output "%reason" $reason]
+		set output [replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
+		set output [replacepath $output $sectionpath $dirpath]
+		sndone $nick [replacebasic $output "UNNUKES"]
+	}
 
-    if {!$num} {
-        set output "$theme(PREFIX)$announce(UNNUKES_NONE)"
-        SendOne $nick [ReplaceBasic $output "UNNUKES"]
-    }
-    return
+	if {!$num} {
+		set output "$theme(PREFIX)$announce(UNNUKES_NONE)"
+		sndone $nick [replacebasic $output "UNNUKES"]
+	}
+	return
 }
 
 ################################################################################
 # Online Stats Commands                                                        #
 ################################################################################
 
-proc ::dZSbot::CmdBw {nick uhost hand chan argv} {
-    variable announce
-    variable binary
-    variable speed
-    variable theme
-    CheckChan $nick $chan
+proc ng_bw {nick uhost hand chan argv} {
+	global binary announce speed theme speedmeasure speedthreshold
+	checkchan $nick $chan
 
-    set output "$theme(PREFIX)$announce(BW)"
-    set raw [exec $binary(WHO) --nbw]
-    set upper [format "%.0f" [expr [lindex $raw 1] * 100 / $speed(INCOMING)]]
-    set dnper [format "%.0f" [expr [lindex $raw 3] * 100 / $speed(OUTGOING)]]
-    set totalper [format "%.0f" [expr [lindex $raw 5] * 100 / ( $speed(INCOMING) + $speed(OUTGOING) )]]
+	set output "$theme(PREFIX)$announce(BW)"
+	set raw [exec $binary(WHO) --nbw]
+	set upper [format "%.0f" [expr [lindex $raw 1] * 100 / $speed(INCOMING)]]
+	set dnper [format "%.0f" [expr [lindex $raw 3] * 100 / $speed(OUTGOING)]]
+	set totalper [format "%.0f" [expr [lindex $raw 5] * 100 / ( $speed(INCOMING) + $speed(OUTGOING) )]]
 
-    set up [FormatSpeed [lindex $raw 1] "none"]
-    set dn [FormatSpeed [lindex $raw 3] "none"]
-    set totalspeed [FormatSpeed [lindex $raw 5] "none"]
+	set up [format_speed [lindex $raw 1] "none"]
+	set dn [format_speed [lindex $raw 3] "none"]
+	set totalspeed [format_speed [lindex $raw 5] "none"]
 
-    set output [ReplaceVar $output "%uploads" [lindex $raw 0]]
-    set output [ReplaceVar $output "%upspeed" $up]
-    set output [ReplaceVar $output "%downloads" [lindex $raw 2]]
-    set output [ReplaceVar $output "%dnspeed" $dn]
-    set output [ReplaceVar $output "%transfers" [lindex $raw 4]]
-    set output [ReplaceVar $output "%totalspeed" $totalspeed]
-    set output [ReplaceVar $output "%idlers" [lindex $raw 6]]
-    set output [ReplaceVar $output "%active" [lindex $raw 7]]
-    set output [ReplaceVar $output "%totallogins" [lindex $raw 8]]
-    set output [ReplaceVar $output "%maxusers" [lindex $raw 9]]
+	set output [replacevar $output "%uploads" [lindex $raw 0]]
+	set output [replacevar $output "%upspeed" $up]
+	set output [replacevar $output "%downloads" [lindex $raw 2]]
+	set output [replacevar $output "%dnspeed" $dn]
+	set output [replacevar $output "%transfers" [lindex $raw 4]]
+	set output [replacevar $output "%totalspeed" $totalspeed]
+	set output [replacevar $output "%idlers" [lindex $raw 6]]
+	set output [replacevar $output "%active" [lindex $raw 7]]
+	set output [replacevar $output "%totallogins" [lindex $raw 8]]
+	set output [replacevar $output "%maxusers" [lindex $raw 9]]
 
-    set output [ReplaceVar $output "%uppercent" $upper]
-    set output [ReplaceVar $output "%dnpercent" $dnper]
-    set output [ReplaceVar $output "%totalpercent" $totalper]
-    SendOne $chan [ReplaceBasic $output "BW"]
-    return
+	set output [replacevar $output "%uppercent" $upper]
+	set output [replacevar $output "%dnpercent" $dnper]
+	set output [replacevar $output "%totalpercent" $totalper]
+	sndone $chan [replacebasic $output "BW"]
+	return
 }
 
-proc ::dZSbot::CmdBwDn {nick uhost hand chan argv} {
-    variable announce
-    variable binary
-    variable speed
-    variable theme
-    CheckChan $nick $chan
+proc ng_bwdn {nick uhost hand chan argv} {
+	global binary announce speed theme
+	checkchan $nick $chan
 
-    set output "$theme(PREFIX)$announce(BWDN)"
-    set raw [exec $binary(WHO) --nbw]
-    set upper [format "%.1f" [expr 100 * ([lindex $raw 1] / $speed(INCOMING))]]
-    set dnper [format "%.1f" [expr 100 * ([lindex $raw 3] / $speed(OUTGOING))]]
-    set totalper [format "%.0f" [expr [lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING))]]
+	set output "$theme(PREFIX)$announce(BWDN)"
+	set raw [exec $binary(WHO) --nbw]
+	set upper [format "%.1f" [expr 100 * ([lindex $raw 1] / $speed(INCOMING))]]
+	set dnper [format "%.1f" [expr 100 * ([lindex $raw 3] / $speed(OUTGOING))]]
+	set totalper [format "%.0f" [expr [lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING))]]
 
-    set output [ReplaceVar $output "%uploads" [lindex $raw 0]]
-    set output [ReplaceVar $output "%upspeed" [FormatSpeed [lindex $raw 1] "none"]]
-    set output [ReplaceVar $output "%downloads" [lindex $raw 2]]
-    set output [ReplaceVar $output "%dnspeed" [FormatSpeed [lindex $raw 3] "none"]]
-    set output [ReplaceVar $output "%transfers" [lindex $raw 4]]
-    set output [ReplaceVar $output "%totalspeed" [FormatSpeed [lindex $raw 5] "none"]]
-    set output [ReplaceVar $output "%idlers" [lindex $raw 6]]
-    set output [ReplaceVar $output "%active" [lindex $raw 7]]
-    set output [ReplaceVar $output "%totallogins" [lindex $raw 8]]
-    set output [ReplaceVar $output "%maxusers" [lindex $raw 9]]
+	set output [replacevar $output "%uploads" [lindex $raw 0]]
+	set output [replacevar $output "%upspeed" [format_speed [lindex $raw 1] "none"]]
+	set output [replacevar $output "%downloads" [lindex $raw 2]]
+	set output [replacevar $output "%dnspeed" [format_speed [lindex $raw 3] "none"]]
+	set output [replacevar $output "%transfers" [lindex $raw 4]]
+	set output [replacevar $output "%totalspeed" [format_speed [lindex $raw 5] "none"]]
+	set output [replacevar $output "%idlers" [lindex $raw 6]]
+	set output [replacevar $output "%active" [lindex $raw 7]]
+	set output [replacevar $output "%totallogins" [lindex $raw 8]]
+	set output [replacevar $output "%maxusers" [lindex $raw 9]]
 
-    set output [ReplaceVar $output "%uppercent" $upper]
-    set output [ReplaceVar $output "%dnpercent" $dnper]
-    set output [ReplaceVar $output "%totalpercent" $totalper]
-    SendOne $chan [ReplaceBasic $output "BW"]
-    return
+	set output [replacevar $output "%uppercent" $upper]
+	set output [replacevar $output "%dnpercent" $dnper]
+	set output [replacevar $output "%totalpercent" $totalper]
+	sndone $chan [replacebasic $output "BW"]
+	return
 }
 
-proc ::dZSbot::CmdBwUp {nick uhost hand chan argv} {
-    variable announce
-    variable binary
-    variable speed
-    variable theme
-    CheckChan $nick $chan
+proc ng_bwup {nick uhost hand chan argv} {
+	global binary announce speed theme
+	checkchan $nick $chan
 
-    set output "$theme(PREFIX)$announce(BWUP)"
-    set raw [exec $binary(WHO) --nbw]
-    set upper [format "%.1f" [expr 100 * ([lindex $raw 1] / $speed(INCOMING))]]
-    set dnper [format "%.1f" [expr 100 * ([lindex $raw 3] / $speed(OUTGOING))]]
-    set totalper [format "%.0f" [expr 100 * ([lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING)))]]
+	set output "$theme(PREFIX)$announce(BWUP)"
+	set raw [exec $binary(WHO) --nbw]
+	set upper [format "%.1f" [expr 100 * ([lindex $raw 1] / $speed(INCOMING))]]
+	set dnper [format "%.1f" [expr 100 * ([lindex $raw 3] / $speed(OUTGOING))]]
+	set totalper [format "%.0f" [expr 100 * ([lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING)))]]
 
-    set output [ReplaceVar $output "%uploads" [lindex $raw 0]]
-    set output [ReplaceVar $output "%upspeed" [FormatSpeed [lindex $raw 1] "none"]]
-    set output [ReplaceVar $output "%downloads" [lindex $raw 2]]
-    set output [ReplaceVar $output "%dnspeed" [FormatSpeed [lindex $raw 3] "none"]]
-    set output [ReplaceVar $output "%transfers" [lindex $raw 4]]
-    set output [ReplaceVar $output "%totalspeed" [FormatSpeed [lindex $raw 5] "none"]]
-    set output [ReplaceVar $output "%idlers" [lindex $raw 6]]
-    set output [ReplaceVar $output "%active" [lindex $raw 7]]
-    set output [ReplaceVar $output "%totallogins" [lindex $raw 8]]
-    set output [ReplaceVar $output "%maxusers" [lindex $raw 9]]
+	set output [replacevar $output "%uploads" [lindex $raw 0]]
+	set output [replacevar $output "%upspeed" [format_speed [lindex $raw 1] "none"]]
+	set output [replacevar $output "%downloads" [lindex $raw 2]]
+	set output [replacevar $output "%dnspeed" [format_speed [lindex $raw 3] "none"]]
+	set output [replacevar $output "%transfers" [lindex $raw 4]]
+	set output [replacevar $output "%totalspeed" [format_speed [lindex $raw 5] "none"]]
+	set output [replacevar $output "%idlers" [lindex $raw 6]]
+	set output [replacevar $output "%active" [lindex $raw 7]]
+	set output [replacevar $output "%totallogins" [lindex $raw 8]]
+	set output [replacevar $output "%maxusers" [lindex $raw 9]]
 
-    set output [ReplaceVar $output "%uppercent" $upper]
-    set output [ReplaceVar $output "%dnpercent" $dnper]
-#   set output [ReplaceVar $output "%totalpercent" $totalper]
-    SendOne $chan [ReplaceBasic $output "BW"]
+	set output [replacevar $output "%uppercent" $upper]
+	set output [replacevar $output "%dnpercent" $dnper]
+#	set output [replacevar $output "%totalpercent" $totalper]
+	sndone $chan [replacebasic $output "BW"]
 }
 
-proc ::dZSbot::CmdIdlers {nick uhost hand chan argv} {
-    variable announce
-    variable binary
-    variable minidletime
-    variable speed
-    variable theme
-    CheckChan $nick $chan
+proc ng_idlers {nick uhost hand chan argv} {
+	global binary announce speed minidletime theme
+	checkchan $nick $chan
 
-    set output "$theme(PREFIX)$announce(IDLE)"
-    SendOne $chan [ReplaceBasic $output "IDLE"]
+	set output "$theme(PREFIX)$announce(IDLE)"
+	sndone $chan [replacebasic $output "IDLE"]
 
-    set raw [exec $binary(WHO) "--raw"]
-    set count 0; set total 0.0
+	set raw [exec $binary(WHO) "--raw"]
+	set count 0; set total 0.0
 
-    foreach line [split $raw "\n"] {
-        if {[string equal "USER" [lindex $line 0]] && [string equal "ID" [lindex $line 4]]} {
-            set user  [lindex $line 2]
-            set group [lindex $line 3]
-            set idletime [lindex $line 5]
-            set tagline [lindex $line 6]
-            set since [lindex $line 7]
+	foreach line [split $raw "\n"] {
+		if {[string equal "USER" [lindex $line 0]] && [string equal "ID" [lindex $line 4]]} {
+			set user  [lindex $line 2]
+			set group [lindex $line 3]
+			set idletime [lindex $line 5]
+			set tagline [lindex $line 6]
+			set since [lindex $line 7]
 
-            if {$idletime > $minidletime} {
-                set output [ReplaceVar "$theme(PREFIX)$announce(USERIDLE)" "%u_name" $user]
-                set output [ReplaceVar $output "%g_name" $group]
-                set output [ReplaceVar $output "%idletime" [FormatDuration $idletime]]
-                set output [ReplaceVar $output "%tagline" $tagline]
-                set output [ReplaceVar $output "%since" $since]
-                SendOne $chan [ReplaceBasic $output "IDLE"]
-                incr count
-            }
-        }
-    }
-    set output [ReplaceVar "$theme(PREFIX)$announce(TOTALIDLE)" "%count" $count]
-    SendOne $chan [ReplaceBasic $output "IDLE"]
-    return
+			if {$idletime > $minidletime} {
+				set output [replacevar "$theme(PREFIX)$announce(USERIDLE)" "%u_name" $user]
+				set output [replacevar $output "%g_name" $group]
+				set output [replacevar $output "%idletime" [format_duration $idletime]]
+				set output [replacevar $output "%tagline" $tagline]
+				set output [replacevar $output "%since" $since]
+				sndone $chan [replacebasic $output "IDLE"]
+				incr count
+			}
+		}
+	}
+	set output [replacevar "$theme(PREFIX)$announce(TOTIDLE)" "%count" $count]
+	sndone $chan [replacebasic $output "IDLE"]
+	return
 }
 
-proc ::dZSbot::CmdLeechers {nick uhost hand chan argv} {
-    variable announce
-    variable binary
-    variable speed
-    variable theme
-    CheckChan $nick $chan
+proc ng_leechers {nick uhost hand chan argv} {
+	global binary announce speed theme
+	checkchan $nick $chan
 
-    set output "$theme(PREFIX)$announce(LEECH)"
-    SendOne $chan [ReplaceBasic $output "LEECH"]
+	set output "$theme(PREFIX)$announce(LEECH)"
+	sndone $chan [replacebasic $output "LEECH"]
 
-    set raw [exec $binary(WHO) "--raw"]
-    set count 0; set total 0.0
+	set raw [exec $binary(WHO) "--raw"]
+	set count 0; set total 0.0
 
-    foreach line [split $raw "\n"] {
-        if {[string equal "USER" [lindex $line 0]] && [string equal "DN" [lindex $line 4]]} {
-            set user  [lindex $line 2]
-            set group [lindex $line 3]
-            set uspeed [ReplaceVar [lindex $line 5] "KB/s" ""]
-            set tagline [lindex $line 6]
-            set since [lindex $line 7]
-            set filename [lindex $line 8]
-            set per [format "%.2f%%" [expr double($uspeed) * 100 / double($speed(OUTGOING))]]
-            set fper [lindex $line 9]
-            set output [ReplaceVar "$theme(PREFIX)$announce(USERDN)" "%u_name" $user]
-            set output [ReplaceVar $output "%g_name" $group]
-            set output [ReplaceVar $output "%fper"  $fper]
-            set output [ReplaceVar $output "%speed" [FormatSpeed $uspeed "none"]]
-            set output [ReplaceVar $output "%per" $per]
-            set output [ReplaceVar $output "%tagline" $tagline]
-            set output [ReplaceVar $output "%since" $since]
-            set output [ReplaceVar $output "%filename" $filename]
-            SendOne $chan [ReplaceBasic $output "LEECH"]
-            incr count
-            set total [expr {$total + $uspeed}]
-        }
-    }
-    set per [format "%.1f" [expr double($total) * 100 / double($speed(OUTGOING)) ]]
+	foreach line [split $raw "\n"] {
+		if {[string equal "USER" [lindex $line 0]] && [string equal "DN" [lindex $line 4]]} {
+			set user  [lindex $line 2]
+			set group [lindex $line 3]
+			set uspeed [replacevar [lindex $line 5] "KB/s" ""]
+			set tagline [lindex $line 6]
+			set since [lindex $line 7]
+			set filename [lindex $line 8]
+			set per [format "%.2f%%" [expr double($uspeed) * 100 / double($speed(OUTGOING))]]
+			set fper [lindex $line 9]
+			set output [replacevar "$theme(PREFIX)$announce(USER)" "%u_name" $user]
+			set output [replacevar $output "%g_name" $group]
+			set output [replacevar $output "%fper"	$fper]
+			set output [replacevar $output "%speed" [format_speed $uspeed "none"]]
+			set output [replacevar $output "%per" $per]
+			set output [replacevar $output "%tagline" $tagline]
+			set output [replacevar $output "%since" $since]
+			set output [replacevar $output "%filename" $filename]
+			sndone $chan [replacebasic $output "LEECH"]
+			incr count
+			set total [expr {$total + $uspeed}]
+		}
+	}
+	set per [format "%.1f" [expr double($total) * 100 / double($speed(OUTGOING)) ]]
 
-    set output "$theme(PREFIX)$announce(TOTALDN)"
-    set output [ReplaceVar $output "%count" $count]
-    set output [ReplaceVar $output "%total" [FormatSpeed $total "none"]]
-    set output [ReplaceVar $output "%per" $per]
-    SendOne $chan [ReplaceBasic $output "LEECH"]
-    return
+	set output [replacevar "$theme(PREFIX)$announce(TOTUPDN)" "%type" "Leechers:"]
+	set output [replacevar $output "%count" $count]
+	set output [replacevar $output "%total" [format_speed $total "none"]]
+	set output [replacevar $output "%per" $per]
+	sndone $chan [replacebasic $output "LEECH"]
+	return
 }
 
-proc ::dZSbot::CmdSpeed {nick uhost hand chan argv} {
-    variable announce
-    variable binary
-    variable disable
-    variable theme
-    CheckChan $nick $chan
+proc ng_speed {nick uhost hand chan argv} {
+	global binary announce theme disable
+	checkchan $nick $chan
 
-    set line ""
-    if {$disable(ALTWHO) != 1} {
-        set output "$theme(PREFIX)$announce(SPEEDERROR)"
-        foreach line [split [exec $binary(WHO) --raw [lindex $argv 0]] "\n"] {
-            set action [lindex $line 4]
-            if {$action == "DN"} {
-                set output "$theme(PREFIX)$announce(SPEEDDN)"
-                set output [ReplaceVar $output "%dnspeed" [FormatSpeed [lindex $line 5] "none"]]
-                set output [ReplaceVar $output "%dnpercent" [lindex $line 9]]
-            } elseif {$action == "UP"} {
-                set output "$theme(PREFIX)$announce(SPEEDUP)"
-                set output [ReplaceVar $output "%upspeed" [FormatSpeed [lindex $line 5] "none"]]
-                set output [ReplaceVar $output "%uppercent" [lindex $line 9]]
-            } elseif {$action == "ID"} {
-                set output "$theme(PREFIX)$announce(SPEEDID)"
-                set output [ReplaceVar $output "%idletime" [FormatDuration [lindex $line 5]]]
-            }
-            set output [ReplaceVar $output "%u_name" [lindex $line 2]]
-            set output [ReplaceVar $output "%g_name" [lindex $line 3]]
-            set output [ReplaceVar $output "%tagline" [lindex $line 6]]
-            set output [ReplaceVar $output "%timeonline" [lindex $line 7]]
-            set output [ReplaceVar $output "%f_name" [lindex $line 8]]
-            SendOne $chan [ReplaceBasic $output "SPEED"]
-        }
-    } else {
-        set base_output "$theme(PREFIX)$announce(DEFAULT)"
-        foreach line [split [exec $binary(WHO) [lindex $argv 0]] "\n"] {
-            set output [ReplaceVar $base_output "%msg" $line]
-            SendOne $chan [ReplaceBasic $output "SPEED"]
-        }
-    }
+	set line ""
+	if {$disable(ALTWHO) != 1} {
+		set output "$theme(PREFIX)$announce(SPEEDERROR)"
+		foreach line [split [exec $binary(WHO) --raw [lindex $argv 0]] "\n"] {
+			set action [lindex $line 4]
+			if {$action == "DN"} {
+				set output "$theme(PREFIX)$announce(SPEEDDN)"
+				set output [replacevar $output "%dnspeed" [format_speed [lindex $line 5] "none"]]
+				set output [replacevar $output "%dnpercent" [lindex $line 9]]
+			} elseif {$action == "UP"} {
+				set output "$theme(PREFIX)$announce(SPEEDUP)"
+				set output [replacevar $output "%upspeed" [format_speed [lindex $line 5] "none"]]
+				set output [replacevar $output "%uppercent" [lindex $line 9]]
+			} elseif {$action == "ID"} {
+				set output "$theme(PREFIX)$announce(SPEEDID)"
+				set output [replacevar $output "%idletime" [format_duration [lindex $line 5]]]
+			}
+			set output [replacevar $output "%u_name" [lindex $line 2]]
+			set output [replacevar $output "%g_name" [lindex $line 3]]
+			set output [replacevar $output "%tagline" [lindex $line 6]]
+			set output [replacevar $output "%timeonline" [lindex $line 7]]
+			set output [replacevar $output "%f_name" [lindex $line 8]]
+			set output [replacevar $output "%u_pid" [lindex $line 10]]
+			sndone $chan [replacebasic $output "SPEED"]
+		}
+	} else {
+		set base_output "$theme(PREFIX)$announce(DEFAULT)"
+		foreach line [split [exec $binary(WHO) [lindex $argv 0]] "\n"] {
+			set output [replacevar $base_output "%msg" $line]
+			sndone $chan [replacebasic $output "SPEED"]
+		}
+	}
 
-    if {[string equal "" $line]} {
-        set output "$theme(PREFIX)$announce(SPEEDERROR)"
-        set output [ReplaceVar $output "%msg" "User not online."]
-        SendOne $chan [ReplaceBasic $output "SPEED"]
-    }
-    return
+	if {[string equal "" $line]} {
+		set output "$theme(PREFIX)$announce(SPEEDERROR)"
+		set output [replacevar $output "%msg" "User not online."]
+		sndone $chan [replacebasic $output "SPEED"]
+	}
+	return
 }
 
-proc ::dZSbot::CmdUploaders {nick uhost hand chan argv} {
-    variable announce
-    variable binary
-    variable speed
-    variable theme
-    CheckChan $nick $chan
+proc ng_uploaders {nick uhost hand chan argv} {
+	global binary announce speed theme
+	checkchan $nick $chan
 
-    set output "$theme(PREFIX)$announce(UPLOAD)"
-    SendOne $chan [ReplaceBasic $output "UPLOAD"]
+	set output "$theme(PREFIX)$announce(UPLOAD)"
+	sndone $chan [replacebasic $output "UPLOAD"]
 
-    set raw [exec $binary(WHO) "--raw"]
-    set count 0; set total 0.0
+	set raw [exec $binary(WHO) "--raw"]
+	set count 0; set total 0.0
 
-    foreach line [split $raw "\n"] {
-        if {[string equal "USER" [lindex $line 0]] && [string equal "UP" [lindex $line 4]]} {
-            set user  [lindex $line 2]
-            set group [lindex $line 3]
-            set uspeed [ReplaceVar [lindex $line 5] "KB/s" ""]
-            set tagline [lindex $line 6]
-            set since [lindex $line 7]
-            set filename [lindex $line 8]
-            set progress [lindex $line 9]
-            set per [format "%.2f%%" [expr double($uspeed) * 100 / double($speed(INCOMING))]]
-            set output [ReplaceVar "$theme(PREFIX)$announce(USERUP)" "%u_name" $user]
-            set output [ReplaceVar $output "%g_name" $group]
-            set output [ReplaceVar $output "%fper" $progress]
-            set output [ReplaceVar $output "%speed" [FormatSpeed $uspeed "none"]]
-            set output [ReplaceVar $output "%per" $per]
-            set output [ReplaceVar $output "%tagline" $tagline]
-            set output [ReplaceVar $output "%since" $since]
-            set output [ReplaceVar $output "%filename" $filename]
-            SendOne $chan [ReplaceBasic $output "UPLOAD"]
-            incr count
-            set total [expr {$total + $uspeed}]
-        }
-    }
-    set per [format "%.1f" [expr double($total) * 100 / double($speed(INCOMING)) ]]
+	foreach line [split $raw "\n"] {
+		if {[string equal "USER" [lindex $line 0]] && [string equal "UP" [lindex $line 4]]} {
+			set user  [lindex $line 2]
+			set group [lindex $line 3]
+			set uspeed [replacevar [lindex $line 5] "KB/s" ""]
+			set tagline [lindex $line 6]
+			set since [lindex $line 7]
+			set filename [lindex $line 8]
+			set progress [lindex $line 9]
+			set per [format "%.2f%%" [expr double($uspeed) * 100 / double($speed(INCOMING))]]
+			set output [replacevar "$theme(PREFIX)$announce(USER)" "%u_name" $user]
+			set output [replacevar $output "%g_name" $group]
+			set output [replacevar $output "%fper" $progress]
+			set output [replacevar $output "%speed" [format_speed $uspeed "none"]]
+			set output [replacevar $output "%per" $per]
+			set output [replacevar $output "%tagline" $tagline]
+			set output [replacevar $output "%since" $since]
+			set output [replacevar $output "%filename" $filename]
+			sndone $chan [replacebasic $output "UPLOAD"]
+			incr count
+			set total [expr {$total + $uspeed}]
+		}
+	}
+	set per [format "%.1f" [expr double($total) * 100 / double($speed(INCOMING)) ]]
 
-    set output "$theme(PREFIX)$announce(TOTALUP)"
-    set output [ReplaceVar $output "%count" $count]
-    set output [ReplaceVar $output "%total" [FormatSpeed $total "none"]]
-    set output [ReplaceVar $output "%per" $per]
-    SendOne $chan [ReplaceBasic $output "UPLOAD"]
-    return
+	set output [replacevar "$theme(PREFIX)$announce(TOTUPDN)" "%type" "Uploaders:"]
+	set output [replacevar $output "%count" $count]
+	set output [replacevar $output "%total" [format_speed $total "none"]]
+	set output [replacevar $output "%per" $per]
+	sndone $chan [replacebasic $output "UPLOAD"]
+	return
 }
 
-proc ::dZSbot::CmdWho {nick uhost hand chan argv} {
-    variable binary
-    CheckChan $nick $chan
-    foreach line [split [exec $binary(WHO)] "\n"] {
-        if {![info exists newline($line)]} {
-            set newline($line) 0
-        } else {
-            incr newline($line)
-        }
-        puthelp "PRIVMSG $nick :$line[c]$newline($line)"
-    }
-    return
+proc ng_who {nick uhost hand chan argv} {
+	global binary
+	checkchan $nick $chan
+	foreach line [split [exec $binary(WHO)] "\n"] {
+		if {![info exists newline($line)]} {
+			set newline($line) 0
+		} else {
+			incr newline($line)
+		}
+		puthelp "PRIVMSG $nick :$line\003$newline($line)"
+	}
+	return
 }
 
 #################################################################################
 # Theme Loading and Replacement                                                 #
 #################################################################################
 
-proc ::dZSbot::ThemeLoad {file} {
-    variable announce
-    variable random
-    variable scriptPath
-    variable theme
-    variable theme_fakes
-    variable variables
-    unset -nocomplain announce random
+proc loadtheme {file {plugin false}} {
+	global announce random scriptpath theme theme_fakes variables
 
-    if {[string index $file 0] != "/"} {
-        set file "$scriptPath/$file"
-    }
-    set announce(THEMEFILE) [file normalize $file]
+	if {![istrue $plugin]} {
+		unset -nocomplain announce random
 
-    InfoMsg "Loading theme \"$file\"."
+		if {[string index $file 0] != "/"} {
+			set file "$scriptpath/$file"
+		}
 
-    if {[catch {set handle [open $file r]} error]} {
-        ErrorMsg ThemeLoad "Unable to read the theme file ($error)."
-        return 0
-    }
-    set data [read -nonewline $handle]
-    close $handle
+		set announce(THEMEFILE) [file normalize $file]
 
-    foreach line [split $data "\n"] {
-        if {[string equal "" $line] || [string index $line 0] == "#"} {continue}
-        if {[regexp -- {(\S+)\.(\S+)\s*=\s*(['\"])(.+)\3} $line dud type setting quote value]} {
-            switch -exact -- [string tolower $type] {
-                "announce"    {set announce($setting) $value}
-                "fakesection" {set theme_fakes($setting) $value}
-                "random"      {set random($setting) $value}
-                default       {WarningMsg ThemeLoad "Invalid theme setting \"$type.$setting\"."}
-            }
-        } elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
-            set theme($setting) $value
-        }
-    }
+		putlog "dZSbot: Loading theme \"$file\"."
+	}
 
-    foreach name [array names random] {
-        if {![regexp {(.+)-\d+$} $name dud base]} {
-            WarningMsg ThemeLoad "Invalid setting \"random.$name\", must be in the format of \"random.EVENT-#\"."
-            unset random($name)
-        } else {
-            set announce($base) "random"
-            set random($name) [ThemeReplaceBasic $random($name)]
-        }
-    }
-    foreach name [array names announce] {set announce($name) [ThemeReplaceBasic $announce($name)]}
-    foreach name [array names theme] {set theme($name) [ThemeReplaceBasic $theme($name)]}
-    foreach name [array names theme_fakes] {set theme_fakes($name) [ThemeReplaceBasic $theme_fakes($name)]}
+	if {[catch {set handle [open $file r]} error]} {
+		putlog "dZSbot error: Unable to read the theme file ($error)."
+		return 0
+	}
+	set data [read -nonewline $handle]
+	close $handle
 
-    ## Sanity checks
-    foreach type {COLOR1 COLOR2 COLOR3 PREFIX KB KBIT MB MBIT} {
-        if {[lsearch -exact [array names theme] $type] == -1} {
-            ErrorMsg ThemeLoad "Missing required theme setting \"$type\", failing."
-            return 0
-        }
-    }
-    foreach type [concat [array names variables] NUKE UNNUKE NUKEES] {
-        if {[lsearch -exact [array names announce] $type] == -1} {
-            WarningMsg ThemeLoad "Missing announce setting \"announce.$type\" in the theme file."
-        }
-    }
-    return 1
+	foreach line [split $data "\n"] {
+		if {[string index $line 0] != "#"} {
+			if {[regexp -- {(\S+)\.(\S+)\s*=\s*(['\"])(.+)\3} $line dud type setting quote value]} {
+				switch -exact -- [string tolower $type] {
+					"announce" {
+						if {(![info exists announce($setting)]) || (![istrue $plugin])} {
+							set announce($setting) $value
+						}
+					}
+					"fakesection" {
+						if {(![info exists theme_fakes($setting)]) || (![istrue $plugin])} {
+							set theme_fakes($setting) $value
+						}
+					}
+					"random" {
+						if {(![info exists random($setting)]) || (![istrue $plugin])} {
+							set random($setting) $value
+						}
+					}
+					default {
+						putlog "dZSbot warning: Invalid theme setting \"$type.$setting\"."
+					}
+				}
+			} elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
+				if {(![info exists theme($setting)]) || (![istrue $plugin])} {
+					set theme($setting) $value
+				}
+			}
+		}
+	}
+
+	foreach name [array names random] {
+		if {![regexp {(.+)-\d+$} $name dud base]} {
+			putlog "dZSbot warning: Invalid setting \"random.$name\", must be in the format of \"random.EVENT-#\"."
+			unset random($name)
+		} else {
+			set announce($base) "random"
+			set random($name) [themereplace_startup $random($name)]
+		}
+	}
+	foreach name [array names announce] {set announce($name) [themereplace_startup $announce($name)]}
+	foreach name [array names theme] {set theme($name) [themereplace_startup $theme($name)]}
+	foreach name [array names theme_fakes] {set theme_fakes($name) [themereplace_startup $theme_fakes($name)]}
+
+	if {![istrue $plugin]} {
+		## Sanity checks
+		foreach type {COLOR1 COLOR2 COLOR3 PREFIX KB KBIT MB MBIT} {
+			if {[lsearch -exact [array names theme] $type] == -1} {
+				putlog "dZSbot error: Missing required theme setting \"$type\", failing."
+				return 0
+			}
+		}
+		foreach type [concat [array names variables] NUKE UNNUKE NUKEES] {
+			if {[lsearch -exact [array names announce] $type] == -1} {
+				putlog "dZSbot warning: Missing announce setting \"announce.$type\" in the theme file."
+			}
+		}
+	}
+
+	return 1
 }
 
-proc ::dZSbot::ThemePreview {handle idx text} {
-    variable announce
-    variable defaultsection
+proc themereplace {targetString section} {
+	global theme
 
-    if {[string equal "" $text]} {
-        putdcc $idx "[b]Preview Usage:[b]"
-        putdcc $idx "- .$::lastbind <event pattern>"
-        putdcc $idx "- Only events matching the pattern are shown (* for all)."
-        return
-    }
+	## Escape any "$" characters so they aren't interpreted as variables in the final "subst".
+	set targetString [string map {$ \\$} $targetString]
 
-    if {[catch {set handle [open $announce(THEMEFILE) r]} error]} {
-        ErrorMsg ThemePreview "Unable to read the theme file ($error)."
-        return
-    }
-    set data [read -nonewline $handle]
-    close $handle
+	# We replace %cX{string}, %b{string} and %u{string} with their coloured, bolded and underlined equivilants ;)
+	# We also do the justification and padding that is required for %r / %l / %m to work.
+	# bold and underline replacement should not be needed here...
+	while {[regexp {(%c(\d)\{([^\{\}]+)\}|%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\}|%([lrm])(\d\d?)\{([^\{\}]+)\})} $targetString matchString dud padOp padLength padString]} {
+		# Check if any innermost %r/%l/%m are present.
+		while {[regexp {%([lrm])(\d\d?)\{([^\{\}]+)\}} $targetString matchString padOp padLength padString]} {
+			set tmpPadString $padString
+			regsub -all {\003\d\d} $tmpPadString {} tmpPadString
+			set tmpPadString [string map {\002 "" \003 "" \037 ""} $tmpPadString]
+			incr padLength [expr [string length $padString] - [string length $tmpPadString]]
 
-    putdcc $idx "[b]Previewing:[b] $announce(THEMEFILE)"
-    putdcc $idx ""
-    foreach line [split $data "\n"] {
-        if {[string equal "" $line] || [string index $line 0] == "#"} {continue}
-        ## TODO: Clean this mess up.
-        if {[regexp -nocase -- {announce\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-            set prefix "announce."
-        } elseif {[regexp -nocase -- {random\.(\S+)\s*=\s*(['\"])(.+)\2} $line dud setting quote value]} {
-            set prefix "random."
-        } elseif {[regexp -- {(\S+)\s*=\s*(['\"])(.*)\2} $line dud setting quote value]} {
-            set prefix ""
-        } else {
-            continue
-        }
-        if {[string match -nocase $text $setting]} {
-            set value [ThemeReplace [ReplaceBasic $value $defaultsection] $defaultsection]
-            putdcc $idx "$prefix$setting = $value"
-        }
-    }
-    return
+			if {[string length $padString] >= $padLength} {
+				set paddedString $padString
+			} elseif {$padOp == "l"} {
+				set paddedString [format "%-*s" $padLength $padString]
+			} elseif {$padOp == "r"} {
+				set paddedString [format "%*s" $padLength $padString]
+			} elseif {$padOp == "m"} {
+				set paddedString [format "%*s%s" [expr ($padLength - [string length $padString]) / 2] "" $padString]
+				set paddedString [format "%-*s" $padLength $paddedString]
+			}
+
+			set targetString [string map [list $matchString $paddedString] $targetString]
+		}
+
+		regsub -all {%b\{([^\{\}]+)\}} $targetString {\\002\1\\002} targetString
+		regsub -all {%u\{([^\{\}]+)\}} $targetString {\\037\1\\037} targetString
+		regsub -all {(%c\d\{[^\{\}]+\})(\d)} $targetString {\1\\002\\002\2} targetString
+
+		set colorString [format "COLOR_%s_1" $section]
+		if {[lsearch -exact [array names theme] $colorString] != -1} {
+			regsub -all {%c(\d)\{([^\{\}]+)\}} $targetString {\\003$theme([format "COLOR_%s_" $section]\1)\2\\003} targetString
+			regsub {\003(\d)(?!\d)} $targetString {\\0030\1} targetString
+		} else {
+			regsub -all {%c(\d)\{([^\{\}]+)\}} $targetString {\\003$theme(COLOR\1)\2\\003} targetString
+			regsub {\003(\d)(?!\d)} $targetString {\\0030\1} targetString
+		}
+	}
+	return [subst -nocommands $targetString]
 }
 
-proc ::dZSbot::ThemeReplace {targetString section} {
-    variable theme
-
-    ## Escape any "$" characters so they aren't interpreted as variables in the final "subst".
-    set targetString [string map {$ \\$} $targetString]
-
-    # We replace %cX{string}, %b{string} and %u{string} with their coloured, bolded and underlined equivilants ;)
-    # We also do the justification and padding that is required for %r / %l / %m to work.
-    # bold and underline replacement should not be needed here...
-    while {[regexp {(%c(\d)\{([^\{\}]+)\}|%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\}|%([lrm])(\d\d?)\{([^\{\}]+)\})} $targetString matchString dud padOp padLength padString]} {
-        # Check if any innermost %r/%l/%m are present.
-        while {[regexp {%([lrm])(\d\d?)\{([^\{\}]+)\}} $targetString matchString padOp padLength padString]} {
-            set tmpPadString $padString
-            regsub -all {\003\d\d} $tmpPadString {} tmpPadString
-            set tmpPadString [string map {\002 "" \003 "" \037 ""} $tmpPadString]
-            incr padLength [expr {[string length $padString] - [string length $tmpPadString]}]
-
-            if {[string length $padString] >= $padLength} {
-                set paddedString $padString
-            } elseif {$padOp == "l"} {
-                set paddedString [format "%-*s" $padLength $padString]
-            } elseif {$padOp == "r"} {
-                set paddedString [format "%*s" $padLength $padString]
-            } elseif {$padOp == "m"} {
-                set paddedString [format "%*s%s" [expr ($padLength - [string length $padString]) / 2] "" $padString]
-                set paddedString [format "%-*s" $padLength $paddedString]
-            }
-
-            set targetString [string map [list $matchString $paddedString] $targetString]
-        }
-
-        regsub -all {%b\{([^\{\}]+)\}} $targetString {\\002\1\\002} targetString
-        regsub -all {%u\{([^\{\}]+)\}} $targetString {\\037\1\\037} targetString
-
-        set colorString [format "COLOR_%s_1" $section]
-        if {[lsearch -exact [array names theme] $colorString] != -1} {
-            regsub -all {%c(\d)\{([^\{\}]+)\}} $targetString {\\003$theme([format "COLOR_%s_" $section]\1)\2\\003} targetString
-            regsub {\003(\d)(?!\d)} $targetString {\\0030\1} targetString
-        } else {
-            regsub -all {%c(\d)\{([^\{\}]+)\}} $targetString {\\003$theme(COLOR\1)\2\\003} targetString
-            regsub {\003(\d)(?!\d)} $targetString {\\0030\1} targetString
-        }
-    }
-    return [subst -nocommands $targetString]
-}
-
-proc ::dZSbot::ThemeReplaceBasic {rstring} {
-    # We replace %b{string} and %u{string} with their bolded and underlined equivilants ;)
-    while {[regexp {(%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\})} $rstring]} {
-        regsub -all {%b\{([^\{\}]+)\}} $rstring {\\002\1\\002} rstring
-        regsub -all {%u\{([^\{\}]+)\}} $rstring {\\037\1\\037} rstring
-    }
-    return [subst -nocommands -novariables $rstring]
+proc themereplace_startup {rstring} {
+	# We replace %b{string} and %u{string} with their bolded and underlined equivilants ;)
+	while {[regexp {(%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\})} $rstring]} {
+		regsub -all {%b\{([^\{\}]+)\}} $rstring {\\002\1\\002} rstring
+		regsub -all {%u\{([^\{\}]+)\}} $rstring {\\037\1\\037} rstring
+	}
+	return [subst -nocommands -novariables $rstring]
 }
 
 #################################################################################
 # Start Up Stuff                                                                #
 #################################################################################
 
-## TODO: Clean up initialization.
-namespace eval ::dZSbot {
-    variable glVersion 0
-    variable loadError 0
-    variable logList ""
-    set context [namespace current]
-
-    if {[catch {source [file join $scriptPath dZSbot.defaults]} error]} {
-        ErrorMsg SourceDefault "Unable to load dZSbot.defaults ($error), cannot continue."
-        ErrorMsg SourceDefault "See FAQ for possible solutions/debugging options."
-        die
-    }
-
-    if {[catch {source [file join $scriptPath dZSbot.vars]} error]} {
-        ErrorMsg SourceVars "Unable to load dZSbot.vars ($error), cannot continue."
-        ErrorMsg SourceVars "See FAQ for possible solutions/debugging options."
-        die
-    }
-
-    if {[catch {source [file join $scriptPath dZSbot.conf]} error]} {
-        WarningMsg SourceConf "Unable to load dZSbot.conf, using default values."
-        if {[file exists  [file join $scriptPath dZSbot.conf]]} {
-            WarningMsg SourceConf "Config error:\n$errorInfo"
-        } else {
-            WarningMsg SourceConf "Since this is your first install, do: cp dZSbot.conf.dist dZSbot.conf"
-        }
-        set loadError 1
-    }
-
-    ## Check binary and file locations
-    foreach {filename filepath} [array get binary] {
-        if {![IsTrue $bnc(ENABLED)]} {
-            if {[string equal "CURL" $filename]} {continue}
-            if {[string equal "PING" $filename] && ![IsTrue $bnc(PING)]} {continue}
-        }
-        if {![IsTrue $enable_irc_invite] && [string equal "PASSCHK" $filename]} {continue}
-
-        if {![file executable $filepath]} {
-            ErrorMsg BinaryCheck "Invalid path/permissions for $filename ($filepath)."
-            set loadError 1
-        }
-    }
-
-    foreach {filename filepath} [array get location] {
-        if {![file exists $filepath]} {
-            ErrorMsg LocationCheck "Invalid path for for $filename ($filepath)."
-            set loadError 1
-        }
-    }
-
-    ## Logs to parse.
-    set logId 0
-    foreach logType {0 1 2} varName {glftpdlog loginlog sysoplog} {
-        foreach {filename filepath} [array get $varName] {
-            if {![file readable $filepath]} {
-                ErrorMsg LogCheck "Unable to read the log file \"$filepath\"."
-                set loadError 1
-            } else {
-                lappend logList $logType [incr logId] [file normalize $filepath]
-                set lastread($logId) [file size $filepath]
+## Check binary and file locations
+foreach {filename filepath} [array get binary] {
+	if {![istrue $bnc(ENABLED)]} {
+		if {[string equal "CURL" $filename]} {continue}
+		if {[string equal "PING" $filename] && ![istrue $bnc(PING)]} {continue}
+	}
+	if {![istrue $enable_irc_invite] && [string equal "PASSCHK" $filename]} {continue}
+        if {![string equal -nocase "glftpd" $ftpd_type]} {
+            # This means we skip checking everything
+            # that isn't matched. (because they're not
+            # used on non-glftpd)
+            switch -- $filename {
+                "CURL" -
+                "DF" -
+                "INCOMPLETE" -
+                "PING" -
+                "UPTIME" { }
+                default { continue; }
             }
         }
-    }
-    if {!$logId} {
-        ErrorMsg LogCheck "No logs found!"
-        set loadError 1
-    } else {
-        InfoMsg "Logs found: $logId"
-    }
 
-    ## Detect glftpd version.
-    if {[string equal -nocase "AUTO" $use_glftpd2]} {
-        if {![info exists binary(GLFTPD)]} {
-            ErrorMsg GlVersion "You did not thoroughly edit the [file join $scriptPath dZSbot.conf] file (hint: binary(GLFTPD))."
-            die
-        }
-        set glVersion [exec strings $binary(GLFTPD) | grep -i "^glftpd " | cut -f1 -d. | tr A-Z a-z]
+	if {![file executable $filepath]} {
+		putlog "dZSbot error: Invalid path/permissions for $filename ($filepath)."
+		set dzerror 1
+	}
+}
 
-        if {[string equal "glftpd 1" $glVersion]} {
-            set glVersion 1
-        } elseif {[string equal "glftpd 2" $glVersion]} {
-            set glVersion 2
-        } else {
-            ErrorMsg GlVersion "Version auto-detection failed, set \"use_glftpd2\" in [file join $scriptPath dZSbot.conf] manually."
-            die
-        }
-    } else {
-        set glVersion [expr {[IsTrue $use_glftpd2] ? 2 : 1}]
+if {[string equal -nocase "glftpd" $ftpd_type]} {
+    foreach {filename filepath} [array get location] {
+            if {![file exists $filepath]} {
+                    putlog "dZSbot error: Invalid path for for $filename ($filepath)."
+                    set dzerror 1
+            }
     }
-    InfoMsg "glFTPD version: $glVersion"
+}
 
-    ## Bind commands and events.
-    BindCommands $cmdpre
-    if {[IsTrue $bindnopre]} {
-        BindCommands "!"
-    } elseif {![string equal "!" $cmdpre]} {
-        UnbindCommands "!"
-    }
-    if {[IsTrue $enable_irc_invite]} {
-        bind msg -|- !invite ${context}::CmdInvite
-    }
-    bind dcc n errorinfo ${context}::ShowError
-    bind dcc n preview   ${context}::ThemePreview
-    bind join -|- *      ${context}::ShowWelcome
+## Logs to parse
+set logid 0; set loglist ""
+foreach {varname logtype} {glftpdlog 0 loginlog 1 sysoplog 2} {
+	foreach {filename filepath} [array get $varname] {
+		if {![file readable $filepath]} {
+			putlog "dZSbot error: Unable to read the log file \"$filepath\"."
+			set dzerror 1
+		} else {
+			lappend loglist $logtype [incr logid] [file normalize $filepath]
+			set lastread($logid) [file size $filepath]
+		}
+	}
+}
+if {!$logid} {
+	putlog "dZSbot error: No logs found!"
+	set dzerror 1
+} else {
+	putlog "dZSbot: Number of logs found: $logid"
+}
 
-    ## Load theme file.
-    if {![ThemeLoad $announce(THEMEFILE)]} {
-		set InvalidTheme $announce(THEMEFILE)
-        if {[ThemeLoad "themes/default.zst"]} {
-            WarningMsg Theme "Unable to load theme $InvalidTheme, loaded default.zst instead."
-        } else {
-            ErrorMsg Theme "Unable to load the themes $InvalidTheme and default.zst."
-            set loadError 1
-        }
-    }
+## Detect glftpd version
+if {[string equal -nocase "glftpd" $ftpd_type] && [string equal -nocase "AUTO" $use_glftpd2]} {
+	if {![info exists binary(GLFTPD)]} {
+		die "dZSbot: you did not thoroughly edit the $scriptpath/dZSbot.conf file (hint: binary(GLFTPD))."
+	}
+	set glversion [exec strings $binary(GLFTPD) | grep -i "^glftpd " | cut -f1 -d. | tr A-Z a-z]
 
-    ## Start log timer.
-    if {[info exists logTimerId] && [catch {killutimer $logTimerId} error]} {
-        WarningMsg StartTimer "Unable to kill log timer, restart the bot to be safe ($error)."
-    }
-    variable logTimerId [utimer 1 ${context}::LogTimer]
+	if {[string equal "glftpd 1" $glversion]} {
+		putlog "dZSbot: Detected $glversion, running in legacy mode."
+		set glversion 1
+	} elseif {[string equal "glftpd 2" $glversion]} {
+		putlog "dZSbot: Detected $glversion, running in standard mode."
+		set glversion 2
+	} else {
+		die "dZSbot: Auto-detecting glftpd version failed, set \"use_glftpd2\" in $scriptpath/dZSbot.conf manually."
+	}
+} else {
+	set glversion [expr [istrue $use_glftpd2] ? 2 : 1]
+	putlog "dZSbot: glftpd version defined as: $glversion."
+}
 
-    foreach rep [array names msgreplace] {
-        set rep [split $msgreplace($rep) ":"]
-        set variables([lindex $rep 2]) $variables([lindex $rep 0])
-        if {![info exists disable([lindex $rep 2])]} {
-            set disable([lindex $rep 2]) 0
-        }
-        if {![info exists announce([lindex $rep 2])]} {
-            set announce([lindex $rep 2]) $announce([lindex $rep 0])
-            WarningMsg MsgReplace "Custom message [lindex $rep 2] defined, but no announce definition found. Using same announce as [lindex $rep 0] for now."
-        }
-    }
+## Invite checks
+if {![info exists invite_channels] && [info exists chanlist(INVITE)]} {
+	putlog "dZSbot warning: No \"invite_channels\" defined in the config, setting to \"$chanlist(INVITE)\" (chanlist(INVITE))"
+	set invite_channels $chanlist(INVITE)
+}
 
-    if {!$loadError} {
-        InfoMsg "Loaded successfully!"
-    } else {
-        InfoMsg "Errors were encountered while loading, refer to the messages above for details."
-        if {[IsTrue $die_on_error]} {die}
-    }
+if {[istrue $enable_irc_invite] && [string equal -nocase "glftpd" $ftpd_type]} {
+	bind msg -|- !invite ng_invite
+}
+
+## Load the theme file
+if {![loadtheme $announce(THEMEFILE)]} {
+	set invalidTheme $announce(THEMEFILE)
+	if {[loadtheme "themes/default.zst"]} {
+		putlog "dZSbot warning: Unable to load theme $invalidTheme, loaded default.zst instead."
+	} else {
+		putlog "dZSbot error: Unable to load the themes $invalidTheme and default.zst."
+		set dzerror 1
+	}
+}
+
+## Start the log timer
+if {[info exists dZStimer] && [catch {killutimer $dZStimer} error]} {
+	putlog "dZSbot warning: Unable to kill log timer ($error)."
+	putlog "dZSbot warning: You should .restart the bot to be safe."
+}
+set dZStimer [utimer 1 readlogtimer]
+
+## Default channels and variables
+if {![array exists chanlist] || ![info exists chanlist(DEFAULT)]} {
+	putlog "dZSbot error: No entry in chanlist set, or \"chanlist(DEFAULT)\" not set."
+	set dzerror 1
+}
+if {![array exists announce] || ![info exists announce(DEFAULT)]} {
+	putlog "dZSbot warning: No \"announce\" entries defined, or \"announce(DEFAULT)\" is not set."
+	set announce(DEFAULT) "\[DEFAULT\] %msg"
+}
+if {![array exists variables] || ![info exists variables(DEFAULT)]} {
+	putlog "dZSbot warning: No \"variables\" entries defined, or \"variables(DEFAULT)\" is not set."
+	set variables(DEFAULT) "%pf %msg"
+}
+if {![array exists disable] || ![info exists disable(DEFAULT)]} {
+	putlog "dZSbot warning: No \"disable\" entries defined, or \"disable(DEFAULT)\" is not set."
+	set disable(DEFAULT) 0
+}
+
+# Hook up variables and announce definitions for the message replacing code
+# New message should have identical variables definition as old message
+# New announce set to old announce if not found in theme file (and output a
+# warning message).
+foreach rep [array names msgreplace] {
+	set rep [split $msgreplace($rep) ":"]
+	set variables([lindex $rep 2]) $variables([lindex $rep 0])
+	if {![info exists disable([lindex $rep 2])]} {
+		set disable([lindex $rep 2]) 0
+	}
+	if {![info exists announce([lindex $rep 2])]} {
+		set announce([lindex $rep 2]) $announce([lindex $rep 0])
+		putlog "dZSbot warning: Custom message [lindex $rep 2] defined, but no announce definition found. Using same announce as [lindex $rep 0] for now. Please edit the theme file!"
+	}
+}
+
+if {!$dzerror} {
+	putlog "dZSbot: Loaded successfully!"
+} else {
+	putlog "dZSbot: Errors were encountered while loading, refer to the messages above for details."
+	if {[istrue $die_on_error]} {die}
 }

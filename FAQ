@@ -58,12 +58,15 @@ A: You should disable the announce in glftpd.conf. Change your dirlog lines
    The / at the end hinders announces/logging of new dirs after it, ie dirs
    created in /site/BOOKWARE/some_release/* is not announced. For more info
    see glftpd.docs.
+A: Check the docs on the sitebot. There is a denypost directive, and you have
+   options to redirect output to a different channel.
 
 Q: (BOT) I get errors on !bw !speed etc in the bot. What to do?
 ---------------------------------------------------------------
 A: If you get either of the following errors in partyline:
-	Tcl error [speed]: unmatched open quote in list
-	Tcl error [ng_bandwidth]: list element in quotes followed by "<something>" instead of space
+	Tcl error [speed]: unmatched open quote in list.
+	Tcl error [ng_bandwidth]: list element in quotes followed by 
+	"<something>" instead of space.
    This is usually a result of you turning on debug in sitewho.conf. Try
    to turn debug off.
 
@@ -89,7 +92,7 @@ A: Ignore it. It's good that you follow UPGRADING, but failure on distclean can
 
 Q: (BOT) Any thoughts about an encryption scheme on the bot?
 ------------------------------------------------------------
-A: Already exists. Try http://poci.u5-inside.de/index.php
+A: Already exists. Try http://mircryption.sourceforge.net/
 
 Q: (BOT) What does "Tcl error in script for 'timer#####'" mean?
 ------------------------------------------------------------
@@ -108,4 +111,20 @@ Q: (BOT) !allup doesn't work! And neither does any other stat command.
 A: glftpd's stats binary probably reports an error. Try to run in from shell:
       /glftpd/bin/stats -r /etc/glftpd.conf -u -a -s <your section here>
    This should give some indication of where the problem is.
+
+Q: (BOT) I get error on !wkup etc. I use a cryptscript.
+-------------------------------------------------------
+A: Change your cryptscript. Currently known working script is mircryption
+   http://mircryption.sourceforge.net
+
+Q: (ZIPSCRIPT) Error: version GLIBC_2.x.x not defined in file libc.so.6
+-----------------------------------------------------------------------
+A: This is most likely a result of a mismatch between libs outside and inside
+   of glftpd's chroot. Try one (or all) of the following:
+   - Run libcopy.sh (located in ./scripts/libcopy/libcopy.sh)
+   - Do 'make distclean; ./configure && make install' then run libcopy.
+     It's important to do 'distclean' and not just 'clean'.
+   - Remove all lib*/ dirs inside /glftpd, 
+     do 'make distclean; ./configure && make install' and then run libcopy.
+     This step is usually not necessary.
 

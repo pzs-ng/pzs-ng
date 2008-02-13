@@ -20,16 +20,19 @@
  %O  = total megabytes in rejected files
  %n  = name of current file
  %p  = percent of files uploaded (uploaded files / totalfiles * 100)
+ %N  = total mbits uploaded
 
  %a  = average speed per transfer (kb/sec)
  %A  = average speed (kb/sec)
- %d  = race length (so far) (time)
+ %d  = race length (so far)
  %$  = estimated time left of race
 #
 #### Current User
 #
  %U  = Name
  %S  = Speed (kb/sec)
+ %#  = Speed (MB/s)
+ %s  = Speed (Mbps)
  %G  = Primary group
 #
 #### Appended messages
@@ -69,12 +72,26 @@
  %i  = VBR version string
  %I  = VBR preset
  %j  = vbr/cbr info
+ %@  = vbr-old/vbr-new
+ %_  = vbr quality (1-100, 100 = lowest)
+ %/  = vbr minimum bitrate (on APS this is average bitrate)
+ %\\ = vbr noiseshaping (1-3)
+ %(  = vbr stereomode (joint, stereo, mono, forced etc)
+ %)  = vbr unwise (1 = yes)
+ %|  = vbr source (<32.000Hz, 44.100Hz, 48.000Hz, >48.000Hz)
 #
 #### Movie AVI/MPG/MPEG/M2V cookies
 #
  %D  = Width
  %E  = Height
  %H  = Frame rate (fps) 
+ %;  = Aspect Ratio
+ %:  = Video Type (long)
+ %,  = Video Type (short)
+ %`  = Audio Hz
+ %=  = Audio Channels
+ %>  = Audio Type (name - AC3 etc)
+ %<  = Audio Type (code - 0x2000 etc)
 #
 #
  %J  = RAR Compression method (!! SHOULD NOT BE USED ATM !!)
@@ -94,7 +111,6 @@
  %A  = AllUp position
  %F  = Speed of fastest upload (use in fastestfilemsg)
  %S  = Speed of slowest upload (use in fastestfilemsg)
- %/  = Size of uploaded file.
 #
 #### Group's
 #
@@ -134,6 +150,7 @@ NOTE: With cookies you can (and in some cases you need to) define accuracy (or s
  %1  = "/site/incoming/release/cd1" => cd1
  %2  = name of current section, or DEFAULT if not found.
  %%  = %-sign
+
 
 ###### sitename
 #

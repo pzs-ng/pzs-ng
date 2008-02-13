@@ -58,12 +58,19 @@ PZS-NG should compile fine on the following platforms:
 - Linux
 - FreeBSD
 - OpenBSD
-- OSX/Darwin (Feedback say the zipscript work on this platform)
+- OSX/Darwin (the zipscript should work, but sitewho etc may need some
+  makefile options. Contact psxc or one of the devs for help)
 - (AIX - untested, but the original docs say it works there)
 - (Solaris - soon *g*)
 
-Only the i386 and AMD64 platforms are tested, so if you try it on anything
-else, don't hesitate to contact us and inform us of the result.
+64-bit processors - should work. Since glftpd is pre-compiled on a 32bit
+platform (usually) certain bins in pzs-ng will be compiled in 32bit mode.
+Make sure you have the 32bit libs installed. For more info, see README.AMD64.
+The *BSD platforms currently have no support for the -m32 flag. Ask psxc
+or one of the devs if you are stuck on this.
+
+Only the i386 platform is tested, so if you try it on anything else, don't
+hesitate to contact us and inform us of the result.
 
 
 Supported FTP Daemons:
@@ -166,13 +173,6 @@ you find - they're supposed to be there. Comments in C are signified by
 
 Installation:
 -------------
-
-Note: If you got the code from our subversion repository, you need to run
-
-./autogen.sh
-
-before you can continue with the next steps.
-
 First off, you should run ./configure - before editing the config (this is new
 in PZS-NG Beta3 with regards to the old versions). People with more than 2
 weeks experience with Linux/UNIX/*BSD (a.k.a. '*NIX') will not see this as
@@ -193,7 +193,7 @@ are shown when you type:
 ./configure --help
 
 Among the options are these:
-  --enable-ss5            compiles the sitewho for use with SiteStat 5
+  --enable-ss5            compiles the zipscript for use with SiteStat 5
   --enable-static         enable static linking of zs-c
   --with-glpath=PATH      specify nondefault path to root glftpd dir (/glftpd
                           per default)
@@ -225,7 +225,7 @@ If the make install fails, or you really wish to make the changes by hand,
 here's what to do:
 
            cp -f zipscript-c postdel racestats cleanup datacleaner rescan \
-	         racedebug ng-undupe ng-chown /path/to/your/glftpd/bin/
+	         racedebug ng-undupe ng-chown audiosort /path/to/your/glftpd/bin/
            chmod 666 /path/to/your/glftpd/ftp-data/logs/glftpd.log
            mkdir -pm777 /path/to/your/glftpd/ftp-data/pzs-ng
 (optional) chmod +s /path/to/your/glftpd/bin/zipscript-c
@@ -288,17 +288,27 @@ to add this, and you end up with a rather shabby site.
 Optionally, add the following:
 
 cscript		SITE[:space:]NUKE	post	/bin/cleanup
+cscript		SITE[:space:]UNNUKE	post	/bin/postunnuke
 cscript		SITE[:space:]WIPE	post	/bin/cleanup
 
 site_cmd	RESCAN			EXEC	/bin/rescan
 custom-rescan	!8	*
 
-The first two will remove dead symlinks. The last two will allow you (and all
+cscript		RETR			post	/bin/dl_speedtest
+
+site_cmd	AUDIOSORT		EXEC	/bin/audiosort
+custom-audiosort	!8	*
+
+The first two will remove dead symlinks. The next two will allow you (and all
 users except anon users) to rescan a dir. This comes in handy in places the
 zipscript isn't invoked by default, when you have dirs you wish to check filled
-before you added the zipscript, and a lot of other occations.
+before you added the zipscript, and a lot of other occations. 
 Forget to add this and you will hit yourself hard quite a few times. ;)
-
+The fifth line add support for speedtesting (ignored in all dirs execpt the ones
+defined in zsconfig.h).
+The last allows you to only resort the genres/year/group/artist of an mp3-release. 
+(rescan does the same, but audiosort is faster - it doesn't check the crc and 
+such of the release)
 
 Crontab:
 --------
@@ -347,13 +357,9 @@ scripts. Here's a short description of each compiled binary:
     instance, in which case it will only scan the current dir. You may also run
     it in 'view' mode, by giving it rootpath to glftpd. This will only list
     incomplete dirs, not remove any links.
-    You can override the days_back_cleanup config option by providing a special
-    commandswitch (--days=XXX) where XXX is the number of days.
     How to test: chroot /glftpd /bin/cleanup
-                 chroot /glftpd /bin/cleanup --days=XXX
                  (in chroot, in a site dir) /bin/glftpd something
                  /glftpd/bin/cleanup /glftpd
-                 /glftpd/bin/cleanup /glftpd --days=XXX
 
   - datacleaner - This one will remove the racedata of dirs no longer found
     on your site. Please note that this script may be run in crontab (example
@@ -365,16 +371,28 @@ scripts. Here's a short description of each compiled binary:
     How to test: chroot /glftpd /bin/datacleaner
 		 chroot /glftpd /bin/datacleaner /site/path/to/file
 		 chroot /glftpd /bin/datacleaner "RMD /path/to/file" (no /site
-		 				 in front!)
+		 in front!)
 		 chroot /glftpd /bin/datacleaner "NUKE /path/to/file" (no /site
-		 				 in front!)
+		 in front!)
 
   - postdel - Should be run after you delete something (as a cscript). Will
     re-check the release and update the racedata accordingly.
     Please note that this script will *only* work as a cscript to the DELE
     command.
     How to test: chroot /glftpd /bin/postdel "DELE /site/path/to/filename"
+
+  - postunnuke - Should be run after you unnuke something (as a cscript). Will
+    re-check the full release and update the racedata accordingly.
+    Please note that this script will *only* work as a cscript to the site
+    UNNUKE command.
+    How to test: chroot /glftpd
+                 cd site/archive/something
+                 /bin/postunnuke "site UNNUKE some.release-here sorry.erroneus.nuke"
  
+  - dl_speedtest - used to measure download speeds. It will write the output
+    to glftpd.log only.
+    How to test: chroot /glftpd /bin/dl_speedtest "RETR /site/speedtest/file"
+
   - ng-undupe - Removes entry in dupelog after a file fails sfv check.
     How to test: chroot /glftpd /bin/ng-undupe filename
   
@@ -390,20 +408,27 @@ scripts. Here's a short description of each compiled binary:
     is uploaded. Will do various tests, create stats, run external commands
     etc, according to your config.
     How to test: chroot /glftpd /bin/zipscript-c <filename> <path> <crc-code>
+    You can recover (or check) your compiled config by the following syntax:
+    chroot /glftpd /bin/zipscript-c --config
+    chroot /glftpd /bin/zipscript-c --fullconfig # Also shows defaulted values
 
   - ng-chown - currently not used. It's a bin designed to chown files/dirs
     in your site to a specified used/group. When used it needs the +s bit
     set. Take care, though - using this bin with +s may be a security risk.
 
-  - rescan - rescans a dir, rechecking files against the sfv. Comes in
-    handy when you manually move releases/files, or you suspect corruption of
-    some files.
-    How to test: (in chroot, in a site dir):
-		 /bin/rescan
-		 /bin/rescan --quick (scans directory for file-changes only)
-		 /bin/rescan filename (rescan only one file)
-		 /bin/rescan "filename*" (rescan all files starting with
-			     the word "filename")
+  - rescan - Used to re-check a release. Mostly used as a site command. It
+    can take the following arguments (only one allowed):
+    --quick - skips files that are already marked as checked, and crc-checks
+      the ones that are not.
+    --normal - check all files regardless if they previously have been checked
+      and found ok.
+    --chroot=<DIRNAME> - chroot() to DIRNAME before starting the rescan.
+    --dir=<DIRNAME> - chdir() to DIRNAME before starting the rescan.
+    <NAME><*> - only recheck the file named NAME or all files starting with
+      NAME*. Wildcard can only be at the end, not beginning or in the middle.
+    How to test: /glftpd/bin/rescan --chroot=/glftpd --dir=/site/linux/suse15 --normal
+                 site rescan --dir=/site/linux/suse15
+                 site rescan --quick
 
 The bot:
 --------
@@ -412,4 +437,5 @@ your channel. It is expected that you already have installed an eggdrop,
 that it's working and have found its way into your channel.
 
 For details on the sitebot please read the file "sitebot/README".
+
 

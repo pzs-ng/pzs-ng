@@ -1,6 +1,12 @@
 PSXC-IMDB CHANGELOG:
 --------------------
-
+- v2.8  - Jul. 01st, 2007 - fix psxc-imdb-find.sh to the new imdb.com html format.
+- v2.7i - Feb. 20th, 2007 - temporary fix for the new imdb.com layout.
+- v2.7h - Jan. 15th, 2007 - changed some code to fetch the title of a movie (iwi).
+- v2.7g - Oct. 15th, 2006 - fixed a bug with MYOWNFORMAT and rescanning multiple
+			     dirs (thanx iwi).
+- v2.7f - Jul. 27th, 2006 - fixed issues with imdb.com's credited cast and the
+                            pictures now used in the list.
 - v2.7e - Apr. 02nd, 2005 - Changed default NEWLINE char to \\\\n, in order to
 			     work with the default dZSbot config. Also fixed a
 			     bug related to MYOWN format and the NEWLINE char.

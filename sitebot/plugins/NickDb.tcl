@@ -8,23 +8,22 @@
 # - Thanks to compieter for the idea.
 #
 # Installation:
-# 1. Compile and install the SQLite v3.2.x Tcl binding:
+# 1. Compile and install the SQLite v3 Tcl binding:
 #    http://www.sqlite.org/download.html
 #
-#    tar zxf sqlite-3.2.x.tar.gz
-#    cd sqlite-3.2.x
+#    tar zxf sqlite-3.x.x.tar.gz
+#    cd sqlite-3.x.x
 #    mkdir bld
 #    cd bld
 #    ../configure
-#    You may have to specify the location of tclConfig.sh:
+#    Users may have to specify the path to tclConfig.sh:
 #    ../configure --with-tcl=/usr/local/lib/tcl8.4/
 #    make
 #    make install
 #
 # 2. Edit the configuration options below.
 #
-# 3. Load this script in eggdrop.conf after dZSbot.tcl, for example:
-#    source pzs-ng/dZSbot.tcl
+# 3. Add the following to your eggdrop.conf:
 #    source pzs-ng/plugins/NickDb.tcl
 #
 # 4. Make sure the bot has read/write access to the pzs-ng/plugins/ directory.
@@ -33,8 +32,7 @@
 #
 #################################################################################
 
-namespace eval ::dZSbot::NickDb {
-    namespace import -force ::dZSbot::*
+namespace eval ::ngBot::NickDb {
 
     ## Config Settings ###############################
     ##
@@ -48,150 +46,106 @@ namespace eval ::dZSbot::NickDb {
     ## Exempt users from the host change (uses glFTPd-style permissions).
     variable hostExempt "=STAFF =SiTEOPS 1"
     ##
-    ## Monitor user events in these channels, usually the invite channels.
-    variable monitorChans "#NG #NG-Spam"
-    ## or if you're lazy:
-    ##variable monitorChans $::dZSbot::invite_channels
-    ##
-    ## Path to the Tcl binding for SQLite v3.2.
+    ## Path to the Tcl binding for SQLite v3.1.
     variable libSQLite "/usr/local/lib/tcl8.4/sqlite3/libtclsqlite3.so"
     ##
     ##################################################
 
-    namespace export GetFtpUser GetIrcUser QueryFtpUser QueryIrcUser
-    variable filePath [file join [file dirname [info script]] "Nicks.db"]
+    namespace export GetFtpUser GetIrcUser
+    variable filePath   [file join [file dirname [info script]] "Nicks.db"]
     variable scriptName [namespace current]::InviteEvent
-
     bind evnt -|- prerehash [namespace current]::DeInit
+    bind nick -|- "*" [namespace current]::NickChange
 }
+
+interp alias {} IsTrue {} string is true -strict
+interp alias {} IsFalse {} string is false -strict
 
 ####
 # NickDb::Init
 #
-# Called on initialization. This procedure opens the user database and
-# registers the INVITEUSER script and Eggdrop event callbacks.
+# Called on initialization; opens the database and
+# registers the event handler.
 #
-proc ::dZSbot::NickDb::Init {args} {
+proc ::ngBot::NickDb::Init {args} {
+    global postcommand
     variable filePath
     variable libSQLite
     variable scriptName
 
     ## Load the Tcl SQLite library.
     if {[catch {load $libSQLite Tclsqlite3} errorMsg]} {
-        ErrorMsg NickDb $errorMsg
-        return
-    }
-    if {[catch {sqlite3 [namespace current]::db $filePath} errorMsg]} {
-        ErrorMsg NickDb "Unable to open database \"$filePath\" ($errorMsg)."
+        putlog "\[ngBot\] NickDb :: $errorMsg"
         return
     }
 
-    ## The second table revision introduces the 'online' column.
-    if {![db eval {SELECT count(*) FROM sqlite_master WHERE name='UserNames' AND type='table'}]} {
-        db eval {CREATE TABLE UserNames (time INT, online INT, ircUser TEXT, ftpUser TEXT UNIQUE)}
-        db eval {PRAGMA user_version = 2}
-    } elseif {[set version [db eval {PRAGMA user_version}]] != 2} {
-        ErrorMsg NickDb "Unsupported database version ($version), please remove \"$filePath\"."
-        db close
+    ## The event handler will only be registered if the SQLite
+    ## database is opened successfully.
+    if {[catch {sqlite3 db $filePath} errorMsg]} {
+        putlog "\[ngBot\] NickDb :: Unable to open database \"$filePath\" - $errorMsg"
         return
+    }
+
+    ## Create the Ftp table
+    if {![db eval {SELECT count(*) FROM sqlite_master WHERE name='UserNames' AND type='table'}]} {
+        db eval {CREATE TABLE UserNames (time INT, ircUser TEXT, ftpUser TEXT UNIQUE)}
     }
     db function StrCaseEq {string equal -nocase}
 
-    ## Register invite handler and event callbacks.
-    EventRegister postcommand INVITEUSER $scriptName
-    bind join -|- "*" [list [namespace current]::ChanEvent join]
-    bind kick -|- "*" [list [namespace current]::ChanEvent kick]
-    bind nick -|- "*" [list [namespace current]::ChanEvent nick]
-    bind part -|- "*" [list [namespace current]::ChanEvent part]
-    bind sign -|- "*" [list [namespace current]::ChanEvent quit]
+    ## Register the event handler.
+    lappend postcommand(INVITEUSER) $scriptName
 
-    InfoMsg "NickDb - Loaded successfully."
+    putlog "\[ngBot\] NickDb :: Loaded successfully."
     return
 }
 
 ####
 # NickDb::DeInit
 #
-# Called on rehash. This procedure closes the user database and unregisters
-# the INVITEUSER script and Eggdrop event callbacks.
+# Called on rehash; closes the database and
+# unregisters the event handler.
 #
-proc ::dZSbot::NickDb::DeInit {args} {
+proc ::ngBot::NickDb::DeInit {args} {
+    global postcommand
     variable scriptName
 
     ## Close the SQLite database in case we're being unloaded.
     catch {db close}
 
-    ## Remove script events and callbacks.
-    EventUnregister postcommand INVITEUSER $scriptName
+    ## Remove the script event from postcommand.
+    if {[info exists postcommand(INVITEUSER)] && [set pos [lsearch -exact $postcommand(INVITEUSER) $scriptName]] !=  -1} {
+        set postcommand(INVITEUSER) [lreplace $postcommand(INVITEUSER) $pos $pos]
+    }
+
     catch {unbind evnt -|- prerehash [namespace current]::DeInit}
-    catch {unbind join -|- "*" [list [namespace current]::ChanEvent join]}
-    catch {unbind kick -|- "*" [list [namespace current]::ChanEvent kick]}
-    catch {unbind nick -|- "*" [list [namespace current]::ChanEvent nick]}
-    catch {unbind part -|- "*" [list [namespace current]::ChanEvent part]}
-    catch {unbind sign -|- "*" [list [namespace current]::ChanEvent quit]}
+    catch {unbind nick -|- "*" [namespace current]::NickChange}
 
     namespace delete [namespace current]
     return
 }
 
 ####
-# NickDb::ChanEvent
+# NickDb::StripName
 #
-# Updates the IRC nickname and online status of users.
+# Strips illegal characters from IRC user names.
 #
-proc ::dZSbot::NickDb::ChanEvent {event args} {
-    variable monitorChans
-
-    switch -exact -- $event {
-        "nick" {
-            foreach {oldNick host handle channel nick} $args {break}
-            set online 1
-        }
-        "join" {
-            foreach {nick host handle channel} $args {break}
-            set online 1
-        }
-        "kick" {
-            foreach {kicker host handle channel nick reason} $args {break}
-            set online [OnMonitorChans $nick $channel]
-        }
-        "quit" - "part" {
-            foreach {nick host handle channel message} $args {break}
-            set online [OnMonitorChans $nick $channel]
-        }
-        default {return}
-    }
-
-    ## Ignore any channels which are not defined in $monitorChans.
-    set valid 0
-    foreach entry $monitorChans {
-        if {[string equal -nocase $entry $channel]} {
-            set valid 1; break
-        }
-    }
-    if {!$valid} {return}
-
-    set time [clock seconds]
-    if {[string equal "nick" $event]} {
-        db eval {UPDATE UserNames SET time=$time, online=$online, ircUser=$nick WHERE StrCaseEq(ircUser,$oldNick)}
-    } else {
-        db eval {UPDATE UserNames SET time=$time, online=$online WHERE StrCaseEq(ircUser,$nick)}
-    }
-    return
+proc ::ngBot::NickDb::StripName {name} {
+    return [regsub -all {[^\w\[\]\{\}\-\`\^\\]+} $name {}]
 }
 
 ####
 # NickDb::InviteEvent
 #
-# Called by the sitebot's event handler on the "INVITEUSER" event.
+# Called by the sitebot's event handler on
+# the "INVITEUSER" event.
 #
-proc ::dZSbot::NickDb::InviteEvent {event ircUser ftpUser ftpGroup ftpFlags} {
+proc ::ngBot::NickDb::InviteEvent {event ircUser ftpUser ftpGroup ftpFlags} {
     variable hostChange
     variable hostExempt
     variable hostFormat
     if {![string equal "INVITEUSER" $event]} {return 1}
 
-    if {[IsTrue $hostChange] && ![RightsCheck $hostExempt $ftpUser $ftpGroup $ftpFlags]} {
+    if {[IsTrue $hostChange] && ![rightscheck $hostExempt $ftpUser $ftpGroup $ftpFlags]} {
         ## glFTPD allows characters in user names which are not allowed on IRC.
         set stripUser [StripName $ftpUser]
         set stripGroup [StripName $ftpGroup]
@@ -203,118 +157,41 @@ proc ::dZSbot::NickDb::InviteEvent {event ircUser ftpUser ftpGroup ftpFlags} {
 
     ## Update the user name database.
     set time [clock seconds]
-    set online [OnMonitorChans $ircUser]
-    db eval {INSERT OR REPLACE INTO UserNames (time,online,ircUser,ftpUser) values($time,$online,$ircUser,$ftpUser)}
+    db eval {INSERT OR REPLACE INTO UserNames (time,ircUser,ftpUser) values($time,$ircUser,$ftpUser)}
 
     return 1
 }
 
 ####
-# NickDb::OnMonitorChans
+# NickDb::NickChange
 #
-# Checks if the specified user is currently in any of the monitored channels.
+# Update the ircNick column when a user changes their nickname.
 #
-proc ::dZSbot::NickDb::OnMonitorChans {ircUser {ignoreChannel ""}} {
-    variable monitorChans
-    foreach channel $monitorChans {
-        if {[string equal -nocase $ignoreChannel $channel]} {continue}
-        if {[validchan $channel] && [onchan $ircUser $channel]} {return 1}
-    }
-    return 0
+proc ::ngBot::NickDb::NickChange {nick host handle channel newNick} {
+    db eval {UPDATE UserNames SET ircUser=$newNick WHERE ircUser=$nick}
+    return
 }
 
 ####
-# NickDb::StripName
+# NickDb::GetIrcUser
 #
-# Strips illegal characters from a user name.
+# Retrieve the IRC user name for the specified FTP user. If
+# no matches are found, an empty string is returned.
 #
-proc ::dZSbot::NickDb::StripName {name} {
-    return [regsub -all {[^\w\[\]\{\}\-\`\^\\]+} $name {}]
-}
-
-####
-# NickDb::GetIrcUser (exported)
-#
-# Retrieve the IRC user name for the specified FTP user. If there is no record
-# of the user, an empty string is returned.
-#
-# Example:
-# set ircUser [GetIrcUser $ftpUser]
-# if {$ircUser eq ""} {
-#     puts "No IRC user found for \"$ircUser\"."
-# } else {
-#     puts "The IRC user nick for \"$ftpUser\" is \"$ircUser\"."
-# }
-#
-proc ::dZSbot::NickDb::GetIrcUser {ftpUser} {
+proc ::ngBot::NickDb::GetIrcUser {ftpUser} {
+    ## Since the ftpUser column is unique, the query is simplier.
     return [db eval {SELECT ircUser FROM UserNames WHERE ftpUser=$ftpUser}]
 }
 
 ####
-# NickDb::GetFtpUser (exported)
+# NickDb::GetFtpUser
 #
-# Retrieve the FTP user name for the specified IRC user. If there is no record
-# of the user, an empty string is returned.
+# Retrieve the FTP user name for the specified IRC user. If
+# no matches are found, an empty string is returned.
 #
-# Example:
-#
-# set ftpUser [GetFtpUser $ircUser]
-# if {$ftpUser eq ""} {
-#     puts "No FTP user found for \"$ircUser\"."
-# } else {
-#     puts "The FTP user name for \"$ircUser\" is \"$ftpUser\"."
-# }
-#
-proc ::dZSbot::NickDb::GetFtpUser {ircUser} {
+proc ::ngBot::NickDb::GetFtpUser {ircUser} {
     ## IRC user names are case-insensitive.
     return [db eval {SELECT ftpUser FROM UserNames WHERE StrCaseEq(ircUser,$ircUser) ORDER BY time DESC LIMIT 1}]
 }
 
-####
-# NickDb::QueryFtpUser (exported)
-#
-# Query the database for the specified FTP user. If a match is found, the
-# information will be stored in the array specified for varName and the return
-# value is non-zero. If no matches are found, the return value is zero.
-#
-# Example:
-# if {[QueryFtpUser $ftpUser info]} {
-#     set lastSeen [expr {$info(online) != 1 ? [clock format $info(time)] : "now"}]
-#     puts "The FTP user $ftpUser was last seen online: $lastSeen"
-# } else {
-#     puts "The FTP user $ftpUser was never seen online."
-# }
-#
-proc ::dZSbot::NickDb::QueryFtpUser {ftpUser varName} {
-    upvar $varName values
-    db eval {SELECT * FROM UserNames WHERE ftpUser=$ftpUser} values {
-        return 1
-    }
-    return 0
-}
-
-####
-# NickDb::QueryIrcUser (exported)
-#
-# Query the database for the specified IRC user. If a match is found, the
-# information will be stored in the array specified for varName and the return
-# value is non-zero. If no matches are found, the return value is zero.
-#
-# Example:
-# if {[QueryIrcUser $ircUser info]} {
-#     set lastSeen [expr {$info(online) != 1 ? [clock format $info(time)] : "now"}]
-#     puts "The IRC user $ircUser was last seen online: $lastSeen"
-# } else {
-#     puts "The IRC user $ircUser was never seen online."
-# }
-#
-proc ::dZSbot::NickDb::QueryIrcUser {ircUser varName} {
-    upvar $varName values
-    ## IRC user names are case-insensitive.
-    db eval {SELECT * FROM UserNames WHERE StrCaseEq(ircUser,$ircUser)} values {
-        return 1
-    }
-    return 0
-}
-
-::dZSbot::NickDb::Init
+::ngBot::NickDb::Init

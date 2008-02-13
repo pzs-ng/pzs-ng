@@ -15,7 +15,7 @@ installdir=.install
 installvars=.install.vars
 backupdir=.backup_`date +%Y%m%d-%H%M.%S`
 
-scrlist="psxc-imdb-nuker.sh|g psxc-symlink-maker.sh|g psxc-imdb-dotimdb.pl|g psxc-imdb-rescan.sh|g psxc-imdb-find.sh|g psxc-imdb-sanity.sh|g psxc-imdb.conf|c psxc-imdb-bot.tcl|s psxc-imdb-conf.tcl|s psxc-imdb.sh|g"
+scrlist="psxc-imdb.conf|c psxc-imdb-nuker.sh|g psxc-symlink-maker.sh|g psxc-imdb-dotimdb.pl|g psxc-imdb-rescan.sh|g psxc-imdb-find.sh|g psxc-imdb-sanity.sh|g psxc-imdb.tcl|s psxc-imdb.sh|g"
 
 #                                                                          #
 ############################################################################
@@ -518,21 +518,21 @@ modify_eggdrop_conf ()
  echo -n "Auto-modify $EGGDROP_CONF? [n]> "
  read line
  if [ "$line" = "y" ]; then
-  if [ -z "`cat $GLBOT/$EGGDROP_CONF | grep -e "psxc-imdb-bot.tcl"`" ]; then
+  if [ -z "`cat $GLBOT/$EGGDROP_CONF | grep -e "psxc-imdb.tcl"`" ]; then
    backitup $GLBOT/$EGGDROP_CONF
    echo "backup of the old file is in $backupdir"
    doeggnr=`nl -ba $GLBOT/$EGGDROP_CONF | awk '{print $2,$1}' | grep -e "^source " | tail -n 1 | awk '{print $2}'`
    doeggall=`nl -ba $GLBOT/$EGGDROP_CONF | tail -n 1 | awk '{print $1}'`
    if [ ! -z "$doeggnr" ]; then
     head -n $doeggnr $GLBOT/$EGGDROP_CONF >$tmpfile
-    echo -e "source\t$GLBOTPATH/psxc-imdb-bot.tcl" >>$tmpfile
+    echo -e "source\t$GLBOTPATH/pzs-ng/plugins/psxc-imdb.tcl" >>$tmpfile
     let doegg=doeggall-doeggnr
     tail -n $doegg $GLBOT/$EGGDROP_CONF >>$tmpfile
     cat $tmpfile >$GLBOT/$EGGDROP_CONF
    else
-    echo -e "source\t$GLBOTPATH/psxc-imdb-bot.tcl" >>$GLBOT/$EGGDROP_CONF
+    echo -e "source\t$GLBOTPATH/pzs-ng/plugins/psxc-imdb.tcl" >>$GLBOT/$EGGDROP_CONF
    fi
-   echo "$GLBOTPATH/psxc-imdb-bot.tcl added to list of sources" | fold -s -w $foldline
+   echo "$GLBOTPATH/pzs-ng/plugins/psxc-imdb.tcl added to list of sources" | fold -s -w $foldline
   fi
  fi
  echo ""

@@ -12,25 +12,16 @@
 #
 # 2. Edit the configuration options below.
 #
-# 3. Load this script in eggdrop.conf after dZSbot.tcl, for example:
-#    source pzs-ng/dZSbot.tcl
+# 3. Add the following to your eggdrop.conf:
 #    source pzs-ng/plugins/PreTime.tcl
 #
-# 4. Add the following to dZSbot.conf:
-#    set disable(NEWPRETIME) 0
-#    set disable(OLDPRETIME) 0
-#    set variables(NEWPRETIME) "%pf %u_name %g_name %u_tagline %preage %predate %pretime"
-#    set variables(OLDPRETIME) "%pf %u_name %g_name %u_tagline %preage %predate %pretime"
-#
-# 5. Add the following to your theme file (.zst):
-#    announce.NEWPRETIME = "[%b{NEW}][%section] %b{%relname} by %b{%u_name} of %g_name :: released %preage ago :: %predate %pretime."
-#    announce.OLDPRETIME = "[%b{OLD}][%section] %b{%relname} by %b{%u_name} of %g_name :: released %preage ago :: %predate %pretime."
-#
-# 6. Rehash or restart your eggdrop for the changes to take effect.
+# 4. Rehash or restart your eggdrop for the changes to take effect.
 #
 #################################################################################
 
-namespace eval ::dZSbot::PreTime {
+namespace eval ::ngBot::PreTime {
+    global disable
+
     variable mysql
 
     ## Config Settings ###############################
@@ -53,10 +44,14 @@ namespace eval ::dZSbot::PreTime {
     ## Path to the MySQLTcl v3.0 library.
     variable libMySQLTcl "/usr/local/lib/tcl8.4/mysqltcl/mysqltcl3.so"
     ##
+    ## Disable announces. (0 = No, 1 = Yes)
+    set disable(NEWPRETIME) 0
+    set disable(OLDPRETIME) 0
+    ##
     ##################################################
 
     set mysql(handle) ""
-    namespace import -force ::dZSbot::*
+    variable scriptFile [info script]
     variable scriptName [namespace current]::LogEvent
     bind evnt -|- prerehash [namespace current]::DeInit
 }
@@ -66,27 +61,38 @@ namespace eval ::dZSbot::PreTime {
 #
 # Called on initialization; registers the event handler.
 #
-proc ::dZSbot::PreTime::Init {args} {
+proc ::ngBot::PreTime::Init {args} {
+    global precommand variables
+
     variable libMySQLTcl
     variable mysql
     variable scriptName
+    variable scriptFile
+
+    set variables(NEWPRETIME) "%pf %u_name %g_name %u_tagline %preage %predate %pretime"
+    set variables(OLDPRETIME) "%pf %u_name %g_name %u_tagline %preage %predate %pretime"
+
+    set theme_file [file normalize "[pwd]/[file rootname $scriptFile].zpt"]
+    if {[file isfile $theme_file]} {
+        loadtheme $theme_file true
+    }
 
     ## Load the MySQLTcl library.
     if {[catch {load $libMySQLTcl Mysqltcl} errorMsg]} {
-        ErrorMsg PreTime $errorMsg
+        putlog "\[ngBot\] PreTime :: $errorMsg"
         return
     }
 
     ## Connect to the MySQL server.
     if {[catch {set mysql(handle) [mysqlconnect -host $mysql(host) -user $mysql(user) -password $mysql(pass) -port $mysql(port) -db $mysql(db)]} errorMsg]} {
-        ErrorMsg PreTime "Unable to connect to MySQL server: $errorMsg"
+        putlog "\[ngBot\] PreTime :: Unable to connect to MySQL server: $errorMsg"
         return
     }
 
-    ## Register event handler.
-    EventRegister precommand NEWDIR $scriptName
+    ## Register the event handler.
+    lappend precommand(NEWDIR) $scriptName
 
-    InfoMsg "PreTime - Loaded successfully."
+    putlog "\[ngBot\] PreTime :: Loaded successfully."
     return
 }
 
@@ -95,15 +101,19 @@ proc ::dZSbot::PreTime::Init {args} {
 #
 # Called on rehash; unregisters the event handler.
 #
-proc ::dZSbot::PreTime::DeInit {args} {
+proc ::ngBot::PreTime::DeInit {args} {
+    global precommand
     variable mysql
     variable scriptName
 
     ## Close the MySQL connection.
     catch {mysqlclose $mysql(handle)}
 
-    ## Remove script events and callbacks.
-    EventUnregister precommand NEWDIR $scriptName
+    ## Remove the script event from precommand.
+    if {[info exists precommand(NEWDIR)] && [set pos [lsearch -exact $precommand(NEWDIR) $scriptName]] !=  -1} {
+        set precommand(NEWDIR) [lreplace $precommand(NEWDIR) $pos $pos]
+    }
+
     catch {unbind evnt -|- prerehash [namespace current]::DeInit}
 
     namespace delete [namespace current]
@@ -116,7 +126,7 @@ proc ::dZSbot::PreTime::DeInit {args} {
 # Look up the pre time of the release. Returns 1 if
 # found and 0 if not.
 #
-proc ::dZSbot::PreTime::LookUp {release timeVar} {
+proc ::ngBot::PreTime::LookUp {release timeVar} {
 
     ## Note ##########################################
     ##
@@ -143,7 +153,7 @@ proc ::dZSbot::PreTime::LookUp {release timeVar} {
 #
 # Called by the sitebot's event handler on the "NEWDIR" announce.
 #
-proc ::dZSbot::PreTime::LogEvent {event section sectionPath logData} {
+proc ::ngBot::PreTime::LogEvent {event section logData} {
     variable lateMins
     variable ignoreDirs
     if {![string equal "NEWDIR" $event]} {return 1}
@@ -169,15 +179,15 @@ proc ::dZSbot::PreTime::LogEvent {event section sectionPath logData} {
         ## Format the pre time and append it to the log data.
         set formatDate [clock format $preTime -format "%m/%d/%y"]
         set formatTime [clock format $preTime -format "%H:%M:%S"]
-        lappend logData [FormatDuration $preAge] $formatDate $formatTime
+        lappend logData [format_duration $preAge] $formatDate $formatTime
 
         ## We'll announce the event ourself since we'll return zero
         ## to cancel the regular NEWDIR announce.
-        SendAll $event $section [LogFormat $event $section $sectionPath $logData]
+        sndall $event $section [ng_format $event $section $logData]
         return 0
     }
 
     return 1
 }
 
-::dZSbot::PreTime::Init
+::ngBot::PreTime::Init

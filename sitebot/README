@@ -159,11 +159,11 @@
 
  COLOR1 = "04"
  ..
- COLOR4 = "07"
+ COLOR3 = "07"
 
  - The color can be referenced in the theme file by doing:
 
- announce.SOMETHING = "[%c4{%section}] %c2{Something happened} in %c1{%pf}"
+ announce.SOMETHING = "[%c3{%section}] %c2{Something happened} in %c1{%pf}"
 
  - Color table:
 
@@ -176,21 +176,20 @@
  06 - Magenta (purple)      14 - Gray
  07 - Orange (dark yellow)  15 - Light gray
 
- - NOTE: dZSbot only supports 9 user defined colors per theme.
+ - NOTE: dZSbot only supports 3 user defined colors per theme.
 
  - Starting with beta4 of pzs-ng, you can define custom colors for each section.
  To use this feature, this you must define colors in the theme for the specific
  section. The section name must be the exact same as the one defined in dZSbot.conf,
  and you must define the same number of section colors as in your default scheme.
 
- - If you have 4 default colors (COLOR1, COLOR2, COLOR3, and COLOR4), then if you
+ - If you have 3 default colors (COLOR1, COLOR2, and COLOR3), then if you
  want a custom color scheme for your GAMES section you need to add the following to
  your theme file:
 
  COLOR_GAMES_1 = "ww"
  COLOR_GAMES_2 = "xx"
  COLOR_GAMES_3 = "yy"
- COLOR_GAMES_4 = "zz"
 
  - Another new addition to pzs-ng beta4 is the ability to add padding/justifying
  control codes to the theme. You can select left or right justification, and the
