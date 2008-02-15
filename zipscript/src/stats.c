@@ -173,7 +173,7 @@ sortstats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI
         t_list += sprintf(t_list, "%s", racersplit_prefix);
 	for (n = 1; n < raceI->total.users; n++) {
                 if (n != 1)
-                    r_list += sprintf(r_list, "%s", racersplit);
+                    t_list += sprintf(r_list, "%s", racersplit);
                 t_list += sprintf(t_list, "%s",
                         convert_user(raceI, userI[userI[n]->pos], groupI, racersmsg, n));
 	}

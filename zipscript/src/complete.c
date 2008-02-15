@@ -103,36 +103,28 @@ complete(GLOBAL *g, int completetype)
 	group_p = g->v.misc.top_messages[1];
 
 	if (g->v.misc.write_log && completetype == 0) {
+#if ( show_stats_from_pos2_only )
+                const int first_entry = 1;
+#else
+                const int first_entry = 0;
+#endif
+
 		if (user_top != NULL && max_users_in_top > 0) {
                         user_p += sprintf(user_p, "%s", racersplit_prefix);
-#if ( show_stats_from_pos2_only )
-			for (cnt = 1; cnt < max_users_in_top && cnt < g->v.total.users; cnt++)
+			for (cnt = first_entry; cnt < max_users_in_top && cnt < g->v.total.users; cnt++)
                         {
-                                if (cnt != 1)
+                                if (cnt != first_entry)
                                     user_p += sprintf(user_p, "%s", racersplit);
-#else
-			for (cnt = 0; cnt < max_users_in_top && cnt < g->v.total.users; cnt++)
-                        {
-                                if (cnt != 0)
-                                    user_p += sprintf(user_p, "%s", racersplit);
-#endif
 				user_p += sprintf(user_p, "%s", convert_user(&g->v, g->ui[g->ui[cnt]->pos], g->gi, user_top, cnt));
                         }
                         user_p += sprintf(user_p, "%s", racersplit_postfix);
 		}
 		if (group_top != NULL && max_groups_in_top > 0) {
                         group_p += sprintf(group_p, "%s", racersplit_prefix);
-#if ( show_stats_from_pos2_only )
-			for (cnt = 1; cnt < max_groups_in_top && cnt < g->v.total.groups; cnt++)
+			for (cnt = first_entry; cnt < max_groups_in_top && cnt < g->v.total.groups; cnt++)
                         {
-                                if (cnt != 1)
+                                if (cnt != first_entry)
                                     group_p += sprintf(user_p, "%s", racersplit);
-#else
-			for (cnt = 0; cnt < max_groups_in_top && cnt < g->v.total.groups; cnt++)
-                        {
-                                if (cnt != 0)
-                                    group_p += sprintf(user_p, "%s", racersplit);
-#endif
 				group_p += sprintf(group_p, "%s", convert_group(&g->v, g->gi[g->gi[cnt]->pos], group_top, cnt));
                                 if (cnt != max_groups_in_top - 1 && cnt != g->v.total.groups - 1)
                                     group_p += sprintf(group_p, "%s", racersplit);
