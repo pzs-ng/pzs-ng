@@ -107,13 +107,16 @@ complete(GLOBAL *g, int completetype)
                         user_p += sprintf(user_p, "%s", racersplit_prefix);
 #if ( show_stats_from_pos2_only )
 			for (cnt = 1; cnt < max_users_in_top && cnt < g->v.total.users; cnt++)
+                        {
+                                if (cnt != 1)
+                                    user_p += sprintf(user_p, "%s", racersplit);
 #else
 			for (cnt = 0; cnt < max_users_in_top && cnt < g->v.total.users; cnt++)
-#endif
                         {
-				user_p += sprintf(user_p, "%s", convert_user(&g->v, g->ui[g->ui[cnt]->pos], g->gi, user_top, cnt));
-                                if (cnt != max_users_in_top - 1 && cnt != g->v.total.users - 1)
+                                if (cnt != 0)
                                     user_p += sprintf(user_p, "%s", racersplit);
+#endif
+				user_p += sprintf(user_p, "%s", convert_user(&g->v, g->ui[g->ui[cnt]->pos], g->gi, user_top, cnt));
                         }
                         user_p += sprintf(user_p, "%s", racersplit_postfix);
 		}
@@ -121,10 +124,15 @@ complete(GLOBAL *g, int completetype)
                         group_p += sprintf(group_p, "%s", racersplit_prefix);
 #if ( show_stats_from_pos2_only )
 			for (cnt = 1; cnt < max_groups_in_top && cnt < g->v.total.groups; cnt++)
+                        {
+                                if (cnt != 1)
+                                    group_p += sprintf(user_p, "%s", racersplit);
 #else
 			for (cnt = 0; cnt < max_groups_in_top && cnt < g->v.total.groups; cnt++)
-#endif
                         {
+                                if (cnt != 0)
+                                    group_p += sprintf(user_p, "%s", racersplit);
+#endif
 				group_p += sprintf(group_p, "%s", convert_group(&g->v, g->gi[g->gi[cnt]->pos], group_top, cnt));
                                 if (cnt != max_groups_in_top - 1 && cnt != g->v.total.groups - 1)
                                     group_p += sprintf(group_p, "%s", racersplit);
