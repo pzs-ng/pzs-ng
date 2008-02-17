@@ -118,6 +118,9 @@ printf("#define announce_norace                         %s\n", (announce_norace 
 #ifndef audio_allowed_genre_check_is_defaulted
 printf("#define audio_allowed_genre_check               %s\n", (audio_allowed_genre_check == FALSE ? "FALSE" : "TRUE"));
 #endif
+#ifndef audio_artist_noid3_is_defaulted
+printf("#define audio_artist_noid3                      %s\n", (audio_artist_noid3 == FALSE ? "FALSE" : "TRUE"));
+#endif
 #ifndef audio_artist_nosub_is_defaulted
 printf("#define audio_artist_nosub                      %s\n", (audio_artist_nosub == FALSE ? "FALSE" : "TRUE"));
 #endif
@@ -876,6 +879,7 @@ printf("#define allowed_years                           %s\n", stringify(allowed
 printf("#define always_scan_audio_syms                  %s\n", (always_scan_audio_syms == FALSE ? "FALSE" : "TRUE"));
 printf("#define announce_norace                         %s\n", (announce_norace == FALSE ? "FALSE" : "TRUE"));
 printf("#define audio_allowed_genre_check               %s\n", (audio_allowed_genre_check == FALSE ? "FALSE" : "TRUE"));
+printf("#define audio_artist_noid3                      %s\n", (audio_artist_noid3 == FALSE ? "FALSE" : "TRUE"));
 printf("#define audio_artist_nosub                      %s\n", (audio_artist_nosub == FALSE ? "FALSE" : "TRUE"));
 printf("#define audio_artist_path                       %s\n", stringify(audio_artist_path));
 printf("#define audio_artist_sort                       %s\n", (audio_artist_sort == FALSE ? "FALSE" : "TRUE"));

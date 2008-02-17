@@ -110,6 +110,11 @@
 #define audio_allowed_genre_check               FALSE
 #endif
 
+#ifndef audio_artist_noid3
+#define audio_artist_noid3_is_defaulted
+#define audio_artist_noid3                      
+#endif
+
 #ifndef audio_artist_nosub
 #define audio_artist_nosub_is_defaulted
 #define audio_artist_nosub                      FALSE

@@ -200,6 +200,12 @@ audio_allowed_genre_check <TRUE|FALSE>
 	set to TRUE - not both.
 	Default: FALSE
 
+audio_artist_noid3 <TRUE|FALSE>
+	If you sort audio by artist ID3 tag will be used to get the first
+	char of the artist. If you would like to use the first char of the
+	release-name instead, set this to TRUE.
+	Default: 
+
 audio_artist_nosub <TRUE|FALSE>
 	If you sort audio by artist, a dir with the first char in the artist is
 	created under audio_artist_path, and then a link to the actual release
