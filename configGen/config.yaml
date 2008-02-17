@@ -771,6 +771,7 @@ options:
             If you sort audio by artist ID3 tag will be used to get the first
             char of the artist. If you would like to use the first char of the
             release-name instead, set this to TRUE.
+        default: false
 
     audio_artist_path:
         type: path

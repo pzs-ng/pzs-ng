@@ -112,7 +112,7 @@
 
 #ifndef audio_artist_noid3
 #define audio_artist_noid3_is_defaulted
-#define audio_artist_noid3                      
+#define audio_artist_noid3                      FALSE
 #endif
 
 #ifndef audio_artist_nosub
