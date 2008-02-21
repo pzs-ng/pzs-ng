@@ -34,14 +34,24 @@ INSTALL too. The things you need to do, in short, is this:
 
  - Prepare pzs-ng for compilation, do this using
    ./configure --disable-glftpd-specific --with-install-path=/path/to/cuftpd/install
+
  - Edit zsconfig.h, the important thing to notice is that all paths must be ABSOLUTE and 
     relative to the system root (NOT ftp-root), unlike glftpd.
      Example: 
        Under glftpd: /site/incoming/videos
        Under cuftpd: /path/to/cuftpd/install/site/incoming/videos
     In addition, make sure these settings are set in zsconfig.h: log (path to cuftpd.log) and storage.
+
  - Compile and install like normal:
    make all install
+
+ - Setting it up in cuftpd:
+   - Edit cuftpd.xml, find <zipscript> under <site>.
+   - Set <type> to 2
+   - Find <pzs_ng>, under it set <path> to /path/to/cuftpd/install/bin.
+     (NOTE that you have to append '/bin' to the installation path used
+      with ./configure)
+   - Restart cuftpd!
 
 Setting up dZSbot under cuftpd:
 -------------------------------
