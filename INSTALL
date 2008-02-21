@@ -1,0 +1,225 @@
+PZS-NG (Project-ZS - Next Generation)
+--------------------------------------
+
+See INSTALL.cuftpd for cuftpd-specific stuff. :)
+
+
+Setting it up:
+--------------
+PZS-NG is made in C and is open source. This means that what you downloaded is
+sourcecode, which is compiled into binaries ("programs") you execute. In other 
+words, it's not a script where you can edit the config and test immediately 
+after - you have to compile the zipscript and copy the binaries every time
+you change the config. I'll say again - edit config, recompile, and copy bins.
+
+How we compile and copy will be described later on.
+
+The old project-zs used cookies to format the output found in glftpd.log.
+PZS-NG uses the same basic layout, but instead of formatting the output in
+the zipscript's config-file, it now relies on the bot formatting the output.
+Thus, it passes on some predefined cookies into glftpd.log, which the bot
+reads and formats.
+The result is that the config for the zipscript is much smaller, and there
+should no longer be any need to recompile the zipscript if you decide to
+change the layout.
+
+People familiar with the old zipscript-c will remember zsconfig.h. This is
+slightly changed - it isn't full of options anymore, just overrides from the
+defaults. What config options you can use, and what defaults there are is
+described in README.ZSCONFIG. Spend time on the readme - read it - as there
+is a lot of options which can tune how the zipscript works.
+If you need to change some of these options, you should copy the define(s)
+found in the README into your zsconfig.h - your settings will override
+whatever is in the defaults.
+
+zsconfig.h is the heart of the script. I cannot stress this enough - if you
+do something bad here, chances are the entire script stops working as it
+should, or misbehaves. So step carefully, edit with care and don't miss any
+quotation marks.
+
+For Windows users - don't edit the file in windows. Install an editor on
+you linux/unix/bsd box - vim, aee, ee, pico, nano are good choices.
+
+Make sure long lines stay on one line - some editors break lines in two (
+or more) when they become a certain length.
+
+The hash character (#) does not signify comments! Do not remove the hashes
+you find - they're supposed to be there. Comments in C are signified by
+/* ... until ... */.
+
+
+Installation:
+-------------
+First off, you should run ./configure - before editing the config (this is new
+in PZS-NG Beta3 with regards to the old versions). People with more than 2
+weeks experience with Linux/UNIX/*BSD (a.k.a. '*NIX') will not see this as
+particularly challenging. Compiling stuff is quite common under *NIX. Anyway,
+I'll walk you through it. First, type:
+
+./configure
+
+This will start a process which will create the makefiles and the configs
+we'll use later. It is beyond the scope of this document to explain what a
+makefile is, but in short it will adjust some settings to accommodate the
+compile process for your system. 
+
+If you have special needs, or the configure script doesn't detect the correct
+glftpd version you have installed etc, there is some options you can use, which
+are shown when you type:
+
+./configure --help
+
+Among the options are these:
+  --enable-ss5            compiles the zipscript for use with SiteStat 5
+  --enable-static         enable static linking of zs-c
+  --with-glpath=PATH      specify nondefault path to root glftpd dir (/glftpd
+                          per default)
+
+The configure process takes a couple of seconds. When it's done, it will have
+made zsconfig.h, which is a copy of zsconfig.h.dist. Do not edit zsconfig.h.dist
+as it is only used as a template and may be changed in future version of the
+zipscript. Once zsconfig.h is made, you should edit it using you favorite
+editor. You'll find the config in zipscript/conf/zsconfig.h.
+If you worry about ./configure overwriting your old config - don't. It won't.
+It will only make a new zsconfig.h if none already exists.
+
+Once you're done editing zsconfig, you should run make:
+
+make
+
+This will compile the sources into binaries. This process can take a few
+seconds longer. When it's done, there should be no errors. Users that still
+uses glftpd 1.32 will get warnings about the ONLINE struct being deprecated -
+these warnings are normal.
+To install the binaries and some other stuff, you need to be root. As root,
+type:
+
+make install
+
+This will make the necessary additions/changes to your system.
+
+If the make install fails, or you really wish to make the changes by hand,
+here's what to do:
+
+           cp -f zipscript-c postdel racestats cleanup datacleaner rescan \
+	         racedebug ng-undupe ng-chown audiosort /path/to/your/glftpd/bin/
+           chmod 666 /path/to/your/glftpd/ftp-data/logs/glftpd.log
+           mkdir -pm777 /path/to/your/glftpd/ftp-data/pzs-ng
+(optional) chmod +s /path/to/your/glftpd/bin/zipscript-c
+
+Please note:
+'make install' also copies the binaries found in sitebot/src/ , and the sitewho
+binary and config. The sitebot or zipscript may depend on some of the scripts
+in scripts/ - these are *not* copied by default. Please familiarize yourself
+with the content of these dirs. Documentation is either written in a separate
+README or is found in the script/config itself.
+
+
+Making sure you have the libs:
+------------------------------
+To make sure you have all the libs you need, there is a script in scripts/
+called libcopy. Use this after you've installed the zipscript.
+
+Usage: ./libcopy.sh <glftpd path>
+
+This will copy all libs needed by the binaries in glftpd's bin dir correctly.
+Can/should(?) be used once in a while to make sure all libs needed are present.
+
+
+Changes in glftpd.conf:
+-----------------------
+You're almost done now. To actually make glftpd use your new zipscript, we need
+to change/add some settings in your glftpd.conf:
+
+Add the following line:
+
+calc_crc	*
+
+This will calculate the crc of all files uploaded on your site, on the fly.
+If you do not add this line in glftpd.conf, the zipscript will calculate it
+instead. This is, however, slower than if glftpd does it on the fly.
+Some will probably react on why we calc crc on everything. Simply put - todays
+computers and the current version of glftpd does this *real* quick w/o slowing
+down the computer much, as it's done while the upload occur. Also, almost
+everything uploaded on sites today uses crc check (sfv). Adding filters to what
+should be calculated and what shouldn't is totally up to the admin, but our
+advice is to just calc it for everything.
+
+Next, add:
+
+post_check	/bin/zipscript-c *
+
+This will invoke the zipscript after a file is uploaded. For more info on the
+post_check line, refer to glftpd.docs. Forget to add this, and the zipscript
+will not run, and no files are checked.
+
+You should also add the following lines:
+
+cscript		DELE			post	/bin/postdel
+cscript		RMD			post	/bin/datacleaner
+
+This will take care of making things right when something is deleted. Like
+updating the race stats, adding/editing the (in)complete-bar etc. Forget
+to add this, and you end up with a rather shabby site.
+
+Optionally, add the following:
+
+cscript		SITE[:space:]NUKE	post	/bin/cleanup
+cscript		SITE[:space:]UNNUKE	post	/bin/postunnuke
+cscript		SITE[:space:]WIPE	post	/bin/cleanup
+
+site_cmd	RESCAN			EXEC	/bin/rescan
+custom-rescan	!8	*
+
+cscript		RETR			post	/bin/dl_speedtest
+
+site_cmd	AUDIOSORT		EXEC	/bin/audiosort
+custom-audiosort	!8	*
+
+The first two will remove dead symlinks. The next two will allow you (and all
+users except anon users) to rescan a dir. This comes in handy in places the
+zipscript isn't invoked by default, when you have dirs you wish to check filled
+before you added the zipscript, and a lot of other occations. 
+Forget to add this and you will hit yourself hard quite a few times. ;)
+The fifth line add support for speedtesting (ignored in all dirs execpt the ones
+defined in zsconfig.h).
+The last allows you to only resort the genres/year/group/artist of an mp3-release. 
+(rescan does the same, but audiosort is faster - it doesn't check the crc and 
+such of the release)
+
+Crontab:
+--------
+All that's left now is to tie up some loose ends - and installing the bot,
+of course. As for loose ends:
+
+chmod 666 /path/to/your/glftpd/ftp-data/logs/dupelog
+
+This is needed by the unduper. Without this file being world writable, it
+will not be able to undupe files.
+
+You might have noticed that we added a dir in ftp-data/ called pzs-ng/.
+This is the place we keep all racedata - a sort of mirror of the site if
+you like, without the actual files in them. Over time this can grow and
+become huge, taking up a great deal of space, even making your system
+refuse to add more files. Thus, the included 'datacleaner' bin. This will
+remove all the racedata from dirs that no longer exists on your site.
+We also have a bin named 'cleanup' which helps clean out dead symlinks -
+you might have nuked an incomplete release, in which case the incomplete-
+link will still exist. To the rescue comes crontab :).
+
+Add the following lines in a users crontab if the bins are owned by root
+and have the setuid bit, or run it in root's crontab if not.
+
+59 23 * * *	chroot /glftpd /bin/cleanup >/dev/null 2>&1
+29 4  * * *	chroot /glftpd /bin/datacleaner >/dev/null 2>&1
+
+This should help keep your site nice and tidy, not burden the hardware too
+much, and stop crontab from sending you annoying emails ;).
+
+The bot:
+--------
+If everything is working smoothly on your site, it's time to add a bot to
+your channel. It is expected that you already have installed an eggdrop,
+that it's working and have found its way into your channel.
+
+For details on the sitebot please read the file "sitebot/README".

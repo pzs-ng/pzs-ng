@@ -1,0 +1,51 @@
+PZS-NG (Project-ZS - Next Generation)
+--------------------------------------
+
+
+Important notes:
+----------------
+
+It's worth mentioning that compatability is _not_
+complete. A few things are missing, the known ones
+are:
+ - All/month/week/day-up/down stats in announces
+ - Most triggers on IRC, the following WORKS:
+   - !df/free
+   - !bnc
+   - !uptime
+   - !inc/!incomplete(s)
+ - Announces for logins/logouts and other
+   siteop-related logging (i.e. security.log).
+
+In addition, while cuftpd works fine under Windows,
+ pzs-ng does not. You might have luck compiling it
+using mingw32 or cygwin, but this is untested. If anyone
+attempts and succeeds at getting pzs-ng working under Windows,
+please let us know. :-)
+
+In short: Patches welcome! :-)
+
+
+Setting up pzs-ng under cuftpd:
+-------------------------------
+
+Setting it up under cuftpd is very much like under glftpd, so read
+INSTALL too. The things you need to do, in short, is this:
+
+ - Prepare pzs-ng for compilation, do this using
+   ./configure --disable-glftpd-specific --with-install-path=/path/to/cuftpd/install
+ - Edit zsconfig.h, the important thing to notice is that all paths must be ABSOLUTE and 
+    relative to the system root (NOT ftp-root), unlike glftpd.
+     Example: 
+       Under glftpd: /site/incoming/videos
+       Under cuftpd: /path/to/cuftpd/install/site/incoming/videos
+    In addition, make sure these settings are set in zsconfig.h: log (path to cuftpd.log) and storage.
+ - Compile and install like normal:
+   make all install
+
+Setting up dZSbot under cuftpd:
+-------------------------------
+
+This is identical as what is described in sitebot/README, except you need to set the paths
+to real paths, and you need to add one line to dZSbot.conf (IMPORTANT):
+ set ftpd_type "other"
