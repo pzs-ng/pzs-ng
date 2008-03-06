@@ -1,7 +1,7 @@
 ZSCONFIG.H - A GUIDE
 ---------------------
 
-zsconfig.h can include a number of options. Starting with pzs-ng beta 4, the
+zsconfig.h can include a number of options. Starting with pzs-ng v1.0 beta4, the
 settings in zsconfig.h are overrides, meaning that not all of these settings
 need be in zsconfig.h. Only the ones you change should be put there.
 This provide a very flexible configuration, and upgrades should be less of a

@@ -152,7 +152,7 @@
  to create a copy of it first. For example: "cp default.zst mytheme.zst"
 
  - You can preview your theme while editing it, using the .preview DCC command
- added in beta5. Type .preview in a DCC chat session with your Eggdrop for more
+ added in 1.0 beta5. Type .preview in a DCC chat session with your Eggdrop for more
  information.
 
  - Using colors is fairly simple in dZSbot. Simply define a color in the theme:
@@ -178,7 +178,7 @@
 
  - NOTE: dZSbot only supports 3 user defined colors per theme.
 
- - Starting with beta4 of pzs-ng, you can define custom colors for each section.
+ - Starting with 1.0 beta4 of pzs-ng, you can define custom colors for each section.
  To use this feature, this you must define colors in the theme for the specific
  section. The section name must be the exact same as the one defined in dZSbot.conf,
  and you must define the same number of section colors as in your default scheme.
@@ -191,7 +191,7 @@
  COLOR_GAMES_2 = "xx"
  COLOR_GAMES_3 = "yy"
 
- - Another new addition to pzs-ng beta4 is the ability to add padding/justifying
+ - Another new addition to pzs-ng 1.0 beta4 is the ability to add padding/justifying
  control codes to the theme. You can select left or right justification, and the
  number of spaces to pad the string to. %r = right-justified text, %l = left-
  justified text, %m = centered text.
