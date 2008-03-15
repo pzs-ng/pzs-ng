@@ -13,6 +13,7 @@ v1.1.0a --> 1.1.x :
                 - %T/%t now users racersplit* too.
 		- fixed a bug re: sort_by_group - case should now no longer matter
 		- added audio_artist_noid3 option to sort by releasename istf id3 info (by pp)
+		- fix small bug in speedtest dirs when mark_file_as_bad was set to TRUE.
 
 v1.1.0 --> 1.1.0a : (r2414)
 		- stats in announces were broken in v1.1.0, ``hotfix''.
