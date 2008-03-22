@@ -79,7 +79,7 @@ install:
 	install -m0755 cleanup "$(bindir)"
 	install -m0755 datacleaner "$(bindir)"
 	install -m0755 rescan "$(bindir)"
-	install -m0755 ng-undupe "$(bindir)"
+	install -m4755 ng-undupe "$(bindir)"
 	install -m0755 audiosort "$(bindir)"
 	install -m0755 postunnuke "$(bindir)"
 	install -m4755 ng-chown "$(bindir)"
