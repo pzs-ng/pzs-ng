@@ -1572,7 +1572,8 @@ insampledir(char *dirname)
 		} else
 			p = sample;
 		if (!strncasecmp(t,p,strlen(p)))
-			return 1;
+			if (strlen(t) == strlen(p))
+				return 1;
 	}
 	return 0;
 }
