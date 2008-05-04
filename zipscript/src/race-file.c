@@ -523,7 +523,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 			if (*ptr == '.')
 				ptr++;
 			
-			if (!strcomp(ignored_types, ptr) && !(strcomp(allowed_types, ptr) && !matchpath(allowed_types_exemption_dirs, raceI->misc.current_path))) {
+			if (!strcomp(ignored_types, ptr) && !(strcomp(allowed_types, ptr) && !matchpath(allowed_types_exemption_dirs, raceI->misc.current_path)) && !strcomp("sfv", ptr) && !strcomp("nfo", ptr)) {
 
 				skip = 0;
 //#if ( sfv_dupecheck == TRUE )
