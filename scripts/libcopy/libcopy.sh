@@ -17,7 +17,7 @@
 possible_glroot_paths="/glftpd /jail/glftpd /usr/glftpd /usr/jail/glftpd /usr/local/glftpd /usr/local/jail/glftpd /$HOME/glftpd /glftpd/glftpd /opt/glftpd"
 
 # bins needed for pzs-ng to run
-needed_bins="zip unzip ldconfig"
+needed_bins="sh cat grep egrep unzip wc find ls bash mkdir rmdir rm mv cp awk ln basename dirname head tail cut tr wc sed date sleep touch gzip"
 zs_bins="zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown"
 #
 ###################################
@@ -45,6 +45,12 @@ case $(uname -s) in
         exit 1
         ;;
 esac
+
+if [ "$os" = "darwin" ]; then
+  needed_bins="$needed_bins tcsh"
+else
+  needed_bins="$needed_bins ldconfig"
+fi
 
 # Ensure we have all useful paths in our $PATH
 PATH="$PATH:/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:\
@@ -183,6 +189,9 @@ case $os in
 	linux)
 		bsdlibs="/lib/ld-linux.so.2"
 		;;
+	darwin)
+		bsdlibs="/usr/lib/dyld /usr/lib/dylib1.o /usr/lib/system/libmathCommon.A.dylib"
+		;;
 	*)
 		echo "No special library needed on this platform."
 		bsdlibs=""
@@ -226,6 +235,11 @@ case $os in
         ;;
     esac
 echo "Done."
+
+echo
+echo "If you got errors, please fix them and re-run the program."
+echo "If you didn't get any errors - have phun!"
+echo
 
 exit 0
 
