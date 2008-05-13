@@ -2,7 +2,7 @@
 
 ###############################################################################
 #
-# LIBCOPY v1.2 by psxc
+# LIBCOPY v1.4 by psxc
 ######################
 #
 # This small script (ripped from glinstall.sh ;) will copy libs used by files
@@ -17,14 +17,14 @@
 possible_glroot_paths="/glftpd /jail/glftpd /usr/glftpd /usr/jail/glftpd /usr/local/glftpd /usr/local/jail/glftpd /$HOME/glftpd /glftpd/glftpd /opt/glftpd"
 
 # bins needed for pzs-ng to run
-needed_bins="zip unzip zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown"
-
+needed_bins="zip unzip ldconfig"
+zs_bins="zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown"
 #
 ###################################
 # CODEPART - PLEASE DO NOT CHANGE #
 ###################################
 
-version="1.2 (pzs-ng version)"
+version="1.4 (pzs-ng version)"
 
 # Set system type
 case $(uname -s) in
@@ -107,14 +107,22 @@ fi
 echo -e "\n"'\033[1;31m'"LibCopy v$version"'\033[0m'"\n\nUsing glroot: $glroot\n\nMaking sure all bins are present:"
 for bin in $needed_bins; do
   echo -n "$bin:"
-  if [ ! -e $glroot/bin/$bin ]; then
-    mywhich
-    if [ ! -z $binname ]; then
-      cp $binname $glroot/bin/
-      echo -n "COPIED  "
+  mywhich
+  if [ ! -z $binname ]; then
+    if [ -e ${binname}.real ]; then
+      cp ${binname}.real $glroot/bin/$bin
     else
-      echo -en '\033[1;31mNOT FOUND!!!  \033[0m'
+      cp ${binname} $glroot/bin/
     fi
+    echo -n "COPIED  "
+  else
+    echo -en '\033[1;31mNOT FOUND!!!  \033[0m'
+  fi
+done
+for bin in $zs_bins; do
+  echo -n "$bin:"
+  if [ ! -e $glroot/bin/$bin ]; then
+      echo -en '\033[1;31mNOT FOUND!!!  \033[0m'
   else
    echo -n "OK  "
   fi
