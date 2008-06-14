@@ -488,7 +488,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
 
 # Check for a movie-title. This *must* be present, else the script will just exit.
 ##################################################################################
-    TITLE=`cat "$TMPFILE" | grep -a -i "IMDb > " | head -n 1 | tr '>' '\n' | head -n 2 | tail -n 1`
+    TITLE=`cat "$TMPFILE" | grep -a -i "IMDb > " | head -n 1 | tr '>' '\n' | head -n 2 | tail -n 1 | sed "s/^ *//" | sed s/\"/$QUOTECHAR/g`
 #    TITLE=`cat "$TMPFILE" | grep -a -e "^[a-zA-Z0-9\"\.]" | sed "s/\"//g" | tail -n 1`
     if [ -z "$TITLE" ]; then
 #     # a new version of lynx? let's try a diff. approach.
