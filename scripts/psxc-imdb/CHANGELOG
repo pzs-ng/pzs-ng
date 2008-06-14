@@ -1,5 +1,7 @@
 PSXC-IMDB CHANGELOG:
 --------------------
+- v2.9  - Jun. 14th, 2008 - imdb.com discontinued the format used in former.imdb.com -
+			     redid psxc-imdb-find.sh and psxc-imdb.sh to match.
 - v2.8  - Jul. 01st, 2007 - fix psxc-imdb-find.sh to the new imdb.com html format.
 - v2.7i - Feb. 20th, 2007 - temporary fix for the new imdb.com layout.
 - v2.7h - Jan. 15th, 2007 - changed some code to fetch the title of a movie (iwi).

@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.8"
+VERSION="v2.9"
 
 ######################################################################################################
 
@@ -459,7 +459,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     OUTPUTOK="OK"
     while [ $LYNXTRIES -gt 0 ]; do
      if [ -z "$USEWGET" ]; then
-      lynx $LYNXFLAGS $IMDBURL > $TMPFILE 2>&1
+      lynx $LYNXFLAGS $IMDBURL | grep -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE 2>&1
       if [ $? = "0" ]; then
        LYNXTRIES=$LYNXTRIESORIG
        break
@@ -473,7 +473,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
       if [ $? = "0" ] || [ -z "`cat $TMPFILE`" ]; then
        LYNXTRIES=$LYNXTRIESORIG
        HTMLPAGE="`lynx $LYNXFLAGS -force_html $TMPFILE`"
-       echo "$HTMLPAGE" > $TMPFILE
+       echo "$HTMLPAGE" | grep -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE
        break
       else
        let LYNXTRIES=LYNXTRIES-1
@@ -488,12 +488,13 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
 
 # Check for a movie-title. This *must* be present, else the script will just exit.
 ##################################################################################
-    TITLE=`cat "$TMPFILE" | grep -a -e "^[a-zA-Z0-9\"\.]" | sed "s/\"//g" | tail -n 1`
+    TITLE=`cat "$TMPFILE" | grep -a -i "IMDb > " | head -n 1 | tr '>' '\n' | head -n 2 | tail -n 1`
+#    TITLE=`cat "$TMPFILE" | grep -a -e "^[a-zA-Z0-9\"\.]" | sed "s/\"//g" | tail -n 1`
     if [ -z "$TITLE" ]; then
-     # a new version of lynx? let's try a diff. approach.
-     TITLE=`cat "$TMPFILE" | grep -a -e "([12][089][0-9][0-9])" | head -n 1 | sed "s/PageFlicker//" | sed "s/\"//g"`
-    fi
-    if [ -z "$TITLE" ] || [ ! -z "`echo "$TITLE" | grep -a -e "with other users on IMDb"`" ] || [ ! -z "`echo "$TITLE" | grep -a -e "laserdisc details"`" ] || [ ! -z "`echo "$TITLE" | grep -a -e "(\ )"`" ] || [ ! -z "`echo "$TITLE" | grep -a -e "\.\.\.\."`" ]; then
+#     # a new version of lynx? let's try a diff. approach.
+#     TITLE=`cat "$TMPFILE" | grep -a -e "([12][089][0-9][0-9])" | head -n 1 | sed "s/PageFlicker//" | sed "s/\"//g"`
+#    fi
+#    if [ -z "$TITLE" ] || [ ! -z "`echo "$TITLE" | grep -a -e "with other users on IMDb"`" ] || [ ! -z "`echo "$TITLE" | grep -a -e "laserdisc details"`" ] || [ ! -z "`echo "$TITLE" | grep -a -e "(\ )"`" ] || [ ! -z "`echo "$TITLE" | grep -a -e "\.\.\.\."`" ]; then
      OUTPUTOK=""
      break
     fi
@@ -508,7 +509,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
      OUTPUTOK=""
      break
     fi
-    GENRE=`cat $TMPFILE | grep -a -e "Genre:" | sed "s/(more)//" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Genre:/Genre........:/" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $GENRENUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//"`
+    GENRE=`cat $TMPFILE | grep -a -e "^Genre:" | head -n 1 | sed "s/ more//" | sed "s/Genre:/Genre........:/" | sed s/\"/$QUOTECHAR/g | tr '|' '\n' | head -n $GENRENUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//"`
     GENRECLEAN=`echo $GENRE | sed "s/Genre........: *//"`
     RATING=`cat $TMPFILE | grep -a -e "User\ Rating:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ [Vv][Oo][Tt][Ee] [Hh][Ee][Rr][Ee]//" | sed "s/User Rating:/User Rating..:/" | sed "s/* //g" | sed "s/_ //g" | sed s/\"/$QUOTECHAR/g | head -n 1`
     RATINGCLEAN=`echo $RATING | sed "s/User Rating..: *//"`
@@ -520,34 +521,35 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
      RATINGVOTES=""
      RATINGSCORE=""
     fi
-    COUNTRY=`cat $TMPFILE | grep -a -e "Country:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Country:/Country......:/" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $COUNTRYNUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//"`
+    COUNTRY=`cat $TMPFILE | grep -a -e "^Country:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Country:/Country......:/" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $COUNTRYNUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//"`
     COUNTRYCLEAN=`echo $COUNTRY | sed "s/Country......: *//"`
-    TAGLINE=`cat $TMPFILE | grep -a -e "Tagline:" | sed "s/(more)//" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/([Mm][Oo][Rr][Ee])//" | sed "s/Tagline:/Tagline......:/" | sed s/\"/$QUOTECHAR/g | head -n 1`
+    TAGLINE=`cat $TMPFILE | grep -a -e "^Tagline:" | sed "s/ more//" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ [Mm][Oo][Rr][Ee]//" | sed "s/Tagline:/Tagline......:/" | sed s/\"/$QUOTECHAR/g | head -n 1`
     TAGLINECLEAN=`echo $TAGLINE | sed "s/Tagline......: *//"`
-    LANGUAGE=`cat $TMPFILE | grep -a -e "Language:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Language:/Language.....:/" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $LANGUAGENUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//"`
+    LANGUAGE=`cat $TMPFILE | grep -a -e "^Language:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Language:/Language.....:/" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $LANGUAGENUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//"`
     LANGUAGECLEAN=`echo $LANGUAGE | sed "s/Language.....: *//"`
-    PLOT=`cat $TMPFILE | grep -a -e "Plot\ [OS][u][tm][lm][ia][nr][ey]:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/([Vv][Ii][Ee][Ww] [Tt][Rr][Aa][Ii][Ll][Ee][Rr])//" | sed "s/([Mm][Oo][Rr][Ee])//" | sed "s/Plot [OS][u][tm][lm][ia][nr][ey][:]/Plot Outline.:/" | sed s/\"/$QUOTECHAR/g | tr -s ' ' | head -n 1`
+    PLOT=`cat $TMPFILE | grep -a -e "^Plot\ [OS][u][tm][lm][ia][nr][ey]:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ more$//" | sed "s/Plot [OS][u][tm][lm][ia][nr][ey][:]/Plot Outline.:/" | sed s/\"/$QUOTECHAR/g | tr -s ' ' | head -n 1`
     PLOTCLEAN=`echo $PLOT | sed "s/Plot Outline.: *//"`
     if [ ! -z "`echo "$PLOTCLEAN" | grep -a -e "\(\ \)\ \(\ \)"`" ]; then
      OUTPUTOK=""
      break
     fi
-    CERT=`cat $TMPFILE | grep -a -e "Certification:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $CERTIFICATIONNUM | sed "s/(.*//g" | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//"`
+    CERT=`cat $TMPFILE | grep -a -e "^Certification:" | sed s/\"/$QUOTECHAR/g | tr '|' '\n' | head -n $CERTIFICATIONNUM | sed "s/(.*//g" | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//"`
     CERTCLEAN=`echo $CERT | sed "s/Certification: *//" | tr '/' '\n' | grep -a -e "[uU][sS][aA]" | tr -d ' ' | head -n 1`
-    CAST=`cat $TMPFILE | grep -a -e "\ \.\.\.\.\ " | sed s/\"/$QUOTECHAR/g | sed "s|\ \[.*\]||g" | head -n $CASTNUM`
-    CASTCLEAN=`echo "$CAST" | sed "s/\.\.\.\..*/|/g" | tr '\n' ' ' | tr -s ' ' | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ |/\,/g" | sed "s/,$//"`
+    CAST=`cat $TMPFILE | grep -a -e "\ \.\.\.\ " | sed s/\"/$QUOTECHAR/g | sed "s|\ \[.*\]||g" | head -n $CASTNUM`
+    CASTCLEAN=`echo "$CAST" | sed "s/\.\.\..*/|/g" | tr '\n' ' ' | tr -s ' ' | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ |/\,/g" | sed "s/,$//"`
     CASTLEADNAME="`echo "$CAST" | head -n 1 | tr '.' '\n' | sed -e /^$/d | head -n 1 | tr -s ' ' | sed "s/^\ //g" | sed "s/\ $//g"`"
     CASTLEADCHAR="`echo "$CAST" | head -n 1 | tr '.' '\n' | sed -e /^$/d | tail -n 1 | tr -s ' ' | sed "s/^\ //g" | sed "s/\ $//g"`"
-    COMMENTSHORT=`cat $TMPFILE | grep -a -e "User Comments:" | head -n 1 | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/([Mm][Oo][Rr][Ee])//" | sed s/\"/$QUOTECHAR/g`
+    COMMENTSHORT=`cat $TMPFILE | grep -a -e "^User Comments:" | head -n 1 | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ more$//" | sed s/\"/$QUOTECHAR/g`
     COMMENTSHORTCLEAN=`echo $COMMENTSHORT | sed "s/User Comments: *//"`
     COMMENT=`cat $TMPFILE | awk '/User Comments:$/, /Check for other user comments.$/' | sed s/\"/$QUOTECHAR/g`
     COMMENTCLEAN=`echo "$COMMENT" | grep -a -e "^\ \ \ \ \ " | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\{\}\"/$QUOTECHAR/g | tr '\n' '|'`
-    RUNTIME=`cat $TMPFILE | grep -a -e "Runtime:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Runtime:/Runtime......:/" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $RUNTIMENUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//"`
+    RUNTIME=`cat $TMPFILE | grep -a -e "^Runtime:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Runtime:/Runtime......:/" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $RUNTIMENUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//"`
     RUNTIMECLEAN="`echo $RUNTIME | sed "s/Runtime......: *//" | tr '/ ' '\n' | sed -e /^$/d | head -n 1 | tr -c -d '[:digit:]'`"
     if [ ! -z "$RUNTIMECLEAN" ]; then
      RUNTIMECLEAN="$RUNTIMECLEAN min"
     fi
-    DIRECTOR=`cat $TMPFILE | awk '/Directed by$/, /Writing credits$/' | grep -a -v "Directed by" | grep -a -v "Writing Credits" | sed "s/^\ *//g" | sed "s/\ *$//g" | head -n 1 | sed s/\"/$QUOTECHAR/g`
+    DIRECTOR=`cat $TMPFILE | grep -a "Director:" | head -n 1 | cut -d ':' -f 2- | sed "s/ *//"`
+#    DIRECTOR=`cat $TMPFILE | awk '/Director:$/, /Writers:$/' | grep -a -v "Director:" | grep -a -v "Writers:" | grep -a -v "^$" | sed "s/^\ *//g" | sed "s/\ *$//g" | head -n 1 | sed s/\"/$QUOTECHAR/g`
     DIRECTORCLEAN=`echo $DIRECTOR`
     if [ ! -z "`echo "$DIRECTOR" | grep -a -e "\(\ \)\ \(\ \)"`" ]; then
      OUTPUTOK=""
@@ -599,7 +601,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
    if [ ! -z "$USEBUSINESS" ]; then
     while [ $LYNXTRIES -gt 0 ]; do
      if [ -z "$USEWGET" ]; then
-      lynx $LYNXFLAGS $BUSINESSURL > $TMPFILE 2>&1
+      lynx $LYNXFLAGS $BUSINESSURL | grep -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE 2>&1
       if [ $? = "0" ]; then
        LYNXTRIES=$LYNXTRIESORIG
        break
@@ -612,8 +614,8 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
       wget -U "Internet Explorer" -O $TMPFILE --timeout=30 $BUSINESSURL >/dev/null 2>&1
       if [ $? = "0" ] || [ -z "`cat $TMPFILE`" ]; then
        LYNXTRIES=$LYNXTRIESORIG
-       HTMLPAGE="`lynx $LYNXFLAGS -force_html $TMPFILE`"
-       echo "$HTMLPAGE" > $TMPFILE
+       HTMLPAGE="`lynx $LYNXFLAGS -force_html $TMPFILE `"
+       echo "$HTMLPAGE" | grep -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE
        break
       else
        let LYNXTRIES=LYNXTRIES-1
@@ -648,7 +650,7 @@ echo "BIZNUM : $BUSINESSSCREENSNUMBER ( $BUSINESSSCREENS )" >/tmp/imdebug.log
    if [ ! -z "$USEPREMIERE" ] || [ ! -z "$USELIMITED" ]; then
     while [ $LYNXTRIES -gt 0 ]; do
      if [ -z "$USEWGET" ]; then
-      lynx $LYNXFLAGS $RELEASEURL > $TMPFILE 2>&1
+      lynx $LYNXFLAGS $RELEASEURL | grep -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE 2>&1
       if [ $? = "0" ]; then
        LYNXTRIES=$LYNXTRIESORIG
        break
@@ -662,7 +664,7 @@ echo "BIZNUM : $BUSINESSSCREENSNUMBER ( $BUSINESSSCREENS )" >/tmp/imdebug.log
       if [ $? = "0" ] || [ -z "`cat $TMPFILE`" ]; then
        LYNXTRIES=$LYNXTRIESORIG
        HTMLPAGE="`lynx $LYNXFLAGS -force_html $TMPFILE`"
-       echo "$HTMLPAGE" > $TMPFILE
+       echo "$HTMLPAGE" | grep -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE
        break
       else
        let LYNXTRIES=LYNXTRIES-1
