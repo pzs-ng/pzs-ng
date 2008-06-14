@@ -555,7 +555,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
      OUTPUTOK=""
      break
     fi
-    ONELINE="`echo "$BOLD$TITLE$BOLD""[$COUNTRY]: $GENRE - $BOLD$RATING$BOLD"" - $IMDBURL" | sed "s/Genre........: //" | sed "s/User Rating..: //" | sed "s/Country......: *//" | tr -s ' '`"
+    ONELINE="`echo "$BOLD$TITLE$BOLD"" [$COUNTRY]: $GENRE - $BOLD$RATING$BOLD"" - $IMDBURL" | sed "s/Genre........: //" | sed "s/User Rating..: //" | sed "s/Country......: *//" | tr -s ' '`"
     if [ ! -z "`echo "$ONELINE" | grep -a -e "\(\ \)\ \(\ \)"`" ]; then
      OUTPUTOK=""
      break
