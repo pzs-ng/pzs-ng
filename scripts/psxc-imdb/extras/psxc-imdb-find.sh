@@ -171,7 +171,7 @@ if [ -z "$URLTOUSE" ]; then
   exit 0
  fi
  if [ -z "$IMDBLIST" ]; then
-  URLTOUSE=`echo "$CONTENT" | grep "imdb.com/title/tt" | head -n 1 | tr ' ' '\n' | grep -v "^$" | grep "imdb"`
+  URLTOUSE=`echo "$CONTENT" | grep "imdb.*/title/tt" | tr ' ' '\n' | grep "tt[0-9][0-9][0-9][0-9][0-9][0-9][0-9]$" | head -n 1`
  else
   a=1
   b=1
