@@ -3,6 +3,7 @@ PSXC-IMDB CHANGELOG:
 - v2.9a - Jun. 16th, 2008 - fixed %imdbplot and %imdbbar in psxc-imdb.sh.
 			     fixed psxc-imdb-nuker.sh to ignore N/A in score votes and
 			     numscreens.
+			     fixed small bug in -find that made it use wrong url.
 - v2.9  - Jun. 14th, 2008 - imdb.com discontinued the format used in former.imdb.com -
 			     redid psxc-imdb-find.sh and psxc-imdb.sh to match.
 - v2.8  - Jul. 01st, 2007 - fix psxc-imdb-find.sh to the new imdb.com html format.

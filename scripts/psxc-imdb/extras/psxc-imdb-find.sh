@@ -32,13 +32,14 @@
 #        to match.
 # v2.9  imdb.com changed url-style. Changed script
 #        to match.
+# v2.9b fixed small bug.
 ##################################################
 
 ########
 # CONFIG
 
 # Version. No need to change.
-VERSION=2.9
+VERSION=2.9a
 
 # (full) path to psxc-imdb.conf
 PSXC_IMDB_CONF=/glftpd/etc/psxc-imdb.conf
@@ -171,7 +172,7 @@ if [ -z "$URLTOUSE" ]; then
   exit 0
  fi
  if [ -z "$IMDBLIST" ]; then
-  URLTOUSE=`echo "$CONTENT" | grep -i "www\.imdb\..*/title/tt" | tr ' ' '\n' | grep "tt[0-9][0-9][0-9][0-9][0-9]*/*$" | head -n 1`
+  URLTOUSE=`echo "$CONTENT" | grep -i "\.imdb\..*/title/tt" | tr ' ' '\n' | grep "tt[0-9][0-9][0-9][0-9][0-9]*/*$" | sed "s|/pro\.|/www\.|" | head -n 1`
  else
   a=1
   b=1
