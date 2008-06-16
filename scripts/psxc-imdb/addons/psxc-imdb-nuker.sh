@@ -16,7 +16,7 @@
 #############################################################################
 
 # Version number. No need to change
-VERSION=2.5
+VERSION=2.9a
 
 # glftpd's root dir
 GLROOT=/glftpd
@@ -339,21 +339,27 @@ else
 
 # Let's do a quick test to see if the release should be nuked
  NUKE_REASON=""
- if [ `echo "$IMDBSCORE" | tr '. ' '\n' | grep -v "^$" | head -n 1` -lt $MIN_SCORE ]; then
-  NUKE_REASON="$MIN_SCORE_MSG"
-  let COMBO=COMBO+1
+ if [ "`echo "$IMDBSCORE" | tr -cd '0-9'`" != "" ]; then
+  if [ `echo "$IMDBSCORE" | tr '. ' '\n' | grep -v "^$" | head -n 1` -lt $MIN_SCORE ]; then
+   NUKE_REASON="$MIN_SCORE_MSG"
+   let COMBO=COMBO+1
+  fi
  fi
- if [ `echo "$IMDBVOTES" | tr -cd '0-9'` -lt $NUKE_VOTES ]; then
-  NUKE_REASON="$NUKE_VOTES_MSG"
-  let COMBO=COMBO+1
+ if [ "`echo "$IMDBVOTES" | tr -cd '0-9'`" != "" ]; then
+  if [ `echo "$IMDBVOTES" | tr -cd '0-9'` -lt $NUKE_VOTES ]; then
+   NUKE_REASON="$NUKE_VOTES_MSG"
+   let COMBO=COMBO+1
+  fi
  fi
  if [ `echo "$IMDBYEAR" | tr -cd '0-9'` -lt $NUKE_YEAR ]; then
   NUKE_REASON="$NUKE_YEAR_MSG"
   let COMBO=COMBO+1
  fi
- if [ `echo "$IMDBNUMSCREENS" | tr -cd '0-9'` -lt $NUKE_SCREENS ]; then
-  NUKE_REASON="$NUKE_SCREENS_MSG"
-  let COMBO=COMBO+1
+ if [ "`echo "$IMDBNUMSCREENS" | tr -cd '0-9'`" != "" ]; then
+  if [ `echo "$IMDBNUMSCREENS" | tr -cd '0-9'` -lt $NUKE_SCREENS ]; then
+   NUKE_REASON="$NUKE_SCREENS_MSG"
+   let COMBO=COMBO+1
+  fi
  fi
  GEN_NUKE_REASON=""
  if [ ! -z "$IMDBGENRE" ]; then

@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.9"
+VERSION="v2.9a"
 
 ######################################################################################################
 
@@ -513,13 +513,25 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     GENRECLEAN=`echo $GENRE | sed "s/Genre........: *//"`
     RATING=`cat $TMPFILE | grep -a -e "User\ Rating:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ [Vv][Oo][Tt][Ee] [Hh][Ee][Rr][Ee]//" | sed "s/User Rating:/User Rating..:/" | sed "s/* //g" | sed "s/_ //g" | sed s/\"/$QUOTECHAR/g | head -n 1`
     RATINGCLEAN=`echo $RATING | sed "s/User Rating..: *//"`
-    RATINGBAR="`cat $TMPFILE | grep -a -e "User\ Rating:" | tr -cd '\*_' | tr '\*_' '#-' | head -n 1`"
     if [ "`echo $RATINGCLEAN | grep -a -e "[Ww][Aa][Ii][Tt]"`" = "" ]; then
      RATINGVOTES=`echo $RATINGCLEAN | sed "s/ [Vv][Oo][Tt][Ee][Ss]//" | tr '() ' '\n' | grep -a -v "/" | grep -a -e "[0-9]" | head -n 1`
      RATINGSCORE=`echo $RATINGCLEAN | grep -a -e "/" | tr '/' '\n' | head -n 1`
+     PLUS="##########"; MINUS="----------"; PNUM=`echo $RATINGSCORE | cut -d '.' -f 1`; let MNUM=10-PNUM
+     PLUS="##########"
+     MINUS="----------"
+     PNUM=`echo $RATINGSCORE | cut -d '.' -f 1`
+     let MNUM=10-PNUM
+     if [ $MNUM -eq 0 ]; then
+      RATINGBAR="$MINUS"
+     elif [ $MNUM -eq 10 ]; then
+      RATINGBAR="$PLUS"
+     else
+      RATINGBAR="`echo $PLUS | cut -c 1-$PNUM`""`echo $MINUS | cut -c 1-$MNUM`"
+     fi
     else
      RATINGVOTES=""
      RATINGSCORE=""
+     RATINGBAR=""
     fi
     COUNTRY=`cat $TMPFILE | grep -a -e "^Country:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Country:/Country......:/" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $COUNTRYNUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//"`
     COUNTRYCLEAN=`echo $COUNTRY | sed "s/Country......: *//"`
@@ -527,8 +539,8 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     TAGLINECLEAN=`echo $TAGLINE | sed "s/Tagline......: *//"`
     LANGUAGE=`cat $TMPFILE | grep -a -e "^Language:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Language:/Language.....:/" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $LANGUAGENUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//"`
     LANGUAGECLEAN=`echo $LANGUAGE | sed "s/Language.....: *//"`
-    PLOT=`cat $TMPFILE | grep -a -e "^Plot\ [OS][u][tm][lm][ia][nr][ey]:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ more$//" | sed "s/Plot [OS][u][tm][lm][ia][nr][ey][:]/Plot Outline.:/" | sed s/\"/$QUOTECHAR/g | tr -s ' ' | head -n 1`
-    PLOTCLEAN=`echo $PLOT | sed "s/Plot Outline.: *//"`
+    PLOT=`cat $TMPFILE | grep -a -e "^Plot:" | head -n 1 | cut -d '|' -f 1 | sed "s/ [fF][uU][lL][lL] [Ss][Uu][Mm][Mm][Aa][Rr][Yy] *$//" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\"/$QUOTECHAR/g | tr -s ' '`
+    PLOTCLEAN=`echo $PLOT | sed "s/Plot: *//"`
     if [ ! -z "`echo "$PLOTCLEAN" | grep -a -e "\(\ \)\ \(\ \)"`" ]; then
      OUTPUTOK=""
      break
@@ -555,7 +567,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
      OUTPUTOK=""
      break
     fi
-    ONELINE="`echo "$BOLD$TITLE$BOLD"" [$COUNTRY]: $GENRE - $BOLD$RATING$BOLD"" - $IMDBURL" | sed "s/Genre........: //" | sed "s/User Rating..: //" | sed "s/Country......: *//" | tr -s ' '`"
+    ONELINE="`echo "$BOLD$TITLE$BOLD""[$COUNTRY]: $GENRE - $BOLD$RATING$BOLD"" - $IMDBURL" | sed "s/Genre........: //" | sed "s/User Rating..: //" | sed "s/Country......: *//" | tr -s ' '`"
     if [ ! -z "`echo "$ONELINE" | grep -a -e "\(\ \)\ \(\ \)"`" ]; then
      OUTPUTOK=""
      break
