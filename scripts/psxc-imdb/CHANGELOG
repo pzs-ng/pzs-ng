@@ -1,5 +1,6 @@
 PSXC-IMDB CHANGELOG:
 --------------------
+- v2.9b - Jun. 17th, 2008 - fixed another introduced bug in psxc-imdb-find.sh.
 - v2.9a - Jun. 16th, 2008 - fixed %imdbplot and %imdbbar in psxc-imdb.sh.
 			     fixed psxc-imdb-nuker.sh to ignore N/A in score votes and
 			     numscreens.
