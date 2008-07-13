@@ -208,6 +208,9 @@ printf("#define check_for_banned_files                  %s\n", (check_for_banned
 #ifndef check_for_missing_nfo_dirs_is_defaulted
 printf("#define check_for_missing_nfo_dirs              %s\n", stringify(check_for_missing_nfo_dirs));
 #endif
+#ifndef check_for_missing_sample_dirs_is_defaulted
+printf("#define check_for_missing_sample_dirs           %s\n", stringify(check_for_missing_sample_dirs));
+#endif
 #ifndef chmod_completebar_is_defaulted
 printf("#define chmod_completebar                       %s\n", (chmod_completebar == FALSE ? "FALSE" : "TRUE"));
 #endif
@@ -231,6 +234,9 @@ printf("#define create_m3u                              %s\n", (create_m3u == FA
 #endif
 #ifndef create_missing_files_is_defaulted
 printf("#define create_missing_files                    %s\n", (create_missing_files == FALSE ? "FALSE" : "TRUE"));
+#endif
+#ifndef create_missing_sample_link_is_defaulted
+printf("#define create_missing_sample_link              %s\n", (create_missing_sample_link == FALSE ? "FALSE" : "TRUE"));
 #endif
 #ifndef create_missing_sfv_is_defaulted
 printf("#define create_missing_sfv                      %s\n", (create_missing_sfv == FALSE ? "FALSE" : "TRUE"));
@@ -909,6 +915,7 @@ printf("#define charbar_filled                          %s\n", stringify(charbar
 printf("#define charbar_missing                         %s\n", stringify(charbar_missing));
 printf("#define check_for_banned_files                  %s\n", (check_for_banned_files == FALSE ? "FALSE" : "TRUE"));
 printf("#define check_for_missing_nfo_dirs              %s\n", stringify(check_for_missing_nfo_dirs));
+printf("#define check_for_missing_sample_dirs           %s\n", stringify(check_for_missing_sample_dirs));
 printf("#define chmod_completebar                       %s\n", (chmod_completebar == FALSE ? "FALSE" : "TRUE"));
 printf("#define cleanupdirs                             %s\n", stringify(cleanupdirs));
 printf("#define cleanupdirs_dated                       %s\n", stringify(cleanupdirs_dated));
@@ -917,6 +924,7 @@ printf("#define complete_script                         %s\n", stringify(complet
 printf("#define create_incomplete_links_in_group_dirs   %s\n", (create_incomplete_links_in_group_dirs == FALSE ? "FALSE" : "TRUE"));
 printf("#define create_m3u                              %s\n", (create_m3u == FALSE ? "FALSE" : "TRUE"));
 printf("#define create_missing_files                    %s\n", (create_missing_files == FALSE ? "FALSE" : "TRUE"));
+printf("#define create_missing_sample_link              %s\n", (create_missing_sample_link == FALSE ? "FALSE" : "TRUE"));
 printf("#define create_missing_sfv                      %s\n", (create_missing_sfv == FALSE ? "FALSE" : "TRUE"));
 printf("#define create_missing_sfv_link                 %s\n", (create_missing_sfv_link == FALSE ? "FALSE" : "TRUE"));
 printf("#define custom_group_dirs_complete_message      %s\n", stringify(custom_group_dirs_complete_message));

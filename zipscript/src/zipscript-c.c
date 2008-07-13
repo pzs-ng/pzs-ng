@@ -977,6 +977,16 @@ main(int argc, char **argv)
 				else
 					d_log("zipscript-c: created backup of sfv (%s)\n", g.v.file.name);
 			}
+#if (create_missing_sample_link)
+			if (matchpath(check_for_missing_sample_dirs, g.l.path) {
+				d_log("zipscript-c: checking for missing sample\n");
+				if (g.l.in_cd_dir) {
+					d_log("zipscript-c: we are in a sub-dir\n");
+				} else {
+					d_log("zipscript-c: we are in the main-dir\n");
+				}
+			}
+#endif
 			break;
 			/* END OF SFV CHECK */
 

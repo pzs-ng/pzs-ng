@@ -215,6 +215,8 @@ and have the setuid bit, or run it in root's crontab if not.
 
 This should help keep your site nice and tidy, not burden the hardware too
 much, and stop crontab from sending you annoying emails ;).
+PS! Make sure to use full path to 'chroot' in the above line, or include a
+PATH variable at the top of the crontab.
 
 The bot:
 --------

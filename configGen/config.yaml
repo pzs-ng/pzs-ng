@@ -297,6 +297,21 @@ options:
             the links, it may very well be.
         default: true
 
+    check_for_missing_sample_dirs:
+        type: paths
+        comment: |-
+            Each movie-release should have a sample included, to show quality.
+            The paths defined in this value will be checked for missing samples.
+            Separate dirs with a space character.
+        default: '"/site/incoming/movies/"'
+
+    create_missing_sample_link:
+        type: boolean
+        comment: |-
+            Movie-releases should have a sample. This setting will check for
+            missing sfv in releases.
+        default: false
+
     GROUPFILE:
         type: path
         comment: |-

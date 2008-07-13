@@ -1,7 +1,7 @@
 ZSCONFIG.H - A GUIDE
 ---------------------
 
-zsconfig.h can include a number of options. Starting with pzs-ng v1.0 beta4, the
+zsconfig.h can include a number of options. Starting with pzs-ng beta 4, the
 settings in zsconfig.h are overrides, meaning that not all of these settings
 need be in zsconfig.h. Only the ones you change should be put there.
 This provide a very flexible configuration, and upgrades should be less of a
@@ -375,6 +375,12 @@ check_for_missing_nfo_dirs <PATHS>
 	dirs with a space character.
 	Default: "/site/incoming/games/ /site/incoming/apps/"
 
+check_for_missing_sample_dirs <PATHS>
+	Each movie-release should have a sample included, to show quality.
+	The paths defined in this value will be checked for missing samples.
+	Separate dirs with a space character.
+	Default: "/site/incoming/movies/"
+
 chmod_completebar <TRUE|FALSE>
 	When TRUE, the permissions on the file/dir is changed to 0222. This is
 	to prevent it from being transfered on download/fxp.
@@ -422,6 +428,11 @@ create_missing_files <TRUE|FALSE>
 	file will be removed when the file is uploaded and found free of
 	errors.
 	Default: TRUE
+
+create_missing_sample_link <TRUE|FALSE>
+	Movie-releases should have a sample. This setting will check for
+	missing sfv in releases.
+	Default: FALSE
 
 create_missing_sfv <TRUE|FALSE>
 	If this option is set to TRUE, the rescan binary will create sfv files

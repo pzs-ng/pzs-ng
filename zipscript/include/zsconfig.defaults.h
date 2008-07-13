@@ -260,6 +260,11 @@
 #define check_for_missing_nfo_dirs              "/site/incoming/games/ /site/incoming/apps/"
 #endif
 
+#ifndef check_for_missing_sample_dirs
+#define check_for_missing_sample_dirs_is_defaulted
+#define check_for_missing_sample_dirs           "/site/incoming/movies/"
+#endif
+
 #ifndef chmod_completebar
 #define chmod_completebar_is_defaulted
 #define chmod_completebar                       FALSE
@@ -298,6 +303,11 @@
 #ifndef create_missing_files
 #define create_missing_files_is_defaulted
 #define create_missing_files                    TRUE
+#endif
+
+#ifndef create_missing_sample_link
+#define create_missing_sample_link_is_defaulted
+#define create_missing_sample_link              FALSE
 #endif
 
 #ifndef create_missing_sfv

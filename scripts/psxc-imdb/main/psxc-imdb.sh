@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.9b"
+VERSION="v2.9c"
 
 ######################################################################################################
 
@@ -601,8 +601,8 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
 
 # We won't check business and release as closely right away... may do so later
 ##############################################################################
-   BUSINESSURL="$IMDBURL""/business"
-   RELEASEURL="$IMDBURL""/releaseinfo"
+   BUSINESSURL="${echo "$IMDBURL""/business" | tr -s '/' | sed "s|:/|://|"}"
+   RELEASEURL="${echo $IMDBURL""/releaseinfo" | tr -s '/' | sed "s|:/|://|"}"
    if [ -z "`cat $TMPFILE | grep -a -F "$BUSINESSURL"`" ] && [ -z "$USEWGET" ]; then
     USEBUSINESS=""
    fi
