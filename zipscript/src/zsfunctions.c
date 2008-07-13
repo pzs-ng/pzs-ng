@@ -114,13 +114,13 @@ findfileext(DIR *dir, char *fileext)
 	}
 
         if (errno)
-            d_log("zipscript-c: findfileext() - readdir(dir) returned an error: %s\n", strerror(errno));
+            d_log("zsfunctions.c: findfileext() - readdir(dir) returned an error: %s\n", strerror(errno));
 
 	return NULL;
 }
 
 char *
-findfileextsub(DIR *dir, char *fileext)
+findfileextsub(DIR *dir)
 {
 	DIR *dir2, *dir3;
 	int			k;
@@ -131,13 +131,13 @@ findfileextsub(DIR *dir, char *fileext)
         errno = 0;
         
   if (getcwd(cwd, sizeof(cwd)) == NULL) {
-    d_log("Error getting path\n");
+    d_log("zsfunctions.c: findfileextsub() - Error getting path\n");
   }
 
 	rewinddir(dir);
 
   if((dir2=opendir(cwd)) == NULL) {
-    d_log("Error getting path\n");
+    d_log("zsfunctions.c: findfileextsub() - Error getting path\n");
   }
   
 	while ((dp = readdir(dir2))) {
@@ -147,39 +147,37 @@ findfileextsub(DIR *dir, char *fileext)
       strcat(cwd2,"/");
       strcat(cwd2,dp->d_name);	  
 	    if (stat(cwd2, &attribut) == -1) 
-	      d_log("Error getting path\n");
+	      d_log("zsfunctions.c: findfileextsub() - Error getting path\n");
 
 	    if (S_ISDIR(attribut.st_mode)) {
 	      if ((dir3 = opendir(cwd2)) == NULL)
-	        d_log("Error getting path\n");
+	        d_log("zsfunctions.c: findfileextsub() - Error getting path\n");
 	        
 	      rewinddir(dir3);
 	      while ((dp2 = readdir(dir3))) {
 	        if ((k = NAMLEN(dp2)) < 4)
 	          continue;
-	        if (strcasecmp(dp2->d_name + k - 4, fileext) == 0) {
+		if (strcomp(video_types, dp2->d_name + k - 3))
 	          return dp2->d_name;
-	        }
 	      }
 	    closedir(dir3);
 	    }
 	  }
-		if ((k = NAMLEN(dp)) < 4)
-			continue;
-		if (strcasecmp(dp->d_name + k - 4, fileext) == 0) {
-			return dp->d_name;
-		}
+	  if ((k = NAMLEN(dp)) < 4)
+	    continue;
+	  if (strcomp(video_types, dp->d_name + k - 3))
+	    return dp->d_name;
 	}
 	closedir(dir2);
 	
-	        if (errno)
-            d_log("zipscript-c: findfileextparent() - readdir(dir) returned an error: %s\n", strerror(errno));
+	if (errno)
+            d_log("zsfunctions.c: findfileextsub() - closedir(dir) returned an error: %s\n", strerror(errno));
 
 	return NULL;
 }
 
 char *
-findfileextsubp(DIR *dir, char *fileext)
+findfileextsubp(DIR *dir)
 {
 	DIR *dir2, *dir3;
 	int			k;
@@ -198,7 +196,7 @@ findfileextsubp(DIR *dir, char *fileext)
 	rewinddir(dir);
 
   if((dir2=opendir(cwd2)) == NULL) {
-    d_log("Error getting path\n");
+    d_log("zsfunctions.c: findfileextsubp() - Error getting path\n");
   }
   
 	while ((dp = readdir(dir2))) {
@@ -208,33 +206,31 @@ findfileextsubp(DIR *dir, char *fileext)
       strcat(cwd3,"/");
       strcat(cwd3,dp->d_name);	  
 	    if (stat(cwd3, &attribut) == -1) 
-	      d_log("Error getting path\n");
+	      d_log("zsfunctions.c: findfileextsubp() - Error getting path\n");
 
 	    if (S_ISDIR(attribut.st_mode)) {
 	      if ((dir3 = opendir(cwd3)) == NULL)
-	        d_log("Error getting path\n");
+	        d_log("zsfunctions.c: findfileextsubp() - Error getting path\n");
 	        
 	      rewinddir(dir3);
 	      while ((dp2 = readdir(dir3))) {
 	        if ((k = NAMLEN(dp2)) < 4)
 	          continue;
-	        if (strcasecmp(dp2->d_name + k - 4, fileext) == 0) {
+		if (strcomp(video_types, dp2->d_name + k - 3))
 	          return dp2->d_name;
-	        }
 	      }
 	    closedir(dir3);
 	    }
 	  }
-		if ((k = NAMLEN(dp)) < 4)
-			continue;
-		if (strcasecmp(dp->d_name + k - 4, fileext) == 0) {
-			return dp->d_name;
-		}
+	  if ((k = NAMLEN(dp)) < 4)
+	    continue;
+	  if (strcomp(video_types, dp->d_name + k - 3))
+	    return dp->d_name;
 	}
 	closedir(dir2);
 	
-	        if (errno)
-            d_log("zipscript-c: findfileextparent() - readdir(dir) returned an error: %s\n", strerror(errno));
+	if (errno)
+            d_log("zsfunctions.c: findfileextsubp() - readdir(dir) returned an error: %s\n", strerror(errno));
 
 	return NULL;
 }

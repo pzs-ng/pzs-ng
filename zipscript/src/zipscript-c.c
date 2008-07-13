@@ -977,16 +977,6 @@ main(int argc, char **argv)
 				else
 					d_log("zipscript-c: created backup of sfv (%s)\n", g.v.file.name);
 			}
-#if (create_missing_sample_link)
-			if (matchpath(check_for_missing_sample_dirs, g.l.path) {
-				d_log("zipscript-c: checking for missing sample\n");
-				if (g.l.in_cd_dir) {
-					d_log("zipscript-c: we are in a sub-dir\n");
-				} else {
-					d_log("zipscript-c: we are in the main-dir\n");
-				}
-			}
-#endif
 			break;
 			/* END OF SFV CHECK */
 
@@ -1803,12 +1793,13 @@ main(int argc, char **argv)
 						}
 					}
 				}
-				if (g.l.sample_incomplete && matchpath(check_for_missing_sample_dirs, g.l.path) && !(findfileextsub(dir, ".vob") || findfileextsub(dir, ".avi"))) {
+#if (create_missing_sample_link)
+				if (g.l.sample_incomplete && matchpath(check_for_missing_sample_dirs, g.l.path) && !(findfileextsub(dir))) {
 					if (!g.l.in_cd_dir) {
 						d_log("zipscript-c: Creating missing-sample indicator %s.\n", g.l.sample_incomplete);
 						create_incomplete_sample();
 					} else {
-						if (!findfileextsubp(dir, ".avi") || !findfileextsubp(dir, ".vob")) {
+						if (!findfileextsubp(dir)) {
 							d_log("zipscript-c: Creating missing-sample indicator (base) %s.\n", g.l.sample_incomplete);
 							if ((inc_point[0] = find_last_of(g.l.path, "/")) != g.l.path)
 								*inc_point[0] = '\0';
@@ -1822,6 +1813,7 @@ main(int argc, char **argv)
 						}
 					}
 				}
+#endif
 			}
 		} else {
 
@@ -1867,10 +1859,12 @@ main(int argc, char **argv)
 		remove_nfo_indicator(&g);
 	}
 
-	if ((findfileextsub(dir, ".vob") || (findfileextsub(dir, ".avi")) || (g.l.in_cd_dir && (findfileextsubp(dir, ".vob") || findfileextsubp(dir, ".avi")))) && g.l.sample_incomplete) {
+#if (create_missing_sample_link)
+	if ((findfileextsub(dir) || (g.l.in_cd_dir && findfileextsubp(dir))) && g.l.sample_incomplete) {
 		d_log("zipscript-c: Removing missing-sample indicator (if any)\n");
 		remove_sample_indicator(&g);
 	}
+#endif
 #if (enable_affil_script == TRUE )
 	if (affil_upload == TRUE) {
 		if (!fileexists(affil_script)) {

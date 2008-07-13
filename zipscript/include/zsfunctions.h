@@ -84,8 +84,8 @@ extern void	d_log(char *,...);
 
 extern void	create_missing(char *);
 extern char    *findfileext(DIR *, char *);
-extern char    *findfileextsub(DIR *, char *);
-extern char    *findfileextsubp(DIR *, char *);
+extern char    *findfileextsub(DIR *);
+extern char    *findfileextsubp(DIR *);
 extern char    *findfileextparent(DIR *, char *);
 
 /* replace these with the ones above everywhere */

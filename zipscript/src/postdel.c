@@ -535,8 +535,9 @@ d_log("g.v.total.files=%d\n", g.v.total.files);
 				}
 			}
 		}
+#if (create_missing_sample_link)
 		if (g.l.sample_incomplete) {
-			if (findfileextsub(dir, ".avi") || findfileextsub(dir, ".vob")) {
+			if (findfileextsub(dir)) {
 				d_log("rescan: Removing missing-sample indicator (if any)\n");
 				remove_sample_indicator(&g);
 			} else if (matchpath(check_for_missing_sample_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
@@ -544,7 +545,7 @@ d_log("g.v.total.files=%d\n", g.v.total.files);
 					d_log("rescan: Creating missing-sample indicator %s.\n", g.l.sample_incomplete);
 					create_incomplete_sample();
 				} else {
-					if (findfileextsubp(dir, ".avi") || findfileextsubp(dir, ".vob")) {
+					if (findfileextsubp(dir)) {
 						d_log("rescan: Removing missing-sample indicator (if any)\n");
 						remove_sample_indicator(&g);
 					} else {
@@ -564,6 +565,7 @@ d_log("g.v.total.files=%d\n", g.v.total.files);
 				}
 			}
 		}
+#endif
 		if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
 			d_log("postdel: Creating incomplete indicator\n");
 			d_log("postdel:    incomplete: '%s', path: '%s'\n", g.l.incomplete, g.l.path);
