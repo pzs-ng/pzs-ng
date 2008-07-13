@@ -84,6 +84,8 @@ extern void	d_log(char *,...);
 
 extern void	create_missing(char *);
 extern char    *findfileext(DIR *, char *);
+extern char    *findfileextsub(DIR *, char *);
+extern char    *findfileextsubp(DIR *, char *);
 extern char    *findfileextparent(DIR *, char *);
 
 /* replace these with the ones above everywhere */
@@ -144,6 +146,7 @@ extern int      chmod_each(const char *list, mode_t mode);
 extern void writelog(GLOBAL *, char *, char *);
 extern void buffer_paths(GLOBAL *, char [2][PATH_MAX], int *, int);
 extern void remove_nfo_indicator(GLOBAL *);
+extern void remove_sample_indicator(GLOBAL *);
 extern void getrelname(GLOBAL *);
 extern unsigned char get_filetype(GLOBAL *, char *);
 

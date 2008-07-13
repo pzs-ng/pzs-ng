@@ -609,6 +609,35 @@ main(int argc, char *argv[])
 				}
 			}
 		}
+		if (g.l.sample_incomplete) {
+			if (findfileextsub(dir, ".avi") || findfileextsub(dir, ".vob")) {
+				d_log("rescan: Removing missing-sample indicator (if any)\n");
+				remove_sample_indicator(&g);
+			} else if (matchpath(check_for_missing_sample_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
+				if (!g.l.in_cd_dir) {
+					d_log("rescan: Creating missing-sample indicator %s.\n", g.l.sample_incomplete);
+					create_incomplete_sample();
+				} else {
+					if (findfileextsubp(dir, ".avi") || findfileextsubp(dir, ".vob")) {
+						d_log("rescan: Removing missing-sample indicator (if any)\n");
+						remove_sample_indicator(&g);
+					} else {
+						d_log("rescan: Creating missing-sample indicator (base) %s.\n", g.l.sample_incomplete);
+
+						/* This is not pretty, but should be functional. */
+						if ((inc_point[0] = find_last_of(g.l.path, "/")) != g.l.path)
+							*inc_point[0] = '\0';
+						if ((inc_point[1] = find_last_of(g.v.misc.release_name, "/")) != g.v.misc.release_name)
+							*inc_point[1] = '\0';
+						create_incomplete_sample();
+						if (*inc_point[0] == '\0')
+							*inc_point[0] = '/';
+						if (*inc_point[1] == '\0')
+							*inc_point[1] = '/';
+					}
+				}
+			}
+		}
 		if (g.v.misc.release_type == RTYPE_AUDIO) {
 			get_mpeg_audio_info(findfileext(dir, ".mp3"), &g.v.audio);
 			strlcpy(g.v.id3_artist, g.v.audio.id3_artist, 31);

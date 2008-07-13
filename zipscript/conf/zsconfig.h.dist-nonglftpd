@@ -65,14 +65,14 @@
 #define complete_script              "/bin/nfo_copy.sh"
 
 /* These are settings that are especially relevant when you're not running under glftpd.
- * Make sure that all paths are absolute and _real_, e.g. set log to /home/myuser/cuftpd/data/logs/cuftpd.log 
+ * Make sure that all paths are absolute and _real_, e.g. set log to /home/myuser/wzd/var/log/wzdftpd/wzd.log 
  *
  * You should probably also create these two first dirs using:
- *  mkdir -p -m777 /home/myuser/cuftpd/data/pzs-ng */
+ *  mkdir -p -m777 /home/myuser/wzd/var/lib/pzs-ng */
 
-#define log                          "/home/myuser/cuftpd/data/logs/cuftpd.log"
-#define storage                      "/home/myuser/cuftpd/data/pzs-ng/"
-#define banned_filelist              "/home/myuser/cuftpd/data/banned_filelist.txt"
+#define log                          "/ftp-data/logs/glftpd.log"
+#define storage                      "/ftp-data/pzs-ng/"
+#define banned_filelist              "/ftp-data/misc/banned_filelist.txt"
 
-#define zip_bin                      "/usr/bin/zip"
-#define unzip_bin                    "/usr/bin/unzip"
+#define zip_bin                      "/bin/zip"
+#define unzip_bin                    "/bin/unzip"

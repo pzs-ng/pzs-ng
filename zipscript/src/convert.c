@@ -836,6 +836,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 /* Converts cookies in incomplete indicators */
 char		normal_buf	[FILE_MAX];
 char		nfo_buf		[FILE_MAX];
+char		sample_buf	[FILE_MAX];
 char		sfv_buf		[FILE_MAX];
 char           *
 incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI, int l_type)
@@ -846,6 +847,8 @@ incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI, int l_type)
 		buf_p = normal_buf;
 	else if (l_type == INCOMPLETE_NFO)
 		buf_p = nfo_buf;
+	else if (l_type == INCOMPLETE_SAMPLE)
+		buf_p = sample_buf;
 	else if (l_type == INCOMPLETE_SFV)
 		buf_p = sfv_buf;
 	else
@@ -878,6 +881,8 @@ incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI, int l_type)
 		return normal_buf;
 	else if (l_type == INCOMPLETE_NFO)
 		return nfo_buf;
+	else if (l_type == INCOMPLETE_SAMPLE)
+		return sample_buf;
 	else if (l_type == INCOMPLETE_SFV)
 		return sfv_buf;
 	else

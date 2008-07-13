@@ -924,6 +924,11 @@ incomplete_base_nfo_indicator <STRING>
 	This variable defines indicators on missing nfo in multi-cd releases.
 	Default: "../../(no-nfo)-%1"
 
+incomplete_base_sample_indicator <STRING>
+	On upload an indicator is created if sample is missing.
+	This variable defines indicators on missing sample in multi-cd releases.
+	Default: "../../(no-sample)-%1"
+
 incomplete_base_sfv_indicator <STRING>
 	On upload an indicator is created after each file, to show still
 	incomplete releases. Put here how that indicator will look.
@@ -941,6 +946,11 @@ incomplete_generic1_base_nfo_indicator <STRING>
 	incomplete releases. Put here how that indicator will look.
 	This variable defines indicators on missing nfo in multi-cd releases.
 	Default: "/site/incompletes/(no-nfo)-%1"
+
+incomplete_generic1_base_sample_indicator <STRING>
+	On upload an indicator is created if sample is missing.
+	This variable defines indicators on missing sample in multi-cd releases.
+	Default: "/site/incompletes/(no-sample)-%1"
 
 incomplete_generic1_base_sfv_indicator <STRING>
 	On upload an indicator is created after each file, to show still
@@ -971,6 +981,11 @@ incomplete_generic1_path <PATH>
 	to create the incomplete indicators.
 	Default: ""
 
+incomplete_generic1_sample_indicator <STRING>
+	On upload an indicator is created if sample is missing.
+	This variable defines indicators on missing sample in normal releases.
+	Default: "/site/incompletes/(no-sample)-%0"
+
 incomplete_generic1_sfv_indicator <STRING>
 	On upload an indicator is created after each file, to show still
 	incomplete releases. Put here how that indicator will look.
@@ -982,6 +997,11 @@ incomplete_generic2_base_nfo_indicator <STRING>
 	incomplete releases. Put here how that indicator will look.
 	This variable defines indicators on missing nfo in multi-cd releases.
 	Default: "/site/incompletes/(no-nfo)-%1"
+
+incomplete_generic2_base_sample_indicator <STRING>
+	On upload an indicator is created if sample is missing.
+	This variable defines indicators on missing sample in multi-cd releases.
+	Default: "/site/incompletes/(no-sample)-%1"
 
 incomplete_generic2_base_sfv_indicator <STRING>
 	On upload an indicator is created after each file, to show still
@@ -1012,6 +1032,11 @@ incomplete_generic2_path <PATH>
 	to create the incomplete indicators.
 	Default: ""
 
+incomplete_generic2_sample_indicator <STRING>
+	On upload an indicator is created if sample is missing.
+	This variable defines indicators on missing sample in normal releases.
+	Default: "/site/incompletes/(no-sample)-%0"
+
 incomplete_generic2_sfv_indicator <STRING>
 	On upload an indicator is created after each file, to show still
 	incomplete releases. Put here how that indicator will look.
@@ -1029,6 +1054,11 @@ incomplete_nfo_indicator <STRING>
 	incomplete releases. Put here how that indicator will look.
 	This variable defines indicators on missing nfo in normal releases.
 	Default: "../(no-nfo)-%0"
+
+incomplete_sample_indicator <STRING>
+	On upload an indicator is created if sample is missing.
+	This variable defines indicators on missing sample in normal releases.
+	Default: "../(no-sample)-%0"
 
 incomplete_sfv_indicator <STRING>
 	On upload an indicator is created after each file, to show still

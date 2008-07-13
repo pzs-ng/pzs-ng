@@ -151,6 +151,7 @@ struct misc {
 struct LOCATIONS {
 	char		*leader;
 	char		*nfo_incomplete;
+	char		*sample_incomplete;
 	char		*incomplete;
 	char		*sfv;
 	char		*sfvbackup;

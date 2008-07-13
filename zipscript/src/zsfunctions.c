@@ -119,6 +119,127 @@ findfileext(DIR *dir, char *fileext)
 	return NULL;
 }
 
+char *
+findfileextsub(DIR *dir, char *fileext)
+{
+	DIR *dir2, *dir3;
+	int			k;
+	char cwd[1024], cwd2[1024];
+
+	static struct dirent	*dp, *dp2;
+
+        errno = 0;
+        
+  if (getcwd(cwd, sizeof(cwd)) == NULL) {
+    d_log("Error getting path\n");
+  }
+
+	rewinddir(dir);
+
+  if((dir2=opendir(cwd)) == NULL) {
+    d_log("Error getting path\n");
+  }
+  
+	while ((dp = readdir(dir2))) {
+	  if (strcmp(dp->d_name,".") && strcmp(dp->d_name,".."))  {
+	    struct stat attribut;
+      strcpy(cwd2,cwd);
+      strcat(cwd2,"/");
+      strcat(cwd2,dp->d_name);	  
+	    if (stat(cwd2, &attribut) == -1) 
+	      d_log("Error getting path\n");
+
+	    if (S_ISDIR(attribut.st_mode)) {
+	      if ((dir3 = opendir(cwd2)) == NULL)
+	        d_log("Error getting path\n");
+	        
+	      rewinddir(dir3);
+	      while ((dp2 = readdir(dir3))) {
+	        if ((k = NAMLEN(dp2)) < 4)
+	          continue;
+	        if (strcasecmp(dp2->d_name + k - 4, fileext) == 0) {
+	          return dp2->d_name;
+	        }
+	      }
+	    closedir(dir3);
+	    }
+	  }
+		if ((k = NAMLEN(dp)) < 4)
+			continue;
+		if (strcasecmp(dp->d_name + k - 4, fileext) == 0) {
+			return dp->d_name;
+		}
+	}
+	closedir(dir2);
+	
+	        if (errno)
+            d_log("zipscript-c: findfileextparent() - readdir(dir) returned an error: %s\n", strerror(errno));
+
+	return NULL;
+}
+
+char *
+findfileextsubp(DIR *dir, char *fileext)
+{
+	DIR *dir2, *dir3;
+	int			k;
+	char cwd[1024], cwd2[1024], cwd3[1024];
+	char * pch;
+	static struct dirent	*dp, *dp2;
+
+        errno = 0;
+  if (getcwd(cwd, sizeof(cwd)) == NULL) {
+    d_log("Error getting path\n");
+  }
+  pch=strrchr(cwd,47);
+  strncpy(cwd2,cwd,pch-cwd);
+  cwd2[pch-cwd]='\0';
+  
+	rewinddir(dir);
+
+  if((dir2=opendir(cwd2)) == NULL) {
+    d_log("Error getting path\n");
+  }
+  
+	while ((dp = readdir(dir2))) {
+	  if (strcmp(dp->d_name,".") && strcmp(dp->d_name,".."))  {
+	    struct stat attribut;
+      strcpy(cwd3,cwd2);
+      strcat(cwd3,"/");
+      strcat(cwd3,dp->d_name);	  
+	    if (stat(cwd3, &attribut) == -1) 
+	      d_log("Error getting path\n");
+
+	    if (S_ISDIR(attribut.st_mode)) {
+	      if ((dir3 = opendir(cwd3)) == NULL)
+	        d_log("Error getting path\n");
+	        
+	      rewinddir(dir3);
+	      while ((dp2 = readdir(dir3))) {
+	        if ((k = NAMLEN(dp2)) < 4)
+	          continue;
+	        if (strcasecmp(dp2->d_name + k - 4, fileext) == 0) {
+	          return dp2->d_name;
+	        }
+	      }
+	    closedir(dir3);
+	    }
+	  }
+		if ((k = NAMLEN(dp)) < 4)
+			continue;
+		if (strcasecmp(dp->d_name + k - 4, fileext) == 0) {
+			return dp->d_name;
+		}
+	}
+	closedir(dir2);
+	
+	        if (errno)
+            d_log("zipscript-c: findfileextparent() - readdir(dir) returned an error: %s\n", strerror(errno));
+
+	return NULL;
+}
+
+
 int
 check_dupefile(DIR *dir, char *fname)
 {
@@ -1242,6 +1363,32 @@ remove_nfo_indicator(GLOBAL *g)
 		unlink(g->l.nfo_incomplete);
 }
 
+void
+remove_sample_indicator(GLOBAL *g)
+{
+        int             k = 2;
+	char            path[2][PATH_MAX];
+
+	buffer_paths(g, path, &k, ((int)strlen(g->l.path)-1));
+
+	if (matchpath(incomplete_generic1_path, g->l.path))
+		g->l.sample_incomplete = incomplete(incomplete_generic1_sample_indicator, path, &g->v, INCOMPLETE_SAMPLE);
+	else if (matchpath(incomplete_generic2_path, g->l.path))
+	        g->l.sample_incomplete = incomplete(incomplete_generic2_sample_indicator, path, &g->v, INCOMPLETE_SAMPLE);
+	else
+	        g->l.sample_incomplete = incomplete(incomplete_sample_indicator, path, &g->v, INCOMPLETE_SAMPLE);
+	if (fileexists(g->l.sample_incomplete))
+	        unlink(g->l.sample_incomplete);
+	if (matchpath(incomplete_generic1_path, g->l.path))
+	        g->l.sample_incomplete = incomplete(incomplete_generic1_base_sample_indicator, path, &g->v, INCOMPLETE_SAMPLE);
+	else if (matchpath(incomplete_generic2_path, g->l.path))
+	        g->l.sample_incomplete = incomplete(incomplete_generic2_base_sample_indicator, path, &g->v, INCOMPLETE_SAMPLE);
+	else
+	        g->l.sample_incomplete = incomplete(incomplete_base_sample_indicator, path, &g->v, INCOMPLETE_SAMPLE);
+	if (fileexists(g->l.sample_incomplete))
+	        unlink(g->l.sample_incomplete);
+}
+
 void 
 getrelname(GLOBAL *g)
 {
@@ -1264,14 +1411,17 @@ getrelname(GLOBAL *g)
 		if (matchpath(incomplete_generic1_path, g->l.path)) {
 			g->l.incomplete = incomplete(incomplete_generic1_cd_indicator, path, &g->v, INCOMPLETE_NORMAL);
 			g->l.nfo_incomplete = incomplete(incomplete_generic1_base_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+			g->l.sample_incomplete = incomplete(incomplete_generic1_base_sample_indicator, path, &g->v, INCOMPLETE_SAMPLE);
 			g->l.sfv_incomplete = incomplete(incomplete_generic1_base_sfv_indicator, path, &g->v, INCOMPLETE_SFV);
 		} else if (matchpath(incomplete_generic2_path, g->l.path)) {
 			g->l.incomplete = incomplete(incomplete_generic2_cd_indicator, path, &g->v, INCOMPLETE_NORMAL);
 			g->l.nfo_incomplete = incomplete(incomplete_generic2_base_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+			g->l.sample_incomplete = incomplete(incomplete_generic2_base_sample_indicator, path, &g->v, INCOMPLETE_SAMPLE);
 			g->l.sfv_incomplete = incomplete(incomplete_generic2_base_sfv_indicator, path, &g->v, INCOMPLETE_SFV);
 		} else {
 			g->l.incomplete = incomplete(incomplete_cd_indicator, path, &g->v, INCOMPLETE_NORMAL);
 			g->l.nfo_incomplete = incomplete(incomplete_base_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+			g->l.sample_incomplete = incomplete(incomplete_base_sample_indicator, path, &g->v, INCOMPLETE_SAMPLE);
 			g->l.sfv_incomplete = incomplete(incomplete_base_sfv_indicator, path, &g->v, INCOMPLETE_SFV);
 		}
 		g->l.in_cd_dir = 1;
@@ -1282,14 +1432,17 @@ getrelname(GLOBAL *g)
 		if (matchpath(incomplete_generic1_path, g->l.path)) {
 			g->l.incomplete = incomplete(incomplete_generic1_indicator, path, &g->v, INCOMPLETE_NORMAL);
 			g->l.nfo_incomplete = incomplete(incomplete_generic1_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+			g->l.sample_incomplete = incomplete(incomplete_generic1_sample_indicator, path, &g->v, INCOMPLETE_SAMPLE);
 			g->l.sfv_incomplete = incomplete(incomplete_generic1_sfv_indicator, path, &g->v, INCOMPLETE_SFV);
 		} else if (matchpath(incomplete_generic2_path, g->l.path)) {
 			g->l.incomplete = incomplete(incomplete_generic2_indicator, path, &g->v, INCOMPLETE_NORMAL);
 			g->l.nfo_incomplete = incomplete(incomplete_generic2_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+			g->l.sample_incomplete = incomplete(incomplete_generic2_sample_indicator, path, &g->v, INCOMPLETE_SAMPLE);
 			g->l.sfv_incomplete = incomplete(incomplete_generic2_sfv_indicator, path, &g->v, INCOMPLETE_SFV);
 		} else {
 			g->l.incomplete = incomplete(incomplete_indicator, path, &g->v, INCOMPLETE_NORMAL);
 			g->l.nfo_incomplete = incomplete(incomplete_nfo_indicator, path, &g->v, INCOMPLETE_NFO);
+			g->l.sample_incomplete = incomplete(incomplete_sample_indicator, path, &g->v, INCOMPLETE_SAMPLE);
 			g->l.sfv_incomplete = incomplete(incomplete_sfv_indicator, path, &g->v, INCOMPLETE_SFV);
 		}
 		g->l.in_cd_dir = 0;

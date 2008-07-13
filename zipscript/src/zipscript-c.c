@@ -1803,6 +1803,25 @@ main(int argc, char **argv)
 						}
 					}
 				}
+				if (g.l.sample_incomplete && matchpath(check_for_missing_sample_dirs, g.l.path) && !(findfileextsub(dir, ".vob") || findfileextsub(dir, ".avi"))) {
+					if (!g.l.in_cd_dir) {
+						d_log("zipscript-c: Creating missing-sample indicator %s.\n", g.l.sample_incomplete);
+						create_incomplete_sample();
+					} else {
+						if (!findfileextsubp(dir, ".avi") || !findfileextsubp(dir, ".vob")) {
+							d_log("zipscript-c: Creating missing-sample indicator (base) %s.\n", g.l.sample_incomplete);
+							if ((inc_point[0] = find_last_of(g.l.path, "/")) != g.l.path)
+								*inc_point[0] = '\0';
+							if ((inc_point[1] = find_last_of(g.v.misc.release_name, "/")) != g.v.misc.release_name)
+								*inc_point[1] = '\0';
+							create_incomplete_sample();
+							if (*inc_point[0] == '\0')
+								*inc_point[0] = '/';
+							if (*inc_point[1] == '\0')
+								*inc_point[1] = '/';
+						}
+					}
+				}
 			}
 		} else {
 
@@ -1846,6 +1865,11 @@ main(int argc, char **argv)
 	if ((findfileext(dir, ".nfo") || (g.l.in_cd_dir && findfileextparent(parent, ".nfo"))) && g.l.nfo_incomplete) {
 		d_log("zipscript-c: Removing missing-nfo indicator (if any)\n");
 		remove_nfo_indicator(&g);
+	}
+
+	if ((findfileextsub(dir, ".vob") || (findfileextsub(dir, ".avi")) || (g.l.in_cd_dir && (findfileextsubp(dir, ".vob") || findfileextsubp(dir, ".avi")))) && g.l.sample_incomplete) {
+		d_log("zipscript-c: Removing missing-sample indicator (if any)\n");
+		remove_sample_indicator(&g);
 	}
 #if (enable_affil_script == TRUE )
 	if (affil_upload == TRUE) {

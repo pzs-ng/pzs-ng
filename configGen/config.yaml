@@ -1389,6 +1389,20 @@ options:
             This variable defines indicators on missing sfv in normal releases.
         default: '"../(no-sfv)-%0"'
 
+    incomplete_base_sample_indicator:
+        type: string
+        comment: |-
+            On upload an indicator is created if sample is missing.
+            This variable defines indicators on missing sample in multi-cd releases.
+        default: '"../../(no-sample)-%1"'
+
+    incomplete_sample_indicator:
+        type: string
+        comment: |-
+            On upload an indicator is created if sample is missing.
+            This variable defines indicators on missing sample in normal releases.
+        default: '"../(no-sample)-%0"'
+
     incomplete_generic1_path:
         type: path
         comment: |-
@@ -1444,6 +1458,20 @@ options:
             This variable defines indicators on missing sfv in normal releases.
         default: '"/site/incompletes/(no-sfv)-%0"'
 
+    incomplete_generic1_base_sample_indicator:
+        type: string
+        comment: |-
+            On upload an indicator is created if sample is missing.
+            This variable defines indicators on missing sample in multi-cd releases.
+        default: '"/site/incompletes/(no-sample)-%1"'
+
+    incomplete_generic1_sample_indicator:
+        type: string
+        comment: |-
+            On upload an indicator is created if sample is missing.
+            This variable defines indicators on missing sample in normal releases.
+        default: '"/site/incompletes/(no-sample)-%0"'
+
     incomplete_generic2_path:
         type: path
         comment: |-
@@ -1498,6 +1526,20 @@ options:
             incomplete releases. Put here how that indicator will look.
             This variable defines indicators on missing sfv in normal releases.
         default: '"/site/incompletes/(no-sfv)-%0"'
+
+    incomplete_generic2_base_sample_indicator:
+        type: string
+        comment: |-
+            On upload an indicator is created if sample is missing.
+            This variable defines indicators on missing sample in multi-cd releases.
+        default: '"/site/incompletes/(no-sample)-%1"'
+
+    incomplete_generic2_sample_indicator:
+        type: string
+        comment: |-
+            On upload an indicator is created if sample is missing.
+            This variable defines indicators on missing sample in normal releases.
+        default: '"/site/incompletes/(no-sample)-%0"'
 
     progressmeter:
         type: string

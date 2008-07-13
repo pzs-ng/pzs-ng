@@ -27,6 +27,7 @@
 
 #define INCOMPLETE_NORMAL		3
 #define INCOMPLETE_NFO			7
+#define INCOMPLETE_SAMPLE		9
 #define INCOMPLETE_SFV			15
 
 #define video_announce_norace_complete_type		"COMPLETE_VIDEO"
