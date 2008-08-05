@@ -1,5 +1,8 @@
 PSXC-IMDB CHANGELOG:
 --------------------
+- v2.9d - Aug. 06th, 2008 - fixed a bug in business-gathering, and a few other
+                             places. Also fixed the top250/bottom100 that was lost
+			     after imdb.com changed last time.
 - v2.9c - Jul. 13th, 2008 - fixed a bug re: business-gathering - compguy284 made a
 			     fix that i modified a bit.
 - v2.9b - Jun. 17th, 2008 - fixed another introduced bug in psxc-imdb-find.sh.
