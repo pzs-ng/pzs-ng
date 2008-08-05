@@ -1,5 +1,7 @@
 PSXC-IMDB CHANGELOG:
 --------------------
+- v2.9e - Aug. 06th, 2008 - added support for thumbnail download. New option
+			     DOWNLOADTHUMB enable this option.
 - v2.9d - Aug. 06th, 2008 - fixed a bug in business-gathering, and a few other
                              places. Also fixed the top250/bottom100 that was lost
 			     after imdb.com changed last time.

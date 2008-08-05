@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.9d"
+VERSION="v2.9e"
 
 ######################################################################################################
 
@@ -471,6 +471,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
       #http_proxy=192.168.0.1:8080
       wget -U "Internet Explorer" -O $TMPFILE --timeout=30 $IMDBURL >/dev/null 2>&1
       if [ $? = "0" ] || [ -z "$(cat $TMPFILE)" ]; then
+       TMBURL=$(grep "\.jpg" $TMPFILE | head -n 1 | tr ' \"' '\n' | grep "\.jpg" | head -n 1)
        LYNXTRIES=$LYNXTRIESORIG
        HTMLPAGE="$(lynx $LYNXFLAGS -force_html $TMPFILE)"
        echo "$HTMLPAGE" | grep -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE
@@ -910,6 +911,15 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
      mv "$GLROOT$IMDBLKL/$INFOTEMPNAME" "$GLROOT$IMDBLKL/$INFOFILENAMEPRINT"
     fi
    fi
+
+# create a thumbnail?
+
+   if [ "$DOWNLOADTHUMB" = "YES" ]; then
+    FILENAME=$(ls -1Ftr "$GLROOT$IMDBLKL" | grep -a -v "/" | grep -a -v "@" | grep -a -e "[.][nN][fF][oO]" | head -n 1)
+    TMBNAME=$(echo $FILENAME | sed "s/\.nfo/.jpg/")
+    wget -U "Internet Explorer" -O $GLROOT$IMDBLKL/$TMBNAME --timeout=30 $TMBURL >/dev/null 2>&1
+   fi
+
 # Should we run any external scripts?
 
    if [ ! -z "$EXTERNALSCRIPTNAME" ]; then
