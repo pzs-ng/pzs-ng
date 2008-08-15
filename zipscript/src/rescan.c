@@ -378,7 +378,6 @@ main(int argc, char *argv[])
 		}
 		buffer_progress_bar(&g.v);
 		if (g.v.total.files_missing == 0) {
-			g.v.misc.write_log = 0;
 			complete(&g, complete_type);
 			createstatusbar(convert(&g.v, g.ui, g.gi, zip_completebar));
 #if (chmod_completebar)
@@ -662,8 +661,8 @@ main(int argc, char *argv[])
 				create_indexfile(g.l.race, &g.v, exec);
 #endif
 
-				/* Sort if we're s'posed to write to log and we're not in a group-dir/nosort-dir. */
-				if (g.v.misc.write_log == TRUE && !matchpath(group_dirs, g.l.path) && !matchpath(audio_nosort_dirs, g.l.path))
+				/* Sort if we're not in a group-dir/nosort-dir. */
+				if (!matchpath(group_dirs, g.l.path) && !matchpath(audio_nosort_dirs, g.l.path))
                                 {
                                     printf(" Resorting release.\n");
                                     audioSort(&g.v.audio, g.l.link_source, g.l.link_target);
@@ -673,7 +672,6 @@ main(int argc, char *argv[])
 				complete_bar = video_completebar;
 				break;
 			}
-			g.v.misc.write_log = 0;
 			complete(&g, complete_type);
 
 			if (complete_bar) {
