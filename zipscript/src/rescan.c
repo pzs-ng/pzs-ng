@@ -207,6 +207,7 @@ main(int argc, char *argv[])
 	bzero(&g.v.total, sizeof(struct race_total));
 	g.v.misc.fastest_user[0] = 0;
 	g.v.misc.release_type = RTYPE_NULL;
+	g.v.misc.write_log = 0;
 
 #ifdef USING_GLFTPD
 	if (getenv("SECTION") == NULL) {
