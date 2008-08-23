@@ -300,7 +300,7 @@ main(int argc, char **argv)
 	} else
 		*fileext = '\0';
 
-	g.v.misc.release_type = 0;
+	g.v.misc.release_type = read_headdata(&g.v);
 	switch (get_filetype_postdel(&g, fileext)) {
 	case 0:
 		ftype = g.v.misc.release_type;
