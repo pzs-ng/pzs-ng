@@ -414,12 +414,12 @@ proc ::ngBot::TVRage::FindEpisode {url season episode} {
 	}
 
 	foreach junk $matches {
-		regexp -nocase -- {<td width='40'.[^>]+><a href='(.[^']+)'>\d+x(\d+)</i></a></td>} $junk -> tmp_url tmp_episode
+		if {[regexp -nocase -- {<td width='40'.[^>]+><a href='(.[^']+)'>\d+x(\d+)</i></a></td>} $junk -> tmp_url tmp_episode]} {
+			if {$episode == $tmp_episode} {
+				set info(episode_url) "http://www.tvrage.com$tmp_url"
 
-		if {$episode == $tmp_episode} {
-			set info(episode_url) "http://www.tvrage.com$tmp_url"
-
-			break
+				break
+			}
 		}
 
 		catch {unset tmp_url tmp_episode}
