@@ -1,5 +1,8 @@
 PSXC-IMDB CHANGELOG:
 --------------------
+- v2.9g - Oct. 01st, 2008 - another imdb layout change.
+- v2.9f - Sep. 16th, 2008 - imdb changed layout again. Fixed rating and votes bug that
+			     appeared because of it.
 - v2.9e - Aug. 06th, 2008 - added support for thumbnail download. New option
 			     DOWNLOADTHUMB enable this option.
 - v2.9d - Aug. 06th, 2008 - fixed a bug in business-gathering, and a few other

@@ -92,7 +92,7 @@
 
 #ifndef allowed_years
 #define allowed_years_is_defaulted
-#define allowed_years                             "2005,2006,2007,2008"
+#define allowed_years                             "2005,2006,2007,2008,2009"
 #endif
 
 #ifndef always_scan_audio_syms

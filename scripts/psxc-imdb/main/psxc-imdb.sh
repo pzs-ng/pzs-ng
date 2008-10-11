@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.9e"
+VERSION="v2.9g"
 
 ######################################################################################################
 
@@ -507,8 +507,11 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     fi
     GENRE=$(cat $TMPFILE | grep -a -e "^Genre:" | head -n 1 | sed "s/ more//" | sed "s/Genre:/Genre........:/" | sed s/\"/$QUOTECHAR/g | tr '|' '\n' | head -n $GENRENUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//")
     GENRECLEAN=$(echo $GENRE | sed "s/Genre........: *//")
-    RATING=$(cat $TMPFILE | grep -a -e "User\ Rating:" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ [Vv][Oo][Tt][Ee] [Hh][Ee][Rr][Ee]//" | sed "s/User Rating:/User Rating..:/" | sed "s/* //g" | sed "s/_ //g" | sed s/\"/$QUOTECHAR/g | head -n 1)
-    RATINGCLEAN=$(echo $RATING | sed "s/User Rating..: *//")
+    RATING="User Rating..: $(grep "[0-9]\.[0-9]\/[0-9][0-9]" $TMPFILE | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/\* //g" | sed "s/_ //g" | sed s/\"/$QUOTECHAR/g | head -n 1 | sed "s|/10\ |/10\ \(|"))"
+    if [ "$RATING" = "User Rating..: )" ]; then
+      RATING="User Rating..: N/A"
+    fi
+    RATINGCLEAN=$(echo $RATING | sed "s/User Rating.*: *//")
     if [ "$(echo $RATINGCLEAN | grep -a -e "[Ww][Aa][Ii][Tt]")" = "" ]; then
      RATINGVOTES=$(echo $RATINGCLEAN | sed "s/ [Vv][Oo][Tt][Ee][Ss]//" | tr '() ' '\n' | grep -a -v "/" | grep -a -e "[0-9]" | head -n 1)
      RATINGSCORE=$(echo $RATINGCLEAN | grep -a -e "/" | tr '/' '\n' | head -n 1)

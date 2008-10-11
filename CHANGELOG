@@ -2,11 +2,12 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.1.0a --> 1.1.x :
+		- fix in tv-rage tcl to compensate for layout changes.
 		- fixed small bug in postdel that prevented it from removing progressbars in
 		  mp3-releases. Thanks goes to |DureX| for report and fix.
 		- fixed a bug in rescan that prevented it from (re-)creating mp3-symlinks.
 		- added check_for_missing_sample_dirs and create_missing_sample_link vars.
-		- updated psxc-imdb to 2.9b
+		- updated psxc-imdb to 2.9g
 		- changed default allowed_years to include 2008 and exclude 2004
                 - we no longer manually add spaces between racers in sortstats()/racer_list,
                   so racersplit is now per default " ". Neither do we add a space after

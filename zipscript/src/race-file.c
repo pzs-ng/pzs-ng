@@ -425,7 +425,12 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 		exit(EXIT_FAILURE);
 	}
 
-	insfv = fdopen(infd, "r");
+	if ((insfv = fdopen(infd, "r")) == NULL) {
+		d_log("copysfv: Unable to fdopen %s: %s\n", source, strerror(errno));
+		remove_lock(raceI);
+		exit(EXIT_FAILURE);
+	}
+
 	while ((fgets(fbuf, sizeof(fbuf), insfv))) {
 		
 		/* remove comment */

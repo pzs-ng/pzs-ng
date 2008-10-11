@@ -9,7 +9,8 @@ NOTE: If you use a different GLROOT than /glftpd, you most
       are taken and all actions questioned.
 NOTE: Where I say "replace" below here, you can also patch.
 
-2.9a -> 2.9b - replace psxc-imdb-find.sh.
+2.9b -> 2.9g - replace psxc-imdb.sh
+2.9a -> 2.9b - replace psxc-imdb-find.sh
 2.9  -> 2.9a - replace psxc-imdb.sh, psxc-imdb-nuker.sh and psxc-imdb-find.sh.
 2.8  -> 2.9  - replace psxc.imdb.sh and psxc-imdb-find.sh.
 2.7g -> 2.7i - replace psxc-imdb.sh
