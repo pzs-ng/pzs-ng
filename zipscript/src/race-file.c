@@ -397,7 +397,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 	
 #if ( sfv_cleanup == TRUE )
 	int		tmpfd;
-	char		crctmp[8];
+	char		crctmp[16];
 	
 	if ((tmpfd = open(".tmpsfv", O_CREAT | O_TRUNC | O_RDWR, 0644)) == -1)
 		d_log("copysfv: open(.tmpsfv): %s\n", strerror(errno));
