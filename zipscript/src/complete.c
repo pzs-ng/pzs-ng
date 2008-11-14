@@ -86,7 +86,7 @@ complete(GLOBAL *g, int completetype)
 			if (message_mp3 != DISABLED) {
 				if (g->v.misc.release_type == RTYPE_AUDIO) {
 					d_log("complete:   - Converting message_mp3 ...\n");
-					fprintf(msgfile, convert(&g->v, g->ui, g->gi, message_mp3));
+					fprintf(msgfile, "%s", convert(&g->v, g->ui, g->gi, message_mp3));
 				}
 			}
 			if (message_footer != DISABLED) {

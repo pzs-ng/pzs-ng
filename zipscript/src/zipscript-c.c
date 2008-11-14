@@ -277,11 +277,11 @@ main(int argc, char **argv)
 	} else {
 		gnum = buffer_groups(GROUPFILE, 0);
 		unum = buffer_users(PASSWDFILE, 0);
-		sprintf(g.v.user.name, getenv("USER"));
-		sprintf(g.v.user.group, getenv("GROUP"));
+		sprintf(g.v.user.name, "%s", getenv("USER"));
+		sprintf(g.v.user.group, "%s", getenv("GROUP"));
 		if (!(int)strlen(g.v.user.group))
 			memcpy(g.v.user.group, "NoGroup", 8);
-		sprintf(g.v.user.tagline, getenv("TAGLINE"));
+		sprintf(g.v.user.tagline, "%s", getenv("TAGLINE"));
 		if (!(int)strlen(g.v.user.tagline))
 			memcpy(g.v.user.tagline, "No Tagline Set", 15);
 		g.v.file.speed = (unsigned int)strtol(getenv("SPEED"), NULL, 0);
@@ -293,7 +293,7 @@ main(int argc, char **argv)
 #endif
 
 		d_log("zipscript-c: Reading section from env (%s)\n", getenv("SECTION"));
-		snprintf(g.v.sectionname, 127, getenv("SECTION"));
+		snprintf(g.v.sectionname, 127, "%s", getenv("SECTION"));
 		g.v.section = 0;
 		temp_p_free = temp_p = strdup((const char *)gl_sections);	/* temp_p_free is needed since temp_p is modified by strsep */
 		if ((temp_p) == NULL) {
@@ -1694,7 +1694,7 @@ main(int argc, char **argv)
 #if ( create_m3u == TRUE )
 				if (findfileext(dir, ".sfv")) {
 					d_log("zipscript-c: Creating m3u\n");
-					cnt = sprintf(target, findfileext(dir, ".sfv"));
+					cnt = sprintf(target, "%s", findfileext(dir, ".sfv"));
 					strlcpy(target + cnt - 3, "m3u", 4);
 					create_indexfile(g.l.race, &g.v, target);
 				} else

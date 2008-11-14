@@ -265,7 +265,7 @@ main(int argc, char **argv)
 	if (getenv("SECTION") == NULL)
 		sprintf(g.v.sectionname, "DEFAULT");
 	else
-		snprintf(g.v.sectionname, 127, getenv("SECTION"));
+		snprintf(g.v.sectionname, 127, "%s", getenv("SECTION"));
 
 	d_log("postdel: Copying data &g.l into memory\n");
 	strlcpy(g.v.file.name, fname, NAME_MAX);

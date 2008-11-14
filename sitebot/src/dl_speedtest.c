@@ -55,7 +55,7 @@ main (int argc, char **argv)
 		return 0;
 	}
 	p = argv[1] + 5;
-	snprintf(filename, sizeof(filename), p);
+	snprintf(filename, "%s", sizeof(filename), p);
 	if (!getcwd(wdir, sizeof(wdir))) {
 #if (debug_mode)
 			printf("%s: Could not retrieve current path - getcwd() failed.\n", argv[0]);
@@ -69,10 +69,10 @@ main (int argc, char **argv)
 		return 0;
 	}
 	if (getenv("USER") && getenv("GROUP") && getenv("SPEED")) {
-		snprintf(user, sizeof(user) - 1, getenv("USER"));
+		snprintf(user, sizeof(user) - 1, "%s", getenv("USER"));
 		if (!strlen(user))
 			sprintf(user, "NoUser");
-		snprintf(group, sizeof(group) - 1, getenv("GROUP"));
+		snprintf(group, sizeof(group) - 1, "%s", getenv("GROUP"));
 		if (!strlen(group))
 			sprintf(group, "NoGroup");
 		if ((speed = strtol(getenv("SPEED"), NULL, 10)) == 0) {

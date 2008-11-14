@@ -146,7 +146,7 @@ main(int argc, char *argv[])
 	if (getenv("SECTION") == NULL) {
 		sprintf(g.v.sectionname, "DEFAULT");
 	} else {
-		snprintf(g.v.sectionname, 127, getenv("SECTION"));
+		snprintf(g.v.sectionname, 127, "%s", getenv("SECTION"));
 	}
 #else
         snprintf(g.v.sectionname, 127, argv[8]);
@@ -574,7 +574,7 @@ main(int argc, char *argv[])
 			case RTYPE_AUDIO:
 				complete_bar = audio_completebar;
 #if ( create_m3u == TRUE )
-				n = sprintf(exec, findfileext(dir, ".sfv"));
+				n = sprintf(exec, "%s", findfileext(dir, ".sfv"));
 				strcpy(exec + n - 3, "m3u");
 				create_indexfile(g.l.race, &g.v, exec);
 #endif

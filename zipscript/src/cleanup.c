@@ -44,7 +44,7 @@ main(int argc, char **argv)
 		if (!strncmp(argv[1], "/", 1)) {
 			setfree = 0;
 			printf("PZS-NG Cleanup: Running script in view mode only.\n");
-			snprintf(startdir, PATH_MAX, argv[1]);
+			snprintf(startdir, PATH_MAX, "%s", argv[1]);
 		} else {
 			if (getcwd(startdir, PATH_MAX) == NULL) {
 				printf("PZS-NG Cleanup: ERROR - Failed to getcwd.\n");
