@@ -589,7 +589,9 @@ readconfig(char *arg)
 	free(tmp);
 	buf = malloc(filestat.st_size);
 	*buf = 0;
-	fread(buf, 1, filestat.st_size, cfgfile);
+	if (!fread(buf, 1, filestat.st_size, cfgfile)) {
+		printf("Failed to fread() %s: %s\n", tmp, strerror(errno));
+	}
 	fclose(cfgfile);
 
 	for (n = 0; n < filestat.st_size; n++) {
@@ -756,7 +758,9 @@ buffer_groups(char *groupfile, int setfree)
 	fstat(f, &filestat);
 	f_size = filestat.st_size;
 	f_buf = malloc(f_size);
-	read(f, f_buf, f_size);
+	if (read(f, f_buf, f_size) == -1) {
+		printf("Failed to read() %s: %s\n", f_name, strerror(errno));
+	}
 
 	for (n = 0; n < f_size; n++)
 		if (f_buf[n] == '\n')

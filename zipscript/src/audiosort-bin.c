@@ -31,7 +31,9 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			getcwd(cwdDir, PATH_MAX);
+			if (!getcwd(cwdDir, PATH_MAX)) {
+				d_log("audioSort: Failed to getcwd: %s\n", strerror(errno));
+			}
 #if (debug_announce)
 			printf("debug info: argv[1] = '%s'\n", argv[1]);
 			printf("debug info: PWD = '%s'\n", getenv("PWD"));

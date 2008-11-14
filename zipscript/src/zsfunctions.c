@@ -962,7 +962,9 @@ readsfv_ffile(struct VARS *raceI)
 
 	fd = open(raceI->file.name, O_RDONLY);
 	buf = ng_realloc(buf, raceI->file.size + 2, 1, 1, raceI, 1);
-	read(fd, buf, raceI->file.size);
+	if (read(fd, buf, raceI->file.size) == -1) {
+		d_log("readsfv_ffile: Failed to read() %s: %s\n", raceI->file.name, strerror(errno));
+	}
 	close(fd);
 
 	dir = opendir(".");
@@ -1016,7 +1018,10 @@ get_rar_info(struct VARS *raceI)
 
 	if ((file = fopen(raceI->file.name, "r"))) {
 		fseek(file, 45, SEEK_CUR);
-		fread(&raceI->file.compression_method, 1, 1, file);
+		if (!fread(&raceI->file.compression_method, 1, 1, file)) {
+			d_log("get_rar_info: Failed to fread() %s.\n", raceI->file.name);
+		}
+
 		if ( ! (( 47 < raceI->file.compression_method ) && ( raceI->file.compression_method < 54 )) )
 			raceI->file.compression_method = 88;
 		fclose(file);

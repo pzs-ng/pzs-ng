@@ -173,7 +173,9 @@ main(int argc, char **argv)
 	g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
 	g.gi = ng_realloc2(g.gi,sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
 
-	getcwd(g.l.path, PATH_MAX);
+	if (!getcwd(g.l.path, PATH_MAX)) {
+		d_log("postdel: Failed to getcwd(): %s\n", strerror(errno));
+	}
 
 	if (subcomp(g.l.path, g.l.basepath) && (g.l.basepath[0] == '\0'))
 		strlcpy(g.l.basepath, g.l.path, PATH_MAX);
@@ -513,7 +515,9 @@ d_log("g.v.total.files=%d\n", g.v.total.files);
 			} else if (matchpath(check_for_missing_nfo_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
 				if (!g.l.in_cd_dir) {
 					d_log("postdel: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
-					create_incomplete_nfo();
+					if (create_incomplete_nfo()) {
+						d_log("postdel: Warning: create_incomplete_nfo() returned something.\n");
+					}
 				} else {
 					
 					if (findfileextparent(parent, ".nfo")) {
@@ -526,7 +530,9 @@ d_log("g.v.total.files=%d\n", g.v.total.files);
 							*inc_point[0] = '\0';
 						if ((inc_point[1] = find_last_of(g.v.misc.release_name, "/")) != g.v.misc.release_name)
 							*inc_point[1] = '\0';
-						create_incomplete_nfo();
+						if (create_incomplete_nfo()) {
+							d_log("postdel: Warning: create_incomplete_nfo() returned something.\n");
+						}
 						if (*inc_point[0] == '\0')
 							*inc_point[0] = '/';
 						if (*inc_point[1] == '\0')
@@ -543,7 +549,9 @@ d_log("g.v.total.files=%d\n", g.v.total.files);
 			} else if (matchpath(check_for_missing_sample_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
 				if (!g.l.in_cd_dir) {
 					d_log("rescan: Creating missing-sample indicator %s.\n", g.l.sample_incomplete);
-					create_incomplete_sample();
+					if (create_incomplete_sample()) {
+						d_log("postdel: Warning: create_incomplete_sample() returned something.\n");
+					}
 				} else {
 					if (findfileextsubp(dir)) {
 						d_log("rescan: Removing missing-sample indicator (if any)\n");
@@ -556,7 +564,9 @@ d_log("g.v.total.files=%d\n", g.v.total.files);
 							*inc_point[0] = '\0';
 						if ((inc_point[1] = find_last_of(g.v.misc.release_name, "/")) != g.v.misc.release_name)
 							*inc_point[1] = '\0';
-						create_incomplete_sample();
+						if (create_incomplete_sample()) {
+							d_log("postdel: Warning: create_incomplete_sample() returned something.\n");
+						}
 						if (*inc_point[0] == '\0')
 							*inc_point[0] = '/';
 						if (*inc_point[1] == '\0')
@@ -569,7 +579,9 @@ d_log("g.v.total.files=%d\n", g.v.total.files);
 		if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
 			d_log("postdel: Creating incomplete indicator\n");
 			d_log("postdel:    incomplete: '%s', path: '%s'\n", g.l.incomplete, g.l.path);
-			create_incomplete();
+			if (create_incomplete()) {
+				d_log("postdel: Warning: create_incomplete() returned something.\n");
+			}
 		}
 		d_log("postdel: Moving progress bar (%d)\n", g.v.misc.release_type);
 		g.v.misc.release_type = ftype;

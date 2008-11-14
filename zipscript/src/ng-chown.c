@@ -204,12 +204,16 @@ myscan(int my_result, int new_user, int new_group, int user_flag, int group_flag
 			while (n--) {
 				my_total += close(open(dirlist[n]->d_name, O_NONBLOCK));
 				if (new_user != 0 && new_group != 0) {
-					chown(dirlist[n]->d_name, new_user, new_group);
+					if (chown(dirlist[n]->d_name, new_user, new_group) == -1) {
+						printf("%s - Warning: Failed to chown() %s: %s\n", my_name, dirlist[n]->d_name, strerror(errno));
+					}
 				}
 			}
 			if ((my_result == 0) && (dir_flag == 1)) {
 				if (new_user != 0 && new_group != 0) {
-					chown(my_path, new_user, new_group);
+					if (chown(my_path, new_user, new_group) == -1) {
+						printf("%s - Warning: Failed to chown() %s: %s\n", my_name, my_path, strerror(errno));
+					}
 				}
 			}
 			return my_total;
@@ -221,7 +225,9 @@ myscan(int my_result, int new_user, int new_group, int user_flag, int group_flag
 			my_result = close(open(my_path, O_NONBLOCK));
 			if (my_result == 0) {
 				if (new_user != 0 && new_group != 0) {
-					chown(my_path, new_user, new_group);
+					if (chown(my_path, new_user, new_group) == -1) {
+						printf("%s - Warning: Failed to chown() %s: %s\n", my_name, my_path, strerror(errno));
+					}
 				}
 			} else {
 				printf("%s - Error: Unable to read file %s\n", my_name, my_path);
@@ -257,7 +263,9 @@ get_gluid(char *passwdfile, char *user_name)
 	fstat(f, &fileinfo);
 	f_size = fileinfo.st_size;
 	f_buf = ng_realloc3(f_buf, f_size);
-	read(f, f_buf, f_size);
+	if (!read(f, f_buf, f_size)) {
+		printf("Warning: read() failed: %s\n", strerror(errno));
+	}
 
 	for (i = 0; i < f_size; i++) {
 		if (f_buf[i] == '\n' || i == f_size) {
@@ -322,7 +330,9 @@ get_glgid(char *groupfile, char *group_name)
 	fstat(f, &fileinfo);
 	f_size = fileinfo.st_size;
 	f_buf = ng_realloc3(f_buf, f_size);
-	read(f, f_buf, f_size);
+	if (!read(f, f_buf, f_size)) {
+		printf("Warning: read() failed: %s\n", strerror(errno));
+	}
 
 	for (i = 0; i < f_size; i++) {
 		if (f_buf[i] == '\n' || i == f_size) {

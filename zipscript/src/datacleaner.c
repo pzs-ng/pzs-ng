@@ -105,7 +105,9 @@ remove_dir_loop(char *path)
 				sprintf(target, "%s/%s", path, dp->d_name);
 				remove_dir_loop(target);
 				rmdir(target);
-				chdir(path);
+				if (chdir(path) == -1) {
+					perror(path);
+				}
 			} else
 				unlink(dp->d_name);
 		}
@@ -135,11 +137,15 @@ check_dir_loop(char *path, int zd_length)
 				if ((dir2 = opendir(target + zd_length))) {
 					closedir(dir2);
 					check_dir_loop(target, zd_length);
-					chdir(path);
+					if (chdir(path) == -1) {
+						perror(path);
+					}
 				} else {
 					remove_dir_loop(target);
 					rmdir(target);
-					chdir(path);
+					if (chdir(path) == -1) {
+						perror(path);
+					}
 				}
 			}
 		}

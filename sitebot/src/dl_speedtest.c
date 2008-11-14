@@ -55,7 +55,7 @@ main (int argc, char **argv)
 		return 0;
 	}
 	p = argv[1] + 5;
-	snprintf(filename, "%s", sizeof(filename), p);
+	snprintf(filename, sizeof(filename), "%s", p);
 	if (!getcwd(wdir, sizeof(wdir))) {
 #if (debug_mode)
 			printf("%s: Could not retrieve current path - getcwd() failed.\n", argv[0]);

@@ -40,7 +40,9 @@ void audioSortDir(char *targetDir)
 	cnt = extractDirname(link_target, targetDir);
 	strlcpy(link_source, targetDir, PATH_MAX);
 	
-	chdir(targetDir);
+	if (chdir(targetDir) == -1) {
+		d_log("audioSortDir: Failed to chdir() to %s: %s\n", targetDir, strerror(errno));
+	}
 	if ((ourDir = opendir(targetDir)) == NULL) {
 		printf("Error: Failed to open dir \"%s\" : %s\n", targetDir, strerror(errno));
 		return;
