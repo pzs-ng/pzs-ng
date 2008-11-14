@@ -208,7 +208,9 @@ main(int argc, char **argv)
 
 	strlcpy(g.v.misc.current_path, g.l.path, PATH_MAX);
 	d_log("zipscript-c: Changing directory to %s\n", g.l.path);
-	chdir(g.l.path);
+	if (chdir(g.l.path) == -1) {
+		d_log("zipscript-c: Failed to chdir(): %s\n", strerror(errno));
+	}
 
 	if (subcomp(g.l.path, g.l.basepath) && (g.l.basepath[0] == '\0'))
 		strlcpy(g.l.basepath, g.l.path, PATH_MAX);
@@ -1157,7 +1159,9 @@ main(int argc, char **argv)
 #if ( create_missing_sfv_link == TRUE )
 				if ((!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) && g.l.sfv_incomplete && !findfileext(dir, ".zip") && !matchpath(nocheck_dirs, g.l.path) && !matchpath(allowed_types_exemption_dirs, g.l.path)) {
 					d_log("zipscript-c: Creating missing-sfv indicator %s.\n", g.l.sfv_incomplete);
-					create_incomplete_sfv();
+					if (create_incomplete_sfv()) {
+						d_log("zipscript-c: create_incomplete_sfv() returned something.\n");
+					}
 				}
 #endif
 			}
@@ -1642,7 +1646,9 @@ main(int argc, char **argv)
 			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
 				d_log("zipscript-c: Creating incomplete indicator:\n", g.l.incomplete);
 				d_log("zipscript-c:    name: '%s', incomplete: '%s', path: '%s'\n", g.v.misc.release_name, g.l.incomplete, g.l.path);
-				create_incomplete();
+				if (create_incomplete()) {
+					d_log("zipscript-c: create_incomplete() returned something.\n");
+				}
 			}
 
 			d_log("zipscript-c: Creating/moving progress bar\n");
@@ -1776,7 +1782,9 @@ main(int argc, char **argv)
 				if (g.l.nfo_incomplete && matchpath(check_for_missing_nfo_dirs, g.l.path) && !findfileext(dir, ".nfo")) {
 					if (!g.l.in_cd_dir) {
 						d_log("zipscript-c: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
-						create_incomplete_nfo();
+						if (create_incomplete_nfo()) {
+							d_log("zipscript-c: create_incomplete_nfo() returned something.\n");
+						}
 					} else {
 						if (!findfileextparent(parent, ".nfo")) {
 							d_log("zipscript-c: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
@@ -1785,7 +1793,9 @@ main(int argc, char **argv)
 								*inc_point[0] = '\0';
 							if ((inc_point[1] = find_last_of(g.v.misc.release_name, "/")) != g.v.misc.release_name)
 								*inc_point[1] = '\0';
-							create_incomplete_nfo();
+							if (create_incomplete_nfo()) {
+								d_log("zipscript-c: create_incomplete_nfo() returned something.\n");
+							}
 							if (*inc_point[0] == '\0')
 								*inc_point[0] = '/';
 							if (*inc_point[1] == '\0')

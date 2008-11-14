@@ -220,7 +220,9 @@ read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
 	if (sb.st_size == 0) {
 		*raceI->misc.old_leader = '\0';
 	} else {
-		read(fd, &raceI->misc.old_leader, 24);
+		if (read(fd, &raceI->misc.old_leader, 24) == -1) {
+			d_log("read_write_leader: read() failed: %s\n", strerror(errno));
+		}
 		lseek(fd, 0L, SEEK_SET);
 	}
 
@@ -980,7 +982,9 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 		d_log("create_lock: lock set. (no previous lockfile found) pid: %d\n", hd.data_pid);
 		return 0;
 	} else {
-		read(fd, &hd, sizeof(HEADDATA));
+		if (read(fd, &hd, sizeof(HEADDATA)) == -1) {
+			d_log("create_lock: read() failed: %s\n", strerror(errno));
+		}
 		if (hd.data_version != sfv_version) {
 			d_log("create_lock: version of datafile mismatch. Stopping and suggesting a cleanup.\n");
 			close(fd);
@@ -1091,7 +1095,9 @@ remove_lock(struct VARS *raceI)
 	if (!raceI->data_in_use)
 		d_log("remove_lock: lock not removed - no lock was set\n");
 	else {
-		read(fd, &hd, sizeof(HEADDATA));
+		if (read(fd, &hd, sizeof(HEADDATA)) == -1) {
+			d_log("remove_lock: read() failed: %s\n", strerror(errno));
+		}
 		hd.data_in_use = 0;
 		hd.data_pid = 0;
 		hd.data_completed = raceI->misc.data_completed;
@@ -1140,7 +1146,9 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 		d_log("update_lock: open(%s): %s\n", raceI->headpath, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	read(fd, &hd, sizeof(HEADDATA));
+	if (read(fd, &hd, sizeof(HEADDATA)) == -1) {
+		d_log("update_lock: read() failed: %s\n", strerror(errno));
+	}
 	fstat(fd, &sb);
 
 	if (hd.data_version != sfv_version) {
@@ -1235,40 +1243,62 @@ check_rarfile(const char *filename)
 		d_log("check_rarfile: Failed to open file (%s): %s\n", filename, strerror(errno));
 		return 0;
 	}
-	read(fd, &HEAD_CRC, 2);
-	read(fd, &HEAD_TYPE, 1);
-	read(fd, &HEAD_FLAGS, 2);
-	read(fd, &HEAD_SIZE, 2);
+	if (read(fd, &HEAD_CRC, 2) == -1) {
+		d_log("check_rarfile: read() failed: %s\n", strerror(errno));
+	}
+	if (read(fd, &HEAD_TYPE, 1) == -1) {
+		d_log("check_rarfile: read() failed: %s\n", strerror(errno));
+	}
+	if (read(fd, &HEAD_FLAGS, 2) == -1) {
+		d_log("check_rarfile: read() failed: %s\n", strerror(errno));
+	}
+	if (read(fd, &HEAD_SIZE, 2) == -1) {
+		d_log("check_rarfile: read() failed: %s\n", strerror(errno));
+	}
 	if (!(HEAD_CRC == 0x6152 && HEAD_TYPE == 0x72 && HEAD_FLAGS == 0x1a21 && HEAD_SIZE == 0x0007)) {
 		close(fd);
 		return 0;       /* Not a rar file */
 	}
 	if (HEAD_FLAGS & 0x8000) {
-		read(fd, &ADD_SIZE, 4);
+		if (read(fd, &ADD_SIZE, 4) == -1) {
+			d_log("check_rarfile: read() failed: %s\n", strerror(errno));
+		}
 		block_size = HEAD_SIZE + ADD_SIZE;
 		lseek(fd, block_size - 11 + 2, SEEK_CUR);
 	} else {
 		block_size = HEAD_SIZE;
 		lseek(fd, block_size - 7 + 2, SEEK_CUR);
 	}
-	read(fd, &HEAD_TYPE, 1);
-	read(fd, &HEAD_FLAGS, 2);
-	read(fd, &HEAD_SIZE, 2);
+	if (read(fd, &HEAD_TYPE, 1) == -1) {
+		d_log("check_rarfile: read() failed: %s\n", strerror(errno));
+	}
+	if (read(fd, &HEAD_FLAGS, 2) == -1) {
+		d_log("check_rarfile: read() failed: %s\n", strerror(errno));
+	}
+	if (read(fd, &HEAD_SIZE, 2) == -1) {
+		d_log("check_rarfile: read() failed: %s\n", strerror(errno));
+	}
 	if (HEAD_TYPE != 0x73) {
 		close(fd);
 		d_log("check_rarfile: Broken file? File has wrong header\n");
 		return 0;       /* wrong header - broken(?) */
 	}
 	if (HEAD_FLAGS & 0x02) {
-		read(fd, &ADD_SIZE, 4);
+		if (read(fd, &ADD_SIZE, 4) == -1) {
+			d_log("check_rarfile: read() failed: %s\n", strerror(errno));
+		}
 		block_size = HEAD_SIZE + ADD_SIZE;
 		lseek(fd, block_size - 11 + 2, SEEK_CUR);
 	} else {
 		block_size = HEAD_SIZE;
 		lseek(fd, block_size - 7 + 2, SEEK_CUR);
 	}
-	read(fd, &HEAD_TYPE, 1);
-	read(fd, &HEAD_FLAGS, 2);
+	if (read(fd, &HEAD_TYPE, 1) == -1) {
+		d_log("check_rarfile: read() failed: %s\n", strerror(errno));
+	}
+	if (read(fd, &HEAD_FLAGS, 2) == -1) {
+		d_log("check_rarfile: read() failed: %s\n", strerror(errno));
+	}
 	if (HEAD_TYPE != 0x74) {
 		close(fd);
 		d_log("check_rarfile: Broken file? File has wrong header\n");

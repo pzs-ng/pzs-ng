@@ -101,7 +101,9 @@ scandirectory(char *dirname, int setfree)
 		if ((dir1 = opendir("."))) {
 			while ((dp1 = readdir(dir1))) {
 				if (dp1->d_name[0] != '.') {
-					chdir(dp1->d_name);
+					if (chdir(dp1->d_name) == -1) {
+						printf("Failed to chdir(): %s\n", strerror(errno));
+					}
 					if ((dir2 = opendir("."))) {
 						while ((dp2 = readdir(dir2))) {
 							if (dp1->d_name[0] != '.') {
@@ -115,7 +117,9 @@ scandirectory(char *dirname, int setfree)
 						}
 					}
 					closedir(dir2);
-					chdir("..");
+					if (chdir("..") == -1) {
+						printf("Failed to chdir(): %s\n", strerror(errno));
+					}
 					if (setfree)
 						rmdir(dp1->d_name);
 				}

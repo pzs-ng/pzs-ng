@@ -330,7 +330,9 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 	if (n == 0) {
 		*(header + 1) -= 224;
 
-		read(fd, header + 2, 2);
+		if (read(fd, header + 2, 2) == -1) {
+			d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+		}
 
 		version = (*(header + 1)) >> 3;
 		layer = (*(header + 1) >> 1) & ((1 << 2) - 1);	/* Nasty code, keeps CC
@@ -387,7 +389,9 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 
 		/* LAME VBR TAG */
 		lseek(fd, 0, SEEK_SET);
-		read(fd, id3v2_header, 10);
+		if (read(fd, id3v2_header, 10) == -1) {
+			d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+		}
 
 		if (memcmp(id3v2_header, "ID3", 3) == 0) {
 			/*
@@ -400,13 +404,21 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 			vbr_offset = (id3v2_header[8] >> 1) * 256 + ((id3v2_header[8] & 1) * 128) + id3v2_header[9] + 10;
 		}
 		lseek(fd, 13 + vbr_offset, SEEK_SET);
-		read(fd, xing_header1, 4);
+		if (read(fd, xing_header1, 4) == -1) {
+			d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+		}
 		lseek(fd, 21 + vbr_offset, SEEK_SET);
-		read(fd, xing_header2, 4);
+		if (read(fd, xing_header2, 4) == -1) {
+			d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+		}
 		lseek(fd, 36 + vbr_offset, SEEK_SET);
-		read(fd, xing_header3, 4);
+		if (read(fd, xing_header3, 4) == -1) {
+			d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+		}
 		lseek(fd, 36 + vbr_offset, SEEK_SET);
-		read(fd, fraunhofer_header, 4);
+		if (read(fd, fraunhofer_header, 4) == -1) {
+			d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+		}
 
 		if (memcmp(xing_header1, "Xing", 4) == 0 ||
 		    memcmp(xing_header2, "Xing", 4) == 0 ||
@@ -415,11 +427,15 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 		    memcmp(fraunhofer_header, "VBRI", 4) == 0) {
 
 			lseek(fd, 165 + vbr_offset, SEEK_SET);
-			read(fd, vbr_oldnew, 1);
+			if (read(fd, vbr_oldnew, 1) == -1) {
+				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			}
 			audio->vbr_oldnew[0] = (*vbr_oldnew & 4) >> 2;     // vbr method (vbr-old, vbr-new)
 
 			lseek(fd, 180 + vbr_offset, SEEK_SET);
-			read(fd, vbr_misc, 1);
+			if (read(fd, vbr_misc, 1) == -1) {
+				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			}
 			audio->vbr_noiseshaping = (*vbr_misc & 3);      // vbr noiseshaping
 			if (((*vbr_misc & 28) >> 2) == 0)
 				sprintf(audio->vbr_stereo_mode, "Mono");
@@ -454,15 +470,21 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 //			audio->vbr_source = (*vbr_misc & 192) >> 6;     // vbr source sample frequency
 
 			lseek(fd, 176 + vbr_offset, SEEK_SET);
-			read(fd, vbr_minimum_bitrate, 1);               // minimumvbr bitrate, or abr bitrate
+			if (read(fd, vbr_minimum_bitrate, 1) == -1) {   // minimumvbr bitrate, or abr bitrate
+				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			}
 			audio->vbr_minimum_bitrate = *vbr_minimum_bitrate;
 
 			lseek(fd, 155 + vbr_offset, SEEK_SET);
-			read(fd, vbr_quality, 1);                       // vbr quality setting
+			if (read(fd, vbr_quality, 1) == -1) {           // vbr quality setting
+				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			}
 			audio->vbr_quality = *vbr_quality;
 
 			lseek(fd, 156 + vbr_offset, SEEK_SET);
-			read(fd, audio->vbr_version_string, 9);         // vbr version, short string
+			if (read(fd, audio->vbr_version_string, 9) == -1) { // vbr version, short string
+				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			}
 			audio->vbr_version_string[9] = 0;
 			for (t1 = 9; t1 > 0; t1--) {
 				if (audio->vbr_version_string[t1] > 32) {
@@ -475,7 +497,9 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 			audio->is_vbr = 1;
 			if (memcmp(audio->vbr_version_string, "LAME", 4) == 0) {
 				lseek(fd, 182 + vbr_offset, SEEK_SET);
-				read(fd, vbr_header, 2);
+				if (read(fd, vbr_header, 2) == -1) {
+					d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+				}
 				sprintf(audio->vbr_preset, "%s", get_preset((char *)vbr_header));
 
 				if (audio->vbr_version_string[4] == 32)
@@ -498,21 +522,33 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 		}
 		/* ID3 TAG */
 		lseek(fd, -128, SEEK_END);
-		read(fd, header, 3);
+		if (read(fd, header, 3) == -1) {
+			d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+		}
 		if (memcmp(header, "TAG", 3) == 0) {	/* id3 tag */
 			tag_ok = 1;
-			read(fd, audio->id3_title, 30);
-			read(fd, audio->id3_artist, 30);
-			read(fd, audio->id3_album, 30);
+			if (read(fd, audio->id3_title, 30) == -1) {
+				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			}
+			if (read(fd, audio->id3_artist, 30) == -1) {
+				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			}
+			if (read(fd, audio->id3_album, 30) == -1) {
+				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			}
 
 			lseek(fd, -35, SEEK_END);
-			read(fd, audio->id3_year, 4);
+			if (read(fd, audio->id3_year, 4) == -1) {
+				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			}
 			if (tolower(audio->id3_year[1]) == 'k') {
 				memcpy(header, audio->id3_year, 3);
 				sprintf(audio->id3_year, "%c00%c", *header, *(header + 2));
 			}
 			lseek(fd, -1, SEEK_END);
-			read(fd, header, 1);
+			if (read(fd, header, 1) == -1) {
+				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			}
 			t_genre = (int)*header;
 			if (t_genre < 0)
 				t_genre += 256;
@@ -639,7 +675,9 @@ int avinfo(char *filename, struct VIDEO *vinfo)
 		if (tag == MKTAG('a','v','i','h')) {
 			AVIMAINHEADER avih;
 
-			fread(&avih, sizeof(avih), 1, f);
+			if (!fread(&avih, sizeof(avih), 1, f)) {
+				d_log("avinfo: Failed to fread()\n");
+			}
 
 			width = avih.dwWidth;
 			height = avih.dwHeight;
@@ -650,7 +688,9 @@ int avinfo(char *filename, struct VIDEO *vinfo)
 		if (tag == MKTAG('s','t','r','h')) {
 			AVISTREAMHEADER strh;
 
-			fread(&strh, sizeof(strh), 1, f);
+			if (!fread(&strh, sizeof(strh), 1, f)) {
+				d_log("avinfo: Failed to fread()\n");
+			}
 			
 			if ((type = strh.fccType) == MKTAG('v','i','d','s')) {
 				vids = strh.fccHandler;
@@ -664,7 +704,9 @@ int avinfo(char *filename, struct VIDEO *vinfo)
 			if (type == MKTAG('a','u','d','s')) {
 				WAVEFORMATEX wave;
 
-				fread(&wave, sizeof(wave), 1, f);
+				if (!fread(&wave, sizeof(wave), 1, f)) {
+					d_log("avinfo: Failed to fread()\n");
+				}
 
 				hz = wave.nSamplesPerSec;
 				ch = wave.nChannels;
@@ -676,7 +718,9 @@ int avinfo(char *filename, struct VIDEO *vinfo)
 			if (type == MKTAG('v','i','d','s') && !vids) {
 				BITMAPINFOHEADER bm;
 
-				fread(&bm, sizeof(bm), 1, f);
+				if (!fread(&bm, sizeof(bm), 1, f)) {
+					d_log("avinfo: Failed to fread()\n");
+				}
 
 				vids = bm.biCompression;
 				

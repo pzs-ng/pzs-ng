@@ -120,7 +120,10 @@ main(int argc, char *argv[])
         }
 
 
-	getcwd(g.l.path, PATH_MAX);
+	if (getcwd(g.l.path, PATH_MAX)) {
+            printf("ng-post_unnuke: Could not getcwd().\n");
+            exit(EXIT_FAILURE);
+	}
 
 	if (subcomp(g.l.path, g.l.basepath) && (g.l.basepath[0] == '\0'))
 		strlcpy(g.l.basepath, g.l.path, PATH_MAX);
@@ -325,7 +328,9 @@ main(int argc, char *argv[])
 
 		} else {
 			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
-				create_incomplete();
+				if (create_incomplete()) {
+					d_log("ng-post_unnuke: WARNING: create_incomplete() returned a value\n");
+				}
 			}
 				move_progress_bar(0, &g.v, g.ui, g.gi);
 		}
@@ -336,14 +341,18 @@ main(int argc, char *argv[])
 			} else if (matchpath(check_for_missing_nfo_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
 				if (!g.l.in_cd_dir) {
 					d_log("ng-post_unnuke: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
-					create_incomplete_nfo();
+					if (create_incomplete_nfo()) {
+						d_log("ng-post_unnuke: WARNING: create_incomplete_nfo() returned a value\n");
+					}
 				} else {
 					if (findfileextparent(parent, ".nfo")) {
 						d_log("ng-post_unnuke: Removing missing-nfo indicator (if any)\n");
 						remove_nfo_indicator(&g);
 					} else {
 						d_log("ng-post_unnuke: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
-						create_incomplete_nfo();
+						if (create_incomplete_nfo()) {
+							d_log("ng-post_unnuke: WARNING: create_incomplete_nfo() returned a value\n");
+						}
 					}
 				}
 			}
@@ -504,7 +513,10 @@ main(int argc, char *argv[])
 			} else if (matchpath(check_for_missing_nfo_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
 				if (!g.l.in_cd_dir) {
 					d_log("ng-post_unnuke: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
-					create_incomplete_nfo();
+					if (create_incomplete_nfo()) {
+						d_log("ng-post_unnuke: WARNING: create_incomplete_nfo() returned a value\n");
+					}
+
 				} else {
 					if (findfileextparent(parent, ".nfo")) {
 						d_log("ng-post_unnuke: Removing missing-nfo indicator (if any)\n");
@@ -517,7 +529,9 @@ main(int argc, char *argv[])
 							*inc_point[0] = '\0';
 						if ((inc_point[1] = find_last_of(g.v.misc.release_name, "/")) != g.v.misc.release_name)
 							*inc_point[1] = '\0';
-						create_incomplete_nfo();
+						if (create_incomplete_nfo()) {
+							d_log("ng-post_unnuke: WARNING: create_incomplete_nfo() returned a value\n");
+						}
 						if (*inc_point[0] == '\0')
 							*inc_point[0] = '/';
 						if (*inc_point[1] == '\0')
@@ -534,7 +548,10 @@ main(int argc, char *argv[])
 			} else if (matchpath(check_for_missing_sample_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
 				if (!g.l.in_cd_dir) {
 					d_log("rescan: Creating missing-sample indicator %s.\n", g.l.sample_incomplete);
-					create_incomplete_sample();
+					if (create_incomplete_sample()) {
+						d_log("ng-post_unnuke: WARNING: create_incomplete_sample() returned a value\n");
+					}
+
 				} else {
 					if (findfileextsubp(dir)) {
 						d_log("rescan: Removing missing-sample indicator (if any)\n");
@@ -547,7 +564,9 @@ main(int argc, char *argv[])
 							*inc_point[0] = '\0';
 						if ((inc_point[1] = find_last_of(g.v.misc.release_name, "/")) != g.v.misc.release_name)
 							*inc_point[1] = '\0';
-						create_incomplete_sample();
+						if (create_incomplete_sample()) {
+							d_log("ng-post_unnuke: WARNING: create_incomplete_sample() returned a value\n");
+						}
 						if (*inc_point[0] == '\0')
 							*inc_point[0] = '/';
 						if (*inc_point[1] == '\0')
@@ -598,12 +617,16 @@ main(int argc, char *argv[])
 			}
 		} else {
 			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
-				create_incomplete();
+				if (create_incomplete()) {
+					d_log("ng-post_unnuke: WARNING: create_incomplete() returned a value\n");
+				}
 			}
 				move_progress_bar(0, &g.v, g.ui, g.gi);
 		}
 	} else if (mark_empty_dirs_as_incomplete_on_rescan) {
-			create_incomplete();
+			if (create_incomplete()) {
+				d_log("ng-post_unnuke: WARNING: create_incomplete() returned a value\n");
+			}
 	}
 
 	d_log("ng-post_unnuke: Freeing memory and removing lock.\n");
