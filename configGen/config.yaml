@@ -1681,6 +1681,13 @@ options:
             Enter the name of the script you wish to execute on sample uploads.
         default: '"/bin/sample_script.sh"'
 
+    accept_before_complete:
+        type: boolean
+        comment: |-
+            This option specify if accept_script should run before complete_script
+            or not.
+        default: false
+
     disable_audio_race:
         type: boolean
         comment: |-

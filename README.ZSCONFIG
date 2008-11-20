@@ -97,6 +97,11 @@ ZIP_NFO <STRING>
 	Error msg when nfo file is uploaded in a zipdir.
 	Default: "NFO-File: Not allowed here!"
 
+accept_before_complete <TRUE|FALSE>
+	This option specify if accept_script should run before complete_script
+	or not.
+	Default: FALSE
+
 accept_script <PATH>
 	Put here the path to the external script which should be run after
 	a file is verified and ok.

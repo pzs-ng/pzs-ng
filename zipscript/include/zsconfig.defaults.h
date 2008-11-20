@@ -20,6 +20,11 @@
 #define PASSWDFILE                                "/etc/passwd"
 #endif
 
+#ifndef accept_before_complete
+#define accept_before_complete_is_defaulted
+#define accept_before_complete                    FALSE
+#endif
+
 #ifndef accept_script
 #define accept_script_is_defaulted
 #define accept_script                             "/bin/imdb_parse.sh"

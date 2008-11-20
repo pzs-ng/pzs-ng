@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.1.0a --> 1.1.x :
+		- added option to make accept_script run prior to complete_script.
 		- fix in tv-rage tcl to compensate for layout changes.
 		- fixed small bug in postdel that prevented it from removing progressbars in
 		  mp3-releases. Thanks goes to |DureX| for report and fix.

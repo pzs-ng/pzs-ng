@@ -104,6 +104,8 @@ main(int argc, char **argv)
 	long		loc;
 #if ( enable_complete_script || enable_accept_script )
 	int		nfofound = 0;
+	int		accept_has_run = 0;
+
 #endif
 #if ( del_banned_release )
 	int		deldir = 0;
@@ -1755,6 +1757,18 @@ main(int argc, char **argv)
 			}
 
 #if ( enable_complete_script == TRUE )
+#if ( enable_accept_script == TRUE )
+			if (accept_before_complete == TRUE) {
+				accept_has_run = 1;
+				if (!fileexists(accept_script)) {
+					d_log("zipscript-c: Warning - accept_script (%s) - file does not exist!\n", accept_script);
+				}
+				d_log("zipscript-c: Executing accept script (before complete_script)\n");
+				sprintf(target, accept_script " \"%s\"", g.v.file.name);
+				if (execute(target) != 0)
+					d_log("zipscript-c: Failed to execute accept_script: %s\n", strerror(errno));
+			}
+#endif
 			nfofound = (int)findfileext(dir, ".nfo");
 			if (!fileexists(complete_script)) {
 				d_log("zipscript-c: Warning - complete_script (%s) - file does not exist!\n", complete_script);
@@ -1841,7 +1855,7 @@ main(int argc, char **argv)
 		printf("%s", convert(&g.v, g.ui, g.gi, zipscript_footer_error));
 	}
 #if ( enable_accept_script == TRUE )
-	if (exit_value == EXIT_SUCCESS) {
+	if (exit_value == EXIT_SUCCESS && !accept_has_run) {
 		nfofound = (int)findfileext(dir, ".nfo");
 		if (!fileexists(accept_script)) {
 			d_log("zipscript-c: Warning - accept_script (%s) - file does not exist!\n", accept_script);

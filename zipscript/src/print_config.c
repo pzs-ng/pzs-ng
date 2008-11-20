@@ -64,6 +64,9 @@ printf("#define UNKNOWN_FILE                              %s\n", stringify(UNKNO
 #ifndef ZIP_NFO_is_defaulted
 printf("#define ZIP_NFO                                   %s\n", stringify(ZIP_NFO));
 #endif
+#ifndef accept_before_complete_is_defaulted
+printf("#define accept_before_complete                    %s\n", (accept_before_complete == FALSE ? "FALSE" : "TRUE"));
+#endif
 #ifndef accept_script_is_defaulted
 printf("#define accept_script                             %s\n", stringify(accept_script));
 #endif
@@ -885,6 +888,7 @@ printf("#define SFV_FIRST                                 %s\n", stringify(SFV_F
 printf("#define SPEEDTEST                                 %s\n", stringify(SPEEDTEST));
 printf("#define UNKNOWN_FILE                              %s\n", stringify(UNKNOWN_FILE));
 printf("#define ZIP_NFO                                   %s\n", stringify(ZIP_NFO));
+printf("#define accept_before_complete                    %s\n", (accept_before_complete == FALSE ? "FALSE" : "TRUE"));
 printf("#define accept_script                             %s\n", stringify(accept_script));
 printf("#define affil_script                              %s\n", stringify(affil_script));
 printf("#define allow_dir_chown_in_ng_chown               %s\n", (allow_dir_chown_in_ng_chown == FALSE ? "FALSE" : "TRUE"));
