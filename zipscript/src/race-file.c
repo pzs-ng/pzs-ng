@@ -899,11 +899,14 @@ verify_racedata(const char *path, struct VARS *raceI)
 	}
 	
 	for (i = 0; (ret = read(fd, &rd, sizeof(RACEDATA)));) {
-		if (fileexists(rd.fname)) {
+		d_log("  verify_racedata: Verifying %s..\n", rd.fname);
+		if (!strlen(rd.fname)) {
+			d_log("  verify_racedata: ERROR! Something is wrong with the racedata!\n");
+		} else if (fileexists(rd.fname)) {
 			tmprd = ng_realloc(tmprd, sizeof(RACEDATA)*(i+1), 0, 1, raceI, 0);
 			memcpy(&tmprd[i], &rd, sizeof(RACEDATA));
 			i++;
-		} else if (rd.fname) {
+		} else {
 			d_log("verify_racedata: Oops! %s is missing - removing from racedata (ret=%d)\n", rd.fname, ret);
 			create_missing(rd.fname);
 		}
@@ -918,11 +921,14 @@ verify_racedata(const char *path, struct VARS *raceI)
 	}
 	
 	max = i;
+	d_log("  verify_racedata: write(%s)\n", path);
 	for (i = 0; i < max; i++)
+		d_log("  verify_racedata: write (%i)\n", i);
 		if (write(fd, &tmprd[i], sizeof(RACEDATA)) != sizeof(RACEDATA))
 			d_log("remove_from_race: write failed: %s\n", strerror(errno));
 	
 	close(fd);
+	d_log("  verify_racedata: write(%s) done.\n", path);
 	ng_free(tmprd);
 
 	return 1;
