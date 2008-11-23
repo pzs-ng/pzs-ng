@@ -922,11 +922,12 @@ verify_racedata(const char *path, struct VARS *raceI)
 	
 	max = i;
 	d_log("  verify_racedata: write(%s)\n", path);
-	for (i = 0; i < max; i++)
+	for (i = 0; i < max; i++) {
 		d_log("  verify_racedata: write (%i)\n", i);
 		if (write(fd, &tmprd[i], sizeof(RACEDATA)) != sizeof(RACEDATA))
 			d_log("remove_from_race: write failed: %s\n", strerror(errno));
-	
+		d_log("  verify_racedata: write (%i) done.\n", i);
+	}
 	close(fd);
 	d_log("  verify_racedata: write(%s) done.\n", path);
 	ng_free(tmprd);
