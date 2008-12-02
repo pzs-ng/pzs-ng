@@ -40,7 +40,7 @@
 #else
 #define create_incomplete() createzerofile(g.l.incomplete)
 #define create_incomplete_nfo() createzerofile(g.l.nfo_incomplete)
-+#define create_incomplete_sample() createzerofile(g.l.sample_incomplete)
+#define create_incomplete_sample() createzerofile(g.l.sample_incomplete)
 #define create_incomplete_sfv() createzerofile(g.l.sfv_incomplete)
 #endif
 
