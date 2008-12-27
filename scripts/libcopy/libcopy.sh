@@ -2,7 +2,7 @@
 
 ###############################################################################
 #
-# LIBCOPY v1.4 by psxc
+# LIBCOPY v1.5 by psxc
 ######################
 #
 # This small script (ripped from glinstall.sh ;) will copy libs used by files
@@ -24,7 +24,7 @@ zs_bins="zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-c
 # CODEPART - PLEASE DO NOT CHANGE #
 ###################################
 
-version="1.4 (pzs-ng version)"
+version="1.5 (pzs-ng version)"
 
 # Set system type
 case $(uname -s) in
@@ -170,9 +170,6 @@ case $os in
         done
 esac
 
-echo -e "\nCopying your system's run-time library linker(s):"
-echo "(NOTE: Searches can take a couple of minutes, please be patient.)"
-libfailed=0
 case $os in
 	freebsd4)
 		bsdlibs="/usr/libexec/ld-elf.so.1"
@@ -188,6 +185,13 @@ case $os in
 		;;
 	linux)
 		bsdlibs="/lib/ld-linux.so.2"
+		echo -e "\nCopying needed resolv-libs (if needed)..."
+		for linuxlib in /lib/libnss_dns*; do
+		  echo -n "   $(basename $linuxlib)"
+		  cp $linuxlib $glroot/lib/
+		  echo " OK"
+		done
+		echo ""
 		;;
 	darwin)
 		bsdlibs="/usr/lib/dyld /usr/lib/dylib1.o /usr/lib/system/libmathCommon.A.dylib"
@@ -197,6 +201,10 @@ case $os in
 		bsdlibs=""
 		;;
 esac
+
+echo -e "\nCopying your system's run-time library linker(s):"
+echo "(NOTE: Searches can take a couple of minutes, please be patient.)"
+libfailed=0
 
 if [ ! -z "$bsdlibs" ]; then
         for bsdlib in $bsdlibs; do
