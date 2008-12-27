@@ -113,8 +113,9 @@ complete(GLOBAL *g, int completetype)
                         user_p += sprintf(user_p, "%s", racersplit_prefix);
 			for (cnt = first_entry; cnt < max_users_in_top && cnt < g->v.total.users; cnt++)
                         {
-                                if (cnt != first_entry)
+                                if (cnt != first_entry) {
                                     user_p += sprintf(user_p, "%s", racersplit);
+				}
 				user_p += sprintf(user_p, "%s", convert_user(&g->v, g->ui[g->ui[cnt]->pos], g->gi, user_top, cnt));
                         }
                         user_p += sprintf(user_p, "%s", racersplit_postfix);
@@ -122,14 +123,16 @@ complete(GLOBAL *g, int completetype)
 		if (group_top != NULL && max_groups_in_top > 0) {
                         group_p += sprintf(group_p, "%s", racersplit_prefix);
 			for (cnt = first_entry; cnt < max_groups_in_top && cnt < g->v.total.groups; cnt++)
-                        {
-                                if (cnt != first_entry)
-                                    group_p += sprintf(user_p, "%s", racersplit);
+			{
+//				if (cnt != first_entry) {
+//					group_p += sprintf(user_p, "%s", racersplit);
+//				}
 				group_p += sprintf(group_p, "%s", convert_group(&g->v, g->gi[g->gi[cnt]->pos], group_top, cnt));
-                                if (cnt != max_groups_in_top - 1 && cnt != g->v.total.groups - 1)
-                                    group_p += sprintf(group_p, "%s", racersplit);
-                        }
-                        group_p += sprintf(group_p, "%s", racersplit_postfix);
+				if (cnt != max_groups_in_top - 1 && cnt != g->v.total.groups - 1) {
+					group_p += sprintf(group_p, "%s", racersplit);
+				}
+			}
+			group_p += sprintf(group_p, "%s", racersplit_postfix);
 		}
 	}
 }
