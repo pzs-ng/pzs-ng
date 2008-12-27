@@ -245,19 +245,6 @@ main(int argc, char **argv)
 			break;
 	}
 
-	if ((matchpath(nocheck_dirs, g.l.path) && rescan_nocheck_dirs_allowed == FALSE) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
-		d_log("postdel: Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
-		d_log("postdel: Freeing memory, removing lock and exiting\n");
-		ng_free(g.ui);
-		ng_free(g.gi);
-
-		if (remove_dot_debug_on_delete)
-			unlink(".debug");
-
-		remove_lock(&g.v);
-		return 0;
-
-	}
 	g.l.race = ng_realloc(g.l.race, n = (int)strlen(g.l.path) + 12 + sizeof(storage), 1, 1, &g.v, 1);
 	g.l.sfv = ng_realloc(g.l.sfv, n, 1, 1, &g.v, 1);
 	g.l.sfvbackup = ng_realloc(g.l.sfvbackup, n, 1, 1, &g.v, 1);
@@ -281,6 +268,33 @@ main(int argc, char **argv)
 	d_log("postdel: Caching release name\n");
 	getrelname(&g);
 	d_log("postdel: DEBUG 0: incomplete: '%s', path: '%s'\n", g.l.incomplete, g.l.path);
+
+	if ((matchpath(nocheck_dirs, g.l.path) && rescan_nocheck_dirs_allowed == FALSE) || (!matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
+		d_log("postdel: Dir matched with nocheck_dirs, or is not in the zip/sfv/group-dirs\n");
+		d_log("postdel: Freeing memory, removing lock and exiting\n");
+		ng_free(g.ui);
+		ng_free(g.gi);
+		if (fileexists(g.l.race))
+			unlink(g.l.race);
+		if (fileexists(g.l.sfv))
+			unlink(g.l.sfv);
+		if (fileexists(g.l.sfvbackup))
+			unlink(g.l.sfvbackup);
+		if (fileexists(g.l.leader))
+			unlink(g.l.leader);
+		ng_free(g.l.race);
+		ng_free(g.l.sfv);
+		ng_free(g.l.sfvbackup);
+		ng_free(g.l.leader);
+
+		if (remove_dot_debug_on_delete)
+			unlink(".debug");
+
+		remove_lock(&g.v);
+		return 0;
+
+	}
+
 
 	d_log("postdel: Parsing file extension from filename...\n");
 
@@ -488,13 +502,17 @@ d_log("g.v.total.files=%d\n", g.v.total.files);
 		if (g.l.incomplete)
 			unlink(g.l.incomplete);
 			
-		unlink("file_id.diz");
-		unlink(g.l.sfv);
+		if (fileexists("file_id.diz"))
+			unlink("file_id.diz");
+		if (fileexists(g.l.race))
+			unlink(g.l.race);
+		if (fileexists(g.l.sfv))
+			unlink(g.l.sfv);
 		if (fileexists(g.l.sfvbackup))
 			unlink(g.l.sfvbackup);
-		unlink(g.l.race);
-		unlink(g.l.leader);
-		
+		if (fileexists(g.l.leader))
+			unlink(g.l.leader);
+
 		g.v.misc.release_type = ftype;
 		move_progress_bar(1, &g.v, g.ui, g.gi);
 		

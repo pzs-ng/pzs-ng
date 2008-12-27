@@ -23,6 +23,7 @@ v1.1.0a --> 1.1.x :
 		- fixed small bug in speedtest dirs when mark_file_as_bad was set to TRUE.
 		- fixed small bug in sample_list.
 		- fixed small bug with channel announce of groups.
+		- fixed bug #472 - remove metadata completely when dir is empty.
 
 v1.1.0 --> 1.1.0a : (r2414)
 		- stats in announces were broken in v1.1.0, ``hotfix''.
