@@ -326,8 +326,14 @@ proc ::ngBot::Blow::encryptedIncomingHandler {nick host hand chan arg} {
         if {[string equal [lindex $item 2] "+OK"]} { continue }
         if {![string equal [lindex $item 1] "-|-"] && ![matchattr $hand [lindex $item 1] $chan]} { continue }
     	set ::blowEncryptedMessage 1
+	set ::lastbind [lindex $item 2]
         ## execute bound proc
-        if {[string equal [lindex $item 2] [lindex $tmp 0]]} { [lindex $item 4] $nick $host $hand $chan [join [lrange $tmp 1 end]] }
+        if {[string equal [lindex $item 2] [lindex $tmp 0]]} { 
+		# Use "eval" to expand the callback script, for example:
+		# bind pub -|- !something [list PubCommand MyEvent]
+		# proc PubCommand {event nick host hand chan text} {...}
+		eval [lindex $item 4] $nick $host $hand $chan [join [lrange $tmp 1 end]] 
+	}
         unset ::blowEncryptedMessage
     }
 }

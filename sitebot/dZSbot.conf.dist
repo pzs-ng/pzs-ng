@@ -113,6 +113,7 @@ set disable(BADHOSTMASK)    0
 set disable(BADPASSWORD)    0
 set disable(BANNEDHOST)     0
 set disable(DELETED)        0
+set disable(EXPIRED)        0
 set disable(IPNOTADDED)     0
 set redirect(ADDUSER)       $staffchan
 set redirect(GADDUSER)      $staffchan
@@ -128,6 +129,7 @@ set redirect(BADHOSTMASK)   $staffchan
 set redirect(BADPASSWORD)   $staffchan
 set redirect(BANNEDHOST)    $staffchan
 set redirect(DELETED)       $staffchan
+set redirect(EXPIRED)       $staffchan
 set redirect(IPNOTADDED)    $staffchan
 set redirect(WHOIS)         $staffchan
 

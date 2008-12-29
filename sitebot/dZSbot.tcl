@@ -415,6 +415,9 @@ proc parselogin {line eventvar datavar} {
 			default {return 0}
 		}
 		set data [list $user $hostmask $ip]
+        } elseif {[regexp {^(\S+): user expired.$} $line result user]} {
+                set event "EXPIRED"
+                set data [list $user]
 	} elseif {![regexp {^(\S+): (.+)$} $line result event data]} {
 		return 0
 	}
@@ -853,7 +856,7 @@ proc rightscheck {rights user group flags} {
 proc ng_invitechan {nick chan} {
 	if {![validchan $chan] || ![botonchan $chan]} {
 		putlog "dZSbot error: Unable to invite \"$nick\" to \"$chan\", I'm not in the channel."
-	} elseif {![botisop $chan]} {
+        } elseif {![botisop $chan] && ![botishalfop $chan]} {
 		putlog "dZSbot error: Unable to invite \"$nick\" to \"$chan\", I'm not opped."
 	} else {
 		putquick "INVITE $nick $chan"
