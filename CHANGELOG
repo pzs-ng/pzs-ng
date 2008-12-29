@@ -25,6 +25,8 @@ v1.1.0a --> 1.1.x :
 		- fixed small bug with channel announce of groups.
 		- fixed bug #472 - remove metadata completely when dir is empty.
 		- updated libcopy to include special libs needed on linux for chroot dnslookups
+		- added psxc-trailer as part of the scripts-dir.
+		- fixed bug #482 - SFV_* vars missing entry in dzsbot.vars
 
 v1.1.0 --> 1.1.0a : (r2414)
 		- stats in announces were broken in v1.1.0, ``hotfix''.
