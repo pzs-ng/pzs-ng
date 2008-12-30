@@ -1,7 +1,7 @@
 PZS-NG CHANGELOG
 ----------------
 
-v1.1.0a --> 1.1.x :
+v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
 		- fix in tv-rage tcl to compensate for layout changes.
 		- fixed small bug in postdel that prevented it from removing progressbars in
@@ -26,7 +26,12 @@ v1.1.0a --> 1.1.x :
 		- fixed bug #472 - remove metadata completely when dir is empty.
 		- updated libcopy to include special libs needed on linux for chroot dnslookups
 		- added psxc-trailer as part of the scripts-dir.
-		- fixed bug #482 - SFV_* vars missing entry in dzsbot.vars
+		- fixed bug #482 - SFV_* vars missing entry in dzsbot.vars.
+		- Fixed bug #466 - enable invite for halfop.
+		- Fixed bug #471 - The stats irc triggers (!allup etc) are broken when a blowfish
+		  script is introduced.
+		- Fixed bug #474 - LOGIN variable dummy changed name.
+		- Fixed bug #475 - Missing login.log parse for expired users.
 
 v1.1.0 --> 1.1.0a : (r2414)
 		- stats in announces were broken in v1.1.0, ``hotfix''.
