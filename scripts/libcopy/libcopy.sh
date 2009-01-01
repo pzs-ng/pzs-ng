@@ -191,7 +191,7 @@ case $os in
 		  cp $linuxlib $glroot/lib/
 		  echo " OK"
 		done
-		echo -n "   $resolvconf/*
+		echo -n "   resolvconf"
 		[[ -d /etc/resolvconf ]] && {
 		  cp -fRp /etc/resolvconf $glroot/etc/
 		  echo " OK"
