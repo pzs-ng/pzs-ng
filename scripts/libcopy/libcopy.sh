@@ -2,7 +2,7 @@
 
 ###############################################################################
 #
-# LIBCOPY v1.5 by psxc
+# LIBCOPY v1.5a by psxc
 ######################
 #
 # This small script (ripped from glinstall.sh ;) will copy libs used by files
@@ -24,7 +24,7 @@ zs_bins="zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-c
 # CODEPART - PLEASE DO NOT CHANGE #
 ###################################
 
-version="1.5 (pzs-ng version)"
+version="1.5a (pzs-ng version)"
 
 # Set system type
 case $(uname -s) in
@@ -191,6 +191,13 @@ case $os in
 		  cp $linuxlib $glroot/lib/
 		  echo " OK"
 		done
+		echo -n "   $resolvconf/*
+		[[ -d /etc/resolvconf ]] && {
+		  cp -fRp /etc/resolvconf $glroot/etc/
+		  echo " OK"
+		} || {
+		  echo " Not needed"
+		}
 		echo ""
 		;;
 	darwin)
