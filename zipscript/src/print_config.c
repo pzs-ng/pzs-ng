@@ -430,6 +430,9 @@ printf("#define enable_mp3_script                         %s\n", (enable_mp3_scr
 #ifndef enable_nfo_script_is_defaulted
 printf("#define enable_nfo_script                         %s\n", (enable_nfo_script == FALSE ? "FALSE" : "TRUE"));
 #endif
+#ifndef enable_rescan_script_is_defaulted
+printf("#define enable_rescan_script                      %s\n", (enable_rescan_script == FALSE ? "FALSE" : "TRUE"));
+#endif
 #ifndef enable_sample_script_is_defaulted
 printf("#define enable_sample_script                      %s\n", (enable_sample_script == FALSE ? "FALSE" : "TRUE"));
 #endif
@@ -714,6 +717,9 @@ printf("#define rescan_default_to_quick                   %s\n", (rescan_default
 #endif
 #ifndef rescan_nocheck_dirs_allowed_is_defaulted
 printf("#define rescan_nocheck_dirs_allowed               %s\n", (rescan_nocheck_dirs_allowed == FALSE ? "FALSE" : "TRUE"));
+#endif
+#ifndef rescan_script_is_defaulted
+printf("#define rescan_script                             %s\n", stringify(rescan_script));
 #endif
 #ifndef sample_list_is_defaulted
 printf("#define sample_list                               %s\n", stringify(sample_list));
@@ -1010,6 +1016,7 @@ printf("#define enable_complete_script                    %s\n", (enable_complet
 printf("#define enable_files_ahead                        %s\n", (enable_files_ahead == FALSE ? "FALSE" : "TRUE"));
 printf("#define enable_mp3_script                         %s\n", (enable_mp3_script == FALSE ? "FALSE" : "TRUE"));
 printf("#define enable_nfo_script                         %s\n", (enable_nfo_script == FALSE ? "FALSE" : "TRUE"));
+printf("#define enable_rescan_script                      %s\n", (enable_rescan_script == FALSE ? "FALSE" : "TRUE"));
 printf("#define enable_sample_script                      %s\n", (enable_sample_script == FALSE ? "FALSE" : "TRUE"));
 printf("#define enable_unduper_script                     %s\n", (enable_unduper_script == FALSE ? "FALSE" : "TRUE"));
 printf("#define exclude_non_sfv_dirs                      %s\n", (exclude_non_sfv_dirs == FALSE ? "FALSE" : "TRUE"));
@@ -1105,6 +1112,7 @@ printf("#define remove_dot_files_on_delete                %s\n", (remove_dot_fil
 printf("#define rescan_chdir_flags                        %s\n", stringify(rescan_chdir_flags));
 printf("#define rescan_default_to_quick                   %s\n", (rescan_default_to_quick == FALSE ? "FALSE" : "TRUE"));
 printf("#define rescan_nocheck_dirs_allowed               %s\n", (rescan_nocheck_dirs_allowed == FALSE ? "FALSE" : "TRUE"));
+printf("#define rescan_script                             %s\n", stringify(rescan_script));
 printf("#define sample_list                               %s\n", stringify(sample_list));
 printf("#define sample_script                             %s\n", stringify(sample_script));
 printf("#define sfv_calc_single_fname                     %s\n", (sfv_calc_single_fname == FALSE ? "FALSE" : "TRUE"));

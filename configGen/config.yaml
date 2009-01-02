@@ -1618,7 +1618,7 @@ options:
     enable_complete_script:
         type: boolean
         comment: |-
-            An external script can be run after a release is complete. Put his to
+            An external script can be run after a release is complete. Put this to
             TRUE to run the external script.
         default: false
 
@@ -1628,6 +1628,22 @@ options:
             Put here the path to the external script which should be run after a
             release is marked complete.
         default: '"/bin/nfo_copy.sh"'
+
+    enable_rescan_script:
+        type: boolean
+        comment: |-
+            An external script can be run after rescan and the release is complete.
+            Note that this option is not valid on zip releases.
+            Put this to TRUE to run the external script.
+        default: false
+
+    rescan_script:
+        type: path
+        comment: |-
+            Put here the path to the external script which should be run on rescan
+            if the release is complete.
+            Note that this option is not valid on zip releases.
+        default: '"/bin/rescan_script.sh"'
 
     enable_mp3_script:
         type: boolean

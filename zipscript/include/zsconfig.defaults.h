@@ -630,6 +630,11 @@
 #define enable_nfo_script                         FALSE
 #endif
 
+#ifndef enable_rescan_script
+#define enable_rescan_script_is_defaulted
+#define enable_rescan_script                      FALSE
+#endif
+
 #ifndef enable_sample_script
 #define enable_sample_script_is_defaulted
 #define enable_sample_script                      FALSE
@@ -1103,6 +1108,11 @@
 #ifndef rescan_nocheck_dirs_allowed
 #define rescan_nocheck_dirs_allowed_is_defaulted
 #define rescan_nocheck_dirs_allowed               TRUE
+#endif
+
+#ifndef rescan_script
+#define rescan_script_is_defaulted
+#define rescan_script                             "/bin/rescan_script.sh"
 #endif
 
 #ifndef sample_list

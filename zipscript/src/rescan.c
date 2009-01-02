@@ -62,6 +62,7 @@ main(int argc, char *argv[])
 	char		*temp_p = NULL;
 	int		chdir_allowed = 0, argnum = 0;
 	GLOBAL		g;
+	char		target[PATH_MAX+NAME_MAX];
 
 #if ( program_uid > 0 )
 	setegid(program_gid);
@@ -425,7 +426,7 @@ main(int argc, char *argv[])
 			d_log("rescan: No sfv found - creating one.\n");
 			make_sfv(g.l.path);
 			if (!findfileext(dir, ".sfv")) {
-				d_log("rescan: Freeing memory, removing lock and exiting\n");
+				d_log("rescan: Freeing memory, removing lock and exiting.\n");
 				unlink(g.l.sfv);
 				if (fileexists(g.l.sfvbackup))
 				unlink(g.l.sfvbackup);
@@ -699,6 +700,16 @@ main(int argc, char *argv[])
 				}
 #endif
 			}
+#if (enable_rescan_script)
+			d_log("rescan: Executing rescan_script script\n");
+			if (!fileexists(rescan_script)) {
+				d_log("rescan: Warning - rescan_script (%s) - file does not exist!\n", rescan_script);
+			} else {
+				sprintf(target, rescan_script " \"%s\"", g.v.file.name);
+				if (execute(target) != 0)
+					d_log("rescan: Failed to execute rescan_script: %s\n", strerror(errno));
+			}
+#endif
 		} else {
 			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
 				if (create_incomplete()) {

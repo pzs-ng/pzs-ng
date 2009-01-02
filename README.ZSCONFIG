@@ -772,7 +772,7 @@ enable_affil_script <TRUE|FALSE>
 	Default: FALSE
 
 enable_complete_script <TRUE|FALSE>
-	An external script can be run after a release is complete. Put his to
+	An external script can be run after a release is complete. Put this to
 	TRUE to run the external script.
 	Default: FALSE
 
@@ -790,6 +790,12 @@ enable_mp3_script <TRUE|FALSE>
 enable_nfo_script <TRUE|FALSE>
 	An external script can be run after a nfo upload. Put his to TRUE to
 	run the external script.
+	Default: FALSE
+
+enable_rescan_script <TRUE|FALSE>
+	An external script can be run after rescan and the release is complete.
+	Note that this option is not valid on zip releases.
+	Put this to TRUE to run the external script.
 	Default: FALSE
 
 enable_sample_script <TRUE|FALSE>
@@ -1345,6 +1351,12 @@ rescan_nocheck_dirs_allowed <TRUE|FALSE>
 	set this variable to TRUE. Setting this to FALSE will render the rescan
 	option dead in nocheck_dirs areas.
 	Default: TRUE
+
+rescan_script <PATH>
+	Put here the path to the external script which should be run on rescan
+	if the release is complete.
+	Note that this option is not valid on zip releases.
+	Default: "/bin/rescan_script.sh"
 
 sample_list <STRING>
 	This is a list of sample-dirs. The list is not case-sensitive.

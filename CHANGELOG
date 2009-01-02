@@ -4,6 +4,8 @@ PZS-NG CHANGELOG
 v1.2.0  --> 1.2.x :
 		- change libcopy to better handle resolving in chroot environment (Debian in
 		  particular need this fix)
+		- added rescan_script and enable_rescan_script option to run script on rescan
+		  if the release is complete.
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
 		- fix in tv-rage tcl to compensate for layout changes.
