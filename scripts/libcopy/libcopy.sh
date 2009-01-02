@@ -186,7 +186,7 @@ case $os in
 	linux)
 		bsdlibs="/lib/ld-linux.so.2"
 		echo -e "\nCopying needed resolv-libs (if needed)..."
-		for linuxlib in /lib/libnss_dns*; do
+		for linuxlib in /lib/libnss_dns* /lib/libresolv*; do
 		  echo -n "   $(basename $linuxlib)"
 		  cp $linuxlib $glroot/lib/
 		  echo " OK"
@@ -196,8 +196,9 @@ case $os in
 		  cp -fRp /etc/resolvconf $glroot/etc/
 		  echo " OK"
 		} || {
-		  echo " Not needed"
+		  echo " NOT NEEDED"
 		}
+		echo -n "   libresolv*
 		echo ""
 		;;
 	darwin)

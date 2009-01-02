@@ -36,6 +36,7 @@
 #   'chroot /glftpd /bin/wget http://www.apple.com' give you a 'Resolving failed'
 #   error, try the following:
 #     cp /lib/libnss_dns* /glftpd/lib/
+#     cp /lib/libresolv* /glftpd/lib/
 #     cp -fRp /etc/resolvconf /glftpd/etc/     (only applicable on some systems)
 #
 #
