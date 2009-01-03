@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# psxc-trailer v0.5.2008.12.28
+# psxc-trailer v0.6.2009.01.03
 ##############################
 #
 # Small script that fetches the qt trailer and image for movies.
@@ -8,7 +8,7 @@
 # current path.
 #
 # Required bins are:
-# wget, sed, echo, tr, cut, head, tail, grep, bash, wc, basename, dirname, uname
+# wget, sed, echo, tr, cut, head, tail, grep, bash, wc, basename, dirname, uname, stat, chmod
 #
 # Use as a site command:
 #   Make sure all required bins are availible in chroot.
@@ -39,6 +39,11 @@
 #     cp /lib/libresolv* /glftpd/lib/
 #     cp -fRp /etc/resolvconf /glftpd/etc/     (only applicable on some systems)
 #
+# QUICK WAY TO COPY NEEDED BINS:
+#   for bin in $(grep -A 1 "^# Required bins" psxc-trailer.sh | tail -n 1 | tr -d '#,'); do
+#     cp $(which $bin) /glftpd/bin/
+#   done
+# Remember to run libcopy afterwards.
 #
 ################# CONFIG OPTIONS #################
 #
@@ -67,11 +72,12 @@ trailername="trailer.mov"
 # in the releasedir.
 # Example: trailerdirs="/site/trailers /glftpd/site/trailers"
 trailerdirs=""
+trailerdirs="/site/trailers /glftpd/site/trailers"
 
 # Should we download to both releasedir and trailerdir?
 # Set to "yes" to use both, and "" to use only one.
 # Example: usebothdirs="yes"
-usebothdirs=""
+usebothdirs="yes"
 
 # download trailer image? ("yes"=yes, ""=no)
 # Example: downloadimage=""
@@ -113,6 +119,12 @@ PATH=$PATH:/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:/glftpd/
 # "-r" on linux. The default is "".
 sedswitch=""
 
+# stat differs from system to system. We use stat to find perms on the dir(s) we try to save the
+# trailer and image. If you end up with 0-byte files or permission-errors you should change this
+# setting. FBSD uses "-f %p", linux uses "-c %a". The script will autodetect if this setting is
+# set to it's default value, "".
+statswitch=""
+
 # We use certain flags with sed. Here we list the flags. Only change if you know what you're doing
 sedflags="--ignore-length --timeout=10"
 
@@ -143,6 +155,11 @@ done
   sedswitch="-r"
 } || {
   sedswitch="-E"
+}
+[[ "$statswitch" == "" && "$(uname | grep -i "bsd$")" == "" ]] && {
+  statswitch="-c %a"
+} || {
+  statswitch="-f %p"
 }
 trailerdir=""
 for trailer in $trailerdirs; do
@@ -258,12 +275,26 @@ done
 }
 
 # download trailer and picture
+[[ "$(echo "$wgettemp" | grep "^/")" == "" ]] && {
+  wgettemp="$(echo "${PWD}/${wgettemp}" | tr -s '/')"
+}
 [[ "$trailerquality" != "" && "$urllink" != "" ]] && {
+  [[ ! -w $(dirname $wgettemp) ]] && {
+    wgettempperms=$(stat $statswitch $(dirname $wgettemp))
+    [[ ! -w $(dirname $wgettemp) ]] && {
+      echo "ERROR! Cannot save file $wgettemp"
+      exit 1
+    }
+    chmod +w $(dirname $wgettemp)
+  }
   wget $sedflags -o $wgetoutput -O $wgettemp $urllink
   fakelinkname=$(echo $urllink | tr '/' '\n' | grep -i "\.mov$")
   reallinkname=$(cat $wgettemp | tr -c 'a-zA-Z0-9\-\.\_' '\n' | grep -i "\.mov")
   reallink=$(echo $urllink | sed "s|$fakelinkname|$reallinkname|")
   rm -f $wgettemp
+  [[ "$wgettempperms" != "" ]] && {
+    chmod $wgettempperms $(dirname $wgettemp)
+  }
   [[ "$trailerdir" != "" ]] && {
     [[ "$trailername" != "" ]] && {
       orgtrailername=$trailername
@@ -277,6 +308,17 @@ done
     orgtrailername=$trailername
   }
   echo "Downloading trailer in $quality quality as $trailername"
+  [[ "$trailerdir" == "" ]]&& {
+    trailerdir="${PWD}/"
+  }
+  [[ ! -w $trailerdir ]] && {
+    trailerdirperms=$(stat $statswitch $trailerdir)
+    [[ ! -w $trailerdir ]] && {
+      echo "ERROR! Cannot save file $trailername"
+      exit 1
+    }
+    chmod +w $trailerdir
+  }
   wget $sedflags -o $wgetoutput -O ${trailerdir}${trailername} $reallink
   [[ ! -s ${trailerdir}${trailername} ]] && {
     echo "For unknown reasons the script failed to download the trailer"
@@ -285,13 +327,44 @@ done
     rm -f ${trailerdir}${trailername}
     exit 1
   }
+  [[ "$trailerdirperms" != "" ]] && {
+    chmod $trailerdirperms $trailerdir
+  }
   [[ "$trailerdir" != "" && "$usebothdirs" != "" ]] && {
+    [[ "$(echo "$orgtrailername" | grep "^/")" == "" ]] && {
+      orgtrailername="$(echo "${PWD}/${orgtrailername}" | tr -s '/')"
+    }
+    [[ ! -w $(dirname $orgtrailername) ]] && {
+      orgtrailernameperms=$(stat $statswitch $(dirname $orgtrailername))
+      [[ ! -w $(dirname $orgtrailername) ]] && {
+        echo "ERROR! Cannot save file $orgtrailername"
+        exit 1
+      }
+      chmod +w $(dirname $orgtrailername)
+    }
     cp -fp ${trailerdir}${trailername} $orgtrailername
+    [[ "$orgtrailernameperms" != "" ]] && {
+      chmod $orgtrailernameperms $(dirname $orgtrailername)
+    }
   }
 }
 [[ "$downloadimage" != "" && "$poster" != "" ]] && {
   echo "Downloading posterimage as $imagename"
+  [[ "$(echo "$imagename" | grep "^/")" == "" ]] && {
+    imagename="$(echo "${PWD}/${imagename}" | tr -s '/')"
+  }
+  [[ ! -w $(dirname $imagename) ]] && {
+    imagenameperms=$(stat $statswitch $(dirname $imagename))
+    [[ ! -w $(dirname $imagename) ]] && {
+      echo "ERROR! Cannot save file $imagename"
+      exit 1
+    }
+    chmod +w $(dirname $imagename)
+  }
   wget $sedflags -o $wgetoutput -O $imagename $poster
+  [[ "$imagenameperms" != "" ]] && {
+    chmod $imagenameperms $imagename
+  }
 }
 
 echo "done"
