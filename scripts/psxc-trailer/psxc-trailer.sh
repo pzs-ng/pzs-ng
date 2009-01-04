@@ -72,12 +72,11 @@ trailername="trailer.mov"
 # in the releasedir.
 # Example: trailerdirs="/site/trailers /glftpd/site/trailers"
 trailerdirs=""
-trailerdirs="/site/trailers /glftpd/site/trailers"
 
 # Should we download to both releasedir and trailerdir?
 # Set to "yes" to use both, and "" to use only one.
 # Example: usebothdirs="yes"
-usebothdirs="yes"
+usebothdirs=""
 
 # download trailer image? ("yes"=yes, ""=no)
 # Example: downloadimage=""
