@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# psxc-trailer v0.6.2009.01.03
+# psxc-trailer v0.7.2009.01.04
 ##############################
 #
 # Small script that fetches the qt trailer and image for movies.
@@ -124,8 +124,8 @@ sedswitch=""
 # set to it's default value, "".
 statswitch=""
 
-# We use certain flags with sed. Here we list the flags. Only change if you know what you're doing
-sedflags="--ignore-length --timeout=10"
+# We use certain flags with wget. Here we list the flags. Only change if you know what you're doing
+wgetflags='--ignore-length --timeout=10 -U "Internet Explorer"'
 
 # debug option. do not remove the hash unless you know what you're doing
 #set -x -v
@@ -202,7 +202,7 @@ let countdot=countdot-0
 
 while [ 1 ]; do
   releasename="$(echo "$releasename" | sed $sedswitch "s/[\.|_][12][0-9][0-9][0-9]$//" | tr -d '\.')"
-  output="$(wget $sedflags -o $wgetoutput -O - "http://www.apple.com/trailers/home/scripts/quickfind.php?q=$releasename")"
+  output="$(wget $wgetflags -o $wgetoutput -O - "http://www.apple.com/trailers/home/scripts/quickfind.php?q=$releasename")"
   outparse="$(echo $output | tr -d '\"' | tr ',' '\n')"
   iserror=$(echo $outparse | grep -i "error:true")
   isresult=$(echo $outparse | grep -i "results:\[\]")
@@ -230,7 +230,7 @@ done
 poster="$(echo "$outparse" | grep -i "^poster:" | cut -d ':' -f 2- | tr -d '\\')"
 location="http://www.apple.com$(echo "$outparse" | grep -i "^location:" | cut -d ':' -f 2- | tr -d '\\' | tr ' ' '\n' | head -n 1)"
 
-output2="$(wget $sedflags -o $wgetoutput -O - $location)"
+output2="$(wget $wgetflags -o $wgetoutput -O - $location)"
 output2parse="$(echo $output2 | tr ' \?' '\n' | grep -v "/images/" | grep -E -i "^href=.*\.mov[\"]*$|^href=.*small[_]?.*\.html[\"]*|^href=.*medium[_]?.*\.html[\"]*|^href=.*large[_]?.*\.html[\"]*|^href=.*low[_]?.*\.html[\"]*|^href=.*high[_]?.*\.html[\"]?.*" | tr -d '\"' | cut -d '=' -f 2-)"
 #echo DEBUG 1: $output2parse
 #echo DEBUG 5: $location
@@ -258,7 +258,7 @@ for quality in $trailerquality; do
   }
   #echo DEBUG 4: $sublink
   [[ "$sublink" != "" ]] && {
-    output3="$(wget $sedflags -o $wgetoutput -O - $sublink)"
+    output3="$(wget $wgetflags -o $wgetoutput -O - $sublink)"
     output3parse="$(echo $output3 | tr -c 'a-zA-Z/:\._0-9\-' '\n' | grep -E -i "$movsearch")"
     urllink=$(echo "$output3parse" | grep -v "/images/" | grep -i "\.mov$" | head -n 1)
     #echo DEBUG 2: $output3parse
@@ -286,7 +286,7 @@ done
     }
     chmod +w $(dirname $wgettemp)
   }
-  wget $sedflags -o $wgetoutput -O $wgettemp $urllink
+  wget $wgetflags -o $wgetoutput -O $wgettemp $urllink
   fakelinkname=$(echo $urllink | tr '/' '\n' | grep -i "\.mov$")
   reallinkname=$(cat $wgettemp | tr -c 'a-zA-Z0-9\-\.\_' '\n' | grep -i "\.mov")
   reallink=$(echo $urllink | sed "s|$fakelinkname|$reallinkname|")
@@ -318,7 +318,7 @@ done
     }
     chmod +w $trailerdir
   }
-  wget $sedflags -o $wgetoutput -O ${trailerdir}${trailername} $reallink
+  wget $wgetflags -o $wgetoutput -O ${trailerdir}${trailername} $reallink
   [[ ! -s ${trailerdir}${trailername} ]] && {
     echo "For unknown reasons the script failed to download the trailer"
     echo "Please report this as a bug to the developer (psxc - psxc@psxc.com)"
@@ -360,7 +360,7 @@ done
     }
     chmod +w $(dirname $imagename)
   }
-  wget $sedflags -o $wgetoutput -O $imagename $poster
+  wget $wgetflags -o $wgetoutput -O $imagename $poster
   [[ "$imagenameperms" != "" ]] && {
     chmod $imagenameperms $imagename
   }
