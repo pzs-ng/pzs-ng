@@ -1,11 +1,9 @@
 ################################################################################
 #                                                                              #
-#             TVRage - TV Show & Episode Pzs-ng Plug-in v2.0                   #
+#                TVRage - TV Show & Episode Pzs-ng Plug-in                     #
 #                       by Meij <meijie@gmail.com>                             #
 #                                                                              #
 ################################################################################
-#
-# Report bugs to: http://bugs.pzs-ng.com/view.php?id=407
 #
 # Description:
 # - Announce information obtained from tvrage.com on pre and new releases.
@@ -401,7 +399,11 @@ proc ::ngBot::TVRage::FindEpisode {url season episode} {
 
 	set data [::http::data $token]
 
-	regexp -- {<font size=.?4.?>Season (\d+)</font>} $data -> tmp_season
+	regexp -- {<font size=.?4.?>(?:Season|Series) (\d+)</font>} $data -> tmp_season
+
+	if {![info exist tmp_season]} {
+		error "Unable to parse season information for \"$season\x$episode\""
+	}
 
 	if {[string trimleft $season "0"] != $tmp_season} {
 		error "Invalid season information. Website returned season $tmp_season, we were expecting $season"
@@ -415,6 +417,8 @@ proc ::ngBot::TVRage::FindEpisode {url season episode} {
 
 	foreach junk $matches {
 		if {[regexp -nocase -- {<td width='40'.[^>]+><a href='(.[^']+)'>\d+x(\d+)</i></a></td>} $junk -> tmp_url tmp_episode]} {
+			if {![info exist tmp_episode]} { continue } 
+
 			if {$episode == $tmp_episode} {
 				set info(episode_url) "http://www.tvrage.com$tmp_url"
 
