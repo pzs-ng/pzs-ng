@@ -1,0 +1,7 @@
+##############################################################################
+#                                                                            #
+#  TVRage.zpt  -  Example Pzs-ng Plug-in (Default Theme)                     #
+#                                                                            #
+##############################################################################
+
+announce.EXAMPLE-NEWDIR = "%b{[EXAMPLE]}[%b{new   }][%section] %b{%relname} by %b{%u_name} of %g_name."
