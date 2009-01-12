@@ -167,9 +167,9 @@ namespace eval ::ngBot {
 		variable msgreplace
 
 		## Load the theme file
-		if {![loadtheme $announce(THEMEFILE)]} {
+		if {![${ns}::loadtheme $announce(THEMEFILE)]} {
 			set invalidtheme $announce(THEMEFILE)
-			if {[loadtheme "themes/default.zst"]} {
+			if {[${ns}::loadtheme "themes/default.zst"]} {
 				putlog "\[ngBot\] Warning :: Unable to load theme $invalidtheme, loaded default.zst instead."
 			} else {
 				putlog "\[ngBot\] Error :: Unable to load the themes $invalidtheme and default.zst."

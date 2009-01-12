@@ -8,7 +8,41 @@ v1.2.0  --> 1.2.x :
 		  if the release is complete.
 		- Updated psxc-trailer to 0.6 - no feature added, only some checks for dir-
 		  perms.
-v1.1.0a --> 1.2.0 :
+		- Overhaul of the sitebot. RIP dZSbot, hello ngBot.
+			- No functionality has been lost.
+			- Old configuration files will still work. Rename them to ngBot.conf.
+			- Changed the sitebot so it is now in its own namespace. This will break plugins
+			  and addons that used the old procs & variables that were in the global
+			  namespace. To fix this just prepend ::ngBot:: to the proc/variables.
+			  eg: ::ngBot::sndall or ::ngBot::disable.
+			- All procs and global variables now reside inside the ::ngBot namespace.
+			- Modularised the sitebot so it can now accommodate other ftpds much more easily.
+			- Moved a whole heap of glftpd only code into modules/glftpd.tcl.
+			- Renamed the prefix of all trigger procs from ng_ to cmd_.
+			- Changed the plugin system.
+				- Plugins now reside inside the ::ngBot::plugin namespace.
+				- The 'init' function within each plugin will be called once all scripts have
+				  been loaded. Case sensitive. You should no longer be required to source
+				  scripts in a certain order in your eggdrop.conf. ie. NickDb & Blow.
+				- The 'deinit' function within each plugin will be called on rehash/restart.
+				  No need for each plugin to bind to evnt prerehash anymore. Case sensitive.
+				- Within 'init' if you want to return an error and silence the default
+				  error message, use: return -code -1.
+				- There is an example plugin: plugins/Example.tcl & plugins/Example.zpt.
+				- Updated all plugins in the plugins/ directory to incorporate the all
+				  changes.
+			- Added an example ftpd module: modules/example.tcl.
+			- All binds bound to a proc matching ::ngBot::* will now be unbound on
+			  rehash/reset. No need to unbind them in plugins anymore.
+			- It now now technically possible to run 2 or more sitebots on the one eggdrop
+			  with some small modifications.
+		- Fixed bug #470 - GameFAQs sitebot plugin now works again.
+		- Fixed bug #483 - TVRage sitebot plugin tmp_season/tmp_episode no such variable error.
+		- Fixed bug #350 - %date/%time variables for the !new/!search/!nukes/!unnukes
+		  announces are now customisable.
+		- Fixed bug #382 - Show !free in a set unit without auto rounding.
+
+		v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
 		- fix in tv-rage tcl to compensate for layout changes.
 		- fixed small bug in postdel that prevented it from removing progressbars in
