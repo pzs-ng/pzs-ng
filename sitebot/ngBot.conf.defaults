@@ -118,6 +118,10 @@ set search_chars        3
 # are dead/hung.
 set local_devices_only  "TRUE"
 
+# Rounding of device sizes returned by !free.
+# Values can be: KB MB GB TB PB EB and AUTO (default is AUTO)
+set device_size         "AUTO"
+
 # Definition of hd devices, for free space. Format: "disk sections"
 # The 'sections' are purely for cosmetic use.
 # HINT: You can also use the mountpoint instead of the device name (see section ARCHIVE below).

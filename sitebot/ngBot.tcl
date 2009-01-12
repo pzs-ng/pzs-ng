@@ -649,10 +649,20 @@ namespace eval ::ngBot {
 
 	# STATUS: OK
 	proc format_kb {amount} {
+		variable device_size
+
+		set round 1
+		if {[info exists device_size] && [regexp -nocase -- {^[kmgtpe]b$} $device_size]} {
+			set round 0
+		}
+
 		foreach dec {0 1 2 2 2 2} unit {KB MB GB TB PB EB} {
-			if {abs($amount) >= 1024} {
+			if {![istrue $round] && [string equal -nocase $device_size $unit]} {
+				break
+			}
+			if {![istrue $round] || abs($amount) >= 1024} {
 				set amount [expr {double($amount) / 1024.0}]
-			} else {break}
+			} elseif {[istrue $round]} {break}
 		}
 		return [format "%.*f%s" $dec $amount $unit]
 	}
