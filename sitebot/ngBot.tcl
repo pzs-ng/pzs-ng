@@ -719,6 +719,20 @@ namespace eval ::ngBot {
 		return [${ns}::themereplace [${ns}::replacevar $type "%value" $value] $section]
 	}
 
+	# STATUS: OK
+	proc format_clock {type ctime} {
+		variable format_time
+		variable format_date
+
+		set str ""
+		switch -nocase -- $type {
+			"time" { set str [expr { [info exists format_time] ? $format_time : "%H:%M:%S" }] }
+			"date" { set str [expr { [info exists format_date] ? $format_date : "%m-%d-%y" }] }
+		}
+
+		return [clock format $ctime -format $str]
+	}
+
 	#################################################################################
 	# Replace Text                                                                  #
 	#################################################################################

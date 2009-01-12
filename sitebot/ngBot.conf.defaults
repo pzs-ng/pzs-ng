@@ -134,6 +134,11 @@ set device(0)           "/dev/ad0s1f MP3"
 # on each line, if there are multiple lines. Set to 0 to disable.
 set dev_max_length      300
 
+# The time/date format used in !new/!search/!nukes/!unnukes.
+# List of available codes: http://tcl.tk/man/tcl8.4/TclCmd/clock.htm
+set format_time             "%H:%M:%S"
+set format_date             "%m-%d-%y"
+
 #############################################################
 # BOUNCERS                                                  #
 #############################################################

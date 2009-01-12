@@ -435,8 +435,8 @@ namespace eval ::ngBot::module::glftpd {
 			set output [${np}::replacevar $body "%num" [format "%02d" [incr num]]]
 			set age [lrange [${np}::format_duration [expr {[clock seconds] - $ctime}]] 0 1]
 			set output [${np}::replacevar $output "%age" $age]
-			set output [${np}::replacevar $output "%date" [clock format $ctime -format "%m-%d-%y"]]
-			set output [${np}::replacevar $output "%time" [clock format $ctime -format "%H:%M:%S"]]
+			set output [${np}::replacevar $output "%date" [${np}::format_clock "date" $ctime]]
+			set output [${np}::replacevar $output "%time" [${np}::format_clock "time" $ctime]]
 			set output [${np}::replacevar $output "%u_name" $user]
 			set output [${np}::replacevar $output "%g_name" $group]
 			set output [${np}::replacevar $output "%files" $files]
@@ -496,8 +496,8 @@ namespace eval ::ngBot::module::glftpd {
 			foreach {status nuketime nuker unnuker nukee multiplier reason kbytes dirpath} $line {break}
 
 			set output [${np}::replacevar $body "%num" [format "%02d" [incr num]]]
-			set output [${np}::replacevar $output "%date" [clock format $nuketime -format "%m-%d-%y"]]
-			set output [${np}::replacevar $output "%time" [clock format $nuketime -format "%H:%M:%S"]]
+			set output [${np}::replacevar $output "%date" [${np}::format_clock "date" $nuketime]]
+			set output [${np}::replacevar $output "%time" [${np}::format_clock "time" $nuketime]]
 			set output [${np}::replacevar $output "%nuker" $nuker]
 			set output [${np}::replacevar $output "%nukee" $nukee]
 			set output [${np}::replacevar $output "%multiplier" $multiplier]
@@ -564,8 +564,8 @@ namespace eval ::ngBot::module::glftpd {
 			set output [${np}::replacevar $body "%num" [format "%02d" [incr num]]]
 			set age [lrange [${np}::format_duration [expr {[clock seconds] - $ctime}]] 0 1]
 			set output [${np}::replacevar $output "%age" $age]
-			set output [${np}::replacevar $output "%date" [clock format $ctime -format "%m-%d-%y"]]
-			set output [${np}::replacevar $output "%time" [clock format $ctime -format "%H:%M:%S"]]
+			set output [${np}::replacevar $output "%date" [${np}::format_clock "date" $ctime]]
+			set output [${np}::replacevar $output "%time" [${np}::format_clock "time" $ctime]]
 			set output [${np}::replacevar $output "%u_name" $user]
 			set output [${np}::replacevar $output "%g_name" $group]
 			set output [${np}::replacevar $output "%files" $files]
@@ -625,8 +625,8 @@ namespace eval ::ngBot::module::glftpd {
 			foreach {status nuketime nuker unnuker nukee multiplier reason kbytes dirpath} $line {break}
 
 			set output [${np}::replacevar $body "%num" [format "%02d" [incr num]]]
-			set output [${np}::replacevar $output "%date" [clock format $nuketime -format "%m-%d-%y"]]
-			set output [${np}::replacevar $output "%time" [clock format $nuketime -format "%H:%M:%S"]]
+			set output [${np}::replacevar $output "%date" [${np}::format_clock "date" $nuketime]]
+			set output [${np}::replacevar $output "%time" [${np}::format_clock "time" $nuketime]]
 			set output [${np}::replacevar $output "%nuker" $nuker]
 			set output [${np}::replacevar $output "%unnuker" $unnuker]
 			set output [${np}::replacevar $output "%nukee" $nukee]
