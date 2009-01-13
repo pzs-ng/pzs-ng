@@ -358,7 +358,7 @@ namespace eval ::ngBot {
 		variable ns
 		variable ng_timer
 		global errorInfo
-		if {[catch {readlog}]} {
+		if {[catch {${ns}::readlog}]} {
 			putlog "\[ngBot\] Error :: Unhandled error, please report to developers:\n$errorInfo"
 		}
 		set ng_timer [utimer 1 ${ns}::readlogtimer]
@@ -604,7 +604,7 @@ namespace eval ::ngBot {
 						append output2 "$announce(${event}_LOOP${loop})"
 					}
 					if {[string match "*speed" [lindex $vari $cnt2]]} {
-						set output2 [${ns}::replacevar $output2 [lindex $vari $cnt2] [format_speed $value $section]]
+						set output2 [${ns}::replacevar $output2 [lindex $vari $cnt2] [${ns}::format_speed $value $section]]
 					} else {
 						set output2 [${ns}::replacevar $output2 [lindex $vari $cnt2] $value]
 					}
@@ -748,15 +748,17 @@ namespace eval ::ngBot {
 
 	# STATUS: OK
 	proc replacepath {message basepath path} {
+		variable ns
+
 		set path [split $path "/"]
 		set pathitems [llength $path]
 		set basepath [split $basepath "/"]
 		set baseitems [llength $basepath]
 		set relname [join [lrange $path [expr {$baseitems - 1}] end] "/"]
 
-		set message [replacevar $message "%relname" $relname]
-		set message [replacevar $message "%reldir" [lindex $path [expr {$pathitems - 1}]]]
-		set message [replacevar $message "%path" [lindex $path [expr {$pathitems - 2}]]]
+		set message [${ns}::replacevar $message "%relname" $relname]
+		set message [${ns}::replacevar $message "%reldir" [lindex $path [expr {$pathitems - 1}]]]
+		set message [${ns}::replacevar $message "%path" [lindex $path [expr {$pathitems - 2}]]]
 		return $message
 	}
 
@@ -797,7 +799,7 @@ namespace eval ::ngBot {
 			return
 		}
 		foreach chan $channels {
-			sndone $chan $text $section
+			${ns}::sndone $chan $text $section
 		}
 	}
 
@@ -1013,7 +1015,7 @@ namespace eval ::ngBot {
 		if {![istrue $bnc(ENABLED)]} {return}
 
 		set output "$theme(PREFIX)$announce(BNC)"
-		sndone $nick [${ns}::replacebasic $output "BNC"]
+		${ns}::sndone $nick [${ns}::replacebasic $output "BNC"]
 
 		set num 0
 		foreach entry $bnc(LIST) {
@@ -1032,7 +1034,7 @@ namespace eval ::ngBot {
 					set output [${ns}::replacevar $output "%desc" $desc]
 					set output [${ns}::replacevar $output "%ip" $ip]
 					set output [${ns}::replacevar $output "%port" $port]
-					sndone $nick [${ns}::replacebasic $output "BNC"]
+					${ns}::sndone $nick [${ns}::replacebasic $output "BNC"]
 					continue
 				}
 				set reply [lindex [split $reply "\n"] 1]
@@ -1472,7 +1474,7 @@ namespace eval ::ngBot {
 	}
 
 	# Run init_ng proc once all scripts are loaded.
-	bind evnt -|- userfile-loaded [namespace current]::init_ng
+	bind evnt -|- userfile-loaded ${ns}::init_ng
 
 	bind join -|- * ${ns}::cmd_welcome
 	bind dcc n errorinfo ${ns}::cmd_error
