@@ -231,7 +231,6 @@ namespace eval ::ngBot::module::glftpd {
 
 		if {$nuke(SHOWN) == 1} {return 0}
 		set nuke(NUKEE) [${np}::trimtail $nuke(NUKEE) $theme(SPLITTER)]
-
 		set output "$theme(PREFIX)$announce($nuke(TYPE))"
 		set output [${np}::replacebasic $output $nuke(SECTION)]
 		set output [${np}::replacevar $output "%nuker" $nuke(NUKER)]
@@ -339,6 +338,7 @@ namespace eval ::ngBot::module::glftpd {
 
 		${np}::checkchan $nick $chan
 
+		set argv [split $argv]
 		set section $statdefault
 		if {[string length [lindex $argv 0]]} {
 			set error 1
@@ -856,6 +856,7 @@ namespace eval ::ngBot::module::glftpd {
 		${np}::checkchan $nick $chan
 
 		set line ""
+		set argv [split $argv]
 		if {$disable(ALTWHO) != 1} {
 			set output "$theme(PREFIX)$announce(SPEEDERROR)"
 			foreach line [split [exec $binary(WHO) --raw [lindex $argv 0]] "\n"] {
@@ -1071,6 +1072,7 @@ namespace eval ::ngBot::module::glftpd {
 		variable ${np}::announce
 		variable ${np}::invite_channels
 
+		set argv [split $argv]
 		if {[llength $argv] > 1} {
 			set user [lindex $argv 0]
 			set pass [lindex $argv 1]

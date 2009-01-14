@@ -330,7 +330,7 @@ namespace eval ::ngBot::plugin::Blow {
         global lastbind blowEncryptedMessage
         set key [${ns}::getKey $chan]
         if {[string equal $key ""]} {return}
-        set tmp [decrypt $key $arg]
+        set tmp [split [decrypt $key $arg]]
         #${ns}::PutLog "received encrypted message: $tmp"
         foreach item [binds pub] {
             if {[string equal [lindex $item 2] "+OK"]} { continue }
@@ -342,7 +342,7 @@ namespace eval ::ngBot::plugin::Blow {
                 # Use "eval" to expand the callback script, for example:
                 # bind pub -|- !something [list PubCommand MyEvent]
                 # proc PubCommand {event nick host hand chan text} {...}
-                eval [lindex $item 4] $nick $host $hand $chan [join [lrange $tmp 1 end]] 
+                eval [lindex $item 4] \$nick \$host \$hand \$chan {[join [lrange $tmp 1 end]]}
             }
             unset blowEncryptedMessage
         }
@@ -415,7 +415,7 @@ namespace eval ::ngBot::plugin::Blow {
         variable ns
         variable maxLength
         variable allowUnencrypted
-        
+
         set channel [lindex [split $text] 1]
         set key [${ns}::getKey $channel]
         if {[IsTrue [${ns}::encryptThis $text]] && ![string equal $key ""]} {
@@ -457,7 +457,7 @@ namespace eval ::ngBot::plugin::Blow {
         variable ns
         variable maxLength
         variable allowUnencrypted
-        
+
         set channel [lindex [split $text] 1]
         set key [${ns}::getKey $channel]
         if {[IsTrue [${ns}::encryptThis $text]] && ![string equal $key ""]} {
@@ -499,7 +499,7 @@ namespace eval ::ngBot::plugin::Blow {
         variable ns
         variable maxLength
         variable allowUnencrypted
-        
+
         set channel [lindex [split $text] 1]
         set key [${ns}::getKey $channel]
         if {[IsTrue [${ns}::encryptThis $text]] && ![string equal $key ""]} {
@@ -595,9 +595,12 @@ namespace eval ::ngBot::plugin::Blow {
         catch {rename ::putserv ::putserv2}
         catch {rename ::puthelp ::puthelp2}
 
-        catch {rename ${ns}::PutQuick ::putquick}
-        catch {rename ${ns}::PutServ  ::putserv}
-        catch {rename ${ns}::PutHelp  ::puthelp}
+        interp alias {} putquick {} ${ns}::PutQuick
+        interp alias {} putserv {} ${ns}::PutServ
+        interp alias {} puthelp {} ${ns}::PutHelp
+        #catch {rename ${ns}::PutQuick ::putquick}
+        #catch {rename ${ns}::PutServ  ::putserv}
+        #catch {rename ${ns}::PutHelp  ::puthelp}
 
 
         ## Set disable(SETTOPIC) to 1 if you dont want the bot to message the chan with the new topic
@@ -643,15 +646,18 @@ namespace eval ::ngBot::plugin::Blow {
 
         ## Remove event callbacks.
         if {[llength [info commands "putquick2"]] == 1} {
-            catch {rename ::putquick  {}}
+            interp alias {} putquick {}
+            #catch {rename ::putquick  {}}
             catch {rename ::putquick2 ::putquick}
         }
         if {[llength [info commands "putserv2"]] == 1} {
-            catch {rename ::putserv   {}}
+            interp alias {} putserv {}
+            #catch {rename ::putserv   {}}
             catch {rename ::putserv2  ::putserv}
         }
         if {[llength [info commands "puthelp2"]] == 1} {
-            catch {rename ::puthelp   {}}
+            interp alias {} puthelp {}
+            #catch {rename ::puthelp   {}}
             catch {rename ::puthelp2  ::puthelp}
         }
 
