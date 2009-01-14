@@ -314,7 +314,7 @@ namespace eval ::ngBot::plugin::Blow {
             } elseif {[${ns}::GetInfo $ftpUser ftpGroup ftpFlags] && [${np}::rightscheck $topicUsers $ftpUser $ftpGroup $ftpFlags] && [IsTrue [${ns}::SetTopic $channel "$text"]]} {
                 ${ns}::PutLog "Topic for $channel set: $text"
             } else {
-            ${ns}::PutLog "Unauthorized user: $nick"
+                ${ns}::PutLog "Unauthorized user: $nick"
             }
         }
     }
@@ -576,13 +576,13 @@ namespace eval ::ngBot::plugin::Blow {
         variable ${np}::msgtypes
         variable ${np}::precommand
 
-        if {![namespace exists ::ngBot::plugin::NickDb]} {
-            putlog "\[ngBot\] Blow Error :: Unable to find NickDb plugin."
-            return -code -1
-        }
-
         if {![string equal $trustedUsers "*"] || ![string equal $topicUsers "*"]} {
-            namespace import ::ngBot::plugin::NickDb::*
+            if {![namespace exists [namespace parent]::NickDb]} {
+                putlog "\[ngBot\] Blow Error :: Unable to find NickDb plugin."
+                return -code -1
+            }
+
+            namespace import [namespace parent]::NickDb::*
         }
 
         if {[catch {load $blowso} error]} {

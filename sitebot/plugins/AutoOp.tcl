@@ -52,12 +52,12 @@ namespace eval ::ngBot::plugin::AutoOp {
     # Called on initialization; registers the event handler. Yeah, nothing fancy.
     #
     proc init {args} {
-        if {![namespace exists ::ngBot::plugin::NickDb]} {
+        if {![namespace exists [namespace parent]::NickDb]} {
             putlog "\[ngBot\] AutoOp Error :: Unable to find NickDb plugin."
             return -code -1
         }
 
-        namespace import ::ngBot::plugin::NickDb::*
+        namespace import [namespace parent]::NickDb::*
 
         ## Bind event callbacks.
         bind join -|- * [namespace current]::GiveOp

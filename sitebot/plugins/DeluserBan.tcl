@@ -38,7 +38,6 @@ namespace eval ::ngBot::plugin::DeluserBan {
     ##
     ##################################################
 
-    namespace import ::ngBot::plugin::NickDb::*
     variable scriptName ${ns}::LogEvent
     #bind evnt -|- prerehash [namespace current]::deinit
 
@@ -54,6 +53,13 @@ namespace eval ::ngBot::plugin::DeluserBan {
         variable np
         variable scriptName
         variable ${np}::precommand
+
+        if {![namespace exists [namespace parent]::NickDb]} {
+            putlog "\[ngBot\] DeluserBan Error :: Unable to find NickDb plugin."
+            return -code -1
+        }
+
+        namespace import [namespace parent]::NickDb::*
 
         ## Register the event handler.
         lappend precommand(DELUSER) $scriptName
