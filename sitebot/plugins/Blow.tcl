@@ -21,10 +21,6 @@
 #
 # 3. Config the stuff below
 #
-# TODO:
-# - write docs. ;)
-# - keyxchange, i dont need this so this is not a top priority ;)
-#
 #################################################################################
 
 namespace eval ::ngBot::plugin::Blow {
@@ -35,60 +31,91 @@ namespace eval ::ngBot::plugin::Blow {
 	variable events
 	variable blowkey
 	##
-	## Path to the DH1080_tcl.so lib. Get it from http://fish.sekure.us/
-	## Compile it yourself if you're a paranoid geek (recommended)
-	variable blowso "scripts/blow/DH1080_tcl.so"
-	##
-	## Set the blowkeys here. You can have as many targets as you want.
+	## Set the blowfish keys for each channel here. You can have as many
+	## targets as you want.
 	set blowkey(#chan1) "mYkeY1"
 	set blowkey(#chan2) "MyKey2"
 	set blowkey(#chan3) "mykey"
 	##
-	## Max character length unencrypted. 305 is a safe bet for both UnrealIrcd and Hybrid (EFnet)
+	## Use the blowfish key of the channel listed in mainChan for unknown
+	## targets. Doesn't work when key exchanged is enabled. Case sensetive.
+	## (Set to "" to disable)
+	##    Example: variable mainChan "#chan1"
+	variable mainChan "#chan1"
+	##
+	## Max character length unencrypted. 305 is a safe bet for both UnrealIrcd
+	## and Hybrid (EFnet).
 	variable maxLength 305
 	##
 	## Split at this character. You probably want to split at spaces.
 	variable splitChar " "
 	##
-	## Send unencrypted data if the target isnt listed in blowkey? Set to either True or False
-	## Respond to unencrypted data?
-	## (set this to False if you dont want to deal with unencrypted data (Recommended)
-	variable allowUnencrypted False
+	## Respond to unencrypted messages. (1/true or 0/false)
+	## Set this to false if you dont want to deal with them. (Recommended)
+	variable allowUnencrypted false
 	##
-	## Do you want to enable the key-exchange for all users? Set to either True or False
-	variable keyx True
+	## Key Exchange Settings #########################
 	##
-	## Which users are allowed to key-exchange? (Only works when you've enabled keyx)
-	## set to "*" to disable (UNIMPLEMENTED)
-	#variable keyxUsers "=siteops"
+	## Note: All keys are stored in memory and are forgotten on
+	##       rehash/reset/etc.
 	##
-	## Use key of mainChan for unknown targets when keyx = False
-	## Set to "" to disable
-	variable mainChan "#chan1"
+	## Enable key exchange. (1/true or 0/false)
+	variable keyx true
 	##
-	## NickDB: only respond trustedUsers
-	## set to "*" to disable
-	variable trustedUsers "!=notthisgroup *"
+	## Restrict which users allowed to key exchange with the bot.
+	## (Set to "" to disable)
+	##    Example: variable keyxUsers "=siteops"
+	variable keyxUsers ""
 	##
-	## NickDB/TOPIC: only these users are allowed to set a new topic
-	## set to "*" to disable
-	variable topicUsers "=siteops"
+	## Respond to unencrypted private messages and initiate a key exchange
+	## before replying. The data sent back will be encrypted.
+	## (1/true or 0/false)
+	variable keyxAllowUnencrypted true
+	##
+	## Time to wait in seconds for a client to complete a key exchange
+	## handshake. Some older version of FiSH for mIRC can take upwards of
+	## 60 seconds to reply.
+	variable keyxTimeout 120
+	##
+	## Path to "DH1080_tcl.so". This file is REQUIRED for key exchange to work.
+	## Get it from http://fish.sekure.us/. Compile it yourself if you're a
+	## paranoid geek (Recommended).
+	variable blowso "scripts/blow/DH1080_tcl.so"
+	##
+	## NickDb Settings ###############################
+	##
+	## NickDb allows you to link IRC users to their FTP accounts. With this
+	## enabled you can restrict IRC commands only to respond to specific users
+	## based on their groups.
+	##
+	## If the following options are disabled, NickDb is NOT required.
+	##
+	## Only respond to trusted users. (Set to "" to disable)
+	##    Example: variable trustedUsers "!=notthisgroup *"
+	variable trustedUsers ""
+	##
+	## Only allow these users to get/set new topics via the
+	## GETTOPIC/SETTOPIC ftpd commands. (Set to "" to disable)
+	##    Example: variable topicUsers "=siteops"
+	#variable topicUsers "=siteops"
+	variable topicUsers ""
 	##
 	##################################################
 	
 	set events [list "SETTOPIC" "GETTOPIC"]
-	#bind evnt -|- prerehash ${ns}::deinit
 
 	interp alias {} IsTrue {} string is true -strict
 	interp alias {} IsFalse {} string is false -strict
 
 	####
-	# Blow::PutLog
+	# Blow::debug
 	#
 	# Pretty self-explanitory
 	#
-	proc PutLog {msg} {
-		putlog "\[ngBot\] Blow :: $msg"
+	proc debug {msg} {
+		variable np
+
+		${np}::debug $msg
 	}
 
 	####
@@ -98,7 +125,7 @@ namespace eval ::ngBot::plugin::Blow {
 	#
 	proc SetTopic {channel topic} {
 		variable ns
-		set topic [join $topic]
+		#set topic [join $topic]
 		set key [${ns}::getKey $channel]
 		if {[IsTrue [${ns}::matchChan $channel]]} {
 			putquick "TOPIC $channel :$topic"
@@ -114,7 +141,7 @@ namespace eval ::ngBot::plugin::Blow {
 	#
 	proc GetTopic {channel} {
 		variable ns
-		set topic [topic $channel]	
+		set topic [topic $channel]
 		set key [${ns}::getKey $channel]
 		if {[string equal $key ""]} { return $topic }
 		
@@ -134,7 +161,7 @@ namespace eval ::ngBot::plugin::Blow {
 		variable maxLength
 		variable splitChar
 		upvar $lineArr broken
-		#${ns}::PutLog "line: $line"
+		#${ns}::debug "line: $line"
 		set length [string length $line]
 
 		set pos 0
@@ -142,7 +169,7 @@ namespace eval ::ngBot::plugin::Blow {
 		set runs [expr round([expr $length/$maxLength]+0.5)]
 		## length of each new line
 		set partSize [expr round([expr $length/$runs]+0.5)]
-		#${ns}::PutLog "maxLength: $maxLength, length: $length, runs: $runs, partsize: $partSize"
+		#${ns}::debug "maxLength: $maxLength, length: $length, runs: $runs, partsize: $partSize"
 
 		for {set i 0} {$i<$runs} {incr i} {
 			## heavy stuff
@@ -150,7 +177,7 @@ namespace eval ::ngBot::plugin::Blow {
 
 			set broken($i) [string range $line $pos [expr [string last " " $newPart]+$pos]]
 			set pos [string last " " [string range $line $pos [expr $pos + $partSize]]]; incr pos
-			#${ns}::PutLog "$i: $runs :: $pos"
+			#${ns}::debug "$i: $runs :: $pos"
 		}
 		return True
 	}
@@ -172,13 +199,21 @@ namespace eval ::ngBot::plugin::Blow {
 	# Returns key associated with $target
 	#
 	proc getKey {target} {
-		variable mainChan
+		variable keyx
 		variable blowkey
+		variable mainChan
 
-		set index [lsearch -exact [string tolower [join [array names blowkey] " "]] [string tolower $target]]
-		if {$index == -1 && ![string equal $mainChan ""]} { return blowkey($mainChan) }
+		set names [array names blowkey]
+		# Old configs had example blowkeys as blowkey("#chan1") etc, accommodate for this.
+		if {[set index [lsearch -regexp $names "(?i)^\[\"\]?$target\[\"\]?$"]] == -1} {
+			if {![string equal $mainChan ""] && [info exists blowkey($mainChan)] && ![IsTrue $keyx]} {
+				return $blowkey($mainChan)
+			}
 
-		return $blowkey([lindex [array names blowkey] $index])
+			return
+		}
+
+		return $blowkey([lindex $names $index])
 	}
 
 	####
@@ -189,9 +224,10 @@ namespace eval ::ngBot::plugin::Blow {
 	proc matchChan {target} {
 		variable blowkey
 
-		if {[lsearch -regexp [array names blowkey] "^\[\"\]?$target\[\"\]?$"] != -1} { return True }
+		# Old configs had example blowkeys as blowkey("#chan1") etc, accommodate for this.
+		if {[lsearch -regexp [array names blowkey] "(?i)^\[\"\]?$target\[\"\]?$"] != -1} { return 1 }
 
-		return False
+		return 0
 	}
 
 	####
@@ -200,8 +236,13 @@ namespace eval ::ngBot::plugin::Blow {
 	# checks if the outgoing command matches PRIVMSG or NOTICE
 	#
 	proc encryptThis {text} {
-		if { ![string compare -nocase -length 7 $text "PRIVMSG"] || ![string compare -nocase -length 7 $text "NOTICE"] || ![string compare -nocase -length 5 $text "TOPIC"]} { return True }
-		return False
+		foreach type [list "PRIVMSG " "NOTICE " "TOPIC "] {
+			if {[string equal -nocase -length [string length $type] $text $type]} {
+				return 1
+			}
+		}
+
+		return 0
 	}
 
 	proc is_trustedusers {} {
@@ -352,11 +393,13 @@ namespace eval ::ngBot::plugin::Blow {
 		variable ns
 		variable keyxtimer
 		variable keyxqueue
+		variable keyxTimeout
 
 		# Clean up the queue variable if the keyx handshake isnt completed
 		# within 120 seconds.
 		if {![info exists keyxtimer($target)]} {
-			set keyxtimer($target) [utimer 120 [list ${ns}::keyx_queue_delete $target]]
+			set timeout [expr { [string is integer $keyxTimeout] ? $keyxTimeout : 120 }]
+			set keyxtimer($target) [utimer $timeout [list ${ns}::keyx_queue_delete $target]]
 		}
 
 		lappend keyxqueue($target) $type $command $text $option
@@ -395,17 +438,20 @@ namespace eval ::ngBot::plugin::Blow {
 		variable topicUsers
 		if {[string equal $text ""] } {
 			set topic [${ns}::GetTopic $channel]
-			${np}::sndall GETTOPIC DEFAULT [ng_format "GETTOPIC" "DEFAULT" \"$topic\"]
+			${np}::sndall GETTOPIC DEFAULT [${np}::ng_format "GETTOPIC" "DEFAULT" \"$topic\"]
 		} else {
-			set ftpUser [${ns}::GetFtpUser $nick]
 			if {[${ns}::is_topicusers]} {
 				if {[IsTrue [${ns}::SetTopic $channel "$text"]]} {
-					${ns}::PutLog "Topic for $channel set: $text"
+					${ns}::debug "Topic for $channel set: $text"
 				}
-			} elseif {[${ns}::GetInfo $ftpUser ftpGroup ftpFlags] && [${np}::rightscheck $topicUsers $ftpUser $ftpGroup $ftpFlags] && [IsTrue [${ns}::SetTopic $channel "$text"]]} {
-				${ns}::PutLog "Topic for $channel set: $text"
+
+				return
+			}
+			set ftpUser [${ns}::GetFtpUser $nick]
+			if {[${ns}::GetInfo $ftpUser ftpGroup ftpFlags] && [${np}::rightscheck $topicUsers $ftpUser $ftpGroup $ftpFlags] && [IsTrue [${ns}::SetTopic $channel "$text"]]} {
+				${ns}::debug "Topic for $channel set: $text"
 			} else {
-				${ns}::PutLog "Unauthorized user: $nick"
+				${ns}::debug "Unauthorized user: $nick"
 			}
 		}
 	}
@@ -439,8 +485,6 @@ namespace eval ::ngBot::plugin::Blow {
 		# If we received an encrypted private message, don't have a key
 		# for the user and it was trigger by a MSG bind, reinit a key exchange.
 		if {[IsTrue $keyx] && ![IsTrue [${ns}::matchChan $target]] && !$ispub} {
-			# ${ns}::getKey can set key to $mainChan, make sure its empty.
-			set key ""
 			if {![info exists blowinit($target)]} {
 				${ns}::keyx_init $target
 
@@ -451,7 +495,7 @@ namespace eval ::ngBot::plugin::Blow {
 		if {[string equal $key ""]} { return }
 
 		set tmp [split [decrypt $key $text]]
-		#${ns}::PutLog "received encrypted message: $tmp"
+		#${ns}::debug "received encrypted message: $tmp"
 		foreach item [binds $bind] {
 			if {[string equal [lindex $item 2] "+OK"]} { continue }
 			if {![string equal [lindex $item 1] "-|-"] && ![matchattr $handle [lindex $item 1] $target]} { continue }
@@ -483,8 +527,9 @@ namespace eval ::ngBot::plugin::Blow {
 		variable keyx
 		variable trustedUsers
 		variable allowUnencrypted
+		variable keyxAllowUnencrypted
 
-		#${ns}::PutLog "unencryptedIncomingHandler {$from $keyword $text} allowUnencrypted: $allowUnencrypted"
+		#${ns}::debug "unencryptedIncomingHandler {$from $keyword $text} allowUnencrypted: $allowUnencrypted"
 
 		set nick [lindex [split $from "!"] 0]
 		#set uhost [lindex [split $from "!"] 1]
@@ -494,23 +539,23 @@ namespace eval ::ngBot::plugin::Blow {
 		if { [IsTrue $allowUnencrypted] || [string match ":+OK *" [string range $text [string first : $text] end]] } {
 			if {![${ns}::is_trustedusers]} {
 				if {[catch {set ftpUser [${ns}::GetFtpUser $nick]} error]} {
-					${ns}::PutLog "Error while grabbing \$ftpuser by nick $nick, ftpUser: $ftpUser, error: $error"
+					${ns}::debug "Error while grabbing \$ftpuser by nick $nick, ftpUser: $ftpUser, error: $error"
 				}
 				if {[${ns}::GetInfo $ftpUser ftpGroup ftpFlags]} {
 					if {[${np}::rightscheck $trustedUsers $ftpUser $ftpGroup $ftpFlags]} { 
 						return 0
 					}
-					${ns}::PutLog "Rightscheck failed, user: $ftpUser, data: [lindex [split $text ":"] 1]"
+					${ns}::debug "Rightscheck failed, user: $ftpUser, data: [lindex [split $text ":"] 1]"
 					return 1
 				}
-				${ns}::PutLog "GetInfo failed, user: $ftpUser"
+				${ns}::debug "GetInfo failed, user: $ftpUser"
 				return 1
 			}
 		} else {
 			# If we received an unencrypted private message and its target isn't a
 			# channel, evaluate it. The output commands will deal with the
-			# encryption.
-			if {[IsTrue $keyx] && [regexp -- {^[^&#]} $target]} {
+			# key exchange initiation and encryption.
+			if {[IsTrue $keyx] && [regexp -- {^[^&#]} $target] && [IsTrue $keyxAllowUnencrypted]} {
 				catch {unset blowkey($target)}
 
 				return 0
@@ -524,7 +569,7 @@ namespace eval ::ngBot::plugin::Blow {
 	# Blow::GetInfo
 	#
 	# gets $group and $flags from the userfile
-	# 	
+	#
 	proc GetInfo {ftpUser groupVar flagsVar} {
 		variable np
 		variable ${np}::location
@@ -571,8 +616,6 @@ namespace eval ::ngBot::plugin::Blow {
 		# already already a key for this target.
 		if {[IsTrue $keyx] && [regexp -- {^[^&#]} $target] && \
 			[IsTrue [${ns}::encryptThis $text]] && ![IsTrue [${ns}::matchChan $target]]} {
-			# ${ns}::getKey can set key to $mainChan, make sure its empty.
-			set key ""
 			 # Initiate if we haven't already.
 			if {![info exists blowinit($target)]} {
 				# Will set blowinit($target)
@@ -581,7 +624,7 @@ namespace eval ::ngBot::plugin::Blow {
 		}
 
 		if {([IsTrue [${ns}::encryptThis $text]] && ![string equal $key ""]) || [info exists blowinit($target)]} {
-			if {[IsTrue [${ns}::matchChan $target]] || [info exists blowinit($target)]} {
+			if {![string equal $key ""] || [info exists blowinit($target)]} {
 				## we have to encrypt this
 				set command [lindex $ltext 0]
 
@@ -622,9 +665,8 @@ namespace eval ::ngBot::plugin::Blow {
 
 	proc put_encrypted {target type command text key {option ""}} {
 		variable ns
-		variable blowkey
 
-		if {[info exists blowkey($target)]} {
+		if {![string equal $key ""]} {
 			if {$option == ""} {
 				put${type}2 "$command $target :+OK [encrypt $key $text]"
 			} else {
@@ -642,12 +684,12 @@ namespace eval ::ngBot::plugin::Blow {
 	#
 	proc LogEvent {event section logData} {
 		variable ns
-		${ns}::PutLog "LogEvent {$event $section $logData} called"
+		${ns}::debug "LogEvent {$event $section $logData} called"
 		if {![string equal "SETTOPIC" $event]} {return 1}
 			set channel [lindex $logData 0]
 			set topic [lindex $logData 1]
 			if {[IsFalse [${ns}::SetTopic $channel $topic]]} {
-			${ns}::PutLog "Unable to set topic"
+			${ns}::debug "Unable to set topic"
 		}
 		return 1
 	}
@@ -681,9 +723,11 @@ namespace eval ::ngBot::plugin::Blow {
 			namespace import [namespace parent]::NickDb::*
 		}
 
-		if {[catch {load $blowso} error]} {
-			putlog "\[ngBot\] Blow Error :: $error"
-			return -code -1
+		if {[IsTrue $keyx]} {
+			if {[catch {load $blowso} error]} {
+				putlog "\[ngBot\] Blow Error :: $error"
+				return -code -1
+			}
 		}
 
 		## Intercept putquick, putserv and puthelp, and replace it with our own version
@@ -694,17 +738,11 @@ namespace eval ::ngBot::plugin::Blow {
 		interp alias {} putquick {} ${ns}::put_bind "quick"
 		interp alias {} putserv {} ${ns}::put_bind "serv"
 		interp alias {} puthelp {} ${ns}::put_bind "help"
-		#interp alias {} putquick {} ${ns}::PutQuick
-		#interp alias {} putserv {} ${ns}::PutServ
-		#interp alias {} puthelp {} ${ns}::PutHelp
-		#catch {rename ${ns}::PutQuick ::putquick}
-		#catch {rename ${ns}::PutServ  ::putserv}
-		#catch {rename ${ns}::PutHelp  ::puthelp}
 
 
 		## Set disable(SETTOPIC) to 1 if you dont want the bot to message the chan with the new topic
-		set disable(SETTOPIC)	1
-		set disable(GETTOPIC)	0
+		set disable(SETTOPIC)    1
+		set disable(GETTOPIC)    0
 		set variables(SETTOPIC)  "%channel %topic"
 		set variables(GETTOPIC)  "%topic"
 
@@ -719,7 +757,6 @@ namespace eval ::ngBot::plugin::Blow {
 		bind pub - ${cmdpre}topic ${ns}::IrcTopic
 		bind raw - PRIVMSG ${ns}::unencryptedIncomingHandler
 		if {[IsTrue $keyx]} {
-			bind msg - !bckeydel bckeydel
 			bind nick - * ${ns}::keyx_nick
 			bind notc - "DH1080_INIT *" ${ns}::keyx_bind
 			bind notc - "DH1080_FINISH *" ${ns}::keyx_bind
@@ -772,15 +809,6 @@ namespace eval ::ngBot::plugin::Blow {
 				set msgtypes(DEFAULT) [lreplace $msgtypes(DEFAULT) $pos $pos]
 			}
 		}
-
-		#catch {unbind evnt -|- prerehash ${ns}::deinit}
-		#catch {unbind pub - +OK ${ns}::encryptedIncomingHandler}
-		#catch {unbind pub - ${cmdpre}topic ${ns}::IrcTopic}
-		#catch {unbind raw - PRIVMSG ${ns}::unencryptedIncomingHandler}
-		#catch {unbind msg - !bckeydel bckeydel}
-		#catch {unbind nick - * ${ns}::keyx_nick}
-		#catch {unbind notc - "DH1080_INIT" ${ns}::keyx_bind}
-		#catch {unbind notc - "DH1080_FINISH" ${ns}::keyx_bind}
 
 		namespace delete $ns
 		return
