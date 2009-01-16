@@ -227,6 +227,8 @@ namespace eval ::ngBot {
 	proc init_plugins {} {
 		variable ns
 
+		if {![namespace exists ${ns}::plugin]} { return }
+
 		set loaded [list]
 		foreach plugin [namespace children ${ns}::plugin] {
 			switch -- [catch {${plugin}::init} error] {
