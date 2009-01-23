@@ -42,6 +42,7 @@ v1.2.0  --> 1.2.x :
 		  announces are now customisable.
 		- Fixed bug #382 - Show !free in a set unit without auto rounding.
 		- Added key exchanging to Blow.tcl and updated/fixed a _lot_ of things.
+		- added mkv to default video_types.
 
 		v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.

@@ -1272,7 +1272,7 @@
 
 #ifndef video_types
 #define video_types_is_defaulted
-#define video_types                               "mpg,mpeg,m2v,m2p,avi"
+#define video_types                               "mpg,mpeg,m2v,m2p,avi,mkv"
 #endif
 
 #ifndef write_complete_message
