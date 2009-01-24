@@ -106,7 +106,7 @@ namespace eval ::ngBot::module::glftpd {
 		if {[string equal -nocase "AUTO" $use_glftpd2]} {
 			if {![info exists binary(GLFTPD)]} {
 				putlog "\[ngBot\] Error :: you did not thoroughly edit the $scriptpath/ngBot.conf file (hint: binary(GLFTPD))."
-				#die
+				die
 			}
 			set glversion [exec strings $binary(GLFTPD) | grep -i "^glftpd " | cut -f1 -d. | tr A-Z a-z]
 
@@ -118,7 +118,7 @@ namespace eval ::ngBot::module::glftpd {
 				set glversion 2
 			} else {
 				putlog "\[ngBot\] Auto-detecting glftpd version failed, set \"use_glftpd2\" in $scriptpath/ngBot.conf manually."
-				#die
+				die
 			}
 		} else {
 			set glversion [expr [istrue $use_glftpd2] ? 2 : 1]

@@ -85,7 +85,7 @@ namespace eval ::ngBot {
 			putlog "\[ngBot\] Loaded successfully!"
 		} else {
 			putlog "\[ngBot\] Errors were encountered while loading, refer to the messages above for details."
-			if {[istrue $die_on_error]} {die}
+			if {[istrue $die_on_error]} { die }
 		}
 
 		bind evnt -|- prerehash ${ns}::deinit_ng
@@ -1421,19 +1421,19 @@ namespace eval ::ngBot {
 	#############################################################################
 
 	if {[catch {package require Tcl 8.4} error]} {
-		#die "\[ngBot\] Error :: You must be using Tcl v8.4, or newer, with ngBot."
+		die "\[ngBot\] Error :: You must be using Tcl v8.4, or newer, with ngBot."
 	}
 
 	# Load the defaults/conf/vars files.
 	if {[catch {source $scriptpath/ngBot.conf.defaults} error]} {
 		putlog "\[ngBot\] Error :: Unable to load ngBot.conf.defaults ($error), cannot continue."
 		putlog "\[ngBot\] Error :: See FAQ for possible solutions/debugging options."
-		#die
+		die
 	}
 	if {[catch {source $scriptpath/ngBot.vars} error]} {
 		putlog "\[ngBot\] Error :: Unable to load ngBot.vars ($error), cannot continue."
 		putlog "\[ngBot\] Error :: See FAQ for possible solutions/debugging options."
-		#die
+		die
 	}
 	if {[catch {source $scriptpath/ngBot.conf} error]} {
 		putlog "\[ngBot\] Warning :: Unable to load ngBot.conf, using default values."
@@ -1458,21 +1458,21 @@ namespace eval ::ngBot {
 	if {[catch {source $scriptpath/modules/${ftpd_type}.tcl} error]} {
 		putlog "\[ngBot\] Error :: Unable to load ftpd module file modules/${ftpd_type}.tcl ($error), cannot continue."
 		putlog "\[ngBot\] Error :: See FAQ for possible solutions/debugging options."
-		#die
+		die
 	}
 
 	# Check to see if the correct ftpd module is available.
 	if {![namespace exists "[namespace current]::module::$ftpd_type"]} {
 		putlog "\[ngBot\] Error :: Unable to locate ftpd module namespace \"$ftpd_type\", cannot continue."
 		putlog "\[ngBot\] Error :: See FAQ for possible solutions/debugging options."
-		#die
+		die
 	}
 
 	# Attempt to load the ftpd module.
 	if {[catch {[namespace current]::module::${ftpd_type}::init} error]} {
 		putlog "\[ngBot\] Error :: Unable to load ftpd module ($error), cannot continue."
 		putlog "\[ngBot\] Error :: See FAQ for possible solutions/debugging options."
-		#die
+		die
 	}
 
 	# Run init_ng proc once all scripts are loaded.
