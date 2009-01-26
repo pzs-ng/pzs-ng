@@ -224,6 +224,7 @@ namespace eval ::ngBot::plugin::TVRage {
 
 	proc LogEvent {event section logData} {
 		variable ns
+		variable np
 		variable tvrage
 
 		if {[string compare -nocase $event "NEWDIR"] == 0} {
@@ -316,7 +317,7 @@ namespace eval ::ngBot::plugin::TVRage {
 		regsub -all -- {[\._]} $show_str " " show_str
 		set show_str [string trim $show_str]
 
-		::http::config -useragent "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.0.7) Gecko/20060909 Firefox/1.5.0.7"
+		::http::config -useragent "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.0.5) Gecko/2008120122 Firefox/3.0.5"
 
 		array set info [${ns}::GetShow $show_str]
 		if {([info exists episode_season]) && ([info exists episode_number]) && \
@@ -445,6 +446,7 @@ namespace eval ::ngBot::plugin::TVRage {
 	}
 
 	proc GetEpisode {url} {
+		variable ns
 		variable tvrage
 
 		set token [::http::geturl $url -timeout $tvrage(timeout)]
