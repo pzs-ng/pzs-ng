@@ -1087,7 +1087,7 @@ options:
         can_disable: true
         comment: |-
             Define here what should be put in the top of the complete_message.
-        default: '".-----------------====---------------------------== PZS-NG v1.0 ===--.\n"' 
+        default: '".-----------------====-------------------------== PZS-NG v1.2.0 ===--.\n"' 
 
     message_user_header:
         type: string
