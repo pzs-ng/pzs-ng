@@ -8,14 +8,14 @@
 #include <time.h>
 #include "zsconfig.h"
 #include "zsconfig.defaults.h"
+#include <stdarg.h>
 
 #define TRUE  1
 #define FALSE 0
 short int matchpath(char *, char *);
+void debug_out(char *,...);
 
-short int
-matchpath(char *instr, char *path)
-{
+short int matchpath(char *instr, char *path) {
 	int             pos = 0;
 
 	if ( (int)strlen(instr) < 2 || (int)strlen(path) < 2 ) {
@@ -38,6 +38,31 @@ matchpath(char *instr, char *path)
 	return 0;
 }
 
+void debug_out(char *fmt,...) {
+#if ( debug_mode == TRUE )
+	time_t          timenow;
+	FILE           *file;
+	va_list         ap;
+	static char     debugname[] = ".debug";
+#endif
+
+        if (fmt == NULL)
+                return;
+#if ( debug_mode == TRUE )
+        va_start(ap, fmt);
+        timenow = time(NULL);
+
+        if ((file = fopen(debugname, "a+"))) {
+                fprintf(file, "%.24s - %.6d - dl_speedtest.c - ", ctime(&timenow), getpid());
+                vfprintf(file, fmt, ap);
+                fclose(file);
+	}
+        chmod(debugname, 0666);
+        va_end(ap);
+#endif
+        return;
+}
+
 int
 main (int argc, char **argv)
 {
@@ -50,22 +75,17 @@ main (int argc, char **argv)
 	long long	speed, size;
 
 	if ((argc < 2) || (strncasecmp(argv[1], "RETR ", 5))) {
-		if (debug_mode)
-			printf("%s: Did not revieve args, or args were wrong. ($1='%s')\n", argv[0], argv[1]); 
+		debug_out("%s: Did not revieve args, or args were wrong. ($1='%s')\n", argv[0], argv[1]); 
 		return 0;
 	}
 	p = argv[1] + 5;
 	snprintf(filename, sizeof(filename), "%s", p);
 	if (!getcwd(wdir, sizeof(wdir))) {
-#if (debug_mode)
-			printf("%s: Could not retrieve current path - getcwd() failed.\n", argv[0]);
-#endif
+		debug_out("%s: Could not retrieve current path - getcwd() failed.\n", argv[0]);
 		return 0;
 	}
 	if (!matchpath(speedtest_dirs, wdir)) {
-#if (debug_mode)
-			printf("%s: Current path does not match speedtest_dirs (%s not in %s).\n", argv[0], wdir, speedtest_dirs);
-#endif
+		debug_out("%s: Current path does not match speedtest_dirs (%s not in %s).\n", argv[0], wdir, speedtest_dirs);
 		return 0;
 	}
 	if (getenv("USER") && getenv("GROUP") && getenv("SPEED")) {
@@ -83,9 +103,7 @@ main (int argc, char **argv)
 			mbytesps = speed * 1024. / 1024. / 1024.;
 		}
 		if (stat(filename, &fileinfo)) {
-#if (debug_mode)
-				printf("%s: Could not stat() file %s.\n", argv[0], filename);
-#endif
+			debug_out("%s: Could not stat() file %s.\n", argv[0], filename);
 			return 0;
 		}
 		if ((size = fileinfo.st_size) == 0) {
@@ -96,9 +114,7 @@ main (int argc, char **argv)
 			mbit = (double)fileinfo.st_size / 1000. / 1000.;
 		}
 		if (!(glfile = fopen(log, "a+"))) {
-#if (debug_mode)
-				printf("%s: Unable to fopen() %s for appending.\n", argv[0], log);
-#endif
+			debug_out("%s: Unable to fopen() %s for appending.\n", argv[0], log);
 			return 0;
 		}
 		fprintf(glfile, "%.24s DLTEST: \"%s\" {%s} {%s} {%.2f} {%.2f} {%.1f} {%.1f}\n", ctime(&timenow), wdir, user, group, mbps, mbytesps, mbit, mbyte);
