@@ -509,13 +509,12 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     GENRECLEAN=$(echo $GENRE | sed "s/Genre........: *//")
     RATING="User Rating..: $(grep "[0-9]\.[0-9]\/[0-9][0-9]" $TMPFILE | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/\* //g" | sed "s/_ //g" | sed s/\"/$QUOTECHAR/g | head -n 1 | sed "s|/10\ |/10\ \(|"))"
     if [ "$RATING" = "User Rating..: )" ]; then
-      RATING="User Rating..: N/A"
+      RATING="User Rating..: Awaiting 5 votes"
     fi
     RATINGCLEAN=$(echo $RATING | sed "s/User Rating.*: *//")
     if [ "$(echo $RATINGCLEAN | grep -a -e "[Ww][Aa][Ii][Tt]")" = "" ]; then
      RATINGVOTES=$(echo $RATINGCLEAN | sed "s/ [Vv][Oo][Tt][Ee][Ss]//" | tr '() ' '\n' | grep -a -v "/" | grep -a -e "[0-9]" | head -n 1)
      RATINGSCORE=$(echo $RATINGCLEAN | grep -a -e "/" | tr '/' '\n' | head -n 1)
-     PLUS="##########"; MINUS="----------"; PNUM=$(echo $RATINGSCORE | cut -d '.' -f 1); let MNUM=10-PNUM
      PLUS="##########"
      MINUS="----------"
      PNUM=$(echo $RATINGSCORE | cut -d '.' -f 1)
@@ -889,16 +888,12 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
      GENREFILE="Unclassified"
     fi
     VOTESFILE="$(echo $RATINGVOTES | tr ',' '.')"
-    if [ -z "$ISLIMITED" ]; then
-     ISLIMITED="unknown"
-    fi
+    [[ -z "$VOTESFILE" ]] && VOTESFILE="NA"
+    [[ -z "$RATINGSCORE" ]] && RATINGSCORE="NA"
+    [[ -z "$ISLIMITED" ]] && ISLIMITED="unknown"
     NUMSCREENS="$(echo $BUSINESSSCREENS | tr ',' '.')"
-    if [ -z "$NUMSCREENS" ]; then
-     NUMSCREENS="unknown"
-    fi
-    if [ -z "$RUNTIMECLEAN" ]; then
-     RUNTIMECLEAN="unknown"
-    fi
+    [[ -z "$NUMSCREENS" ]] && NUMSCREENS="unknown"
+    [[ -z "$RUNTIMECLEAN" ]] && RUNTIMECLEAN="unknown"
     INFOFILENAMEOLD="$(echo "$INFOFILENAME" | tr -c $INFOVALID $INFOCHARTO | sed "s%VOTES%*%g" | sed "s%SCORE%*%g" | sed "s%GENRE%*%g" | sed "s%RUNTIME%*%g" | sed "s%YEAR%*%g" | sed "s%ISLIMITED%*%g" | sed "s%SCREENS%*%g" | tr -d ' ')"
     INFOFILENAMEOLDA="$(echo "$INFOFILENAMEOLD" | sed "s%*%.*%g")"
     INFOFILENAMEOLDB="$(echo "$INFOFILENAMEOLDA" | tr '\]\[' '.')"

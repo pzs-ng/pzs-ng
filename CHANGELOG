@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- make dl_speedtest output to .debug
 		- change libcopy to better handle resolving in chroot environment (Debian and
 		  Ubuntu in particular need this fix)
 		- added rescan_script and enable_rescan_script option to run script on rescan
