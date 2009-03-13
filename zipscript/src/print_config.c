@@ -143,7 +143,7 @@ printf("#define audio_cbr_check                           %s\n", (audio_cbr_chec
 printf("#define audio_cbr_warn                            %s\n", (audio_cbr_warn == FALSE ? "FALSE" : "TRUE"));
 #endif
 #ifndef audio_completebar_is_defaulted
-printf("#define audio_completebar                         %s\n", stringify(audio_completebar));
+printf("#define audio_completebar                         %s\n", (audio_completebar == DISABLED ? "DISABLED" : stringify(audio_completebar)));
 #endif
 #ifndef audio_genre_path_is_defaulted
 printf("#define audio_genre_path                          %s\n", stringify(audio_genre_path));
@@ -248,7 +248,7 @@ printf("#define create_missing_sfv                        %s\n", (create_missing
 printf("#define create_missing_sfv_link                   %s\n", (create_missing_sfv_link == FALSE ? "FALSE" : "TRUE"));
 #endif
 #ifndef custom_group_dirs_complete_message_is_defaulted
-printf("#define custom_group_dirs_complete_message        %s\n", stringify(custom_group_dirs_complete_message));
+printf("#define custom_group_dirs_complete_message        %s\n", (custom_group_dirs_complete_message == DISABLED ? "DISABLED" : stringify(custom_group_dirs_complete_message)));
 #endif
 #ifndef days_back_cleanup_is_defaulted
 printf("#define days_back_cleanup                         %s\n", stringify(days_back_cleanup));
@@ -266,7 +266,7 @@ printf("#define debug_mode                                %s\n", (debug_mode == 
 printf("#define del_banned_release                        %s\n", (del_banned_release == FALSE ? "FALSE" : "TRUE"));
 #endif
 #ifndef del_completebar_is_defaulted
-printf("#define del_completebar                           %s\n", stringify(del_completebar));
+printf("#define del_completebar                           %s\n", (del_completebar == DISABLED ? "DISABLED" : stringify(del_completebar)));
 #endif
 #ifndef del_progressmeter_is_defaulted
 printf("#define del_progressmeter                         %s\n", stringify(del_progressmeter));
@@ -599,34 +599,34 @@ printf("#define max_seconds_wait_for_lock                 %s\n", stringify(max_s
 printf("#define max_users_in_top                          %s\n", stringify(max_users_in_top));
 #endif
 #ifndef message_file_name_is_defaulted
-printf("#define message_file_name                         %s\n", stringify(message_file_name));
+printf("#define message_file_name                         %s\n", (message_file_name == DISABLED ? "DISABLED" : stringify(message_file_name)));
 #endif
 #ifndef message_footer_is_defaulted
-printf("#define message_footer                            %s\n", stringify(message_footer));
+printf("#define message_footer                            %s\n", (message_footer == DISABLED ? "DISABLED" : stringify(message_footer)));
 #endif
 #ifndef message_group_body_is_defaulted
-printf("#define message_group_body                        %s\n", stringify(message_group_body));
+printf("#define message_group_body                        %s\n", (message_group_body == DISABLED ? "DISABLED" : stringify(message_group_body)));
 #endif
 #ifndef message_group_footer_is_defaulted
-printf("#define message_group_footer                      %s\n", stringify(message_group_footer));
+printf("#define message_group_footer                      %s\n", (message_group_footer == DISABLED ? "DISABLED" : stringify(message_group_footer)));
 #endif
 #ifndef message_group_header_is_defaulted
-printf("#define message_group_header                      %s\n", stringify(message_group_header));
+printf("#define message_group_header                      %s\n", (message_group_header == DISABLED ? "DISABLED" : stringify(message_group_header)));
 #endif
 #ifndef message_header_is_defaulted
-printf("#define message_header                            %s\n", stringify(message_header));
+printf("#define message_header                            %s\n", (message_header == DISABLED ? "DISABLED" : stringify(message_header)));
 #endif
 #ifndef message_mp3_is_defaulted
-printf("#define message_mp3                               %s\n", stringify(message_mp3));
+printf("#define message_mp3                               %s\n", (message_mp3 == DISABLED ? "DISABLED" : stringify(message_mp3)));
 #endif
 #ifndef message_user_body_is_defaulted
-printf("#define message_user_body                         %s\n", stringify(message_user_body));
+printf("#define message_user_body                         %s\n", (message_user_body == DISABLED ? "DISABLED" : stringify(message_user_body)));
 #endif
 #ifndef message_user_footer_is_defaulted
-printf("#define message_user_footer                       %s\n", stringify(message_user_footer));
+printf("#define message_user_footer                       %s\n", (message_user_footer == DISABLED ? "DISABLED" : stringify(message_user_footer)));
 #endif
 #ifndef message_user_header_is_defaulted
-printf("#define message_user_header                       %s\n", stringify(message_user_header));
+printf("#define message_user_header                       %s\n", (message_user_header == DISABLED ? "DISABLED" : stringify(message_user_header)));
 #endif
 #ifndef min_halfway_files_is_defaulted
 printf("#define min_halfway_files                         %s\n", stringify(min_halfway_files));
@@ -665,7 +665,7 @@ printf("#define nocheck_dirs                              %s\n", stringify(noche
 printf("#define noforce_sfv_first_dirs                    %s\n", stringify(noforce_sfv_first_dirs));
 #endif
 #ifndef other_completebar_is_defaulted
-printf("#define other_completebar                         %s\n", stringify(other_completebar));
+printf("#define other_completebar                         %s\n", (other_completebar == DISABLED ? "DISABLED" : stringify(other_completebar)));
 #endif
 #ifndef program_gid_is_defaulted
 printf("#define program_gid                               %s\n", stringify(program_gid));
@@ -680,28 +680,28 @@ printf("#define progressmeter                             %s\n", stringify(progr
 printf("#define progressmeter_mp3                         %s\n", stringify(progressmeter_mp3));
 #endif
 #ifndef rar_completebar_is_defaulted
-printf("#define rar_completebar                           %s\n", stringify(rar_completebar));
+printf("#define rar_completebar                           %s\n", (rar_completebar == DISABLED ? "DISABLED" : stringify(rar_completebar)));
 #endif
 #ifndef realtime_group_body_is_defaulted
-printf("#define realtime_group_body                       %s\n", stringify(realtime_group_body));
+printf("#define realtime_group_body                       %s\n", (realtime_group_body == DISABLED ? "DISABLED" : stringify(realtime_group_body)));
 #endif
 #ifndef realtime_group_footer_is_defaulted
-printf("#define realtime_group_footer                     %s\n", stringify(realtime_group_footer));
+printf("#define realtime_group_footer                     %s\n", (realtime_group_footer == DISABLED ? "DISABLED" : stringify(realtime_group_footer)));
 #endif
 #ifndef realtime_group_header_is_defaulted
-printf("#define realtime_group_header                     %s\n", stringify(realtime_group_header));
+printf("#define realtime_group_header                     %s\n", (realtime_group_header == DISABLED ? "DISABLED" : stringify(realtime_group_header)));
 #endif
 #ifndef realtime_mp3_info_is_defaulted
-printf("#define realtime_mp3_info                         %s\n", stringify(realtime_mp3_info));
+printf("#define realtime_mp3_info                         %s\n", (realtime_mp3_info == DISABLED ? "DISABLED" : stringify(realtime_mp3_info)));
 #endif
 #ifndef realtime_user_body_is_defaulted
-printf("#define realtime_user_body                        %s\n", stringify(realtime_user_body));
+printf("#define realtime_user_body                        %s\n", (realtime_user_body == DISABLED ? "DISABLED" : stringify(realtime_user_body)));
 #endif
 #ifndef realtime_user_footer_is_defaulted
-printf("#define realtime_user_footer                      %s\n", stringify(realtime_user_footer));
+printf("#define realtime_user_footer                      %s\n", (realtime_user_footer == DISABLED ? "DISABLED" : stringify(realtime_user_footer)));
 #endif
 #ifndef realtime_user_header_is_defaulted
-printf("#define realtime_user_header                      %s\n", stringify(realtime_user_header));
+printf("#define realtime_user_header                      %s\n", (realtime_user_header == DISABLED ? "DISABLED" : stringify(realtime_user_header)));
 #endif
 #ifndef remove_dot_debug_on_delete_is_defaulted
 printf("#define remove_dot_debug_on_delete                %s\n", (remove_dot_debug_on_delete == FALSE ? "FALSE" : "TRUE"));
@@ -812,7 +812,7 @@ printf("#define use_partial_on_noforce                    %s\n", (use_partial_on
 printf("#define userellink                                %s\n", stringify(userellink));
 #endif
 #ifndef video_completebar_is_defaulted
-printf("#define video_completebar                         %s\n", stringify(video_completebar));
+printf("#define video_completebar                         %s\n", (video_completebar == DISABLED ? "DISABLED" : stringify(video_completebar)));
 #endif
 #ifndef video_types_is_defaulted
 printf("#define video_types                               %s\n", stringify(video_types));
@@ -830,7 +830,7 @@ printf("#define zip_bin                                   %s\n", stringify(zip_b
 printf("#define zip_clean                                 %s\n", (zip_clean == FALSE ? "FALSE" : "TRUE"));
 #endif
 #ifndef zip_completebar_is_defaulted
-printf("#define zip_completebar                           %s\n", stringify(zip_completebar));
+printf("#define zip_completebar                           %s\n", (zip_completebar == DISABLED ? "DISABLED" : stringify(zip_completebar)));
 #endif
 #ifndef zip_dirs_is_defaulted
 printf("#define zip_dirs                                  %s\n", stringify(zip_dirs));
@@ -920,7 +920,7 @@ printf("#define audio_artist_sort                         %s\n", (audio_artist_s
 printf("#define audio_banned_genre_check                  %s\n", (audio_banned_genre_check == FALSE ? "FALSE" : "TRUE"));
 printf("#define audio_cbr_check                           %s\n", (audio_cbr_check == FALSE ? "FALSE" : "TRUE"));
 printf("#define audio_cbr_warn                            %s\n", (audio_cbr_warn == FALSE ? "FALSE" : "TRUE"));
-printf("#define audio_completebar                         %s\n", stringify(audio_completebar));
+printf("#define audio_completebar                         %s\n", (audio_completebar == DISABLED ? "DISABLED" : stringify(audio_completebar)));
 printf("#define audio_genre_path                          %s\n", stringify(audio_genre_path));
 printf("#define audio_genre_sort                          %s\n", (audio_genre_sort == FALSE ? "FALSE" : "TRUE"));
 printf("#define audio_genre_warn                          %s\n", (audio_genre_warn == FALSE ? "FALSE" : "TRUE"));
@@ -955,13 +955,13 @@ printf("#define create_missing_files                      %s\n", (create_missing
 printf("#define create_missing_sample_link                %s\n", (create_missing_sample_link == FALSE ? "FALSE" : "TRUE"));
 printf("#define create_missing_sfv                        %s\n", (create_missing_sfv == FALSE ? "FALSE" : "TRUE"));
 printf("#define create_missing_sfv_link                   %s\n", (create_missing_sfv_link == FALSE ? "FALSE" : "TRUE"));
-printf("#define custom_group_dirs_complete_message        %s\n", stringify(custom_group_dirs_complete_message));
+printf("#define custom_group_dirs_complete_message        %s\n", (custom_group_dirs_complete_message == DISABLED ? "DISABLED" : stringify(custom_group_dirs_complete_message)));
 printf("#define days_back_cleanup                         %s\n", stringify(days_back_cleanup));
 printf("#define debug_altlog                              %s\n", (debug_altlog == FALSE ? "FALSE" : "TRUE"));
 printf("#define debug_announce                            %s\n", (debug_announce == FALSE ? "FALSE" : "TRUE"));
 printf("#define debug_mode                                %s\n", (debug_mode == FALSE ? "FALSE" : "TRUE"));
 printf("#define del_banned_release                        %s\n", (del_banned_release == FALSE ? "FALSE" : "TRUE"));
-printf("#define del_completebar                           %s\n", stringify(del_completebar));
+printf("#define del_completebar                           %s\n", (del_completebar == DISABLED ? "DISABLED" : stringify(del_completebar)));
 printf("#define del_progressmeter                         %s\n", stringify(del_progressmeter));
 printf("#define del_progressmeter_mp3                     %s\n", stringify(del_progressmeter_mp3));
 printf("#define delete_old_link                           %s\n", (delete_old_link == FALSE ? "FALSE" : "TRUE"));
@@ -1072,16 +1072,16 @@ printf("#define mark_file_as_bad                          %s\n", (mark_file_as_b
 printf("#define max_groups_in_top                         %s\n", stringify(max_groups_in_top));
 printf("#define max_seconds_wait_for_lock                 %s\n", stringify(max_seconds_wait_for_lock));
 printf("#define max_users_in_top                          %s\n", stringify(max_users_in_top));
-printf("#define message_file_name                         %s\n", stringify(message_file_name));
-printf("#define message_footer                            %s\n", stringify(message_footer));
-printf("#define message_group_body                        %s\n", stringify(message_group_body));
-printf("#define message_group_footer                      %s\n", stringify(message_group_footer));
-printf("#define message_group_header                      %s\n", stringify(message_group_header));
-printf("#define message_header                            %s\n", stringify(message_header));
-printf("#define message_mp3                               %s\n", stringify(message_mp3));
-printf("#define message_user_body                         %s\n", stringify(message_user_body));
-printf("#define message_user_footer                       %s\n", stringify(message_user_footer));
-printf("#define message_user_header                       %s\n", stringify(message_user_header));
+printf("#define message_file_name                         %s\n", (message_file_name == DISABLED ? "DISABLED" : stringify(message_file_name)));
+printf("#define message_footer                            %s\n", (message_footer == DISABLED ? "DISABLED" : stringify(message_footer)));
+printf("#define message_group_body                        %s\n", (message_group_body == DISABLED ? "DISABLED" : stringify(message_group_body)));
+printf("#define message_group_footer                      %s\n", (message_group_footer == DISABLED ? "DISABLED" : stringify(message_group_footer)));
+printf("#define message_group_header                      %s\n", (message_group_header == DISABLED ? "DISABLED" : stringify(message_group_header)));
+printf("#define message_header                            %s\n", (message_header == DISABLED ? "DISABLED" : stringify(message_header)));
+printf("#define message_mp3                               %s\n", (message_mp3 == DISABLED ? "DISABLED" : stringify(message_mp3)));
+printf("#define message_user_body                         %s\n", (message_user_body == DISABLED ? "DISABLED" : stringify(message_user_body)));
+printf("#define message_user_footer                       %s\n", (message_user_footer == DISABLED ? "DISABLED" : stringify(message_user_footer)));
+printf("#define message_user_header                       %s\n", (message_user_header == DISABLED ? "DISABLED" : stringify(message_user_header)));
 printf("#define min_halfway_files                         %s\n", stringify(min_halfway_files));
 printf("#define min_halfway_size                          %s\n", stringify(min_halfway_size));
 printf("#define min_newleader_files                       %s\n", stringify(min_newleader_files));
@@ -1094,19 +1094,19 @@ printf("#define newleader_files_ahead                     %s\n", stringify(newle
 printf("#define nfo_script                                %s\n", stringify(nfo_script));
 printf("#define nocheck_dirs                              %s\n", stringify(nocheck_dirs));
 printf("#define noforce_sfv_first_dirs                    %s\n", stringify(noforce_sfv_first_dirs));
-printf("#define other_completebar                         %s\n", stringify(other_completebar));
+printf("#define other_completebar                         %s\n", (other_completebar == DISABLED ? "DISABLED" : stringify(other_completebar)));
 printf("#define program_gid                               %s\n", stringify(program_gid));
 printf("#define program_uid                               %s\n", stringify(program_uid));
 printf("#define progressmeter                             %s\n", stringify(progressmeter));
 printf("#define progressmeter_mp3                         %s\n", stringify(progressmeter_mp3));
-printf("#define rar_completebar                           %s\n", stringify(rar_completebar));
-printf("#define realtime_group_body                       %s\n", stringify(realtime_group_body));
-printf("#define realtime_group_footer                     %s\n", stringify(realtime_group_footer));
-printf("#define realtime_group_header                     %s\n", stringify(realtime_group_header));
-printf("#define realtime_mp3_info                         %s\n", stringify(realtime_mp3_info));
-printf("#define realtime_user_body                        %s\n", stringify(realtime_user_body));
-printf("#define realtime_user_footer                      %s\n", stringify(realtime_user_footer));
-printf("#define realtime_user_header                      %s\n", stringify(realtime_user_header));
+printf("#define rar_completebar                           %s\n", (rar_completebar == DISABLED ? "DISABLED" : stringify(rar_completebar)));
+printf("#define realtime_group_body                       %s\n", (realtime_group_body == DISABLED ? "DISABLED" : stringify(realtime_group_body)));
+printf("#define realtime_group_footer                     %s\n", (realtime_group_footer == DISABLED ? "DISABLED" : stringify(realtime_group_footer)));
+printf("#define realtime_group_header                     %s\n", (realtime_group_header == DISABLED ? "DISABLED" : stringify(realtime_group_header)));
+printf("#define realtime_mp3_info                         %s\n", (realtime_mp3_info == DISABLED ? "DISABLED" : stringify(realtime_mp3_info)));
+printf("#define realtime_user_body                        %s\n", (realtime_user_body == DISABLED ? "DISABLED" : stringify(realtime_user_body)));
+printf("#define realtime_user_footer                      %s\n", (realtime_user_footer == DISABLED ? "DISABLED" : stringify(realtime_user_footer)));
+printf("#define realtime_user_header                      %s\n", (realtime_user_header == DISABLED ? "DISABLED" : stringify(realtime_user_header)));
 printf("#define remove_dot_debug_on_delete                %s\n", (remove_dot_debug_on_delete == FALSE ? "FALSE" : "TRUE"));
 printf("#define remove_dot_files_on_delete                %s\n", (remove_dot_files_on_delete == FALSE ? "FALSE" : "TRUE"));
 printf("#define rescan_chdir_flags                        %s\n", stringify(rescan_chdir_flags));
@@ -1143,13 +1143,13 @@ printf("#define unzip_bin                                 %s\n", stringify(unzip
 printf("#define use_group_dirs_as_affil_list              %s\n", (use_group_dirs_as_affil_list == FALSE ? "FALSE" : "TRUE"));
 printf("#define use_partial_on_noforce                    %s\n", (use_partial_on_noforce == FALSE ? "FALSE" : "TRUE"));
 printf("#define userellink                                %s\n", stringify(userellink));
-printf("#define video_completebar                         %s\n", stringify(video_completebar));
+printf("#define video_completebar                         %s\n", (video_completebar == DISABLED ? "DISABLED" : stringify(video_completebar)));
 printf("#define video_types                               %s\n", stringify(video_types));
 printf("#define write_complete_message                    %s\n", (write_complete_message == FALSE ? "FALSE" : "TRUE"));
 printf("#define write_complete_message_in_group_dirs      %s\n", (write_complete_message_in_group_dirs == FALSE ? "FALSE" : "TRUE"));
 printf("#define zip_bin                                   %s\n", stringify(zip_bin));
 printf("#define zip_clean                                 %s\n", (zip_clean == FALSE ? "FALSE" : "TRUE"));
-printf("#define zip_completebar                           %s\n", stringify(zip_completebar));
+printf("#define zip_completebar                           %s\n", (zip_completebar == DISABLED ? "DISABLED" : stringify(zip_completebar)));
 printf("#define zip_dirs                                  %s\n", stringify(zip_dirs));
 printf("#define zipscript_SFV_ok                          %s\n", stringify(zipscript_SFV_ok));
 printf("#define zipscript_SFV_skip                        %s\n", stringify(zipscript_SFV_skip));

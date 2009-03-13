@@ -1128,7 +1128,7 @@ max_users_in_top <NUMBER>
 	release is complete.
 	Default: 7
 
-message_file_name <STRING>
+message_file_name <STRING|DISABLED>
 	What name should the complete_message file have?
 	Default: ".message"
 

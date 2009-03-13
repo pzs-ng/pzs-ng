@@ -45,7 +45,11 @@ def get_config_printf(name, info, max_length)
     if info['type'] == 'boolean'
         string += "(#{name} == FALSE ? \"FALSE\" : \"TRUE\")"
     else
-        string += "stringify(#{name})"
+        if info.has_key? 'can_disable' and info['can_disable']
+            string += "(#{name} == DISABLED ? \"DISABLED\" : stringify(#{name}))"
+        else
+            string += "stringify(#{name})"
+        end
     end
     string += ");"
 end

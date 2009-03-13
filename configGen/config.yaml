@@ -1078,6 +1078,7 @@ options:
 
     message_file_name:
         type: string
+        can_disable: true
         comment: |-
             What name should the complete_message file have?
         default: '".message"'
