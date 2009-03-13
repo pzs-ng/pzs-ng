@@ -68,9 +68,9 @@ if [ ! -z "$RECVDARGS" ]; then
  case $FILENAME in
   *.[nN][fF][oO])
    if [ ! -z "$GLROOT" ]; then
-    MYTMPFILE=$(echo "$TMPFILE" | sed "s%$GLROOT%%")
+    MYTMPFILE=$(echo "$TMPRESCANFILE" | sed "s%$GLROOT%%")
    else
-    MYTMPFILE=$TMPFILE
+    MYTMPFILE=$TMPRESCANFILE
    fi
    PSXCFLAG=$(head -n 1 $MYTMPFILE | tr -cd '0-9')
    if [ ! -z "$PSXCFLAG" ]; then
@@ -332,7 +332,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
 
 # Seems like something was put into the log. Let's check it.
 ############################################################
- IMDBFLAGS=$(head -n 1 $TMPFILE | tr -cd '0-9')
+ IMDBFLAGS=$(head -n 1 $TMPRESCANFILE | tr -cd '0-9')
  if [ ! -z "$IMDBFLAGS" ]; then
   if [ $IMDBFLAGS -ge 4 ]; then
    EXTERNALSCRIPTNAME=""
@@ -896,15 +896,16 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     NUMSCREENS="$(echo $BUSINESSSCREENS | tr ',' '.')"
     [[ -z "$NUMSCREENS" ]] && NUMSCREENS="unknown"
     [[ -z "$RUNTIMECLEAN" ]] && RUNTIMECLEAN="unknown"
-    INFOFILENAMEOLD="$(echo "$INFOFILENAME" | tr -c $INFOVALID $INFOCHARTO | sed "s%VOTES%*%g" | sed "s%SCORE%*%g" | sed "s%GENRE%*%g" | sed "s%RUNTIME%*%g" | sed "s%YEAR%*%g" | sed "s%ISLIMITED%*%g" | sed "s%SCREENS%*%g" | tr -d ' ')"
+    INFOFILENAMEOLD="$(echo "$INFOFILENAME" | tr -c $INFOVALID $INFOCHARTO | sed "s%VOTES%*%g" | sed "s%SCORE%*%g" | sed "s%GENRE%*%g" | sed "s%RUNTIME%*%g" | sed "s%YEAR%*%g" | sed "s%ISLIMITED%*%g" | sed "s%SCREENS%*%g")"
     INFOFILENAMEOLDA="$(echo "$INFOFILENAMEOLD" | sed "s%*%.*%g")"
     INFOFILENAMEOLDB="$(echo "$INFOFILENAMEOLDA" | tr '\]\[' '.')"
     INFOFILENAMEPRINT="$(echo "$INFOFILENAME" | sed "s%VOTES%$VOTESFILE%g" | sed "s%SCORE%$RATINGSCORE%g" | sed "s%GENRE%$GENREFILE%g" | sed "s%RUNTIME%$RUNTIMECLEAN%g" | sed "s%YEAR%$TITLEYEAR%g" | sed "s%ISLIMITED%$ISLIMITED%g" | sed "s%SCREENS%$NUMSCREENS%g")"
     INFOFILENAMEPRINT="$(echo "$INFOFILENAMEPRINT" | tr -c $INFOVALID $INFOCHARTO)"
     if [ ! -z "$(ls -1 "$GLROOT$IMDBLKL" | grep -a -e "$INFOFILENAMEOLDB")" ]; then
-     for OLDINFOFILE in $(ls -1  "$GLROOT$IMDBLKL" | grep -a -e "$INFOFILENAMEOLDB" | tr -d ' '); do
-      rm -f "$GLROOT$IMDBLKL/"$OLDINFOFILE >/dev/null 2>&1
-      rmdir "$GLROOT$IMDBLKL/"$OLDINFOFILE >/dev/null 2>&1
+     for OLDINFOFILE in $(ls -1  "$GLROOT$IMDBLKL" | grep -a -e "$INFOFILENAMEOLDB" | tr ' ' '^'); do
+      OLDINFOFILE="$(echo $OLDINFOFILE | tr '^' ' ')"
+      rm -f "$GLROOT$IMDBLKL/$OLDINFOFILE" >/dev/null 2>&1
+      rmdir "$GLROOT$IMDBLKL/$OLDINFOFILE" >/dev/null 2>&1
      done
     fi
     if [ -e "$GLROOT$IMDBLKL/$INFOTEMPNAME" ]; then
@@ -951,6 +952,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
   cat $TMPFILE > $IMDBLOG
   echo -n "" > $TMPFILE
  done
+ echo -n "" > $TMPRESCANFILE
  echo -n "" > $IMDBPID
 fi
 exit 0
