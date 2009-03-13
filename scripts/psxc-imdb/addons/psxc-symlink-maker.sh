@@ -37,6 +37,7 @@ SORT_BY_GROUP=0
 SORT_BY_DATE=0
 SORT_BY_TOP250=0
 SORT_BY_KEYWORD=0
+SORT_BY_LANGUAGE=1
 
 # Here we specify the name of the dirs for the sorted releases.
 SORT_BY_GENRE_NAME="Sorted.by.Genre"
@@ -48,6 +49,7 @@ SORT_BY_DATE_NAME="Sorted.by.Date"
 SORT_BY_TOP250_NAME="Sorted.by.Top250"
 SORT_BY_KEYWORD_NAME="Sorted.by.%KEYWORD%"
 
+SORT_BY_LANGUAGE_NAME="Sorted.by.Language"
 # If you wish to use SORT_BY_DATE, enter here the format you wish to use.
 # This will be prefixed the name of the release. Please take note that this
 # is the date this script is run, not when the dir was created (In case
@@ -72,6 +74,8 @@ SORT_BY_DATE_LS="bsd"  # for the bsd's
 SORT_BY_KEYWORD_LIST="german|German.Movies divx|DivX xvid|DivX"
 
 # Clean up dead symlinks after each run? Usually, this is done pretty quick,
+SORT_BY_GROUP_NONE="#NONE#"
+SORT_BY_GROUP_SPECIAL="VH-PROD|DVD-R"
 # but can take time, so use the trial and error method on this ;)
 # Please note that only the used SORT_BY cathegories is being scanned for
 # dead symlinks.
@@ -257,6 +261,44 @@ if [ $SORT_BY_GENRE -eq 1 ]; then
  fi
 fi
 
+# Language Section.
+if [ $SORT_BY_LANGUAGE -eq 1 ]; then
+ if [ ! -d "$GLROOT$SYMLINK_PATH/$SORT_BY_LANGUAGE_NAME" ]; then
+  mkdir -p "$GLROOT$SYMLINK_PATH/$SORT_BY_LANGUAGE_NAME"
+  chmod 777 "$GLROOT$SYMLINK_PATH/$SORT_BY_LANGUAGE_NAME"
+ fi
+# Cleanup Language-dirs
+ if [ $CLEANUP_SYMLINKS -eq 1 ]; then
+  LANGUAGES="`ls -F $GLROOT$SYMLINK_PATH/$SORT_BY_LANGUAGE_NAME/ | grep "/" | tr ' ' '%'`"
+  if [ ! -z "$LANGUAGES" ]; then
+   for LANGUAGE in $LANGUAGES; do
+    LANGUAGE="`echo $LANGUAGE | tr '%' ' '`"
+    for LANGUAGE_SYM in `ls -l "$GLROOT$SYMLINK_PATH/$SORT_BY_LANGUAGE_NAME/$LANGUAGE" | grep ">" | cut -d '>' -f 2 | tr ' ' '%'`; do
+     LANGUAGE_SYM="`echo "$LANGUAGE_SYM" | tr '%' ' ' | awk '{for (i = 1; i <= NF; i++) print $i}' | tr '\n' ' '`"
+     let LANGUAGE_SYM_CNT="`echo "$LANGUAGE_SYM" | wc -c`-2"
+     LANGUAGE_SYM="`echo "$LANGUAGE_SYM" | cut -c 1-$LANGUAGE_SYM_CNT`"
+      if [ ! -e "$GLROOT$LANGUAGE_SYM" ]; then
+      rm -f  "$GLROOT$SYMLINK_PATH/$SORT_BY_LANGUAGE_NAME/$LANGUAGE`basename "$LANGUAGE_SYM"`"
+     fi
+    done
+    rmdir "$GLROOT$SYMLINK_PATH/$SORT_BY_LANGUAGE_NAME/$LANGUAGE" >/dev/null 2>&1
+   done
+  fi
+ fi
+# Make link if needed
+ if [ ! -z "$IMDBLANGUAGE" ] && [ ! $ISEXEMPT -eq 1 ]; then
+  IMDBLANGUAGES="`echo "$IMDBLANGUAGE" | tr -s ' ' '_' | sed s/'_|_'/' '/g`"
+  for LANGUAGE in $IMDBLANGUAGES; do
+   if [ ! -d  "$GLROOT$SYMLINK_PATH/$SORT_BY_LANGUAGE_NAME/$LANGUAGE" ]; then
+    mkdir -p "$GLROOT$SYMLINK_PATH/$SORT_BY_LANGUAGE_NAME/$LANGUAGE"
+    chmod 777 "$GLROOT$SYMLINK_PATH/$SORT_BY_LANGUAGE_NAME/$LANGUAGE"
+   fi
+   if [ ! -L "$GLROOT$SYMLINK_PATH/$SORT_BY_LANGUAGE_NAME/$LANGUAGE/$IMDBDIRNAME" ]; then
+    ln -s "$IMDBRELPATH" "$GLROOT$SYMLINK_PATH/$SORT_BY_LANGUAGE_NAME/$LANGUAGE/$IMDBDIRNAME"
+   fi
+  done
+ fi
+fi
 # Year Section.
 
 if [ $SORT_BY_YEAR -eq 1 ]; then
@@ -371,8 +413,16 @@ if [ $SORT_BY_TITLE -eq 1 ]; then
  if [ ! -z "$IMDBNAME" ] && [ ! $ISEXEMPT -eq 1 ]; then
   SECTION="`echo "$IMDBRELPATH" | tr ' ' '_' | tr '/' ' ' | wc -w | tr -d ' '`"
   SECTIONNAME="`echo "$IMDBRELPATH" | cut -d '/' -f $SECTION`"
-  TITLE="`echo "$IMDBNAME" | tr -sc 'A-Za-z0-9_\-()' '.'`""-.$SECTIONNAME"
-  TITLECHAR=${TITLE:0:1}
+  if [ "${IMDBNAME:0:1}" == "'" ] && [ -z `echo "${IMDBNAME:1:1}" | tr -d "A-Za-z0-9_\-()"` ]; then
+    TITLECHAR=${IMDBNAME:1:1}
+  elif [ "${IMDBNAME:0:1}" == "." ]; then
+    TITLECHAR="DOT"
+  elif [ ! -z `echo "${IMDBNAME:0:1}" | tr -d "A-Za-z0-9_\-()"` ]; then
+    TITLECHAR="Other"
+  else
+    TITLECHAR=${IMDBNAME:0:1}
+  fi
+  TITLE="`echo "$IMDBNAME" | tr -d "'" | tr -sc 'A-Za-z0-9_\-()' '.'`""-.$SECTIONNAME"
   if [ ! -d "$GLROOT$SYMLINK_PATH/$SORT_BY_TITLE_NAME/$TITLECHAR" ]; then
    mkdir -p "$GLROOT$SYMLINK_PATH/$SORT_BY_TITLE_NAME/$TITLECHAR"
    chmod 777 "$GLROOT$SYMLINK_PATH/$SORT_BY_TITLE_NAME/$TITLECHAR"
@@ -412,7 +462,13 @@ if [ $SORT_BY_GROUP -eq 1 ]; then
 
 # Make link if needed
  if [ ! -z "$IMDBRELPATH" ]; then
-  GROUP="`basename "$IMDBRELPATH" | tr '-' '\n' | grep -v "^$" | tail -n 1`"
+  if [ "`basename "$IMDBRELPATH" | tr '-' '\n' | grep -v "^$" | wc -l`" -eq 1 ]; then
+    GROUP="$SORT_BY_GROUP_NONE"
+  elif [ ! -z `echo $IMDBRELPATH | egrep "$SORT_BY_GROUP_SPECIAL"` ]; then
+    GROUP="`echo "$IMDBRELPATH" | egrep -o "*($SORT_BY_GROUP_SPECIAL)$"`"
+  else
+    GROUP="`basename "$IMDBRELPATH" | tr '-' '\n' | grep -v "^$" | tail -n 1`"
+  fi
   if [ ! -z "$GROUP" ] && [ ! $ISEXEMPT -eq 1 ]; then
    if [ ! -d "$GLROOT$SYMLINK_PATH/$SORT_BY_GROUP_NAME/$GROUP" ]; then
     mkdir -p "$GLROOT$SYMLINK_PATH/$SORT_BY_GROUP_NAME/$GROUP"
@@ -526,18 +582,19 @@ if [ $SORT_BY_TOP250 -eq 1 ]; then
 
 # Cleanup TOP250-dirs
  if [ $CLEANUP_SYMLINKS -eq 1 ]; then
-  TOP250S="`ls -F "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME/" | grep "@" | tr ' ' '%' | tr -d '@'`"
-  if [ ! -z "$TOP250S" ]; then
-   for TOP250_SYM in `ls -lF "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME" | grep -e ">" | sed "s|->|>|g" | tr ' \?' '%'`; do
-    TOP250_SYM_SRC="`echo "$TOP250_SYM" | cut -d '>' -f 1 | tr '%' ' ' | tr '@' '\n' | grep -v "^$" | head -n 1 | awk '{for (i = ENVIRON["MYNUM"]; i <= NF; i++) print $i}' | tr '\n' ' '`"
-    let TOP250_SYM_SRC_CNT="`echo "$TOP250_SYM_SRC" | wc -c`-2"
-    TOP250_SYM_SRC="`echo "$TOP250_SYM_SRC" | cut -c 1-$TOP250_SYM_SRC_CNT`"
-    TOP250_SYM_DST="`echo "$TOP250_SYM" | cut -d '>' -f 2 | tr '%' ' ' | awk '{for (i = 1; i <= NF; i++) print $i}' | tr '\n' ' '`"
-    let TOP250_SYM_DST_CNT="`echo "$TOP250_SYM_DST" | wc -c`-2"
-    TOP250_SYM_DST="`echo "$TOP250_SYM_DST" | cut -c 1-$TOP250_SYM_DST_CNT`"
-    if [ ! -e "$GLROOT$TOP250_SYM_DST" ]; then
-     rm -f  "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME/`basename "$TOP250_SYM_SRC"`"
-    fi
+  DIRTOP250S="`ls -F "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME/" | grep "/" | tr ' ' '%'`"
+  if [ ! -z "$DIRTOP250S" ]; then
+   for TOP250S in $DIRTOP250S; do
+    TOP250S="`echo $TOP250S | tr '%' ' '`"
+    for TOP250_SYM in `ls -lF "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME/$TOP250S" | grep ">" | cut -d '>' -f2 | tr ' ' '%'`; do
+     TOP250_SYM="`echo "$TOP250_SYM" | tr '%' ' ' | awk '{for (i = 1; i <= NF; i++) print $i}' | tr '\n' ' '`"
+     let TOP250_SYM_CNT="`echo "$TOP250_SYM" | wc -c`-2"
+     TOP250_SYM="`echo "$TOP250_SYM" | cut -c 1-$TOP250_SYM_CNT`"
+     if [ ! -e "$GLROOT$TOP250_SYM" ]; then
+      rm -f  "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME/$TOP250S`basename "$TOP250_SYM"`"
+     fi
+    done
+    rmdir "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME/$TOP250S" >/dev/null 2>&1
    done
   fi
  fi
@@ -552,19 +609,20 @@ if [ $SORT_BY_TOP250 -eq 1 ]; then
   else
    TOP250R="$TOP250_RATING"
   fi
-  TOP250DIRNAME="`echo "$GLROOT$IMDBRELPATH" | sed "s%$DIRNAME/%%"`"
   IMDBNAMENEW="`echo "$IMDBNAME" | tr -sc 'A-Za-z0-9_\-()' '.'`"
   SECTION="`echo "$IMDBRELPATH" | tr ' ' '_' | tr '/' ' ' | wc -w | tr -d ' '`"
   SECTIONNAME="`echo "$IMDBRELPATH" | cut -d '/' -f $SECTION`"
-  TOP250="`echo "$TOP250R"".-.""$IMDBNAME"".(.""$IMDBYEAR"".).""-.$SECTIONNAME" | tr -sc 'A-Za-z0-9_\-()' '.'`"
-  if [ ! -z "`ls -1F "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME" | grep -e "^$TOP250R.-."`" ]; then
-   rm "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME/"$TOP250R.-.*
+  TOP250="`echo "$TOP250R"".-.""$IMDBNAME"".(.""$IMDBYEAR"".)" | tr -sc 'A-Za-z0-9_\-()\n' '.'`"
+  if [ -z "`ls -1F "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME" | grep -e "^$TOP250R.-.$IMDBNAMENEW"`" ]; then
+   rm -fr "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME/"$TOP250R.-.*
+   rm -fr "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME/"*.-.$IMDBNAMENEW.*
   fi
-  if [ ! -z "`ls -1F "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME" | grep -e ".-.$IMDBNAMENEW" | tr -sc 'A-Za-z0-9_\-()' '.'`" ]; then
-   rm "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME/""`ls -1F "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME" | grep -e ".-.$IMDBNAMENEW" | tr -d '@' | tail -n 1 | tr -sc 'A-Za-z0-9_\-()' '.'`"
+  if [ ! -d "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME/$TOP250" ]; then
+   mkdir -p "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME/$TOP250"
+   chmod 777 "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME/$TOP250"
   fi
-  if [ ! -L "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME/$TOP250" ]; then
-   ln -s "$IMDBRELPATH" "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME/$TOP250"
+  if [ ! -L "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME/$TOP250/$IMDBDIRNAME" ]; then
+   ln -s "$IMDBRELPATH" "$GLROOT$SYMLINK_PATH/$SORT_BY_TOP250_NAME/$TOP250/$IMDBDIRNAME"
   fi
  fi
 fi
