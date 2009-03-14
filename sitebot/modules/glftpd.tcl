@@ -21,46 +21,46 @@ namespace eval ::ngBot::module::glftpd {
 		variable ${np}::cmdpre
 		variable ${np}::bindnopre
 
-		if {[istrue $bindnopre]} {
-			set cmdpre {!}
+		if {[istrue $bindnopre] && [lsearch [split $cmdpre] "!"] == -1} {
+			set cmdpre "$cmdpre !"
 		}
 
-		foreach pre $cmdpre {
-			bind pub -|- ${cmdpre}bw          ${ns}::cmd_bw
-			bind pub -|- ${cmdpre}bwdn        ${ns}::cmd_bwdn
-			bind pub -|- ${cmdpre}bwup        ${ns}::cmd_bwup
-			bind pub -|- ${cmdpre}dn          ${ns}::cmd_leechers
-			bind pub -|- ${cmdpre}down        ${ns}::cmd_leechers
-			bind pub -|- ${cmdpre}downloaders ${ns}::cmd_leechers
-			bind pub -|- ${cmdpre}leechers    ${ns}::cmd_leechers
-			bind pub -|- ${cmdpre}idle        ${ns}::cmd_idlers
-			bind pub -|- ${cmdpre}idlers      ${ns}::cmd_idlers
-			bind pub -|- ${cmdpre}new         ${ns}::cmd_new
-			bind pub -|- ${cmdpre}nukes       ${ns}::cmd_nukes
-			bind pub -|- ${cmdpre}search      ${ns}::cmd_search
-			bind pub -|- ${cmdpre}speed       ${ns}::cmd_speed
-			bind pub -|- ${cmdpre}unnukes     ${ns}::cmd_unnukes
-			bind pub -|- ${cmdpre}up          ${ns}::cmd_uploaders
-			bind pub -|- ${cmdpre}uploaders   ${ns}::cmd_uploaders
-			bind pub -|- ${cmdpre}who         ${ns}::cmd_who
+		foreach pre [split $cmdpre] {
+			bind pub -|- ${pre}bw          ${ns}::cmd_bw
+			bind pub -|- ${pre}bwdn        ${ns}::cmd_bwdn
+			bind pub -|- ${pre}bwup        ${ns}::cmd_bwup
+			bind pub -|- ${pre}dn          ${ns}::cmd_leechers
+			bind pub -|- ${pre}down        ${ns}::cmd_leechers
+			bind pub -|- ${pre}downloaders ${ns}::cmd_leechers
+			bind pub -|- ${pre}leechers    ${ns}::cmd_leechers
+			bind pub -|- ${pre}idle        ${ns}::cmd_idlers
+			bind pub -|- ${pre}idlers      ${ns}::cmd_idlers
+			bind pub -|- ${pre}new         ${ns}::cmd_new
+			bind pub -|- ${pre}nukes       ${ns}::cmd_nukes
+			bind pub -|- ${pre}search      ${ns}::cmd_search
+			bind pub -|- ${pre}speed       ${ns}::cmd_speed
+			bind pub -|- ${pre}unnukes     ${ns}::cmd_unnukes
+			bind pub -|- ${pre}up          ${ns}::cmd_uploaders
+			bind pub -|- ${pre}uploaders   ${ns}::cmd_uploaders
+			bind pub -|- ${pre}who         ${ns}::cmd_who
 
-			bind pub -|- ${cmdpre}gpad    [list ${ns}::cmd_stats "-d" "-A"]
-			bind pub -|- ${cmdpre}gpau    [list ${ns}::cmd_stats "-u" "-A"]
-			bind pub -|- ${cmdpre}gpwd    [list ${ns}::cmd_stats "-d" "-W"]
-			bind pub -|- ${cmdpre}gpwu    [list ${ns}::cmd_stats "-u" "-W"]
-			bind pub -|- ${cmdpre}gpmd    [list ${ns}::cmd_stats "-d" "-M"]
-			bind pub -|- ${cmdpre}gpmu    [list ${ns}::cmd_stats "-u" "-M"]
-			bind pub -|- ${cmdpre}gpdd    [list ${ns}::cmd_stats "-d" "-T"]
-			bind pub -|- ${cmdpre}gpdu    [list ${ns}::cmd_stats "-u" "-T"]
+			bind pub -|- ${pre}gpad    [list ${ns}::cmd_stats "-d" "-A"]
+			bind pub -|- ${pre}gpau    [list ${ns}::cmd_stats "-u" "-A"]
+			bind pub -|- ${pre}gpwd    [list ${ns}::cmd_stats "-d" "-W"]
+			bind pub -|- ${pre}gpwu    [list ${ns}::cmd_stats "-u" "-W"]
+			bind pub -|- ${pre}gpmd    [list ${ns}::cmd_stats "-d" "-M"]
+			bind pub -|- ${pre}gpmu    [list ${ns}::cmd_stats "-u" "-M"]
+			bind pub -|- ${pre}gpdd    [list ${ns}::cmd_stats "-d" "-T"]
+			bind pub -|- ${pre}gpdu    [list ${ns}::cmd_stats "-u" "-T"]
 
-			bind pub -|- ${cmdpre}alldn   [list ${ns}::cmd_stats "-d" "-a"]
-			bind pub -|- ${cmdpre}allup   [list ${ns}::cmd_stats "-u" "-a"]
-			bind pub -|- ${cmdpre}daydn   [list ${ns}::cmd_stats "-d" "-t"]
-			bind pub -|- ${cmdpre}dayup   [list ${ns}::cmd_stats "-u" "-t"]
-			bind pub -|- ${cmdpre}monthdn [list ${ns}::cmd_stats "-d" "-m"]
-			bind pub -|- ${cmdpre}monthup [list ${ns}::cmd_stats "-u" "-m"]
-			bind pub -|- ${cmdpre}wkdn    [list ${ns}::cmd_stats "-d" "-w"]
-			bind pub -|- ${cmdpre}wkup    [list ${ns}::cmd_stats "-u" "-w"]
+			bind pub -|- ${pre}alldn   [list ${ns}::cmd_stats "-d" "-a"]
+			bind pub -|- ${pre}allup   [list ${ns}::cmd_stats "-u" "-a"]
+			bind pub -|- ${pre}daydn   [list ${ns}::cmd_stats "-d" "-t"]
+			bind pub -|- ${pre}dayup   [list ${ns}::cmd_stats "-u" "-t"]
+			bind pub -|- ${pre}monthdn [list ${ns}::cmd_stats "-d" "-m"]
+			bind pub -|- ${pre}monthup [list ${ns}::cmd_stats "-u" "-m"]
+			bind pub -|- ${pre}wkdn    [list ${ns}::cmd_stats "-d" "-w"]
+			bind pub -|- ${pre}wkup    [list ${ns}::cmd_stats "-u" "-w"]
 		}
 
 		${np}::_init_binds

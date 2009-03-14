@@ -50,19 +50,19 @@ namespace eval ::ngBot {
 		variable cmdpre
 		variable bindnopre
 
-		if {[istrue $bindnopre]} {
-			set cmdpre {!}
+		if {[istrue $bindnopre] && [lsearch [split $cmdpre] "!"] == -1} {
+			set cmdpre "$cmdpre !"
 		}
 
-		foreach pre $cmdpre {
-			bind pub -|- ${cmdpre}bnc         ${ns}::cmd_bnc
-			bind pub -|- ${cmdpre}df          ${ns}::cmd_free
-			bind pub -|- ${cmdpre}free        ${ns}::cmd_free
-			bind pub -|- ${cmdpre}help        ${ns}::cmd_help
-			bind pub -|- ${cmdpre}inc         ${ns}::cmd_incompletes
-			bind pub -|- ${cmdpre}incomplete  ${ns}::cmd_incompletes
-			bind pub -|- ${cmdpre}incompletes ${ns}::cmd_incompletes
-			bind pub -|- ${cmdpre}uptime      ${ns}::cmd_uptime
+		foreach pre [split $cmdpre] {
+			bind pub -|- ${pre}bnc         ${ns}::cmd_bnc
+			bind pub -|- ${pre}df          ${ns}::cmd_free
+			bind pub -|- ${pre}free        ${ns}::cmd_free
+			bind pub -|- ${pre}help        ${ns}::cmd_help
+			bind pub -|- ${pre}inc         ${ns}::cmd_incompletes
+			bind pub -|- ${pre}incomplete  ${ns}::cmd_incompletes
+			bind pub -|- ${pre}incompletes ${ns}::cmd_incompletes
+			bind pub -|- ${pre}uptime      ${ns}::cmd_uptime
 		}
 	}
 
