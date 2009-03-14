@@ -45,6 +45,8 @@ v1.2.0  --> 1.2.x :
 		- Added key exchanging to Blow.tcl and updated/fixed a _lot_ of things.
 		- added mkv to default video_types.
 		- added windows slash (\) to the sfv check (allow_slash_in_sfv).
+		- Fixed bug #493 - Call curl from within the eggdrop using --max-time rather than
+		  --connect-timeout. Prevents an unlikely situation that could stall the sitebot.
 
 		v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
