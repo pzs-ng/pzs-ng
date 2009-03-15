@@ -2,7 +2,7 @@
 
 ###############################################################################
 #
-# LIBCOPY v1.5a by psxc
+# LIBCOPY v1.6 by psxc
 ######################
 #
 # This small script (ripped from glinstall.sh ;) will copy libs used by files
@@ -24,7 +24,7 @@ zs_bins="zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-c
 # CODEPART - PLEASE DO NOT CHANGE #
 ###################################
 
-version="1.5a (pzs-ng version)"
+version="1.6 (pzs-ng version)"
 
 # Set system type
 case $(uname -s) in
@@ -89,12 +89,14 @@ lddsequence() {
     libdir="$(dirname $lib)"
     if [ -f "$lib" ]; then
        mkdir -p "$glroot$libdir"
-       cp -f "$lib" "$glroot$libdir"
+       rm -f "$glroot$lib"
+       cp -fRH "$lib" "$glroot$libdir"
        echo "$libdir" >> "$glroot/etc/ld.so.conf"
        echo "OK"
     elif [ -f "/usr/compat/linux/$lib" ]; then
        mkdir -p "$glroot/usr/compat/linux"
-       cp -f "/usr/compat/linux/$lib" "$glroot/usr/compat/linux/"
+       rm -f "$glroot/usr/compat/linux/$(basename $lib)"
+       cp -fRH "/usr/compat/linux/$lib" "$glroot/usr/compat/linux/"
        echo "$libdir" >> "$glroot/etc/ld.so.conf"
        echo "OK"
     else
@@ -116,8 +118,10 @@ for bin in $needed_bins; do
   mywhich
   if [ ! -z $binname ]; then
     if [ -e ${binname}.real ]; then
-      cp ${binname}.real $glroot/bin/$bin
+      rm -f "$glroot/bin/$bin"
+      cp ${binname}.real "$glroot/bin/$bin"
     else
+      rm -f "$glroot/bin/$(basename $binname)"
       cp ${binname} $glroot/bin/
     fi
     echo -n "COPIED  "
@@ -140,33 +144,28 @@ case $os in
     openbsd)
       openrel=`uname -r | tr -cd '0-9' | cut -b 1-2`
       if [ $openrel -ge 40 ]; then
-        ldd $glroot/bin/* 2>/dev/null | awk '{print $7, $1}' | grep -e "^/" | grep -v "00000000$" | awk '{print $1}' |
-        sort | uniq | while read lib; do
-            lddsequence
+        ldd $glroot/bin/* 2>/dev/null | awk '{print $7, $1}' | grep -e "^/" | grep -v "00000000$" | awk '{print $1}' | sort | uniq | while read lib; do
+          lddsequence
         done
       elif [ $openrel -ge 34 ]; then
-        ldd $glroot/bin/* 2>/dev/null | awk '{print $5, $1}' | grep -e "^/" | grep -v "00000000$" | awk '{print $1}' |
-        sort | uniq | while read lib; do
-            lddsequence
+        ldd $glroot/bin/* 2>/dev/null | awk '{print $5, $1}' | grep -e "^/" | grep -v "00000000$" | awk '{print $1}' | sort | uniq | while read lib; do
+          lddsequence
         done
       else
-        ldd $glroot/bin/* 2>/dev/null | awk '{print $3, $4}' | grep -e "^/" | grep -v "00000000)$" | awk '{print $1}' |
-        sort | uniq | while read lib; do
-            lddsequence
+        ldd $glroot/bin/* 2>/dev/null | awk '{print $3, $4}' | grep -e "^/" | grep -v "00000000)$" | awk '{print $1}' | sort | uniq | while read lib; do
+          lddsequence
         done
       fi
     ;;
     darwin)
-        otool -L $glroot/bin/* 2>/dev/null | awk '{print $1}' | grep -e "^/" | grep -v "$glroot/bin/" |
-        sort | uniq | while read lib; do
-            lddsequence
+        otool -L $glroot/bin/* 2>/dev/null | awk '{print $1}' | grep -e "^/" | grep -v "$glroot/bin/" | sort | uniq | while read lib; do
+          lddsequence
         done
     ;;
     *)
 	bindir="`echo $glroot/bin | tr -s '/'`"
-	ldd $bindir/* 2>/dev/null | grep -v "^$bindir" | tr ' \t' '\n' | grep -e "^/" |
-        sort | uniq | while read lib; do
-            lddsequence
+	ldd $bindir/* 2>/dev/null | grep -v "^$bindir" | tr ' \t' '\n' | grep -e "^/" | sort | uniq | while read lib; do
+          lddsequence
         done
 esac
 
@@ -188,7 +187,8 @@ case $os in
 		echo -e "\nCopying needed resolv-libs (if needed)..."
 		for linuxlib in /lib/libnss_dns* /lib/libresolv* ; do
 		  echo -n "   $(basename $linuxlib)"
-		  cp $linuxlib $glroot/lib/
+		  rm -f "$glroot/lib/$(basename $linuxlib)"
+		  cp -fRH $linuxlib $glroot/lib/
 		  echo " OK"
 		done
 		echo -n "   resolvconf"
@@ -219,13 +219,15 @@ if [ ! -z "$bsdlibs" ]; then
             mkdir -p "$glroot$bsdlibdir"
             echo -n "   $(basename $bsdlib): "
             if [ -e "$bsdlib" ]; then
-                cp -f "$bsdlib" "$glroot$bsdlibdir"
+		rm -f "$glroot$bsdlibdir$(basename $bsdlib)"
+                cp -fRH "$bsdlib" "$glroot$bsdlibdir"
                 echo "OK"
             else
                 echo -n "Searching . . . " 
                 file=$(find / -name $(basename $bsdlib) | head -1)
                 if [ -n "$file" ]; then
-                    cp -f "$file" "$glroot$bsdlibdir"
+		    rm -f "$glroot$bsdlibdir$(basename $file)"
+                    cp -fRH "$file" "$glroot$bsdlibdir"
                     echo "OK"
                 else
                     echo -e '\033[1;31mFailed!\033[0m'

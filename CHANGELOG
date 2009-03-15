@@ -47,6 +47,18 @@ v1.2.0  --> 1.2.x :
 		- added windows slash (\) to the sfv check (allow_slash_in_sfv).
 		- Fixed bug #493 - Call curl from within the eggdrop using --max-time rather than
 		  --connect-timeout. Prevents an unlikely situation that could stall the sitebot.
+		- Fixed bug #488 - psxc-imdb: films with no rating/votes show incorrect values in
+		  IMDB banner.
+		- Fixed bug #489 - psxc-imdb: INFOTEMPNAME-dir/file stays when no details can be
+		  fetched.
+		- Fixed bug #490 - psxc-imdb-find: lists pro-link url for searchstrings with one
+		  hit in search.
+		- Fixed bug #492 - psxc-symlink-maker.sh: sort_by_title for films starting with a
+		  dot or non-"A-Za-z0-9_\-()"-char.
+		- Fixed bug #487 - psxc-imdb.sh doesn't remove old IMDB banner when spaces present.
+		- Fixed bug #485 - zipscript-c --config prints ((void *)0) instead of DISABLED.
+		- Did some fixes in libcopy to overcome symlinks and old broken libs. Hopefully you
+		  no longer need to rm -fR all lib* dirs in /glftpd before running libcopy anymore.
 
 		v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
