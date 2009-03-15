@@ -59,8 +59,10 @@ if [ ! -z "`echo $@ | grep -e "[-][nN][oO][bBfFaA][oOiIdD][tTlLdD]"`" ]; then
  . $PSXC_CONF
  if [ ! -z $GLROOT ]; then
   MYTMPFILE="`echo "$TMPFILE" | sed "s%$GLROOT%%"`"
+  MYTMPRESCANFILE="`echo "$TMPRESCANFILE" | sed "s%$GLROOT%%"`"
  else
   MYTMPFILE=$TMPFILE
+  MYTMPRESCANFILE=$TMPRESCANFILE
  fi
  if [ -z "`cat $MYTMPFILE`" ]; then
   echo "checking to see if psxc-imdb is running..."
@@ -88,13 +90,14 @@ if [ ! -z "`echo $@ | grep -e "[-][nN][oO][bBfFaA][oOiIdD][tTlLdD]"`" ]; then
   echo "Please try again a bit later."
   exit 2
  fi
- echo $PSXCFLAG >$MYTMPFILE
+ echo $PSXCFLAG >$MYTMPRESCANFILE
 fi
 
 if [ ! "$ARG" = "-r" ]; then
  echo "Doing a scan in current dir .. searching for iMDB info."
  IMDB_NFO="`ls -1 | grep -e "[.][Nn][Ff][Oo]" | head -n 1`"
  if [ ! -z "$IMDB_NFO" ]; then
+  echo "Processing $IMDB_NFO"
   $PSXC_IMDB $IMDB_NFO
  fi
  echo "Done."
