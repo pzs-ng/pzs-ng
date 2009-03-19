@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# psxc-trailer v0.8.2009.03.19
+# psxc-trailer v0.9.2009.03.19
 ##############################
 #
 # Small script that fetches the qt trailer and image for movies.
@@ -77,6 +77,12 @@ trailerdirs=""
 # Set to "yes" to use both, and "" to use only one.
 # Example: usebothdirs="yes"
 usebothdirs=""
+
+# If you wish to download all availible trailers in the chosen quality, set
+# this variable to "yes". The trailername variable will be ignored if you
+# use this option.
+# Example: downloadall=""
+downloadall=""
 
 # download trailer image? ("yes"=yes, ""=no)
 # Example: downloadimage=""
@@ -235,7 +241,8 @@ output2parse="$(echo $output2 | tr ' \?' '\n' | grep -v "/images/" | grep -E -i 
 #echo DEBUG 1: $output2parse
 #echo DEBUG 5: $location
 for quality in $trailerquality; do
-  urllink=$(echo "$output2parse" | grep -i "${quality}.mov$" | head -n 1)
+  urllinks="$(echo "$output2parse" | grep -i "${quality}.mov$")"
+  urllink=$(echo "$urllinks" | head -n 1)
   [[ "$urllink" != "" ]] && {
     break
   }
@@ -260,7 +267,8 @@ for quality in $trailerquality; do
   [[ "$sublink" != "" ]] && {
     output3="$(wget $wgetflags -o $wgetoutput -O - $sublink)"
     output3parse="$(echo $output3 | tr -c 'a-zA-Z/:\._0-9\-' '\n' | grep -E -i "$movsearch")"
-    urllink=$(echo "$output3parse" | grep -v "/images/" | grep -i "\.mov$" | head -n 1)
+    urllinks="$(echo "$output3parse" | grep -v "/images/" | grep -i "\.mov$")"
+    urllink="$(echo "$urllinks" | head -n 1)"
     #echo DEBUG 2: $output3parse
   }
   [[ "$urllink" != "" ]] && {
@@ -286,67 +294,72 @@ done
     }
     chmod +w $(dirname $wgettemp)
   }
-  wget $wgetflags -o $wgetoutput -O $wgettemp $urllink
-  fakelinkname=$(echo $urllink | tr '/' '\n' | grep -i "\.mov$")
-  reallinkname=$(cat $wgettemp | tr -c 'a-zA-Z0-9\-\.\_' '\n' | grep -i "\.mov" | sed "s|[Rr][Mm][Dd][Rr]||" | sed "
-s|^0||")
-  reallink=$(echo $urllink | sed "s|$fakelinkname|$reallinkname|")
-  rm -f $wgettemp
-  [[ "$wgettempperms" != "" ]] && {
-    chmod $wgettempperms $(dirname $wgettemp)
+  [[ "$downloadall" == "" ]] && {
+    urllinks=$urllink
   }
-  [[ "$trailerdir" != "" ]] && {
-    [[ "$trailername" != "" ]] && {
+  for urllink in $urllinks; do
+    wget $wgetflags -o $wgetoutput -O $wgettemp $urllink
+    fakelinkname=$(echo $urllink | tr '/' '\n' | grep -i "\.mov$")
+    reallinkname=$(cat $wgettemp | tr -c 'a-zA-Z0-9\-\.\_' '\n' | grep -i "\.mov" | sed "s|[Rr][Mm][Dd][Rr]||" | sed "
+s|^0||")
+    reallink=$(echo $urllink | sed "s|$fakelinkname|$reallinkname|")
+    rm -f $wgettemp
+    [[ "$wgettempperms" != "" ]] && {
+      chmod $wgettempperms $(dirname $wgettemp)
+    }
+    [[ "$trailerdir" != "" ]] && {
+      [[ "$trailername" != "" ]] && {
+        orgtrailername=$trailername
+      }
+      trailername=$(echo ${orgrelname}.mov | tr -c 'a-zA-Z0-9\-\.\n' '.')
+    }
+    [[ "$trailername" == "" || "$downloadall" != "" ]] && {
+      trailername=$(echo $urllink | tr '/' '\n' | grep -i "mov$" | tail -n 1)
+    }
+    [[ "$orgtrailername" == "" ]] && {
       orgtrailername=$trailername
     }
-    trailername=$(echo ${orgrelname}.mov | tr -c 'a-zA-Z0-9\-\.\n' '.')
-  }
-  [[ "$trailername" == "" ]] && {
-    trailername=$(echo $urllink | tr '/' '\n' | grep -i "mov$" | tail -n 1)
-  }
-  [[ "$orgtrailername" == "" ]] && {
-    orgtrailername=$trailername
-  }
-  echo "Downloading trailer in $quality quality as $trailername"
-  [[ "$trailerdir" == "" ]]&& {
-    trailerdir="${PWD}/"
-  }
-  [[ ! -w $trailerdir ]] && {
-    trailerdirperms=$(stat $statswitch $trailerdir)
+    echo "Downloading trailer in $quality quality as $trailername"
+    [[ "$trailerdir" == "" ]]&& {
+      trailerdir="${PWD}/"
+    }
     [[ ! -w $trailerdir ]] && {
-      echo "ERROR! Cannot save file $trailername"
-      exit 1
-    }
-    chmod +w $trailerdir
-  }
-  wget $wgetflags -o $wgetoutput -O ${trailerdir}${trailername} $reallink
-  [[ ! -s ${trailerdir}${trailername} ]] && {
-    echo "For unknown reasons the script failed to download the trailer"
-    echo "Please report this as a bug to the developer (psxc - psxc@psxc.com)"
-    echo "Do not forget to include the name of the movie that failed."
-    rm -f ${trailerdir}${trailername}
-    exit 1
-  }
-  [[ "$trailerdirperms" != "" ]] && {
-    chmod $trailerdirperms $trailerdir
-  }
-  [[ "$trailerdir" != "" && "$usebothdirs" != "" ]] && {
-    [[ "$(echo "$orgtrailername" | grep "^/")" == "" ]] && {
-      orgtrailername="$(echo "${PWD}/${orgtrailername}" | tr -s '/')"
-    }
-    [[ ! -w $(dirname $orgtrailername) ]] && {
-      orgtrailernameperms=$(stat $statswitch $(dirname $orgtrailername))
-      [[ ! -w $(dirname $orgtrailername) ]] && {
-        echo "ERROR! Cannot save file $orgtrailername"
+      trailerdirperms=$(stat $statswitch $trailerdir)
+      [[ ! -w $trailerdir ]] && {
+        echo "ERROR! Cannot save file $trailername"
         exit 1
       }
-      chmod +w $(dirname $orgtrailername)
+      chmod +w $trailerdir
     }
-    cp -fp ${trailerdir}${trailername} $orgtrailername
-    [[ "$orgtrailernameperms" != "" ]] && {
-      chmod $orgtrailernameperms $(dirname $orgtrailername)
+    wget $wgetflags -o $wgetoutput -O ${trailerdir}${trailername} $reallink
+    [[ ! -s ${trailerdir}${trailername} ]] && {
+      echo "For unknown reasons the script failed to download the trailer"
+      echo "Please report this as a bug to the developer (psxc - psxc@psxc.com)"
+      echo "Do not forget to include the name of the movie that failed."
+      rm -f ${trailerdir}${trailername}
+      exit 1
     }
-  }
+    [[ "$trailerdirperms" != "" ]] && {
+      chmod $trailerdirperms $trailerdir
+    }
+    [[ "$trailerdir" != "" && "$usebothdirs" != "" ]] && {
+      [[ "$(echo "$orgtrailername" | grep "^/")" == "" ]] && {
+        orgtrailername="$(echo "${PWD}/${orgtrailername}" | tr -s '/')"
+      }
+      [[ ! -w $(dirname $orgtrailername) ]] && {
+        orgtrailernameperms=$(stat $statswitch $(dirname $orgtrailername))
+        [[ ! -w $(dirname $orgtrailername) ]] && {
+          echo "ERROR! Cannot save file $orgtrailername"
+          exit 1
+        }
+        chmod +w $(dirname $orgtrailername)
+      }
+      cp -fp ${trailerdir}${trailername} $orgtrailername
+      [[ "$orgtrailernameperms" != "" ]] && {
+        chmod $orgtrailernameperms $(dirname $orgtrailername)
+      }
+    }
+  done
 }
 [[ "$downloadimage" != "" && "$poster" != "" ]] && {
   echo "Downloading posterimage as $imagename"

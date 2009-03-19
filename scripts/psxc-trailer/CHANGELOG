@@ -7,4 +7,5 @@ v 0.5 - fixed a bug affecting Tropic Thunder (among others).
 v 0.7 - changed 'sedflags' to 'wgetflags' (i must've been high naming that variable)
       - added '-U "Internet Explorer"' to the list of wgetflags
 v 0.8 - modified the script to handle some new obfuscation in the url-hiding scheme.
-
+v 0.9 - added support for downloading all availible trailers of a movie in the
+        specified quality.
