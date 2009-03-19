@@ -167,6 +167,7 @@ done
   statswitch="-f %p"
 }
 trailerdir=""
+
 for trailer in $trailerdirs; do
   [[ -d "$trailer" ]] && {
     trailerdir=${trailer}/
@@ -298,6 +299,9 @@ done
     urllinks=$urllink
   }
   for urllink in $urllinks; do
+    [[ "$downloadall" != "" ]] && {
+      trailername=""
+    }
     wget $wgetflags -o $wgetoutput -O $wgettemp $urllink
     fakelinkname=$(echo $urllink | tr '/' '\n' | grep -i "\.mov$")
     reallinkname=$(cat $wgettemp | tr -c 'a-zA-Z0-9\-\.\_' '\n' | grep -i "\.mov" | sed "s|[Rr][Mm][Dd][Rr]||" | sed "
@@ -307,7 +311,7 @@ s|^0||")
     [[ "$wgettempperms" != "" ]] && {
       chmod $wgettempperms $(dirname $wgettemp)
     }
-    [[ "$trailerdir" != "" ]] && {
+    [[ "$trailerdir" != "" && "$downloadall" == "" ]] && {
       [[ "$trailername" != "" ]] && {
         orgtrailername=$trailername
       }
@@ -316,7 +320,7 @@ s|^0||")
     [[ "$trailername" == "" || "$downloadall" != "" ]] && {
       trailername=$(echo $urllink | tr '/' '\n' | grep -i "mov$" | tail -n 1)
     }
-    [[ "$orgtrailername" == "" ]] && {
+    [[ "$orgtrailername" == "" || "$downloadall" != "" ]] && {
       orgtrailername=$trailername
     }
     echo "Downloading trailer in $quality quality as $trailername"
@@ -331,6 +335,7 @@ s|^0||")
       }
       chmod +w $trailerdir
     }
+echo    wget $wgetflags -o $wgetoutput -O ${trailerdir}${trailername} $reallink
     wget $wgetflags -o $wgetoutput -O ${trailerdir}${trailername} $reallink
     [[ ! -s ${trailerdir}${trailername} ]] && {
       echo "For unknown reasons the script failed to download the trailer"
@@ -342,7 +347,7 @@ s|^0||")
     [[ "$trailerdirperms" != "" ]] && {
       chmod $trailerdirperms $trailerdir
     }
-    [[ "$trailerdir" != "" && "$usebothdirs" != "" ]] && {
+    [[ "$trailerdir" != "" ]] && {
       [[ "$(echo "$orgtrailername" | grep "^/")" == "" ]] && {
         orgtrailername="$(echo "${PWD}/${orgtrailername}" | tr -s '/')"
       }
