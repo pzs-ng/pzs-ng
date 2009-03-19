@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# psxc-trailer v0.7.2009.01.04
+# psxc-trailer v0.8.2009.03.19
 ##############################
 #
 # Small script that fetches the qt trailer and image for movies.
@@ -288,7 +288,8 @@ done
   }
   wget $wgetflags -o $wgetoutput -O $wgettemp $urllink
   fakelinkname=$(echo $urllink | tr '/' '\n' | grep -i "\.mov$")
-  reallinkname=$(cat $wgettemp | tr -c 'a-zA-Z0-9\-\.\_' '\n' | grep -i "\.mov")
+  reallinkname=$(cat $wgettemp | tr -c 'a-zA-Z0-9\-\.\_' '\n' | grep -i "\.mov" | sed "s|[Rr][Mm][Dd][Rr]||" | sed "
+s|^0||")
   reallink=$(echo $urllink | sed "s|$fakelinkname|$reallinkname|")
   rm -f $wgettemp
   [[ "$wgettempperms" != "" ]] && {

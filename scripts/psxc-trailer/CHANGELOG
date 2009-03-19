@@ -6,4 +6,5 @@ v 0.5 - fixed a bug affecting Tropic Thunder (among others).
       - added option to download to both releasedir and trailerdir.
 v 0.7 - changed 'sedflags' to 'wgetflags' (i must've been high naming that variable)
       - added '-U "Internet Explorer"' to the list of wgetflags
+v 0.8 - modified the script to handle some new obfuscation in the url-hiding scheme.
 
