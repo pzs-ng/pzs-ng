@@ -5,9 +5,7 @@
 # - Based on the original dZSbot written by dark0n3.                            #
 #################################################################################
 
-# Notes:
-#   - Uncomment 'die's
-#   - Whats is the variable 'mclastbind'? blowfish?
+# TODO:
 #   - Invites are somewhat hardcoded into readlog, but it seems to be glftpd
 #     only. need to look into moving this to the glftpd tcl, along with
 #     cmd_invite and the other invite procs.
@@ -22,11 +20,11 @@
 #   - Possibly create a rename_ng and exec_ng function for modules that rename
 #     procs. At the moment we only support a function being renamed once.
 #     * As an after thought: The way its been done a proc can choose not to
-#     continue the chain loading. What happens when you have 2 procs that rename
-#     the original and the first decides to stop the chain.
+#       continue the chain loading. What happens when you have 2 procs that
+#       rename the original and the first decides to stop the chain.
 #     * A solution I came up with was just creating 2 levels. The first which is
-#     also run first would be the ones that continue chain loading and second
-#     are the ones that halt it.
+#       also run first would be the ones that continue chain loading and second
+#       are the ones that halt it.
 #   - Create an example plugin. Note: cant use variable ${np}::zeroconvert
 #     directly in the eval when its first run. you  _must_ reference the variables
 #     with their full namespaces.
@@ -832,11 +830,9 @@ namespace eval ::ngBot {
 		variable disable
 		variable mainchan
 
-		global lastbind mclastbind
-
 		if {$disable(TRIGINALLCHAN) == 1 && ![string equal -nocase $chan $mainchan]} {
-			if {[info exist mclastbind]} {set lastbind $mclastbind}
-			putlog "\[ngBot\] Warning :: \002$nick\002 tried to use \002$lastbind\002 from an invalid channel ($chan)."
+			if {[info exist ::mclastbind]} {set ::lastbind $::mclastbind}
+			putlog "\[ngBot\] Warning :: \002$nick\002 tried to use \002$::lastbind\002 from an invalid channel ($chan)."
 			return -code return
 		}
 	}
@@ -938,12 +934,10 @@ namespace eval ::ngBot {
 		variable announce
 		variable defaultsection
 
-		global lastbind mclastbind
-
 		if {[string equal "" $text]} {
-			if {[info exist mclastbind]} {set lastbind $mclastbind}
+			if {[info exist ::mclastbind]} {set ::lastbind $::mclastbind}
 			putdcc $idx "\002Preview Usage:\002"
-			putdcc $idx "- .$lastbind <event pattern>"
+			putdcc $idx "- .$::lastbind <event pattern>"
 			putdcc $idx "- Only events matching the pattern are shown (* for all)."
 			return
 		}

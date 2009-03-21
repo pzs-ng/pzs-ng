@@ -26,22 +26,22 @@ namespace eval ::ngBot::module::glftpd {
 		}
 
 		foreach pre [split $cmdpre] {
-			bind pub -|- ${pre}bw          ${ns}::cmd_bw
-			bind pub -|- ${pre}bwdn        ${ns}::cmd_bwdn
-			bind pub -|- ${pre}bwup        ${ns}::cmd_bwup
-			bind pub -|- ${pre}dn          ${ns}::cmd_leechers
-			bind pub -|- ${pre}down        ${ns}::cmd_leechers
-			bind pub -|- ${pre}downloaders ${ns}::cmd_leechers
-			bind pub -|- ${pre}leechers    ${ns}::cmd_leechers
+			bind pub -|- ${pre}bw          [list ${ns}::cmd_bw "bw"]
+			bind pub -|- ${pre}bwdn        [list ${ns}::cmd_bw "bwdn"]
+			bind pub -|- ${pre}bwup        [list ${ns}::cmd_bw "bwup"]
+			bind pub -|- ${pre}dn          [list ${ns}::cmd_transfers "dn"]
+			bind pub -|- ${pre}down        [list ${ns}::cmd_transfers "dn"]
+			bind pub -|- ${pre}downloaders [list ${ns}::cmd_transfers "dn"]
+			bind pub -|- ${pre}leechers    [list ${ns}::cmd_transfers "dn"]
+			bind pub -|- ${pre}up          [list ${ns}::cmd_transfers "up"]
+			bind pub -|- ${pre}uploaders   [list ${ns}::cmd_transfers "up"]
+			bind pub -|- ${pre}nukes       [list ${ns}::cmd_silo "nukes"]
+			bind pub -|- ${pre}unnukes     [list ${ns}::cmd_silo "unnukes"]
 			bind pub -|- ${pre}idle        ${ns}::cmd_idlers
 			bind pub -|- ${pre}idlers      ${ns}::cmd_idlers
 			bind pub -|- ${pre}new         ${ns}::cmd_new
-			bind pub -|- ${pre}nukes       ${ns}::cmd_nukes
 			bind pub -|- ${pre}search      ${ns}::cmd_search
 			bind pub -|- ${pre}speed       ${ns}::cmd_speed
-			bind pub -|- ${pre}unnukes     ${ns}::cmd_unnukes
-			bind pub -|- ${pre}up          ${ns}::cmd_uploaders
-			bind pub -|- ${pre}uploaders   ${ns}::cmd_uploaders
 			bind pub -|- ${pre}who         ${ns}::cmd_who
 
 			bind pub -|- ${pre}gpad    [list ${ns}::cmd_stats "-d" "-A"]
@@ -193,7 +193,6 @@ namespace eval ::ngBot::module::glftpd {
 	# Nuke and Unnuke Handlers                                                      #
 	#################################################################################
 
-	# STATUS: OK
 	proc fuelnuke {type path section line} {
 		variable ns
 		variable np
@@ -221,7 +220,6 @@ namespace eval ::ngBot::module::glftpd {
 		set nuke(LASTDIR) $path
 	}
 
-	# STATUS: OK
 	proc launchnuke {} {
 		variable np
 		variable ${np}::nuke
@@ -243,7 +241,6 @@ namespace eval ::ngBot::module::glftpd {
 		set nuke(SHOWN) 1
 	}
 
-	# STATUS: OK
 	proc launchnuke2 {type path section info nukees} {
 		variable np
 		variable ${np}::nuke
@@ -286,7 +283,6 @@ namespace eval ::ngBot::module::glftpd {
 	# glFTPd Users and Groups                                                       #
 	#################################################################################
 
-	# STATUS: OK
 	proc gluserids {} {
 		variable np
 		variable ${np}::location
@@ -305,7 +301,6 @@ namespace eval ::ngBot::module::glftpd {
 		return $userlist
 	}
 
-	# STATUS: OK
 	proc glgroupids {} {
 		variable np
 		variable ${np}::location
@@ -328,7 +323,6 @@ namespace eval ::ngBot::module::glftpd {
 	# Stats Command                                                                 #
 	#################################################################################
 
-	# STATUS: OK
 	proc cmd_stats {type time nick uhost hand chan argv} {
 		variable np
 		variable ${np}::binary
@@ -377,7 +371,6 @@ namespace eval ::ngBot::module::glftpd {
 	# Latest Dirs/Nukes Commands                                                   #
 	################################################################################
 
-	# STATUS: OK
 	proc cmd_new {nick uhost hand chan argv} {
 		variable ns
 		variable np
@@ -388,16 +381,14 @@ namespace eval ::ngBot::module::glftpd {
 		variable ${np}::sections
 		variable ${np}::defaultsection
 
-		global lastbind mclastbind
-
 		${np}::checkchan $nick $chan
 
 		if {![${np}::getoptions $argv results section]} {
-			if {[info exist mclastbind]} {set lastbind $mclastbind}
+			if {[info exist ::mclastbind]} {set ::lastbind $::mclastbind}
 			## By displaying the command syntax in the channel (opposed to private message), we can inform others
 			## at the same time. There's this recurring phenomena, every time a user types an "uncommon" command, half
 			## a dozen others will as well...to learn about this command. So, let's kill a few idiots with one stone.
-			puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] \[section\]"
+			puthelp "PRIVMSG $chan :\002Usage:\002 $::lastbind \[-max <num>\] \[section\]"
 			return
 		}
 		if {[string equal "" $section]} {
@@ -452,8 +443,7 @@ namespace eval ::ngBot::module::glftpd {
 		return
 	}
 
-	# STATUS: OK
-	proc cmd_nukes {nick uhost hand chan argv} {
+	proc cmd_silo {type nick uhost hand chan argv} {
 		variable np
 		variable ${np}::theme
 		variable ${np}::binary
@@ -462,32 +452,35 @@ namespace eval ::ngBot::module::glftpd {
 		variable ${np}::sections
 		variable ${np}::defaultsection
 
-		global lastbind mclastbind
-
 		${np}::checkchan $nick $chan
 
 		if {![${np}::getoptions $argv results section]} {
-			if {[info exist mclastbind]} {set lastbind $mclastbind}
-			puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] \[section\]"
+			if {[info exist ::mclastbind]} {set ::lastbind $::mclastbind}
+			puthelp "PRIVMSG $chan :\002Usage:\002 $::lastbind \[-max <num>\] \[section\]"
 			return
+		}
+		if {[string equal [set type [string toupper $type]] "NUKES"]} {
+			set type_opt "-n"
+		} else {
+			set type_opt "-u"
 		}
 		if {[string equal "" $section]} {
 			set section $defaultsection
 			set sectionpath "/site/*"
-			set lines [exec $binary(SHOWLOG) -n -m $results -r $location(GLCONF)]
+			set lines [exec $binary(SHOWLOG) $type_opt -m $results -r $location(GLCONF)]
 		} else {
 			if {[set sectiondata [${np}::getsectionpath $section]] == ""} {
 				puthelp "PRIVMSG $nick :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
 				return
 			}
 			foreach {section sectionpath} $sectiondata {break}
-			set lines [exec $binary(SHOWLOG) -f -n -m $results -p $sectionpath -r $location(GLCONF)]
+			set lines [exec $binary(SHOWLOG) -f $type_opt -m $results -p $sectionpath -r $location(GLCONF)]
 		}
 
-		set output "$theme(PREFIX)$announce(NUKES)"
+		set output "$theme(PREFIX)$announce($type)"
 		set output [${np}::replacevar $output "%section" $section]
-		${np}::sndone $nick [${np}::replacebasic $output "NUKES"]
-		set body "$theme(PREFIX)$announce(NUKES_BODY)"
+		${np}::sndone $nick [${np}::replacebasic $output $type]
+		set body "$theme(PREFIX)$announce(${type}_BODY)"
 		set num 0
 
 		foreach line [split $lines "\n"] {
@@ -499,22 +492,22 @@ namespace eval ::ngBot::module::glftpd {
 			set output [${np}::replacevar $output "%date" [${np}::format_clock "date" $nuketime]]
 			set output [${np}::replacevar $output "%time" [${np}::format_clock "time" $nuketime]]
 			set output [${np}::replacevar $output "%nuker" $nuker]
+			set output [${np}::replacevar $output "%unnuker" $unnuker]
 			set output [${np}::replacevar $output "%nukee" $nukee]
 			set output [${np}::replacevar $output "%multiplier" $multiplier]
 			set output [${np}::replacevar $output "%reason" $reason]
 			set output [${np}::replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
 			set output [${np}::replacepath $output $sectionpath $dirpath]
-			${np}::sndone $nick [${np}::replacebasic $output "NUKES"]
+			${np}::sndone $nick [${np}::replacebasic $output $type]
 		}
 
 		if {!$num} {
-			set output "$theme(PREFIX)$announce(NUKES_NONE)"
-			${np}::sndone $nick [${np}::replacebasic $output "NUKES"]
+			set output "$theme(PREFIX)$announce(${type}_NONE)"
+			${np}::sndone $nick [${np}::replacebasic $output $type]
 		}
 		return
 	}
 
-	# STATUS: OK
 	proc cmd_search {nick uhost hand chan argv} {
 		variable ns
 		variable np
@@ -525,13 +518,11 @@ namespace eval ::ngBot::module::glftpd {
 		variable ${np}::search_chars
 		variable ${np}::defaultsection
 
-		global lastbind mclastbind
-
 		${np}::checkchan $nick $chan
 
 		if {![${np}::getoptions $argv results pattern] || [string equal "" $pattern]} {
-			if {[info exist mclastbind]} {set lastbind $mclastbind}
-			puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] <pattern>"
+			if {[info exist ::mclastbind]} {set ::lastbind $::mclastbind}
+			puthelp "PRIVMSG $chan :\002Usage:\002 $::lastbind \[-max <num>\] <pattern>"
 			return
 		}
 		if {$search_chars > 0 && [regexp -all {[a-zA-Z0-9]} $pattern] < $search_chars} {
@@ -581,129 +572,25 @@ namespace eval ::ngBot::module::glftpd {
 		return
 	}
 
-	# STATUS: OK
-	proc cmd_unnukes {nick uhost hand chan argv} {
-		variable np
-		variable ${np}::theme
-		variable ${np}::binary
-		variable ${np}::announce
-		variable ${np}::location
-		variable ${np}::sections
-		variable ${np}::defaultsection
-
-		global lastbind mclastbind
-
-		${np}::checkchan $nick $chan
-
-		if {![${np}::getoptions $argv results section]} {
-			if {[info exist mclastbind]} {set lastbind $mclastbind}
-			puthelp "PRIVMSG $chan :\002Usage:\002 $lastbind \[-max <num>\] \[section\]"
-			return
-		}
-		if {[string equal "" $section]} {
-			set section $defaultsection
-			set sectionpath "/site/*"
-			set lines [exec $binary(SHOWLOG) -u -m $results -r $location(GLCONF)]
-		} else {
-			if {[set sectiondata [${np}::getsectionpath $section]] == ""} {
-				puthelp "PRIVMSG $nick :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
-				return
-			}
-			foreach {section sectionpath} $sectiondata {break}
-			set lines [exec $binary(SHOWLOG) -f -u -m $results -p $sectionpath -r $location(GLCONF)]
-		}
-
-		set output "$theme(PREFIX)$announce(UNNUKES)"
-		set output [${np}::replacevar $output "%section" $section]
-		${np}::sndone $nick [${np}::replacebasic $output "UNNUKES"]
-		set body "$theme(PREFIX)$announce(UNNUKES_BODY)"
-		set num 0
-
-		foreach line [split $lines "\n"] {
-			## Format: status|nuketime|nuker|unnuker|nukee|multiplier|reason|kilobytes|dirpath
-			if {[llength [set line [split $line "|"]]] != 9} {continue}
-			foreach {status nuketime nuker unnuker nukee multiplier reason kbytes dirpath} $line {break}
-
-			set output [${np}::replacevar $body "%num" [format "%02d" [incr num]]]
-			set output [${np}::replacevar $output "%date" [${np}::format_clock "date" $nuketime]]
-			set output [${np}::replacevar $output "%time" [${np}::format_clock "time" $nuketime]]
-			set output [${np}::replacevar $output "%nuker" $nuker]
-			set output [${np}::replacevar $output "%unnuker" $unnuker]
-			set output [${np}::replacevar $output "%nukee" $nukee]
-			set output [${np}::replacevar $output "%multiplier" $multiplier]
-			set output [${np}::replacevar $output "%reason" $reason]
-			set output [${np}::replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
-			set output [${np}::replacepath $output $sectionpath $dirpath]
-			${np}::sndone $nick [${np}::replacebasic $output "UNNUKES"]
-		}
-
-		if {!$num} {
-			set output "$theme(PREFIX)$announce(UNNUKES_NONE)"
-			${np}::sndone $nick [${np}::replacebasic $output "UNNUKES"]
-		}
-		return
-	}
-
 	################################################################################
 	# Online Stats Commands                                                        #
 	################################################################################
 
-	# STATUS: OK
-	proc cmd_bw {nick uhost hand chan argv} {
+	proc cmd_bw {type nick uhost hand chan argv} {
 		variable np
 		variable ${np}::speed
 		variable ${np}::theme
 		variable ${np}::binary
 		variable ${np}::announce
-		variable ${np}::speedmeasure
-		variable ${np}::speedthreshold
 
 		${np}::checkchan $nick $chan
 
-		set output "$theme(PREFIX)$announce(BW)"
+		set output "$theme(PREFIX)$announce([string toupper $type])"
 		set raw [exec $binary(WHO) --nbw]
 		set upper [format "%.0f" [expr [lindex $raw 1] * 100 / $speed(INCOMING)]]
 		set dnper [format "%.0f" [expr [lindex $raw 3] * 100 / $speed(OUTGOING)]]
 		set totalper [format "%.0f" [expr [lindex $raw 5] * 100 / ( $speed(INCOMING) + $speed(OUTGOING) )]]
 
-		set up [${np}::format_speed [lindex $raw 1] "none"]
-		set dn [${np}::format_speed [lindex $raw 3] "none"]
-		set totalspeed [${np}::format_speed [lindex $raw 5] "none"]
-
-		set output [${np}::replacevar $output "%uploads" [lindex $raw 0]]
-		set output [${np}::replacevar $output "%upspeed" $up]
-		set output [${np}::replacevar $output "%downloads" [lindex $raw 2]]
-		set output [${np}::replacevar $output "%dnspeed" $dn]
-		set output [${np}::replacevar $output "%transfers" [lindex $raw 4]]
-		set output [${np}::replacevar $output "%totalspeed" $totalspeed]
-		set output [${np}::replacevar $output "%idlers" [lindex $raw 6]]
-		set output [${np}::replacevar $output "%active" [lindex $raw 7]]
-		set output [${np}::replacevar $output "%totallogins" [lindex $raw 8]]
-		set output [${np}::replacevar $output "%maxusers" [lindex $raw 9]]
-
-		set output [${np}::replacevar $output "%uppercent" $upper]
-		set output [${np}::replacevar $output "%dnpercent" $dnper]
-		set output [${np}::replacevar $output "%totalpercent" $totalper]
-		${np}::sndone $chan [${np}::replacebasic $output "BW"]
-		return
-	}
-
-	# STATUS: OK
-	proc cmd_bwdn {nick uhost hand chan argv} {
-		variable np
-		variable ${np}::speed
-		variable ${np}::theme
-		variable ${np}::binary
-		variable ${np}::announce
-
-		${np}::checkchan $nick $chan
-
-		set output "$theme(PREFIX)$announce(BWDN)"
-		set raw [exec $binary(WHO) --nbw]
-		set upper [format "%.1f" [expr 100 * ([lindex $raw 1] / $speed(INCOMING))]]
-		set dnper [format "%.1f" [expr 100 * ([lindex $raw 3] / $speed(OUTGOING))]]
-		set totalper [format "%.0f" [expr [lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING))]]
-
 		set output [${np}::replacevar $output "%uploads" [lindex $raw 0]]
 		set output [${np}::replacevar $output "%upspeed" [${np}::format_speed [lindex $raw 1] "none"]]
 		set output [${np}::replacevar $output "%downloads" [lindex $raw 2]]
@@ -722,40 +609,6 @@ namespace eval ::ngBot::module::glftpd {
 		return
 	}
 
-	# STATUS: OK
-	proc cmd_bwup {nick uhost hand chan argv} {
-		variable np
-		variable ${np}::speed
-		variable ${np}::theme
-		variable ${np}::binary
-		variable ${np}::announce
-
-		${np}::checkchan $nick $chan
-
-		set output "$theme(PREFIX)$announce(BWUP)"
-		set raw [exec $binary(WHO) --nbw]
-		set upper [format "%.1f" [expr 100 * ([lindex $raw 1] / $speed(INCOMING))]]
-		set dnper [format "%.1f" [expr 100 * ([lindex $raw 3] / $speed(OUTGOING))]]
-		set totalper [format "%.0f" [expr 100 * ([lindex $raw 5] / ( $speed(INCOMING) + $speed(OUTGOING)))]]
-
-		set output [${np}::replacevar $output "%uploads" [lindex $raw 0]]
-		set output [${np}::replacevar $output "%upspeed" [${np}::format_speed [lindex $raw 1] "none"]]
-		set output [${np}::replacevar $output "%downloads" [lindex $raw 2]]
-		set output [${np}::replacevar $output "%dnspeed" [${np}::format_speed [lindex $raw 3] "none"]]
-		set output [${np}::replacevar $output "%transfers" [lindex $raw 4]]
-		set output [${np}::replacevar $output "%totalspeed" [${np}::format_speed [lindex $raw 5] "none"]]
-		set output [${np}::replacevar $output "%idlers" [lindex $raw 6]]
-		set output [${np}::replacevar $output "%active" [lindex $raw 7]]
-		set output [${np}::replacevar $output "%totallogins" [lindex $raw 8]]
-		set output [${np}::replacevar $output "%maxusers" [lindex $raw 9]]
-
-		set output [${np}::replacevar $output "%uppercent" $upper]
-		set output [${np}::replacevar $output "%dnpercent" $dnper]
-	#	set output [${np}::replacevar $output "%totalpercent" $totalper]
-		${np}::sndone $chan [${np}::replacebasic $output "BW"]
-	}
-
-	# STATUS: OK
 	proc cmd_idlers {nick uhost hand chan argv} {
 		variable np
 		variable ${np}::speed
@@ -796,56 +649,6 @@ namespace eval ::ngBot::module::glftpd {
 		return
 	}
 
-	# STATUS: OK
-	proc cmd_leechers {nick uhost hand chan argv} {
-		variable np
-		variable ${np}::speed
-		variable ${np}::theme
-		variable ${np}::binary
-		variable ${np}::announce
-
-		${np}::checkchan $nick $chan
-
-		set output "$theme(PREFIX)$announce(LEECH)"
-		${np}::sndone $chan [${np}::replacebasic $output "LEECH"]
-
-		set raw [exec $binary(WHO) "--raw"]
-		set count 0; set total 0.0
-
-		foreach line [split $raw "\n"] {
-			if {[string equal "USER" [lindex $line 0]] && [string equal "DN" [lindex $line 4]]} {
-				set user  [lindex $line 2]
-				set group [lindex $line 3]
-				set uspeed [${np}::replacevar [lindex $line 5] "KB/s" ""]
-				set tagline [lindex $line 6]
-				set since [lindex $line 7]
-				set filename [lindex $line 8]
-				set per [format "%.2f%%" [expr double($uspeed) * 100 / double($speed(OUTGOING))]]
-				set fper [lindex $line 9]
-				set output [${np}::replacevar "$theme(PREFIX)$announce(USER)" "%u_name" $user]
-				set output [${np}::replacevar $output "%g_name" $group]
-				set output [${np}::replacevar $output "%fper"	$fper]
-				set output [${np}::replacevar $output "%speed" [${np}::format_speed $uspeed "none"]]
-				set output [${np}::replacevar $output "%per" $per]
-				set output [${np}::replacevar $output "%tagline" $tagline]
-				set output [${np}::replacevar $output "%since" $since]
-				set output [${np}::replacevar $output "%filename" $filename]
-				${np}::sndone $chan [${np}::replacebasic $output "LEECH"]
-				incr count
-				set total [expr {$total + $uspeed}]
-			}
-		}
-		set per [format "%.1f" [expr double($total) * 100 / double($speed(OUTGOING)) ]]
-
-		set output [${np}::replacevar "$theme(PREFIX)$announce(TOTUPDN)" "%type" "Leechers:"]
-		set output [${np}::replacevar $output "%count" $count]
-		set output [${np}::replacevar $output "%total" [${np}::format_speed $total "none"]]
-		set output [${np}::replacevar $output "%per" $per]
-		${np}::sndone $chan [${np}::replacebasic $output "LEECH"]
-		return
-	}
-
-	# STATUS: OK
 	proc cmd_speed {nick uhost hand chan argv} {
 		variable np
 		variable ${np}::theme
@@ -855,6 +658,11 @@ namespace eval ::ngBot::module::glftpd {
 
 		${np}::checkchan $nick $chan
 
+		if {[string equal $argv ""]} {
+			if {[info exist ::mclastbind]} {set ::lastbind $::mclastbind}
+			puthelp "PRIVMSG $chan :\002Usage:\002 $::lastbind <user>"
+			return
+		}
 		set line ""
 		set argv [split $argv]
 		if {$disable(ALTWHO) != 1} {
@@ -897,8 +705,7 @@ namespace eval ::ngBot::module::glftpd {
 		return
 	}
 
-	# STATUS: OK
-	proc cmd_uploaders {nick uhost hand chan argv} {
+	proc cmd_transfers {type nick uhost hand chan argv} {
 		variable np
 		variable ${np}::speed
 		variable ${np}::theme
@@ -907,46 +714,50 @@ namespace eval ::ngBot::module::glftpd {
 
 		${np}::checkchan $nick $chan
 
-		set output "$theme(PREFIX)$announce(UPLOAD)"
-		${np}::sndone $chan [${np}::replacebasic $output "UPLOAD"]
+		if {[string equal [set type [string toupper $type]] "UP"]} {
+			set type_long "UPLOAD"
+			set type_speed $speed(INCOMING)
+			set type_string "Uploader:"
+		} else {
+			set type_long "LEECH"
+			set type_speed $speed(OUTGOING)
+			set type_string "Leechers:"
+		}
+
+		set output "$theme(PREFIX)$announce($type_long)"
+		${np}::sndone $chan [${np}::replacebasic $output $type_long]
 
 		set raw [exec $binary(WHO) "--raw"]
 		set count 0; set total 0.0
 
 		foreach line [split $raw "\n"] {
-			if {[string equal "USER" [lindex $line 0]] && [string equal "UP" [lindex $line 4]]} {
-				set user  [lindex $line 2]
-				set group [lindex $line 3]
+			if {[string equal "USER" [lindex $line 0]] && [string equal $type [lindex $line 4]]} {
 				set uspeed [${np}::replacevar [lindex $line 5] "KB/s" ""]
-				set tagline [lindex $line 6]
-				set since [lindex $line 7]
-				set filename [lindex $line 8]
-				set progress [lindex $line 9]
-				set per [format "%.2f%%" [expr double($uspeed) * 100 / double($speed(INCOMING))]]
-				set output [${np}::replacevar "$theme(PREFIX)$announce(USER)" "%u_name" $user]
-				set output [${np}::replacevar $output "%g_name" $group]
-				set output [${np}::replacevar $output "%fper" $progress]
+				set per [format "%.2f%%" [expr double($uspeed) * 100 / double($type_speed)]]
+				set output [${np}::replacevar "$theme(PREFIX)$announce(USER)" "%u_name" [lindex $line 2]]
+				set output [${np}::replacevar $output "%g_name" [lindex $line 3]]
+				set output [${np}::replacevar $output "%fper" [lindex $line 9]]
 				set output [${np}::replacevar $output "%speed" [${np}::format_speed $uspeed "none"]]
 				set output [${np}::replacevar $output "%per" $per]
-				set output [${np}::replacevar $output "%tagline" $tagline]
-				set output [${np}::replacevar $output "%since" $since]
-				set output [${np}::replacevar $output "%filename" $filename]
-				${np}::sndone $chan [${np}::replacebasic $output "UPLOAD"]
+				set output [${np}::replacevar $output "%tagline" [lindex $line 6]]
+				set output [${np}::replacevar $output "%since" [lindex $line 7]]
+				set output [${np}::replacevar $output "%filename" [lindex $line 8]]
+				${np}::sndone $chan [${np}::replacebasic $output $type_long]
 				incr count
 				set total [expr {$total + $uspeed}]
 			}
 		}
-		set per [format "%.1f" [expr double($total) * 100 / double($speed(INCOMING)) ]]
 
-		set output [${np}::replacevar "$theme(PREFIX)$announce(TOTUPDN)" "%type" "Uploaders:"]
+		set per [format "%.1f" [expr double($total) * 100 / double($type_speed) ]]
+
+		set output [${np}::replacevar "$theme(PREFIX)$announce(TOTUPDN)" "%type" $type_string]
 		set output [${np}::replacevar $output "%count" $count]
 		set output [${np}::replacevar $output "%total" [${np}::format_speed $total "none"]]
 		set output [${np}::replacevar $output "%per" $per]
-		${np}::sndone $chan [${np}::replacebasic $output "UPLOAD"]
+		${np}::sndone $chan [${np}::replacebasic $output $type_long]
 		return
 	}
 
-	# STATUS: OK
 	proc cmd_who {nick uhost hand chan argv} {
 		variable np
 		variable ${np}::binary
@@ -968,7 +779,6 @@ namespace eval ::ngBot::module::glftpd {
 	# Invite User                                                                   #
 	#################################################################################
 
-	# STATUS: OK
 	proc flagcheck {currentflags needflags} {
 		set currentflags [split $currentflags ""]
 		foreach needflag [split $needflags ""] {
@@ -977,7 +787,6 @@ namespace eval ::ngBot::module::glftpd {
 		return 0
 	}
 
-	# STATUS: OK
 	proc rightscheck {rights user group flags} {
 		variable ns
 		variable np
@@ -1027,7 +836,6 @@ namespace eval ::ngBot::module::glftpd {
 		return 0
 	}
 
-	# STATUS: OK
 	proc inviteuser {nick user group flags} {
 		variable np
 		variable ns
@@ -1051,7 +859,6 @@ namespace eval ::ngBot::module::glftpd {
 		return
 	}
 
-	# STATUS: OK
 	proc invitechan {nick chan} {
 		if {![validchan $chan] || ![botonchan $chan]} {
 			putlog "\[ngBot\] Error :: Unable to invite \"$nick\" to \"$chan\", I'm not in the channel."
@@ -1062,7 +869,6 @@ namespace eval ::ngBot::module::glftpd {
 		}
 	}
 
-	#STATUS: OK
 	proc cmd_invite {nick host hand argv} {
 		variable np
 		variable ${np}::theme
