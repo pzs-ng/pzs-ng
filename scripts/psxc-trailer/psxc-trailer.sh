@@ -335,7 +335,6 @@ s|^0||")
       }
       chmod +w $trailerdir
     }
-echo    wget $wgetflags -o $wgetoutput -O ${trailerdir}${trailername} $reallink
     wget $wgetflags -o $wgetoutput -O ${trailerdir}${trailername} $reallink
     [[ ! -s ${trailerdir}${trailername} ]] && {
       echo "For unknown reasons the script failed to download the trailer"
