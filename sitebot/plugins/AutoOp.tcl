@@ -84,11 +84,16 @@ namespace eval ::ngBot::plugin::AutoOp {
     # gets $group and $flags from the userfile
     #
     proc GetInfo {ftpUser groupVar flagsVar} {
-        global location
+        variable np
+        variable ${np}::location
         upvar $groupVar group $flagsVar flags
-        set group ""; set flags ""
 
-        if {![catch {set handle [open "$location(USERS)/$ftpUser" r]} error]} {
+        set file "$location(USERS)/$ftpUser"
+        # Linux will give an error if you open a directory and try to read from it.
+        if {![file isfile $file]} { return }
+
+        set group ""; set flags ""
+        if {![catch {set handle [open $file r]} error]} {
             set data [read $handle]
             close $handle
             foreach line [split $data "\n"] {
@@ -97,7 +102,7 @@ namespace eval ::ngBot::plugin::AutoOp {
                     "GROUP" {set group [lindex $line 1]}
                 }
             }
-        return 1
+            return 1
         } else {
             putlog "\[ngBot\] AutoOp Error :: Unable to open user file for \"$ftpUser\" ($error)."
             return 0
