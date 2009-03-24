@@ -610,9 +610,10 @@ DWORD get32(FILE *f)
 {
 	DWORD result;
 	
-	if (fread(&result, sizeof(DWORD), 1, f) != 1)
+	if (fread(&result, sizeof(DWORD), 1, f) != 1) {
 		d_log("avinfo: Premature end of file.\n");
-
+		result=0;
+	}
 	return result;
 }
 
@@ -620,9 +621,10 @@ WORD get16(FILE *f)
 {
 	WORD result;
 	
-	if (fread(&result, sizeof(WORD), 1, f) != 1)
+	if (fread(&result, sizeof(WORD), 1, f) != 1) {
 		d_log("avinfo: Premature end of file.\n");
-
+		result=0;
+	}
 	return result;
 }
 
@@ -643,22 +645,27 @@ int avinfo(char *filename, struct VIDEO *vinfo)
 		d_log("avinfo: Unable to open file.\n");
 		return 1;
 	}
-	tag = get32(f);
-	size = get32(f);
+	if (!(tag = get32(f)))
+		return 1;
+	if (!(size = get32(f)))
+		return 1;
 
 	if (tag != MKTAG('R','I','F','F')) {
 		d_log("avinfo: Not a RIFF file.\n");
 		return 2;
 	}
-	tag = get32(f);
+	if (!(tag = get32(f)))
+		return 1;
 
 	if (tag != MKTAG('A','V','I',' ')) {
 		d_log("avinfo: Not an AVI file.\n");
 		return 2;
 	}
 	while (!feof(f)) {
-		tag = get32(f);
-		size = get32(f);
+		if (!(tag = get32(f)))
+			return 1;
+		if (!(size = get32(f)))
+			return 1;
 
 		if (!tag) {
 			d_log("avinfo: Invalid file format.\n");
