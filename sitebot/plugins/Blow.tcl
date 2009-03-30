@@ -577,10 +577,13 @@ namespace eval ::ngBot::plugin::Blow {
 
 		set file "$location(USERS)/$ftpUser"
 		# Linux will give an error if you open a directory and try to read from it.
-		if {![file isfile $file]} { return }
+		if {![file isfile $file]} {
+			putlog "\[ngBot\] Blow Error :: Invalid user file for \"$ftpUser\" ($file)."
+			return 0
+		}
 
 		set group ""; set flags ""
-		if {![catch {set handle [open $file r]} error]} {
+		if {[catch {set handle [open $file r]} error] == 0} {
 			set data [read $handle]
 			close $handle
 			foreach line [split $data "\n"] {
@@ -589,10 +592,10 @@ namespace eval ::ngBot::plugin::Blow {
 					"GROUP" {set group [lindex $line 1]}
 				}
 			}
-			return True
+			return 1
 		} else {
 			putlog "\[ngBot\] Blow Error :: Unable to open user file for \"$ftpUser\" ($error)."
-			return False
+			return 0
 		}
 	}
 

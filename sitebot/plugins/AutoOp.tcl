@@ -41,11 +41,6 @@ namespace eval ::ngBot::plugin::AutoOp {
     variable permsAutoOp "1 A"
     ##################################################
 
-    #bind evnt -|- prerehash [namespace current]::deinit
-
-    #interp alias {} IsTrue {} string is true -strict
-    #interp alias {} IsFalse {} string is false -strict
-
     ####
     # AutoOp::Init
     #
@@ -61,7 +56,6 @@ namespace eval ::ngBot::plugin::AutoOp {
 
         ## Bind event callbacks.
         bind join -|- * [namespace current]::GiveOp
-        return
     }
 
     ####
@@ -70,12 +64,7 @@ namespace eval ::ngBot::plugin::AutoOp {
     # Called on rehash; unregisters the event handler.
     #
     proc deinit {args} {
-        ## Remove event callbacks.
-        #catch {unbind evnt -|- prerehash [namespace current]::DeInit}
-        #catch {unbind join -|- *!*@* [namespace current]::GiveOp}
-
         namespace delete [namespace current]
-        return
     }
 
     ####
@@ -90,10 +79,13 @@ namespace eval ::ngBot::plugin::AutoOp {
 
         set file "$location(USERS)/$ftpUser"
         # Linux will give an error if you open a directory and try to read from it.
-        if {![file isfile $file]} { return }
+        if {![file isfile $file]} {
+            putlog "\[ngBot\] AutoOp Error :: Invalid user file for \"$ftpUser\" ($file)."
+            return 0
+        }
 
         set group ""; set flags ""
-        if {![catch {set handle [open $file r]} error]} {
+        if {[catch {set handle [open $file r]} error] == 0} {
             set data [read $handle]
             close $handle
             foreach line [split $data "\n"] {
@@ -118,13 +110,14 @@ namespace eval ::ngBot::plugin::AutoOp {
         variable ns
         variable np
         variable permsAutoOp
-        
+
         set ftpUser [${ns}::GetFtpUser $nick]
-     
+        if {$ftpUser == ""} { return }
+
         if {[${ns}::GetInfo $ftpUser group flags]} {
             if {[${np}::rightscheck $permsAutoOp $ftpUser $group $flags]} {
-            pushmode $channel +o $nick
-            putlog "\[ngBot\] AutoOp :: Gave OP to $nick ($ftpUser) in $channel"
+                pushmode $channel +o $nick
+                putlog "\[ngBot\] AutoOp :: Gave OP to $nick ($ftpUser) in $channel"
             }
         }
 
