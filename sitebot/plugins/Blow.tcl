@@ -78,7 +78,7 @@ namespace eval ::ngBot::plugin::Blow {
 	variable keyxTimeout 120
 	##
 	## Path to "DH1080_tcl.so". This file is REQUIRED for key exchange to work.
-	## Get it from http://fish.sekure.us/. Compile it yourself if you're a
+	## Get it from http://fish.secure.la/. Compile it yourself if you're a
 	## paranoid geek (Recommended).
 	variable blowso "scripts/blow/DH1080_tcl.so"
 	##
