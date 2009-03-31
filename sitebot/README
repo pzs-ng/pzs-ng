@@ -1,4 +1,4 @@
-                       This script is part of:
+                           ngBot - README
             Project Zipscript - Next Generation (www.pzs-ng.com)
     (Based on dZSbot by Dark0n3 - http://kotisivu.raketti.net/darkone/)
 
@@ -30,12 +30,12 @@
 
  - Copy the necessary files to your Eggdrop's directory:
   mkdir -p /path/to/eggdrop/pzs-ng/themes
-  cp -R dZSbot.* plugins themes /path/to/eggdrop/pzs-ng/
+  cp -R ngBot.* plugins themes modules /path/to/eggdrop/pzs-ng/
 
  - On a new install (not upgrade):
-  cp dZSbot.conf.dist /path/to/eggdrop/pzs-ng/dZSbot.conf
+  cp ngBot.conf.dist /path/to/eggdrop/pzs-ng/ngBot.conf
 
- - Edit the configuration file (dZSbot.conf) to your liking.
+ - Edit the configuration file (ngBot.conf) to your liking.
 
  - If you want the bouncer checker, you must install a recent version of cURL.
  cURL supports secure FTP connections (AUTH TLS), this feature is only available
@@ -54,7 +54,7 @@
   b) Compiling
 --------------------------------------------------------------------------------
 
- - The "src" directory contains helper scripts used by dZSbot. These binaries compiled
+ - The "src" directory contains helper scripts used by ngBot. These binaries compiled
  from root makefile. However, you can always compile them separately by issuing
  "make" and "make install" inside this the directory.
 
@@ -63,7 +63,7 @@
  passchk          - Used by !invite to authenticate users (requires OpenSSL headers).
 
  showlog          - Displays the latest entries in the dirlog and nukelog for
-                    external scripts (used by dZSbot for !new/!search/!nukes/!unnukes).
+                    external scripts (used by ngBot for !new/!search/!nukes/!unnukes).
 
  - The "extra" directory contains helper scripts to be used with the sitebot.
 
@@ -81,23 +81,23 @@
                     Add the following to eggdrop.conf:
                     source scripts/top.tcl
 
- - The "plugins" directory contains useful plug-ins for dZSbot. Refer to
+ - The "plugins" directory contains useful plug-ins for ngBot. Refer to
  plugins/README for more information.
 
 --------------------------------------------------------------------------------
   c) Loading the sitebot
 --------------------------------------------------------------------------------
 
- - Eggdrop must be linked against Tcl v8.4 (or newer). dZSbot uses certain
+ - Eggdrop must be linked against Tcl v8.4 (or newer). ngBot uses certain
  functions which are not present in previous versions of Tcl.
 
- - Load dZSbot as you would load any Eggdrop script, by adding the following line
+ - Load ngBot as you would load any Eggdrop script, by adding the following line
  to your eggdrop.conf:
- source pzs-ng/dZSbot.tcl
+ source pzs-ng/ngBot.tcl
 
  - Rehash or restart your Eggdrop for the changes to take effect.
 
- - When updating dZSbot to a newer revision, refer to the sitebot/UPDATING file.
+ - When updating ngBot to a newer revision, refer to the sitebot/UPDATING file.
 
 --------------------------------------------------------------------------------
  2. Themes
@@ -105,10 +105,10 @@
   a) Installation
 --------------------------------------------------------------------------------
 
- - To install a theme - all you need to do is edit dZSbot.conf and change a line:
+ - To install a theme - all you need to do is edit ngBot.conf and change a line:
  set announce(THEMEFILE) "yourtheme.zst"
 
- - dZSbot will look for the theme in its own path by default. However, you may
+ - ngBot will look for the theme in its own path by default. However, you may
  specify the full path if you prefer.
 
 --------------------------------------------------------------------------------
@@ -121,7 +121,7 @@
                theme should be used a reference when creating a new theme or
                updating your existing one.
 
- classic.zst - A simple theme, based on the original dZSbot and project-zs look.
+ classic.zst - A simple theme, based on the dZSbot and project-zs look.
 
  dakrer.zst  - Similar to default.zst but with less output and a (small) splash of
                colors. See theme for additional info. Created and maintained by dakrer.
@@ -155,7 +155,7 @@
  added in 1.0 beta5. Type .preview in a DCC chat session with your Eggdrop for more
  information.
 
- - Using colors is fairly simple in dZSbot. Simply define a color in the theme:
+ - Using colors is fairly simple in ngBot. Simply define a color in the theme:
 
  COLOR1 = "04"
  ..
@@ -176,11 +176,11 @@
  06 - Magenta (purple)      14 - Gray
  07 - Orange (dark yellow)  15 - Light gray
 
- - NOTE: dZSbot only supports 3 user defined colors per theme.
+ - NOTE: ngBot only supports 3 user defined colors per theme.
 
  - Starting with 1.0 beta4 of pzs-ng, you can define custom colors for each section.
  To use this feature, this you must define colors in the theme for the specific
- section. The section name must be the exact same as the one defined in dZSbot.conf,
+ section. The section name must be the exact same as the one defined in ngBot.conf,
  and you must define the same number of section colors as in your default scheme.
 
  - If you have 3 default colors (COLOR1, COLOR2, and COLOR3), then if you

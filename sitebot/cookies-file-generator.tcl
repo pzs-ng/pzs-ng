@@ -1,8 +1,8 @@
 #!/usr/bin/tclsh
 
-source dZSbot.conf.defaults
-source dZSbot.conf.dist
-source dZSbot.vars
+source ngBot.conf.defaults
+source ngBot.conf.dist
+source ngBot.vars
 
 puts "Quickreference of cookies:"
 puts "        (ANNOUNCES)       "
