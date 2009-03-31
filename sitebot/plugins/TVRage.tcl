@@ -24,8 +24,6 @@
 namespace eval ::ngBot::plugin::TVRage {
 	variable ns [namespace current]
 	variable np [namespace qualifiers [namespace parent]]
-	#variable ${np}::zeroconvert
-	#variable ${np}::disable
 
 	variable tvrage
 
@@ -149,7 +147,6 @@ namespace eval ::ngBot::plugin::TVRage {
 		variable np
 		variable ${np}::postcommand
 
-		#variable tvrage
 		variable events
 		variable scriptName
 
@@ -159,10 +156,6 @@ namespace eval ::ngBot::plugin::TVRage {
 				set postcommand($event) [lreplace $postcommand($event) $pos $pos]
 			}
 		}
-
-		#catch {unbind pub -|- $tvrage(ctrigger) ${ns}::Trigger}
-		#catch {unbind msg -|- $tvrage(ptrigger) ${ns}::Trigger}
-		#catch {unbind evnt -|- prerehash ${ns}::deinit}
 
 		namespace delete $ns
 	}

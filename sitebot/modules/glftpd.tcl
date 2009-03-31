@@ -1,7 +1,10 @@
-# Notes:
-#   - there are a bunch of exec's not being contained within catch {}'s
-#   - !speed should give you a syntax error if you dont put a user after the trigger
-#   - merge cmd_bw* procs.
+################################################################################
+#
+#                        ngBot - glftpd FTP Module
+#            Project Zipscript - Next Generation (www.pzs-ng.com)
+#    (Based on dZSbot by Dark0n3 - http://kotisivu.raketti.net/darkone/)
+#
+################################################################################
 
 namespace eval ::ngBot::module::glftpd {
 	variable ns [namespace current]

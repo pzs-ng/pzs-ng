@@ -1,35 +1,33 @@
-#################################################################################
-# ngBot - ProjectZS-NG Sitebot                                                  #
-#################################################################################
-# - Displays information, real-time events, and stats for your glFTPd site.     #
-# - Based on the original dZSbot written by dark0n3.                            #
-#################################################################################
-
+################################################################################
+#
+#                            ngBot - Sitebot
+#            Project Zipscript - Next Generation (www.pzs-ng.com)
+#    (Based on dZSbot by Dark0n3 - http://kotisivu.raketti.net/darkone/)
+#
+################################################################################
+#
 # TODO:
+#
 #   - Invites are somewhat hardcoded into readlog, but it seems to be glftpd
 #     only. need to look into moving this to the glftpd tcl, along with
 #     cmd_invite and the other invite procs.
-#   - Clean up set's inside catches. ie: [catch {set handle [open ..]} error]
-#     Catch will set error to whatever is returned regareless of the return value.
-#   - Make an init_plugins proc and load all plugins that are under
-#     ::ngBot::plugin::*. default proc to call would be 'init'.
-#   - To extend on the init idea, maybe only deinit and unbind the binds of the
-#     functions that were successfully init'd. not all sub namespaces.
+#   - Only deinit and unbind the binds of the plugins that were successfully
+#     init'd. not all sub namespaces.
 #   - init_logs has glftpd specific code it seems. ie the glftpdlog variable, but
 #     i assume this is used by cuftpd as well.
-#   - Possibly create a rename_ng and exec_ng function for modules that rename
-#     procs. At the moment we only support a function being renamed once.
+#   - Possibly create a rename_ng, unrename_ng & exec_ng function for modules
+#     that rename procs. At the moment we only support a function being renamed
+#     once.
 #     * As an after thought: The way its been done a proc can choose not to
 #       continue the chain loading. What happens when you have 2 procs that
 #       rename the original and the first decides to stop the chain.
 #     * A solution I came up with was just creating 2 levels. The first which is
 #       also run first would be the ones that continue chain loading and second
 #       are the ones that halt it.
-#   - Create an example plugin. Note: cant use variable ${np}::zeroconvert
-#     directly in the eval when its first run. you  _must_ reference the variables
-#     with their full namespaces.
 #   - ::ngBot::eventhandler will stop processing precommands if one returns false.
 #   - Create rename_ng and derename_ng!
+#
+################################################################################
 
 namespace eval ::ngBot {
 	variable ns [namespace current]
@@ -295,7 +293,6 @@ namespace eval ::ngBot {
 	#                                                                           #
 	#############################################################################
 
-	# STATUS: OK
 	proc debug {text} {
 		variable debugmode
 		if {[istrue $debugmode]} {
@@ -307,7 +304,6 @@ namespace eval ::ngBot {
 	# Log Parsing for glFTPd and Login Logs                                         #
 	#################################################################################
 
-	# STATUS: OK
 	proc denycheck {release} {
 		variable ns
 		variable denypost
@@ -320,7 +316,6 @@ namespace eval ::ngBot {
 		return 0
 	}
 
-	# STATUS: OK
 	proc eventcheck {section event} {
 		variable ns
 		variable disabletypes
@@ -334,7 +329,6 @@ namespace eval ::ngBot {
 		return 0
 	}
 
-	# STATUS: OK
 	proc eventhandler {type event argv} {
 		variable ns
 		variable $type
@@ -353,7 +347,6 @@ namespace eval ::ngBot {
 		return 1
 	}
 
-	# STATUS: OK
 	proc readlogtimer {} {
 		variable ns
 		variable ng_timer
@@ -364,7 +357,6 @@ namespace eval ::ngBot {
 		set ng_timer [utimer 1 ${ns}::readlogtimer]
 	}
 
-	#STATUS: OK
 	proc readlog {} {
 		variable ns
 		variable disable
@@ -483,7 +475,6 @@ namespace eval ::ngBot {
 		}
 	}
 
-	# STATUS: OK
 	proc parselogin {line eventvar datavar} {
 		upvar $eventvar event $datavar data
 		## The data in login.log is not at all consistent,
@@ -512,7 +503,6 @@ namespace eval ::ngBot {
 		return 1
 	}
 
-	# STATUS: OK
 	proc parsesysop {line eventvar datavar} {
 		upvar $eventvar event $datavar newdata
 		set patterns [list \
@@ -536,7 +526,6 @@ namespace eval ::ngBot {
 		return 0
 	}
 
-	# STATUS: OK
 	proc ng_random {event rndvar} {
 		variable random
 
@@ -551,7 +540,6 @@ namespace eval ::ngBot {
 		return 0
 	}
 
-	# STATUS: OK
 	proc ng_format {event section line} {
 		variable ns
 		variable theme
@@ -636,7 +624,6 @@ namespace eval ::ngBot {
 	# Format Size, Speed and Time Units                                             #
 	#################################################################################
 
-	# STATUS: OK
 	proc format_duration {secs} {
 		set duration ""
 		foreach div {31536000 604800 86400 3600 60 1} unit {y w d h m s} {
@@ -647,7 +634,6 @@ namespace eval ::ngBot {
 		if {[llength $duration]} {return [join $duration]} else {return "\0020\002s"}
 	}
 
-	# STATUS: OK
 	proc format_kb {amount} {
 		variable device_size
 
@@ -667,7 +653,6 @@ namespace eval ::ngBot {
 		return [format "%.*f%s" $dec $amount $unit]
 	}
 
-	# STATUS: OK
 	proc format_speed {value section} {
 		variable ns
 		variable theme
@@ -719,7 +704,6 @@ namespace eval ::ngBot {
 		return [${ns}::themereplace [${ns}::replacevar $type "%value" $value] $section]
 	}
 
-	# STATUS: OK
 	proc format_clock {type ctime} {
 		variable format_time
 		variable format_date
@@ -737,7 +721,6 @@ namespace eval ::ngBot {
 	# Replace Text                                                                  #
 	#################################################################################
 
-	# STATUS: OK
 	proc replacebasic {message section} {
 		variable cmdpre
 		variable sitename
@@ -746,7 +729,6 @@ namespace eval ::ngBot {
 		return [string map [list "%cmdpre" $pre "%section" $section "%sitename" $sitename "%bold" \002 "%uline" \037 "%color" \003] $message]
 	}
 
-	# STATUS: OK
 	proc replacepath {message basepath path} {
 		variable ns
 
@@ -762,7 +744,6 @@ namespace eval ::ngBot {
 		return $message
 	}
 
-	# STATUS: OK
 	proc replacevar {string cookie value} {
 		variable zeroconvert
 		if {[string length $value] == 0 && [info exists zeroconvert($cookie)]} {
@@ -771,7 +752,6 @@ namespace eval ::ngBot {
 		return [string map [list $cookie $value] $string]
 	}
 
-	# STATUS: OK
 	proc trimtail {strsrc strrm} {
 		if { [expr [string length $strsrc] - [string length $strrm]] == [string last $strrm $strsrc] } {
 			return [string range $strsrc 0 [expr [string length $strsrc] - [string length $strrm] - 1]]
@@ -783,7 +763,6 @@ namespace eval ::ngBot {
 	# Send Messages                                                                 #
 	#################################################################################
 
-	# STATUS: OK
 	proc sndall {event section text} {
 		variable ns
 		variable chanlist
@@ -803,7 +782,6 @@ namespace eval ::ngBot {
 		}
 	}
 
-	# STATUS: OK
 	proc sndone {chan text {section "none"}} {
 		variable ns
 		variable splitter
@@ -816,7 +794,6 @@ namespace eval ::ngBot {
 	# Invite User                                                                   #
 	#################################################################################
 
-	# STATUS: OK
 	proc inviteuser {args} {
 		putlog "\[ngBot\] Error :: Current ftpd not supported for site chan inviting."
 	}
@@ -825,7 +802,6 @@ namespace eval ::ngBot {
 	# Command Utilities                                                            #
 	################################################################################
 
-	# STATUS: OK
 	proc checkchan {nick chan} {
 		variable disable
 		variable mainchan
@@ -837,7 +813,6 @@ namespace eval ::ngBot {
 		}
 	}
 
-	# STATUS: OK
 	proc getoptions {argv p_results p_other} {
 		variable default_results
 		variable maximum_results
@@ -871,7 +846,6 @@ namespace eval ::ngBot {
 		return 1
 	}
 
-	# STATUS: OK
 	proc getsectionname {checkpath} {
 		variable mpath
 		variable paths
@@ -899,7 +873,6 @@ namespace eval ::ngBot {
 		return $returnval
 	}
 
-	# STATUS: OK
 	proc getsectionpath {getsection} {
 		variable paths
 		variable sections
@@ -917,7 +890,6 @@ namespace eval ::ngBot {
 	# Internal Commands                                                             #
 	#################################################################################
 
-	# STATUS: OK
 	proc cmd_error {args} {
 		global errorInfo tcl_patchLevel tcl_platform
 		putlog "--\[\002Error Info\002\]------------------------------------------"
@@ -975,7 +947,6 @@ namespace eval ::ngBot {
 	# Welcome Message Command                                                       #
 	#################################################################################
 
-	# STATUS: OK
 	proc cmd_welcome {nick uhost hand chan} {
 		variable ns
 		variable disable
@@ -997,7 +968,6 @@ namespace eval ::ngBot {
 	# General Commands                                                             #
 	################################################################################
 
-	# STATUS: OK
 	proc cmd_bnc {nick uhost hand chan arg} {
 		variable ns
 		variable bnc
@@ -1083,7 +1053,6 @@ namespace eval ::ngBot {
 		return
 	}
 
-	# STATUS: OK
 	proc cmd_help {nick uhost hand chan arg} {
 		variable ns
 		variable sections
@@ -1115,7 +1084,6 @@ namespace eval ::ngBot {
 		return
 	}
 
-	# STATUS: OK
 	proc cmd_free {nick uhost hand chan arg} {
 		variable ns
 		variable theme
@@ -1209,7 +1177,6 @@ namespace eval ::ngBot {
 		return
 	}
 
-	# STATUS: OK
 	proc cmd_incompletes {nick uhost hand chan arg} {
 		variable ns
 		variable binary
@@ -1228,7 +1195,6 @@ namespace eval ::ngBot {
 		return
 	}
 
-	# STATUS: OK
 	proc cmd_uptime {nick uhost hand chan argv} {
 		variable ns
 		variable theme
@@ -1263,7 +1229,6 @@ namespace eval ::ngBot {
 	# Theme Loading and Replacement                                                 #
 	#################################################################################
 
-	# STATUS: OK
 	proc loadtheme {file {isplugin false}} {
 		variable ns
 		variable theme
@@ -1352,7 +1317,6 @@ namespace eval ::ngBot {
 		return 1
 	}
 
-	# STATUS: OK
 	proc themereplace {targetString section} {
 		variable theme
 
@@ -1400,7 +1364,6 @@ namespace eval ::ngBot {
 		return [subst -nocommands $targetString]
 	}
 
-	# STATUS: OK
 	proc themereplace_startup {rstring} {
 		# We replace %b{string} and %u{string} with their bolded and underlined equivilants ;)
 		while {[regexp {(%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\})} $rstring]} {

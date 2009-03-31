@@ -66,6 +66,7 @@ namespace eval ::ngBot::plugin::Top {
 	}
 
 	proc showTop {args} {
+		variable np
 		variable top
 		variable ${np}::binary
 		variable ${np}::location

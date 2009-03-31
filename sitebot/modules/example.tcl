@@ -1,4 +1,11 @@
-# Example ftpd module.
+################################################################################
+#
+#                        ngBot - Example FTP Module
+#            Project Zipscript - Next Generation (www.pzs-ng.com)
+#    (Based on dZSbot by Dark0n3 - http://kotisivu.raketti.net/darkone/)
+#
+################################################################################
+
 namespace eval ::ngBot::module::example {
 	variable ns [namespace current]
 	# References the base namespace (the parents parent to be precise) ::ngBot.

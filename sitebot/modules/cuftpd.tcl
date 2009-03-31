@@ -1,3 +1,11 @@
+################################################################################
+#
+#                        ngBot - cuftpd FTP Module
+#            Project Zipscript - Next Generation (www.pzs-ng.com)
+#    (Based on dZSbot by Dark0n3 - http://kotisivu.raketti.net/darkone/)
+#
+################################################################################
+
 namespace eval ::ngBot::module::cuftpd {
 	variable ns [namespace current]
 	variable np [namespace qualifiers [namespace parent]]

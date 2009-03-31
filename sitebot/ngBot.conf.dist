@@ -1,23 +1,23 @@
-######################################################################
-#      Project Zipscript Next Generation - Sitebot Configuration     #
-#                        (originally by Dark0n3)                     #
-#                                                                    #
-######################################################################
-#                                                                    #
-#                          IMPORTANT!!                               #
-#                          -----------                               #
-# This file contains overrides only. You may find that some settings #
-# are missing - search in dZSbot.conf.defaults for the settings you  #
-# need and COPY THOSE INTO THIS FILE - do not edit the defaults file #
-# - it will be changed! This file, however, will not, which means    #
-# that when you upgrade your bot, you can keep this file, replace    #
-# the defaults file, and be done with it.                            #
-#                                                                    #
-######################################################################
+################################################################################
+#
+#                            ngBot - Config
+#            Project Zipscript - Next Generation (www.pzs-ng.com)
+#    (Based on dZSbot by Dark0n3 - http://kotisivu.raketti.net/darkone/)
+#
+################################################################################
+#
+#                               IMPORTANT!!
+#                               -----------
+# This file contains overrides only. You may find that some settings are
+# missing - search in dZSbot.conf.defaults for the settings you need and COPY
+# THOSE INTO THIS FILE - do not edit the defaults file - it will be changed!
+# This file, however, will not, which means that when you upgrade your bot, you
+# can keep this file, replace the defaults file, and be done with it.
+#
+################################################################################
+# Important Settings
+################################################################################
 
-######################
-# Important Settings #
-######################
 set debugmode               "TRUE"
 set cmdpre                  "!ng"
 set sitename                "pzs-ng"
@@ -25,9 +25,10 @@ set mainchan                "#pzs-ng"
 set glroot                  "/glftpd/"
 set announce(THEMEFILE)     "themes/default.zst"
 
-######################
-# Bins, Logs & Paths #
-######################
+################################################################################
+# Bins, Logs & Paths
+################################################################################
+
 set location(GROUP)         "$glroot/etc/group"
 set location(PASSWD)        "$glroot/etc/passwd"
 set location(USERS)         "$glroot/ftp-data/users/"
@@ -46,9 +47,10 @@ set binary(DF)              "/bin/df"
 set binary(PING)            "/bin/ping"
 set binary(UPTIME)          "/usr/bin/uptime"
 
-######################
-# Misc. Settings     #
-######################
+################################################################################
+# Misc. Settings
+################################################################################
+
 set bindnopre               "FALSE"
 set speed(INCOMING)         12500
 set speed(OUTGOING)         12500
@@ -57,9 +59,10 @@ set device(1)               "/dev/ad0s1e ISO"
 set local_devices_only      "TRUE"
 set device_size             "AUTO"
 
-######################
-# Bouncers           #
-######################
+################################################################################
+# Bouncers
+################################################################################
+
 set bnc(ENABLED)            "FALSE"
 set bnc(PING)               "TRUE"
 set bnc(SECURE)             "TRUE"
@@ -67,9 +70,10 @@ set bnc(LIST)               "Canada:bnc.host.ca:123 Germany:bnc.host.de:456 Swed
 set bnc(USER)               "bncuser"
 set bnc(PASS)               "bncpass"
 
-######################
-# Sections           #
-######################
+################################################################################
+# Sections
+################################################################################
+
 set denypost                "/site/groups/* /site/private/*"
 set sections                "0DAY APPS GAMES MP3 MV"
 set paths(0DAY)             "/site/incoming/0day/*"
@@ -87,15 +91,15 @@ set chanlist(WELCOME)       $mainchan
 set statsection(0)          "DEFAULT"
 set statsection(1)          "PRE"
 
-######################
-# Invite             #
-######################
+################################################################################
+# Invite
+################################################################################
 set enable_irc_invite       "FALSE"
 set invite_channels         $mainchan
 
-######################
-# Announcing         #
-######################
+################################################################################
+# Announcing
+################################################################################
 set splitter(CHAR)          "\n"
 
 ## Staff channel announces
@@ -158,4 +162,3 @@ set disable(IMDBVAR)        0
 set disable(PRE)            0
 set disable(TURGEN)         0
 set disable(WHOIS)          0
-

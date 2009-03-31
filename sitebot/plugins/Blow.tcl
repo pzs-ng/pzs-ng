@@ -733,6 +733,14 @@ namespace eval ::ngBot::plugin::Blow {
 			}
 		}
 
+		set aliases [interp aliases]
+		foreach cmd {putquick putserv puthelp} {
+			if {[lsearch $aliases $cmd] != -1 || [catch {info args $cmd}] == 0 || [info commands $cmd] == ""} {
+				putlog "\[ngBot\] Blow Error :: Output procs have already been renamed. make sure no other blowfish scripts are loaded and \002.restart\002."
+				return -code -1
+			}
+		}
+
 		## Intercept putquick, putserv and puthelp, and replace it with our own version
 		catch {rename ::putquick ::putquick2}
 		catch {rename ::putserv ::putserv2}
@@ -786,19 +794,16 @@ namespace eval ::ngBot::plugin::Blow {
 		variable ${np}::msgtypes
 
 		## Remove event callbacks.
-		if {[llength [info commands "putquick2"]] == 1} {
+		if {[info commands "putquick2"] != ""} {
 			interp alias {} putquick {}
-			#catch {rename ::putquick  {}}
 			catch {rename ::putquick2 ::putquick}
 		}
-		if {[llength [info commands "putserv2"]] == 1} {
+		if {[info commands "putserv2"] != ""} {
 			interp alias {} putserv {}
-			#catch {rename ::putserv   {}}
 			catch {rename ::putserv2  ::putserv}
 		}
-		if {[llength [info commands "puthelp2"]] == 1} {
+		if {[info commands "puthelp2"] != ""} {
 			interp alias {} puthelp {}
-			#catch {rename ::puthelp   {}}
 			catch {rename ::puthelp2  ::puthelp}
 		}
 

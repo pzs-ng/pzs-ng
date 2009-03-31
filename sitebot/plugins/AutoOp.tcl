@@ -22,11 +22,11 @@
 #    and add "WHOIS" at the end of your msgtypes(DEFAULT) line.
 #    (NOTE BY PSXC: This is already done)
 #
-# 4. Add the following line to your theme file:
+# 3. Add the following line to your theme file:
 #    (NOTE BY PSXC: This is already done)
 #    announce.WHOIS = "%b{[WHOIS]} %msg"
 #
-# 5. Rehash or restart your eggdrop for the changes to take effect.
+# 4. Rehash or restart your eggdrop for the changes to take effect.
 #
 #################################################################################
 
