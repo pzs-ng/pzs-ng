@@ -82,16 +82,16 @@ read readline
 # Eggdrop
 if [ ! -z "$eggpath" ] && [ -d "$eggpath" ]; then
   mkdir -p $eggpath/pzs-ng/plugins
-  cp -fR sitebot/ngBot.* sitebot/plugins $eggpath/pzs-ng/
+  cp -fR sitebot/ngBot.* sitebot/plugins sitebot/modules $eggpath/pzs-ng/
   if [ ! -d $eggpath/pzs-ng/themes ]; then
     mkdir -p $eggpath/pzs-ng/themes
-    cp -fR sitebot/themes/* sitebot/plugins $eggpath/pzs-ng/themes/
+    cp -fR sitebot/themes/* $eggpath/pzs-ng/themes/
   else
-    echo "sitebot themes is NOT be copied - please upgrade manually."
+    echo "sitebot themes are NOT being copied - please upgrade manually."
   fi
   if [ ! -e $eggpath/pzs-ng/ngBot.conf ]; then
     if [ -e "$eggpath/pzs-ng/dZSbot.conf" ]; then
-      echo -n "Do you wish to rename dZSbot.conf to ngBot.conf? (Y/n)> "
+      echo -n "Do you wish to rename dZSbot.conf to ngBot.conf (recommended)? (Y/n)> "
       read answer
       if [ ! "`echo $answer | tr 'A-Z' 'a-z' | cut -c 1-1`" = "n" ]; then
         mv $eggpath/pzs-ng/dZSbot.conf $eggpath/pzs-ng/ngBot.conf
