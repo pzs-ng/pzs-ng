@@ -82,15 +82,23 @@ read readline
 # Eggdrop
 if [ ! -z "$eggpath" ] && [ -d "$eggpath" ]; then
   mkdir -p $eggpath/pzs-ng/plugins
-  cp -fR sitebot/dZSbot.* sitebot/plugins $eggpath/pzs-ng/
+  cp -fR sitebot/ngBot.* sitebot/plugins $eggpath/pzs-ng/
   if [ ! -d $eggpath/pzs-ng/themes ]; then
     mkdir -p $eggpath/pzs-ng/themes
     cp -fR sitebot/themes/* sitebot/plugins $eggpath/pzs-ng/themes/
   else
     echo "sitebot themes is NOT be copied - please upgrade manually."
   fi
-  if [ ! -e $eggpath/pzs-ng/dZSbot.conf ]; then
-    cp sitebot/dZSbot.conf.dist $eggpath/pzs-ng/dZSbot.conf
+  if [ ! -e $eggpath/pzs-ng/ngBot.conf ]; then
+    if [ -e "$eggpath/pzs-ng/dZSbot.conf" ]; then
+      echo -n "Do you wish to rename dZSbot.conf to ngBot.conf? (Y/n)> "
+      read answer
+      if [ ! "`echo $answer | tr 'A-Z' 'a-z' | cut -c 1-1`" = "n" ]; then
+        mv $eggpath/pzs-ng/dZSbot.conf $eggpath/pzs-ng/ngBot.conf
+      else
+        cp sitebot/ngBot.conf.dist $eggpath/pzs-ng/ngBot.conf
+      fi
+    fi
   fi
 fi
 
@@ -157,7 +165,7 @@ else
 fi
 if [ -e "$eggpath" ]; then
   echo -e "\nMake sure you add the following to your eggdrop.conf:"
-  echo "  source pzs-ng/dZSbot.tcl"
+  echo "  source pzs-ng/ngBot.tcl"
 fi
 echo -e "\n\npzs-ng installed."
 
