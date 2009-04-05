@@ -293,7 +293,7 @@ main(int argc, char **argv)
 			g.v.file.speed = 1;
 
 #if (debug_announce == TRUE)
-		printf("zipscript-c: DEBUG: Speed: %dkb/s (%skb/s)\n",  g.v.file.speed, getenv("SPEED"));
+		printf("zipscript-c: DEBUG: Speed: %.0fkb/s (%skb/s)\n", g.v.file.speed, getenv("SPEED"));
 #endif
 
 		d_log("zipscript-c: Reading section from env (%s)\n", getenv("SECTION"));

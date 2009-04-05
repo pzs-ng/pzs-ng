@@ -92,6 +92,7 @@ v1.2.0  --> 1.2.x :
 		  script is introduced.
 		- Fixed bug #474 - LOGIN variable dummy changed name.
 		- Fixed bug #475 - Missing login.log parse for expired users.
+		- Fixed a bug in avinfo which could make it loop endlessly on bad samples.
 
 v1.1.0 --> 1.1.0a : (r2414)
 		- stats in announces were broken in v1.1.0, ``hotfix''.
