@@ -14,19 +14,24 @@
 #include <openssl/sha.h>
 #include <openssl/hmac.h>
 
+#define FTPD_GLFTPD 0x01
+#define FTPD_CUFTPD 0x02
+
 extern char    *crypt(const char *key, const char *salt);
 
 struct passwd *fgetpwent(FILE *);
 int pbkdf2(const unsigned char *, unsigned int, unsigned int, unsigned char *, unsigned long long);
 int pw_encrypt(const unsigned char *, char *);
 int pw_encrypt_new(const unsigned char *, unsigned char *, char *);
+struct passwd *get_cuftpd_passwd(FILE *);
+struct passwd *get_passwd(FILE *, int);
 
 #define SHA_SALT_LEN 4
 
-#ifndef  __USE_SVID
 struct passwd	pwd;
 
-struct passwd  *
+#ifndef  __USE_SVID
+struct passwd *
 fgetpwent(FILE * fp)
 {
 	char           *data[10], tmp;
@@ -197,31 +202,114 @@ pw_encrypt_new(const unsigned char *pw_pwd, unsigned char *encryp, char *digest)
 	return 0;
 }
 
+struct passwd *
+get_cuftpd_passwd(FILE * fp)
+{
+	char *data, *value, tmp;
+	int  length = 0, varsize = 0, check = 0;
+
+	while (fread(&tmp, 1, 1, fp) > 0) {
+		length++;
+
+		if (varsize < length) {
+			varsize += 20;
+			if (varsize == 20)
+				data = malloc(varsize);
+			else
+				data = realloc(data, varsize);
+		}
+
+		if (tmp == '\n' || tmp == '\r') {
+			data[length-1] = '\0';
+			if (length > 1 && (value = strstr(data, "=")) != NULL) {
+				value[0] = '\0';
+				value++;
+				if (strcasecmp(data, "username") == 0) {
+					pwd.pw_name = malloc(strlen(value));
+					strcpy(pwd.pw_name, value);
+					check |= 0x01;
+				} else if (strcasecmp(data, "password") == 0) {
+					pwd.pw_passwd = malloc(strlen(value));
+					strcpy(pwd.pw_passwd, value);
+					check |= 0x02;
+				}
+				/* printf("data: %s value: %s\n", data, value); */
+			}
+
+			free(data);
+			length = varsize = 0;
+		} else {
+			data[length-1] = tmp;
+		}
+	}
+
+	if (check != 0x03)
+		return NULL;
+
+	return &pwd;
+}
+
+struct passwd *
+get_passwd(FILE * fp, int ftpd)
+{
+	struct passwd *buf;
+
+	if (ftpd == FTPD_CUFTPD) {
+		buf = get_cuftpd_passwd(fp);
+	} else { /* glftpd */
+		buf = fgetpwent(fp);
+	}
+
+	return buf;
+}
+
 int
 main(int argc, char *argv[])
 {
 	FILE           *fp;
 	struct passwd  *buf;
 
+	int            ftpd, filelen, z = 0;
 	char           *crypted;
-	char		salt      [2];
+	char           salt      [2];
+	char           *filename;
 
-	if (argc != 4) {
+	if (strcmp(argv[1], "-c") == 0) {
+		z = 1;
+		ftpd = FTPD_CUFTPD;
+	} else {
+		ftpd = FTPD_GLFTPD;
+	}
+
+	if (argc == 4 && ftpd == FTPD_GLFTPD) {
+		if ((fp = fopen(argv[3], "r")) == NULL) {
+			printf("Ooops, couldn\'t open your passwd file.\n");
+			printf("Looks like you didnt specify a correct path.\n");
+			return 1;
+		}
+	} else if (argc == 5 && ftpd == FTPD_CUFTPD) {
+		filelen = strlen(argv[2])+strlen(argv[4])+2;
+		filename = malloc(filelen);
+		sprintf(filename, "%s/%s", argv[4], argv[2]);
+		filename[filelen-1] = '\0';
+		if ((fp = fopen(filename, "r")) == NULL) {
+			printf("Ooops, couldn\'t open the user file.\n");
+			printf("Looks like you didnt specify a correct user or path.\n");
+			return 1;
+		}
+	} else {
 		printf("Usage: %s <user> <pass> <passwdfile>\n", argv[0]);
+		printf("       %s -c <user> <pass> <userfilepath>\n", argv[0]);
 		return 1;
 	}
-	if ((fp = fopen(argv[3], "r")) == NULL) {
-		printf("Ooops, couldn\'t open your passwd file.\n");
-		printf("Looks like you didnt specify a correct path.\n");
-		return 1;
-	}
-	while ((buf = fgetpwent(fp)) != NULL) {
-		if (strcmp(buf->pw_name, argv[1]))
+
+	while ((buf = get_passwd(fp, ftpd)) != NULL) {
+		if (strcmp(buf->pw_name, argv[z+1]))
 			continue;
 
 		if ((int)strlen(buf->pw_passwd) == 13) {
 			strncpy(salt, buf->pw_passwd, 2);
-			crypted = crypt(argv[2], salt);
+			crypted = crypt(argv[z+2], salt);
 		} else if ((int)strlen(buf->pw_passwd) == SHA_DIGEST_LENGTH * 2) {
 			crypted = malloc(SHA_DIGEST_LENGTH * 2 + 1);
 			if (!crypted) {
@@ -230,7 +318,7 @@ main(int argc, char *argv[])
 					 (SHA_DIGEST_LENGTH * 2 + 1));
 				return 1;
 			}
-			pw_encrypt((unsigned char *)argv[2], crypted);
+			pw_encrypt((unsigned char *)argv[z+2], crypted);
 		} else if ((int)strlen(buf->pw_passwd) == 50) {
 			crypted = malloc(51);
 			if (!crypted) {
@@ -239,7 +327,7 @@ main(int argc, char *argv[])
 					 (SHA_DIGEST_LENGTH * 2 + 1));
 				return 1;
 			}
-			pw_encrypt_new((unsigned char *)argv[2], (unsigned char *)buf->pw_passwd,
+			pw_encrypt_new((unsigned char *)argv[z+2], (unsigned char *)buf->pw_passwd,
 					crypted);
 		} else {
 			printf
