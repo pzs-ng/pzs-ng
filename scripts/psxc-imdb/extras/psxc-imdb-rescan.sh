@@ -17,7 +17,7 @@
 ########
 
 # Version. No need to change
-VERSION=2.3
+VERSION=2.9h
 
 # Path to psxc-imdb.sh. This is relative to GLROOT.
 PSXC_IMDB=/bin/psxc-imdb.sh

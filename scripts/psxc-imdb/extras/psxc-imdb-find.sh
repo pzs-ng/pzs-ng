@@ -33,13 +33,14 @@
 # v2.9  imdb.com changed url-style. Changed script
 #        to match.
 # v2.9b fixed small bug.
+# v2.9h check CHANGELOG
 ##################################################
 
 ########
 # CONFIG
 
 # Version. No need to change.
-VERSION=2.9a
+VERSION=2.9h
 
 # (full) path to psxc-imdb.conf
 PSXC_IMDB_CONF=/glftpd/etc/psxc-imdb.conf

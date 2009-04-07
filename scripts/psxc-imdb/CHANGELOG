@@ -1,7 +1,7 @@
 PSXC-IMDB CHANGELOG:
 --------------------
 - v2.9h - Mar. xxxx, 2009 - a few fixes done by sked:
-			    - psxc-imdb.sh doesn't remove old IMDB banner when spaces
+			    - psxc-imdb.sh doesn't remove old IMDB banner when spaces is
 			      present.
 			    - psxc-symlink-maker.sh: sort_by_title for films starting
 			      with a dot or non-"A-Za-z0-9_\-()"-char.
@@ -13,6 +13,7 @@ PSXC-IMDB CHANGELOG:
 			      in IMDB banner.
 			    - psxc-imdb-rescan: psxc-imdb-rescan -r gives no or faulty
 			      psxcflags.
+			    - psxc-imdb.conf: new variable: TMPRESCANFILE.
 - v2.9g - Oct. 01st, 2008 - another imdb layout change.
 - v2.9f - Sep. 16th, 2008 - imdb changed layout again. Fixed rating and votes bug that
 			     appeared because of it.

@@ -17,7 +17,7 @@
 ############################################################################
 
 # version number. no need to change
-VERSION=2.7d
+VERSION=2.9h
 
 # The location of psxc-imdb.conf. This is the full path.
 IMDB_CONF=/glftpd/etc/psxc-imdb.conf
