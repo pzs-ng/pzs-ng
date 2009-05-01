@@ -209,7 +209,7 @@ let countdot=countdot-0
 
 while [ 1 ]; do
   releasename="$(echo "$releasename" | sed $sedswitch "s/[\.|_][12][0-9][0-9][0-9]$//" | tr -d '\.')"
-  releasename="$(echo "$releasename" | sed $sedswitch "s/dont/don't/g" | sed $sedswitch "s/wont/won't/g" | sed $sedswitch "s/[cant/can't/g" | sed $sedswitch "s/shant/shan't/g" | sed $sedswitch "s/shouldnt/shouldn't/g" | sed $sedswitch "s/wouldnt/wouldn't/g" | sed $sedswitch "s/[m]ustnt/mustn't/g" )"
+  releasename="$(echo "$releasename" | sed $sedswitch "s/dont/don't/g" | sed $sedswitch "s/wont/won't/g" | sed $sedswitch "s/cant/can't/g" | sed $sedswitch "s/shant/shan't/g" | sed $sedswitch "s/shouldnt/shouldn't/g" | sed $sedswitch "s/wouldnt/wouldn't/g" | sed $sedswitch "s/[m]ustnt/mustn't/g" )"
   output="$(wget $wgetflags -o $wgetoutput -O - "http://www.apple.com/trailers/home/scripts/quickfind.php?q=$releasename")"
   outparse="$(echo $output | tr -d '\"' | tr ',' '\n')"
   iserror=$(echo $outparse | grep -i "error:true")
