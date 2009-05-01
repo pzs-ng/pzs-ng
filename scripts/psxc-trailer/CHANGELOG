@@ -10,3 +10,5 @@ v 0.8 - modified the script to handle some new obfuscation in the url-hiding sch
 v 0.9 - added support for downloading all availible trailers of a movie in the
         specified quality.
 v 0.10- better search for movies. Added fix made by oliveroms.
+v 0.11- some regexp improvements. Added support for spaces in dirnames.
+

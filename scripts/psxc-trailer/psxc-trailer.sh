@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# psxc-trailer v0.10.2009.05.01
+# psxc-trailer v0.11.2009.05.01
 ###############################
 #
 # Small script that fetches the qt trailer and image for movies.
@@ -143,7 +143,7 @@ wgetflags='--ignore-length --timeout=10 -U "Internet Explorer"'
   cd $1
 }
 [[ "$(basename "$PWD" | grep -E "$subdirs")" != "" ]] && {
-  cd $(dirname $PWD)
+  cd $(dirname "$PWD")
 }
 founddir=""
 for validdir in $validdirs; do
@@ -185,7 +185,7 @@ while [ 1 ]; do
   whilename="$releasename"
   for word in $removewords; do
     word=$(echo $word | tr 'A-Z' 'a-z')
-    rname="$(echo "$releasename" | tr "\'\_\-\ " "." | sed $sedswitch "s/\.$word\.//")"
+    rname="$(echo "$releasename" | tr "\'\_\ " "." | sed $sedswitch "s/\.$word\././")"
     [[ "$releasename" != "$rname" ]] && {
       releasename=$rname
       ismovie="yes"
@@ -203,14 +203,14 @@ done
 }
 
 echo "Looking up trailer for $(echo $releasename)..."
-orgrelname=$releasename
-countdot=$(echo $releasename | tr -cd '\.\_' | wc -c)
+orgrelname=$(echo $releasename | sed $sedswitch "s/(.*)\.$/\1/")
+countdot=$(echo $releasename | tr -cd '\.' | wc -c)
 let countdot=countdot-0
 
 while [ 1 ]; do
-  releasename="$(echo "$releasename" | sed $sedswitch "s/[\.|_][12][0-9][0-9][0-9]$//" | tr -d '\.')"
-  releasename="$(echo "$releasename" | sed $sedswitch "s/dont/don't/g" | sed $sedswitch "s/wont/won't/g" | sed $sedswitch "s/cant/can't/g" | sed $sedswitch "s/shant/shan't/g" | sed $sedswitch "s/shouldnt/shouldn't/g" | sed $sedswitch "s/wouldnt/wouldn't/g" | sed $sedswitch "s/[m]ustnt/mustn't/g" )"
-  output="$(wget $wgetflags -o $wgetoutput -O - "http://www.apple.com/trailers/home/scripts/quickfind.php?q=$releasename")"
+  releasename="$(echo "$releasename" | sed $sedswitch "s/\.[12][0-9][0-9][0-9]$//" | tr -d '\.')"
+  releasename="$(echo "$releasename" | sed $sedswitch "s/([dw]o|[sc][h]*a|[sw][h]*ould|must|[wh]a[sd]|did|are)(nt)/\1n't/g" )"
+  output="$(wget $wgetflags -o "$wgetoutput" -O - "http://www.apple.com/trailers/home/scripts/quickfind.php?q=$releasename")"
   outparse="$(echo $output | tr -d '\"' | tr ',' '\n')"
   iserror=$(echo $outparse | grep -i "error:true")
   isresult=$(echo $outparse | grep -i "results:\[\]")
@@ -221,24 +221,21 @@ while [ 1 ]; do
   [[ "$isresult" == "" ]] && {
     break
   }
-  [[ $countdot -le $accuracy ]] && {
-    break
-  }
   releasename=$(echo $orgrelname | cut -d '.' -f 1-$countdot)
-  let countdot=countdot-1
-  [[ $countdot -lt 1 ]] && {
+  [[ $countdot -lt $accuracy || $countdot -lt 1 ]] && {
     break
   }
+  let countdot=countdot-1
 done
 [[ "$isresult" != "" ]] && {
   echo "Unable to find movie"
   exit 0
 }
 
-poster="$(echo "$outparse" | grep -i "^poster:" | cut -d ':' -f 2- | tr -d '\\')"
+poster=$(echo "$outparse" | grep -i "^poster:" | cut -d ':' -f 2- | tr -d '\\' | head -n 1)
 location="http://www.apple.com$(echo "$outparse" | grep -i "^location:" | cut -d ':' -f 2- | tr -d '\\' | tr ' ' '\n' | head -n 1)"
 
-output2="$(wget $wgetflags -o $wgetoutput -O - $location)"
+output2="$(wget $wgetflags -o "$wgetoutput" -O - $location)"
 output2parse="$(echo $output2 | tr ' \?' '\n' | grep -v "/images/" | grep -E -i "^href=.*\.mov[\"]*$|^href=.*small[_]?.*\.html[\"]*|^href=.*medium[_]?.*\.html[\"]*|^href=.*large[_]?.*\.html[\"]*|^href=.*low[_]?.*\.html[\"]*|^href=.*high[_]?.*\.html[\"]?.*" | tr -d '\"' | cut -d '=' -f 2-)"
 #echo DEBUG 1: $output2parse
 #echo DEBUG 5: $location
@@ -267,7 +264,7 @@ for quality in $trailerquality; do
   }
   #echo DEBUG 4: $sublink
   [[ "$sublink" != "" ]] && {
-    output3="$(wget $wgetflags -o $wgetoutput -O - $sublink)"
+    output3="$(wget $wgetflags -o "$wgetoutput" -O - $sublink)"
     output3parse="$(echo $output3 | tr -c 'a-zA-Z/:\._0-9\-' '\n' | grep -E -i "$movsearch")"
     urllinks="$(echo "$output3parse" | grep -v "/images/" | grep -i "\.mov$")"
     urllink="$(echo "$urllinks" | head -n 1)"
@@ -288,13 +285,13 @@ done
   wgettemp="$(echo "${PWD}/${wgettemp}" | tr -s '/')"
 }
 [[ "$trailerquality" != "" && "$urllink" != "" ]] && {
-  [[ ! -w $(dirname $wgettemp) ]] && {
-    wgettempperms=$(stat $statswitch $(dirname $wgettemp))
-    [[ ! -w $(dirname $wgettemp) ]] && {
-      echo "ERROR! Cannot save file $wgettemp"
+  [[ ! -w "$(dirname "$wgettemp")" ]] && {
+    wgettempperms=$(stat $statswitch "$(dirname "$wgettemp")")
+    [[ ! -w "$(dirname "$wgettemp")" ]] && {
+      echo "ERROR! Cannot save file \"$wgettemp\""
       exit 1
     }
-    chmod +w $(dirname $wgettemp)
+    chmod +w "$(dirname "$wgettemp")"
   }
   [[ "$downloadall" == "" ]] && {
     urllinks=$urllink
@@ -303,18 +300,18 @@ done
     [[ "$downloadall" != "" ]] && {
       trailername=""
     }
-    wget $wgetflags -o $wgetoutput -O $wgettemp $urllink
+    wget $wgetflags -o "$wgetoutput" -O "$wgettemp" $urllink
     fakelinkname=$(echo $urllink | tr '/' '\n' | grep -i "\.mov$")
-    reallinkname=$(cat $wgettemp | tr -c 'a-zA-Z0-9\-\.\_' '\n' | grep -i "\.mov" | sed "s|[Rr][Mm][Dd][Rr]||" | sed "
+    reallinkname=$(cat "$wgettemp" | tr -c 'a-zA-Z0-9\-\.\_' '\n' | grep -i "\.mov" | sed "s|[Rr][Mm][Dd][Rr]||" | sed "
 s|^0||")
     reallink=$(echo $urllink | sed "s|$fakelinkname|$reallinkname|")
-    rm -f $wgettemp
+    rm -f "$wgettemp"
     [[ "$wgettempperms" != "" ]] && {
-      chmod $wgettempperms $(dirname $wgettemp)
+      chmod $wgettempperms "$(dirname "$wgettemp")"
     }
     [[ "$trailerdir" != "" && "$downloadall" == "" ]] && {
       [[ "$trailername" != "" ]] && {
-        orgtrailername=$trailername
+        orgtrailername="$trailername"
       }
       trailername=$(echo ${orgrelname}.mov | tr -c 'a-zA-Z0-9\-\.\n' '.')
     }
@@ -322,46 +319,49 @@ s|^0||")
       trailername=$(echo $urllink | tr '/' '\n' | grep -i "mov$" | tail -n 1)
     }
     [[ "$orgtrailername" == "" || "$downloadall" != "" ]] && {
-      orgtrailername=$trailername
+      orgtrailername="$trailername"
     }
-    echo "Downloading trailer in $quality quality as $trailername"
+    echo "Downloading trailer ($(echo $reallink | tr -s '/' '\n' | tail -n 1)) in $quality quality as $trailername"
     [[ "$trailerdir" == "" ]]&& {
       trailerdir="${PWD}/"
     }
-    [[ ! -w $trailerdir ]] && {
-      trailerdirperms=$(stat $statswitch $trailerdir)
-      [[ ! -w $trailerdir ]] && {
+    [[ ! -w "$trailerdir" ]] && {
+      trailerdirperms=$(stat $statswitch "$trailerdir")
+      [[ ! -w "$trailerdir" ]] && {
         echo "ERROR! Cannot save file $trailername"
         exit 1
       }
-      chmod +w $trailerdir
+      chmod +w "$trailerdir"
     }
-    wget $wgetflags -o $wgetoutput -O ${trailerdir}${trailername} $reallink
-    [[ ! -s ${trailerdir}${trailername} ]] && {
+    wget $wgetflags -o "$wgetoutput" -O ${trailerdir}${trailername} $reallink
+    [[ ! -s "${trailerdir}${trailername}" ]] && {
       echo "For unknown reasons the script failed to download the trailer"
       echo "Please report this as a bug to the developer (psxc - psxc@psxc.com)"
       echo "Do not forget to include the name of the movie that failed."
-      rm -f ${trailerdir}${trailername}
+      rm -f "${trailerdir}${trailername}"
       exit 1
     }
     [[ "$trailerdirperms" != "" ]] && {
-      chmod $trailerdirperms $trailerdir
+      chmod $trailerdirperms "$trailerdir"
     }
     [[ "$trailerdir" != "" ]] && {
       [[ "$(echo "$orgtrailername" | grep "^/")" == "" ]] && {
         orgtrailername="$(echo "${PWD}/${orgtrailername}" | tr -s '/')"
       }
-      [[ ! -w $(dirname $orgtrailername) ]] && {
-        orgtrailernameperms=$(stat $statswitch $(dirname $orgtrailername))
-        [[ ! -w $(dirname $orgtrailername) ]] && {
-          echo "ERROR! Cannot save file $orgtrailername"
+      [[ ! -w "$(dirname "$orgtrailername")" ]] && {
+        orgtrailernameperms=$(stat $statswitch "$(dirname "$orgtrailername")")
+        [[ ! -w "$(dirname "$orgtrailername")" ]] && {
+          echo "ERROR! Cannot save file \"$orgtrailername\""
           exit 1
         }
-        chmod +w $(dirname $orgtrailername)
+        chmod +w "$(dirname "$orgtrailername")"
       }
-      cp -fp ${trailerdir}${trailername} $orgtrailername
+      [[ "$usebothdirs" != "" && "$trailerdir" != "$(dirname "$orgtrailername")/" ]] && {
+        echo "Copying \"${trailername}\" to \"$(dirname "$orgtrailername")\""
+        cp -fp "${trailerdir}${trailername}" "$orgtrailername"
+      }
       [[ "$orgtrailernameperms" != "" ]] && {
-        chmod $orgtrailernameperms $(dirname $orgtrailername)
+        chmod $orgtrailernameperms "$(dirname "$orgtrailername")"
       }
     }
   done
@@ -371,17 +371,17 @@ s|^0||")
   [[ "$(echo "$imagename" | grep "^/")" == "" ]] && {
     imagename="$(echo "${PWD}/${imagename}" | tr -s '/')"
   }
-  [[ ! -w $(dirname $imagename) ]] && {
-    imagenameperms=$(stat $statswitch $(dirname $imagename))
-    [[ ! -w $(dirname $imagename) ]] && {
-      echo "ERROR! Cannot save file $imagename"
+  [[ ! -w "$(dirname "$imagename")" ]] && {
+    imagenameperms=$(stat $statswitch "$(dirname "$imagename")")
+    [[ ! -w "$(dirname "$imagename")" ]] && {
+      echo "ERROR! Cannot save file \"$imagename\""
       exit 1
     }
-    chmod +w $(dirname $imagename)
+    chmod +w "$(dirname "$imagename")"
   }
-  wget $wgetflags -o $wgetoutput -O $imagename $poster
+  wget $wgetflags -o "$wgetoutput" -O "$imagename" $poster
   [[ "$imagenameperms" != "" ]] && {
-    chmod $imagenameperms $imagename
+    chmod $imagenameperms "$imagename"
   }
 }
 
