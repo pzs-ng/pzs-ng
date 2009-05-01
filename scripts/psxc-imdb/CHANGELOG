@@ -1,6 +1,6 @@
 PSXC-IMDB CHANGELOG:
 --------------------
-- v2.9h - Mar. xxxx, 2009 - a few fixes done by sked:
+- v2.9h - Apr. 07th, 2009 - a few fixes done by sked:
 			    - psxc-imdb.sh doesn't remove old IMDB banner when spaces is
 			      present.
 			    - psxc-symlink-maker.sh: sort_by_title for films starting

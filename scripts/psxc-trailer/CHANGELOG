@@ -9,3 +9,4 @@ v 0.7 - changed 'sedflags' to 'wgetflags' (i must've been high naming that varia
 v 0.8 - modified the script to handle some new obfuscation in the url-hiding scheme.
 v 0.9 - added support for downloading all availible trailers of a movie in the
         specified quality.
+v 0.10- better search for movies. Added fix made by oliveroms.

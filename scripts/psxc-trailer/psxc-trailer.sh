@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# psxc-trailer v0.9.2009.03.19
-##############################
+# psxc-trailer v0.10.2009.05.01
+###############################
 #
 # Small script that fetches the qt trailer and image for movies.
 # Takes one argument (path to releasedir). If no arg is given, it uses
@@ -177,15 +177,15 @@ done
 count=$(echo $PWD | tr -cd '-' | wc -c)
 let count=count+0
 [[ count -ge 1 ]] && {
-  releasename="$(echo "$PWD" | tr '/' '\n' | tail -n 1 | cut -d '-' -f 1-$count | tr 'A-Z' 'a-z')"
+  releasename="$(echo "$PWD" | tr '/' '\n' | tail -n 1 | cut -d '-' -f 1-$count | tr 'A-Z' 'a-z')."
 } || {
-  releasename="$(echo "$PWD" | tr '/' '\n' | tail -n 1 | tr 'A-Z' 'a-z')"
+  releasename="$(echo "$PWD" | tr '/' '\n' | tail -n 1 | tr 'A-Z' 'a-z')."
 }
 while [ 1 ]; do
-  whilename=$releasename
+  whilename="$releasename"
   for word in $removewords; do
     word=$(echo $word | tr 'A-Z' 'a-z')
-    rname="$(echo "$releasename" | sed $sedswitch "s/[\.|_]$word$//")"
+    rname="$(echo "$releasename" | tr "\'\_\-\ " "." | sed $sedswitch "s/\.$word\.//")"
     [[ "$releasename" != "$rname" ]] && {
       releasename=$rname
       ismovie="yes"
@@ -202,13 +202,14 @@ done
   exit 0
 }
 
-echo "Looking up trailer for \"$(echo $releasename | tr '\.' ' ')\"..."
+echo "Looking up trailer for $(echo $releasename)..."
 orgrelname=$releasename
-countdot=$(echo $releasename | tr -cd '\.' | wc -c)
+countdot=$(echo $releasename | tr -cd '\.\_' | wc -c)
 let countdot=countdot-0
 
 while [ 1 ]; do
   releasename="$(echo "$releasename" | sed $sedswitch "s/[\.|_][12][0-9][0-9][0-9]$//" | tr -d '\.')"
+  releasename="$(echo "$releasename" | sed $sedswitch "s/[dw]ont/don't/g" | sed $sedswitch "s/[cs][h]?ant/can't/g" | sed $sedswitch "s/[sw][h]?ouldnt/shouldn't/g" | sed $sedswitch "s/[m]ustnt/mustn't/g" )"
   output="$(wget $wgetflags -o $wgetoutput -O - "http://www.apple.com/trailers/home/scripts/quickfind.php?q=$releasename")"
   outparse="$(echo $output | tr -d '\"' | tr ',' '\n')"
   iserror=$(echo $outparse | grep -i "error:true")
