@@ -345,7 +345,7 @@ namespace eval ::ngBot::plugin::Blow {
 
 		set text [split $text]
 		set len [string length [lindex $text 1]]
-		switch -nocase -- [lindex $text 0] {
+		switch -- [string toupper [lindex $text 0]] {
 			DH1080_INIT {
 				if { ($len > 178) || ($len < 182) } {
 					if {[${ns}::keyx_generate $nick my_key_pub my_key_prv]} {
