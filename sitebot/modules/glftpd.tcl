@@ -111,7 +111,8 @@ namespace eval ::ngBot::module::glftpd {
 				putlog "\[ngBot\] Error :: you did not thoroughly edit the $scriptpath/ngBot.conf file (hint: binary(GLFTPD))."
 				die
 			}
-			set glversion [exec strings $binary(GLFTPD) | grep -i "^glftpd " | cut -f1 -d. | tr A-Z a-z]
+
+			catch {exec strings $binary(GLFTPD) | grep -i "^glftpd " | cut -f1 -d. | tr A-Z a-z} glversion
 
 			if {[string equal "glftpd 1" $glversion]} {
 				putlog "\[ngBot\] Detected $glversion, running in legacy mode."
@@ -873,6 +874,7 @@ namespace eval ::ngBot::module::glftpd {
 	}
 
 	proc cmd_invite {nick host hand argv} {
+		variable ns
 		variable np
 		variable ${np}::theme
 		variable ${np}::binary

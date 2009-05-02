@@ -122,6 +122,7 @@ namespace eval ::ngBot {
 
 		## Logs to parse
 		set logid 0
+		set loglist {}
 		foreach {varname logtype} {glftpdlog 0 loginlog 1 sysoplog 2} {
 			foreach {filename filepath} [array get $varname] {
 				if {![file readable $filepath]} {
@@ -352,7 +353,8 @@ namespace eval ::ngBot {
 		variable ng_timer
 		global errorInfo
 		if {[catch {${ns}::readlog}]} {
-			putlog "\[ngBot\] Error :: Unhandled error, please report to developers:\n$errorInfo"
+			putlog "\[ngBot\] Error :: Unhandled error, please report to developers:"
+			${ns}::cmd_error
 		}
 		set ng_timer [utimer 1 ${ns}::readlogtimer]
 	}
@@ -861,7 +863,7 @@ namespace eval ::ngBot {
 				continue
 			}
 
-			foreach path $paths($section) {
+			foreach path [split $paths($section)] {
 				## Compare the path length of the previous match (best match wins)
 				if {[string match $path $checkpath] && [set pathlen [string length $path]] > $bestmatch} {
 					set mpath $path
