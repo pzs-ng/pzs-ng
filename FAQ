@@ -92,7 +92,7 @@ A: Ignore it. It's good that you follow UPGRADING, but failure on distclean can
 
 Q: (BOT) Any thoughts about an encryption scheme on the bot?
 ------------------------------------------------------------
-A: Already exists. Try http://mircryption.sourceforge.net/
+A: Already exists. Try http://www.donationcoder.com/Software/Mouser/mircryption/
 
 Q: (BOT) What does "Tcl error in script for 'timer#####'" mean?
 ------------------------------------------------------------
@@ -115,7 +115,7 @@ A: glftpd's stats binary probably reports an error. Try to run in from shell:
 Q: (BOT) I get error on !wkup etc. I use a cryptscript.
 -------------------------------------------------------
 A: Change your cryptscript. Currently known working script is mircryption
-   http://mircryption.sourceforge.net
+   http://www.donationcoder.com/Software/Mouser/mircryption/
 
 Q: (ZIPSCRIPT) Error: version GLIBC_2.x.x not defined in file libc.so.6
 -----------------------------------------------------------------------
