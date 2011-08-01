@@ -115,7 +115,7 @@ main(int argc, char *argv[])
         if (chdir(argv[5]) != 0)
         {
             printf("Could not chdir to <cwd = '%s'>, ftpd agnostic mode: %s\n", argv[5], strerror(errno));
-            d_log("Could not chdir to <cwd = '%s'>, ftpd agnostic mode: %s\n", argv[5], strerror(errno));
+            d_log("rescan: Could not chdir to <cwd = '%s'>, ftpd agnostic mode: %s\n", argv[5], strerror(errno));
             return 1;
         }
 #else
@@ -168,12 +168,12 @@ main(int argc, char *argv[])
 			} else if (!fileexists(one_name)) {
 				d_log("PZS-NG Rescan: No file named '%s' exists.\n", one_name);
 				one_name[0] = '\0';
+				not_allowed = 1;
 			}
-			not_allowed = 1;
 			argv_mode = 1;
-		}		
+		}
 		argnum++;
-	} 
+	}
 	if (one_name[0] == '\0') {
 		if (rescan_quick == TRUE) {
 			printf("PZS-NG Rescan %s: Rescanning in QUICK mode.\n", ng_version);
@@ -623,7 +623,7 @@ main(int argc, char *argv[])
 		}
 #if (create_missing_sample_link)
 		if (g.l.sample_incomplete) {
-			if (findfileextsub(dir)) {
+			if (findfileextsub(dir) || matchpartialdirname(missing_sample_check_ignore_list, g.v.misc.release_name, missing_sample_check_ignore_dividers)) {
 				d_log("rescan: Removing missing-sample indicator (if any)\n");
 				remove_sample_indicator(&g);
 			} else if (matchpath(check_for_missing_sample_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {

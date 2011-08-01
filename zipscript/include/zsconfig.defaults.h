@@ -872,7 +872,7 @@
 
 #ifndef incompleteislink
 #define incompleteislink_is_defaulted
-#define incompleteislink                          true
+#define incompleteislink                          TRUE
 #endif
 
 #ifndef lock_optimize
@@ -945,6 +945,11 @@
 #define message_mp3                               "|                                                                    |\n|-=[ I D 3 - T A G ]=---------------.                                |\n|                                    `-----==-------------===--------|\n| Artist : %-57x |\n| Album  : %-57W |\n| Genre  : %-34w Rate  : %3Xkbit/s      |\n| Tracks : %-34f Year  : %-14Y |\n| Encoder: %-34i Preset: %-14I |\n"
 #endif
 
+#ifndef message_store_in_mirror
+#define message_store_in_mirror_is_defaulted
+#define message_store_in_mirror                   FALSE
+#endif
+
 #ifndef message_user_body
 #define message_user_body_is_defaulted
 #define message_user_body                         "| %3n %-29U %7.1mM %4fF %5.1p%% %7.0sKBs |\n"
@@ -988,6 +993,16 @@
 #ifndef min_update_size
 #define min_update_size_is_defaulted
 #define min_update_size                           1
+#endif
+
+#ifndef missing_sample_check_ignore_dividers
+#define missing_sample_check_ignore_dividers_is_defaulted
+#define missing_sample_check_ignore_dividers      "._-"
+#endif
+
+#ifndef missing_sample_check_ignore_list
+#define missing_sample_check_ignore_list_is_defaulted
+#define missing_sample_check_ignore_list          "dirfix,fix,freezefix,fullsubpack,nfofix,proof,rarfix,subfix,subpack,subpck,syncfix"
 #endif
 
 #ifndef mp3_script
@@ -1262,7 +1277,7 @@
 
 #ifndef userellink
 #define userellink_is_defaulted
-#define userellink                                true
+#define userellink                                TRUE
 #endif
 
 #ifndef video_completebar

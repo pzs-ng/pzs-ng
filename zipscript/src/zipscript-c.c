@@ -604,7 +604,7 @@ main(int argc, char **argv)
 		no_check = TRUE;
 	}
 	if (exit_value == 2)
-		d_log("File already marked as bad. Will not process further.\n");
+		d_log("zipscript-c: File already marked as bad. Will not process further.\n");
 	else if (no_check && insampledir(g.l.path) && !matchpath(group_dirs, g.l.path) && !matchpath(nocheck_dirs, g.l.path) && strcomp(video_types, fileext)) {
 		if (!avinfo(g.v.file.name, &g.v.avinfo)) {
 			d_log("zipscript-c: Writing %s announce to %s.\n", sample_announce_type, log);
@@ -1818,7 +1818,8 @@ main(int argc, char **argv)
 					}
 				}
 #if (create_missing_sample_link)
-				if (g.l.sample_incomplete && matchpath(check_for_missing_sample_dirs, g.l.path) && !(findfileextsub(dir))) {
+				d_log("zipscript-c: Checking if we should create a missing sample for %s.\n", g.v.misc.release_name);
+				if (g.l.sample_incomplete && matchpath(check_for_missing_sample_dirs, g.l.path) && !matchpartialdirname(missing_sample_check_ignore_list, g.v.misc.release_name, missing_sample_check_ignore_dividers) && !(findfileextsub(dir))) {
 					if (!g.l.in_cd_dir) {
 						d_log("zipscript-c: Creating missing-sample indicator %s.\n", g.l.sample_incomplete);
 						create_incomplete_sample();

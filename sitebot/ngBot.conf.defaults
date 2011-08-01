@@ -62,6 +62,9 @@ set die_on_error        "FALSE"
 # they will be able to easily harvest usernames/passwords. CONSIDER WITH CAUTION!
 set enable_irc_invite   "TRUE"
 
+# If IRC invite is enabled, allow deleted users to invite themselves to the channel through IRC.
+set enable_irc_invite_deleted_users   "FALSE"
+
 # Are you using glftpd2? Default setting ("AUTO") should be safe,
 # enables autodetection (if binary(GLFTPD) is set correctly)
 # To override autodetection (or if it just doesn't work), you can set

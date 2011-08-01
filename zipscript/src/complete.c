@@ -27,7 +27,9 @@ complete(GLOBAL *g, int completetype)
 	int		cnt       , pos;
 	char           *user_p, *group_p;
 	FILE           *msgfile;
-
+#if message_store_in_mirror
+	char		message_mirror_name[PATH_MAX];
+#endif
 	move_progress_bar(1, &g->v, g->ui, g->gi);
 	unlink(g->l.incomplete);
 
@@ -38,7 +40,11 @@ complete(GLOBAL *g, int completetype)
 		d_log("complete: No message file is written. 'message_file_name' not set.\n");
 	else {
 		d_log("complete: Writing %s file ...\n", message_file_name);
-
+#if message_store_in_mirror
+		sprintf(message_mirror_name, storage "/%s/%s", g->l.path, message_file_name);
+		if (symlink(message_mirror_name, message_file_name) != 0)
+			d_log("complete: Couldn't create symlink %s in %s: %s\n", message_file_name, strerror(errno));
+#endif
 		if (!(msgfile = fopen(message_file_name, "w"))) {
 			d_log("complete: Couldn't fopen %s: %s\n", message_file_name, strerror(errno));
 			exit(EXIT_FAILURE);

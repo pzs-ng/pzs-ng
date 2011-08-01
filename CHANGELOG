@@ -68,8 +68,17 @@ v1.2.0  --> 1.2.x :
 		- Added names to some values instf 0,1,2.
 		- movies.apple.com changed - psxc-trailer script updated.
 		- fixed a rare segfault issue if getwd() failed.
+		- --- 2011 ---
+		- fixed bug for rescanning single files
+		- fixed incorrect default values for incompleteislink and userellink
+		- added option to store .message-files in pzs-ng storage and symlink to there
+		- added ignorelist for dirs which should not have a sample-dir
+		- fixed bug where deleted users could still invite themselves via irc_invite
+		- updated TVRage script
+		- Fixed bug #503 - segfault in zsfunctions.c findfileextsub and findfileextsubp
+		  partial fix for findfileextsub done by pute
 
-		v1.1.0a --> 1.2.0 :
+v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
 		- fix in tv-rage tcl to compensate for layout changes.
 		- fixed small bug in postdel that prevented it from removing progressbars in

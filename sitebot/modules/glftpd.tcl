@@ -881,7 +881,7 @@ namespace eval ::ngBot::module::glftpd {
 		variable ${np}::disable
 		variable ${np}::location
 		variable ${np}::announce
-		variable ${np}::invite_channels
+		variable ${np}::enable_irc_invite_deleted_users
 
 		set argv [split $argv]
 		if {[llength $argv] > 1} {
@@ -905,7 +905,11 @@ namespace eval ::ngBot::module::glftpd {
 				} else {
 					putlog "\[ngBot\] Error :: Unable to open user file for \"$user\" ($error)."
 				}
-				${ns}::inviteuser $nick $user $group $flags
+				if {![string match "*6*" "$flags"] || [istrue $enable_irc_invite_deleted_users]} {
+					${ns}::inviteuser $nick $user $group $flags
+				} else {
+					set output "$theme(PREFIX)$announce(BADMSGINVITE)"
+				}
 			} else {
 				set output "$theme(PREFIX)$announce(BADMSGINVITE)"
 			}

@@ -1077,11 +1077,11 @@ incomplete_sfv_indicator <STRING>
 	This variable defines indicators on missing sfv in normal releases.
 	Default: "../(no-sfv)-%0"
 
-incompleteislink <true|false>
+incompleteislink <TRUE|FALSE>
 	While a release is incomplete, a link will be created pointing to
 	the releasedir. You can define if it will be a file (FALSE) or
 	a symbolic link (TRUE).
-	Default: true
+	Default: TRUE
 
 lock_optimize <NUMBER>
 	This option is meant to minimize impact the runtime of the locking.
@@ -1157,6 +1157,11 @@ message_mp3 <STRING|DISABLED>
 	Define here a special complete_message for mp3-releases.
 	Default: "|                                                                    |\n|-=[ I D 3 - T A G ]=---------------.                                |\n|                                    `-----==-------------===--------|\n| Artist : %-57x |\n| Album  : %-57W |\n| Genre  : %-34w Rate  : %3Xkbit/s      |\n| Tracks : %-34f Year  : %-14Y |\n| Encoder: %-34i Preset: %-14I |\n"
 
+message_store_in_mirror <TRUE|FALSE>
+        Enable this to have the message_file_name stored in the mirror location where the racedata is stored, defined by "storage".
+        A symlink is made in the releasedir pointing to the real message_file_name, with the same name.
+        Default: FALSE
+
 message_user_body <STRING|DISABLED>
 	Define here the body of the list of racers (users).
 	Default: "| %3n %-29U %7.1mM %4fF %5.1p%% %7.0sKBs |\n"
@@ -1198,6 +1203,27 @@ min_update_size <NUMBER>
 	Define here the minimum estimated total size (in MB) of RELEASE to
 	announce an update message.
 	Default: 1
+
+missing_sample_check_ignore_dividers <STRING>
+	List of characters that can be around the strings listed in
+	missing_sample_check_ignore_list. Leave this empty if you want to
+	match parts of dirnames without them being surrounded.
+	This list is casesensitive.
+	Example: With "proof" in missing_sample_check_ignore_list,
+	Proof.Of.Concept-GRP would only be matched if
+	missing_sample_check_ignore_dividers is empty.
+	Default: "._-"
+
+missing_sample_check_ignore_list <STRING>
+	If a dirname under the paths listed in check_for_missing_sample_dirs
+	has any of the strings in this list, then a sample is not required
+	and no incomplete_sample_indicator is created.
+	Every string is checked to be surrounded by the chars in
+	missing_sample_check_ignore_dividers. This implies that the first and
+	last character of a dirname are never checked as part of a listed
+	string, unless missing_sample_check_ignore_dividers is empty.
+	Separate strings with a comma character. List is not casesensitive.
+	Default: "dirfix,fix,freezefix,fullsubpack,nfofix,proof,rarfix,subfix,subpack,subpck,syncfix"
 
 mp3_script <PATH>
 	Put here the path to the external script which should be run after
@@ -1541,10 +1567,10 @@ use_partial_on_noforce <TRUE|FALSE>
 	number of possible wrong hits.
 	Default: FALSE
 
-userellink <false|true>
+userellink <TRUE|FALSE>
 	With symbolic links you have an option of it being absolute (FALSE) or
 	relative (TRUE).
-	Default: true
+	Default: TRUE
 
 video_completebar <STRING|DISABLED>
 	When a release is complete, a 'complete bar' will be created. Define

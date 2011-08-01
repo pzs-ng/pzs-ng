@@ -413,6 +413,8 @@ main(int argc, char **argv)
 
 		if (g.l.nfo_incomplete)
 			unlink(g.l.nfo_incomplete);
+		if (g.l.sample_incomplete)
+			unlink(g.l.sample_incomplete);
 		if (g.l.incomplete)
 			unlink(g.l.incomplete);
 		d_log("postdel: removing progressbar, if any\n");
@@ -446,8 +448,8 @@ main(int argc, char **argv)
 			d_log("postdel: Caching progress bar\n");
 			buffer_progress_bar(&g.v);
 		}
-d_log("g.v.total.files_missing=%d\n", g.v.total.files_missing);
-d_log("g.v.total.files=%d\n", g.v.total.files);
+
+		d_log("postdel: g.v.total.files_missing=%d, g.v.total.files=%d\n", g.v.total.files_missing, g.v.total.files);
 		if (g.v.total.files_missing < g.v.total.files) {
 			if (g.v.total.files_missing == 1) {
 				d_log("postdel: Writing INCOMPLETE to %s\n", log);
@@ -561,21 +563,21 @@ d_log("g.v.total.files=%d\n", g.v.total.files);
 		}
 #if (create_missing_sample_link)
 		if (g.l.sample_incomplete) {
-			if (findfileextsub(dir)) {
-				d_log("rescan: Removing missing-sample indicator (if any)\n");
+			if (findfileextsub(dir) || matchpartialdirname(missing_sample_check_ignore_list, g.v.misc.release_name, missing_sample_check_ignore_dividers)) {
+				d_log("postdel: Removing missing-sample indicator (if any)\n");
 				remove_sample_indicator(&g);
 			} else if (matchpath(check_for_missing_sample_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
 				if (!g.l.in_cd_dir) {
-					d_log("rescan: Creating missing-sample indicator %s.\n", g.l.sample_incomplete);
+					d_log("postdel: Creating missing-sample indicator %s.\n", g.l.sample_incomplete);
 					if (create_incomplete_sample()) {
 						d_log("postdel: Warning: create_incomplete_sample() returned something.\n");
 					}
 				} else {
 					if (findfileextsubp(dir)) {
-						d_log("rescan: Removing missing-sample indicator (if any)\n");
+						d_log("postdel: Removing missing-sample indicator (if any)\n");
 						remove_sample_indicator(&g);
 					} else {
-						d_log("rescan: Creating missing-sample indicator (base) %s.\n", g.l.sample_incomplete);
+						d_log("postdel: Creating missing-sample indicator (base) %s.\n", g.l.sample_incomplete);
 
 						/* This is not pretty, but should be functional. */
 						if ((inc_point[0] = find_last_of(g.l.path, "/")) != g.l.path)
@@ -618,14 +620,15 @@ d_log("g.v.total.files=%d\n", g.v.total.files);
 
 	remove_lock(&g.v);
 
-	d_log("postdel: Exit 0\n");
-
 	if (empty_dir) {
-		d_log("zipscript-c: Removing missing-sfv indicator (if any)\n");
+		d_log("postdel: Removing missing-sfv indicator (if any)\n");
 		unlink(g.l.sfv_incomplete);
 		if (fileexists(".debug") && remove_dot_debug_on_delete)
 			unlink(".debug");
 	}
+
+	d_log("postdel: Exit 0\n");
+
 	return 0;
 }
 

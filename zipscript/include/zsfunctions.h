@@ -120,6 +120,7 @@ extern void	removedotfiles(DIR *);
 extern void	removecomplete(void);
 extern short	matchpath(char *, char *);
 extern short	matchpartialpath(char *, char *);
+extern short	matchpartialdirname(char *, char *, char *);
 extern short	strcomp(char *, char *);
 extern short	subcomp(char *, char *);
 extern short	fileexists(char *);

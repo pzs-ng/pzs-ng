@@ -485,7 +485,7 @@ showusers(int n, int mode, char *ucomp, char raw)
 				/*
 				 * Maskeduser / Username / GroupName / Status
 				 * / TagLine / Online / Filename / Part
-				 * up/down-loaded / Current dir
+				 * up/down-loaded / Current dir / PID
 				 */
 				printf("\"USER\" \"%1c\" \"%s\" \"%s\" %s \"%s\" \"%s\" \"%s\" \"%.1f%s\" \"%s\" \"%d\"\n", maskchar, user[x].username, get_g_name(user[x].groupid), status, user[x].tagline, online, filename, (pct >= 0 ? pct : mb_xfered), (pct >= 0 ? "%" : "MB"), user[x].currentdir, user[x].procid);
 			} else if (showall || (!noshow && !mask && !(maskchar == '*'))) {
@@ -498,7 +498,6 @@ showusers(int n, int mode, char *ucomp, char raw)
 			if ((!noshow && !mask && !(maskchar == '*')) || chidden) {
 				onlineusers++;
 			}
-//		} else if (!strcasecmp(ucomp, user[x].username)) {
 		} else if (user[x].username && !strcmp(ucomp, user[x].username)) {
 #ifdef _WITH_ALTWHO
 			if (!raw && (showall || (!noshow && !mask && !(maskchar == '*')))) {

@@ -619,6 +619,9 @@ printf("#define message_header                            %s\n", (message_header
 #ifndef message_mp3_is_defaulted
 printf("#define message_mp3                               %s\n", (message_mp3 == DISABLED ? "DISABLED" : stringify(message_mp3)));
 #endif
+#ifndef message_store_in_mirror_is_defaulted
+printf("#define message_store_in_mirror                   %s\n", (message_store_in_mirror == FALSE ? "FALSE" : "TRUE"));
+#endif
 #ifndef message_user_body_is_defaulted
 printf("#define message_user_body                         %s\n", (message_user_body == DISABLED ? "DISABLED" : stringify(message_user_body)));
 #endif
@@ -645,6 +648,12 @@ printf("#define min_update_files                          %s\n", stringify(min_u
 #endif
 #ifndef min_update_size_is_defaulted
 printf("#define min_update_size                           %s\n", stringify(min_update_size));
+#endif
+#ifndef missing_sample_check_ignore_dividers_is_defaulted
+printf("#define missing_sample_check_ignore_dividers      %s\n", stringify(missing_sample_check_ignore_dividers));
+#endif
+#ifndef missing_sample_check_ignore_list_is_defaulted
+printf("#define missing_sample_check_ignore_list          %s\n", stringify(missing_sample_check_ignore_list));
 #endif
 #ifndef mp3_script_is_defaulted
 printf("#define mp3_script                                %s\n", stringify(mp3_script));
@@ -1079,6 +1088,7 @@ printf("#define message_group_footer                      %s\n", (message_group_
 printf("#define message_group_header                      %s\n", (message_group_header == DISABLED ? "DISABLED" : stringify(message_group_header)));
 printf("#define message_header                            %s\n", (message_header == DISABLED ? "DISABLED" : stringify(message_header)));
 printf("#define message_mp3                               %s\n", (message_mp3 == DISABLED ? "DISABLED" : stringify(message_mp3)));
+printf("#define message_store_in_mirror                   %s\n", (message_store_in_mirror == FALSE ? "FALSE" : "TRUE"));
 printf("#define message_user_body                         %s\n", (message_user_body == DISABLED ? "DISABLED" : stringify(message_user_body)));
 printf("#define message_user_footer                       %s\n", (message_user_footer == DISABLED ? "DISABLED" : stringify(message_user_footer)));
 printf("#define message_user_header                       %s\n", (message_user_header == DISABLED ? "DISABLED" : stringify(message_user_header)));
@@ -1088,6 +1098,8 @@ printf("#define min_newleader_files                       %s\n", stringify(min_n
 printf("#define min_newleader_size                        %s\n", stringify(min_newleader_size));
 printf("#define min_update_files                          %s\n", stringify(min_update_files));
 printf("#define min_update_size                           %s\n", stringify(min_update_size));
+printf("#define missing_sample_check_ignore_dividers      %s\n", stringify(missing_sample_check_ignore_dividers));
+printf("#define missing_sample_check_ignore_list          %s\n", stringify(missing_sample_check_ignore_list));
 printf("#define mp3_script                                %s\n", stringify(mp3_script));
 printf("#define mp3_script_cookies                        %s\n", stringify(mp3_script_cookies));
 printf("#define newleader_files_ahead                     %s\n", stringify(newleader_files_ahead));

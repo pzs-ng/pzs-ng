@@ -260,7 +260,7 @@ main(int argc, char *argv[])
 				f_gid = fileinfo.st_gid;
 
 				if ((timenow == fileinfo.st_ctime) && (fileinfo.st_mode & 0111)) {
-					d_log("rescan.c: Seems this file (%s) is in the process of being uploaded. Ignoring for now.\n", dp->d_name);
+					d_log("ng-post_unnuke: Seems this file (%s) is in the process of being uploaded. Ignoring for now.\n", dp->d_name);
 					continue;
 				}
 
@@ -542,22 +542,22 @@ main(int argc, char *argv[])
 		}
 #if (create_missing_sample_link)
 		if (g.l.sample_incomplete) {
-			if (findfileextsub(dir)) {
-				d_log("rescan: Removing missing-sample indicator (if any)\n");
+			if (findfileextsub(dir) || matchpartialdirname(missing_sample_check_ignore_list, g.v.misc.release_name, missing_sample_check_ignore_dividers)) {
+				d_log("ng-post_unnuke: Removing missing-sample indicator (if any)\n");
 				remove_sample_indicator(&g);
 			} else if (matchpath(check_for_missing_sample_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
 				if (!g.l.in_cd_dir) {
-					d_log("rescan: Creating missing-sample indicator %s.\n", g.l.sample_incomplete);
+					d_log("ng-post_unnuke: Creating missing-sample indicator %s.\n", g.l.sample_incomplete);
 					if (create_incomplete_sample()) {
 						d_log("ng-post_unnuke: WARNING: create_incomplete_sample() returned a value\n");
 					}
 
 				} else {
 					if (findfileextsubp(dir)) {
-						d_log("rescan: Removing missing-sample indicator (if any)\n");
+						d_log("ng-post_unnuke: Removing missing-sample indicator (if any)\n");
 						remove_sample_indicator(&g);
 					} else {
-						d_log("rescan: Creating missing-sample indicator (base) %s.\n", g.l.sample_incomplete);
+						d_log("ng-post_unnuke: Creating missing-sample indicator (base) %s.\n", g.l.sample_incomplete);
 
 						/* This is not pretty, but should be functional. */
 						if ((inc_point[0] = find_last_of(g.l.path, "/")) != g.l.path)
@@ -611,7 +611,7 @@ main(int argc, char *argv[])
 #if (chmod_completebar)
 				if (!matchpath(group_dirs, g.l.path)) {
                                         if (chmod(convert(&g.v, g.ui, g.gi, complete_bar), 0222))
-                                                d_log("rescan: Failed to chmod a statusbar: %s\n", strerror(errno));
+                                                d_log("ng-post_unnuke: Failed to chmod a statusbar: %s\n", strerror(errno));
 				}
 #endif
 			}

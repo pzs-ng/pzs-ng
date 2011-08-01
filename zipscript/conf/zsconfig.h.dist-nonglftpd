@@ -30,7 +30,7 @@
 #define debug_altlog                 TRUE
 
 #define status_bar_type              BAR_DIR
-#define incompleteislink             true
+#define incompleteislink             TRUE
 
 #define ignored_types                ",diz,debug,message,imdb,html,url,m3u,metadata"
 

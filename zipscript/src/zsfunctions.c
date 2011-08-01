@@ -103,7 +103,7 @@ findfileext(DIR *dir, char *fileext)
 	int			k;
 	static struct dirent	*dp;
 
-        errno = 0;
+	errno = 0;
 	rewinddir(dir);
 	while ((dp = readdir(dir))) {
 		if ((k = NAMLEN(dp)) < 4)
@@ -113,8 +113,8 @@ findfileext(DIR *dir, char *fileext)
 		}
 	}
 
-        if (errno)
-            d_log("zsfunctions.c: findfileext() - readdir(dir) returned an error: %s\n", strerror(errno));
+	if (errno)
+		d_log("zsfunctions.c: findfileext() - readdir(dir) returned an error: %s\n", strerror(errno));
 
 	return NULL;
 }
@@ -129,7 +129,7 @@ findfileextsub(DIR *dir)
 	static struct dirent	*dp, *dp2;
 
         errno = 0;
-        
+
 	if (getcwd(cwd, sizeof(cwd)) == NULL) {
 		d_log("zsfunctions.c: findfileextsub() - Error getting path: %s\n", strerror(errno));
 		return NULL;
@@ -144,8 +144,8 @@ findfileextsub(DIR *dir)
 			struct stat attribut;
 			strcpy(cwd2,cwd);
 			strcat(cwd2,"/");
-			strcat(cwd2,dp->d_name);	  
-			if (stat(cwd2, &attribut) == -1) 
+			strcat(cwd2,dp->d_name);
+			if (stat(cwd2, &attribut) == -1)
 				d_log("zsfunctions.c: findfileextsub() - Error getting path\n");
 			if (strcomp(sample_list, dp->d_name)) {
 				if (S_ISDIR(attribut.st_mode)) {
@@ -170,7 +170,7 @@ findfileextsub(DIR *dir)
 			return dp->d_name;
 	}
 	closedir(dir2);
-	
+
 	if (errno)
 		d_log("zsfunctions.c: findfileextsub() - closedir(dir) returned an error: %s\n", strerror(errno));
 
@@ -187,37 +187,44 @@ findfileextsubp(DIR *dir)
 	static struct dirent	*dp, *dp2;
 
 	errno = 0;
-	if (getcwd(cwd, sizeof(cwd)) == NULL)
-		d_log("findfileextsubp: Error getting path: %s\n", strerror(errno));
+
+	if (getcwd(cwd, sizeof(cwd)) == NULL) {
+		d_log("zsfunctions.c: findfileextsubp() - Error getting path: %s\n", strerror(errno));
+		return NULL;
+	}
+
 	pch=strrchr(cwd,47);
 	strncpy(cwd2,cwd,pch-cwd);
 	cwd2[pch-cwd]='\0';
 
 	rewinddir(dir);
 
-	if((dir2=opendir(cwd2)) == NULL)
+	if((dir2=opendir(cwd)) == NULL) {
 		d_log("zsfunctions.c: findfileextsubp() - Error getting path: %s\n", strerror(errno));
-  
+		return NULL;
+	}
 	while ((dp = readdir(dir2))) {
 		if (strcmp(dp->d_name,".") && strcmp(dp->d_name,".."))  {
 			struct stat attribut;
 			strcpy(cwd3,cwd2);
 			strcat(cwd3,"/");
-			strcat(cwd3,dp->d_name);	  
-			if (stat(cwd3, &attribut) == -1) 
+			strcat(cwd3,dp->d_name);
+			if (stat(cwd3, &attribut) == -1)
 				d_log("zsfunctions.c: findfileextsubp() - Error getting path\n");
 			if (strcomp(sample_list, dp->d_name)) {
 				if (S_ISDIR(attribut.st_mode)) {
 					if ((dir3 = opendir(cwd3)) == NULL)
 						d_log("zsfunctions.c: findfileextsubp() - Error getting path\n");
-					rewinddir(dir3);
-					while ((dp2 = readdir(dir3))) {
-						if ((k = NAMLEN(dp2)) < 4)
-							continue;
-						if (strcomp(video_types, dp2->d_name + k - 3))
-							return dp2->d_name;
+					else {
+						rewinddir(dir3);
+						while ((dp2 = readdir(dir3))) {
+							if ((k = NAMLEN(dp2)) < 4)
+								continue;
+							if (strcomp(video_types, dp2->d_name + k - 3))
+								return dp2->d_name;
+						}
+						closedir(dir3);
 					}
-					closedir(dir3);
 				}
 			}
 		}
@@ -227,9 +234,9 @@ findfileextsubp(DIR *dir)
 			return dp->d_name;
 	}
 	closedir(dir2);
-	
+
 	if (errno)
-            d_log("zsfunctions.c: findfileextsubp() - readdir(dir) returned an error: %s\n", strerror(errno));
+		d_log("zsfunctions.c: findfileextsubp() - readdir(dir) returned an error: %s\n", strerror(errno));
 
 	return NULL;
 }
@@ -317,7 +324,7 @@ file_count(DIR *dir)
 	int		c = 0;
 	struct dirent	*dp;
 	char		*fp;
-	
+
 	rewinddir(dir);
 	while ((dp = readdir(dir))) {
 		fp = dp->d_name + NAMLEN(dp) - 4;
@@ -573,7 +580,7 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 					regfree(&preg);
 					return;
 				}
-	
+
 				if (raceI->misc.release_type == RTYPE_AUDIO)
 					bar = convert(raceI, userI, groupI, progressmeter_mp3);
 				else
@@ -684,7 +691,8 @@ check_nocase_linkname(char *dirname, char *linkname)
 }
 
 /*
- * Modified: 01.16.2002
+ * Modified: 2011.07.07 (YYYY.MM.DD)
+ *  by Sked
  */
 void 
 removecomplete()
@@ -697,10 +705,19 @@ removecomplete()
 	DIR		*dir;
 	struct dirent	*dp;
 
-#ifdef message_file_name
-		unlink(message_file_name);
-#endif
-	
+        struct stat     fileinfo;
+        char            deref_link[PATH_MAX];
+        ssize_t         len;
+
+        if (message_file_name != DISABLED && !message_file_name && lstat(message_file_name, &fileinfo) != -1) {
+                if (S_ISLNK(fileinfo.st_mode) && stat(message_file_name, &fileinfo) != -1 && (len = readlink(message_file_name, deref_link, sizeof(deref_link)-1)) != -1) {
+                        d_log("removecomplete: message_file_name is a symlink: %s points to %s\n", message_file_name, deref_link);
+                        deref_link[len] = '\0';
+                        unlink(deref_link);
+                }
+                unlink(message_file_name);
+        }
+
 	mydelbar = convert_sitename(del_completebar);
 	d_log("removecomplete: del_completebar: %s\n", mydelbar);
 	regret = regcomp(&preg, mydelbar, REG_NEWLINE | REG_EXTENDED);
@@ -760,7 +777,8 @@ matchpath(char *instr, char *path)
 }
 
 /*
- * Modified: 01.16.2002
+ * Modified: 2011.08.02 (YYYY.MM.DD)
+ * by Sked
  */
 short int 
 strcomp(char *instr, char *searchstr)
@@ -776,17 +794,12 @@ strcomp(char *instr, char *searchstr)
 		switch (*instr) {
 		case 0:
 		case ',':
+		case ' ':
 			if (k == pos && !strncasecmp(instr - pos, searchstr, pos)) {
 				return 1;
 			}
 			pos = 0;
 			break;
-	  case ' ':
-	    if (k == pos && !strncasecmp(instr - pos, searchstr, pos)) {
-	      return 1;
-	    }
-	    pos = 0;
-	    break;
 		default:
 			pos++;
 			break;
@@ -823,6 +836,66 @@ matchpartialpath(char *instr, char *path)
 	return 0;
 }
 
+/*
+ * Given a comma-seperated list of strings (arg1),
+ * check if any is a part of a given string (arg2)
+ * when surrounded by any chars of a given string.
+ * Modified: 2011.07.13 (YYYY.MM.DD)
+ * by Sked
+ */
+short int 
+matchpartialdirname(char *parts, char *dirname, char *dividers)
+{
+	int	pos = 0;
+	int	i, k, l, hit;
+
+	k = (int)strlen(dirname);
+	l = (int)strlen(dividers);
+
+	if ( (int)strlen(parts) == 0 || k == 0 )
+		return 0;
+
+	d_log("matchpartialdirname: parts: %s.\n", parts);
+	d_log("matchpartialdirname: dirname: %s.\n", dirname);
+	d_log("matchpartialdirname: dividers: %s.\n", dividers);
+
+	do {
+		switch (*parts) {
+		case 0:
+		case ',':
+			d_log("matchpartialdirname: comparing first string of: %s.\n", parts - pos);
+			do {
+				hit = 0;
+				i = 0;
+				while (i<l && !hit) {
+					if (dirname[0] && dividers[i] == dirname[0]) {
+						hit = 1;
+					}
+					++i;
+				}
+				if (!l || hit) {
+					d_log("matchpartialdirname: At divider, hit=%d, comparing to part of dirname: %s.\n", hit, dirname + hit);
+					if (dirname[hit] && !strncasecmp(parts - pos, dirname + hit, pos)) {
+						d_log("matchpartialdirname: We have a hit, checking ending divider with char: %c.\n", dirname[pos + 1]);
+						if (!l) return 1;
+						for (i=0;i<l;++i) {
+							if (dirname[pos + 1] && dividers[i] == dirname[pos + 1]) {
+								return 1;
+							}
+						}
+					}
+				}
+			} while (*dirname++);
+			pos = 0;
+			dirname -= (k + 1);
+			break;
+		default:
+			++pos;
+			break;
+		}
+	} while (*parts++);
+	return 0;
+}
 
 /* check for matching subpath
    psxc - 2004-12-18
@@ -968,7 +1041,7 @@ readsfv_ffile(struct VARS *raceI)
 	int		fd, line_start = 0, index_start,
 			ext_start, n;
 	char		*buf = NULL, *fname;
-	
+
 	DIR		*dir;
 
 	fd = open(raceI->file.name, O_RDONLY);
@@ -1268,10 +1341,10 @@ sfv_compare_size(char *fileext, unsigned long fsize)
 			continue;
 		}
 	}
-	
+
 	if (!(l = l - fsize) > 0)
 		l = 0;
-	
+
 	closedir(dir);
 
 	return l;
@@ -1410,7 +1483,7 @@ getrelname(GLOBAL *g)
 	buffer_paths(g, path, &k, ((int)strlen(g->l.path)-1));
 
 	subc = subcomp(path[1], g->l.basepath);
-	
+
 	d_log("getrelname():\tsubc:\t\t%d\n", subc);
 	d_log("\t\t\tpath[0]:\t%s\n", path[0]);
 	d_log("\t\t\tpath[1]:\t%s\n", path[1]);
@@ -1459,7 +1532,7 @@ getrelname(GLOBAL *g)
 		}
 		g->l.in_cd_dir = 0;
 	}
-	
+
 	d_log("\t\t\tlink_source:\t%s\n", g->l.link_source);
 	d_log("\t\t\tlink_target:\t%s\n", g->l.link_target);
 	d_log("\t\t\tg->l.incomplete:\t%s\n", g->l.incomplete);

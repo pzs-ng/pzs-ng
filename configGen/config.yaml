@@ -305,6 +305,31 @@ options:
             Separate dirs with a space character.
         default: '"/site/incoming/movies/"'
 
+    missing_sample_check_ignore_dividers:
+        type: string
+        comment: |-
+            List of characters that can be around the strings listed in
+            missing_sample_check_ignore_list. Leave this empty if you want to
+            match parts of dirnames without them being surrounded.
+            This list is casesensitive.
+            Example: With "proof" in missing_sample_check_ignore_list,
+            Proof.Of.Concept-GRP would only be matched if
+            missing_sample_check_ignore_dividers is empty.
+        default: '"._-"'
+
+    missing_sample_check_ignore_list:
+        type: string
+        comment: |-
+            If a dirname under the paths listed in check_for_missing_sample_dirs
+            has any of the strings in this list, then a sample is not required
+            and no incomplete_sample_indicator is created.
+            Every string is checked to be surrounded by the chars in
+            missing_sample_check_ignore_dividers. This implies that the first and
+            last character of a dirname are never checked as part of a listed
+            string, unless missing_sample_check_ignore_dividers is empty.
+            Separate strings with a comma character. List is not casesensitive.
+        default: '"dirfix,fix,freezefix,fullsubpack,nfofix,proof,rarfix,subfix,subpack,subpck,syncfix"'
+
     create_missing_sample_link:
         type: boolean
         comment: |-
@@ -1077,6 +1102,13 @@ options:
         comment: |-
             Should a file be created in the releasedir, containing race-info etc?
         default: true
+
+    message_store_in_mirror:
+        type: boolean
+        comment: |-
+            Enable this to have the message_file_name stored in the mirror location where the racedata is stored, defined by "storage".
+            A symlink is made in the releasedir pointing to the real message_file_name, with the same name.
+        default: false
 
     message_file_name:
         type: string
