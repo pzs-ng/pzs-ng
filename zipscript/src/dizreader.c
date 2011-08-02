@@ -8,9 +8,10 @@
 #include "dizreader.h"
 
 /*
- * ? = any char & = character is not (&/ = character is not /) # = total disk
- * count ! = chars 0-9, o & x
- * 
+ * ? = any char; & = character is not ... (ie &/ = character is not /)
+ * # = total disk count; ! = chars 0-9, o & x
+ * &! = character is not 0-9, o or x
+ *
  * !!! USE LOWERCASE !!!
  */
 char	*search[] = {
@@ -19,13 +20,14 @@ char	*search[] = {
 		"[?!!/###]",
 		"(?!!/###)",
 		"[?/#]",
+		"[?/##]",
 		"(?/#)",
 		"[disk:!!/##]",
 		"[disk:?!/##]",
 		"o?/o#",
 		"disks[!!/##",
 		" !/# ",
-		" !!/##&/",
+		" !!/##&/&!",
 		"&/!!/## ",
 		"[!!/#]",
 		": ?!/##&/",
@@ -40,7 +42,7 @@ char	*search[] = {
 		"?! of ##",
 		"xx of ##"};
 
-int		strings = 24;
+int		strings = 25;
 
 /* REMOVE SPACES FROM STRING */
 void 
@@ -100,7 +102,7 @@ read_diz(void)
 						break;
 					case '&':
 						control++;
-						if (data[cnt + cnt3] != search[cnt2][cnt3 + control])
+						if (!(search[cnt2][cnt3 + control] == '!' && (isdigit(data[cnt + cnt3]) || data[cnt + cnt3] == 'o' || data[cnt + cnt3] == 'x')) && data[cnt + cnt3] != search[cnt2][cnt3 + control])
 							matches++;
 						break;
 					default:

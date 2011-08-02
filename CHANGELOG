@@ -77,6 +77,8 @@ v1.2.0  --> 1.2.x :
 		- updated TVRage script
 		- Fixed bug #503 - segfault in zsfunctions.c findfileextsub and findfileextsubp
 		  partial fix for findfileextsub done by pute
+		- Fixed bug #512 - several rescan fixes regarding zips
+		- Fixed bug #511 - incorrect diskcount for certain file_id.diz
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.

@@ -56,6 +56,9 @@ main(int argc, char *argv[])
 	struct dirent	*dp;
 	long		loc;
 	time_t		timenow;
+#if (test_for_password || extract_nfo || zip_clean)
+	off_t		tempstream;
+#endif
 
 	short		rescan_quick = rescan_default_to_quick;
 	char		one_name[NAME_MAX];
@@ -307,115 +310,140 @@ main(int argc, char *argv[])
 	printf("Rescanning files...\n");
 	
 	if (findfileext(dir, ".zip")) {
-		strlcpy(g.v.file.name, findfileext(dir, ".zip"), NAME_MAX);
-		maketempdir(g.l.path);
-		stat(g.v.file.name, &fileinfo);
-		//n = direntries;
-		crc = 0;
-		rewinddir(dir);
-		timenow = time(NULL);
-		while ((dp = readdir(dir))) {
-			m = l = (int)strlen(dp->d_name);
-			
-			ext = find_last_of(dp->d_name, ".");
-			if (*ext == '.')
-				ext++;
-
-			if (!strcasecmp(ext, "zip")) {
-				stat(dp->d_name, &fileinfo);
-				f_uid = fileinfo.st_uid;
-				f_gid = fileinfo.st_gid;
-
-				if ((timenow == fileinfo.st_ctime) && (fileinfo.st_mode & 0111)) {
-					d_log("rescan.c: Seems this file (%s) is in the process of being uploaded. Ignoring for now.\n", dp->d_name);
-					continue;
-				}
-#ifdef USING_GLFTPD
-				strcpy(g.v.user.name, get_u_name(f_uid));
-				strcpy(g.v.user.group, get_g_name(f_gid));
-#else
-				strncpy(g.v.user.name, argv[1], sizeof(g.v.user.name));
-				strncpy(g.v.user.group, argv[2], sizeof(g.v.user.group));
-#endif
-				strlcpy(g.v.file.name, dp->d_name, NAME_MAX);
-				g.v.file.speed = 2005 * 1024;
-				g.v.file.size = fileinfo.st_size;
-				g.v.total.start_time = 0;
-
-				if (!fileexists("file_id.diz")) {
-					sprintf(exec, "%s -qqjnCLL \"%s\" file_id.diz 2>.delme", unzip_bin, g.v.file.name);
-					if (execute(exec) != 0) {
-						d_log("rescan: No file_id.diz found (#%d): %s\n", errno, strerror(errno));
-					} else {
-						if ((loc = findfile(dir, "file_id.diz.bad"))) {
-							seekdir(dir, loc);
-							dp = readdir(dir);
-							unlink(dp->d_name);
-						}
-						if (chmod("file_id.diz", 0666))
-							d_log("rescan: Failed to chmod %s: %s\n", "file_id.diz", strerror(errno));
-					}
-				}
-				sprintf(exec, "%s -qqt \"%s\" >.delme", unzip_bin, g.v.file.name);
-				if (system(exec) == 0) {
-					writerace(g.l.race, &g.v, crc, F_CHECKED);
-				} else {
-					writerace(g.l.race, &g.v, crc, F_BAD);
-					if (g.v.file.name)
-						unlink(g.v.file.name);
-				}
-			}
-		}
-//		g.v.total.files = read_diz("file_id.diz");
-		g.v.total.files = read_diz();
-		if (!g.v.total.files) {
-			g.v.total.files = 1;
-			unlink("file_id.diz");
-		}
-		g.v.total.files_missing = g.v.total.files;
-		readrace(g.l.race, &g.v, g.ui, g.gi);
-		sortstats(&g.v, g.ui, g.gi);
-		if (g.v.total.files_missing < 0) {
-			g.v.total.files -= g.v.total.files_missing;
-			g.v.total.files_missing = 0;
-		}
-		buffer_progress_bar(&g.v);
-		if (g.v.total.files_missing == 0) {
-			complete(&g, complete_type);
-			createstatusbar(convert(&g.v, g.ui, g.gi, zip_completebar));
-#if (chmod_completebar)
-			if (!matchpath(group_dirs, g.l.path)) {
-				if (chmod_each(convert(&g.v, g.ui, g.gi, zip_completebar), 0222))
-					d_log("rescan: Failed to chmod a statusbar: %s\n", strerror(errno));
-			}
-#endif
-
+		if (!fileexists(unzip_bin)) {
+			printf("rescan: ERROR! Not able to check zip-files - %s does not exist!\n", unzip_bin);
+			exit(2);
 		} else {
-			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
-				if (create_incomplete()) {
-					d_log("rescan: create_incomplete() returned something\n");
-				}
-			}
-				move_progress_bar(0, &g.v, g.ui, g.gi);
-		}
-		if (g.l.nfo_incomplete) {
-			if (findfileext(dir, ".nfo")) {
-				d_log("rescan: Removing missing-nfo indicator (if any)\n");
-				remove_nfo_indicator(&g);
-			} else if (matchpath(check_for_missing_nfo_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
-				if (!g.l.in_cd_dir) {
-					d_log("rescan: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
-					if (create_incomplete_nfo()) {
-						d_log("rescan: create_incomplete_nfo() returned something\n");
+			strlcpy(g.v.file.name, findfileext(dir, ".zip"), NAME_MAX);
+			maketempdir(g.l.path);
+			stat(g.v.file.name, &fileinfo);
+			//n = direntries;
+			crc = 0;
+			rewinddir(dir);
+			timenow = time(NULL);
+			while ((dp = readdir(dir))) {
+				m = l = (int)strlen(dp->d_name);
+				ext = find_last_of(dp->d_name, ".");
+				if (*ext == '.')
+					ext++;
+				if (!strcasecmp(ext, "zip")) {
+					stat(dp->d_name, &fileinfo);
+					f_uid = fileinfo.st_uid;
+					f_gid = fileinfo.st_gid;
+					if ((timenow == fileinfo.st_ctime) && (fileinfo.st_mode & 0111)) {
+						d_log("rescan.c: Seems this file (%s) is in the process of being uploaded. Ignoring for now.\n", dp->d_name);
+						continue;
 					}
-				} else {
-					if (findfileextparent(parent, ".nfo")) {
-						d_log("rescan: Removing missing-nfo indicator (if any)\n");
-						remove_nfo_indicator(&g);
+#ifdef USING_GLFTPD
+					strcpy(g.v.user.name, get_u_name(f_uid));
+					strcpy(g.v.user.group, get_g_name(f_gid));
+#else
+					strncpy(g.v.user.name, argv[1], sizeof(g.v.user.name));
+					strncpy(g.v.user.group, argv[2], sizeof(g.v.user.group));
+#endif
+					strlcpy(g.v.file.name, dp->d_name, NAME_MAX);
+					g.v.file.speed = 2005 * 1024;
+					g.v.file.size = fileinfo.st_size;
+					g.v.total.start_time = 0;
+#if (test_for_password || extract_nfo)
+					tempstream = telldir(dir);
+					if ((!findfileextcount(dir, ".nfo") || findfileextcount(dir, ".zip")) && !mkdir(".unzipped", 0777))
+						sprintf(exec, "%s -qqjo \"%s\" -d .unzipped 2>.delme", unzip_bin, g.v.file.name);
+					else
+						sprintf(exec, "%s -qqt \"%s\" 2>.delme", unzip_bin, g.v.file.name);
+					seekdir(dir, tempstream);
+#else
+					sprintf(exec, "%s -qqt \"%s\" 2>.delme", unzip_bin, g.v.file.name);
+#endif
+					if (system(exec) == 0 || (allow_error2_in_unzip == TRUE && errno < 3 )) {
+						writerace(g.l.race, &g.v, crc, F_CHECKED);
 					} else {
-						d_log("rescan: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
+						writerace(g.l.race, &g.v, crc, F_BAD);
+						if (g.v.file.name)
+							unlink(g.v.file.name);
+						removedir(".unzipped");
+						continue;
+					}
+#if (test_for_password || extract_nfo || zip_clean)
+					tempstream = telldir(dir);
+                        	        if ((!findfileextcount(dir, ".nfo") || findfileextcount(dir, ".zip")) && check_zipfile(".unzipped", g.v.file.name, findfileextcount(dir, ".nfo"))) {
+                                	        d_log("rescan: File %s is password protected.\n", g.v.file.name);
+						writerace(g.l.race, &g.v, crc, F_BAD);
+						if (g.v.file.name)
+							unlink(g.v.file.name);
+						seekdir(dir, tempstream);
+						continue;
+	                                }
+					seekdir(dir, tempstream);
+#endif
+					if (!fileexists("file_id.diz")) {
+						sprintf(exec, "%s -qqjnCLL \"%s\" file_id.diz 2>.delme", unzip_bin, g.v.file.name);
+						if (execute(exec) != 0) {
+							d_log("rescan: No file_id.diz found (#%d): %s\n", errno, strerror(errno));
+						} else {
+							if (fileexists("file_id.diz.bad")) {
+								loc = findfile(dir, "file_id.diz.bad");
+								seekdir(dir, loc);
+								dp = readdir(dir);
+								unlink(dp->d_name);
+							}
+							if (chmod("file_id.diz", 0666))
+								d_log("rescan: Failed to chmod %s: %s\n", "file_id.diz", strerror(errno));
+						}
+					}
+
+	                        }
+			}
+			g.v.total.files = read_diz();
+			if (!g.v.total.files) {
+				g.v.total.files = 1;
+				unlink("file_id.diz");
+			}
+			g.v.total.files_missing = g.v.total.files;
+			readrace(g.l.race, &g.v, g.ui, g.gi);
+			sortstats(&g.v, g.ui, g.gi);
+			if (g.v.total.files_missing < 0) {
+				g.v.total.files -= g.v.total.files_missing;
+				g.v.total.files_missing = 0;
+			}
+			buffer_progress_bar(&g.v);
+			if (g.v.total.files_missing == 0) {
+				complete(&g, complete_type);
+				createstatusbar(convert(&g.v, g.ui, g.gi, zip_completebar));
+#if (chmod_completebar)
+				if (!matchpath(group_dirs, g.l.path)) {
+					if (chmod_each(convert(&g.v, g.ui, g.gi, zip_completebar), 0222))
+						d_log("rescan: Failed to chmod a statusbar: %s\n", strerror(errno));
+				}
+#endif
+
+			} else {
+				if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
+					if (create_incomplete()) {
+						d_log("rescan: create_incomplete() returned something\n");
+					}
+				}
+				move_progress_bar(0, &g.v, g.ui, g.gi);
+			}
+			if (g.l.nfo_incomplete) {
+				if (findfileext(dir, ".nfo")) {
+					d_log("rescan: Removing missing-nfo indicator (if any)\n");
+					remove_nfo_indicator(&g);
+				} else if (matchpath(check_for_missing_nfo_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
+					if (!g.l.in_cd_dir) {
+						d_log("rescan: Creating missing-nfo indicator %s.\n", g.l.nfo_incomplete);
 						if (create_incomplete_nfo()) {
 							d_log("rescan: create_incomplete_nfo() returned something\n");
+						}
+					} else {
+						if (findfileextparent(parent, ".nfo")) {
+							d_log("rescan: Removing missing-nfo indicator (if any)\n");
+							remove_nfo_indicator(&g);
+						} else {
+							d_log("rescan: Creating missing-nfo indicator (base) %s.\n", g.l.nfo_incomplete);
+							if (create_incomplete_nfo()) {
+								d_log("rescan: create_incomplete_nfo() returned something\n");
+							}
 						}
 					}
 				}
@@ -745,6 +773,7 @@ main(int argc, char *argv[])
 			printf(" Empty dir - marking as incomplete.\n");
 		}
 	}
+
 	printf(" Passed : %i\n", (int)g.v.total.files - (int)g.v.total.files_missing);
 	printf(" Failed : %i\n", (int)g.v.total.files_bad);
 	printf(" Missing: %i\n", (int)g.v.total.files_missing);
