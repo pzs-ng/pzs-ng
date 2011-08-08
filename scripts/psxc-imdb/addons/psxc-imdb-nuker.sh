@@ -16,7 +16,7 @@
 #############################################################################
 
 # Version number. No need to change
-VERSION=2.9a
+VERSION=2.9i
 
 # glftpd's root dir
 GLROOT=/glftpd
@@ -200,7 +200,7 @@ IFS="^"
 
 # Initialize variables. bash is a bit limited, so we gotta do a "hack"
 c=1
-for a in `echo $@ | sed "s|\" \"|^|g"`; do
+for a in `echo $@ | sed "s/^\"//;s/\"$//;s|\" \"|^|g"`; do
 b[c]=$a
 let c=c+1
 done

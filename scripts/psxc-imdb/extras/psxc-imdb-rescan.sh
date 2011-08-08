@@ -17,7 +17,7 @@
 ########
 
 # Version. No need to change
-VERSION=2.9h
+VERSION=2.9i
 
 # Path to psxc-imdb.sh. This is relative to GLROOT.
 PSXC_IMDB=/bin/psxc-imdb.sh
@@ -52,69 +52,67 @@ if [ $# -eq 0 ]; then
 fi
 ARG=$1
 
+PSXC_CONF="`cat "$PSXC_IMDB" | grep -e "^CONFFILE" | head -n 1 | cut -d '=' -f 2`"
+. $PSXC_CONF
+
+if [ ! -z $GLROOT ]; then
+ MYTMPFILE="`echo "$TMPFILE" | sed "s%$GLROOT%%"`"
+ MYTMPRESCANFILE="`echo "$TMPRESCANFILE" | sed "s%$GLROOT%%"`"
+ IMDBPIDCHROOTED="`echo "$IMDBPID" | sed "s%$GLROOT%%"`"
+else
+  MYTMPFILE=$TMPFILE
+  MYTMPRESCANFILE=$TMPRESCANFILE
+  IMDBPIDCHROOTED=$IMDBPID
+fi
+
+echo "Checking to see if psxc-imdb is running..."
+[[ ! -z "`cat $IMDBPIDCHROOTED`" ]] &&
+ sleep 1
+[[ ! -z "`cat $IMDBPIDCHROOTED`" ]] &&
+ echo "I'm sorry. It looks to me that psxc-imdb is already running." &&
+ echo "I cannot perform a rescan while this is the case." &&
+ echo "Please try again a bit later." &&
+ exit 2
+
+echo $$ > "$IMDBPIDCHROOTED"
+
 if [ ! -z "`echo $@ | grep -e "[-][nN][oO][bBfFaA][oOiIdD][tTlLdD]"`" ]; then
  PSXCFLAGS=$@
  PSXCFLAG=0
- PSXC_CONF="`cat "$PSXC_IMDB" | grep -e "^CONFFILE" | head -n 1 | cut -d '=' -f 2`"
- . $PSXC_CONF
- if [ ! -z $GLROOT ]; then
-  MYTMPFILE="`echo "$TMPFILE" | sed "s%$GLROOT%%"`"
-  MYTMPRESCANFILE="`echo "$TMPRESCANFILE" | sed "s%$GLROOT%%"`"
- else
-  MYTMPFILE=$TMPFILE
-  MYTMPRESCANFILE=$TMPRESCANFILE
- fi
- if [ -z "`cat $MYTMPFILE`" ]; then
-  echo "checking to see if psxc-imdb is running..."
-  sleep 1
-  if [ ! -z "`echo "$@" | grep -e "[nN][oO][bB][oO][tT]"`" ]; then
-   let PSXCFLAG=PSXCFLAG+1
-  fi
-  if [ ! -z "`echo "$@" | grep -e "[nN][oO][fF][iI][lL][eE]"`" ]; then
-   let PSXCFLAG=PSXCFLAG+2
-  fi
-  if [ ! -z "`echo "$@" | grep -e "[nN][oO][aA][dD][dD][oO][nN]"`" ]; then
-   let PSXCFLAG=PSXCFLAG+4
-  fi
-  if [ -z "`cat $MYTMPFILE`" ]; then
-   CLEARTORUN=0
-  else
-   CLEARTORUN=1
-  fi
- else
-  CLEARTORUN=0
- fi
- if [ ! -z "`cat $MYTMPFILE`" ]; then
-  echo "I'm sorry. It looks to me that psxc-imdb is already running."
-  echo "I cannot perform a rescan while this is the case."
-  echo "Please try again a bit later."
-  exit 2
- fi
+
+ [[ ! -z "`echo "$@" | grep -e "[nN][oO][bB][oO][tT]"`" ]] &&
+  let PSXCFLAG=PSXCFLAG+1
+ [[ ! -z "`echo "$@" | grep -e "[nN][oO][fF][iI][lL][eE]"`" ]] &&
+  let PSXCFLAG=PSXCFLAG+2
+ [[ ! -z "`echo "$@" | grep -e "[nN][oO][aA][dD][dD][oO][nN]"`" ]] &&
+  let PSXCFLAG=PSXCFLAG+4
+
  echo $PSXCFLAG >$MYTMPRESCANFILE
+
 fi
 
 if [ ! "$ARG" = "-r" ]; then
  echo "Doing a scan in current dir .. searching for iMDB info."
  IMDB_NFO="`ls -1 | grep -e "[.][Nn][Ff][Oo]" | head -n 1`"
- if [ ! -z "$IMDB_NFO" ]; then
-  echo "Processing $IMDB_NFO"
+ [[ ! -z "$IMDB_NFO" ]] &&
+  echo "Processing $IMDB_NFO" &&
   $PSXC_IMDB $IMDB_NFO
- fi
- echo "Done."
- exit 0
 else
- echo "Scanning for iMDB info.."
- for REL_DIR in `ls -1F | grep -e "/" | grep -F -v "^$NUKEDIR_STYLE" | tr ' ' '%'`; do
-  REL_DIR="`echo $REL_DIR | tr '%' ' '`"
+ echo "Scanning recursively for iMDB info.."
+ for REL_DIR in `ls -1F | egrep "@$|/$" | grep -F -v "^$NUKEDIR_STYLE" | tr ' ' '%'`; do
+  REL_DIR="`echo $REL_DIR | tr '%@' ' /'`"
   echo "$REL_DIR ..."
   cd "$REL_DIR"
   IMDB_NFO="`ls -1 | grep -e "[.][Nn][Ff][Oo]" | head -n 1`"
-  if [ ! -z "$IMDB_NFO" ]; then
+  [[ ! -z "$IMDB_NFO" ]] &&
+   echo "Processing $IMDB_NFO" &&
    $PSXC_IMDB $IMDB_NFO
-  fi
   cd ..
  done
- echo "Done."
- exit 0
 fi
+
+echo "Done."
+> "$IMDBPIDCHROOTED"
+
+exit 0
 

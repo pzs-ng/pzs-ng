@@ -18,7 +18,7 @@
 ## Used to make !imdb lookups possible, and for pre.
 ## This version, unlike the old one, also has support for
 ## channel/user specific lookups, meaning that the channel/
-## person did the !imdb will be the reciever of the output.
+## person did the !imdb will be the receiver of the output.
 ## The old version only put output in main channel.
 ##
 ## Require: dZSbot.vars from pzs-ng v1.0.4 or newer.
@@ -67,7 +67,7 @@ namespace eval ::ngBot::plugin::psxc-IMDb {
         set psxc(FINDSCRIPT) "/glftpd/bin/psxc-imdb-find.sh"
         ##
         ## This char is used to split lines on output. It should be the
-        ## same variable you have in psxc-imdb-conf (NEWLINE).
+        ## same variable you have in psxc-imdb.conf (NEWLINE).
         set psxc(NEWLINE) "|"
         ##
         ##################################################
@@ -112,6 +112,7 @@ namespace eval ::ngBot::plugin::psxc-IMDb {
         set ${np}::disable(IMDBVAR)                0
         ##
         ## Convert empty or zero variables into something else.
+	## If you use MYOWN these are not used, see psxc-imdb.conf
         set ${np}::zeroconvert(%imdbdirname)       "N/A"
         set ${np}::zeroconvert(%imdburl)           "N/A"
         set ${np}::zeroconvert(%imdbtitle)         "N/A"
@@ -140,16 +141,16 @@ namespace eval ::ngBot::plugin::psxc-IMDb {
         set ${np}::zeroconvert(%imdbcommentshort)  "N/A"
         ##
         ##################################################
- 
-        set psxc(VERSION) "2.9a"
- 
+
+        set psxc(VERSION) "2.9i"
+
         variable events [list "IMDB" "IMDBVAR" "IMDBFIND"]
         variable psxcimdb
         variable scriptFile [info script]
         variable scriptName ${ns}::LogEvent
- 
+
         #bind evnt -|- prerehash ${ns}::deinit
- 
+
         proc init {} {
                 variable ns
                 variable np
