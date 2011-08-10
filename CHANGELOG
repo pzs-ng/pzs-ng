@@ -80,6 +80,8 @@ v1.2.0  --> 1.2.x :
 		- Fixed bug #512 - several rescan fixes regarding zips
 		- Fixed bug #511 - incorrect diskcount for certain file_id.diz
 		- several fixes and improvements on psxc-imdb, see CHANGELOG
+		- fixed bug where files would be marked as bad when sfv_lenient
+		  and sfv_cleanup_lowercase would both be set to FALSE
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.

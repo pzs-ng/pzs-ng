@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <fnmatch.h>
 
-#include "race-file.h" 
+#include "race-file.h"
 
 #include "objects.h"
 #include "macros.h"
@@ -46,7 +46,7 @@
  * Description	: Creates directory where all race information will be
  * stored.
  */
-void 
+void
 maketempdir(char *path)
 {
 	char		full_path[PATH_MAX], *p;
@@ -69,18 +69,17 @@ maketempdir(char *path)
 }
 
 /*
- * Modified	: 01.16.2002 Author	: Dark0n3
- * 
+ * Modified	: 2002.01.16	Author	: Dark0n3
+ * Modified	: 2011.08.10	by	: Sked
  * Description	: Reads crc for current file from preparsed sfv file.
  */
-unsigned int 
+unsigned int
 readsfv(const char *path, struct VARS *raceI, int getfcount)
 {
-	int		insfv = 0;
 	unsigned int	crc = 0;
 	FILE		*sfvfile;
 	DIR		*dir;
-	
+
 	SFVDATA		sd;
 
 	if (!(sfvfile = fopen(path, "r"))) {
@@ -97,38 +96,34 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 	raceI->misc.release_type = raceI->data_type;
 
 	d_log("readsfv: Reading data from sfv for (%s)\n", raceI->file.name);
-	
+
 	dir = opendir(".");
-	
+
 	raceI->total.files = 0;
+
 	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
 		raceI->total.files++;
-#if (sfv_lenient || sfv_cleanup_lowercase)
+
 		if (lenient_compare(raceI->file.name, sd.fname)) {
 			d_log("readsfv: crc read from sfv-file (%s): %.8x\n", sd.fname, (unsigned int)sd.crc32);
 			crc = (unsigned int)sd.crc32;
-			insfv = 1;
 			strncpy(raceI->file.unlink, sd.fname, sizeof(raceI->file.unlink));
 		}
-#endif
+
 		if (getfcount && findfile(dir, sd.fname))
 			raceI->total.files_missing--;
 	}
-	
+
 	closedir(dir);
 	fclose(sfvfile);
-	
+
 	raceI->total.files_missing += raceI->total.files;
-	
-	if (insfv)
-		errno = 1;
-	else
-		errno = 0;
 
 	if (raceI->total.files_missing < 0) {
 		d_log("readsfv: GAKK! raceI->total.files_missing %d < 0\n", raceI->total.files_missing);
 		raceI->total.files_missing = 0;
 	}
+
 	return crc;
 }
 
@@ -136,7 +131,7 @@ void
 update_sfvdata(const char *path, const char *fname, const unsigned int crc)
 {
 	int		fd, count;
-	
+
 	SFVDATA		sd;
 
 	if ((fd = open(path, O_RDWR, 0666)) == -1) {
@@ -153,7 +148,7 @@ update_sfvdata(const char *path, const char *fname, const unsigned int crc)
 		}
 		count++;
 	}
-	
+
 	lseek(fd, sizeof(SFVDATA) * count, SEEK_SET);
 	if (write(fd, &sd, sizeof(SFVDATA)) != sizeof(SFVDATA))
 		d_log("update_sfvdata: write failed: %s\n", strerror(errno));
@@ -162,10 +157,10 @@ update_sfvdata(const char *path, const char *fname, const unsigned int crc)
 
 /*
  * Modified	: 01.16.2002 Author	: Dark0n3
- * 
+ *
  * Description	: Deletes all -missing files with preparsed sfv.
  */
-void 
+void
 delete_sfv(const char *path, struct VARS *raceI)
 {
 	char		*f = 0, missing_fname[NAME_MAX];
@@ -178,7 +173,7 @@ delete_sfv(const char *path, struct VARS *raceI)
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
-	
+
 	while (fread(&sd, sizeof(SFVDATA), 1, sfvfile)) {
 		snprintf(missing_fname, NAME_MAX, "%s-missing", sd.fname);
 		if ((f = findfilename(missing_fname, f, raceI)))
@@ -193,12 +188,12 @@ delete_sfv(const char *path, struct VARS *raceI)
 
 /*
  * Modified	: 01.16.2002 Author	: Dark0n3
- * 
+ *
  * Description	: Reads name of old race leader and writes name of new leader
  * 		  into temporary file.
- * 
+ *
  */
-void 
+void
 read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
 {
 	int		fd;
@@ -208,7 +203,7 @@ read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
 		d_log("read_write_leader: open(%s): %s\n", path, strerror(errno));
 		return;
 	}
-	
+
 	if (!update_lock(raceI, 1, 0)) {
 		d_log("read_write_leader: Lock is suggested removed. Will comply and exit\n");
 		remove_lock(raceI);
@@ -228,18 +223,18 @@ read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
 
 	if (write(fd, userI->name, 24) != 24)
 		d_log("read_write_leader: write failed: %s\n", strerror(errno));
-	
+
 	close(fd);
 }
 
 /*
  * Modified	: 01.16.2002 Author	: Dark0n3
- * 
+ *
  * Description	: Goes through all untested files and compares crc of file
  * with one that is reported in sfv.
- * 
+ *
  */
-void 
+void
 testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 {
 	int		fd, lret, count;
@@ -258,7 +253,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 			exit(EXIT_FAILURE);
 		}
 	}
-	
+
 	close(fd);
 	if (!(racefile = fopen(locations->race, "r+"))) {
 		d_log("testfiles: fopen(%s) failed\n", locations->race);
@@ -273,7 +268,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	count = 0;
 	rd.status = F_NOTCHECKED;
 	while ((fread(&rd, sizeof(RACEDATA), 1, racefile))) {
-d_log("TOP: count=%d\n", count);
+		d_log("TOP: count=%d\n", count);
 		if (!update_lock(raceI, 1, 0)) {
 			d_log("testfiles: Lock is suggested removed. Will comply and exit\n");
 			remove_lock(raceI);
@@ -362,7 +357,7 @@ d_log("TOP: count=%d\n", count);
 			if (!((timenow == filestat.st_ctime) && (filestat.st_mode & 0111)))
 				unlink_missing(rd.fname);
 		}
-d_log("BOTTOM: count=%d\n", count);
+		d_log("BOTTOM: count=%d\n", count);
 		count++;
 	}
 	strlcpy(raceI->file.name, real_file, strlen(real_file)+1);
@@ -374,7 +369,7 @@ d_log("BOTTOM: count=%d\n", count);
  * Modified	: 01.20.2002 Author	: Dark0n3
  *
  * Description	: Parses file entries from sfv file and store them in a file.
- * 
+ *
  * Todo		: Add dupefile remover.
  *
  * Totally rewritten by js on 08.02.2005
@@ -384,7 +379,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 {
 	int		infd, outfd, i, retval = 0;
 	short int	music, rars, video, others, type;
-	
+
 	char		*ptr, fbuf[2048];
 	FILE		*insfv;
 
@@ -396,11 +391,11 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 	int		skip = 0;
 	SFVDATA		tempsd;
 //#endif
-	
+
 #if ( sfv_cleanup == TRUE )
 	int		tmpfd;
 	char		crctmp[16];
-	
+
 	if ((tmpfd = open(".tmpsfv", O_CREAT | O_TRUNC | O_RDWR, 0644)) == -1)
 		d_log("copysfv: open(.tmpsfv): %s\n", strerror(errno));
 #endif
@@ -410,13 +405,13 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
-	
+
 	if ((outfd = open(target, O_CREAT | O_TRUNC | O_RDWR, 0666)) == -1) {
 		d_log("copysfv: open(%s): %s\n", target, strerror(errno));
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
-	
+
 	video = music = rars = others = type = 0;
 
 	dir = opendir(".");
@@ -434,7 +429,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 	}
 
 	while ((fgets(fbuf, sizeof(fbuf), insfv))) {
-		
+
 		/* remove comment */
 		if ((ptr = find_first_of(fbuf, ";")))
 			*ptr = '\0';
@@ -446,7 +441,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 
 		if (strlen(ptr) == 0)
 			continue;
-	
+
 #if (sfv_cleanup_lowercase == TRUE)
 		for (; *ptr; ptr++)
 			*ptr = tolower(*ptr);
@@ -454,14 +449,14 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 		sd.crc32 = 0;
 		bzero(sd.fname, sizeof(sd.fname));
 		if ((ptr = find_last_of(fbuf, " \t"))) {
-			
+
 			/* pass the " \t" */
 			ptr++;
-			
+
 			/* what we have now is hopefully a crc */
 			for (i = 0; isxdigit(*ptr) != 0; i++)
 				ptr++;
-			
+
 			ptr -= i;
 			if (i > 8 || i < 6) {
 				/* we didn't get an 8 digit crc number */
@@ -474,15 +469,15 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 #endif
 			} else {
 				sd.crc32 = hexstrtodec(ptr);
-				
+
 				/* cut off crc string */
 				*ptr = '\0';
-				
+
 				/* nobody should be stupid enough to have spaces
 				 * at the end of the file name */
 				strip_whitespaces(fbuf);
 			}
-		
+
 		} else {
 			/* we have a filename only. */
 #if (sfv_cleanup == TRUE)
@@ -528,12 +523,12 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 #endif
 			}
 
-			
+
 			/* get file extension */
 			ptr = find_last_of(fbuf, ".");
 			if (*ptr == '.')
 				ptr++;
-			
+
 			if (!strcomp(ignored_types, ptr) && !(strcomp(allowed_types, ptr) && !matchpath(allowed_types_exemption_dirs, raceI->misc.current_path)) && !strcomp("sfv", ptr) && !strcomp("nfo", ptr)) {
 
 				skip = 0;
@@ -544,7 +539,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 //					if (!strcmp(sd.fname, tempsd.fname) || (sd.crc32 == tempsd.crc32 && sd.crc32))
 					if (!strcmp(sd.fname, tempsd.fname))
 						skip = 1;
-						
+
 				lseek(outfd, 0L, SEEK_END);
 
 #if ( sfv_dupecheck == TRUE )
@@ -582,7 +577,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 					video++;
 				else
 					others++;
-				
+
 #if ( create_missing_files == TRUE )
 				if (!findfile(dir, sd.fname) && !(matchpath(allowed_types_exemption_dirs, raceI->misc.current_path) && strcomp(allowed_types, ptr)))
 					create_missing(sd.fname);
@@ -593,7 +588,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 			}
 		}
 	}
-	
+
 	if (music > rars) {
 		if (video > music)
 			type = (video >= others ? 4 : 2);
@@ -617,7 +612,7 @@ END:
 		rename(".tmpsfv", source);
 	}
 #endif
-	
+
 	closedir(dir);
 	close(outfd);
 	if (!update_lock(raceI, 1, type)) {
@@ -631,11 +626,11 @@ END:
 
 /*
  * Modified	: 01.17.2002 Author	: Dark0n3
- * 
+ *
  * Description	: Creates a file that contains list of files in release in
  * alphabetical order.
  */
-void 
+void
 create_indexfile(const char *racefile, struct VARS *raceI, char *f)
 {
 	int		fd;
@@ -644,7 +639,7 @@ create_indexfile(const char *racefile, struct VARS *raceI, char *f)
 	int		pos[raceI->total.files],
 			t_pos[raceI->total.files];
 	char		fname[raceI->total.files][NAME_MAX];
-	
+
 	RACEDATA	rd;
 
 	if ((fd = open(racefile, O_RDONLY)) == -1) {
@@ -694,12 +689,12 @@ create_indexfile(const char *racefile, struct VARS *raceI, char *f)
 
 /*
  * Modified	: 01.16.2002 Author	: Dark0n3
- * 
+ *
  * Description	: Marks file as deleted.
  *
  * Obsolete?
  */
-short int 
+short int
 clear_file(const char *path, char *f)
 {
 	int		n = 0, count = 0, retval = -1;
@@ -730,11 +725,11 @@ clear_file(const char *path, char *f)
 
 /*
  * Modified	: 02.19.2002 Author	: Dark0n3
- * 
+ *
  * Description	: Reads current race statistics from fixed format file.
  * 				: "path" is the location of a racedata file.
  */
-void 
+void
 readrace(const char *path, struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI)
 {
 	int		fd, rlength = 0;
@@ -782,10 +777,10 @@ readrace(const char *path, struct VARS *raceI, struct USERINFO **userI, struct G
 
 /*
  * Modified	: 01.18.2002 Author	: Dark0n3
- * 
+ *
  * Description	: Writes stuff into race file.
  */
-void 
+void
 writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char status)
 {
 	int		fd, count, ret;
@@ -830,7 +825,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	bzero(&rd, sizeof(RACEDATA));
 	rd.status = status;
 	rd.crc32 = crc;
-	
+
 	strlcpy(rd.fname, raceI->file.name, NAMEMAX);
 	strlcpy(rd.uname, raceI->user.name, 24);
 	strlcpy(rd.group, raceI->user.group, 24);
@@ -853,14 +848,14 @@ void
 remove_from_race(const char *path, const char *f, struct VARS *raceI)
 {
 	int		fd, i, max;
-	
+
 	RACEDATA	rd, *tmprd = 0;
-	
+
 	if ((fd = open(path, O_RDONLY)) == -1) {
 		d_log("remove_from_race: open(%s): %s\n", path, strerror(errno));
 		return;
 	}
-	
+
 	for (i = 0; (read(fd, &rd, sizeof(RACEDATA)));) {
 #if (sfv_cleanup_lowercase)
 		if (strcasecmp(rd.fname, f) != 0) {
@@ -874,13 +869,13 @@ remove_from_race(const char *path, const char *f, struct VARS *raceI)
 	}
 
 	close(fd);
-	
+
 	if ((fd = open(path, O_TRUNC | O_WRONLY)) == -1) {
 		d_log("remove_from_race: open(%s): %s\n", path, strerror(errno));
 		ng_free(tmprd);
 		return;
 	}
-	
+
 	max = i;
 	for (i = 0; i < max; i++)
 		if (write(fd, &tmprd[i], sizeof(RACEDATA)) != sizeof(RACEDATA))
@@ -894,14 +889,14 @@ int
 verify_racedata(const char *path, struct VARS *raceI)
 {
 	int		fd, i, ret, max;
-	
+
 	RACEDATA	rd, *tmprd = 0;
-	
+
 	if ((fd = open(path, O_RDWR, 0666)) == -1) {
 		d_log("verify_racedata: open(%s): %s\n", path, strerror(errno));
 		return 0;
 	}
-	
+
 	for (i = 0; (ret = read(fd, &rd, sizeof(RACEDATA)));) {
 		d_log("  verify_racedata: Verifying %s..\n", rd.fname);
 		if (!strlen(rd.fname)) {
@@ -915,15 +910,15 @@ verify_racedata(const char *path, struct VARS *raceI)
 			create_missing(rd.fname);
 		}
 	}
-	
+
 	close(fd);
-	
+
 	if ((fd = open(path, O_TRUNC | O_WRONLY)) == -1) {
 		d_log("verify_racedata: open(%s): %s\n", path, strerror(errno));
 		ng_free(tmprd);
 		return 0;
 	}
-	
+
 	max = i;
 	d_log("  verify_racedata: write(%s)\n", path);
 	for (i = 0; i < max; i++) {
