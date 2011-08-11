@@ -803,6 +803,7 @@ namespace eval ::ngBot::module::glftpd {
 			close $handle
 			foreach line [split $data "\n"] {
 				switch -exact -- [lindex $line 0] {
+					"PRIVATE" {lappend groups [lindex $line 1]}
 					"GROUP" {lappend groups [lindex $line 1]}
 				}
 			}
@@ -845,12 +846,15 @@ namespace eval ::ngBot::module::glftpd {
 		variable ns
 		variable ${np}::privchannel
 		variable ${np}::invite_channels
+		variable ${np}::invite_channels_rights
 
 		if {![${np}::eventhandler precommand INVITEUSER [list $nick $user $group $flags]]} {return}
 
 		## Invite the user to the defined channels.
 		foreach chan $invite_channels {
-			${ns}::invitechan $nick $chan
+			if {[${ns}::rightscheck $invite_channels_rights $user $group $flags]} {
+				${ns}::invitechan $nick $chan
+			}
 		}
 		foreach {chan rights} [array get privchannel] {
 			if {[${ns}::rightscheck $rights $user $group $flags]} {
@@ -881,7 +885,6 @@ namespace eval ::ngBot::module::glftpd {
 		variable ${np}::disable
 		variable ${np}::location
 		variable ${np}::announce
-		variable ${np}::enable_irc_invite_deleted_users
 
 		set argv [split $argv]
 		if {[llength $argv] > 1} {
@@ -905,11 +908,9 @@ namespace eval ::ngBot::module::glftpd {
 				} else {
 					putlog "\[ngBot\] Error :: Unable to open user file for \"$user\" ($error)."
 				}
-				if {![string match "*6*" "$flags"] || [istrue $enable_irc_invite_deleted_users]} {
-					${ns}::inviteuser $nick $user $group $flags
-				} else {
-					set output "$theme(PREFIX)$announce(BADMSGINVITE)"
-				}
+
+				${ns}::inviteuser $nick $user $group $flags
+
 			} else {
 				set output "$theme(PREFIX)$announce(BADMSGINVITE)"
 			}

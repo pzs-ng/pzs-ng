@@ -80,8 +80,14 @@ v1.2.0  --> 1.2.x :
 		- Fixed bug #512 - several rescan fixes regarding zips
 		- Fixed bug #511 - incorrect diskcount for certain file_id.diz
 		- several fixes and improvements on psxc-imdb, see CHANGELOG
-		- fixed bug where files would be marked as bad when sfv_lenient
+		- Fixed bug where files would be marked as bad when sfv_lenient
 		  and sfv_cleanup_lowercase would both be set to FALSE
+		- Fixed bug where any user could invite themselves via irc if irc inviting was enabled
+		  regardless of invite rights on the ftp. This reworks the former bug where deleted
+		  users could invite themselves, removing the previously introduced setting
+		  enable_irc_invite_deleted_users and introducing the new invite_channels_rights
+		  setting in ngBot.conf.defaults
+		- Fixed bug #458 - privchannels wont invite users from PRIVATE groups
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.

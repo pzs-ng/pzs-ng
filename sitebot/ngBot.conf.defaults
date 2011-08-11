@@ -62,8 +62,12 @@ set die_on_error        "FALSE"
 # they will be able to easily harvest usernames/passwords. CONSIDER WITH CAUTION!
 set enable_irc_invite   "TRUE"
 
-# If IRC invite is enabled, allow deleted users to invite themselves to the channel through IRC.
-set enable_irc_invite_deleted_users   "FALSE"
+# When enable_irc_invite is TRUE, every user can invite itself. Set here the
+# rights a user should have matching the glFTPd-style permissions to be
+# invited to the invite_channels. This setting also applies on invites requested
+# through the ftp "site invite" command, so this should resemble the custom-invite
+# permissions in glftpd.conf.
+set invite_channels_rights "!6 *"
 
 # Are you using glftpd2? Default setting ("AUTO") should be safe,
 # enables autodetection (if binary(GLFTPD) is set correctly)
