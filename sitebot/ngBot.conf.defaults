@@ -253,6 +253,13 @@ set msgtypes(DEFAULT)   "ADDUSER GADDUSER CHGRPADD CHGRPDEL ADDIP DELIP READDED 
 # PS! This is NOT intended as a way to cutomize each section of a site. It
 # should work, but would require a LARGE amount of msgreplace() statements.
 # Remember to create an announce for your custom message in the theme file!
+# When multiple same types are used and more than one matches the path, the
+# msgreplace with the highest indexnumber will be the new message type.
+# Example: if you have these msgreplace's:
+#	set msgreplace(0) "NEWDIR:*sample:SAMPLE"
+#	set msgreplace(1) "NEWDIR:*/sub*:SUBS"
+# and the path to match is "Some.Dir/Subsample" then both will match, but the
+# SUBS will become the new mesagetype as it has a higher indexnumber.
 # Format: "original message type:string to look for in path:new message type"
 #set msgreplace(0)      "NEWDIR:*/sample:SAMPLE"
 #set msgreplace(1)      "NEWDIR:*/cd?:NEWCD"

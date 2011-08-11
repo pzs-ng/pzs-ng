@@ -436,14 +436,15 @@ namespace eval ::ngBot {
 				set section [${ns}::getsectionname $path]
 
 				# Replace messages with custom messages
-				foreach {name value} [array get msgreplace] {
-					set value [split $value ":"]
+				foreach name [lsort -integer [array names msgreplace]] {
+					set value [split $msgreplace($name) ":"]
 					if {[string equal $event [lindex $value 0]]} {
 						if {[string match -nocase [lindex $value 1] $path]} {
-							set event [lindex $value 2]
+							set newevent [lindex $value 2]
 						}
 					}
 				}
+				if {[info exists newevent]} { set event $newevent }
 			} elseif {[lsearch -exact $msgtypes(DEFAULT) $event] != -1} {
 				set section $defaultsection
 			} else {

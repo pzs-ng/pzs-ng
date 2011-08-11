@@ -88,6 +88,8 @@ v1.2.0  --> 1.2.x :
 		  enable_irc_invite_deleted_users and introducing the new invite_channels_rights
 		  setting in ngBot.conf.defaults
 		- Fixed bug #458 - privchannels wont invite users from PRIVATE groups
+		- Added bug #435 - msgreplaces are sorted so highest indexnumber is used when
+		  multiple matches occur - Thanks to [piLL]
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
