@@ -201,6 +201,10 @@ set bnc(ENABLED)        "TRUE"
 # Should we make a ping test too? TRUE/FALSE
 set bnc(PING)           "TRUE"
 
+# If we do a ping test, how many should we do?
+# Setting this too high will stall the bot as every ping takes 1 second.
+set bnc(PINGCOUNT)	1
+
 # Connect to the FTP using AUTH TLS? TRUE/FALSE
 set bnc(SECURE)         "TRUE"
 

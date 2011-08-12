@@ -95,6 +95,11 @@ v1.2.0  --> 1.2.x :
 		  This setting is available for all triggers via announcetochan(TRIGGER),
 		  see ngBot.conf.defaults
 		- Fixed typobug regarding mclastbind
+		- Updated sitebot/COOKIES
+		- Added bug #359 - Show average ping instead of 1 ping only
+		  Implemented it a bit differently with an extra option of how many pingcounts,
+		  adding the min/avg/max/mdev instead of picking one to replace the ping with
+		  and to not break all themes the %ping var was kept aside the new vars
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.

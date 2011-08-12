@@ -41,6 +41,9 @@ Quickreference of cookies:
 # BAD_FILE_DUPENFO:
 %releasename, %u_name, %g_name, %filename
 
+# BAD_FILE_DUPERELEASE:
+%releasename, %u_name, %g_name, %filename
+
 # BAD_FILE_GENRE:
 %releasename, %u_name, %g_name, %filename
 
@@ -57,6 +60,9 @@ Quickreference of cookies:
 %releasename, %u_name, %g_name, %filename
 
 # BAD_FILE_ZIP:
+%releasename, %u_name, %g_name, %filename
+
+# BAD_FILE_ZIPNFO:
 %releasename, %u_name, %g_name, %filename
 
 # BANNEDHOST:
@@ -79,11 +85,12 @@ Quickreference of cookies:
 # COMPLETE_AUDIO_VBR:
 %releasename, %t_mbytes, %t_files, %t_avgspeed, %r_avgspeed, %t_duration, %u_name
 %g_name, %genre, %year, %bitrate, %sampling, %mode, %audio, %a_stream, %a_version
-%artist, %album, %title, %codec, %layer, %vbr_oldnew %filename, %u_tagline, %g_racer_position
-%g_racer_name, %g_racer_mbytes, %g_racer_files, %g_racer_percent, %g_racer_avgspeed
-%u_racer_position, %u_racer_name, %g_racer_name, %u_racer_mbytes, %u_racer_files
-%u_racer_percent, %u_racer_avgspeed, %u_racer_dayup, %u_racer_wkup, %u_racer_monthup
-%u_racer_allup
+%artist, %album, %title, %codec, %layer, %vbr_oldnew, %vbr_quality, %vbr_minimum_bitrate
+%vbr_noiseshaping, %vbr_stereomode, %vbr_unwise, %vbr_source, %filename, %u_tagline
+%g_racer_position, %g_racer_name, %g_racer_mbytes, %g_racer_files, %g_racer_percent
+%g_racer_avgspeed, %u_racer_position, %u_racer_name, %g_racer_name, %u_racer_mbytes
+%u_racer_files, %u_racer_percent, %u_racer_avgspeed, %u_racer_dayup, %u_racer_wkup
+%u_racer_monthup, %u_racer_allup
 
 # COMPLETE_OTHER:
 %releasename, %t_mbytes, %t_files, %t_avgspeed, %r_avgspeed, %t_duration, %u_name
@@ -113,11 +120,12 @@ Quickreference of cookies:
 # COMPLETE_STAT_RACE_AUDIO_VBR:
 %releasename, %t_mbytes, %t_files, %t_avgspeed, %r_avgspeed, %t_duration, %u_count
 %g_count, %genre, %year, %bitrate, %sampling, %mode, %audio, %a_stream, %a_version
-%artist, %album, %title, %codec, %layer, %vbr_oldnew %u_slowest_name, %u_slowest_gname, %u_slowest_speed
-%u_fastest_name, %u_fastest_gname, %u_fastest_speed, %u_winner_name, %u_winner_gname
-%u_winner_mbytes, %u_winner_files, %u_winner_percent, %u_winner_avgspeed, %g_winner_name
-%g_winner_mbytes, %g_winner_files, %g_winner_percent, %g_winner_avgspeed, %filename
-%r_name, %r_gname %g_racer_position, %g_racer_name, %g_racer_mbytes, %g_racer_files
+%artist, %album, %title, %codec, %layer, %vbr_oldnew, %vbr_quality, %vbr_minimum_bitrate
+%vbr_noiseshaping, %vbr_stereomode, %vbr_unwise, %vbr_source, %u_slowest_name, %u_slowest_gname
+%u_slowest_speed, %u_fastest_name, %u_fastest_gname, %u_fastest_speed, %u_winner_name
+%u_winner_gname, %u_winner_mbytes, %u_winner_files, %u_winner_percent, %u_winner_avgspeed
+%g_winner_name, %g_winner_mbytes, %g_winner_files, %g_winner_percent, %g_winner_avgspeed
+%filename, %r_name, %r_gname %g_racer_position, %g_racer_name, %g_racer_mbytes, %g_racer_files
 %g_racer_percent, %g_racer_avgspeed %u_racer_position, %u_racer_name, %g_racer_name
 %u_racer_mbytes, %u_racer_files, %u_racer_percent, %u_racer_avgspeed, %u_racer_dayup
 %u_racer_wkup, %u_racer_monthup, %u_racer_allup\
@@ -151,7 +159,9 @@ Quickreference of cookies:
 %g_winner_percent, %g_winner_avgspeed, %filename, %r_name, %r_gname %g_racer_position
 %g_racer_name, %g_racer_mbytes, %g_racer_files, %g_racer_percent, %g_racer_avgspeed %u_racer_position
 %u_racer_name, %g_racer_name, %u_racer_mbytes, %u_racer_files, %u_racer_percent, %u_racer_avgspeed
-%u_racer_dayup, %u_racer_wkup, %u_racer_monthup, %u_racer_allup\
+%u_racer_dayup, %u_racer_wkup, %u_racer_monthup, %u_racer_allup %video_width, %video_height
+%video_fps, %video_aspect, %video_type_long, %video_type_short, %video_audio_hz, %video_audio_channels
+%video_audio_name, %video_audio_code
 
 # COMPLETE_STAT_RACE_ZIP:
 %releasename, %t_mbytes, %t_files, %t_avgspeed, %r_avgspeed, %t_duration, %u_count
@@ -168,7 +178,9 @@ Quickreference of cookies:
 %g_name, %filename, %u_tagline, %g_racer_position, %g_racer_name, %g_racer_mbytes
 %g_racer_files, %g_racer_percent, %g_racer_avgspeed, %u_racer_position, %u_racer_name
 %g_racer_name, %u_racer_mbytes, %u_racer_files, %u_racer_percent, %u_racer_avgspeed
-%u_racer_dayup, %u_racer_wkup, %u_racer_monthup, %u_racer_allup
+%u_racer_dayup, %u_racer_wkup, %u_racer_monthup, %u_racer_allup, %video_width, %video_height
+%video_fps, %video_aspect, %video_type_long, %video_type_short, %video_audio_hz, %video_audio_channels
+%video_audio_name, %video_audio_code
 
 # COMPLETE_ZIP:
 %releasename, %t_mbytes, %t_files, %t_avgspeed, %r_avgspeed, %t_duration, %u_name
@@ -192,8 +204,14 @@ Quickreference of cookies:
 # DELUSER:
 %u_siteop, %u_name
 
+# DLTEST:
+%u_name, %g_name, %mbps, %mbytesps, %mibytes, %mbytes
+
 # DOUBLESFV:
 %u_name, %g_name, %releasename, %filename
+
+# EXPIRED:
+%u_name
 
 # GADDUSER:
 %u_siteop, %u_name, %g_name
@@ -224,7 +242,8 @@ Quickreference of cookies:
 %u_leader_percent, %u_leader_avgspeed, %g_leader_name, %g_leader_mbytes, %g_leader_files
 %g_leader_percent, %g_leader_avgspeed, %t_mbytes, %t_files, %t_percent, %t_avgspeed
 %r_avgspeed, %t_missingfiles, %filename, %u_count, %g_count, %u_name, %g_name, %t_total_files
-%u_tagline, %t_timeleft
+%u_tagline, %t_timeleft, %video_width, %video_height, %video_fps, %video_aspect, %video_type_long
+%video_type_short, %video_audio_hz, %video_audio_channels, %video_audio_name, %video_audio_code
 
 # HALFWAY_NORACE_ZIP:
 %releasename, %u_leader_name, %u_leader_gname, %u_leader_mbytes, %u_leader_files
@@ -259,7 +278,9 @@ Quickreference of cookies:
 %u_leader_percent, %u_leader_avgspeed, %g_leader_name, %g_leader_mbytes, %g_leader_files
 %g_leader_percent, %g_leader_avgspeed, %t_mbytes, %t_files, %t_percent, %t_avgspeed
 %r_avgspeed, %t_missingfiles, %filename, %u_count, %g_count, %u_name, %g_name, %t_total_files
-%r_name, %r_gname %t_timeleft
+%r_name, %r_gname %t_timeleft, %video_width, %video_height, %video_fps, %video_aspect
+%video_type_long, %video_type_short, %video_audio_hz, %video_audio_channels, %video_audio_name
+%video_audio_code
 
 # HALFWAY_RACE_ZIP:
 %releasename, %u_leader_name, %u_leader_gname, %u_leader_mbytes, %u_leader_files
@@ -268,24 +289,11 @@ Quickreference of cookies:
 %r_avgspeed, %t_missingfiles, %filename, %u_count, %g_count, %u_name, %g_name, %t_total_files
 %r_name, %r_gname %t_timeleft
 
-# IMDB:
-%msg
-
-# IMDBFIND:
-%msg
-
-# IMDBVAR:
-%imdbdirname, %imdburl, %imdbtitle, %imdbgenre, %imdbrating, %imdbcountry, %imdblanguage
-%imdbcertification, %imdbruntime, %imdbdirector, %imdbbusinessdata, %imdbpremiereinfo
-%imdblimitedinfo, %imdbvotes, %imdbscore, %imdbname, %imdbyear, %imdbnumscreens, %imdbislimited
-%imdbcastleadname, %imdbcastleadchar, %imdbtagline, %imdbplot, %imdbbar, %imdbcasting
-%imdbcommentshort, %imdbdestination
-
 # INCOMPLETE:
 %u_name, %g_name, %releasename
 
 # INVITE:
-%u_ircnick, %u_name, %g_name
+%u_ircnick, %u_name, %g_name, %u_tagline
 
 # IPNOTADDED:
 %u_hostmask, %u_ip
@@ -297,7 +305,7 @@ Quickreference of cookies:
 %u_name, %pid
 
 # LOGIN:
-%u_hostmask, %u_ip, %dummy, %u_name, %g_name, %u_tagline
+%u_hostmask, %u_ip, %bncip, %u_name, %g_name, %u_tagline
 
 # LOGOUT:
 %u_hostmask, %u_ip, %u_name, %g_name, %u_tagline
@@ -331,7 +339,9 @@ Quickreference of cookies:
 %releasename, %filename, %u_count, %g_count, %t_files, %t_missingfiles, %u_leader_name
 %u_leader_gname, %u_leader_mbytes, %u_leader_files, %u_leader_percent, %u_leader_avgspeed
 %g_leader_name, %g_leader_mbytes, %g_leader_files, %g_leader_percent, %g_leader_avgspeed
-%u_tagline, %a_name, %a_gname %t_timeleft
+%u_tagline, %a_name, %a_gname %t_timeleft, %video_width, %video_height, %video_fps
+%video_aspect, %video_type_long, %video_type_short, %video_audio_hz, %video_audio_channels
+%video_audio_name, %video_audio_code
 
 # NEWLEADER_ZIP:
 %u_name, %g_name, %u_speed, %t_duration, %uploaded_files, %uploaded_percent, %uploaded_mbytes
@@ -364,7 +374,9 @@ Quickreference of cookies:
 # RACE_VIDEO:
 %u_name, %g_name, %a_name, %a_gname %releasename, %u_speed, %filename, %t_duration
 %t_percent, %u_count, %g_count, %t_upfiles, %t_files, %missing_files, %u_tagline
-%r_name, %r_gname %t_timeleft
+%r_name, %r_gname %t_timeleft, %video_width, %video_height, %video_fps, %video_aspect
+%video_type_long, %video_type_short, %video_audio_hz, %video_audio_channels, %video_audio_name
+%video_audio_code
 
 # RACE_ZIP:
 %u_name, %g_name, %a_name, %a_gname %releasename, %u_speed, %filename, %t_duration
@@ -380,17 +392,48 @@ Quickreference of cookies:
 # REQUEST:
 %releasename, %u_name, %g_name, %u_tagline
 
+# RESUMESFV:
+%u_name, %g_name, %releasename, %filename
+
+# SAMPLEDIR:
+%u_name, %g_name, %video_width, %video_height, %video_fps, %video_aspect, %video_type_long
+%video_type_short, %video_audio_hz, %video_audio_channels, %video_audio_name, %video_audio_code
+
+# SAMPLE_AVI:
+%u_name, %g_name, %video_codec, %video_framerate, %video_bitrate, %video_height, %video_width
+%video_aspect, %video_interlacement, %audio_codec, %audio_bitrate, %audio_mode, %audio_channels
+%audio_samplerate, %audio_resolution, %audio_codecprofile
+
+# SAMPLE_GENERAL:
+%u_name, %g_name, %video_codec, %video_framerate, %video_bitrate, %video_height, %video_width
+%video_aspect, %audio_codec, %audio_bitrate, %audio_mode, %audio_channels, %audio_samplerate
+%audio_resolution
+
+# SAMPLE_MPEG1:
+%u_name, %g_name, %audio_codec, %audio_bitrate, %audio_mode, %audio_channels, %audio_samplerate
+%audio_resolution, %audio_genre, %audio_year, %audio_cprofile
+
+# SAMPLE_MPEG2:
+%u_name, %g_name, %video_codec, %video_framerate, %video_bitrate, %video_bitratemode
+%video_standard, %video_height, %video_width, %video_aspect, %video_interlacement
+%audio_codec, %audio_bitrate, %audio_mode, %audio_channels, %audio_samplerate, %audio_resolution
+
+# SAMPLE_QT:
+%u_name, %g_name, %video_codec, %video_framerate, %video_bitrate, %video_height, %video_width
+%video_aspect, %video_interlacement, %audio_codec, %audio_bitrate, %audio_mode, %audio_channels
+%audio_samplerate, %audio_resolution
+
 # SFV_AUDIO:
-%releasename, %t_filecount, %u_name, %g_name, %u_tagline
+%releasename, %t_filecount, %u_name, %g_name, %sfv_name, %u_tagline
 
 # SFV_OTHER:
-%releasename, %t_filecount, %u_name, %g_name, %u_tagline
+%releasename, %t_filecount, %u_name, %g_name, %sfv_name, %u_tagline
 
 # SFV_RAR:
-%releasename, %t_filecount, %u_name, %g_name, %u_tagline
+%releasename, %t_filecount, %u_name, %g_name, %sfv_name, %u_tagline
 
 # SFV_VIDEO:
-%releasename, %t_filecount, %u_name, %g_name, %u_tagline
+%releasename, %t_filecount, %u_name, %g_name, %sfv_name, %u_tagline
 
 # SYSOP:
 %msg
@@ -403,6 +446,9 @@ Quickreference of cookies:
 
 # TURGEN:
 %msg
+
+# ULTEST:
+%u_name, %g_name, %mbps, %mbytesps, %mibytes, %mbytes
 
 # UPDATE_CBR:
 %u_name, %g_name, %t_files, %u_speed, %t_mbytes, %filename, %releasename, %u_tagline
@@ -420,15 +466,20 @@ Quickreference of cookies:
 # UPDATE_VBR:
 %u_name, %g_name, %t_files, %u_speed, %t_mbytes, %filename, %releasename, %u_tagline
 %genre, %year, %bitrate, %sampling, %mode, %audio, %a_stream, %a_version, %artist
-%album, %title, %codec, %layer %vbr_oldnew, %t_timeleft
+%album, %title, %codec, %layer, %vbr_oldnew, %vbr_quality, %vbr_minimum_bitrate, %vbr_noiseshaping
+%vbr_stereomode, %vbr_unwise, %vbr_source, %t_timeleft
 
 # UPDATE_VIDEO:
 %u_name, %g_name, %t_files, %u_speed, %t_mbytes, %filename, %releasename, %u_tagline
-%t_timeleft
+%t_timeleft, %video_width, %video_height, %video_fps, %video_aspect, %video_type_long
+%video_type_short, %video_audio_hz, %video_audio_channels, %video_audio_name, %video_audio_code
 
 # UPDATE_ZIP:
 %u_name, %g_name, %t_files, %u_speed, %t_mbytes, %filename, %releasename, %u_tagline
 %t_timeleft
+
+# WHOIS:
+%msg
 
 # WIPE:
 %u_name, %g_name, %u_tagline

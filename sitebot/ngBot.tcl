@@ -1015,11 +1015,11 @@ namespace eval ::ngBot {
 				putlog "\[ngBot\] Error :: Invalid bouncer line \"$entry\" (check bnc(LIST))."
 				continue
 			}
-			incr num; set ping "N/A"
+			incr num; set ping "N/A"; set min "-"; set avg "-"; set max "-"; set mdev "-"
 			foreach {desc ip port} $entrysplit {break}
 
 			if {[istrue $bnc(PING)]} {
-				if {[catch {exec $binary(PING) -c 1 -t $bnc(TIMEOUT) $ip} reply]} {
+				if {[catch {exec $binary(PING) -c $bnc(PINGCOUNT) -t $bnc(TIMEOUT) $ip} reply]} {
 					set output "$theme(PREFIX)$announce(BNC_PING)"
 					set output [${ns}::replacevar $output "%num" $num]
 					set output [${ns}::replacevar $output "%desc" $desc]
@@ -1028,9 +1028,18 @@ namespace eval ::ngBot {
 					${ns}::sndone $rcvr [${ns}::replacebasic $output "BNC"]
 					continue
 				}
-				set reply [lindex [split $reply "\n"] 1]
-				if {[regexp {.+time=(\S+) ms} $reply reply ping]} {
+				set firstreply [lindex [split $reply "\n"] 1]
+				if {[regexp {.+time=(\S+) ms} $firstreply -> ping]} {
 					set ping [format "%.1fms" $ping]
+				} else {
+					putlog "\[ngBot\] Error :: Unable to parse ping reply \"$firstreply\", please report to pzs-ng developers."
+				}
+				set reply [lindex [split $reply "\n"] end]
+				if {[regexp {rtt min/avg/max/mdev = ([^/]+)/([^/]+)/([^/]+)/(\S+) ms} $reply -> min avg max mdev]} {
+					set min [format "%.1fms" $min]
+					set avg [format "%.1fms" $avg]
+					set max [format "%.1fms" $max]
+					set mdev [format "%.1fms" $mdev]
 				} else {
 					putlog "\[ngBot\] Error :: Unable to parse ping reply \"$reply\", please report to pzs-ng developers."
 				}
@@ -1047,6 +1056,10 @@ namespace eval ::ngBot {
 			if {!$status} {
 				set output "$theme(PREFIX)$announce(BNC_ONLINE)"
 				set output [${ns}::replacevar $output "%ping" $ping]
+				set output [${ns}::replacevar $output "%min" $min]
+				set output [${ns}::replacevar $output "%avg" $avg]
+				set output [${ns}::replacevar $output "%max" $max]
+				set output [${ns}::replacevar $output "%mdev" $mdev]
 				set output [${ns}::replacevar $output "%response" $response]
 			} else {
 				set error "unknown error"

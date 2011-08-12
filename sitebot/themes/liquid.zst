@@ -247,7 +247,7 @@ announce.REQUEST                = "%b{%u_name}·%g_name requests %b{%releasename}
 ## Bouncer status
 announce.BNC                    = "Checking bouncer status..."
 announce.BNC_PING               = "%b{-} %num. %desc at %ip:%port is %c1{%b{DOWN}} (can't ping host) SSL"
-announce.BNC_ONLINE             = "%b{-} %num. %desc at %ip:%port is %c3{%b{UP}} (login: %b{%response}ms ping: %b{%ping}) SSL"
+announce.BNC_ONLINE             = "%b{-} %num. %desc at %ip:%port is %c3{%b{UP}} (login: %b{%response}ms ping: %b{%ping} (%min/%avg/%max/%mdev)) SSL"
 announce.BNC_OFFLINE            = "%b{-} %num. %desc at %ip:%port is %c1{%b{DOWN}} (%error) SSL"
 
 ## IRC Commands

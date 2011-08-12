@@ -65,6 +65,7 @@ set device_size             "AUTO"
 
 set bnc(ENABLED)            "FALSE"
 set bnc(PING)               "TRUE"
+set bnc(PINGCOUNT)          1
 set bnc(SECURE)             "TRUE"
 set bnc(LIST)               "Canada:bnc.host.ca:123 Germany:bnc.host.de:456 Sweden:bnc.host.se:789"
 set bnc(USER)               "bncuser"
