@@ -333,8 +333,15 @@ namespace eval ::ngBot::module::glftpd {
 		variable ${np}::statsection
 		variable ${np}::statdefault
 		variable ${np}::location
+		variable ${np}::announcetochan
 
 		${np}::checkchan $nick $chan
+
+		if {[info exists ::mclastbind]} {set ::lastbind $::mclastbind}
+		set rcvr $nick
+		if {[${np}::announcetochancheck $::lastbind 0]} {
+			set rcvr $chan
+		}
 
 		set argv [split $argv]
 		set section $statdefault
@@ -349,7 +356,7 @@ namespace eval ::ngBot::module::glftpd {
 				lappend sections $value
 			}
 			if {$error} {
-				puthelp "PRIVMSG $nick :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
+				puthelp "PRIVMSG $rcvr :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
 				return
 			}
 		}
@@ -365,9 +372,9 @@ namespace eval ::ngBot::module::glftpd {
 			} else {
 				incr newline($line)
 			}
-			puthelp "PRIVMSG $nick :$line\003$newline($line)"
+			puthelp "PRIVMSG $rcvr :$line\003$newline($line)"
 		}
-		puthelp "PRIVMSG $nick :------------------------------------------------------------------------"
+		puthelp "PRIVMSG $rcvr :------------------------------------------------------------------------"
 		return
 	}
 
@@ -384,11 +391,17 @@ namespace eval ::ngBot::module::glftpd {
 		variable ${np}::location
 		variable ${np}::sections
 		variable ${np}::defaultsection
+		variable ${np}::announcetochan
 
 		${np}::checkchan $nick $chan
 
+		if {[info exists ::mclastbind]} {set ::lastbind $::mclastbind}
+		set rcvr $nick
+		if {[${np}::announcetochancheck $::lastbind 0]} {
+			set rcvr $chan
+		}
+
 		if {![${np}::getoptions $argv results section]} {
-			if {[info exist ::mclastbind]} {set ::lastbind $::mclastbind}
 			## By displaying the command syntax in the channel (opposed to private message), we can inform others
 			## at the same time. There's this recurring phenomena, every time a user types an "uncommon" command, half
 			## a dozen others will as well...to learn about this command. So, let's kill a few idiots with one stone.
@@ -401,7 +414,7 @@ namespace eval ::ngBot::module::glftpd {
 			set lines [exec $binary(SHOWLOG) -l -m $results -r $location(GLCONF)]
 		} else {
 			if {[set sectiondata [${np}::getsectionpath $section]] == ""} {
-				puthelp "PRIVMSG $nick :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
+				puthelp "PRIVMSG $rcvr :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
 				return
 			}
 			foreach {section sectionpath} $sectiondata {break}
@@ -414,7 +427,7 @@ namespace eval ::ngBot::module::glftpd {
 
 		set output "$theme(PREFIX)$announce(NEW)"
 		set output [${np}::replacevar $output "%section" $section]
-		${np}::sndone $nick [${np}::replacebasic $output "NEW"]
+		${np}::sndone $rcvr [${np}::replacebasic $output "NEW"]
 		set body "$theme(PREFIX)$announce(NEW_BODY)"
 		set num 0
 
@@ -437,12 +450,12 @@ namespace eval ::ngBot::module::glftpd {
 			set output [${np}::replacevar $output "%files" $files]
 			set output [${np}::replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
 			set output [${np}::replacepath $output $sectionpath $dirpath]
-			${np}::sndone $nick [${np}::replacebasic $output "NEW"]
+			${np}::sndone $rcvr [${np}::replacebasic $output "NEW"]
 		}
 
 		if {!$num} {
 			set output "$theme(PREFIX)$announce(NEW_NONE)"
-			${np}::sndone $nick [${np}::replacebasic $output "NEW"]
+			${np}::sndone $rcvr [${np}::replacebasic $output "NEW"]
 		}
 		return
 	}
@@ -455,11 +468,17 @@ namespace eval ::ngBot::module::glftpd {
 		variable ${np}::location
 		variable ${np}::sections
 		variable ${np}::defaultsection
+		variable ${np}::announcetochan
 
 		${np}::checkchan $nick $chan
 
+		if {[info exists ::mclastbind]} {set ::lastbind $::mclastbind}
+		set rcvr $nick
+		if {[${np}::announcetochancheck $::lastbind 0]} {
+			set rcvr $chan
+		}
+
 		if {![${np}::getoptions $argv results section]} {
-			if {[info exist ::mclastbind]} {set ::lastbind $::mclastbind}
 			puthelp "PRIVMSG $chan :\002Usage:\002 $::lastbind \[-max <num>\] \[section\]"
 			return
 		}
@@ -474,7 +493,7 @@ namespace eval ::ngBot::module::glftpd {
 			set lines [exec $binary(SHOWLOG) $type_opt -m $results -r $location(GLCONF)]
 		} else {
 			if {[set sectiondata [${np}::getsectionpath $section]] == ""} {
-				puthelp "PRIVMSG $nick :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
+				puthelp "PRIVMSG $rcvr :Invalid section, sections: [join [lsort -ascii $sections] {, }]"
 				return
 			}
 			foreach {section sectionpath} $sectiondata {break}
@@ -483,7 +502,7 @@ namespace eval ::ngBot::module::glftpd {
 
 		set output "$theme(PREFIX)$announce($type)"
 		set output [${np}::replacevar $output "%section" $section]
-		${np}::sndone $nick [${np}::replacebasic $output $type]
+		${np}::sndone $rcvr [${np}::replacebasic $output $type]
 		set body "$theme(PREFIX)$announce(${type}_BODY)"
 		set num 0
 
@@ -502,12 +521,12 @@ namespace eval ::ngBot::module::glftpd {
 			set output [${np}::replacevar $output "%reason" $reason]
 			set output [${np}::replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
 			set output [${np}::replacepath $output $sectionpath $dirpath]
-			${np}::sndone $nick [${np}::replacebasic $output $type]
+			${np}::sndone $rcvr [${np}::replacebasic $output $type]
 		}
 
 		if {!$num} {
 			set output "$theme(PREFIX)$announce(${type}_NONE)"
-			${np}::sndone $nick [${np}::replacebasic $output $type]
+			${np}::sndone $rcvr [${np}::replacebasic $output $type]
 		}
 		return
 	}
@@ -521,16 +540,22 @@ namespace eval ::ngBot::module::glftpd {
 		variable ${np}::location
 		variable ${np}::search_chars
 		variable ${np}::defaultsection
+		variable ${np}::announcetochan
 
 		${np}::checkchan $nick $chan
 
+		if {[info exists ::mclastbind]} {set ::lastbind $::mclastbind}
+		set rcvr $nick
+		if {[${np}::announcetochancheck $::lastbind 0]} {
+			set rcvr $chan
+		}
+
 		if {![${np}::getoptions $argv results pattern] || [string equal "" $pattern]} {
-			if {[info exist ::mclastbind]} {set ::lastbind $::mclastbind}
 			puthelp "PRIVMSG $chan :\002Usage:\002 $::lastbind \[-max <num>\] <pattern>"
 			return
 		}
 		if {$search_chars > 0 && [regexp -all {[a-zA-Z0-9]} $pattern] < $search_chars} {
-			puthelp "PRIVMSG $nick :The search pattern must at be at least \002$search_chars\002 alphanumeric characters."
+			puthelp "PRIVMSG $rcvr :The search pattern must at be at least \002$search_chars\002 alphanumeric characters."
 			return
 		}
 		## Retrieve matching dirlog entries
@@ -543,7 +568,7 @@ namespace eval ::ngBot::module::glftpd {
 
 		set output "$theme(PREFIX)$announce(SEARCH)"
 		set output [${np}::replacevar $output "%pattern" $pattern]
-		${np}::sndone $nick [${np}::replacebasic $output "SEARCH"]
+		${np}::sndone $rcvr [${np}::replacebasic $output "SEARCH"]
 		set body "$theme(PREFIX)$announce(SEARCH_BODY)"
 		set num 0
 
@@ -566,12 +591,12 @@ namespace eval ::ngBot::module::glftpd {
 			set output [${np}::replacevar $output "%files" $files]
 			set output [${np}::replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
 			set output [${np}::replacepath $output "/site/*" $dirpath]
-			${np}::sndone $nick [${np}::replacebasic $output "SEARCH"]
+			${np}::sndone $rcvr [${np}::replacebasic $output "SEARCH"]
 		}
 
 		if {!$num} {
 			set output "$theme(PREFIX)$announce(SEARCH_NONE)"
-			${np}::sndone $nick [${np}::replacebasic $output "SEARCH"]
+			${np}::sndone $rcvr [${np}::replacebasic $output "SEARCH"]
 		}
 		return
 	}
@@ -586,6 +611,7 @@ namespace eval ::ngBot::module::glftpd {
 		variable ${np}::theme
 		variable ${np}::binary
 		variable ${np}::announce
+		variable ${np}::announcetochan
 
 		${np}::checkchan $nick $chan
 
@@ -609,7 +635,13 @@ namespace eval ::ngBot::module::glftpd {
 		set output [${np}::replacevar $output "%uppercent" $upper]
 		set output [${np}::replacevar $output "%dnpercent" $dnper]
 		set output [${np}::replacevar $output "%totalpercent" $totalper]
-		${np}::sndone $chan [${np}::replacebasic $output "BW"]
+
+		if {[info exists ::mclastbind]} {set ::lastbind $::mclastbind}
+		set rcvr $chan
+		if {![${np}::announcetochancheck $::lastbind 1]} {
+			set rcvr $nick
+		}
+		${np}::sndone $rcvr [${np}::replacebasic $output "BW"]
 		return
 	}
 
@@ -620,11 +652,18 @@ namespace eval ::ngBot::module::glftpd {
 		variable ${np}::binary
 		variable ${np}::announce
 		variable ${np}::minidletime
+		variable ${np}::announcetochan
 
 		${np}::checkchan $nick $chan
 
+		if {[info exists ::mclastbind]} {set ::lastbind $::mclastbind}
+		set rcvr $chan
+		if {![${np}::announcetochancheck $::lastbind 1]} {
+			set rcvr $nick
+		}
+
 		set output "$theme(PREFIX)$announce(IDLE)"
-		${np}::sndone $chan [${np}::replacebasic $output "IDLE"]
+		${np}::sndone $rcvr [${np}::replacebasic $output "IDLE"]
 
 		set raw [exec $binary(WHO) "--raw"]
 		set count 0; set total 0.0
@@ -643,13 +682,13 @@ namespace eval ::ngBot::module::glftpd {
 					set output [${np}::replacevar $output "%idletime" [${np}::format_duration $idletime]]
 					set output [${np}::replacevar $output "%tagline" $tagline]
 					set output [${np}::replacevar $output "%since" $since]
-					${np}::sndone $chan [${np}::replacebasic $output "IDLE"]
+					${np}::sndone $rcvr [${np}::replacebasic $output "IDLE"]
 					incr count
 				}
 			}
 		}
 		set output [${np}::replacevar "$theme(PREFIX)$announce(TOTIDLE)" "%count" $count]
-		${np}::sndone $chan [${np}::replacebasic $output "IDLE"]
+		${np}::sndone $rcvr [${np}::replacebasic $output "IDLE"]
 		return
 	}
 
@@ -659,11 +698,17 @@ namespace eval ::ngBot::module::glftpd {
 		variable ${np}::binary
 		variable ${np}::disable
 		variable ${np}::announce
+		variable ${np}::announcetochan
 
 		${np}::checkchan $nick $chan
 
+		if {[info exists ::mclastbind]} {set ::lastbind $::mclastbind}
+		set rcvr $chan
+		if {![${np}::announcetochancheck $::lastbind 1]} {
+			set rcvr $nick
+		}
+
 		if {[string equal $argv ""]} {
-			if {[info exist ::mclastbind]} {set ::lastbind $::mclastbind}
 			puthelp "PRIVMSG $chan :\002Usage:\002 $::lastbind <user>"
 			return
 		}
@@ -691,20 +736,20 @@ namespace eval ::ngBot::module::glftpd {
 				set output [${np}::replacevar $output "%timeonline" [lindex $line 7]]
 				set output [${np}::replacevar $output "%f_name" [lindex $line 8]]
 				set output [${np}::replacevar $output "%u_pid" [lindex $line 10]]
-				${np}::sndone $chan [${np}::replacebasic $output "SPEED"]
+				${np}::sndone $rcvr [${np}::replacebasic $output "SPEED"]
 			}
 		} else {
 			set base_output "$theme(PREFIX)$announce(DEFAULT)"
 			foreach line [split [exec $binary(WHO) [lindex $argv 0]] "\n"] {
 				set output [${np}::replacevar $base_output "%msg" $line]
-				${np}::sndone $chan [${np}::replacebasic $output "SPEED"]
+				${np}::sndone $rcvr [${np}::replacebasic $output "SPEED"]
 			}
 		}
 
 		if {[string equal "" $line]} {
 			set output "$theme(PREFIX)$announce(SPEEDERROR)"
 			set output [${np}::replacevar $output "%msg" "User not online."]
-			${np}::sndone $chan [${np}::replacebasic $output "SPEED"]
+			${np}::sndone $rcvr [${np}::replacebasic $output "SPEED"]
 		}
 		return
 	}
@@ -715,6 +760,7 @@ namespace eval ::ngBot::module::glftpd {
 		variable ${np}::theme
 		variable ${np}::binary
 		variable ${np}::announce
+		variable ${np}::announcetochan
 
 		${np}::checkchan $nick $chan
 
@@ -728,8 +774,14 @@ namespace eval ::ngBot::module::glftpd {
 			set type_string "Leechers:"
 		}
 
+		if {[info exists ::mclastbind]} {set ::lastbind $::mclastbind}
+		set rcvr $chan
+		if {![${np}::announcetochancheck $::lastbind 1]} {
+			set rcvr $nick
+		}
+
 		set output "$theme(PREFIX)$announce($type_long)"
-		${np}::sndone $chan [${np}::replacebasic $output $type_long]
+		${np}::sndone $rcvr [${np}::replacebasic $output $type_long]
 
 		set raw [exec $binary(WHO) "--raw"]
 		set count 0; set total 0.0
@@ -746,7 +798,7 @@ namespace eval ::ngBot::module::glftpd {
 				set output [${np}::replacevar $output "%tagline" [lindex $line 6]]
 				set output [${np}::replacevar $output "%since" [lindex $line 7]]
 				set output [${np}::replacevar $output "%filename" [lindex $line 8]]
-				${np}::sndone $chan [${np}::replacebasic $output $type_long]
+				${np}::sndone $rcvr [${np}::replacebasic $output $type_long]
 				incr count
 				set total [expr {$total + $uspeed}]
 			}
@@ -758,15 +810,22 @@ namespace eval ::ngBot::module::glftpd {
 		set output [${np}::replacevar $output "%count" $count]
 		set output [${np}::replacevar $output "%total" [${np}::format_speed $total "none"]]
 		set output [${np}::replacevar $output "%per" $per]
-		${np}::sndone $chan [${np}::replacebasic $output $type_long]
+		${np}::sndone $rcvr [${np}::replacebasic $output $type_long]
 		return
 	}
 
 	proc cmd_who {nick uhost hand chan argv} {
 		variable np
 		variable ${np}::binary
+		variable ${np}::announcetochan
 
 		${np}::checkchan $nick $chan
+
+		if {[info exists ::mclastbind]} {set ::lastbind $::mclastbind}
+		set rcvr $nick
+		if {[${np}::announcetochancheck $::lastbind 0]} {
+			set rcvr $chan
+		}
 
 		foreach line [split [exec $binary(WHO)] "\n"] {
 			if {![info exists newline($line)]} {
@@ -774,7 +833,7 @@ namespace eval ::ngBot::module::glftpd {
 			} else {
 				incr newline($line)
 			}
-			puthelp "PRIVMSG $nick :$line\003$newline($line)"
+			puthelp "PRIVMSG $rcvr :$line\003$newline($line)"
 		}
 		return
 	}

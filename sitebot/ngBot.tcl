@@ -809,11 +809,26 @@ namespace eval ::ngBot {
 		variable disable
 		variable mainchan
 
-		if {$disable(TRIGINALLCHAN) == 1 && ![string equal -nocase $chan $mainchan]} {
-			if {[info exist ::mclastbind]} {set ::lastbind $::mclastbind}
+		if {$disable(TRIGINALLCHAN) == 1 && [lsearch [string tolower $mainchan] [string tolower $chan]] == -1} {
+			if {[info exists ::mclastbind]} {set ::lastbind $::mclastbind}
 			putlog "\[ngBot\] Warning :: \002$nick\002 tried to use \002$::lastbind\002 from an invalid channel ($chan)."
 			return -code return
 		}
+	}
+
+	proc announcetochancheck {bind default} {
+		variable bindnopre
+		variable cmdpre
+		variable announcetochan
+
+		if {[istrue $bindnopre]} {
+			set trimupperbind [string toupper [string range $bind 1 end]]
+			if {[info exists announcetochan($trimupperbind)]} { return $announcetochan($trimupperbind) }
+		}
+		set trimupperbind [string toupper [string range $bind [string length $cmdpre] end]]
+		if {[info exists announcetochan($trimupperbind)]} { return $announcetochan($trimupperbind) }
+
+		return $default
 	}
 
 	proc getoptions {argv p_results p_other} {
@@ -910,7 +925,7 @@ namespace eval ::ngBot {
 		variable defaultsection
 
 		if {[string equal "" $text]} {
-			if {[info exist ::mclastbind]} {set ::lastbind $::mclastbind}
+			if {[info exists ::mclastbind]} {set ::lastbind $::mclastbind}
 			putdcc $idx "\002Preview Usage:\002"
 			putdcc $idx "- .$::lastbind <event pattern>"
 			putdcc $idx "- Only events matching the pattern are shown (* for all)."
@@ -977,14 +992,21 @@ namespace eval ::ngBot {
 		variable theme
 		variable binary
 		variable announce
+		variable announcetochan
 
 		global errorCode
 
 		${ns}::checkchan $nick $chan
 		if {![istrue $bnc(ENABLED)]} {return}
 
+		if {[info exists ::mclastbind]} {set ::lastbind $::mclastbind}
+		set rcvr $nick
+		if {[${ns}::announcetochancheck $::lastbind 0]} {
+			set rcvr $chan
+		}
+
 		set output "$theme(PREFIX)$announce(BNC)"
-		${ns}::sndone $nick [${ns}::replacebasic $output "BNC"]
+		${ns}::sndone $rcvr [${ns}::replacebasic $output "BNC"]
 
 		set num 0
 		foreach entry $bnc(LIST) {
@@ -1003,7 +1025,7 @@ namespace eval ::ngBot {
 					set output [${ns}::replacevar $output "%desc" $desc]
 					set output [${ns}::replacevar $output "%ip" $ip]
 					set output [${ns}::replacevar $output "%port" $port]
-					${ns}::sndone $nick [${ns}::replacebasic $output "BNC"]
+					${ns}::sndone $rcvr [${ns}::replacebasic $output "BNC"]
 					continue
 				}
 				set reply [lindex [split $reply "\n"] 1]
@@ -1051,7 +1073,7 @@ namespace eval ::ngBot {
 			set output [${ns}::replacevar $output "%desc" $desc]
 			set output [${ns}::replacevar $output "%ip" $ip]
 			set output [${ns}::replacevar $output "%port" $port]
-			${ns}::sndone $nick [${ns}::replacebasic $output "BNC"]
+			${ns}::sndone $rcvr [${ns}::replacebasic $output "BNC"]
 		}
 		return
 	}
@@ -1061,12 +1083,19 @@ namespace eval ::ngBot {
 		variable sections
 		variable scriptpath
 		variable statsection
+		variable announcetochan
 
 		${ns}::checkchan $nick $chan
 
+		if {[info exists ::mclastbind]} {set ::lastbind $::mclastbind}
+		set rcvr $nick
+		if {[${ns}::announcetochancheck $::lastbind 0]} {
+			set rcvr $chan
+		}
+
 		if {[catch {set handle [open "$scriptpath/ngBot.help" r]} error]} {
 			putlog "\[ngBot\] Error :: Unable to read the help file ($error)."
-			puthelp "PRIVMSG $nick :Unable to read the help file, please contact a siteop."
+			puthelp "PRIVMSG $rcvr :Unable to read the help file, please contact a siteop."
 			return
 		}
 		set data [read -nonewline $handle]
@@ -1082,7 +1111,7 @@ namespace eval ::ngBot {
 		foreach line [split $data "\n"] {
 			set line [${ns}::replacevar $line "%sections" $sectlist]
 			set line [${ns}::replacevar $line "%statsections" $statlist]
-			puthelp "PRIVMSG $nick :[${ns}::themereplace [${ns}::replacebasic $line "HELP"] "none"]"
+			puthelp "PRIVMSG $rcvr :[${ns}::themereplace [${ns}::replacebasic $line "HELP"] "none"]"
 		}
 		return
 	}
@@ -1095,6 +1124,7 @@ namespace eval ::ngBot {
 		variable announce
 		variable dev_max_length
 		variable local_devices_only
+		variable announcetochan
 
 		${ns}::checkchan $nick $chan
 
@@ -1166,6 +1196,13 @@ namespace eval ::ngBot {
 		set totalSize [${ns}::format_kb $totalSize]
 
 		set index 0
+
+		if {[info exists ::mclastbind]} {set ::lastbind $::mclastbind}
+		set rcvr $chan
+		if {![${ns}::announcetochancheck $::lastbind 1]} {
+			set rcvr $nick
+		}
+
 		while {$index < $lineCount + 1} {
 			set output "$theme(PREFIX)$announce(FREE)"
 			set output [${ns}::replacevar $output "%free" $totalFree]
@@ -1174,7 +1211,7 @@ namespace eval ::ngBot {
 			set output [${ns}::replacevar $output "%perc_free" $percFree]
 			set output [${ns}::replacevar $output "%perc_used" $percUsed]
 			set output [${ns}::replacevar $output "%devices" $devices($index)]
-			${ns}::sndone $chan [${ns}::replacebasic $output "FREE"]
+			${ns}::sndone $rcvr [${ns}::replacebasic $output "FREE"]
 			incr index
 		}
 		return
@@ -1183,8 +1220,15 @@ namespace eval ::ngBot {
 	proc cmd_incompletes {nick uhost hand chan arg} {
 		variable ns
 		variable binary
+		variable announcetochan
 
 		${ns}::checkchan $nick $chan
+
+		if {[info exists ::mclastbind]} {set ::lastbind $::mclastbind}
+		set rcvr $chan
+		if {![${ns}::announcetochancheck $::lastbind 1]} {
+			set rcvr $nick
+		}
 
 		#puthelp "PRIVMSG $chan :Processing incomplete list for $nick."
 		foreach line [split [exec $binary(INCOMPLETE)] "\n"] {
@@ -1193,7 +1237,7 @@ namespace eval ::ngBot {
 			} else {
 				incr newline($line)
 			}
-			puthelp "PRIVMSG $chan :$line\003$newline($line)"
+			puthelp "PRIVMSG $rcvr :$line\003$newline($line)"
 		}
 		return
 	}
@@ -1203,6 +1247,7 @@ namespace eval ::ngBot {
 		variable theme
 		variable binary
 		variable announce
+		variable announcetochan
 
 		global uptime
 
@@ -1224,7 +1269,12 @@ namespace eval ::ngBot {
 		set output [${ns}::replacevar $output "%time" $time]
 		set output [${ns}::replacevar $output "%users" $users]
 		set output [${ns}::replacevar $output "%load" $load]
-		${ns}::sndone $chan [${ns}::replacebasic $output "UPTIME"]
+		if {[info exists ::mclastbind]} {set ::lastbind $::mclastbind}
+		set rcvr $chan
+		if {![${ns}::announcetochancheck $::lastbind 1]} {
+			set rcvr $nick
+		}
+		${ns}::sndone $rcvr [${ns}::replacebasic $output "UPTIME"]
 		return
 	}
 

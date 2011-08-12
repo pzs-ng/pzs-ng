@@ -69,6 +69,7 @@ set bnc(SECURE)             "TRUE"
 set bnc(LIST)               "Canada:bnc.host.ca:123 Germany:bnc.host.de:456 Sweden:bnc.host.se:789"
 set bnc(USER)               "bncuser"
 set bnc(PASS)               "bncpass"
+set announcetochan(BNC)     0
 
 ################################################################################
 # Sections
@@ -96,6 +97,7 @@ set statsection(1)          "PRE"
 ################################################################################
 set enable_irc_invite       "FALSE"
 set invite_channels         $mainchan
+set invite_channels_rights  "!6 *"
 
 ################################################################################
 # Announcing

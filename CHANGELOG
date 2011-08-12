@@ -90,6 +90,11 @@ v1.2.0  --> 1.2.x :
 		- Fixed bug #458 - privchannels wont invite users from PRIVATE groups
 		- Added bug #435 - msgreplaces are sorted so highest indexnumber is used when
 		  multiple matches occur - Thanks to [piLL]
+		- Added bug #365 - Multiple channels in $mainchan do not work. - Thanks to firstof9
+		- Added bug #335 - setting to set chan or nick reply on bnc-trigger
+		  This setting is available for all triggers via announcetochan(TRIGGER),
+		  see ngBot.conf.defaults
+		- Fixed typobug regarding mclastbind
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.

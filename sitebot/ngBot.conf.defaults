@@ -57,18 +57,6 @@ set binary(GLFTPD)      "/glftpd/bin/glftpd"
 # Should the bot die if a binary is missing - or just output that something is wrong?
 set die_on_error        "FALSE"
 
-# Allow people to invite themselves to the channel through IRC. WARNING! This is
-# considered a security threat because if someone steals the nickname of the bot
-# they will be able to easily harvest usernames/passwords. CONSIDER WITH CAUTION!
-set enable_irc_invite   "TRUE"
-
-# When enable_irc_invite is TRUE, every user can invite itself. Set here the
-# rights a user should have matching the glFTPd-style permissions to be
-# invited to the invite_channels. This setting also applies on invites requested
-# through the ftp "site invite" command, so this should resemble the custom-invite
-# permissions in glftpd.conf.
-set invite_channels_rights "!6 *"
-
 # Are you using glftpd2? Default setting ("AUTO") should be safe,
 # enables autodetection (if binary(GLFTPD) is set correctly)
 # To override autodetection (or if it just doesn't work), you can set
@@ -81,12 +69,62 @@ set ftpd_type           "glftpd"
 # Sitename is for the %sitename-cookie in announces.
 set sitename            "pzs-ng"
 
+################################################################################
+# TRIGGERS
+################################################################################
+
 # Prefix on commands (f. x. !pnfree if cmdpre is !pn, !free if cmdpre is !, etc)
 # bindnopre does not replace the cmd pre command, it meirly adds a second
 # trigger option. example: you can set cmdpre to !pn but if bindnopre is set to
 # "TRUE" then the sitebot will respond to !pnbnc and also !bnc useful for rings.
 set cmdpre              "!pn"
 set bindnopre           "TRUE"
+
+# Set here to where the different triggers should reply: channel or nick.
+# Use 0 to reply to the nick that issued the trigger, or 1 to reply in the chan
+# the trigger was issued in. Use the triggername as index in UPPERCASE.
+set announcetochan(BNC)		0
+set announcetochan(DF)		1
+set announcetochan(FREE)	1
+set announcetochan(HELP)	0
+set announcetochan(INC)		1
+set announcetochan(INCOMPLETE)	1
+set announcetochan(INCOMPLETES)	1
+set announcetochan(UPTIME)	1
+# glFTPd-specific
+set announcetochan(BW)		1
+set announcetochan(BWDN)	1
+set announcetochan(BWUP)	1
+set announcetochan(DN)		1
+set announcetochan(DOWN)	1
+set announcetochan(DOWNLOADERS)	1
+set announcetochan(LEECHERS)	1
+set announcetochan(UP)		1
+set announcetochan(UPLOADERS)	1
+set announcetochan(NUKES)	0
+set announcetochan(UNNUKES)	0
+set announcetochan(IDLE)	1
+set announcetochan(IDLERS)	1
+set announcetochan(NEW)		0
+set announcetochan(SEARCH)	0
+set announcetochan(SPEED)	1
+set announcetochan(WHO)		0
+set announcetochan(GPAD)	0
+set announcetochan(GPAU)	0
+set announcetochan(GPWD)	0
+set announcetochan(GPWU)	0
+set announcetochan(GPMD)	0
+set announcetochan(GPMU)	0
+set announcetochan(GPDD)	0
+set announcetochan(GPDU)	0
+set announcetochan(ALLDN)	0
+set announcetochan(ALLUP)	0
+set announcetochan(DAYDN)	0
+set announcetochan(DAYUP)	0
+set announcetochan(MONTHDN)	0
+set announcetochan(MONTHUP)	0
+set announcetochan(WKDN)	0
+set announcetochan(WKUP)	0
 
 # Your sites bandwidth, used for bandwidth usage calculations (in kilobytes/s).
 # 100mbit full duplex
@@ -215,6 +253,22 @@ set mainchan            ""
 #set chanlist(TEST)     $mainchan
 set chanlist(DEFAULT)   $mainchan
 set chanlist(WELCOME)   $mainchan
+
+################################################################################
+# INVITING
+################################################################################
+
+# Allow people to invite themselves to the channel through IRC. WARNING! This is
+# considered a security threat because if someone steals the nickname of the bot
+# they will be able to easily harvest usernames/passwords. CONSIDER WITH CAUTION!
+set enable_irc_invite   "TRUE"
+
+# When enable_irc_invite is TRUE, every user can invite itself. Set here the
+# rights a user should have matching the glFTPd-style permissions to be
+# invited to the invite_channels. This setting also applies on invites requested
+# through the ftp "site invite" command, so this should resemble the custom-invite
+# permissions in glftpd.conf.
+set invite_channels_rights "!6 *"
 
 # Which channels should users be invited to (by default, users are invited
 # to the same channel the invite is announced in).
