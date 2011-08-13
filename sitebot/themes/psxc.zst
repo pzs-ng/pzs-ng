@@ -33,6 +33,7 @@ announce.BADHOSTMASK				= "[%b{LOGIN }] failed login %b{%u_name} - hostmask does
 announce.BADPASSWORD				= "[%b{LOGIN }] failed login %b{%u_name} - wrong password."
 announce.BANNEDHOST				= "[%b{LOGIN }] failed login %b{%u_name} - hostmask banned."
 announce.DELETED				= "[%b{LOGIN }] failed login %b{%u_name} - account deleted."
+announce.EXPIRED				= "[%b{LOGIN }] failed login %b{%u_name} - account expired."
 announce.IPNOTADDED				= "[%b{LOGIN }] denied unknown connection from %b{%u_hostmask}."
 announce.TAGLINE				= "[%b{TAG   }] %b{%u_name}@%g_name has changed tagline to %b{%u_tagline}."
 announce.TIMEOUT				= "[%b{LOGOUT}] %b{%u_name} has timed out after %b{%u_idletime}s."

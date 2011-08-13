@@ -38,6 +38,7 @@ announce.BADHOSTMASK            = "[%b{login }] %b{%u_name} could not login, hos
 announce.BADPASSWORD            = "[%b{login }] %b{%u_name} could not login, invalid password."
 announce.BANNEDHOST             = "[%b{login }] %b{%u_name} could not login, hostmask %b{%u_hostmask} is banned."
 announce.DELETED                = "[%b{login }] %b{%u_name} could not login, account deleted."
+announce.EXPIRED                = "[%b{login }] %b{%u_name} could not login, account expired."
 announce.IPNOTADDED             = "[%b{login }] denied unknown connection from %b{%u_hostmask}."
 announce.KILLGHOST              = "[%b{ghost }] %b{%u_name} killed a ghost with PID %b{%pid}."
 announce.TAGLINE				= "%b{%c9{-TAGLINE-}} %b{%u_name}@%g_name sprays the new hip logo %b{%u_tagline}on his dope ride."

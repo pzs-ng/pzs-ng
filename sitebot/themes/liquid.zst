@@ -48,6 +48,7 @@ announce.BADHOSTMASK            = "[LOGiN] .: wannabe %b{%u_name} (%u_hostmask) 
 announce.BADPASSWORD            = "[LOGiN] .: %b{%u_name} n00bed an invalid password :."
 announce.BANNEDHOST             = "[LOGiN] .: %b{%u_name} (%u_hostmask) is banned :."
 announce.DELETED                = "[LOGiN] .: deluser %b{%u_name} wanna enter liquid :."
+announce.EXPIRED                = "[LOGiN] .: expired user %b{%u_name} wanna enter liquid :."
 announce.IPNOTADDED             = "[LOGiN] .: denied unknown connection from %b{%u_hostmask} :."
 announce.LOGOUT                 = "[LOGOUT] .: %b{%u_name}·%g_name dried up :."
 announce.TIMEOUT                = "[LOGOUT] .: %b{%u_name} has dried up after %b{%u_idletime}s idle :."

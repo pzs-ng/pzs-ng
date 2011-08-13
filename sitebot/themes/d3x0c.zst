@@ -53,6 +53,7 @@ announce.BADHOSTMASK            = "%b{login failed} > %b{%u_name} > hostmask %b{
 announce.BADPASSWORD            = "%b{login failed} > %b{%u_name} > invalid password"
 announce.BANNEDHOST             = "%b{login failed} > %b{%u_name} > hostmask %b{%u_hostmask} banned"
 announce.DELETED                = "%b{login failed} > %b{%u_name} > account deleted"
+announce.EXPIRED                = "%b{login failed} > %b{%u_name} > account expired"
 announce.KILLGHOST              = "%b{ghost} > %b{%u_name} killed ghost > PID %b{%pid}"
 announce.TAGLINE                = "%b{tagline} > %b{%u_name}> changed tagline > %b{%u_tagline}"
 announce.TIMEOUT                = "%b{timeout} > %b{%u_name} > timed out > %b{%u_idletime}s"
