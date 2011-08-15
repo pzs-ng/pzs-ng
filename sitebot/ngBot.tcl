@@ -444,7 +444,7 @@ namespace eval ::ngBot {
 						}
 					}
 				}
-				if {[info exists newevent]} { set event $newevent }
+				if {[info exists newevent]} { set event $newevent; unset newevent }
 			} elseif {[lsearch -exact $msgtypes(DEFAULT) $event] != -1} {
 				set section $defaultsection
 			} else {
