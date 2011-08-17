@@ -174,7 +174,7 @@ allowed_genres <STRING>
 allowed_types <STRING>
 	This variable holds a comma-separated list of extensions. All files
 	with any of these extensions are allowed and not checked.
-	Default: "jpg,cue,m3u,mpg,mpeg,avi,txt,mov,vob,mkv,wmv"
+	Default: "jpg,cue,m3u,mpg,mpeg,avi,txt,mov,vob,mkv,wmv,png,m2ts"
 
 allowed_types_exemption_dirs <PATHS>
 	In allowed_types we define filetypes that are allowed on site w/o
@@ -185,7 +185,7 @@ allowed_types_exemption_dirs <PATHS>
 allowed_years <STRING>
 	Another way to restrict mp3-releases is by year. Define here a list
 	of years allowed on site. The list should be comma-separated.
-	Default: "2005,2006,2007,2008,2009"
+	Default: "2008,2009,2010,2011,2012"
 
 always_scan_audio_syms <TRUE|FALSE>
 	On cleanup symlinks are removed. However, if cleanup is used as a
@@ -1540,7 +1540,7 @@ subdir_list <STRING>
 	at the end of a dirname. Ie, cd?? will match cdA, cd12, but not cd123.
 	Do not put '?' at the beginning or in the middle - it will not work.
 	The string is not case-sensitive (dVd == DvD).
-	Default: "cd??,disc??,disk??,dvd??,extra?,sub?,subtitle?,vobsub?,sample?,subpack?,ac3,audioaddon,addon,ac3addon"
+	Default: "cd??,disc??,disk??,dvd??,extra?,sub?,subtitle?,vobsub?,sample?,subpack?,ac3,audioaddon,addon,ac3addon,proof,cover?"
 
 test_for_password <TRUE|FALSE>
 	Some rarfiles have password protection. If you wish to check for such

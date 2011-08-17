@@ -29,7 +29,7 @@
 
 #define incompleteislink		1
 
-#define allowed_types			"jpg,cue,m3u,mpg,mpeg,avi,txt,mov,vob"
+#define allowed_types			"jpg,cue,m3u,mpg,mpeg,avi,txt,mov,vob,mkv,wmv,png,m2ts"
 
 #define ignored_types			",diz,debug,message,imdb"
 
@@ -45,7 +45,7 @@
 #define audio_year_path			"/site/incoming/music.by.year/"
 #define audio_group_path		"/site/incoming/music.by.group/"
 #define allowed_constant_bitrates	"160,192"
-#define allowed_years			"2003,2004,2005"
+#define allowed_years			"2007,2008,2009,2010,2011,2012"
 #define banned_genres			"Christian Rap"
 #define allowed_genres			"Rock"
 #define audio_genre_sort		FALSE

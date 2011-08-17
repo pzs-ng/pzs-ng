@@ -87,7 +87,7 @@
 
 #ifndef allowed_types
 #define allowed_types_is_defaulted
-#define allowed_types                             "jpg,cue,m3u,mpg,mpeg,avi,txt,mov,vob,mkv,wmv"
+#define allowed_types                             "jpg,cue,m3u,mpg,mpeg,avi,txt,mov,vob,mkv,wmv,png,m2ts"
 #endif
 
 #ifndef allowed_types_exemption_dirs
@@ -97,7 +97,7 @@
 
 #ifndef allowed_years
 #define allowed_years_is_defaulted
-#define allowed_years                             "2005,2006,2007,2008,2009"
+#define allowed_years                             "2007,2008,2009,2010,2011,2012"
 #endif
 
 #ifndef always_scan_audio_syms
@@ -1247,7 +1247,7 @@
 
 #ifndef subdir_list
 #define subdir_list_is_defaulted
-#define subdir_list                               "cd??,disc??,disk??,dvd??,extra?,sub?,subtitle?,vobsub?,sample?,subpack?,ac3,audioaddon,addon,ac3addon"
+#define subdir_list                               "cd??,disc??,disk??,dvd??,extra?,sub?,subtitle?,vobsub?,sample?,subpack?,ac3,audioaddon,addon,ac3addon,proof,cover?"
 #endif
 
 #ifndef test_for_password

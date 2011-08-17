@@ -101,6 +101,9 @@ v1.2.0  --> 1.2.x :
 		  adding the min/avg/max/mdev instead of picking one to replace the ping with
 		  and to not break all themes the %ping var was kept aside the new vars
 		- Updated all themes to have the EXPIRED announce (previously only in default.zst)
+		- Added png and m2ts to default allowed_types
+		- Added proof and cover? to default subdir_list
+		- Added 2010, 2011 and 2012 to allowed_years and removed 2005 and 2006
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
