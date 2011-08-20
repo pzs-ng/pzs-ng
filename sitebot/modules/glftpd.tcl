@@ -555,7 +555,7 @@ namespace eval ::ngBot::module::glftpd {
 			return
 		}
 		if {$search_chars > 0 && [regexp -all {[a-zA-Z0-9]} $pattern] < $search_chars} {
-			puthelp "PRIVMSG $rcvr :The search pattern must at be at least \002$search_chars\002 alphanumeric characters."
+			puthelp "PRIVMSG $rcvr :The search pattern must be at least \002$search_chars\002 alphanumeric characters."
 			return
 		}
 		## Retrieve matching dirlog entries
@@ -954,7 +954,7 @@ namespace eval ::ngBot::module::glftpd {
 
 			if {[string equal $result "MATCH"]} {
 				set output "$theme(PREFIX)$announce(MSGINVITE)"
-				## Check the user file for the user's group.
+				## Check the user file for the user's groups.
 				if {![catch {set handle [open "$location(USERS)/$user" r]} error]} {
 					set data [read $handle]
 					close $handle

@@ -918,7 +918,7 @@ namespace eval ::ngBot {
 		putlog "--------------------------------------------------------"
 	}
 
-	# STAUS: OK
+	# STATUS: OK
 	proc cmd_preview {handle idx text} {
 		variable ns
 		variable announce
@@ -1389,10 +1389,15 @@ namespace eval ::ngBot {
 		## Escape any "$" characters so they aren't interpreted as variables in the final "subst".
 		set targetString [string map {$ \\$} $targetString]
 
+		# We need to escape [] for the final "subst" due to how we do casealtering.
+		regsub -all {\[} $targetString {\[} targetString
+		regsub -all {\]} $targetString {\]} targetString
+
 		# We replace %cX{string}, %b{string} and %u{string} with their coloured, bolded and underlined equivilants ;)
 		# We also do the justification and padding that is required for %r / %l / %m to work.
+		# And we alter text within %T{}, %U{} or %L{} to Titlecase, UPPERCASE or lowercase.
 		# bold and underline replacement should not be needed here...
-		while {[regexp {(%c(\d)\{([^\{\}]+)\}|%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\}|%([lrm])(\d\d?)\{([^\{\}]+)\})} $targetString matchString dud padOp padLength padString]} {
+		while {[regexp {(%c(\d)\{([^\{\}]+)\}|%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\}|%T\{([^\{\}]+)\}|%U\{([^\{\}]+)\}|%L\{([^\{\}]+)\}|%([lrm])(\d\d?)\{([^\{\}]+)\})} $targetString matchString dud padOp padLength padString]} {
 			# Check if any innermost %r/%l/%m are present.
 			while {[regexp {%([lrm])(\d\d?)\{([^\{\}]+)\}} $targetString matchString padOp padLength padString]} {
 				set tmpPadString $padString
@@ -1414,6 +1419,10 @@ namespace eval ::ngBot {
 				set targetString [string map [list $matchString $paddedString] $targetString]
 			}
 
+			regsub -all {%T\{([^\{\}]+)\}} $targetString {[string totitle "\1"]} targetString
+			regsub -all {%U\{([^\{\}]+)\}} $targetString {[string toupper "\1"]} targetString
+			regsub -all {%L\{([^\{\}]+)\}} $targetString {[string tolower "\1"]} targetString
+
 			regsub -all {%b\{([^\{\}]+)\}} $targetString {\\002\1\\002} targetString
 			regsub -all {%u\{([^\{\}]+)\}} $targetString {\\037\1\\037} targetString
 			regsub -all {(%c\d\{[^\{\}]+\})(\d)} $targetString {\1\\002\\002\2} targetString
@@ -1427,7 +1436,7 @@ namespace eval ::ngBot {
 				regsub {\003(\d)(?!\d)} $targetString {\\0030\1} targetString
 			}
 		}
-		return [subst -nocommands $targetString]
+		return [subst $targetString]
 	}
 
 	proc themereplace_startup {rstring} {

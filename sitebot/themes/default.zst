@@ -16,6 +16,13 @@
 #                                                                            #
 ##############################################################################
 
+# Use %c#{text} for colors (see below), %u{text} for underlining, %b{text} for bold,
+# %T{text} for Titlecasing, %U{text} for UPPERCASING, %L{text} for lowercasing,
+# %l#{text} for leftalignmentpadding, %r#{text} for rightalignmentpadding and
+# %m#{text} for middlealignmentpadding
+# These can be nested, but for changing cases, the outmost braces will override
+# the braces inside: "%U{text %T{text2} teXt3}" will return "TEXT TEXT2 TEXT3"
+
 # Default colors, used for all sections except those defined below
 COLOR1      = "04"
 COLOR2      = "07"
