@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <ctype.h>
+#include <time.h>
 #include "objects.h"
 #include "zsfunctions.h"
 #include "../conf/zsconfig.h"
@@ -521,10 +522,10 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 			case 'b':
 				out_p += sprintf(out_p, "%*u", val1, (unsigned int)raceI->total.size);
 				break;	/* what about files bigger than 4gb? */
-//			case 'B':
-//				out_p += sprintf(out_p, "\\002");
-//				break;
-			case 'K':
+/*			case 'B':
+ *				out_p += sprintf(out_p, "\\002");
+ *				break;
+ */			case 'K':
 				out_p += sprintf(out_p, "%s", raceI->user.tagline);
 				break;
 			case 'c':
@@ -612,6 +613,9 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 			case '$':
 				out_p += sprintf(out_p, "%*.*s", val1, val2,
 						 (char *)hms(ttime, (((((raceI->total.stop_time - raceI->total.start_time) + (raceI->total.files - raceI->total.files_missing) > 0 ? (raceI->total.stop_time - raceI->total.start_time) + (raceI->total.files - raceI->total.files_missing) : 1 )) / (raceI->total.files - raceI->total.files_missing)) * raceI->total.files) - (raceI->total.stop_time - raceI->total.start_time)));
+				break;
+			case '&':
+				out_p += sprintf(out_p, "%llu", (unsigned long long)time(0));
 				break;
 			case 'e':
 				out_p += sprintf(out_p, "%*.*f", val1, val2, (double)((raceI->file.size * raceI->total.files >> 10) / 1024.));

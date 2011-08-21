@@ -4,6 +4,8 @@
 #
  %r  = release name
  %?  = current path
+ %~  = current path
+ %^  = base path
 
  %u  = # of users in race 
  %g  = # of groups in race
@@ -26,6 +28,7 @@
  %A  = average speed (kb/sec)
  %d  = race length (so far)
  %$  = estimated time left of race
+ %&  = epoch (so far)
 #
 #### Current User
 #
@@ -126,7 +129,6 @@
  %m  = total megabytes uploaded
  %p  = percent uploaded
  %s  = speed (kb/sec)
- %B  = Bold (on/off)
  %%  = % char
 
 NOTE: With cookies you can (and in some cases you need to) define accuracy (or string length), 

@@ -153,8 +153,8 @@
 #endif
 
 /* Special reformat cookies */
-#define fastestfile		"{\"user\": \"%u\", \"group\": \"%g\", \"speed\": \"%.3F\"}"	/* Put in %l cookie */
-#define slowestfile		"{\"user\": \"%u\", \"group\": \"%g\", \"speed\": \"%.3S\"}"	/* Put in %L cookie */
+#define fastestfile		"{\"user\": \"%u\", \"group\": \"%g\", \"speed\": \"%.3F\"}"	/* Put in %L cookie */
+#define slowestfile		"{\"user\": \"%u\", \"group\": \"%g\", \"speed\": \"%.3S\"}"	/* Put in %l cookie */
 
 #define racersplit_prefix	"" /* Put after the last racer in the %R & %T/t cookie */
 #define racersplit_postfix	"" /* Put before the first racer in the %R & %T/t cookie */
@@ -195,7 +195,7 @@
 #define audio_newleader		DISABLED
 #endif
 #if ( disable_audio_complete == FALSE )
-#define audio_complete		"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"num_users\": %u, \"num_groups\": %g, \"audio_info\": %j, \"slowest_user\": %l, \"fastest_user\": %L, \"winning_user\": %C0, \"winning_group\": %c0, \"filename\": \"%n\", \"racers\": [%B], \"top_groups\": [%t], \"top_users\": [%T]}"
+#define audio_complete		"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"epoch\": \"%&\", \"num_users\": %u, \"num_groups\": %g, \"audio_info\": %j, \"slowest_user\": %l, \"fastest_user\": %L, \"winning_user\": %C0, \"winning_group\": %c0, \"filename\": \"%n\", \"racers\": [%B], \"top_groups\": [%t], \"top_users\": [%T]}"
 #else
 #define audio_complete		DISABLED
 #endif
@@ -205,7 +205,7 @@
 #define audio_norace_halfway	DISABLED
 #endif
 #if ( disable_audio_norace_complete == FALSE )
-#define audio_norace_complete	"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"user\": \"%U\", \"group\": \"%G\", \"audio_info\": %j, \"filename\": \"%n\", \"tagline\": \"%K\", \"top_groups\": [%t], \"top_users\": [%T]}"
+#define audio_norace_complete	"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"epoch\": \"%&\", \"user\": \"%U\", \"group\": \"%G\", \"audio_info\": %j, \"filename\": \"%n\", \"tagline\": \"%K\", \"top_groups\": [%t], \"top_users\": [%T]}"
 #else
 #define audio_norace_complete	DISABLED
 #endif
@@ -238,7 +238,7 @@
 #define video_newleader		DISABLED
 #endif
 #if ( disable_video_complete == FALSE )
-#define video_complete		"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"num_users\": %u, \"num_groups\": %g, \"slowest_user\": %l, \"fastest_user\": %L, \"winning_user\": %C0, \"winning_group\": %c0, \"filename\": \"%n\", \"racers\": [%B], \"top_groups\": [%t], \"top_users\": [%T], \"video_info\": {" video_info "}}"
+#define video_complete		"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"epoch\": \"%&\", \"num_users\": %u, \"num_groups\": %g, \"slowest_user\": %l, \"fastest_user\": %L, \"winning_user\": %C0, \"winning_group\": %c0, \"filename\": \"%n\", \"racers\": [%B], \"top_groups\": [%t], \"top_users\": [%T], \"video_info\": {" video_info "}}"
 #else
 #define video_complete		DISABLED
 #endif
@@ -248,7 +248,7 @@
 #define video_norace_halfway	DISABLED
 #endif
 #if ( disable_video_norace_complete == FALSE )
-#define video_norace_complete	"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"user\": \"%U\", \"group\": \"%G\", \"filename\": \"%n\", \"tagline\": \"%K\", \"top_groups\": [%t], \"top_users\": [%T], \"video_info\": {" video_info "}}"
+#define video_norace_complete	"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"epoch\": \"%&\", \"user\": \"%U\", \"group\": \"%G\", \"filename\": \"%n\", \"tagline\": \"%K\", \"top_groups\": [%t], \"top_users\": [%T], \"video_info\": {" video_info "}}"
 #else
 #define video_norace_complete	DISABLED
 #endif
@@ -280,7 +280,7 @@
 #define rar_newleader		DISABLED
 #endif
 #if ( disable_rar_complete == FALSE )
-#define rar_complete		"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"num_users\": %u, \"num_groups\": %g, \"slowest_user\": %l, \"fastest_user\": %L, \"winning_user\": %C0, \"winning_group\": %c0, \"filename\": \"%n\", \"racers\": [%B], \"compression\": \"%J\", \"top_groups\": [%t], \"top_users\": [%T]}"
+#define rar_complete		"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"epoch\": \"%&\", \"num_users\": %u, \"num_groups\": %g, \"slowest_user\": %l, \"fastest_user\": %L, \"winning_user\": %C0, \"winning_group\": %c0, \"filename\": \"%n\", \"racers\": [%B], \"compression\": \"%J\", \"top_groups\": [%t], \"top_users\": [%T]}"
 #else
 #define rar_complete		DISABLED
 #endif
@@ -290,7 +290,7 @@
 #define rar_norace_halfway	DISABLED
 #endif
 #if ( disable_rar_norace_complete == FALSE )
-#define rar_norace_complete	"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"user\": \"%U\", \"group\": \"%G\", \"filename\": \"%n\", \"tagline\": \"%K\", \"compression\": \"%J\", \"top_groups\": [%t], \"top_users\": [%T]}"
+#define rar_norace_complete	"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"epoch\": \"%&\", \"user\": \"%U\", \"group\": \"%G\", \"filename\": \"%n\", \"tagline\": \"%K\", \"compression\": \"%J\", \"top_groups\": [%t], \"top_users\": [%T]}"
 #else
 #define rar_norace_complete	DISABLED
 #endif
@@ -322,7 +322,7 @@
 #define other_newleader		DISABLED
 #endif
 #if ( disable_other_complete == FALSE )
-#define other_complete		"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"num_users\": %u, \"num_groups\": %g, \"slowest_user\": %l, \"fastest_user\": %L, \"winning_user\": %C0, \"winning_group\": %c0, \"filename\": \"%n\", \"racers\": [%B], \"top_groups\": [%t], \"top_users\": [%T]}"
+#define other_complete		"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"epoch\": \"%&\", \"num_users\": %u, \"num_groups\": %g, \"slowest_user\": %l, \"fastest_user\": %L, \"winning_user\": %C0, \"winning_group\": %c0, \"filename\": \"%n\", \"racers\": [%B], \"top_groups\": [%t], \"top_users\": [%T]}"
 #else
 #define other_complete		DISABLED
 #endif
@@ -332,7 +332,7 @@
 #define other_norace_halfway	DISABLED
 #endif
 #if ( disable_other_norace_complete == FALSE )
-#define other_norace_complete	"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"user\": \"%U\", \"group\": \"%G\", \"filename\": \"%n\", \"tagline\": \"%K\", \"top_groups\": [%t], \"top_users\": [%T]}"
+#define other_norace_complete	"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"epoch\": \"%&\", \"user\": \"%U\", \"group\": \"%G\", \"filename\": \"%n\", \"tagline\": \"%K\", \"top_groups\": [%t], \"top_users\": [%T]}"
 #else
 #define other_norace_complete	DISABLED
 #endif
@@ -359,7 +359,7 @@
 #define zip_newleader		DISABLED
 #endif
 #if ( disable_zip_complete == FALSE )
-#define zip_complete		"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"num_users\": %u, \"num_groups\": %g, \"slowest_user\": %l, \"fastest_user\": %L, \"winning_user\": %C0, \"winning_group\": %c0, \"filename\": \"%n\", \"racers\": [%B], \"top_groups\": [%t], \"top_users\": [%T]}"
+#define zip_complete		"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"epoch\": \"%&\", \"num_users\": %u, \"num_groups\": %g, \"slowest_user\": %l, \"fastest_user\": %L, \"winning_user\": %C0, \"winning_group\": %c0, \"filename\": \"%n\", \"racers\": [%B], \"top_groups\": [%t], \"top_users\": [%T]}"
 #else
 #define zip_complete		DISABLED
 #endif
@@ -369,7 +369,7 @@
 #define zip_norace_halfway	DISABLED
 #endif
 #if ( disable_zip_norace_complete == FALSE )
-#define zip_norace_complete	"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"user\": \"%U\", \"group\": \"%G\", \"filename\": \"%n\", \"tagline\": \"%K\", \"top_groups\": [%t], \"top_users\": [%T]}"
+#define zip_norace_complete	"{\"release\": \"%r\", \"total_mbytes\": %.0m, \"expected_files\": %f, \"average_speed\": %.0A, \"average_speed_or_dontknow\": %.0a, \"duration\": \"%d\", \"epoch\": \"%&\", \"user\": \"%U\", \"group\": \"%G\", \"filename\": \"%n\", \"tagline\": \"%K\", \"top_groups\": [%t], \"top_users\": [%T]}"
 #else
 #define zip_norace_complete	DISABLED
 #endif

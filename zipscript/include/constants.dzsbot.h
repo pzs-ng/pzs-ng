@@ -152,8 +152,8 @@
 #endif
 
 /* Special reformat cookies */
-#define fastestfile		"{%u} {%g} {%.3F}"	/* Put in %l cookie */
-#define slowestfile		"{%u} {%g} {%.3S}"	/* Put in %L cookie */
+#define fastestfile		"{%u} {%g} {%.3F}"	/* Put in %L cookie */
+#define slowestfile		"{%u} {%g} {%.3S}"	/* Put in %l cookie */
 
 #define racersplit		" "	/* Put between racers in the %R cookie */
 #define racersplit_prefix	""      /* Put before the first racer in the %R cookie */
@@ -194,7 +194,7 @@
 #define audio_newleader		DISABLED
 #endif
 #if ( disable_audio_complete == FALSE )
-#define audio_complete		"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%u} {%g} %j %l %L %C0 %c0 {%n} {%B} {%t} {%T}"
+#define audio_complete		"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%&} {%u} {%g} %j %l %L %C0 %c0 {%n} {%B} {%t} {%T}"
 #else
 #define audio_complete		DISABLED
 #endif
@@ -204,7 +204,7 @@
 #define audio_norace_halfway	DISABLED
 #endif
 #if ( disable_audio_norace_complete == FALSE )
-#define audio_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%U} {%G} %j {%n} \"%K\" %t %T"
+#define audio_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%&} {%U} {%G} %j {%n} \"%K\" %t %T"
 #else
 #define audio_norace_complete	DISABLED
 #endif
@@ -236,7 +236,7 @@
 #define video_newleader		DISABLED
 #endif
 #if ( disable_video_complete == FALSE )
-#define video_complete		"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%u} {%g} %l %L %C0 %c0 {%n} {%B} {%t} {%T} {%D} {%E} {%.3H} {%.2;} {%:} {%,} {%`} {%=} {%>} {%<}"
+#define video_complete		"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%&} {%u} {%g} %l %L %C0 %c0 {%n} {%B} {%t} {%T} {%D} {%E} {%.3H} {%.2;} {%:} {%,} {%`} {%=} {%>} {%<}"
 #else
 #define video_complete		DISABLED
 #endif
@@ -246,7 +246,7 @@
 #define video_norace_halfway	DISABLED
 #endif
 #if ( disable_video_norace_complete == FALSE )
-#define video_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%U} {%G} {%n} \"%K\" %t %T {%D} {%E} {%.3H} {%.2;} {%:} {%,} {%`} {%=} {%>} {%<}"
+#define video_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%&} {%U} {%G} {%n} \"%K\" %t %T {%D} {%E} {%.3H} {%.2;} {%:} {%,} {%`} {%=} {%>} {%<}"
 #else
 #define video_norace_complete	DISABLED
 #endif
@@ -278,7 +278,7 @@
 #define rar_newleader		DISABLED
 #endif
 #if ( disable_rar_complete == FALSE )
-#define rar_complete		"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%u} {%g} %l %L %C0 %c0 {%n} {%B} {%J} {%t} {%T}"
+#define rar_complete		"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%&} {%u} {%g} %l %L %C0 %c0 {%n} {%B} {%J} {%t} {%T}"
 #else
 #define rar_complete		DISABLED
 #endif
@@ -288,7 +288,7 @@
 #define rar_norace_halfway	DISABLED
 #endif
 #if ( disable_rar_norace_complete == FALSE )
-#define rar_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%U} {%G} {%n} \"%K\" {%J} %t %T"
+#define rar_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%&} {%U} {%G} {%n} \"%K\" {%J} %t %T"
 #else
 #define rar_norace_complete	DISABLED
 #endif
@@ -320,7 +320,7 @@
 #define other_newleader		DISABLED
 #endif
 #if ( disable_other_complete == FALSE )
-#define other_complete		"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%u} {%g} %l %L %C0 %c0 {%n} {%B} {%t} {%T}"
+#define other_complete		"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%&} {%u} {%g} %l %L %C0 %c0 {%n} {%B} {%t} {%T}"
 #else
 #define other_complete		DISABLED
 #endif
@@ -330,7 +330,7 @@
 #define other_norace_halfway	DISABLED
 #endif
 #if ( disable_other_norace_complete == FALSE )
-#define other_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%U} {%G} {%n} \"%K\" %t %T"
+#define other_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%&} {%U} {%G} {%n} \"%K\" %t %T"
 #else
 #define other_norace_complete	DISABLED
 #endif
@@ -357,7 +357,7 @@
 #define zip_newleader		DISABLED
 #endif
 #if ( disable_zip_complete == FALSE )
-#define zip_complete		"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%u} {%g} %l %L %C0 %c0 {%n} {%B} {%t} {%T}"
+#define zip_complete		"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%&} {%u} {%g} %l %L %C0 %c0 {%n} {%B} {%t} {%T}"
 #else
 #define zip_complete		DISABLED
 #endif
@@ -367,7 +367,7 @@
 #define zip_norace_halfway	DISABLED
 #endif
 #if ( disable_zip_norace_complete == FALSE )
-#define zip_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%U} {%G} {%n} \"%K\" %t %T"
+#define zip_norace_complete	"{%r} {%.0m} {%f} {%.0A} {%.0a} {%d} {%&} {%U} {%G} {%n} \"%K\" %t %T"
 #else
 #define zip_norace_complete	DISABLED
 #endif
