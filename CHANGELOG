@@ -112,8 +112,8 @@ v1.2.0  --> 1.2.x :
 		  between %t_duration and %u_name and %t_duration and %u_count respectively,
 		  so update your ngBot.vars file!
 		- Added new cookie for incomplete-indicators, see COOKIES.
-		- Fixed c/p bug in psxc-symlinkmaker.sh - Fix by filou4
-		- Added improved specialchar-replacement in psxc-symlinkmaker.sh - Thanks to filou4
+		- Fixed c/p bug in psxc-symlinkmaker.sh - Fix by PCFiL
+		- Added improved specialchar-replacement in psxc-symlinkmaker.sh - Thanks to PCFiL
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
