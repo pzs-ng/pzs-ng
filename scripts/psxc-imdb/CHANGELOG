@@ -1,5 +1,6 @@
 PSXC-IMDB CHANGELOG:
 --------------------
+- v2.9j - Sep. 07th, 2011 - Improval of specialchar replacement and some fixes in psxc-symlink-maker
 - v2.9i - Aug. 08th, 2011 - included combined-patch
 			  - added bugfixes #509 and #510
 			  - fixed several parses (tagline, comment, genre, cast, rating ...)

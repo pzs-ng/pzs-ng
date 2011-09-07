@@ -579,7 +579,6 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 					from *= 10;
 					from += *instr - 48;
 				}
-
 				if (*instr == '-') {
 					instr++;
 					for (; isdigit(*instr); instr++) {
@@ -602,8 +601,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 					to = -1;
 				}
 				for (n = from; n <= to; n++) {
-					out_p += sprintf(out_p, "%*.*s", val1, val2, convert_user(raceI, userI[userI[n]->pos], groupI, user_info, n));
-					break;
+					out_p += sprintf(out_p, "%*.*s", val1, val2, convert_user(raceI, userI[n], groupI, user_info, n));
 				}
 				instr--;
 				break;
@@ -845,7 +843,9 @@ char		sfv_buf		[FILE_MAX];
 char           *
 incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI, int l_type)
 {
-	char           *buf_p;
+	char	*buf_p;
+	char	sectiondir[PATH_MAX];
+	int	c, len, n;
 
 	if (l_type == INCOMPLETE_NORMAL)
 		buf_p = normal_buf;
@@ -864,6 +864,19 @@ incomplete(char *instr, char path[2][PATH_MAX], struct VARS *raceI, int l_type)
 		if (*instr == '%') {
 			instr++;
 			switch (*instr) {
+			case '3':
+				n = 0;
+				c = strlen(sitepath_dir);
+				len = strlen(raceI->misc.basepath);
+				if (len > c && raceI->misc.basepath[c] == '/') ++c;
+				while (len > c && raceI->misc.basepath[c] != '/') {
+					sectiondir[n] = raceI->misc.basepath[c];
+					++c;
+					++n;
+				}
+				sectiondir[n] = '\0';
+				buf_p += sprintf(buf_p, "%s", sectiondir);
+				break;
 			case '2':
 				buf_p += sprintf(buf_p, "%s", raceI->sectionname);
 				break;

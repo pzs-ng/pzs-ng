@@ -1487,7 +1487,7 @@ getrelname(GLOBAL *g)
 	d_log("getrelname():\tsubc:\t\t%d\n", subc);
 	d_log("\t\t\tpath[0]:\t%s\n", path[0]);
 	d_log("\t\t\tpath[1]:\t%s\n", path[1]);
-	d_log("\t\t\tg->l_path:\t%s\n", path[1]);
+	d_log("\t\t\tg->l.path:\t%s\n", g->l.path);
 
 	if (subc) {
 		snprintf(g->v.misc.release_name, PATH_MAX, "%s/%s", path[0], path[1]);
@@ -1536,6 +1536,9 @@ getrelname(GLOBAL *g)
 	d_log("\t\t\tlink_source:\t%s\n", g->l.link_source);
 	d_log("\t\t\tlink_target:\t%s\n", g->l.link_target);
 	d_log("\t\t\tg->l.incomplete:\t%s\n", g->l.incomplete);
+	d_log("\t\t\tg->l.nfo_incomplete:\t%s\n", g->l.nfo_incomplete);
+	d_log("\t\t\tg->l.sample_incomplete:\t%s\n", g->l.sample_incomplete);
+	d_log("\t\t\tg->l.sfv_incomplete:\t%s\n", g->l.sfv_incomplete);
 }
 
 unsigned char 

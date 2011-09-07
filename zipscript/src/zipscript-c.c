@@ -1649,7 +1649,7 @@ main(int argc, char **argv)
 				d_log("zipscript-c: Creating incomplete indicator:\n", g.l.incomplete);
 				d_log("zipscript-c:    name: '%s', incomplete: '%s', path: '%s'\n", g.v.misc.release_name, g.l.incomplete, g.l.path);
 				if (create_incomplete()) {
-					d_log("zipscript-c: create_incomplete() returned something.\n");
+					d_log("zipscript-c: create_incomplete() returned something: %s.\n", strerror(errno));
 				}
 			}
 
