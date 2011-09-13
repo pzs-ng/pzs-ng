@@ -11,6 +11,9 @@
 #
 # 2. Rehash or restart your eggdrop for the changes to take effect.
 #
+# Changelog:
+# - 20110913 - Sked:	Fixed output for users with chars other than A-Za-z0-9_ - Fix by PCFiL
+#
 #################################################################################
 
 namespace eval ::ngBot::plugin::Top {
@@ -38,11 +41,15 @@ namespace eval ::ngBot::plugin::Top {
 	##
 	##################################################
 
+	set top(version) "20110913"
+
 	variable timer
 
 
 	proc init {args} {
+		variable top
 		[namespace current]::startTimer
+		putlog "\[ngBot\] Top :: Loaded successfully (Version: $top(version))."
 	}
 
 	proc deinit {args} {
@@ -82,7 +89,7 @@ namespace eval ::ngBot::plugin::Top {
 		foreach line [split $output "\n"] {
 			regsub -all -- {(\s+)\s} $line " " line
 
-			if {[regexp -- {^\[(\d+)\] (\w+) (.*?) (\d+) (\d+)\w+ (\S+)} $line -> pos username tagline files bytes speed]} {
+			if {[regexp -- {^\[(\d+)\] (.*?) (.*?) (\d+) (\d+)\w+ (\S+)} $line -> pos username tagline files bytes speed]} {
 				lappend msg "\[$pos. $username \002$bytes\002M\]"
 			}
 		}

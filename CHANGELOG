@@ -114,6 +114,7 @@ v1.2.0  --> 1.2.x :
 		- Added new cookie for incomplete-indicators, see COOKIES.
 		- Fixed c/p bug in psxc-symlinkmaker.sh - Fix by PCFiL
 		- Added improved specialchar-replacement in psxc-symlinkmaker.sh - Thanks to PCFiL
+		- Fixed Top.tcl output for users with chars other than A-Za-z0-9_ - Fix by PCFiL
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
