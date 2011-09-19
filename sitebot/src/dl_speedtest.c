@@ -25,8 +25,14 @@ short int matchpath(char *instr, char *path) {
 		switch (*instr) {
 		case 0:
 		case ' ':
-			if (!strncmp(instr - pos, path, pos - 1)) {
-				return 1;
+			if (!strncmp(instr - pos, path, pos)) {
+				if (*(instr - 1) == '/')
+					return 1;
+				if ((int)strlen(path) >= pos) {
+					if (*(path + pos) == '/')
+						return 1;
+				} else
+					return 1;
 			}
 			pos = 0;
 			break;
@@ -48,6 +54,7 @@ void debug_out(char *fmt,...) {
 
         if (fmt == NULL)
                 return;
+
 #if ( debug_mode == TRUE )
         va_start(ap, fmt);
         timenow = time(NULL);
@@ -67,12 +74,12 @@ int
 main (int argc, char **argv)
 {
 	char		filename[NAME_MAX], wdir[PATH_MAX], user[25], group[25];
-	char	       *p = NULL;
+	char		*p = NULL;
 	struct stat	fileinfo;
 	double		mbit, mbyte, mbps, mbytesps;
 	FILE		*glfile;
-	time_t          timenow = time(NULL);
-	long long	speed, size;
+	time_t		timenow = time(NULL);
+	long long	speed;
 
 	debug_out("dl_speedtest was initiated.\n");
 	if ((argc < 2) || (strncasecmp(argv[1], "RETR ", 5))) {
@@ -107,7 +114,7 @@ main (int argc, char **argv)
 			debug_out("%s: Could not stat() file %s.\n", argv[0], filename);
 			return 0;
 		}
-		if ((size = fileinfo.st_size) == 0) {
+		if (fileinfo.st_size == 0) {
 			mbyte = (double)1 / 1024. / 1024.;
 			 mbit = (double)1 / 1000. / 1000.;
 		} else {
@@ -123,4 +130,3 @@ main (int argc, char **argv)
 	}
 	return 0;
 }
-

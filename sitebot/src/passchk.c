@@ -274,7 +274,7 @@ main(int argc, char *argv[])
 	char           salt      [2];
 	char           *filename;
 
-	if (strcmp(argv[1], "-c") == 0) {
+	if (argc > 1 && strcmp(argv[1], "-c") == 0) {
 		z = 1;
 		ftpd = FTPD_CUFTPD;
 	} else {

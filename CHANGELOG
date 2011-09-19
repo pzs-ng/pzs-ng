@@ -116,6 +116,12 @@ v1.2.0  --> 1.2.x :
 		- Added improved specialchar-replacement in psxc-symlinkmaker.sh - Thanks to PCFiL
 		- Fixed Top.tcl output for users with chars other than A-Za-z0-9_ - Fix by PCFiL
 		- Two bugfixes in psxc-symlink-maker, bringing it to version 2.9k
+		- Improved recognition of glversion and arch for proper 64bit glftpd support
+		- Fix bug #523 - dirlog from glftpd 64bit doesn't work with showlog
+		- Fixes for libcopy for 32bit libs on 64bit arch
+		- Fix segfault in passchk when run without arguments
+		- Cleanup and updates of configure
+		- Fix for make distclean/clean/uninstall not removing postunnuke
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.

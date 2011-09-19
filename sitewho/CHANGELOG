@@ -1,5 +1,8 @@
- - Fucked up one small thing (caused segfault)
- + Completly rewritten... phew !!! Config file has changed
- + sitewho <username> now shows shows actions of <username> in bot compatible form
- + User now sees his own masked/hidden actions
- + Now it's possible to hide whole groups too
+20110918 -	- Proper support for the existing 64bit glftps
+		- Updated matchpath and strcomp
+xxxxxxxx -	- Fucked up one small thing (caused segfault)
+		+ Completly rewritten... phew !!! Config file has changed
+		+ sitewho <username> now shows shows actions of <username>
+		  in bot compatible form
+		+ User now sees his own masked/hidden actions
+		+ Now it's possible to hide whole groups too

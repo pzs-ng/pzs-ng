@@ -34,12 +34,18 @@ int		maxusers = 20 , showall = 0, uploads = 0, downloads = 0, onlineusers = 0, b
 double		total_dn_speed = 0, total_up_speed = 0;
 int		totusers = 0;
 
-#if ( GLVERSION == 201 )
-	static int	glversion = 201;
-#elif ( GLVERSION == 200 )
-	static int	glversion = 200;
+#if ( GLVERSION == 13232 )
+	static int	glversion = 13232;
+#elif ( GLVERSION == 20032 )
+	static int	glversion = 20032;
+#elif ( GLVERSION == 20132 )
+	static int	glversion = 20132;
+#elif ( GLVERSION == 20232 )
+	static int	glversion = 20232;
+#elif ( GLVERSION == 20164 )
+	static int	glversion = 20164;
 #else
-	static int	glversion = 132;
+	static int	glversion = 20264;
 #endif
 
 /* CORE CODE */
@@ -238,55 +244,67 @@ strplen(char *strin)
 	return n;
 }
 
-short 
+short int 
 matchpath(char *instr, char *path)
 {
-	int		cnt, pos, k, ncase = 0;
+	int	pos = 0;
 
-	if (!strncasecmp(nocase, "true", 4))
-		ncase = 1;
+	if ( (int)strlen(instr) < 2 || (int)strlen(path) < 2)
+		return 0;
 
-	k = strlen(instr) + 1;
-	for (cnt = pos = 0; cnt < k; cnt++) {
-		if (instr[cnt] == ' ' || instr[cnt] == 0) {
-			if (ncase == 0 && !strncmp(instr + cnt - pos, path, pos - 1) && pos) {
-				return 1;
-			} else if (ncase == 1 && !strncasecmp(instr + cnt - pos, path, pos - 1) && pos) {
-				return 1;
+	do {
+		switch (*instr) {
+		case 0:
+		case ' ':
+			if (!strncmp(instr - pos, path, pos)) {
+				if (*(instr - 1) == '/')
+					return 1;
+				if ((int)strlen(path) >= pos) {
+					if (*(path + pos) == '/')
+						return 1;
+				} else
+					return 1;
 			}
 			pos = 0;
-		} else
+			break;
+		default:
 			pos++;
-	}
+			break;
+		}
+	} while (*instr++);
 	return 0;
 }
 
-short 
+short int
 strcomp(char *instr, char *searchstr)
 {
-	int		cnt, pos, ncase = 0;
-	int		k = strlen(searchstr);
-	int		l = strlen(instr) + 1;
+	int	pos = 0, ncase = 0;
+	int	k = strlen(searchstr);
 
 	if (!strncasecmp(nocase, "true", 4))
 		ncase = 1;
 
-	if (k == 0)
+	if ( (int)strlen(instr) == 0 || k == 0)
 		return 0;
-	for (cnt = pos = 0; cnt < l; cnt++) {
-		if (instr[cnt] == ' ' || instr[cnt] == 0) {
+
+	do {
+		switch (*instr) {
+		case 0:
+		case ' ':
 			if (k == pos) {
-				if (ncase == 0 && !strncmp(instr + cnt - pos, searchstr, pos)) {
+				if (ncase == 0 && !strncmp(instr - pos, searchstr, pos)) {
 					return 1;
-				} else if (ncase == 1 && !strncasecmp(instr + cnt - pos, searchstr, pos)) {
+				} else if (ncase == 1 && !strncasecmp(instr - pos, searchstr, pos)) {
 					return 1;
 				}
 			}
 			pos = 0;
-		} else {
+			break;
+		default:
 			pos++;
+			break;
 		}
-	}
+	} while (*instr++);
 	return 0;
 }
 

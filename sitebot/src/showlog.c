@@ -11,7 +11,9 @@
                do not include unwanted cruft like cd1,
                sample, subs etc. We use the subdir_list
                option from zsconfig.h for this.
-
+  2011-09-16 - Sked:
+               Make compatible with different 64bit glftpds
+               Fix matchpath
 */
 
 #include <sys/file.h>
@@ -32,13 +34,6 @@
 #include "zsconfig.h"
 #include "zsconfig.defaults.h"
 
-//#undef group_dirs
-//#define group_dirs                      "/site/groups/"
-
-
-/* Comment this line to compile showlog for glftpd v2.x */
-/* (psxc) - well, we'll do, since it's defined already when compiling in pzs-ng." */
-//#define GLVERSION 132
 
 /* Default values */
 #define GLCONF "/etc/glftpd.conf"
@@ -49,17 +44,14 @@ static int match_full = 0;
 static int search_mode = 0;
 
 /* Force structure alignment to 4 bytes (for 64bit support). */
+#if ( GLVERSION != 20164 )
 #pragma pack(push, 4)
+#endif
 
 /* 32-bit time values (for 64bit support). */
 typedef int32_t time32_t;
 
-typedef struct {
-    int32_t     tv_sec;
-    int32_t     tv_usec;
-} timeval32_t;
-
-#if ( GLVERSION == 132 )
+#if ( GLVERSION == 13232 )
 struct dirlog {
     uint16_t    status;          /* 0 = NEWDIR, 1 = NUKE, 2 = UNNUKE, 3 = DELETED */
     time32_t    uptime;          /* Creation time since epoch (man 2 time) */
@@ -70,7 +62,20 @@ struct dirlog {
     char        dirname[255];    /* The name of the dir (fullpath) */
     char        dummy[8];        /* Unused, kept for compatibility reasons */
 } __attribute__((deprecated));
+#elif ( GLVERSION == 20164 )
+struct dirlog {
+    ushort      status;          /* 0 = NEWDIR, 1 = NUKE, 2 = UNNUKE, 3 = DELETED */
+    time_t      uptime;          /* Creation time since epoch (man 2 time) */
+    ushort      uploader;        /* The userid of the creator */
+    ushort      group;           /* The groupid of the primary group of the creator */
+    ushort      files;           /* The number of files inside the dir */
+    unsigned long long bytes;    /* The number of bytes in the dir */
+    char        dirname[255];    /* The name of the dir (fullpath) */
+    struct dirlog *nxt;          /* Unused, kept for compatibility reasons */
+    struct dirlog *prv;          /* Unused, kept for compatibility reasons */
+};
 #else
+/* 20132 & 20032 & 20232 & 20264 */
 struct dirlog {
     uint16_t    status;          /* 0 = NEWDIR, 1 = NUKE, 2 = UNNUKE, 3 = DELETED */
     time32_t    uptime;          /* Creation time since epoch (man 2 time) */
@@ -83,6 +88,22 @@ struct dirlog {
 };
 #endif
 
+#if ( GLVERSION == 20164 )
+struct nukelog {
+    ushort      status;          /* 0 = NUKED, 1 = UNNUKED */
+    time_t      nuketime;        /* The nuke time since epoch (man 2 time) */
+    char        nuker[12];       /* The name of the nuker */
+    char        unnuker[12];     /* The name of the unnuker */
+    char        nukee[12];       /* The name of the nukee */
+    ushort      mult;            /* The nuke multiplier */
+    float       bytes;           /* The number of bytes nuked */
+    char        reason[60];      /* The nuke reason */
+    char        dirname[255];    /* The dirname (fullpath) */
+    struct nukelog *nxt;         /* Unused, kept for compatibility reasons */
+    struct nukelog *prv;         /* Unused, kept for compatibility reasons */
+};
+#else
+/* 20132 & 20032 & 20232 & 20264 & 13232 */
 struct nukelog {
     uint16_t    status;          /* 0 = NUKED, 1 = UNNUKED */
     time32_t    nuketime;        /* The nuke time since epoch (man 2 time) */
@@ -95,9 +116,12 @@ struct nukelog {
     char        dirname[255];    /* The dirname (fullpath) */
     char        dummy[8];        /* Unused, kept for compatibility reasons */
 };
+#endif
 
 /* Restore default structure alignment for non-critical structures. */
+#if ( GLVERSION != 20164 )
 #pragma pack(pop)
+#endif
 
 enum {
 	NO_ACTION = 1,
@@ -204,8 +228,14 @@ matchpath(char *instr, char *path)
                 switch (*instr) {
                 case 0:
                 case ' ':
-                        if (!strncmp(instr - pos, path, pos - 1)) {
-                                return 1;
+                        if (!strncmp(instr - pos, path, pos)) {
+                                if (*(instr - 1) == '/')
+                                        return 1;
+                                if ((int)strlen(path) >= pos) {
+                                        if (*(path + pos) == '/')
+                                                return 1;
+                                } else
+                                        return 1;
                         }
                         pos = 0;
                         break;
@@ -344,16 +374,9 @@ void show_newdirs(const char *pattern)
 
 		/* Format: status|uptime|uploader|group|files|kilobytes|dirname */
 		if (!matchpath(group_dirs, buffer.dirname) && !subcomp(buffer.dirname)) {
-#ifndef USE_GLFTPD132
-			printf("%d|%u|%d|%d|%d|%.0f|",
+			printf("%d|%u|%d|%d|%d|%.0f|%s",
 				buffer.status, (unsigned int)buffer.uptime, buffer.uploader, buffer.group,
-				buffer.files, (float)buffer.bytes/1024.);
-#else
-			printf("%d|%u|%d|%d|%d|%.0f|",
-				buffer.status, (unsigned int)buffer.uptime, buffer.uploader, buffer.group,
-				buffer.files, (float)buffer.bytes/1024.);
-#endif
-			puts(buffer.dirname);
+				buffer.files, (float)buffer.bytes/1024., buffer.dirname);
 			i++;
 		}
     	}
@@ -407,10 +430,9 @@ void show_nukes(const ushort status, const char *pattern)
 			}
 
 			/* Format: status|nuketime|nuker|unnuker|nukee|multiplier|reason|kilobytes|dirname */
-			printf("%d|%u|%s|%s|%s|%d|%s|%.0f|",
+			printf("%d|%u|%s|%s|%s|%d|%s|%.0f|%s\n",
 				buffer.status, (unsigned int)buffer.nuketime, buffer.nuker, buffer.unnuker,
-				buffer.nukee, buffer.mult, buffer.reason, buffer.bytes*1024.0);
-			puts(buffer.dirname);
+				buffer.nukee, buffer.mult, buffer.reason, buffer.bytes*1024.0, buffer.dirname);
 			i++;
     	}
     	fclose(fp);
@@ -528,4 +550,3 @@ subcomp(char *directory)
 	} while (1);
 	return 0;
 }
-

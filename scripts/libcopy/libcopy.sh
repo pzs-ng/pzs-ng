@@ -2,7 +2,7 @@
 
 ###############################################################################
 #
-# LIBCOPY v1.6 by psxc
+# LIBCOPY v1.7 by psxc
 ######################
 #
 # This small script (ripped from glinstall.sh ;) will copy libs used by files

@@ -5,7 +5,7 @@ bindir=$(prefix)/bin
 using_glftpd=@USING_GLFTPD@
 
 CC=@CC@
-CFLAGS=@CFLAGS@ @STATIC@ @NOFORMAT@ @USING_GLFTPD@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE @DEFS@ -I../include/ -I../../ -I../../lib/
+CFLAGS=@CFLAGS@ @STATIC@ @NOFORMAT@ @USING_GLFTPD@ @GLVERSION@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE @DEFS@ -I../include/ -I../../ -I../../lib/
 LDFLAGS=@LDFLAGS@
 RM=@RM@ -f
 INSTALL=@INSTALL@
@@ -88,11 +88,11 @@ install:
 distclean: clean
 
 clean:
-	$(RM) zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown audiosort
+	$(RM) zipscript-c postdel postunnuke racestats cleanup datacleaner rescan ng-undupe ng-chown audiosort
 
 uninstall:
 	rm -rf "$(prefix)$(storage)"
-	rm -f "$(bindir)"/{zipscript-c,postdel,racestats,cleanup,datacleaner,rescan,ng-undupe,ng-chown,audiosort}
+	rm -f "$(bindir)"/{zipscript-c,postdel,postunnuke,racestats,cleanup,datacleaner,rescan,ng-undupe,ng-chown,audiosort}
 
 strip:
-	strip zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown audiosort
+	strip zipscript-c postdel postunnuke racestats cleanup datacleaner rescan ng-undupe ng-chown audiosort
