@@ -17,7 +17,7 @@
 ############################################################################
 
 # version number. no need to change
-VERSION=2.9j
+VERSION=2.9k
 
 # The location of psxc-imdb.conf. This is the full path.
 IMDB_CONF=/glftpd/etc/psxc-imdb.conf
@@ -268,8 +268,10 @@ proc_cleanup() {
 
 ## Cleanup proc for structures like SORT_BY_*_NAME/DIR/LINK
 proc_cleanup_single() {
- for SDIR in `ls -AF "$1" | tr ' ' '%'`; do
-  SDIR="`echo $SDIR | tr '%' ' '`"
+ # The sed is for if $1 contains dirs like ? or * which would be shellexpanded,
+ # by placing a bogus path before them no shellexpansion can occur
+ for SDIR in `ls -AF "$1" | tr ' ' '%' | sed 's|^|.../|'`; do
+  SDIR="`echo "$SDIR" | tr '%' ' ' | sed 's|^\.\.\./||'`"
   proc_cleanup "$1/$SDIR"
   rmdir "$1/$SDIR" >/dev/null 2>&1
  done
@@ -277,8 +279,8 @@ proc_cleanup_single() {
 
 ## Cleanup proc for structures like SORT_BY_*_NAME/DIR/DIR/LINK
 proc_cleanup_double() {
- for DIR in `ls -AF "$1" | tr ' ' '%'`; do
-  DIR="`echo $DIR | tr '%' ' '`"
+ for DIR in `ls -AF "$1" | tr ' ' '%' | sed 's|^|.../|'`; do
+  DIR="`echo "$DIR" | tr '%' ' ' | sed 's|^\.\.\./||'`"
   proc_cleanup_single "$1/$DIR"
   rmdir "$1/$DIR" >/dev/null 2>&1
  done
@@ -549,7 +551,8 @@ if [ $SORT_BY_TITLE -eq 1 ]; then
   [[ ! -d "$GLROOT$SYMLINK_PATH/$SORT_BY_TITLE_NAME/$TITLECHAR" ]] &&
    mkdir -pm777 "$GLROOT$SYMLINK_PATH/$SORT_BY_TITLE_NAME/$TITLECHAR"
   CNTR=""
-  while [ -L "$GLROOT$SYMLINK_PATH/$SORT_BY_TITLE_NAME/$TITLECHAR/$TITLE$CNTR" ]; do
+  while [ -L "$GLROOT$SYMLINK_PATH/$SORT_BY_TITLE_NAME/$TITLECHAR/$TITLE$CNTR" ] &&
+    [ "$IMDBRELPATH" != "$(ls -l "$GLROOT$SYMLINK_PATH/$SORT_BY_TITLE_NAME/$TITLECHAR/$TITLE$CNTR" | cut -d'>' -f2 | sed 's/^ *//')" ]; do
    CNTR=$((CNTR+1))
   done
   ln -s "$IMDBRELPATH" "$GLROOT$SYMLINK_PATH/$SORT_BY_TITLE_NAME/$TITLECHAR/$TITLE$CNTR"
