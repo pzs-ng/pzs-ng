@@ -14,6 +14,7 @@
   2011-09-16 - Sked:
                Make compatible with different 64bit glftpds
                Fix matchpath
+  2011-09-20 - Fix small typo bug printing newdirs all on one line
 */
 
 #include <sys/file.h>
@@ -374,7 +375,7 @@ void show_newdirs(const char *pattern)
 
 		/* Format: status|uptime|uploader|group|files|kilobytes|dirname */
 		if (!matchpath(group_dirs, buffer.dirname) && !subcomp(buffer.dirname)) {
-			printf("%d|%u|%d|%d|%d|%.0f|%s",
+			printf("%d|%u|%d|%d|%d|%.0f|%s\n",
 				buffer.status, (unsigned int)buffer.uptime, buffer.uploader, buffer.group,
 				buffer.files, (float)buffer.bytes/1024., buffer.dirname);
 			i++;
