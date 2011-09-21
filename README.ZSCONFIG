@@ -516,6 +516,14 @@ del_progressmeter_mp3 <STRING>
 	This is for mp3 releases only.
 	Default: "^\\[.*] - .*%% Complete - (.*) \\[.*]$"
 
+delbanned_script <PATH>
+	Enter the name of the script which is called when a release is
+	banned and will be deleted. The argument given is the full
+	chrooted path, and if the script exits with a non-zero value,
+	the dir is not removed. The example script marks a dir as deleted
+	in glftpd's dirlog.
+	Default: "/bin/ng-deldir"
+
 delete_old_link <TRUE|FALSE>
 	If you do NOT want to have the zipscript/rescan/audiosort delete any
 	links with the same name when it tries to create a new link, set this 
@@ -555,6 +563,11 @@ deny_resume_sfv <TRUE|FALSE>
 	                   sfv_cleanup_crlf sfv_lenient deny_double_sfv
 	                   allow_slash_in_sfv
 	Default: TRUE
+
+dirlogpath <PATH>
+	This is the location of glftpd's dirlog. The file must be world
+	read/writable (+rw), and so must the containing dir (+rwx).
+	Default: "/ftp-data/logs/dirlog"
 
 disable_audio_complete <TRUE|FALSE>
 	You can choose to disable some announces. Set to TRUE to disable the
@@ -775,6 +788,12 @@ enable_complete_script <TRUE|FALSE>
 	An external script can be run after a release is complete. Put this to
 	TRUE to run the external script.
 	Default: FALSE
+
+enable_delbanned_script <TRUE|FALSE>
+	When del_banned_release is TRUE, the banned release will be removed,
+	but the dirlog stays unaffected. The delbanned_script executes before
+	the directory is removed and marks it as deleted in the dirlog.
+	Default: TRUE
 
 enable_files_ahead <TRUE|FALSE>
 	To limit the amount of logging on races, you can choose to only report

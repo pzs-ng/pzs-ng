@@ -192,6 +192,9 @@ scripts. Here's a short description of each compiled binary:
   - ng-undupe - Removes entry in dupelog after a file fails sfv check.
     How to test: chroot /glftpd /bin/ng-undupe filename
   
+  - ng-deldir - Marks a directory as deleted in dirlog when it is removed cause it's banned.
+    How to test: chroot /glftpd /bin/ng-deldir /chrooted/path/to/directory
+  
   - racedebug - Debugging bin that reads the racedata directly and prints
     out a report on racers, files, speed, crc etc.
     How to test: chroot /glftpd /bin/racedebug /ftp-data/pzs-ng/path/to/racedata

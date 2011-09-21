@@ -6,7 +6,8 @@
  *
  * Modded/stripped for use with pzs-ng - psxc 2004-07-14
  * Fixed issues on 64bit - DuReX 2007-12-17
- * compatibility for 64bit glftpds - Sked 2011-09-16
+ * Compatibility for 64bit glftpds - Sked 2011-09-16
+ * Try renaming prior to streaming, some cleanups - Sked 2011-09-20
  *
  */
 
@@ -38,15 +39,15 @@ typedef int32_t time32_t;
 
 #if ( GLVERSION == 20164 )
 struct dupeentry {
-	char		filename  [256];
+	char		filename[256];
 	time_t		timeup;
-	char		uploader  [25];
+	char		uploader[25];
 };
 #else
 struct dupeentry {
-	char		filename  [256];
+	char		filename[256];
 	time32_t	timeup;
-	char		uploader  [25];
+	char		uploader[25];
 };
 #endif
 
@@ -58,18 +59,17 @@ struct dupeentry {
 int 
 main(int argc, char *argv[])
 {
-	FILE           *fp, *fp2;
-	char		dupename  [1024], data2[1024], dupefile[1024];
-
+	FILE		*fp, *fp2;
+	char		dupename[1024], data2[1024], dupefile[1024];
 	struct dupeentry buffer;
 
 	if (argc != 2) {
 		printf("Please give a filename to undupe as well\n");
 		return 1;
 	}
+
 	strlcpy(dupefile, dupepath, 1024);
 	strlcpy(dupename, argv[1], 1024);
-
 	sprintf(data2, "%s/dupefile.%d", storage, (int)getuid());
 
 	if (!(fp = fopen(dupefile, "r+b"))) {
@@ -78,55 +78,60 @@ main(int argc, char *argv[])
 	}
 	if (!(fp2 = fopen(data2, "w+b"))) {
 		printf("FATAL ERROR: Unable to write to tempfile (%s)\n", data2);
+		fclose(fp);
 		return 1;
 	}
-	while (!feof(fp)) {
 
+	while (!feof(fp)) {
 		if (fread(&buffer, sizeof(struct dupeentry), 1, fp) < 1)
 			break;
 		/* If we found the file, delete it */
 		if (strcmp(buffer.filename, dupename) == 0)
 			fflush(fp);
-		/* if not, write it to the new file */
-		if (strcmp(buffer.filename, dupename) != 0)
-			if (fwrite(&buffer, sizeof(struct dupeentry), 1, fp2) < 1)
-				break;
+		/* if not, write it to the new file, if we can */
+		else if (fwrite(&buffer, sizeof(struct dupeentry), 1, fp2) < 1)
+			break;
 	}
 
 	fclose(fp);
 	fclose(fp2);
 
 	/*
-	 * Time to put back the remainder of the dupefile. Instead of
-	 * renaming the file as was done before, we stream the content
-	 * back - this is a workaround for a world writable logs
-	 * directory...
+	 * Time to put back the remainder of the dupefile. We try renaming the
+	 * tempfile first, if this fails we try streaming the contents of the
+	 * tempfile to the original file. Streaming will work where renaming
+	 * fails if the directory is not writable for the user.
 	 */
 
-	if (!(fp = fopen(data2, "r+b"))) {
-		printf("FATAL ERROR: Unable to open tempfile (%s)\n", data2);
-		return 1;
-	}
-	if (!(fp2 = fopen(dupefile, "w+b"))) {
-		printf("FATAL ERROR: Unable to write to dupefile (%s)\n", dupefile);
-		return 1;
-	}
-	while (!feof(fp)) {
-		if (fread(&buffer, sizeof(struct dupeentry), 1, fp) < 1)
-			break;
-		if (fwrite(&buffer, sizeof(struct dupeentry), 1, fp2) < 1)
-			break;
+	if (rename(data2, dupefile) == -1) {
+		if (!(fp = fopen(data2, "r+b"))) {
+			printf("FATAL ERROR: Unable to open tempfile (%s)\n", data2);
+			return 1;
+		}
+		if (!(fp2 = fopen(dupefile, "w+b"))) {
+			printf("FATAL ERROR: Unable to write to dupefile (%s)\n", dupefile);
+			fclose(fp);
+			return 1;
+		}
+
+		while (!feof(fp)) {
+			if (fread(&buffer, sizeof(struct dupeentry), 1, fp) < 1)
+				break;
+			if (fwrite(&buffer, sizeof(struct dupeentry), 1, fp2) < 1)
+				break;
+		}
+
+		fclose(fp);
+		fclose(fp2);
+
+		if (chmod(dupefile, 0666))
+			printf("WARNING: Failed to chmod %s: %s\n", dupefile, strerror(errno));
+
+		if (unlink(data2) > 0) {
+			printf("FATAL ERROR: Unable to delete tempfile (%s)\n", data2);
+			return 1;
+		}
 	}
 
-	fclose(fp);
-	fclose(fp2);
-
-	if (chmod(dupefile, 0666))
-		printf("WARNING: Failed to chmod %s: %s\n", dupefile, strerror(errno));
-	if (unlink(data2) > 0) {
-		printf("FATAL ERROR: Unable to delete tempfile (%s)\n", data2);
-		return 1;
-	}
 	return 0;
 }
-

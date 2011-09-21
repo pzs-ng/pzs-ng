@@ -122,6 +122,9 @@ v1.2.0  --> 1.2.x :
 		- Fix segfault in passchk when run without arguments
 		- Cleanup and updates of configure
 		- Fix for make distclean/clean/uninstall not removing postunnuke
+		- Fixed bug #340 - when using del_banned_release , release is still present in dirlog
+		  This involves new defines dirlogpath, enable_delbanned_script and delbanned_script;
+		  and a new bin ng-deldir as well, which marks a dir as deleted in dirlog
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.

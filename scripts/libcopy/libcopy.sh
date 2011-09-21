@@ -2,7 +2,7 @@
 
 ###############################################################################
 #
-# LIBCOPY v1.7 by psxc
+# LIBCOPY v1.8 by psxc
 ######################
 #
 # This small script (ripped from glinstall.sh ;) will copy libs used by files
@@ -18,7 +18,7 @@ possible_glroot_paths="/glftpd /jail/glftpd /usr/glftpd /usr/jail/glftpd /usr/lo
 
 # bins needed for pzs-ng to run
 needed_bins="sh cat grep egrep unzip wc find ls bash mkdir rmdir rm mv cp awk ln basename dirname head tail cut tr wc sed date sleep touch gzip"
-zs_bins="zipscript-c postdel racestats cleanup datacleaner rescan ng-undupe ng-chown"
+zs_bins="zipscript-c postdel postunnuke racestats cleanup datacleaner rescan ng-undupe ng-deldir ng-chown audiosort"
 #
 ###################################
 # CODEPART - PLEASE DO NOT CHANGE #

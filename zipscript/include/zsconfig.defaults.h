@@ -370,6 +370,11 @@
 #define del_progressmeter_mp3                     "^\\[.*] - .*%% Complete - (.*) \\[.*]$"
 #endif
 
+#ifndef delbanned_script
+#define delbanned_script_is_defaulted
+#define delbanned_script                          "/bin/ng-deldir"
+#endif
+
 #ifndef delete_old_link
 #define delete_old_link_is_defaulted
 #define delete_old_link                           TRUE
@@ -393,6 +398,11 @@
 #ifndef deny_resume_sfv
 #define deny_resume_sfv_is_defaulted
 #define deny_resume_sfv                           TRUE
+#endif
+
+#ifndef dirlogpath
+#define dirlogpath_is_defaulted
+#define dirlogpath                                "/ftp-data/logs/dirlog"
 #endif
 
 #ifndef disable_audio_complete
@@ -613,6 +623,11 @@
 #ifndef enable_complete_script
 #define enable_complete_script_is_defaulted
 #define enable_complete_script                    FALSE
+#endif
+
+#ifndef enable_delbanned_script
+#define enable_delbanned_script_is_defaulted
+#define enable_delbanned_script                   TRUE
 #endif
 
 #ifndef enable_files_ahead

@@ -1904,13 +1904,28 @@ main(int argc, char **argv)
 
 #if ( del_banned_release )
 	if (deldir) {
-		d_log("zipscript-c: del_banned_release is set - removing entire dir.\n");
-		move_progress_bar(1, &g.v, g.ui, g.gi);
-		if (g.l.incomplete)
-			unlink(g.l.incomplete);
-		closedir(dir);
-		dir = opendir(".");
-		del_releasedir(dir, g.l.path);
+		if (enable_delbanned_script == TRUE) {
+			if (!fileexists(delbanned_script))
+				d_log("zipscript-c: Warning - delbanned script (%s) does not exist.\n", delbanned_script);
+
+			sprintf(target, delbanned_script " \"%s\"", g.l.path);
+			if (execute(target) == 0)
+				d_log("zipscript-c: marking deleted of %s successful.\n", g.l.path);
+			else {
+				d_log("zipscript-c: marking deleted of %s failed.\n", g.l.path);
+				deldir = 0;
+			}
+		}
+		/* if delbanned_script returned non-zero value, we do not remove the dir */
+		if (deldir) {
+			d_log("zipscript-c: del_banned_release is set - removing entire dir.\n");
+			move_progress_bar(1, &g.v, g.ui, g.gi);
+			if (g.l.incomplete)
+				unlink(g.l.incomplete);
+			closedir(dir);
+			dir = opendir(".");
+			del_releasedir(dir, g.l.path);
+		}
 	}
 #endif
 

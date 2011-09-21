@@ -21,13 +21,14 @@ CU-OBJECTS=cleanup.o
 #IL-OBJECTS=incomplete-list.o
 DC-OBJECTS=datacleaner.o
 UD-OBJECTS=ng-undupe.o $(STRLCPY)
+DD-OBJECTS=ng-deldir.o $(STRLCPY)
 SC-OBJECTS=rescan.o dizreader.o complete.o crc.o multimedia.o audiosort.o $(UNIVERSAL)
 PU-OBJECTS=postunnuke.o dizreader.o complete.o crc.o multimedia.o audiosort.o $(UNIVERSAL)
 CH-OBJECTS=ng-chown.o
 #ZS-DEPEND=cleanup.o incomplete-list.o complete.o datacleaner.o postdel.o racestats.o rescan.o zipscript-c.o multimedia.o $(UNIVERSAL)
 ZS-DEPEND=cleanup.o complete.o datacleaner.o postdel.o racestats.o rescan.o zipscript-c.o multimedia.o $(UNIVERSAL)
 
-all: postunnuke ng-undupe zipscript-c postdel racestats cleanup datacleaner rescan ng-chown audiosort
+all: postunnuke ng-undupe ng-deldir zipscript-c postdel racestats cleanup datacleaner rescan ng-chown audiosort
 
 $(ZS-DEPEND): ../conf/zsconfig.h
 
@@ -53,6 +54,9 @@ datacleaner: $(DC-OBJECTS)
 
 ng-undupe: $(UD-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(UD-OBJECTS)
+
+ng-deldir: $(DD-OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(DD-OBJECTS)
 
 ng-chown: $(CH-OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(CH-OBJECTS) $(SUNOBJS)
@@ -80,6 +84,7 @@ install:
 	install -m0755 datacleaner "$(bindir)"
 	install -m0755 rescan "$(bindir)"
 	install -m4755 ng-undupe "$(bindir)"
+	install -m4755 ng-deldir "$(bindir)"
 	install -m0755 audiosort "$(bindir)"
 	install -m0755 postunnuke "$(bindir)"
 	install -m4755 ng-chown "$(bindir)"
@@ -88,11 +93,11 @@ install:
 distclean: clean
 
 clean:
-	$(RM) zipscript-c postdel postunnuke racestats cleanup datacleaner rescan ng-undupe ng-chown audiosort
+	$(RM) zipscript-c postdel postunnuke racestats cleanup datacleaner rescan ng-undupe ng-deldir ng-chown audiosort
 
 uninstall:
 	rm -rf "$(prefix)$(storage)"
-	rm -f "$(bindir)"/{zipscript-c,postdel,postunnuke,racestats,cleanup,datacleaner,rescan,ng-undupe,ng-chown,audiosort}
+	rm -f "$(bindir)"/{zipscript-c,postdel,postunnuke,racestats,cleanup,datacleaner,rescan,ng-undupe,ng-deldir,ng-chown,audiosort}
 
 strip:
-	strip zipscript-c postdel postunnuke racestats cleanup datacleaner rescan ng-undupe ng-chown audiosort
+	strip zipscript-c postdel postunnuke racestats cleanup datacleaner rescan ng-undupe ng-deldir ng-chown audiosort

@@ -142,8 +142,8 @@
 #define group_info		"SS/%g/%.1m/%f/%.1p/%.0s"
 
 /* Special reformat cookies */
-#define fastestfile		"{%u} {%g} {%.3F}"	/* Put in %l cookie */
-#define slowestfile		"{%u} {%g} {%.3S}"	/* Put in %L cookie */
+#define fastestfile		"{%u} {%g} {%.3F}"	/* Put in %L cookie */
+#define slowestfile		"{%u} {%g} {%.3S}"	/* Put in %l cookie */
 
 #define racersplit		" "	/* Put between racers in the %R */
 #define racersplit_prefix	""      /* Put before the first racer in the %R cookie */

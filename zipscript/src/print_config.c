@@ -274,6 +274,9 @@ printf("#define del_progressmeter                         %s\n", stringify(del_p
 #ifndef del_progressmeter_mp3_is_defaulted
 printf("#define del_progressmeter_mp3                     %s\n", stringify(del_progressmeter_mp3));
 #endif
+#ifndef delbanned_script_is_defaulted
+printf("#define delbanned_script                          %s\n", stringify(delbanned_script));
+#endif
 #ifndef delete_old_link_is_defaulted
 printf("#define delete_old_link                           %s\n", (delete_old_link == FALSE ? "FALSE" : "TRUE"));
 #endif
@@ -288,6 +291,9 @@ printf("#define deny_nfo_upload_in_zip                    %s\n", (deny_nfo_uploa
 #endif
 #ifndef deny_resume_sfv_is_defaulted
 printf("#define deny_resume_sfv                           %s\n", (deny_resume_sfv == FALSE ? "FALSE" : "TRUE"));
+#endif
+#ifndef dirlogpath_is_defaulted
+printf("#define dirlogpath                                %s\n", stringify(dirlogpath));
 #endif
 #ifndef disable_audio_complete_is_defaulted
 printf("#define disable_audio_complete                    %s\n", (disable_audio_complete == FALSE ? "FALSE" : "TRUE"));
@@ -420,6 +426,9 @@ printf("#define enable_affil_script                       %s\n", (enable_affil_s
 #endif
 #ifndef enable_complete_script_is_defaulted
 printf("#define enable_complete_script                    %s\n", (enable_complete_script == FALSE ? "FALSE" : "TRUE"));
+#endif
+#ifndef enable_delbanned_script_is_defaulted
+printf("#define enable_delbanned_script                   %s\n", (enable_delbanned_script == FALSE ? "FALSE" : "TRUE"));
 #endif
 #ifndef enable_files_ahead_is_defaulted
 printf("#define enable_files_ahead                        %s\n", (enable_files_ahead == FALSE ? "FALSE" : "TRUE"));
@@ -973,11 +982,13 @@ printf("#define del_banned_release                        %s\n", (del_banned_rel
 printf("#define del_completebar                           %s\n", (del_completebar == DISABLED ? "DISABLED" : stringify(del_completebar)));
 printf("#define del_progressmeter                         %s\n", stringify(del_progressmeter));
 printf("#define del_progressmeter_mp3                     %s\n", stringify(del_progressmeter_mp3));
+printf("#define delbanned_script                          %s\n", stringify(delbanned_script));
 printf("#define delete_old_link                           %s\n", (delete_old_link == FALSE ? "FALSE" : "TRUE"));
 printf("#define deny_double_nfo                           %s\n", (deny_double_nfo == FALSE ? "FALSE" : "TRUE"));
 printf("#define deny_double_sfv                           %s\n", (deny_double_sfv == FALSE ? "FALSE" : "TRUE"));
 printf("#define deny_nfo_upload_in_zip                    %s\n", (deny_nfo_upload_in_zip == FALSE ? "FALSE" : "TRUE"));
 printf("#define deny_resume_sfv                           %s\n", (deny_resume_sfv == FALSE ? "FALSE" : "TRUE"));
+printf("#define dirlogpath                                %s\n", stringify(dirlogpath));
 printf("#define disable_audio_complete                    %s\n", (disable_audio_complete == FALSE ? "FALSE" : "TRUE"));
 printf("#define disable_audio_halfway                     %s\n", (disable_audio_halfway == FALSE ? "FALSE" : "TRUE"));
 printf("#define disable_audio_newleader                   %s\n", (disable_audio_newleader == FALSE ? "FALSE" : "TRUE"));
@@ -1022,6 +1033,7 @@ printf("#define dupepath                                  %s\n", stringify(dupep
 printf("#define enable_accept_script                      %s\n", (enable_accept_script == FALSE ? "FALSE" : "TRUE"));
 printf("#define enable_affil_script                       %s\n", (enable_affil_script == FALSE ? "FALSE" : "TRUE"));
 printf("#define enable_complete_script                    %s\n", (enable_complete_script == FALSE ? "FALSE" : "TRUE"));
+printf("#define enable_delbanned_script                   %s\n", (enable_delbanned_script == FALSE ? "FALSE" : "TRUE"));
 printf("#define enable_files_ahead                        %s\n", (enable_files_ahead == FALSE ? "FALSE" : "TRUE"));
 printf("#define enable_mp3_script                         %s\n", (enable_mp3_script == FALSE ? "FALSE" : "TRUE"));
 printf("#define enable_nfo_script                         %s\n", (enable_nfo_script == FALSE ? "FALSE" : "TRUE"));

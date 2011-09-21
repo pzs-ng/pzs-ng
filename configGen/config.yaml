@@ -99,6 +99,13 @@ options:
             read/writable (+rw), and so must the containing dir (+rwx).
         default: '"/ftp-data/logs/dupefile"'
 
+    dirlogpath:
+        type: path
+        comment: |-
+            This is the location of glftpd's dirlog. The file must be world
+            read/writable (+rw), and so must the containing dir (+rwx).
+        default: '"/ftp-data/logs/dirlog"'
+
     group_dirs:
         type: paths
         comment: |-
@@ -1700,6 +1707,24 @@ options:
             Put here what should be used as args for the external script after
             first uploaded mp3 in an audio release.
         default: '"0 0 0 1 0 1 - \"%w\" \"%?\""'
+
+    enable_delbanned_script:
+        type: boolean
+        comment: |-
+            When del_banned_release is TRUE, the banned release will be removed,
+            but the dirlog stays unaffected. The delbanned_script executes before
+            the directory is removed and marks it as deleted in the dirlog.
+        default: true
+
+    delbanned_script:
+        type: path
+        comment: |-
+            Enter the name of the script which is called when a release is
+            banned and will be deleted. The argument given is the full
+            chrooted path, and if the script exits with a non-zero value,
+            the dir is not removed. The example script marks a dir as deleted
+            in glftpd's dirlog.
+        default: '"/bin/ng-deldir"'
 
     enable_unduper_script:
         type: boolean

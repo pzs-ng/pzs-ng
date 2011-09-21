@@ -101,8 +101,9 @@ This will make the necessary additions/changes to your system.
 If the make install fails, or you really wish to make the changes by hand,
 here's what to do:
 
-           cp -f zipscript-c postdel racestats cleanup datacleaner rescan \
-	         racedebug ng-undupe ng-chown audiosort /path/to/your/glftpd/bin/
+           cp -f zipscript-c postdel postunnuke racestats cleanup \
+	         datacleaner rescan ng-undupe ng-deldir ng-chown \
+	         audiosort /path/to/your/glftpd/bin/
            chmod 666 /path/to/your/glftpd/ftp-data/logs/glftpd.log
            mkdir -pm777 /path/to/your/glftpd/ftp-data/pzs-ng
 (optional) chmod +s /path/to/your/glftpd/bin/zipscript-c
@@ -165,8 +166,8 @@ to add this, and you end up with a rather shabby site.
 Optionally, add the following:
 
 cscript		SITE[:space:]NUKE	post	/bin/cleanup
-cscript		SITE[:space:]UNNUKE	post	/bin/postunnuke
 cscript		SITE[:space:]WIPE	post	/bin/cleanup
+cscript		SITE[:space:]UNNUKE	post	/bin/postunnuke
 
 site_cmd	RESCAN			EXEC	/bin/rescan
 custom-rescan	!8	*
@@ -176,7 +177,8 @@ cscript		RETR			post	/bin/dl_speedtest
 site_cmd	AUDIOSORT		EXEC	/bin/audiosort
 custom-audiosort	!8	*
 
-The first two will remove dead symlinks. The next two will allow you (and all
+The first two will remove dead symlinks. The next one rechecks a dir and
+recreates symlinks accordingly. The following two will allow you (and all
 users except anon users) to rescan a dir. This comes in handy in places the
 zipscript isn't invoked by default, when you have dirs you wish to check filled
 before you added the zipscript, and a lot of other occations. 
