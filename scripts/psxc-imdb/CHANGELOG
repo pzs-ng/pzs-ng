@@ -1,5 +1,10 @@
 PSXC-IMDB CHANGELOG:
 --------------------
+- v2.9l - Oct. 02nd, 2011 - Fixed businessdata, it will now fetch the opening weekend
+			    from USA and/or UK if present and compare the numscreens
+			    with 500 and/or 300 respectively to determine a correct
+			    limited release. If no USA and UK, the first opening weekend,
+			    if present, will be used for businessdata only.
 - v2.9k - Sep. 19th, 2011 - Fixed multiple symlink creation when sorting by title and
 			    running the psxc-symlink-maker script more than once
 			  - Fixed incorrect symlink cleanup when subdirs named

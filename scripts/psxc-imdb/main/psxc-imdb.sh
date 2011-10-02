@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.9i"
+VERSION="v2.9l"
 
 ######################################################################################################
 
@@ -640,24 +640,38 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
      fi
     done
     if [ "$LYNXTRIES" = "$LYNXTRIESORIG" ]; then
-     BUSINESS=$(awk '/Opening Weekend$/,/Gross$/' "$TMPFILE" | grep -a -e "(" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\"/$QUOTECHAR/g)
-     BUSINESSSHORT=$(awk '/Opening Weekend$/,/Gross$/' "$TMPFILE" | grep -a -e "[Ss][Cc][Rr][Ee][Ee][Nn]" | grep -a -e "[Uu][Ss][Aa]" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\"/$QUOTECHAR/g | head -n 1)
-     if [ -z "$BUSINESSSHORT" ]; then
-      BUSINESSSHORT=$(awk '/Opening Weekend$/,/Gross$/' "$TMPFILE" | grep -a -e "[Uu][Ss][Aa]" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\"/$QUOTECHAR/g | head -n 1)
+     BUSINESS=$(awk '/Weekend Gross$/,/Related Links$/' "$TMPFILE" | grep -a -e "(" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\"/$QUOTECHAR/g)
+     BUSINESSSHORTUSA=$(echo "$BUSINESS" | grep -a -e "[Ss][Cc][Rr][Ee][Ee][Nn]" | grep -a -e "([Uu][Ss][Aa])" | tail -n 1)
+     BUSINESSSHORTUK=$(echo "$BUSINESS" | grep -a -e "[Ss][Cc][Rr][Ee][Ee][Nn]" | grep -a -e "([Uu][Kk])" | tail -n 1)
+     [[ -z "$BUSINESSSHORTUSA" ]] && BUSINESSSHORTUSA=$(echo "$BUSINESS" | grep -a -e "([Uu][Ss][Aa])" | tail -n 1)
+     [[ -z "$BUSINESSSHORTUK" ]] && BUSINESSSHORTUK=$(echo "$BUSINESS" | grep -a -e "([Uu][Kk])" | tail -n 1)
+     if [ -z "$BUSINESSSHORTUSA" ] && [ -z "$BUSINESSSHORTUK" ]; then
+      BUSINESSSHORT=$(echo "$BUSINESS" | tail -n 1)
+     elif [ -z "$BUSINESSSHORTUSA" ]; then
+      BUSINESSSHORT="$BUSINESSSHORTUK"
+     else
+      BUSINESSSHORT="$BUSINESSSHORTUSA"
      fi
-     if [ -z "$BUSINESSSHORT" ]; then
-      BUSINESSSHORT=$(echo "$BUSINESS" | head -n 1)
-     fi
+     BUSINESSSCREENSUSA=$(echo "$BUSINESSSHORTUSA" | tr '()' '\n' | grep -a -e "[Ss][Cc][Rr][Ee][Ee][Nn]" | tr ' ' '\n' | head -n 1 | tr -d ',')
+     BUSINESSSCREENSUK=$(echo "$BUSINESSSHORTUK" | tr '()' '\n' | grep -a -e "[Ss][Cc][Rr][Ee][Ee][Nn]" | tr ' ' '\n' | head -n 1 | tr -d ',')
      BUSINESSSCREENS=$(echo "$BUSINESSSHORT" | tr '()' '\n' | grep -a -e "[Ss][Cc][Rr][Ee][Ee][Nn]" | tr ' ' '\n' | head -n 1)
-     BUSINESSSCREENSNUMBER=$(echo "$BUSINESSSCREENS" | sed "s/,//")
-     if [ ! -z "$BUSINESSSCREENSNUMBER" ]; then
-      if [ $BUSINESSSCREENSNUMBER -lt 500 ]; then
+     if [ ! -z "$BUSINESSSCREENSUSA" ]; then
+      if [ $BUSINESSSCREENSUSA -lt 500 ]; then
        ISLIMITED=$LIMITEDYES
       else
        ISLIMITED=$LIMITEDNO
       fi
      else
       ISLIMITED=""
+     fi
+     if [ ! -z "$BUSINESSSCREENSUK" ] && [[ -z "$ISLIMITED" || "x$ISLIMITED" == "x$LIMITEDYES" ]]; then
+      if [ $BUSINESSSCREENSUK -lt 300 ]; then
+       ISLIMITED=$LIMITEDYES
+      else
+       ISLIMITED=$LIMITEDNO
+       BUSINESSSHORT=$BUSINESSSHORTUK
+       BUSINESSSCREENS=$BUSINESSSCREENSUK
+      fi
      fi
     fi
    fi
