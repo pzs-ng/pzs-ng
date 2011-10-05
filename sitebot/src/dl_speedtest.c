@@ -16,7 +16,7 @@ short int matchpath(char *, char *);
 void debug_out(char *,...);
 
 short int matchpath(char *instr, char *path) {
-	int             pos = 0;
+	int             pos = 0, c = 0;
 
 	if ( (int)strlen(instr) < 2 || (int)strlen(path) < 2 ) {
 		return 0;
@@ -25,15 +25,18 @@ short int matchpath(char *instr, char *path) {
 		switch (*instr) {
 		case 0:
 		case ' ':
-			if (!strncmp(instr - pos, path, pos)) {
+			if ((int)strlen(path) == pos - 1 && *(path + pos - 2) != '/' && *(instr - 1) == '/')
+				c = 1;
+			if (!strncmp(instr - pos, path, pos - c)) {
 				if (*(instr - 1) == '/')
 					return 1;
 				if ((int)strlen(path) >= pos) {
-					if (*(path + pos) == '/')
+					if (*(path + pos - 1) == '/')
 						return 1;
 				} else
 					return 1;
 			}
+			c = 0;
 			pos = 0;
 			break;
 		default:
@@ -83,7 +86,7 @@ main (int argc, char **argv)
 
 	debug_out("dl_speedtest was initiated.\n");
 	if ((argc < 2) || (strncasecmp(argv[1], "RETR ", 5))) {
-		debug_out("%s: Did not revieve args, or args were wrong. ($1='%s')\n", argv[0], argv[1]); 
+		debug_out("%s: Did not receive args, or args were wrong. ($1='%s')\n", argv[0], argv[1]); 
 		return 0;
 	}
 	p = argv[1] + 5;

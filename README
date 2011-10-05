@@ -182,18 +182,21 @@ scripts. Here's a short description of each compiled binary:
     Please note that this script will *only* work as a cscript to the site
     UNNUKE command.
     How to test: chroot /glftpd
-                 cd site/archive/something
+                 cd /site/archive/something
                  /bin/postunnuke "site UNNUKE some.release-here sorry.erroneus.nuke"
  
   - dl_speedtest - used to measure download speeds. It will write the output
     to glftpd.log only.
-    How to test: chroot /glftpd /bin/dl_speedtest "RETR /site/speedtest/file"
+    How to test: chroot /glftpd
+		 cd /site/speedtest
+		 export USER=something; export GROUP=something; export SPEED=2011
+		 /bin/dl_speedtest "RETR /site/speedtest/file"
 
   - ng-undupe - Removes entry in dupelog after a file fails sfv check.
     How to test: chroot /glftpd /bin/ng-undupe filename
   
   - ng-deldir - Marks a directory as deleted in dirlog when it is removed cause it's banned.
-    How to test: chroot /glftpd /bin/ng-deldir /chrooted/path/to/directory
+    How to test: chroot /glftpd /bin/ng-deldir /site/path/to/dir
   
   - racedebug - Debugging bin that reads the racedata directly and prints
     out a report on racers, files, speed, crc etc.

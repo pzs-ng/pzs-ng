@@ -15,6 +15,7 @@
                Make compatible with different 64bit glftpds
                Fix matchpath
   2011-09-20 - Fix small typo bug printing newdirs all on one line
+  2011-10-05 - Fix matchpath bug when "path" has no trailing '/'
 */
 
 #include <sys/file.h>
@@ -221,7 +222,7 @@ int main(int argc, char *argv[])
 short int
 matchpath(char *instr, char *path)
 {
-        int             pos = 0;
+        int             pos = 0, c = 0;
 
         if ( (int)strlen(instr) < 2 || (int)strlen(path) < 2 )
                 return 0;
@@ -229,15 +230,18 @@ matchpath(char *instr, char *path)
                 switch (*instr) {
                 case 0:
                 case ' ':
-                        if (!strncmp(instr - pos, path, pos)) {
+			if ((int)strlen(path) == pos - 1 && *(path + pos - 2) != '/' && *(instr - 1) == '/')
+				c = 1;
+                        if (!strncmp(instr - pos, path, pos - c)) {
                                 if (*(instr - 1) == '/')
                                         return 1;
                                 if ((int)strlen(path) >= pos) {
-                                        if (*(path + pos) == '/')
+                                        if (*(path + pos - 1) == '/')
                                                 return 1;
                                 } else
                                         return 1;
                         }
+			c = 0;
                         pos = 0;
                         break;
                 default:

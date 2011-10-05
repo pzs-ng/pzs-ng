@@ -742,12 +742,13 @@ removecomplete()
 }
 
 /*
- * Modified: 01.16.2002
+ * Modified: 2011.10.05 (YYYY.MM.DD)
+ * by Sked
  */
 short int 
 matchpath(char *instr, char *path)
 {
-	int		pos = 0;
+	int		pos = 0, c = 0;
 
 	if ( (int)strlen(instr) < 2 || (int)strlen(path) < 2 ) {
 		d_log("matchpath: pathlength(s) too short - returning nomatch (not an error)\n");
@@ -757,15 +758,18 @@ matchpath(char *instr, char *path)
 		switch (*instr) {
 		case 0:
 		case ' ':
-			if (!strncmp(instr - pos, path, pos)) {
+			if ((int)strlen(path) == pos - 1 && *(path + pos - 2) != '/' && *(instr - 1) == '/')
+				c = 1;
+			if (!strncmp(instr - pos, path, pos - c)) {
 				if (*(instr - 1) == '/')
 					return 1;
 				if ((int)strlen(path) >= pos) {
-					if (*(path + pos) == '/')
+					if (*(path + pos - 1) == '/')
 						return 1;
 				} else
 					return 1;
 			}
+			c = 0;
 			pos = 0;
 			break;
 		default:

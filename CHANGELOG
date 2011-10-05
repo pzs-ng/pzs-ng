@@ -126,6 +126,9 @@ v1.2.0  --> 1.2.x :
 		  This involves new defines dirlogpath, enable_delbanned_script and delbanned_script;
 		  and a new bin ng-deldir as well, which marks a dir as deleted in dirlog
 		- Fixed numscreens, businessdata and limited release determination in psxc-imdb
+		- Fixed matchpath bug for a "path" without trailing '/', mainly occuring for speedtest_dirs
+		  This should also fix issues with dl_speedtest. Thanks to sukalis for notifying.
+		- Updated test-instructions for dl_speedtest in the README.
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
