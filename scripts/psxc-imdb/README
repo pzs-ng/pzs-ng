@@ -225,10 +225,10 @@ what is closest to your setup.
    In psxc-imdb.tcl, verify that psxc(IMDBSCRIPT) and psxc(IMDBCHANNEL)
    are correct. Leave the rest for now.
 
-   Then add the tcl's:
+   Then add the tcl and zpt:
 
      1. Copy the tcl files to your eggdrop's scripts-dir:
-          cp *.tcl /glftpd/sitebot/pzs-ng/plugins/
+          cp *.tcl *.zpt /glftpd/sitebot/pzs-ng/plugins/
      
      2. Add the following in your eggdrop.conf:
           source pzs-ng/plugins/psxc-imdb.tcl
@@ -264,10 +264,10 @@ what is closest to your setup.
    Read the doc named README.use.of.special.format, and change dZSbot.tcl
    accordingly to your wishes.
 
-   Add the tcl's:
+   Add the tcl and zpt:
 
      1. Copy the tcl files to your eggdrop's scripts-dir:
-          cp *.tcl /glftpd/sitebot/pzs-ng/plugins/
+          cp *.tcl *.zpt /glftpd/sitebot/pzs-ng/plugins/
      
      2. Add the following in your eggdrop.conf:
           source pzs-ng/plugins/psxc-imdb.tcl
@@ -364,11 +364,11 @@ SETTING UP THE BOT (OPTIONAL):
    crontab entry, add support for pre'ing, use the script as the main output of
    imdb-info, or any combination of the 3, you must do the following:
    
-   1. Copy the tcl files to your eggdrop's scripts-dir:
-        cp *.tcl /glftpd/sitebot/pzs-ng/plugins/
+   1. Copy the tcl and zpt files to your eggdrop's scripts-dir:
+        cp *.tcl *.zpt /glftpd/sitebot/pzs-ng/plugins/
    
    2. Add the following in your eggdrop.conf:
-        source scripts/psxc-imdb.tcl
+        source pzs-ng/plugins//psxc-imdb.tcl
    
    3. Edit the new tcl files (yes, both. At least check to see if the variables are
       okay for your setup).
@@ -529,17 +529,19 @@ it fails on, or a .info it cannot extract the url, please let me know.
 
 CONTACT:
 --------
+--OBSOLETE--
 Should you scratch your head a bit too much, or require some extra functionality,
 do not hesitate to contact me.
 I can be emailed @ psxc@psxc.com
 I'm also known to be on #glftpd, #glhelp, #psxc and a few other chans on EFNet
 w/the nick psxc.
-
+--OBSOLETE--
+As psxc does not frequent irc anymore, go to #pzs-ng for help/suggestions/...
 
 
 GUARANTEE/LICENSE:
 ------------------
-There is none. This script is releases "as is", and the user must take full
+There is none. This script is released "as is", and the user must take full
 responsibility of setting it up correctly before use. The author cannot be held
 responsible for any losses, material or otherwise caused by this program.
 Whatever you wish to do with this script, you're free to do. Set it on fire, turn

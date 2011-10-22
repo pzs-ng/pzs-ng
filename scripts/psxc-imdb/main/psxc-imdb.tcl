@@ -110,6 +110,7 @@ namespace eval ::ngBot::plugin::psxc-IMDb {
         set ${np}::disable(IMDB)                   0
         set ${np}::disable(IMDBFIND)               0
         set ${np}::disable(IMDBVAR)                0
+        set ${np}::disable(IMDBFINDVAR)            0
         ##
         ## Convert empty or zero variables into something else.
 	## If you use MYOWN these are not used, see psxc-imdb.conf
@@ -142,9 +143,9 @@ namespace eval ::ngBot::plugin::psxc-IMDb {
         ##
         ##################################################
 
-        set psxc(VERSION) "2.9i"
+        set psxc(VERSION) "2.9m"
 
-        variable events [list "IMDB" "IMDBVAR" "IMDBFIND"]
+        variable events [list "IMDB" "IMDBVAR" "IMDBFIND" "IMDBFINDVAR"]
         variable psxcimdb
         variable scriptFile [info script]
         variable scriptName ${ns}::LogEvent
@@ -164,10 +165,11 @@ namespace eval ::ngBot::plugin::psxc-IMDb {
                 variable ${np}::precommand
 
                 lappend msgtypes(SECTION) "IMDB" "IMDBVAR"
-                lappend msgtypes(DEFAULT) "IMDBFIND"
-                set variables(IMDB)       "%pf %msg %imdbdestination"
-                set variables(IMDBFIND)   "%pf %msg %imdbdestination"
-                set variables(IMDBVAR)    "%pf %imdbdirname %imdburl %imdbtitle %imdbgenre %imdbrating %imdbcountry %imdblanguage %imdbcertification %imdbruntime %imdbdirector %imdbbusinessdata %imdbpremiereinfo %imdblimitedinfo %imdbvotes %imdbscore %imdbname %imdbyear %imdbnumscreens %imdbislimited %imdbcastleadname %imdbcastleadchar %imdbtagline %imdbplot %imdbbar %imdbcasting %imdbcommentshort %imdbdestination"
+                lappend msgtypes(DEFAULT) "IMDBFIND" "IMDBFINDVAR"
+                set variables(IMDB)        "%pf %msg %imdbdestination"
+                set variables(IMDBFIND)    "%pf %msg %imdbdestination"
+                set variables(IMDBVAR)     "%pf %imdbdirname %imdburl %imdbtitle %imdbgenre %imdbrating %imdbcountry %imdblanguage %imdbcertification %imdbruntime %imdbdirector %imdbbusinessdata %imdbpremiereinfo %imdblimitedinfo %imdbvotes %imdbscore %imdbname %imdbyear %imdbnumscreens %imdbislimited %imdbcastleadname %imdbcastleadchar %imdbtagline %imdbplot %imdbbar %imdbcasting %imdbcommentshort %imdbdestination"
+                set variables(IMDBFINDVAR) "%pf %imdbdirname %imdburl %imdbtitle %imdbgenre %imdbrating %imdbcountry %imdblanguage %imdbcertification %imdbruntime %imdbdirector %imdbbusinessdata %imdbpremiereinfo %imdblimitedinfo %imdbvotes %imdbscore %imdbname %imdbyear %imdbnumscreens %imdbislimited %imdbcastleadname %imdbcastleadchar %imdbtagline %imdbplot %imdbbar %imdbcasting %imdbcommentshort %imdbdestination"
 
                 set theme_file [file normalize "[pwd]/[file rootname $scriptFile].zpt"]
                 if {[file isfile $theme_file]} {
@@ -308,7 +310,7 @@ namespace eval ::ngBot::plugin::psxc-IMDb {
         }
 
         proc ReadIMDb {} {
-                variable ns 
+                variable ns
                 variable psxc
                 variable psxcimdb
 
@@ -340,7 +342,7 @@ namespace eval ::ngBot::plugin::psxc-IMDb {
         }
 
         proc ShowIMDb {} {
-                variable ns 
+                variable ns
                 variable psxc
                 variable psxcimdb
 
@@ -393,7 +395,7 @@ namespace eval ::ngBot::plugin::psxc-IMDb {
         }
 
         proc PreIMDb {} {
-                variable ns 
+                variable ns
                 variable psxc
                 variable psxcimdb
 
@@ -457,4 +459,3 @@ namespace eval ::ngBot::plugin::psxc-IMDb {
                 }
         }
 }
-

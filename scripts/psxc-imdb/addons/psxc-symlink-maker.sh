@@ -17,7 +17,7 @@
 ############################################################################
 
 # version number. no need to change
-VERSION=2.9k
+VERSION=2.9m
 
 # The location of psxc-imdb.conf. This is the full path.
 IMDB_CONF=/glftpd/etc/psxc-imdb.conf
@@ -198,12 +198,12 @@ IMDBCOMMENTFULL=${b[30]}
 
 ###### Let's start
 
-# First, a couple of test to make sure we got the variables. These should be better.
+# First, a couple of tests to make sure we got the variables.
 [[ ! -z "`echo "$SYMLINK_PATH" | grep -v "/"`" ]] &&
  echo "config error. check variables." &&
  exit 0
 
-# Let's check the if SYMLINK_PATH exist.
+# Let's check if the SYMLINK_PATH exists.
 if [ ! -d "$GLROOT$SYMLINK_PATH" ]; then
  mkdir "$GLROOT$SYMLINK_PATH" >/dev/null 2>&1
  [[ $? -ne 0 ]] &&
@@ -260,7 +260,7 @@ fi
 proc_cleanup() {
  for LINK in `ls -AF "$1" | tr ' ' '%'`; do
   LINK="`echo "$LINK" | sed "s/@$//" | tr '%' ' '`"
-  LINK_DST="`ls -Al "$1/$LINK" | cut -d'>' -f2 | sed "s/^ *//"`"
+  LINK_DST="$(readlink "$1/$LINK")"
   [[ ! -e "$GLROOT$LINK_DST" ]] &&
    rm -f "$1`basename "$LINK"`"
  done
@@ -273,7 +273,7 @@ proc_cleanup_single() {
  for SDIR in `ls -AF "$1" | tr ' ' '%' | sed 's|^|.../|'`; do
   SDIR="`echo "$SDIR" | tr '%' ' ' | sed 's|^\.\.\./||'`"
   proc_cleanup "$1/$SDIR"
-  rmdir "$1/$SDIR" >/dev/null 2>&1
+  rmdir --ignore-fail-on-non-empty "$1/$SDIR"
  done
 }
 
@@ -282,7 +282,7 @@ proc_cleanup_double() {
  for DIR in `ls -AF "$1" | tr ' ' '%' | sed 's|^|.../|'`; do
   DIR="`echo "$DIR" | tr '%' ' ' | sed 's|^\.\.\./||'`"
   proc_cleanup_single "$1/$DIR"
-  rmdir "$1/$DIR" >/dev/null 2>&1
+  rmdir --ignore-fail-on-non-empty "$1/$DIR"
  done
 }
 
@@ -522,6 +522,7 @@ if [ $SORT_BY_TITLE -eq 1 ]; then
  if [ ! -z "$IMDBNAME" ] && [ ! $ISEXEMPT -eq 1 ]; then
   SECTION="`echo "$IMDBRELPATH" | tr ' ' '_' | tr '/' ' ' | wc -w | tr -d ' '`"
   SECTIONNAME="`echo "$IMDBRELPATH" | cut -d '/' -f $SECTION`"
+  MYYEAR="`echo "$IMDBYEAR" | tr -cd '0-9'`"
   TITLECHAR=${IMDBNAME:0:1}
   if [ "$TITLECHAR" == "$QUOTECHAR" ] && [ "${IMDBNAME: -1:1}" == "$QUOTECHAR" ]; then
    TITLECHAR=${IMDBNAME:1:1}
@@ -542,7 +543,7 @@ if [ $SORT_BY_TITLE -eq 1 ]; then
    [[ ! -z "$SPECIAL_CHAR_REPLACER" ]] && [[ ! -z "$SPECIAL_CHAR_LIST" ]] && [[ ! -z "$SPECIAL_CHAR_SUBS_LIST" ]] &&
     TITLECHAR=$(echo "$TITLECHAR" | tr "$SPECIAL_CHAR_LIST" "$SPECIAL_CHAR_SUBS_LIST")
   fi
-  TITLE="$(echo "$IMDBNAME-.$SECTIONNAME" | tr -s ' ' "$SPACE_REPLACER" | tr "$BADCHARS" "$BAD_CHAR_REPLACER")"
+  TITLE="$(echo "$IMDBNAME.$MYYEAR-$SECTIONNAME" | tr -s ' ' "$SPACE_REPLACER" | tr "$BADCHARS" "$BAD_CHAR_REPLACER")"
   if [[ ! -z "$SPECIAL_CHAR_REPLACER" ]]; then
    [[ ! -z "$SPECIAL_CHAR_LIST" ]] && [[ ! -z "$SPECIAL_CHAR_SUBS_LIST" ]] &&
     TITLE=$(echo "$TITLE" | tr "$SPECIAL_CHAR_LIST" "$SPECIAL_CHAR_SUBS_LIST")
@@ -552,7 +553,7 @@ if [ $SORT_BY_TITLE -eq 1 ]; then
    mkdir -pm777 "$GLROOT$SYMLINK_PATH/$SORT_BY_TITLE_NAME/$TITLECHAR"
   CNTR=""
   while [ -L "$GLROOT$SYMLINK_PATH/$SORT_BY_TITLE_NAME/$TITLECHAR/$TITLE$CNTR" ] &&
-    [ "$IMDBRELPATH" != "$(ls -l "$GLROOT$SYMLINK_PATH/$SORT_BY_TITLE_NAME/$TITLECHAR/$TITLE$CNTR" | cut -d'>' -f2 | sed 's/^ *//')" ]; do
+    [ "$IMDBRELPATH" != "$(readlink "$GLROOT$SYMLINK_PATH/$SORT_BY_TITLE_NAME/$TITLECHAR/$TITLE$CNTR")" ]; do
    CNTR=$((CNTR+1))
   done
   ln -s "$IMDBRELPATH" "$GLROOT$SYMLINK_PATH/$SORT_BY_TITLE_NAME/$TITLECHAR/$TITLE$CNTR"

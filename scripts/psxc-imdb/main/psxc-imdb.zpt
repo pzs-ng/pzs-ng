@@ -7,3 +7,4 @@
 announce.IMDB                   = "%msg"
 announce.IMDBVAR                = "[%b{imdb  }][%section] %b{%imdbname} (%imdburl), a %imdbdirector movie which scored %b{%imdbscore of 10} (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.\n%b{%sitename} :: [%b{imdb  }][%section] %b{%imdbname} plot summary: %imdbplot [%imdbbar]"
 announce.IMDBFIND               = "%msg"
+announce.IMDBFINDVAR            = "[%b{imdb  }] %b{%imdbname}, a %imdbdirector movie which scored %b{%imdbscore of 10} (%imdbvotes people voted). It premiered in %imdbpremiereinfo, with %b{%imdbnumscreens screens} on the opening weekend.\n[%b{imdb  }] %b{%imdbname} plot summary: %imdbplot [%imdbbar]"

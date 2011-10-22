@@ -1,5 +1,11 @@
 PSXC-IMDB CHANGELOG:
 --------------------
+- v2.9m - Oct. 22nd, 2011 - Fixed announce when LOGFORMAT and/or FINDLOGFORMAT was set to SPECIAL.
+			    If those are set to SPECIAL, TRIGGER and/or FINDTRIGGER should be changed
+			    to IMDBVAR and/or IMDBFINDVAR respectively.
+			  - Improved psxc-symlink-maker to use readlink instead of the ls-tr-sed combo,
+			    using the ignore flag for rmdir instead of redirection and
+			    adding the year to the TITLE-sorted symlinks - Improvements by PCFiL
 - v2.9l - Oct. 02nd, 2011 - Fixed businessdata, it will now fetch the opening weekend
 			    from USA and/or UK if present and compare the numscreens
 			    with 500 and/or 300 respectively to determine a correct
