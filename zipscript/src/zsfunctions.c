@@ -177,6 +177,11 @@ findfileextsub(DIR *dir)
 	return NULL;
 }
 
+/* Last modified: 2011.11.12 (YYYY.MM.DD)
+ * by Sked
+ * Check if any of the subdirs of the parentdir of "dir" is in the sample_list
+ * and if any file in such a subdir with an extension listed in video_types exists.
+ */
 char *
 findfileextsubp(DIR *dir)
 {
@@ -189,7 +194,7 @@ findfileextsubp(DIR *dir)
 	errno = 0;
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL) {
-		d_log("zsfunctions.c: findfileextsubp() - Error getting path: %s\n", strerror(errno));
+		d_log("zsfunctions.c: findfileextsubp() - getcwd: Error getting path: %s\n", strerror(errno));
 		return NULL;
 	}
 
@@ -199,10 +204,11 @@ findfileextsubp(DIR *dir)
 
 	rewinddir(dir);
 
-	if((dir2=opendir(cwd)) == NULL) {
-		d_log("zsfunctions.c: findfileextsubp() - Error getting path: %s\n", strerror(errno));
+	if((dir2=opendir(cwd2)) == NULL) {
+		d_log("zsfunctions.c: findfileextsubp() - opendir(%s): Error getting path: %s\n", cwd2, strerror(errno));
 		return NULL;
 	}
+
 	while ((dp = readdir(dir2))) {
 		if (strcmp(dp->d_name,".") && strcmp(dp->d_name,".."))  {
 			struct stat attribut;
@@ -210,11 +216,11 @@ findfileextsubp(DIR *dir)
 			strcat(cwd3,"/");
 			strcat(cwd3,dp->d_name);
 			if (stat(cwd3, &attribut) == -1)
-				d_log("zsfunctions.c: findfileextsubp() - Error getting path\n");
+				d_log("zsfunctions.c: findfileextsubp() - stat(%s): Error getting path: %s\n", cwd3, strerror(errno));
 			if (strcomp(sample_list, dp->d_name)) {
 				if (S_ISDIR(attribut.st_mode)) {
 					if ((dir3 = opendir(cwd3)) == NULL)
-						d_log("zsfunctions.c: findfileextsubp() - Error getting path\n");
+						d_log("zsfunctions.c: findfileextsubp() - opendir(%s): Error getting path: %s\n", cwd3, strerror(errno));
 					else {
 						rewinddir(dir3);
 						while ((dp2 = readdir(dir3))) {
@@ -236,7 +242,7 @@ findfileextsubp(DIR *dir)
 	closedir(dir2);
 
 	if (errno)
-		d_log("zsfunctions.c: findfileextsubp() - readdir(dir) returned an error: %s\n", strerror(errno));
+		d_log("zsfunctions.c: findfileextsubp() - readdir(dir2) returned an error: %s\n", strerror(errno));
 
 	return NULL;
 }
