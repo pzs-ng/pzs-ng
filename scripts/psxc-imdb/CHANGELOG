@@ -1,5 +1,7 @@
 PSXC-IMDB CHANGELOG:
 --------------------
+- v2.9n - Nov. 24th, 2011 - Fixed GENRE, PLOT, RATING and COMMENTSHORT for certain locales and setups
+			    See added info in psxc-imdb.conf near the LYNXFLAGS
 - v2.9m - Oct. 22nd, 2011 - Fixed announce when LOGFORMAT and/or FINDLOGFORMAT was set to SPECIAL.
 			    If those are set to SPECIAL, TRIGGER and/or FINDTRIGGER should be changed
 			    to IMDBVAR and/or IMDBFINDVAR respectively.

@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.9l"
+VERSION="v2.9n"
 
 ######################################################################################################
 
@@ -507,9 +507,9 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
      OUTPUTOK=""
      break
     fi
-    GENRE=$(grep -a -e "^Genre:" "$TMPFILE" | sed "s/ See more »//" | sed "s/Genre:/Genre........:/" | sed s/\"/$QUOTECHAR/g | tr '|' '\n' | head -n $GENRENUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//")
+    GENRE=$(grep -a -e "^Genre:" "$TMPFILE" | sed "s/ See more ..*//" | sed "s/Genre:/Genre........:/" | sed s/\"/$QUOTECHAR/g | tr '|' '\n' | head -n $GENRENUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//")
     GENRECLEAN=$(echo $GENRE | sed "s/Genre........: *//")
-    RATING="User Rating..: $(grep -A1 "^User Rating:" $TMPFILE | grep "[0-9]\.[0-9]\/[0-9][0-9]" | sed "s/^User Rating://" | sed "s/^ *//;s/ »//" | sed s/\"/$QUOTECHAR/g | sed "s|/10\ |/10\ \(|"))"
+    RATING="User Rating..: $(grep -A1 "^User Rating:" $TMPFILE | grep "[0-9]\.[0-9]\/[0-9][0-9]" | sed "s/^User Rating://" | sed "s/^ *//;s/ .[^ ]*$//" | sed s/\"/$QUOTECHAR/g | sed "s|/10\ |/10\ \(|"))"
     if [ "$RATING" = "User Rating..: )" ]; then
       RATING="User Rating..: Awaiting 5 votes"
     fi
@@ -547,7 +547,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     TAGLINECLEAN=$(echo $TAGLINE | sed "s/Tagline......: *//")
     LANGUAGE=$(grep -a -e "^Language:" "$TMPFILE" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Language:/Language.....:/" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $LANGUAGENUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//")
     LANGUAGECLEAN=$(echo $LANGUAGE | sed "s/Language.....: *//")
-    PLOT=$(grep -a -e "^Plot:" "$TMPFILE" | cut -d '|' -f 1 | sed "s/ Full summary »//" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\"/$QUOTECHAR/g | tr -s ' ')
+    PLOT=$(grep -a -e "^Plot:" "$TMPFILE" | cut -d '|' -f 1 | sed "s/ Full summary ..*//" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\"/$QUOTECHAR/g | tr -s ' ')
     PLOTCLEAN=$(echo $PLOT | sed "s/Plot: *//")
     if [ ! -z "$(echo "$PLOTCLEAN" | grep -a -e "\(\ \)\ \(\ \)")" ]; then
      OUTPUTOK=""
@@ -559,7 +559,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     CASTCLEAN=$(echo "$CAST" | sed "s/\.\.\..*/|/g" | tr -s '\n' ' ' | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ |/\,/g" | sed "s/,$//")
     CASTLEADNAME="$(echo "$CAST" | head -n 1 | sed 's/\.\.\./\n/' | head -n 1 | tr -s ' ' | sed "s/^\ //g" | sed "s/\ $//g")"
     CASTLEADCHAR="$(echo "$CAST" | head -n 1 | sed 's/\.\.\./\n/' | tail -n 1 | tr -s ' ' | sed "s/^\ //g" | sed "s/\ $//g")"
-    COMMENTSHORT=$(grep -a -e "^User Reviews:" "$TMPFILE" | head -n 1 | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ See more \(.*\) »$//" | sed s/\"/$QUOTECHAR/g)
+    COMMENTSHORT=$(grep -a -e "^User Reviews:" "$TMPFILE" | head -n 1 | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ See more \(.*\) .[^ ]*$//" | sed s/\"/$QUOTECHAR/g)
     COMMENTSHORTCLEAN=$(echo $COMMENTSHORT | sed "s/User Reviews: *//")
     COMMENT=$(awk '/User Reviews$/, /Was the above review useful to you. Yes No$/' "$TMPFILE" | awk '/ Author: /, /EOF/' | sed '1d;$d' | sed s/\"/$QUOTECHAR/g)
     [[ -n "$COMMENT" ]] && COMMENTCLEAN=$(echo "$COMMENT" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\{\}\"/$QUOTECHAR/g | tr '\n' '|')
