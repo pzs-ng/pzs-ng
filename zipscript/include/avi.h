@@ -18,8 +18,10 @@
 #ifndef __AVI_H
 #define __AVI_H
 
-typedef unsigned long FOURCC;
-typedef unsigned long DWORD;
+#include <inttypes.h> /* needed for uint32_t */
+
+typedef uint32_t FOURCC; /* must be 32bit */
+typedef uint32_t DWORD; /* must be 32bit */
 typedef unsigned short WORD;
 
 typedef struct {

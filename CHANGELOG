@@ -133,6 +133,7 @@ v1.2.0  --> 1.2.x :
 		  nfo and sample on dirs with no sfv and containing subdirs with sfv
 		- Some fixes in psxc-imdb related to different charsets
 		- Added --disable-epsv to curl execution for those using glftpd-ng
+		- Fixed bug where avis were not recognized on 64bit and thus didn't give sampleinfo
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.

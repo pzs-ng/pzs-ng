@@ -873,7 +873,6 @@ matchpartialdirname(char *parts, char *dirname, char *dividers)
 		switch (*parts) {
 		case 0:
 		case ',':
-			d_log("matchpartialdirname: comparing first string of: %s.\n", parts - pos);
 			do {
 				hit = 0;
 				i = 0;
@@ -884,7 +883,6 @@ matchpartialdirname(char *parts, char *dirname, char *dividers)
 					++i;
 				}
 				if (!l || hit) {
-					d_log("matchpartialdirname: At divider, hit=%d, comparing to part of dirname: %s.\n", hit, dirname + hit);
 					if (dirname[hit] && !strncasecmp(parts - pos, dirname + hit, pos)) {
 						d_log("matchpartialdirname: We have a hit, checking ending divider with char: %c.\n", dirname[pos + 1]);
 						if (!l) return 1;
