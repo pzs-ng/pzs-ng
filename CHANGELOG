@@ -158,6 +158,8 @@ v1.2.0  --> 1.2.x :
 		  releases will only be sorted under VA.
 		- Fixed another matchpathbug only occuring if a defined path had no trailing /
 		- Several other fixes, cleanups and removal of most compiler warnings
+		- Fix for backward compatibility when rescanning releases uploaded prior to the flacsupport
+		- Fix for bitrate gathering for flacfiles and vbr_version_string will now show the encoder used
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.

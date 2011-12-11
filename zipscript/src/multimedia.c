@@ -63,11 +63,10 @@ char *genre_s[] = {
 unsigned char genre_count=149;
 
 char *fps_s[] = {"Unknown", "23.976", "24", "25", "29.97", "30", "50", "59.94", "60"};
-char *layer_s[] = {"Unknown", "Layer III", "Layer II", "Layer I"};
+char *layer_s[] = {"Unknown", "Layer III", "Layer II", "Layer I", "None"};
 char *codec_s[] = {"Mpeg 2.5", "Unknown", "Mpeg 2", "Mpeg 1", "FLAC"};
 char *chanmode_s[] = {"Stereo", "Joint Stereo", "Dual Channel", "Single Channel", "Unknown"};
 char *flac_chanmode_s[] = {"Unknown", "1 Channel", "2 Channels", "3 Channels", "4 Channels", "5 Channels", "6 Channels", "7 Channels", "8 Channels"};
-char flac_encoder[NAME_MAX];
 
 /*
  * Remove whitespace characters from both ends of a copy of '\0' terminated
@@ -635,11 +634,12 @@ get_flac_audio_info(char *f, struct audio *audio)
 	strcpy(audio->id3_title, "Unknown");
 	strcpy(audio->id3_artist, "Unknown");
 	strcpy(audio->id3_album, "Unknown");
+	strcpy(audio->vbr_version_string, "Unknown");
 	audio->id3_genre = genre_s[genre_count - 1];
 	audio->is_vbr = 1;
 	audio->codec = codec_s[4];
 	audio->channelmode = flac_chanmode_s[0];
-	audio->layer = layer_s[0];
+	audio->layer = layer_s[4];
 
 	fd = open(f, O_RDONLY);
 	if (fd < 0) {
@@ -657,9 +657,8 @@ get_flac_audio_info(char *f, struct audio *audio)
 			if (!strncmp((char *)temp_meta->data.vorbis_comment.vendor_string.entry, "reference libFLAC", 17))
 				k = 10;
 			for (i = 0; i < NAME_MAX - 1 && i < temp_meta->data.vorbis_comment.vendor_string.length; ++i)
-				flac_encoder[i] = temp_meta->data.vorbis_comment.vendor_string.entry[i+k];
-			flac_encoder[i] = '\0';
-			audio->layer = flac_encoder;
+				audio->vbr_version_string[i] = temp_meta->data.vorbis_comment.vendor_string.entry[i+k];
+			audio->vbr_version_string[i] = '\0';
 		}
 
 		for (i = 0; i < temp_meta->data.vorbis_comment.num_comments; ++i) {
@@ -757,7 +756,7 @@ get_flac_audio_info(char *f, struct audio *audio)
 		stat(f, &st);
 
 		if (temp_meta->data.stream_info.total_samples)
-			sprintf(audio->bitrate, "%d", ((int)st.st_size * (int)temp_meta->data.stream_info.sample_rate) / (125 * (int)temp_meta->data.stream_info.total_samples));
+			sprintf(audio->bitrate, "%llu", (st.st_size * temp_meta->data.stream_info.sample_rate) / (125 * temp_meta->data.stream_info.total_samples));
 
 		d_log("multimedia.c: get_flac_audio_info() - stream info: %d Hz, %d channel(s), %d bits per sample, %d total samples\n", temp_meta->data.stream_info.sample_rate,
 														temp_meta->data.stream_info.channels,

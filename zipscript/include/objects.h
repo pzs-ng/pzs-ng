@@ -72,7 +72,7 @@ struct audio {
 	char           *layer;
 	char           *codec;
 	char           *channelmode;
-	char		vbr_version_string[10];
+	char		vbr_version_string[NAME_MAX];
 	char		vbr_preset[15];
 	int		is_vbr;
 	char		vbr_oldnew;
