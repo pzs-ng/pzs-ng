@@ -328,37 +328,40 @@ checklink(char *link_, int setfree)
 short int
 matchpath(char *instr, char *path)
 {
-        int             pos = 0, c = 0;
-        if ( (int)strlen(instr) < 2 || (int)strlen(path) < 2 ) {
+	int pos = 0, c = 0;
+
+	if ( (int)strlen(instr) < 2 || (int)strlen(path) < 2 ) {
 #if (debug_mode && debug_announce)
 		printf("DEBUG: matchpath: pathlength(s) too short - returning nomatch (not an error)\n");
 #endif
-                return 0;
-        }
-        do {
-                switch (*instr) {
-                case 0:
-                case ' ':
+		return 0;
+	}
+
+	do {
+		switch (*instr) {
+		case 0:
+		case ' ':
 			if ((int)strlen(path) == pos - 1 && *(path + pos - 2) != '/' && *(instr - 1) == '/')
 				c = 1;
 			if (!strncmp(instr - pos, path, pos - c)) {
 				if (*(instr - 1) == '/')
 					return 1;
 				if ((int)strlen(path) >= pos) {
-					if (*(path + pos - 1) == '/')
+					if (*(path + pos) == '/')
 						return 1;
 				} else
 					return 1;
-                        }
+			}
 			c = 0;
-                        pos = 0;
-                        break;
-                default:
-                        pos++;
-                        break;
-                }
-        } while (*instr++);
-        return 0;
+			pos = 0;
+			break;
+		default:
+			++pos;
+			break;
+		}
+	} while (*instr++);
+
+	return 0;
 }
 
 void 

@@ -135,6 +135,29 @@ v1.2.0  --> 1.2.x :
 		- Added --disable-epsv to curl execution for those using glftpd-ng
 		- Fixed bug where avis were not recognized on 64bit and thus didn't give sampleinfo
 		- Fix in psxc-imdb for PLOT output
+		- Added support for FLAC audiofiles, partially based on the flacpatch by io / yoaha,
+		  and made adding other audioformats easier via the new audio_types configuration option.
+		  Getting metadata information from other formats than .mp3 and .flac still has to be
+		  implemented seperately though.
+		  ATTENTION: the following configuration options have changed names due to this:
+			del_progressmeter_mp3	>	del_progressmeter_audio
+			enable_mp3_script	>	enable_audio_script
+			message_mp3		>	message_audio
+			mp3_script		>	audio_script
+			mp3_script_cookies	>	audio_script_cookies
+			progressmeter_mp3	>	progressmeter_audio
+			realtime_mp3_info	>	realtime_audio_info
+		    update your zsconfig.h accordingly.
+		  ATTENTION: as the bins will now be compiled against the FLAC libs, you are advised
+				to run libcopy.sh after installation, as those external libs have to be
+				accessible when chrooted
+		- Sorting of audiofiles now happens for every file opposed to only the last file.
+		- Added a new option audio_artist_sort_various_only which is meant for audioreleases with
+		  various artists (VA-/VA_). As every file is now causing a sorting, those releases will be
+		  sorted under every artist that appears on them. By setting this option to TRUE, those
+		  releases will only be sorted under VA.
+		- Fixed another matchpathbug only occuring if a defined path had no trailing /
+		- Several other fixes, cleanups and removal of most compiler warnings
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.

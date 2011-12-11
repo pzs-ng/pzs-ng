@@ -165,8 +165,8 @@
 #define audio_cbr		"{%w} {%Y} {%X} {%z} {%Q} {CBR} {%x} {%W} {%y} {%h} {%q}"			/* Put in %j cookie */
 
 /*
- * Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 &
- * mpeg2.5 + layer1 & 2 can be added if needed
+ * Audio files - currently used only for flac & mp3 (mpeg2 layer3),
+ * but mpeg1 & mpeg2.5 + layer1 & 2 can be added if needed
  */
 #if ( disable_audio_race == FALSE )
 #define audio_race		"{%U} {%G} {%R} {%r} {%.0S} {%n} {%d} {%.1p} {%u} {%g} {%F} {%f} {%M} \"%K\" {%B} {%$}"

@@ -606,6 +606,7 @@ SHOWLOG
 SITEWHO
 USING_GLFTPD
 GLVERSION
+FLAC_HEADERS
 SSL_INCLUDE
 SSL_LIBS
 EGREP
@@ -680,6 +681,7 @@ enable_glftpd_specific
 enable_format
 enable_expert
 enable_altwho
+enable_flac
 enable_static
 with_install_path
 with_glpath
@@ -1319,6 +1321,7 @@ Optional Features:
   --enable-expert         expert mode - uses full config
   --disable-altwho        compiles the sitewho to not use an alternative
                           output on single user who lookups
+  --disable-flac          disable flacinfo support
   --enable-static         enable static linking of zs-c
   --enable-gl132          disable autodetect of glversion, and compile bot
                           binaries for glftpd 1.32
@@ -4352,6 +4355,38 @@ if test "${enable_altwho+set}" = set; then :
 fi
 
 
+# Check whether --enable-flac was given.
+if test "${enable_flac+set}" = set; then :
+  enableval=$enable_flac;
+else
+  enable_flac=check
+fi
+
+
+FLAC_HEADERS=""
+if test "x$enable_flac" != xno; then :
+
+              for ac_header in FLAC/metadata.h FLAC/format.h
+do :
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
+if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+ FLAC_HEADERS="-DHAVE_FLAC_HEADERS -lFLAC"
+
+else
+  if test "x$enable_flac" != xcheck; then
+                  as_fn_error $? "Couldn't find required flacheaders. Install libflac development files if you want to have flacinfo support." "$LINENO" 5
+                 fi
+
+fi
+
+done
+
+fi
+
 # Check whether --enable-static was given.
 if test "${enable_static+set}" = set; then :
   enableval=$enable_static; CFLAGS="$CFLAGS -static"; static="yes"
@@ -5782,6 +5817,17 @@ The makefiles are now configured. Next up you need to edit
 zipscript/conf/zsconfig.h to fit your needs. Please see
 README.ZSCONFIG for a complete list of options.
 " >&6; }
+
+if [ "x$FLAC_HEADERS" != "x" ]; then
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $( echo )ATTENTION! You are compiling with FLAC support enabled.
+ This requires third party libs to be accessible in your chroot.
+ For this you are advised to run libcopy.sh after installation.
+" >&5
+$as_echo "$( echo )ATTENTION! You are compiling with FLAC support enabled.
+ This requires third party libs to be accessible in your chroot.
+ For this you are advised to run libcopy.sh after installation.
+" >&6; }
+fi
 
 if [ "x$GLFTPD_SPECIFIC" = "xyes" ]; then
 RESULT="Also be sure to edit sitewho/sitewho.conf. The conf has

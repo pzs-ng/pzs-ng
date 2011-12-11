@@ -269,7 +269,6 @@ get_id3(mp3info * mp3, struct audio *audio)
 				memcpy(&(audio->id3_title), &(mp3->id3.title), sizeof(mp3->id3.title));
 				memcpy(&(audio->id3_album), &(mp3->id3.album), sizeof(mp3->id3.album));
 				memcpy(&(audio->id3_year), &(mp3->id3.year), sizeof(mp3->id3.year));
-				memcpy(&(audio->id3_artist), &(mp3->id3.artist), sizeof(mp3->id3.artist));
 			}
 		}
 	}

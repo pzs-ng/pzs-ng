@@ -62,9 +62,9 @@ struct GROUPINFO {
 };
 
 struct audio {
-	char		id3_artist[31];
-	char		id3_title [31];
-	char		id3_album [31];
+	char		id3_artist[NAME_MAX];
+	char		id3_title [NAME_MAX];
+	char		id3_album [NAME_MAX];
 	char		id3_year  [5];
 	char		bitrate   [5];
 	char		samplingrate[6];
@@ -75,7 +75,7 @@ struct audio {
 	char		vbr_version_string[10];
 	char		vbr_preset[15];
 	int		is_vbr;
-	char		vbr_oldnew[1];
+	char		vbr_oldnew;
 	int		vbr_quality;
 	int		vbr_minimum_bitrate;
 	int		vbr_noiseshaping;
@@ -181,8 +181,6 @@ struct VARS {
 	unsigned int	data_in_use;
 	unsigned int	data_queue;
 	unsigned int	data_type;
-	char		id3_artist[31];
-	char		id3_genre[31];
 };
 
 /* passing this around is a lot easier than passing

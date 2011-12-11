@@ -166,8 +166,8 @@
 #define audio_cbr		"{" audio_info "}"			/* Put in %j cookie */
 
 /*
- * Audio files - currently used only for mp3 (mpeg2 layer3), but mpeg1 &
- * mpeg2.5 + layer1 & 2 can be added if needed
+ * Audio files - currently used only for flac & mp3 (mpeg2 layer3),
+ * but mpeg1 & mpeg2.5 + layer1 & 2 can be added if needed
  */
 #if ( disable_audio_race == FALSE )
 #define audio_race		"{\"user\": \"%U\", \"group\": \"%G\", \"competitors\": [%R], \"release\": \"%r\", \"speed\": %.0S, \"filename\": \"%n\", \"duration\": \"%d\", \"percent\": %.1p, \"num_users\": %u, \"num_groups\": %g, \"num_files\": %F, \"expected_files\": %f, \"missing_files\": %M, \"tagline\": \"%K\", \"racers\": [%B], \"eta\": \"%$\"}"

@@ -244,10 +244,10 @@ strplen(char *strin)
 	return n;
 }
 
-short int 
+short int
 matchpath(char *instr, char *path)
 {
-	int	pos = 0, c = 0;
+	int pos = 0, c = 0;
 
 	if ( (int)strlen(instr) < 2 || (int)strlen(path) < 2)
 		return 0;
@@ -262,7 +262,7 @@ matchpath(char *instr, char *path)
 				if (*(instr - 1) == '/')
 					return 1;
 				if ((int)strlen(path) >= pos) {
-					if (*(path + pos - 1) == '/')
+					if (*(path + pos) == '/')
 						return 1;
 				} else
 					return 1;
@@ -271,10 +271,11 @@ matchpath(char *instr, char *path)
 			pos = 0;
 			break;
 		default:
-			pos++;
+			++pos;
 			break;
 		}
 	} while (*instr++);
+
 	return 0;
 }
 

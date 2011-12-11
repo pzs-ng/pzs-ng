@@ -101,6 +101,17 @@ dnl altwho
 ALTWHO="-D_WITH_ALTWHO"
 AC_ARG_ENABLE(altwho, AS_HELP_STRING([--disable-altwho], [compiles the sitewho to not use an alternative output on single user who lookups]), ALTWHO="")
 
+dnl flac_headers
+AC_ARG_ENABLE(flac, AS_HELP_STRING([--disable-flac], [disable flacinfo support]), , [enable_flac=check])
+
+FLAC_HEADERS=""
+AS_IF([test "x$enable_flac" != xno], [
+              AC_CHECK_HEADERS([FLAC/metadata.h FLAC/format.h],[AC_SUBST([FLAC_HEADERS], ["-DHAVE_FLAC_HEADERS -lFLAC"])],
+                [if test "x$enable_flac" != xcheck; then
+                  AC_MSG_ERROR([Couldn't find required flacheaders. Install libflac development files if you want to have flacinfo support.])
+                 fi]
+              )])
+
 dnl Static linking :)
 AC_ARG_ENABLE(static, AS_HELP_STRING([--enable-static], [enable static linking of zs-c]), CFLAGS="$CFLAGS -static"; static="yes")
 if test "$static" = "yes"; then
@@ -216,6 +227,14 @@ The makefiles are now configured. Next up you need to edit
 zipscript/conf/zsconfig.h to fit your needs. Please see
 README.ZSCONFIG for a complete list of options.
 )
+
+if [[ "x$FLAC_HEADERS" != "x" ]]; then
+AC_MSG_RESULT(
+$( echo )ATTENTION! You are compiling with FLAC support enabled.
+ This requires third party libs to be accessible in your chroot.
+ For this you are advised to run libcopy.sh after installation.
+)
+fi
 
 if [[ "x$GLFTPD_SPECIFIC" = "xyes" ]]; then
 RESULT="Also be sure to edit sitewho/sitewho.conf. The conf has

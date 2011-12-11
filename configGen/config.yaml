@@ -182,7 +182,7 @@ options:
     spaces_to_dots:
         type: boolean
         comment: |-
-            This option will replace spaces in mp3-genre dirs to dots.
+            This option will replace spaces in audio-genre dirs to dots.
         default: false
 
     audio_nocheck_dirs:
@@ -762,7 +762,7 @@ options:
     exclude_non_sfv_dirs:
         type: boolean
         comment: |-
-            Applies only to audio/mp3 releases - NEEDS MORE INFO HERE!!!!!
+            Applies only to audio releases - NEEDS MORE INFO HERE!!!!!
         default: true
 
     force_sfv_first:
@@ -784,16 +784,23 @@ options:
                                deny_resume_sfv
         default: true
 
+    audio_types:
+        type: string
+        comment: |-
+            Comma-separated list of files considered to be audio files. Sorting will
+            apply on directories containing these.
+        default: '"mp3,flac"'
+
     audio_genre_sort:
         type: boolean
         comment: |-
-            If you wish to sort audio/mp3 releases by genre, set this to TRUE.
+            If you wish to sort audio releases by genre, set this to TRUE.
         default: false
 
     audio_genre_path:
         type: path
         comment: |-
-            If you choose to sort audio/mp3 releases by genre, this is the place
+            If you choose to sort audio releases by genre, this is the place
             where the symlinks will be created. This dir must be created in order
             for the sorting to work - the zipscript will not create it for you.
         default: '"/site/incoming/music.by.genre/"'
@@ -801,7 +808,16 @@ options:
     audio_artist_sort:
         type: boolean
         comment: |-
-            If you wish to sort audio/mp3 releases by artist, set this to TRUE.
+            If you wish to sort audio releases by artist, set this to TRUE.
+        default: false
+
+    audio_artist_sort_various_only:
+        type: boolean
+        comment: |-
+            An audio release containing multiple artists and having VA-/VA_
+            start the releasename, will be sorted in artist subdirs for each
+            appearing artist and in the VA-sortdir. Set this to TRUE to only
+            sort in the VA-sortdir.
         default: false
 
     audio_artist_nosub:
@@ -825,7 +841,7 @@ options:
     audio_artist_path:
         type: path
         comment: |-
-            If you choose to sort audio/mp3 releases by artist, this is the place
+            If you choose to sort audio releases by artist, this is the place
             where the symlinks will be created. This dir must be created in order
             for the sorting to work - the zipscript will not create it for you.
         default: '"/site/incoming/music.by.artist/"'
@@ -833,13 +849,13 @@ options:
     audio_year_sort:
         type: boolean
         comment: |-
-            If you wish to sort audio/mp3 releases by year, set this to TRUE.
+            If you wish to sort audio releases by year, set this to TRUE.
         default: false
 
     audio_year_path:
         type: path
         comment: |-
-            If you choose to sort audio/mp3 releases by year, this is the place
+            If you choose to sort audio releases by year, this is the place
             where the symlinks will be created. This dir must be created in order
             for the sorting to work - the zipscript will not create it for you.
         default: '"/site/incoming/music.by.year/"'
@@ -847,13 +863,13 @@ options:
     audio_group_sort:
         type: boolean
         comment: |-
-            If you wish to sort audio/mp3 releases by group, set this to TRUE.
+            If you wish to sort audio releases by group, set this to TRUE.
         default: false
 
     audio_group_path:
         type: path
         comment: |-
-            If you choose to sort audio/mp3 releases by group, this is the place
+            If you choose to sort audio releases by group, this is the place
             where the symlinks will be created. This dir must be created in order
             for the sorting to work - the zipscript will not create it for you.
         default: '"/site/incoming/music.by.group/"'
@@ -861,13 +877,13 @@ options:
     audio_language_sort:
         type: boolean
         comment: |-
-            If you wish to sort audio/mp3 releases by language, set this to TRUE.
+            If you wish to sort audio releases by language, set this to TRUE.
         default: false
 
     audio_language_path:
         type: path
         comment: |-
-            If you choose to sort audio/mp3 releases by language, this is the place
+            If you choose to sort audio releases by language, this is the place
             where the symlinks will be created. This dir must be created in order
             for the sorting to work - the zipscript will not create it for you.
         default: '"/site/incoming/music.by.language/"'
@@ -884,15 +900,15 @@ options:
     allowed_constant_bitrates:
         type: string
         comment: |-
-            You can restrict uploaded audio/mp3 releases several ways. One is by
-            bitrate. Only CBR (Constant Bit Rate) mp3-files is of interest this
-            way. The list you define should be comma-separated.
+            You can restrict uploaded audio releases several ways. For mp3 one
+            is by bitrate. Only CBR (Constant Bit Rate) mp3-files are of interest
+            via this setting. The list you define should be comma-separated.
         default: '"160,192"'
 
     audio_cbr_check:
         type: boolean
         comment: |-
-            Should the zipscript check for allowed bitrate on cbr audio/mp3
+            Should the zipscript check for allowed bitrate on CBR audio/mp3
             releases? Set to TRUE if yes.
         default: true
 
@@ -907,14 +923,14 @@ options:
     allowed_years:
         type: string
         comment: |-
-            Another way to restrict mp3-releases is by year. Define here a list
+            Another way to restrict audio-releases is by year. Define here a list
             of years allowed on site. The list should be comma-separated.
         default: '"2007,2008,2009,2010,2011,2012"'
 
     audio_year_check:
         type: boolean
         comment: |-
-            Should the zipscript check for allowed years on audio/mp3 releases? Set
+            Should the zipscript check for allowed years on audio releases? Set
             to TRUE if yes.
         default: true
 
@@ -943,7 +959,7 @@ options:
     audio_ignored_languages:
         type: string
         comment: |-
-            To prevent mp3 language sorting of languages that isn't, well,
+            To prevent audio language sorting of languages that aren't, well,
             languages, list here what should be ignored. Not case sensitive, and
             the list is comma separated.
         default: '"md,cd,lp,ep,va"'
@@ -951,7 +967,7 @@ options:
     audio_banned_genre_check:
         type: boolean
         comment: |-
-            Should the audio/mp3 release be checked against your defined genres?
+            Should the audio release be checked against your defined genres?
             Only audio_banned_genre_check OR audio_allowed_genre_check should be
             set to TRUE - not both.
         default: true
@@ -959,7 +975,7 @@ options:
     audio_allowed_genre_check:
         type: boolean
         comment: |-
-            Should the audio/mp3 release be checked against your defined genres?
+            Should the audio release be checked against your defined genres?
             Only audio_banned_genre_check OR audio_allowed_genre_check should be
             set to TRUE - not both.
         default: false
@@ -985,7 +1001,7 @@ options:
     create_m3u:
         type: boolean
         comment: |-
-            If you wish to create .m3u files on complete mp3-releases, set this to
+            If you wish to create .m3u files on complete audio-releases, set this to
             TRUE.
         default: true
 
@@ -1173,11 +1189,11 @@ options:
             Define here the footer of the list of racers (groups).
         default: '"|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |\n| %3g Total %31.1mM %4fF 100.0%% %7.0aKBs |\n"'
 
-    message_mp3:
+    message_audio:
         type: string
         can_disable: true
         comment: |-
-            Define here a special complete_message for mp3-releases.
+            Define here a special complete_message for audio-releases.
         default: '"|                                                                    |\n|-=[ I D 3 - T A G ]=---------------.                                |\n|                                    `-----==-------------===--------|\n| Artist : %-57x |\n| Album  : %-57W |\n| Genre  : %-34w Rate  : %3Xkbit/s      |\n| Tracks : %-34f Year  : %-14Y |\n| Encoder: %-34i Preset: %-14I |\n"'
 
     message_footer:
@@ -1288,12 +1304,12 @@ options:
             upload.
         default: '"| + ZiP integrity: oK!                             |\n"'
 
-    realtime_mp3_info:
+    realtime_audio_info:
         type: string
         can_disable: true
         comment: |-
             When files are uploaded, some output is shown to the racer uploading.
-            Put here what should be shown as the body of that message on mp3-file
+            Put here what should be shown as the body of that message on audiofiles
             upload.
         default: '"+-=[ID3tag]=------------------------===------------+\n| Title  : %-39y |\n| Artist : %-39x |\n| Album  : %-39W |\n| Genre  : %-39w |\n| Year   : %-39Y |\n"'
 
@@ -1598,21 +1614,21 @@ options:
             that bar - the file(s) matching this will be deleted.
         default: '"^\\[.*] - .*%% Complete - \\[.*]$"'
 
-    progressmeter_mp3:
+    progressmeter_audio:
         type: string
         comment: |-
             On upload a complete-bar is created after each file, to show how
             complete the release is. Put here how that indicator will look.
-            This is for mp3 releases only.
+            This is for audio releases only.
         default: '"[%V] - %3.0p%% Complete - (%w) [%Z]"'
 
-    del_progressmeter_mp3:
+    del_progressmeter_audio:
         type: string
         comment: |-
             On upload a complete-bar is created after each file, to show how
             complete the release is. Put here what to search for when updating
             that bar - the file(s) matching this will be deleted.
-            This is for mp3 releases only.
+            This is for audio releases only.
         default: '"^\\[.*] - .*%% Complete - (.*) \\[.*]$"'
 
     charbar_missing:
@@ -1687,25 +1703,25 @@ options:
             Note that this option is not valid on zip releases.
         default: '"/bin/rescan_script.sh"'
 
-    enable_mp3_script:
+    enable_audio_script:
         type: boolean
         comment: |-
             Put here the path to the external script which should be run after
-            first uploaded mp3 in an audio-release.
+            the first uploaded audiofile in an audio-release.
         default: false
 
-    mp3_script:
+    audio_script:
         type: path
         comment: |-
             Put here the path to the external script which should be run after
-            first uploaded mp3 in an audio release.
+            the first uploaded audiofile in an audio-release.
         default: '"/bin/ng-chown"'
 
-    mp3_script_cookies:
+    audio_script_cookies:
         type: string
         comment: |-
             Put here what should be used as args for the external script after
-            first uploaded mp3 in an audio release.
+            the first uploaded audiofile in an audio-release.
         default: '"0 0 0 1 0 1 - \"%w\" \"%?\""'
 
     enable_delbanned_script:

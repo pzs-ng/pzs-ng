@@ -93,7 +93,7 @@ create_missing(char *f)
 }
 
 /*
- * findfilext - find a filename with a matching extension in current dir.
+ * findfileext - find a filename with a matching extension in current dir.
  * Last Modified by: d1
  *         Revision: r1 (2002.01.16)
  */
@@ -108,13 +108,50 @@ findfileext(DIR *dir, char *fileext)
 	while ((dp = readdir(dir))) {
 		if ((k = NAMLEN(dp)) < 4)
 			continue;
-		if (strcasecmp(dp->d_name + k - 4, fileext) == 0) {
+		if (strcasecmp(dp->d_name + k - strlen(fileext), fileext) == 0) {
 			return dp->d_name;
 		}
 	}
 
 	if (errno)
 		d_log("zsfunctions.c: findfileext() - readdir(dir) returned an error: %s\n", strerror(errno));
+
+	return NULL;
+}
+/*
+ * findfileextfromlist - find a filename with a matching extension
+ *                      from a given list in the given dir.
+ * Last Modified by: Sked 2011.12.06 (YYYY.MM.DD)
+ */
+char *
+findfileextfromlist(DIR *dir, char *extlist)
+{
+	int pos = 1;
+	char *filename = NULL;
+	char *buf = NULL;
+
+	buf = ng_realloc2(buf, (strlen(extlist) + 2) * sizeof(char), 0, 1, 1);
+	buf[0] = '.';
+
+	do {
+		switch (*extlist) {
+			case '\0':
+			case ',':
+				buf[pos] = '\0';
+				if ((filename = findfileext(dir, buf)) != NULL) {
+					ng_free(buf);
+					return filename;
+				}
+				pos = 1;
+				break;
+			default:
+				buf[pos] = *extlist;
+				++pos;
+				break;
+		}
+	} while (*extlist++);
+
+	ng_free(buf);
 
 	return NULL;
 }
@@ -270,7 +307,7 @@ check_dupefile(DIR *dir, char *fname)
 
 
 /*
- * findfilextparent - find a filename with a matching extension in parent dir.
+ * findfileextparent - find a filename with a matching extension in parent dir.
  * Last Modified by: psxc
  *         Revision: ?? (2004.10.06)
  */
@@ -298,7 +335,7 @@ findfileextparent(DIR *dir, char *fileext)
 }
 
 /*
- * findfilextcount - count files with given extension
+ * findfileextcount - count files with given extension
  * Last Modified by: daxxar
  *         Revision: ?? (2003.12.11)
  */
@@ -558,8 +595,8 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 	struct dirent *dp;
 
 	if (raceI->misc.release_type == RTYPE_AUDIO) {
-		d_log("move_progress_bar: del_progressmeter_mp3: %s\n", del_progressmeter_mp3);
-		delbar = convert_sitename(del_progressmeter_mp3);
+		d_log("move_progress_bar: del_progressmeter_audio: %s\n", del_progressmeter_audio);
+		delbar = convert_sitename(del_progressmeter_audio);
 	} else {
 		d_log("move_progress_bar: del_progressmeter: %s\n", del_progressmeter);
 		delbar = convert_sitename(del_progressmeter);
@@ -588,7 +625,7 @@ move_progress_bar(unsigned char delete, struct VARS *raceI, struct USERINFO **us
 				}
 
 				if (raceI->misc.release_type == RTYPE_AUDIO)
-					bar = convert(raceI, userI, groupI, progressmeter_mp3);
+					bar = convert(raceI, userI, groupI, progressmeter_audio);
 				else
 					bar = convert(raceI, userI, groupI, progressmeter);
 				while ((dp = readdir(dir))) {
@@ -748,18 +785,21 @@ removecomplete()
 }
 
 /*
- * Modified: 2011.10.05 (YYYY.MM.DD)
- * by Sked
+ * First Version: <2011.10.05	???
+ * Last update  : 2011.12.09	Sked
+ * Description: Returns 1 if a given 'path' matches it's start
+ *		with a spaceseperated list of paths
  */
-short int 
+short int
 matchpath(char *instr, char *path)
 {
-	int		pos = 0, c = 0;
+	int pos = 0, c = 0;
 
 	if ( (int)strlen(instr) < 2 || (int)strlen(path) < 2 ) {
 		d_log("matchpath: pathlength(s) too short - returning nomatch (not an error)\n");
 		return 0;
 	}
+
 	do {
 		switch (*instr) {
 		case 0:
@@ -770,7 +810,7 @@ matchpath(char *instr, char *path)
 				if (*(instr - 1) == '/')
 					return 1;
 				if ((int)strlen(path) >= pos) {
-					if (*(path + pos - 1) == '/')
+					if (*(path + pos) == '/')
 						return 1;
 				} else
 					return 1;
@@ -779,10 +819,11 @@ matchpath(char *instr, char *path)
 			pos = 0;
 			break;
 		default:
-			pos++;
+			++pos;
 			break;
 		}
 	} while (*instr++);
+
 	return 0;
 }
 
@@ -980,7 +1021,7 @@ fileexists(char *f)
 
 }
 
-/* Create symbolic link (related to mp3 genre/year/group etc)
+/* Create symbolic link (related to audio genre/year/group etc)
  * Last modified by: psxc
  *         Revision: r1228
  */
@@ -993,11 +1034,17 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 #endif
 	char		org	[PATH_MAX];
 	char	       *target = org;
-	int		l1 = (int)strlen(factor1) + 1,
-			l2 = (int)strlen(factor2) + 1,
-			l3 = (int)strlen(ltarget) + 1;
+	int		l1, l2, l3;
 	struct stat linkStat;
 
+	if (factor1 == NULL || factor2 == NULL || source == NULL || ltarget == NULL) {
+		d_log("zsfunctions.c: createlink() - received a null value as one of the arguments: (%s, %s, %s, %s)\n", factor1, factor2, source, ltarget);
+		return;
+	}
+
+	l1 = (int)strlen(factor1) + 1,
+	l2 = (int)strlen(factor2) + 1,
+	l3 = (int)strlen(ltarget) + 1;
 	memcpy(target, factor1, l1);
 	target += l1 - 1;
 	if (*(target - 1) != '/') {
@@ -1017,8 +1064,8 @@ createlink(char *factor1, char *factor2, char *source, char *ltarget)
 	} else
 		d_log("createlink: Looks like %s already exists - will not create it.\n", org);
 
-if (access(org, W_OK) == -1)
-	d_log("createlink: Warning: May be a problem with linking to %s : %s\n", org, strerror(errno));
+	if (access(org, W_OK) == -1)
+		d_log("createlink: Warning: May be a problem with linking to %s : %s\n", org, strerror(errno));
 
 #if ( userellink == 1 )
 	abs2rel(source, org, result, MAXPATHLEN);

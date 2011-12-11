@@ -135,6 +135,11 @@
 #define audio_artist_sort                         FALSE
 #endif
 
+#ifndef audio_artist_sort_various_only
+#define audio_artist_sort_various_only_is_defaulted
+#define audio_artist_sort_various_only            FALSE
+#endif
+
 #ifndef audio_banned_genre_check
 #define audio_banned_genre_check_is_defaulted
 #define audio_banned_genre_check                  TRUE
@@ -203,6 +208,21 @@
 #ifndef audio_nosort_dirs
 #define audio_nosort_dirs_is_defaulted
 #define audio_nosort_dirs                         "/site/incoming/requests/"
+#endif
+
+#ifndef audio_script
+#define audio_script_is_defaulted
+#define audio_script                              "/bin/ng-chown"
+#endif
+
+#ifndef audio_script_cookies
+#define audio_script_cookies_is_defaulted
+#define audio_script_cookies                      "0 0 0 1 0 1 - \"%w\" \"%?\""
+#endif
+
+#ifndef audio_types
+#define audio_types_is_defaulted
+#define audio_types                               "mp3,flac"
 #endif
 
 #ifndef audio_year_check
@@ -365,9 +385,9 @@
 #define del_progressmeter                         "^\\[.*] - .*%% Complete - \\[.*]$"
 #endif
 
-#ifndef del_progressmeter_mp3
-#define del_progressmeter_mp3_is_defaulted
-#define del_progressmeter_mp3                     "^\\[.*] - .*%% Complete - (.*) \\[.*]$"
+#ifndef del_progressmeter_audio
+#define del_progressmeter_audio_is_defaulted
+#define del_progressmeter_audio                   "^\\[.*] - .*%% Complete - (.*) \\[.*]$"
 #endif
 
 #ifndef delbanned_script
@@ -620,6 +640,11 @@
 #define enable_affil_script                       FALSE
 #endif
 
+#ifndef enable_audio_script
+#define enable_audio_script_is_defaulted
+#define enable_audio_script                       FALSE
+#endif
+
 #ifndef enable_complete_script
 #define enable_complete_script_is_defaulted
 #define enable_complete_script                    FALSE
@@ -633,11 +658,6 @@
 #ifndef enable_files_ahead
 #define enable_files_ahead_is_defaulted
 #define enable_files_ahead                        TRUE
-#endif
-
-#ifndef enable_mp3_script
-#define enable_mp3_script_is_defaulted
-#define enable_mp3_script                         FALSE
 #endif
 
 #ifndef enable_nfo_script
@@ -925,6 +945,11 @@
 #define max_users_in_top                          7
 #endif
 
+#ifndef message_audio
+#define message_audio_is_defaulted
+#define message_audio                             "|                                                                    |\n|-=[ I D 3 - T A G ]=---------------.                                |\n|                                    `-----==-------------===--------|\n| Artist : %-57x |\n| Album  : %-57W |\n| Genre  : %-34w Rate  : %3Xkbit/s      |\n| Tracks : %-34f Year  : %-14Y |\n| Encoder: %-34i Preset: %-14I |\n"
+#endif
+
 #ifndef message_file_name
 #define message_file_name_is_defaulted
 #define message_file_name                         ".message"
@@ -953,11 +978,6 @@
 #ifndef message_header
 #define message_header_is_defaulted
 #define message_header                            ".-----------------====-------------------------== PZS-NG v1.2.0 ===--.\n"
-#endif
-
-#ifndef message_mp3
-#define message_mp3_is_defaulted
-#define message_mp3                               "|                                                                    |\n|-=[ I D 3 - T A G ]=---------------.                                |\n|                                    `-----==-------------===--------|\n| Artist : %-57x |\n| Album  : %-57W |\n| Genre  : %-34w Rate  : %3Xkbit/s      |\n| Tracks : %-34f Year  : %-14Y |\n| Encoder: %-34i Preset: %-14I |\n"
 #endif
 
 #ifndef message_store_in_mirror
@@ -1020,16 +1040,6 @@
 #define missing_sample_check_ignore_list          "dirfix,fix,freezefix,fullsubpack,nfofix,proof,rarfix,subfix,subpack,subpck,syncfix"
 #endif
 
-#ifndef mp3_script
-#define mp3_script_is_defaulted
-#define mp3_script                                "/bin/ng-chown"
-#endif
-
-#ifndef mp3_script_cookies
-#define mp3_script_cookies_is_defaulted
-#define mp3_script_cookies                        "0 0 0 1 0 1 - \"%w\" \"%?\""
-#endif
-
 #ifndef newleader_files_ahead
 #define newleader_files_ahead_is_defaulted
 #define newleader_files_ahead                     2
@@ -1070,14 +1080,19 @@
 #define progressmeter                             "[%V] - %3.0p%% Complete - [%Z]"
 #endif
 
-#ifndef progressmeter_mp3
-#define progressmeter_mp3_is_defaulted
-#define progressmeter_mp3                         "[%V] - %3.0p%% Complete - (%w) [%Z]"
+#ifndef progressmeter_audio
+#define progressmeter_audio_is_defaulted
+#define progressmeter_audio                       "[%V] - %3.0p%% Complete - (%w) [%Z]"
 #endif
 
 #ifndef rar_completebar
 #define rar_completebar_is_defaulted
 #define rar_completebar                           "[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"
+#endif
+
+#ifndef realtime_audio_info
+#define realtime_audio_info_is_defaulted
+#define realtime_audio_info                       "+-=[ID3tag]=------------------------===------------+\n| Title  : %-39y |\n| Artist : %-39x |\n| Album  : %-39W |\n| Genre  : %-39w |\n| Year   : %-39Y |\n"
 #endif
 
 #ifndef realtime_group_body
@@ -1093,11 +1108,6 @@
 #ifndef realtime_group_header
 #define realtime_group_header_is_defaulted
 #define realtime_group_header                     "+-=[GroupTop]=--------------------===--------------+\n"
-#endif
-
-#ifndef realtime_mp3_info
-#define realtime_mp3_info_is_defaulted
-#define realtime_mp3_info                         "+-=[ID3tag]=------------------------===------------+\n| Title  : %-39y |\n| Artist : %-39x |\n| Album  : %-39W |\n| Genre  : %-39w |\n| Year   : %-39Y |\n"
 #endif
 
 #ifndef realtime_user_body

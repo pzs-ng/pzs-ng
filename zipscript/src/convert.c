@@ -328,10 +328,7 @@ convert_audio(struct VARS *raceI, char *instr)
 
 			switch (*instr) {
 			case 'w':
-				if (raceI->audio.id3_genre)
-					out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_genre);
-				else
-					out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->id3_genre);
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_genre);
 				break;
 			case 'W':
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_album);
@@ -355,7 +352,7 @@ convert_audio(struct VARS *raceI, char *instr)
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.codec);
 				break;
 			case '@':
-				if (*raceI->audio.vbr_oldnew == 1)
+				if (raceI->audio.vbr_oldnew == 1)
 					out_p += sprintf(out_p, "%*.*s", val1, val2, vbrnew);
 				else
 					out_p += sprintf(out_p, "%*.*s", val1, val2, vbrold);
@@ -703,10 +700,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				/* Audio */
 
 			case 'w':
-				if (raceI->audio.id3_genre)
-					out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_genre);
-				else
-					out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->id3_genre);
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_genre);
 				break;
 			case 'W':
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_album);
@@ -736,7 +730,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.channelmode);
 				break;
 			case '@':
-				if (*raceI->audio.vbr_oldnew == 1)
+				if (raceI->audio.vbr_oldnew == 1)
 					out_p += sprintf(out_p, "%*.*s", val1, val2, vbrnew);
 				else
 					out_p += sprintf(out_p, "%*.*s", val1, val2, vbrold);

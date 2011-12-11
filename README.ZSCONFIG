@@ -161,9 +161,9 @@ allow_uid_change_in_ng_chown <TRUE|FALSE>
 	Default: FALSE
 
 allowed_constant_bitrates <STRING>
-	You can restrict uploaded audio/mp3 releases several ways. One is by
-	bitrate. Only CBR (Constant Bit Rate) mp3-files is of interest this
-	way. The list you define should be comma-separated.
+	You can restrict uploaded audio releases several ways. For mp3 one
+	is by bitrate. Only CBR (Constant Bit Rate) mp3-files are of interest
+	via this setting. The list you define should be comma-separated.
 	Default: "160,192"
 
 allowed_genres <STRING>
@@ -183,9 +183,9 @@ allowed_types_exemption_dirs <PATHS>
 	Default: "/site/incoming/musicvideos/"
 
 allowed_years <STRING>
-	Another way to restrict mp3-releases is by year. Define here a list
+	Another way to restrict audio-releases is by year. Define here a list
 	of years allowed on site. The list should be comma-separated.
-	Default: "2008,2009,2010,2011,2012"
+	Default: "2007,2008,2009,2010,2011,2012"
 
 always_scan_audio_syms <TRUE|FALSE>
 	On cleanup symlinks are removed. However, if cleanup is used as a
@@ -200,7 +200,7 @@ announce_norace <TRUE|FALSE>
 	Default: TRUE
 
 audio_allowed_genre_check <TRUE|FALSE>
-	Should the audio/mp3 release be checked against your defined genres?
+	Should the audio release be checked against your defined genres?
 	Only audio_banned_genre_check OR audio_allowed_genre_check should be
 	set to TRUE - not both.
 	Default: FALSE
@@ -220,23 +220,30 @@ audio_artist_nosub <TRUE|FALSE>
 	Default: FALSE
 
 audio_artist_path <PATH>
-	If you choose to sort audio/mp3 releases by artist, this is the place
+	If you choose to sort audio releases by artist, this is the place
 	where the symlinks will be created. This dir must be created in order
 	for the sorting to work - the zipscript will not create it for you.
 	Default: "/site/incoming/music.by.artist/"
 
 audio_artist_sort <TRUE|FALSE>
-	If you wish to sort audio/mp3 releases by artist, set this to TRUE.
+	If you wish to sort audio releases by artist, set this to TRUE.
+	Default: FALSE
+
+audio_artist_sort_various_only <TRUE|FALSE>
+	An audio release containing multiple artists and having VA-/VA_
+	start the releasename, will be sorted in artist subdirs for each
+	appearing artist and in the VA-sortdir. Set this to TRUE to only
+	sort in the VA-sortdir.
 	Default: FALSE
 
 audio_banned_genre_check <TRUE|FALSE>
-	Should the audio/mp3 release be checked against your defined genres?
+	Should the audio release be checked against your defined genres?
 	Only audio_banned_genre_check OR audio_allowed_genre_check should be
 	set to TRUE - not both.
 	Default: TRUE
 
 audio_cbr_check <TRUE|FALSE>
-	Should the zipscript check for allowed bitrate on cbr audio/mp3
+	Should the zipscript check for allowed bitrate on CBR audio/mp3
 	releases? Set to TRUE if yes.
 	Default: TRUE
 
@@ -253,13 +260,13 @@ audio_completebar <STRING|DISABLED>
 	Default: "[%Z] - ( %.0mM %fF - COMPLETE - %w %Y ) - [%Z]"
 
 audio_genre_path <PATH>
-	If you choose to sort audio/mp3 releases by genre, this is the place
+	If you choose to sort audio releases by genre, this is the place
 	where the symlinks will be created. This dir must be created in order
 	for the sorting to work - the zipscript will not create it for you.
 	Default: "/site/incoming/music.by.genre/"
 
 audio_genre_sort <TRUE|FALSE>
-	If you wish to sort audio/mp3 releases by genre, set this to TRUE.
+	If you wish to sort audio releases by genre, set this to TRUE.
 	Default: FALSE
 
 audio_genre_warn <TRUE|FALSE>
@@ -269,29 +276,29 @@ audio_genre_warn <TRUE|FALSE>
 	Default: TRUE
 
 audio_group_path <PATH>
-	If you choose to sort audio/mp3 releases by group, this is the place
+	If you choose to sort audio releases by group, this is the place
 	where the symlinks will be created. This dir must be created in order
 	for the sorting to work - the zipscript will not create it for you.
 	Default: "/site/incoming/music.by.group/"
 
 audio_group_sort <TRUE|FALSE>
-	If you wish to sort audio/mp3 releases by group, set this to TRUE.
+	If you wish to sort audio releases by group, set this to TRUE.
 	Default: FALSE
 
 audio_ignored_languages <STRING>
-	To prevent mp3 language sorting of languages that isn't, well,
+	To prevent audio language sorting of languages that isn't, well,
 	languages, list here what should be ignored. Not case sensitive, and
 	the list is comma separated.
 	Default: "md,cd,lp,ep,va"
 
 audio_language_path <PATH>
-	If you choose to sort audio/mp3 releases by language, this is the place
+	If you choose to sort audio releases by language, this is the place
 	where the symlinks will be created. This dir must be created in order
 	for the sorting to work - the zipscript will not create it for you.
 	Default: "/site/incoming/music.by.language/"
 
 audio_language_sort <TRUE|FALSE>
-	If you wish to sort audio/mp3 releases by language, set this to TRUE.
+	If you wish to sort audio releases by language, set this to TRUE.
 	Default: FALSE
 
 audio_nocheck_dirs <PATHS>
@@ -307,19 +314,24 @@ audio_nosort_dirs <PATHS>
 	list of dirs in this variable.
 	Default: "/site/incoming/requests/"
 
+audio_types <STRING>
+	Comma-separated list of files considered to be audio files. Sorting will
+	apply on directories containing these.
+	Default: "mp3,flac"
+
 audio_year_check <TRUE|FALSE>
-	Should the zipscript check for allowed years on audio/mp3 releases? Set
+	Should the zipscript check for allowed years on audio releases? Set
 	to TRUE if yes.
 	Default: TRUE
 
 audio_year_path <PATH>
-	If you choose to sort audio/mp3 releases by year, this is the place
+	If you choose to sort audio releases by year, this is the place
 	where the symlinks will be created. This dir must be created in order
 	for the sorting to work - the zipscript will not create it for you.
 	Default: "/site/incoming/music.by.year/"
 
 audio_year_sort <TRUE|FALSE>
-	If you wish to sort audio/mp3 releases by year, set this to TRUE.
+	If you wish to sort audio releases by year, set this to TRUE.
 	Default: FALSE
 
 audio_year_warn <TRUE|FALSE>
@@ -423,7 +435,7 @@ create_incomplete_links_in_group_dirs <TRUE|FALSE>
 	Default: TRUE
 
 create_m3u <TRUE|FALSE>
-	If you wish to create .m3u files on complete mp3-releases, set this to
+	If you wish to create .m3u files on complete audio-releases, set this to
 	TRUE.
 	Default: TRUE
 
@@ -509,11 +521,11 @@ del_progressmeter <STRING>
 	that bar - the file(s) matching this will be deleted.
 	Default: "^\\[.*] - .*%% Complete - \\[.*]$"
 
-del_progressmeter_mp3 <STRING>
+del_progressmeter_audio <STRING>
 	On upload a complete-bar is created after each file, to show how
 	complete the release is. Put here what to search for when updating
 	that bar - the file(s) matching this will be deleted.
-	This is for mp3 releases only.
+	This is for audio releases only.
 	Default: "^\\[.*] - .*%% Complete - (.*) \\[.*]$"
 
 delbanned_script <PATH>
@@ -801,9 +813,9 @@ enable_files_ahead <TRUE|FALSE>
 	files. Set to TRUE to enable this feature.
 	Default: TRUE
 
-enable_mp3_script <TRUE|FALSE>
+enable_audio_script <TRUE|FALSE>
 	Put here the path to the external script which should be run after
-	first uploaded mp3 in an audio-release.
+	the first uploaded audiofile in an audio-release.
 	Default: FALSE
 
 enable_nfo_script <TRUE|FALSE>
@@ -833,7 +845,7 @@ enable_unduper_script <TRUE|FALSE>
 	Default: TRUE
 
 exclude_non_sfv_dirs <TRUE|FALSE>
-	Applies only to audio/mp3 releases - NEEDS MORE INFO HERE!!!!!
+	Applies only to audio releases - NEEDS MORE INFO HERE!!!!!
 	Default: TRUE
 
 extract_nfo <TRUE|FALSE>
@@ -1172,8 +1184,8 @@ message_header <STRING|DISABLED>
 	Define here what should be put in the top of the complete_message.
 	Default: ".-----------------====-------------------------== PZS-NG v1.2.0 ===--.\n"
 
-message_mp3 <STRING|DISABLED>
-	Define here a special complete_message for mp3-releases.
+message_audio <STRING|DISABLED>
+	Define here a special complete_message for audio-releases.
 	Default: "|                                                                    |\n|-=[ I D 3 - T A G ]=---------------.                                |\n|                                    `-----==-------------===--------|\n| Artist : %-57x |\n| Album  : %-57W |\n| Genre  : %-34w Rate  : %3Xkbit/s      |\n| Tracks : %-34f Year  : %-14Y |\n| Encoder: %-34i Preset: %-14I |\n"
 
 message_store_in_mirror <TRUE|FALSE>
@@ -1244,14 +1256,14 @@ missing_sample_check_ignore_list <STRING>
 	Separate strings with a comma character. List is not casesensitive.
 	Default: "dirfix,fix,freezefix,fullsubpack,nfofix,proof,rarfix,subfix,subpack,subpck,syncfix"
 
-mp3_script <PATH>
+audio_script <PATH>
 	Put here the path to the external script which should be run after
-	first uploaded mp3 in an audio release.
+	the first uploaded audiofile in an audio release.
 	Default: "/bin/ng-chown"
 
-mp3_script_cookies <STRING>
+audio_script_cookies <STRING>
 	Put here what should be used as args for the external script after
-	first uploaded mp3 in an audio release.
+	the first uploaded audiofile in an audio release.
 	Default: "0 0 0 1 0 1 - \"%w\" \"%?\""
 
 newleader_files_ahead <NUMBER>
@@ -1302,10 +1314,10 @@ progressmeter <STRING>
 	complete the release is. Put here how that indicator will look.
 	Default: "[%V] - %3.0p%% Complete - [%Z]"
 
-progressmeter_mp3 <STRING>
+progressmeter_audio <STRING>
 	On upload a complete-bar is created after each file, to show how
 	complete the release is. Put here how that indicator will look.
-	This is for mp3 releases only.
+	This is for audio releases only.
 	Default: "[%V] - %3.0p%% Complete - (%w) [%Z]"
 
 rar_completebar <STRING|DISABLED>
@@ -1332,9 +1344,9 @@ realtime_group_header <STRING|DISABLED>
 	group-stats.
 	Default: "+-=[GroupTop]=--------------------===--------------+\n"
 
-realtime_mp3_info <STRING|DISABLED>
+realtime_audio_info <STRING|DISABLED>
 	When files are uploaded, some output is shown to the racer uploading.
-	Put here what should be shown as the body of that message on mp3-file
+	Put here what should be shown as the body of that message on audiofiles
 	upload.
 	Default: "+-=[ID3tag]=------------------------===------------+\n| Title  : %-39y |\n| Artist : %-39x |\n| Album  : %-39W |\n| Genre  : %-39w |\n| Year   : %-39Y |\n"
 
@@ -1510,7 +1522,7 @@ sleep_on_bad <NUMBER>
 	Default: 0
 
 spaces_to_dots <TRUE|FALSE>
-	This option will replace spaces in mp3-genre dirs to dots.
+	This option will replace spaces in audio-genre dirs to dots.
 	Default: FALSE
 
 speedtest_delfile <TRUE|FALSE>

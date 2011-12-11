@@ -262,8 +262,6 @@ main(int argc, char **argv)
 	sprintf(g.l.sfvbackup, storage "/%s/sfvbackup", g.l.path);
 	sprintf(g.l.leader, storage "/%s/leader", g.l.path);
 	sprintf(g.l.race, storage "/%s/racedata", g.l.path);
-	g.v.id3_artist[0] = '\0';
-	g.v.id3_genre[0] = '\0';
 	g.l.sfv_incomplete = 0;
 	d_log("postdel: Caching release name\n");
 	getrelname(&g);
@@ -637,7 +635,7 @@ get_filetype_postdel(GLOBAL *g, char *ext)
 {
 	if (!(*ext))
 		return 255;
-	if (!strcasecmp(ext, "mp3")) {
+	if (strcomp(audio_types, ext)) {
 		g->v.misc.release_type = RTYPE_AUDIO;
 	}
 	if (!strcasecmp(ext, "sfv"))
@@ -652,4 +650,3 @@ get_filetype_postdel(GLOBAL *g, char *ext)
 		return 3;
 	return 255;
 }
-

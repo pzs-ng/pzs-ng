@@ -10,8 +10,17 @@
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
 
+/* Define to 1 if you have the <FLAC/format.h> header file. */
+#undef HAVE_FLAC_FORMAT_H
+
+/* Define to 1 if you have the <FLAC/metadata.h> header file. */
+#undef HAVE_FLAC_METADATA_H
+
 /* Define to 1 if you have the <fnmatch.h> header file. */
 #undef HAVE_FNMATCH_H
+
+/* Define to 1 if you have the <hsregex.h> header file. */
+#undef HAVE_HSREGEX_H
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
@@ -92,6 +101,9 @@
 
 /* Define to the one symbol short name of this package. */
 #undef PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION

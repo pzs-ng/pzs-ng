@@ -24,12 +24,16 @@
 void 
 complete(GLOBAL *g, int completetype)
 {
-	int		cnt       , pos;
-	char           *user_p, *group_p;
-	FILE           *msgfile;
-#if message_store_in_mirror
-	char		message_mirror_name[PATH_MAX];
+	int cnt;
+	char *user_p, *group_p;
+#if ( write_complete_message == TRUE )
+	int pos;
+	FILE *msgfile;
 #endif
+#if message_store_in_mirror
+	char message_mirror_name[PATH_MAX];
+#endif
+
 	move_progress_bar(1, &g->v, g->ui, g->gi);
 	unlink(g->l.incomplete);
 
@@ -89,10 +93,10 @@ complete(GLOBAL *g, int completetype)
 				d_log("complete:   - Converting message_group_footer ...\n");
 				fprintf(msgfile, "%s", convert(&g->v, g->ui, g->gi, message_group_footer));
 			}
-			if (message_mp3 != DISABLED) {
+			if (message_audio != DISABLED) {
 				if (g->v.misc.release_type == RTYPE_AUDIO) {
-					d_log("complete:   - Converting message_mp3 ...\n");
-					fprintf(msgfile, "%s", convert(&g->v, g->ui, g->gi, message_mp3));
+					d_log("complete:   - Converting message_audio ...\n");
+					fprintf(msgfile, "%s", convert(&g->v, g->ui, g->gi, message_audio));
 				}
 			}
 			if (message_footer != DISABLED) {

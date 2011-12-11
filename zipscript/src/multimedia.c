@@ -6,10 +6,19 @@
 #include "objects.h"
 #include "multimedia.h"
 #include "zsfunctions.h"
+#include "helpfunctions.h"
 
 #include "avi.h"
 #include "audio.h"
 #include "video.h"
+
+#ifdef HAVE_FLAC_HEADERS
+
+#include <sys/stat.h>
+#include <FLAC/metadata.h>
+#include <FLAC/format.h>
+
+#endif
 
 char *genre_s[] = {
 	"Blues", "Classic Rock", "Country", "Dance",
@@ -22,18 +31,18 @@ char *genre_s[] = {
 	"Vocal", "Jazz+Funk", "Fusion", "Trance",
 	"Classical", "Instrumental", "Acid", "House",
 	"Game", "Sound Clip", "Gospel", "Noise",
-	"Alt. Rock", "Bass", "Soul", "Punk",
+	"AlternRock", "Bass", "Soul", "Punk",
 	"Space", "Meditative", "Instrumental Pop", "Instrumental Rock",
 	"Ethnic", "Gothic", "Darkwave", "Techno-Industrial",
 	"Electronic", "Pop-Folk", "Eurodance", "Dream",
-	"Southern Rock", "Comedy", "Cult", "Gangsta Rap",
-	"Top 40", "Christian Rap", "Pop Funk", "Jungle",
-	"Native American", "Cabaret", "New Wave", "Psychedelic",
+	"Southern Rock", "Comedy", "Cult", "Gangsta",
+	"Top 40", "Christian Rap", "Pop_Funk", "Jungle",
+	"Native American", "Cabaret", "New Wave", "Psychadelic",
 	"Rave", "Showtunes", "Trailer", "Lo-Fi",
 	"Tribal", "Acid Punk", "Acid Jazz", "Polka",
 	"Retro", "Musical", "Rock & Roll", "Hard Rock",
-	"Folk", "Folk Rock", "National Folk", "Swing",
-	"Fast-Fusion", "Bebob", "Latin", "Revival",
+	"Folk", "Folk-Rock", "National Folk", "Swing",
+	"Fast Fusion", "Bebob", "Latin", "Revival",
 	"Celtic", "Bluegrass", "Avantgarde", "Gothic Rock",
 	"Progressive Rock", "Psychedelic Rock", "Symphonic Rock", "Slow Rock",
 	"Big Band", "Chorus", "Easy Listening", "Acoustic",
@@ -42,20 +51,23 @@ char *genre_s[] = {
 	"Primus", "Porn Groove", "Satire", "Slow Jam",
 	"Club", "Tango", "Samba", "Folklore",
 	"Ballad", "Power Ballad", "Rhythmic Soul", "Freestyle",
-	"Duet", "Punk Rock", "Drum Solo", "A Cappella",
+	"Duet", "Punk Rock", "Drum Solo", "A cappella",
 	"Euro-House", "Dance Hall", "Goa", "Drum & Bass",
-	"Club-House", "Hardcore", "Terror", "Indie",
+	"Club House", "Hardcore", "Terror", "Indie",
 	"BritPop", "Negerpunk", "Polsk Punk", "Beat",
 	"Christian Gangsta Rap", "Heavy Metal", "Black Metal", "Crossover",
 	"Contemporary Christian", "Christian Rock", "Merengue", "Salsa",
 	"Thrash Metal", "Anime", "JPop", "Synthpop",
 	"Unknown"
 };
+unsigned char genre_count=149;
 
 char *fps_s[] = {"Unknown", "23.976", "24", "25", "29.97", "30", "50", "59.94", "60"};
 char *layer_s[] = {"Unknown", "Layer III", "Layer II", "Layer I"};
-char *codec_s[] = {"Mpeg 2.5", "Unknown", "Mpeg 2", "Mpeg 1"};
+char *codec_s[] = {"Mpeg 2.5", "Unknown", "Mpeg 2", "Mpeg 1", "FLAC"};
 char *chanmode_s[] = {"Stereo", "Joint Stereo", "Dual Channel", "Single Channel", "Unknown"};
+char *flac_chanmode_s[] = {"Unknown", "1 Channel", "2 Channels", "3 Channels", "4 Channels", "5 Channels", "6 Channels", "7 Channels", "8 Channels"};
+char flac_encoder[NAME_MAX];
 
 /*
  * Remove whitespace characters from both ends of a copy of '\0' terminated
@@ -247,6 +259,30 @@ get_preset(char vbr_header[4])
 
 
 /*
+ * First Version: 2011.12.07	Sked
+ * Description: Umbrella for the different get_*_audio_info functions where
+ *		the correct function is chosen based on the fileextension.
+ *		This makes it easier to add new audioformats.
+ */
+void
+get_audio_info(char *f, struct audio *audio)
+{
+	char *ext = find_last_of(f, ".");
+
+	if (!strcasecmp(".mp3", ext))
+		get_mpeg_audio_info(f, audio);
+
+#ifdef HAVE_FLAC_HEADERS
+	else if (!strcasecmp(".flac", ext))
+		get_flac_audio_info(f, audio);
+#endif
+
+	else
+		d_log("multimedia.c: get_audio_info() - Received %s as fileextension but no libs present to get metadata.\n", ext);
+
+}
+
+/*
  * Updated     : 01.22.2002 Author      : Dark0n3
  * 
  * Description : Reads MPEG header from file and stores info to 'audio'.
@@ -255,7 +291,6 @@ void
 get_mpeg_audio_info(char *f, struct audio *audio)
 {
 	int		fd;
-	int		t_genre;
 	int		n;
 	int		tag_ok = 0;
 	unsigned char	header[4];
@@ -266,6 +301,7 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 	unsigned char	version;
 	unsigned char	layer;
 	unsigned char	protected = 1;
+	unsigned char	t_genre;
 	unsigned char	t_bitrate;
 	unsigned char	t_samplingrate;
 	unsigned char	channelmode;
@@ -281,20 +317,19 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 	unsigned int	sr_v25[] = {11025, 12000, 8000, 0};
 	int		vbr_offset = 0;
 	int		t1;
-	unsigned char	vbr_oldnew[1];
-	unsigned char	vbr_quality[1];
-	unsigned char	vbr_minimum_bitrate[1];
-	unsigned char	vbr_misc[1];
+	unsigned char	vbr_misc;
+
+	d_log("multimedia.c: get_mpeg_audio_info() - starting: %s\n", f);
 
 	fd = open(f, O_RDONLY);
 	if (fd < 0)
 	{
-		d_log("get_mpeg_audio_info: could not open file '%s': %s\n", f, strerror(errno));
+		d_log("multimedia.c: get_mpeg_audio_info() - could not open file '%s': %s\n", f, strerror(errno));
 		strcpy(audio->id3_year, "0000");
 		strcpy(audio->id3_title, "Unknown");
 		strcpy(audio->id3_artist, "Unknown");
 		strcpy(audio->id3_album, "Unknown");
-		audio->id3_genre = genre_s[148];
+		audio->id3_genre = genre_s[genre_count - 1];
 
 		return;
 	}
@@ -331,7 +366,7 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 		*(header + 1) -= 224;
 
 		if (read(fd, header + 2, 2) == -1) {
-			d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			d_log("multimedia.c: get_mpeg_audio_info() - read() failed - may lead to unexpected result.\n");
 		}
 
 		version = (*(header + 1)) >> 3;
@@ -390,7 +425,7 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 		/* LAME VBR TAG */
 		lseek(fd, 0, SEEK_SET);
 		if (read(fd, id3v2_header, 10) == -1) {
-			d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			d_log("multimedia.c: get_mpeg_audio_info() - read() for id3v2_header failed - may lead to unexpected result.\n");
 		}
 
 		if (memcmp(id3v2_header, "ID3", 3) == 0) {
@@ -405,19 +440,19 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 		}
 		lseek(fd, 13 + vbr_offset, SEEK_SET);
 		if (read(fd, xing_header1, 4) == -1) {
-			d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			d_log("multimedia.c: get_mpeg_audio_info() - read() for xing_header1 failed - may lead to unexpected result.\n");
 		}
 		lseek(fd, 21 + vbr_offset, SEEK_SET);
 		if (read(fd, xing_header2, 4) == -1) {
-			d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			d_log("multimedia.c: get_mpeg_audio_info() - read() for xing_header2 failed - may lead to unexpected result.\n");
 		}
 		lseek(fd, 36 + vbr_offset, SEEK_SET);
 		if (read(fd, xing_header3, 4) == -1) {
-			d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			d_log("multimedia.c: get_mpeg_audio_info() - read() for xing_header3 failed - may lead to unexpected result.\n");
 		}
 		lseek(fd, 36 + vbr_offset, SEEK_SET);
 		if (read(fd, fraunhofer_header, 4) == -1) {
-			d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			d_log("multimedia.c: get_mpeg_audio_info() - read() for fraunhofer_header failed - may lead to unexpected result.\n");
 		}
 
 		if (memcmp(xing_header1, "Xing", 4) == 0 ||
@@ -427,63 +462,61 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 		    memcmp(fraunhofer_header, "VBRI", 4) == 0) {
 
 			lseek(fd, 165 + vbr_offset, SEEK_SET);
-			if (read(fd, vbr_oldnew, 1) == -1) {
-				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			if (read(fd, &audio->vbr_oldnew, 1) == -1) {
+				d_log("multimedia.c: get_mpeg_audio_info() - read() for audio->vbr_oldnew failed - may lead to unexpected result.\n");
 			}
-			audio->vbr_oldnew[0] = (*vbr_oldnew & 4) >> 2;     // vbr method (vbr-old, vbr-new)
+			audio->vbr_oldnew = (audio->vbr_oldnew & 4) >> 2; /* vbr method (vbr-old, vbr-new) */
 
 			lseek(fd, 180 + vbr_offset, SEEK_SET);
-			if (read(fd, vbr_misc, 1) == -1) {
-				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			if (read(fd, &vbr_misc, 1) == -1) {
+				d_log("multimedia.c: get_mpeg_audio_info() - read() for vbr_misc failed - may lead to unexpected result.\n");
 			}
-			audio->vbr_noiseshaping = (*vbr_misc & 3);      // vbr noiseshaping
-			if (((*vbr_misc & 28) >> 2) == 0)
+			audio->vbr_noiseshaping = (vbr_misc & 3); /* vbr noiseshaping */
+			if (((vbr_misc & 28) >> 2) == 0)
 				sprintf(audio->vbr_stereo_mode, "Mono");
-			else if (((*vbr_misc & 28) >> 2) == 1)
+			else if (((vbr_misc & 28) >> 2) == 1)
 				sprintf(audio->vbr_stereo_mode, "Stereo");
-			else if (((*vbr_misc & 28) >> 2) == 2)
+			else if (((vbr_misc & 28) >> 2) == 2)
 				sprintf(audio->vbr_stereo_mode, "Dual");
-			else if (((*vbr_misc & 28) >> 2) == 3)
+			else if (((vbr_misc & 28) >> 2) == 3)
 				sprintf(audio->vbr_stereo_mode, "Joint");
-			else if (((*vbr_misc & 28) >> 2) == 4)
+			else if (((vbr_misc & 28) >> 2) == 4)
 				sprintf(audio->vbr_stereo_mode, "Force");
-			else if (((*vbr_misc & 28) >> 2) == 5)
+			else if (((vbr_misc & 28) >> 2) == 5)
 				sprintf(audio->vbr_stereo_mode, "Auto");
-			else if (((*vbr_misc & 28) >> 2) == 6)
+			else if (((vbr_misc & 28) >> 2) == 6)
 				sprintf(audio->vbr_stereo_mode, "Intensity");
 			else
 				sprintf(audio->vbr_stereo_mode, "Undefined");
-//			audio->vbr_stereo_mode = (*vbr_misc & 28) >> 2; // vbr stereo mode
-			if (((*vbr_misc & 32) >> 5))
+/*			audio->vbr_stereo_mode = (vbr_misc & 28) >> 2; // vbr stereo mode */
+			if (((vbr_misc & 32) >> 5))
 				sprintf(audio->vbr_unwise, "Yes");
 			else
 				sprintf(audio->vbr_unwise, "No");
-//			audio->vbr_unwise = (*vbr_misc & 32) >> 5;      // vbr unwise setting
-			if (((*vbr_misc & 192) >> 6) == 0)
+/*			audio->vbr_unwise = (vbr_misc & 32) >> 5;      // vbr unwise setting */
+			if (((vbr_misc & 192) >> 6) == 0)
 				sprintf(audio->vbr_source, "<32.000Hz");
-			else if (((*vbr_misc & 192) >> 6) == 1)
+			else if (((vbr_misc & 192) >> 6) == 1)
 				sprintf(audio->vbr_source, "44.100Hz");
-			else if (((*vbr_misc & 192) >> 6) == 2)
+			else if (((vbr_misc & 192) >> 6) == 2)
 				sprintf(audio->vbr_source, "48.000Hz");
 			else
 				sprintf(audio->vbr_source, ">48.000Hz");
-//			audio->vbr_source = (*vbr_misc & 192) >> 6;     // vbr source sample frequency
+/*			audio->vbr_source = (*vbr_misc & 192) >> 6;     // vbr source sample frequency */
 
 			lseek(fd, 176 + vbr_offset, SEEK_SET);
-			if (read(fd, vbr_minimum_bitrate, 1) == -1) {   // minimumvbr bitrate, or abr bitrate
-				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			if (read(fd, &audio->vbr_minimum_bitrate, 1) == -1) { /* minimumvbr bitrate, or abr bitrate */
+				d_log("multimedia.c: get_mpeg_audio_info() - read() for audio->vbr_minimum_bitrate failed - may lead to unexpected result.\n");
 			}
-			audio->vbr_minimum_bitrate = *vbr_minimum_bitrate;
 
 			lseek(fd, 155 + vbr_offset, SEEK_SET);
-			if (read(fd, vbr_quality, 1) == -1) {           // vbr quality setting
-				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			if (read(fd, &audio->vbr_quality, 1) == -1) { /* vbr quality setting */
+				d_log("multimedia.c: get_mpeg_audio_info() - read() for audio->vbr_quality failed - may lead to unexpected result.\n");
 			}
-			audio->vbr_quality = *vbr_quality;
 
 			lseek(fd, 156 + vbr_offset, SEEK_SET);
-			if (read(fd, audio->vbr_version_string, 9) == -1) { // vbr version, short string
-				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			if (read(fd, audio->vbr_version_string, 9) == -1) { /* vbr version, short string */
+				d_log("multimedia.c: get_mpeg_audio_info() - read() for audio->vbr_version_string failed - may lead to unexpected result.\n");
 			}
 			audio->vbr_version_string[9] = 0;
 			for (t1 = 9; t1 > 0; t1--) {
@@ -492,13 +525,12 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 				}
 				audio->vbr_version_string[t1] = 0;
 			}
-//printf("vbr-method=%d\nvbr-minimum-bitrate=%d\nvbr-quality=%d\nvbr-version=%s\nvbr_noise=%d\nvbr_stereo=%s\nvbr_unwise=%s\nvbr_source=%s\nvbr-misc=%X", (short)audio->vbr_oldnew, (short)audio->vbr_minimum_bitrate, (short)audio->vbr_quality, audio->vbr_version_string, audio->vbr_noiseshaping, audio->vbr_stereo_mode, audio->vbr_unwise, audio->vbr_source, (short)*vbr_misc);
 
 			audio->is_vbr = 1;
 			if (memcmp(audio->vbr_version_string, "LAME", 4) == 0) {
 				lseek(fd, 182 + vbr_offset, SEEK_SET);
 				if (read(fd, vbr_header, 2) == -1) {
-					d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+					d_log("multimedia.c: get_mpeg_audio_info() - read() for vbr_header failed - may lead to unexpected result.\n");
 				}
 				sprintf(audio->vbr_preset, "%s", get_preset((char *)vbr_header));
 
@@ -523,37 +555,32 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 		/* ID3 TAG */
 		lseek(fd, -128, SEEK_END);
 		if (read(fd, header, 3) == -1) {
-			d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			d_log("multimedia.c: get_mpeg_audio_info() - read() for header failed - may lead to unexpected result.\n");
 		}
 		if (memcmp(header, "TAG", 3) == 0) {	/* id3 tag */
 			tag_ok = 1;
 			if (read(fd, audio->id3_title, 30) == -1) {
-				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+				d_log("multimedia.c: get_mpeg_audio_info() - read() for audio->id3_title failed - may lead to unexpected result.\n");
 			}
 			if (read(fd, audio->id3_artist, 30) == -1) {
-				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+				d_log("multimedia.c: get_mpeg_audio_info() - read() for audio->id3_artist failed - may lead to unexpected result.\n");
 			}
 			if (read(fd, audio->id3_album, 30) == -1) {
-				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+				d_log("multimedia.c: get_mpeg_audio_info() - read() for audio->id3_album failed - may lead to unexpected result.\n");
 			}
-
-			lseek(fd, -35, SEEK_END);
 			if (read(fd, audio->id3_year, 4) == -1) {
-				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+				d_log("multimedia.c: get_mpeg_audio_info() - read() for audio->id3_year failed - may lead to unexpected result.\n");
 			}
 			if (tolower(audio->id3_year[1]) == 'k') {
 				memcpy(header, audio->id3_year, 3);
 				sprintf(audio->id3_year, "%c00%c", *header, *(header + 2));
 			}
 			lseek(fd, -1, SEEK_END);
-			if (read(fd, header, 1) == -1) {
-				d_log("get_mpeg_audio_info: read() failed - may lead to unexpected result.\n");
+			if (read(fd, &t_genre, 1) == -1) {
+				d_log("multimedia.c: get_mpeg_audio_info() - read() for t_genre failed - may lead to unexpected result.\n");
 			}
-			t_genre = (int)*header;
-			if (t_genre < 0)
-				t_genre += 256;
-			if (t_genre > 148)
-				t_genre = 148;
+			if (t_genre > genre_count - 1)
+				t_genre = genre_count - 1;
 
 			audio->id3_genre = genre_s[t_genre];
 			audio->id3_year[4] =
@@ -574,12 +601,209 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 		strcpy(audio->id3_title, "Unknown");
 		strcpy(audio->id3_artist, "Unknown");
 		strcpy(audio->id3_album, "Unknown");
-		audio->id3_genre = genre_s[148];
+		audio->id3_genre = genre_s[genre_count - 1];
 	}
 	close(fd);
 
 	get_mp3_info(f, audio);
-//	sprintf(audio->bitrate, "%.0f", get_mp3_info(f));
+
+	d_log("multimedia.c: get_mpeg_audio_info() - values: id3_artist: %s, id3_title: %s, id3_album: %s, id3_year: %s, bitrate: %s, samplingrate: %s\n",
+			audio->id3_artist, audio->id3_title, audio->id3_album, audio->id3_year, audio->bitrate, audio->samplingrate);
+	d_log("multimedia.c: get_mpeg_audio_info() - values: id3_genre: %s, layer: %s, codec: %s, channelmode: %s, vbr_version_string: %s, vbr_preset: %s\n",
+			audio->id3_genre, audio->layer, audio->codec, audio->channelmode, audio->vbr_version_string, audio->vbr_preset);
+	d_log("multimedia.c: get_mpeg_audio_info() - values: is_vbr: %d, vbr_oldnew: %d, vbr_quality: %d, vbr_minimum_bitrate: %d, vbr_noiseshaping: %d\n",
+			audio->is_vbr, audio->vbr_oldnew, audio->vbr_quality, audio->vbr_minimum_bitrate, audio->vbr_noiseshaping);
+	d_log("multimedia.c: get_mpeg_audio_info() - values: vbr_stereo_mode: %s, vbr_unwise: %s, vbr_source: %s\n", audio->vbr_stereo_mode, audio->vbr_unwise, audio->vbr_source);
+}
+
+/*
+ * First Version: 2011.01.30	io
+ * Last update	: 2011.12.10	Sked
+ * Description	: Reads FLAC header from file and stores info to 'audio'.
+ */
+#ifdef HAVE_FLAC_HEADERS
+void
+get_flac_audio_info(char *f, struct audio *audio)
+{
+	int fd;
+	FLAC__StreamMetadata *temp_meta; /* union that holds all vorbis meta data */
+
+	d_log("multimedia.c: get_flac_audio_info() - starting: %s\n", f);
+
+	/* defaults */
+	strcpy(audio->id3_year, "0000");
+	strcpy(audio->id3_title, "Unknown");
+	strcpy(audio->id3_artist, "Unknown");
+	strcpy(audio->id3_album, "Unknown");
+	audio->id3_genre = genre_s[genre_count - 1];
+	audio->is_vbr = 1;
+	audio->codec = codec_s[4];
+	audio->channelmode = flac_chanmode_s[0];
+	audio->layer = layer_s[0];
+
+	fd = open(f, O_RDONLY);
+	if (fd < 0) {
+		d_log("multimedia.c: get_flac_audio_info() - could not open file '%s': %s\n", f, strerror(errno));
+		return;
+	}
+
+	temp_meta = FLAC__metadata_object_new(FLAC__METADATA_TYPE_VORBIS_COMMENT);
+
+	if (FLAC__metadata_get_tags(f, &temp_meta)) {
+		FLAC__uint32 i, j, k = 0;
+
+		d_log("multimedia.c: get_flac_audio_info() - read metadata -- vendor string length: %d, string: %s\n", temp_meta->data.vorbis_comment.vendor_string.length, temp_meta->data.vorbis_comment.vendor_string.entry);
+		if (temp_meta->data.vorbis_comment.vendor_string.length > 0) {
+			if (!strncmp((char *)temp_meta->data.vorbis_comment.vendor_string.entry, "reference libFLAC", 17))
+				k = 10;
+			for (i = 0; i < NAME_MAX - 1 && i < temp_meta->data.vorbis_comment.vendor_string.length; ++i)
+				flac_encoder[i] = temp_meta->data.vorbis_comment.vendor_string.entry[i+k];
+			flac_encoder[i] = '\0';
+			audio->layer = flac_encoder;
+		}
+
+		for (i = 0; i < temp_meta->data.vorbis_comment.num_comments; ++i) {
+			d_log("multimedia.c: get_flac_audio_info() - comment #%d: length = %d, data = %s\n", i, temp_meta->data.vorbis_comment.comments[i].length, temp_meta->data.vorbis_comment.comments[i].entry);
+
+			j = 0;
+			while (j < temp_meta->data.vorbis_comment.comments[i].length && temp_meta->data.vorbis_comment.comments[i].entry[j] != '=')
+				++j;
+
+			if (!strncasecmp((char *)temp_meta->data.vorbis_comment.comments[i].entry, "ARTIST", j)) {
+				++j;
+				if (temp_meta->data.vorbis_comment.comments[i].entry[j]) {
+					k = 0;
+					while (k < NAME_MAX - 1 && temp_meta->data.vorbis_comment.comments[i].entry[j]) {
+						audio->id3_artist[k] = temp_meta->data.vorbis_comment.comments[i].entry[j];
+						++k;
+						++j;
+					}
+					audio->id3_artist[k] = '\0';
+				}
+
+			} else if (!strncasecmp((char *)temp_meta->data.vorbis_comment.comments[i].entry, "TITLE", j)) {
+				++j;
+				if (temp_meta->data.vorbis_comment.comments[i].entry[j]) {
+					k = 0;
+					while (k < NAME_MAX - 1 && temp_meta->data.vorbis_comment.comments[i].entry[j]) {
+						audio->id3_title[k] = temp_meta->data.vorbis_comment.comments[i].entry[j];
+						++k;
+						++j;
+					}
+					audio->id3_title[k] = '\0';
+				}
+
+			} else if (!strncasecmp((char *)temp_meta->data.vorbis_comment.comments[i].entry, "ALBUM", j)) {
+				++j;
+				if (temp_meta->data.vorbis_comment.comments[i].entry[j]) {
+					k = 0;
+					while (k < NAME_MAX - 1 && temp_meta->data.vorbis_comment.comments[i].entry[j]) {
+						audio->id3_album[k] = temp_meta->data.vorbis_comment.comments[i].entry[j];
+						++k;
+						++j;
+					}
+					audio->id3_album[k] = '\0';
+				}
+
+			} else if (!strncasecmp((char *)temp_meta->data.vorbis_comment.comments[i].entry, "DATE", j)) {
+				++j;
+				if (temp_meta->data.vorbis_comment.comments[i].entry[j]) {
+					k = 0;
+					while (k < 4 && temp_meta->data.vorbis_comment.comments[i].entry[j]) {
+						audio->id3_year[k] = temp_meta->data.vorbis_comment.comments[i].entry[j];
+						++k;
+						++j;
+					}
+					audio->id3_year[k] = '\0';
+				}
+
+			} else if (!strncasecmp((char *)temp_meta->data.vorbis_comment.comments[i].entry, "GENRE", j)) {
+				++j;
+				if (temp_meta->data.vorbis_comment.comments[i].entry[j]) {
+					k = 0;
+					/* (unsigned)1 to get rid of compiler warning */
+					while (k < genre_count - (unsigned)1 && strcmp(safe_genre((char *)temp_meta->data.vorbis_comment.comments[i].entry + j), genre_s[k]))
+						++k;
+					audio->id3_genre = genre_s[k];
+				}
+
+			} else
+				d_log("multimedia.c: get_flac_audio_info() - Nonindexed tag found: %s\n", temp_meta->data.vorbis_comment.comments[i].entry);
+
+		}
+
+		d_log("multimedia.c: get_flac_audio_info() - TAG audio info: --- artist: %s, album: %s, title: %s, year: %s, genre: %s\n", audio->id3_artist, audio->id3_album, audio->id3_title, audio->id3_year, audio->id3_genre);
+
+	} else
+		d_log("multimedia.c: get_flac_audio_info() - failed getting comment meta data\n");
+
+	if(temp_meta != NULL)
+		FLAC__metadata_object_delete(temp_meta);
+	temp_meta = FLAC__metadata_object_new(FLAC__METADATA_TYPE_STREAMINFO);
+
+	/* now get technical info */
+	if (FLAC__metadata_get_streaminfo(f, temp_meta)) {
+		struct stat st;
+
+		sprintf(audio->samplingrate, "%d",  temp_meta->data.stream_info.sample_rate);
+
+		if (temp_meta->data.stream_info.channels < 9)
+			audio->channelmode = flac_chanmode_s[temp_meta->data.stream_info.channels];
+
+		/* bitrate = (filesize in bits / duration in seconds) -> bps
+		 * duration = total samples / samplerate in Hz -> s
+		 * --> bitrate = (filesize in bytes * samplerate in Hz)/(125 * total samples) -> kbps
+		 */
+		stat(f, &st);
+
+		if (temp_meta->data.stream_info.total_samples)
+			sprintf(audio->bitrate, "%d", ((int)st.st_size * (int)temp_meta->data.stream_info.sample_rate) / (125 * (int)temp_meta->data.stream_info.total_samples));
+
+		d_log("multimedia.c: get_flac_audio_info() - stream info: %d Hz, %d channel(s), %d bits per sample, %d total samples\n", temp_meta->data.stream_info.sample_rate,
+														temp_meta->data.stream_info.channels,
+														temp_meta->data.stream_info.bits_per_sample,
+														temp_meta->data.stream_info.total_samples);
+		d_log("multimedia.c: get_flac_audio_info() - filesize: %llu, bitrate: %s\n", st.st_size, audio->bitrate);
+
+	} else {
+		d_log("multimedia.c: get_flac_audio_info() - failed getting stream meta data\n");
+		strcpy(audio->samplingrate, "0");
+		strcpy(audio->bitrate, "0");
+	}
+
+	if(temp_meta != NULL)
+		FLAC__metadata_object_delete(temp_meta);
+
+	close(fd);
+
+	d_log("multimedia.c: get_flac_audio_info() - values: id3_artist: %s, id3_title: %s, id3_album: %s, id3_year: %s, bitrate: %s, samplingrate: %s\n",
+			audio->id3_artist, audio->id3_title, audio->id3_album, audio->id3_year, audio->bitrate, audio->samplingrate);
+	d_log("multimedia.c: get_flac_audio_info() - values: id3_genre: %s, layer: %s, codec: %s, channelmode: %s, vbr_version_string: %s, vbr_preset: %s\n",
+			audio->id3_genre, audio->layer, audio->codec, audio->channelmode, audio->vbr_version_string, audio->vbr_preset);
+	d_log("multimedia.c: get_flac_audio_info() - values: is_vbr: %d, vbr_oldnew: %d, vbr_quality: %d, vbr_minimum_bitrate: %d, vbr_noiseshaping: %d\n",
+			audio->is_vbr, audio->vbr_oldnew, audio->vbr_quality, audio->vbr_minimum_bitrate, audio->vbr_noiseshaping);
+	d_log("multimedia.c: get_flac_audio_info() - values: vbr_stereo_mode: %s, vbr_unwise: %s, vbr_source: %s\n", audio->vbr_stereo_mode, audio->vbr_unwise, audio->vbr_source);
+}
+#endif
+
+/*
+ * First Version: 2011.12.09	Sked
+ * Description: substitute any '/' char which is unsafe to use in dirnames
+ *		by the '_' char, and return the given genre, this way it can
+ *		easily be used in other functions arguments
+ */
+char *
+safe_genre(char *genre)
+{
+	int i = 0;
+
+	while (genre[i]) {
+		if (genre[i] == '/')
+			genre[i] = '_';
+		++i;
+	}
+
+	return genre;
 }
 
 const unsigned char *fourcc(FOURCC tag)
@@ -751,7 +975,7 @@ int avinfo(char *filename, struct VIDEO *vinfo)
 	if (hz || ch || auds)
 		sprintf(buf,
 			"Video: %dx%d (%.2f), %.3f fps, %s [%s] - "
-			"Audio: %ldHz, %dch, %s [0x%.4x]",
+			"Audio: %dHz, %dch, %s [0x%.4x]",
 			width, height, (double)width/height, fps, _vids, fourcc(vids),
 			hz, ch, _auds, auds);
 	else
@@ -771,4 +995,3 @@ int avinfo(char *filename, struct VIDEO *vinfo)
 	snprintf(vinfo->audiotype, sizeof(vinfo->audiotype), "0x%.4x", auds);
 	return 0;
 }
-

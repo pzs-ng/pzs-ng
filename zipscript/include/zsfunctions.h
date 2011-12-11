@@ -87,11 +87,7 @@ extern char    *findfileext(DIR *, char *);
 extern char    *findfileextsub(DIR *);
 extern char    *findfileextsubp(DIR *);
 extern char    *findfileextparent(DIR *, char *);
-
-/* replace these with the ones above everywhere */
-extern char    *findfileext_old_(char *);
-extern char    *findfileext_old_parent(char *);
-/* mkay? */
+extern char    *findfileextfromlist(DIR *, char *);
 
 extern int	findfileextcount(DIR *, char *);
 extern int	file_count(DIR *);

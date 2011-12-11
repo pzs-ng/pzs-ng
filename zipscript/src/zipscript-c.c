@@ -356,20 +356,16 @@ main(int argc, char **argv)
 	g.v.file.compression_method = '5';
 	g.v.user.pos = 0;
 	sprintf(g.v.misc.old_leader, "none");
-	g.v.id3_artist[0] = '\0';
-	g.v.id3_genre[0] = '\0';
 	g.v.file.unlink[0] = '\0';
-	g.v.audio.id3_artist[0] = '\0';
-	g.v.audio.id3_genre = NULL;
-	/* Get file extension */
 
+	/* Get file extension */
 	d_log("zipscript-c: Parsing file extension from filename... (%s)\n", argv[1]);
 	for (temp_p = name_p = argv[1]; *name_p != 0; name_p++) {
 		if (*name_p == '.') {
 			temp_p = name_p;
 		}
 	}
-	
+
 	if (*temp_p != '.') {
 		d_log("zipscript-c: Got: no extension\n");
 		temp_p = name_p;
@@ -435,7 +431,7 @@ main(int argc, char **argv)
 					usleep(100000);
 					if (!(m = create_lock(&g.v, g.l.path, PROGTYPE_ZIPSCRIPT, 0, g.v.data_queue)))
 						break;
-				
+
 				}
 				if (n >= max_seconds_wait_for_lock * 10) {
 					if (m == PROGTYPE_RESCAN) {
@@ -459,13 +455,6 @@ main(int argc, char **argv)
 			break;
 	}
 
-	if (!memcmp(fileext, "mp3", 4)) {
-		d_log("zipscript-c: Trying to read audio header and tags\n");
-		get_mpeg_audio_info(findfileext(dir, ".mp3"), &g.v.audio);
-		strlcpy(g.v.id3_artist, g.v.audio.id3_artist, sizeof(g.v.id3_artist));
-		strlcpy(g.v.id3_genre, g.v.audio.id3_genre, sizeof(g.v.id3_genre));
-		d_log("zipscript-c: g.v.id3_artist='%s' - g.v.id3_genre='%s'\n", g.v.id3_artist, g.v.id3_genre);
-	}
 	if (strlen(zipscript_header))
 		printf(zipscript_header);
 
@@ -579,7 +568,7 @@ main(int argc, char **argv)
 		exit_value = 2;
 #endif
 #if (ignore_zero_size == FALSE )
-	/* Empty file recieved */
+	/* Empty file received */
 	} else if (g.v.file.size == 0) {
 		d_log("zipscript-c: File seems to be 0\n");
 		sprintf(g.v.misc.error_msg, EMPTY_FILE);
@@ -966,13 +955,6 @@ main(int argc, char **argv)
 						writelog(&g, convert(&g.v, g.ui, g.gi, sfv_msg), sfv_type);
 					}
 				}
-			} else {
-				if (g.v.misc.release_type == RTYPE_AUDIO) {
-					d_log("zipscript-c: Reading audio info for completebar\n");
-					get_mpeg_audio_info(findfileext(dir, ".mp3"), &g.v.audio);
-					strlcpy(g.v.id3_artist, g.v.audio.id3_artist, sizeof(g.v.id3_artist));
-					strlcpy(g.v.id3_genre, g.v.audio.id3_genre, sizeof(g.v.id3_genre));
-				}
 			}
 
 			if (deny_resume_sfv == TRUE) {
@@ -1049,7 +1031,7 @@ main(int argc, char **argv)
 					update_sfvdata(g.l.sfv, g.v.file.name, s_crc);
 				}
 #endif
-				d_log("zipscript-c: crc recieved/calc'ed: %X - crc found in sfv: %X\n", crc, s_crc);
+				d_log("zipscript-c: crc received/calc'ed: %X - crc found in sfv: %X\n", crc, s_crc);
 				if (s_crc != crc) {
 					if (s_crc == 0) {
 						if (!strcomp(allowed_types, fileext)) {
@@ -1177,11 +1159,10 @@ main(int argc, char **argv)
 			if (g.v.misc.release_type == RTYPE_NULL) {
 				if (israr(fileext))
 					g.v.misc.release_type = RTYPE_RAR;	/* .RAR / .R?? */
-//				else if (isvideo(fileext))
 				else if (strcomp(video_types, fileext))
 					g.v.misc.release_type = RTYPE_VIDEO;	/* AVI/MPEG */
-				else if (!memcmp(fileext, "mp3", 4))
-					g.v.misc.release_type = RTYPE_AUDIO;	/* MP3 */
+				else if (strcomp(audio_types, fileext))
+					g.v.misc.release_type = RTYPE_AUDIO;	/* MP3/FLAC */
 				else
 					g.v.misc.release_type = RTYPE_OTHER;	/* OTHER FILE */
 			}
@@ -1204,21 +1185,28 @@ main(int argc, char **argv)
 				update_msg = audio_update;
 				halfway_msg = CHOOSE(g.v.total.users, audio_halfway, audio_norace_halfway);
 				newleader_msg = audio_newleader;
+
 				d_log("zipscript-c: Trying to read audio header and tags\n");
-				get_mpeg_audio_info(g.v.file.name, &g.v.audio);
-				strlcpy(g.v.id3_artist, g.v.audio.id3_artist, sizeof(g.v.id3_artist));
-				strlcpy(g.v.id3_genre, g.v.audio.id3_genre, sizeof(g.v.id3_genre));
+				get_audio_info(g.v.file.name, &g.v.audio);
+
+				d_log("zipscript-c: Symlinking audio...\n");
+				/* Sort if we're not in a group-dir/nosort-dir. */
+				if (!matchpath(group_dirs, g.l.path) && !matchpath(audio_nosort_dirs, g.l.path))
+					audioSort(&g.v.audio, g.l.link_source, g.l.link_target);
+				else
+					d_log("zipscript-c: Symlinking halted - will not create symlinks for this release.\n");
+
 #if ( exclude_non_sfv_dirs )
 				if (g.v.misc.write_log == TRUE) {
 #endif
-					if ((enable_mp3_script == TRUE) && (g.ui[g.v.user.pos]->files == 1)) {
-						if (!fileexists(mp3_script)) {
-							d_log("zipscript-c: Warning -  mp3_script (%s) - file does not exist!\n", mp3_script);
+					if ((enable_audio_script == TRUE) && (g.ui[g.v.user.pos]->files == 1)) {
+						if (!fileexists(audio_script)) {
+							d_log("zipscript-c: Warning -  audio_script (%s) - file does not exist!\n", audio_script);
 						}
-						d_log("zipscript-c: Executing mp3 script (%s %s)\n", mp3_script, convert(&g.v, g.ui, g.gi, mp3_script_cookies));
-						sprintf(target, "%s %s", mp3_script, convert(&g.v, g.ui, g.gi, mp3_script_cookies));
+						d_log("zipscript-c: Executing audio script (%s %s)\n", audio_script, convert(&g.v, g.ui, g.gi, audio_script_cookies));
+						sprintf(target, "%s %s", audio_script, convert(&g.v, g.ui, g.gi, audio_script_cookies));
 						if (execute(target) != 0)
-							d_log("zipscript-c: Failed to execute mp3_script: %s\n", strerror(errno));
+							d_log("zipscript-c: Failed to execute audio_script: %s\n", strerror(errno));
 					}
 					if (!matchpath(audio_nocheck_dirs, g.l.path)) {
 #if ( audio_banned_genre_check )
@@ -1347,9 +1335,9 @@ main(int argc, char **argv)
 #if ( exclude_non_sfv_dirs == TRUE )
 				}
 #endif
-				if (realtime_mp3_info != DISABLED) {
-					d_log("zipscript-c: Printing realtime_mp3_info.\n");
-					printf("%s", convert(&g.v, g.ui, g.gi, realtime_mp3_info));
+				if (realtime_audio_info != DISABLED) {
+					d_log("zipscript-c: Printing realtime_audio_info.\n");
+					printf("%s", convert(&g.v, g.ui, g.gi, realtime_audio_info));
 				}
 				break;
 			case RTYPE_VIDEO:
@@ -1692,13 +1680,6 @@ main(int argc, char **argv)
 					complete_announce = CHOOSE(g.v.total.users, audio_vbr_announce_one_race_complete_type, audio_vbr_announce_norace_complete_type);
 				}
 
-				d_log("zipscript-c: Symlinking audio\n");
-
-				/* Sort if we're s'posed to write to log and we're not in a group-dir/nosort-dir. */
-				if (g.v.misc.write_log == TRUE && !matchpath(group_dirs, g.l.path) && !matchpath(audio_nosort_dirs, g.l.path))
-					audioSort(&g.v.audio, g.l.link_source, g.l.link_target);
-				else
-					d_log("zipscript-c: Symlinking halted - will not create symlinks for this release.\n");
 #if ( create_m3u == TRUE )
 				if (findfileext(dir, ".sfv")) {
 					d_log("zipscript-c: Creating m3u\n");
