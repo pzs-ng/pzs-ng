@@ -15,7 +15,9 @@ typedef struct {
 	unsigned char	dummy;
 	char		fname[NAMEMAX],
 			uname[24],
-			group[24];
+			group[24],
+			dummy[31], /* not used anymore, */
+			dummy[31]; /* kept for compatibilty */
 } RACEDATA;
 
 /* this is put in sfvdata files */
