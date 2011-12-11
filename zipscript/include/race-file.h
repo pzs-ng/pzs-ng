@@ -12,12 +12,12 @@ typedef struct {
 	off_t		size;
 	time_t		start_time;
 	unsigned char	status;
-	unsigned char	dummy;
+	unsigned char	dummy1;
 	char		fname[NAMEMAX],
 			uname[24],
 			group[24],
-			dummy[31], /* not used anymore, */
-			dummy[31]; /* kept for compatibilty */
+			dummy2[31], /* not used anymore, */
+			dummy3[31]; /* kept for compatibilty */
 } RACEDATA;
 
 /* this is put in sfvdata files */
