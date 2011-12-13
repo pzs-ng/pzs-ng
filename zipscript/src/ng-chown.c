@@ -144,7 +144,7 @@ selector3(struct dirent *d)
 short int 
 matchpath2(char *instr, char *path)
 {
-	int		pos = 0, c = 0;
+	int pos = 0, c = 0;
 
 	do {
 		switch (*instr) {
@@ -156,7 +156,7 @@ matchpath2(char *instr, char *path)
 				if (*(instr - 1) == '/')
 					return 1;
 				if ((int)strlen(path) >= pos) {
-					if (*(path + pos - 1) == '/')
+					if (*(path + pos) == '/' || *(path + pos) == '\0')
 						return 1;
 				} else
 					return 1;
@@ -165,10 +165,11 @@ matchpath2(char *instr, char *path)
 			pos = 0;
 			break;
 		default:
-			pos++;
+			++pos;
 			break;
 		}
 	} while (*instr++);
+
 	return 0;
 }
 

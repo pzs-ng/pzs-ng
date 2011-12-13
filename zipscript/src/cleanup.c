@@ -347,7 +347,7 @@ matchpath(char *instr, char *path)
 				if (*(instr - 1) == '/')
 					return 1;
 				if ((int)strlen(path) >= pos) {
-					if (*(path + pos) == '/')
+					if (*(path + pos) == '/' || *(path + pos) == '\0')
 						return 1;
 				} else
 					return 1;

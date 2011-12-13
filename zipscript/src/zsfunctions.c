@@ -786,7 +786,7 @@ removecomplete()
 
 /*
  * First Version: <2011.10.05	???
- * Last update  : 2011.12.09	Sked
+ * Last update  : 2011.12.13	Sked
  * Description: Returns 1 if a given 'path' matches it's start
  *		with a spaceseperated list of paths
  */
@@ -810,7 +810,7 @@ matchpath(char *instr, char *path)
 				if (*(instr - 1) == '/')
 					return 1;
 				if ((int)strlen(path) >= pos) {
-					if (*(path + pos) == '/')
+					if (*(path + pos) == '/' || *(path + pos) == '\0')
 						return 1;
 				} else
 					return 1;

@@ -16,6 +16,7 @@
                Fix matchpath
   2011-09-20 - Fix small typo bug printing newdirs all on one line
   2011-10-05 - Fix matchpath bug when "path" has no trailing '/'
+  2011-12-13 - Fix matchpath bug when both "path" and "inst" had no trailing '/'
 */
 
 #include <sys/file.h>
@@ -236,7 +237,7 @@ matchpath(char *instr, char *path)
                                 if (*(instr - 1) == '/')
                                         return 1;
                                 if ((int)strlen(path) >= pos) {
-                                        if (*(path + pos - 1) == '/')
+                                        if (*(path + pos) == '/' || *(path + pos) == '\0')
                                                 return 1;
                                 } else
                                         return 1;
@@ -245,10 +246,11 @@ matchpath(char *instr, char *path)
                         pos = 0;
                         break;
                 default:
-                        pos++;
+                        ++pos;
                         break;
                 }
         } while (*instr++);
+
         return 0;
 }
 
