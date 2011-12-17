@@ -17,6 +17,9 @@
 #
 # 4. Rehash or restart your eggdrop for the changes to take effect.
 #
+# Changelog:
+# - 20111217 - Sked:	Added version, changed debug and error handling, updated ignoreDirs,
+#			added mysqlserver pingcheck (partly based on code from an unknown person)
 #################################################################################
 
 namespace eval ::ngBot::plugin::PreTime {
@@ -33,7 +36,7 @@ namespace eval ::ngBot::plugin::PreTime {
     variable lateMins 10
     ##
     ## Skip the pre time for these directories.
-    variable ignoreDirs {cd[0-9] dis[ck][0-9] dvd[0-9] codec cover covers extra extras sample subs vobsub vobsubs}
+    variable ignoreDirs {cd[0-9] dis[ck][0-9] dvd[0-9] codec cover covers extra extras sample subs vobsub vobsubs proof}
     ##
     ## MySQL server information.
     set mysql(host)  "127.0.0.1"
@@ -53,6 +56,7 @@ namespace eval ::ngBot::plugin::PreTime {
     ##################################################
 
     set mysql(handle) ""
+    set mysql(version) "20111217"
     variable scriptFile [info script]
     variable scriptName ${ns}::LogEvent
     #bind evnt -|- prerehash [namespace current]::deinit
@@ -82,18 +86,20 @@ namespace eval ::ngBot::plugin::PreTime {
 
         ## Load the MySQLTcl library.
         if {[catch {load $libMySQLTcl Mysqltcl} errorMsg]} {
-            putlog "\[ngBot\] PreTime Error :: $errorMsg"
+            Error "$errorMsg"
             return -code -1
         }
 
         ## Connect to the MySQL server.
-        if {[catch {set mysql(handle) [mysqlconnect -host $mysql(host) -user $mysql(user) -password $mysql(pass) -port $mysql(port) -db $mysql(db)]} errorMsg]} {
-            putlog "\[ngBot\] PreTime Error :: Unable to connect to MySQL server: $errorMsg"
+        if {[catch {set mysql(handle) [mysqlconnect -host $mysql(host) -user $mysql(user) -password $mysql(pass) -port $mysql(port) -db $mysql(db)]} errorMs$
+            Error "Unable to connect to MySQL server: $errorMsg"
             return -code -1
         }
 
         ## Register the event handler.
         lappend precommand(NEWDIR) $scriptName
+
+        Debug "Loaded successfully (Version: $mysql(version))."
 
         return
     }
@@ -117,10 +123,19 @@ namespace eval ::ngBot::plugin::PreTime {
             set precommand(NEWDIR) [lreplace $precommand(NEWDIR) $pos $pos]
         }
 
+	# Uncomment only if using dZSbot
         #catch {unbind evnt -|- prerehash [namespace current]::deinit}
 
         namespace delete [namespace current]
         return
+    }
+
+    proc Debug {msg} {
+        putlog "\[ngBot\] PreTime :: $msg"
+    }
+
+    proc Error {error} {
+        putlog "\[ngBot\] PreTime Error :: $error"
     }
 
     ####
@@ -162,6 +177,12 @@ namespace eval ::ngBot::plugin::PreTime {
         variable lateMins
         variable ignoreDirs
         if {![string equal "NEWDIR" $event]} {return 1}
+
+        ## Check if mysql server is still around
+        if {![::mysql::ping $mysql(handle)]} {
+            Error "MySQL server is gone and unable to re-connect. Skipping pre-time!"
+            return 1
+        }
 
         ## Log Data:
         ## NEWDIR - path user group tagline
