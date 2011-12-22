@@ -162,6 +162,8 @@ v1.2.0  --> 1.2.x :
 		- Fix for bitrate gathering for flacfiles and vbr_version_string will now show the encoder used
 		- Fixed another matchpath bug if both dirs were equal and both had no trailing /
 		- Updated PreTime.tcl to check if the connection is still open, and some other stuff
+		- Several fixes in psxc-imdb, bringing it to v2.9p
+		- Updated COOKIES file
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.

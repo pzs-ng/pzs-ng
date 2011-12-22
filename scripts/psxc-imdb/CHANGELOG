@@ -1,5 +1,17 @@
 PSXC-IMDB CHANGELOG:
 --------------------
+- v2.9p - Dec. 22nd, 2011 - Fixed TAGLINE output having "See more >>"
+			  - Fixed bug in psxc-imdb-rescan with symlinks in the recursively scanned
+			    dir pointing to dirs in that dir. (Thanks to PCFiL for noticing)
+			  - Fixed bug with psxc-imdb-rescan not rescanning dirs containing nukedir_style
+			    even when not at the start of the dirname.
+			  - Added EXCLUDES in psxc-imdb-rescan so incomplete and missingfile indicators
+			    would not appear in sorted-dirs in case you have sorting enabled.
+			  - Now psxc-imdb-rescan scans all nfo's found in a dir. If both contain an imdblink,
+			    only the last one scanned will have it's info saved, announced, etc...
+			    A warning message is sent to stderr when more than one nfo is found.
+			  - Added queueing support for psxc-imdb-rescan. Now rescans can be run consecutively
+			    when -queue is listed as an argument.
 - v2.9o - Dec. 10th, 2011 - Fixed PLOT output having "See more >>"
 - v2.9n - Nov. 24th, 2011 - Fixed GENRE, PLOT, RATING and COMMENTSHORT for certain locales and setups
 			    See added info in psxc-imdb.conf near the LYNXFLAGS

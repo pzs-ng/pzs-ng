@@ -5,6 +5,7 @@ NOTE: If you use a different GLROOT than /glftpd, you most
       likely need to change a couple of variables in the files
       you replace.
 
+2.9o -> 2.9p - replace psxc-imdb.sh, psxc-imdb-rescan.sh
 2.9m -> 2.9o - replace psxc-imdb.sh
 2.9l -> 2.9m - replace psxc-symlink-maker.sh, psxc-imdb.tcl, psxc-imdb.zpt
 2.9k -> 2.9l - replace psxc-imdb.sh

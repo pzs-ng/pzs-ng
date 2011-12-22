@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.9o"
+VERSION="v2.9p"
 
 ######################################################################################################
 
@@ -323,13 +323,10 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
 # Make sure this script isn't already running.
 ##############################################
  sleep 0.$RANDOM
- MYNAMEIS=$(basename "$0")
- IMDBPIDCONTENT=$(cat $IMDBPID)
- if [ ! -z "$IMDBPIDCONTENT" ]; then
-  if [ ! -z $(ps ax | awk '{print $1}' | grep -a -e "^$IMDBPIDCONTENT$") ]; then
-   exit 0
-  fi
- fi
+ IMDBPIDCONTENT="$(head -n2 $IMDBPID | tail -n1)"
+ [[ ! -z "$IMDBPIDCONTENT" ]] &&
+   [[ -1 -eq "$IMDBPIDCONTENT" || ! -z $(ps ax | awk '{print $1}' | grep -a -e "^$IMDBPIDCONTENT$") ]] &&
+     exit 0
  echo $$ > $IMDBPID
 
 # Seems like something was put into the log. Let's check it.
@@ -543,7 +540,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     fi
     COUNTRY=$(grep -a -e "^Country:" "$TMPFILE" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Country:/Country......:/" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $COUNTRYNUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//")
     COUNTRYCLEAN=$(echo $COUNTRY | sed "s/Country......: *//")
-    TAGLINE=$(grep -a -e "^Tagline:" "$TMPFILE" | sed "s/ See more »//" | sed "s/Tagline:/Tagline......:/" | sed s/\"/$QUOTECHAR/g | head -n 1)
+    TAGLINE=$(grep -a -e "^Tagline:" "$TMPFILE" | sed "s/ See more ..*//" | sed "s/Tagline:/Tagline......:/" | sed s/\"/$QUOTECHAR/g | head -n 1)
     TAGLINECLEAN=$(echo $TAGLINE | sed "s/Tagline......: *//")
     LANGUAGE=$(grep -a -e "^Language:" "$TMPFILE" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Language:/Language.....:/" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $LANGUAGENUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//")
     LANGUAGECLEAN=$(echo $LANGUAGE | sed "s/Language.....: *//")
@@ -883,7 +880,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     echo -e "$IMDBTAIL" >> "$IMDBLNK"
    fi
 
-   if [ ! -z "$INFOTEMPNAME" ]; then
+   if [ ! -z "$INFOTEMPNAME" ] && [ -e "$GLROOT$IMDBLKL/$INFOTEMPNAME" ]; then
 
 # make a file/dir with imdb info in the name 
 
@@ -920,9 +917,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
       rmdir "$GLROOT$IMDBLKL/$OLDINFOFILE" >/dev/null 2>&1
      done
     fi
-    if [ -e "$GLROOT$IMDBLKL/$INFOTEMPNAME" ]; then
-     mv "$GLROOT$IMDBLKL/$INFOTEMPNAME" "$GLROOT$IMDBLKL/$INFOFILENAMEPRINT"
-    fi
+    mv "$GLROOT$IMDBLKL/$INFOTEMPNAME" "$GLROOT$IMDBLKL/$INFOFILENAMEPRINT"
    fi
 
 # create a thumbnail?
