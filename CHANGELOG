@@ -164,6 +164,7 @@ v1.2.0  --> 1.2.x :
 		- Updated PreTime.tcl to check if the connection is still open, and some other stuff
 		- Several fixes in psxc-imdb, bringing it to v2.9p
 		- Updated COOKIES file
+		- Fixed and updated the GameFAQs sitebot plugin
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
