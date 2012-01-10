@@ -18,6 +18,7 @@
 # 4. Rehash or restart your eggdrop for the changes to take effect.
 #
 # Changelog:
+# - 20120110 - Sked:	Fixed c/p typo in init (Thanks to tr1t1um for noticing)
 # - 20111217 - Sked:	Added version, changed debug and error handling, updated ignoreDirs,
 #			added mysqlserver pingcheck (partly based on code from an unknown person)
 #################################################################################
@@ -56,7 +57,7 @@ namespace eval ::ngBot::plugin::PreTime {
     ##################################################
 
     set mysql(handle) ""
-    set mysql(version) "20111217"
+    set mysql(version) "20120110"
     variable scriptFile [info script]
     variable scriptName ${ns}::LogEvent
     #bind evnt -|- prerehash [namespace current]::deinit
