@@ -91,7 +91,7 @@ namespace eval ::ngBot::plugin::PreTime {
         }
 
         ## Connect to the MySQL server.
-        if {[catch {set mysql(handle) [mysqlconnect -host $mysql(host) -user $mysql(user) -password $mysql(pass) -port $mysql(port) -db $mysql(db)]} errorMs$
+        if {[catch {set mysql(handle) [mysqlconnect -host $mysql(host) -user $mysql(user) -password $mysql(pass) -port $mysql(port) -db $mysql(db)]} errorMsg]} {
             Error "Unable to connect to MySQL server: $errorMsg"
             return -code -1
         }

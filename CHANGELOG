@@ -165,6 +165,7 @@ v1.2.0  --> 1.2.x :
 		- Several fixes in psxc-imdb, bringing it to v2.9p
 		- Updated COOKIES file
 		- Fixed and updated the GameFAQs sitebot plugin
+		- Fixed copy/paste typo in PreTime.tcl (Thanks to tr1t1um for noticing)
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
