@@ -47,15 +47,15 @@ fakesection.INVITE = "iNViTE"
 announce.DEFAULT                = "%b{info} > %msg"
 
 ## Login announcements
-announce.LOGIN                  = "%b{login} > %b{%u_name}> logged in"
-announce.LOGOUT                 = "%b{logout} > %b{%u_name}> logged out"
+announce.LOGIN                  = "%b{login} > %b{%u_name} > logged in"
+announce.LOGOUT                 = "%b{logout} > %b{%u_name} > logged out"
 announce.BADHOSTMASK            = "%b{login failed} > %b{%u_name} > hostmask %b{%u_hostmask} not added"
 announce.BADPASSWORD            = "%b{login failed} > %b{%u_name} > invalid password"
 announce.BANNEDHOST             = "%b{login failed} > %b{%u_name} > hostmask %b{%u_hostmask} banned"
 announce.DELETED                = "%b{login failed} > %b{%u_name} > account deleted"
 announce.EXPIRED                = "%b{login failed} > %b{%u_name} > account expired"
-announce.KILLGHOST              = "%b{ghost} > %b{%u_name} killed ghost > PID %b{%pid}"
-announce.TAGLINE                = "%b{tagline} > %b{%u_name}> changed tagline > %b{%u_tagline}"
+announce.KILLGHOST              = "%b{ghost} > %b{%u_name} > killed ghost > PID %b{%pid}"
+announce.TAGLINE                = "%b{tagline} > %b{%u_name} > changed tagline > %b{%u_tagline}"
 announce.TIMEOUT                = "%b{timeout} > %b{%u_name} > timed out > %b{%u_idletime}s"
 
 ## Sysop announcements (only important announces are themed)
@@ -64,7 +64,7 @@ announce.GADDUSER               = "%b{gadduser} > %b{%u_siteop} > %b{%u_name} > 
 announce.CHGRPADD               = "%b{chgrpadd} > %b{%u_siteop} > %b{%u_name} > group %b{%g_name}"
 announce.CHGRPDEL               = "%b{chgrpdel} > %b{%u_siteop} > %b{%u_name} > group %b{%g_name}"
 announce.ADDIP                  = "%b{addip} > %b{%u_siteop} > %b{%u_ip} > %b{%u_name}"
-announce.DELIP                  = "%b{delip} > %b{%u_siteop} > ip %b{%u_ip} > %b{%u_name}"
+announce.DELIP                  = "%b{delip} > %b{%u_siteop} > %b{%u_ip} > %b{%u_name}"
 announce.READDED                = "%b{readded} > %b{%u_siteop} > %b{%u_name}"
 announce.DELUSER                = "%b{deluser} > %b{%u_siteop} > %b{%u_name}"
 announce.PURGED                 = "%b{purged} > %b{%u_siteop} > %b{%u_name}"
@@ -86,8 +86,8 @@ announce.DLTEST                 = "%b{dl-speed} > %b{%u_name} > %b{%mbytes}MB fi
 announce.COVERS                = "%b{covers} > %b{%section} > %b{%relname} > %b{%u_name}"
 announce.NEWCD                 = "%b{cd} > %b{%section} > %b{%relname} > %b{%u_name}"
 announce.NEWDISC               = "%b{disc} > %b{%section} > %b{%relname} > %b{%u_name}"
-announce.SAMPLE                = "%b{sample}> %b{%section} > %b{%relname} > %b{%u_name}"
-announce.SUBTITLES             = "%b{subs} > %b{%section} %b{%relname} > %b{%u_name}"
+announce.SAMPLE                = "%b{sample} > %b{%section} > %b{%relname} > %b{%u_name}"
+announce.SUBTITLES             = "%b{subs} > %b{%section} > %b{%relname} > %b{%u_name}"
 
 ## Random announcements (random.EVENT-##)
 #random.NEWDIR-0                 = "%b{new} > %b{%section} > %b{%u_name} of %g_name creates a directory called %b{%relname}."
@@ -280,7 +280,7 @@ announce.ANUKEALLOW             =	"%b{autonuke} > %release > group not allowed >
 announce.PREBW                  = "%b{prebw} > %b{%section} > %prebw"
 
 ## ktmf v3.2.2
-announce.KTMFDLW								= "%b{dualDL} > %user warning > dual DL > checking again > %delay seconds"
+announce.KTMFDLW		= "%b{dualDL} > %user warning > dual DL > checking again > %delay seconds"
 announce.KTMFDL                 = "%b{dualDL} > %user kicked > dual DL"
 announce.KTMFULW                = "%b{dualUL} > %user warning > dual UL > %where > checking again > %delay seconds"
 announce.KTMFUL                 = "%b{dualUL} > %user kicked > dual UL > %where"

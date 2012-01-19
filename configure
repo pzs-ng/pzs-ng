@@ -4374,7 +4374,9 @@ if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
   cat >>confdefs.h <<_ACEOF
 #define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
 _ACEOF
- FLAC_HEADERS="-DHAVE_FLAC_HEADERS -lFLAC"
+ FLAC_HEADERS="-DHAVE_FLAC_HEADERS"
+
+                  LDFLAGS="-lFLAC"
 
 else
   if test "x$enable_flac" != xcheck; then

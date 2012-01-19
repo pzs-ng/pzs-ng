@@ -106,7 +106,8 @@ AC_ARG_ENABLE(flac, AS_HELP_STRING([--disable-flac], [disable flacinfo support])
 
 FLAC_HEADERS=""
 AS_IF([test "x$enable_flac" != xno], [
-              AC_CHECK_HEADERS([FLAC/metadata.h FLAC/format.h],[AC_SUBST([FLAC_HEADERS], ["-DHAVE_FLAC_HEADERS -lFLAC"])],
+              AC_CHECK_HEADERS([FLAC/metadata.h FLAC/format.h],[AC_SUBST([FLAC_HEADERS], ["-DHAVE_FLAC_HEADERS"])
+                  AC_SUBST([LDFLAGS], ["-lFLAC"])],
                 [if test "x$enable_flac" != xcheck; then
                   AC_MSG_ERROR([Couldn't find required flacheaders. Install libflac development files if you want to have flacinfo support.])
                  fi]
