@@ -581,34 +581,36 @@ main(int argc, char **argv)
 		exit_value = 2;
 #endif
 	/* No check directories */
-	} else if (matchpath(nocheck_dirs, g.l.path) || (!matchpath(nocheck_dirs, g.l.path) && !matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path)) || insampledir(g.l.path)) {
-		d_log("zipscript-c: Directory matched with nocheck_dirs/sample_list, or is not among sfv/zip/group/speedtest dirs\n");
+	} else if (matchpath(nocheck_dirs, g.l.path) || (!matchpath(nocheck_dirs, g.l.path) && !matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path))) {
+		d_log("zipscript-c: Directory matched with nocheck_dirs, or is not among sfv/zip/group/speedtest dirs\n");
 		d_log("zipscript-c:   - nocheck_dirs  : '%s'\n", nocheck_dirs);
 		d_log("zipscript-c:   - zip_dirs      : '%s'\n", zip_dirs);
 		d_log("zipscript-c:   - sfv_dirs      : '%s'\n", sfv_dirs);
 		d_log("zipscript-c:   - group_dirs    : '%s'\n", group_dirs);
 		d_log("zipscript-c:   - speedtest_dirs: '%s'\n", speedtest_dirs);
-		d_log("zipscript-c:   - sample_list   : '%s'\n", sample_list);
 		d_log("zipscript-c:   - current path  : '%s'\n", g.l.path);
 		no_check = TRUE;
 	}
 	if (exit_value == 2)
 		d_log("zipscript-c: File already marked as bad. Will not process further.\n");
-	else if (no_check && insampledir(g.l.path) && !matchpath(group_dirs, g.l.path) && !matchpath(nocheck_dirs, g.l.path) && strcomp(video_types, fileext)) {
-		if (!avinfo(g.v.file.name, &g.v.avinfo)) {
-			d_log("zipscript-c: Writing %s announce to %s.\n", sample_announce_type, log);
-			write_log = g.v.misc.write_log;
-			g.v.misc.write_log = TRUE;
-			writelog(&g, convert(&g.v, g.ui, g.gi, sample_msg), sample_announce_type);
-				g.v.misc.write_log = write_log;
-		}
-		if (enable_sample_script == TRUE) {
-			d_log("zipscript-c: Executing sample_script (%s).\n", sample_script);
-			if (!fileexists(sample_script))
-				d_log("zipscript-c: Warning - sample_script (%s) - file does not exist!\n", sample_script);
-			sprintf(target, sample_script " \"%s\"", g.v.file.name);
-			if (execute(target) != 0)
-				d_log("zipscript-c: Failed to execute sample_script: %s\n", strerror(errno));
+	else if (insampledir(g.l.path) && strcomp(video_types, fileext)) {
+		d_log("zipscript-c: Directory matched with sample_list = '%s', checking is set to %d (1 means no checking)\n", sample_list, no_check);
+		if (no_check == FALSE) {
+			if (!avinfo(g.v.file.name, &g.v.avinfo)) {
+				d_log("zipscript-c: Writing %s announce to %s.\n", sample_announce_type, log);
+				write_log = g.v.misc.write_log;
+				g.v.misc.write_log = TRUE;
+				writelog(&g, convert(&g.v, g.ui, g.gi, sample_msg), sample_announce_type);
+					g.v.misc.write_log = write_log;
+			}
+			if (enable_sample_script == TRUE) {
+				d_log("zipscript-c: Executing sample_script (%s).\n", sample_script);
+				if (!fileexists(sample_script))
+					d_log("zipscript-c: Warning - sample_script (%s) - file does not exist!\n", sample_script);
+				sprintf(target, sample_script " \"%s\"", g.v.file.name);
+				if (execute(target) != 0)
+					d_log("zipscript-c: Failed to execute sample_script: %s\n", strerror(errno));
+			}
 		}
 	} else {
 		/* Process file */
