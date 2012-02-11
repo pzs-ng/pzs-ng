@@ -18,6 +18,7 @@
 # 4. Rehash or restart your eggdrop for the changes to take effect.
 #
 # Changelog:
+# - 20120211 - Sked:	Fixed missing mysql variable in LogEvent (Thanks to Bac0n for noticing)
 # - 20120110 - Sked:	Fixed c/p typo in init (Thanks to tr1t1um for noticing)
 # - 20111217 - Sked:	Added version, changed debug and error handling, updated ignoreDirs,
 #			added mysqlserver pingcheck (partly based on code from an unknown person)
@@ -57,7 +58,7 @@ namespace eval ::ngBot::plugin::PreTime {
     ##################################################
 
     set mysql(handle) ""
-    set mysql(version) "20120110"
+    set mysql(version) "20120211"
     variable scriptFile [info script]
     variable scriptName ${ns}::LogEvent
     #bind evnt -|- prerehash [namespace current]::deinit
@@ -177,6 +178,7 @@ namespace eval ::ngBot::plugin::PreTime {
         variable ns
         variable lateMins
         variable ignoreDirs
+	variable mysql
         if {![string equal "NEWDIR" $event]} {return 1}
 
         ## Check if mysql server is still around

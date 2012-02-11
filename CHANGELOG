@@ -170,6 +170,7 @@ v1.2.0  --> 1.2.x :
 		- Fixed few inconsistencies in d3x0c.zst (Thanks to tr1t1um for noticing)
 		- Fixed linkererrors regarding FLAC libs
 		- Fixed bug whith sample_list in group_dirs and nocheck_dirs (Thanks to Auri for noticing)
+		- Fixed bug in PreTime.tcl
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
