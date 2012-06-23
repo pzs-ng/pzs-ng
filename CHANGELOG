@@ -171,6 +171,7 @@ v1.2.0  --> 1.2.x :
 		- Fixed linkererrors regarding FLAC libs
 		- Fixed bug whith sample_list in group_dirs and nocheck_dirs (Thanks to Auri for noticing)
 		- Fixed bug in PreTime.tcl
+		- Fixed bug #532: halfway and newleader had wrong leader
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.

@@ -598,7 +598,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 					to = -1;
 				}
 				for (n = from; n <= to; n++) {
-					out_p += sprintf(out_p, "%*.*s", val1, val2, convert_user(raceI, userI[n], groupI, user_info, n));
+					out_p += sprintf(out_p, "%*.*s", val1, val2, convert_user(raceI, userI[userI[n]->pos], groupI, user_info, n));
 				}
 				instr--;
 				break;
