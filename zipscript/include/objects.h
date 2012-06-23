@@ -138,7 +138,7 @@ struct misc {
 	char		basepath[PATH_MAX];
 	char		racer_list[1024];
 	char		total_racer_list[1024];
-	char		top_messages[2][1024];
+	char		top_messages[2][2048];
 	char		error_msg [80];
 	char		progress_bar[15];
 	int		release_type;

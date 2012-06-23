@@ -1374,15 +1374,20 @@ buffer_users(char *passwdfile, int setfree)
 }
 #endif
 
-unsigned long 
-sfv_compare_size(char *fileext, unsigned long fsize)
+/*
+ * First Version: <2012.01.23	???
+ * Last update  : 2012.01.23	Sked
+ * Description: Returns the size of all the files with a given
+ *		3-char fileext, minus a given filesize
+ */
+off_t
+sfv_compare_size(char *fileext, off_t fsize)
 {
-	int		k = 0;
-	unsigned long	l = 0;
-	struct stat	filestat;
-
-	DIR		*dir;
-	struct dirent	*dp;
+	int k = 0;
+	off_t l = 0;
+	struct stat filestat;
+	DIR *dir;
+	struct dirent *dp;
 
 	dir = opendir(".");
 
@@ -1392,7 +1397,7 @@ sfv_compare_size(char *fileext, unsigned long fsize)
 		if (strcasecmp(dp->d_name + k - 4, fileext) == 0) {
 			if (stat(dp->d_name, &filestat) != 0)
 				filestat.st_size = 1;
-			l = l + filestat.st_size;
+			l += filestat.st_size;
 			continue;
 		}
 	}

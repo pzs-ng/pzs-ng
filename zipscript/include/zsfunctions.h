@@ -132,7 +132,7 @@ extern int	buffer_groups(char *, int);
 extern int	buffer_users(char *, int);
 #endif
 
-extern unsigned long sfv_compare_size(char *, unsigned long);
+extern off_t	sfv_compare_size(char *, off_t);
 extern void	mark_as_bad(char *);
 extern int	extractDirname(char *dirname, char *absoluteDirname);
 extern void     createstatusbar(const char *bar);

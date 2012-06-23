@@ -17,9 +17,10 @@
 
 /*
  * Modified     : 01.27.2002 Author       : Dark0n3
- * 
+ * Modified	: 06.24.2012 by Skeddie: fix out of bounds for userstop
+ *
  * Description  : Writes .message file and moves toplists into buffer
- * 
+ *
  */
 void 
 complete(GLOBAL *g, int completetype)
@@ -109,10 +110,13 @@ complete(GLOBAL *g, int completetype)
 	}
 #endif
 
-	user_p = g->v.misc.top_messages[0];
-	group_p = g->v.misc.top_messages[1];
-
 	if (g->v.misc.write_log && completetype == 0) {
+		int topsize = 0;
+		char topbuf[256];
+
+		user_p = g->v.misc.top_messages[0];
+		group_p = g->v.misc.top_messages[1];
+
 #if ( show_stats_from_pos2_only )
                 const int first_entry = 1;
 #else
@@ -121,25 +125,43 @@ complete(GLOBAL *g, int completetype)
 
 		if (user_top != NULL && max_users_in_top > 0) {
                         user_p += sprintf(user_p, "%s", racersplit_prefix);
-			for (cnt = first_entry; cnt < max_users_in_top && cnt < g->v.total.users; cnt++)
-                        {
-                                if (cnt != first_entry) {
-                                    user_p += sprintf(user_p, "%s", racersplit);
-				}
-				user_p += sprintf(user_p, "%s", convert_user(&g->v, g->ui[g->ui[cnt]->pos], g->gi, user_top, cnt));
+			for (cnt = first_entry; cnt < max_users_in_top && cnt < g->v.total.users; ++cnt) {
+				topsize = sprintf(topbuf, "%s", convert_user(&g->v, g->ui[g->ui[cnt]->pos], g->gi, user_top, cnt));
+
+				/* only add next pos if we're not going out of bounds,
+				 * otherwise the sprintf outside the for-loop takes
+				 * care of writing the \0 on the correct spot
+				 */
+				if (user_p + topsize + sizeof(racersplit_postfix) < g->v.misc.top_messages[0] + sizeof(g->v.misc.top_messages[0])) {
+	                                if (cnt != first_entry) {
+        	                            user_p += sprintf(user_p, "%s", racersplit);
+					}
+					user_p += sprintf(user_p, "%s", topbuf);
+				} else {
+					cnt = max_users_in_top;
+	                        }
                         }
                         user_p += sprintf(user_p, "%s", racersplit_postfix);
 		}
+
 		if (group_top != NULL && max_groups_in_top > 0) {
+			topsize = 0;
                         group_p += sprintf(group_p, "%s", racersplit_prefix);
-			for (cnt = first_entry; cnt < max_groups_in_top && cnt < g->v.total.groups; cnt++)
-			{
-//				if (cnt != first_entry) {
-//					group_p += sprintf(user_p, "%s", racersplit);
-//				}
-				group_p += sprintf(group_p, "%s", convert_group(&g->v, g->gi[g->gi[cnt]->pos], group_top, cnt));
-				if (cnt != max_groups_in_top - 1 && cnt != g->v.total.groups - 1) {
-					group_p += sprintf(group_p, "%s", racersplit);
+			for (cnt = first_entry; cnt < max_groups_in_top && cnt < g->v.total.groups; ++cnt) {
+				topsize = sprintf(topbuf, "%s", convert_group(&g->v, g->gi[g->gi[cnt]->pos], group_top, cnt));
+
+				/* only add next pos if we're not going out of bounds,
+				 * otherwise the sprintf outside the for-loop takes
+				 * care of writing the \0 on the correct spot
+				 */
+				if (group_p + topsize + sizeof(racersplit_postfix) < g->v.misc.top_messages[1] + sizeof(g->v.misc.top_messages[1])) {
+                	                if (cnt != first_entry) {
+        	                            group_p += sprintf(group_p, "%s", racersplit);
+					}
+					group_p += sprintf(group_p, "%s", topbuf);
+
+				} else {
+					cnt = max_groups_in_top;
 				}
 			}
 			group_p += sprintf(group_p, "%s", racersplit_postfix);
