@@ -4,13 +4,13 @@
 # Please do not edit below                     #
 ################################################
 
-audiogenres="A Cappella
+audiogenres="A cappella
+Acid
 Acid Jazz
 Acid Punk
-Acid
 Acoustic
-Alt. Rock
 Alternative
+AlternRock
 Ambient
 Anime
 Avantgarde
@@ -35,14 +35,14 @@ Christian Rock
 Classic Rock
 Classical
 Club
-Club-House
+Club House
 Comedy
 Contemporary Christian
 Country
 Crossover
 Cult
-Dance Hall
 Dance
+Dance Hall
 Darkwave
 Death Metal
 Disco
@@ -56,19 +56,19 @@ Ethnic
 Euro-House
 Euro-Techno
 Eurodance
-Fast-Fusion
-Folk Rock
+Fast Fusion
 Folk
+Folk-Rock
 Folklore
 Freestyle
 Funk
 Fusion
 Game
-Gangsta Rap
+Gangsta
 Goa
 Gospel
-Gothic Rock
 Gothic
+Gothic Rock
 Grunge
 Hard Rock
 Hardcore
@@ -78,12 +78,12 @@ House
 Humour
 Indie
 Industrial
+Instrumental
 Instrumental Pop
 Instrumental Rock
-Instrumental
-JPop
 Jazz
 Jazz+Funk
+JPop
 Jungle
 Latin
 Lo-Fi
@@ -102,18 +102,18 @@ Opera
 Other
 Polka
 Polsk Punk
-Pop Funk
 Pop
 Pop-Folk
+Pop_Funk
 Porn Groove
 Power Ballad
 Pranks
 Primus
 Progressive Rock
+Psychadelic
 Psychedelic Rock
-Psychedelic
-Punk Rock
 Punk
+Punk Rock
 R&B
 Rap
 Rave
@@ -121,12 +121,12 @@ Reggae
 Retro
 Revival
 Rhythmic Soul
-Rock & Roll
 Rock
+Rock & Roll
 Salsa
 Samba
 Satire
-Showtunes
+Showtunes"
 Ska
 Slow Jam
 Slow Rock
