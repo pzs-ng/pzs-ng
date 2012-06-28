@@ -87,7 +87,7 @@
 
 #ifndef allowed_types
 #define allowed_types_is_defaulted
-#define allowed_types                             "jpg,cue,m3u,mpg,mpeg,avi,txt,mov,vob,mkv,wmv,png,m2ts"
+#define allowed_types                             "jpg,cue,m3u,txt,vob,png,m2ts,ts"
 #endif
 
 #ifndef allowed_types_exemption_dirs
@@ -1312,7 +1312,7 @@
 
 #ifndef video_types
 #define video_types_is_defaulted
-#define video_types                               "mpg,mpeg,m2v,m2p,avi,mkv"
+#define video_types                               "mpg,mpeg,m2v,m2p,avi,mkv,mov,mp4,wmv"
 #endif
 
 #ifndef write_complete_message
