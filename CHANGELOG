@@ -175,7 +175,7 @@ v1.2.0  --> 1.2.x :
 		- Fixed bug #530: output problems for races with a lot of users
 		- Added comments to ngBot.conf.default regarding max_log_change
 		- Updated the audio-genre script to use the same genres as in the zipscript
-		- Added mov, mp4 and wmv to the default video_types and removed several from allowed_types
+		- Added vob, mov, mp4 and wmv to the default video_types and removed several from allowed_types
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
