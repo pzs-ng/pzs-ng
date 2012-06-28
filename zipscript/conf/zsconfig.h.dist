@@ -24,6 +24,9 @@
 #define cleanupdirs                  "/site/test/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/"
 #define cleanupdirs_dated            "/site/incoming/0day/%m%d/ /site/incoming/mp3/%m%d/"
 
+#define check_for_missing_sample_dirs "/site/incoming/movies/"
+#define create_missing_sample_link   FALSE
+
 #define short_sitename               "NG"
 
 #define debug_mode                   FALSE

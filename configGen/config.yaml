@@ -341,7 +341,7 @@ options:
         type: boolean
         comment: |-
             Movie-releases should have a sample. This setting will check for
-            missing sfv in releases.
+            missing samples in releases.
         default: false
 
     GROUPFILE:

@@ -448,7 +448,7 @@ create_missing_files <TRUE|FALSE>
 
 create_missing_sample_link <TRUE|FALSE>
 	Movie-releases should have a sample. This setting will check for
-	missing sfv in releases.
+	missing samples in releases.
 	Default: FALSE
 
 create_missing_sfv <TRUE|FALSE>
