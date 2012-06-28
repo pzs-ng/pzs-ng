@@ -502,7 +502,7 @@ options:
         comment: |-
             This variable holds a comma-separated list of extensions. All files
             with any of these extensions are allowed and not checked.
-        default: '"jpg,cue,m3u,mpg,mpeg,avi,txt,mov,vob,mkv,wmv,png,m2ts"'
+        default: '"jpg,cue,m3u,txt,vob,png,m2ts,ts"'
 
     ignored_types:
         type: string
@@ -522,7 +522,7 @@ options:
             Comma-separated list of files considered to be video files. Should
             usually not be changed, but may need to be if a 3rd party script handle
             sample info.
-        default: '"mpg,mpeg,m2v,m2p,avi,mkv"'
+        default: '"mpg,mpeg,m2v,m2p,avi,mkv,mov,mp4,wmv"'
 
     allow_files_not_in_sfv:
         type: boolean
