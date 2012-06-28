@@ -186,10 +186,30 @@ case $os in
 		bsdlibs="/lib/ld-linux.so.2"
 		echo -e "\nCopying needed resolv-libs (if needed)..."
 		for linuxlib in /lib/libnss_dns* /lib/libresolv* ; do
-		  echo -n "   $(basename $linuxlib)"
-		  rm -f "$glroot/lib/$(basename $linuxlib)"
-		  cp -fRH $linuxlib $glroot/lib/
-		  echo " OK"
+		  [[ -e "$linuxlib" ]] && {
+		    echo -n "   $(basename $linuxlib)"
+		    rm -f "$glroot/lib/$(basename $linuxlib)"
+		    cp -fRH $linuxlib $glroot/lib/
+		    echo " OK"
+		  }
+		done
+		for linuxlib in /lib/i386-linux-gnu/libnss_dns* /lib/i386-linux-gnu/libresolv* ; do
+		  [[ -e "$linuxlib" ]] && {
+		    echo -n "   $(basename $linuxlib)"
+		    rm -f "$glroot/lib/i386-linux-gnu/$(basename $linuxlib)"
+		    [[ ! -e $glroot/lib/i386-linux-gnu/ ]] && mkdir $glroot/lib/i386-linux-gnu/
+		    cp -fRH $linuxlib $glroot/lib/i386-linux-gnu/
+		    echo " OK (32bit)"
+		  }
+		done
+		for linuxlib in /lib/x86_64-linux-gnu/libnss_dns* /lib/i386-linux-gnu/libresolv* ; do
+		  [[ -e "$linuxlib" ]] && {
+		    echo -n "   $(basename $linuxlib)"
+		    rm -f "$glroot/lib/x86_64-linux-gnu/$(basename $linuxlib)"
+		    [[ ! -e $glroot/lib/x86_64-linux-gnu/ ]] && mkdir $glroot/lib/x86_64-linux-gnu/
+		    cp -fRH $linuxlib $glroot/lib/x86_64-linux-gnu/
+		    echo " OK (64bit)"
+		  }
 		done
 		echo -n "   resolvconf"
 		[[ -d /etc/resolvconf ]] && {

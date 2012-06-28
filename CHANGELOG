@@ -178,6 +178,7 @@ v1.2.0  --> 1.2.x :
 		- Added vob, mov, mp4 and wmv to the default video_types and removed several from allowed_types
 		- Added sample checking option to default zsconfig.h
 		- Fixed typo in docs regarding create_missing_sample_link
+		- Fixed libcopy.sh on 64bit systems not copying the correct resolvlibs
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
