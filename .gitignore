@@ -1,0 +1,30 @@
+# Build & configure
+Makefile
+/config.h
+/config.log
+/config.status
+
+# Configuration
+/sitewho/sitewho.conf
+/zipscript/conf/zsconfig.h
+
+# Produced object files
+*.o
+*.dSYM/
+
+# Produced binaries
+/sitebot/src/dl_speedtest
+/sitebot/src/passchk
+/sitebot/src/showlog
+/sitewho/sitewho
+/zipscript/src/audiosort
+/zipscript/src/cleanup
+/zipscript/src/datacleaner
+/zipscript/src/ng-chown
+/zipscript/src/ng-deldir
+/zipscript/src/ng-undupe
+/zipscript/src/postdel
+/zipscript/src/postunnuke
+/zipscript/src/racestats
+/zipscript/src/rescan
+/zipscript/src/zipscript-c
