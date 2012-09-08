@@ -718,11 +718,32 @@ main(int argc, char *argv[])
 			}
 				move_progress_bar(0, &g.v, g.ui, g.gi);
 		}
-	} else if (mark_empty_dirs_as_incomplete_on_rescan) {
+	} else {
+		int empty = 1;
+		if (create_missing_sfv_link && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) && g.l.sfv_incomplete && !matchpath(nocheck_dirs, g.l.path) && !matchpath(allowed_types_exemption_dirs, g.l.path)) {
+			rewinddir(dir);
+			while ((dp = readdir(dir))) {
+				stat(dp->d_name, &fileinfo);
+				if (S_ISREG(fileinfo.st_mode)) {
+					ext = find_last_of(dp->d_name, ".");
+					if (*ext == '.')
+						ext++;
+					if (*ext && get_filetype(&g, ext) == 3) {
+						d_log("rescan: Creating missing-sfv indicator %s.\n", g.l.sfv_incomplete);
+						if (create_incomplete_sfv())
+							d_log("rescan: create_incomplete_sfv() returned something.\n");
+						empty = 0;
+						break;
+					}
+				}
+			}
+		}
+		if (empty && mark_empty_dirs_as_incomplete_on_rescan) {
 			if (create_incomplete()) {
 				d_log("rescan: create_incomplete() returned something\n");
 			}
 			printf(" Empty dir - marking as incomplete.\n");
+		}
 	}
 	printf(" Passed : %i\n", (int)g.v.total.files - (int)g.v.total.files_missing);
 	printf(" Failed : %i\n", (int)g.v.total.files_bad);

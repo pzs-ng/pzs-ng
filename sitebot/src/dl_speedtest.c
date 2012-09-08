@@ -74,6 +74,7 @@ main (int argc, char **argv)
 	time_t          timenow = time(NULL);
 	long long	speed, size;
 
+	debug_out("dl_speedtest was initiated.\n");
 	if ((argc < 2) || (strncasecmp(argv[1], "RETR ", 5))) {
 		debug_out("%s: Did not revieve args, or args were wrong. ($1='%s')\n", argv[0], argv[1]); 
 		return 0;

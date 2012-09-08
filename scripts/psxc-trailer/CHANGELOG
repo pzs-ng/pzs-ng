@@ -1,14 +1,17 @@
-v 0.1 - inital build - not publicly released.
-v 0.2 - first public release.
-v 0.3 - added support for subdirs and "intelligent" choosing of what releases to scan.
-v 0.4 - added fix for linux. added support for sentralized trailerdir.
-v 0.5 - fixed a bug affecting Tropic Thunder (among others).
-      - added option to download to both releasedir and trailerdir.
-v 0.7 - changed 'sedflags' to 'wgetflags' (i must've been high naming that variable)
-      - added '-U "Internet Explorer"' to the list of wgetflags
-v 0.8 - modified the script to handle some new obfuscation in the url-hiding scheme.
-v 0.9 - added support for downloading all availible trailers of a movie in the
-        specified quality.
-v 0.10- better search for movies. Added fix made by oliveroms.
-v 0.11- some regexp improvements. Added support for spaces in dirnames.
+v 0.1  - inital build - not publicly released.
+v 0.2  - first public release.
+v 0.3  - added support for subdirs and "intelligent" choosing of what releases to scan.
+v 0.4  - added fix for linux. added support for sentralized trailerdir.
+v 0.5  - fixed a bug affecting Tropic Thunder (among others).
+       - added option to download to both releasedir and trailerdir.
+v 0.7  - changed 'sedflags' to 'wgetflags' (i must've been high naming that variable)
+       - added '-U "Internet Explorer"' to the list of wgetflags
+v 0.8  - modified the script to handle some new obfuscation in the url-hiding scheme.
+v 0.9  - added support for downloading all availible trailers of a movie in the
+         specified quality.
+v 0.10 - better search for movies. Added fix made by oliveroms.
+v 0.11 - some regexp improvements. Added support for spaces in dirnames.
+v 0.12 - apple.com changed some requirements, which broke the script. fixed.
+v 0.13 - small typo and bug in the latest 0.12 - fixed.
+v 0.14 - fixed a small bug with year exclusion. Added better accuracy lookups.
 

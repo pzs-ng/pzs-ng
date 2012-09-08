@@ -60,6 +60,14 @@ v1.2.0  --> 1.2.x :
 		- Fixed bug #485 - zipscript-c --config prints ((void *)0) instead of DISABLED.
 		- Did some fixes in libcopy to overcome symlinks and old broken libs. Hopefully you
 		  no longer need to rm -fR all lib* dirs in /glftpd before running libcopy anymore.
+		- Fixed bug #497 - zipscript-c: If chmod_completebar is enabled then
+		  create_missing_sample_link does not work - fix done by lex.
+		- Fixed bug #498, 499, 500 - cleanup.c - various fixes done by Sked.
+		- Rescan did not re-create missing-sfv links (fix by Sked).
+		- Fixed inaccuracy-bug in matchpath().
+		- Added names to some values instf 0,1,2.
+		- movies.apple.com changed - psxc-trailer script updated.
+		- fixed a rare segfault issue if getwd() failed.
 
 		v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.

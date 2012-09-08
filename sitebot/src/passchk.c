@@ -205,7 +205,7 @@ pw_encrypt_new(const unsigned char *pw_pwd, unsigned char *encryp, char *digest)
 struct passwd *
 get_cuftpd_passwd(FILE * fp)
 {
-	char *data, *value, tmp;
+	char *data = 0, *value, tmp;
 	int  length = 0, varsize = 0, check = 0;
 
 	while (fread(&tmp, 1, 1, fp) > 0) {

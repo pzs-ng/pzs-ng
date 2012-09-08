@@ -14,6 +14,10 @@
 #define TRUE				1
 #define FALSE				0
 
+#define BAR_FILE			0
+#define BAR_DIR				1
+#define BAR_OFF				2
+
 #define DISABLED			NULL
 
 #define FILE_MAX			256

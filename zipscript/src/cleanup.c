@@ -9,6 +9,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <errno.h>
+#include <libgen.h>
 
 #include "objects.h"
 #include "macros.h"
@@ -29,7 +30,6 @@
 #endif
 
 #include "cleanup.h"
-
 struct tm      *timenow;
 time_t		tnow;
 
@@ -38,25 +38,29 @@ main(int argc, char **argv)
 {
 
 	int		setfree = 1;
-	char		startdir[PATH_MAX] = "/";
+	char		startdir[PATH_MAX];
 
-	if (argc > 1) {
-		if (!strncmp(argv[1], "/", 1)) {
-			setfree = 0;
-			printf("PZS-NG Cleanup: Running script in view mode only.\n");
-			snprintf(startdir, PATH_MAX, "%s", argv[1]);
-		} else {
-			if (getcwd(startdir, PATH_MAX) == NULL) {
-				printf("PZS-NG Cleanup: ERROR - Failed to getcwd.\n");
-				exit (0);
-			}
-			printf("PZS-NG Cleanup: Running.\n");
+	if (argc == 2 && !strncmp(argv[1], "/", 1)) {
+		setfree = 0;
+		snprintf(startdir, PATH_MAX, "%s", argv[1]);
+		printf("PZS-NG Cleanup: Running script in view mode only.\n");
+		if (chroot(startdir) == -1) {
+			printf("PZS-NG Cleanup: ERROR - Failed to chroot: %s.\n", strerror(errno));
+			exit(0);
 		}
+		startdir[0] = '\0';
+	} else {
+		if (getcwd(startdir, PATH_MAX) == NULL) {
+			printf("PZS-NG Cleanup: ERROR - Failed to getcwd: %s.\n", strerror(errno));
+			exit(0);
+		} else if (!strcmp(startdir, "/"))
+			startdir[0] = '\0';
+		printf("PZS-NG Cleanup: Running.\n");
 	}
 
 	cleanup(cleanupdirs, cleanupdirs_dated, setfree, startdir);
 
-	if (argc < 2 || always_scan_audio_syms == TRUE) {
+	if (((int)strlen(startdir) < 1 && argc < 2) || always_scan_audio_syms == TRUE) {
 
 #if ( audio_genre_sort == TRUE )
 		scandirectory((char *)audio_genre_path, setfree);
@@ -74,10 +78,6 @@ main(int argc, char **argv)
 		scandirectory((char *)audio_group_path, setfree);
 #endif
 
-#if ( audio_artist_sort == TRUE )
-		scandirectory((char *)audio_artist_path, setfree);
-#endif
-
 #if ( audio_language_sort == TRUE )
 		scandirectory((char *)audio_language_path, setfree);
 #endif
@@ -89,15 +89,15 @@ main(int argc, char **argv)
 
 /* new try without expensive scandir() */
 void
-scandirectory(char *dirname, int setfree)
+scandirectory(char *dname, int setfree)
 {
 	int		fd;
 	DIR		*dir1, *dir2;
 	struct dirent	*dp1, *dp2;
 	
-	printf("[%s]\n", dirname);
+	printf("[%s]\n", dname);
 
-	if (chdir(dirname) != -1) {
+	if (chdir(dname) != -1) {
 		if ((dir1 = opendir("."))) {
 			while ((dp1 = readdir(dir1))) {
 				if (dp1->d_name[0] != '.') {
@@ -192,137 +192,167 @@ regcomp_error(int regcomp_return, regex_t *preg, char *expression)
 }
 
 void 
-incomplete_cleanup(char *path, int setfree, char *startupdir)
+incomplete_cleanup(char *path, int setfree)
 {
 	DIR		*dir;
 	struct dirent	*dp;
+	struct stat	fileinfo;
 	
-	int		i, fd;
-	regex_t		preg[4];
+	int		i, fd, size;
+	regex_t		preg[8];
 	regmatch_t	pmatch[1];
-	char		temp[PATH_MAX];
+	char		incarr[8][PATH_MAX];
 	char		*locator;
-#if (userellink)
-	(void)startupdir; // To choke a warning ;-)
-#endif
-
-	snprintf(temp, PATH_MAX, "%s", incomplete_cd_indicator);
-	locator = replace_cookies(temp);
-	if (regcomp_error(regcomp(&preg[0], locator, REG_NEWLINE | REG_EXTENDED), &preg[0], locator))
-            return;
-#if (debug_mode && debug_announce)
-	printf("DEBUG: locator for preg[0]='%s'\n", locator);
-#endif
-
-	snprintf(temp, PATH_MAX, "%s", incomplete_indicator);
-	locator = replace_cookies(temp);
-        if (regcomp_error(regcomp(&preg[1], locator, REG_NEWLINE | REG_EXTENDED), &preg[1], locator))
-        {
-            regfree(&preg[0]);
-            return;
-        }
-#if (debug_mode && debug_announce)
-	printf("DEBUG: locator for preg[1]='%s'\n", locator);
-#endif
-
-	snprintf(temp, PATH_MAX, "%s", incomplete_base_nfo_indicator);
-	locator = replace_cookies(temp);
-        if (regcomp_error(regcomp(&preg[2], locator, REG_NEWLINE | REG_EXTENDED), &preg[2], locator))
-        {
-            regfree(&preg[0]);
-            regfree(&preg[1]);
-            return;
-        }
-#if (debug_mode && debug_announce)
-	printf("DEBUG: locator for preg[2]='%s'\n", locator);
-#endif
-
-	snprintf(temp, PATH_MAX, "%s", incomplete_nfo_indicator);
-	locator = replace_cookies(temp);
-        if (regcomp_error(regcomp(&preg[3], locator, REG_NEWLINE | REG_EXTENDED), &preg[3], locator))
-        {
-            regfree(&preg[0]);
-            regfree(&preg[1]);
-            regfree(&preg[2]);
-            return;
-        }
-#if (debug_mode && debug_announce)
-	printf("DEBUG: locator for preg[3]='%s'\n", locator);
-#endif
+	static char	tempa[PATH_MAX],
+			tempb[PATH_MAX];
+        char            fulldir[PATH_MAX];
 
 	printf("[%s]\n", path);
 
 	if (chdir(path) != -1) {
-
 		if ((dir = opendir("."))) {
-		
 			while ((dp = readdir(dir))) {
+				snprintf(tempa, PATH_MAX, "%s/%s", path, dp->d_name);
+				if (lstat(tempa, &fileinfo) != -1 && S_ISLNK(fileinfo.st_mode)) {
 #if (debug_mode && debug_announce)
-				printf("DEBUG: dp->d_name='%s'\n", dp->d_name);
+					printf("DEBUG: dp->d_name='%s'\n", dp->d_name);
 #endif
-				for (i = 0; i < 4; i++) {
-					if (regexec(&preg[i], dp->d_name, 1, pmatch, 0) == 0)
-						if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dp))
-#if (userellink)
-							if (checklink(path, dp->d_name, setfree))
-#else
-							if (checklink(startupdir, dp->d_name, setfree))
-#endif
-								break;
-					if ((fd = open(dp->d_name, O_NDELAY, 0777)) != -1)
+					if ((fd = open(dp->d_name, O_NDELAY)) != -1) {
 						close(fd);
-					else if (setfree) {
+	       					if ((size = readlink(tempa, tempb, PATH_MAX)) < 0) continue;
+					        tempb[size] = '\0';
+						if (chdir(tempb) == -1)
+							fprintf(stderr, "chdir(%s): %s\n", tempb, strerror(errno));
+						if (getcwd(fulldir, PATH_MAX) == NULL)
+							fprintf(stderr, "getcwd(%s): %s\n", fulldir, strerror(errno));
+						if (chdir(path) == -1)
+							fprintf(stderr, "chdir(%s): %s\n", path, strerror(errno));
+						if (matchpath(incomplete_generic1_path, fulldir)) {
+							snprintf(incarr[0], PATH_MAX, "%s", incomplete_generic1_cd_indicator);
+							snprintf(incarr[1], PATH_MAX, "%s", incomplete_generic1_indicator);
+							snprintf(incarr[2], PATH_MAX, "%s", incomplete_generic1_base_nfo_indicator);
+							snprintf(incarr[3], PATH_MAX, "%s", incomplete_generic1_nfo_indicator);
+							snprintf(incarr[4], PATH_MAX, "%s", incomplete_generic1_base_sfv_indicator);
+							snprintf(incarr[5], PATH_MAX, "%s", incomplete_generic1_sfv_indicator);
+							snprintf(incarr[6], PATH_MAX, "%s", incomplete_generic1_base_sample_indicator);
+							snprintf(incarr[7], PATH_MAX, "%s", incomplete_generic1_sample_indicator);
+#if (debug_mode && debug_announce)
+							printf("DEBUG: Matchpath hit for generic1: '%s'\n", incarr[1]);
+#endif
+						} else if (matchpath(incomplete_generic2_path, fulldir)) {
+							snprintf(incarr[0], PATH_MAX, "%s", incomplete_generic2_cd_indicator);
+							snprintf(incarr[1], PATH_MAX, "%s", incomplete_generic2_indicator);
+							snprintf(incarr[2], PATH_MAX, "%s", incomplete_generic2_base_nfo_indicator);
+							snprintf(incarr[3], PATH_MAX, "%s", incomplete_generic2_nfo_indicator);
+							snprintf(incarr[4], PATH_MAX, "%s", incomplete_generic2_base_sfv_indicator);
+							snprintf(incarr[5], PATH_MAX, "%s", incomplete_generic2_sfv_indicator);
+							snprintf(incarr[6], PATH_MAX, "%s", incomplete_generic2_base_sample_indicator);
+							snprintf(incarr[7], PATH_MAX, "%s", incomplete_generic2_sample_indicator);
+#if (debug_mode && debug_announce)
+							printf("DEBUG: Matchpath hit for generic2: '%s'\n", incarr[1]);
+#endif
+						} else {
+							snprintf(incarr[0], PATH_MAX, "%s", incomplete_cd_indicator);
+							snprintf(incarr[1], PATH_MAX, "%s", incomplete_indicator);
+							snprintf(incarr[2], PATH_MAX, "%s", incomplete_base_nfo_indicator);
+							snprintf(incarr[3], PATH_MAX, "%s", incomplete_nfo_indicator);
+							snprintf(incarr[4], PATH_MAX, "%s", incomplete_base_sfv_indicator);
+							snprintf(incarr[5], PATH_MAX, "%s", incomplete_sfv_indicator);
+							snprintf(incarr[6], PATH_MAX, "%s", incomplete_base_sample_indicator);
+							snprintf(incarr[7], PATH_MAX, "%s", incomplete_sample_indicator);
+#if (debug_mode && debug_announce)
+							printf("DEBUG: No matchpath hit: '%s'\n", incarr[1]);
+#endif
+						}
+
+						for (i = 0; i < (int)(sizeof(incarr) / sizeof(incarr[i])); i++) {
+							locator = basename(replace_cookies(incarr[i]));
+							if (locator && !regcomp_error(regcomp(&preg[i], locator, REG_NEWLINE | REG_EXTENDED), &preg[i], locator)) {
+#if (debug_mode && debug_announce)
+								printf("DEBUG: locator for preg[%i]='%s'\n", i, locator);
+#endif
+								if (regexec(&preg[i], dp->d_name, 1, pmatch, 0) == 0)
+									if (!(int)pmatch[0].rm_so && (int)pmatch[0].rm_eo == (int)NAMLEN(dp))
+										if (checklink(dp->d_name, setfree)) {
+											regfree(&preg[i]);
+											break;
+										}
+								regfree(&preg[i]);
+								continue;
+							}
+							regfree(&preg[i]);
+							return;
+						}
+					} else if (setfree) {
 						unlink(dp->d_name);
 						printf("Broken symbolic link \"%s\" removed.\n", dp->d_name);
-						i=5;
 					}
 				}
 			}
 			closedir(dir);
-		
+
 		} else {
 			fprintf(stderr, "opendir(%s): %s\n", path, strerror(errno));
 		}
-		
+
 	} else {
 		fprintf(stderr, "chdir(%s): %s\n", path, strerror(errno));
 	}
-	
-	regfree(&preg[0]);
-	regfree(&preg[1]);
-	regfree(&preg[2]);
-	regfree(&preg[3]);
+
 }
 
 int 
-checklink(char *path, char *link_, int setfree)
+checklink(char *link_, int setfree)
 {
-	int		size, retval;
+	int		size;
 	static char	temp[PATH_MAX];
-	static char	lnk[PATH_MAX];
-	struct stat	fileinfo;
+        char            fulldir[PATH_MAX], origdir[PATH_MAX];
 
-	size = readlink(link_, temp, PATH_MAX);
-#if (userellink)
-	snprintf(lnk, PATH_MAX, "%s", link_);
-#else
-	snprintf(lnk, PATH_MAX, "%s/%s", path, temp);
-#endif
-
-	if (size < 0) return 0;
+	if ((size = readlink(link_, temp, PATH_MAX)) < 0) return 0;
 	temp[size] = '\0';
-	retval = 0;
-	if (stat(lnk, &fileinfo)) {
+	if (getcwd(origdir, PATH_MAX) == NULL)
+		fprintf(stderr, "getcwd(%s): %s\n", origdir, strerror(errno));
+        if ((chdir(temp) == -1) || (getcwd(fulldir, PATH_MAX) == NULL)) {
 		if (setfree) {
 			unlink(link_);
-			printf("Broken symbolic link \"%s\" removed.\n", temp);
-			retval = 1;
+			printf("Broken symbolic link \"%s\" removed.\n", link_);
 		}
 	} else {
-		printf("Incomplete release: \"%s%s\".\n", path, temp);
-		retval = 1;
+		printf("Incomplete release: \"%s\".\n", fulldir);
 	}
-	return retval;
+	if (chdir(origdir) == -1)
+		fprintf(stderr, "chdir(%s): %s\n", origdir, strerror(errno));
+	return 1;
+}
+
+short int
+matchpath(char *instr, char *path)
+{
+        int             pos = 0;
+        if ( (int)strlen(instr) < 2 || (int)strlen(path) < 2 ) {
+#if (debug_mode && debug_announce)
+		printf("DEBUG: matchpath: pathlength(s) too short - returning nomatch (not an error)\n");
+#endif
+                return 0;
+        }
+        do {
+                switch (*instr) {
+                case 0:
+                case ' ':
+			if (!strncmp(instr - pos, path, pos)) {
+				if (*(instr - 1) == '/')
+					return 1;
+				if (*(path + pos) == '/')
+			        	return 1;
+			}
+                        pos = 0;
+                        break;
+                default:
+                        pos++;
+                        break;
+                }
+        } while (*instr++);
+        return 0;
 }
 
 void 
@@ -342,28 +372,28 @@ cleanup(char *pathlist, char *pathlist_dated, int setfree, char *startpath)
 		}
 
 	if (((int)strlen(startpath) > 1) && (setfree == 1)) {
-		/* Scanning current dir only */
+		printf("Scanning current dir only\n");
 
-		incomplete_cleanup(startpath, setfree, startpath);
+		incomplete_cleanup(startpath, setfree);
 	} else {
 		newentry = pathlist;
-		while (1) {
-			for (entry = newentry; *newentry != ' ' && *newentry != 0; newentry++);
+		while (*newentry) {
+			for (entry = newentry; *newentry != ' ' && *newentry; newentry++);
 			sprintf(path, "%s%.*s", startpath, (int)(newentry - entry), entry);
-			incomplete_cleanup(path, setfree, startpath);
+			incomplete_cleanup(path, setfree);
 			if (!*newentry)
 				break;
 			newentry++;
 		}
-		while (day_back <= (days_back_cleanup - 1)) {
+		while (pathlist_dated && day_back <= (days_back_cleanup - 1)) {
 			newentry = pathlist_dated;
 			t_day = time(NULL) - (60 * 60 * 24 * day_back);	/* 86400 seconds back == * 1 day */
 			time_day = localtime_r(&t_day, time_day);
-			while (1) {
-				for (entry = newentry; *newentry != ' ' && *newentry != 0; newentry++);
+			while (*newentry) {
+				for (entry = newentry; *newentry != ' ' && *newentry; newentry++);
 				sprintf(path, "%s%.*s", startpath, (int)(newentry - entry), entry);
 				strftime(data_day, PATH_MAX, path, time_day);
-				incomplete_cleanup(data_day, setfree, startpath);
+				incomplete_cleanup(data_day, setfree);
 				if (!*newentry)
 					break;
 				newentry++;
@@ -374,4 +404,3 @@ cleanup(char *pathlist, char *pathlist_dated, int setfree, char *startpath)
 	if (time_day)
 		free(time_day);
 }
-

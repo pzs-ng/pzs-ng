@@ -872,7 +872,7 @@
 
 #ifndef incompleteislink
 #define incompleteislink_is_defaulted
-#define incompleteislink                          1
+#define incompleteislink                          true
 #endif
 
 #ifndef lock_optimize
@@ -1212,7 +1212,7 @@
 
 #ifndef status_bar_type
 #define status_bar_type_is_defaulted
-#define status_bar_type                           1
+#define status_bar_type                           BAR_DIR
 #endif
 
 #ifndef storage
@@ -1262,7 +1262,7 @@
 
 #ifndef userellink
 #define userellink_is_defaulted
-#define userellink                                1
+#define userellink                                true
 #endif
 
 #ifndef video_completebar

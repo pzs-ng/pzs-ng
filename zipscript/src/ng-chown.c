@@ -150,8 +150,11 @@ matchpath2(char *instr, char *path)
 		switch (*instr) {
 		case 0:
 		case ' ':
-			if (strncmp(instr - pos, path, pos - 1) == 0) {
-				return 1;
+			if (!strncmp(instr - pos, path, pos)) {
+				if (*(instr - 1) == '/')
+					return 1;
+				if (*(path + pos) == '/')
+			        	return 1;
 			}
 			pos = 0;
 			break;

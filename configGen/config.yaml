@@ -420,33 +420,35 @@ options:
     status_bar_type:
         type: integer
         valid_values: 
-            - 0
-            - 1
+            - BAR_FILE
+            - BAR_DIR
+            - BAR_OFF
         comment: |-
             In each dir there will be a statusbar. Here you define if you wish
-            to make it as a file (0) or as a dir (1).
-        default: 1
+            to make it as a file (BAR_FILE) or as a dir (BAR_DIR). To disable use
+            BAR_OFF.
+        default: BAR_DIR
 
     incompleteislink:
         type: integer
         valid_values: 
-            - 0
-            - 1
+            - TRUE
+            - FALSE
         comment: |-
             While a release is incomplete, a link will be created pointing to
-            the releasedir. You can define if it will be a file (0) or a
-            symbolic link (1).
-        default: 1
+            the releasedir. You can define if it will be a file (FALSE) or
+            a symbolic link (TRUE).
+        default: TRUE
 
     userellink:
         type: integer
         valid_values: 
-            - 0
-            - 1
+            - FALSE
+            - TRUE
         comment: |-
-            With symbolic links you have an option of it being absolute (0) or
-            relative (1).
-        default: 1
+            With symbolic links you have an option of it being absolute (FALSE) or
+            relative (TRUE).
+        default: TRUE
 
     program_uid:
         type: integer

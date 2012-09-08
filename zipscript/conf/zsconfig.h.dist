@@ -29,8 +29,8 @@
 #define debug_mode                   FALSE
 #define debug_altlog                 TRUE
 
-#define status_bar_type              1
-#define incompleteislink             1
+#define status_bar_type              BAR_DIR
+#define incompleteislink             true
 
 #define ignored_types                ",diz,debug,message,imdb,html,url,m3u,metadata"
 

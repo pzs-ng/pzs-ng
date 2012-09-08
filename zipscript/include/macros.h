@@ -25,8 +25,8 @@
 #endif
 
 /* General */
-#if ( incompleteislink == 1 )
-#if ( userellink == 1 )
+#if ( incompleteislink == TRUE )
+#if ( userellink == TRUE )
 #define create_incomplete() symlink(g.v.misc.release_name, g.l.incomplete)
 #define create_incomplete_nfo() symlink(g.v.misc.release_name, g.l.nfo_incomplete)
 #define create_incomplete_sample() symlink(g.v.misc.release_name, g.l.sample_incomplete)
@@ -45,7 +45,7 @@
 #endif
 
 /* No race */
-#if ( announce_norace == 1 )
+#if ( announce_norace == TRUE )
 #define CHOOSE(a,b,c)	g.v.total.users > 1 ? b : c;
 #else
 #define CHOOSE(a,b,c)	b;

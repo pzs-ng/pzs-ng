@@ -130,48 +130,49 @@ findfileextsub(DIR *dir)
 
         errno = 0;
         
-  if (getcwd(cwd, sizeof(cwd)) == NULL) {
-    d_log("zsfunctions.c: findfileextsub() - Error getting path\n");
-  }
-
+	if (getcwd(cwd, sizeof(cwd)) == NULL) {
+		d_log("zsfunctions.c: findfileextsub() - Error getting path: %s\n", strerror(errno));
+		return NULL;
+	}
 	rewinddir(dir);
-
-  if((dir2=opendir(cwd)) == NULL) {
-    d_log("zsfunctions.c: findfileextsub() - Error getting path\n");
-  }
-  
+	if((dir2=opendir(cwd)) == NULL) {
+		d_log("zsfunctions.c: findfileextsub() - Error getting path: %s\n", strerror(errno));
+		return NULL;
+	}
 	while ((dp = readdir(dir2))) {
-	  if (strcmp(dp->d_name,".") && strcmp(dp->d_name,".."))  {
-	    struct stat attribut;
-      strcpy(cwd2,cwd);
-      strcat(cwd2,"/");
-      strcat(cwd2,dp->d_name);	  
-	    if (stat(cwd2, &attribut) == -1) 
-	      d_log("zsfunctions.c: findfileextsub() - Error getting path\n");
-
-	    if (S_ISDIR(attribut.st_mode)) {
-	      if ((dir3 = opendir(cwd2)) == NULL)
-	        d_log("zsfunctions.c: findfileextsub() - Error getting path\n");
-	        
-	      rewinddir(dir3);
-	      while ((dp2 = readdir(dir3))) {
-	        if ((k = NAMLEN(dp2)) < 4)
-	          continue;
-		if (strcomp(video_types, dp2->d_name + k - 3))
-	          return dp2->d_name;
-	      }
-	    closedir(dir3);
-	    }
-	  }
-	  if ((k = NAMLEN(dp)) < 4)
-	    continue;
-	  if (strcomp(video_types, dp->d_name + k - 3))
-	    return dp->d_name;
+		if (strcmp(dp->d_name,".") && strcmp(dp->d_name,".."))  {
+			struct stat attribut;
+			strcpy(cwd2,cwd);
+			strcat(cwd2,"/");
+			strcat(cwd2,dp->d_name);	  
+			if (stat(cwd2, &attribut) == -1) 
+				d_log("zsfunctions.c: findfileextsub() - Error getting path\n");
+			if (strcomp(sample_list, dp->d_name)) {
+				if (S_ISDIR(attribut.st_mode)) {
+					if ((dir3 = opendir(cwd2)) == NULL)
+						d_log("zsfunctions.c: findfileextsub() - Error getting path\n");
+	        			else {
+						rewinddir(dir3);
+						while ((dp2 = readdir(dir3))) {
+							if ((k = NAMLEN(dp2)) < 4)
+								continue;
+							if (strcomp(video_types, dp2->d_name + k - 3))
+								return dp2->d_name;
+						}
+						closedir(dir3);
+					}
+				}
+			}
+		}
+		if ((k = NAMLEN(dp)) < 4)
+			continue;
+		if (strcomp(video_types, dp->d_name + k - 3))
+			return dp->d_name;
 	}
 	closedir(dir2);
 	
 	if (errno)
-            d_log("zsfunctions.c: findfileextsub() - closedir(dir) returned an error: %s\n", strerror(errno));
+		d_log("zsfunctions.c: findfileextsub() - closedir(dir) returned an error: %s\n", strerror(errno));
 
 	return NULL;
 }
@@ -185,47 +186,45 @@ findfileextsubp(DIR *dir)
 	char * pch;
 	static struct dirent	*dp, *dp2;
 
-        errno = 0;
-  if (getcwd(cwd, sizeof(cwd)) == NULL) {
-    d_log("Error getting path\n");
-  }
-  pch=strrchr(cwd,47);
-  strncpy(cwd2,cwd,pch-cwd);
-  cwd2[pch-cwd]='\0';
-  
+	errno = 0;
+	if (getcwd(cwd, sizeof(cwd)) == NULL)
+		d_log("findfileextsubp: Error getting path: %s\n", strerror(errno));
+	pch=strrchr(cwd,47);
+	strncpy(cwd2,cwd,pch-cwd);
+	cwd2[pch-cwd]='\0';
+
 	rewinddir(dir);
 
-  if((dir2=opendir(cwd2)) == NULL) {
-    d_log("zsfunctions.c: findfileextsubp() - Error getting path\n");
-  }
+	if((dir2=opendir(cwd2)) == NULL)
+		d_log("zsfunctions.c: findfileextsubp() - Error getting path: %s\n", strerror(errno));
   
 	while ((dp = readdir(dir2))) {
-	  if (strcmp(dp->d_name,".") && strcmp(dp->d_name,".."))  {
-	    struct stat attribut;
-      strcpy(cwd3,cwd2);
-      strcat(cwd3,"/");
-      strcat(cwd3,dp->d_name);	  
-	    if (stat(cwd3, &attribut) == -1) 
-	      d_log("zsfunctions.c: findfileextsubp() - Error getting path\n");
-
-	    if (S_ISDIR(attribut.st_mode)) {
-	      if ((dir3 = opendir(cwd3)) == NULL)
-	        d_log("zsfunctions.c: findfileextsubp() - Error getting path\n");
-	        
-	      rewinddir(dir3);
-	      while ((dp2 = readdir(dir3))) {
-	        if ((k = NAMLEN(dp2)) < 4)
-	          continue;
-		if (strcomp(video_types, dp2->d_name + k - 3))
-	          return dp2->d_name;
-	      }
-	    closedir(dir3);
-	    }
-	  }
-	  if ((k = NAMLEN(dp)) < 4)
-	    continue;
-	  if (strcomp(video_types, dp->d_name + k - 3))
-	    return dp->d_name;
+		if (strcmp(dp->d_name,".") && strcmp(dp->d_name,".."))  {
+			struct stat attribut;
+			strcpy(cwd3,cwd2);
+			strcat(cwd3,"/");
+			strcat(cwd3,dp->d_name);	  
+			if (stat(cwd3, &attribut) == -1) 
+				d_log("zsfunctions.c: findfileextsubp() - Error getting path\n");
+			if (strcomp(sample_list, dp->d_name)) {
+				if (S_ISDIR(attribut.st_mode)) {
+					if ((dir3 = opendir(cwd3)) == NULL)
+						d_log("zsfunctions.c: findfileextsubp() - Error getting path\n");
+					rewinddir(dir3);
+					while ((dp2 = readdir(dir3))) {
+						if ((k = NAMLEN(dp2)) < 4)
+							continue;
+						if (strcomp(video_types, dp2->d_name + k - 3))
+							return dp2->d_name;
+					}
+					closedir(dir3);
+				}
+			}
+		}
+		if ((k = NAMLEN(dp)) < 4)
+			continue;
+		if (strcomp(video_types, dp->d_name + k - 3))
+			return dp->d_name;
 	}
 	closedir(dir2);
 	
@@ -734,15 +733,21 @@ matchpath(char *instr, char *path)
 	int		pos = 0;
 
 	if ( (int)strlen(instr) < 2 || (int)strlen(path) < 2 ) {
-		d_log("matchpath: pathlength(s) too short - returning nomatch\n");
+		d_log("matchpath: pathlength(s) too short - returning nomatch (not an error)\n");
 		return 0;
 	}
 	do {
 		switch (*instr) {
 		case 0:
 		case ' ':
-			if (!strncmp(instr - pos, path, pos - 1)) {
-				return 1;
+			if (!strncmp(instr - pos, path, pos)) {
+				if (*(instr - 1) == '/')
+					return 1;
+				if ((int)strlen(path) >= pos) {
+					if (*(path + pos) == '/')
+						return 1;
+				} else
+					return 1;
 			}
 			pos = 0;
 			break;
@@ -776,6 +781,12 @@ strcomp(char *instr, char *searchstr)
 			}
 			pos = 0;
 			break;
+	  case ' ':
+	    if (k == pos && !strncasecmp(instr - pos, searchstr, pos)) {
+	      return 1;
+	    }
+	    pos = 0;
+	    break;
 		default:
 			pos++;
 			break;
@@ -991,7 +1002,7 @@ readsfv_ffile(struct VARS *raceI)
 					}
 					index_start++;
 					raceI->total.files++;
-					if (!strcomp(ignored_types, fname + ext_start)) {
+					if (!strcomp(ignored_types, fname + ext_start) || !strcomp("nfo", fname + ext_start)) {
 //					if (!strcomp(ignored_types, fname + ext_start) && !(strcomp(allowed_types, fname + ext_start) && matchpath(allowed_types_exemption_dirs, raceI->misc.current_path))) {
 						if (findfile(dir, fname)) {
 							raceI->total.files_missing--;
@@ -1735,7 +1746,7 @@ insampledir(char *dirname)
 void
 createstatusbar(const char *bar)
 {
-#if ( status_bar_type == 2 )
+#if ( status_bar_type == BAR_OFF )
     (void)bar;
 #else
     char *newbar, *tmp;
@@ -1746,10 +1757,10 @@ createstatusbar(const char *bar)
     while (tmp != NULL)
     {
 /* Creates status bar file */
-#if ( status_bar_type == 0 )
+#if ( status_bar_type == BAR_FILE )
         createzerofile(tmp);
 #endif
-#if ( status_bar_type == 1 )
+#if ( status_bar_type == BAR_DIR )
         mkdir(tmp, 0777);
 #endif
 

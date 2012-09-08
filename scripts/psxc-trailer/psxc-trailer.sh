@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# psxc-trailer v0.11.2009.05.01
+# psxc-trailer v0.14.2009.09.06
 ###############################
 #
 # Small script that fetches the qt trailer and image for movies.
@@ -37,6 +37,7 @@
 #   error, try the following:
 #     cp /lib/libnss_dns* /glftpd/lib/
 #     cp /lib/libresolv* /glftpd/lib/
+#     cp -fRp /etc/resolv.conf /glftpd/etc/
 #     cp -fRp /etc/resolvconf /glftpd/etc/     (only applicable on some systems)
 #
 # QUICK WAY TO COPY NEEDED BINS:
@@ -132,6 +133,7 @@ statswitch=""
 
 # We use certain flags with wget. Here we list the flags. Only change if you know what you're doing
 wgetflags='--ignore-length --timeout=10 -U "Internet Explorer"'
+wgetflags2='--ignore-length --timeout=10 -U QuickTime/7.6.2 (qtver=7.6.2;os=Windows NT 5.1Service Pack 3)'
 
 # debug option. do not remove the hash unless you know what you're doing
 #set -x -v
@@ -202,14 +204,14 @@ done
   exit 0
 }
 
-echo "Looking up trailer for $(echo $releasename)..."
+echo "Looking up trailer for $(echo $releasename | sed $sedswitch "s/(.*)\.$/\1/")..."
 orgrelname=$(echo $releasename | sed $sedswitch "s/(.*)\.$/\1/")
 countdot=$(echo $releasename | tr -cd '\.' | wc -c)
 let countdot=countdot-0
 
 while [ 1 ]; do
-  releasename="$(echo "$releasename" | sed $sedswitch "s/\.[12][0-9][0-9][0-9]$//" | tr -d '\.')"
-  releasename="$(echo "$releasename" | sed $sedswitch "s/([dw]o|[sc][h]*a|[sw][h]*ould|must|[wh]a[sd]|did|are)(nt)/\1n't/g" )"
+  releasenamedot="$(echo "$releasename" | sed $sedswitch "s/\.[12][0-9][0-9][0-9]\.*$//")"
+  releasename="$(echo "$releasenamedot" | tr -d '\.' | sed $sedswitch "s/([dw]o|[sc][h]*a|[sw][h]*ould|must|[wh]a[sd]|did|are)(nt)/\1n't/g" )"
   output="$(wget $wgetflags -o "$wgetoutput" -O - "http://www.apple.com/trailers/home/scripts/quickfind.php?q=$releasename")"
   outparse="$(echo $output | tr -d '\"' | tr ',' '\n')"
   iserror=$(echo $outparse | grep -i "error:true")
@@ -230,6 +232,20 @@ done
 [[ "$isresult" != "" ]] && {
   echo "Unable to find movie"
   exit 0
+}
+
+outparse2="$(echo "$output" | tr -d '\"' | tr '}{' '\n' | grep -i "^title:" | sed "s/[Tt][Ii][Tt][Ll][Ee]://g")"
+hits=$(echo "$outparse2" | wc -l)
+let hits=hits-0
+releasenamespace=$(echo "$releasenamedot" | sed $sedswitch "s/(.*)\.$/\1/" | tr '.' ' ')
+[[ $hits -gt 1 ]] && {
+  outtitle=$(echo "$outparse2" | grep -i "^${releasenamespace},")
+  [[ "$outtitle" == "" ]] && {
+    outtitle=$(echo "$outparse2" | grep -i "^${releasenamespace}")
+  }
+  [[ "$outtitle" != "" ]] && {
+    outparse="$(echo "$outtitle" | tr ',' '\n')"
+  }
 }
 
 poster=$(echo "$outparse" | grep -i "^poster:" | cut -d ':' -f 2- | tr -d '\\' | head -n 1)
@@ -333,7 +349,8 @@ s|^0||")
       }
       chmod +w "$trailerdir"
     }
-    wget $wgetflags -o "$wgetoutput" -O ${trailerdir}${trailername} $reallink
+    wget $wgetflags2 -o "$wgetoutput" -O ${trailerdir}${trailername} $reallink
+#    wget --ignore-length --timeout=10 -U "QuickTime/7.6.2 (qtver=7.6.2;os=Windows NT 5.1 Service Pack 3)" -o "$wgetoutput" -O ${trailerdir}${trailername} $reallink
     [[ ! -s "${trailerdir}${trailername}" ]] && {
       echo "For unknown reasons the script failed to download the trailer"
       echo "Please report this as a bug to the developer (psxc - psxc@psxc.com)"
