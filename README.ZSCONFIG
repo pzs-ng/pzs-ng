@@ -1613,7 +1613,7 @@ video_types <STRING>
 	Comma-separated list of files considered to be video files. Should
 	usually not be changed, but may need to be if a 3rd party script handle
 	sample info.
-	Default: "mpg,mpeg,m2v,m2p,avi,mkv"
+	Default: "mpg,mpeg,m2v,m2p,avi,mkv,mov,mp4,wmv,vob,ts"
 
 write_complete_message <TRUE|FALSE>
 	Should a file be created in the releasedir, containing race-info etc?

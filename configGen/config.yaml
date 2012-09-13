@@ -522,7 +522,7 @@ options:
             Comma-separated list of files considered to be video files. Should
             usually not be changed, but may need to be if a 3rd party script handle
             sample info.
-        default: '"mpg,mpeg,m2v,m2p,avi,mkv,mov,mp4,wmv,vob"'
+        default: '"mpg,mpeg,m2v,m2p,avi,mkv,mov,mp4,wmv,vob,ts"'
 
     allow_files_not_in_sfv:
         type: boolean
