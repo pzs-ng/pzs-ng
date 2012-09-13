@@ -60,7 +60,7 @@
  %v  = Error message
  %V  = Progress bar (14 Chars)
 #
-#### MP3 specific cookies
+#### Audio MP3/FLAC specific cookies
 #
  %x  = Artist
  %w  = Genre
@@ -70,18 +70,18 @@
  %z  = Sampling rate
  %X  = Bitrate
  %h  = Codec
- %q  = Layer
+ %q  = Layer (MP3 Only)
  %Q  = Channel mode
  %i  = VBR version string
- %I  = VBR preset
+ %I  = VBR preset (MP3 Only)
  %j  = vbr/cbr info
- %@  = vbr-old/vbr-new
- %_  = vbr quality (1-100, 100 = lowest)
- %/  = vbr minimum bitrate (on APS this is average bitrate)
- %\\ = vbr noiseshaping (1-3)
- %(  = vbr stereomode (joint, stereo, mono, forced etc)
- %)  = vbr unwise (1 = yes)
- %|  = vbr source (<32.000Hz, 44.100Hz, 48.000Hz, >48.000Hz)
+ %@  = vbr-old/vbr-new (MP3 Only)
+ %_  = vbr quality (1-100, 100 = lowest) (MP3 Only)
+ %/  = vbr minimum bitrate (on APS this is average bitrate) (MP3 Only)
+ %\\ = vbr noiseshaping (1-3) (MP3 Only)
+ %(  = vbr stereomode (joint, stereo, mono, forced etc) (MP3 Only)
+ %)  = vbr unwise (1 = yes) (MP3 Only)
+ %|  = vbr source (<32.000Hz, 44.100Hz, 48.000Hz, >48.000Hz) (MP3 Only)
 #
 #### Movie AVI/MPG/MPEG/M2V cookies
 #

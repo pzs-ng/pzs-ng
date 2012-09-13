@@ -179,6 +179,7 @@ v1.2.0  --> 1.2.x :
 		- Added sample checking option to default zsconfig.h
 		- Fixed typo in docs regarding create_missing_sample_link
 		- Fixed libcopy.sh on 64bit systems not copying the correct resolvlibs
+		- Updated COOKIES file
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
