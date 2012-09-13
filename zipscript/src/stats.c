@@ -249,11 +249,12 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	int		u1;
 	int		n = 0, m, users = 0;
 	int		fd;
+	int		wkupc = 1, monthupc = 1, allupc = 1, dayupc = 1;
 	unsigned char	space;
 	unsigned char	args;
 	char		*p_buf = 0, *eof = 0;
 	char		t_buf[PATH_MAX], *f_buf = 0; /* target buf, file buf */
-	char		*arg[45]; /* Enough to hold 10 sections (noone has more?) */
+	char		*arg[46]; /* Enough to hold 15 sections (glftpd has max 10, others?) */
 	struct userdata	*user = 0;
 	struct stat	fileinfo;
 
@@ -269,21 +270,32 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 	d_log("get_stats: reading stats..\n");
 
 	while ((dp = readdir(dir))) {
-		
+		/* do not read stats from default.* group templates (for glftpd),
+		 * though it's uncommon for those to have any stats
+		 */
+#ifdef USING_GLFTPD
+		if (!strncmp(dp->d_name, "default.", 8) && strlen(dp->d_name) > 8) continue;
+#endif
+
 		sprintf(t_buf, "%s/%s", gl_userfiles, dp->d_name);
 
 		if ((fd = open(t_buf, O_RDONLY)) == -1) {
 			d_log("get_stats: open(%s): %s\n", t_buf, strerror(errno));
 			continue;
 		}
-		
+
 		fileinfo.st_mode = 0;
 		if (fstat(fd, &fileinfo) == -1) {
 			d_log("get_stats: fstat(%i): %s\n", fd, strerror(errno));
 			continue;
 		}
-		
+
+		/* do not read stats if the file is a dir, has 0-size or has uid and gid 99 (for glftpd) */
+#ifdef USING_GLFTPD
+		if (!S_ISDIR(fileinfo.st_mode) && fileinfo.st_size && (fileinfo.st_uid != 99 || fileinfo.st_gid != 99)) {
+#else
 		if (!S_ISDIR(fileinfo.st_mode) && fileinfo.st_size) {
+#endif
 
 			if (!update_lock(raceI, 1, 0)) {
 				d_log("get_stats: Lock is suggested removed. Will comply and exit\n");
@@ -311,13 +323,13 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 					case '\n':
 						*p_buf = 0;
 						if ((!memcmp(arg[0], "DAYUP", 5)) && (args >= raceI->section * 3 + 2))
-							user[n].dayup_bytes = strtoll(arg[raceI->section * 3 + 2], NULL, 10);
+							user[n].dayup_bytes = strtoull(arg[raceI->section * 3 + 2], NULL, 10);
 						else if ((!memcmp(arg[0], "WKUP", 4)) && (args >= raceI->section * 3 + 2))
-							user[n].wkup_bytes = strtoll(arg[raceI->section * 3 + 2], NULL, 10);
+							user[n].wkup_bytes = strtoull(arg[raceI->section * 3 + 2], NULL, 10);
 						else if ((!memcmp(arg[0], "MONTHUP", 7)) && (args >= raceI->section * 3 + 2))
-							user[n].monthup_bytes = strtoll(arg[raceI->section * 3 + 2], NULL, 10);
+							user[n].monthup_bytes = strtoull(arg[raceI->section * 3 + 2], NULL, 10);
 						else if ((!memcmp(arg[0], "ALLUP", 5)) && (args >= raceI->section * 3 + 2))
-							user[n].allup_bytes = strtoll(arg[raceI->section * 3 + 2], NULL, 10);
+							user[n].allup_bytes = strtoull(arg[raceI->section * 3 + 2], NULL, 10);
 						args = 0;
 						space = 1;
 						break;
@@ -327,7 +339,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 						space = 1;
 						break;
 					default:
-						if (space && args < 30) {
+						if (space && args < 45) {
 							space = 0;
 							arg[args] = p_buf;
 							args++;
@@ -384,6 +396,33 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 				}
 			}
 	}
+
+	/* Making stats unique so no user shares a same position */
+	d_log("get_stats: making stats unique...\n");
+	for (n = 0; n < raceI->total.users; ++n) {
+		for (m = 0; m < raceI->total.users; ++m) {
+			if (m != n) {
+				if (userI[n]->wkup == userI[m]->wkup) {
+					/* if same pos, raise by 1; next user on same pos will be raised by 2 etc */
+					userI[n]->wkup += wkupc;
+					++wkupc;
+				}
+				if (userI[n]->monthup == userI[m]->monthup) {
+					userI[n]->monthup += monthupc;
+					++monthupc;
+				}
+				if (userI[n]->allup == userI[m]->allup) {
+					userI[n]->allup += allupc;
+					++allupc;
+				}
+				if (userI[n]->dayup == userI[m]->dayup) {
+					userI[n]->dayup += dayupc;
+					++dayupc;
+				}
+			}
+		}
+	}
+
 	ng_free(f_buf);
 	ng_free(user);
 	d_log("get_stats: done.\n");
