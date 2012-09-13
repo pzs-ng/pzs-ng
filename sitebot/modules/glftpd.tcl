@@ -90,7 +90,7 @@ namespace eval ::ngBot::module::glftpd {
 
 		foreach {filename filepath} [array get location] {
 				if {![file exists $filepath]} {
-						putlog "\[ngBot\] Error :: Invalid path for for $filename ($filepath)."
+						putlog "\[ngBot\] Error :: Invalid path for $filename ($filepath)."
 						set dzerror 1
 				}
 		}
