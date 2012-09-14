@@ -745,7 +745,7 @@ readrace(const char *path, struct VARS *raceI, struct USERINFO **userI, struct G
 				case F_NOTCHECKED:
 				case F_CHECKED:
 					updatestats(raceI, userI, groupI, rd.uname, rd.group,
-						    rd.size, rd.speed, rd.start_time);
+						    rd.size, (unsigned long)rd.speed, rd.start_time);
 					break;
 				case F_BAD:
 					raceI->total.files_bad++;

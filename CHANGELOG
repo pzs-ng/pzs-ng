@@ -183,6 +183,7 @@ v1.2.0  --> 1.2.x :
 		- Updated video_types to contain .ts by default
 		- Fix textual typo in glftpd.tcl
 		- Improve stats-gathering for dayup/wkup/monthup/allup
+		- Rework internal speed handling and calculation
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.

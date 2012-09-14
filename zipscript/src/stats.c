@@ -43,12 +43,11 @@ updatestats_free(GLOBAL *g)
  * old doesnt exist
  */
 void 
-updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *usern, char *group, off_t filesize, unsigned int speed, unsigned int start_time)
+updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, char *usern, char *group, off_t filesize, unsigned long speed, unsigned int start_time)
 {
 	int		u_no = -1;
 	int		g_no = -1;
 	int		n;
-	double		speedD = filesize * speed;
 
 	for (n = 0; n < raceI->total.users; n++) {
 		if (strncmp(userI[n]->name, usern, 24) == 0) {
@@ -95,28 +94,27 @@ updatestats(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **grou
 	groupI[g_no]->bytes += filesize;
 	raceI->total.size += filesize;
 
-	userI[u_no]->speed += speedD;
-	groupI[g_no]->speed += speedD;
-	raceI->total.speed += speedD;
+	userI[u_no]->speed += speed;
+	groupI[g_no]->speed += speed;
+	raceI->total.speed += speed;
 
 	userI[u_no]->files++;
 	groupI[g_no]->files++;
 	raceI->total.files_missing--;
 
-	speed >>= 10;
-
-	if (speed > (unsigned int)raceI->misc.fastest_user[0]) {
+	if (speed > raceI->misc.fastest_user[0]) {
 		raceI->misc.fastest_user[1] = u_no;
 		raceI->misc.fastest_user[0] = speed;
 	}
-	if (speed < (unsigned int)raceI->misc.slowest_user[0]) {
+	if (speed < raceI->misc.slowest_user[0]) {
 		raceI->misc.slowest_user[1] = u_no;
 		raceI->misc.slowest_user[0] = speed;
 	}
-//	if (raceI->total.files_missing < 0) {
-//		d_log("updatestats: GAKK! raceI->total.files_missing %d < 0\n", raceI->total.files_missing);
-//		raceI->total.files_missing = 0;
-//	}
+/*	if (raceI->total.files_missing < 0) {
+ *		d_log("updatestats: GAKK! raceI->total.files_missing %d < 0\n", raceI->total.files_missing);
+ *		raceI->total.files_missing = 0;
+ *	}
+ */
 }
 
 /*

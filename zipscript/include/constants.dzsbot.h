@@ -152,8 +152,8 @@
 #endif
 
 /* Special reformat cookies */
-#define fastestfile		"{%u} {%g} {%.3F}"	/* Put in %L cookie */
-#define slowestfile		"{%u} {%g} {%.3S}"	/* Put in %l cookie */
+#define fastestfile		"{%u} {%g} {%.2F}"	/* Put in %L cookie */
+#define slowestfile		"{%u} {%g} {%.2S}"	/* Put in %l cookie */
 
 #define racersplit		" "	/* Put between racers in the %R cookie */
 #define racersplit_prefix	""      /* Put before the first racer in the %R cookie */

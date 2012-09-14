@@ -41,7 +41,7 @@
 struct USERINFO {
 	char		name[24];	/* Username */
 	off_t		bytes;	/* Bytes uploaded */
-	double		speed;	/* Time spent uploading (secs) */
+	unsigned long	speed;	/* Bytes per second */
 	unsigned int	files;	/* Files uploaded */
 	unsigned int	pos;	/* User position */
 	unsigned int	group;	/* Primary group number */
@@ -55,7 +55,7 @@ struct USERINFO {
 struct GROUPINFO {
 	char		name[24];	/* Groupname */
 	off_t		bytes;	/* Bytes uploaded */
-	double		speed;	/* Time spent uploading (secs) */
+	unsigned long	speed;	/* Bytes per second */
 	unsigned int	files;	/* Files uploaded */
 	unsigned int	pos;	/* Group position */
 	unsigned int	users;	/* Users in group; */
@@ -84,12 +84,6 @@ struct audio {
 	char		vbr_source[10];
 };
 
-//struct video {
-//	int		height;
-//	int		width;
-//	char	       *fps;
-//};
-
 struct VIDEO {
 	int		height;
 	int		width;
@@ -112,7 +106,7 @@ struct current_user {
 struct current_file {
 	char		name[NAME_MAX];
 	char		unlink[NAME_MAX];
-	double		speed;
+	unsigned long	speed;
 	off_t		size;
 	char		compression_method;
 };
@@ -126,7 +120,7 @@ struct race_total {
 	int		files_missing;
 	int		files_bad;
 	unsigned char	nfo_present;
-	double		speed;
+	unsigned long	speed;
 	off_t		size;
 	off_t		bad_size;
 };
@@ -143,8 +137,8 @@ struct misc {
 	char		progress_bar[15];
 	int		release_type;
 	unsigned char	write_log;
-	long		fastest_user[2];
-	long		slowest_user[2];
+	unsigned long	fastest_user[2];
+	unsigned long	slowest_user[2];
 	unsigned int	data_completed;
 };
 
@@ -172,7 +166,6 @@ struct VARS {
 	struct race_total total;
 	struct misc	misc;
 	struct audio	audio;
-//	struct video	video;
 	struct VIDEO	avinfo;
 	unsigned char	section;
 	char		sectionname[128];

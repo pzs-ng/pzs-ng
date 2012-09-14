@@ -177,7 +177,7 @@ main(int argc, char **argv)
 
 	d_log("zipscript-c: Clearing arrays\n");
 	bzero(&g.v.total, sizeof(struct race_total));
-	g.v.misc.slowest_user[0] = 30000;
+	g.v.misc.slowest_user[0] = ULONG_MAX;
 	g.v.misc.fastest_user[0] = g.v.misc.release_type = RTYPE_NULL;
 
 	/* gettimeofday(&g.v.transfer_stop, (struct timezone *)0 ); */
@@ -232,9 +232,9 @@ main(int argc, char **argv)
         sprintf(g.v.user.tagline, argv[5]);
         if (!(int)strlen(g.v.user.tagline))
                 memcpy(g.v.user.tagline, "No Tagline Set", 15);
-        g.v.file.speed = (unsigned int)strtol(argv[6], NULL, 0);
+        g.v.file.speed = strtoul(argv[6], NULL, 0);
         if (!g.v.file.speed)
-                g.v.file.speed = 1;
+                g.v.file.speed = 2005;
 
         d_log("zipscript-c: Reading section from arg (%s)\n", argv[7]);
         snprintf(g.v.sectionname, 127, argv[7]);
@@ -288,12 +288,12 @@ main(int argc, char **argv)
 		sprintf(g.v.user.tagline, "%s", getenv("TAGLINE"));
 		if (!(int)strlen(g.v.user.tagline))
 			memcpy(g.v.user.tagline, "No Tagline Set", 15);
-		g.v.file.speed = (unsigned int)strtol(getenv("SPEED"), NULL, 0);
+		g.v.file.speed = strtoul(getenv("SPEED"), NULL, 0);
 		if (!g.v.file.speed)
-			g.v.file.speed = 1;
+			g.v.file.speed = 2005;
 
 #if (debug_announce == TRUE)
-		printf("zipscript-c: DEBUG: Speed: %.0fkb/s (%skb/s)\n", g.v.file.speed, getenv("SPEED"));
+		printf("zipscript-c: DEBUG: Speed: %lukb/s (ENV: %skb/s)\n", g.v.file.speed, getenv("SPEED"));
 #endif
 
 		d_log("zipscript-c: Reading section from env (%s)\n", getenv("SECTION"));
@@ -315,7 +315,7 @@ main(int argc, char **argv)
 		}
 	}
 #endif
-	g.v.file.speed *= 1024;
+	g.v.file.speed <<= 10;
 
 	d_log("zipscript-c: Checking the file size of %s\n", g.v.file.name);
 	if (stat(g.v.file.name, &fileinfo)) {

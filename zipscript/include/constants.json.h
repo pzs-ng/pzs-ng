@@ -153,8 +153,8 @@
 #endif
 
 /* Special reformat cookies */
-#define fastestfile		"{\"user\": \"%u\", \"group\": \"%g\", \"speed\": \"%.3F\"}"	/* Put in %L cookie */
-#define slowestfile		"{\"user\": \"%u\", \"group\": \"%g\", \"speed\": \"%.3S\"}"	/* Put in %l cookie */
+#define fastestfile		"{\"user\": \"%u\", \"group\": \"%g\", \"speed\": \"%.2F\"}"	/* Put in %L cookie */
+#define slowestfile		"{\"user\": \"%u\", \"group\": \"%g\", \"speed\": \"%.2S\"}"	/* Put in %l cookie */
 
 #define racersplit_prefix	"" /* Put after the last racer in the %R & %T/t cookie */
 #define racersplit_postfix	"" /* Put before the first racer in the %R & %T/t cookie */
