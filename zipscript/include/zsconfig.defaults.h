@@ -1157,7 +1157,7 @@
 
 #ifndef sample_list
 #define sample_list_is_defaulted
-#define sample_list                               "sample vobsample"
+#define sample_list                               "sample,vobsample"
 #endif
 
 #ifndef sample_script

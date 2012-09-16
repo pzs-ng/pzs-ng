@@ -250,8 +250,8 @@ options:
     sample_list:
         type: string
         comment: |-
-            This is a list of sample-dirs. The list is not case-sensitive.
-        default: '"sample vobsample"'
+            This is a comma-seperated list of sample-dirs. The list is not case-sensitive.
+        default: '"sample,vobsample"'
 
     gl_sections:
         type: string

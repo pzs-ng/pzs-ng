@@ -828,8 +828,8 @@ matchpath(char *instr, char *path)
 }
 
 /*
- * Modified: 2011.08.02 (YYYY.MM.DD)
- * by Sked
+ * Modified: 2012.09.16 (YYYY.MM.DD)
+ * by Skeddie
  */
 short int 
 strcomp(char *instr, char *searchstr)
@@ -845,7 +845,6 @@ strcomp(char *instr, char *searchstr)
 		switch (*instr) {
 		case 0:
 		case ',':
-		case ' ':
 			if (k == pos && !strncasecmp(instr - pos, searchstr, pos)) {
 				return 1;
 			}
