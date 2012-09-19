@@ -139,7 +139,7 @@ main(int argc, char *argv[])
 		ng_free(g.gi);
 		return 0;
 	}
-	g.v.misc.slowest_user[0] = 30000;
+	g.v.misc.slowest_user[0] = ULONG_MAX;
 
 	bzero(&g.v.total, sizeof(struct race_total));
 	g.v.misc.fastest_user[0] = 0;

@@ -146,7 +146,7 @@ main(int argc, char **argv)
 
 	d_log("postdel: Clearing arrays\n");
 	bzero(&g.v.total, sizeof(struct race_total));
-	g.v.misc.slowest_user[0] = 30000;
+	g.v.misc.slowest_user[0] = ULONG_MAX;
 	g.v.misc.fastest_user[0] = 0;
 
 #ifdef USING_GLFTPD

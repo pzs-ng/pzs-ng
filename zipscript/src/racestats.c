@@ -37,7 +37,7 @@ main(int argc, char **argv)
 	g.gi = malloc(sizeof(struct GROUPINFO *) * 30);
 	memset(g.gi, 0, sizeof(struct GROUPINFO *) * 30);
 
-	g.v.misc.slowest_user[0] = 30000;
+	g.v.misc.slowest_user[0] = ULONG_MAX;
 	g.v.misc.fastest_user[0] =
 		g.v.total.speed =
 		g.v.total.files_missing =
