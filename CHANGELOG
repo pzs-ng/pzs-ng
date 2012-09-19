@@ -187,6 +187,7 @@ v1.2.0  --> 1.2.x :
 		- Fix allowed_genres and banned_genres (and any other list where items have a space)
 		  having wrong matches. This causes sample_list to be a comma-seperated list
 		  now, so update your zsconfig.h if you have that defined in there.
+		- Update ignored_types, removed m3u from it to allow multi-cd m3u's
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
