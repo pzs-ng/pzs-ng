@@ -1865,7 +1865,7 @@ insampledir(char *dirname)
 		t++;
 	strncpy(sample, sample_list, sizeof(sample_list));
 	while (p != sample) {
-		p = strrchr(sample, ' ');
+		p = strrchr(sample, ',');
 		if (p != NULL) {
 			*p = '\0';
 			p++;

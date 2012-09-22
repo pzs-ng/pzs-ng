@@ -188,6 +188,7 @@ v1.2.0  --> 1.2.x :
 		  having wrong matches. This causes sample_list to be a comma-seperated list
 		  now, so update your zsconfig.h if you have that defined in there.
 		- Update ignored_types, removed m3u from it to allow multi-cd m3u's
+		- Fix forgotten part of sampledir checking code to work with commas
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
