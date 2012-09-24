@@ -268,10 +268,10 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	count = 0;
 	rd.status = F_NOTCHECKED;
 	while ((fread(&rd, sizeof(RACEDATA), 1, racefile))) {
-		d_log("TOP: count=%d\n", count);
 		if (!update_lock(raceI, 1, 0)) {
 			d_log("testfiles: Lock is suggested removed. Will comply and exit\n");
 			remove_lock(raceI);
+			fclose(racefile);
 			exit(EXIT_FAILURE);
 		}
 		ext = find_last_of(raceI->file.name, ".");
@@ -302,59 +302,68 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 				rd.status = F_IGNORED;
 				create_missing(rd.fname);
 			}
-		} else {
-                        d_log("testfiles: File doesnt exist (%s), marking as F_NOTCHECKED.\n", rd.fname);
-			rd.status = F_NOTCHECKED;
-                }
-
-		if (rd.status == F_NOTCHECKED) {
-			d_log("testfiles: Marking file (%s) as bad and removing it.\n", rd.fname);
-			mark_as_bad(rd.fname);
-			if (rd.fname)
-				unlink(rd.fname);
+		} else if (snprintf(target, sizeof(target), "%s.bad", rd.fname) > 4 && fileexists(target)) {
+       	                d_log("testfiles: File doesnt exist (%s), bad version of it does, keeping it marked as bad.\n", rd.fname);
 			rd.status = F_BAD;
+			if (rstatus)
+				printf("File: %s BAD!\n", rd.fname);
+		} else {
+                        d_log("testfiles: File doesnt exist (%s), marking as missing.\n", rd.fname);
+			rd.status = F_MISSING;
+			if (rstatus)
+				printf("File: %s MISSING!\n", rd.fname);
+			remove_from_race(locations->race, rd.fname, raceI);
+			--count;
+		}
 
+		if (rd.status == F_MISSING || rd.status == F_NOTCHECKED) {
+			if (rd.status == F_NOTCHECKED) {
+				d_log("testfiles: Marking file (%s) as bad and removing it.\n", rd.fname);
+				mark_as_bad(rd.fname);
+				if (rd.fname)
+					unlink(rd.fname);
+				rd.status = F_BAD;
+				if (rstatus)
+					printf("File: %s FAILED!\n", rd.fname);
+
+			}
 #if ( create_missing_files )
 			if (Tcrc != 0)
 				create_missing(rd.fname);
 #endif
 
-			if (rstatus)
-				printf("File: %s FAILED!\n", rd.fname);
-
-			d_log("testfiles: marking %s bad.\n", rd.fname);
 #if (enable_unduper_script == TRUE)
-				if (!fileexists(unduper_script)) {
-					d_log("Failed to undupe '%s' - '%s' does not exist.\n",
-						  rd.fname, unduper_script);
-				} else {
-					sprintf(target, unduper_script " \"%s\"", rd.fname);
-					if (execute(target) == 0)
-						d_log("testfiles: undupe of %s successful.\n", rd.fname);
-					else
-						d_log("testfiles: undupe of %s failed.\n", rd.fname);
-				}
+			if (!fileexists(unduper_script)) {
+				d_log("Failed to undupe '%s' - '%s' does not exist.\n", rd.fname, unduper_script);
+			} else {
+				sprintf(target, unduper_script " \"%s\"", rd.fname);
+				if (execute(target) == 0)
+					d_log("testfiles: undupe of %s successful (%s).\n", rd.fname, target);
+				else
+					d_log("testfiles: undupe of %s failed (%s).\n", rd.fname, target);
+			}
 #endif
 		}
-		if (rd.status == F_BAD) {
-			remove_from_race(locations->race, rd.fname, raceI);
-		} else {
+
+		if (rd.status != F_MISSING) {
 			if ((lret = fseek(racefile, sizeof(RACEDATA) * count, SEEK_SET)) == -1) {
 				d_log("testfiles: fseek: %s\n", strerror(errno));
+				fclose(racefile);
+				remove_lock(raceI);
 				exit(EXIT_FAILURE);
 			}
 			if (fwrite(&rd, sizeof(RACEDATA), 1, racefile) == 0)
 				d_log("testfiles: write failed: %s\n", strerror(errno));
 
-			if (!((timenow == filestat.st_ctime) && (filestat.st_mode & 0111)))
+			if (rd.status != F_BAD && !((timenow == filestat.st_ctime) && (filestat.st_mode & 0111)))
 				unlink_missing(rd.fname);
 		}
-		d_log("BOTTOM: count=%d\n", count);
-		count++;
+		++count;
 	}
 	strlcpy(raceI->file.name, real_file, strlen(real_file)+1);
 	raceI->total.files = raceI->total.files_missing = 0;
 	fclose(racefile);
+	d_log("testfiles: finished checking\n");
 }
 
 /*

@@ -7,6 +7,7 @@
 #define F_IGNORED			254
 #define F_BAD				255
 #define F_NFO				253
+#define F_MISSING			252
 #define F_DELETED			0
 #define F_CHECKED			1
 #define F_NOTCHECKED			2

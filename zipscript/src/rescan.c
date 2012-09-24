@@ -37,7 +37,7 @@ void print_syntax(int chdir_allowed); /* Defined at the bottom of this file. */
 int 
 main(int argc, char *argv[])
 {
-	int		k, n, m, l, complete_type = 0, not_allowed = 0, argv_mode = 0;
+	int		n, l, complete_type = 0, not_allowed = 0, argv_mode = 0;
 
 #ifdef USING_GLFTPD
         int             gnum = 0, unum = 0;
@@ -84,22 +84,21 @@ main(int argc, char *argv[])
 #endif
 
 	d_log("rescan: Allocating memory for variables\n");
-	g.ui = ng_realloc2(g.ui, sizeof(struct USERINFO *) * 30, 1, 1, 1);
-	g.gi = ng_realloc2(g.gi, sizeof(struct GROUPINFO *) * 30, 1, 1, 1);
+	g.ui = ng_realloc2(g.ui, sizeof(*g.ui) * 30, 1, 1, 1);
+	g.gi = ng_realloc2(g.gi, sizeof(*g.gi) * 30, 1, 1, 1);
 
 	bzero(one_name, NAME_MAX);
 
 #ifdef USING_GLFTPD
 	if (getenv("FLAGS")) {
-		strncpy(myflags, getenv("FLAGS"), sizeof(myflags));
-		myflags[sizeof(myflags) - 1] = '\0';
+		strlcpy(myflags, getenv("FLAGS"), sizeof(myflags));
 		n = strlen(myflags);
 		while (n > 0) {
-			n--;
-			m = strlen(rescan_chdir_flags);
-			while(m > 0) {
-				m--;
-				if (myflags[n] == rescan_chdir_flags[m])
+			--n;
+			l = strlen(rescan_chdir_flags);
+			while(l > 0) {
+				--l;
+				if (myflags[n] == rescan_chdir_flags[l])
 					chdir_allowed = 1;
 			}
 		}
@@ -108,20 +107,22 @@ main(int argc, char *argv[])
 		chdir_allowed = 1;
 #endif
 
-        /* With glftpd we can use env vars, rest of the world: commandline. */
+	/* With glftpd we can use env vars, rest of the world: commandline. */
 #ifndef USING_GLFTPD
-        if (argc < 7)
-        {
-            print_syntax(chdir_allowed);
-            return 0;
-        }
-        argnum = 6;
-        
-        if (chdir(argv[5]) != 0)
-        {
-            printf("Could not chdir to <cwd = '%s'>, ftpd agnostic mode: %s\n", argv[5], strerror(errno));
-            d_log("rescan: Could not chdir to <cwd = '%s'>, ftpd agnostic mode: %s\n", argv[5], strerror(errno));
-            return 1;
+	if (argc < 7) {
+		print_syntax(chdir_allowed);
+		ng_free(g.ui);
+		ng_free(g.gi);
+		return 0;
+	}
+	argnum = 6;
+
+	if (chdir(argv[5]) != 0) {
+		printf("Could not chdir to <cwd = '%s'>, ftpd agnostic mode: %s\n", argv[5], strerror(errno));
+		d_log("rescan: Could not chdir to <cwd = '%s'>, ftpd agnostic mode: %s\n", argv[5], strerror(errno));
+		ng_free(g.ui);
+		ng_free(g.gi);
+		return 1;
         }
 #else
 	argnum = 1;
@@ -141,6 +142,8 @@ main(int argc, char *argv[])
 				}
 			} else {
 				printf("Not allowed to chdir() to %s\n", temp_p);
+				ng_free(g.ui);
+				ng_free(g.gi);
 				return 1;
 			}
 			printf("PZS-NG Rescan %s: Rescanning %s\n", ng_version, temp_p);
@@ -156,6 +159,8 @@ main(int argc, char *argv[])
 			} else {
 				temp_p = argv[argnum] + 9;
 				printf("Not allowed to chroot() to %s\n", temp_p);
+				ng_free(g.ui);
+				ng_free(g.gi);
 				return 1;
 			}
 			printf("PZS-NG Rescan %s: Chroot'ing to %s\n", ng_version, temp_p);
@@ -163,9 +168,11 @@ main(int argc, char *argv[])
 
 		} else if (!strncasecmp(argv[argnum], "--help", 6) || !strncasecmp(argv[argnum], "/?", 2) || !strncasecmp(argv[argnum], "--?", 3)) {
                         print_syntax(chdir_allowed);
+			ng_free(g.ui);
+			ng_free(g.gi);
                         return 0;
 		} else {
-			strncpy(one_name, argv[argnum], NAME_MAX - 1);
+			strlcpy(one_name, argv[argnum], sizeof(one_name));
 			rescan_quick = FALSE;
 			printf("PZS-NG Rescan %s: Rescanning in FILE mode\n", ng_version);
 			if (one_name[strlen(one_name) - 1] == '*') {
@@ -188,25 +195,28 @@ main(int argc, char *argv[])
 	}
 	printf("PZS-NG Rescan %s: Use --help for options.\n\n", ng_version);
 
-	if (not_allowed)
+	if (not_allowed) {
+		ng_free(g.ui);
+		ng_free(g.gi);
 		return 1;
+	}
 
 	if (!getcwd(g.l.path, PATH_MAX)) {
 		d_log("rescan: getcwd() failed: %s\n", strerror(errno));
 	}
 	if (subcomp(g.l.path, g.l.basepath) && (g.l.basepath[0] == '\0'))
-		strlcpy(g.l.basepath, g.l.path, PATH_MAX);
+		strlcpy(g.l.basepath, g.l.path, sizeof(g.l.basepath));
 	if (strncmp(g.l.path, g.l.basepath, PATH_MAX))
 		d_log("rescan: We are in subdir of %s\n", g.l.basepath);
-        strncpy(g.v.misc.current_path, g.l.path, sizeof(g.v.misc.current_path));
-        strncpy(g.v.misc.basepath, g.l.basepath, sizeof(g.v.misc.basepath));
+        strlcpy(g.v.misc.current_path, g.l.path, sizeof(g.v.misc.current_path));
+        strlcpy(g.v.misc.basepath, g.l.basepath, sizeof(g.v.misc.basepath));
 
 	if ((matchpath(nocheck_dirs, g.l.path) && !rescan_nocheck_dirs_allowed) || (matchpath(group_dirs, g.l.path) && argv_mode) || (!matchpath(nocheck_dirs, g.l.path) && !matchpath(zip_dirs, g.l.path) && !matchpath(sfv_dirs, g.l.path) && !matchpath(group_dirs, g.l.path)) || insampledir(g.l.path)) {
 		d_log("rescan: Dir matched with nocheck_dirs/sample_list, or is not in the zip/sfv/group-dirs.\n");
 		d_log("rescan: Freeing memory, and exiting.\n");
+		printf("Notice: Unable to rescan this dir - check config.\n\n");
 		ng_free(g.ui);
 		ng_free(g.gi);
-		printf("Notice: Unable to rescan this dir - check config.\n\n");
 		return 0;
 	}
 	g.v.misc.slowest_user[0] = ULONG_MAX;
@@ -220,18 +230,19 @@ main(int argc, char *argv[])
 	if (getenv("SECTION") == NULL) {
 		sprintf(g.v.sectionname, "DEFAULT");
 	} else {
-		snprintf(g.v.sectionname, 127, "%s", getenv("SECTION"));
+		snprintf(g.v.sectionname, sizeof(g.v.sectionname), "%s", getenv("SECTION"));
 	}
 #else
-        snprintf(g.v.sectionname, 127, argv[4]);
+        snprintf(g.v.sectionname, sizeof(g.v.sectionname), argv[4]);
 #endif
 
-	g.l.race = ng_realloc2(g.l.race, n = (int)strlen(g.l.path) + 12 + sizeof(storage), 1, 1, 1);
-	g.l.sfv = ng_realloc2(g.l.sfv, n, 1, 1, 1);
-	g.l.sfvbackup = ng_realloc2(g.l.sfvbackup, n, 1, 1, 1);
-	g.l.leader = ng_realloc2(g.l.leader, n, 1, 1, 1);
 	g.l.length_path = (int)strlen(g.l.path);
 	g.l.length_zipdatadir = sizeof(storage);
+	n = g.l.length_path + g.l.length_zipdatadir + 11;
+	g.l.race = ng_realloc2(g.l.race, n, 1, 1, 1);
+	g.l.sfv = ng_realloc2(g.l.sfv, n - 1, 1, 1, 1);
+	g.l.sfvbackup = ng_realloc2(g.l.sfvbackup, n + 1, 1, 1, 1);
+	g.l.leader = ng_realloc2(g.l.leader, n - 2, 1, 1, 1);
 	g.l.sfv_incomplete = 0;
 
 	getrelname(&g);
@@ -250,14 +261,24 @@ main(int argc, char *argv[])
 
 	d_log("rescan: Locking release\n");
 	while (1) {
-		if ((k = create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 3, 0))) {
+		if ((l = create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 3, 0))) {
 			d_log("rescan: Failed to lock release.\n");
-			if (k == 1) {
+			if (l == 1) {
 				d_log("rescan: version mismatch. Exiting.\n");
-				printf("Error. You need to rm -fR ftp-data/pzs-ng/* before rescan will work.\n");
+				printf("Error. You need to rm -fR ftp-data/pzs-ng/* before rescan will work.\n"); /* */
+				ng_free(g.ui);
+				ng_free(g.gi);
+				ng_free(g.l.sfv);
+				ng_free(g.l.sfvbackup);
+				ng_free(g.l.leader);
+				ng_free(g.l.race);
+#ifdef USING_GLFTPD
+				buffer_groups(GROUPFILE, gnum);
+				buffer_users(PASSWDFILE, unum);
+#endif
 				exit(EXIT_FAILURE);
 			}
-			if (k == PROGTYPE_POSTDEL) {
+			if (l == PROGTYPE_POSTDEL) {
 				n = (signed int)g.v.data_incrementor;
 				d_log("rescan: Detected postdel running - sleeping for one second.\n");
 				if (!create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0, g.v.data_queue))
@@ -270,19 +291,39 @@ main(int argc, char *argv[])
 					if (create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 2, g.v.data_queue)) {
 						d_log("rescan: Failed to force a lock.\n");
 						d_log("rescan: Exiting with error.\n");
+						ng_free(g.ui);
+						ng_free(g.gi);
+						ng_free(g.l.sfv);
+						ng_free(g.l.sfvbackup);
+						ng_free(g.l.leader);
+						ng_free(g.l.race);
+#ifdef USING_GLFTPD
+						buffer_groups(GROUPFILE, gnum);
+						buffer_users(PASSWDFILE, unum);
+#endif
 						exit(EXIT_FAILURE);
 					}
 					break;
 				}
 			} else {
-				for ( k = 0; k <= max_seconds_wait_for_lock * 10; k++) {
+				for (l = 0; l <= max_seconds_wait_for_lock * 10; ++l) {
 					d_log("rescan: sleeping for .1 second before trying to get a lock (queue: %d).\n", g.v.data_queue);
 					usleep(100000);
 					if (!create_lock(&g.v, g.l.path, PROGTYPE_RESCAN, 0, g.v.data_queue))
 						break;
 				}
-				if (k >= max_seconds_wait_for_lock * 10) {
+				if (l >= max_seconds_wait_for_lock * 10) {
 					d_log("rescan: Failed to get lock. Will not force unlock.\n");
+					ng_free(g.ui);
+					ng_free(g.gi);
+					ng_free(g.l.sfv);
+					ng_free(g.l.sfvbackup);
+					ng_free(g.l.leader);
+					ng_free(g.l.race);
+#ifdef USING_GLFTPD
+					buffer_groups(GROUPFILE, gnum);
+					buffer_users(PASSWDFILE, unum);
+#endif
 					exit(EXIT_FAILURE);
 				}
 			}
@@ -297,7 +338,7 @@ main(int argc, char *argv[])
 		unlink(g.l.incomplete);
 	if (del_completebar)
 		removecomplete();
-	
+
 	dir = opendir(".");
 	parent = opendir("..");
 
@@ -308,21 +349,29 @@ main(int argc, char *argv[])
 			unlink(g.l.race);
 	}
 	printf("Rescanning files...\n");
-	
+
 	if (findfileext(dir, ".zip")) {
 		if (!fileexists(unzip_bin)) {
 			printf("rescan: ERROR! Not able to check zip-files - %s does not exist!\n", unzip_bin);
-			exit(2);
+			closedir(dir);
+			closedir(parent);
+			ng_free(g.ui);
+			ng_free(g.gi);
+			ng_free(g.l.sfv);
+			ng_free(g.l.sfvbackup);
+			ng_free(g.l.leader);
+			ng_free(g.l.race);
+#ifdef USING_GLFTPD
+			buffer_groups(GROUPFILE, gnum);
+			buffer_users(PASSWDFILE, unum);
+#endif
+			remove_lock(&g.v);
+			exit(EXIT_FAILURE);
 		} else {
-			strlcpy(g.v.file.name, findfileext(dir, ".zip"), NAME_MAX);
-			maketempdir(g.l.path);
-			stat(g.v.file.name, &fileinfo);
-			//n = direntries;
 			crc = 0;
 			rewinddir(dir);
 			timenow = time(NULL);
 			while ((dp = readdir(dir))) {
-				m = l = (int)strlen(dp->d_name);
 				ext = find_last_of(dp->d_name, ".");
 				if (*ext == '.')
 					ext++;
@@ -335,25 +384,25 @@ main(int argc, char *argv[])
 						continue;
 					}
 #ifdef USING_GLFTPD
-					strcpy(g.v.user.name, get_u_name(f_uid));
-					strcpy(g.v.user.group, get_g_name(f_gid));
+					strlcpy(g.v.user.name, get_u_name(f_uid), sizeof(g.v.user.name));
+					strlcpy(g.v.user.group, get_g_name(f_gid), sizeof(g.v.user.group));
 #else
-					strncpy(g.v.user.name, argv[1], sizeof(g.v.user.name));
-					strncpy(g.v.user.group, argv[2], sizeof(g.v.user.group));
+					strlcpy(g.v.user.name, argv[1], sizeof(g.v.user.name));
+					strlcpy(g.v.user.group, argv[2], sizeof(g.v.user.group));
 #endif
-					strlcpy(g.v.file.name, dp->d_name, NAME_MAX);
+					strlcpy(g.v.file.name, dp->d_name, sizeof(g.v.file.name));
 					g.v.file.speed = 2005 * 1024;
 					g.v.file.size = fileinfo.st_size;
 					g.v.total.start_time = 0;
 #if (test_for_password || extract_nfo)
 					tempstream = telldir(dir);
 					if ((!findfileextcount(dir, ".nfo") || findfileextcount(dir, ".zip")) && !mkdir(".unzipped", 0777))
-						sprintf(exec, "%s -qqjo \"%s\" -d .unzipped 2>.delme", unzip_bin, g.v.file.name);
+						snprintf(exec, sizeof(exec), "%s -qqjo \"%s\" -d .unzipped 2>.delme", unzip_bin, g.v.file.name);
 					else
-						sprintf(exec, "%s -qqt \"%s\" 2>.delme", unzip_bin, g.v.file.name);
+						snprintf(exec, sizeof(exec), "%s -qqt \"%s\" 2>.delme", unzip_bin, g.v.file.name);
 					seekdir(dir, tempstream);
 #else
-					sprintf(exec, "%s -qqt \"%s\" 2>.delme", unzip_bin, g.v.file.name);
+					snprintf(exec, sizeof(exec), "%s -qqt \"%s\" 2>.delme", unzip_bin, g.v.file.name);
 #endif
 					if (system(exec) == 0 || (allow_error2_in_unzip == TRUE && errno < 3 )) {
 						writerace(g.l.race, &g.v, crc, F_CHECKED);
@@ -377,7 +426,7 @@ main(int argc, char *argv[])
 					seekdir(dir, tempstream);
 #endif
 					if (!fileexists("file_id.diz")) {
-						sprintf(exec, "%s -qqjnCLL \"%s\" file_id.diz 2>.delme", unzip_bin, g.v.file.name);
+						snprintf(exec, sizeof(exec), "%s -qqjnCLL \"%s\" file_id.diz 2>.delme", unzip_bin, g.v.file.name);
 						if (execute(exec) != 0) {
 							d_log("rescan: No file_id.diz found (#%d): %s\n", errno, strerror(errno));
 						} else {
@@ -391,9 +440,12 @@ main(int argc, char *argv[])
 								d_log("rescan: Failed to chmod %s: %s\n", "file_id.diz", strerror(errno));
 						}
 					}
-
-	                        }
+				}
 			}
+
+			if (fileexists(".delme"))
+				unlink(".delme");
+
 			g.v.total.files = read_diz();
 			if (!g.v.total.files) {
 				g.v.total.files = 1;
@@ -449,22 +501,28 @@ main(int argc, char *argv[])
 				}
 			}
 		}
-	} else if (findfileext(dir, ".sfv") || (create_missing_sfv && file_count(dir))) {
-		if (!findfileext(dir, ".sfv") && create_missing_sfv && file_count(dir)) {
+	} else if ((temp_p = findfileext(dir, ".sfv")) || (create_missing_sfv && file_count(dir))) {
+		if (!temp_p && create_missing_sfv && file_count(dir)) {
 			d_log("rescan: No sfv found - creating one.\n");
 			make_sfv(g.l.path);
-			if (!findfileext(dir, ".sfv")) {
+			if (!(temp_p = findfileext(dir, ".sfv"))) {
 				d_log("rescan: Freeing memory, removing lock and exiting.\n");
 				unlink(g.l.sfv);
 				if (fileexists(g.l.sfvbackup))
 				unlink(g.l.sfvbackup);
 				unlink(g.l.race);
+				closedir(dir);
+				closedir(parent);
 				ng_free(g.ui);
 				ng_free(g.gi);
-				ng_free(g.l.race);
 				ng_free(g.l.sfv);
 				ng_free(g.l.sfvbackup);
 				ng_free(g.l.leader);
+				ng_free(g.l.race);
+#ifdef USING_GLFTPD
+				buffer_groups(GROUPFILE, gnum);
+				buffer_users(PASSWDFILE, unum);
+#endif
 				remove_lock(&g.v);
 				return 0;
 			}
@@ -473,7 +531,7 @@ main(int argc, char *argv[])
 		d_log("rescan: Removing missing-sfv indicator (if any)\n");
 		unlink(g.l.sfv_incomplete);
 #endif
-		strlcpy(g.v.file.name, findfileext(dir, ".sfv"), NAME_MAX);
+		strlcpy(g.v.file.name, temp_p, sizeof(g.v.file.name));
 
 		maketempdir(g.l.path);
 		stat(g.v.file.name, &fileinfo);
@@ -482,9 +540,8 @@ main(int argc, char *argv[])
 			printf("Found invalid entries in SFV - Exiting.\n");
 
 			while ((dp = readdir(dir))) {
-				m = l = (int)strlen(dp->d_name);
 				ext = find_last_of(dp->d_name, "-");
-				if (!strncmp(ext, "-missing", 8))
+				if (!strcasecmp(ext, "-missing"))
 					unlink(dp->d_name);
 			}
 
@@ -493,13 +550,18 @@ main(int argc, char *argv[])
 			if (fileexists(g.l.sfvbackup))
 			unlink(g.l.sfvbackup);
 			unlink(g.l.race);
+			closedir(dir);
+			closedir(parent);
 			ng_free(g.ui);
 			ng_free(g.gi);
-			ng_free(g.l.race);
 			ng_free(g.l.sfv);
 			ng_free(g.l.sfvbackup);
 			ng_free(g.l.leader);
-			
+			ng_free(g.l.race);
+#ifdef USING_GLFTPD
+			buffer_groups(GROUPFILE, gnum);
+			buffer_users(PASSWDFILE, unum);
+#endif
 			remove_lock(&g.v);
 
 			return 0;
@@ -510,14 +572,26 @@ main(int argc, char *argv[])
 			if (*one_name && strncasecmp(one_name, dp->d_name, strlen(one_name)))
 				continue;
 
-			m = l = (int)strlen(dp->d_name);
+			l = (int)strlen(dp->d_name);
 
-			ext = find_last_of(dp->d_name, ".");
+			ext = find_last_of(dp->d_name, ".-");
 			if (*ext == '.')
 				ext++;
 
 			if (!update_lock(&g.v, 1, 0)) {
 				d_log("rescan: Another process wants the lock - will comply and remove lock, then exit.\n");
+				closedir(dir);
+				closedir(parent);
+				ng_free(g.ui);
+				ng_free(g.gi);
+				ng_free(g.l.sfv);
+				ng_free(g.l.sfvbackup);
+				ng_free(g.l.leader);
+				ng_free(g.l.race);
+#ifdef USING_GLFTPD
+				buffer_groups(GROUPFILE, gnum);
+				buffer_users(PASSWDFILE, unum);
+#endif
 				remove_lock(&g.v);
 				exit(EXIT_FAILURE);
 			}
@@ -528,10 +602,10 @@ main(int argc, char *argv[])
 				strcasecmp("sfv", ext) &&
 				strcasecmp("nfo", ext) &&
 				strcasecmp("bad", ext) &&
-				strcmp(dp->d_name + l - 8, "-missing") &&
+				strcasecmp("-missing", ext) &&
 				strncmp(dp->d_name, ".", 1)
 				) {
-				
+
 				stat(dp->d_name, &fileinfo);
 
 				if (S_ISDIR(fileinfo.st_mode))
@@ -543,41 +617,41 @@ main(int argc, char *argv[])
 				f_gid = fileinfo.st_gid;
 
 #ifdef USING_GLFTPD
-				strcpy(g.v.user.name, get_u_name(f_uid));
-				strcpy(g.v.user.group, get_g_name(f_gid));
+				strlcpy(g.v.user.name, get_u_name(f_uid), sizeof(g.v.user.name));
+				strlcpy(g.v.user.group, get_g_name(f_gid), sizeof(g.v.user.group));
 #else
-				strncpy(g.v.user.name, argv[1], sizeof(g.v.user.name));
-				strncpy(g.v.user.group, argv[2], sizeof(g.v.user.group));
+				strlcpy(g.v.user.name, argv[1], sizeof(g.v.user.name));
+				strlcpy(g.v.user.group, argv[2], sizeof(g.v.user.group));
 #endif
 
-				strlcpy(g.v.file.name, dp->d_name, NAME_MAX);
+				strlcpy(g.v.file.name, dp->d_name, sizeof(g.v.file.name));
 				g.v.file.speed = 2005 * 1024;
 				g.v.file.size = fileinfo.st_size;
 
 				temp_time = fileinfo.st_mtime;
-				
+
 				if (g.v.total.start_time == 0)
 					g.v.total.start_time = temp_time;
 				else
 					g.v.total.start_time = (g.v.total.start_time < temp_time ? g.v.total.start_time : temp_time);
-				
+
 				g.v.total.stop_time = (temp_time > g.v.total.stop_time ? temp_time : g.v.total.stop_time);
 
 				/* Hide users in group_dirs */
 				if (matchpath(group_dirs, g.l.path) && (hide_group_uploaders == TRUE)) {
 					d_log("rescan: Hiding user in group-dir:\n");
 					if ((int)strlen(hide_gname) > 0) {
-						snprintf(g.v.user.group, 18, "%s", hide_gname);
+						snprintf(g.v.user.group, sizeof(g.v.user.group), "%s", hide_gname);
 						d_log("rescan:    Changing groupname\n");
 					}
 					if ((int)strlen(hide_uname) > 0) {
-						snprintf(g.v.user.name, 18, "%s", hide_uname);
+						snprintf(g.v.user.name, sizeof(g.v.user.name), "%s", hide_uname);
 						d_log("rescan:    Changing username\n");
 					}
 #if (show_users_in_group_dirs == FALSE)
 					if ((int)strlen(hide_uname) == 0) {
 						d_log("rescan:    Making username = groupname\n");
-						snprintf(g.v.user.name, 18, "%s", g.v.user.group);
+						snprintf(g.v.user.name, sizeof(g.v.user.name), "%s", g.v.user.group);
 					}
 #endif
 				}
@@ -704,7 +778,7 @@ main(int argc, char *argv[])
 			case RTYPE_AUDIO:
 				complete_bar = audio_completebar;
 #if ( create_m3u == TRUE )
-				n = sprintf(exec, "%s", findfileext(dir, ".sfv"));
+				n = snprintf(exec, sizeof(exec), "%s", findfileext(dir, ".sfv"));
 				strcpy(exec + n - 3, "m3u");
 				create_indexfile(g.l.race, &g.v, exec);
 #endif
@@ -729,7 +803,7 @@ main(int argc, char *argv[])
 			if (!fileexists(rescan_script)) {
 				d_log("rescan: Warning - rescan_script (%s) - file does not exist!\n", rescan_script);
 			} else {
-				sprintf(target, rescan_script " \"%s\"", g.v.file.name);
+				snprintf(target, sizeof(target), rescan_script " \"%s\"", g.v.file.name);
 				if (execute(target) != 0)
 					d_log("rescan: Failed to execute rescan_script: %s\n", strerror(errno));
 			}
@@ -744,7 +818,8 @@ main(int argc, char *argv[])
 		}
 	} else {
 		int empty = 1;
-		if (create_missing_sfv_link && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) && g.l.sfv_incomplete && !matchpath(nocheck_dirs, g.l.path) && !matchpath(allowed_types_exemption_dirs, g.l.path)) {
+#if (create_missing_sfv_link == TRUE)
+		if ((!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) && g.l.sfv_incomplete && !matchpath(nocheck_dirs, g.l.path) && !matchpath(allowed_types_exemption_dirs, g.l.path)) {
 			rewinddir(dir);
 			while ((dp = readdir(dir))) {
 				stat(dp->d_name, &fileinfo);
@@ -762,6 +837,7 @@ main(int argc, char *argv[])
 				}
 			}
 		}
+#endif
 		if (empty && mark_empty_dirs_as_incomplete_on_rescan) {
 			if (create_incomplete()) {
 				d_log("rescan: create_incomplete() returned something\n");
@@ -775,19 +851,22 @@ main(int argc, char *argv[])
 	printf(" Missing: %i\n", (int)g.v.total.files_missing);
 	printf("  Total : %i\n", (int)g.v.total.files);
 
+	if (g.v.total.files && !g.v.total.files_missing) {
+		g.v.misc.data_completed = 1;
+	} else {
+		g.v.misc.data_completed = 0;
+	}
+
 	d_log("rescan: Freeing memory and removing lock.\n");
 	closedir(dir);
 	closedir(parent);
-	updatestats_free(&g);
 	ng_free(g.l.race);
 	ng_free(g.l.sfv);
 	ng_free(g.l.sfvbackup);
 	ng_free(g.l.leader);
 
-	if (fileexists(".delme"))
-		unlink(".delme");
-
 	remove_lock(&g.v);
+	updatestats_free(&g);
 
 #ifdef USING_GLFTPD
 	buffer_groups(GROUPFILE, gnum);

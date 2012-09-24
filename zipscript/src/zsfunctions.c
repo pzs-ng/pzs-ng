@@ -1424,8 +1424,8 @@ mark_as_bad(char *filename)
 		d_log("mark_as_bad: Error - failed to rename %s to %s\n", filename, newname);
 	} else {
 		createzerofile(filename);
-		if (chmod(newname, 0644))
-			d_log("mark_as_bad: Failed to chmod %s: %s\n", newname, strerror(errno));
+		if (chmod(filename, 0644))
+			d_log("mark_as_bad: Failed to chmod %s: %s\n", filename, strerror(errno));
 	}
 #endif
 	d_log("mark_as_bad: File (%s) marked as bad\n", filename);

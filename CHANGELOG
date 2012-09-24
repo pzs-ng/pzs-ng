@@ -189,6 +189,9 @@ v1.2.0  --> 1.2.x :
 		  now, so update your zsconfig.h if you have that defined in there.
 		- Update ignored_types, removed m3u from it to allow multi-cd m3u's
 		- Fix forgotten part of sampledir checking code to work with commas
+		- Cleanup, memleakfixes and preventive buffer overflow fixes for rescan
+		- Some fixes for the racedata and headdata files after rescan-runs
+		- Bugfix for rescan where negative missing files and over 100% completion occured
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
