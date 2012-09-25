@@ -192,6 +192,8 @@ v1.2.0  --> 1.2.x :
 		- Cleanup, memleakfixes and preventive buffer overflow fixes for rescan
 		- Some fixes for the racedata and headdata files after rescan-runs
 		- Bugfix for rescan where negative missing files and over 100% completion occured
+		- Rewrote and enhanced the stripping/trimming help functions
+		- Bugfix for split AUDIO_* lines when garbage is in the ID3 fields
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.

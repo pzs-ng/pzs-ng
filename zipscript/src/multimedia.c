@@ -68,122 +68,6 @@ char *codec_s[] = {"Mpeg 2.5", "Unknown", "Mpeg 2", "Mpeg 1", "FLAC"};
 char *chanmode_s[] = {"Stereo", "Joint Stereo", "Dual Channel", "Single Channel", "Unknown"};
 char *flac_chanmode_s[] = {"Unknown", "1 Channel", "2 Channels", "3 Channels", "4 Channels", "5 Channels", "6 Channels", "7 Channels", "8 Channels"};
 
-/*
- * Remove whitespace characters from both ends of a copy of '\0' terminated
- * STRING and return the result.
- */
-char           *
-trim(char *string)
-{
-	char           *result = 0;
-
-	/* Ignore NULL pointers. */
-	if (string) {
-		char           *ptr = string;
-
-		/* Skip leading whitespace. */
-		while (strchr(WHITESPACE_STR, *ptr))
-			++ptr;
-
-		/* Make a copy of the remainder. */
-		result = strdup(ptr);
-
-		/* Move to the last character of the copy. */
-		for (ptr = result; *ptr; ++ptr)
-			 /* NOWORK */ ;
-		--ptr;
-
-		/* Remove trailing whitespace.  */
-		for (--ptr; strchr(WHITESPACE_STR, *ptr); --ptr)
-			*ptr = '\0';
-	}
-	return result;
-}
-
-/*
- * Updated     : 01.22.2002 Author      : Dark0n3
- * 
- * Description : Reads height, width and fps from mpeg file.
- */
-/*
- * obsolete - will be removed
-void 
-mpeg_video(char *f, struct video *video)
-{
-	int		fd;
-	unsigned char	header[] = {0, 0, 1, 179};
-	unsigned char	buf[8];
-	short int	width = 0;
-	short int	height = 0;
-	unsigned char	aspect_ratio;
-	unsigned char	fps = 0;
-	short int	t = 0;
-
-	fd = open(f, O_RDONLY);
-
-	while (read(fd, buf, 1) == 1) {
-		if (*buf == *(header + t)) {
-			t++;
-			if (t == sizeof(header)) {
-				read(fd, buf, 8);
-				memcpy(&t, buf, 2);
-
-				t = *(buf + 1) >> 4;
-				width = (*buf << 4) + t;
-				height = ((*(buf + 1) - (t << 4)) << 4) + *(buf + 2);
-
-				aspect_ratio = *(buf + 3) >> 4;
-				fps = *(buf + 3) - (aspect_ratio << 4);
-				break;
-			}
-		} else if (*buf == 0) {
-			t = (t == 2 ? 2 : 1);
-		} else {
-			t = 0;
-		}
-	}
-
-	video->height = height;
-	video->width = width;
-	video->fps = fps_s[fps > 8 ? 0 : fps];
-
-	close(fd);
-}
- */
-
-/*
- * Updated     : 01.22.2002 Author      : Dark0n3
- * 
- * Description : Reads height, width and fps from avi file.
- */
-/*
- * obsolete - will be removed
-char		fps_t     [10];
-void 
-avi_video(char *f, struct video *video)
-{
-	int		fd;
-	unsigned char	buf[56];
-	int		fps;
-
-	fd = open(f, O_RDONLY);
-	if (lseek(fd, 32, 0) != -1 &&
-	    read(fd, buf, 56) == 56) {
-		memcpy(&fps, buf, 4);
-		if (fps > 0) {
-			memcpy(&video->width, buf + 32, 4);
-			memcpy(&video->height, buf + 36, 4);
-			sprintf(fps_t, "%i", 1000000 / fps);
-			video->fps = fps_t;
-		} else {
-			video->height = 0;
-			video->width = 0;
-			video->fps = fps_s[0];
-		}
-	}
-	close(fd);
-}
- */
 char           *
 get_preset(char vbr_header[4])
 {
@@ -276,8 +160,26 @@ get_audio_info(char *f, struct audio *audio)
 		get_flac_audio_info(f, audio);
 #endif
 
-	else
+	else {
 		d_log("multimedia.c: get_audio_info() - Received %s as fileextension but no libs present to get metadata.\n", ext);
+		return;
+	}
+
+	/* cleanup id3_artist/title/album */
+	/* remove prefixing whitespace chars (space, formfeed,
+	 * newline, carriage return, horizontal and vertical tab)
+	 */
+	strcpy(audio->id3_artist, prestrip_chars(audio->id3_artist, WHITESPACE_STR));
+	strcpy(audio->id3_title, prestrip_chars(audio->id3_title, WHITESPACE_STR));
+	strcpy(audio->id3_album, prestrip_chars(audio->id3_album, WHITESPACE_STR));
+	/* remove trailing whitespace chars (same as prefixing) */
+	tailstrip_chars(audio->id3_artist, WHITESPACE_STR);
+	tailstrip_chars(audio->id3_title, WHITESPACE_STR);
+	tailstrip_chars(audio->id3_album, WHITESPACE_STR);
+	/* remove bad chars from the complete string (like above but without space and including backspace) */
+	strip_chars(audio->id3_artist, BAD_STR);
+	strip_chars(audio->id3_title, BAD_STR);
+	strip_chars(audio->id3_album, BAD_STR);
 
 }
 

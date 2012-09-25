@@ -40,29 +40,53 @@ find_last_of(char *name, const char *delim)
 	return result;
 }
 
-/* remove trailing whitespaces and newline stuff */
+/* First Version:	????????	?
+ * Modified:		20120926	Sked
+ * Description:	remove trailing given chars, modifying the string
+ */
 void
-strip_whitespaces(char *s)
+tailstrip_chars(char *s, char *dels)
 {
-	if (s && *s)
-		while (s[(int)strlen(s)-1] == ' '  ||
-	           s[(int)strlen(s)-1] == '\t' ||
-		   s[(int)strlen(s)-1] == '\n' ||
-	           s[(int)strlen(s)-1] == '\r')
-			s[(int)strlen(s)-1] = '\0';
+	if (s && *s) {
+		char *p = s + strlen(s) - 1;
+		while (s-1 != p && strchr(dels, (int)*p) != NULL)
+			--p;
+		*(++p) = '\0';
+	}
 }
 
-/* remove preceding whitespaces and newline stuff */
+/* First Version:	????????	?
+ * Modified:		20120926	Sked
+ * Description:	remove prefixing given chars, retunring the result
+ */
 char *
-prestrip_whitespaces(char *s)
+prestrip_chars(char *s, char *dels)
 {
 	if (s)
-		while (*s == ' '  ||
-	           *s == '\t' ||
-		   *s == '\n' ||
-	           *s == '\r')
-			s++;
+		while (*s && strchr(dels, (int)*s) != NULL)
+			++s;
 	return s;
+}
+
+/* First Version:	20120925	Sked
+ * Description:	Removes all given characters from a string, modifying it
+ */
+void
+strip_chars(char *s, char *dels)
+{
+	if (s != NULL) {
+		char *p = s;
+		while (*s) {
+			if (strchr(dels, (int)*s) != NULL) {
+				while (*p && strchr(dels, (int)*p) != NULL)
+					++p;
+			} else {
+				++s;
+				++p;
+			}
+			*s = *p;
+		}
+	}
 }
 
 /* exclusive write lock */

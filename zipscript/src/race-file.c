@@ -435,8 +435,8 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 		if ((ptr = find_first_of(fbuf, ";")))
 			*ptr = '\0';
 
-		strip_whitespaces(fbuf);
-		ptr = prestrip_whitespaces(fbuf);
+		tailstrip_chars(fbuf, WHITESPACE_STR);
+		ptr = prestrip_chars(fbuf, WHITESPACE_STR);
 		if (ptr != fbuf)
 			d_log("copysfv: prestripped whitespaces (%d chars)\n", ptr - fbuf);
 
@@ -476,7 +476,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 
 				/* nobody should be stupid enough to have spaces
 				 * at the end of the file name */
-				strip_whitespaces(fbuf);
+				tailstrip_chars(fbuf, WHITESPACE_STR);
 			}
 
 		} else {
@@ -491,7 +491,7 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 		}
 
 		/* we assume what's left is a filename */
-		ptr = prestrip_whitespaces(fbuf);
+		ptr = prestrip_chars(fbuf, WHITESPACE_STR);
 		if (ptr != fbuf)
 			d_log("copysfv: prestripped whitespaces (%d chars)\n", ptr - fbuf);
 
