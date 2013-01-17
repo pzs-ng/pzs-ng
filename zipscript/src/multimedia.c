@@ -142,7 +142,8 @@ get_preset(char vbr_header[4])
 
 
 /*
- * First Version: 2011.12.07	Sked
+ * First Version:	 20111207	Sked
+ * Modified:		20130117	Sked
  * Description: Umbrella for the different get_*_audio_info functions where
  *		the correct function is chosen based on the fileextension.
  *		This makes it easier to add new audioformats.
@@ -150,36 +151,38 @@ get_preset(char vbr_header[4])
 void
 get_audio_info(char *f, struct audio *audio)
 {
-	char *ext = find_last_of(f, ".");
+	char *ext;
 
-	if (!strcasecmp(".mp3", ext))
-		get_mpeg_audio_info(f, audio);
+	if (f != NULL && (ext = find_last_of(f, ".")) != NULL) {
+		if (!strcasecmp(".mp3", ext))
+			get_mpeg_audio_info(f, audio);
 
 #ifdef HAVE_FLAC_HEADERS
-	else if (!strcasecmp(".flac", ext))
-		get_flac_audio_info(f, audio);
+		else if (!strcasecmp(".flac", ext))
+			get_flac_audio_info(f, audio);
 #endif
 
-	else {
-		d_log("multimedia.c: get_audio_info() - Received %s as fileextension but no libs present to get metadata.\n", ext);
-		return;
-	}
+		else {
+			d_log("multimedia.c: get_audio_info() - Received %s as fileextension but no libs present to get metadata.\n", ext);
+			return;
+		}
 
-	/* cleanup id3_artist/title/album */
-	/* remove prefixing whitespace chars (space, formfeed,
-	 * newline, carriage return, horizontal and vertical tab)
-	 */
-	strcpy(audio->id3_artist, prestrip_chars(audio->id3_artist, WHITESPACE_STR));
-	strcpy(audio->id3_title, prestrip_chars(audio->id3_title, WHITESPACE_STR));
-	strcpy(audio->id3_album, prestrip_chars(audio->id3_album, WHITESPACE_STR));
-	/* remove trailing whitespace chars (same as prefixing) */
-	tailstrip_chars(audio->id3_artist, WHITESPACE_STR);
-	tailstrip_chars(audio->id3_title, WHITESPACE_STR);
-	tailstrip_chars(audio->id3_album, WHITESPACE_STR);
-	/* remove bad chars from the complete string (like above but without space and including backspace) */
-	strip_chars(audio->id3_artist, BAD_STR);
-	strip_chars(audio->id3_title, BAD_STR);
-	strip_chars(audio->id3_album, BAD_STR);
+		/* cleanup id3_artist/title/album */
+		/* remove prefixing whitespace chars (space, formfeed,
+		 * newline, carriage return, horizontal and vertical tab)
+		 */
+		strcpy(audio->id3_artist, prestrip_chars(audio->id3_artist, WHITESPACE_STR));
+		strcpy(audio->id3_title, prestrip_chars(audio->id3_title, WHITESPACE_STR));
+		strcpy(audio->id3_album, prestrip_chars(audio->id3_album, WHITESPACE_STR));
+		/* remove trailing whitespace chars (same as prefixing) */
+		tailstrip_chars(audio->id3_artist, WHITESPACE_STR);
+		tailstrip_chars(audio->id3_title, WHITESPACE_STR);
+		tailstrip_chars(audio->id3_album, WHITESPACE_STR);
+		/* remove bad chars from the complete string (like above but without space and including backspace) */
+		strip_chars(audio->id3_artist, BAD_STR);
+		strip_chars(audio->id3_title, BAD_STR);
+		strip_chars(audio->id3_album, BAD_STR);
+	}
 
 }
 
