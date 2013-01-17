@@ -6,37 +6,47 @@
 #include "zsfunctions.h"
 #include "helpfunctions.h"
 
-/* find the first occurance of any of delim in name */
+/* First Version:	????????	?
+ * Modified:		20130117	Sked
+ * Description: find the first occurance of any of delim in name
+ */
 char *
 find_first_of(char *name, const char *delim)
 {
-	char		*n_ptr;
+	char		*n_ptr = NULL;
 	const char	*d_ptr;
 
-	for (n_ptr = name; *n_ptr; n_ptr++) {
-		for (d_ptr = delim; *d_ptr; d_ptr++) {
-			if (*n_ptr == *d_ptr)
-				return n_ptr;
+	if (name != NULL) {
+		for (n_ptr = name; *n_ptr; n_ptr++) {
+			for (d_ptr = delim; *d_ptr; d_ptr++) {
+				if (*n_ptr == *d_ptr)
+					return n_ptr;
+			}
 		}
 	}
-	
+
 	return n_ptr;
 }
 
-/* find the last occurance of any of delim in name */
+/* First Version:	????????	?
+ * Modified:		20130117	Sked
+ * Description: find the last occurance of any of delim in name
+ */
 char *
 find_last_of(char *name, const char *delim)
 {
-	char		*n_ptr, *result;
+	char		*n_ptr, *result = NULL;
 	const char	*d_ptr;
 
-	for (result = n_ptr = name; *n_ptr; n_ptr++) {
-		for (d_ptr = delim; *d_ptr; d_ptr++) {
-			if (*n_ptr == *d_ptr)
-				result = n_ptr;
+	if (name != NULL) {
+		for (result = n_ptr = name; *n_ptr; n_ptr++) {
+			for (d_ptr = delim; *d_ptr; d_ptr++) {
+				if (*n_ptr == *d_ptr)
+					result = n_ptr;
+			}
 		}
 	}
-	
+
 	return result;
 }
 

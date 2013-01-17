@@ -2,13 +2,167 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
-		- make dl_speedtest output to .debug
-		- change libcopy to better handle resolving in chroot environment (Debian and
-		  Ubuntu in particular need this fix)
-		- added rescan_script and enable_rescan_script option to run script on rescan
-		  if the release is complete.
-		- Updated psxc-trailer to 0.6 - no feature added, only some checks for dir-
-		  perms.
+		- Fix find_last_of and find_first_of crashing on NULL input
+		- Forgotten mp3-to-audio textchange
+		- change CHANGELOG to list newest at top
+		- ^--- 2013 ---^
+		- Bugfix for split AUDIO_* lines when garbage is in the ID3 fields
+		- Rewrote and enhanced the stripping/trimming help functions
+		- Bugfix for rescan where negative missing files and over 100% completion occured
+		- Some fixes for the racedata and headdata files after rescan-runs
+		- Cleanup, memleakfixes and preventive buffer overflow fixes for rescan
+		- Fix forgotten part of sampledir checking code to work with commas
+		- Update ignored_types, removed m3u from it to allow multi-cd m3u's
+		- Fix allowed_genres and banned_genres (and any other list where items have a space)
+		  having wrong matches. This causes sample_list to be a comma-seperated list
+		  now, so update your zsconfig.h if you have that defined in there.
+		- Rework internal speed handling and calculation
+		- Improve stats-gathering for dayup/wkup/monthup/allup
+		- Fix textual typo in glftpd.tcl
+		- Updated video_types to contain .ts by default
+		- Updated COOKIES file
+		- Fixed libcopy.sh on 64bit systems not copying the correct resolvlibs
+		- Fixed typo in docs regarding create_missing_sample_link
+		- Added sample checking option to default zsconfig.h
+		- Added vob, mov, mp4 and wmv to the default video_types and removed several from allowed_types
+		- Updated the audio-genre script to use the same genres as in the zipscript
+		- Added comments to ngBot.conf.default regarding max_log_change
+		- Fixed bug #530: output problems for races with a lot of users
+		- Fixed bug #532: halfway and newleader had wrong leader
+		- Fixed bug in PreTime.tcl
+		- Fixed bug whith sample_list in group_dirs and nocheck_dirs (Thanks to Auri for noticing)
+		- Fixed linkererrors regarding FLAC libs
+		- Fixed few inconsistencies in d3x0c.zst (Thanks to tr1t1um for noticing)
+		- Fixed copy/paste typo in PreTime.tcl (Thanks to tr1t1um for noticing)
+		- ^--- 2012 ---^
+		- Fixed and updated the GameFAQs sitebot plugin
+		- Updated COOKIES file
+		- Several fixes in psxc-imdb, bringing it to v2.9p
+		- Updated PreTime.tcl to check if the connection is still open, and some other stuff
+		- Fixed another matchpath bug if both dirs were equal and both had no trailing /
+		- Fix for bitrate gathering for flacfiles and vbr_version_string will now show the encoder used
+		- Fix for backward compatibility when rescanning releases uploaded prior to the flacsupport
+		- Several other fixes, cleanups and removal of most compiler warnings
+		- Fixed another matchpathbug only occuring if a defined path had no trailing /
+		- Added a new option audio_artist_sort_various_only which is meant for audioreleases with
+		  various artists (VA-/VA_). As every file is now causing a sorting, those releases will be
+		  sorted under every artist that appears on them. By setting this option to TRUE, those
+		  releases will only be sorted under VA.
+		- Sorting of audiofiles now happens for every file opposed to only the last file.
+		- Added support for FLAC audiofiles, partially based on the flacpatch by io / yoaha,
+		  and made adding other audioformats easier via the new audio_types configuration option.
+		  Getting metadata information from other formats than .mp3 and .flac still has to be
+		  implemented seperately though.
+		  ATTENTION: the following configuration options have changed names due to this:
+			del_progressmeter_mp3	>	del_progressmeter_audio
+			enable_mp3_script	>	enable_audio_script
+			message_mp3		>	message_audio
+			mp3_script		>	audio_script
+			mp3_script_cookies	>	audio_script_cookies
+			progressmeter_mp3	>	progressmeter_audio
+			realtime_mp3_info	>	realtime_audio_info
+		    update your zsconfig.h accordingly.
+		  ATTENTION: as the bins will now be compiled against the FLAC libs, you are advised
+				to run libcopy.sh after installation, as those external libs have to be
+				accessible when chrooted
+		- Fix in psxc-imdb for PLOT output
+		- Fixed bug where avis were not recognized on 64bit and thus didn't give sampleinfo
+		- Added --disable-epsv to curl execution for those using glftpd-ng
+		- Some fixes in psxc-imdb related to different charsets
+		- Fixed broken findfileextsubp resulting in incomplete-indicators being created for
+		  nfo and sample on dirs with no sfv and containing subdirs with sfv
+		- Updated test-instructions for dl_speedtest in the README.
+		- Fixed matchpath bug for a "path" without trailing '/', mainly occuring for speedtest_dirs
+		  This should also fix issues with dl_speedtest. Thanks to sukalis for notifying.
+		- Fixed numscreens, businessdata and limited release determination in psxc-imdb
+		- Fixed bug #340 - when using del_banned_release , release is still present in dirlog
+		  This involves new defines dirlogpath, enable_delbanned_script and delbanned_script;
+		  and a new bin ng-deldir as well, which marks a dir as deleted in dirlog
+		- Fix for make distclean/clean/uninstall not removing postunnuke
+		- Cleanup and updates of configure
+		- Fix segfault in passchk when run without arguments
+		- Fixes for libcopy for 32bit libs on 64bit arch
+		- Fix bug #523 - dirlog from glftpd 64bit doesn't work with showlog
+		- Improved recognition of glversion and arch for proper 64bit glftpd support
+		- Two bugfixes in psxc-symlink-maker, bringing it to version 2.9k
+		- Fixed Top.tcl output for users with chars other than A-Za-z0-9_ - Fix by PCFiL
+		- Added improved specialchar-replacement in psxc-symlinkmaker.sh - Thanks to PCFiL
+		- Fixed c/p bug in psxc-symlinkmaker.sh - Fix by PCFiL
+		- Added new cookie for incomplete-indicators, see COOKIES.
+		- Added part of bug #215 - epoch in race complete (other part was already added)
+		  This introduces a new cookie %& for usage in .message and bars and
+		  a new var %t_epoch in COMPLETE_* and COMPLETE_STAT_RACE_*. This var comes
+		  between %t_duration and %u_name and %t_duration and %u_count respectively,
+		  so update your ngBot.vars file!
+		- Added bug #434 - upper/lower case and title cookies, for zst files
+		  See themes/default.zst for explanations.
+		- Added 2010, 2011 and 2012 to allowed_years and removed 2005 and 2006
+		- Added proof and cover? to default subdir_list
+		- Added png and m2ts to default allowed_types
+		- Updated all themes to have the EXPIRED announce (previously only in default.zst)
+		- Added bug #359 - Show average ping instead of 1 ping only
+		  Implemented it a bit differently with an extra option of how many pingcounts,
+		  adding the min/avg/max/mdev instead of picking one to replace the ping with
+		  and to not break all themes the %ping var was kept aside the new vars
+		- Updated sitebot/COOKIES
+		- Fixed typobug regarding mclastbind
+		- Added bug #335 - setting to set chan or nick reply on bnc-trigger
+		  This setting is available for all triggers via announcetochan(TRIGGER),
+		  see ngBot.conf.defaults
+		- Added bug #365 - Multiple channels in $mainchan do not work. - Thanks to firstof9
+		- Added bug #435 - msgreplaces are sorted so highest indexnumber is used when
+		  multiple matches occur - Thanks to [piLL]
+		- Fixed bug #458 - privchannels wont invite users from PRIVATE groups
+		- Fixed bug where any user could invite themselves via irc if irc inviting was enabled
+		  regardless of invite rights on the ftp. This reworks the former bug where deleted
+		  users could invite themselves, removing the previously introduced setting
+		  enable_irc_invite_deleted_users and introducing the new invite_channels_rights
+		  setting in ngBot.conf.defaults
+		- Fixed bug where files would be marked as bad when sfv_lenient
+		  and sfv_cleanup_lowercase would both be set to FALSE
+		- several fixes and improvements on psxc-imdb, see CHANGELOG
+		- Fixed bug #511 - incorrect diskcount for certain file_id.diz
+		- Fixed bug #512 - several rescan fixes regarding zips
+		- Fixed bug #503 - segfault in zsfunctions.c findfileextsub and findfileextsubp
+		  partial fix for findfileextsub done by pute
+		- updated TVRage script
+		- fixed bug where deleted users could still invite themselves via irc_invite
+		- added ignorelist for dirs which should not have a sample-dir
+		- added option to store .message-files in pzs-ng storage and symlink to there
+		- fixed incorrect default values for incompleteislink and userellink
+		- fixed bug for rescanning single files
+		- ^--- 2011 ---^
+		- fixed a rare segfault issue if getwd() failed.
+		- movies.apple.com changed - psxc-trailer script updated.
+		- Added names to some values instf 0,1,2.
+		- Fixed inaccuracy-bug in matchpath().
+		- Rescan did not re-create missing-sfv links (fix by Sked).
+		- Fixed bug #498, 499, 500 - cleanup.c - various fixes done by Sked.
+		- Fixed bug #497 - zipscript-c: If chmod_completebar is enabled then
+		  create_missing_sample_link does not work - fix done by lex.
+		- Did some fixes in libcopy to overcome symlinks and old broken libs. Hopefully you
+		  no longer need to rm -fR all lib* dirs in /glftpd before running libcopy anymore.
+		- Fixed bug #485 - zipscript-c --config prints ((void *)0) instead of DISABLED.
+		- Fixed bug #486 - psxc-imdb-rescan -r gives no or faulty psxcflags.
+		- Fixed bug #487 - psxc-imdb.sh doesn't remove old IMDB banner when spaces present.
+		- Fixed bug #492 - psxc-symlink-maker.sh: sort_by_title for films starting with a
+		  dot or non-"A-Za-z0-9_\-()"-char.
+		- Fixed bug #490 - psxc-imdb-find: lists pro-link url for searchstrings with one
+		  hit in search.
+		- Fixed bug #489 - psxc-imdb: INFOTEMPNAME-dir/file stays when no details can be
+		  fetched.
+		- Fixed bug #488 - psxc-imdb: films with no rating/votes show incorrect values in
+		  IMDB banner.
+		- Fixed bug #493 - Call curl from within the eggdrop using --max-time rather than
+		  --connect-timeout. Prevents an unlikely situation that could stall the sitebot.
+		- added windows slash (\) to the sfv check (allow_slash_in_sfv).
+		- added mkv to default video_types.
+		- Added key exchanging to Blow.tcl and updated/fixed a _lot_ of things.
+		- Fixed bug #382 - Show !free in a set unit without auto rounding.
+		- Fixed bug #350 - %date/%time variables for the !new/!search/!nukes/!unnukes
+		  announces are now customisable.
+		- Fixed bug #483 - TVRage sitebot plugin tmp_season/tmp_episode no such variable error.
+		- Fixed bug #470 - GameFAQs sitebot plugin now works again.
 		- Overhaul of the sitebot. RIP dZSbot, hello ngBot.
 			- No functionality has been lost.
 			- Old configuration files will still work. Rename them to ngBot.conf.
@@ -37,163 +191,13 @@ v1.2.0  --> 1.2.x :
 			  rehash/reset. No need to unbind them in plugins anymore.
 			- It now now technically possible to run 2 or more sitebots on the one eggdrop
 			  with some small modifications.
-		- Fixed bug #470 - GameFAQs sitebot plugin now works again.
-		- Fixed bug #483 - TVRage sitebot plugin tmp_season/tmp_episode no such variable error.
-		- Fixed bug #350 - %date/%time variables for the !new/!search/!nukes/!unnukes
-		  announces are now customisable.
-		- Fixed bug #382 - Show !free in a set unit without auto rounding.
-		- Added key exchanging to Blow.tcl and updated/fixed a _lot_ of things.
-		- added mkv to default video_types.
-		- added windows slash (\) to the sfv check (allow_slash_in_sfv).
-		- Fixed bug #493 - Call curl from within the eggdrop using --max-time rather than
-		  --connect-timeout. Prevents an unlikely situation that could stall the sitebot.
-		- Fixed bug #488 - psxc-imdb: films with no rating/votes show incorrect values in
-		  IMDB banner.
-		- Fixed bug #489 - psxc-imdb: INFOTEMPNAME-dir/file stays when no details can be
-		  fetched.
-		- Fixed bug #490 - psxc-imdb-find: lists pro-link url for searchstrings with one
-		  hit in search.
-		- Fixed bug #492 - psxc-symlink-maker.sh: sort_by_title for films starting with a
-		  dot or non-"A-Za-z0-9_\-()"-char.
-		- Fixed bug #487 - psxc-imdb.sh doesn't remove old IMDB banner when spaces present.
-		- Fixed bug #486 - psxc-imdb-rescan -r gives no or faulty psxcflags.
-		- Fixed bug #485 - zipscript-c --config prints ((void *)0) instead of DISABLED.
-		- Did some fixes in libcopy to overcome symlinks and old broken libs. Hopefully you
-		  no longer need to rm -fR all lib* dirs in /glftpd before running libcopy anymore.
-		- Fixed bug #497 - zipscript-c: If chmod_completebar is enabled then
-		  create_missing_sample_link does not work - fix done by lex.
-		- Fixed bug #498, 499, 500 - cleanup.c - various fixes done by Sked.
-		- Rescan did not re-create missing-sfv links (fix by Sked).
-		- Fixed inaccuracy-bug in matchpath().
-		- Added names to some values instf 0,1,2.
-		- movies.apple.com changed - psxc-trailer script updated.
-		- fixed a rare segfault issue if getwd() failed.
-		- --- 2011 ---
-		- fixed bug for rescanning single files
-		- fixed incorrect default values for incompleteislink and userellink
-		- added option to store .message-files in pzs-ng storage and symlink to there
-		- added ignorelist for dirs which should not have a sample-dir
-		- fixed bug where deleted users could still invite themselves via irc_invite
-		- updated TVRage script
-		- Fixed bug #503 - segfault in zsfunctions.c findfileextsub and findfileextsubp
-		  partial fix for findfileextsub done by pute
-		- Fixed bug #512 - several rescan fixes regarding zips
-		- Fixed bug #511 - incorrect diskcount for certain file_id.diz
-		- several fixes and improvements on psxc-imdb, see CHANGELOG
-		- Fixed bug where files would be marked as bad when sfv_lenient
-		  and sfv_cleanup_lowercase would both be set to FALSE
-		- Fixed bug where any user could invite themselves via irc if irc inviting was enabled
-		  regardless of invite rights on the ftp. This reworks the former bug where deleted
-		  users could invite themselves, removing the previously introduced setting
-		  enable_irc_invite_deleted_users and introducing the new invite_channels_rights
-		  setting in ngBot.conf.defaults
-		- Fixed bug #458 - privchannels wont invite users from PRIVATE groups
-		- Added bug #435 - msgreplaces are sorted so highest indexnumber is used when
-		  multiple matches occur - Thanks to [piLL]
-		- Added bug #365 - Multiple channels in $mainchan do not work. - Thanks to firstof9
-		- Added bug #335 - setting to set chan or nick reply on bnc-trigger
-		  This setting is available for all triggers via announcetochan(TRIGGER),
-		  see ngBot.conf.defaults
-		- Fixed typobug regarding mclastbind
-		- Updated sitebot/COOKIES
-		- Added bug #359 - Show average ping instead of 1 ping only
-		  Implemented it a bit differently with an extra option of how many pingcounts,
-		  adding the min/avg/max/mdev instead of picking one to replace the ping with
-		  and to not break all themes the %ping var was kept aside the new vars
-		- Updated all themes to have the EXPIRED announce (previously only in default.zst)
-		- Added png and m2ts to default allowed_types
-		- Added proof and cover? to default subdir_list
-		- Added 2010, 2011 and 2012 to allowed_years and removed 2005 and 2006
-		- Added bug #434 - upper/lower case and title cookies, for zst files
-		  See themes/default.zst for explanations.
-		- Added part of bug #215 - epoch in race complete (other part was already added)
-		  This introduces a new cookie %& for usage in .message and bars and
-		  a new var %t_epoch in COMPLETE_* and COMPLETE_STAT_RACE_*. This var comes
-		  between %t_duration and %u_name and %t_duration and %u_count respectively,
-		  so update your ngBot.vars file!
-		- Added new cookie for incomplete-indicators, see COOKIES.
-		- Fixed c/p bug in psxc-symlinkmaker.sh - Fix by PCFiL
-		- Added improved specialchar-replacement in psxc-symlinkmaker.sh - Thanks to PCFiL
-		- Fixed Top.tcl output for users with chars other than A-Za-z0-9_ - Fix by PCFiL
-		- Two bugfixes in psxc-symlink-maker, bringing it to version 2.9k
-		- Improved recognition of glversion and arch for proper 64bit glftpd support
-		- Fix bug #523 - dirlog from glftpd 64bit doesn't work with showlog
-		- Fixes for libcopy for 32bit libs on 64bit arch
-		- Fix segfault in passchk when run without arguments
-		- Cleanup and updates of configure
-		- Fix for make distclean/clean/uninstall not removing postunnuke
-		- Fixed bug #340 - when using del_banned_release , release is still present in dirlog
-		  This involves new defines dirlogpath, enable_delbanned_script and delbanned_script;
-		  and a new bin ng-deldir as well, which marks a dir as deleted in dirlog
-		- Fixed numscreens, businessdata and limited release determination in psxc-imdb
-		- Fixed matchpath bug for a "path" without trailing '/', mainly occuring for speedtest_dirs
-		  This should also fix issues with dl_speedtest. Thanks to sukalis for notifying.
-		- Updated test-instructions for dl_speedtest in the README.
-		- Fixed broken findfileextsubp resulting in incomplete-indicators being created for
-		  nfo and sample on dirs with no sfv and containing subdirs with sfv
-		- Some fixes in psxc-imdb related to different charsets
-		- Added --disable-epsv to curl execution for those using glftpd-ng
-		- Fixed bug where avis were not recognized on 64bit and thus didn't give sampleinfo
-		- Fix in psxc-imdb for PLOT output
-		- Added support for FLAC audiofiles, partially based on the flacpatch by io / yoaha,
-		  and made adding other audioformats easier via the new audio_types configuration option.
-		  Getting metadata information from other formats than .mp3 and .flac still has to be
-		  implemented seperately though.
-		  ATTENTION: the following configuration options have changed names due to this:
-			del_progressmeter_mp3	>	del_progressmeter_audio
-			enable_mp3_script	>	enable_audio_script
-			message_mp3		>	message_audio
-			mp3_script		>	audio_script
-			mp3_script_cookies	>	audio_script_cookies
-			progressmeter_mp3	>	progressmeter_audio
-			realtime_mp3_info	>	realtime_audio_info
-		    update your zsconfig.h accordingly.
-		  ATTENTION: as the bins will now be compiled against the FLAC libs, you are advised
-				to run libcopy.sh after installation, as those external libs have to be
-				accessible when chrooted
-		- Sorting of audiofiles now happens for every file opposed to only the last file.
-		- Added a new option audio_artist_sort_various_only which is meant for audioreleases with
-		  various artists (VA-/VA_). As every file is now causing a sorting, those releases will be
-		  sorted under every artist that appears on them. By setting this option to TRUE, those
-		  releases will only be sorted under VA.
-		- Fixed another matchpathbug only occuring if a defined path had no trailing /
-		- Several other fixes, cleanups and removal of most compiler warnings
-		- Fix for backward compatibility when rescanning releases uploaded prior to the flacsupport
-		- Fix for bitrate gathering for flacfiles and vbr_version_string will now show the encoder used
-		- Fixed another matchpath bug if both dirs were equal and both had no trailing /
-		- Updated PreTime.tcl to check if the connection is still open, and some other stuff
-		- Several fixes in psxc-imdb, bringing it to v2.9p
-		- Updated COOKIES file
-		- Fixed and updated the GameFAQs sitebot plugin
-		- --- 2012 ---
-		- Fixed copy/paste typo in PreTime.tcl (Thanks to tr1t1um for noticing)
-		- Fixed few inconsistencies in d3x0c.zst (Thanks to tr1t1um for noticing)
-		- Fixed linkererrors regarding FLAC libs
-		- Fixed bug whith sample_list in group_dirs and nocheck_dirs (Thanks to Auri for noticing)
-		- Fixed bug in PreTime.tcl
-		- Fixed bug #532: halfway and newleader had wrong leader
-		- Fixed bug #530: output problems for races with a lot of users
-		- Added comments to ngBot.conf.default regarding max_log_change
-		- Updated the audio-genre script to use the same genres as in the zipscript
-		- Added vob, mov, mp4 and wmv to the default video_types and removed several from allowed_types
-		- Added sample checking option to default zsconfig.h
-		- Fixed typo in docs regarding create_missing_sample_link
-		- Fixed libcopy.sh on 64bit systems not copying the correct resolvlibs
-		- Updated COOKIES file
-		- Updated video_types to contain .ts by default
-		- Fix textual typo in glftpd.tcl
-		- Improve stats-gathering for dayup/wkup/monthup/allup
-		- Rework internal speed handling and calculation
-		- Fix allowed_genres and banned_genres (and any other list where items have a space)
-		  having wrong matches. This causes sample_list to be a comma-seperated list
-		  now, so update your zsconfig.h if you have that defined in there.
-		- Update ignored_types, removed m3u from it to allow multi-cd m3u's
-		- Fix forgotten part of sampledir checking code to work with commas
-		- Cleanup, memleakfixes and preventive buffer overflow fixes for rescan
-		- Some fixes for the racedata and headdata files after rescan-runs
-		- Bugfix for rescan where negative missing files and over 100% completion occured
-		- Rewrote and enhanced the stripping/trimming help functions
-		- Bugfix for split AUDIO_* lines when garbage is in the ID3 fields
+		- Updated psxc-trailer to 0.6 - no feature added, only some checks for dir-
+		  perms.
+		- added rescan_script and enable_rescan_script option to run script on rescan
+		  if the release is complete.
+		- change libcopy to better handle resolving in chroot environment (Debian and
+		  Ubuntu in particular need this fix)
+		- make dl_speedtest output to .debug
 
 v1.1.0a --> 1.2.0 :
 		- added option to make accept_script run prior to complete_script.
