@@ -34,13 +34,14 @@
 #        to match.
 # v2.9b fixed small bug.
 # v2.9h check CHANGELOG
+# v2.9q Fix finding a result
 ##################################################
 
 ########
 # CONFIG
 
 # Version. No need to change.
-VERSION=2.9h
+VERSION=2.9q
 
 # (full) path to psxc-imdb.conf
 PSXC_IMDB_CONF=/glftpd/etc/psxc-imdb.conf
@@ -173,7 +174,7 @@ if [ -z "$URLTOUSE" ]; then
   exit 0
  fi
  if [ -z "$IMDBLIST" ]; then
-  URLTOUSE=`echo "$CONTENT" | grep -i "\.imdb\..*/title/tt" | tr ' ' '\n' | grep "tt[0-9][0-9][0-9][0-9][0-9]*/*$" | sed "s|/pro\.|/www\.|" | head -n 1 | grep -i "^http://[a-z]*\.imdb\.[a-z]*/title/tt"`
+  URLTOUSE=`echo "$CONTENT" | grep -i "\.imdb\.[a-z]*/title/tt" | tr ' ' '\n' | grep "tt[0-9][0-9][0-9][0-9][0-9]*/.*$" | head -n1 | sed "s|/pro\.|/www\.|" | cut -d'?' -f1 | grep -i "^http://[a-z]*\.imdb\.[a-z]*/title/tt"`
  else
   a=1
   b=1

@@ -1,5 +1,6 @@
 PSXC-IMDB CHANGELOG:
 --------------------
+- v2.9q - Feb. 17th, 2013 - Fixed psxc-imdb-find not finding anything
 - v2.9p - Dec. 22nd, 2011 - Fixed TAGLINE output having "See more >>"
 			  - Fixed bug in psxc-imdb-rescan with symlinks in the recursively scanned
 			    dir pointing to dirs in that dir. (Thanks to PCFiL for noticing)

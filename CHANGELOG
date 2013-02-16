@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix psxc-imdb-find not finding any results anymore
 		- Fix for segv when rescanning audiodirs without audiofiles
 		- Fix find_last_of and find_first_of crashing on NULL input
 		- Forgotten mp3-to-audio textchange
