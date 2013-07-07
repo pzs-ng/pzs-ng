@@ -148,7 +148,7 @@ allow_gid_change_in_ng_chown <TRUE|FALSE>
 allow_slash_in_sfv <TRUE|FALSE>
 	Allow slashes '/' in sfv? If TRUE whatever is behind the last slash is
 	taken as the filename. If FALSE, the sfv is rejected.
-	Related option(s): sfv-dupecheck sfv_cleanup sfv_cleanup_lowercase
+	Related option(s): sfv_dupecheck sfv_cleanup sfv_cleanup_lowercase
 	                   sfv_cleanup_crlf sfv_lenient deny_double_sfv
 	                   deny_resume_sfv
 	Default: TRUE
@@ -557,7 +557,7 @@ deny_double_sfv <TRUE|FALSE>
 	based on the content of the sfv. If the new sfv contains more files
 	than the old one, and they match with what is already uploaded in the
 	dir, it will be allowed and used. If it does not, it will be denied.
-	Related option(s): sfv-dupecheck sfv_cleanup sfv_cleanup_lowercase
+	Related option(s): sfv_dupecheck sfv_cleanup sfv_cleanup_lowercase
 	                   sfv_cleanup_crlf sfv_lenient deny_resume_sfv
 	                   allow_slash_in_sfv
 	Default: FALSE
@@ -571,7 +571,7 @@ deny_resume_sfv <TRUE|FALSE>
 	This option works like deny_double_sfv, only it will deny even resumed
 	or overwritten sfv files. If that happens, a backup of the original sfv
 	will be copied back to the release.
-	Related option(s): sfv-dupecheck sfv_cleanup sfv_cleanup_lowercase
+	Related option(s): sfv_dupecheck sfv_cleanup sfv_cleanup_lowercase
 	                   sfv_cleanup_crlf sfv_lenient deny_double_sfv
 	                   allow_slash_in_sfv
 	Default: TRUE
@@ -1441,7 +1441,7 @@ sfv_cleanup_crlf <TRUE|FALSE>
 	If sfv_cleanup is set to TRUE, this option defines if you use windows
 	or *nix version of linefeeds. The recommended option is to leave this
 	to TRUE, using windows style (<cr><lf>).
-	Related option(s): sfv-dupecheck sfv_cleanup sfv_cleanup_lowercase
+	Related option(s): sfv_dupecheck sfv_cleanup sfv_cleanup_lowercase
 	                   sfv_lenient deny_double_sfv deny_resume_sfv
 	                   allow_slash_in_sfv
 	Default: TRUE
@@ -1453,7 +1453,7 @@ sfv_cleanup_lowercase <TRUE|FALSE>
 	pointers and the internal sfv database lowercased.
 	Either way, if set to TRUE you in effect turn winblows mode on, and the
 	zipscript will not separate case on filenames.
-	Related option(s): sfv-dupecheck sfv_cleanup sfv_cleanup_crlf
+	Related option(s): sfv_dupecheck sfv_cleanup sfv_cleanup_crlf
 	                   sfv_lenient deny_double_sfv deny_resume_sfv
 	                   allow_slash_in_sfv
 	Default: TRUE
@@ -1477,7 +1477,7 @@ sfv_lenient <TRUE|FALSE>
 	If this is set to true, the chars '_' , '-' , '.' , ' ' and ',' are
 	recognized as the same char. Ie, if you have in sfv 'file.name' and
 	upload 'file_name' - the file will be allowed.
-	Related option(s): sfv-dupecheck sfv_cleanup sfv_cleanup_lowercase
+	Related option(s): sfv_dupecheck sfv_cleanup sfv_cleanup_lowercase
 	                   sfv_cleanup_crlf deny_double_sfv deny_resume_sfv
 	                   allow_slash_in_sfv
 	Default: TRUE
