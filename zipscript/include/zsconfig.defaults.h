@@ -1175,6 +1175,11 @@
 #define sfv_cleanup                               TRUE
 #endif
 
+#ifndef sfv_cleanup_comments
+#define sfv_cleanup_comments_is_defaulted
+#define sfv_cleanup_comments                      TRUE
+#endif
+
 #ifndef sfv_cleanup_crlf
 #define sfv_cleanup_crlf_is_defaulted
 #define sfv_cleanup_crlf                          TRUE

@@ -757,6 +757,9 @@ printf("#define sfv_calc_single_fname                     %s\n", (sfv_calc_singl
 #ifndef sfv_cleanup_is_defaulted
 printf("#define sfv_cleanup                               %s\n", (sfv_cleanup == FALSE ? "FALSE" : "TRUE"));
 #endif
+#ifndef sfv_cleanup_comments_is_defaulted
+printf("#define sfv_cleanup_comments                      %s\n", (sfv_cleanup_comments == FALSE ? "FALSE" : "TRUE"));
+#endif
 #ifndef sfv_cleanup_crlf_is_defaulted
 printf("#define sfv_cleanup_crlf                          %s\n", (sfv_cleanup_crlf == FALSE ? "FALSE" : "TRUE"));
 #endif
@@ -1149,6 +1152,7 @@ printf("#define sample_list                               %s\n", stringify(sampl
 printf("#define sample_script                             %s\n", stringify(sample_script));
 printf("#define sfv_calc_single_fname                     %s\n", (sfv_calc_single_fname == FALSE ? "FALSE" : "TRUE"));
 printf("#define sfv_cleanup                               %s\n", (sfv_cleanup == FALSE ? "FALSE" : "TRUE"));
+printf("#define sfv_cleanup_comments                      %s\n", (sfv_cleanup_comments == FALSE ? "FALSE" : "TRUE"));
 printf("#define sfv_cleanup_crlf                          %s\n", (sfv_cleanup_crlf == FALSE ? "FALSE" : "TRUE"));
 printf("#define sfv_cleanup_lowercase                     %s\n", (sfv_cleanup_lowercase == FALSE ? "FALSE" : "TRUE"));
 printf("#define sfv_dirs                                  %s\n", stringify(sfv_dirs));

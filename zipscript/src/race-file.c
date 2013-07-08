@@ -431,14 +431,27 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 
 	while ((fgets(fbuf, sizeof(fbuf), insfv))) {
 
-		/* remove comment */
-		if ((ptr = find_first_of(fbuf, ";")))
-			*ptr = '\0';
-
 		tailstrip_chars(fbuf, WHITESPACE_STR);
 		ptr = prestrip_chars(fbuf, WHITESPACE_STR);
 		if (ptr != fbuf)
 			d_log("copysfv: prestripped whitespaces (%d chars)\n", ptr - fbuf);
+
+		/* check if ; appears at start of line */
+		if ((ptr == find_first_of(ptr, ";"))) {
+#if ( sfv_cleanup == TRUE && sfv_cleanup_comments == FALSE )
+			/* comments can be written away immediately to .tmpsfv */
+			if (write(tmpfd, ptr, strlen(ptr)) != (int)strlen(ptr))
+				d_log("copysfv: write of comment failed: %s\n", strerror(errno));
+#if (sfv_cleanup_crlf == TRUE )
+			if (write(tmpfd, "\r", 1) != 1)
+				d_log("copysfv: write of \\r failed: %s\n", strerror(errno));
+#endif
+			if (write(tmpfd, "\n", 1) != 1)
+				d_log("copysfv: write of \\n failed: %s\n", strerror(errno));
+#endif
+			/* clear comment to prevent further processing */
+			*ptr = '\0';
+		}
 
 		if (strlen(ptr) == 0)
 			continue;

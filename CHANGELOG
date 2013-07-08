@@ -2,6 +2,10 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Made comment-removal in sfvs to be separately definable.
+		  Now you can have a cleanup of the sfv while still keeping
+		  the sometimes valuable information and/or ascii art present
+		  in the comments. A must for old mp3 releases.
 		- Fix typo in README.ZSCONFIG
 		- Fix psxc-imdb-find not finding any results anymore
 		- Fix for segv when rescanning audiodirs without audiofiles

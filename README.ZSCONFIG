@@ -150,7 +150,7 @@ allow_slash_in_sfv <TRUE|FALSE>
 	taken as the filename. If FALSE, the sfv is rejected.
 	Related option(s): sfv_dupecheck sfv_cleanup sfv_cleanup_lowercase
 	                   sfv_cleanup_crlf sfv_lenient deny_double_sfv
-	                   deny_resume_sfv
+	                   deny_resume_sfv sfv_cleanup_comments
 	Default: TRUE
 
 allow_uid_change_in_ng_chown <TRUE|FALSE>
@@ -559,7 +559,7 @@ deny_double_sfv <TRUE|FALSE>
 	dir, it will be allowed and used. If it does not, it will be denied.
 	Related option(s): sfv_dupecheck sfv_cleanup sfv_cleanup_lowercase
 	                   sfv_cleanup_crlf sfv_lenient deny_resume_sfv
-	                   allow_slash_in_sfv
+	                   allow_slash_in_sfv sfv_cleanup_comments
 	Default: FALSE
 
 deny_nfo_upload_in_zip <TRUE|FALSE>
@@ -573,7 +573,7 @@ deny_resume_sfv <TRUE|FALSE>
 	will be copied back to the release.
 	Related option(s): sfv_dupecheck sfv_cleanup sfv_cleanup_lowercase
 	                   sfv_cleanup_crlf sfv_lenient deny_double_sfv
-	                   allow_slash_in_sfv
+	                   allow_slash_in_sfv sfv_cleanup_comments
 	Default: TRUE
 
 dirlogpath <PATH>
@@ -1430,11 +1430,20 @@ sfv_calc_single_fname <TRUE|FALSE>
 	Default: FALSE
 
 sfv_cleanup <TRUE|FALSE>
-	Setting this to true will cleanup the uploaded sfv, removing
-	comments etc. from it.
+	Setting this to TRUE will remove heading and trailing whitespace and
+	enable cleanup of the uploaded sfv depending on which related options
+	are set to TRUE.
 	Related option(s): sfv_dupecheck sfv_cleanup_lowercase sfv_cleanup_crlf
 	                   sfv_lenient deny_double_sfv deny_resume_sfv
-	                   allow_slash_in_sfv
+	                   allow_slash_in_sfv sfv_cleanup_comments
+	Default: TRUE
+
+sfv_cleanup_comments <TRUE|FALSE>
+	Setting this to true will cleanup the uploaded sfv by removing comments.
+	Comments are all lines containing ';'.
+	Related option(s): sfv_dupecheck sfv_cleanup_lowercase sfv_cleanup_crlf
+	                   sfv_lenient deny_double_sfv deny_resume_sfv
+	                   allow_slash_in_sfv sfv_cleanup
 	Default: TRUE
 
 sfv_cleanup_crlf <TRUE|FALSE>
@@ -1443,7 +1452,7 @@ sfv_cleanup_crlf <TRUE|FALSE>
 	to TRUE, using windows style (<cr><lf>).
 	Related option(s): sfv_dupecheck sfv_cleanup sfv_cleanup_lowercase
 	                   sfv_lenient deny_double_sfv deny_resume_sfv
-	                   allow_slash_in_sfv
+	                   allow_slash_in_sfv sfv_cleanup_comments
 	Default: TRUE
 
 sfv_cleanup_lowercase <TRUE|FALSE>
@@ -1455,7 +1464,7 @@ sfv_cleanup_lowercase <TRUE|FALSE>
 	zipscript will not separate case on filenames.
 	Related option(s): sfv_dupecheck sfv_cleanup sfv_cleanup_crlf
 	                   sfv_lenient deny_double_sfv deny_resume_sfv
-	                   allow_slash_in_sfv
+	                   allow_slash_in_sfv sfv_cleanup_comments
 	Default: TRUE
 
 sfv_dirs <PATHS>
@@ -1470,7 +1479,7 @@ sfv_dupecheck <TRUE|FALSE>
 	uploaded sfv file.
 	Related option(s): sfv_cleanup sfv_cleanup_lowercase sfv_cleanup_crlf
 	                   sfv_lenient deny_double_sfv deny_resume_sfv
-	                   allow_slash_in_sfv
+	                   allow_slash_in_sfv sfv_cleanup_comments
 	Default: TRUE
 
 sfv_lenient <TRUE|FALSE>
@@ -1479,7 +1488,7 @@ sfv_lenient <TRUE|FALSE>
 	upload 'file_name' - the file will be allowed.
 	Related option(s): sfv_dupecheck sfv_cleanup sfv_cleanup_lowercase
 	                   sfv_cleanup_crlf deny_double_sfv deny_resume_sfv
-	                   allow_slash_in_sfv
+	                   allow_slash_in_sfv sfv_cleanup_comments
 	Default: TRUE
 
 short_sitename <STRING>
