@@ -1170,7 +1170,7 @@ main(int argc, char **argv)
 			}
 			switch (g.v.misc.release_type) {
 			case RTYPE_RAR:
-				get_rar_info(&g.v);
+				get_rar_info(g.v.file.name, &g.v);
 				race_msg = rar_race;
 				update_msg = rar_update;
 				halfway_msg = CHOOSE(g.v.total.users, rar_halfway, rar_norace_halfway);
@@ -1371,7 +1371,7 @@ main(int argc, char **argv)
 				newleader_msg = video_newleader;
 				break;
 			default:
-				get_rar_info(&g.v);
+				get_rar_info(g.v.file.name, &g.v);
 				race_msg = rar_race;
 				update_msg = rar_update;
 				halfway_msg = CHOOSE(g.v.total.users, rar_halfway, rar_norace_halfway);

@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Changed get_rar_info methodcall in preparation for a bugfix.
 		- Made comment-removal in sfvs to be separately definable.
 		  Now you can have a cleanup of the sfv while still keeping
 		  the sometimes valuable information and/or ascii art present

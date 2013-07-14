@@ -1149,15 +1149,20 @@ readsfv_ffile(struct VARS *raceI)
 	closedir(dir);
 }
 
+/*
+ * Author: ? (????.??.??)
+ * Modified: Sked (2013.07.14)
+ * Description: Gets info from a given rarfile, at the moment only the compression method.
+ */
 void 
-get_rar_info(struct VARS *raceI)
+get_rar_info(char *filename, struct VARS *raceI)
 {
 	FILE           *file;
 
-	if ((file = fopen(raceI->file.name, "r"))) {
+	if ((file = fopen(filename, "r"))) {
 		fseek(file, 45, SEEK_CUR);
 		if (!fread(&raceI->file.compression_method, 1, 1, file)) {
-			d_log("get_rar_info: Failed to fread() %s.\n", raceI->file.name);
+			d_log("get_rar_info: Failed to fread() %s.\n", filename);
 		}
 
 		if ( ! (( 47 < raceI->file.compression_method ) && ( raceI->file.compression_method < 54 )) )

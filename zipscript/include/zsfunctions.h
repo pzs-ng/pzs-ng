@@ -122,7 +122,7 @@ extern short	subcomp(char *, char *);
 extern short	fileexists(char *);
 extern void	createlink(char *, char *, char *, char *);
 extern void	readsfv_ffile(struct VARS *);
-extern void	get_rar_info(struct VARS *);
+extern void	get_rar_info(char *, struct VARS *);
 extern int	execute(char *);
 
 #ifdef USING_GLFTPD
