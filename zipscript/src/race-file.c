@@ -127,6 +127,31 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 	return crc;
 }
 
+/*
+ * First Version: 2013.07.15	by	: Sked
+ * Description	: Gets the first filename from the sfvdata and returns it. This should be freed later.
+ */
+char *
+get_first_filename_from_sfvdata(const char *sfvdatafile)
+{
+	char	*firstfile;
+	FILE	*sfvfile;
+	SFVDATA	sd;
+
+	if (!(sfvfile = fopen(sfvdatafile, "r"))) {
+		d_log("readsfv: Failed to open sfv (%s): %s\n", sfvdatafile, strerror(errno));
+		return 0;
+	}
+
+	fread(&sd, sizeof(SFVDATA), 1, sfvfile);
+	fclose(sfvfile);
+
+	firstfile = ng_realloc2(firstfile, (strlen(sd.fname) + 1), 0, 1, 1);
+	strcpy(firstfile, sd.fname);
+
+	return firstfile;
+}
+
 void
 update_sfvdata(const char *path, const char *fname, const unsigned int crc)
 {

@@ -957,6 +957,23 @@ main(int argc, char **argv)
 						writelog(&g, convert(&g.v, g.ui, g.gi, sfv_msg), sfv_type);
 					}
 				}
+			} else if ((g.v.total.files_missing == 0) && (g.v.total.files > 0)) {
+				/* Release complete, get a random (first in the sfvdata) file
+				 * and get the relevant info from it to be used in the cookies.
+				 */
+				char *filename = get_first_filename_from_sfvdata(g.l.sfv);
+				d_log("zipscript-c: SFV received after all files, and all files present.\n");
+				switch (g.v.misc.release_type) {
+				case RTYPE_RAR:
+					get_rar_info(filename, &g.v);
+					break;
+				case RTYPE_AUDIO:
+					get_audio_info(filename, &g.v.audio);
+					break;
+				default:
+					break;
+				}
+				ng_free(filename);
 			}
 
 			if (deny_resume_sfv == TRUE) {
