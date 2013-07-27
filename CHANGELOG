@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Refactor SFV-parsing
 		- Fixed bug where not all data was available in the cookies for
 		  the complete bar when the sfv was uploaded last.
 		- Changed get_rar_info methodcall in preparation for a bugfix.

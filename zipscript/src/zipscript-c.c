@@ -839,81 +839,20 @@ main(int argc, char **argv)
 					}
 				}
 			}
-			d_log("zipscript-c: Parsing sfv and creating sfv data\n");
-			if (copysfv(g.v.file.name, g.l.sfv, &g.v)) {
-				d_log("zipscript-c: Found invalid entries in SFV.\n");
+
+			exit_value = parse_sfv(g.v.file.name, &g, dir);
+			if (!exit_value)
+				printf(zipscript_sfv_ok);
+			else {
 				write_log = g.v.misc.write_log;
 				g.v.misc.write_log = 1;
 				error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-				if (exit_value < 2)
-					writelog(&g, error_msg, bad_file_sfv_type);
-				mark_as_bad(g.v.file.name);
-				exit_value = 2;
+				writelog(&g, error_msg, bad_file_sfv_type);
 				sprintf(g.v.misc.error_msg, EMPTY_SFV);
-				unlink(g.l.race);
-				unlink(g.l.sfv);
-
-				rewinddir(dir);
-				while ((dp = readdir(dir))) {
-					cnt = cnt2 = (int)strlen(dp->d_name);
-					ext = dp->d_name;
-					while (ext[cnt] != '-' && cnt > 0)
-						cnt--;
-					if (ext[cnt] != '-')
-						cnt = cnt2;
-					else
-						cnt++;
-					ext += cnt;
-					if (!strncmp(ext, "missing", 7))
-						unlink(dp->d_name);
-				}
-
+				g.v.misc.write_log = write_log;
 				break;
 			}
 
-#if ( create_missing_sfv_link == TRUE )
-			if (g.l.sfv_incomplete) {
-				d_log("zipscript-c: Removing missing-sfv indicator (if any)\n");
-				unlink(g.l.sfv_incomplete);
-			}
-#endif
-
-#if (use_partial_on_noforce == TRUE)
-			if ( (force_sfv_first == FALSE) || matchpartialpath(noforce_sfv_first_dirs, g.l.path))
-#else
-			if ( (force_sfv_first == FALSE) || matchpath(noforce_sfv_first_dirs, g.l.path))
-#endif
-			{
-				if (fileexists(g.l.race) && fileexists(g.l.sfv)) {
-					d_log("zipscript-c: Testing files marked as untested\n");
-					testfiles(&g.l, &g.v, 0);
-				}
-			}
-			d_log("zipscript-c: Reading file count from SFV\n");
-			readsfv(g.l.sfv, &g.v, 0);
-
-			if (g.v.total.files == 0) {
-				d_log("zipscript-c: SFV seems to have no files of accepted types, or has errors.\n");
-				unlink(g.l.sfv);
-				sprintf(g.v.misc.error_msg, EMPTY_SFV);
-				mark_as_bad(g.v.file.name);
-				write_log = g.v.misc.write_log;
-				g.v.misc.write_log = 1;
-				error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
-				if (exit_value < 2)
-					writelog(&g, error_msg, bad_file_sfv_type);
-				exit_value = 2;
-				break;
-			}
-			printf(zipscript_sfv_ok);
-			if (fileexists(g.l.race)) {
-				d_log("zipscript-c: Reading race data from file to memory\n");
-				readrace(g.l.race, &g.v, g.ui, g.gi);
-			}
-			if (del_completebar) {
-				d_log("zipscript-c: Making sure that release is not marked as complete\n");
-				removecomplete();
-			}
 			d_log("zipscript-c: Setting message pointers\n");
 			sfv_type = general_announce_sfv_type;
 			switch (g.v.misc.release_type) {
@@ -976,12 +915,6 @@ main(int argc, char **argv)
 				ng_free(filename);
 			}
 
-			if (deny_resume_sfv == TRUE) {
-				if (copyfile(g.v.file.name, g.l.sfvbackup))
-					d_log("zipscript-c: failed to make backup of sfv (%s)\n", g.v.file.name);
-				else
-					d_log("zipscript-c: created backup of sfv (%s)\n", g.v.file.name);
-			}
 			break;
 			/* END OF SFV CHECK */
 
