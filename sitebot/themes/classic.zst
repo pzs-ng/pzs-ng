@@ -69,6 +69,7 @@ announce.BAD_FILE_DISALLOWED    = "%b{[%c1{%section}]} - %b{%u_name}/%g_name upl
 announce.BAD_FILE_DUPENFO       = "%b{[%c1{%section}]} - %b{%u_name}/%g_name uploaded a duplicate NFO in %b{%releasename}."
 announce.BAD_FILE_GENRE         = "%b{[%c1{%section}]} - %b{%u_name}/%g_name uploaded a banned genre in %b{%releasename}."
 announce.BAD_FILE_NOSFV         = "%b{[%c1{%section}]} - %b{%u_name}/%g_name uploaded a file in %b{%releasename} but there's no SFV."
+announce.BAD_FILE_NONFO         = "%b{[%c1{%section}]} - %b{%u_name}/%g_name uploaded a file in %b{%releasename} but there's no NFO."
 announce.BAD_FILE_SFV           = "%b{[%c1{%section}]} - %b{%u_name}/%g_name uploaded a bad SFV in %b{%releasename}."
 announce.BAD_FILE_WRONGDIR      = "%b{[%c1{%section}]} - %b{%u_name}/%g_name uploaded a file to the wrong dir in %b{%releasename}."
 announce.BAD_FILE_YEAR          = "%b{[%c1{%section}]} - %b{%u_name}/%g_name uploaded a banned year in %b{%releasename}."

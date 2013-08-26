@@ -109,6 +109,7 @@ announce.BAD_FILE_YEAR          = "[%c3{iNFO}] .: %b{%u_name}·%g_name n00bs a BA
 announce.BAD_FILE_ZIPNFO        = "[%c3{iNFO}] .: %b{%u_name}·%g_name n00bs a bloody nfo in a zip-dirs for %b{%releasename}"
 announce.BAD_FILE_ZIP           = "[%c3{iNFO}] .: %b{%u_name}·%g_name n00bs a bad zip in %b{%releasename} :."
 announce.BAD_FILE_NOSFV         = "[%c3{iNFO}] .: %b{%releasename} still has no SFV! ga-damn n00bs! :."
+announce.BAD_FILE_NONFO         = "[%c3{iNFO}] .: %b{%releasename} still has no NFO! ga-damn n00bs! :."
 announce.BAD_FILE_SFV           = "[%c3{iNFO}] .: %b{%releasename} has SFV with ERRORS! ga-damn n00bs! :."
 announce.BAD_FILE_DUPERELEASE   = "[%c3{iNFO}] .: %b{%releasename} dupe - release has previously been completed, %b{%u_name}! :."
 

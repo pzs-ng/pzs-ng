@@ -79,6 +79,7 @@ announce.BAD_FILE_DISALLOWED			= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%
 announce.BAD_FILE_DUPENFO			= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{uploaded a bad file (dupe NFO) in} %c3{%b{%releasename}}%c1{.}"
 announce.BAD_FILE_GENRE				= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{uploaded a bad file (banned genre) in} %c3{%b{%releasename}}%c1{.}"
 announce.BAD_FILE_NOSFV				= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{uploaded a bad file (no SFV uploaded yet) in} %c3{%b{%releasename}}%c1{.}"
+announce.BAD_FILE_NONFO				= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{uploaded a bad file (no NFO uploaded yet) in} %c3{%b{%releasename}}%c1{.}"
 announce.BAD_FILE_SFV				= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{uploaded a bad file (SFV with errors) in} %c3{%b{%releasename}}%c1{.}"
 announce.BAD_FILE_WRONGDIR			= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{uploaded a bad file (wrong dir) in} %c3{%b{%releasename}}%c1{.}"
 announce.BAD_FILE_YEAR				= "%b{NOTiCE%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{uploaded a bad file (banned year) in} %c3{%b{%releasename}}%c1{.}"

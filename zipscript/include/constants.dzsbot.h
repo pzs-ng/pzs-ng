@@ -113,6 +113,7 @@
 #define bad_file_wrongdir_type				"BAD_FILE_WRONGDIR"
 #define bad_file_sfv_type				"BAD_FILE_SFV"
 #define bad_file_nosfv_type				"BAD_FILE_NOSFV"
+#define bad_file_nonfo_type                             "BAD_FILE_NONFO"
 #define bad_file_genre_type				"BAD_FILE_GENRE"
 #define bad_file_year_type				"BAD_FILE_YEAR"
 #define bad_file_bitrate_type				"BAD_FILE_BITRATE"
