@@ -58,6 +58,11 @@
 #define SFV_FIRST      "CRC-Check: SFV first!"
 #endif
 
+#ifndef NFO_FIRST
+#define NFO_FIRST_is_defaulted
+#define NFO_FIRST      "NFO-Check: NFO first!"
+#endif
+
 #ifndef SPEEDTEST
 #define SPEEDTEST_is_defaulted
 #define SPEEDTEST      "BW: %.1fMiB (%.1fMB) @ %.2fMbps (%.2fMB/s)."

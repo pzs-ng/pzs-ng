@@ -55,6 +55,9 @@ printf("#define PASSWDFILE                                %s\n", stringify(PASSW
 #ifndef SFV_FIRST_is_defaulted
 printf("#define SFV_FIRST                                 %s\n", stringify(SFV_FIRST));
 #endif
+#ifndef NFO_FIRST_is_defaulted
+printf("#define NFO_FIRST                                 %s\n", stringify(NFO_FIRST));
+#endif
 #ifndef SPEEDTEST_is_defaulted
 printf("#define SPEEDTEST                                 %s\n", stringify(SPEEDTEST));
 #endif
@@ -469,6 +472,9 @@ printf("#define extract_nfo                               %s\n", (extract_nfo ==
 #ifndef force_sfv_first_is_defaulted
 printf("#define force_sfv_first                           %s\n", (force_sfv_first == FALSE ? "FALSE" : "TRUE"));
 #endif
+#ifndef force_nfo_first_is_defaulted
+printf("#define force_nfo_first                           %s\n", (force_nfo_first == FALSE ? "FALSE" : "TRUE"));
+#endif
 #ifndef get_competitor_list_is_defaulted
 printf("#define get_competitor_list                       %s\n", (get_competitor_list == FALSE ? "FALSE" : "TRUE"));
 #endif
@@ -687,6 +693,9 @@ printf("#define nocheck_dirs                              %s\n", stringify(noche
 #endif
 #ifndef noforce_sfv_first_dirs_is_defaulted
 printf("#define noforce_sfv_first_dirs                    %s\n", stringify(noforce_sfv_first_dirs));
+#endif
+#ifndef noforce_nfo_first_dirs_is_defaulted
+printf("#define noforce_nfo_first_dirs                    %s\n", stringify(noforce_nfo_first_dirs));
 #endif
 #ifndef other_completebar_is_defaulted
 printf("#define other_completebar                         %s\n", (other_completebar == DISABLED ? "DISABLED" : stringify(other_completebar)));
@@ -918,6 +927,7 @@ printf("#define GROUPFILE                                 %s\n", stringify(GROUP
 printf("#define NOT_IN_SFV                                %s\n", stringify(NOT_IN_SFV));
 printf("#define PASSWDFILE                                %s\n", stringify(PASSWDFILE));
 printf("#define SFV_FIRST                                 %s\n", stringify(SFV_FIRST));
+printf("#define NFO_FIRST                                 %s\n", stringify(NFO_FIRST));
 printf("#define SPEEDTEST                                 %s\n", stringify(SPEEDTEST));
 printf("#define UNKNOWN_FILE                              %s\n", stringify(UNKNOWN_FILE));
 printf("#define ZIP_NFO                                   %s\n", stringify(ZIP_NFO));
@@ -1056,6 +1066,7 @@ printf("#define enable_unduper_script                     %s\n", (enable_unduper
 printf("#define exclude_non_sfv_dirs                      %s\n", (exclude_non_sfv_dirs == FALSE ? "FALSE" : "TRUE"));
 printf("#define extract_nfo                               %s\n", (extract_nfo == FALSE ? "FALSE" : "TRUE"));
 printf("#define force_sfv_first                           %s\n", (force_sfv_first == FALSE ? "FALSE" : "TRUE"));
+printf("#define force_nfo_first                           %s\n", (force_nfo_first == FALSE ? "FALSE" : "TRUE"));
 printf("#define get_competitor_list                       %s\n", (get_competitor_list == FALSE ? "FALSE" : "TRUE"));
 printf("#define get_user_stats                            %s\n", (get_user_stats == FALSE ? "FALSE" : "TRUE"));
 printf("#define gl_sections                               %s\n", stringify(gl_sections));
@@ -1129,6 +1140,7 @@ printf("#define newleader_files_ahead                     %s\n", stringify(newle
 printf("#define nfo_script                                %s\n", stringify(nfo_script));
 printf("#define nocheck_dirs                              %s\n", stringify(nocheck_dirs));
 printf("#define noforce_sfv_first_dirs                    %s\n", stringify(noforce_sfv_first_dirs));
+printf("#define noforce_nfo_first_dirs                    %s\n", stringify(noforce_nfo_first_dirs));
 printf("#define other_completebar                         %s\n", (other_completebar == DISABLED ? "DISABLED" : stringify(other_completebar)));
 printf("#define program_gid                               %s\n", stringify(program_gid));
 printf("#define program_uid                               %s\n", stringify(program_uid));
