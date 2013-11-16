@@ -1,5 +1,10 @@
 PSXC-IMDB CHANGELOG:
 --------------------
+- v2.9r - Nov. 16th, 2013 - Fixed psxc-imdb not limiting Country, Language, Cert and Runtime
+			    to their configured number
+			  - Fixed bug where iMDB has an empty Language, Country, Genre, Cert or Runtime item
+			    in between seperators, causing a |_ to be prepended to a single item.
+			    See the language for Lucky Miles (2007) for example.
 - v2.9q - Feb. 17th, 2013 - Fixed psxc-imdb-find not finding anything
 - v2.9p - Dec. 22nd, 2011 - Fixed TAGLINE output having "See more >>"
 			  - Fixed bug in psxc-imdb-rescan with symlinks in the recursively scanned

@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.9p"
+VERSION="v2.9r"
 
 ######################################################################################################
 
@@ -504,7 +504,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
      OUTPUTOK=""
      break
     fi
-    GENRE=$(grep -a -e "^Genre:" "$TMPFILE" | sed "s/ See more ..*//" | sed "s/Genre:/Genre........:/" | sed s/\"/$QUOTECHAR/g | tr '|' '\n' | head -n $GENRENUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//")
+    GENRE=$(grep -a -e "^Genre:" "$TMPFILE" | sed "s/ See more ..*//" | sed "s/Genre:/Genre........:/" | sed s/\"/$QUOTECHAR/g | tr '|' '\n' | sed '/^ *$/d' | head -n $GENRENUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//")
     GENRECLEAN=$(echo $GENRE | sed "s/Genre........: *//")
     RATING="User Rating..: $(grep -A1 "^User Rating:" $TMPFILE | grep "[0-9]\.[0-9]\/[0-9][0-9]" | sed "s/^User Rating://" | sed "s/^ *//;s/ .[^ ]*$//" | sed s/\"/$QUOTECHAR/g | sed "s|/10\ |/10\ \(|"))"
     if [ "$RATING" = "User Rating..: )" ]; then
@@ -538,11 +538,11 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     if [ ! -z "$BOTTOM" ]; then
       RATINGCLEAN="$(echo "$RATINGCLEAN Bottom 100: #$BOTTOM")"
     fi
-    COUNTRY=$(grep -a -e "^Country:" "$TMPFILE" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Country:/Country......:/" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $COUNTRYNUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//")
+    COUNTRY=$(grep -a -e "^Country:" "$TMPFILE" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Country:/Country......:/" | sed s/\"/$QUOTECHAR/g | tr '|' '\n' | sed '/^ *$/d' | head -n $COUNTRYNUM | tr '\n' '|' | sed "s|/$||" | sed "s/ *$//")
     COUNTRYCLEAN=$(echo $COUNTRY | sed "s/Country......: *//")
     TAGLINE=$(grep -a -e "^Tagline:" "$TMPFILE" | sed "s/ See more ..*//" | sed "s/Tagline:/Tagline......:/" | sed s/\"/$QUOTECHAR/g | head -n 1)
     TAGLINECLEAN=$(echo $TAGLINE | sed "s/Tagline......: *//")
-    LANGUAGE=$(grep -a -e "^Language:" "$TMPFILE" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Language:/Language.....:/" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $LANGUAGENUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//")
+    LANGUAGE=$(grep -a -e "^Language:" "$TMPFILE" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Language:/Language.....:/" | sed s/\"/$QUOTECHAR/g | tr '|' '\n' | sed '/^ *$/d' | head -n $LANGUAGENUM | tr '\n' '|' | sed "s|/$||" | sed "s/ *$//")
     LANGUAGECLEAN=$(echo $LANGUAGE | sed "s/Language.....: *//")
     PLOT=$(grep -a -e "^Plot:" "$TMPFILE" | cut -d '|' -f 1 | sed "s/ Full summary ..*//;s/ See more ..*//" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\"/$QUOTECHAR/g | tr -s ' ')
     PLOTCLEAN=$(echo $PLOT | sed "s/Plot: *//")
@@ -550,7 +550,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
      OUTPUTOK=""
      break
     fi
-    CERT=$(grep -a -e "^Certification:" "$TMPFILE" | sed s/\"/$QUOTECHAR/g | tr '|' '\n' | head -n $CERTIFICATIONNUM | sed "s/(.*//g" | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//")
+    CERT=$(grep -a -e "^Certification:" "$TMPFILE" | sed s/\"/$QUOTECHAR/g | tr '|' '\n' | sed '/^ *$/d' | head -n $CERTIFICATIONNUM | sed "s/(.*//g" | tr '\n' '|' | sed "s|/$||" | sed "s/ *$//")
     CERTCLEAN=$(echo $CERT | sed "s/Certification: *//" | tr '/' '\n' | grep -a -e "[uU][sS][aA]" | tr -d ' ' | head -n 1)
     CAST=$(awk '/^Cast$/, /Directed by$/' "$TMPFILE" | awk '/^Cast$/, /Create a character page for/' | grep -a -e "\ \.\.\.\ " | sed s/\"/$QUOTECHAR/g | sed "s|.*\ \[.*\]||g" | head -n $CASTNUM)
     CASTCLEAN=$(echo "$CAST" | sed "s/\.\.\..*/|/g" | tr -s '\n' ' ' | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/ |/\,/g" | sed "s/,$//")
@@ -560,7 +560,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     COMMENTSHORTCLEAN=$(echo $COMMENTSHORT | sed "s/User Reviews: *//")
     COMMENT=$(awk '/User Reviews$/, /Was the above review useful to you. Yes No$/' "$TMPFILE" | awk '/ Author: /, /EOF/' | sed '1d;$d' | sed s/\"/$QUOTECHAR/g)
     [[ -n "$COMMENT" ]] && COMMENTCLEAN=$(echo "$COMMENT" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\{\}\"/$QUOTECHAR/g | tr '\n' '|')
-    RUNTIME=$(grep -a -e "^Runtime:" "$TMPFILE" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Runtime:/Runtime......:/" | sed s/\"/$QUOTECHAR/g | tr '/' '\n' | head -n $RUNTIMENUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//")
+    RUNTIME=$(grep -a -e "^Runtime:" "$TMPFILE" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed "s/Runtime:/Runtime......:/" | sed s/\"/$QUOTECHAR/g | tr '|' '\n' | sed '/^ *$/d' | head -n $RUNTIMENUM | tr '\n' '|' | sed "s|/$||" | sed "s/ *$//")
     RUNTIMECLEAN="$(echo $RUNTIME | sed "s/Runtime......: *//" | tr '/ ' '\n' | sed -e /^$/d | head -n 1 | tr -c -d '[:digit:]')"
     if [ ! -z "$RUNTIMECLEAN" ]; then
      RUNTIMECLEAN="$RUNTIMECLEAN min"
