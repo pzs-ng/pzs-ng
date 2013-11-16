@@ -1603,3 +1603,85 @@ read_headdata(struct VARS *raceI)
 	return type;
 }
 
+/*
+ * First version: 2013.07.21 by Sked
+ * Description	: Parses an sfv, testing any present files and
+ * removing no-sfv links and -missing files
+ * Returns 0 if everything went fine, 2 if there were problems with the SFV
+ */
+int
+parse_sfv(char *sfvfile, GLOBAL *g, DIR *dir) {
+	int cnt, cnt2;
+	char *ext = 0;
+	struct dirent *dp;
+
+	d_log("parse_sfv: Parsing sfv and creating sfv data from %s\n", sfvfile);
+	if (copysfv(sfvfile, g->l.sfv, &g->v)) {
+		d_log("parse_sfv: Found invalid entries in SFV.\n");
+		mark_as_bad(sfvfile);
+		unlink(g->l.race);
+		unlink(g->l.sfv);
+
+		rewinddir(dir);
+		while ((dp = readdir(dir))) {
+			cnt = cnt2 = (int)strlen(dp->d_name);
+			ext = dp->d_name;
+			while (ext[cnt] != '-' && cnt > 0)
+				cnt--;
+			if (ext[cnt] != '-')
+				cnt = cnt2;
+			else
+				cnt++;
+			ext += cnt;
+			if (!strncmp(ext, "missing", 7))
+				unlink(dp->d_name);
+		}
+		return 2;
+	}
+
+#if ( create_missing_sfv_link == TRUE )
+	if (g->l.sfv_incomplete) {
+		d_log("parse_sfv: Removing missing-sfv indicator (if any)\n");
+		unlink(g->l.sfv_incomplete);
+	}
+#endif
+
+#if (use_partial_on_noforce == TRUE)
+	if ( (force_sfv_first == FALSE) || matchpartialpath(noforce_sfv_first_dirs, g->l.path))
+#else
+	if ( (force_sfv_first == FALSE) || matchpath(noforce_sfv_first_dirs, g->l.path))
+#endif
+	{
+		if (fileexists(g->l.race) && fileexists(g->l.sfv)) {
+			d_log("parse_sfv: Testing files marked as untested\n");
+			testfiles(&g->l, &g->v, 0);
+		}
+	}
+	d_log("parse_sfv: Reading file count from SFV\n");
+	readsfv(g->l.sfv, &g->v, 0);
+
+	if (g->v.total.files == 0) {
+		d_log("parse_sfv: SFV seems to have no files of accepted types, or has errors.\n");
+		unlink(g->l.sfv);
+		mark_as_bad(sfvfile);
+		return 2;
+	}
+
+	if (fileexists(g->l.race)) {
+		d_log("parse_sfv: Reading race data from file to memory\n");
+		readrace(g->l.race, &g->v, g->ui, g->gi);
+	}
+	if (del_completebar) {
+		d_log("parse_sfv: Making sure that release is not marked as complete\n");
+		removecomplete();
+	}
+
+	if (deny_resume_sfv == TRUE) {
+		if (copyfile(sfvfile, g->l.sfvbackup))
+			d_log("parse_sfv: failed to make backup of sfv (%s)\n", sfvfile);
+		else
+			d_log("parse_sfv: created backup of sfv (%s)\n", sfvfile);
+	}
+
+	return 0;
+}

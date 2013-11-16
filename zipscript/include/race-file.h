@@ -43,6 +43,7 @@ typedef struct {
 
 extern unsigned int readsfv(const char *, struct VARS *, int);
 extern char *get_first_filename_from_sfvdata(const char *);
+extern int parse_sfv(char *, GLOBAL *, DIR *);
 extern void update_sfvdata(const char *, const char *, const unsigned int);
 extern void delete_sfv(const char *, struct VARS *);
 extern void readrace(const char *, struct VARS *, struct USERINFO **, struct GROUPINFO **);
