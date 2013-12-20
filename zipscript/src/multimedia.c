@@ -37,7 +37,7 @@ char *genre_s[] = {
 	"Electronic", "Pop-Folk", "Eurodance", "Dream",
 	"Southern Rock", "Comedy", "Cult", "Gangsta",
 	"Top 40", "Christian Rap", "Pop_Funk", "Jungle",
-	"Native American", "Cabaret", "New Wave", "Psychadelic",
+	"Native American", "Cabaret", "New Wave", "Psychedelic",
 	"Rave", "Showtunes", "Trailer", "Lo-Fi",
 	"Tribal", "Acid Punk", "Acid Jazz", "Polka",
 	"Retro", "Musical", "Rock & Roll", "Hard Rock",

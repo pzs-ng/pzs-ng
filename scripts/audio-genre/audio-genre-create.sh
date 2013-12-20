@@ -110,7 +110,7 @@ Power Ballad
 Pranks
 Primus
 Progressive Rock
-Psychadelic
+Psychedelic
 Psychedelic Rock
 Punk
 Punk Rock
@@ -126,7 +126,7 @@ Rock & Roll
 Salsa
 Samba
 Satire
-Showtunes"
+Showtunes
 Ska
 Slow Jam
 Slow Rock

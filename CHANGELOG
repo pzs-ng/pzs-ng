@@ -2,6 +2,12 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Change "Psychadelic" to "Psychedelic". According to ID3
+		  there is no ID3 genre standard: Q5 at http://id3.org/FAQ
+		  So if there's no chance for a fix of a non-existing standard,
+		  I quit following it and fix what's wrong with it.
+		  Any other suggestions welcome though not of the American vs British English kind.
+		- Fix typo in audio-genre-script (thanks to tittof for noticing)
 		- Updated psxc-imdb.sh, see it's changelog
 		- Refactor SFV-parsing
 		- Fixed bug where not all data was available in the cookies for
