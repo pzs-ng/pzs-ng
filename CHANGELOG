@@ -2,6 +2,10 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix configure working with glftpd 2.03
+		- Add .log to the allowed_types by default
+		- Update default allowed_years to include 2014
+		- ^--- 2014 ---^
 		- Change "Psychadelic" to "Psychedelic". According to ID3
 		  there is no ID3 genre standard: Q5 at http://id3.org/FAQ
 		  So if there's no chance for a fix of a non-existing standard,
