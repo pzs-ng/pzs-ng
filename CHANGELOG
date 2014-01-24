@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix configure working with any future glftpd v2.04 up to v2.09
 		- Fix GameFAQs sitebot plugin
 		- Fix configure working with glftpd 2.03
 		- Add .log to the allowed_types by default
