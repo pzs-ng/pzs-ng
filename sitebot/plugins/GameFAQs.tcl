@@ -20,6 +20,10 @@
 # 4. Rehash or restart your eggdrop for the changes to take effect.
 #
 # Changelog:
+# - 20140124 - Sked:	Updated systemnames & numbers
+#			Fixed regexes and more for the new site layout
+#			Added ESRB rating (K-A) and extra var _esrb_descriptor
+#			Fixed date conversion
 # - 20120107 - Sked:	Updated systemnames & numbers, ignore_dirs and
 #			 banned words in dirnames (thanks to bwqbbq and K999 for the latter)
 #			Added gamefaqs_description (Thanks to bwqbbq and K999)
@@ -30,49 +34,129 @@
 #
 # System Names & Numbers:
 #
-# Num  System               | Num  System                | Num  System
-#------------------------------------------------------------------------------------
-# 0    All Platforms        | 1    Dreamcast             | 2    Game Boy
-# 3    NeoGeo Pocket Color  | 4    Nintendo 64           | 5    PC
-# 6    PlayStation          | 7    PlayStation 2         | 8    Saturn
-# 9    Game Boy Color       | 10   Genesis               | 11   GameCube
-# 12   Game Boy Advance     | 13   Xbox                  | 14   Nuon
-# 15   3DO                  | 16   GameGear              | 17   Jaguar
-# 18   NeoGeo               | 19   NES                   | 20   Sega Master System
-# 21   SNES                 | 22   TurboGrafx-16         | 23   WonderSwan Color
-# 24   Amiga                | 25   Apple II              | 26   Arcade Games
-# 27   Arcadia 2001         | 28   Atari 2600            | 29   Atari 5200
-# 30   Atari 7800           | 31   Atari 8-bit           | 32   BBS Door
-# 33   CD-I                 | 34   Channel F             | 35   Colecovision
-# 36   Commodore 64         | 37   GP32                  | 38   Game.com
-# 39   Intellivision        | 40   Lynx                  | 41   MSX
-# 42   Macintosh            | 43   Microvision           | 44   Odyssey^2
-# 45   PC-FX                | 46   Playdia               | 47   Unix/Linux
-# 48   VIC-20               | 48   Vectrex               | 50   VirtualBoy
-# 1002 Sega CD              | 1003 Sega 32X              | 1004 Jaguar CD
-# 1005 Turbo CD             | 1006 N-Gage                | 1007 Neo-Geo CD
-# 1008 Famicom Disk System  | 1009 Pinball               | 1010 Online/Browser
-# 1011 Odyssey              | 1012 Nintendo 64DD         | 1013 e-Reader
-# 1014 Windows Mobile       | 1015 Palm OS Classic       | 1017 SG-1000
-# 1018 OS/2                 | 1019 Redemption            | 1020 APF-*1000/IM
-# 1021 Astrocade            | 1022 WonderSwan            | 1023 DVD Player
-# 1024 PSP                  | 1025 Mobile                | 1026 DS
-# 1027 Zodiac               | 1028 PlayStation 3         | 1029 Xbox 360
-# 1030 Gizmondo             | 1031 Wii                   | 1032 Sharp X68000
-# 1033 NEC PC98             | 1034 Atari ST              | 1035 Amstrad CPC
-# 1036 Tandy Color Computer | 1037 Oric 1/Atmos          | 1038 Commodore PET
-# 1039 Mattel Aquarius      | 1040 EACA Colour Genie 2000| 1041 FM Towns
-# 1042 Adventurevision      | 1043 SuperVision           | 1044 CPS Changer
-# 1045 RCA Studio II        | 1046 LaserActive           | 1047 Interton VC4000
-# 1048 CreatiVision         | 1049 iPhone/iPod           | 1050 Sinclair ZX81/Spectrum
-# 1051 TI-99/4A             | 1052 Bandai Pippin         | 1053 BBC Micro
-# 1054 Sord M5              | 1055 FM-7                  | 1056 Cassette Vision
-# 1057 Super Cassette Vision| 1058 Acorn Archimedes      | 1059 Amiga CD32
-# 1060 Casio Loopy          | 1061 Android               | 1062 Palm webOS
-# 1063 BlackBerry           | 1064 Flash                 | 1065 NEC PC88
-# 1066 Sharp X1             | 1067 Zeebo                 | 1068 3DS
-# 1069 PlayStation Vita     | 1070 Wii U
-#
+# Systemname			Abbreviation	Number
+# All Platforms			n/a		0
+# 3DO				3do		61
+# 3DS				3ds		116
+# Acorn Archimedes		arch		48
+# Adventurevision		avision		32
+# Amiga				amiga		39
+# Amiga CD32			cd32		70
+# Amstrad CPC			cpc		46
+# Android			android		106
+# APF-*1000/IM			apf1000		12
+# Apple II			appleii		8
+# Arcade Games			arcade		2
+# Arcadia 2001			a2k1		28
+# Astrocade			astrocade	7
+# Atari 2600			atari2600	6
+# Atari 5200			atari5200	20
+# Atari 7800			atari7800	51
+# Atari 8-bit			atari8bit	13
+# Atari ST			ast		38
+# Bandai Pippin			pippin		81
+# BBC Micro			bbc		22
+# BBS Door			bbs		50
+# BlackBerry			blackberry	107
+# Casio Loopy			loopy		80
+# Cassette Vision		ecv		26
+# CD-I				cdi		60
+# Channel F			channelf	4
+# Colecovision			colecovision	29
+# Commodore 64			c64		24
+# Commodore PET			pet		15
+# CPS Changer			cps		75
+# CreatiVision			cvision		23
+# Dreamcast			dreamcast	67
+# DS				ds		108
+# DVD Player			dvd		87
+# EACA Colour Genie 2000	cg2000		31
+# e-Reader			ereader		101
+# Famicom Disk System		famicomds	47
+# Flash				flash		102
+# FM-7				fm7		30
+# FM Towns			fmtowns		55
+# Game Boy			gameboy		59
+# Game Boy Advance		gba		91
+# Game Boy Color		gbc		57
+# Game.com			gamecom		86
+# GameCube			gamecube	99
+# GameGear			gamegear	62
+# Genesis			genesis		54
+# Gizmondo			gizmondo	110
+# GP32				gp32		100
+# Intellivision			intellivision	16
+# Interton VC4000		vc4000		10
+# iPhone/iPod			iphone		112
+# Jaguar			jaguar		72
+# Jaguar CD			jaguarcd	82
+# LaserActive			laser		71
+# Lynx				lynx		58
+# Macintosh			mac		27
+# Mattel Aquarius		aquarius	36
+# Microvision			microvision	17
+# Mobile			mobile		85
+# MSX				msx		40
+# NEC PC88			pc88		21
+# NEC PC98			pc98		42
+# NeoGeo			neo		64
+# Neo-Geo CD			neogeocd	68
+# NeoGeo Pocket Color		ngpc		89
+# NES				nes		41
+# N-Gage			ngage		105
+# Nintendo 64			n64		84
+# Nintendo 64DD			n64dd		92
+# Nuon				nuon		93
+# Odyssey			odyssey		3
+# Odyssey^2			odyssey2	9
+# Online/Browser		webonly		69
+# Oric 1/Atmos			oric1		44
+# OS/2				os2		73
+# Ouya				ouya		119
+# Palm OS Classic		palmos		96
+# Palm webOS			palm-webos	97
+# PC				pc		19
+# PC-FX				pcfx		79
+# Pinball			pinball		1
+# Playdia			playdia		77
+# PlayStation			ps		78
+# PlayStation 2			ps2		94
+# PlayStation 3			ps3		113
+# PlayStation 4			ps4		120
+# PlayStation Vita		vita		117
+# PSP				psp		109
+# RCA Studio II			studio2		5
+# Redemption			redemption	104
+# Saturn			saturn		76
+# Sega 32X			sega32x		74
+# Sega CD			segacd		65
+# Sega Master System		sms		49
+# SG-1000			sg1000		43
+# Sharp X1			x1		37
+# Sharp X68000			x68000		52
+# Sinclair ZX81/Spectrum	sinclair	35
+# Sord M5			sordm5		25
+# Super Cassette Vision		scv		45
+# Super Nintendo		snes		63
+# SuperVision			svision		66
+# Tandy Color Computer		coco		18
+# TI-99/4A			ti99		14
+# Turbo CD			turbocd		56
+# TurboGrafx-16			tg16		53
+# Unix/Linux			unixlinux	33
+# Vectrex			vectrex		34
+# VIC-20			vic20		11
+# Virtual Boy			virtualboy	83
+# Wii				wii		114
+# Wii U				wii-u		118
+# Windows Mobile		windows-mobile	88
+# WonderSwan			wonderswan	90
+# WonderSwan Color		wsc		95
+# Xbox				xbox		98
+# Xbox 360			xbox360		111
+# Xbox One			xboxone		121
+# Zeebo				zeebo		115
+# Zodiac			zod		103
 ################################################################################
 
 
@@ -90,7 +174,7 @@ namespace eval ::ngBot::plugin::GameFAQs {
 	##
 	##  Where Num is the system number from the above graph, and the Path
 	##  is path of the section (wildcards accepted).
-	set gamefaqs(sections) { {12 /site/incoming/gba/} {13 /site/incoming/xbox} {7 /site/incoming/ps2} {0 /site/requests/} }
+	set gamefaqs(sections) { {91 /site/incoming/gba/} {98 /site/incoming/xbox} {94 /site/incoming/ps2} {0 /site/requests/} }
 	##
 	## Timeout in milliseconds. (default: 3000)
 	set gamefaqs(timeout)  3000
@@ -104,7 +188,7 @@ namespace eval ::ngBot::plugin::GameFAQs {
 	## Private message trigger. (Leave blank to disable)
 	set gamefaqs(ptrigger) ""
 	##
-	## Date format. (URL: http://tcl.tk/man/tcl8.3/TclCmd/clock.htm)
+	## Date format. (URL: http://tcl.tk/man/tcl8.5/TclCmd/clock.htm)
 	set gamefaqs(date)     "%Y-%m-%d"
 	##
 	## Skip announce for these directories.
@@ -112,7 +196,7 @@ namespace eval ::ngBot::plugin::GameFAQs {
 	##
 	## Max chars in the description, if more, it will be trimmed
 	## to 3 less and have '...' added at the end. (default: 300)
-	set gamefaqs(desctrimlength)  300
+	set gamefaqs(desctrimlength)  250
 	##
 	## Pre line regexp.
 	##  We need to reconstruct the full path to the release. Since not all
@@ -148,10 +232,11 @@ namespace eval ::ngBot::plugin::GameFAQs {
 	set ${np}::zeroconvert(%gamefaqs_url)              "N/A"
 	set ${np}::zeroconvert(%gamefaqs_system)           "N/A"
 	set ${np}::zeroconvert(%gamefaqs_esrb)             "-"
+	set ${np}::zeroconvert(%gamefaqs_esrb_descriptor)  "N/A"
 	set ${np}::zeroconvert(%gamefaqs_description)      "N/A"
 	##
 	##################################################
-	set gamefaqs(version) "20120109"
+	set gamefaqs(version) "20140124"
 
 	variable events [list "NEWDIR" "PRE"]
 
@@ -177,7 +262,7 @@ namespace eval ::ngBot::plugin::GameFAQs {
 			return -code -1
 		}
 
-		set variables(GAMEFAQS-MSG) "%gamefaqs_title %gamefaqs_rating_users %gamefaqs_rating_internet %gamefaqs_rating %gamefaqs_genre %gamefaqs_players %gamefaqs_developer {%gamefaqs_region_title %gamefaqs_region_publisher %gamefaqs_region_date %gamefaqs_region_rating %gamefaqs_region} %gamefaqs_url %gamefaqs_system %gamefaqs_esrb %gamefaqs_description"
+		set variables(GAMEFAQS-MSG) "%gamefaqs_title %gamefaqs_rating_users %gamefaqs_rating_internet %gamefaqs_rating %gamefaqs_genre %gamefaqs_players %gamefaqs_developer {%gamefaqs_region_title %gamefaqs_region_publisher %gamefaqs_region_date %gamefaqs_region_rating %gamefaqs_region} %gamefaqs_url %gamefaqs_system %gamefaqs_esrb_descriptor %gamefaqs_esrb %gamefaqs_description"
 		set variables(GAMEFAQS) "$variables(NEWDIR) $variables(GAMEFAQS-MSG)"
 		set variables(GAMEFAQS-PRE) "$variables(PRE) $variables(GAMEFAQS-MSG)"
 
@@ -235,8 +320,13 @@ namespace eval ::ngBot::plugin::GameFAQs {
 	proc ConvertDate {string} {
 		variable gamefaqs
 
-		if {[catch {clock format [clock scan $string] -format $gamefaqs(date)} result] == 0} {
-			set string $result
+		#Default is "MM/DD/YY"
+		#Variations: "Monthname YYYY" and "YYYY" can not be processed
+		set format "%m/%d/%y"
+		if {[regexp -- {^[01][0-9]/[0-3][0-9]/[0-9][0-9]$} $string]} {
+			if {[catch {clock format [clock scan $string -format $format -locale en] -format $gamefaqs(date)} result] == 0} {
+				set string $result
+			}
 		}
 
 		return $string
@@ -351,7 +441,7 @@ namespace eval ::ngBot::plugin::GameFAQs {
 	proc FindInfo {string platform logData} {
 		variable ns
 		set output_order [list title rating_users rating_internet rating genre \
-							   players developer release_data url system esrb description]
+							   players developer release_data url system esrb_descriptor esrb description]
 
 		set string [${ns}::Cleanup $string]
 
@@ -420,49 +510,52 @@ namespace eval ::ngBot::plugin::GameFAQs {
 
 		array set info [list]
 
-		regexp -nocase -- {<div class="crumbs"><a href=".*?">(.*?)</a>} $data -> info(system)
+		regexp -nocase -- {<li class="crumb top-crumb"><a href=".*?">(.*?)</a>} $data -> info(system)
 
-		regexp -nocase -- {<div class="logo">(.*?)</div>} $data -> info(esrb)
+		regexp -nocase -- {<span class="esrb_logo [a-z_]+">(.*?) - </span>} $data -> info(esrb)
 
-		if {[regexp -nocase -- {<ul class="details title_data">(.*?)</ul>} $data -> title_data]} {
-			set title_details [regexp -inline -nocase -all -- {<li><span class="label">(.*?):</span><span class="data">(.*?)</span></li>} $title_data]
+		if {[regexp -nocase -- {<h2 class="title">Title Data</h2></div><div class="body"><dl>(.*?)</dl>} $data -> title_data]} {
+			set title_details [regexp -inline -nocase -all -- {<dt>(.*?):</dt><dd>(.*?)</dd>} $title_data]
 
 			if {[llength $title_details] > 0} {
 				foreach {{} name value} $title_details {
 					switch -exact [string tolower $name] {
 						"genre" {
-							set value [string map { "&gt;" " > " } $value]
+							set value [string map { "&gt;" ">" } $value]
 
 							set info(genre) [${ns}::ToTitle $value]
 						}
 						"developer" {
 							regexp -nocase -- {<a href=".*?">(.*?)</a>} $value -> info(developer)
 						}
-						## has this been removed ?
 						"number of players" {
 							set info(players) [${ns}::ToTitle $value]
 						}
-						## has this been removed ?
-						"esrb rating" {
-							set info(esrb) $value
+						"esrb descriptor(s)" {
+							set info(esrb_descriptor) $value
 						}
 					}
 				}
 			}
 		}
 
-		if {[regexp -nocase -- {<table class="release">(.*?)</table>} $data -> release_data]} {
-			set release_details [regexp -inline -nocase -all -- {<th scope="row">(.*?)</th><td><a href=".*?">(.*?)</a></td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td></tr>} $release_data]
+		if {[regexp -nocase -- {<h2 class="title">Release Data</h2></div><div class="body"><table class="contrib">.*?</thead><tbody>(.*?)</tbody></table>} $data -> release_data]} {
+			set release_details [regexp -inline -nocase -all -- {<tr><td class="cbox" rowspan="2">.*?</td><td class="ctitle" colspan="6"><b>(.*?)</b></td></tr><tr><td class="cregion">(.*?)</td><td class="datacompany"><a href=".*?">(.*?)</a></td><td class="datapid">(.*?)</td><td class="datapid">(.*?)</td><td class="cdate">(.*?)</td><td class="datarating">(.*?)</td></tr>} $release_data]
 
 			if {[llength $release_details] > 0} {
-				foreach {{} title publisher serial date region rating} $release_details {
+				foreach {{} title region publisher serial barcode date rating} $release_details {
 					if {[string length $date] > 4} {
 						set date [${ns}::ConvertDate $date]
 					}
 					if {[string equal -nocase $rating "&nbsp;"]} {
 						set rating ""
 					}
-
+					if {[string equal -nocase $serial "&nbsp;"]} {
+						set serial ""
+					}
+					if {[string equal -nocase $barcode "&nbsp;"]} {
+						set barcode ""
+					}
 					lappend info(release_data) $title $publisher $date $rating $region
 				}
 			}
@@ -497,13 +590,15 @@ namespace eval ::ngBot::plugin::GameFAQs {
 
 		set data [::http::data $token]
 
-		regexp -- {<tr><td.*?([0-9]{1,2}\.?[0-9]?|[\w/]+)</span>.*?([0-9]{1,2}\.?[0-9]?|[\w/]+)</span>.*?([0-9]{1,2}\.?[0-9]?|[\w/]+)</span>.*?</tr>} $data -> info(rating_users) info(rating) info(rating_internet)
+		regexp -- {<h4>Reader Review Average</h4><p><span class="score(?: no-score)?">([0-9]{1,2}\.?[0-9]?|[\w/]+)</span>.*?<p><span class="score(?: no-score)?">([0-9]{1,2}\.?[0-9]?|[\w/]+)</span>.*?<h4>([\w\s]+)</h4><p><span class="score(?: no-score)?">([0-9]{1,3}\.?[0-9]?|[\w/]+)</span>.*?</a></p></li></ul></div></div>} $data -> info(rating_users) info(rating) extrater info(rating_internet)
 
 		foreach name [array names info] {
 			if {![string is double $info($name)]} {
 				unset info($name)
 			}
 		}
+
+		if {[string match "GameRankings Average" $extrater]} { set info(rating_internet) [string map {. ""} $info(rating_internet)] }
 
 		regexp -- {<div class="details">(.*?)</div>} $data -> info(description)
 		if {[string length $info(description)] > $gamefaqs(desctrimlength)} {
@@ -572,7 +667,15 @@ namespace eval ::ngBot::plugin::GameFAQs {
 	# and 1 if rating1 is higher than rating2
 	proc CompareESRB {rating1 rating2} {
 		set flag 1
-		array set esrbratings { "" 0 "RP" 1 "EC" 2 "E" 3 "E10+" 4 "T" 5 "M" 6 "AO" 7 }
+		# Ratings used on GameFAQs:
+		# AU (Classification Board): n/a < E (Exempt) < G (General) < PG (Parental Guidance) < M (Mature) < MA (15+ Mature Accompanied) < R (18+ Restricted)
+		# EU (PEGI): n/a < 3+ < 7+ < 12+ < 16+ < 18+
+		# US (ESRB): n/a < RP (Rating Pending) < E (Everyone) = K-A (Kids to Adult) < EC (Early Childhood) < E10+ (Everyone 10+) < T (Teen) < M (Mature) < AO (Adults Only)
+		# JP (CERO): n/a < EDB (Education/Database) < A (All Ages) < B (Ages 12+) < C (Ages 15+) < D (Ages 17+) < Z (Ages 18+)
+		# SG (Media Development Authority): n/a < NAR < AGE (Age Advisory) < M18
+		# KO (Game Rating Board): n/a < ALL (All Ages) < 12 (Ages 12+) < 15 (Ages 15+) < 18 (Ages 18+) < NO (Refused Classification)
+		# As it's not easy to crosscompare, only ESRB ratings are compared
+		array set esrbratings { "" 0 "RP" 1 "E" 2 "K-A" 2 "EC" 3 "E10+" 4 "T" 5 "M" 6 "AO" 7 }
 		if {[info exists esrbratings($rating1)]} {
 			if {[info exists esrbratings($rating2)]} {
 				if {$esrbratings($rating1) < $esrbratings($rating2)} {
@@ -593,30 +696,31 @@ namespace eval ::ngBot::plugin::GameFAQs {
 
 	proc SelectPlatform {string} {
 		array set platforms {
-			dc       1	gb      2	ngpc      3	n64     4	pc      5
-			ps       6	ps2     7	sat       8	gbc     9	gen    10
-			gc      11	gba    12	xbox     13	nuon   14	3do    15
-			gg      16	jag    17	neo      18	nes    19	sms    20
-			snes    21	tg16   22	wsc      23	ami    24	apl2   25
-			arc     26	a2k1   27	2600     28	5200   29	7800   30
-			a800    31	bbs    32	cdi      33	fair   34	cvis   35
-			c64     36	gp32   37	gcom     38	intv   39	lynx   40
-			msx     41	mac    42	mvis     43	o2     44	pcfx   45
-			pld     46	unix   47	vc20     48	vecx   49	vboy   50
-			scd   1002	32x  1003	jcd    1004	tcd  1005	nge  1006
-			ngcd  1007	fds  1008	pbl    1009	web  1010	ody  1011
-			n64dd 1012	erdr 1013	winm   1014	pos  1015	sg1  1017
-			os2   1018	red  1019	apf    1020	ast  1021	ws   1022
-			dvd   1023	psp  1024	mobile 1025	ds   1026	zod  1027
-			ps3   1028	x360 1029	giz    1030	wii  1031	x68  1032
-			pc98  1033	st   1034	cpc    1035	coco 1036	oric 1037
-			pet   1038	aqu  1039	cg     1040	fmt  1041	adv  1042
-			sv    1043	cps  1044	s2     1045	la   1046	ivc  1047
-			vcv   1048	ip   1049	zx     1050	ti   1051	pip  1052
-			bbc   1053	m5   1054	fm7    1055	ecv  1056	svc  1057
-			arch  1058	cd32 1059	cl     1060	and  1061	wos  1062
-			bb    1063	fla  1064	pc88   1065	x1   1066	zb   1067
-			3ds   1068	vita 1069	wiiu   1070
+			3do 61		3ds 116		arch 48		avision 32		amiga 39
+			cd32 70		cpc 46		android 106	apf1000 12		appleii 8
+			arcade 2	a2k1 28		astrocade 7	atari2600 6		atari5200 20
+			atari7800 51	atari8bit 13	ast 38		pippin 81		bbc 22
+			bbs 50		blackberry 107	loopy 80	ecv 26			cdi 60
+			channelf 4	colecovision 29	c64 24		pet 15			cps 75
+			cvision 23	dreamcast 67	ds 108		dvd 87			cg2000 31
+			ereader 101	famicomds 47	flash 102	fm7 30			fmtowns 55
+			gameboy 59	gba 91		gbc 57		gamecom 86		gamecube 99
+			gamegear 62	genesis 54	gizmondo 110	gp32 100		intellivision 16
+			vc4000 10	iphone 112	jaguar 72	jaguarcd 82		laser 71
+			lynx 58		mac 27		aquarius 36	microvision 17		mobile 85
+			msx 40		pc88 21		pc98 42		neo 64			neogeocd 68
+			ngpc 89		nes 41		ngage 105	n64 84			n64dd 92
+			nuon 93		odyssey 3	odyssey2 9	webonly 69		oric1 44
+			os2 73		ouya 119	palmos 96	palm-webos 97		pc 19
+			pcfx 79		pinball 1	playdia 77	ps 78			ps2 94
+			ps3 113		ps4 120		vita 117	psp 109			studio2 5
+			redemption 104	saturn 76	sega32x 74	segacd 65		sms 49
+			sg1000 43	x1 37		x68000 52	sinclair 35		sordm5 25
+			scv 45		snes 63		svision 66	coco 18			ti99 14
+			turbocd 56	tg16 53		unixlinux 33	vectrex 34		vic20 11
+			virtualboy 83	wii 114		wii-u 118	windows-mobile 88	wonderswan 90
+			wsc 95		xbox 98		xbox360 111	xboxone 121		zeebo 115
+			zod 103
 		}
 
 		set string [string tolower $string]
