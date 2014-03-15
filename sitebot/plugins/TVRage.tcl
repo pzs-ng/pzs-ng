@@ -24,6 +24,7 @@
 # the egghttp.tcl is sourced before this script in your eggdrop.conf.
 #
 # Changelog:
+# - 20140315 - melange: Now does http cleanup where necessary.
 # - 20140314 - melange:	No longer hangs eggdrop event loop while getting data.
 # - 20140314 - melange: Option to use egghttp.
 # - 20140314 - melange:	Option to store episode information in a file.
@@ -46,7 +47,8 @@ namespace eval ::ngBot::plugin::TVRage {
 	variable np [namespace qualifiers [namespace parent]]
 	#variable np ""
 	##
-	set tvrage(sections) { "/site/incoming/tvxvid/" "/site/incoming/tvx264/" }
+	set tvrage(sections) { "/site/incoming/tv-rip-hd/" "/site/incoming/tv-retail-hd/" "/site/incoming/tv-rip-sd/" "/site/incoming/tv-retail-sd/" }
+#	set tvrage(sections) { "/site/incoming/tvxvid/" "/site/incoming/tvx264/" }
 	##
 	## Timeout in milliseconds. (default: 3000)
 	set tvrage(timeout)  3000
@@ -126,11 +128,11 @@ namespace eval ::ngBot::plugin::TVRage {
 	##		%rlsname_lower	As %rlsname, but lowercase.
 	##		%rlsname_upper	As %rlsname, but uppercase.
 	##		%rlsname_title	As %rlsname, but uses [string totitle].
-	set tvrage(nfo-file) ".tvrage.nfo"
+	set tvrage(nfo-file) ".tvrage"
 	##################################################
 
 	## Version
-	set tvrage(version) "20140314"
+	set tvrage(version) "20140315"
 
 	variable events [list "NEWDIR" "PRE"]
 
@@ -317,13 +319,16 @@ namespace eval ::ngBot::plugin::TVRage {
 			return 0
 		}
 	}
-	proc TriggerCallback {target data_array} {
+	proc TriggerCallback {token target data_array} {
 		variable np
+		variable http
 		set logData [LogData $data_array]
 
 		## Display full series/episode info if episode_url exists
 		set event [expr { [string equal [lindex $logData 19] ""] ? "TVRAGE-MSGSHOW" : "TVRAGE-MSGFULL" }]
 		${np}::sndone $target [${np}::ng_format $event "none" $logData]
+
+		$http(ns)cleanup $token
 
 		return 1
 	}
@@ -386,9 +391,10 @@ namespace eval ::ngBot::plugin::TVRage {
 
 		return 1
 	}
-	proc LogEventCallback {event section release logData token data_array} {
+	proc LogEventCallback {event section release logData token target data_array} {
 		variable np
 		variable tvrage
+		variable http
 
 		set logData [concat $logData [LogData $data_array]]
 		set empty 0
@@ -406,6 +412,7 @@ namespace eval ::ngBot::plugin::TVRage {
 				WriteInfoFile $event $section $release $logData
 			}
 		}
+		$http(ns)cleanup $token
 	}
 
 	proc ShowArgs {release_dir {strict true}} {
@@ -476,6 +483,7 @@ namespace eval ::ngBot::plugin::TVRage {
 
 		if {![string equal -nocase $status "ok"]} {
 			InternalError $target "Connection $status" {*}$event_args
+			$http(ns)cleanup $token
 			return
 		}
 
@@ -495,6 +503,7 @@ namespace eval ::ngBot::plugin::TVRage {
 
 		if {[string length $matches] == 0} {
 			InternalError $target "No results found for \"$show\""
+			$http(ns)cleanup $token
 			return
 		}
 
@@ -546,8 +555,10 @@ namespace eval ::ngBot::plugin::TVRage {
 
 		if {![info exists info(show_url)]} {
 			InternalError $target "Invalid results found for \"$show\"" {*}$event_args
+			$http(ns)cleanup $token
+		} {
+			{*}$callback $token $target [array get info]
 		}
-		{*}$callback $target [array get info]
 	}
 }
 
