@@ -2,6 +2,7 @@
 #                                                                              #
 #                TVRage - TV Show & Episode Pzs-ng Plug-in                     #
 #                       by Meij <meijie@gmail.com>                             #
+#     maintained by the community <irc://irc.efnet.org/#pzs-ng,#glhelp>        #
 #                                                                              #
 ################################################################################
 #
@@ -19,7 +20,13 @@
 #
 # 4. Rehash or restart your eggdrop for the changes to take effect.
 #
+# If you want to use egghttp instead of the tcllib http package, make sure that
+# the egghttp.tcl is sourced before this script in your eggdrop.conf.
+#
 # Changelog:
+# - 20140314 - melange:	No longer hangs eggdrop event loop while getting data.
+# - 20140314 - melange: Option to use egghttp.
+# - 20140314 - melange:	Option to store episode information in a file.
 # - 20110630 - Sked:	Now tested and working with ngBot - thx to mok_ for reporting
 # - 20110624 - Sked:	Change parsing to work with quickinfo API solely
 #			Removed episode votes, rating and prodnumber as not available or useless
@@ -45,6 +52,7 @@ namespace eval ::ngBot::plugin::TVRage {
 	set tvrage(timeout)  3000
 	##
 	## Announce when no data was found. (default: false)
+	## Note: this also effects output to "nfo-file".
 	set tvrage(announce-empty) false
 	##
 	## Channel trigger. (Leave blank to disable)
@@ -111,15 +119,26 @@ namespace eval ::ngBot::plugin::TVRage {
 	set ${np}::zeroconvert(%tvrage_episode_original_airdate)  "N/A"
 	set ${np}::zeroconvert(%tvrage_episode_title)             "N/A"
 	##
+	## If you want to store the information for an epsiode in a file under the
+	## release path, then specify the filename to use here (Leave empty/unset
+	## to disable). You can use these cookies in the filename:
+	##		%rlsname		The release directory name.
+	##		%rlsname_lower	As %rlsname, but lowercase.
+	##		%rlsname_upper	As %rlsname, but uppercase.
+	##		%rlsname_title	As %rlsname, but uses [string totitle].
+	set tvrage(nfo-file) ".tvrage.nfo"
 	##################################################
 
 	## Version
-	set tvrage(version) "20110630"
+	set tvrage(version) "20140314"
 
 	variable events [list "NEWDIR" "PRE"]
 
 	variable scriptFile [info script]
 	variable scriptName ${ns}::LogEvent
+
+	variable http
+	set http(useragent) "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.0.5) Gecko/2008120122 Firefox/3.0.5"
 
 	if {[string equal "" $np]} {
 		bind evnt -|- prerehash ${ns}::deinit
@@ -133,9 +152,25 @@ namespace eval ::ngBot::plugin::TVRage {
 
 		variable events
 		variable tvrage
+		variable http
 		variable scriptName
 		variable scriptFile
 
+		set http(ns) ::http::
+		set http(use_egghttp) [expr { [info exists http(use_egghttp)] && [${np}::istrue $http(use_egghttp)] }]
+
+		if {$http(use_egghttp)} {
+			if {[info exists ::egghttp(version)]} {
+				${ns}::Debug "Using egghttp instead of the tcllib http package for http connections."
+			} {
+				${ns}::Error "\"egghttp\" package not found, unloading script."
+				return -code -1
+			}
+			set http(ns) ::egghttp:
+		}
+		# Egghttp does not have a command to encode a query, so we still use
+		# the tcllib http package for the formatQuery procedure and assume
+		# UTF-8 encoding.
 		if {[catch {package require http}] != 0} {
 			${ns}::Error "\"http\" package not found, unloading script."
 			return -code -1
@@ -145,10 +180,18 @@ namespace eval ::ngBot::plugin::TVRage {
 		set variables(TVRAGE) "$variables(NEWDIR) $variables(TVRAGE-MSGFULL)"
 		set variables(TVRAGE-PRE) "$variables(PRE) $variables(TVRAGE-MSGFULL)"
 		set variables(TVRAGE-MSGSHOW) $variables(TVRAGE-MSGFULL)
+		set variables(TVRAGE-INFOFILE) $variables(TVRAGE-MSGFULL)
 
-		set theme_file [file normalize "[pwd]/[file rootname $scriptFile].zpt"]
+		# Handle the script being sourced with an absolute path.
+		if {[string index $scriptFile 0] eq "/"} {
+			set theme_file [file normalize "[file rootname $scriptFile].zpt"]
+		} {
+			set theme_file [file normalize "[pwd]/[file rootname $scriptFile].zpt"]
+		}
 		if {[file isfile $theme_file]} {
 			${np}::loadtheme $theme_file true
+		} {
+			Error "Could not find theme file \"$theme_file\", but continuing anyway."
 		}
 
 		## Register the event handler.
@@ -193,6 +236,21 @@ namespace eval ::ngBot::plugin::TVRage {
 		putlog "\[ngBot\] TVRage Error :: $error"
 	}
 
+	proc InternalError {{target {}} {msg {}} {event {}} {section {}}} {
+		variable np
+
+		set pub_msg "TVRage Error :: An internal error occured. Please ask a sysop to check the eggdrop.log for details of the error."
+
+		if {[string length $target]} {
+			${np}::sndone $target $pub_msg
+		} elseif {[string length $event]} {
+			${np}::sndall $event $section $pub_msg
+		} {
+			${np}::sndall "SYSOP" "DEFAULT" $pub_msg
+		}
+		Error [expr { [string length $msg] ? $msg : $::errorInfo}]
+	}
+
 	proc ConvertDate {string} {
 		variable tvrage
 
@@ -206,6 +264,27 @@ namespace eval ::ngBot::plugin::TVRage {
 		}
 
 		return $string
+	}
+
+	proc WriteInfoFile {event section path logData} {
+		variable np
+		variable tvrage
+
+		set release [file tail $path]
+		set path [file join [set ${np}::glroot] {*}[lrange [file split [file dirname $path]] 1 end]]
+		set file_name [string map {"%rlsname_lower" [string toupper $release} $tvrage(nfo-file)]
+		set file_name [string map {"%rlsname_upper" [string tolower $release} $tvrage(nfo-file)]
+		set file_name [string map {"%rlsname_title" [string totitle $release} $tvrage(nfo-file)]
+		set file_name [string map {"%rlsname" $release} $tvrage(nfo-file)]
+
+		if {[catch { set file_id [open [file join $path $release $file_name] "w"] }]} {
+			InternalError "" "" $event $section
+			return 0
+		}
+		puts $file_id [${np}::ng_format "TVRAGE-INFOFILE" "none" $logData]
+		close $file_id
+
+		return 1
 	}
 
 	proc Trigger {args} {
@@ -229,17 +308,22 @@ namespace eval ::ngBot::plugin::TVRage {
 			return 1
 		}
 
-		if {[catch {${ns}::FindInfo $text [list] "false"} logData] != 0} {
-			${np}::sndone $target "TVRage Error :: $logData"
+		if {[catch { set show_args [ShowArgs $text false] } fail]} {
+			${np}::sndone $target "TVRage Error :: $fail"
+			return 1
+		}
+		if {[catch { ${ns}::GetShowAndEpisode $target {*}$show_args [list ${ns}::TriggerCallback] }]} {
+			InternalError $target
 			return 0
 		}
+	}
+	proc TriggerCallback {target data_array} {
+		variable np
+		set logData [LogData $data_array]
 
 		## Display full series/episode info if episode_url exists
-		if {![string equal [lindex $logData 19] ""]} {
-			${np}::sndone $target [${np}::ng_format "TVRAGE-MSGFULL" "none" $logData]
-		} else {
-			${np}::sndone $target [${np}::ng_format "TVRAGE-MSGSHOW" "none" $logData]
-		}
+		set event [expr { [string equal [lindex $logData 19] ""] ? "TVRAGE-MSGSHOW" : "TVRAGE-MSGFULL" }]
+		${np}::sndone $target [${np}::ng_format $event "none" $logData]
 
 		return 1
 	}
@@ -250,34 +334,34 @@ namespace eval ::ngBot::plugin::TVRage {
 		variable tvrage
 
 		if {[string compare -nocase $event "NEWDIR"] == 0} {
-			set target "TVRAGE"
+			set event "TVRAGE"
 
 			set release [lindex $logData 0]
 		} else {
-			set target "TVRAGE-PRE"
+			set event "TVRAGE-PRE"
 
 			if {(![info exists tvrage(pre-regexp)]) || (![info exists tvrage(pre-path)])} {
-				${ns}::Error "Your pre-regexp or pre-path variables are not set"
+				InternalError "" "Your pre-regexp or pre-path variables are not set." $event $section
 				return 0
 			}
 
-			if {[catch {regexp -inline -nocase -- $tvrage(pre-regexp) $logData} error] != 0} {
-				${ns}::Error $error
+			if {[catch { set values [regexp -inline -nocase -- $tvrage(pre-regexp) $logData] }]} {
+				InternalError "" "" $event $section
 				return 0
 			}
 
 			if {[set cookies [regexp -inline -all -- {%([0-9]+)} $tvrage(pre-path)]] == ""} {
-				${ns}::Error "Your pre-path contains no valid cookies"
+				InternalError "" "Your pre-path contains no valid cookies." $event $section
 				return 0
 			}
 
 			set release $tvrage(pre-path)
 			foreach {cookie number} $cookies {
-				regsub -- $cookie $release [lindex $error $number] release
+				regsub -- $cookie $release [lindex $values $number] release
 			}
 		}
 
-		## Check the release directory is ignored.
+		## Check if the release directory is ignored.
 		foreach ignore [split $tvrage(ignore_dirs) " "] {
 			if {[string match -nocase $ignore [file tail $release]]} {
 				return 1
@@ -286,93 +370,132 @@ namespace eval ::ngBot::plugin::TVRage {
 
 		foreach path $tvrage(sections) {
 			if {[string match -nocase "$path*" $release]} {
-				set logLen [llength $logData]
 
-				if {[catch {${ns}::FindInfo [file tail $release] $logData} logData] != 0} {
-					${ns}::Error "$logData. ($release)"
+				if {[catch { set show_args [ShowArgs [file tail $release]] }]} {
+					InternalError "" "" $event $section
 					return 0
 				}
-
-				set empty 1
-				foreach piece [lrange $logData $logLen end] {
-					if {![string equal $piece ""]} {
-						set empty 0
-
-						break
-					}
-				}
-
-				if {($empty == 0) || ([string is true -strict $tvrage(announce-empty)])} {
-					${np}::sndall $target $section [${np}::ng_format $target $section $logData]
+				if {[catch { ${ns}::GetShowAndEpisode "" {*}$show_args [list ${ns}::LogEventCallback $event $section $release $logData] }]} {
+					InternalError "" "" $event $section
+					return 0
 				}
 
 				break
 			}
-
-
 		}
 
 		return 1
 	}
+	proc LogEventCallback {event section release logData token data_array} {
+		variable np
+		variable tvrage
 
-	proc FindInfo {string logData {strict true}} {
-		variable ns
-		set output_order [list show_name show_id show_genres show_country show_network show_status \
-						show_latest_title show_latest_episode show_latest_airdate \
-						show_next_title show_next_episode show_next_airdate \
-						show_url show_classification show_premiered \
-						show_started show_ended show_airtime show_runtime \
-						episode_url episode_season_episode episode_season episode_number \
-						episode_original_airdate episode_title]
+		set logData [concat $logData [LogData $data_array]]
+		set empty 0
 
-		set show_str $string
-		if {(![regexp -- {^(.*?)(\d+x\d+|[sS]\d+[eE]\d+).*$} $string -> show_str episode_str]) && ([string is true -strict $strict])} {
-			return -code error "Unable to parse season and episode info from \"$string\""
+		foreach element [lrange $logData [llength $logData] end] {
+			if {![string length $element]} {
+				set empty 1
+				break
+			}
+		}
+		if {!$empty || [string is true -strict $tvrage(announce-empty)]} {
+			${np}::sndall $event $section [${np}::ng_format $event $section $logData]
+
+			if {[info exists tvrage(nfo-file)] && [string length $tvrage(nfo-file)]} {
+				WriteInfoFile $event $section $release $logData
+			}
+		}
+	}
+
+	proc ShowArgs {release_dir {strict true}} {
+
+		if {![string length $release_dir]} {
+			return -code error "No show name specified."
+		}
+		if {![llength [set regexp_list [regexp -inline -- {^(.*)(?:(?:(\d+)x(\d+))|(?:[sS](\d+)[eE](\d+)))} $release_dir]]]} {
+			if {[string is true -strict $strict]} {
+				return -code error "Unable to parse show name, season and/or episode info from \"$release_dir\"."
+			}
+			# Assume that we are responding to an irc trigger.
+			lappend regexp_list "" $release_dir
 		}
 
-		set episode_season ""
-		set episode_number ""
-		catch {regexp -- {^(\d+)x(\d+)$} $episode_str -> episode_season episode_number}
-		catch {regexp -- {^[sS](\d+)[eE](\d+)$} $episode_str -> episode_season episode_number}
+		set show_str [string trim [string map {. " " _ " "} [lindex $regexp_list 1]]]
+		set episode [split [concat [join [lrange $regexp_list 2 end]]]]
 
-		regsub -all -- {[\._]} $show_str " " show_str
-		set show_str [string trim $show_str]
+		return [list $show_str [lindex $episode 0] [lindex $episode 1]]
+	}
 
-		::http::config -useragent "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.0.5) Gecko/2008120122 Firefox/3.0.5"
+	proc LogData {data_array} {
 
-		array set info [${ns}::GetShowAndEpisode $show_str $episode_season $episode_number]
+		set logData [list]
+		array set data $data_array
+		lappend output_order show_name show_id show_genres show_country show_network show_status
+		lappend output_order show_latest_title show_latest_episode show_latest_airdate
+		lappend output_order show_next_title show_next_episode show_next_airdate
+		lappend output_order show_url show_classification show_premiered
+		lappend output_order show_started show_ended show_airtime show_runtime
+		lappend output_order episode_url episode_season_episode episode_season episode_number
+		lappend output_order episode_original_airdate episode_title
 
 		foreach key $output_order {
-			if {(![info exists info($key)]) || \
-				([string equal -nocase $info($key) "&nbsp;"])} {
-				set info($key) ""
+			if {![info exists data($key)] || [string equal -nocase $data($key) "&nbsp;"]} {
+				set data($key) ""
 			}
-
-			lappend logData $info($key)
+			lappend logData $data($key)
 		}
 
 		return $logData
 	}
 
-	proc GetShowAndEpisode {show season epnumber} {
+	proc GetShowAndEpisode {target show season epnumber callback {token {}}} {
 		variable ns
 		variable tvrage
+		variable http
 
-		set token [::http::geturl "http://services.tvrage.com/tools/quickinfo.php?show=[::http::formatQuery $show]&ep=${season}x$epnumber" -timeout $tvrage(timeout)]
+		set event_args [expr { [lindex $callback 0] eq "${ns}::LogEventCallback" ? [lrange $callback 1 2] : [list] }]
 
-		if {![string equal -nocase [::http::status $token] "ok"]} {
-			return -code error "Connection [::http::status $token]"
+		if {![string length $token]} {
+			lappend command ${ns}::GetShowAndEpisode $target $show $season $epnumber $callback
+
+			# Egghttp doesn't have it's own query encoder and i'm too lazy
+			# to write one :(
+			set url "http://services.tvrage.com/tools/quickinfo.php?show=[::http::formatQuery $show]&ep=${season}x$epnumber"
+
+			if {!$http(use_egghttp)} {
+				$http(ns)config -useragent $http(useragent)
+				$http(ns)geturl $url -command $command -timeout $tvrage(timeout)
+			} {
+				$http(ns)geturl $url $command -useragent $http(useragent) -timeout $tvrage(timeout)
+			}
+			return
+		}
+
+		set status [expr { $http(use_egghttp) ? [$http(ns)errormsg $token] : [$http(ns)status $token] }]
+
+		if {![string equal -nocase $status "ok"]} {
+			InternalError $target "Connection $status" {*}$event_args
+			return
 		}
 
 		## Its pointless checking the http status, its always 200. Errors are
 		## redirected on the server to an 'Unknown Page' error page.
+		##
+		## We probably should check it anyway, as we can not guarantee
+		## behaviour, if the server gives an unexpected response (API change,
+		## bad upgrade, etc). You'd hope they would test before commiting to
+		## their production environment and ensure backwards compatibility for
+		## clients, but they have made these mistakes in the past. At the very
+		## least, we should handle redirect correctly. Maybe fix it one day :p
 
 		## Removal of the <pre>-tag and splitting in key-value pairs, taking into account that value might be empty
-		set data [string replace [::http::data $token] 0 4]
+		set data [string replace [$http(ns)data $token] 0 4]
 		set matches [regexp -inline -nocase -all -- {(.[^@]+)@([^\n\r]*)(?:[\n\r]*)} $data]
 
 		if {[string length $matches] == 0} {
-			return -code error "No results found for \"$show\""
+			InternalError $target "No results found for \"$show\""
+			return
 		}
 
 		foreach {{} key value} $matches {
@@ -422,12 +545,10 @@ namespace eval ::ngBot::plugin::TVRage {
 		}
 
 		if {![info exists info(show_url)]} {
-			return -code error "Invalid results found for \"$show\""
+			InternalError $target "Invalid results found for \"$show\"" {*}$event_args
 		}
-
-		return [array get info]
+		{*}$callback $target [array get info]
 	}
-
 }
 
 if {[string equal "" $::ngBot::plugin::TVRage::np]} {
