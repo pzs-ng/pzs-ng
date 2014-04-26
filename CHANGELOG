@@ -2,7 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
-		- Fix ng-chown being unable to change usernames when a user_name was given
+		- Fix ng-chown being unable to change usernames when a user_name was given (thanks to tittof for noticing)
 		- Added warnings to ng-chown when zsconfig-settings conflict with given params
 		- Fix configure working with any future glftpd v2.04 up to v2.09
 		- Fix GameFAQs sitebot plugin
