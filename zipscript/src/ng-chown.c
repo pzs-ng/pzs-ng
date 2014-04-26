@@ -67,21 +67,29 @@ main(int argc, char *argv[])
 		printf("%s - Syntax: %s <uid> <gid> <uid_flag> <gid_flag> <files_flag> <dir/file_flag> <user name> <group name> <name of dir/file>\n", argv[0], argv[0]);
 		return 1;
 	}
-	
+
 	new_user = strtol(argv[1], NULL, 10);	/* uid of user */
 	new_group = strtol(argv[2], NULL, 10);	/* gid of user */
-	
+
 	if (allow_uid_change_in_ng_chown)
 		user_flag = strtol(argv[3], NULL, 10);	/* change the uid of the files/dir if > 0      */
+	else if (strtol(argv[3], NULL, 10))
+		printf("%s - Warning: allow_uid_change_in_ng_chown is FALSE while uid_flag was given as %s\n", argv[0], argv[3]);
 
 	if (allow_gid_change_in_ng_chown)
 		group_flag = strtol(argv[4], NULL, 10);	/* change the gid of the files/dir if > 0      */
+	else if (strtol(argv[4], NULL, 10))
+		printf("%s - Warning: allow_gid_change_in_ng_chown is FALSE while gid_flag was given as %s\n", argv[0], argv[4]);
 
 	if (allow_files_chown_in_ng_chown)
 		files_flag = strtol(argv[5], NULL, 10);	/* make changes on the files in the dir if > 0 */
-		
+	else if (strtol(argv[5], NULL, 10))
+		printf("%s - Warning: allow_files_chown_in_ng_chown is FALSE while files_flag was given as %s\n", argv[0], argv[5]);
+
 	if (allow_dir_chown_in_ng_chown)
 		dir_flag = strtol(argv[6], NULL, 10);	/* make changes on the dir itself if > 0       */
+	else if (strtol(argv[6], NULL, 10))
+		printf("%s - Warning: allow_dir_chown_in_ng_chown is FALSE while dir/file_flag was given as %s\n", argv[0], argv[6]);
 
 	if ((new_user == 0) && (new_group == 0)) {
 		if ((int)strlen(argv[7]) < 25)
@@ -89,7 +97,7 @@ main(int argc, char *argv[])
 		if ((int)strlen(argv[8]) < 25)
 			new_group = (int)get_glgid(GROUPFILE, argv[8]);
 	}
-	
+
 	if (((int)strlen(argv[9]) < PATH_MAX) && (new_user < 65536) && (new_group < 65535)) {
 		sprintf(my_path, "%s", argv[9]);
 	} else {
@@ -98,7 +106,7 @@ main(int argc, char *argv[])
 	}
 
 	my_result = myscan(my_result, new_user, new_group, user_flag, group_flag, files_flag, dir_flag, my_path, argv[0]);
-	
+
 	if (my_result == 0) {
 		if ((new_user > 0) || (new_group > 0)) {
 			if (setuid(0) == -1) {
@@ -121,7 +129,7 @@ main(int argc, char *argv[])
 		printf("\t- allow_dir_chown_in_ng_chown  : %s - flag set to %d (was %d)\n", !allow_dir_chown_in_ng_chown ? "FALSE" : "TRUE ", dir_flag, (int)strtol(argv[6], NULL, 10));
 		printf("If you see a allow_* setting above here as FALSE where you have it TRUE in the zsconfig.h - please do:\nmake distclean; ./configure && make install && chmod +s /glftpd/bin/ng-chown\n(or have your op/sitetech/whoever do it) and try again.\n");
 	}
-	
+
 	return my_result;
 }
 
@@ -295,9 +303,9 @@ get_gluid(char *passwdfile, char *user_name)
 				while (f_buf[m] != ':' && m > l_start)
 					m--;
 #if (change_spaces_to_underscore_in_ng_chown)
-				if ((m != i) && m == (int)strlen(u_modname) && !strcmp(u_name, u_modname)) {
+				if ((m != i) && !strcmp(u_name, u_modname)) {
 #else
-				if ((m != i) && m == (int)strlen(user_name) && !strcmp(u_name, user_name)) {
+				if ((m != i) && !strcmp(u_name, user_name)) {
 #endif
 					u_id = strtol(f_buf + m + 1, NULL, 10);
 					break;
