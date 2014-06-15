@@ -752,7 +752,7 @@ removecomplete()
         char            deref_link[PATH_MAX];
         ssize_t         len;
 
-        if (message_file_name != DISABLED && !message_file_name && lstat(message_file_name, &fileinfo) != -1) {
+        if (message_file_name != DISABLED && message_file_name && lstat(message_file_name, &fileinfo) != -1) {
                 if (S_ISLNK(fileinfo.st_mode) && stat(message_file_name, &fileinfo) != -1 && (len = readlink(message_file_name, deref_link, sizeof(deref_link)-1)) != -1) {
                         d_log("removecomplete: message_file_name is a symlink: %s points to %s\n", message_file_name, deref_link);
                         deref_link[len] = '\0';
