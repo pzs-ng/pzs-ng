@@ -1035,7 +1035,9 @@ namespace eval ::ngBot {
 					putlog "\[ngBot\] Error :: Unable to parse ping reply \"$firstreply\", please report to pzs-ng developers."
 				}
 				set reply [lindex [split $reply "\n"] end]
-				if {[regexp {rtt min/avg/max/mdev = ([^/]+)/([^/]+)/([^/]+)/(\S+) ms} $reply -> min avg max mdev]} {
+				# Match iputils and GNU inetutils/BSD version
+				if {[regexp {rtt min/avg/max/mdev = ([^/]+)/([^/]+)/([^/]+)/(\S+) ms} $reply -> min avg max mdev] ||
+					[regexp {round-trip min/avg/max/stddev = ([^/]+)/([^/]+)/([^/]+)/(\S+) ms} $reply -> min avg max mdev]} {
 					set min [format "%.1fms" $min]
 					set avg [format "%.1fms" $avg]
 					set max [format "%.1fms" $max]
