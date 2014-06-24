@@ -39,6 +39,9 @@ namespace eval ::ngBot::plugin::AutoOp {
     ## Permissions! Who get's opped in chan?
     ## Leave the default to op siteops, nukers and users with flag +J
     variable permsAutoOp "1 A"
+    ## AutoVoice - implemented by [piLL]
+#    variable permsAutoVoice "1 =NUKERS"
+    variable permsAutoVoice "1 =NUKERS"
     ##################################################
 
     ####
@@ -110,6 +113,7 @@ namespace eval ::ngBot::plugin::AutoOp {
         variable ns
         variable np
         variable permsAutoOp
+		variable permsAutoVoice
 
         set ftpUser [${ns}::GetFtpUser $nick]
         if {$ftpUser == ""} { return }
@@ -119,7 +123,10 @@ namespace eval ::ngBot::plugin::AutoOp {
                 pushmode $channel +o $nick
                 putlog "\[ngBot\] AutoOp :: Gave OP to $nick ($ftpUser) in $channel"
             }
+			if {[${np}::rightscheck $permsAutoVoice $ftpUser $group $flags]} {
+				pushmode $channel +v $nick
+				putlog "\[ngBot\] AutoOp :: Gave VOICE to $nick ($ftpUser) in $channel"
+			}
         }
-
     }
 }
