@@ -1,65 +1,72 @@
-#################################################################################
-# ngBot - AutoOp Users on their flags                                           #
-#################################################################################
+################################################################################
+# ngBot - AutoIRCFlag Gives users an IRC flag depending on their flags         #
+################################################################################
 #
 # Author: Pee
+# mod by: Sked
 # 
 # Description:
-# - You need to have NickDb.tcl loaded.
 # - Based on Whois.tcl by Compieter & E-Liquid
-# - Will give op to ppl depending on their flags
+# - Will give a defined IRC flag to ppl depending on their flags
 #
 # Installation:
-# 1. Add the following to your eggdrop.conf:
-#    source pzs-ng/plugins/AutoOp.tcl
+# 1. You need to have NickDb.tcl loaded.
 #
-# 2. Add the following lines to your ngBot.conf:
-#    (NOTE BY PSXC: This is already done)
+# 2. Add the following to your eggdrop.conf:
+#    source pzs-ng/plugins/AutoIRCFlag.tcl
+#
+# Now redundant as already present
+# 3. Add the following lines to your ngBot.conf:
 #    set variables(WHOIS)   "%msg"
 #    set redirect(WHOIS)    $staffchan
 #    set disable(WHOIS)     0
 #
-#    and add "WHOIS" at the end of your msgtypes(DEFAULT) line.
-#    (NOTE BY PSXC: This is already done)
+#    Add "WHOIS" at the end of your msgtypes(DEFAULT) line.
 #
-# 3. Add the following line to your theme file:
-#    (NOTE BY PSXC: This is already done)
+#    Add the following line to your theme file:
 #    announce.WHOIS = "%b{[WHOIS]} %msg"
 #
 # 4. Rehash or restart your eggdrop for the changes to take effect.
 #
-#################################################################################
+################################################################################
 
-namespace eval ::ngBot::plugin::AutoOp {
+namespace eval ::ngBot::plugin::AutoIRCFlag {
     variable ns [namespace current]
     variable np [namespace qualifiers [namespace parent]]
+    variable perms
 
     ## Config Settings ###############################
     ##
-    ## Permissions! Who get's opped in chan?
-    ## Leave the default to op siteops, nukers and users with flag +J
-    variable permsAutoOp "1 A"
+    ## Permissions! Who get's which flags in chan?
+    ## Format: IRCFLAG "SITEFLAG =GROUPNAME -USERNAME"
+    ##  with IRCFLAG the mode used on the ircd (ie o, v, h ...)
+    ## Leave the default to op siteops (flag 1) and users with flag +A
+    ##  and give normal users (flag 3) voice
+    array set perms {
+      o "1 A"
+      v "3"
+    }
     ##################################################
 
     ####
-    # AutoOp::Init
+    # AutoIRCFlag::Init
     #
     # Called on initialization; registers the event handler. Yeah, nothing fancy.
     #
     proc init {args} {
         if {![namespace exists [namespace parent]::NickDb]} {
-            putlog "\[ngBot\] AutoOp Error :: Unable to find NickDb plugin."
+            putlog "\[ngBot\] AutoIRCFlag Error :: Unable to find NickDb plugin."
             return -code -1
         }
 
         namespace import [namespace parent]::NickDb::*
 
         ## Bind event callbacks.
-        bind join -|- * [namespace current]::GiveOp
+        bind join -|- * [namespace current]::GiveIRCFlag
     }
 
     ####
-    # AutoOp::DeInit
+    # AutoIRCFlag::DeInit
     #
     # Called on rehash; unregisters the event handler.
     #
@@ -68,7 +75,7 @@ namespace eval ::ngBot::plugin::AutoOp {
     }
 
     ####
-    # AutoOp::GetInfo
+    # AutoIRCFlag::GetInfo
     #
     # gets $group and $flags from the userfile
     #
@@ -80,7 +87,7 @@ namespace eval ::ngBot::plugin::AutoOp {
         set file "$location(USERS)/$ftpUser"
         # Linux will give an error if you open a directory and try to read from it.
         if {![file isfile $file]} {
-            putlog "\[ngBot\] AutoOp Error :: Invalid user file for \"$ftpUser\" ($file)."
+            putlog "\[ngBot\] AutoIRCFlag Error :: Invalid user file for \"$ftpUser\" ($file)."
             return 0
         }
 
@@ -96,30 +103,31 @@ namespace eval ::ngBot::plugin::AutoOp {
             }
             return 1
         } else {
-            putlog "\[ngBot\] AutoOp Error :: Unable to open user file for \"$ftpUser\" ($error)."
+            putlog "\[ngBot\] AutoIRCFlag Error :: Unable to open user file for \"$ftpUser\" ($error)."
             return 0
         }
     }
 
     ####
-    # AutoOp::GiveOp
+    # AutoIRCFlag::GiveIRCFlag
     #
-    # Op IRC users depending on their ftp flags
+    # Give IRC users an IRC flag depending on their site flags
     #
-    proc GiveOp {nick host handle channel} {
+    proc GiveIRCFlag {nick host handle channel} {
         variable ns
         variable np
-        variable permsAutoOp
+        variable perms
 
         set ftpUser [${ns}::GetFtpUser $nick]
         if {$ftpUser == ""} { return }
 
         if {[${ns}::GetInfo $ftpUser group flags]} {
-            if {[${np}::rightscheck $permsAutoOp $ftpUser $group $flags]} {
-                pushmode $channel +o $nick
-                putlog "\[ngBot\] AutoOp :: Gave OP to $nick ($ftpUser) in $channel"
+            foreach mode [array names perms] {
+                if {[${np}::rightscheck $perms($mode) $ftpUser $group $flags]} {
+                    pushmode $channel +$mode $nick
+                    putlog "\[ngBot\] AutoIRCFlag :: Gave +$mode to $nick ($ftpUser) in $channel"
+                }
             }
         }
-
     }
 }
