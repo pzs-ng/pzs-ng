@@ -129,7 +129,7 @@ main (int argc, char **argv)
 			debug_out("%s: Unable to fopen() %s for appending.\n", argv[0], log);
 			return 0;
 		}
-		fprintf(glfile, "%.24s DLTEST: \"%s\" {%s} {%s} {%.2f} {%.2f} {%.1f} {%.1f}\n", ctime(&timenow), wdir, user, group, mbps, mbytesps, mbit, mbyte);
+		fprintf(glfile, "%.24s DLTEST: \"%s\" {%s} {%s} {%.2f} {%.2f} {%.1f} {%.1f}\n", ctime(&timenow), wdir, user, group, mbps, mbytesps, mbyte, mbit);
 		fclose(glfile);
 	}
 	return 0;
