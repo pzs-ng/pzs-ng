@@ -20,6 +20,7 @@
 # 4. Rehash or restart your eggdrop for the changes to take effect.
 #
 # Changelog:
+# - 20140723 - Sked:	Add socks5 proxy support, needs tclcurl (based on code by crx)
 # - 20110630 - Sked:	Now tested and working with ngBot - thx to mok_ for reporting
 # - 20110624 - Sked:	Change parsing to work with quickinfo API solely
 #			Removed episode votes, rating and prodnumber as not available or useless
@@ -38,6 +39,15 @@ namespace eval ::ngBot::plugin::TVRage {
 	## Choose one of two settings, the first when using ngBot, the second when using dZSbot
 	variable np [namespace qualifiers [namespace parent]]
 	#variable np ""
+	##
+	## Proxy settings
+	## If you set proxy host it will use proxy. Keep it "" for no proxy.
+	## For the type, options are http/socks4/socks5 or others depending on the TclCurl version
+	set tvrage(proxytype) "socks5"
+	set tvrage(proxyhost) ""
+	set tvrage(proxyport) 8080
+	set tvrage(proxyuser) "username"
+	set tvrage(proxypass) "password"
 	##
 	set tvrage(sections) { "/site/incoming/tvxvid/" "/site/incoming/tvx264/" }
 	##
@@ -114,7 +124,9 @@ namespace eval ::ngBot::plugin::TVRage {
 	##################################################
 
 	## Version
-	set tvrage(version) "20110630"
+	set tvrage(version) "20140723"
+	## Useragent
+	set tvrage(useragent) "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.0.5) Gecko/2008120122 Firefox/3.0.5"
 
 	variable events [list "NEWDIR" "PRE"]
 
@@ -136,9 +148,17 @@ namespace eval ::ngBot::plugin::TVRage {
 		variable scriptName
 		variable scriptFile
 
-		if {[catch {package require http}] != 0} {
-			${ns}::Error "\"http\" package not found, unloading script."
-			return -code -1
+		# If string length nonzero, we require TclCurl
+		if {[string length $tvrage(proxyhost)]} {
+			if {[catch {package require TclCurl}]} {
+				${ns}::Error "\"TclCurl\" package not found, unloading script."
+				return -code -1
+			}
+		} else {
+			if {[catch {package require http}]} {
+				${ns}::Error "\"http\" package not found, unloading script."
+				return -code -1
+			}
 		}
 
 		set variables(TVRAGE-MSGFULL) "%tvrage_show_name %tvrage_show_id %tvrage_show_genres %tvrage_show_country %tvrage_show_network %tvrage_show_status %tvrage_show_latest_title %tvrage_show_latest_episode %tvrage_show_latest_airdate %tvrage_show_next_title %tvrage_show_next_episode %tvrage_show_next_airdate %tvrage_show_url %tvrage_show_classification %tvrage_show_premiered %tvrage_show_started %tvrage_show_ended %tvrage_show_airtime %tvrage_show_runtime %tvrage_episode_url %tvrage_episode_season_episode %tvrage_episode_season %tvrage_episode_number %tvrage_episode_original_airdate %tvrage_episode_title"
@@ -338,8 +358,6 @@ namespace eval ::ngBot::plugin::TVRage {
 		regsub -all -- {[\._]} $show_str " " show_str
 		set show_str [string trim $show_str]
 
-		::http::config -useragent "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.0.5) Gecko/2008120122 Firefox/3.0.5"
-
 		array set info [${ns}::GetShowAndEpisode $show_str $episode_season $episode_number]
 
 		foreach key $output_order {
@@ -358,17 +376,27 @@ namespace eval ::ngBot::plugin::TVRage {
 		variable ns
 		variable tvrage
 
-		set token [::http::geturl "http://services.tvrage.com/tools/quickinfo.php?show=[::http::formatQuery $show]&ep=${season}x$epnumber" -timeout $tvrage(timeout)]
+		# init data
+		set data ""
+		if {[string length $tvrage(proxyhost)]} {
+			curl::transfer -url "http://services.tvrage.com/tools/quickinfo.php?show=[curl::escape $show]&ep=${season}x$epnumber" -proxy $tvrage(proxyhost):$tvrage(proxyport) -proxytype $tvrage(proxytype) -proxyuserpwd $tvrage(proxyuser):$tvrage(proxypass) -useragent $tvrage(useragent) -bodyvar token -timeoutms $tvrage(timeout)
+			## Removal of the <pre>-tag and splitting in key-value pairs, taking into account that value might be empty
+			set data [string replace $token 0 4]
+		} else {
+			::http::config -useragent $tvrage(useragent)
+			set token [::http::geturl "http://services.tvrage.com/tools/quickinfo.php?show=[::http::formatQuery $show]&ep=${season}x$epnumber" -timeout $tvrage(timeout)]
 
-		if {![string equal -nocase [::http::status $token] "ok"]} {
-			return -code error "Connection [::http::status $token]"
+			if {![string equal -nocase [::http::status $token] "ok"]} {
+				return -code error "Connection [::http::status $token]"
+			}
+
+			## Its pointless checking the http status, its always 200. Errors are
+			## redirected on the server to an 'Unknown Page' error page.
+
+			## Removal of the <pre>-tag and splitting in key-value pairs, taking into account that value might be empty
+			set data [string replace [::http::data $token] 0 4]
 		}
 
-		## Its pointless checking the http status, its always 200. Errors are
-		## redirected on the server to an 'Unknown Page' error page.
-
-		## Removal of the <pre>-tag and splitting in key-value pairs, taking into account that value might be empty
-		set data [string replace [::http::data $token] 0 4]
 		set matches [regexp -inline -nocase -all -- {(.[^@]+)@([^\n\r]*)(?:[\n\r]*)} $data]
 
 		if {[string length $matches] == 0} {

@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Added socks5 proxy support for TVRage sitebot plugin (based on code by crx)
 		- Fix swapped arguments in dl_speedtest (fixed by rbt)
 		- Enhance AutoOp sitebot plugin to handle any availible IRC mode. Renamed to AutoIRCFlag.
 		- Fixed bug #535: !bnc command failing to parse ping reply on BSD
