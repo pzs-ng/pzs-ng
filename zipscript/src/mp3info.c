@@ -252,6 +252,12 @@ get_id3(mp3info * mp3, struct audio *audio)
 				ignore = fread(mp3->id3.album, 1, 30, mp3->file);
 				mp3->id3.album[30] = '\0';
 				ignore = fread(mp3->id3.year, 1, 4, mp3->file);
+				if ((!isdigit(mp3->id3.year[0])) ||
+				    (!isdigit(mp3->id3.year[1])) ||
+				    (!isdigit(mp3->id3.year[2])) ||
+				    (!isdigit(mp3->id3.year[3]))) {
+					memset(mp3->id3.year, '0', 4);
+				}
 				mp3->id3.year[4] = '\0';
 				ignore = fread(mp3->id3.comment, 1, 30, mp3->file);
 				mp3->id3.comment[30] = '\0';
