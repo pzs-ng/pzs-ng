@@ -182,8 +182,30 @@ get_audio_info(char *f, struct audio *audio)
 		strip_chars(audio->id3_artist, BAD_STR);
 		strip_chars(audio->id3_title, BAD_STR);
 		strip_chars(audio->id3_album, BAD_STR);
+		/* convert 'k' and 'o' to numbers and verify all are digits */
+		if (tolower(audio->id3_year[1]) == 'k') { /* like 2k2 */
+			audio->id3_year[3] = audio->id3_year[2];
+			audio->id3_year[1] = audio->id3_year[2] = '0';
+		} else if (tolower(audio->id3_year[1]) == 'o' ||
+				tolower(audio->id3_year[2]) == 'o' ||
+				tolower(audio->id3_year[3]) == 'o') {
+			if (tolower(audio->id3_year[1]) == 'o') { /* like 2oo2 */
+				audio->id3_year[1] = '0';
+			}
+			if (tolower(audio->id3_year[2]) == 'o') {
+				audio->id3_year[2] = '0';
+			}
+			if (tolower(audio->id3_year[3]) == 'o') {
+				audio->id3_year[3] = '0';
+			}
+		}
+		if (!isdigit(audio->id3_year[0]) ||
+				!isdigit(audio->id3_year[1]) ||
+				!isdigit(audio->id3_year[2]) ||
+				!isdigit(audio->id3_year[3])) {
+			memset(audio->id3_year, '0', 4);
+		}
 	}
-
 }
 
 /*

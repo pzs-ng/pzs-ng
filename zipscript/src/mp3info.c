@@ -252,28 +252,6 @@ get_id3(mp3info * mp3, struct audio *audio)
 				ignore = fread(mp3->id3.album, 1, 30, mp3->file);
 				mp3->id3.album[30] = '\0';
 				ignore = fread(mp3->id3.year, 1, 4, mp3->file);
-				if (tolower(mp3->id3.year[1]) == 'k') { /* like 2k2 */
-					mp3->id3.year[3] = mp3->id3.year[2];
-					mp3->id3.year[1] = mp3->id3.year[2] = '0';
-				} else if (tolower(mp3->id3.year[1]) == 'o' ||
-						tolower(mp3->id3.year[2]) == 'o' ||
-						tolower(mp3->id3.year[3]) == 'o') {
-					if (tolower(mp3->id3.year[1]) == 'o') { /* like 2oo2 */
-						mp3->id3.year[1] = '0';
-					}
-					if (tolower(mp3->id3.year[2]) == 'o') {
-						mp3->id3.year[2] = '0';
-					}
-					if (tolower(mp3->id3.year[3]) == 'o') {
-						mp3->id3.year[3] = '0';
-					}
-				}
-				if (!isdigit(mp3->id3.year[0]) ||
-						!isdigit(mp3->id3.year[1]) ||
-						!isdigit(mp3->id3.year[2]) ||
-						!isdigit(mp3->id3.year[3])) {
-					memset(mp3->id3.year, '0', 4);
-                                }
 				mp3->id3.year[4] = '\0';
 				ignore = fread(mp3->id3.comment, 1, 30, mp3->file);
 				mp3->id3.comment[30] = '\0';
