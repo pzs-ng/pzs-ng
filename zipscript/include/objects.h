@@ -69,6 +69,7 @@ struct audio {
 	char		bitrate   [5];
 	char		samplingrate[6];
 	char           *id3_genre;
+	unsigned char   id3_genre_id;
 	char           *layer;
 	char           *codec;
 	char           *channelmode;

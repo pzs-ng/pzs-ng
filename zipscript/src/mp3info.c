@@ -228,20 +228,20 @@ sameConstant(mp3header * h1, mp3header * h2)
 int 
 get_id3(mp3info * mp3, struct audio *audio)
 {
-	int		retcode = 0;
+	int		retcode = 1;
 	char		fbuf      [4];
 	int		ignore = 0;
 
-	if (mp3->datasize >= 128) {
+	if (mp3->datasize > 128) {
 		if (fseek(mp3->file, -128, SEEK_END)) {
 			fprintf(stderr, "ERROR: Couldn't read last 128 bytes of %s!!\n", mp3->filename);
 			retcode |= 4;
 		} else {
 			ignore = fread(fbuf, 1, 3, mp3->file);
 			fbuf[3] = '\0';
-			mp3->id3.genre[0] = 255;
 
 			if (!strcmp((const char *)"TAG", (const char *)fbuf)) {
+				retcode = 0;
 				mp3->id3_isvalid = 1;
 				mp3->datasize -= 128;
 				fseek(mp3->file, -125, SEEK_END);
@@ -252,12 +252,28 @@ get_id3(mp3info * mp3, struct audio *audio)
 				ignore = fread(mp3->id3.album, 1, 30, mp3->file);
 				mp3->id3.album[30] = '\0';
 				ignore = fread(mp3->id3.year, 1, 4, mp3->file);
-				if ((!isdigit(mp3->id3.year[0])) ||
-				    (!isdigit(mp3->id3.year[1])) ||
-				    (!isdigit(mp3->id3.year[2])) ||
-				    (!isdigit(mp3->id3.year[3]))) {
-					memset(mp3->id3.year, '0', 4);
+				if (tolower(mp3->id3.year[1]) == 'k') { /* like 2k2 */
+					mp3->id3.year[3] = mp3->id3.year[2];
+					mp3->id3.year[1] = mp3->id3.year[2] = '0';
+				} else if (tolower(mp3->id3.year[1]) == 'o' ||
+						tolower(mp3->id3.year[2]) == 'o' ||
+						tolower(mp3->id3.year[3]) == 'o') {
+					if (tolower(mp3->id3.year[1]) == 'o') { /* like 2oo2 */
+						mp3->id3.year[1] = '0';
+					}
+					if (tolower(mp3->id3.year[2]) == 'o') {
+						mp3->id3.year[2] = '0';
+					}
+					if (tolower(mp3->id3.year[3]) == 'o') {
+						mp3->id3.year[3] = '0';
+					}
 				}
+				if (!isdigit(mp3->id3.year[0]) ||
+						!isdigit(mp3->id3.year[1]) ||
+						!isdigit(mp3->id3.year[2]) ||
+						!isdigit(mp3->id3.year[3])) {
+					memset(mp3->id3.year, '0', 4);
+                                }
 				mp3->id3.year[4] = '\0';
 				ignore = fread(mp3->id3.comment, 1, 30, mp3->file);
 				mp3->id3.comment[30] = '\0';
@@ -265,19 +281,30 @@ get_id3(mp3info * mp3, struct audio *audio)
 					mp3->id3.track[0] = mp3->id3.comment[29];
 				}
 				ignore = fread(mp3->id3.genre, 1, 1, mp3->file);
+
 				unpad(mp3->id3.title);
 				unpad(mp3->id3.artist);
 				unpad(mp3->id3.album);
 				unpad(mp3->id3.year);
 				unpad(mp3->id3.comment);
 
-				memcpy(&(audio->id3_artist), &(mp3->id3.artist), sizeof(mp3->id3.artist));
-				memcpy(&(audio->id3_title), &(mp3->id3.title), sizeof(mp3->id3.title));
-				memcpy(&(audio->id3_album), &(mp3->id3.album), sizeof(mp3->id3.album));
-				memcpy(&(audio->id3_year), &(mp3->id3.year), sizeof(mp3->id3.year));
+				memcpy(&(audio->id3_artist), &(mp3->id3.artist), sizeof(audio->id3_artist));
+				memcpy(&(audio->id3_title), &(mp3->id3.title), sizeof(audio->id3_title));
+				memcpy(&(audio->id3_album), &(mp3->id3.album), sizeof(audio->id3_album));
+				memcpy(&(audio->id3_year), &(mp3->id3.year), sizeof(audio->id3_year));
+				audio->id3_genre_id = mp3->id3.genre[0];
 			}
 		}
 	}
+
+	if (retcode) {
+		strcpy(audio->id3_year, "0000");
+		strcpy(audio->id3_title, "Unknown");
+		strcpy(audio->id3_artist, "Unknown");
+		strcpy(audio->id3_album, "Unknown");
+		audio->id3_genre_id = 255;
+        }
+
 	return retcode;
 }
 

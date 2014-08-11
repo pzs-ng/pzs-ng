@@ -196,7 +196,6 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 {
 	int		fd;
 	int		n;
-	int		tag_ok = 0;
 	unsigned char	header[4];
 	unsigned char	vbr_header[4];
 	unsigned char	xing_header1[4], xing_header2[4], xing_header3[4];
@@ -205,7 +204,6 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 	unsigned char	version;
 	unsigned char	layer;
 	unsigned char	protected = 1;
-	unsigned char	t_genre;
 	unsigned char	t_bitrate;
 	unsigned char	t_samplingrate;
 	unsigned char	channelmode;
@@ -226,8 +224,7 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 	d_log("multimedia.c: get_mpeg_audio_info() - starting: %s\n", f);
 
 	fd = open(f, O_RDONLY);
-	if (fd < 0)
-	{
+	if (fd < 0) {
 		d_log("multimedia.c: get_mpeg_audio_info() - could not open file '%s': %s\n", f, strerror(errno));
 		strcpy(audio->id3_year, "0000");
 		strcpy(audio->id3_title, "Unknown");
@@ -456,42 +453,6 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 		if (memcmp(fraunhofer_header, "VBRI", 4) == 0) {
 			strcpy(audio->vbr_version_string, "FHG");
 		}
-		/* ID3 TAG */
-		lseek(fd, -128, SEEK_END);
-		if (read(fd, header, 3) == -1) {
-			d_log("multimedia.c: get_mpeg_audio_info() - read() for header failed - may lead to unexpected result.\n");
-		}
-		if (memcmp(header, "TAG", 3) == 0) {	/* id3 tag */
-			tag_ok = 1;
-			if (read(fd, audio->id3_title, 30) == -1) {
-				d_log("multimedia.c: get_mpeg_audio_info() - read() for audio->id3_title failed - may lead to unexpected result.\n");
-			}
-			if (read(fd, audio->id3_artist, 30) == -1) {
-				d_log("multimedia.c: get_mpeg_audio_info() - read() for audio->id3_artist failed - may lead to unexpected result.\n");
-			}
-			if (read(fd, audio->id3_album, 30) == -1) {
-				d_log("multimedia.c: get_mpeg_audio_info() - read() for audio->id3_album failed - may lead to unexpected result.\n");
-			}
-			if (read(fd, audio->id3_year, 4) == -1) {
-				d_log("multimedia.c: get_mpeg_audio_info() - read() for audio->id3_year failed - may lead to unexpected result.\n");
-			}
-			if (tolower(audio->id3_year[1]) == 'k') {
-				memcpy(header, audio->id3_year, 3);
-				sprintf(audio->id3_year, "%c00%c", *header, *(header + 2));
-			}
-			lseek(fd, -1, SEEK_END);
-			if (read(fd, &t_genre, 1) == -1) {
-				d_log("multimedia.c: get_mpeg_audio_info() - read() for t_genre failed - may lead to unexpected result.\n");
-			}
-			if (t_genre > genre_count - 1)
-				t_genre = genre_count - 1;
-
-			audio->id3_genre = genre_s[t_genre];
-			audio->id3_year[4] =
-				audio->id3_artist[30] =
-				audio->id3_title[30] =
-				audio->id3_album[30] = 0;
-		}
 	} else {		/* header is broken, shouldnt crc fail? */
 		strcpy(audio->samplingrate, "0");
 		strcpy(audio->bitrate, "0");
@@ -500,16 +461,15 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 		audio->channelmode = chanmode_s[4];
 	}
 
-	if (tag_ok == 0) {
-		strcpy(audio->id3_year, "0000");
-		strcpy(audio->id3_title, "Unknown");
-		strcpy(audio->id3_artist, "Unknown");
-		strcpy(audio->id3_album, "Unknown");
-		audio->id3_genre = genre_s[genre_count - 1];
-	}
 	close(fd);
 
+	/* Get ID3 info and avg bitrate if VBR */
 	get_mp3_info(f, audio);
+	/* map genre id to string */
+	if (audio->id3_genre_id > genre_count - 1) {
+		audio->id3_genre_id = genre_count - 1;
+	}
+	audio->id3_genre = genre_s[audio->id3_genre_id];
 
 	d_log("multimedia.c: get_mpeg_audio_info() - values: id3_artist: %s, id3_title: %s, id3_album: %s, id3_year: %s, bitrate: %s, samplingrate: %s\n",
 			audio->id3_artist, audio->id3_title, audio->id3_album, audio->id3_year, audio->bitrate, audio->samplingrate);
