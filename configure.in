@@ -10,6 +10,11 @@ AC_CANONICAL_HOST
 dnl Checks for programs.
 AC_PROG_CC
 
+if test -d /usr/local/include; then
+    CFLAGS="$CFLAGS -I/usr/local/include"
+    LDFLAGS="$LDFLAGS -L/usr/local/lib"
+fi
+
 if [[ "$CC" = "gcc" ]]; then
 	CFLAGS="$CFLAGS -W -Wall -Wundef -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline"
 fi
@@ -107,7 +112,7 @@ AC_ARG_ENABLE(flac, AS_HELP_STRING([--disable-flac], [disable flacinfo support])
 FLAC_HEADERS=""
 AS_IF([test "x$enable_flac" != xno], [
               AC_CHECK_HEADERS([FLAC/metadata.h FLAC/format.h],[AC_SUBST([FLAC_HEADERS], ["-DHAVE_FLAC_HEADERS"])
-                  AC_SUBST([LDFLAGS], ["-lFLAC"])],
+                  AC_SUBST([LDFLAGS], ["$LDFLAGS -lFLAC"])],
                 [if test "x$enable_flac" != xcheck; then
                   AC_MSG_ERROR([Couldn't find required flacheaders. Install libflac development files if you want to have flacinfo support.])
                  fi]
