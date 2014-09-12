@@ -2,6 +2,8 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix overwriting of LDFLAGS when enabling FLAC (fixed by tittof)
+		- Make configure more portable
 		- Remove bashisms from the configure script
 		- Move mp3 year checking code so it applies on flac files too
 		- Clean up mp3 tag info gathering
