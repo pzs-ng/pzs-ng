@@ -4520,13 +4520,12 @@ fi
                If you're NOT using glftpd, use --disable-glftpd-specific. Quitting!" "$LINENO" 5
       fi
       glversion="`strings $INSTALLPATH/bin/glftpd | grep -i '^glftpd ' | cut -c8-11 | tr -d '.'``file $INSTALLPATH/bin/glftpd | cut -d':' -f2 | cut -c6,7`"
-      #echo "$v" | grep -E "^(132)|(200)|(201)$"
-      if [ "$glversion" = "13232" ] || [ "$glversion" = "20032" ] || [ "$glversion" = "20132" ] || [ "$glversion" = "20164" ] || [[ "$glversion" =~ 20[2-9]32 ]] || [[ "$glversion" =~ 20[2-9]64 ]]; then
+      if [ `echo "$glversion" | grep -E "^(13232|20032|(20[1-9](32|64)))$"` ]; then
         glusevers="$glversion"
-        if [[ "$glversion" =~ 20[2-9]32 ]]; then
+        if [ `echo "$glversion" | grep -E "20[2-9]32"` ]; then
           glusevers="20232"
         else
-          if [[ "$glversion" =~ 20[2-9]64 ]]; then
+          if [ `echo "$glversion" | grep -E "20[2-9]64"` ]; then
             glusevers="20264"
           fi
         fi
