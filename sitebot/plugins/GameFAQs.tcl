@@ -20,6 +20,8 @@
 # 4. Rehash or restart your eggdrop for the changes to take effect.
 #
 # Changelog:
+# - 20140915 - Sked:	Adjusted regexes for rating and description
+#			Only user and internet ratings remain, but added amount of votes
 # - 20140124 - Sked:	Updated systemnames & numbers
 #			Fixed regexes and more for the new site layout
 #			Added ESRB rating (K-A) and extra var _esrb_descriptor
@@ -220,7 +222,7 @@ namespace eval ::ngBot::plugin::GameFAQs {
 	set ${np}::zeroconvert(%gamefaqs_title)            "N/A"
 	set ${np}::zeroconvert(%gamefaqs_rating_users)     "-"
 	set ${np}::zeroconvert(%gamefaqs_rating_internet)  "-"
-	set ${np}::zeroconvert(%gamefaqs_rating)           "-"
+	set ${np}::zeroconvert(%gamefaqs_rating_uservotes) "-"
 	set ${np}::zeroconvert(%gamefaqs_genre)            "N/A"
 	set ${np}::zeroconvert(%gamefaqs_players)          "?"
 	set ${np}::zeroconvert(%gamefaqs_developer)        "N/A"
@@ -262,7 +264,7 @@ namespace eval ::ngBot::plugin::GameFAQs {
 			return -code -1
 		}
 
-		set variables(GAMEFAQS-MSG) "%gamefaqs_title %gamefaqs_rating_users %gamefaqs_rating_internet %gamefaqs_rating %gamefaqs_genre %gamefaqs_players %gamefaqs_developer {%gamefaqs_region_title %gamefaqs_region_publisher %gamefaqs_region_date %gamefaqs_region_rating %gamefaqs_region} %gamefaqs_url %gamefaqs_system %gamefaqs_esrb_descriptor %gamefaqs_esrb %gamefaqs_description"
+		set variables(GAMEFAQS-MSG) "%gamefaqs_title %gamefaqs_rating_users %gamefaqs_rating_internet %gamefaqs_rating_uservotes %gamefaqs_genre %gamefaqs_players %gamefaqs_developer {%gamefaqs_region_title %gamefaqs_region_publisher %gamefaqs_region_date %gamefaqs_region_rating %gamefaqs_region} %gamefaqs_url %gamefaqs_system %gamefaqs_esrb_descriptor %gamefaqs_esrb %gamefaqs_description"
 		set variables(GAMEFAQS) "$variables(NEWDIR) $variables(GAMEFAQS-MSG)"
 		set variables(GAMEFAQS-PRE) "$variables(PRE) $variables(GAMEFAQS-MSG)"
 
@@ -440,7 +442,7 @@ namespace eval ::ngBot::plugin::GameFAQs {
 
 	proc FindInfo {string platform logData} {
 		variable ns
-		set output_order [list title rating_users rating_internet rating genre \
+		set output_order [list title rating_users rating_internet rating_uservotes genre \
 							   players developer release_data url system esrb_descriptor esrb description]
 
 		set string [${ns}::Cleanup $string]
@@ -590,17 +592,16 @@ namespace eval ::ngBot::plugin::GameFAQs {
 
 		set data [::http::data $token]
 
-		regexp -- {<h4>Reader Review Average</h4><p><span class="score(?: no-score)?">([0-9]{1,2}\.?[0-9]?|[\w/]+)</span>.*?<p><span class="score(?: no-score)?">([0-9]{1,2}\.?[0-9]?|[\w/]+)</span>.*?<h4>([\w\s]+)</h4><p><span class="score(?: no-score)?">([0-9]{1,3}\.?[0-9]?|[\w/]+)</span>.*?</a></p></li></ul></div></div>} $data -> info(rating_users) info(rating) extrater info(rating_internet)
+		regexp -- {<div class="subsection-title">Rating:<br/><div .*?><a href.*?>([0-5]\.[0-9]{2}) / 5</a></div><p class="rate">([0-9]+) total votes</p></div></div>} $data -> info(rating_users) info(rating_uservotes)
+		regexp -- {<div class="title">MetaCritic MetaScore</div><div .*?>([0-9]+)</div>} $data -> info(rating_internet)
 
 		foreach name [array names info] {
-			if {![string is double $info($name)]} {
+			if {![string is double $info($name)] && ![string is integer $info($name)]} {
 				unset info($name)
 			}
 		}
 
-		if {[string match "GameRankings Average" $extrater]} { set info(rating_internet) [string map {. ""} $info(rating_internet)] }
-
-		regexp -- {<div class="details">(.*?)</div>} $data -> info(description)
+		regexp -- {<h2 class="title">Description</h2></div><div class="body game_desc"><div class="desc">(.*?)</div></div></div>} $data -> info(description)
 		if {[string length $info(description)] > $gamefaqs(desctrimlength)} {
 			set desctrimmed [string range $info(description) 0 [expr $gamefaqs(desctrimlength) - 4]]
 			set info(description) $desctrimmed...

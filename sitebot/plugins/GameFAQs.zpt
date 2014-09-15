@@ -4,11 +4,11 @@
 #                                                                            #
 ##############################################################################
 
-announce.GAMEFAQS               = "[%b{game-info}][%section] %b{%gamefaqs_title} %gamefaqs_rating/10 URL: %gamefaqs_url\n[%b{game-info}][%section] Release Date: %loop1"
+announce.GAMEFAQS               = "[%b{game-info}][%section] %b{%gamefaqs_title} %gamefaqs_rating_users/5 URL: %gamefaqs_url\n[%b{game-info}][%section] Release Date: %loop1"
 announce.GAMEFAQS_LOOP1         = "%gamefaqs_region: %gamefaqs_region_date%splitter"
 
-announce.GAMEFAQS-PRE           = "[%b{game-info}][%section] %b{%gamefaqs_title} %gamefaqs_rating/10 URL: %gamefaqs_url\n[%b{game-info}][%section] Release Date: %loop1"
+announce.GAMEFAQS-PRE           = "[%b{game-info}][%section] %b{%gamefaqs_title} %gamefaqs_rating_users/5 URL: %gamefaqs_url\n[%b{game-info}][%section] Release Date: %loop1"
 announce.GAMEFAQS-PRE_LOOP1     = "%gamefaqs_region: %gamefaqs_region_date%splitter"
 
-announce.GAMEFAQS-MSG           = "[%b{game-info}] %b{%gamefaqs_title} %gamefaqs_rating/10 (users: %gamefaqs_rating_users/10 - internet: %gamefaqs_rating_internet/100) URL: %gamefaqs_url\n[%b{game-info}] %gamefaqs_description\n[%b{game-info}] Genre: %gamefaqs_genre, Players: %gamefaqs_players, System: %gamefaqs_system\n[%b{game-info}] Developer: %gamefaqs_developer, ESRB: %gamefaqs_esrb, Descriptor(s): %gamefaqs_esrb_descriptor%loop1"
+announce.GAMEFAQS-MSG           = "[%b{game-info}] %b{%gamefaqs_title} %gamefaqs_rating_users/5 (%gamefaqs_rating_uservotes votes - internet: %gamefaqs_rating_internet/100) URL: %gamefaqs_url\n[%b{game-info}] %gamefaqs_description\n[%b{game-info}] Genre: %gamefaqs_genre, Players: %gamefaqs_players, System: %gamefaqs_system\n[%b{game-info}] Developer: %gamefaqs_developer, ESRB: %gamefaqs_esrb, Descriptor(s): %gamefaqs_esrb_descriptor%loop1"
 announce.GAMEFAQS-MSG_LOOP1     = "\n[%b{game-info}] Release Data: %gamefaqs_region: %gamefaqs_region_date (%gamefaqs_region_title by %gamefaqs_region_publisher rated %gamefaqs_region_rating)"

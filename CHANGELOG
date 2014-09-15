@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix GameFAQs sitebot plugin's rating and description
 		- Fix overwriting of LDFLAGS when enabling FLAC (fixed by tittof)
 		- Make configure more portable
 		- Remove bashisms from the configure script
