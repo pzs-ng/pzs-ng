@@ -1,7 +1,7 @@
 CC=@CC@
 MAKE=@MAKE@
 
-CFLAGS=@CFLAGS@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -W -Wall -Wundef -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline -I../include/
+CFLAGS=@CFLAGS@ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE @DEFS@ -W -Wall -Wundef -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline -I../include/ -I../../
 
 all: racedatatest sfvdatatest headdatatest
 

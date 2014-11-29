@@ -34,8 +34,9 @@
  #define _ALT_MAX
 #endif
 
-
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include "objects.h"
 #include "macros.h"

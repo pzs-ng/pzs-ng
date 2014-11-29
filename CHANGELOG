@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fixed "make utils" not able to compile (thanks to tittof for noticing)
 		- Fix GameFAQs sitebot plugin's rating and description
 		- Fix overwriting of LDFLAGS when enabling FLAC (fixed by tittof)
 		- Make configure more portable
