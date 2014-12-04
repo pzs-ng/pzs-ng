@@ -3,15 +3,15 @@
 log="/ftp-data/logs/glftpd.log"
 
 if [ -z "$1" ] || [ ! -z "$2" ] ; then
- echo -e "\nUsage: SITE INVITE <irc-nick>\n"
+ printf "\nUsage: SITE INVITE <irc-nick>\n\n"
  exit 0
 fi
 
-badchars=`echo -n "$1" | tr -d "[a-z][A-Z][0-9]|\-_^]["`
+badchars=$(printf "%s" "$1" | tr -d "[a-z][A-Z][0-9]|\-_^][")
 if [ ! -z "$badchars" ]; then
- echo -e "\nERROR - Invalid characters in nick: $badchars\n"
+ printf "\nERROR - Invalid characters in nick: %s\n\n" "$badchars"
  exit 0
 fi
 
-echo `/bin/date '+%a %b %d %X %Y'` INVITE: \"$1\" \"$USER\" \"$GROUP\" \"$FLAGS\" \"$TAGLINE\" >> "$log"
-echo -e "\nInvited $USER with nick $1 \n"
+printf "%s INVITE: \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"\n" "$(/bin/date '+%a %b %d %T %Y')" "$1" "$USER" "$GROUP" "$FLAGS" "$TAGLINE" >> "$log"
+printf "\nInvited %s with nick %s\n\n" "$USER" "$1"
