@@ -1009,6 +1009,17 @@ options:
             announce, but the file along with the entire dir will be removed.
         default: false
 
+    crc_algo:
+        type: integer
+        valid_values:
+            - CRC_STANDARD
+            - CRC_SLICEBY4
+            - CRC_SLICEBY8
+        comment: |-
+            The crc-algorithm to be used. Normally sliceby8 > sliceby4 > standard,
+            but on some limited hardware this order is different.
+        default: CRC_SLICEBY8
+
     create_m3u:
         type: boolean
         comment: |-

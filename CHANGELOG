@@ -2,6 +2,10 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Implemented slice-by-4/8 based on Stephan Brumme's cpp code.
+		  Introducing a new config option: crc_algo where you can decide
+		  to keep using the standard algo or slice-by-4 or slice-by-8 (default).
+		  This code is used when rescanning or when you don't use calc_crc in glftpd.
 		- Fixed "make utils" not able to compile (thanks to tittof for noticing)
 		- Fix GameFAQs sitebot plugin's rating and description
 		- Fix overwriting of LDFLAGS when enabling FLAC (fixed by tittof)

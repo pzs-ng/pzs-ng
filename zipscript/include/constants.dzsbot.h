@@ -19,6 +19,10 @@
 #define BAR_DIR				1
 #define BAR_OFF				2
 
+#define CRC_STANDARD			0
+#define CRC_SLICEBY4			1
+#define CRC_SLICEBY8			2
+
 #define DISABLED			NULL
 
 #define FILE_MAX			256

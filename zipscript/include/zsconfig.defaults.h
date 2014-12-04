@@ -315,6 +315,11 @@
 #define complete_script                           "/bin/nfo_copy.sh"
 #endif
 
+#ifndef crc_algo
+#define crc_algo_is_defaulted
+#define crc_algo                                  CRC_SLICEBY8
+#endif
+
 #ifndef create_incomplete_links_in_group_dirs
 #define create_incomplete_links_in_group_dirs_is_defaulted
 #define create_incomplete_links_in_group_dirs     TRUE

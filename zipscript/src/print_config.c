@@ -241,6 +241,9 @@ printf("#define combine_path                              %s\n", (combine_path =
 #ifndef complete_script_is_defaulted
 printf("#define complete_script                           %s\n", stringify(complete_script));
 #endif
+#ifndef crc_algo_is_defaulted
+printf("#define crc_algo                                  %s\n", stringify(crc_algo));
+#endif
 #ifndef create_incomplete_links_in_group_dirs_is_defaulted
 printf("#define create_incomplete_links_in_group_dirs     %s\n", (create_incomplete_links_in_group_dirs == FALSE ? "FALSE" : "TRUE"));
 #endif
@@ -980,6 +983,7 @@ printf("#define cleanupdirs                               %s\n", stringify(clean
 printf("#define cleanupdirs_dated                         %s\n", stringify(cleanupdirs_dated));
 printf("#define combine_path                              %s\n", (combine_path == FALSE ? "FALSE" : "TRUE"));
 printf("#define complete_script                           %s\n", stringify(complete_script));
+printf("#define crc_algo                                  %s\n", stringify(crc_algo));
 printf("#define create_incomplete_links_in_group_dirs     %s\n", (create_incomplete_links_in_group_dirs == FALSE ? "FALSE" : "TRUE"));
 printf("#define create_m3u                                %s\n", (create_m3u == FALSE ? "FALSE" : "TRUE"));
 printf("#define create_missing_files                      %s\n", (create_missing_files == FALSE ? "FALSE" : "TRUE"));
