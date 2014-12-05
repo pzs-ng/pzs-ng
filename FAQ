@@ -128,3 +128,8 @@ A: This is most likely a result of a mismatch between libs outside and inside
      do 'make distclean; ./configure && make install' and then run libcopy.
      This step is usually not necessary.
 
+Q: (ZIPSCRIPT) I enabled audiosorting, recompiled and made the base sortingdirs, but no sorting occurs?
+Or more general: I enabled X, recompiled, but X still seems disabled?
+-------------------------------------------------------------------------------------------------------
+A: make distclean; ./configure && make install
+   Don't forget to add your options to configure if necessary.
