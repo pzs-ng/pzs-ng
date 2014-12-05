@@ -242,7 +242,9 @@ printf("#define combine_path                              %s\n", (combine_path =
 printf("#define complete_script                           %s\n", stringify(complete_script));
 #endif
 #ifndef crc_algo_is_defaulted
-printf("#define crc_algo                                  %s\n", stringify(crc_algo));
+printf("#define crc_algo                                  %s\n", (crc_algo == CRC_STANDARD ? "CRC_STANDARD" :
+								 (crc_algo == CRC_SLICEBY4 ? "CRC_SLICEBY4" :
+								 (crc_algo == CRC_SLICEBY8 ? "CRC_SLICEBY8" : stringify(crc_algo)))));
 #endif
 #ifndef create_incomplete_links_in_group_dirs_is_defaulted
 printf("#define create_incomplete_links_in_group_dirs     %s\n", (create_incomplete_links_in_group_dirs == FALSE ? "FALSE" : "TRUE"));
@@ -809,7 +811,9 @@ printf("#define speedtest_delfile                         %s\n", (speedtest_delf
 printf("#define speedtest_dirs                            %s\n", stringify(speedtest_dirs));
 #endif
 #ifndef status_bar_type_is_defaulted
-printf("#define status_bar_type                           %s\n", stringify(status_bar_type));
+printf("#define status_bar_type                           %s\n", (status_bar_type == BAR_OFF ? "BAR_OFF" :
+								 (status_bar_type == BAR_DIR ? "BAR_DIR" :
+								 (status_bar_type == BAR_FILE ? "BAR_FILE" : stringify(status_bar_type)))));
 #endif
 #ifndef storage_is_defaulted
 printf("#define storage                                   %s\n", stringify(storage));
@@ -983,7 +987,9 @@ printf("#define cleanupdirs                               %s\n", stringify(clean
 printf("#define cleanupdirs_dated                         %s\n", stringify(cleanupdirs_dated));
 printf("#define combine_path                              %s\n", (combine_path == FALSE ? "FALSE" : "TRUE"));
 printf("#define complete_script                           %s\n", stringify(complete_script));
-printf("#define crc_algo                                  %s\n", stringify(crc_algo));
+printf("#define crc_algo                                  %s\n", (crc_algo == CRC_STANDARD ? "CRC_STANDARD" :
+								 (crc_algo == CRC_SLICEBY4 ? "CRC_SLICEBY4" :
+								 (crc_algo == CRC_SLICEBY8 ? "CRC_SLICEBY8" : stringify(crc_algo)))));
 printf("#define create_incomplete_links_in_group_dirs     %s\n", (create_incomplete_links_in_group_dirs == FALSE ? "FALSE" : "TRUE"));
 printf("#define create_m3u                                %s\n", (create_m3u == FALSE ? "FALSE" : "TRUE"));
 printf("#define create_missing_files                      %s\n", (create_missing_files == FALSE ? "FALSE" : "TRUE"));
@@ -1172,7 +1178,9 @@ printf("#define sleep_on_bad                              %s\n", stringify(sleep
 printf("#define spaces_to_dots                            %s\n", (spaces_to_dots == FALSE ? "FALSE" : "TRUE"));
 printf("#define speedtest_delfile                         %s\n", (speedtest_delfile == FALSE ? "FALSE" : "TRUE"));
 printf("#define speedtest_dirs                            %s\n", stringify(speedtest_dirs));
-printf("#define status_bar_type                           %s\n", stringify(status_bar_type));
+printf("#define status_bar_type                           %s\n", (status_bar_type == BAR_OFF ? "BAR_OFF" :
+								 (status_bar_type == BAR_DIR ? "BAR_DIR" :
+								 (status_bar_type == BAR_FILE ? "BAR_FILE" : stringify(status_bar_type)))));
 printf("#define storage                                   %s\n", stringify(storage));
 printf("#define strict_path_match                         %s\n", (strict_path_match == FALSE ? "FALSE" : "TRUE"));
 printf("#define strict_sfv_check                          %s\n", (strict_sfv_check == FALSE ? "FALSE" : "TRUE"));
