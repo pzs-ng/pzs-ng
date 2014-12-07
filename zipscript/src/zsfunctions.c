@@ -16,7 +16,14 @@
 #include "race-file.h"
 #include "crc.h"
 
-#include <strl/strl.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#ifndef HAVE_STRLCPY
+# include "strl/strl.h"
+#endif
+
 #include <stdarg.h>
 
 int		num_groups = 0, num_users = 0;

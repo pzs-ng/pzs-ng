@@ -1,6 +1,10 @@
 #include <string.h>
 #include <errno.h>
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #ifndef HAVE_STRLCPY
 # include "strl/strl.h"
 #endif
