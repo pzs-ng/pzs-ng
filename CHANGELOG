@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fixed compilation on BSD and OSX (thanks to tittof and Hujer)
 		- Prettified output at --(full)config of status_bar_type and crc_algo
 		- Fixed bugs in invite.sh outputting "-e" and bad timeformat (fixed by rbt)
 		- Implemented slice-by-4/8 based on Stephan Brumme's cpp code.
