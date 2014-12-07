@@ -4449,8 +4449,11 @@ case $host in
 		CFLAGS="$CFLAGS -D_SunOS_"
 		SUNOBJS="strsep.o scandir.o"
 		;;
-	*bsd*|*darwin*)
+	*bsd*)
 		CFLAGS="$CFLAGS -D_BSD_"
+		;;
+	*darwin*)
+		CFLAGS="$CFLAGS -D_OSX_"
 		;;
 esac
 
