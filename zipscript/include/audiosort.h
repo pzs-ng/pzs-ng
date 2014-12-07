@@ -1,5 +1,5 @@
 #ifndef _AUDIOSORT_H_
-#define _AUDIOSORT_H__
+#define _AUDIOSORT_H_
 
 #include "objects.h"
 
