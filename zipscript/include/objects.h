@@ -15,7 +15,7 @@
  #define _LIMITS_H_
  #if defined(_SunOS_)
   #include <syslimits.h>
- #elif defined(_BSD_)
+ #elif defined(_BSD_) || defined(_OSX_)
   #include <sys/syslimits.h>
  #else
   #include <limits.h>
