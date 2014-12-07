@@ -629,14 +629,14 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 
 	if (music > rars) {
 		if (video > music)
-			type = (video >= others ? 4 : 2);
+			type = (video >= others ? RTYPE_VIDEO : RTYPE_OTHER);
 		else
-			type = (music >= others ? 3 : 2);
+			type = (music >= others ? RTYPE_AUDIO : RTYPE_OTHER);
 	} else {
 		if (video > rars)
-			type = (video >= others ? 4 : 2);
+			type = (video >= others ? RTYPE_VIDEO : RTYPE_OTHER);
 		else
-			type = (rars >= others ? 1 : 2);
+			type = (rars >= others ? RTYPE_RAR : RTYPE_OTHER);
 	}
 
 #if ( sfv_cleanup == FALSE )
