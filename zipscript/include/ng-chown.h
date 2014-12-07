@@ -4,10 +4,8 @@
 #include <sys/types.h>
 
 int 
-#if defined(__linux__)
+#if defined(__linux__) || defined(_OSX_) || defined(_BSD_)
 selector3(const struct dirent *d);
-#elif defined(__NetBSD__)
-selector3 (const struct dirent *d);
 #else
 selector3(struct dirent *d);
 #endif
@@ -20,4 +18,3 @@ gid_t get_glgid(char *, char *);
 void *ng_realloc3(void *, int);
 void *ng_free3(void *);
 #endif
-

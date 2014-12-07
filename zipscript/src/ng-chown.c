@@ -134,9 +134,7 @@ main(int argc, char *argv[])
 }
 
 int 
-#if defined(__linux__)
-selector3(const struct dirent *d)
-#elif defined(__NetBSD__)
+#if defined(__linux__) || defined(_OSX_) || defined(_BSD_)
 selector3(const struct dirent *d)
 #else
 selector3(struct dirent *d)
