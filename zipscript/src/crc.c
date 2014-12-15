@@ -16,9 +16,9 @@
   typedef unsigned __int8  uint8_t;
   typedef unsigned __int32 uint32_t;
   typedef          __int32  int32_t;
-  #define __LITTLE_ENDIAN 1234
-  #define __BIG_ENDIAN    4321
-  #define __BYTE_ORDER    __LITTLE_ENDIAN
+  #define LITTLE_ENDIAN 1234
+  #define BIG_ENDIAN    4321
+  #define BYTE_ORDER    LITTLE_ENDIAN
 #else
   /* uint8_t, uint32_t, in32_t */
   #include <stdint.h>
@@ -29,6 +29,29 @@
     #include <sys/endian.h>
   #else
     #include <endian.h>
+  #endif
+#endif
+
+/* verify we can use the needed defines */
+#ifndef BYTE_ORDER
+  #ifdef _BYTE_ORDER /* some bsd versions/compilations */
+    #define BYTE_ORDER _BYTE_ORDER
+    #define BIG_ENDIAN _BIG_ENDIAN
+    #define LITTLE_ENDIAN _LITTLE_ENDIAN
+  #elif defined(__BYTE_ORDER) /* some linux versions/compilations */
+    #define BYTE_ORDER __BYTE_ORDER
+    #define BIG_ENDIAN __BIG_ENDIAN
+    #define LITTLE_ENDIAN __LITTLE_ENDIAN
+  #elif defined(_LITTLE_ENDIAN) /* some systems don't have a *BYTE_ORDER but define one of the methods instead */
+    #define BYTE_ORDER _LITTLE_ENDIAN
+    #define BIG_ENDIAN 4321
+    #define LITTLE_ENDIAN _LITTLE_ENDIAN
+  #elif defined(_BIG_ENDIAN)
+    #define BYTE_ORDER _BIG_ENDIAN
+    #define BIG_ENDIAN _BIG_ENDIAN
+    #define LITTLE_ENDIAN 1234
+  #else
+    #error Could not determine the byte ordering method, report to the devs.
   #endif
 #endif
 
@@ -346,7 +369,7 @@ uint32_t calc_crc32(char *f) {
 
 		/* process four bytes at once (Slicing-by-4) */
 		while (i >= 4) {
-#if __BYTE_ORDER == __BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
 			uint32_t one = buf[k++] ^ swap(crc);
 			crc = crc32_table[0][ one      & 0xFF] ^
 			      crc32_table[1][(one>> 8) & 0xFF] ^
@@ -373,7 +396,7 @@ uint32_t calc_crc32(char *f) {
 
 		/* process eight bytes at once (Slicing-by-8) */
 		 while (i >= 8) {
-#if __BYTE_ORDER == __BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
 			uint32_t one = buf[k++] ^ swap(crc);
 			uint32_t two = buf[k++];
 			crc = crc32_table[0][ two      & 0xFF] ^
