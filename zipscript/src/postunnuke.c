@@ -7,6 +7,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include "postunnuke.h"
+
 #include "zsfunctions.h"
 #include "helpfunctions.h"
 #include "race-file.h"
@@ -81,7 +83,7 @@ main(int argc, char *argv[])
             printf("This should only be run as a cscript. Read the README!\n");
             exit(EXIT_FAILURE);
         }
-        if (strncasecmp(argv[1], "site unnuke ", strlen("site unnuke ")) != 0)
+        if (strncasecmp(argv[1], UNNUKE_STR, UNNUKE_STRLEN) != 0)
         {
             printf("You're supposed to use this as a cscript to site unnuke. Read the README!\n");
             exit(EXIT_FAILURE);
@@ -96,7 +98,7 @@ main(int argc, char *argv[])
             printf("This should only be run as a cscript with valid parameters (non-glftpd specific). Read the README!\n");
         }
         // ??
-        if (strncasecmp(argv[1], "site unnuke ", strlen("site unnuke ")) != 0)
+        if (strncasecmp(argv[1], UNNUKE_STR, UNNUKE_STRLEN) != 0)
         {
             printf("You're supposed to use this as a cscript to site unnuke. Read the README!\n");
             exit(EXIT_FAILURE);
@@ -108,7 +110,7 @@ main(int argc, char *argv[])
         // We skip everything after the release, so that:
         //  site unnuke foo.bar baz
         // yields temp_p = "foo.bar". :-)
-        temp_p2 = temp_p = argv[1] + strlen("site unnuke ");
+        temp_p2 = temp_p = argv[1] + UNNUKE_STRLEN;
         while (*temp_p2 != '\0' && *temp_p2 != ' ')
             temp_p2++;
         *temp_p2 = '\0';
