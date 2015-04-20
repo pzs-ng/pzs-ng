@@ -1259,7 +1259,7 @@ missing_sample_check_ignore_list <STRING>
 	last character of a dirname are never checked as part of a listed
 	string, unless missing_sample_check_ignore_dividers is empty.
 	Separate strings with a comma character. List is not casesensitive.
-	Default: "dirfix,fix,freezefix,fullsubpack,nfofix,proof,rarfix,subfix,subpack,subpck,syncfix"
+	Default: "dirfix,fix,freezefix,fullsubpack,nfofix,proof,rarfix,subfix,subpack,subpck,syncfix,prooffix"
 
 audio_script <PATH>
 	Put here the path to the external script which should be run after

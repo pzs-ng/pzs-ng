@@ -335,7 +335,7 @@ options:
             last character of a dirname are never checked as part of a listed
             string, unless missing_sample_check_ignore_dividers is empty.
             Separate strings with a comma character. List is not casesensitive.
-        default: '"dirfix,fix,freezefix,fullsubpack,nfofix,proof,rarfix,subfix,subpack,subpck,syncfix"'
+        default: '"dirfix,fix,freezefix,fullsubpack,nfofix,proof,rarfix,subfix,subpack,subpck,syncfix,prooffix"'
 
     create_missing_sample_link:
         type: boolean

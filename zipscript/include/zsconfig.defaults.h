@@ -1042,7 +1042,7 @@
 
 #ifndef missing_sample_check_ignore_list
 #define missing_sample_check_ignore_list_is_defaulted
-#define missing_sample_check_ignore_list          "dirfix,fix,freezefix,fullsubpack,nfofix,proof,rarfix,subfix,subpack,subpck,syncfix"
+#define missing_sample_check_ignore_list          "dirfix,fix,freezefix,fullsubpack,nfofix,proof,rarfix,subfix,subpack,subpck,syncfix,prooffix"
 #endif
 
 #ifndef newleader_files_ahead

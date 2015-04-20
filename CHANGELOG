@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Add prooffix to default missing_sample_check_ignore_list
 		- Fixed issue #9 where %u_tagline showed the user's FLAGS for the INVITE-event
 		- Fixed crc calculation for the slice-methods on BSD and OSX (thanks to Hujer)
 		- Fixed compilation on BSD and OSX (thanks to tittof and Hujer)
