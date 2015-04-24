@@ -293,7 +293,7 @@ Quickreference of cookies:
 %u_name, %g_name, %releasename
 
 # INVITE:
-%u_ircnick, %u_name, %g_name, %u_tagline
+%u_ircnick, %u_name, %g_name, %u_flags, %u_tagline
 
 # IPNOTADDED:
 %u_hostmask, %u_ip
