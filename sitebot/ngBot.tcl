@@ -45,20 +45,34 @@ namespace eval ::ngBot {
 		variable ns
 		variable cmdpre
 		variable bindnopre
+		variable trigger
+		variable triggerflag
+		variable defaulttriggerflag
 
 		if {[istrue $bindnopre] && [lsearch [split $cmdpre] "!"] == -1} {
 			set cmdpre "$cmdpre !"
 		}
 
 		foreach pre [split $cmdpre] {
-			bind pub -|- ${pre}bnc         ${ns}::cmd_bnc
-			bind pub -|- ${pre}df          ${ns}::cmd_free
-			bind pub -|- ${pre}free        ${ns}::cmd_free
-			bind pub -|- ${pre}help        ${ns}::cmd_help
-			bind pub -|- ${pre}inc         ${ns}::cmd_incompletes
-			bind pub -|- ${pre}incomplete  ${ns}::cmd_incompletes
-			bind pub -|- ${pre}incompletes ${ns}::cmd_incompletes
-			bind pub -|- ${pre}uptime      ${ns}::cmd_uptime
+			foreach {cmd trigs} [array get trigger] {
+				# Check if cmd isn't disabled
+				if {[string length "$trigs"]} {
+					# process $cmd, split by _ and use 0 as procname (prefixing with cmd_) and rest as args
+					set cmdlist [split $cmd "_"]
+					set cmdname ${ns}::cmd_[lindex $cmdlist 0]
+					# check if the cmd is a real proc
+					if {[llength [info procs $cmdname]]} {
+						lset cmdlist 0 $cmdname
+						foreach trig [split $trigs] {
+							set flags "$defaulttriggerflag"
+							if {[array exists triggerflag] && [info exists triggerflag("$trig")]} {
+								set flags $triggerflag("$trig")
+							}
+							bind pub "$flags" $pre$trig $cmdlist
+						}
+					}
+				}
+			}
 		}
 	}
 

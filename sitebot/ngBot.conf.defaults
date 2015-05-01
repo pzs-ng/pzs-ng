@@ -81,6 +81,51 @@ set sitename            "pzs-ng"
 set cmdpre              "!pn"
 set bindnopre           "TRUE"
 
+# What to name the different triggercommands. Multiple can be given for one
+# triggercommand, seperated by a space. An empty string disables the command.
+# The commandnames are case-sensitive!
+set trigger(bnc)		"bnc"
+set trigger(free)		"df free"
+set trigger(help)		"help"
+set trigger(incompletes)	"inc incomplete incompletes"
+set trigger(uptime)		"uptime"
+# glFTPd-specific
+set trigger(bw_bw)		"bw"
+set trigger(bw_bwdn)		"bwdn"
+set trigger(bw_bwup)		"bwup"
+set trigger(transfers_dn)	"dn down downloaders leechers"
+set trigger(transfers_up)	"up uploaders"
+set trigger(silo_nukes)		"nukes"
+set trigger(silo_unnukes)	"unnukes"
+set trigger(idlers)		"idle idlers"
+set trigger(new)		"new"
+set trigger(search)		"search"
+set trigger(speed)		"speed"
+set trigger(who)		"who"
+## glFTPd, groupstats
+set trigger(stats_-A_-d)	"gpad"
+set trigger(stats_-A_-u)	"gpau"
+set trigger(stats_-W_-d)	"gpwd"
+set trigger(stats_-W_-u)	"gpwu"
+set trigger(stats_-M_-d)	"gpmd"
+set trigger(stats_-M_-u)	"gpmu"
+set trigger(stats_-T_-d)	"gpdd"
+set trigger(stats_-T_-u)	"gpdu"
+## glFTPd, userstats
+set trigger(stats_-a_-d)	"alldn"
+set trigger(stats_-a_-u)	"allup"
+set trigger(stats_-t_-d)	"daydn"
+set trigger(stats_-t_-u)	"dayup"
+set trigger(stats_-m_-d)	"monthdn"
+set trigger(stats_-m_-u)	"monthup"
+set trigger(stats_-w_-d)	"wkdn"
+set trigger(stats_-w_-u)	"wkup"
+
+# For each of the entered triggers, the eggdrop flags that are required to use
+# them can be set; if no seperate flag is set, the default will be used
+#set triggerflag(who) "o|o"
+set defaulttriggerflag "-|-"
+
 # Set here to where the different triggers should reply: channel or nick.
 # Use 0 to reply to the nick that issued the trigger, or 1 to reply in the chan
 # the trigger was issued in. Use the triggername as index in UPPERCASE.

@@ -9,65 +9,15 @@
 namespace eval ::ngBot::module::glftpd {
 	variable ns [namespace current]
 	variable np [namespace qualifiers [namespace parent]]
-	variable renames [list init_binds init_invite init_binaries readlog ng_format]
+	variable renames [list init_invite init_binaries readlog ng_format]
 	variable glversion
 
+	# This also exports the cmd_* procs, enabling binding to it from the base tcl
 	namespace export *
 
 	#############################################################################
 	# De/Initialisation Commands                                                #
 	#############################################################################
-
-	proc init_binds {} {
-		variable ns
-		variable np
-		variable ${np}::cmdpre
-		variable ${np}::bindnopre
-
-		if {[istrue $bindnopre] && [lsearch [split $cmdpre] "!"] == -1} {
-			set cmdpre "$cmdpre !"
-		}
-
-		foreach pre [split $cmdpre] {
-			bind pub -|- ${pre}bw          [list ${ns}::cmd_bw "bw"]
-			bind pub -|- ${pre}bwdn        [list ${ns}::cmd_bw "bwdn"]
-			bind pub -|- ${pre}bwup        [list ${ns}::cmd_bw "bwup"]
-			bind pub -|- ${pre}dn          [list ${ns}::cmd_transfers "dn"]
-			bind pub -|- ${pre}down        [list ${ns}::cmd_transfers "dn"]
-			bind pub -|- ${pre}downloaders [list ${ns}::cmd_transfers "dn"]
-			bind pub -|- ${pre}leechers    [list ${ns}::cmd_transfers "dn"]
-			bind pub -|- ${pre}up          [list ${ns}::cmd_transfers "up"]
-			bind pub -|- ${pre}uploaders   [list ${ns}::cmd_transfers "up"]
-			bind pub -|- ${pre}nukes       [list ${ns}::cmd_silo "nukes"]
-			bind pub -|- ${pre}unnukes     [list ${ns}::cmd_silo "unnukes"]
-			bind pub -|- ${pre}idle        ${ns}::cmd_idlers
-			bind pub -|- ${pre}idlers      ${ns}::cmd_idlers
-			bind pub -|- ${pre}new         ${ns}::cmd_new
-			bind pub -|- ${pre}search      ${ns}::cmd_search
-			bind pub -|- ${pre}speed       ${ns}::cmd_speed
-			bind pub -|- ${pre}who         ${ns}::cmd_who
-
-			bind pub -|- ${pre}gpad    [list ${ns}::cmd_stats "-d" "-A"]
-			bind pub -|- ${pre}gpau    [list ${ns}::cmd_stats "-u" "-A"]
-			bind pub -|- ${pre}gpwd    [list ${ns}::cmd_stats "-d" "-W"]
-			bind pub -|- ${pre}gpwu    [list ${ns}::cmd_stats "-u" "-W"]
-			bind pub -|- ${pre}gpmd    [list ${ns}::cmd_stats "-d" "-M"]
-			bind pub -|- ${pre}gpmu    [list ${ns}::cmd_stats "-u" "-M"]
-			bind pub -|- ${pre}gpdd    [list ${ns}::cmd_stats "-d" "-T"]
-			bind pub -|- ${pre}gpdu    [list ${ns}::cmd_stats "-u" "-T"]
-
-			bind pub -|- ${pre}alldn   [list ${ns}::cmd_stats "-d" "-a"]
-			bind pub -|- ${pre}allup   [list ${ns}::cmd_stats "-u" "-a"]
-			bind pub -|- ${pre}daydn   [list ${ns}::cmd_stats "-d" "-t"]
-			bind pub -|- ${pre}dayup   [list ${ns}::cmd_stats "-u" "-t"]
-			bind pub -|- ${pre}monthdn [list ${ns}::cmd_stats "-d" "-m"]
-			bind pub -|- ${pre}monthup [list ${ns}::cmd_stats "-u" "-m"]
-			bind pub -|- ${pre}wkdn    [list ${ns}::cmd_stats "-d" "-w"]
-			bind pub -|- ${pre}wkup    [list ${ns}::cmd_stats "-u" "-w"]
-		}
-
-		${np}::_init_binds
-	}
 
 	proc init {} {
 		variable np

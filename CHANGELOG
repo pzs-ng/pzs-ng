@@ -2,6 +2,10 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Make IRC-triggers configurable in ngBot: now you can easily disable a command
+		  or add more triggers for it and eggdrop-perms can be set for them.
+		  Changed files: ngBot.conf.defaults, ngBot.tcl, modules/glftpd.tcl
+		  See ngBot.conf.defaults for new options and usage instructions
 		- Add prooffix to default missing_sample_check_ignore_list
 		- Fixed issue #9 where %u_tagline showed the user's FLAGS for the INVITE-event
 		- Fixed crc calculation for the slice-methods on BSD and OSX (thanks to Hujer)
