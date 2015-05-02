@@ -65,8 +65,8 @@ namespace eval ::ngBot {
 						lset cmdlist 0 $cmdname
 						foreach trig [split $trigs] {
 							set flags "$defaulttriggerflag"
-							if {[array exists triggerflag] && [info exists triggerflag("$trig")]} {
-								set flags $triggerflag("$trig")
+							if {[array exists triggerflag] && [info exists triggerflag($trig)]} {
+								set flags $triggerflag($trig)
 							}
 							bind pub "$flags" $pre$trig $cmdlist
 						}
