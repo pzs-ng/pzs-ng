@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Add jpeg to allowed_types and 2015 to allowed_years
 		- Make IRC-triggers configurable in ngBot: now you can easily disable a command
 		  or add more triggers for it and eggdrop-perms can be set for them.
 		  Changed files: ngBot.conf.defaults, ngBot.tcl, modules/glftpd.tcl

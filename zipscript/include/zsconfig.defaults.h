@@ -87,7 +87,7 @@
 
 #ifndef allowed_types
 #define allowed_types_is_defaulted
-#define allowed_types                             "jpg,cue,m3u,txt,vob,png,m2ts,ts,log"
+#define allowed_types                             "jpg,jpeg,cue,m3u,txt,vob,png,m2ts,ts,log"
 #endif
 
 #ifndef allowed_types_exemption_dirs
@@ -97,7 +97,7 @@
 
 #ifndef allowed_years
 #define allowed_years_is_defaulted
-#define allowed_years                             "2009,2010,2011,2012,2013,2014"
+#define allowed_years                             "2010,2011,2012,2013,2014,2015"
 #endif
 
 #ifndef always_scan_audio_syms

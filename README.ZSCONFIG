@@ -174,7 +174,7 @@ allowed_genres <STRING>
 allowed_types <STRING>
 	This variable holds a comma-separated list of extensions. All files
 	with any of these extensions are allowed and not checked.
-	Default: "jpg,cue,m3u,txt,vob,png,m2ts,ts,log"
+	Default: "jpg,jpeg,cue,m3u,txt,vob,png,m2ts,ts,log"
 
 allowed_types_exemption_dirs <PATHS>
 	In allowed_types we define filetypes that are allowed on site w/o
@@ -185,7 +185,7 @@ allowed_types_exemption_dirs <PATHS>
 allowed_years <STRING>
 	Another way to restrict audio-releases is by year. Define here a list
 	of years allowed on site. The list should be comma-separated.
-	Default: "2009,2010,2011,2012,2013,2014"
+	Default: "2010,2011,2012,2013,2014,2015"
 
 always_scan_audio_syms <TRUE|FALSE>
 	On cleanup symlinks are removed. However, if cleanup is used as a
