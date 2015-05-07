@@ -360,10 +360,9 @@ main(int argc, char **argv)
 		d_log("postdel: Caching progress bar\n");
 		buffer_progress_bar(&g.v);
 
-		if (del_completebar) {
-			d_log("postdel: Removing old complete bar, if any\n");
-			removecomplete();
-		}
+		d_log("postdel: Removing old complete bar, if any\n");
+		removecomplete(g.v.misc.release_type);
+
 		if (g.v.total.files_missing < 0) {
 			g.v.total.files -= g.v.total.files_missing;
 			g.v.total.files_missing = 0;
@@ -398,8 +397,7 @@ main(int argc, char **argv)
 			empty_dir = 1;
 		}
 		d_log("postdel: SFV was removed - removing progressbar/completebar and -missing pointers.\n");
-		if (del_completebar)
-			removecomplete();
+		removecomplete(g.v.misc.release_type);
 
 		d_log("postdel: removing files created\n");
 		if (fileexists(g.l.sfv)) {
@@ -421,10 +419,9 @@ main(int argc, char **argv)
 		break;
 	case 3:
 		ftype = g.v.misc.release_type;
-		if (del_completebar) {
-			d_log("postdel: Removing old complete bar, if any\n");
-			removecomplete();
-		}
+		d_log("postdel: Removing old complete bar, if any\n");
+		removecomplete(g.v.misc.release_type);
+
 		g.v.misc.write_log = matchpath(sfv_dirs, g.l.path) > 0 ? 1 - matchpath(group_dirs, g.l.path) : 0;
 
 		if (fileexists(g.l.race)) {
@@ -491,17 +488,16 @@ main(int argc, char **argv)
 	}
 
 	if (empty_dir == 1 && !findfileext(dir, ".sfv")) {
-		
+
 		d_log("postdel: Removing all files and directories created by zipscript\n");
-		if (del_completebar)
-			removecomplete();
+		removecomplete(g.v.misc.release_type);
 		if (fileexists(g.l.sfv))
 			delete_sfv(g.l.sfv, &g.v);
 		if (g.l.nfo_incomplete)
 			unlink(g.l.nfo_incomplete);
 		if (g.l.incomplete)
 			unlink(g.l.incomplete);
-			
+
 		if (fileexists("file_id.diz"))
 			unlink("file_id.diz");
 		if (fileexists(g.l.race))

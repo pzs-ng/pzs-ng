@@ -515,10 +515,30 @@ del_banned_release <TRUE|FALSE>
 	announce, but the file along with the entire dir will be removed.
 	Default: FALSE
 
-del_completebar <STRING|DISABLED>
+del_audio_completebar <STRING|DISABLED>
 	This setting is what the zipscript will search for (and delete) when
-	it updates the complete bar.
-	Default: "^\\[.*] - \\( .*F - COMPLETE.*) - \\[.*]$"
+	it updates the complete bar for audio releases.
+	Default: "^\\[.*] - \\( .*F - COMPLETE - .*) - \\[.*]$"
+
+del_other_completebar <STRING|DISABLED>
+	This setting is what the zipscript will search for (and delete) when
+	it updates the complete bar for other releases.
+	Default: "^\\[.*] - \\( .*F - COMPLETE ) - \\[.*]$"
+
+del_rar_completebar <STRING|DISABLED>
+	This setting is what the zipscript will search for (and delete) when
+	it updates the complete bar for rar releases.
+	Default: "^\\[.*] - \\( .*F - COMPLETE ) - \\[.*]$"
+
+del_video_completebar <STRING|DISABLED>
+	This setting is what the zipscript will search for (and delete) when
+	it updates the complete bar for video releases.
+	Default: "^\\[.*] - \\( .*F - COMPLETE ) - \\[.*]$"
+
+del_zip_completebar <STRING|DISABLED>
+	This setting is what the zipscript will search for (and delete) when
+	it updates the complete bar for zip releases.
+	Default: "^\\[.*] - \\( .*F - COMPLETE ) - \\[.*]$"
 
 del_progressmeter <STRING>
 	On upload a complete-bar is created after each file, to show how

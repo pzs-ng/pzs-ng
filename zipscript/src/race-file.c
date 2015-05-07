@@ -1671,10 +1671,8 @@ parse_sfv(char *sfvfile, GLOBAL *g, DIR *dir) {
 		d_log("parse_sfv: Reading race data from file to memory\n");
 		readrace(g->l.race, &g->v, g->ui, g->gi);
 	}
-	if (del_completebar) {
-		d_log("parse_sfv: Making sure that release is not marked as complete\n");
-		removecomplete();
-	}
+	d_log("parse_sfv: Making sure that release is not marked as complete\n");
+	removecomplete(g->v.misc.release_type);
 
 	if (deny_resume_sfv == TRUE) {
 		if (copyfile(sfvfile, g->l.sfvbackup))

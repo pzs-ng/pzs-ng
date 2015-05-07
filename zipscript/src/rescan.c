@@ -336,8 +336,7 @@ main(int argc, char *argv[])
 	move_progress_bar(1, &g.v, g.ui, g.gi);
 	if (g.l.incomplete)
 		unlink(g.l.incomplete);
-	if (del_completebar)
-		removecomplete();
+	removecomplete(g.v.misc.release_type);
 
 	dir = opendir(".");
 	parent = opendir("..");

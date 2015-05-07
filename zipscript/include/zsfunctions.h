@@ -114,7 +114,7 @@ extern long	findfile(DIR *, char *);
 extern char    *findfilename(char *, char *, struct VARS *);
 extern char    *check_nocase_linkname(char *, char *);
 extern void	removedotfiles(DIR *);
-extern void	removecomplete(void);
+extern void	removecomplete(int);
 extern short	matchpath(char *, char *);
 extern short	matchpartialpath(char *, char *);
 extern short	matchpartialdirname(char *, char *, char *);

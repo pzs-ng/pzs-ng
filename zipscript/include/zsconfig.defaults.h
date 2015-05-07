@@ -375,14 +375,34 @@
 #define debug_mode                                FALSE
 #endif
 
+#ifndef del_audio_completebar
+#define del_audio_completebar_is_defaulted
+#define del_audio_completebar                     "^\\[.*] - \\( .*F - COMPLETE - .*) - \\[.*]$"
+#endif
+
 #ifndef del_banned_release
 #define del_banned_release_is_defaulted
 #define del_banned_release                        FALSE
 #endif
 
-#ifndef del_completebar
-#define del_completebar_is_defaulted
-#define del_completebar                           "^\\[.*] - \\( .*F - COMPLETE.*) - \\[.*]$"
+#ifndef del_other_completebar
+#define del_other_completebar_is_defaulted
+#define del_other_completebar                     "^\\[.*] - \\( .*F - COMPLETE ) - \\[.*]$"
+#endif
+
+#ifndef del_rar_completebar
+#define del_rar_completebar_is_defaulted
+#define del_rar_completebar                       "^\\[.*] - \\( .*F - COMPLETE ) - \\[.*]$"
+#endif
+
+#ifndef del_video_completebar
+#define del_video_completebar_is_defaulted
+#define del_video_completebar                     "^\\[.*] - \\( .*F - COMPLETE ) - \\[.*]$"
+#endif
+
+#ifndef del_zip_completebar
+#define del_zip_completebar_is_defaulted
+#define del_zip_completebar                       "^\\[.*] - \\( .*F - COMPLETE ) - \\[.*]$"
 #endif
 
 #ifndef del_progressmeter

@@ -1655,10 +1655,8 @@ main(int argc, char **argv)
 				break;
 			}
 
-			if (complete_bar) {
-				d_log("zipscript-c: Removing old complete bar, if any\n");
-				removecomplete();
-			}
+			d_log("zipscript-c: Removing old complete bar, if any\n");
+			removecomplete(g.v.misc.release_type);
 
 			d_log("zipscript-c: Removing incomplete indicator (%s)\n", g.l.incomplete);
 			complete(&g, complete_type);

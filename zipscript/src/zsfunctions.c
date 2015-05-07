@@ -741,13 +741,14 @@ check_nocase_linkname(char *dirname, char *linkname)
 }
 
 /*
- * Modified: 2011.07.07 (YYYY.MM.DD)
- *  by Sked
+ * First Version: <2011.07.07	???
+ * Last update  : 2015.05.07	Sked
+ * Description: Removes the completebar and .message-file (as it's not complete anymore, data will change)
  */
 void 
-removecomplete()
+removecomplete(int rtype)
 {
-	char		*mydelbar = 0, regbuf[100];
+	char		*mydelbar = 0, *del_completebar = 0, regbuf[100];
 	regex_t		preg;
 	regmatch_t	pmatch[1];
 	int		regret;
@@ -768,27 +769,47 @@ removecomplete()
                 unlink(message_file_name);
         }
 
-	mydelbar = convert_sitename(del_completebar);
-	d_log("removecomplete: del_completebar: %s\n", mydelbar);
-	regret = regcomp(&preg, mydelbar, REG_NEWLINE | REG_EXTENDED);
-	if (!regret) {
-		if ((dir = opendir("."))) {
-			while ((dp = readdir(dir))) {
-				if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
-					if ((int)pmatch[0].rm_so == 0 && (int)pmatch[0].rm_eo == (int)NAMLEN(dp)) {
-						remove(dp->d_name);
-						*dp->d_name = 0;
+	switch (rtype) {
+		case RTYPE_AUDIO:
+			del_completebar = del_audio_completebar;
+			break;
+		case RTYPE_OTHER:
+			del_completebar = del_other_completebar;
+			break;
+		case RTYPE_RAR:
+			del_completebar = del_rar_completebar;
+			break;
+		case RTYPE_VIDEO:
+			del_completebar = del_video_completebar;
+			break;
+		default:
+			del_completebar = del_zip_completebar;
+			break;
+	}
+	/* Check if del_*_completebar exists, is not empty and doesn't equal DISABLED */
+	if (del_completebar && *del_completebar && strcmp(del_completebar, "DISABLED")) {
+		mydelbar = convert_sitename(del_completebar);
+		d_log("removecomplete: del_*_completebar (type: %d): %s\n", rtype, mydelbar);
+		regret = regcomp(&preg, mydelbar, REG_NEWLINE | REG_EXTENDED);
+		if (!regret) {
+			if ((dir = opendir("."))) {
+				while ((dp = readdir(dir))) {
+					if (regexec(&preg, dp->d_name, 1, pmatch, 0) == 0) {
+						if ((int)pmatch[0].rm_so == 0 && (int)pmatch[0].rm_eo == (int)NAMLEN(dp)) {
+							remove(dp->d_name);
+							*dp->d_name = 0;
+						}
 					}
 				}
-			}
-			closedir(dir);
-		} else
-			d_log("removecomplete: opendir failed : %s\n", strerror(errno));
-	} else {
-		regerror(regret, &preg, regbuf, sizeof(regbuf));
-		d_log("move_progress_bar: regex failed: %s\n", regbuf);
+				closedir(dir);
+			} else
+				d_log("removecomplete: opendir failed : %s\n", strerror(errno));
+		} else {
+			regerror(regret, &preg, regbuf, sizeof(regbuf));
+			d_log("move_progress_bar: regex failed: %s\n", regbuf);
+		}
+		regfree(&preg);
 	}
-	regfree(&preg);
 }
 
 /*

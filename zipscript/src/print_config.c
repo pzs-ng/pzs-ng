@@ -279,11 +279,23 @@ printf("#define debug_announce                            %s\n", (debug_announce
 #ifndef debug_mode_is_defaulted
 printf("#define debug_mode                                %s\n", (debug_mode == FALSE ? "FALSE" : "TRUE"));
 #endif
+#ifndef del_audio_completebar_is_defaulted
+printf("#define del_audio_completebar                     %s\n", (del_audio_completebar == DISABLED ? "DISABLED" : stringify(del_audio_completebar)));
+#endif
 #ifndef del_banned_release_is_defaulted
 printf("#define del_banned_release                        %s\n", (del_banned_release == FALSE ? "FALSE" : "TRUE"));
 #endif
-#ifndef del_completebar_is_defaulted
-printf("#define del_completebar                           %s\n", (del_completebar == DISABLED ? "DISABLED" : stringify(del_completebar)));
+#ifndef del_other_completebar_is_defaulted
+printf("#define del_other_completebar                     %s\n", (del_other_completebar == DISABLED ? "DISABLED" : stringify(del_other_completebar)));
+#endif
+#ifndef del_rar_completebar_is_defaulted
+printf("#define del_rar_completebar                       %s\n", (del_rar_completebar == DISABLED ? "DISABLED" : stringify(del_rar_completebar)));
+#endif
+#ifndef del_video_completebar_is_defaulted
+printf("#define del_video_completebar                     %s\n", (del_video_completebar == DISABLED ? "DISABLED" : stringify(del_video_completebar)));
+#endif
+#ifndef del_zip_completebar_is_defaulted
+printf("#define del_zip_completebar                       %s\n", (del_zip_completebar == DISABLED ? "DISABLED" : stringify(del_zip_completebar)));
 #endif
 #ifndef del_progressmeter_is_defaulted
 printf("#define del_progressmeter                         %s\n", stringify(del_progressmeter));
@@ -1001,8 +1013,12 @@ printf("#define days_back_cleanup                         %s\n", stringify(days_
 printf("#define debug_altlog                              %s\n", (debug_altlog == FALSE ? "FALSE" : "TRUE"));
 printf("#define debug_announce                            %s\n", (debug_announce == FALSE ? "FALSE" : "TRUE"));
 printf("#define debug_mode                                %s\n", (debug_mode == FALSE ? "FALSE" : "TRUE"));
+printf("#define del_audio_completebar                     %s\n", (del_audio_completebar == DISABLED ? "DISABLED" : stringify(del_audio_completebar)));
 printf("#define del_banned_release                        %s\n", (del_banned_release == FALSE ? "FALSE" : "TRUE"));
-printf("#define del_completebar                           %s\n", (del_completebar == DISABLED ? "DISABLED" : stringify(del_completebar)));
+printf("#define del_other_completebar                     %s\n", (del_other_completebar == DISABLED ? "DISABLED" : stringify(del_other_completebar)));
+printf("#define del_rar_completebar                       %s\n", (del_rar_completebar == DISABLED ? "DISABLED" : stringify(del_rar_completebar)));
+printf("#define del_video_completebar                     %s\n", (del_video_completebar == DISABLED ? "DISABLED" : stringify(del_video_completebar)));
+printf("#define del_zip_completebar                       %s\n", (del_zip_completebar == DISABLED ? "DISABLED" : stringify(del_zip_completebar)));
 printf("#define del_progressmeter                         %s\n", stringify(del_progressmeter));
 printf("#define del_progressmeter_audio                   %s\n", stringify(del_progressmeter_audio));
 printf("#define delbanned_script                          %s\n", stringify(delbanned_script));

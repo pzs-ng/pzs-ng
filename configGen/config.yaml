@@ -1271,13 +1271,45 @@ options:
             completebars _per release_, separate them with "\n" (Like "foo\nbar").
         default: '"[%Z] - ( %.0mM %fF - COMPLETE ) - [%Z]"'
 
-    del_completebar:
+    del_audio_completebar:
         type: string
         can_disable: true
         comment: |-
             This setting is what the zipscript will search for (and delete) when
-            it updates the complete bar.
-        default: '"^\\[.*] - \\( .*F - COMPLETE.*) - \\[.*]$"'
+            it updates the complete bar for audio releases.
+        default: '"^\\[.*] - \\( .*F - COMPLETE - .*) - \\[.*]$"'
+
+    del_other_completebar:
+        type: string
+        can_disable: true
+        comment: |-
+            This setting is what the zipscript will search for (and delete) when
+            it updates the complete bar for other releases.
+        default: '"^\\[.*] - \\( .*F - COMPLETE ) - \\[.*]$"'
+
+    del_rar_completebar:
+        type: string
+        can_disable: true
+        comment: |-
+            This setting is what the zipscript will search for (and delete) when
+            it updates the complete bar for rar releases.
+        default: '"^\\[.*] - \\( .*F - COMPLETE ) - \\[.*]$"'
+
+    del_video_completebar:
+        type: string
+        can_disable: true
+        comment: |-
+            This setting is what the zipscript will search for (and delete) when
+            it updates the complete bar for video releases.
+        default: '"^\\[.*] - \\( .*F - COMPLETE ) - \\[.*]$"'
+
+    del_zip_completebar:
+        type: string
+        can_disable: true
+        comment: |-
+            This setting is what the zipscript will search for (and delete) when
+            it updates the complete bar for zip releases.
+        default: '"^\\[.*] - \\( .*F - COMPLETE ) - \\[.*]$"'
 
     zipscript_header:
         type: string
