@@ -516,6 +516,12 @@ options:
             commonly make, like .imdb, .html, .url, .date etc.
         default: '",diz,debug,message,imdb,html,url,metadata,date,xxxdata,ioftpd"'
 
+    sample_types:
+        type: string
+        comment: |-
+            Comma-separated list of file extensions considered to be sample files.
+        default: '"mpg,mpeg,m2v,m2p,avi,mkv,mov,mp4,wmv,vob,ts,jpg,jpeg,png"'
+
     video_types:
         type: string
         comment: |-

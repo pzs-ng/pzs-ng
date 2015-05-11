@@ -200,7 +200,7 @@ findfileextsub(DIR *dir)
 						while ((dp2 = readdir(dir3))) {
 							if ((k = NAMLEN(dp2)) < 4)
 								continue;
-							if (strcomp(video_types, dp2->d_name + k - 3))
+							if (strcomp(sample_types, dp2->d_name + k - 3))
 								return dp2->d_name;
 						}
 						closedir(dir3);
@@ -210,7 +210,7 @@ findfileextsub(DIR *dir)
 		}
 		if ((k = NAMLEN(dp)) < 4)
 			continue;
-		if (strcomp(video_types, dp->d_name + k - 3))
+		if (strcomp(sample_types, dp->d_name + k - 3))
 			return dp->d_name;
 	}
 	closedir(dir2);
@@ -224,7 +224,7 @@ findfileextsub(DIR *dir)
 /* Last modified: 2011.11.12 (YYYY.MM.DD)
  * by Sked
  * Check if any of the subdirs of the parentdir of "dir" is in the sample_list
- * and if any file in such a subdir with an extension listed in video_types exists.
+ * and if any file in such a subdir with an extension listed in sample_types exists.
  */
 char *
 findfileextsubp(DIR *dir)
@@ -270,7 +270,7 @@ findfileextsubp(DIR *dir)
 						while ((dp2 = readdir(dir3))) {
 							if ((k = NAMLEN(dp2)) < 4)
 								continue;
-							if (strcomp(video_types, dp2->d_name + k - 3))
+							if (strcomp(sample_types, dp2->d_name + k - 3))
 								return dp2->d_name;
 						}
 						closedir(dir3);
@@ -280,7 +280,7 @@ findfileextsubp(DIR *dir)
 		}
 		if ((k = NAMLEN(dp)) < 4)
 			continue;
-		if (strcomp(video_types, dp->d_name + k - 3))
+		if (strcomp(sample_types, dp->d_name + k - 3))
 			return dp->d_name;
 	}
 	closedir(dir2);

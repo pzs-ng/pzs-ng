@@ -768,6 +768,9 @@ printf("#define sample_list                               %s\n", stringify(sampl
 #ifndef sample_script_is_defaulted
 printf("#define sample_script                             %s\n", stringify(sample_script));
 #endif
+#ifndef sample_types_is_defaulted
+printf("#define sample_types                               %s\n", stringify(sample_types));
+#endif
 #ifndef sfv_calc_single_fname_is_defaulted
 printf("#define sfv_calc_single_fname                     %s\n", (sfv_calc_single_fname == FALSE ? "FALSE" : "TRUE"));
 #endif
@@ -1176,6 +1179,7 @@ printf("#define rescan_nocheck_dirs_allowed               %s\n", (rescan_nocheck
 printf("#define rescan_script                             %s\n", stringify(rescan_script));
 printf("#define sample_list                               %s\n", stringify(sample_list));
 printf("#define sample_script                             %s\n", stringify(sample_script));
+printf("#define sample_types                              %s\n", stringify(sample_types));
 printf("#define sfv_calc_single_fname                     %s\n", (sfv_calc_single_fname == FALSE ? "FALSE" : "TRUE"));
 printf("#define sfv_cleanup                               %s\n", (sfv_cleanup == FALSE ? "FALSE" : "TRUE"));
 printf("#define sfv_cleanup_comments                      %s\n", (sfv_cleanup_comments == FALSE ? "FALSE" : "TRUE"));

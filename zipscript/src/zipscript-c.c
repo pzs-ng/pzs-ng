@@ -593,7 +593,7 @@ main(int argc, char **argv)
 	}
 	if (exit_value == 2)
 		d_log("zipscript-c: File already marked as bad. Will not process further.\n");
-	else if (insampledir(g.l.path) && strcomp(video_types, fileext)) {
+	else if (insampledir(g.l.path) && strcomp(sample_types, fileext)) {
 		d_log("zipscript-c: Directory matched with sample_list = '%s', checking is set to %d (1 means no checking)\n", sample_list, no_check);
 		if (no_check == FALSE) {
 			if (!avinfo(g.v.file.name, &g.v.avinfo)) {
@@ -1351,21 +1351,6 @@ main(int argc, char **argv)
 
 		case 4:	/* ACCEPTED FILE */
 			d_log("zipscript-c: File type: NO CHECK\n");
-//			if (!matchpath(group_dirs, g.l.path) && !matchpath(nocheck_dirs, g.l.path) && insampledir(g.l.path) && strcomp(video_types, fileext) && !avinfo(g.v.file.name, &g.v.avinfo)) {
-//				d_log("zipscript-c: Writing %s announce to %s.\n", sample_announce_type, log);
-//				write_log = g.v.misc.write_log;
-//				g.v.misc.write_log = TRUE;
-//				writelog(&g, convert(&g.v, g.ui, g.gi, sample_msg), sample_announce_type);
-//				g.v.misc.write_log = write_log;
-//				if (enable_sample_script == TRUE) {
-//					d_log("zipscript-c: Executing sample_script (%s).\n", sample_script);
-//					if (!fileexists(sample_script))
-//						d_log("zipscript-c: Warning - sample_script (%s) - file does not exist!\n", sample_script);
-//					sprintf(target, sample_script " \"%s\"", g.v.file.name);
-//					if (execute(target) != 0)
-//						d_log("zipscript-c: Failed to execute sample_script: %s\n", strerror(errno));
-//				}
-//			}
 			no_check = TRUE;
 			break;
 			/* END OF ACCEPTED FILE CHECK */

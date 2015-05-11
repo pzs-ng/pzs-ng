@@ -1190,6 +1190,11 @@
 #define sample_script                             "/bin/sample_script.sh"
 #endif
 
+#ifndef sample_types
+#define sample_types_is_defaulted
+#define sample_types                               "mpg,mpeg,m2v,m2p,avi,mkv,mov,mp4,wmv,vob,ts,jpg,jpeg,png"
+#endif
+
 #ifndef sfv_calc_single_fname
 #define sfv_calc_single_fname_is_defaulted
 #define sfv_calc_single_fname                     FALSE

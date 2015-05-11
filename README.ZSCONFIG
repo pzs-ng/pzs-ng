@@ -1448,6 +1448,10 @@ sample_script <PATH>
 	Enter the name of the script you wish to execute on sample uploads.
 	Default: "/bin/sample_script.sh"
 
+sample_types <STRING>
+	Comma-separated list of file extensions considered to be sample files.
+	Default: "mpg,mpeg,m2v,m2p,avi,mkv,mov,mp4,wmv,vob,ts,jpg,jpeg,png"
+
 sfv_calc_single_fname <TRUE|FALSE>
 	Setting this to TRUE enables the zipscript to calculate a crc checksum
 	for filenames listed in the sfv, which do not have a corresponding crc.
