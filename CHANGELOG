@@ -11,6 +11,7 @@ v1.2.0  --> 1.2.x :
 		  See ngBot.conf.defaults for new options and usage instructions
 		- Add prooffix to default missing_sample_check_ignore_list
 		- Fixed issue #9 where %u_tagline showed the user's FLAGS for the INVITE-event
+		- ^--- 2015 ---^
 		- Fixed crc calculation for the slice-methods on BSD and OSX (thanks to Hujer)
 		- Fixed compilation on BSD and OSX (thanks to tittof and Hujer)
 		- Prettified output at --(full)config of status_bar_type and crc_algo
