@@ -11,5 +11,5 @@ clean:
 	cd strl ; $(MAKE) clean
 
 strl_dir:
-	@(echo -e "\n\033[1;37mCompiling the strl lib\033[0m")
+	@(printf "\n\033[1;37mCompiling the strl lib\033[0m\n")
 	cd strl ; $(MAKE) all

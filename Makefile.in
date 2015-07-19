@@ -6,7 +6,7 @@ LIBS=@LIBS@
 INSTALL=@INSTALL@
 
 all: zs bot @SITEWHO@
-	@(echo -e "\n\tProject-ZS-NG is now compiled!\n\tType 'make install' to install it into $(prefix).\n")
+	@(printf "\n\tProject-ZS-NG is now compiled!\n\tType 'make install' to install it into $(prefix).\n\n")
 
 install: all
 	$(INSTALL) -m755 -d $(prefix)/bin
@@ -34,23 +34,23 @@ uninstall:
 	cd zipscript/src ; $(MAKE) uninstall
 
 zs: libs
-	@(echo -e "\n\033[1;37mCompiling the zipscript\033[0m")
+	@(printf "\n\033[1;37mCompiling the zipscript\033[0m\n")
 	cd zipscript/src ; $(MAKE) all
 
 bot:
-	@(echo -e "\n\033[1;37mCompiling the bot binaries\033[0m")
+	@(printf "\n\033[1;37mCompiling the bot binaries\033[0m\n")
 	cd sitebot/src ; $(MAKE) all
 
 swho:
-	@(echo -e "\n\033[1;37mCompiling the sitewho\033[0m")
+	@(printf "\n\033[1;37mCompiling the sitewho\033[0m\n")
 	cd sitewho/ ; $(MAKE) all
 
 libs:
-	@(echo -e "\n\033[1;37mCompiling the additional libraries\033[0m")
+	@(printf "\n\033[1;37mCompiling the additional libraries\033[0m\n")
 	cd lib/ ; $(MAKE) all
 
 utils:
-	@(echo -e "\n\033[1;37mCompiling the extra utilities\033[0m")
+	@(printf "\n\033[1;37mCompiling the extra utilities\033[0m\n")
 	cd zipscript/utils ; $(MAKE) all
 
 strip:
