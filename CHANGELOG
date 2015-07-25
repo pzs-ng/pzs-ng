@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix "-e" echo when compiling (patch by tittof)
 		- Add sample_types option to be used instead of video_types to define those extensions prsent in sampledirs
 		- Split del_completebar into as many equivalents as *_completebar
 		- Add jpeg to allowed_types and 2015 to allowed_years
