@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix incorrect bitrate (and other values) reported for .mp3 files (thanks to bizzyfunk for noticing)
 		- Fix "-e" echo when compiling (patch by tittof)
 		- Add sample_types option to be used instead of video_types to define those extensions prsent in sampledirs
 		- Split del_completebar into as many equivalents as *_completebar

@@ -222,7 +222,6 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 	unsigned char	vbr_header[4];
 	unsigned char	xing_header1[4], xing_header2[4], xing_header3[4];
 	unsigned char	fraunhofer_header[4];
-	unsigned char	id3v2_header[10];
 	unsigned char	version;
 	unsigned char	layer;
 	unsigned char	protected = 1;
@@ -239,7 +238,7 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 	unsigned int	sr_v1[] = {44100, 48000, 32000, 0};
 	unsigned int	sr_v2[] = {22050, 24000, 16000, 0};
 	unsigned int	sr_v25[] = {11025, 12000, 8000, 0};
-	int		vbr_offset = 0;
+	int		audio_header_start = 0;
 	int		t1;
 	unsigned char	vbr_misc;
 
@@ -256,6 +255,13 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 
 		return;
 	}
+
+	/* Skip ID3v2 header if present, as it may contain chars resembling an mp3 header */
+	if ((audio_header_start = get_audio_header_start(fd)) < 0) {
+		d_log("multimedia.c: get_mpeg_audio_info() - error finding offset: %s\n", strerror(errno));
+		return;
+	}
+	lseek(fd, audio_header_start, SEEK_SET);
 
 	n = 2;
 	while (read(fd, header + 2 - n, n) == n) {
@@ -346,34 +352,19 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 		audio->channelmode = chanmode_s[channelmode];
 
 		/* LAME VBR TAG */
-		lseek(fd, 0, SEEK_SET);
-		if (read(fd, id3v2_header, 10) == -1) {
-			d_log("multimedia.c: get_mpeg_audio_info() - read() for id3v2_header failed - may lead to unexpected result.\n");
-		}
-
-		if (memcmp(id3v2_header, "ID3", 3) == 0) {
-			/*
-			 * The ID3V2 tag is prepended to the mp3file, so we
-			 * must adjust the vbr_offset accordingly. ID3V2 uses
-			 * synchsafe integers hence this bitmanipulation.
-			 * Reference :
-			 * http://www.id3.org/id3v2.4.0-structure.txt
-			 */
-			vbr_offset = (id3v2_header[8] >> 1) * 256 + ((id3v2_header[8] & 1) * 128) + id3v2_header[9] + 10;
-		}
-		lseek(fd, 13 + vbr_offset, SEEK_SET);
+		lseek(fd, 13 + audio_header_start, SEEK_SET);
 		if (read(fd, xing_header1, 4) == -1) {
 			d_log("multimedia.c: get_mpeg_audio_info() - read() for xing_header1 failed - may lead to unexpected result.\n");
 		}
-		lseek(fd, 21 + vbr_offset, SEEK_SET);
+		lseek(fd, 21 + audio_header_start, SEEK_SET);
 		if (read(fd, xing_header2, 4) == -1) {
 			d_log("multimedia.c: get_mpeg_audio_info() - read() for xing_header2 failed - may lead to unexpected result.\n");
 		}
-		lseek(fd, 36 + vbr_offset, SEEK_SET);
+		lseek(fd, 36 + audio_header_start, SEEK_SET);
 		if (read(fd, xing_header3, 4) == -1) {
 			d_log("multimedia.c: get_mpeg_audio_info() - read() for xing_header3 failed - may lead to unexpected result.\n");
 		}
-		lseek(fd, 36 + vbr_offset, SEEK_SET);
+		lseek(fd, 36 + audio_header_start, SEEK_SET);
 		if (read(fd, fraunhofer_header, 4) == -1) {
 			d_log("multimedia.c: get_mpeg_audio_info() - read() for fraunhofer_header failed - may lead to unexpected result.\n");
 		}
@@ -384,13 +375,13 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 		    memcmp(xing_header3, "Xing", 4) == 0 ||
 		    memcmp(fraunhofer_header, "VBRI", 4) == 0) {
 
-			lseek(fd, 165 + vbr_offset, SEEK_SET);
+			lseek(fd, 165 + audio_header_start, SEEK_SET);
 			if (read(fd, &audio->vbr_oldnew, 1) == -1) {
 				d_log("multimedia.c: get_mpeg_audio_info() - read() for audio->vbr_oldnew failed - may lead to unexpected result.\n");
 			}
 			audio->vbr_oldnew = (audio->vbr_oldnew & 4) >> 2; /* vbr method (vbr-old, vbr-new) */
 
-			lseek(fd, 180 + vbr_offset, SEEK_SET);
+			lseek(fd, 180 + audio_header_start, SEEK_SET);
 			if (read(fd, &vbr_misc, 1) == -1) {
 				d_log("multimedia.c: get_mpeg_audio_info() - read() for vbr_misc failed - may lead to unexpected result.\n");
 			}
@@ -427,17 +418,17 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 				sprintf(audio->vbr_source, ">48.000Hz");
 /*			audio->vbr_source = (*vbr_misc & 192) >> 6;     // vbr source sample frequency */
 
-			lseek(fd, 176 + vbr_offset, SEEK_SET);
+			lseek(fd, 176 + audio_header_start, SEEK_SET);
 			if (read(fd, &audio->vbr_minimum_bitrate, 1) == -1) { /* minimumvbr bitrate, or abr bitrate */
 				d_log("multimedia.c: get_mpeg_audio_info() - read() for audio->vbr_minimum_bitrate failed - may lead to unexpected result.\n");
 			}
 
-			lseek(fd, 155 + vbr_offset, SEEK_SET);
+			lseek(fd, 155 + audio_header_start, SEEK_SET);
 			if (read(fd, &audio->vbr_quality, 1) == -1) { /* vbr quality setting */
 				d_log("multimedia.c: get_mpeg_audio_info() - read() for audio->vbr_quality failed - may lead to unexpected result.\n");
 			}
 
-			lseek(fd, 156 + vbr_offset, SEEK_SET);
+			lseek(fd, 156 + audio_header_start, SEEK_SET);
 			if (read(fd, audio->vbr_version_string, 9) == -1) { /* vbr version, short string */
 				d_log("multimedia.c: get_mpeg_audio_info() - read() for audio->vbr_version_string failed - may lead to unexpected result.\n");
 			}
@@ -451,7 +442,7 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 
 			audio->is_vbr = 1;
 			if (memcmp(audio->vbr_version_string, "LAME", 4) == 0) {
-				lseek(fd, 182 + vbr_offset, SEEK_SET);
+				lseek(fd, 182 + audio_header_start, SEEK_SET);
 				if (read(fd, vbr_header, 2) == -1) {
 					d_log("multimedia.c: get_mpeg_audio_info() - read() for vbr_header failed - may lead to unexpected result.\n");
 				}
@@ -880,4 +871,43 @@ int avinfo(char *filename, struct VIDEO *vinfo)
 	snprintf(vinfo->audio, sizeof(vinfo->audio), "%s", _auds);
 	snprintf(vinfo->audiotype, sizeof(vinfo->audiotype), "0x%.4x", auds);
 	return 0;
+}
+
+
+/*
+ * First Version: 2015.07.26	Sked
+ * Description: get the start of the audio header by checking if an ID3v2 header
+ *		is present and getting the size of the tag and if an optional
+ *		footer is present.
+ *		This function changes the offset of the open file to it's start.
+ *		Returns -1 if an error occurs.
+ */
+int get_audio_header_start(int fd) {
+	int result = -1;
+	unsigned char id3v2_header[10];
+
+	/* Go to start of file, read first 10 bytes and check if an ID3v2 header */
+	if (lseek(fd, 0, SEEK_SET) >= 0 && read(fd, id3v2_header, 10) >= 0) {
+		if (memcmp(id3v2_header, "ID3", 3) == 0) {
+			/* ID3V2 uses synchsafe integers hence this bitmanipulation.
+			 * Reference: http://www.id3.org/id3v2.4.0-structure.txt
+			 */
+			result = (id3v2_header[6] << 21) + \
+				 (id3v2_header[7] << 14) + \
+				 (id3v2_header[8] << 7) + \
+				 id3v2_header[9] + \
+				 + 10;
+			/* check for footer which adds 10 bytes */
+			if (id3v2_header[5] & 16) {
+				result += 10;
+			}
+		} else {
+			result = 0;
+		}
+	}
+
+	/* return to start of file */
+	lseek(fd, 0, SEEK_SET);
+
+	return result;
 }

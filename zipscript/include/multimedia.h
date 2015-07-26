@@ -5,6 +5,7 @@
 
 char *get_preset(char[4]);
 char *safe_genre(char *);
+int get_audio_header_start(int);
 
 void get_audio_info(char *, struct audio *);
 void get_mpeg_audio_info(char *, struct audio *);
