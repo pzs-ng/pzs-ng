@@ -169,7 +169,7 @@ findfileextfromlist(DIR *dir, char *extlist)
  * Arguments: dir= the directory to search in
  *            filetypes= comma-seperated list of fileextensions
  *            subdirs= comma-seperated list of dirnames
- * Last modified: 2015.05.15 by Sked
+ * Last modified: 2015.08.09 by Sked
  */
 char *
 findfileextsub(const char *dir, char *filetypes, char *subdirs)
@@ -202,12 +202,15 @@ findfileextsub(const char *dir, char *filetypes, char *subdirs)
 						return NULL;
 					} else {
 						while ((dp2 = readdir(subd))) {
-							if ((ext = strrchr(dp2->d_name, '.')) == NULL)
-								ext = dp2->d_name + NAMLEN(dp2);
-							if (strcomp(filetypes, ext)) {
-								closedir(subd);
-								closedir(d);
-								return dp2->d_name;
+							if (strcmp(dp2->d_name, ".") && strcmp(dp2->d_name, "..")) {
+								if ((ext = strrchr(dp2->d_name, '.')) == NULL)
+									ext = dp2->d_name + NAMLEN(dp2) - 1;
+								++ext;
+								if (strcomp(filetypes, ext)) {
+									closedir(subd);
+									closedir(d);
+									return dp2->d_name;
+								}
 							}
 						}
 						closedir(subd);
