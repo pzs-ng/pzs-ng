@@ -1735,12 +1735,12 @@ main(int argc, char **argv)
 				}
 #if (create_missing_sample_link)
 				d_log("zipscript-c: Checking if we should create a missing sample for %s.\n", g.v.misc.release_name);
-				if (g.l.sample_incomplete && matchpath(check_for_missing_sample_dirs, g.l.path) && !matchpartialdirname(missing_sample_check_ignore_list, g.v.misc.release_name, missing_sample_check_ignore_dividers) && !(findfileextsub(dir))) {
+				if (g.l.sample_incomplete && matchpath(check_for_missing_sample_dirs, g.l.path) && !matchpartialdirname(missing_sample_check_ignore_list, g.v.misc.release_name, missing_sample_check_ignore_dividers) && !(findfileextsub(".", sample_types, sample_list))) {
 					if (!g.l.in_cd_dir) {
 						d_log("zipscript-c: Creating missing-sample indicator %s.\n", g.l.sample_incomplete);
 						create_incomplete_sample();
 					} else {
-						if (!findfileextsubp(dir)) {
+						if (!findfileextsub("..", sample_types, sample_list)) {
 							d_log("zipscript-c: Creating missing-sample indicator (base) %s.\n", g.l.sample_incomplete);
 							if ((inc_point[0] = find_last_of(g.l.path, "/")) != g.l.path)
 								*inc_point[0] = '\0';
@@ -1801,7 +1801,7 @@ main(int argc, char **argv)
 	}
 
 #if (create_missing_sample_link)
-	if ((findfileextsub(dir) || (g.l.in_cd_dir && findfileextsubp(dir))) && g.l.sample_incomplete) {
+	if ((findfileextsub(".", sample_types, sample_list) || (g.l.in_cd_dir && findfileextsub("..", sample_types, sample_list))) && g.l.sample_incomplete) {
 		d_log("zipscript-c: Removing missing-sample indicator (if any)\n");
 		remove_sample_indicator(&g);
 	}

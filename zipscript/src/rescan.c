@@ -724,7 +724,7 @@ main(int argc, char *argv[])
 		}
 #if (create_missing_sample_link)
 		if (g.l.sample_incomplete) {
-			if (findfileextsub(dir) || matchpartialdirname(missing_sample_check_ignore_list, g.v.misc.release_name, missing_sample_check_ignore_dividers)) {
+			if (findfileextsub(".", sample_types, sample_list) || matchpartialdirname(missing_sample_check_ignore_list, g.v.misc.release_name, missing_sample_check_ignore_dividers)) {
 				d_log("rescan: Removing missing-sample indicator (if any)\n");
 				remove_sample_indicator(&g);
 			} else if (matchpath(check_for_missing_sample_dirs, g.l.path) && (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs)) {
@@ -734,7 +734,7 @@ main(int argc, char *argv[])
 						d_log("rescan: create_incomplete_sample() returned something\n");
 					}
 				} else {
-					if (findfileextsubp(dir)) {
+					if (findfileextsub("..", sample_types, sample_list)) {
 						d_log("rescan: Removing missing-sample indicator (if any)\n");
 						remove_sample_indicator(&g);
 					} else {

@@ -85,8 +85,7 @@ extern void	d_log(char *,...);
 
 extern void	create_missing(char *);
 extern char    *findfileext(DIR *, char *);
-extern char    *findfileextsub(DIR *);
-extern char    *findfileextsubp(DIR *);
+extern char    *findfileextsub(const char *, char *, char *);
 extern char    *findfileextparent(DIR *, char *);
 extern char    *findfileextfromlist(DIR *, char *);
 

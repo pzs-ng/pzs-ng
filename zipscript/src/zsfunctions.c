@@ -163,134 +163,69 @@ findfileextfromlist(DIR *dir, char *extlist)
 	return NULL;
 }
 
+/* Description: Returns the name of the first file whose extension matches
+ * one of those in "filetypes", either in the given "dir" or a subdir of "dir"
+ * matching one in "subdirs".
+ * Arguments: dir= the directory to search in
+ *            filetypes= comma-seperated list of fileextensions
+ *            subdirs= comma-seperated list of dirnames
+ * Last modified: 2015.05.15 by Sked
+ */
 char *
-findfileextsub(DIR *dir)
+findfileextsub(const char *dir, char *filetypes, char *subdirs)
 {
-	DIR *dir2, *dir3;
-	int			k;
-	char cwd[1024], cwd2[1024];
-
-	static struct dirent	*dp, *dp2;
+	DIR *d, *subd;
+	char cwd[1024], *ext;
+	static struct dirent *dp, *dp2;
 
         errno = 0;
 
-	if (getcwd(cwd, sizeof(cwd)) == NULL) {
-		d_log("zsfunctions.c: findfileextsub() - Error getting path: %s\n", strerror(errno));
+	if((d=opendir(dir)) == NULL) {
+		d_log("zsfunctions.c: findfileextsub() - opendir(%s) returned an error: %s\n", dir, strerror(errno));
 		return NULL;
 	}
-	rewinddir(dir);
-	if((dir2=opendir(cwd)) == NULL) {
-		d_log("zsfunctions.c: findfileextsub() - Error getting path: %s\n", strerror(errno));
-		return NULL;
-	}
-	while ((dp = readdir(dir2))) {
-		if (strcmp(dp->d_name,".") && strcmp(dp->d_name,".."))  {
-			struct stat attribut;
-			strcpy(cwd2,cwd);
-			strcat(cwd2,"/");
-			strcat(cwd2,dp->d_name);
-			if (stat(cwd2, &attribut) == -1)
-				d_log("zsfunctions.c: findfileextsub() - Error getting path\n");
-			if (strcomp(sample_list, dp->d_name)) {
-				if (S_ISDIR(attribut.st_mode)) {
-					if ((dir3 = opendir(cwd2)) == NULL)
-						d_log("zsfunctions.c: findfileextsub() - Error getting path\n");
-	        			else {
-						rewinddir(dir3);
-						while ((dp2 = readdir(dir3))) {
-							if ((k = NAMLEN(dp2)) < 4)
-								continue;
-							if (strcomp(sample_types, dp2->d_name + k - 3))
+
+	while ((dp = readdir(d))) {
+		if (strcmp(dp->d_name, ".") && strcmp(dp->d_name, ".."))  {
+			if (strcomp(subdirs, dp->d_name)) {
+				struct stat attr;
+				snprintf(cwd, sizeof(cwd), "%s/%s", dir, dp->d_name);
+				if (stat(cwd, &attr) == -1) {
+					d_log("zsfunctions.c: findfileextsub() - stat(%s) returned an error: %s\n", cwd, strerror(errno));
+					closedir(d);
+					return NULL;
+				}
+				if (S_ISDIR(attr.st_mode)) {
+					if ((subd = opendir(cwd)) == NULL) {
+						d_log("zsfunctions.c: findfileextsub() - opendir(%s) returned an error: %s\n", dir, strerror(errno));
+						closedir(d);
+						return NULL;
+					} else {
+						while ((dp2 = readdir(subd))) {
+							if ((ext = strrchr(dp2->d_name, '.')) == NULL)
+								ext = dp2->d_name + NAMLEN(dp2);
+							if (strcomp(filetypes, ext)) {
+								closedir(subd);
+								closedir(d);
 								return dp2->d_name;
+							}
 						}
-						closedir(dir3);
+						closedir(subd);
 					}
 				}
 			}
 		}
-		if ((k = NAMLEN(dp)) < 4)
-			continue;
-		if (strcomp(sample_types, dp->d_name + k - 3))
-			return dp->d_name;
 	}
-	closedir(dir2);
 
-	if (errno)
-		d_log("zsfunctions.c: findfileextsub() - closedir(dir) returned an error: %s\n", strerror(errno));
+	if (errno) {
+		d_log("zsfunctions.c: findfileextsub() - readdir(d) returned an error: %s\n", strerror(errno));
+	}
+	if (closedir(d)) {
+		d_log("zsfunctions.c: findfileextsub() - closedir(d) returned an error: %s\n", strerror(errno));
+	}
 
 	return NULL;
 }
-
-/* Last modified: 2011.11.12 (YYYY.MM.DD)
- * by Sked
- * Check if any of the subdirs of the parentdir of "dir" is in the sample_list
- * and if any file in such a subdir with an extension listed in sample_types exists.
- */
-char *
-findfileextsubp(DIR *dir)
-{
-	DIR *dir2, *dir3;
-	int			k;
-	char cwd[1024], cwd2[1024], cwd3[1024];
-	char * pch;
-	static struct dirent	*dp, *dp2;
-
-	errno = 0;
-
-	if (getcwd(cwd, sizeof(cwd)) == NULL) {
-		d_log("zsfunctions.c: findfileextsubp() - getcwd: Error getting path: %s\n", strerror(errno));
-		return NULL;
-	}
-
-	pch=strrchr(cwd,47);
-	strncpy(cwd2,cwd,pch-cwd);
-	cwd2[pch-cwd]='\0';
-
-	rewinddir(dir);
-
-	if((dir2=opendir(cwd2)) == NULL) {
-		d_log("zsfunctions.c: findfileextsubp() - opendir(%s): Error getting path: %s\n", cwd2, strerror(errno));
-		return NULL;
-	}
-
-	while ((dp = readdir(dir2))) {
-		if (strcmp(dp->d_name,".") && strcmp(dp->d_name,".."))  {
-			struct stat attribut;
-			strcpy(cwd3,cwd2);
-			strcat(cwd3,"/");
-			strcat(cwd3,dp->d_name);
-			if (stat(cwd3, &attribut) == -1)
-				d_log("zsfunctions.c: findfileextsubp() - stat(%s): Error getting path: %s\n", cwd3, strerror(errno));
-			if (strcomp(sample_list, dp->d_name)) {
-				if (S_ISDIR(attribut.st_mode)) {
-					if ((dir3 = opendir(cwd3)) == NULL)
-						d_log("zsfunctions.c: findfileextsubp() - opendir(%s): Error getting path: %s\n", cwd3, strerror(errno));
-					else {
-						rewinddir(dir3);
-						while ((dp2 = readdir(dir3))) {
-							if ((k = NAMLEN(dp2)) < 4)
-								continue;
-							if (strcomp(sample_types, dp2->d_name + k - 3))
-								return dp2->d_name;
-						}
-						closedir(dir3);
-					}
-				}
-			}
-		}
-		if ((k = NAMLEN(dp)) < 4)
-			continue;
-		if (strcomp(sample_types, dp->d_name + k - 3))
-			return dp->d_name;
-	}
-	closedir(dir2);
-
-	if (errno)
-		d_log("zsfunctions.c: findfileextsubp() - readdir(dir2) returned an error: %s\n", strerror(errno));
-
-	return NULL;
-}
-
 
 int
 check_dupefile(DIR *dir, char *fname)
@@ -866,7 +801,9 @@ strcomp(char *instr, char *searchstr)
 
 	k = (int)strlen(searchstr);
 
-	if ( (int)strlen(instr) == 0 || k == 0 )
+	/* Don't check if k==0 so we can check an empty searchstr is present.
+		"instr" will have ",text" or "text,,text" or "text," */
+	if ( (int)strlen(instr) == 0 )
 		return 0;
 
 	do {

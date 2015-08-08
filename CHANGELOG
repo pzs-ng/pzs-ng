@@ -2,9 +2,10 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix samplechecking for fileexts not being 3 chars long. Fix some memleaks and other bugs at the same time.
 		- Fix incorrect bitrate (and other values) reported for .mp3 files (thanks to bizzyfunk for noticing)
 		- Fix "-e" echo when compiling (patch by tittof)
-		- Add sample_types option to be used instead of video_types to define those extensions prsent in sampledirs
+		- Add sample_types option to be used instead of video_types to define those extensions present in sampledirs
 		- Split del_completebar into as many equivalents as *_completebar
 		- Add jpeg to allowed_types and 2015 to allowed_years
 		- Make IRC-triggers configurable in ngBot: now you can easily disable a command
