@@ -87,6 +87,7 @@ announce.BAD_FILE_ZIP				= "[%b{%c1{RULES} }] %b{%u_name}@%g_name uploaded a bad
 announce.BAD_FILE_WRONGDIR			= "[%b{%c1{RULES} }] %b{%u_name}@%g_name uploaded a bad file (wrong dir) in %b{%releasename}."
 announce.BAD_FILE_SFV	 			= "[%b{%c1{RULES} }] %b{%u_name}@%g_name uploaded a bad file (sfv with errors) in %b{%releasename}."
 announce.BAD_FILE_NOSFV				= "[%b{%c1{RULES} }] %b{%u_name}@%g_name uploaded a bad file (no sfv uploaded yet) in %b{%releasename}."
+announce.BAD_FILE_NONFO				= "[%b{%c1{RULES} }] %b{%u_name}@%g_name uploaded a bad file (no nfo uploaded yet) in %b{%releasename}."
 announce.BAD_FILE_GENRE				= "[%b{%c1{RULES} }] %b{%u_name}@%g_name uploaded a bad file (banned genre) in %b{%releasename}."
 announce.BAD_FILE_YEAR				= "[%b{%c1{RULES} }] %b{%u_name}@%g_name uploaded a bad file (banned year) in %b{%releasename}."
 announce.BAD_FILE_BITRATE			= "[%b{%c1{RULES} }] %b{%u_name}@%g_name uploaded a bad file (banned bitrate) in %b{%releasename}."

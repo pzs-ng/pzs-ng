@@ -1,24 +1,22 @@
 #################################################################################
-# ngBot - Auto Announce Top Uploaders                                           #
+# ngBot - Auto Announce Top Groups                                              #
 #################################################################################
 # 
 # Description:
-# - Auto announces the top uploaders at a configurable interval.
+# - Auto announces the top groups at a configurable interval.
 #
 # Installation:
 # 1. Add the following to your eggdrop.conf:
-#    source pzs-ng/plugins/Top.tcl
+#    source pzs-ng/plugins/GrpTop.tcl
 #
 # 2. Rehash or restart your eggdrop for the changes to take effect.
 #
 # Changelog:
-# - 20110913 - Sked:	Fixed output for users with chars other than A-Za-z0-9_ - Fix by PCFiL
-# - 20120529 - Madjik:  Modded the output for two lines with header
-#                       Added support for displaying users group
+# - 20132701 - Initial release
 #
 #################################################################################
 
-namespace eval ::ngBot::plugin::Top {
+namespace eval ::ngBot::plugin::GrpTop {
 	variable ns [namespace current]
 	variable np [namespace qualifiers [namespace parent]]
 
@@ -27,17 +25,17 @@ namespace eval ::ngBot::plugin::Top {
 	## Config Settings ###############################
 	##
 	## Interval between announces in seconds (default: 7200 - 2 hours)
-	set top(interval)   7200
+	set top(interval)   10800
 	##
 	## Section to display (0 = DEFAULT)
 	set top(sect)       0
 	##
 	## Maximum number of users to display
-	set top(users)      5
+	set top(groups)      5
 	##
 	## Message prefix
 	set top(prefix)     "\002charts\002"
-	set top(header)     "$top(prefix) > This week awesome people >"
+	set top(header)     "$top(prefix) > This week impressive groups >"
 
 	##
 	## Output channels
@@ -45,7 +43,7 @@ namespace eval ::ngBot::plugin::Top {
 	##
 	##################################################
 
-	set top(version) "20120529"
+	set top(version) "20132701"
 
 	variable timer
 
@@ -53,7 +51,7 @@ namespace eval ::ngBot::plugin::Top {
 	proc init {args} {
 		variable top
 		[namespace current]::startTimer
-		putlog "\[ngBot\] Top :: Loaded successfully (Version: $top(version))."
+		putlog "\[ngBot\] GrpTop :: Loaded successfully (Version: $top(version))."
 	}
 
 	proc deinit {args} {
@@ -66,7 +64,7 @@ namespace eval ::ngBot::plugin::Top {
 		variable timer
 
 		if {[catch {killutimer $timer} error] != 0} {
-			putlog "\[ngBot\] Top :: Warning: Unable to kill announce timer \"$error\""
+			putlog "\[ngBot\] GrpTop :: Warning: Unable to kill announce timer \"$error\""
 		}
 	}
 
@@ -85,8 +83,8 @@ namespace eval ::ngBot::plugin::Top {
 
 		[namespace current]::startTimer
 
-		if {[catch {exec $binary(STATS) -r $location(GLCONF) -u -w -x $top(users) -s $top(sect)} output] != 0} {
-			putlog "\[ngBot\] Top :: Error: Problem executing stats-exec \"$output\""
+		if {[catch {exec $binary(STATS) -r $location(GLCONF) -u -W -x $top(groups) -s $top(sect)} output] != 0} {
+			putlog "\[ngBot\] GrpTop :: Error: Problem executing stats-exec \"$output\""
 			return
 		}
 
@@ -94,9 +92,8 @@ namespace eval ::ngBot::plugin::Top {
 		foreach line [split $output "\n"] {
 			regsub -all -- {(\s+)\s} $line " " line
 
-			if {[regexp -- {^\[(\d+)\] (.*?) (.*?) (\d+) (\d+)\w+ (\S+)} $line -> pos username tagline files bytes speed]} {
-				set groups [usergrp $username]
-				lappend msg "$pos. $username/$groups \002$bytes\002MB "
+			if {[regexp -- {^\[(\d+)\] (.*?) (\d+) (\d+)\w+ (\d+)} $line -> pos groupname files bytes members]} {
+				lappend msg "$pos. $groupname \002$bytes\002MB "
 			}
 		}
 
@@ -111,25 +108,4 @@ namespace eval ::ngBot::plugin::Top {
 			putquick "PRIVMSG $chan : "
 		}
 	}
-
-	proc usergrp {user} {
-		variable np
-	        variable ${np}::location
-
-		set groups [list]
-		if {![catch {set handle [open "$location(USERS)/$user" r]} error]} {
-			set data [read $handle]
-			close $handle
-			foreach line [split $data "\n"] {
-				switch -exact -- [lindex $line 0] {
-					"GROUP" {lappend groups [lindex $line 1]}
-				}
-			}
-			return $groups
-		} else {
-			putlog "\[Top\] Error :: Unable to open user file for \"$user\" ($error)."
-			return false
-		}
-	}
-
 }

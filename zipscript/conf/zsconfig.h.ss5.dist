@@ -17,6 +17,8 @@
 #define sfv_dirs			"/site/test/ /site/incoming/mp3/ /site/incoming/games/ /site/incoming/apps/ /site/incoming/musicvideos/ /site/incoming/requests/"
 #define nocheck_dirs			"/site/private/"
 #define noforce_sfv_first_dirs		"/site/incoming/requests/"
+#define noforce_nfo_first_dirs          "/site/incoming/requests/"
+
 #define audio_nocheck_dirs		"/site/groups/ /site/incoming/requests/"
 #define allowed_types_exemption_dirs	"/site/incoming/musicvideos/"
 #define check_for_missing_nfo_dirs	"/site/incoming/games/ /site/incoming/apps/"
@@ -37,6 +39,7 @@
 
 #define deny_double_sfv			FALSE
 #define force_sfv_first			FALSE
+#define force_nfo_first                 FALSE
 
 #define audio_genre_path		"/site/incoming/music.by.genre/"
 #define audio_artist_path		"/site/incoming/music.by.artist/"

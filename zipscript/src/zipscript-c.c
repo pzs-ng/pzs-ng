@@ -973,6 +973,29 @@ main(int argc, char **argv)
 				d_log("zipscript-c: We did not get crc from ftp daemon, calculating crc for %s now.\n", g.v.file.name);
 				crc = calc_crc32(g.v.file.name);
 			}
+
+			/* NFO FIRST CHECK */
+#if ( force_nfo_first == TRUE )
+			if (!findfileext(dir, ".nfo")) {
+#if (use_partial_on_noforce == TRUE)
+				if (!matchpartialpath(noforce_nfo_first_dirs, g.l.path) && !matchpath(zip_dirs, g.l.path)) {
+#else
+				if (!matchpath(noforce_nfo_first_dirs, g.l.path) && !matchpath(zip_dirs, g.l.path)) {
+#endif
+					d_log("zipscript-c: NFO needs to be uploaded first\n");
+					strlcpy(g.v.misc.error_msg, NFO_FIRST, 80);
+					mark_as_bad(g.v.file.name);
+					write_log = g.v.misc.write_log;
+					g.v.misc.write_log = 1;
+					error_msg = convert(&g.v, g.ui, g.gi, bad_file_msg);
+					if (exit_value < 2)
+						writelog(&g, error_msg, bad_file_nonfo_type);
+					exit_value = 2;
+					break;
+				}
+			}
+#endif
+			/* END OF NFO FIRST CHECK*/
 			if (fileexists(g.l.sfv)) {
 				s_crc = readsfv(g.l.sfv, &g.v, 0);
 				

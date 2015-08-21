@@ -209,6 +209,7 @@ announce.BAD_FILE_DISALLOWED                    = "( %c9{%b{%section}} )-( %c2{%
 announce.BAD_FILE_DUPENFO                       = "( %c9{%b{%section}} )-( %c2{%b{DUPE NFO}} )-( %b{%releasename} )-( by %b{%u_name}/%g_name )"
 announce.BAD_FILE_GENRE                         = "( %c9{%b{%section}} )-( %c2{%b{BAD GENRE}} )-( %b{%releasename} )-( by %b{%u_name}/%g_name )"
 announce.BAD_FILE_NOSFV                         = "( %c9{%b{%section}} )-( %c2{%b{MISSING SFV}} )-( %b{%releasename} )-( by %b{%u_name}/%g_name )"
+announce.BAD_FILE_NONFO                         = "( %c9{%b{%section}} )-( %c2{%b{MISSING NFO}} )-( %b{%releasename} )-( by %b{%u_name}/%g_name )"
 announce.BAD_FILE_SFV                           = "( %c9{%b{%section}} )-( %c2{%b{CORRUPT SFV}} )-( %b{%releasename} )-( by %b{%u_name}/%g_name )"
 announce.BAD_FILE_WRONGDIR                      = "( %c9{%b{%section}} )-( %c2{%b{WRONG DIR}} )-( %b{%releasename} )-( by %b{%u_name}/%g_name )"
 announce.BAD_FILE_YEAR                          = "( %c9{%b{%section}} )-( %c2{%b{BAD YEAR}} )-( %b{%releasename} )-( by %b{%u_name}/%g_name )"
