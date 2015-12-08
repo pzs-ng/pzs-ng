@@ -507,7 +507,8 @@ namespace eval ::ngBot {
 				"Bad user@host."    {set event "BADHOSTMASK"}
 				"Banned user@host." {set event "BANNEDHOST"}
 				"Deleted."          {set event "DELETED"}
-				"Login failure."    {set event "BADPASSWORD"}
+				"Login failure. (wrong password)"    {set event "BADPASSWORD"}
+				"Login failure. (user does not exist)"    {set event "BADUSERNAME"}
 				default {return 0}
 			}
 			set data [list $user $hostmask $ip]

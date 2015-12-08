@@ -23,6 +23,9 @@ Quickreference of cookies:
 # BADPASSWORD:
 %u_name, %u_hostmask, %u_ip
 
+# BADUSERNAME:
+%u_name, %u_hostmask, %u_ip
+
 # BADYEAR:
 %u_name, %g_name, %year
 

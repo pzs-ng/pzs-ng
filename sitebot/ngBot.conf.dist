@@ -119,6 +119,7 @@ set disable(PURGED)         0
 set disable(SYSOP)          0
 set disable(BADHOSTMASK)    0
 set disable(BADPASSWORD)    0
+set disable(BADUSERNAME)    0
 set disable(BANNEDHOST)     0
 set disable(DELETED)        0
 set disable(EXPIRED)        0
@@ -135,6 +136,7 @@ set redirect(PURGED)        $staffchan
 set redirect(SYSOP)         $staffchan
 set redirect(BADHOSTMASK)   $staffchan
 set redirect(BADPASSWORD)   $staffchan
+set redirect(BADUSERNAME)   $staffchan
 set redirect(BANNEDHOST)    $staffchan
 set redirect(DELETED)       $staffchan
 set redirect(EXPIRED)       $staffchan

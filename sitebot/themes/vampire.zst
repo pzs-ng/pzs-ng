@@ -37,6 +37,7 @@ announce.LOGIN					= "%b{LOGiN%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{h
 announce.LOGOUT					= "%b{LOGOUT%c1{:}} %c3{%b{%u_name}} %c1{/} %c3{%g_name} %c1{has logged out.}"
 announce.BADHOSTMASK				= "%b{LOGiN%c1{:}} %c3{%b{%u_name}} %c1{failed to log in from} %c3{%u_hostmask}%c1{.}"
 announce.BADPASSWORD				= "%b{LOGiN%c1{:}} %c3{%b{%u_name}} %c1{tried to log in with a wrong password.}"
+announce.BADUSERNAME				= "%b{LOGiN%c1{:}} %c3{%b{%u_name}} %c1{tried to log in with a user that doesn't exist.}"
 announce.BANNEDHOST				= "%b{LOGiN%c1{:}} %c3{%b{%u_name}} %c1{could not log, hostmask} %c3{%u_hostmask} %c1{is banned.}"
 announce.DELETED				= "%b{LOGiN%c1{:}} %c3{%b{%u_name}} %c1{could not log in, user deleted.}"
 announce.EXPIRED				= "%b{LOGiN%c1{:}} %c3{%b{%u_name}} %c1{could not log in, user expired.}"

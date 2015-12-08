@@ -55,6 +55,7 @@ announce.LOGIN                  = "[%b{login }] %b{%u_name}@%g_name has logged i
 announce.LOGOUT                 = "[%b{logout}] %b{%u_name}@%g_name has logged out."
 announce.BADHOSTMASK            = "[%b{login }] %b{%u_name} could not login, hostmask %b{%u_hostmask} is not added."
 announce.BADPASSWORD            = "[%b{login }] %b{%u_name} could not login, invalid password."
+announce.BADUSERNAME            = "[%b{login }] %b{%u_name} could not login, invalid username."
 announce.BANNEDHOST             = "[%b{login }] %b{%u_name} could not login, hostmask %b{%u_hostmask} is banned."
 announce.DELETED                = "[%b{login }] %b{%u_name} could not login, account deleted."
 announce.EXPIRED                = "[%b{login }] %b{%u_name} could not login, account expired."
