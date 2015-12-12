@@ -177,6 +177,7 @@ announce.FAILLOGIN                		= "( %c7{%b{SYSLOG}} )-( %c2{%b{LOGIN FAILED
 announce.BADHOSTMASK                            = "( %c7{%b{SYSLOG}} )-( %c2{%b{LOGIN FAILED}} )-( %b{%u_name} )-( Reason: Hostmask %b{%u_hostmask} not added )"
 announce.BADPASSWORD                            = "( %c7{%b{SYSLOG}} )-( %c2{%b{LOGIN FAILED}} )-( %b{%u_name} )-( Reason: Wrong password )"
 announce.BADUSERNAME                            = "( %c7{%b{SYSLOG}} )-( %c2{%b{LOGIN FAILED}} )-( %b{%u_name} )-( Reason: User does not exist )"
+announce.BADEMAILPASS                           = "( %c7{%b{SYSLOG}} )-( %c2{%b{LOGIN FAILED}} )-( %b{%u_name} )-( Reason: Incorrect email address )"
 announce.DELETED                                = "( %c7{%b{SYSLOG}} )-( %c2{%b{LOGIN FAILED}} )-( %b{%u_name} )-( Reason: Account is deleted )"
 announce.EXPIRED                                = "( %c7{%b{SYSLOG}} )-( %c2{%b{LOGIN FAILED}} )-( %b{%u_name} )-( Reason: Account has expired )"
 announce.BANNEDHOST                             = "( %c7{%b{SYSLOG}} )-( %c2{%b{LOGIN FAILED}} )-( %b{%u_name} )-( Reason: Hostmask %b{%u_hostmask} is banned )"

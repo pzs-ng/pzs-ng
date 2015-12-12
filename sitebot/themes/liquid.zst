@@ -47,6 +47,7 @@ announce.LOGIN                  = "[LOGiN] .: %b{%u_name}·%g_name turned into li
 announce.BADHOSTMASK            = "[LOGiN] .: wannabe %b{%u_name} (%u_hostmask) hit the dessert :."
 announce.BADPASSWORD            = "[LOGiN] .: %b{%u_name} n00bed an invalid password :."
 announce.BADUSERNAME            = "[LOGiN] .: %b{%u_name} n00bed an invalid username :."
+announce.BADEMAILPASS           = "[LOGiN] .: %b{%u_name} n00bed an invalid email as password :."
 announce.BANNEDHOST             = "[LOGiN] .: %b{%u_name} (%u_hostmask) is banned :."
 announce.DELETED                = "[LOGiN] .: deluser %b{%u_name} wanna enter liquid :."
 announce.EXPIRED                = "[LOGiN] .: expired user %b{%u_name} wanna enter liquid :."

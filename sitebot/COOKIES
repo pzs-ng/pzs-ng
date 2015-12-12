@@ -26,6 +26,9 @@ Quickreference of cookies:
 # BADUSERNAME:
 %u_name, %u_hostmask, %u_ip
 
+# BADEMAILPASS:
+%u_name, %u_hostmask, %u_ip
+
 # BADYEAR:
 %u_name, %g_name, %year
 

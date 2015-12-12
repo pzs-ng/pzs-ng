@@ -509,6 +509,7 @@ namespace eval ::ngBot {
 				"Deleted."          {set event "DELETED"}
 				"Login failure. (wrong password)"    {set event "BADPASSWORD"}
 				"Login failure. (user does not exist)"    {set event "BADUSERNAME"}
+				"Login failure. (incorrect email address)"    {set event "BADEMAILPASS"}
 				default {return 0}
 			}
 			set data [list $user $hostmask $ip]
