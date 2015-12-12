@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Add explanation for usable vars in FREE and FREE-DEV
 		- Add announce for users with email as pass and using an incorrect one.
 		- Add 44 extra genres defined by Winamp
 		- Add announce for glftpd's new logline concerning logins with invalid usernames and adjust existing one for bad passwords.
