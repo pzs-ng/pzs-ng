@@ -2,6 +2,8 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Add explanation for vars in WELCOME and UPTIME
+		- Add %color explanation and extra info for BNC_* announces
 		- Add explanation for usable vars in FREE and FREE-DEV
 		- Add announce for users with email as pass and using an incorrect one.
 		- Add 44 extra genres defined by Winamp
