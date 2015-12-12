@@ -717,7 +717,7 @@ namespace eval ::ngBot::module::glftpd {
 		if {[string equal [set type [string toupper $type]] "UP"]} {
 			set type_long "UPLOAD"
 			set type_speed $speed(INCOMING)
-			set type_string "Uploader:"
+			set type_string "Uploaders:"
 		} else {
 			set type_long "LEECH"
 			set type_speed $speed(OUTGOING)
@@ -895,6 +895,7 @@ namespace eval ::ngBot::module::glftpd {
 		variable ${np}::location
 		variable ${np}::announce
 
+		set bad 0
 		set argv [split $argv]
 		if {[llength $argv] > 1} {
 			set user [lindex $argv 0]
@@ -921,10 +922,11 @@ namespace eval ::ngBot::module::glftpd {
 				${ns}::inviteuser $nick $user $group $flags
 
 			} else {
+				set bad 1
 				set output "$theme(PREFIX)$announce(BADMSGINVITE)"
 			}
 
-			if {$disable(MSGINVITE) != 1} {
+			if {($bad == 1 && $disable(BADMSGINVITE) != 1) || ($bad == 0 && $disable(MSGINVITE) != 1)} {
 				set output [${np}::replacevar $output "%u_ircnick" $nick]
 				set output [${np}::replacevar $output "%u_name" $user]
 				set output [${np}::replacevar $output "%u_host" $host]
