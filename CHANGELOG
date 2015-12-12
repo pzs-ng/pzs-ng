@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Add 44 extra genres defined by Winamp
 		- Add announce for glftpd's new logline concerning logins with invalid usernames and adjust existing one for bad passwords.
 		- Fix samplechecking for fileexts not being 3 chars long. Fix some memleaks and other bugs at the same time.
 		- Fix incorrect bitrate (and other values) reported for .mp3 files (thanks to bizzyfunk for noticing)
