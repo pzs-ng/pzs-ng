@@ -1,0 +1,10 @@
+##############################################################################
+#                                                                            #
+#  TVMaze.zpt  -  TVMaze: TV Show & Episode Pzs-ng Plug-in (Default Theme)   #
+#                                                                            #
+##############################################################################
+
+announce.TVMAZE                 = "[%b{tv-info}][%section] %b{%tvmaze_show_name}: %b{%tvmaze_episode_title} (%tvmaze_show_genres) %tvmaze_show_type Aired: %tvmaze_episode_original_airdate\n[%b{tv-info}][%section] URL: %tvmaze_episode_url"
+announce.TVMAZE-PRE             = "[%b{tv-info}][%section] %b{%tvmaze_show_name}: %b{%tvmaze_episode_title} (%tvmaze_show_genres) %tvmaze_show_type Aired: %tvmaze_episode_original_airdate\n[%b{tv-info}][%section] URL: %tvmaze_episode_url"
+announce.TVMAZE-MSGFULL         = "[%b{tv-info}] %b{%tvmaze_show_name}: %b{%tvmaze_episode_title} (%tvmaze_show_genres) Aired: %tvmaze_episode_original_airdate\n[%b{tv-info}] URL: %tvmaze_episode_url"
+announce.TVMAZE-MSGSHOW         = "[%b{tv-info}] %b{%tvmaze_show_name} (%tvmaze_show_genres) %tvmaze_show_type\n[%b{tv-info}] Last Episode: %b{%tvmaze_show_latest_episode: %tvmaze_show_latest_title} (%tvmaze_show_latest_airdate)\n[%b{tv-info}] Next Episode: %b{%tvmaze_show_next_episode: %tvmaze_show_next_title} (%tvmaze_show_next_airdate)\n[%b{tv-info}] URL: %tvmaze_show_url"

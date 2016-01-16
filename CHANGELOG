@@ -2,6 +2,8 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Add TVMaze sitebot plugin, revamped TVRage plugin by MrCode.
+		- ^--- 2016 ---^
 		- Fix disabling of BADMSGINVITE announce.
 		- Add explanation for vars in all triggers, WELCOME and (BAD)MSGINVITE
 		- Add %color explanation and extra info for BNC_* announces
