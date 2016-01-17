@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix typos in TVMaze plugin (thanks to sam-lap for noticing)
 		- Add TVMaze sitebot plugin, revamped TVRage plugin by MrCode.
 		- ^--- 2016 ---^
 		- Fix disabling of BADMSGINVITE announce.

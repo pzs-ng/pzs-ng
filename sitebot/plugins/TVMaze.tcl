@@ -124,7 +124,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 	##################################################
 
 	## Version
-	set tvmaze(version) "20151222"
+	set tvmaze(version) "20160117"
 	## Useragent
 	set tvmaze(useragent) "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.0.5) Gecko/2008120122 Firefox/3.0.5"
 
@@ -376,7 +376,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 		variable tvmaze
 
 		set data [GetFromApi "http://api.tvmaze.com/singlesearch/shows?embed%5b%5d=previousepisode&embed%5b%5d=nextepisode&q=" $show]
-		if {[string equal "Connection" [string range $data 0 9]} {
+		if {[string equal "Connection" [string range $data 0 9]]} {
 			return -code error $data
 		}
 
@@ -480,7 +480,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 		# in case of SXXEXX
 		if {![string equal "$season" ""] && ![string equal "$epnumber" ""]} {
 			set data [GetFromApi "http://api.tvmaze.com/shows/${info(show_id)}/episodebynumber?season=${season}&number=${epnumber}" ""]
-			if {[string equal "Connection" [string range $data 0 9]} {
+			if {[string equal "Connection" [string range $data 0 9]]} {
 				return -code error $data
 			}
 
