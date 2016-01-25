@@ -625,6 +625,8 @@ namespace eval ::ngBot::module::glftpd {
 				set idletime [lindex $line 5]
 				set tagline [lindex $line 6]
 				set since [lindex $line 7]
+				set curdir [lindex $line 10]
+				set upid [lindex $line 11]
 
 				if {$idletime > $minidletime} {
 					set output [${np}::replacevar "$theme(PREFIX)$announce(USERIDLE)" "%u_name" $user]
@@ -632,6 +634,8 @@ namespace eval ::ngBot::module::glftpd {
 					set output [${np}::replacevar $output "%idletime" [${np}::format_duration $idletime]]
 					set output [${np}::replacevar $output "%tagline" $tagline]
 					set output [${np}::replacevar $output "%since" $since]
+					set output [${np}::replacevar $output "%currentdir" $curdir]
+					set output [${np}::replacevar $output "%u_pid" $upid]
 					${np}::sndone $rcvr [${np}::replacebasic $output "IDLE"]
 					incr count
 				}
@@ -685,7 +689,8 @@ namespace eval ::ngBot::module::glftpd {
 				set output [${np}::replacevar $output "%tagline" [lindex $line 6]]
 				set output [${np}::replacevar $output "%timeonline" [lindex $line 7]]
 				set output [${np}::replacevar $output "%f_name" [lindex $line 8]]
-				set output [${np}::replacevar $output "%u_pid" [lindex $line 10]]
+				set output [${np}::replacevar $output "%currentdir" [lindex $line 10]]
+				set output [${np}::replacevar $output "%u_pid" [lindex $line 11]]
 				${np}::sndone $rcvr [${np}::replacebasic $output "SPEED"]
 			}
 		} else {
@@ -748,6 +753,8 @@ namespace eval ::ngBot::module::glftpd {
 				set output [${np}::replacevar $output "%tagline" [lindex $line 6]]
 				set output [${np}::replacevar $output "%since" [lindex $line 7]]
 				set output [${np}::replacevar $output "%filename" [lindex $line 8]]
+				set output [${np}::replacevar $output "%currentdir" [lindex $line 10]]
+				set output [${np}::replacevar $output "%u_pid" [lindex $line 11]]
 				${np}::sndone $rcvr [${np}::replacebasic $output $type_long]
 				incr count
 				set total [expr {$total + $uspeed}]
