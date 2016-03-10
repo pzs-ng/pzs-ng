@@ -23,6 +23,7 @@
 # 4. Rehash or restart your eggdrop for the changes to take effect.
 #
 # Changelog:
+# - 20160310 - Sked:	Fix show_network
 # - 20160117 - Sked:	Cleanup for inclusion in pzs-ng
 # - 20160115 - MrCode:	Refactoring
 # - 20151222 - MrCode:	Revamp TVRage to TVMaze
@@ -390,15 +391,15 @@ namespace eval ::ngBot::plugin::TVMaze {
 		regexp {\"url\":\"(.*?)\"} $data -> info(show_url)
 		regexp {\"status\":\"(.*?)\"} $data -> info(show_status)
 		regexp {\"country\":.*?\"code\":\"(.*?)\"} $data -> info(show_country)
-		regexp {\"network\":.*?\"name\":\"(.*?)\"} $data -> info(show_network)
 		regexp {\"premiered\":\"(.*?)\"} $data -> info(show_premiered)
 		regexp {\"type\":\"(.*?)\"} $data -> info(show_type)
 		regexp {\"runtime\":(\d+)} $data -> info(show_runtime)
 
-		# use webchan over network if present
-		regexp {\"webChannel\":.*?\"name\":\"(.*?)\",\"} $data -> show_webchannel
-		if {[info exists show_webchannel]} {
-			set info(show_network) $show_webchannel
+		# use webchan or network as "show_network"
+		if {[regexp {\"network\":null,} $data] && ![regexp {\"webChannel\":null,} $data]} {
+			regexp {\"webChannel\":.*?\"name\":\"(.*?)\",\"} $data -> info(show_network)
+		} elseif {![regexp {\"network\":null,} $data] && [regexp {\"webChannel\":null,} $data]} {
+			regexp {\"network\":.*?\"name\":\"(.*?)\"} $data -> info(show_network)
 		}
 
 		# genre(s)

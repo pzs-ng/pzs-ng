@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix TVMaze plugin show_network showing incorrect result (thanks to ViP3R for noticing).
 		- Fix %u_pid in SPEED* announces, add %currentdir for SPEED* and USER announces and %u_pid for USER announce.
 		- Fix typos in TVMaze plugin (thanks to sam-lap for noticing)
 		- Add TVMaze sitebot plugin, revamped TVRage plugin by MrCode.
