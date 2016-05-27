@@ -2,6 +2,8 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Change behaviour of use_partial_on_noforce to match strings in noforce_sfv_first_dirs with
+		  any part of the path instead of the rightmost part.
 		- Fix TVMaze plugin show_network showing incorrect result (thanks to ViP3R for noticing).
 		- Fix %u_pid in SPEED* announces, add %currentdir for SPEED* and USER announces and %u_pid for USER announce.
 		- Fix typos in TVMaze plugin (thanks to sam-lap for noticing)

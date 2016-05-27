@@ -826,28 +826,38 @@ strcomp(char *instr, char *searchstr)
 	return 0;
 }
 
+/*
+ * Given a space-seperated list of strings (arg1),
+ * check if any is a part of a given string (arg2)
+ * Modified: 2016.05.28 (YYYY.MM.DD)
+ * by Sked
+ */
 short int 
 matchpartialpath(char *instr, char *path)
 {
-	int	pos = 0;
-	char	partstring[strlen(path) + 2];
+	int	pos = 0, i;
+	int	plen = (int)strlen(path);
+	char	partstring[plen + 2];
 
-	if ( (int)strlen(instr) < 2 || (int)strlen(path) < 2 )
-		return 0;
+	if (*(path + plen) == '/')
+		sprintf(partstring, "%s", path);
+	else {
+		sprintf(partstring, "%s/", path);
+		++plen;
+	}
 
-	sprintf(partstring, "%s", path);
 	do {
 		switch (*instr) {
 		case 0:
 		case ' ':
-			if (!strncasecmp(instr - pos, partstring + (int)strlen(partstring) - pos, pos))
-				return 1;
-			if ((pos > 1) && (*(instr - 1) == '/') && (!strncasecmp(instr - pos, partstring + (int)strlen(partstring) + 1 - pos, pos - 1)))
-				return 1;
+			for (i = 0; pos + i <= plen; ++i) {
+				if (!strncasecmp(instr - pos, partstring + i, pos))
+					return 1;
+			}
 			pos = 0;
 			break;
 		default:
-			pos++;
+			++pos;
 			break;
 		}
 	} while (*instr++);
