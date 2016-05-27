@@ -17,7 +17,7 @@
 ############################################################################
 
 # version number. no need to change
-VERSION=2.9m
+VERSION=2.9s
 
 # The location of psxc-imdb.conf. This is the full path.
 IMDB_CONF=/glftpd/etc/psxc-imdb.conf
@@ -556,7 +556,7 @@ if [ $SORT_BY_TITLE -eq 1 ]; then
     [ "$IMDBRELPATH" != "$(readlink "$GLROOT$SYMLINK_PATH/$SORT_BY_TITLE_NAME/$TITLECHAR/$TITLE$CNTR")" ]; do
    CNTR=$((CNTR+1))
   done
-  ln -s "$IMDBRELPATH" "$GLROOT$SYMLINK_PATH/$SORT_BY_TITLE_NAME/$TITLECHAR/$TITLE$CNTR"
+  ln -nfs "$IMDBRELPATH" "$GLROOT$SYMLINK_PATH/$SORT_BY_TITLE_NAME/$TITLECHAR/$TITLE$CNTR"
  fi
 fi
 

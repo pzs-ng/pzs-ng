@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix psxc-symlink-maker not updating links when sorting by title when dest has changed.
 		- Fix psxc-imdb parsing Directors with single quotes in their names correctly.
 		- Fix psxc-imdb to parse all data again from pages now considered binary by certain grep-versions.
 		- Change behaviour of use_partial_on_noforce to match strings in noforce_sfv_first_dirs with
