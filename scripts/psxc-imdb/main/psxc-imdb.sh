@@ -565,7 +565,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     if [ ! -z "$RUNTIMECLEAN" ]; then
      RUNTIMECLEAN="$RUNTIMECLEAN min"
     fi
-    DIRECTOR=$(sed -nr '/Directed by$/, /(sponsored_links_afc_iframe|Production Companies|Distributors| by|Writing credits)$/p' "$TMPFILE" | awk '/Directed by$/,/[^Directed] by$/' | awk '/Directed by$/,/Writing credits$/' | sed '1d;$d;s/(.*)//;s/^ //;s/ $//' | tr -s ' ' '_' | xargs | sed -e 's/ / \| /g' -e 's/\"/$QUOTECHAR/g' | tr '_' ' ')
+    DIRECTOR=$(sed -nr '/Directed by$/, /(sponsored_links_afc_iframe|Production Companies|Distributors| by|Writing credits)$/p' "$TMPFILE" | awk '/Directed by$/,/[^Directed] by$/' | awk '/Directed by$/,/Writing credits$/' | sed '1d;$d;s/(.*)//;s/^ //;s/ $//;s/'"'/\\\'/g;s/  */_/g" | xargs | sed 's/ / \| /g;s/\"/$QUOTECHAR/g;s/_/ /g')
     DIRECTORCLEAN=$(echo $DIRECTOR)
     if [ ! -z "$(echo "$DIRECTOR" | grep -a -e "\(\ \)\ \(\ \)")" ]; then
      OUTPUTOK=""
