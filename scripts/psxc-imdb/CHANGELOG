@@ -1,5 +1,7 @@
 PSXC-IMDB CHANGELOG:
 --------------------
+- v2.9s - May  28th, 2016 - Fixed psxc-imdb not getting all data due to certain grep versions
+			    treating the pages a binary.
 - v2.9r - Nov. 16th, 2013 - Fixed psxc-imdb not limiting Country, Language, Cert and Runtime
 			    to their configured number
 			  - Fixed bug where iMDB has an empty Language, Country, Genre, Cert or Runtime item

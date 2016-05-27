@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.9r"
+VERSION="v2.9s"
 
 ######################################################################################################
 
@@ -120,7 +120,7 @@ if [ ! -z "$RECVDARGS" ]; then
    IMDBURLS="$(grep -a [Ii][Mm][Dd][Bb] $FILENAME | tr ' \|' '\n' | sed -n /[hH][tT][tT][pP]:[/][/].*[.][iI][mM][dD][bB][.].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?')"
    if [ ! -z "$(echo $IMDBURLS | grep -a "imdb\.")" ]; then
 #    IMDBURL="http://www.imdb.com/title/tt""$(echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]')"
-    IMDBURL="http://www.imdb.com/title/tt""$(echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 |  grep -o "[0-9]*" | head -n 1)"
+    IMDBURL="http://www.imdb.com/title/tt""$(echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 |  grep -a -o "[0-9]*" | head -n 1)"
     if [ -z $(echo $IMDBURL | tr -cd '0-9') ]; then
      IMDBURL=""
     fi
@@ -458,7 +458,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     OUTPUTOK="OK"
     while [ $LYNXTRIES -gt 0 ]; do
      if [ -z "$USEWGET" ]; then
-      lynx $LYNXFLAGS $IMDBURL/combined | grep -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE 2>&1
+      lynx $LYNXFLAGS $IMDBURL/combined | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE 2>&1
       if [ $? = "0" ]; then
        LYNXTRIES=$LYNXTRIESORIG
        break
@@ -470,10 +470,10 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
       #http_proxy=192.168.0.1:8080
       wget -U "Internet Explorer" -O $TMPFILE --timeout=30 $IMDBURL/combined >/dev/null 2>&1
       if [ $? = "0" ] || [ -z "$(cat $TMPFILE)" ]; then
-       TMBURL=$(grep "\.jpg" $TMPFILE | head -n 1 | tr ' \"' '\n' | grep "\.jpg" | head -n 1)
+       TMBURL=$(grep -a "\.jpg" $TMPFILE | head -n 1 | tr ' \"' '\n' | grep -a "\.jpg" | head -n 1)
        LYNXTRIES=$LYNXTRIESORIG
        HTMLPAGE="$(lynx $LYNXFLAGS -force_html $TMPFILE)"
-       echo "$HTMLPAGE" | grep -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE
+       echo "$HTMLPAGE" | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE
        break
       else
        let LYNXTRIES=LYNXTRIES-1
@@ -506,7 +506,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     fi
     GENRE=$(grep -a -e "^Genre:" "$TMPFILE" | sed "s/ See more ..*//" | sed "s/Genre:/Genre........:/" | sed s/\"/$QUOTECHAR/g | tr '|' '\n' | sed '/^ *$/d' | head -n $GENRENUM | tr '\n' '/' | sed "s|/$||" | sed "s/ *$//")
     GENRECLEAN=$(echo $GENRE | sed "s/Genre........: *//")
-    RATING="User Rating..: $(grep -A1 "^User Rating:" $TMPFILE | grep "[0-9]\.[0-9]\/[0-9][0-9]" | sed "s/^User Rating://" | sed "s/^ *//;s/ .[^ ]*$//" | sed s/\"/$QUOTECHAR/g | sed "s|/10\ |/10\ \(|"))"
+    RATING="User Rating..: $(grep -a -A1 "^User Rating:" $TMPFILE | grep -a "[0-9]\.[0-9]\/[0-9][0-9]" | sed "s/^User Rating://" | sed "s/^ *//;s/ .[^ ]*$//" | sed s/\"/$QUOTECHAR/g | sed "s|/10\ |/10\ \(|"))"
     if [ "$RATING" = "User Rating..: )" ]; then
       RATING="User Rating..: Awaiting 5 votes"
     fi
@@ -613,7 +613,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
    if [ ! -z "$USEBUSINESS" ]; then
     while [ $LYNXTRIES -gt 0 ]; do
      if [ -z "$USEWGET" ]; then
-      lynx $LYNXFLAGS $BUSINESSURL | grep -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE 2>&1
+      lynx $LYNXFLAGS $BUSINESSURL | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE 2>&1
       if [ $? = "0" ]; then
        LYNXTRIES=$LYNXTRIESORIG
        break
@@ -627,7 +627,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
       if [ $? = "0" ] || [ -z "$(cat $TMPFILE)" ]; then
        LYNXTRIES=$LYNXTRIESORIG
        HTMLPAGE="$(lynx $LYNXFLAGS -force_html $TMPFILE)"
-       echo "$HTMLPAGE" | grep -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE
+       echo "$HTMLPAGE" | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE
        break
       else
        let LYNXTRIES=LYNXTRIES-1
@@ -675,7 +675,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
    if [ ! -z "$USEPREMIERE" ] || [ ! -z "$USELIMITED" ]; then
     while [ $LYNXTRIES -gt 0 ]; do
      if [ -z "$USEWGET" ]; then
-      lynx $LYNXFLAGS $RELEASEURL | grep -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE 2>&1
+      lynx $LYNXFLAGS $RELEASEURL | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE 2>&1
       if [ $? = "0" ]; then
        LYNXTRIES=$LYNXTRIESORIG
        break
@@ -689,7 +689,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
       if [ $? = "0" ] || [ -z "$(cat $TMPFILE)" ]; then
        LYNXTRIES=$LYNXTRIESORIG
        HTMLPAGE="$(lynx $LYNXFLAGS -force_html $TMPFILE)"
-       echo "$HTMLPAGE" | grep -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE
+       echo "$HTMLPAGE" | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE
        break
       else
        let LYNXTRIES=LYNXTRIES-1
