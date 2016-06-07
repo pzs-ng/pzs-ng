@@ -81,6 +81,11 @@ namespace eval ::ngBot {
 		variable ns
 		variable dzerror
 		variable die_on_error
+		variable ng_is_loaded
+
+		if {ng_is_loaded} {
+			return
+		}
 
 		${ns}::init_version
 		${ns}::init_binaries
@@ -99,6 +104,8 @@ namespace eval ::ngBot {
 		}
 
 		bind evnt -|- prerehash ${ns}::deinit_ng
+		# Prevent re-init when only userfile is (re)loaded, like with botnet userfile sharing
+		set ng_is_loaded 1
 	}
 
 	proc init_version {} {}
@@ -256,7 +263,7 @@ namespace eval ::ngBot {
 			}
 		}
 
-		if {[llength $loaded] > 1} {
+		if {[llength $loaded] >= 1} {
 			putlog "\[ngBot\] Plugins Loaded: [join $loaded ", "]."
 		}
 	}
@@ -1526,6 +1533,7 @@ namespace eval ::ngBot {
 	}
 
 	# Run init_ng proc once all scripts are loaded.
+	variable ng_is_loaded 0
 	bind evnt -|- userfile-loaded ${ns}::init_ng
 
 	bind join -|- * ${ns}::cmd_welcome

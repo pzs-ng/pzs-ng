@@ -2,6 +2,9 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix ngBot reloading on userfile reloads caused by botnet userfile sharing.
+		  This had possible negative side-effects in plugins.
+		- Fix ngBot logoutput of amount of plugins loaded when only 1 is loaded.
 		- Fix psxc-symlink-maker not updating links when sorting by title when dest has changed.
 		- Fix psxc-imdb parsing Directors with single quotes in their names correctly.
 		- Fix psxc-imdb to parse all data again from pages now considered binary by certain grep-versions.
