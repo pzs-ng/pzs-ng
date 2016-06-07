@@ -83,7 +83,7 @@ namespace eval ::ngBot {
 		variable die_on_error
 		variable ng_is_loaded
 
-		if {ng_is_loaded} {
+		if {$ng_is_loaded} {
 			return
 		}
 
