@@ -11,9 +11,7 @@
 # - integrates perfectly with pzs-ng and NickDb
 #
 # DOCS:
-# 1. Add the following to your themefile:
-# GETTOPIC = "%b{[topic ]} %topic"
-# SETTOPIC = "%b{[topic ]} %channel %topic"
+# 1. Edit the plugin theme (Blow.zpt) for the *TOPIC announces.
 # 
 # 2. Add the following to your glftpd.conf:
 # site_cmd        TOPIC           EXEC            /bin/ng-topic.sh
@@ -28,7 +26,6 @@ namespace eval ::ngBot::plugin::Blow {
 	variable np [namespace qualifiers [namespace parent]]
 
 	## Config Settings ###############################
-	variable events
 	variable blowkey
 	##
 	## Set the blowfish keys for each channel here. You can have as many
@@ -51,6 +48,8 @@ namespace eval ::ngBot::plugin::Blow {
 	variable splitChar " "
 	##
 	## Respond to unencrypted messages. (1/true or 0/false)
+	## This includes notices, CTCP and also DCC. This means you will not
+	## be able to get on the partyline via IRC.
 	## Set this to false if you dont want to deal with them. (Recommended)
 	variable allowUnencrypted false
 	##
@@ -100,22 +99,49 @@ namespace eval ::ngBot::plugin::Blow {
 	#variable topicUsers "=siteops"
 	variable topicUsers ""
 	##
+	## TOPIC Settings ###############################
+	##
+	## Above setting also related
+	##
+	## Set disable(SETTOPIC) to 1 if you dont want the bot to message the
+	## chan with the new topic
+	set ${np}::disable(SETTOPIC)    1
+	set ${np}::disable(GETTOPIC)    0
+	##
+	## Trigger (Leave blank to disable)
+	variable topictrigger "!topic"
+	##
 	##################################################
-	
-	set events [list "SETTOPIC" "GETTOPIC"]
+
+	variable blowversion "20160604"
+
+	variable events [list "SETTOPIC" "GETTOPIC"]
+
+	variable scriptFile [info script]
 
 	interp alias {} IsTrue {} string is true -strict
 	interp alias {} IsFalse {} string is false -strict
 
 	####
-	# Blow::debug
+	# Blow::Debug
 	#
-	# Pretty self-explanitory
+	# Pretty self-explanatory
 	#
-	proc debug {msg} {
+	proc Debug {msg} {
 		variable np
+		variable ${np}::debugmode
+		if {[IsTrue [set ${np}::debugmode]]} {
+			putlog "\[ngBot\] Blow :: $msg"
+		}
+	}
 
-		${np}::debug $msg
+	####
+	# Blow::Error
+	#
+	# Pretty self-explanatory
+	#
+	proc Error {error} {
+		putlog "\[ngBot\] Blow Error :: $error"
 	}
 
 	####
@@ -314,7 +340,7 @@ namespace eval ::ngBot::plugin::Blow {
 
 		if {[${ns}::keyx_generate $target my_key_pub]} {
 			putquick2 "NOTICE $target :DH1080_INIT $my_key_pub"
-			${np}::debug "keyx_init: Sending DH1080 public key to $target."
+			${ns}::Debug "keyx_init: Sending DH1080 public key to $target."
 		}
 	}
 
@@ -327,7 +353,7 @@ namespace eval ::ngBot::plugin::Blow {
 		variable keyxUsers
 
 		if {![IsTrue $keyx]} {
-			${np}::debug "Key exchange is disabled!"
+			${ns}::Debug "Key exchange is disabled!"
 			return
 		}
 
@@ -353,7 +379,7 @@ namespace eval ::ngBot::plugin::Blow {
 						set his_key_pub [lindex $text 1]
 						DH1080comp $my_key_prv $his_key_pub
 						set blowkey($nick) $his_key_pub
-						${np}::debug "keyx_bind: Received DH1080 public key from $nick. Sending DH1080 plublic key to $nick."
+						${ns}::Debug "keyx_bind: Received DH1080 public key from $nick. Sending DH1080 plublic key to $nick."
 
 						${ns}::keyx_queue_flush $nick
 
@@ -370,7 +396,7 @@ namespace eval ::ngBot::plugin::Blow {
 						DH1080comp $blowinit($nick) $his_key_pub
 						set blowkey($nick) $his_key_pub
 						unset blowinit($nick)
-						${np}::debug "keyx_bind: Received DH1080 public key from $nick."
+						${ns}::Debug "keyx_bind: Received DH1080 public key from $nick."
 
 						${ns}::keyx_queue_flush $nick
 
@@ -442,16 +468,16 @@ namespace eval ::ngBot::plugin::Blow {
 		} else {
 			if {[${ns}::is_topicusers]} {
 				if {[IsTrue [${ns}::SetTopic $channel "$text"]]} {
-					${ns}::debug "Topic for $channel set: $text"
+					${ns}::Debug "Topic for $channel set: $text"
 				}
 
 				return
 			}
 			set ftpUser [${ns}::GetFtpUser $nick]
 			if {[${ns}::GetInfo $ftpUser ftpGroup ftpFlags] && [${np}::rightscheck $topicUsers $ftpUser $ftpGroup $ftpFlags] && [IsTrue [${ns}::SetTopic $channel "$text"]]} {
-				${ns}::debug "Topic for $channel set: $text"
+				${ns}::Debug "Topic for $channel set: $text"
 			} else {
-				${ns}::debug "Unauthorized user: $nick"
+				${ns}::Debug "Unauthorized user: $nick"
 			}
 		}
 	}
@@ -539,16 +565,16 @@ namespace eval ::ngBot::plugin::Blow {
 		if { [IsTrue $allowUnencrypted] || [string match ":+OK *" [string range $text [string first : $text] end]] } {
 			if {![${ns}::is_trustedusers]} {
 				if {[catch {set ftpUser [${ns}::GetFtpUser $nick]} error]} {
-					${ns}::debug "Error while grabbing \$ftpuser by nick $nick, ftpUser: $ftpUser, error: $error"
+					${ns}::Debug "Error while grabbing \$ftpuser by nick $nick, ftpUser: $ftpUser, error: $error"
 				}
 				if {[${ns}::GetInfo $ftpUser ftpGroup ftpFlags]} {
 					if {[${np}::rightscheck $trustedUsers $ftpUser $ftpGroup $ftpFlags]} { 
 						return 0
 					}
-					${ns}::debug "Rightscheck failed, user: $ftpUser, data: [lindex [split $text ":"] 1]"
+					${ns}::Debug "Rightscheck failed, user: $ftpUser, data: [lindex [split $text ":"] 1]"
 					return 1
 				}
-				${ns}::debug "GetInfo failed, user: $ftpUser"
+				${ns}::Debug "GetInfo failed, user: $ftpUser"
 				return 1
 			}
 		} else {
@@ -571,6 +597,7 @@ namespace eval ::ngBot::plugin::Blow {
 	# gets $group and $flags from the userfile
 	#
 	proc GetInfo {ftpUser groupVar flagsVar} {
+		variable ns
 		variable np
 		variable ${np}::location
 		upvar $groupVar group $flagsVar flags
@@ -578,7 +605,7 @@ namespace eval ::ngBot::plugin::Blow {
 		set file "$location(USERS)/$ftpUser"
 		# Linux will give an error if you open a directory and try to read from it.
 		if {![file isfile $file]} {
-			putlog "\[ngBot\] Blow Error :: Invalid user file for \"$ftpUser\" ($file)."
+			${ns}::Error "Invalid user file for \"$ftpUser\" ($file)."
 			return 0
 		}
 
@@ -594,7 +621,7 @@ namespace eval ::ngBot::plugin::Blow {
 			}
 			return 1
 		} else {
-			putlog "\[ngBot\] Blow Error :: Unable to open user file for \"$ftpUser\" ($error)."
+			${ns}::Error "Unable to open user file for \"$ftpUser\" ($error)."
 			return 0
 		}
 	}
@@ -633,7 +660,7 @@ namespace eval ::ngBot::plugin::Blow {
 
 				set pos [string first : $text]
 				if {$pos == -1 || [string equal $pos " "]} {
-					putlog "\[ngBot\] Blow Error :: BOGUS MESSAGE"
+					${ns}::Error "BOGUS MESSAGE"
 					return
 				}
 				set message [string range $text [incr pos] end]
@@ -687,12 +714,12 @@ namespace eval ::ngBot::plugin::Blow {
 	#
 	proc LogEvent {event section logData} {
 		variable ns
-		${ns}::debug "LogEvent {$event $section $logData} called"
+		${ns}::Debug "LogEvent {$event $section $logData} called"
 		if {![string equal "SETTOPIC" $event]} {return 1}
 			set channel [lindex $logData 0]
 			set topic [lindex $logData 1]
 			if {[IsFalse [${ns}::SetTopic $channel $topic]]} {
-			${ns}::debug "Unable to set topic"
+			${ns}::Debug "Unable to set topic"
 		}
 		return 1
 	}
@@ -711,6 +738,9 @@ namespace eval ::ngBot::plugin::Blow {
 		variable topicUsers
 		variable trustedUsers
 		variable allowUnencrypted
+		variable scriptFile
+		variable blowversion
+		variable topictrigger
 		variable ${np}::cmdpre
 		variable ${np}::variables
 		variable ${np}::disable
@@ -719,7 +749,7 @@ namespace eval ::ngBot::plugin::Blow {
 
 		if {![${ns}::is_trustedusers] || ![${ns}::is_topicusers]} {
 			if {![namespace exists [namespace parent]::NickDb]} {
-				putlog "\[ngBot\] Blow Error :: Unable to find NickDb plugin."
+				${ns}::Error "Unable to find NickDb plugin."
 				return -code -1
 			}
 
@@ -728,7 +758,7 @@ namespace eval ::ngBot::plugin::Blow {
 
 		if {[IsTrue $keyx]} {
 			if {[catch {load $blowso} error]} {
-				putlog "\[ngBot\] Blow Error :: $error"
+				${ns}::Error "$error"
 				return -code -1
 			}
 		}
@@ -736,7 +766,7 @@ namespace eval ::ngBot::plugin::Blow {
 		set aliases [interp aliases]
 		foreach cmd {putquick putserv puthelp} {
 			if {[lsearch $aliases $cmd] != -1 || [catch {info args $cmd}] == 0 || [info commands $cmd] == ""} {
-				putlog "\[ngBot\] Blow Error :: Output procs have already been renamed. make sure no other blowfish scripts are loaded and \002.restart\002."
+				${ns}::Error "Output procs have already been renamed. Make sure no other blowfish scripts are loaded and \002.restart\002."
 				return -code -1
 			}
 		}
@@ -750,12 +780,13 @@ namespace eval ::ngBot::plugin::Blow {
 		interp alias {} putserv {} ${ns}::put_bind "serv"
 		interp alias {} puthelp {} ${ns}::put_bind "help"
 
-
-		## Set disable(SETTOPIC) to 1 if you dont want the bot to message the chan with the new topic
-		set disable(SETTOPIC)    1
-		set disable(GETTOPIC)    0
 		set variables(SETTOPIC)  "%channel %topic"
 		set variables(GETTOPIC)  "%topic"
+
+		set theme_file [file normalize "[pwd]/[file rootname $scriptFile].zpt"]
+                if {[file isfile $theme_file]} {
+                        ${np}::loadtheme $theme_file true
+                }
 
 		## Register the event handler.
 		foreach event $events {
@@ -765,7 +796,6 @@ namespace eval ::ngBot::plugin::Blow {
 		## Initialize our encrypted incoming handler
 		## Binds to input from irc
 		bind pub - +OK ${ns}::encryptedIncomingHandler
-		bind pub - ${cmdpre}topic ${ns}::IrcTopic
 		bind raw - PRIVMSG ${ns}::unencryptedIncomingHandler
 		if {[IsTrue $keyx]} {
 			bind nick - * ${ns}::keyx_nick
@@ -773,11 +803,14 @@ namespace eval ::ngBot::plugin::Blow {
 			bind notc - "DH1080_FINISH *" ${ns}::keyx_bind
 			bind msg  - "+OK" ${ns}::encryptedIncomingHandler
 		}
+		if {([info exists topictrigger]) && (![string equal $topictrigger ""])} {
+			bind pub - $topictrigger ${ns}::IrcTopic
+		}
 
 		## Binds to input from the ftp
 		lappend precommand(SETTOPIC) ${ns}::LogEvent
 
-		return
+		putlog "\[ngBot\] Blow :: Loaded successfully (Version: $blowversion)."
 	}
 
 	####
@@ -790,6 +823,8 @@ namespace eval ::ngBot::plugin::Blow {
 		variable np
 		variable events
 		variable keyxtimer
+		variable topictrigger
+		variable keyx
 		variable ${np}::cmdpre
 		variable ${np}::msgtypes
 
@@ -816,6 +851,19 @@ namespace eval ::ngBot::plugin::Blow {
 			if {[info exists msgtypes(DEFAULT)] && [set pos [lsearch -exact $msgtypes(DEFAULT) $event]] !=  -1} {
 				set msgtypes(DEFAULT) [lreplace $msgtypes(DEFAULT) $pos $pos]
 			}
+		}
+
+		# Remove binds
+		catch {unbind pub - +OK ${ns}::encryptedIncomingHandler}
+		catch {unbind raw - PRIVMSG ${ns}::unencryptedIncomingHandler}
+		if {[IsTrue $keyx]} {
+			catch {unbind nick - * ${ns}::keyx_nick}
+			catch {unbind notc - "DH1080_INIT *" ${ns}::keyx_bind}
+			catch {unbind notc - "DH1080_FINISH *" ${ns}::keyx_bind}
+			catch {unbind msg  - "+OK" ${ns}::encryptedIncomingHandler}
+		}
+		if {([info exists topictrigger]) && (![string equal $topictrigger ""])} {
+			catch {unbind pub - $topictrigger ${ns}::IrcTopic}
 		}
 
 		namespace delete $ns

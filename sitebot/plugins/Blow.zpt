@@ -1,0 +1,8 @@
+##############################################################################
+#                                                                            #
+#  Blow.zpt  -  Blowcrypt Pzs-ng Plug-in (Default Theme)                     #
+#                                                                            #
+##############################################################################
+
+announce.GETTOPIC               = "%b{[topic ]} %topic"
+announce.SETTOPIC               = "%b{[topic ]} %channel %topic"
