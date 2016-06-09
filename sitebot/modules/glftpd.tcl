@@ -377,7 +377,7 @@ namespace eval ::ngBot::module::glftpd {
 
 		set output "$theme(PREFIX)$announce(NEW)"
 		set output [${np}::replacevar $output "%section" $section]
-		${np}::sndone $rcvr [${np}::replacebasic $output "NEW"]
+		${np}::sndone $rcvr [${np}::replacebasic $output "NEW"] "NEW"
 		set body "$theme(PREFIX)$announce(NEW_BODY)"
 		set num 0
 
@@ -400,12 +400,12 @@ namespace eval ::ngBot::module::glftpd {
 			set output [${np}::replacevar $output "%files" $files]
 			set output [${np}::replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
 			set output [${np}::replacepath $output $sectionpath $dirpath]
-			${np}::sndone $rcvr [${np}::replacebasic $output "NEW"]
+			${np}::sndone $rcvr [${np}::replacebasic $output "NEW"] "NEW_BODY"
 		}
 
 		if {!$num} {
 			set output "$theme(PREFIX)$announce(NEW_NONE)"
-			${np}::sndone $rcvr [${np}::replacebasic $output "NEW"]
+			${np}::sndone $rcvr [${np}::replacebasic $output "NEW"] "NEW_NONE"
 		}
 		return
 	}
@@ -452,7 +452,7 @@ namespace eval ::ngBot::module::glftpd {
 
 		set output "$theme(PREFIX)$announce($type)"
 		set output [${np}::replacevar $output "%section" $section]
-		${np}::sndone $rcvr [${np}::replacebasic $output $type]
+		${np}::sndone $rcvr [${np}::replacebasic $output $type] $type
 		set body "$theme(PREFIX)$announce(${type}_BODY)"
 		set num 0
 
@@ -471,12 +471,12 @@ namespace eval ::ngBot::module::glftpd {
 			set output [${np}::replacevar $output "%reason" $reason]
 			set output [${np}::replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
 			set output [${np}::replacepath $output $sectionpath $dirpath]
-			${np}::sndone $rcvr [${np}::replacebasic $output $type]
+			${np}::sndone $rcvr [${np}::replacebasic $output $type] "${type}_BODY"
 		}
 
 		if {!$num} {
 			set output "$theme(PREFIX)$announce(${type}_NONE)"
-			${np}::sndone $rcvr [${np}::replacebasic $output $type]
+			${np}::sndone $rcvr [${np}::replacebasic $output $type] "${type}_NONE"
 		}
 		return
 	}
@@ -518,7 +518,7 @@ namespace eval ::ngBot::module::glftpd {
 
 		set output "$theme(PREFIX)$announce(SEARCH)"
 		set output [${np}::replacevar $output "%pattern" $pattern]
-		${np}::sndone $rcvr [${np}::replacebasic $output "SEARCH"]
+		${np}::sndone $rcvr [${np}::replacebasic $output "SEARCH"] "SEARCH"
 		set body "$theme(PREFIX)$announce(SEARCH_BODY)"
 		set num 0
 
@@ -541,12 +541,12 @@ namespace eval ::ngBot::module::glftpd {
 			set output [${np}::replacevar $output "%files" $files]
 			set output [${np}::replacevar $output "%mbytes" [format "%.1f" [expr {$kbytes / 1024.0}]]]
 			set output [${np}::replacepath $output "/site/*" $dirpath]
-			${np}::sndone $rcvr [${np}::replacebasic $output "SEARCH"]
+			${np}::sndone $rcvr [${np}::replacebasic $output "SEARCH"] "SEARCH_BODY"
 		}
 
 		if {!$num} {
 			set output "$theme(PREFIX)$announce(SEARCH_NONE)"
-			${np}::sndone $rcvr [${np}::replacebasic $output "SEARCH"]
+			${np}::sndone $rcvr [${np}::replacebasic $output "SEARCH"] "SEARCH_NONE"
 		}
 		return
 	}
@@ -591,7 +591,7 @@ namespace eval ::ngBot::module::glftpd {
 		if {![${np}::announcetochancheck $::lastbind 1]} {
 			set rcvr $nick
 		}
-		${np}::sndone $rcvr [${np}::replacebasic $output "BW"]
+		${np}::sndone $rcvr [${np}::replacebasic $output "BW"] "[string toupper $type]"
 		return
 	}
 
@@ -613,7 +613,7 @@ namespace eval ::ngBot::module::glftpd {
 		}
 
 		set output "$theme(PREFIX)$announce(IDLE)"
-		${np}::sndone $rcvr [${np}::replacebasic $output "IDLE"]
+		${np}::sndone $rcvr [${np}::replacebasic $output "IDLE"] "IDLE"
 
 		set raw [exec $binary(WHO) "--raw"]
 		set count 0; set total 0.0
@@ -636,13 +636,13 @@ namespace eval ::ngBot::module::glftpd {
 					set output [${np}::replacevar $output "%since" $since]
 					set output [${np}::replacevar $output "%currentdir" $curdir]
 					set output [${np}::replacevar $output "%u_pid" $upid]
-					${np}::sndone $rcvr [${np}::replacebasic $output "IDLE"]
+					${np}::sndone $rcvr [${np}::replacebasic $output "IDLE"] "USERIDLE"
 					incr count
 				}
 			}
 		}
 		set output [${np}::replacevar "$theme(PREFIX)$announce(TOTIDLE)" "%count" $count]
-		${np}::sndone $rcvr [${np}::replacebasic $output "IDLE"]
+		${np}::sndone $rcvr [${np}::replacebasic $output "IDLE"] "TOTIDLE"
 		return
 	}
 
@@ -683,6 +683,8 @@ namespace eval ::ngBot::module::glftpd {
 				} elseif {$action == "ID"} {
 					set output "$theme(PREFIX)$announce(SPEEDID)"
 					set output [${np}::replacevar $output "%idletime" [${np}::format_duration [lindex $line 5]]]
+				} else {
+					set action "ERROR"
 				}
 				set output [${np}::replacevar $output "%u_name" [lindex $line 2]]
 				set output [${np}::replacevar $output "%g_name" [lindex $line 3]]
@@ -691,20 +693,20 @@ namespace eval ::ngBot::module::glftpd {
 				set output [${np}::replacevar $output "%f_name" [lindex $line 8]]
 				set output [${np}::replacevar $output "%currentdir" [lindex $line 10]]
 				set output [${np}::replacevar $output "%u_pid" [lindex $line 11]]
-				${np}::sndone $rcvr [${np}::replacebasic $output "SPEED"]
+				${np}::sndone $rcvr [${np}::replacebasic $output "SPEED"] "SPEED$action"
 			}
 		} else {
 			set base_output "$theme(PREFIX)$announce(DEFAULT)"
 			foreach line [split [exec $binary(WHO) [lindex $argv 0]] "\n"] {
 				set output [${np}::replacevar $base_output "%msg" $line]
-				${np}::sndone $rcvr [${np}::replacebasic $output "SPEED"]
+				${np}::sndone $rcvr [${np}::replacebasic $output "SPEED"] "SPEED"
 			}
 		}
 
 		if {[string equal "" $line]} {
 			set output "$theme(PREFIX)$announce(SPEEDERROR)"
 			set output [${np}::replacevar $output "%msg" "User not online."]
-			${np}::sndone $rcvr [${np}::replacebasic $output "SPEED"]
+			${np}::sndone $rcvr [${np}::replacebasic $output "SPEED"] "SPEEDERROR"
 		}
 		return
 	}
@@ -736,7 +738,7 @@ namespace eval ::ngBot::module::glftpd {
 		}
 
 		set output "$theme(PREFIX)$announce($type_long)"
-		${np}::sndone $rcvr [${np}::replacebasic $output $type_long]
+		${np}::sndone $rcvr [${np}::replacebasic $output $type_long] $type_long
 
 		set raw [exec $binary(WHO) "--raw"]
 		set count 0; set total 0.0
@@ -755,7 +757,7 @@ namespace eval ::ngBot::module::glftpd {
 				set output [${np}::replacevar $output "%filename" [lindex $line 8]]
 				set output [${np}::replacevar $output "%currentdir" [lindex $line 10]]
 				set output [${np}::replacevar $output "%u_pid" [lindex $line 11]]
-				${np}::sndone $rcvr [${np}::replacebasic $output $type_long]
+				${np}::sndone $rcvr [${np}::replacebasic $output $type_long] "USER"
 				incr count
 				set total [expr {$total + $uspeed}]
 			}
@@ -767,7 +769,7 @@ namespace eval ::ngBot::module::glftpd {
 		set output [${np}::replacevar $output "%count" $count]
 		set output [${np}::replacevar $output "%total" [${np}::format_speed $total "none"]]
 		set output [${np}::replacevar $output "%per" $per]
-		${np}::sndone $rcvr [${np}::replacebasic $output $type_long]
+		${np}::sndone $rcvr [${np}::replacebasic $output $type_long] "TOTUPDN"
 		return
 	}
 

@@ -811,8 +811,11 @@ namespace eval ::ngBot {
 	proc sndone {chan text {section "none"}} {
 		variable ns
 		variable splitter
-		foreach line [split $text $splitter(CHAR)] {
-			putquick "PRIVMSG $chan :[${ns}::themereplace $line $section]"
+		variable disable
+		if {![info exists disable($section)] || $disable($section) != 1} {
+			foreach line [split $text $splitter(CHAR)] {
+				putquick "PRIVMSG $chan :[${ns}::themereplace $line $section]"
+			}
 		}
 	}
 
@@ -1029,7 +1032,7 @@ namespace eval ::ngBot {
 		}
 
 		set output "$theme(PREFIX)$announce(BNC)"
-		${ns}::sndone $rcvr [${ns}::replacebasic $output "BNC"]
+		${ns}::sndone $rcvr [${ns}::replacebasic $output "BNC"] "BNC"
 
 		set num 0
 		foreach entry $bnc(LIST) {
@@ -1048,7 +1051,7 @@ namespace eval ::ngBot {
 					set output [${ns}::replacevar $output "%desc" $desc]
 					set output [${ns}::replacevar $output "%ip" $ip]
 					set output [${ns}::replacevar $output "%port" $port]
-					${ns}::sndone $rcvr [${ns}::replacebasic $output "BNC"]
+					${ns}::sndone $rcvr [${ns}::replacebasic $output "BNC"] "BNC_PING"
 					continue
 				}
 				set firstreply [lindex [split $reply "\n"] 1]
@@ -1077,6 +1080,7 @@ namespace eval ::ngBot {
 				set status [catch {exec $binary(CURL) --disable-epsv --max-time $bnc(TIMEOUT) -u $bnc(USER):$bnc(PASS) ftp://$ip:$port 2>@stdout} reply]
 			}
 			set response [expr {[clock clicks -milliseconds] - $response}]
+			set type "ONLINE"
 
 			if {!$status} {
 				set output "$theme(PREFIX)$announce(BNC_ONLINE)"
@@ -1088,6 +1092,7 @@ namespace eval ::ngBot {
 				set output [${ns}::replacevar $output "%response" $response]
 			} else {
 				set error "unknown error"
+				set type "OFFLINE"
 				## Check curl's exit code (stored in errorCode).
 				if {[string equal "CHILDSTATUS" [lindex $errorCode 0]]} {
 					set code [lindex $errorCode 2]
@@ -1111,7 +1116,7 @@ namespace eval ::ngBot {
 			set output [${ns}::replacevar $output "%desc" $desc]
 			set output [${ns}::replacevar $output "%ip" $ip]
 			set output [${ns}::replacevar $output "%port" $port]
-			${ns}::sndone $rcvr [${ns}::replacebasic $output "BNC"]
+			${ns}::sndone $rcvr [${ns}::replacebasic $output "BNC"] "BNC_$type"
 		}
 		return
 	}
@@ -1249,7 +1254,7 @@ namespace eval ::ngBot {
 			set output [${ns}::replacevar $output "%perc_free" $percFree]
 			set output [${ns}::replacevar $output "%perc_used" $percUsed]
 			set output [${ns}::replacevar $output "%devices" $devices($index)]
-			${ns}::sndone $rcvr [${ns}::replacebasic $output "FREE"]
+			${ns}::sndone $rcvr [${ns}::replacebasic $output "FREE"] "FREE"
 			incr index
 		}
 		return
@@ -1312,7 +1317,7 @@ namespace eval ::ngBot {
 		if {![${ns}::announcetochancheck $::lastbind 1]} {
 			set rcvr $nick
 		}
-		${ns}::sndone $rcvr [${ns}::replacebasic $output "UPTIME"]
+		${ns}::sndone $rcvr [${ns}::replacebasic $output "UPTIME"] "UPTIME"
 		return
 	}
 

@@ -503,6 +503,42 @@ set disable(SAMPLE_MPEG2)                   0
 set disable(SAMPLE_QT)                      0
 set disable(SAMPLE_GENERAL)                 0
 
+## Trigger replies, uses same name as announce.NAME
+set disable(BNC)		0
+set disable(BNC_PING)		0
+set disable(BNC_ONLINE)		0
+set disable(BNC_OFFLINE)	0
+set disable(FREE)		0
+set disable(UPTIME)		0
+set disable(NEW)		0
+set disable(NEW_BODY)		0
+set disable(NEW_NONE)		0
+set disable(NUKES)		0
+set disable(NUKES_BODY)		0
+set disable(NUKES_NONE)		0
+set disable(UNNUKES)		0
+set disable(UNNUKES_BODY)	0
+set disable(UNNUKES_NONE)	0
+set disable(SEARCH)		0
+set disable(SEARCH_BODY)	0
+set disable(SEARCH_NONE)	0
+set disable(BW)			0
+set disable(BWUP)		0
+set disable(BWDN)		0
+set disable(IDLE)		0
+set disable(USERIDLE)		0
+set disable(TOTIDLE)		0
+set disable(SPEED)		0
+set disable(SPEEDUP)		0
+set disable(SPEEDDN)		0
+set disable(SPEEDID)		0
+set disable(SPEEDERROR)		0
+set disable(UPLOAD)		0
+set disable(LEECH)		0
+set disable(USER)		0
+set disable(TOTUPDN)		0
+
+
 ################################################################################
 # ADVANCED CONFIG, EDIT CAREFULLY
 ################################################################################

@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Add option to disable specified announces caused by triggers. See ngBot.conf.defaults.
 		- Refactor Blow.tcl, remove topic trigger binds if unwanted, add Blow.zpt for *TOPIC.
 		- Fix ngBot reloading on userfile reloads caused by botnet userfile sharing.
 		  This had possible negative side-effects in plugins.
