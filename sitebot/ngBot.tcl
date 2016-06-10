@@ -503,13 +503,15 @@ namespace eval ::ngBot {
 		upvar $eventvar event $datavar data
 		## The data in login.log is not at all consistent,
 		## which makes it fun for us to parse.
+		## The BADUSERNAME's $user can even hold ANY char as it's completely usercrafted,
+		## luckily with a 23char limit
 		if {[regexp {^'(.+)' killed a ghost with PID (\d+)\.$} $line result user pid]} {
 			set event "KILLGHOST"
 			set data [list $user $pid]
 		} elseif {[regexp {^(.+@.+) \((.+)\): connection refused: .+$} $line result hostmask ip]} {
 			set event "IPNOTADDED"
 			set data [list $hostmask $ip]
-		} elseif {[regexp {^(\S+): (.+@.+) \((.+)\): (.+)} $line result user hostmask ip error]} {
+		} elseif {[regexp {^(.+): (.+@.+) \(([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\): (.+)} $line result user hostmask ip error]} {
 			switch -exact -- $error {
 				"Bad user@host."    {set event "BADHOSTMASK"}
 				"Banned user@host." {set event "BANNEDHOST"}
@@ -520,9 +522,9 @@ namespace eval ::ngBot {
 				default {return 0}
 			}
 			set data [list $user $hostmask $ip]
-			} elseif {[regexp {^(\S+): user expired.$} $line result user]} {
-					set event "EXPIRED"
-					set data [list $user]
+		} elseif {[regexp {^(\S+): user expired.$} $line result user]} {
+			set event "EXPIRED"
+			set data [list $user]
 		} elseif {![regexp {^(\S+): (.+)$} $line result event data]} {
 			return 0
 		}
