@@ -177,11 +177,11 @@ paths etc, which can be tediuos.
     A small tip - If you're feeling lazy/have many sections,
     change "SECTION" to "*" ;)
 
-5.  Add/edit the following in glftpd.conf:
+5.  Add the following in glftpd.conf:
 
-     show_diz        .message .imdb .date
+     show_diz        .imdb
+     show_diz        .date
 
-    (the .imdb/.date part being what's added)
     This step is not required for the script to work, but it is recommended
      if you wish to let people see the content of the .imdb and .date files.
 
