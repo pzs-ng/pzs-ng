@@ -103,7 +103,8 @@ namespace eval ::ngBot::plugin::DeluserBan {
         variable banUser
         variable message
         variable killUser
-        variable ${np}::botnick
+        #variable ${np}::botnick
+        global botnick
         if {![string equal "DELUSER" $event] && ![string equal "PURGED" $event]} {return 1}
 
         ## Log Data:
