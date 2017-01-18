@@ -985,23 +985,25 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 		exit(EXIT_FAILURE);
 	}
 
-	fstat(fd, &sb);
-
 	snprintf(lockfile, PATH_MAX, "%s.lock", raceI->headpath);
 	if (!stat(lockfile, &sp) && (time(NULL) - sp.st_ctime >= max_seconds_wait_for_lock * 5))
 		unlink(lockfile);
 	cnt = 0;
 	while (cnt < 10 && link(raceI->headpath, lockfile)) {
-		d_log("create_lock: link failed (%d/10) - sleeping .1 seconds: %s\n", cnt, strerror(errno));
 		cnt++;
+		d_log("create_lock: link failed (%d/10) - sleeping .1 seconds: %s\n", cnt, strerror(errno));
 		usleep(100000);
 	}
 	if (cnt == 10 ) {
+		close(fd);
 		d_log("create_lock: link failed: %s\n", strerror(errno));
 		return -1;
 	} else if (cnt)
 		d_log("create_lock: link ok.\n");
-	if (!sb.st_size) {							/* no lock file exists - let's create one with default values. */
+
+	fstat(fd, &sb);
+	if (!sb.st_size) {
+		/* no lock file exists - let's create one with default values. */
 		hd.data_version = sfv_version;
 		raceI->data_type = hd.data_type = 0;
 		raceI->data_in_use = hd.data_in_use = progtype;
