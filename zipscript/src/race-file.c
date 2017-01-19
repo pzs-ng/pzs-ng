@@ -1168,7 +1168,7 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 	HEADDATA	hd;
 	struct stat	sb;
 
-	if (!(unsigned int)strlen(raceI->headpath)) {
+	if (!raceI->headpath[0]) {
 		d_log("update_lock: variable 'headpath' empty - assuming no lock is set\n");
 		return -1;
 	}
@@ -1185,7 +1185,6 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 	if (read(fd, &hd, sizeof(HEADDATA)) == -1) {
 		d_log("update_lock: read() failed: %s\n", strerror(errno));
 	}
-	fstat(fd, &sb);
 
 	if (hd.data_version != sfv_version) {
 		d_log("create_lock: version of datafile mismatch. Stopping and suggesting a cleanup.\n");
@@ -1221,6 +1220,8 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 	}
 	if (datatype && counter)
 		hd.data_type = datatype;
+
+	fstat(fd, &sb);
 	if ((retval && !lock_optimize) || datatype || !retval || !hd.data_incrementor || (time(NULL) - sb.st_ctime >= lock_optimize && hd.data_incrementor > 1)) {
 		lseek(fd, 0L, SEEK_SET);
 		if (write(fd, &hd, sizeof(HEADDATA)) != sizeof(HEADDATA))
