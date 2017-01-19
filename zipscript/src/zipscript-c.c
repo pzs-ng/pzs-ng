@@ -380,7 +380,7 @@ main(int argc, char **argv)
 #else
 	d_log("zipscript-c: Copying (unchanged version of) extension to memory\n");
 #endif
-	fileext = ng_realloc(fileext, name_p - temp_p, 1, 1, &g.v, 1);
+	fileext = ng_realloc2(fileext, name_p - temp_p, 1, 1, 1);
 	memcpy(fileext, temp_p, name_p - temp_p);
 #if ( sfv_cleanup_lowercase == TRUE )
 	strtolower(fileext);
