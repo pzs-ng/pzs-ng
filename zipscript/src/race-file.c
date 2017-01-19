@@ -1585,25 +1585,23 @@ lenient_compare(char *name1, char *name2)
  * Read the data-type from headdata
  * mod by |DureX|, edited by psxc
  */
-
 int
-read_headdata(struct VARS *raceI)
+read_headdata(const char *headpath)
 {
 	int fd = 0;
 	HEADDATA hd;
-	int type = 0;
 
-	if ((fd = open(raceI->headpath, O_RDONLY)) == -1) {
-		d_log("read_headdata: failed to open(%s): %s - returning '0' as data_type\n", raceI->headpath, strerror(errno));
+	if ((fd = open(headpath, O_RDONLY)) == -1) {
+		d_log("read_headdata: failed to open(%s): %s - returning '0' as data_type\n", headpath, strerror(errno));
 		return 0;
 	}
 	if ((read(fd, &hd, sizeof(HEADDATA))) != sizeof(HEADDATA)) {
-		d_log("read_headdata: failed to read %s : %s - returning '0' as data_type\n", raceI->headpath, strerror(errno));
+		d_log("read_headdata: failed to read %s : %s - returning '0' as data_type\n", headpath, strerror(errno));
 		return 0;
 	}
-	type = hd.data_type;
 	close(fd);
-	return type;
+
+	return hd.data_type;
 }
 
 /*
