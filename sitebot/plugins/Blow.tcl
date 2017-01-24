@@ -48,7 +48,7 @@ namespace eval ::ngBot::plugin::Blow {
 	variable splitChar " "
 	##
 	## Respond to unencrypted messages. (1/true or 0/false)
-	## This includes notices, CTCP and also DCC. This means you will not
+	## This includes CTCP and also DCC. This means you will not
 	## be able to get on the partyline via IRC.
 	## Set this to false if you dont want to deal with them. (Recommended)
 	variable allowUnencrypted false
@@ -113,7 +113,7 @@ namespace eval ::ngBot::plugin::Blow {
 	##
 	##################################################
 
-	variable blowversion "20160604"
+	variable blowversion "20170124"
 
 	variable events [list "SETTOPIC" "GETTOPIC"]
 
@@ -796,12 +796,12 @@ namespace eval ::ngBot::plugin::Blow {
 		## Initialize our encrypted incoming handler
 		## Binds to input from irc
 		bind pub - +OK ${ns}::encryptedIncomingHandler
+		bind msg - +OK ${ns}::encryptedIncomingHandler
 		bind raw - PRIVMSG ${ns}::unencryptedIncomingHandler
 		if {[IsTrue $keyx]} {
 			bind nick - * ${ns}::keyx_nick
 			bind notc - "DH1080_INIT *" ${ns}::keyx_bind
 			bind notc - "DH1080_FINISH *" ${ns}::keyx_bind
-			bind msg  - "+OK" ${ns}::encryptedIncomingHandler
 		}
 		if {([info exists topictrigger]) && (![string equal $topictrigger ""])} {
 			bind pub - $topictrigger ${ns}::IrcTopic
@@ -855,12 +855,12 @@ namespace eval ::ngBot::plugin::Blow {
 
 		# Remove binds
 		catch {unbind pub - +OK ${ns}::encryptedIncomingHandler}
+		catch {unbind msg - +OK ${ns}::encryptedIncomingHandler}
 		catch {unbind raw - PRIVMSG ${ns}::unencryptedIncomingHandler}
 		if {[IsTrue $keyx]} {
 			catch {unbind nick - * ${ns}::keyx_nick}
 			catch {unbind notc - "DH1080_INIT *" ${ns}::keyx_bind}
 			catch {unbind notc - "DH1080_FINISH *" ${ns}::keyx_bind}
-			catch {unbind msg  - "+OK" ${ns}::encryptedIncomingHandler}
 		}
 		if {([info exists topictrigger]) && (![string equal $topictrigger ""])} {
 			catch {unbind pub - $topictrigger ${ns}::IrcTopic}

@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix Blow.tcl not responding to encrypted messages when keyx is disabled (will use default key).
 		- Improve ngBot's login.log parsing for bad usernames.
 		- Add option to disable specified announces caused by triggers. See ngBot.conf.defaults.
 		- Refactor Blow.tcl, remove topic trigger binds if unwanted, add Blow.zpt for *TOPIC.
