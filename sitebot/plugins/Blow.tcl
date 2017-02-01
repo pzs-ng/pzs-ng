@@ -220,6 +220,16 @@ namespace eval ::ngBot::plugin::Blow {
 	}
 
 	####
+	# Blow::reEscape
+	#
+	# Escapes all non-alfanumeric for use in a regexp
+	#
+	proc reEscape {str} {
+		regsub -all {\W} $str {\\&}
+	}
+
+
+	####
 	# Blow::getKey
 	#
 	# Returns key associated with $target
@@ -231,7 +241,7 @@ namespace eval ::ngBot::plugin::Blow {
 
 		set names [array names blowkey]
 		# Old configs had example blowkeys as blowkey("#chan1") etc, accommodate for this.
-		if {[set index [lsearch -regexp $names "(?i)^\[\"\]?$target\[\"\]?$"]] == -1} {
+		if {[set index [lsearch -regexp $names "(?i)^\"?[reEscape $target]\"?$"]] == -1} {
 			if {![string equal $mainChan ""] && [info exists blowkey($mainChan)] && ![IsTrue $keyx]} {
 				return $blowkey($mainChan)
 			}
@@ -251,7 +261,7 @@ namespace eval ::ngBot::plugin::Blow {
 		variable blowkey
 
 		# Old configs had example blowkeys as blowkey("#chan1") etc, accommodate for this.
-		if {[lsearch -regexp [array names blowkey] "(?i)^\[\"\]?$target\[\"\]?$"] != -1} { return 1 }
+		if {[lsearch -regexp [array names blowkey] "(?i)^\"?[reEscape $target]\"?$"] != -1} { return 1 }
 
 		return 0
 	}
