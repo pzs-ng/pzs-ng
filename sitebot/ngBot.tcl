@@ -1485,8 +1485,8 @@ namespace eval ::ngBot {
 	# Read The Config Files                                                     #
 	#############################################################################
 
-	if {[catch {package require Tcl 8.4} error]} {
-		die "\[ngBot\] Error :: You must be using Tcl v8.4, or newer, with ngBot."
+	if {[catch {package require Tcl 8.5} error]} {
+		die "\[ngBot\] Error :: You must be using Tcl v8.5, or newer, with ngBot."
 	}
 
 	# Load the defaults/conf/vars files.
