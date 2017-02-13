@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix psxc-imdb.sh having trailing '|' for some vars (thanks to silv3rr for the language-var).
 		- Fix Blow.tcl not storing keys for channels and users with certain special chars in (thanks to ParAd0x^)
 		- Fix Blow.tcl not responding to encrypted messages when keyx is disabled (will use default key).
 		- Fix wrong release type being used, sometimes causing leftover progressbars. (thanks to tittof, crx and jochar for noticing).
