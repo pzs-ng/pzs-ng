@@ -1116,39 +1116,42 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 
 /* Remove the lock
  */
-
 void
 remove_lock(struct VARS *raceI)
 {
-	int		fd;
-	HEADDATA	hd;
-	char		lockfile[PATH_MAX + 1];
-
-	if ((fd = open(raceI->headpath, O_RDWR, 0666)) == -1) {
-		d_log("remove_lock: open(%s): %s\n", raceI->headpath, strerror(errno));
-		exit(EXIT_FAILURE);
-	}
 	if (!raceI->data_in_use)
 		d_log("remove_lock: lock not removed - no lock was set\n");
 	else {
+		int		fd;
+		HEADDATA	hd;
+		char		lockfile[PATH_MAX + 1];
+
+		if ((fd = open(raceI->headpath, O_RDWR, 0666)) == -1) {
+			d_log("remove_lock: open(%s): %s\n", raceI->headpath, strerror(errno));
+			exit(EXIT_FAILURE);
+		}
+
 		if (read(fd, &hd, sizeof(HEADDATA)) == -1) {
 			d_log("remove_lock: read() failed: %s\n", strerror(errno));
+			hd.data_queue = 0;
+			hd.data_qcurrent = 0;
 		}
+
 		hd.data_in_use = 0;
 		hd.data_pid = 0;
 		hd.data_completed = raceI->misc.data_completed;
 		hd.data_incrementor = 0;
-		if (hd.data_queue)							/* if queue, increase the number in current so the next */
-			hd.data_qcurrent++;						/* process can start. */
-		if (hd.data_queue < hd.data_qcurrent) {					/* If the next in line is bigger than the queue itself, */
-			hd.data_queue = 0;						/* it should be fair to assume there is noone else in queue */
-			hd.data_qcurrent = 0;						/* and reset the queue. Normally, this should not happen. */
+		if (hd.data_queue)			/* if queue, increase the number in current so the next */
+			++hd.data_qcurrent;		/* process can start. */
+		if (hd.data_queue < hd.data_qcurrent) {	/* If the next in line is bigger than the queue itself, */
+			hd.data_queue = 0;		/* it should be fair to assume there is noone else in queue */
+			hd.data_qcurrent = 0;		/* and reset the queue. Normally, this should not happen. */
 		}
 		lseek(fd, 0L, SEEK_SET);
 		if (write(fd, &hd, sizeof(HEADDATA)) != sizeof(HEADDATA))
 			d_log("remove_lock: write failed: %s\n", strerror(errno));
 		close(fd);
-		snprintf(lockfile, PATH_MAX, "%s.lock", raceI->headpath);
+		snprintf(lockfile, sizeof lockfile, "%s.lock", raceI->headpath);
 		unlink(lockfile);
 		d_log("remove_lock: queue %d/%d\n", hd.data_qcurrent, hd.data_queue);
 	}
