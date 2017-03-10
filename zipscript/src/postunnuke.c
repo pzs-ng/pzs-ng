@@ -185,7 +185,7 @@ main(int argc, char *argv[])
 			d_log("ng-post_unnuke: Failed to lock release.\n");
 			if (k == 1) {
 				d_log("ng-post_unnuke: version mismatch. Exiting.\n");
-				printf("Error. You need to rm -fR ftp-data/pzs-ng/* before rescan will work.\n");
+				printf("Error. You need to \"rm -fR ftp-data/pzs-ng/\" before rescan will work.\n");
 				exit(EXIT_FAILURE);
 			}
 			if (k == PROGTYPE_POSTDEL) {

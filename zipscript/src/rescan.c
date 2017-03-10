@@ -265,7 +265,7 @@ main(int argc, char *argv[])
 			d_log("rescan: Failed to lock release.\n");
 			if (l == 1) {
 				d_log("rescan: version mismatch. Exiting.\n");
-				printf("Error. You need to rm -fR ftp-data/pzs-ng/* before rescan will work.\n"); /* */
+				printf("Error. You need to \"rm -fR ftp-data/pzs-ng/\" before rescan will work.\n");
 				ng_free(g.ui);
 				ng_free(g.gi);
 				ng_free(g.l.sfv);

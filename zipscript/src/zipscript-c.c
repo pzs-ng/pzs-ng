@@ -401,7 +401,7 @@ main(int argc, char **argv)
 			d_log("zipscript-c: Failed to lock release.\n");
 			if (m == 1) {
 				d_log("zipscript-c: version mismatch. Exiting.\n");
-				printf("Error. You need to rm -fR ftp-data/pzs-ng/* before zipscript-c will work.\n");
+				printf("Error. You need to \"rm -fR ftp-data/pzs-ng/\" before zipscript-c will work.\n");
 				exit(EXIT_FAILURE);
 			}
 			if (m == PROGTYPE_RESCAN) {
