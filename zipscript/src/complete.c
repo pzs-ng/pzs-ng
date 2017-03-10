@@ -7,6 +7,7 @@
 #include "zsfunctions.h"
 #include "objects.h"
 #include "convert.h"
+#include "race-file.h"
 
 #include "../conf/zsconfig.h"
 #include "../include/zsconfig.defaults.h"
@@ -52,6 +53,7 @@ complete(GLOBAL *g, int completetype)
 #endif
 		if (!(msgfile = fopen(message_file_name, "w"))) {
 			d_log("complete: Couldn't fopen %s: %s\n", message_file_name, strerror(errno));
+			remove_lock(&g->v);
 			exit(EXIT_FAILURE);
 		}
 		if ((matchpath(group_dirs, g->l.path)) && (custom_group_dirs_complete_message)) {

@@ -89,6 +89,7 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 
 	if (!update_lock(raceI, 1, 0)) {
 		d_log("readsfv: Lock is suggested removed. Will comply and exit\n");
+		fclose(sfvfile);
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
@@ -231,6 +232,7 @@ read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
 
 	if (!update_lock(raceI, 1, 0)) {
 		d_log("read_write_leader: Lock is suggested removed. Will comply and exit\n");
+		close(fd);
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
@@ -262,28 +264,20 @@ read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
 void
 testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 {
-	int		fd, lret, count;
+	int		lret, count;
 	char		*ext, target[PATH_MAX], real_file[PATH_MAX];
 	FILE		*racefile;
 	unsigned int	Tcrc;
 	struct stat	filestat;
 	time_t		timenow;
-
 	RACEDATA	rd;
 
-	if ((fd = open(locations->race, O_CREAT | O_RDWR, 0666)) == -1) {
-		if (errno != EEXIST) {
-			d_log("testfiles: open(%s): %s\n", locations->race, strerror(errno));
-			remove_lock(raceI);
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	close(fd);
-	if (!(racefile = fopen(locations->race, "r+"))) {
-		d_log("testfiles: fopen(%s) failed\n", locations->race);
+	if (!(racefile = fopen(locations->race, "a+"))) {
+		d_log("testfiles: fopen(%s) failed: %s\n", locations->race, strerror(errno));
+		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
+	rewind(racefile);
 
 	strlcpy(real_file, raceI->file.name, sizeof(real_file));
 
@@ -295,8 +289,8 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	while ((fread(&rd, sizeof(RACEDATA), 1, racefile))) {
 		if (!update_lock(raceI, 1, 0)) {
 			d_log("testfiles: Lock is suggested removed. Will comply and exit\n");
-			remove_lock(raceI);
 			fclose(racefile);
+			remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
 		ext = find_last_of(raceI->file.name, ".");
@@ -403,7 +397,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 int
 copysfv(const char *source, const char *target, struct VARS *raceI)
 {
-	int		infd, outfd, i, retval = 0;
+	int		outfd, i, retval = 0;
 	short int	music, rars, video, others, type;
 
 	char		*ptr, fbuf[2048];
@@ -426,14 +420,24 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 		d_log("copysfv: open(.tmpsfv): %s\n", strerror(errno));
 #endif
 
-	if ((infd = open(source, O_RDONLY)) == -1) {
-		d_log("copysfv: open(%s): %s\n", source, strerror(errno));
+	if ((insfv = fopen(source, "r")) == NULL) {
+		d_log("copysfv: fopen(%s): %s\n", source, strerror(errno));
+#if ( sfv_cleanup == TRUE )
+		close(tmpfd);
+		unlink(".tmpsfv");
+#endif
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
 
 	if ((outfd = open(target, O_CREAT | O_TRUNC | O_RDWR, 0666)) == -1) {
 		d_log("copysfv: open(%s): %s\n", target, strerror(errno));
+		fclose(insfv);
+#if ( sfv_cleanup == TRUE )
+		close(tmpfd);
+		unlink(".tmpsfv");
+#endif
+		unlink(target);
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
@@ -444,12 +448,14 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 
 	if (!update_lock(raceI, 1, 0)) {
 		d_log("copysfv: Lock is suggested removed. Will comply and exit\n");
-		remove_lock(raceI);
-		exit(EXIT_FAILURE);
-	}
-
-	if ((insfv = fdopen(infd, "r")) == NULL) {
-		d_log("copysfv: Unable to fdopen %s: %s\n", source, strerror(errno));
+		fclose(insfv);
+		closedir(dir);
+#if ( sfv_cleanup == TRUE )
+		close(tmpfd);
+		unlink(".tmpsfv");
+#endif
+		close(outfd);
+		unlink(target);
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
@@ -642,7 +648,6 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 #if ( sfv_cleanup == FALSE )
 END:
 #endif
-	close(infd);
 #if ( sfv_cleanup == TRUE )
 	if (tmpfd != -1) {
 		close(tmpfd);
@@ -653,6 +658,7 @@ END:
 
 	closedir(dir);
 	close(outfd);
+	fclose(insfv);
 	if (!update_lock(raceI, 1, type)) {
 		d_log("copysfv: Lock is suggested removed. Will comply and exit\n");
 		remove_lock(raceI);
@@ -688,6 +694,7 @@ create_indexfile(const char *racefile, struct VARS *raceI, char *f)
 
 	if (!update_lock(raceI, 1, 0)) {
 		d_log("create_indexfile: Lock is suggested removed. Will comply and exit\n");
+		close(fd);
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
@@ -778,6 +785,7 @@ readrace(const char *path, struct VARS *raceI, struct USERINFO **userI, struct G
 
 		if (!update_lock(raceI, 1, 0)) {
 			d_log("readrace: Lock is suggested removed. Will comply and exit\n");
+			close(fd);
 			remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
@@ -785,6 +793,7 @@ readrace(const char *path, struct VARS *raceI, struct USERINFO **userI, struct G
 		while ((rlength = read(fd, &rd, sizeof(RACEDATA)))) {
 			if (rlength != sizeof(RACEDATA)) {
 				d_log("readrace: Agh! racedata seems to be broken!\n");
+				close(fd);
 				remove_lock(raceI);
 				exit(EXIT_FAILURE);
 			}
@@ -831,6 +840,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 
 	if (!update_lock(raceI, 1, 0)) {
 		d_log("writerace: Lock is suggested removed. Will comply and exit\n");
+		close(fd);
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
@@ -840,6 +850,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	while ((ret = read(fd, &rd, sizeof(RACEDATA)))) {
 		if (ret == -1) {
 			d_log("writerace: read(%s): %s\n", path, strerror(errno));
+			close(fd);
 			remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
@@ -1183,6 +1194,7 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 
 	if ((fd = open(raceI->headpath, O_RDWR, 0666)) == -1) {
 		d_log("update_lock: open(%s): %s\n", raceI->headpath, strerror(errno));
+		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
 	if (read(fd, &hd, sizeof(HEADDATA)) == -1) {
@@ -1197,6 +1209,7 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 	if ((hd.data_in_use != raceI->data_in_use) && counter) {
 		d_log("update_lock: Lock not active or progtype mismatch - no choice but to exit.\n");
 		close(fd);
+		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
 	if (!hd.data_incrementor) {
