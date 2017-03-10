@@ -601,18 +601,17 @@ main(int argc, char **argv)
 		g.v.misc.release_type = ftype;
 		move_progress_bar(0, &g.v, g.ui, g.gi);
 	}
-	
+
 	d_log("postdel: Releasing memory and removing lock.\n");
 	closedir(dir);
 	closedir(parent);
+	remove_lock(&g.v);
 	updatestats_free(&g);
 	ng_free(target);
 	ng_free(g.l.race);
 	ng_free(g.l.sfv);
 	ng_free(g.l.sfvbackup);
 	ng_free(g.l.leader);
-
-	remove_lock(&g.v);
 
 	if (empty_dir) {
 		d_log("postdel: Removing missing-sfv indicator (if any)\n");
