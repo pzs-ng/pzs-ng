@@ -264,7 +264,7 @@ read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
 void
 testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 {
-	int		lret, count;
+	int		fd, lret, count;
 	char		*ext, target[PATH_MAX], real_file[PATH_MAX];
 	FILE		*racefile;
 	unsigned int	Tcrc;
@@ -272,12 +272,21 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	time_t		timenow;
 	RACEDATA	rd;
 
-	if (!(racefile = fopen(locations->race, "a+"))) {
-		d_log("testfiles: fopen(%s) failed: %s\n", locations->race, strerror(errno));
+	/* create if it doesn't exist yet and don't truncate if it does */
+	if ((fd = open(locations->race, O_CREAT | O_RDWR, 0666)) == -1) {
+		if (errno != EEXIST) {
+			d_log("testfiles: open(%s): %s\n", locations->race, strerror(errno));
+			remove_lock(raceI);
+			exit(EXIT_FAILURE);
+		}
+	}
+	close(fd);
+
+	if (!(racefile = fopen(locations->race, "r+"))) {
+		d_log("testfiles: fopen(%s) failed\n", locations->race);
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
-	rewind(racefile);
 
 	strlcpy(real_file, raceI->file.name, sizeof(real_file));
 
