@@ -265,7 +265,7 @@ main(int argc, char *argv[])
 			d_log("rescan: Failed to lock release.\n");
 			if (l == 1) {
 				d_log("rescan: version mismatch. Exiting.\n");
-				printf("Error. You need to rm -fR ftp-data/pzs-ng/* before rescan will work.\n"); /* */
+				printf("Error. You need to \"rm -fR ftp-data/pzs-ng/\" before rescan will work.\n");
 				ng_free(g.ui);
 				ng_free(g.gi);
 				ng_free(g.l.sfv);
@@ -845,6 +845,9 @@ main(int argc, char *argv[])
 		}
 	}
 
+	closedir(dir);
+	closedir(parent);
+
 	printf(" Passed : %i\n", (int)g.v.total.files - (int)g.v.total.files_missing);
 	printf(" Failed : %i\n", (int)g.v.total.files_bad);
 	printf(" Missing: %i\n", (int)g.v.total.files_missing);
@@ -857,14 +860,12 @@ main(int argc, char *argv[])
 	}
 
 	d_log("rescan: Freeing memory and removing lock.\n");
-	closedir(dir);
-	closedir(parent);
+	remove_lock(&g.v);
 	ng_free(g.l.race);
 	ng_free(g.l.sfv);
 	ng_free(g.l.sfvbackup);
 	ng_free(g.l.leader);
 
-	remove_lock(&g.v);
 	updatestats_free(&g);
 
 #ifdef USING_GLFTPD

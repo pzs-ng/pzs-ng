@@ -237,6 +237,19 @@ set format_time             "%H:%M:%S"
 set format_date             "%m-%d-%y"
 
 ################################################################################
+# STATS
+################################################################################
+
+# Set to TRUE to hide users with 0 Mbytes
+set stats(hide_zeros)       "FALSE"
+
+# List of users to hide from stats output, space seperated
+#set stats(hide_users)       "glftpd"
+
+# List of groups to hide from stats output, space seperated
+#set stats(hide_groups)      "glftpd NoGroup"
+
+################################################################################
 # BOUNCERS
 ################################################################################
 

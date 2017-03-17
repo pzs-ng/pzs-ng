@@ -66,6 +66,6 @@ extern void removedir(const char *);
 extern void create_dirlist(const char *, char *, const int);
 extern int filebanned_match(const char *);
 extern int lenient_compare(char *, char *);
-extern int read_headdata(struct VARS *);
+extern int read_headdata(const char *);
 #endif
 

@@ -111,7 +111,7 @@ void audioSort(struct audio *info, char *link_source, char *link_target)
 
  #if ( audio_artist_nosub == FALSE )
 
-			temp_p = ng_realloc(temp_p, 2, 1, 0, NULL, 1);
+			temp_p = ng_realloc2(temp_p, 2, 1, 0, 1);
 
   #if ( audio_artist_noid3 == FALSE )
 			snprintf(temp_p, 2, "%c", toupper(*info->id3_artist));
@@ -120,7 +120,7 @@ void audioSort(struct audio *info, char *link_source, char *link_target)
   #endif
 
  #else
-			temp_p = ng_realloc(temp_p, strlen(info->id3_artist)+1, 1, 0, NULL, 1);
+			temp_p = ng_realloc2(temp_p, strlen(info->id3_artist)+1, 1, 0, 1);
 			snprintf(temp_p, strlen(info->id3_artist)+1, "%s", info->id3_artist);
 			temp_p = check_nocase_linkname(audio_artist_path, temp_p);
 			space_to_dot(temp_p);

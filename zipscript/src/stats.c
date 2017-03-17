@@ -297,6 +297,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 
 			if (!update_lock(raceI, 1, 0)) {
 				d_log("get_stats: Lock is suggested removed. Will comply and exit\n");
+				close(fd);
 				remove_lock(raceI);
 				exit(EXIT_FAILURE);
 			}
@@ -309,6 +310,7 @@ get_stats(struct VARS *raceI, struct USERINFO **userI)
 
 			if (read(fd, f_buf, fileinfo.st_size) == -1) {
 				d_log("get_stats: failed to read stats: %s\n", strerror(errno));
+				close(fd);
 				remove_lock(raceI);
 				exit(EXIT_FAILURE);
 			}

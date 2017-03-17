@@ -1,5 +1,6 @@
 PSXC-IMDB CHANGELOG:
 --------------------
+- v2.9t - Feb  13th, 2017 - Removed trailing '|' for languages, comments, countries, certs; '/' for genres.
 - v2.9s - May  28th, 2016 - Fixed psxc-imdb not getting all data due to certain grep versions
 			    treating the pages a binary.
 			  - Fixed error with Directors having a single quote in their name.

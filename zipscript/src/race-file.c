@@ -89,6 +89,7 @@ readsfv(const char *path, struct VARS *raceI, int getfcount)
 
 	if (!update_lock(raceI, 1, 0)) {
 		d_log("readsfv: Lock is suggested removed. Will comply and exit\n");
+		fclose(sfvfile);
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
@@ -231,6 +232,7 @@ read_write_leader(const char *path, struct VARS *raceI, struct USERINFO *userI)
 
 	if (!update_lock(raceI, 1, 0)) {
 		d_log("read_write_leader: Lock is suggested removed. Will comply and exit\n");
+		close(fd);
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
@@ -268,9 +270,9 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	unsigned int	Tcrc;
 	struct stat	filestat;
 	time_t		timenow;
-
 	RACEDATA	rd;
 
+	/* create if it doesn't exist yet and don't truncate if it does */
 	if ((fd = open(locations->race, O_CREAT | O_RDWR, 0666)) == -1) {
 		if (errno != EEXIST) {
 			d_log("testfiles: open(%s): %s\n", locations->race, strerror(errno));
@@ -278,10 +280,11 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 			exit(EXIT_FAILURE);
 		}
 	}
-
 	close(fd);
+
 	if (!(racefile = fopen(locations->race, "r+"))) {
 		d_log("testfiles: fopen(%s) failed\n", locations->race);
+		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
 
@@ -295,8 +298,8 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 	while ((fread(&rd, sizeof(RACEDATA), 1, racefile))) {
 		if (!update_lock(raceI, 1, 0)) {
 			d_log("testfiles: Lock is suggested removed. Will comply and exit\n");
-			remove_lock(raceI);
 			fclose(racefile);
+			remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
 		ext = find_last_of(raceI->file.name, ".");
@@ -403,7 +406,7 @@ testfiles(struct LOCATIONS *locations, struct VARS *raceI, int rstatus)
 int
 copysfv(const char *source, const char *target, struct VARS *raceI)
 {
-	int		infd, outfd, i, retval = 0;
+	int		outfd, i, retval = 0;
 	short int	music, rars, video, others, type;
 
 	char		*ptr, fbuf[2048];
@@ -426,14 +429,24 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 		d_log("copysfv: open(.tmpsfv): %s\n", strerror(errno));
 #endif
 
-	if ((infd = open(source, O_RDONLY)) == -1) {
-		d_log("copysfv: open(%s): %s\n", source, strerror(errno));
+	if ((insfv = fopen(source, "r")) == NULL) {
+		d_log("copysfv: fopen(%s): %s\n", source, strerror(errno));
+#if ( sfv_cleanup == TRUE )
+		close(tmpfd);
+		unlink(".tmpsfv");
+#endif
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
 
 	if ((outfd = open(target, O_CREAT | O_TRUNC | O_RDWR, 0666)) == -1) {
 		d_log("copysfv: open(%s): %s\n", target, strerror(errno));
+		fclose(insfv);
+#if ( sfv_cleanup == TRUE )
+		close(tmpfd);
+		unlink(".tmpsfv");
+#endif
+		unlink(target);
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
@@ -444,12 +457,14 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 
 	if (!update_lock(raceI, 1, 0)) {
 		d_log("copysfv: Lock is suggested removed. Will comply and exit\n");
-		remove_lock(raceI);
-		exit(EXIT_FAILURE);
-	}
-
-	if ((insfv = fdopen(infd, "r")) == NULL) {
-		d_log("copysfv: Unable to fdopen %s: %s\n", source, strerror(errno));
+		fclose(insfv);
+		closedir(dir);
+#if ( sfv_cleanup == TRUE )
+		close(tmpfd);
+		unlink(".tmpsfv");
+#endif
+		close(outfd);
+		unlink(target);
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
@@ -642,7 +657,6 @@ copysfv(const char *source, const char *target, struct VARS *raceI)
 #if ( sfv_cleanup == FALSE )
 END:
 #endif
-	close(infd);
 #if ( sfv_cleanup == TRUE )
 	if (tmpfd != -1) {
 		close(tmpfd);
@@ -653,6 +667,7 @@ END:
 
 	closedir(dir);
 	close(outfd);
+	fclose(insfv);
 	if (!update_lock(raceI, 1, type)) {
 		d_log("copysfv: Lock is suggested removed. Will comply and exit\n");
 		remove_lock(raceI);
@@ -688,6 +703,7 @@ create_indexfile(const char *racefile, struct VARS *raceI, char *f)
 
 	if (!update_lock(raceI, 1, 0)) {
 		d_log("create_indexfile: Lock is suggested removed. Will comply and exit\n");
+		close(fd);
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
@@ -778,6 +794,7 @@ readrace(const char *path, struct VARS *raceI, struct USERINFO **userI, struct G
 
 		if (!update_lock(raceI, 1, 0)) {
 			d_log("readrace: Lock is suggested removed. Will comply and exit\n");
+			close(fd);
 			remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
@@ -785,6 +802,7 @@ readrace(const char *path, struct VARS *raceI, struct USERINFO **userI, struct G
 		while ((rlength = read(fd, &rd, sizeof(RACEDATA)))) {
 			if (rlength != sizeof(RACEDATA)) {
 				d_log("readrace: Agh! racedata seems to be broken!\n");
+				close(fd);
 				remove_lock(raceI);
 				exit(EXIT_FAILURE);
 			}
@@ -831,6 +849,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 
 	if (!update_lock(raceI, 1, 0)) {
 		d_log("writerace: Lock is suggested removed. Will comply and exit\n");
+		close(fd);
 		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
@@ -840,6 +859,7 @@ writerace(const char *path, struct VARS *raceI, unsigned int crc, unsigned char 
 	while ((ret = read(fd, &rd, sizeof(RACEDATA)))) {
 		if (ret == -1) {
 			d_log("writerace: read(%s): %s\n", path, strerror(errno));
+			close(fd);
 			remove_lock(raceI);
 			exit(EXIT_FAILURE);
 		}
@@ -985,23 +1005,25 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 		exit(EXIT_FAILURE);
 	}
 
-	fstat(fd, &sb);
-
 	snprintf(lockfile, PATH_MAX, "%s.lock", raceI->headpath);
 	if (!stat(lockfile, &sp) && (time(NULL) - sp.st_ctime >= max_seconds_wait_for_lock * 5))
 		unlink(lockfile);
 	cnt = 0;
 	while (cnt < 10 && link(raceI->headpath, lockfile)) {
-		d_log("create_lock: link failed (%d/10) - sleeping .1 seconds: %s\n", cnt, strerror(errno));
 		cnt++;
+		d_log("create_lock: link failed (%d/10) - sleeping .1 seconds: %s\n", cnt, strerror(errno));
 		usleep(100000);
 	}
 	if (cnt == 10 ) {
+		close(fd);
 		d_log("create_lock: link failed: %s\n", strerror(errno));
 		return -1;
 	} else if (cnt)
 		d_log("create_lock: link ok.\n");
-	if (!sb.st_size) {							/* no lock file exists - let's create one with default values. */
+
+	fstat(fd, &sb);
+	if (!sb.st_size) {
+		/* no lock file exists - let's create one with default values. */
 		hd.data_version = sfv_version;
 		raceI->data_type = hd.data_type = 0;
 		raceI->data_in_use = hd.data_in_use = progtype;
@@ -1114,39 +1136,42 @@ create_lock(struct VARS *raceI, const char *path, unsigned int progtype, unsigne
 
 /* Remove the lock
  */
-
 void
 remove_lock(struct VARS *raceI)
 {
-	int		fd;
-	HEADDATA	hd;
-	char		lockfile[PATH_MAX + 1];
-
-	if ((fd = open(raceI->headpath, O_RDWR, 0666)) == -1) {
-		d_log("remove_lock: open(%s): %s\n", raceI->headpath, strerror(errno));
-		exit(EXIT_FAILURE);
-	}
 	if (!raceI->data_in_use)
 		d_log("remove_lock: lock not removed - no lock was set\n");
 	else {
+		int		fd;
+		HEADDATA	hd;
+		char		lockfile[PATH_MAX + 1];
+
+		if ((fd = open(raceI->headpath, O_RDWR, 0666)) == -1) {
+			d_log("remove_lock: open(%s): %s\n", raceI->headpath, strerror(errno));
+			exit(EXIT_FAILURE);
+		}
+
 		if (read(fd, &hd, sizeof(HEADDATA)) == -1) {
 			d_log("remove_lock: read() failed: %s\n", strerror(errno));
+			hd.data_queue = 0;
+			hd.data_qcurrent = 0;
 		}
+
 		hd.data_in_use = 0;
 		hd.data_pid = 0;
 		hd.data_completed = raceI->misc.data_completed;
 		hd.data_incrementor = 0;
-		if (hd.data_queue)							/* if queue, increase the number in current so the next */
-			hd.data_qcurrent++;						/* process can start. */
-		if (hd.data_queue < hd.data_qcurrent) {					/* If the next in line is bigger than the queue itself, */
-			hd.data_queue = 0;						/* it should be fair to assume there is noone else in queue */
-			hd.data_qcurrent = 0;						/* and reset the queue. Normally, this should not happen. */
+		if (hd.data_queue)			/* if queue, increase the number in current so the next */
+			++hd.data_qcurrent;		/* process can start. */
+		if (hd.data_queue < hd.data_qcurrent) {	/* If the next in line is bigger than the queue itself, */
+			hd.data_queue = 0;		/* it should be fair to assume there is noone else in queue */
+			hd.data_qcurrent = 0;		/* and reset the queue. Normally, this should not happen. */
 		}
 		lseek(fd, 0L, SEEK_SET);
 		if (write(fd, &hd, sizeof(HEADDATA)) != sizeof(HEADDATA))
 			d_log("remove_lock: write failed: %s\n", strerror(errno));
 		close(fd);
-		snprintf(lockfile, PATH_MAX, "%s.lock", raceI->headpath);
+		snprintf(lockfile, sizeof lockfile, "%s.lock", raceI->headpath);
 		unlink(lockfile);
 		d_log("remove_lock: queue %d/%d\n", hd.data_qcurrent, hd.data_queue);
 	}
@@ -1166,7 +1191,7 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 	HEADDATA	hd;
 	struct stat	sb;
 
-	if (!(unsigned int)strlen(raceI->headpath)) {
+	if (!raceI->headpath[0]) {
 		d_log("update_lock: variable 'headpath' empty - assuming no lock is set\n");
 		return -1;
 	}
@@ -1178,12 +1203,12 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 
 	if ((fd = open(raceI->headpath, O_RDWR, 0666)) == -1) {
 		d_log("update_lock: open(%s): %s\n", raceI->headpath, strerror(errno));
+		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
 	if (read(fd, &hd, sizeof(HEADDATA)) == -1) {
 		d_log("update_lock: read() failed: %s\n", strerror(errno));
 	}
-	fstat(fd, &sb);
 
 	if (hd.data_version != sfv_version) {
 		d_log("create_lock: version of datafile mismatch. Stopping and suggesting a cleanup.\n");
@@ -1193,6 +1218,7 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 	if ((hd.data_in_use != raceI->data_in_use) && counter) {
 		d_log("update_lock: Lock not active or progtype mismatch - no choice but to exit.\n");
 		close(fd);
+		remove_lock(raceI);
 		exit(EXIT_FAILURE);
 	}
 	if (!hd.data_incrementor) {
@@ -1219,6 +1245,8 @@ update_lock(struct VARS *raceI, unsigned int counter, unsigned int datatype)
 	}
 	if (datatype && counter)
 		hd.data_type = datatype;
+
+	fstat(fd, &sb);
 	if ((retval && !lock_optimize) || datatype || !retval || !hd.data_incrementor || (time(NULL) - sb.st_ctime >= lock_optimize && hd.data_incrementor > 1)) {
 		lseek(fd, 0L, SEEK_SET);
 		if (write(fd, &hd, sizeof(HEADDATA)) != sizeof(HEADDATA))
@@ -1582,25 +1610,23 @@ lenient_compare(char *name1, char *name2)
  * Read the data-type from headdata
  * mod by |DureX|, edited by psxc
  */
-
 int
-read_headdata(struct VARS *raceI)
+read_headdata(const char *headpath)
 {
 	int fd = 0;
 	HEADDATA hd;
-	int type = 0;
 
-	if ((fd = open(raceI->headpath, O_RDONLY)) == -1) {
-		d_log("read_headdata: failed to open(%s): %s - returning '0' as data_type\n", raceI->headpath, strerror(errno));
+	if ((fd = open(headpath, O_RDONLY)) == -1) {
+		d_log("read_headdata: failed to open(%s): %s - returning '0' as data_type\n", headpath, strerror(errno));
 		return 0;
 	}
 	if ((read(fd, &hd, sizeof(HEADDATA))) != sizeof(HEADDATA)) {
-		d_log("read_headdata: failed to read %s : %s - returning '0' as data_type\n", raceI->headpath, strerror(errno));
+		d_log("read_headdata: failed to read %s : %s - returning '0' as data_type\n", headpath, strerror(errno));
 		return 0;
 	}
-	type = hd.data_type;
 	close(fd);
-	return type;
+
+	return hd.data_type;
 }
 
 /*

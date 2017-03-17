@@ -185,7 +185,7 @@ main(int argc, char *argv[])
 			d_log("ng-post_unnuke: Failed to lock release.\n");
 			if (k == 1) {
 				d_log("ng-post_unnuke: version mismatch. Exiting.\n");
-				printf("Error. You need to rm -fR ftp-data/pzs-ng/* before rescan will work.\n");
+				printf("Error. You need to \"rm -fR ftp-data/pzs-ng/\" before rescan will work.\n");
 				exit(EXIT_FAILURE);
 			}
 			if (k == PROGTYPE_POSTDEL) {
@@ -630,6 +630,7 @@ main(int argc, char *argv[])
 	d_log("ng-post_unnuke: Freeing memory and removing lock.\n");
 	closedir(dir);
 	closedir(parent);
+	remove_lock(&g.v);
 	updatestats_free(&g);
 	ng_free(g.l.race);
 	ng_free(g.l.sfv);
@@ -638,8 +639,6 @@ main(int argc, char *argv[])
 
 	if (fileexists(".delme"))
 		unlink(".delme");
-
-	remove_lock(&g.v);
 
 #ifdef USING_GLFTPD
 	buffer_groups(GROUPFILE, gnum);
