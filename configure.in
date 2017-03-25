@@ -10,6 +10,11 @@ AC_CANONICAL_HOST
 dnl Checks for programs.
 AC_PROG_CC
 
+if test -d /usr/local/include; then
+    CFLAGS="$CFLAGS -I/usr/local/include"
+    LDFLAGS="$LDFLAGS -L/usr/local/lib"
+fi
+
 if [[ "$CC" = "gcc" ]]; then
 	CFLAGS="$CFLAGS -W -Wall -Wundef -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline"
 fi
