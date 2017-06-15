@@ -317,11 +317,13 @@ main(int argc, char *argv[])
 		if (g.v.total.files_missing == 0) {
 			g.v.misc.write_log = 0;
 			complete(&g, complete_type);
-			createstatusbar(convert(&g.v, g.ui, g.gi, zip_completebar));
+			if (zip_completebar) {
+				createstatusbar(convert(&g.v, g.ui, g.gi, zip_completebar));
 #if (chmod_completebar)
-			if (!matchpath(group_dirs, g.l.path)) {
-                                if (chmod(convert(&g.v, g.ui, g.gi, zip_completebar), 0222))
-                                        d_log("ng-post_unnuke: Failed to chmod a statusbar: %s\n", strerror(errno));
+				if (!matchpath(group_dirs, g.l.path)) {
+                	                if (chmod(convert(&g.v, g.ui, g.gi, zip_completebar), 0222))
+                        	                d_log("ng-post_unnuke: Failed to chmod a statusbar: %s\n", strerror(errno));
+				}
 			}
 #endif
 

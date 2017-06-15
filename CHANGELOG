@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix segfault when zip_completebar is DISABLED (thanks to kniffy for reporting).
 		- Prevent bufferoverflows for FLAC bitrate and samplingrate.
 		- Add extra options for output of the stats, allowing hiding of users, groups and/or zerodata.
 		- Fix psxc-imdb.sh having trailing '|' for some vars (thanks to silv3rr for the language-var).

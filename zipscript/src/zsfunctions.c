@@ -1864,6 +1864,8 @@ insampledir(char *dirname)
 void
 createstatusbar(const char *bar)
 {
+    if (bar == NULL)
+        return;
 #if ( status_bar_type == BAR_OFF )
     (void)bar;
 #else
