@@ -65,9 +65,9 @@ struct audio {
 	char		id3_artist[NAME_MAX];
 	char		id3_title [NAME_MAX];
 	char		id3_album [NAME_MAX];
-	char		id3_year  [5];
-	char		bitrate   [5];
-	char		samplingrate[6];
+	char		id3_year[5];
+	char		bitrate[8]; /* MLP based lossless is 18 Mbit/s */
+	char		samplingrate[10]; /* SACD is 2822400 Hz */
 	char           *id3_genre;
 	unsigned char   id3_genre_id;
 	char           *layer;
