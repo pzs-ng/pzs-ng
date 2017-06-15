@@ -152,8 +152,8 @@ get_preset(char vbr_header[4])
 
 
 /*
- * First Version:	 20111207	Sked
- * Modified:		20130117	Sked
+ * First Version:	20111207	Sked
+ * Modified:		20170615	Sked
  * Description: Umbrella for the different get_*_audio_info functions where
  *		the correct function is chosen based on the fileextension.
  *		This makes it easier to add new audioformats.
@@ -514,7 +514,7 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 
 /*
  * First Version: 2011.01.30	io
- * Last update	: 2011.12.10	Sked
+ * Last update	: 2017.06.15	Sked
  * Description	: Reads FLAC header from file and stores info to 'audio'.
  */
 #ifdef HAVE_FLAC_HEADERS
@@ -629,7 +629,7 @@ get_flac_audio_info(char *f, struct audio *audio)
 	if (FLAC__metadata_get_streaminfo(f, temp_meta)) {
 		struct stat st;
 
-		sprintf(audio->samplingrate, "%d",  temp_meta->data.stream_info.sample_rate);
+		snprintf(audio->samplingrate, sizeof audio->samplingrate, "%d",  temp_meta->data.stream_info.sample_rate);
 
 		if (temp_meta->data.stream_info.channels < 9)
 			audio->channelmode = flac_chanmode_s[temp_meta->data.stream_info.channels];
@@ -641,7 +641,7 @@ get_flac_audio_info(char *f, struct audio *audio)
 		stat(f, &st);
 
 		if (temp_meta->data.stream_info.total_samples)
-			sprintf(audio->bitrate, "%llu", (st.st_size * temp_meta->data.stream_info.sample_rate) / (125 * temp_meta->data.stream_info.total_samples));
+			snprintf(audio->bitrate, sizeof audio->bitrate, "%llu", (st.st_size * temp_meta->data.stream_info.sample_rate) / (125 * temp_meta->data.stream_info.total_samples));
 
 		d_log("multimedia.c: get_flac_audio_info() - stream info: %d Hz, %d channel(s), %d bits per sample, %d total samples\n", temp_meta->data.stream_info.sample_rate,
 														temp_meta->data.stream_info.channels,
