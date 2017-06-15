@@ -324,8 +324,8 @@ main(int argc, char *argv[])
                 	                if (chmod(convert(&g.v, g.ui, g.gi, zip_completebar), 0222))
                         	                d_log("ng-post_unnuke: Failed to chmod a statusbar: %s\n", strerror(errno));
 				}
-			}
 #endif
+			}
 
 		} else {
 			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
