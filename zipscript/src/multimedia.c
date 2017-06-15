@@ -163,16 +163,42 @@ get_audio_info(char *f, struct audio *audio)
 {
 	char *ext;
 
+	if (!f || !audio)
+		return;
+
+	/* defaults */
+	strcpy(audio->id3_year, "0000");
+	strcpy(audio->id3_title, "Unknown");
+	strcpy(audio->id3_artist, "Unknown");
+	strcpy(audio->id3_album, "Unknown");
+	strcpy(audio->vbr_version_string, "Unknown");
+	strcpy(audio->vbr_preset, "NA");
+	strcpy(audio->vbr_stereo_mode, "Undefined");
+	strcpy(audio->vbr_unwise, "No");
+	strcpy(audio->vbr_source, "Unknown");
+	strcpy(audio->samplingrate, "0");
+	strcpy(audio->bitrate, "0");
+	audio->id3_genre = genre_s[genre_count - 1];
+	audio->id3_genre_id = genre_count - 1;
+	audio->is_vbr = 1;
+	audio->vbr_oldnew = audio->vbr_quality = audio->vbr_minimum_bitrate = audio->vbr_noiseshaping = 0;
+	audio->codec = codec_s[1];
+	audio->channelmode = chanmode_s[4];
+	audio->layer = layer_s[0];
+
 	if (f != NULL && (ext = find_last_of(f, ".")) != NULL) {
-		if (!strcasecmp(".mp3", ext))
+		if (!strcasecmp(".mp3", ext)) {
 			get_mpeg_audio_info(f, audio);
 
 #ifdef HAVE_FLAC_HEADERS
-		else if (!strcasecmp(".flac", ext))
+		} else if (!strcasecmp(".flac", ext)) {
+			audio->codec = codec_s[4];
+			audio->channelmode = flac_chanmode_s[0];
+			audio->layer = layer_s[4];
 			get_flac_audio_info(f, audio);
 #endif
 
-		else {
+		} else {
 			d_log("multimedia.c: get_audio_info() - Received %s as fileextension but no libs present to get metadata.\n", ext);
 			return;
 		}
@@ -257,11 +283,6 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 	fd = open(f, O_RDONLY);
 	if (fd < 0) {
 		d_log("multimedia.c: get_mpeg_audio_info() - could not open file '%s': %s\n", f, strerror(errno));
-		strcpy(audio->id3_year, "0000");
-		strcpy(audio->id3_title, "Unknown");
-		strcpy(audio->id3_artist, "Unknown");
-		strcpy(audio->id3_album, "Unknown");
-		audio->id3_genre = genre_s[genre_count - 1];
 
 		return;
 	}
@@ -410,13 +431,9 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 				sprintf(audio->vbr_stereo_mode, "Auto");
 			else if (((vbr_misc & 28) >> 2) == 6)
 				sprintf(audio->vbr_stereo_mode, "Intensity");
-			else
-				sprintf(audio->vbr_stereo_mode, "Undefined");
 /*			audio->vbr_stereo_mode = (vbr_misc & 28) >> 2; // vbr stereo mode */
 			if (((vbr_misc & 32) >> 5))
 				sprintf(audio->vbr_unwise, "Yes");
-			else
-				sprintf(audio->vbr_unwise, "No");
 /*			audio->vbr_unwise = (vbr_misc & 32) >> 5;      // vbr unwise setting */
 			if (((vbr_misc & 192) >> 6) == 0)
 				sprintf(audio->vbr_source, "<32.000Hz");
@@ -464,24 +481,16 @@ get_mpeg_audio_info(char *f, struct audio *audio)
 				/* strcpy(audio->bitrate, "VBR"); */
 			} else {
 				strcpy(audio->vbr_version_string, "Not LAME");
-				strcpy(audio->vbr_preset, "NA");
 			}
 
 		} else {
 			audio->is_vbr = 0;
 			strcpy(audio->vbr_version_string, "NA");
-			strcpy(audio->vbr_preset, "NA");
 		}
 
 		if (memcmp(fraunhofer_header, "VBRI", 4) == 0) {
 			strcpy(audio->vbr_version_string, "FHG");
 		}
-	} else {		/* header is broken, shouldnt crc fail? */
-		strcpy(audio->samplingrate, "0");
-		strcpy(audio->bitrate, "0");
-		audio->codec = codec_s[1];
-		audio->layer = layer_s[0];
-		audio->channelmode = chanmode_s[4];
 	}
 
 	close(fd);
@@ -516,18 +525,6 @@ get_flac_audio_info(char *f, struct audio *audio)
 	FLAC__StreamMetadata *temp_meta; /* union that holds all vorbis meta data */
 
 	d_log("multimedia.c: get_flac_audio_info() - starting: %s\n", f);
-
-	/* defaults */
-	strcpy(audio->id3_year, "0000");
-	strcpy(audio->id3_title, "Unknown");
-	strcpy(audio->id3_artist, "Unknown");
-	strcpy(audio->id3_album, "Unknown");
-	strcpy(audio->vbr_version_string, "Unknown");
-	audio->id3_genre = genre_s[genre_count - 1];
-	audio->is_vbr = 1;
-	audio->codec = codec_s[4];
-	audio->channelmode = flac_chanmode_s[0];
-	audio->layer = layer_s[4];
 
 	fd = open(f, O_RDONLY);
 	if (fd < 0) {
@@ -652,11 +649,8 @@ get_flac_audio_info(char *f, struct audio *audio)
 														temp_meta->data.stream_info.total_samples);
 		d_log("multimedia.c: get_flac_audio_info() - filesize: %llu, bitrate: %s\n", st.st_size, audio->bitrate);
 
-	} else {
+	} else
 		d_log("multimedia.c: get_flac_audio_info() - failed getting stream meta data\n");
-		strcpy(audio->samplingrate, "0");
-		strcpy(audio->bitrate, "0");
-	}
 
 	if(temp_meta != NULL)
 		FLAC__metadata_object_delete(temp_meta);
