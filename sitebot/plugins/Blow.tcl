@@ -34,6 +34,9 @@ namespace eval ::ngBot::plugin::Blow {
 	set blowkey(#chan2) "MyKey2"
 	set blowkey(#chan3) "mykey"
 	##
+	## Set blowfish cipher mode. (ecb or cbc)
+	variable ciphermode "ecb"
+	##
 	## Use the blowfish key of the channel listed in mainChan for unknown
 	## targets. Doesn't work when key exchanged is enabled. Case sensetive.
 	## (Set to "" to disable)
@@ -361,6 +364,8 @@ namespace eval ::ngBot::plugin::Blow {
 		variable blowkey
 		variable blowinit
 		variable keyxUsers
+		variable ciphermode
+		variable ciphermodemod
 
 		if {![IsTrue $keyx]} {
 			${ns}::Debug "Key exchange is disabled!"
@@ -388,7 +393,11 @@ namespace eval ::ngBot::plugin::Blow {
 						putquick2 "NOTICE $nick :DH1080_FINISH $my_key_pub"
 						set his_key_pub [lindex $text 1]
 						DH1080comp $my_key_prv $his_key_pub
-						set blowkey($nick) $his_key_pub
+						if {$ciphermodemod == "cbc" && $ciphermode == "ecb"} {
+							set blowkey($nick) "ecb:${his_key_pub}"
+						} else {
+							set blowkey($nick) $his_key_pub
+						}
 						${ns}::Debug "keyx_bind: Received DH1080 public key from $nick. Sending DH1080 plublic key to $nick."
 
 						${ns}::keyx_queue_flush $nick
@@ -404,7 +413,11 @@ namespace eval ::ngBot::plugin::Blow {
 					if {[info exists blowinit($nick)]} {
 						set his_key_pub [lindex $text 1]
 						DH1080comp $blowinit($nick) $his_key_pub
-						set blowkey($nick) $his_key_pub
+						if {$ciphermodemod == "cbc" && $ciphermode == "ecb"} {
+							set blowkey($nick) "ecb:${his_key_pub}"
+						} else {
+							set blowkey($nick) $his_key_pub
+						}
 						unset blowinit($nick)
 						${ns}::Debug "keyx_bind: Received DH1080 public key from $nick."
 
@@ -745,7 +758,10 @@ namespace eval ::ngBot::plugin::Blow {
 		variable keyx
 		variable blowso
 		variable events
+		variable blowkey
 		variable topicUsers
+		variable ciphermode
+		variable ciphermodemod
 		variable trustedUsers
 		variable allowUnencrypted
 		variable scriptFile
@@ -773,6 +789,20 @@ namespace eval ::ngBot::plugin::Blow {
 			}
 		}
 
+		set string1 [encrypt "cbc:testkey" "teststring"]
+		set string2 [decrypt "testkey" $string1]
+		if {$string2 == "teststring" } {
+			set ciphermodemod "cbc"
+		} else {
+			set ciphermodemod "ebc"
+		}
+
+		if {$ciphermodemod == "cbc" && $ciphermode == "ecb"} {
+			foreach key [array names blowkey] {
+				if {[regexp -- {^(?:cbc|ecb):} $blowkey($key)]} { continue }
+				set blowkey($key) "ecb:$blowkey($key)"
+			}
+		}
 		set aliases [interp aliases]
 		foreach cmd {putquick putserv puthelp} {
 			if {[lsearch $aliases $cmd] != -1 || [catch {info args $cmd}] == 0 || [info commands $cmd] == ""} {
@@ -820,7 +850,7 @@ namespace eval ::ngBot::plugin::Blow {
 		## Binds to input from the ftp
 		lappend precommand(SETTOPIC) ${ns}::LogEvent
 
-		putlog "\[ngBot\] Blow :: Loaded successfully (Version: $blowversion)."
+		putlog "\[ngBot\] Blow :: Loaded successfully (Version: $blowversion). Blowfish Cipher Mode: $ciphermode (Default: $ciphermodemod)"
 	}
 
 	####
