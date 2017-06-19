@@ -47,6 +47,7 @@ swho:
 
 libs:
 	@(printf "\n\033[1;37mCompiling the additional libraries\033[0m\n")
+	sh ./version.sh
 	cd lib/ ; $(MAKE) all
 
 utils:
