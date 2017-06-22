@@ -23,6 +23,7 @@ Makefile
 /zipscript/src/ng-chown
 /zipscript/src/ng-deldir
 /zipscript/src/ng-undupe
+/zipscript/src/ng-version.c
 /zipscript/src/postdel
 /zipscript/src/postunnuke
 /zipscript/src/racestats
