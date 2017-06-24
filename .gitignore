@@ -12,6 +12,9 @@ Makefile
 *.o
 *.dSYM/
 
+# Generated version
+/zipscript/include/ng-version.h
+
 # Produced binaries
 /sitebot/src/dl_speedtest
 /sitebot/src/passchk
@@ -23,7 +26,6 @@ Makefile
 /zipscript/src/ng-chown
 /zipscript/src/ng-deldir
 /zipscript/src/ng-undupe
-/zipscript/src/ng-version.c
 /zipscript/src/postdel
 /zipscript/src/postunnuke
 /zipscript/src/racestats

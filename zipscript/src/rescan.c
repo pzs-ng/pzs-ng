@@ -76,7 +76,7 @@ main(int argc, char *argv[])
 
 	umask(0666 & 000);
 
-	d_log("rescan: PZS-NG (rescan v2) %s debug log.\n", ng_version);
+	d_log("rescan: PZS-NG (rescan v2) %s debug log.\n", NG_VERSION);
 	d_log("rescan: Rescan executed by: (uid/gid) %d/%d\n", geteuid(), getegid());
 
 #ifdef _ALT_MAX
@@ -146,7 +146,7 @@ main(int argc, char *argv[])
 				ng_free(g.gi);
 				return 1;
 			}
-			printf("PZS-NG Rescan %s: Rescanning %s\n", ng_version, temp_p);
+			printf("PZS-NG Rescan %s: Rescanning %s\n", NG_VERSION, temp_p);
 			argv_mode = 1;
 
 		} else if (!strncasecmp(argv[argnum], "--chroot=", 9) && (strlen(argv[argnum]) > 10) && chdir_allowed) {
@@ -163,7 +163,7 @@ main(int argc, char *argv[])
 				ng_free(g.gi);
 				return 1;
 			}
-			printf("PZS-NG Rescan %s: Chroot'ing to %s\n", ng_version, temp_p);
+			printf("PZS-NG Rescan %s: Chroot'ing to %s\n", NG_VERSION, temp_p);
 			argv_mode = 1;
 
 		} else if (!strncasecmp(argv[argnum], "--help", 6) || !strncasecmp(argv[argnum], "/?", 2) || !strncasecmp(argv[argnum], "--?", 3)) {
@@ -174,7 +174,7 @@ main(int argc, char *argv[])
 		} else {
 			strlcpy(one_name, argv[argnum], sizeof(one_name));
 			rescan_quick = FALSE;
-			printf("PZS-NG Rescan %s: Rescanning in FILE mode\n", ng_version);
+			printf("PZS-NG Rescan %s: Rescanning in FILE mode\n", NG_VERSION);
 			if (one_name[strlen(one_name) - 1] == '*') {
 				one_name[strlen(one_name) - 1] = '\0';
 			} else if (!fileexists(one_name)) {
@@ -188,12 +188,12 @@ main(int argc, char *argv[])
 	}
 	if (one_name[0] == '\0') {
 		if (rescan_quick == TRUE) {
-			printf("PZS-NG Rescan %s: Rescanning in QUICK mode.\n", ng_version);
+			printf("PZS-NG Rescan %s: Rescanning in QUICK mode.\n", NG_VERSION);
 		} else {
-			printf("PZS-NG Rescan %s: Rescanning in NORMAL mode.\n", ng_version);
+			printf("PZS-NG Rescan %s: Rescanning in NORMAL mode.\n", NG_VERSION);
 		}
 	}
-	printf("PZS-NG Rescan %s: Use --help for options.\n\n", ng_version);
+	printf("PZS-NG Rescan %s: Use --help for options.\n\n", NG_VERSION);
 
 	if (not_allowed) {
 		ng_free(g.ui);
@@ -880,7 +880,7 @@ main(int argc, char *argv[])
 
 void print_syntax(int chdir_allowed)
 {
-    printf("PZS-NG Rescan %s options:\n\n", ng_version);
+    printf("PZS-NG Rescan %s options:\n\n", NG_VERSION);
 #ifndef USING_GLFTPD
     printf("  [non-glftpd] The first 4 arguments must be: <user> <group> <tagline> <section> <current working dir>, after that - normal options (or none)\n");
 #endif

@@ -99,7 +99,7 @@ main(int argc, char **argv)
         d_log("postdel: Got a 'DELE %s' in '%s'\n", fname, dirname);
 #endif
 
-	d_log("postdel: Project-ZS Next Generation (pzs-ng) %s debug log for postdel.\n", ng_version);
+	d_log("postdel: Project-ZS Next Generation (pzs-ng) %s debug log for postdel.\n", NG_VERSION);
 	d_log("postdel: Postdel executed by: (uid/gid) %d/%d\n", geteuid(), getegid());
 
 #ifdef _ALT_MAX

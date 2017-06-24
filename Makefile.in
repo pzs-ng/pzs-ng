@@ -34,7 +34,7 @@ uninstall:
 	cd zipscript/src ; $(MAKE) uninstall
 
 zs: libs
-	@(printf "\n\033[1;37mGenerating ng-version.c\033[0m\n")
+	@(printf "\n\033[1;37mGenerating ng-version: \033[0m")
 	@(./version.sh)
 	@(printf "\n\033[1;37mCompiling the zipscript\033[0m\n")
 	cd zipscript/src ; $(MAKE) all

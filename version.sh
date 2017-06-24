@@ -1,19 +1,24 @@
 #!/bin/sh
-# extract abbreviated hash from master
-if [ -f .git/refs/heads/master ]; then
-  GIT_HASH=$(cut -c"1-8" .git/refs/heads/master)
-else GIT_HASH="svn-checkout"
+# extract abbreviated hash from head
+GIT_PREFIX="git-"
+GIT_HASH="${GIT_PREFIX}dl"
+if [ -f .git/HEAD ]; then
+  if [ "$(cut -c1-5 .git/HEAD)" = "ref: " ]; then
+    GIT_REF=".git/$(cut -c6- .git/HEAD)"
+    if [ -f ${GIT_REF} ]; then
+      GIT_HASH="${GIT_PREFIX}$(basename ${GIT_REF})-$(cut -c1-8 ${GIT_REF})"
+    fi
+  else
+    GIT_HASH="$GIT_PREFIX$(cut -c1-8 .git/HEAD)"
+  fi
 fi
 echo ${GIT_HASH}
-cat << EOF > zipscript/src/ng-version.c
-#include "ng-version.h"
 
-/*** 
- * DO NOT CHANGE THIS FILE ON SVN PRIOR TO RELEASE!
- * The bot (pzs-ng) takes care of this when you do something like:
- *  <@psxc> pzs-ng: release 2291 stable v1.0.9
- * So just leave this, so that you can identify a svn revision versus a normal release. :-)
- ***/
+cat << EOF > zipscript/include/ng-version.h
+#ifndef _NG_VERSION_H_
+#define _NG_VERSION_H_
 
-const char* ng_version = "${GIT_HASH}";
+#define NG_VERSION "${GIT_HASH}"
+
+#endif
 EOF

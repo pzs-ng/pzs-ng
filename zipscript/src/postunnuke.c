@@ -66,7 +66,7 @@ main(int argc, char *argv[])
 
 	umask(0666 & 000);
 
-	d_log("ng-post_unnuke: PZS-NG %s debug log.\n", ng_version);
+	d_log("ng-post_unnuke: PZS-NG %s debug log.\n", NG_VERSION);
 	d_log("ng-post_unnuke: ng-post_unnuke executed by: (uid/gid) %d/%d\n", geteuid(), getegid());
 
 #ifdef _ALT_MAX
