@@ -31,3 +31,8 @@ Makefile
 /zipscript/src/racestats
 /zipscript/src/rescan
 /zipscript/src/zipscript-c
+
+# Produced binaries with "make utils"
+/zipscript/utils/headdatatest
+/zipscript/utils/racedatatest
+/zipscript/utils/sfvdatatest
