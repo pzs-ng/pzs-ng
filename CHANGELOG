@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix *-missing files appearing in nocheck_dirs and non-zip_dirs/sfv_dirs/group_dirs.
 		- Use updated versionnumber, using git-files if present (thanks to tittof for init).
 		- Fix segfault when zip_completebar is DISABLED (thanks to kniffy for reporting).
 		- Prevent bufferoverflows for FLAC bitrate and samplingrate.
