@@ -540,7 +540,7 @@ main(int argc, char **argv)
 	/* Test to see if we are in a speedtest dir */
 	if (matchpath(speedtest_dirs, g.l.path)) {
 		d_log("zipscript-c: Dir matched speedtest_dirs\n");
-		sprintf(g.v.misc.error_msg, SPEEDTEST, ((double)g.v.file.size/1000./1000.), ((double)g.v.file.size/1024./1024.), ((double)g.v.file.speed*8/1000./1000.), ((double)g.v.file.speed/1024./1024.));
+		sprintf(g.v.misc.error_msg, SPEEDTEST, ((double)g.v.file.size/1024./1024.), ((double)g.v.file.size/1000./1000.), ((double)g.v.file.speed*8/1000./1000.), ((double)g.v.file.speed/1000./1000.));
 		write_log = g.v.misc.write_log;
 		g.v.misc.write_log = TRUE;
 		//mark_as_bad(g.v.file.name);
@@ -549,10 +549,10 @@ main(int argc, char **argv)
 		if (exit_value < 2)
 			writelog(&g, error_msg, bad_file_speedtest_type);
 		if (!speedtest_delfile) {
-			sprintf(target, "%.1fMiB", ((float)g.v.file.size/1000./1000.));
+			sprintf(target, "%.1fMiB", ((float)g.v.file.size/1024./1024.));
 			if (rename(g.v.file.name, target) == -1)
 				d_log("zipscript-c: Unable to rename speedtest file: %s (not considered an error in this case)\n", strerror(errno));
-			}
+		}
 		exit_value = 2;
 
 #if (check_for_banned_files == TRUE )
