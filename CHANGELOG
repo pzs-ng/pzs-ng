@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix speedtestfile being deleted when filename is same as it's size in MiB + "MiB" (and speedtest_delfile is false).
 		- Correct shown size of speedtestfiles in ftpclient output and target filename.
 		- Fix *-missing files appearing in nocheck_dirs and non-zip_dirs/sfv_dirs/group_dirs.
 		- Use updated versionnumber, using git-files if present (thanks to tittof for init).

@@ -85,6 +85,7 @@ main(int argc, char **argv)
 	unsigned int	crc, s_crc = 0;
 	unsigned char	exit_value = EXIT_SUCCESS;
 	unsigned char	no_check = FALSE;
+	unsigned char	do_not_del = FALSE;
 	char	       *sfv_type = 0;
 	char	       *race_type = 0;
 	char	       *newleader_type = 0;
@@ -550,8 +551,11 @@ main(int argc, char **argv)
 			writelog(&g, error_msg, bad_file_speedtest_type);
 		if (!speedtest_delfile) {
 			sprintf(target, "%.1fMiB", ((float)g.v.file.size/1024./1024.));
-			if (rename(g.v.file.name, target) == -1)
-				d_log("zipscript-c: Unable to rename speedtest file: %s (not considered an error in this case)\n", strerror(errno));
+			if (!strcmp(target, g.v.file.name)) {
+				/* Uploaded file has same name as target, prevent deletion */
+				do_not_del = TRUE;
+			} else if (rename(g.v.file.name, target) == -1 || chmod(target, 0644) == -1)
+				d_log("zipscript-c: Unable to rename or chmod speedtest file: %s (not considered an error in this case)\n", strerror(errno));
 		}
 		exit_value = 2;
 
@@ -1873,6 +1877,9 @@ main(int argc, char **argv)
 	printf(zsinternal_checks_completed, ((bstop.tv_sec - bstart.tv_sec) + (bstop.tv_usec - bstart.tv_usec) / 1000000.));
 	d_log("zipscript-c: Checks completed in %0.6f seconds.\n", ((bstop.tv_sec - bstart.tv_sec) + (bstop.tv_usec - bstart.tv_usec) / 1000000.));
 #endif
+
+	if (do_not_del == TRUE)
+		exit_value = EXIT_SUCCESS;
 
 #if ( sleep_on_bad > 0 && sleep_on_bad < 1001 )
 	if (exit_value == 2) {
