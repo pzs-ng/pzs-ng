@@ -61,7 +61,7 @@ main(int argc, char **argv)
 #ifndef USING_GLFTPD
         char            temp_path[PATH_MAX];
 #else
-        char            *temp_p_free = NULL;
+	char            *temp_p_free = NULL, *env_p;
 #endif
 	char           *fileext = NULL, *name_p, *temp_p = NULL;
 	char           *target = 0;
@@ -262,43 +262,48 @@ main(int argc, char **argv)
 
 #else /* below here: glftpd specific */
 	d_log("zipscript-c: Reading data from environment variables\n");
-	if ((getenv("USER") == NULL) || (getenv("GROUP") == NULL) || (getenv("TAGLINE") == NULL) || (getenv("SPEED") ==NULL) || (getenv("SECTION") == NULL)) {
-		d_log("zipscript-c: We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE, $SECTION and $SPEED\n");
-		/*
-		 * strcpy(g.v.user.name, "Unknown");
-		 * strcpy(g.v.user.group, "NoGroup");
-		 */
-
-		gnum = buffer_groups(GROUPFILE, 0);
-		unum = buffer_users(PASSWDFILE, 0);
+	unum = buffer_users(PASSWDFILE, 0);
+	gnum = buffer_groups(GROUPFILE, 0);
+	env_p = getenv("USER");
+	if (env_p == NULL || !(*env_p)) {
+		d_log("zipscript-c: Got NULL or empty string for $USER, trying to determine via uid.\n");
 		fileinfo.st_uid = geteuid();
-		fileinfo.st_gid = getegid();
-		strlcpy(g.v.user.name, get_u_name(fileinfo.st_uid), 24);
-		strlcpy(g.v.user.group, get_g_name(fileinfo.st_gid), 24);
-		memcpy(g.v.user.tagline, "No Tagline Set", 15);
-		g.v.file.speed = 2005;
-		g.v.section = 0;
-		sprintf(g.v.sectionname, "DEFAULT");
+		strlcpy(g.v.user.name, get_u_name(fileinfo.st_uid), sizeof(g.v.user.name));
 	} else {
-		gnum = buffer_groups(GROUPFILE, 0);
-		unum = buffer_users(PASSWDFILE, 0);
-		sprintf(g.v.user.name, "%s", getenv("USER"));
-		sprintf(g.v.user.group, "%s", getenv("GROUP"));
-		if (!(int)strlen(g.v.user.group))
-			memcpy(g.v.user.group, "NoGroup", 8);
-		sprintf(g.v.user.tagline, "%s", getenv("TAGLINE"));
-		if (!(int)strlen(g.v.user.tagline))
-			memcpy(g.v.user.tagline, "No Tagline Set", 15);
-		g.v.file.speed = strtoul(getenv("SPEED"), NULL, 0);
-		if (!g.v.file.speed)
-			g.v.file.speed = 2005;
-
+		strlcpy(g.v.user.name, env_p, sizeof(g.v.user.name));
+	}
+	env_p = getenv("GROUP");
+	if (env_p == NULL || !(*env_p)) {
+		d_log("zipscript-c: Got NULL or empty string for $GROUP, trying to determine via gid.\n");
+		fileinfo.st_gid = getegid();
+		strlcpy(g.v.user.group, get_g_name(fileinfo.st_gid), sizeof(g.v.user.group));
+	} else {
+		strlcpy(g.v.user.group, env_p, sizeof(g.v.user.group));
+	}
+	env_p = getenv("TAGLINE");
+	if (env_p == NULL || !(*env_p)) {
+		d_log("zipscript-c: Got NULL or empty string for $TAGLINE, falling back to default.\n");
+		strlcpy(g.v.user.tagline, "No Tagline Set", sizeof(g.v.user.tagline));
+	} else {
+		strlcpy(g.v.user.tagline, env_p, sizeof(g.v.user.tagline));
+	}
+	env_p = getenv("SPEED");
+	if (env_p == NULL || !(g.v.file.speed = strtoul(env_p, NULL, 0))) {
+		d_log("zipscript-c: Got NULL or 0 for $SPEED, falling back to default.\n");
+		g.v.file.speed = 2005;
 #if (debug_announce == TRUE)
-		printf("zipscript-c: DEBUG: Speed: %lukb/s (ENV: %skb/s)\n", g.v.file.speed, getenv("SPEED"));
+	} else {
+		printf("zipscript-c: DEBUG: Speed: %lukb/s (ENV: %skb/s)\n", g.v.file.speed, env_p);
 #endif
-
-		d_log("zipscript-c: Reading section from env (%s)\n", getenv("SECTION"));
-		snprintf(g.v.sectionname, 127, "%s", getenv("SECTION"));
+	}
+	env_p = getenv("SECTION");
+	if (env_p == NULL || !(*env_p)) {
+		d_log("zipscript-c: Got NULL or empty string for $SECTION, falling back to default.\n");
+		g.v.section = 0;
+		strlcpy(g.v.sectionname, "DEFAULT", sizeof(g.v.sectionname));
+	} else {
+		d_log("zipscript-c: Reading section from env (%s)\n", env_p);
+		strlcpy(g.v.sectionname, env_p, sizeof(g.v.sectionname));
 		g.v.section = 0;
 		temp_p_free = temp_p = strdup((const char *)gl_sections);	/* temp_p_free is needed since temp_p is modified by strsep */
 		if ((temp_p) == NULL) {
@@ -306,7 +311,7 @@ main(int argc, char **argv)
 		} else {
 			n = 0;
 			while (temp_p) {
-				if (!strcmp(strsep(&temp_p, " "), getenv("SECTION"))) {
+				if (!strcmp(strsep(&temp_p, " "), env_p)) {
 					g.v.section = (unsigned char)n;
 					break;
 				} else
