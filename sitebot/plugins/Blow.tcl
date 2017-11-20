@@ -553,14 +553,15 @@ namespace eval ::ngBot::plugin::Blow {
 				}
 				## execute bound proc
 				if {[string match "$targchan" "$target"]} {
-					if {([string equal "$bindtype" "pubm"] || [string equal "$bindtype" "msgm"]) && [string match "$lastbind" "$tmp"]} {
+					if {([string equal "$bindtype" "pubm"] || [string equal "$bindtype" "msgm"])&&
+					    [regexp "[string map {\\* .* \\? . \\% \\S* \\~ \\s+} "[reEscape "[join $lastbind]"]"]" "[join $tmp]"]} {
 						if {[info exists exclusive-binds] && ${::exclusive-binds}} {
 							set mExecuted 1
 						}
 						if {$ispub} {
-							eval [lindex $item 4] \$nick \$uhost \$handle \$target \$tmp
+							eval [lindex $item 4] \$nick \$uhost \$handle \$target {[join $tmp]}
 						} else {
-							eval [lindex $item 4] \$nick \$uhost \$handle \$tmp
+							eval [lindex $item 4] \$nick \$uhost \$handle {[join $tmp]}
 						}
 					} elseif {!$mExecuted && [string equal "$lastbind" [lindex $tmp 0]]} {
 						# Use "eval" to expand the callback script, for example:
