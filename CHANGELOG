@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Add support for PUBM and MSGM binds in the blow script.
 		- Improve handling of env vars
 		- Fix speedtestfile being deleted when filename is same as it's size in MiB + "MiB" (and speedtest_delfile is false).
 		- Correct shown size of speedtestfiles in ftpclient output and target filename.
