@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix bad parsing of certain loglines with glftpd -X mode (thanks to iknowmarkers for reporting).
 		- Add support for PUBM and MSGM binds in the blow script.
 		- Improve handling of env vars
 		- Fix speedtestfile being deleted when filename is same as it's size in MiB + "MiB" (and speedtest_delfile is false).
