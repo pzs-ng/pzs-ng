@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix psxc-imdb for new site layout
 		- Fix bad parsing of certain loglines with glftpd -X mode (thanks to iknowmarkers for reporting).
 		- Add support for PUBM and MSGM binds in the blow script.
 		- Improve handling of env vars
