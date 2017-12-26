@@ -44,7 +44,7 @@
 VERSION=2.9q
 
 # (full) path to psxc-imdb.conf
-PSXC_IMDB_CONF=/glftpd/etc/psxc-imdb.conf
+PSXC_IMDB_CONF=/jail/glftpd/etc/psxc-imdb.conf
 
 # max hits listed
 MAXLIST=10
@@ -93,8 +93,8 @@ VERBOSE=""
 
 DESTINATION=$1
 shift
-IMDBSEARCHORIGA=`echo -n "$@" | tr -cd 'A-Za-z0-9\-\,+\=\.\ '`
-IMDBSEARCHORIG="`echo $IMDBSEARCHORIGA | tr ' \.' '\n' | grep -v "^-" | grep -v "^$" | tr '\n' ' '`"
+IMDBSEARCHORIGA=$(echo -n "$@" | tr -cd 'A-Za-z0-9\-\,+\=\.\ ')
+IMDBSEARCHORIG="$(echo $IMDBSEARCHORIGA | tr ' \.' '\n' | grep -v "^-" | grep -v "^$" | tr '\n' ' ')"
 if [ -z "$IMDBSEARCHORIG" ]; then
  echo "$PREWORD psxc-imdb channel trigger v$VERSION - argument(s) missing."
  echo "$PREWORD   use ${BOLD}-f${BOLD}   to make a ${BOLD}f${BOLD}uzzy (alternative) search."
@@ -106,20 +106,20 @@ if [ -z "$IMDBSEARCHORIG" ]; then
  exit 0
 fi
 IMDBFUZZ=""
-if [ ! -z "`echo $IMDBSEARCHORIGA | grep -e "\-[fF]"`" ]; then
+if [ ! -z "$(echo $IMDBSEARCHORIGA | grep -e "\-[fF]")" ]; then
  IMDBFUZZ="&type=fuzzy"
 fi
 IMDBNOURL=""
-if [ ! -z "`echo $IMDBSEARCHORIGA | grep -e "\-[nN]"`" ]; then
+if [ ! -z "$(echo $IMDBSEARCHORIGA | grep -e "\-[nN]")" ]; then
  IMDBNOURL="ON"
 fi
 IMDBPRIVATE=""
-#if [ ! -z "`echo $IMDBSEARCHORIGA | grep -e "\-[pP]"`" ]; then
+#if [ ! -z "$(echo $IMDBSEARCHORIGA | grep -e "\-[pP]")" ]; then
 # IMDBPRIVATE="ON"
 #fi
  IMDBLIST=""
-if [ ! -z "`echo $IMDBSEARCHORIGA | grep -e "\-[lL]"`" ]; then
- IMDBLIST="`echo $IMDBSEARCHORIGA | tr ' ' '\n' | grep -e "\-[lL]" | head -n 1 | tr -cd '0-9'`"
+if [ ! -z "$(echo $IMDBSEARCHORIGA | grep -e "\-[lL]")" ]; then
+ IMDBLIST="$(echo $IMDBSEARCHORIGA | tr ' ' '\n' | grep -e "\-[lL]" | head -n 1 | tr -cd '0-9')"
  if [ -z "$IMDBLIST" ]; then
   IMDBLIST=$DEFLIST
  else
@@ -131,21 +131,21 @@ if [ ! -z "`echo $IMDBSEARCHORIGA | grep -e "\-[lL]"`" ]; then
  fi
 fi
 
-IMDBSEARCHORIG="`echo $IMDBSEARCHORIGA | tr ' \.' '\n' | grep -v "^-" | grep -v "^$" | tr '\n' ' '`"
+IMDBSEARCHORIG="$(echo $IMDBSEARCHORIGA | tr ' \.' '\n' | grep -v "^-" | grep -v "^$" | tr '\n' ' ')"
 if [ -z "$IMDBSEARCHORIG" ]; then
  echo "$PREWORD psxc-imdb channel trigger v$VERSION - please add something to search for."
  exit 0
 fi
 URLTOUSE=""
-IMDBSEARCHWORDS="`echo $IMDBSEARCHORIG`"
-IMDBSEARCHCNT=`echo $IMDBSEARCHORIG | tr '-' '\n' | wc | awk '{print $1}'`
+IMDBSEARCHWORDS="$(echo $IMDBSEARCHORIG)"
+IMDBSEARCHCNT=$(echo $IMDBSEARCHORIG | tr '-' '\n' | wc | awk '{print $1}')
 let IMDBSEARCHCNT=IMDBSEARCHCNT-1
 if [ $IMDBSEARCHCNT -lt 1 ]; then
  IMDBSEARCHCNT=1
 fi
-IMDBSEARCHTITLA=`echo "$IMDBSEARCHORIG" | cut -d '-' -f 1-$IMDBSEARCHCNT | tr ' ' '\n' | grep -iv "^custom$" | grep -iv "^dvd" | grep -iv "^screener" | grep -iv "vcd" | grep -iv "divx" | grep -iv "xvid" | grep -iv "^ts$" | grep -iv "telesync" | grep -iv "^tc$" | grep -iv "telecine" | grep -iv "^proper$" | grep -iv "limited" | grep -iv "^subbed$" | grep -iv "^read$" | grep -iv "^nfo$" | grep -iv "internal" | grep -iv "workprint" | grep -iv "^wp$" | tr '\n' ' '`
-IMDBSEARCHTITLE="`echo $IMDBSEARCHTITLA | tr ' -' '+'`""$IMDBFUZZ"
-IMDBSEARCHTITLB=`echo $IMDBSEARCHTITLA`
+IMDBSEARCHTITLA=$(echo "$IMDBSEARCHORIG" | cut -d '-' -f 1-$IMDBSEARCHCNT | tr ' ' '\n' | grep -iv "^custom$" | grep -iv "^dvd" | grep -iv "^screener" | grep -iv "vcd" | grep -iv "divx" | grep -iv "xvid" | grep -iv "^ts$" | grep -iv "telesync" | grep -iv "^tc$" | grep -iv "telecine" | grep -iv "^proper$" | grep -iv "limited" | grep -iv "^subbed$" | grep -iv "^read$" | grep -iv "^nfo$" | grep -iv "internal" | grep -iv "workprint" | grep -iv "^wp$" | tr '\n' ' ')
+IMDBSEARCHTITLE="$(echo $IMDBSEARCHTITLA | tr ' -' '+')""$IMDBFUZZ"
+IMDBSEARCHTITLB=$(echo $IMDBSEARCHTITLA)
 
 . $PSXC_IMDB_CONF
 
@@ -156,9 +156,9 @@ fi
 
 if [ -z "$IMDBNOURL" ]; then
  for SEARCHWORD in $IMDBSEARCHWORDS; do
-  IMDBSEARCHID="`echo -n "$SEARCHWORD" | tr -cd '0-9'`"
+  IMDBSEARCHID="$(echo -n "$SEARCHWORD" | tr -cd '0-9')"
   if [ ! -z "$IMDBSEARCHID" ]; then
-   if [ `echo -n "$IMDBSEARCHID" | wc -c` -ge 6 ] && [ `echo -n "$IMDBSEARCHID" | wc -c` -le 8 ]; then
+   if [ $(echo -n "$IMDBSEARCHID" | wc -c) -ge 6 ] && [ $(echo -n "$IMDBSEARCHID" | wc -c) -le 8 ]; then
     URLTOUSE="http://""$IMDBLOCAL"".imdb.com/title/tt""$IMDBSEARCHID"
     break
    fi
@@ -166,25 +166,25 @@ if [ -z "$IMDBNOURL" ]; then
  done
 fi
 
-MYLYNXFLAGS=`echo $LYNXFLAGS | sed "s| -nolist||"`
+MYLYNXFLAGS=$(echo $LYNXFLAGS | sed "s| -nolist||")
 if [ -z "$URLTOUSE" ]; then
- CONTENT=`lynx $MYLYNXFLAGS http://www.imdb.com/Tsearch?title=$IMDBSEARCHTITLE 2>/dev/null`
+ CONTENT=$(lynx $MYLYNXFLAGS http://www.imdb.com/find?q=$IMDBSEARCHTITLE 2>/dev/null)
  if [ $? -gt 0 ]; then
   echo "$PREWORD Internal Error. www.imdb.com may be down, or not answering. Try again later."
   exit 0
  fi
  if [ -z "$IMDBLIST" ]; then
-  URLTOUSE=`echo "$CONTENT" | grep -i "\.imdb\.[a-z]*/title/tt" | tr ' ' '\n' | grep "tt[0-9][0-9][0-9][0-9][0-9]*/.*$" | head -n1 | sed "s|/pro\.|/www\.|" | cut -d'?' -f1 | grep -i "^http://[a-z]*\.imdb\.[a-z]*/title/tt"`
+  URLTOUSE=$(echo "$CONTENT" | grep -i "\.imdb\.[a-z]*/title/tt" | tr ' ' '\n' | grep "tt[0-9][0-9][0-9][0-9][0-9]*/.*tt_1$" | head -n1 | sed "s|/pro\.|/www\.|" | cut -d'?' -f1 | grep -i "^http://[a-z]*\.imdb\.[a-z]*/title/tt")
  else
   a=1
   b=1
   URLS=""
-  for LINKNONAME in `echo "$CONTENT" | grep "imdb.com/title/tt" | uniq -s 5 | tr -d ' '`; do
-   URLTOUSE=`echo "$LINKNONAME" | cut -d '.' -f 2-`
-   LINKNO=`echo "$LINKNONAME" | cut -d '.' -f 1`
-   LINKNAME=`echo "$CONTENT" | grep "\[$LINKNO\]" | head -n 1 | tr '\]' '\n' | tail -n 1`
+  for LINKNONAME in $(echo "$CONTENT" | grep "imdb.com/title/tt.*_tt_.*" | uniq -s 5 | tr -d ' '); do
+   URLTOUSE=$(echo "$LINKNONAME" | cut -d '.' -f 2-)
+   LINKNO=$(echo "$LINKNONAME" | cut -d '.' -f 1)
+   LINKNAME=$(echo "$CONTENT" | grep "\[$LINKNO\]" | head -n 1 | tr '\]' '\n' | tail -n 1)
    if [ ! -z "$LINKNAME" ]; then
-    if [ ! -z "$URLTOUSE" ] && [ -z "`echo "$URLS" | grep -e "$URLTOUSE"`" ]; then
+    if [ ! -z "$URLTOUSE" ] && [ -z "$(echo "$URLS" | grep -e "$URLTOUSE")" ]; then
      if [ $a -eq 1 ]; then
       echo "$PREWORD Listing up to $IMDBLIST hits (duplicates removed)..."
       URLORIG="$URLTOUSE"
@@ -207,12 +207,12 @@ if [ -z "$URLTOUSE" ]; then
 
 # Just in case there's only one hit, imdb redirects us to the page. this will check to see if this is the case.
  if [ -z "$URLTOUSE" ]; then
-  WGETOUT=`wget -U "Internet Explorer" -O /dev/null --timeout=10 http://www.imdb.com/Tsearch?title=$IMDBSEARCHTITLE 2>&1`
-  URLTOUSE=`echo "$WGETOUT" | tr ' ' '\n' | grep -e "imdb" | tr '><&' '\n' | grep -i -e "\/title\/" | tr '\?' '\n' | head -n 1`
+  WGETOUT=$(wget -U "Internet Explorer" -O /dev/null --timeout=10 http://www.imdb.com/search?title=$IMDBSEARCHTITLE 2>&1)
+  URLTOUSE=$(echo "$WGETOUT" | tr ' ' '\n' | grep -e "imdb" | tr '><&' '\n' | sed -n 's/\(.*\/title\/.*\/\).*_1$/\1/p"'| head -n 1)
  fi
 fi
 if [ ! -z "$URLTOUSE" ]; then
- URLTOSHOW=`echo $URLTOUSE | sed "s|/www.|/$IMDBLOCAL.|"`
+ URLTOSHOW=$(echo $URLTOUSE | sed "s|/www.|/$IMDBLOCAL.|")
  if [ -z "$VERBOSE" ] && [ -z "$IMDBPRIVATE" ]; then
   if [ -z "$IMDBLIST" ]; then
    echo -n "$PREWORD '$IMDBSEARCHTITLB' found @ ""$BOLD""$URLTOSHOW""$BOLD"". "
