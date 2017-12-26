@@ -35,13 +35,14 @@
 # v2.9b fixed small bug.
 # v2.9h check CHANGELOG
 # v2.9q Fix finding a result
+# v2.9u Fix finding a result again
 ##################################################
 
 ########
 # CONFIG
 
 # Version. No need to change.
-VERSION=2.9q
+VERSION=2.9u
 
 # (full) path to psxc-imdb.conf
 PSXC_IMDB_CONF=/glftpd/etc/psxc-imdb.conf
@@ -168,13 +169,13 @@ fi
 
 MYLYNXFLAGS=`echo $LYNXFLAGS | sed "s| -nolist||"`
 if [ -z "$URLTOUSE" ]; then
- CONTENT=`lynx $MYLYNXFLAGS http://www.imdb.com/Tsearch?title=$IMDBSEARCHTITLE 2>/dev/null`
+ CONTENT=`lynx $MYLYNXFLAGS "http://www.imdb.com/find?s=tt&q=$IMDBSEARCHTITLE" 2>/dev/null`
  if [ $? -gt 0 ]; then
   echo "$PREWORD Internal Error. www.imdb.com may be down, or not answering. Try again later."
   exit 0
  fi
  if [ -z "$IMDBLIST" ]; then
-  URLTOUSE=`echo "$CONTENT" | grep -i "\.imdb\.[a-z]*/title/tt" | tr ' ' '\n' | grep "tt[0-9][0-9][0-9][0-9][0-9]*/.*$" | head -n1 | sed "s|/pro\.|/www\.|" | cut -d'?' -f1 | grep -i "^http://[a-z]*\.imdb\.[a-z]*/title/tt"`
+  URLTOUSE=`echo "$CONTENT" | grep -i "\.imdb\.[a-z]*/title/tt[0-9][0-9]*/?ref_=fn_tt_tt_1" | tr ' ' '\n' | grep "tt[0-9][0-9][0-9][0-9][0-9]*/.*$" | head -n1 | sed "s|/pro\.|/www\.|" | cut -d'?' -f1 | grep -i "^http://[a-z]*\.imdb\.[a-z]*/title/tt"`
  else
   a=1
   b=1
@@ -205,11 +206,12 @@ if [ -z "$URLTOUSE" ]; then
   URLTOUSE="$URLORIG"
  fi
 
-# Just in case there's only one hit, imdb redirects us to the page. this will check to see if this is the case.
- if [ -z "$URLTOUSE" ]; then
-  WGETOUT=`wget -U "Internet Explorer" -O /dev/null --timeout=10 http://www.imdb.com/Tsearch?title=$IMDBSEARCHTITLE 2>&1`
-  URLTOUSE=`echo "$WGETOUT" | tr ' ' '\n' | grep -e "imdb" | tr '><&' '\n' | grep -i -e "\/title\/" | tr '\?' '\n' | head -n 1`
- fi
+# No more redirects
+### Just in case there's only one hit, imdb redirects us to the page. this will check to see if this is the case.
+# if [ -z "$URLTOUSE" ]; then
+#  WGETOUT=`wget -U "Internet Explorer" -O /dev/null --timeout=10 "http://www.imdb.com/find?s=tt&q=$IMDBSEARCHTITLE" 2>&1`
+#  URLTOUSE=`echo "$WGETOUT" | tr ' ' '\n' | grep -e "imdb" | tr '><&' '\n' | grep -i -e "\/title\/" | tr '\?' '\n' | head -n 1`
+# fi
 fi
 if [ ! -z "$URLTOUSE" ]; then
  URLTOSHOW=`echo $URLTOUSE | sed "s|/www.|/$IMDBLOCAL.|"`
