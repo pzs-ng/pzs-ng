@@ -113,7 +113,7 @@ namespace eval ::ngBot::plugin::Blow {
 	##
 	##################################################
 
-	variable blowversion "20170124"
+	variable blowversion "20171120"
 
 	variable events [list "SETTOPIC" "GETTOPIC"]
 
@@ -507,11 +507,13 @@ namespace eval ::ngBot::plugin::Blow {
 
 		# Find out if its a PUB or MSG bind.
 		if {[set ispub [expr { [llength $args] == 2 ? 1 : 0 }]]} {
-			set bind "pub"
+			# From the eggdrop Tcl manual: "PUBM binds are processed before PUB binds."
+			set bind { "pubm" "pub" }
 			set text [lindex $args 1]
 			set target [lindex $args 0]
 		} else {
-			set bind "msg"
+			# From the eggdrop Tcl manual: "MSGM binds are processed before MSG binds."
+			set bind { "msgm" "msg" }
 			set text [lindex $args 0]
 			set target $nick
 		}
@@ -531,24 +533,49 @@ namespace eval ::ngBot::plugin::Blow {
 		if {[string equal $key ""]} { return }
 
 		set tmp [split [decrypt $key $text]]
+		# From the eggdrop server help: "exclusive-binds:
+		#   This setting configures PUBM and MSGM binds to be exclusive of PUB and MSG binds."
+		set mExecuted 0
 		#${ns}::debug "received encrypted message: $tmp"
-		foreach item [binds $bind] {
-			if {[string equal [lindex $item 2] "+OK"]} { continue }
-			if {![string equal [lindex $item 1] "-|-"] && ![matchattr $handle [lindex $item 1] $target]} { continue }
-			set blowEncryptedMessage 1
-			set lastbind [lindex $item 2]
-			## execute bound proc
-			if {[string equal [lindex $item 2] [lindex $tmp 0]]} { 
-				# Use "eval" to expand the callback script, for example:
-				# bind pub -|- !something [list PubCommand MyEvent]
-				# proc PubCommand {event nick uhost handle chan text} {...}
-				if {$ispub} {
-					eval [lindex $item 4] \$nick \$uhost \$handle \$target {[join [lrange $tmp 1 end]]}
-				} else {
-					eval [lindex $item 4] \$nick \$uhost \$handle {[join [lrange $tmp 1 end]]}
+		foreach bindtype $bind {
+			foreach item [binds $bindtype] {
+				if {[string equal [lindex $item 2] "+OK"]} { continue }
+				if {![string equal [lindex $item 1] "-|-"] && ![matchattr $handle [lindex $item 1] $target]} { continue }
+				set blowEncryptedMessage 1
+				set lastbind [lindex $item 2]
+				set targchan "*"
+				if {[string equal "$bindtype" "pubm"]} {
+					set targchan [lindex "$lastbind" 0]
+					if {[string equal "$targchan" "%"]} {
+						set targchan "*"
+					}
+					set lastbind [lrange "$lastbind" 1 end]
 				}
+				## execute bound proc
+				if {[string match "$targchan" "$target"]} {
+					if {([string equal "$bindtype" "pubm"] || [string equal "$bindtype" "msgm"])&&
+					    [regexp "[string map {\\* .* \\? . \\% \\S* \\~ \\s+} "[reEscape "[join $lastbind]"]"]" "[join $tmp]"]} {
+						if {[info exists exclusive-binds] && ${::exclusive-binds}} {
+							set mExecuted 1
+						}
+						if {$ispub} {
+							eval [lindex $item 4] \$nick \$uhost \$handle \$target {[join $tmp]}
+						} else {
+							eval [lindex $item 4] \$nick \$uhost \$handle {[join $tmp]}
+						}
+					} elseif {!$mExecuted && [string equal "$lastbind" [lindex $tmp 0]]} {
+						# Use "eval" to expand the callback script, for example:
+						# bind pub -|- !something [list PubCommand MyEvent]
+						# proc PubCommand {event nick uhost handle chan text} {...}
+						if {$ispub} {
+							eval [lindex $item 4] \$nick \$uhost \$handle \$target {[join [lrange $tmp 1 end]]}
+						} else {
+							eval [lindex $item 4] \$nick \$uhost \$handle {[join [lrange $tmp 1 end]]}
+						}
+					}
+				}
+				unset blowEncryptedMessage
 			}
-			unset blowEncryptedMessage
 		}
 	}
 

@@ -61,7 +61,7 @@ main(int argc, char **argv)
 #ifndef USING_GLFTPD
         char            temp_path[PATH_MAX];
 #else
-        char            *temp_p_free = NULL;
+	char            *temp_p_free = NULL, *env_p;
 #endif
 	char           *fileext = NULL, *name_p, *temp_p = NULL;
 	char           *target = 0;
@@ -85,6 +85,7 @@ main(int argc, char **argv)
 	unsigned int	crc, s_crc = 0;
 	unsigned char	exit_value = EXIT_SUCCESS;
 	unsigned char	no_check = FALSE;
+	unsigned char	do_not_del = FALSE;
 	char	       *sfv_type = 0;
 	char	       *race_type = 0;
 	char	       *newleader_type = 0;
@@ -125,7 +126,7 @@ main(int argc, char **argv)
 	/*
 	 * Adding version-number to head if .debug message 15.09.2004 - psxc
 	 */
-	d_log("zipscript-c: Project-ZS Next Generation (pzs-ng) %s debug log.\n", ng_version);
+	d_log("zipscript-c: Project-ZS Next Generation (pzs-ng) %s debug log.\n", NG_VERSION);
 
 #ifdef _ALT_MAX
 	d_log("zipscript-c: PATH_MAX not found - using predefined settings! Please report to the devs!\n");
@@ -160,7 +161,7 @@ main(int argc, char **argv)
 #ifdef USING_GLFTPD
 	if (argc < 4) {
 		d_log("zipscript-c: Wrong number of arguments used\n");
-		printf(" - - PZS-NG ZipScript-C %s - -\n\nUsage: %s <filename> <path> <crc>\n", ng_version, argv[0]);
+		printf(" - - PZS-NG ZipScript-C %s - -\n\nUsage: %s <filename> <path> <crc>\n", NG_VERSION, argv[0]);
 		printf("Usage: %s --(full)config - shows (full) config compiled.\n\n", argv[0]);
 		exit(1);
 	}
@@ -168,7 +169,7 @@ main(int argc, char **argv)
 #else
 	if (argc < 8) {
 		d_log("zipscript-c: Wrong number of arguments used (ftpd-agnostic)\n");
-		printf(" - - PZS-NG ZipScript-C %s - -\n\nUsage: %s <absolute filepath> <crc> <user> <group> <tagline> <speed> <section>\n", ng_version, argv[0]);
+		printf(" - - PZS-NG ZipScript-C %s - -\n\nUsage: %s <absolute filepath> <crc> <user> <group> <tagline> <speed> <section>\n", NG_VERSION, argv[0]);
 		printf(" Usage: %s --(full)config - shows (full) config compiled.\n\n", argv[0]);
 		exit(1);
 	}
@@ -261,43 +262,48 @@ main(int argc, char **argv)
 
 #else /* below here: glftpd specific */
 	d_log("zipscript-c: Reading data from environment variables\n");
-	if ((getenv("USER") == NULL) || (getenv("GROUP") == NULL) || (getenv("TAGLINE") == NULL) || (getenv("SPEED") ==NULL) || (getenv("SECTION") == NULL)) {
-		d_log("zipscript-c: We are running from shell, falling back to default values for $USER, $GROUP, $TAGLINE, $SECTION and $SPEED\n");
-		/*
-		 * strcpy(g.v.user.name, "Unknown");
-		 * strcpy(g.v.user.group, "NoGroup");
-		 */
-
-		gnum = buffer_groups(GROUPFILE, 0);
-		unum = buffer_users(PASSWDFILE, 0);
+	unum = buffer_users(PASSWDFILE, 0);
+	gnum = buffer_groups(GROUPFILE, 0);
+	env_p = getenv("USER");
+	if (env_p == NULL || !(*env_p)) {
+		d_log("zipscript-c: Got NULL or empty string for $USER, trying to determine via uid.\n");
 		fileinfo.st_uid = geteuid();
-		fileinfo.st_gid = getegid();
-		strlcpy(g.v.user.name, get_u_name(fileinfo.st_uid), 24);
-		strlcpy(g.v.user.group, get_g_name(fileinfo.st_gid), 24);
-		memcpy(g.v.user.tagline, "No Tagline Set", 15);
-		g.v.file.speed = 2005;
-		g.v.section = 0;
-		sprintf(g.v.sectionname, "DEFAULT");
+		strlcpy(g.v.user.name, get_u_name(fileinfo.st_uid), sizeof(g.v.user.name));
 	} else {
-		gnum = buffer_groups(GROUPFILE, 0);
-		unum = buffer_users(PASSWDFILE, 0);
-		sprintf(g.v.user.name, "%s", getenv("USER"));
-		sprintf(g.v.user.group, "%s", getenv("GROUP"));
-		if (!(int)strlen(g.v.user.group))
-			memcpy(g.v.user.group, "NoGroup", 8);
-		sprintf(g.v.user.tagline, "%s", getenv("TAGLINE"));
-		if (!(int)strlen(g.v.user.tagline))
-			memcpy(g.v.user.tagline, "No Tagline Set", 15);
-		g.v.file.speed = strtoul(getenv("SPEED"), NULL, 0);
-		if (!g.v.file.speed)
-			g.v.file.speed = 2005;
-
+		strlcpy(g.v.user.name, env_p, sizeof(g.v.user.name));
+	}
+	env_p = getenv("GROUP");
+	if (env_p == NULL || !(*env_p)) {
+		d_log("zipscript-c: Got NULL or empty string for $GROUP, trying to determine via gid.\n");
+		fileinfo.st_gid = getegid();
+		strlcpy(g.v.user.group, get_g_name(fileinfo.st_gid), sizeof(g.v.user.group));
+	} else {
+		strlcpy(g.v.user.group, env_p, sizeof(g.v.user.group));
+	}
+	env_p = getenv("TAGLINE");
+	if (env_p == NULL || !(*env_p)) {
+		d_log("zipscript-c: Got NULL or empty string for $TAGLINE, falling back to default.\n");
+		strlcpy(g.v.user.tagline, "No Tagline Set", sizeof(g.v.user.tagline));
+	} else {
+		strlcpy(g.v.user.tagline, env_p, sizeof(g.v.user.tagline));
+	}
+	env_p = getenv("SPEED");
+	if (env_p == NULL || !(g.v.file.speed = strtoul(env_p, NULL, 0))) {
+		d_log("zipscript-c: Got NULL or 0 for $SPEED, falling back to default.\n");
+		g.v.file.speed = 2005;
 #if (debug_announce == TRUE)
-		printf("zipscript-c: DEBUG: Speed: %lukb/s (ENV: %skb/s)\n", g.v.file.speed, getenv("SPEED"));
+	} else {
+		printf("zipscript-c: DEBUG: Speed: %lukb/s (ENV: %skb/s)\n", g.v.file.speed, env_p);
 #endif
-
-		d_log("zipscript-c: Reading section from env (%s)\n", getenv("SECTION"));
-		snprintf(g.v.sectionname, 127, "%s", getenv("SECTION"));
+	}
+	env_p = getenv("SECTION");
+	if (env_p == NULL || !(*env_p)) {
+		d_log("zipscript-c: Got NULL or empty string for $SECTION, falling back to default.\n");
+		g.v.section = 0;
+		strlcpy(g.v.sectionname, "DEFAULT", sizeof(g.v.sectionname));
+	} else {
+		d_log("zipscript-c: Reading section from env (%s)\n", env_p);
+		strlcpy(g.v.sectionname, env_p, sizeof(g.v.sectionname));
 		g.v.section = 0;
 		temp_p_free = temp_p = strdup((const char *)gl_sections);	/* temp_p_free is needed since temp_p is modified by strsep */
 		if ((temp_p) == NULL) {
@@ -305,7 +311,7 @@ main(int argc, char **argv)
 		} else {
 			n = 0;
 			while (temp_p) {
-				if (!strcmp(strsep(&temp_p, " "), getenv("SECTION"))) {
+				if (!strcmp(strsep(&temp_p, " "), env_p)) {
 					g.v.section = (unsigned char)n;
 					break;
 				} else
@@ -540,7 +546,7 @@ main(int argc, char **argv)
 	/* Test to see if we are in a speedtest dir */
 	if (matchpath(speedtest_dirs, g.l.path)) {
 		d_log("zipscript-c: Dir matched speedtest_dirs\n");
-		sprintf(g.v.misc.error_msg, SPEEDTEST, ((double)g.v.file.size/1000./1000.), ((double)g.v.file.size/1024./1024.), ((double)g.v.file.speed*8/1000./1000.), ((double)g.v.file.speed/1024./1024.));
+		sprintf(g.v.misc.error_msg, SPEEDTEST, ((double)g.v.file.size/1024./1024.), ((double)g.v.file.size/1000./1000.), ((double)g.v.file.speed*8/1000./1000.), ((double)g.v.file.speed/1000./1000.));
 		write_log = g.v.misc.write_log;
 		g.v.misc.write_log = TRUE;
 		//mark_as_bad(g.v.file.name);
@@ -549,10 +555,13 @@ main(int argc, char **argv)
 		if (exit_value < 2)
 			writelog(&g, error_msg, bad_file_speedtest_type);
 		if (!speedtest_delfile) {
-			sprintf(target, "%.1fMiB", ((float)g.v.file.size/1000./1000.));
-			if (rename(g.v.file.name, target) == -1)
-				d_log("zipscript-c: Unable to rename speedtest file: %s (not considered an error in this case)\n", strerror(errno));
-			}
+			sprintf(target, "%.1fMiB", ((float)g.v.file.size/1024./1024.));
+			if (!strcmp(target, g.v.file.name)) {
+				/* Uploaded file has same name as target, prevent deletion */
+				do_not_del = TRUE;
+			} else if (rename(g.v.file.name, target) == -1 || chmod(target, 0644) == -1)
+				d_log("zipscript-c: Unable to rename or chmod speedtest file: %s (not considered an error in this case)\n", strerror(errno));
+		}
 		exit_value = 2;
 
 #if (check_for_banned_files == TRUE )
@@ -593,24 +602,24 @@ main(int argc, char **argv)
 	}
 	if (exit_value == 2)
 		d_log("zipscript-c: File already marked as bad. Will not process further.\n");
+	else if (no_check == TRUE)
+		d_log("zipscript-c: File will not be processed further.\n");
 	else if (insampledir(g.l.path) && strcomp(sample_types, fileext)) {
-		d_log("zipscript-c: Directory matched with sample_list = '%s', checking is set to %d (1 means no checking)\n", sample_list, no_check);
-		if (no_check == FALSE) {
-			if (!avinfo(g.v.file.name, &g.v.avinfo)) {
-				d_log("zipscript-c: Writing %s announce to %s.\n", sample_announce_type, log);
-				write_log = g.v.misc.write_log;
-				g.v.misc.write_log = TRUE;
-				writelog(&g, convert(&g.v, g.ui, g.gi, sample_msg), sample_announce_type);
-					g.v.misc.write_log = write_log;
-			}
-			if (enable_sample_script == TRUE) {
-				d_log("zipscript-c: Executing sample_script (%s).\n", sample_script);
-				if (!fileexists(sample_script))
-					d_log("zipscript-c: Warning - sample_script (%s) - file does not exist!\n", sample_script);
-				sprintf(target, sample_script " \"%s\"", g.v.file.name);
-				if (execute(target) != 0)
-					d_log("zipscript-c: Failed to execute sample_script: %s\n", strerror(errno));
-			}
+		d_log("zipscript-c: Directory matched with sample_list = '%s'\n", sample_list);
+		if (!avinfo(g.v.file.name, &g.v.avinfo)) {
+			d_log("zipscript-c: Writing %s announce to %s.\n", sample_announce_type, log);
+			write_log = g.v.misc.write_log;
+			g.v.misc.write_log = TRUE;
+			writelog(&g, convert(&g.v, g.ui, g.gi, sample_msg), sample_announce_type);
+			g.v.misc.write_log = write_log;
+		}
+		if (enable_sample_script == TRUE) {
+			d_log("zipscript-c: Executing sample_script (%s).\n", sample_script);
+			if (!fileexists(sample_script))
+				d_log("zipscript-c: Warning - sample_script (%s) - file does not exist!\n", sample_script);
+			sprintf(target, sample_script " \"%s\"", g.v.file.name);
+			if (execute(target) != 0)
+				d_log("zipscript-c: Failed to execute sample_script: %s\n", strerror(errno));
 		}
 	} else {
 		/* Process file */
@@ -1873,6 +1882,9 @@ main(int argc, char **argv)
 	printf(zsinternal_checks_completed, ((bstop.tv_sec - bstart.tv_sec) + (bstop.tv_usec - bstart.tv_usec) / 1000000.));
 	d_log("zipscript-c: Checks completed in %0.6f seconds.\n", ((bstop.tv_sec - bstart.tv_sec) + (bstop.tv_usec - bstart.tv_usec) / 1000000.));
 #endif
+
+	if (do_not_del == TRUE)
+		exit_value = EXIT_SUCCESS;
 
 #if ( sleep_on_bad > 0 && sleep_on_bad < 1001 )
 	if (exit_value == 2) {

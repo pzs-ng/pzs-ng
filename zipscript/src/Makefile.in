@@ -12,7 +12,7 @@ INSTALL=@INSTALL@
 STRLCPY=../../lib/strl/strlcpy.o
 
 SUNOBJS=@SUNOBJS@
-UNIVERSAL=stats.o convert.o race-file.o helpfunctions.o zsfunctions.o mp3info.o ng-version.o abs2rel.o $(SUNOBJS) $(STRLCPY)
+UNIVERSAL=stats.o convert.o race-file.o helpfunctions.o zsfunctions.o mp3info.o abs2rel.o $(SUNOBJS) $(STRLCPY)
 ZS-OBJECTS=zipscript-c.o dizreader.o complete.o multimedia.o audiosort.o crc.o print_config.o $(UNIVERSAL)
 PD-OBJECTS=postdel.o dizreader.o multimedia.o crc.o $(UNIVERSAL)
 RS-OBJECTS=racestats.o dizreader.o crc.o $(UNIVERSAL)

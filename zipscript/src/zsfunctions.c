@@ -68,7 +68,7 @@ d_log(char *fmt,...)
 #endif
 
 	if ((file = fopen(debugname, "a+"))) {
-		fprintf(file, "%.24s - %.6d - %s - ", ctime(&timenow), getpid(), ng_version);
+		fprintf(file, "%.24s - %.6d - %s - ", ctime(&timenow), getpid(), NG_VERSION);
 		vfprintf(file, fmt, ap);
 		fclose(file);
 #if ( debug_announce == TRUE)
@@ -1864,6 +1864,8 @@ insampledir(char *dirname)
 void
 createstatusbar(const char *bar)
 {
+    if (bar == NULL)
+        return;
 #if ( status_bar_type == BAR_OFF )
     (void)bar;
 #else

@@ -511,7 +511,7 @@ namespace eval ::ngBot {
 		} elseif {[regexp {^(.+@.+) \((.+)\): connection refused: .+$} $line result hostmask ip]} {
 			set event "IPNOTADDED"
 			set data [list $hostmask $ip]
-		} elseif {[regexp {^(.+): (.+@.+) \(([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\): (.+)} $line result user hostmask ip error]} {
+		} elseif {[regexp {^(.+): (.+@.+) \(([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|disabled)\): (.+)} $line result user hostmask ip error]} {
 			switch -exact -- $error {
 				"Bad user@host."    {set event "BADHOSTMASK"}
 				"Banned user@host." {set event "BANNEDHOST"}

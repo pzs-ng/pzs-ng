@@ -2,6 +2,16 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix psxc-imdb for new site layout
+		- Fix bad parsing of certain loglines with glftpd -X mode (thanks to iknowmarkers for reporting).
+		- Add support for PUBM and MSGM binds in the blow script.
+		- Improve handling of env vars
+		- Fix speedtestfile being deleted when filename is same as it's size in MiB + "MiB" (and speedtest_delfile is false).
+		- Correct shown size of speedtestfiles in ftpclient output and target filename.
+		- Fix *-missing files appearing in nocheck_dirs and non-zip_dirs/sfv_dirs/group_dirs.
+		- Use updated versionnumber, using git-files if present (thanks to tittof for init).
+		- Fix segfault when zip_completebar is DISABLED (thanks to kniffy for reporting).
+		- Prevent bufferoverflows for FLAC bitrate and samplingrate.
 		- Add extra options for output of the stats, allowing hiding of users, groups and/or zerodata.
 		- Fix psxc-imdb.sh having trailing '|' for some vars (thanks to silv3rr for the language-var).
 		- Fix Blow.tcl not storing keys for channels and users with certain special chars in (thanks to ParAd0x^)

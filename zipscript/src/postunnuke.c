@@ -66,7 +66,7 @@ main(int argc, char *argv[])
 
 	umask(0666 & 000);
 
-	d_log("ng-post_unnuke: PZS-NG %s debug log.\n", ng_version);
+	d_log("ng-post_unnuke: PZS-NG %s debug log.\n", NG_VERSION);
 	d_log("ng-post_unnuke: ng-post_unnuke executed by: (uid/gid) %d/%d\n", geteuid(), getegid());
 
 #ifdef _ALT_MAX
@@ -317,13 +317,15 @@ main(int argc, char *argv[])
 		if (g.v.total.files_missing == 0) {
 			g.v.misc.write_log = 0;
 			complete(&g, complete_type);
-			createstatusbar(convert(&g.v, g.ui, g.gi, zip_completebar));
+			if (zip_completebar) {
+				createstatusbar(convert(&g.v, g.ui, g.gi, zip_completebar));
 #if (chmod_completebar)
-			if (!matchpath(group_dirs, g.l.path)) {
-                                if (chmod(convert(&g.v, g.ui, g.gi, zip_completebar), 0222))
-                                        d_log("ng-post_unnuke: Failed to chmod a statusbar: %s\n", strerror(errno));
-			}
+				if (!matchpath(group_dirs, g.l.path)) {
+                	                if (chmod(convert(&g.v, g.ui, g.gi, zip_completebar), 0222))
+                        	                d_log("ng-post_unnuke: Failed to chmod a statusbar: %s\n", strerror(errno));
+				}
 #endif
+			}
 
 		} else {
 			if (!matchpath(group_dirs, g.l.path) || create_incomplete_links_in_group_dirs) {
