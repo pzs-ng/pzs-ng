@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.9u"
+VERSION="v2.9v"
 
 ######################################################################################################
 
@@ -547,7 +547,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     TAGLINECLEAN=$(echo $TAGLINE | sed "s/Tagline......: *//")
     LANGUAGE="Language.....: $(sed -n '/^ Language$/,/^ [^ *]/p' "$TMPFILE" | sed -n 's/^ \* //p' | sed s/\"/$QUOTECHAR/g | head -n $LANGUAGENUM | tr '\n' '/' | sed "s/[ /]*$//")"
     LANGUAGECLEAN=$(echo $LANGUAGE | sed "s/Language.....: *//")
-    PLOT="Plot: $(sed -n '/^ Plot Summary$/,/^ \* Plot Summary$/p' "$TMPFILE" | sed -n 'n;p' | sed s/\"/$QUOTECHAR/g | sed 's/^\ *//g' | tr -s ' ' | sed "s/ *$//")"
+    PLOT="Plot: "$(sed -n '/^ Plot Summary$/,/^ \* Plot Summary$/{//d;p;}' "$TMPFILE" | sed -e 's/Written by .*$//' -e '/(.*@.*)/d' | sed s/\"/$QUOTECHAR/g | sed 's/^\ *//g' | tr -s ' ' | sed "s/ *$//" | fold -s -w 275 | sed ':a;N;$!ba;s/\n/\\\\n/g')""
     PLOTCLEAN=$(echo $PLOT | sed "s/Plot: *//")
     if [ ! -z "$(echo "$PLOTCLEAN" | grep -a -e "\(\ \)\ \(\ \)")" ]; then
      OUTPUTOK=""
@@ -895,7 +895,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     fi
     if [ ! -z "$PLOT" ]; then
      echo "-" >> "$IMDBLNK"
-     echo "$PLOT" | fold -s -w $IMDBWIDTH >> "$IMDBLNK"
+     echo "$PLOT" | sed 's/\\\\n//g' | fold -s -w $IMDBWIDTH >> "$IMDBLNK"
     fi
     if [ ! -z "$SHOWCOMMENT" ] && [ ! -z "$COMMENT" ]; then
      echo "---" >> "$IMDBLNK"
