@@ -461,7 +461,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     OUTPUTOK="OK"
     while [ $LYNXTRIES -gt 0 ]; do
      if [ -z "$USEWGET" ]; then
-      lynx $LYNXFLAGS $IMDBURL/reference | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/\.\.\.~ /... /g" | tr '~' '\n' > $TMPFILE 2>&1
+     lynx $LYNXFLAGS $IMDBURL/reference | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/\.\.\.~ /... /g" | tr '~' '\n' | sed 's/*/\\\*/' > $TMPFILE 2>&1
       if [ $? = "0" ]; then
        LYNXTRIES=$LYNXTRIESORIG
        break
@@ -476,7 +476,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
        TMBURL=$(grep -a "\.jpg" $TMPFILE | head -n 1 | tr ' \"' '\n' | grep -a "\.jpg" | head -n 1)
        LYNXTRIES=$LYNXTRIESORIG
        HTMLPAGE="$(lynx $LYNXFLAGS -force_html $TMPFILE)"
-       echo "$HTMLPAGE" | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE
+       echo "$HTMLPAGE" | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' | sed 's/*/\\*/' > $TMPFILE
        break
       else
        let LYNXTRIES=LYNXTRIES-1
@@ -547,7 +547,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     TAGLINECLEAN=$(echo $TAGLINE | sed "s/Tagline......: *//")
     LANGUAGE="Language.....: $(sed -n '/^ Language$/,/^ [^ *]/p' "$TMPFILE" | sed -n 's/^ \* //p' | sed s/\"/$QUOTECHAR/g | head -n $LANGUAGENUM | tr '\n' '/' | sed "s/[ /]*$//")"
     LANGUAGECLEAN=$(echo $LANGUAGE | sed "s/Language.....: *//")
-    PLOT="Plot: "$(sed -n '/^ Plot Summary$/,/^ \* Plot Summary$/{//d;p;}' "$TMPFILE" | sed -e 's/Written by .*$//' -e '/(.*@.*)/d' | sed s/\"/$QUOTECHAR/g | sed 's/^\ *//g' | tr -s ' ' | sed "s/ *$//" | fold -s -w 275 | sed ':a;N;$!ba;s/\n/\\\\n/g')""
+    PLOT="Plot: "$(sed -n '/^ Plot Summary$/,/^ \\\* Plot Summary$/{//d;p;}' "$TMPFILE" | sed -e 's/Written by .*$//' -e '/(.*@.*)/d' | sed s/\"/$QUOTECHAR/g | sed 's/^\ *//g' | tr -s ' ' | sed "s/ *$//" | fold -s -w 275 | sed ':a;N;$!ba;s/\n/\\\\n/g' | grep ^[0-9A-Za-z])""
     PLOTCLEAN=$(echo $PLOT | sed "s/Plot: *//")
     if [ ! -z "$(echo "$PLOTCLEAN" | grep -a -e "\(\ \)\ \(\ \)")" ]; then
      OUTPUTOK=""
@@ -632,7 +632,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
    if [ ! -z "$USEBUSINESS" ]; then
     while [ $LYNXTRIES -gt 0 ]; do
      if [ -z "$USEWGET" ]; then
-      lynx $LYNXFLAGS $BUSINESSURL | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE 2>&1
+      lynx $LYNXFLAGS $BUSINESSURL | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' | sed 's/*/\\\*/'> $TMPFILE 2>&1
       if [ $? = "0" ]; then
        LYNXTRIES=$LYNXTRIESORIG
        break
@@ -646,7 +646,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
       if [ $? = "0" ] || [ -z "$(cat $TMPFILE)" ]; then
        LYNXTRIES=$LYNXTRIESORIG
        HTMLPAGE="$(lynx $LYNXFLAGS -force_html $TMPFILE)"
-       echo "$HTMLPAGE" | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE
+       echo "$HTMLPAGE" | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' | sed 's/*/\\\*/' > $TMPFILE
        break
       else
        let LYNXTRIES=LYNXTRIES-1
@@ -714,7 +714,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
       if [ $? = "0" ] || [ -z "$(cat $TMPFILE)" ]; then
        LYNXTRIES=$LYNXTRIESORIG
        HTMLPAGE="$(lynx $LYNXFLAGS -force_html $TMPFILE)"
-       echo "$HTMLPAGE" | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE
+       echo "$HTMLPAGE" | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' | sed 's/*/\\\*/' > $TMPFILE
        break
       else
        let LYNXTRIES=LYNXTRIES-1
