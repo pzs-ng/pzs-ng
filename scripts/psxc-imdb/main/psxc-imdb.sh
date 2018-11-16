@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.9v"
+VERSION="v2.9w"
 
 ######################################################################################################
 
@@ -120,7 +120,7 @@ if [ ! -z "$RECVDARGS" ]; then
    IMDBURLS="$(grep -a [Ii][Mm][Dd][Bb] $FILENAME | tr ' \|' '\n' | sed -n /[hH][tT][tT][pP]:[/][/].*[.][iI][mM][dD][bB][.].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?')"
    if [ ! -z "$(echo $IMDBURLS | grep -a "imdb\.")" ]; then
 #    IMDBURL="http://www.imdb.com/title/tt""$(echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]')"
-    IMDBURL="http://www.imdb.com/title/tt""$(echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 |  grep -a -o "[0-9]*" | head -n 1)"
+    IMDBURL="https://www.imdb.com/title/tt""$(echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 |  grep -a -o "[0-9]*" | head -n 1)"
     if [ -z $(echo $IMDBURL | tr -cd '0-9') ]; then
      IMDBURL=""
     fi
@@ -130,7 +130,7 @@ if [ ! -z "$RECVDARGS" ]; then
    if [ -z "$IMDBURL" ] && [ $RELAXEDURLS -ge 1 ]; then
     IMDBURLS="$(grep -a [Ii][Mm][Dd][Bb] $FILENAME | tr ' \|' '\n' | sed -n /[hH][tT][tT][pP]:[/][/].*[iI][mM][dD][bB][.].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?')"
     if [ ! -z "$(echo $IMDBURLS | grep -a "imdb\.")" ]; then
-     IMDBURL="http://www.imdb.com/title/tt""$(echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]')"
+     IMDBURL="https://www.imdb.com/title/tt""$(echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]')"
      if [ -z $(echo $IMDBURL | tr -cd '0-9') ]; then
       IMDBURL=""
      fi
@@ -141,7 +141,7 @@ if [ ! -z "$RECVDARGS" ]; then
    if [ -z "$IMDBURL" ] && [ $RELAXEDURLS -ge 2 ]; then
     IMDBURLS="$(grep -a [Ii][Mm][Dd][Bb] $FILENAME | tr ' \|' '\n' | sed -n /.*[iI][mM][dD][bB][.].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?')"
     if [ ! -z "$(echo $IMDBURLS | grep -a "imdb\.")" ]; then
-     IMDBURL="http://www.imdb.com/title/tt""$(echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]')"
+     IMDBURL="https://www.imdb.com/title/tt""$(echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]')"
      if [ -z $(echo $IMDBURL | tr -cd '0-9') ]; then
       IMDBURL=""
      fi
@@ -159,7 +159,7 @@ if [ ! -z "$RECVDARGS" ]; then
      fi
     done
     if [ ! -z "$IMDBURL" ]; then
-     IMDBURL="http://www.imdb.com/title/tt""$IMDBURL"
+     IMDBURL="https://www.imdb.com/title/tt""$IMDBURL"
     fi
    fi
 
@@ -172,7 +172,7 @@ if [ ! -z "$RECVDARGS" ]; then
      fi
     done
     if [ ! -z "$IMDBURL" ]; then
-     IMDBURL="http://www.imdb.com/title/tt""$IMDBURL"
+     IMDBURL="https://www.imdb.com/title/tt""$IMDBURL"
     fi
    fi
 
@@ -275,7 +275,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
    FILENAME=$(ls -1 $GLROOT$DIRNAME | grep -a "\.[Nn][Ff][Oo]$" | head -n 1)
    IMDBURL="$(grep -a [Ii][Mm][Dd][Bb] $GLROOT$DIRNAME/$FILENAME | tr ' ' '\n' | sed -n /[hH][tT][tT][pP]:[/][/].*[.][iI][mM][dD][bB].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?')"
    if [ ! -z "$(echo $IMDBURL | grep -a "\.imdb\.")" ]; then
-    IMDBURL="http://www.imdb.com/title/tt""$(echo $IMDBURL | sed "s/=/-/g" | sed "s/.imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]')"
+    IMDBURL="https://www.imdb.com/title/tt""$(echo $IMDBURL | sed "s/=/-/g" | sed "s/.imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]')"
    fi
    if [ ! -z "$IMDBURL" ]; then
     a="$(tail -n 5 $GLLOG | grep -a "$TRIGGER" | grep -a "$DIRNAME" | tail -n 1)"
@@ -476,7 +476,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
        TMBURL=$(grep -a "\.jpg" $TMPFILE | head -n 1 | tr ' \"' '\n' | grep -a "\.jpg" | head -n 1)
        LYNXTRIES=$LYNXTRIESORIG
        HTMLPAGE="$(lynx $LYNXFLAGS -force_html $TMPFILE)"
-       echo "$HTMLPAGE" | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' | sed 's/*/\\*/' > $TMPFILE
+       echo "$HTMLPAGE" | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/\.\.\.~ /... /g" | tr '~' '\n' | sed 's/*/\\\*/' > $TMPFILE 2>&1
        break
       else
        let LYNXTRIES=LYNXTRIES-1
@@ -507,9 +507,9 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
      OUTPUTOK=""
      break
     fi
-    GENRE="Genre........: $(sed -n '/^ Genres$/,/^ [^ *]/p' "$TMPFILE" | sed -n 's/^ \* //p' | sed s/\"/$QUOTECHAR/g | sed '/^ *$/d' | head -n $GENRENUM | tr '\n' '/' | sed "s/[ /]*$//")"
+    GENRE="Genre........: $(sed -n '/^ Genres$/,/^ [^ \*]/p' "$TMPFILE" | sed -n 's/^ \\\* //p' | sed s/\"/$QUOTECHAR/g | sed '/^ \*$/d' | head -n $GENRENUM | tr '\n' '/' | sed "s/[ /]*$//")"
     GENRECLEAN=$(echo $GENRE | sed "s/Genre........: *//")
-    RATING="User Rating..: $(grep -a " \* [0-9][0-9]*\(\.[0-9]\)* (\([0-9]*,\)*[0-9][0-9]*)" "$TMPFILE" | sed "s/^ \* //" | sed s/\"/$QUOTECHAR/g)"
+    RATING="User Rating..: $(grep -a " \\\\\* [0-9][0-9]*\(\.[0-9]\)* (\([0-9]*,\)*[0-9][0-9]*)" "$TMPFILE" | sed "s/^ \\\\\* //" | sed s/\"/$QUOTECHAR/g)"
     if [ "$RATING" = "User Rating..: 0 (0)" ]; then
       RATING="User Rating..: Awaiting 5 votes"
     fi
@@ -541,22 +541,24 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     if [ ! -z "$BOTTOM" ]; then
       RATINGCLEAN="$(echo "$RATINGCLEAN Bottom 100: #$BOTTOM")"
     fi
-    COUNTRY="Country......: $(sed -n '/^ Country$/,/^ [^ *]/p' "$TMPFILE" | sed -n 's/^ \* //p' | sed s/\"/$QUOTECHAR/g | sed '/^ *$/d' | head -n $COUNTRYNUM | tr '\n' '/' | sed "s/[ /]*$//")"
+    COUNTRY="Country......: $(sed -n '/^ Country$/,/^ [^ *]/p' "$TMPFILE" | sed -n 's/^ \\\* //p' | sed s/\"/$QUOTECHAR/g | sed '/^ *$/d' | head -n $COUNTRYNUM | tr '\n' '/' | sed "s/[ /]*$//")"
     COUNTRYCLEAN=$(echo $COUNTRY | sed "s/Country......: *//")
     TAGLINE="Tagline......: $(sed -n 's/^ Taglines //p' "$TMPFILE" | sed "s/ See more ..*//" | sed s/\"/$QUOTECHAR/g | head -n 1)"
     TAGLINECLEAN=$(echo $TAGLINE | sed "s/Tagline......: *//")
-    LANGUAGE="Language.....: $(sed -n '/^ Language$/,/^ [^ *]/p' "$TMPFILE" | sed -n 's/^ \* //p' | sed s/\"/$QUOTECHAR/g | head -n $LANGUAGENUM | tr '\n' '/' | sed "s/[ /]*$//")"
+    LANGUAGE="Language.....: $(sed -n '/^ Language$/,/^ [^ *]/p' "$TMPFILE" | sed -n 's/^ \\\* //p' | sed s/\"/$QUOTECHAR/g | head -n $LANGUAGENUM | tr '\n' '/' | sed "s/[ /]*$//")"
     LANGUAGECLEAN=$(echo $LANGUAGE | sed "s/Language.....: *//")
-    PLOT="Plot: "$(sed -n '/^ Plot Summary$/,/^ \\\* Plot Summary$/{//d;p;}' "$TMPFILE" | sed -e 's/Written by .*$//' -e '/(.*@.*)/d' | sed s/\"/$QUOTECHAR/g | sed 's/^\ *//g' | tr -s ' ' | sed "s/ *$//" | fold -s -w 275 | sed ':a;N;$!ba;s/\n/\\\\n/g' | grep ^[0-9A-Za-z])""
+    PLOT="Plot: "$(sed -n '/^ Plot Summary$/,/^ \\\* Plot Summary$/{//d;p;}' "$TMPFILE" | sed -e 's/Written by .*$//' -e '/(.*@.*)/d' | sed s/\"/$QUOTECHAR/g | sed 's/^\ *//g' | tr -s ' ' | sed "s/ *$//" | \
+                   fold -s -w 275 | sed ':a;N;$!ba;s/\n/\\\\n/g' | sed 's/\(.\{1000\}\).*/\1.../' | grep ^[0-9A-Za-z])""
     PLOTCLEAN=$(echo $PLOT | sed "s/Plot: *//")
     if [ ! -z "$(echo "$PLOTCLEAN" | grep -a -e "\(\ \)\ \(\ \)")" ]; then
      OUTPUTOK=""
      break
     fi
-    CERT="Certification: $(sed -n '/^ Certification$/,/^[^ *]/p' "$TMPFILE" | sed -n 's/^ \* //p' | sed s/\"/$QUOTECHAR/g | head -n $CERTIFICATIONNUM | tr '\n' '/' | sed "s/[ /]*$//")"
+    CERT="Certification: $(sed -n '/^ Certification$/,/^[^ *]/p' "$TMPFILE" | sed -n 's/^ \\\* //p' | sed s/\"/$QUOTECHAR/g | head -n $CERTIFICATIONNUM | tr '\n' '/' | sed "s/[ /]*$//")"
     CERTCLEAN=$(echo $CERT | sed "s/Certification: *//" | tr '/' '\n' | grep -a -e "United States:" | tr -d ' ' | tail -n 1)
     # We get the name twice (due to the image alt-text) so need to remove by counting spaces
     CASTRAW=$(sed 's/^ Rest of cast listed alphabetically:/Cast verified as complete\n/' "$TMPFILE" | sed -n '/^Cast verified as complete$/,/^[^ ]/p' | sed '/^Cast verified as complete$/d;/^ Edit$/d' | sed -n 's/^ //p' | head -n $CASTNUM)
+
     CAST=""
     OLDIFS=$IFS
     IFS="
@@ -579,7 +581,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     COMMENTSHORTCLEAN=$(echo $COMMENTSHORT | sed "s/User Reviews: *//")
     COMMENT="Not supported anymore"
     [[ -n "$COMMENT" ]] && COMMENTCLEAN=$(echo "$COMMENT" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\{\}\"/$QUOTECHAR/g | tr '\n' '|' | sed "s/[ /]*$//")
-    RUNTIME="Runtime......: $(sed -n '/^ Runtime$/,/^ [^ *]/p' "$TMPFILE" | sed -n 's/^ \* //p' | sed s/\"/$QUOTECHAR/g | sed '/^ *$/d' | head -n $RUNTIMENUM | tr '\n' '/' | sed "s/[ /]*$//")"
+    RUNTIME="Runtime......: $(sed -n '/^ Runtime$/,/^ [^ *]/p' "$TMPFILE" | sed -n 's/^ \\\* //p' | sed s/\"/$QUOTECHAR/g | sed '/^ *$/d' | head -n $RUNTIMENUM | tr '\n' '/' | sed "s/[ /]*$//")"
     RUNTIMECLEAN="$(echo $RUNTIME | sed "s/Runtime......: *//" | tr '/ ' '\n' | sed -e /^$/d | head -n 1 | tr -c -d '[:digit:]')"
     if [ ! -z "$RUNTIMECLEAN" ]; then
      RUNTIMECLEAN="$RUNTIMECLEAN min"
