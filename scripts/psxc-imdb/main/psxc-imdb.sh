@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.9w"
+VERSION="v2.9x"
 
 ######################################################################################################
 
@@ -547,18 +547,24 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     TAGLINECLEAN=$(echo $TAGLINE | sed "s/Tagline......: *//")
     LANGUAGE="Language.....: $(sed -n '/^ Language$/,/^ [^ *]/p' "$TMPFILE" | sed -n 's/^ \\\* //p' | sed s/\"/$QUOTECHAR/g | head -n $LANGUAGENUM | tr '\n' '/' | sed "s/[ /]*$//")"
     LANGUAGECLEAN=$(echo $LANGUAGE | sed "s/Language.....: *//")
-    PLOT="Plot: "$(sed -n '/^ Plot Summary$/,/^ \\\* Plot Summary$/{//d;p;}' "$TMPFILE" | sed -e 's/Written by .*$//' -e '/(.*@.*)/d' | sed s/\"/$QUOTECHAR/g | sed 's/^\ *//g' | tr -s ' ' | sed "s/ *$//" | \
-                   fold -s -w 275 | sed ':a;N;$!ba;s/\n/\\\\n/g' | sed 's/\(.\{1000\}\).*/\1.../' | grep ^[0-9A-Za-z])""
+    # Yeah, this keeps getting worse ;)
+    if [ -z $PLOTWIDTH ]; then
+      PLOTWIDTH=275
+    fi
+    PLOT="Plot: "$(sed -n '/^ Plot Summary$/,/\(^ \\\* Plot \(Summary\|Synopsis\)\|Plot Keywords\)$/{//d;p;}' "$TMPFILE" | \
+                   sed -e 's/\( \\\* Plot Summary\|Written by .*\)$//' -e '/(.*@.*)/d' | \
+                   sed s/\"/$QUOTECHAR/g | sed 's/^\ *//g' | tr -s ' ' | sed "s/ *$//" | \
+                   fold -s -w $PLOTWIDTH | sed ':a;N;$!ba;s/\n/\\\\n/g' | sed 's/\(.\{1000\}\).*/\1.../' | grep ^[0-9A-Za-z])""
     PLOTCLEAN=$(echo $PLOT | sed "s/Plot: *//")
     if [ ! -z "$(echo "$PLOTCLEAN" | grep -a -e "\(\ \)\ \(\ \)")" ]; then
-     OUTPUTOK=""
-     break
+      OUTPUTOK=""
+      break
     fi
     CERT="Certification: $(sed -n '/^ Certification$/,/^[^ *]/p' "$TMPFILE" | sed -n 's/^ \\\* //p' | sed s/\"/$QUOTECHAR/g | head -n $CERTIFICATIONNUM | tr '\n' '/' | sed "s/[ /]*$//")"
     CERTCLEAN=$(echo $CERT | sed "s/Certification: *//" | tr '/' '\n' | grep -a -e "United States:" | tr -d ' ' | tail -n 1)
     # We get the name twice (due to the image alt-text) so need to remove by counting spaces
-    CASTRAW=$(sed 's/^ Rest of cast listed alphabetically:/Cast verified as complete\n/' "$TMPFILE" | sed -n '/^Cast verified as complete$/,/^[^ ]/p' | sed '/^Cast verified as complete$/d;/^ Edit$/d' | sed -n 's/^ //p' | head -n $CASTNUM)
-
+    CASTRAW=$(sed -E -n '/^(Cast|Cast verified as complete|Complete, Cast awaiting verification)$/,/^(Directed|Written) by$/{//d;p;}' $TMPFILE | \
+              sed -E '/^ (Edit|Rest of cast listed alphabetically:)/d' | sed -n 's/^ //p' | head -n $CASTNUM)
     CAST=""
     OLDIFS=$IFS
     IFS="
@@ -566,7 +572,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
      # Need newline above so keep " there.
     for CASTN in $CASTRAW; do
      CASTNC=$(echo "$CASTN" | sed 's/ \.\.\..*//' | tr ' ' '\n' | wc -l)
-     CASTNC=$((CASTNC / 2 + 1))
+     CASTNC=$(((CASTNC / 2) + 1))
      CAST="$CAST$(echo $CASTN | cut -d' ' -f$CASTNC- | sed s/\"/$QUOTECHAR/g)
 "
      # Need newline above so keep " there.
