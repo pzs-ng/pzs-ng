@@ -4,7 +4,9 @@ PZS-NG CHANGELOG
 v1.2.0  --> 1.2.x :
 		- Fix TVMaze to work with newer Tcl packages (thanks to teqnodude for reporting)
 		- Change hardcoded limit for justification in sitebot announces from 2 to 3 (thanks to h-0-s-h)
+		- ^--- 2019 ---^
 		- Fix incomplete-list.sh and cleanup to not use chroot()
+		- ^--- 2018 ---^
 		- Fix psxc-imdb for new site layout
 		- Fix bad parsing of certain loglines with glftpd -X mode (thanks to iknowmarkers for reporting).
 		- Add support for PUBM and MSGM binds in the blow script.
