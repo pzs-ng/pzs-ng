@@ -23,6 +23,7 @@
 # 4. Rehash or restart your eggdrop for the changes to take effect.
 #
 # Changelog:
+# - 20190815 - Sked:	Fix finding shows with newer Tcl packages
 # - 20160310 - Sked:	Fix show_network
 # - 20160117 - Sked:	Cleanup for inclusion in pzs-ng
 # - 20160115 - MrCode:	Refactoring
@@ -125,7 +126,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 	##################################################
 
 	## Version
-	set tvmaze(version) "20160310"
+	set tvmaze(version) "20190815"
 	## Useragent
 	set tvmaze(useragent) "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.0.5) Gecko/2008120122 Firefox/3.0.5"
 
@@ -516,7 +517,16 @@ namespace eval ::ngBot::plugin::TVMaze {
 			set data $token
 		} else {
 			if {![string equal "" "$query"]} {
-				set uri "$uri[::http::formatQuery $query]"
+				# Verify if we can use quoteString or the older mapReply
+				# else fallback to the original formatQuery
+				# Use "commands" as quoteString is an alias (of mapReply)
+				if {[string length [info commands ::http::quoteString]]} {
+					set uri "$uri[::http::quoteString $query]"
+				} elseif {[string length [info procs ::http::mapReply]]} {
+					set uri "$uri[::http::mapReply $query]"
+				} else {
+					set uri "$uri[::http::formatQuery $query]"
+				}
 			}
 			::http::config -useragent $tvmaze(useragent)
 			set token [::http::geturl "$uri" -timeout $tvmaze(timeout)]
