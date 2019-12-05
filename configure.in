@@ -189,12 +189,12 @@ if [[ "x$GLFTPD_SPECIFIC" = "xyes" ]]; then
                If you're NOT using glftpd, use --disable-glftpd-specific. Quitting!])
       fi
       glversion="`$STRINGS $INSTALLPATH/bin/glftpd | $GREP -i '^glftpd ' | $CUT -c8-11 | $TR -d '.'``$FILE $INSTALLPATH/bin/glftpd | $CUT -d':' -f2 | $CUT -c6,7`"
-      if [[ `echo "$glversion" | $EGREP "^(13232|20032|(20[1-9](32|64)))$"` ]]; then
+      if [[ `echo "$glversion" | $EGREP "^(13232|20032|(2(0[1-9]|[1-9][0-9])(32|64)))$"` ]]; then
         glusevers="$glversion"
-        if [[ `echo "$glversion" | $EGREP "20[2-9]32"` ]]; then
+        if [[ `echo "$glversion" | $EGREP "^2(0[2-9]|[1-9][0-9])32$"` ]]; then
           glusevers="20232"
         else
-          if [[ `echo "$glversion" | $EGREP "20[2-9]64"` ]]; then
+          if [[ `echo "$glversion" | $EGREP "^2(0[2-9]|[1-9][0-9])64$"` ]]; then
             glusevers="20264"
           fi
         fi

@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix configure to detect glFTPd 2.10 and above
 		- Fix TVMaze to work with newer Tcl packages (thanks to teqnodude for reporting)
 		- Change hardcoded limit for justification in sitebot announces from 2 to 3 (thanks to h-0-s-h)
 		- ^--- 2019 ---^
