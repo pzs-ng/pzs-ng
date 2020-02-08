@@ -36,13 +36,17 @@
 # v2.9h check CHANGELOG
 # v2.9q Fix finding a result
 # v2.9u Fix finding a result again
+# v2.9v Fix finding a result yet again due to https usage
+#       Fix searching for imdb number, lower length to 5 digits and
+#        only use if it's the only searchword
+#       Use https
 ##################################################
 
 ########
 # CONFIG
 
 # Version. No need to change.
-VERSION=2.9u
+VERSION=2.9v
 
 # (full) path to psxc-imdb.conf
 PSXC_IMDB_CONF=/glftpd/etc/psxc-imdb.conf
@@ -144,7 +148,7 @@ let IMDBSEARCHCNT=IMDBSEARCHCNT-1
 if [ $IMDBSEARCHCNT -lt 1 ]; then
  IMDBSEARCHCNT=1
 fi
-IMDBSEARCHTITLA=`echo "$IMDBSEARCHORIG" | cut -d '-' -f 1-$IMDBSEARCHCNT | tr ' ' '\n' | grep -iv "^custom$" | grep -iv "^dvd" | grep -iv "^screener" | grep -iv "vcd" | grep -iv "divx" | grep -iv "xvid" | grep -iv "^ts$" | grep -iv "telesync" | grep -iv "^tc$" | grep -iv "telecine" | grep -iv "^proper$" | grep -iv "limited" | grep -iv "^subbed$" | grep -iv "^read$" | grep -iv "^nfo$" | grep -iv "internal" | grep -iv "workprint" | grep -iv "^wp$" | tr '\n' ' '`
+IMDBSEARCHTITLA=`echo "$IMDBSEARCHORIG" | cut -d '-' -f 1-$IMDBSEARCHCNT | tr ' ' '\n' | grep -iv "^custom$" | grep -iv "^dvd" | grep -iv "^screener" | grep -iv "vcd" | grep -iv "divx" | grep -iv "xvid" | grep -iv "^ts$" | grep -iv "telesync" | grep -iv "^tc$" | grep -iv "telecine" | grep -iv "^proper$" | grep -iv "limited" | grep -iv "^subbed$" | grep -iv "^read$" | grep -iv "^nfo$" | grep -iv "internal" | grep -iv "workprint" | grep -iv "^wp$" | grep -iv "x264" | grep -iv "dvdrip" | grep -iv "bdrip" | tr '\n' ' '`
 IMDBSEARCHTITLE="`echo $IMDBSEARCHTITLA | tr ' -' '+'`""$IMDBFUZZ"
 IMDBSEARCHTITLB=`echo $IMDBSEARCHTITLA`
 
@@ -155,27 +159,27 @@ if [ -z "$IMDBLOCAL" ]; then
  IMDBLOCAL="www"
 fi
 
-if [ -z "$IMDBNOURL" ]; then
- for SEARCHWORD in $IMDBSEARCHWORDS; do
-  IMDBSEARCHID="`echo -n "$SEARCHWORD" | tr -cd '0-9'`"
-  if [ ! -z "$IMDBSEARCHID" ]; then
-   if [ `echo -n "$IMDBSEARCHID" | wc -c` -ge 6 ] && [ `echo -n "$IMDBSEARCHID" | wc -c` -le 8 ]; then
-    URLTOUSE="http://""$IMDBLOCAL"".imdb.com/title/tt""$IMDBSEARCHID"
-    break
-   fi
+# Only check for ID when only one searchword
+if [ -z "$IMDBNOURL" ] && [ $(echo "$IMDBSEARCHWORDS" | wc -w) -eq 1 ]; then
+ IMDBSEARCHID="`echo -n "$IMDBSEARCHWORDS" | tr -cd '0-9'`"
+ if [ ! -z "$IMDBSEARCHID" ]; then
+  IMDBIDWC=$(echo -n "$IMDBSEARCHID" | wc -c)
+  if [ $IMDBIDWC -ge 5 ] && [ $IMDBIDWC -le 8 ]; then
+   # Need at least 7 digits and imdb doesn't care how many zeroes are in front, so always add 2 zeroes
+    URLTOUSE="https://""$IMDBLOCAL"".imdb.com/title/tt00""$IMDBSEARCHID"
   fi
- done
+ fi
 fi
 
 MYLYNXFLAGS=`echo $LYNXFLAGS | sed "s| -nolist||"`
 if [ -z "$URLTOUSE" ]; then
- CONTENT=`lynx $MYLYNXFLAGS "http://www.imdb.com/find?s=tt&q=$IMDBSEARCHTITLE" 2>/dev/null`
+ CONTENT=`lynx $MYLYNXFLAGS "https://www.imdb.com/find?s=tt&q=$IMDBSEARCHTITLE" 2>/dev/null`
  if [ $? -gt 0 ]; then
   echo "$PREWORD Internal Error. www.imdb.com may be down, or not answering. Try again later."
   exit 0
  fi
  if [ -z "$IMDBLIST" ]; then
-  URLTOUSE=`echo "$CONTENT" | grep -i "\.imdb\.[a-z]*/title/tt[0-9][0-9]*/?ref_=fn_tt_tt_1" | tr ' ' '\n' | grep "tt[0-9][0-9][0-9][0-9][0-9]*/.*$" | head -n1 | sed "s|/pro\.|/www\.|" | cut -d'?' -f1 | grep -i "^http://[a-z]*\.imdb\.[a-z]*/title/tt"`
+  URLTOUSE=`echo "$CONTENT" | grep -i "\.imdb\.[a-z]*/title/tt[0-9][0-9]*/?ref_=fn_tt_tt_1" | tr ' ' '\n' | grep "tt[0-9][0-9][0-9][0-9][0-9]*/.*$" | head -n1 | sed "s|/pro\.|/www\.|" | cut -d'?' -f1 | grep -i "^https*://[a-z]*\.imdb\.[a-z]*/title/tt"`
  else
   a=1
   b=1
@@ -209,7 +213,7 @@ if [ -z "$URLTOUSE" ]; then
 # No more redirects
 ### Just in case there's only one hit, imdb redirects us to the page. this will check to see if this is the case.
 # if [ -z "$URLTOUSE" ]; then
-#  WGETOUT=`wget -U "Internet Explorer" -O /dev/null --timeout=10 "http://www.imdb.com/find?s=tt&q=$IMDBSEARCHTITLE" 2>&1`
+#  WGETOUT=`wget -U "Internet Explorer" -O /dev/null --timeout=10 "https://www.imdb.com/find?s=tt&q=$IMDBSEARCHTITLE" 2>&1`
 #  URLTOUSE=`echo "$WGETOUT" | tr ' ' '\n' | grep -e "imdb" | tr '><&' '\n' | grep -i -e "\/title\/" | tr '\?' '\n' | head -n 1`
 # fi
 fi

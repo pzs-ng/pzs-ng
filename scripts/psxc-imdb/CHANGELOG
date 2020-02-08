@@ -1,5 +1,13 @@
 PSXC-IMDB CHANGELOG:
 --------------------
+- v2.9v - Feb  15th, 2020 - Get screens and ISLIMITED from Box Office Mojo (option USEBOM)
+                          - Added option USEWIDEST to use "Widest Release" instead of "Opening" theaters
+                          - Fixed PLOT and CAST, added PLOTWIDTH config option
+                          - Added option to use Original Title instead of localized one (option USEORIGTITLE)
+                          - Added option to USECURL and FLAGS for both curl and wget
+                          - Fixed Businessdata (opening earnings in BUSINESSSHORT)
+                          - Fixed searching on iMDB.
+                          - Improve rescan
 - v2.9u - Dec  26th, 2017 - Fix main and find for new layout, no user reviews and screens anymore.
 - v2.9t - Feb  13th, 2017 - Removed trailing '|' for languages, comments, countries, certs; '/' for genres.
 - v2.9s - May  28th, 2016 - Fixed psxc-imdb not getting all data due to certain grep versions

@@ -17,7 +17,7 @@
 ########
 
 # Version. No need to change
-VERSION=2.9p
+VERSION=2.9v
 
 # Path to psxc-imdb.sh. This is relative to GLROOT.
 PSXC_IMDB=/bin/psxc-imdb.sh
@@ -35,6 +35,15 @@ PSXC_IMDB=/bin/psxc-imdb.sh
 #
 # Be sure to put a \ before each ()[]
 EXCLUDES="^NUKED-|^\(incomplete\)-|^\(no-sfv\)-|^\(no-nfo\)-|^\(no-sample\)-"
+
+# When more than 1 nfo is found, if one of them equals the below setting, only
+# the link found in that nfo will be used. Useful for those nfo's with a wrong url.
+# It is possible to use bash regex here ("=~")
+PREF_NFO="real_imdb.nfo"
+
+# When more than 1 nfo is found and 1 of them is the $PREF_NFO, don't put out a warning
+# Set to 0 or 1
+IGNORE_WARN=1
 
 # end of config
 ###############
@@ -108,8 +117,21 @@ if [ ! -z "`echo $@ | grep -e "[-][nNqQ][oOUu][bBfFaAEe][oOiIdDUu][tTlLdDEe]"`" 
 fi
 
 proc_doscan() {
- IMDB_NFO="`ls -1 | grep "\.[Nn][Ff][Oo]$"`"
- [[ 1 -lt "$(echo "$IMDB_NFO" | wc -l)" ]] && echo "WARNING: More than one nfo found" >&2
+ IMDB_NFO="$(ls -1 *.[Nn][Ff][Oo] 2>/dev/null)"
+ NFO_CNT="$(echo "$IMDB_NFO" | wc -l)"
+ if [[ 1 -lt $NFO_CNT ]]; then
+  for NFO in $IMDB_NFO; do
+   [[ "$NFO" =~ ^$PREF_NFO$ ]] && echo "Processing $NFO" &&
+   $PSXC_IMDB $NFO &&
+   IMDB_NFO=""
+  done
+  if [[ -z "$IMDB_NFO" ]]; then
+   [[ 1 -ne $IGNORE_WARN ]] && echo "WARNING: More than one nfo found" >&2
+  else
+   echo "WARNING: More than one nfo found" >&2
+  fi
+ fi
+ # Can"t rely on NFO_CNT as it'll be 1 even when there are none (an echo+wc-l gimmick)
  [[ ! -z "$IMDB_NFO" ]] &&
   for NFO in $IMDB_NFO; do
    echo "Processing $NFO" &&

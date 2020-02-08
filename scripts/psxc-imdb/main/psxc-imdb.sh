@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.9u"
+VERSION="v2.9v"
 
 ######################################################################################################
 
@@ -117,10 +117,10 @@ if [ ! -z "$RECVDARGS" ]; then
    fi
 
 # Level 0 search
-   IMDBURLS="$(grep -a [Ii][Mm][Dd][Bb] $FILENAME | tr ' \|' '\n' | sed -n /[hH][tT][tT][pP]:[/][/].*[.][iI][mM][dD][bB][.].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?')"
+   IMDBURLS="$(grep -a [Ii][Mm][Dd][Bb] $FILENAME | tr ' \|' '\n' | sed -n /[hH][tT][tT][pP][sS]*:[/][/].*[.][iI][mM][dD][bB][.].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?')"
    if [ ! -z "$(echo $IMDBURLS | grep -a "imdb\.")" ]; then
-#    IMDBURL="http://www.imdb.com/title/tt""$(echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]')"
-    IMDBURL="http://www.imdb.com/title/tt""$(echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 |  grep -a -o "[0-9]*" | head -n 1)"
+#    IMDBURL="https://www.imdb.com/title/tt""$(echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]')"
+    IMDBURL="https://www.imdb.com/title/tt""$(echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 |  grep -a -o "[0-9]*" | head -n 1)"
     if [ -z $(echo $IMDBURL | tr -cd '0-9') ]; then
      IMDBURL=""
     fi
@@ -128,9 +128,9 @@ if [ ! -z "$RECVDARGS" ]; then
 
 # Level 1 search
    if [ -z "$IMDBURL" ] && [ $RELAXEDURLS -ge 1 ]; then
-    IMDBURLS="$(grep -a [Ii][Mm][Dd][Bb] $FILENAME | tr ' \|' '\n' | sed -n /[hH][tT][tT][pP]:[/][/].*[iI][mM][dD][bB][.].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?')"
+    IMDBURLS="$(grep -a [Ii][Mm][Dd][Bb] $FILENAME | tr ' \|' '\n' | sed -n /[hH][tT][tT][pP][sS]*:[/][/].*[iI][mM][dD][bB][.].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?')"
     if [ ! -z "$(echo $IMDBURLS | grep -a "imdb\.")" ]; then
-     IMDBURL="http://www.imdb.com/title/tt""$(echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]')"
+     IMDBURL="https://www.imdb.com/title/tt""$(echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]')"
      if [ -z $(echo $IMDBURL | tr -cd '0-9') ]; then
       IMDBURL=""
      fi
@@ -141,7 +141,7 @@ if [ ! -z "$RECVDARGS" ]; then
    if [ -z "$IMDBURL" ] && [ $RELAXEDURLS -ge 2 ]; then
     IMDBURLS="$(grep -a [Ii][Mm][Dd][Bb] $FILENAME | tr ' \|' '\n' | sed -n /.*[iI][mM][dD][bB][.].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?')"
     if [ ! -z "$(echo $IMDBURLS | grep -a "imdb\.")" ]; then
-     IMDBURL="http://www.imdb.com/title/tt""$(echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]')"
+     IMDBURL="https://www.imdb.com/title/tt""$(echo $IMDBURLS | sed "s/=/-/g" | sed "s/imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]')"
      if [ -z $(echo $IMDBURL | tr -cd '0-9') ]; then
       IMDBURL=""
      fi
@@ -159,7 +159,7 @@ if [ ! -z "$RECVDARGS" ]; then
      fi
     done
     if [ ! -z "$IMDBURL" ]; then
-     IMDBURL="http://www.imdb.com/title/tt""$IMDBURL"
+     IMDBURL="https://www.imdb.com/title/tt""$IMDBURL"
     fi
    fi
 
@@ -172,7 +172,7 @@ if [ ! -z "$RECVDARGS" ]; then
      fi
     done
     if [ ! -z "$IMDBURL" ]; then
-     IMDBURL="http://www.imdb.com/title/tt""$IMDBURL"
+     IMDBURL="https://www.imdb.com/title/tt""$IMDBURL"
     fi
    fi
 
@@ -273,9 +273,9 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
   DIRNAME=$(echo $DIRNAME | sed "s|\"\"|$SEPARATOR|g" | sed "s|\"||g")
   if [ -d $GLROOT$DIRNAME ]; then
    FILENAME=$(ls -1 $GLROOT$DIRNAME | grep -a "\.[Nn][Ff][Oo]$" | head -n 1)
-   IMDBURL="$(grep -a [Ii][Mm][Dd][Bb] $GLROOT$DIRNAME/$FILENAME | tr ' ' '\n' | sed -n /[hH][tT][tT][pP]:[/][/].*[.][iI][mM][dD][bB].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?')"
+   IMDBURL="$(grep -a [Ii][Mm][Dd][Bb] $GLROOT$DIRNAME/$FILENAME | tr ' ' '\n' | sed -n /[hH][tT][tT][pP][sS]*:[/][/].*[.][iI][mM][dD][bB].*.[0-9]/p | head -n 1 | tr -c -d '[:alnum:]\:./?')"
    if [ ! -z "$(echo $IMDBURL | grep -a "\.imdb\.")" ]; then
-    IMDBURL="http://www.imdb.com/title/tt""$(echo $IMDBURL | sed "s/=/-/g" | sed "s/.imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]')"
+    IMDBURL="https://www.imdb.com/title/tt""$(echo $IMDBURL | sed "s/=/-/g" | sed "s/.imdb./=/" | cut -d "=" -f 2 | cut -d "/" -f 2,3 | tr -c -d '[:digit:]')"
    fi
    if [ ! -z "$IMDBURL" ]; then
     a="$(tail -n 5 $GLLOG | grep -a "$TRIGGER" | grep -a "$DIRNAME" | tail -n 1)"
@@ -460,8 +460,8 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     let OUTPUTTRIES=OUTPUTTRIES+1
     OUTPUTOK="OK"
     while [ $LYNXTRIES -gt 0 ]; do
-     if [ -z "$USEWGET" ]; then
-      lynx $LYNXFLAGS $IMDBURL/reference | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/\.\.\.~ /... /g" | tr '~' '\n' > $TMPFILE 2>&1
+     if [ -z "$USEWGET" ] && [ -z "$USECURL" ]; then
+     lynx $LYNXFLAGS $IMDBURL/reference | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/\.\.\.~ /... /g" | tr '~' '\n' | sed 's/*/\\\*/' > $TMPFILE 2>&1
       if [ $? = "0" ]; then
        LYNXTRIES=$LYNXTRIESORIG
        break
@@ -470,13 +470,17 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
        sleep 1
       fi
      else
-      #http_proxy=192.168.0.1:8080
-      wget -U "Internet Explorer" -O $TMPFILE --timeout=30 $IMDBURL/combined >/dev/null 2>&1
+      if [ ! -z "$USEWGET" ]; then
+       #http_proxy=192.168.0.1:8080
+       wget $WGETFLAGS -U "Internet Explorer" -O $TMPFILE --timeout=30 $IMDBURL/reference >/dev/null 2>&1
+      elif [ ! -z "$USECURL" ]; then
+       curl $CURLFLAGS -A "Internet Explorer" -o $TMPFILE --connect-timeout 30 $IMDBURL/reference >/dev/null 2>&1
+      fi
       if [ $? = "0" ] || [ -z "$(cat $TMPFILE)" ]; then
        TMBURL=$(grep -a "\.jpg" $TMPFILE | head -n 1 | tr ' \"' '\n' | grep -a "\.jpg" | head -n 1)
        LYNXTRIES=$LYNXTRIESORIG
        HTMLPAGE="$(lynx $LYNXFLAGS -force_html $TMPFILE)"
-       echo "$HTMLPAGE" | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE
+       echo "$HTMLPAGE" | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/\.\.\.~ /... /g" | tr '~' '\n' | sed 's/*/\\\*/' > $TMPFILE 2>&1
        break
       else
        let LYNXTRIES=LYNXTRIES-1
@@ -496,6 +500,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
      OUTPUTOK=""
      break
     fi
+    ORIGTITLE=$(grep -a -i "^.* (original title)$" "$TMPFILE" | head -n 1 | sed s/\"/$QUOTECHAR/g )
 
 # Grab hold of the info we'll use later. Also do some formatting.
 #################################################################
@@ -507,9 +512,13 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
      OUTPUTOK=""
      break
     fi
-    GENRE="Genre........: $(sed -n '/^ Genres$/,/^ [^ *]/p' "$TMPFILE" | sed -n 's/^ \* //p' | sed s/\"/$QUOTECHAR/g | sed '/^ *$/d' | head -n $GENRENUM | tr '\n' '/' | sed "s/[ /]*$//")"
+    if [ ! -z "$USEORIGTITLE" ] && [ ! -z "$ORIGTITLE" ]; then
+     TITLENAME="$( echo $ORIGTITLE | sed -e 's/^ *//g' -e 's/ (original title)//' )"
+     TITLE="$TITLENAME $TITLEYEAR"
+    fi
+    GENRE="Genre........: $(sed -n '/^ Genres$/,/^ [^ \*]/p' "$TMPFILE" | sed -n 's/^ \\\* //p' | sed s/\"/$QUOTECHAR/g | sed '/^ \*$/d' | head -n $GENRENUM | tr '\n' '/' | sed "s/[ /]*$//")"
     GENRECLEAN=$(echo $GENRE | sed "s/Genre........: *//")
-    RATING="User Rating..: $(grep -a " \* [0-9][0-9]*\(\.[0-9]\)* (\([0-9]*,\)*[0-9][0-9]*)" "$TMPFILE" | sed "s/^ \* //" | sed s/\"/$QUOTECHAR/g)"
+    RATING="User Rating..: $(grep -a " \\\\\* [0-9][0-9]*\(\.[0-9]\)* (\([0-9]*,\)*[0-9][0-9]*)" "$TMPFILE" | sed "s/^ \\\\\* //" | sed s/\"/$QUOTECHAR/g)"
     if [ "$RATING" = "User Rating..: 0 (0)" ]; then
       RATING="User Rating..: Awaiting 5 votes"
     fi
@@ -541,22 +550,30 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     if [ ! -z "$BOTTOM" ]; then
       RATINGCLEAN="$(echo "$RATINGCLEAN Bottom 100: #$BOTTOM")"
     fi
-    COUNTRY="Country......: $(sed -n '/^ Country$/,/^ [^ *]/p' "$TMPFILE" | sed -n 's/^ \* //p' | sed s/\"/$QUOTECHAR/g | sed '/^ *$/d' | head -n $COUNTRYNUM | tr '\n' '/' | sed "s/[ /]*$//")"
+    COUNTRY="Country......: $(sed -n '/^ Country$/,/^ [^ *]/p' "$TMPFILE" | sed -n 's/^ \\\* //p' | sed s/\"/$QUOTECHAR/g | sed '/^ *$/d' | head -n $COUNTRYNUM | tr '\n' '/' | sed "s/[ /]*$//")"
     COUNTRYCLEAN=$(echo $COUNTRY | sed "s/Country......: *//")
     TAGLINE="Tagline......: $(sed -n 's/^ Taglines //p' "$TMPFILE" | sed "s/ See more ..*//" | sed s/\"/$QUOTECHAR/g | head -n 1)"
     TAGLINECLEAN=$(echo $TAGLINE | sed "s/Tagline......: *//")
-    LANGUAGE="Language.....: $(sed -n '/^ Language$/,/^ [^ *]/p' "$TMPFILE" | sed -n 's/^ \* //p' | sed s/\"/$QUOTECHAR/g | head -n $LANGUAGENUM | tr '\n' '/' | sed "s/[ /]*$//")"
+    LANGUAGE="Language.....: $(sed -n '/^ Language$/,/^ [^ *]/p' "$TMPFILE" | sed -n 's/^ \\\* //p' | sed s/\"/$QUOTECHAR/g | head -n $LANGUAGENUM | tr '\n' '/' | sed "s/[ /]*$//")"
     LANGUAGECLEAN=$(echo $LANGUAGE | sed "s/Language.....: *//")
-    PLOT="Plot: $(sed -n '/^ Plot Summary$/,/^ \* Plot Summary$/p' "$TMPFILE" | sed -n 'n;p' | sed s/\"/$QUOTECHAR/g | sed 's/^\ *//g' | tr -s ' ' | sed "s/ *$//")"
+    # Yeah, this keeps getting worse ;)
+    if [ -z $PLOTWIDTH ]; then
+      PLOTWIDTH=275
+    fi
+    PLOT="Plot: "$(sed -n '/^ Plot Summary$/,/\(^ \\\* Plot \(Summary\|Synopsis\)\|Plot Keywords\)$/{//d;p;}' "$TMPFILE" | \
+                   sed -e 's/\( \\\* Plot Summary\|Written by .*\)$//' -e '/(.*@.*)/d' | \
+                   sed s/\"/$QUOTECHAR/g | sed 's/^\ *//g' | tr -s ' ' | sed "s/ *$//" | \
+                   fold -s -w $PLOTWIDTH | sed ':a;N;$!ba;s/\n/'"$NEWLINE"'/g' | sed 's/\(.\{1000\}\).*/\1.../' | grep ^[0-9A-Za-z])""
     PLOTCLEAN=$(echo $PLOT | sed "s/Plot: *//")
     if [ ! -z "$(echo "$PLOTCLEAN" | grep -a -e "\(\ \)\ \(\ \)")" ]; then
      OUTPUTOK=""
      break
     fi
-    CERT="Certification: $(sed -n '/^ Certification$/,/^[^ *]/p' "$TMPFILE" | sed -n 's/^ \* //p' | sed s/\"/$QUOTECHAR/g | head -n $CERTIFICATIONNUM | tr '\n' '/' | sed "s/[ /]*$//")"
+    CERT="Certification: $(sed -n '/^ Certification$/,/^[^ *]/p' "$TMPFILE" | sed -n 's/^ \\\* //p' | sed s/\"/$QUOTECHAR/g | head -n $CERTIFICATIONNUM | tr '\n' '/' | sed "s/[ /]*$//")"
     CERTCLEAN=$(echo $CERT | sed "s/Certification: *//" | tr '/' '\n' | grep -a -e "United States:" | tr -d ' ' | tail -n 1)
     # We get the name twice (due to the image alt-text) so need to remove by counting spaces
-    CASTRAW=$(sed 's/^ Rest of cast listed alphabetically:/Cast verified as complete\n/' "$TMPFILE" | sed -n '/^Cast verified as complete$/,/^[^ ]/p' | sed '/^Cast verified as complete$/d;/^ Edit$/d' | sed -n 's/^ //p' | head -n $CASTNUM)
+    CASTRAW=$(sed -E -n '/^(Cast|Cast verified as complete|Complete, Cast awaiting verification)$/,/^(Directed|Written) by$/{//d;p;}' $TMPFILE | \
+              sed -E '/^ (Edit|Rest of cast listed alphabetically:)/d' | sed -n 's/^ //p' | head -n $CASTNUM)
     CAST=""
     OLDIFS=$IFS
     IFS="
@@ -564,7 +581,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
      # Need newline above so keep " there.
     for CASTN in $CASTRAW; do
      CASTNC=$(echo "$CASTN" | sed 's/ \.\.\..*//' | tr ' ' '\n' | wc -l)
-     CASTNC=$((CASTNC / 2 + 1))
+     CASTNC=$(((CASTNC / 2) + 1))
      CAST="$CAST$(echo $CASTN | cut -d' ' -f$CASTNC- | sed s/\"/$QUOTECHAR/g)
 "
      # Need newline above so keep " there.
@@ -579,7 +596,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     COMMENTSHORTCLEAN=$(echo $COMMENTSHORT | sed "s/User Reviews: *//")
     COMMENT="Not supported anymore"
     [[ -n "$COMMENT" ]] && COMMENTCLEAN=$(echo "$COMMENT" | sed "s/^\ *//g" | sed "s/\ *$//g" | sed s/\{\}\"/$QUOTECHAR/g | tr '\n' '|' | sed "s/[ /]*$//")
-    RUNTIME="Runtime......: $(sed -n '/^ Runtime$/,/^ [^ *]/p' "$TMPFILE" | sed -n 's/^ \* //p' | sed s/\"/$QUOTECHAR/g | sed '/^ *$/d' | head -n $RUNTIMENUM | tr '\n' '/' | sed "s/[ /]*$//")"
+    RUNTIME="Runtime......: $(sed -n '/^ Runtime$/,/^ [^ *]/p' "$TMPFILE" | sed -n 's/^ \\\* //p' | sed s/\"/$QUOTECHAR/g | sed '/^ *$/d' | head -n $RUNTIMENUM | tr '\n' '/' | sed "s/[ /]*$//")"
     RUNTIMECLEAN="$(echo $RUNTIME | sed "s/Runtime......: *//" | tr '/ ' '\n' | sed -e /^$/d | head -n 1 | tr -c -d '[:digit:]')"
     if [ ! -z "$RUNTIMECLEAN" ]; then
      RUNTIMECLEAN="$RUNTIMECLEAN min"
@@ -627,12 +644,12 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
 
 # We won't check business and release as closely right away... may do so later
 ##############################################################################
-   BUSINESSURL="$IMDBURL" # Page has become imdbpro, need to parse from main page
+   BUSINESSURL="${IMDBURL}/" # Page has become imdbpro, need to parse from main page
    RELEASEURL="$(echo "$IMDBURL""/releaseinfo" | tr -s '/' | sed "s|:/|://|")"
    if [ ! -z "$USEBUSINESS" ]; then
     while [ $LYNXTRIES -gt 0 ]; do
-     if [ -z "$USEWGET" ]; then
-      lynx $LYNXFLAGS $BUSINESSURL | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE 2>&1
+     if [ -z "$USEWGET" ] && [ -z "$USECURL" ]; then
+      lynx $LYNXFLAGS $BUSINESSURL | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' | sed 's/*/\\\*/'> $TMPFILE 2>&1
       if [ $? = "0" ]; then
        LYNXTRIES=$LYNXTRIESORIG
        break
@@ -641,12 +658,16 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
        sleep 1
       fi
      else
-      #http_proxy=192.168.0.1:8080
-      wget -U "Internet Explorer" -O $TMPFILE --timeout=30 $BUSINESSURL >/dev/null 2>&1
+      if [ ! -z "$USEWGET" ]; then
+       #http_proxy=192.168.0.1:8080
+       wget $WGETFLAGS -U "Internet Explorer" -O $TMPFILE --timeout=30 $BUSINESSURL >/dev/null 2>&1
+      elif [ ! -z "$USECURL" ]; then
+       curl $CURLFLAGS -A "Internet Explorer" -o $TMPFILE --connect-timeout 30 $BUSINESSURL >/dev/null 2>&1
+      fi
       if [ $? = "0" ] || [ -z "$(cat $TMPFILE)" ]; then
        LYNXTRIES=$LYNXTRIESORIG
        HTMLPAGE="$(lynx $LYNXFLAGS -force_html $TMPFILE)"
-       echo "$HTMLPAGE" | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE
+       echo "$HTMLPAGE" | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' | sed 's/*/\\\*/' > $TMPFILE
        break
       else
        let LYNXTRIES=LYNXTRIES-1
@@ -660,46 +681,21 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
      ISLIMITED=""
      [[ -n "$(echo "$BUSINESS" | grep -a "^Opening Weekend.* Limited Release$")" ]] && ISLIMITED="$LIMITEDYES"
      [[ -n "$(echo "$BUSINESS" | grep -a "^Opening Weekend.* Wide Release$")" ]] && ISLIMITED="$LIMITEDNO"
-     # IMDBPro only
+     # IMDBPro only, replaced by BOM below (where possible)
      BUSINESSSHORT=""
      BUSINESSSCREENS=""
-     #BUSINESSSHORTUSA=$(echo "$BUSINESS" | grep -a -e "[Ss][Cc][Rr][Ee][Ee][Nn]" | grep -a -e "([Uu][Ss][Aa])" | tail -n 1)
-     #BUSINESSSHORTUK=$(echo "$BUSINESS" | grep -a -e "[Ss][Cc][Rr][Ee][Ee][Nn]" | grep -a -e "([Uu][Kk])" | tail -n 1)
-     #[[ -z "$BUSINESSSHORTUSA" ]] && BUSINESSSHORTUSA=$(echo "$BUSINESS" | grep -a -e "([Uu][Ss][Aa])" | tail -n 1)
-     #[[ -z "$BUSINESSSHORTUK" ]] && BUSINESSSHORTUK=$(echo "$BUSINESS" | grep -a -e "([Uu][Kk])" | tail -n 1)
-     #if [ -z "$BUSINESSSHORTUSA" ] && [ -z "$BUSINESSSHORTUK" ]; then
-     # BUSINESSSHORT=$(echo "$BUSINESS" | tail -n 1)
-     #elif [ -z "$BUSINESSSHORTUSA" ]; then
-     # BUSINESSSHORT="$BUSINESSSHORTUK"
-     #else
-     # BUSINESSSHORT="$BUSINESSSHORTUSA"
-     #fi
-     #BUSINESSSCREENSUSA=$(echo "$BUSINESSSHORTUSA" | tr '()' '\n' | grep -a -e "[Ss][Cc][Rr][Ee][Ee][Nn]" | tr ' ' '\n' | head -n 1 | tr -d ',')
-     #BUSINESSSCREENSUK=$(echo "$BUSINESSSHORTUK" | tr '()' '\n' | grep -a -e "[Ss][Cc][Rr][Ee][Ee][Nn]" | tr ' ' '\n' | head -n 1 | tr -d ',')
-     #BUSINESSSCREENS=$(echo "$BUSINESSSHORT" | tr '()' '\n' | grep -a -e "[Ss][Cc][Rr][Ee][Ee][Nn]" | tr ' ' '\n' | head -n 1)
-     #if [ ! -z "$BUSINESSSCREENSUSA" ]; then
-     # if [ $BUSINESSSCREENSUSA -lt 500 ]; then
-     #  ISLIMITED=$LIMITEDYES
-     # else
-     #  ISLIMITED=$LIMITEDNO
-     # fi
-     #else
-     # ISLIMITED=""
-     #fi
-     #if [ ! -z "$BUSINESSSCREENSUK" ] && [[ -z "$ISLIMITED" || "x$ISLIMITED" == "x$LIMITEDYES" ]]; then
-     # if [ $BUSINESSSCREENSUK -lt 300 ]; then
-     #  ISLIMITED=$LIMITEDYES
-     # else
-     #  ISLIMITED=$LIMITEDNO
-     #  BUSINESSSHORT=$BUSINESSSHORTUK
-     #  BUSINESSSCREENS=$BUSINESSSCREENSUK
-     # fi
-     #fi
+     BUSINESSSHORTUSA=$( echo "$BUSINESS" | sed -n -E 's/^Opening Weekend (USA|United States): ([0-9,$]+), ([0-9]{1,2}) ([A-Z][a-z][a-z])[a-z]* ([0-9]{4})/\2 \3 \4 \5/p' )
+     BUSINESSSHORTUK=$( echo "$BUSINESS" | sed -n -E 's/^Opening Weekend (UK|United Kingdom): ([0-9,$]+), ([0-9]{1,2}) ([A-Z][a-z][a-z])[a-z]* ([0-9]{4})/\2 \3 \4 \5/p' )
+     if [ -z "$BUSINESSSHORTUSA" ]; then
+      BUSINESSSHORT="$BUSINESSSHORTUK"
+     else
+      BUSINESSSHORT="$BUSINESSSHORTUSA"
+     fi
     fi
    fi
    if [ ! -z "$USEPREMIERE" ] || [ ! -z "$USELIMITED" ]; then
     while [ $LYNXTRIES -gt 0 ]; do
-     if [ -z "$USEWGET" ]; then
+     if [ -z "$USEWGET" ] && [ -z "$USECURL" ]; then
       lynx $LYNXFLAGS $RELEASEURL | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE 2>&1
       if [ $? = "0" ]; then
        LYNXTRIES=$LYNXTRIESORIG
@@ -709,12 +705,16 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
        sleep 1
       fi
      else
-      #http_proxy=192.168.0.1:8080
-      wget -U "Internet Explorer" -O $TMPFILE --timeout=30 $RELEASEURL >/dev/null 2>&1
+      if [ ! -z "$USEWGET" ]; then
+       #http_proxy=192.168.0.1:8080
+       wget $WGETFLAGS -U "Internet Explorer" -O $TMPFILE --timeout=30 $RELEASEURL >/dev/null 2>&1
+      elif [ ! -z "$USECURL" ]; then
+       curl $CURLFLAGS -A "Internet Explorer" -o $TMPFILE --connect-timeout 30 $RELEASEURL >/dev/null 2>&1
+      fi
       if [ $? = "0" ] || [ -z "$(cat $TMPFILE)" ]; then
        LYNXTRIES=$LYNXTRIESORIG
        HTMLPAGE="$(lynx $LYNXFLAGS -force_html $TMPFILE)"
-       echo "$HTMLPAGE" | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' > $TMPFILE
+       echo "$HTMLPAGE" | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' | sed 's/*/\\\*/' > $TMPFILE
        break
       else
        let LYNXTRIES=LYNXTRIES-1
@@ -737,6 +737,118 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
       LIMITED=$(grep -a -e "(limited)" "$TMPFILE" | head -n 1 | sed "s/ (limited)//" | sed "s/^\ *//g" | sed "s/\ *$//g" | tr -s ' ' | sed s/\"/$QUOTECHAR/g)
      fi
     fi
+   fi
+
+# Get screens/islimited from parsing Box Office Mojo page (source: slftp) 
+##############################################################################
+
+   if [ ! -z "$USEBOM" ]; then
+    BOMURL="https://www.boxofficemojo.com/title/$(echo "$IMDBURL" | grep -Pow "tt[0-9]+")/"
+    while [ $LYNXTRIES -gt 0 ]; do
+     if [ -z "$USEWGET" ] && [ -z "$USECURL" ]; then
+      lynx -source $LYNXFLAGS $BOMURL > $TMPFILE 2>&1
+      if [ $? = "0" ]; then
+       LYNXTRIES=$LYNXTRIESORIG
+       break
+      else
+       let LYNXTRIES=LYNXTRIES-1
+       sleep 1
+      fi
+     else
+      if [ ! -z "$USEWGET" ]; then
+       #http_proxy=192.168.0.1:8080
+       wget $WGETFLAGS -U "Internet Explorer" -O $TMPFILE --timeout=30 $BOMURL >/dev/null 2>&1
+      elif [ ! -z "$USECURL" ]; then
+       curl $CURLFLAGS -A "Internet Explorer" -o $TMPFILE --connect-timeout 30 $BOMURL >/dev/null 2>&1
+      fi
+      if [ $? = "0" ] || [ -z "$(cat $TMPFILE)" ]; then
+       LYNXTRIES=$LYNXTRIESORIG
+       break
+      else
+       let LYNXTRIES=LYNXTRIES-1
+       echo -n "" > $TMPFILE
+       sleep 1
+      fi
+     fi
+    done
+    BOMRELEASEGROUP="$(sed -n -E 's|.*<option value="(/releasegroup/gr[0-9]+/)">Original Release</option>.*|\1|p' $TMPFILE)"
+    BOMURLRELEASEGROUP="https://www.boxofficemojo.com${BOMRELEASEGROUP}"
+    while [ $LYNXTRIES -gt 0 ]; do
+     if [ -z "$USEWGET" ] && [ -z "$USECURL" ]; then
+      lynx -source $LYNXFLAGS $BOMURLRELEASEGROUP > $TMPFILE 2>&1
+      if [ $? = "0" ]; then
+       LYNXTRIES=$LYNXTRIESORIG
+       break
+      else
+       let LYNXTRIES=LYNXTRIES-1
+       sleep 1
+      fi
+     else
+      if [ ! -z "$USEWGET" ]; then
+       #http_proxy=192.168.0.1:8080
+       wget $WGETFLAGS -U "Internet Explorer" -O $TMPFILE --timeout=30 $BOMURLRELEASEGROUP >/dev/null 2>&1
+      elif [ ! -z "$USECURL" ]; then
+       curl $CURLFLAGS -A "Internet Explorer" -o $TMPFILE --connect-timeout 30 $BOMURLRELEASEGROUP >/dev/null 2>&1
+      fi
+      if [ $? = "0" ] || [ -z "$(cat $TMPFILE)" ]; then
+       LYNXTRIES=$LYNXTRIESORIG
+       break
+      else
+       let LYNXTRIES=LYNXTRIES-1
+       echo -n "" > $TMPFILE
+       sleep 1
+      fi
+     fi
+    done
+    BOMRELEASE="$(sed -n -E 's|.*<a class="a-link-normal" href="(/release/rl[0-9]+/)[^\"]*">Domestic[^\n]*</a>.*|\1|p' $TMPFILE | head -n 1)"
+    BOMURLRELEASE="https://www.boxofficemojo.com${BOMRELEASE}"
+    while [ $LYNXTRIES -gt 0 ]; do
+     if [ -z "$USEWGET" ] && [ -z "$USECURL" ]; then
+      #lynx $LYNXFLAGS $BOMURLRELEASE | grep -a -v "^$" | tr '\t' ' ' | tr -s ' ' | tr '\n' '~' | sed "s/:~ /: /g" | tr '~' '\n' | sed 's/*/\\\*/' > $TMPFILE 2>&1
+      lynx -source $LYNXFLAGS $BOMURLRELEASE > $TMPFILE 2>&1
+      if [ $? = "0" ]; then
+       LYNXTRIES=$LYNXTRIESORIG
+       break
+      else
+       let LYNXTRIES=LYNXTRIES-1
+       sleep 1
+      fi
+     else
+      if [ ! -z "$USEWGET" ]; then
+       #http_proxy=192.168.0.1:8080
+       wget $WGETFLAGS -U "Internet Explorer" -O $TMPFILE --timeout=30 $BOMURLRELEASE >/dev/null 2>&1
+      elif [ ! -z "$USECURL" ]; then
+       curl $CURLFLAGS -A "Internet Explorer" -o $TMPFILE --connect-timeout 30 $BOMURLRELEASE >/dev/null 2>&1
+      fi
+      if [ $? = "0" ] || [ -z "$(cat $TMPFILE)" ]; then
+       LYNXTRIES=$LYNXTRIESORIG
+       break
+      else
+       let LYNXTRIES=LYNXTRIES-1
+       echo -n "" > $TMPFILE
+       sleep 1
+      fi
+     fi
+    done
+    if [ "$LYNXTRIES" = "$LYNXTRIESORIG" ]; then
+     if [ ! -z "$USEWIDEST" ]; then
+      BUSINESSSCREENS="$(sed -n -E 's|.*<div[^>]*><span>Widest Release</span><span>([0-9,]+) theaters</span></div>.*|\1|p' $TMPFILE | head -n1 | tr -d ',' )"
+     else 
+      BUSINESSSCREENS=$(sed -n -E 's|.*<div[^>]*><span>Opening</span><span><span class="money">[0-9,$]+</span><br/>*([0-9,]+)$|\1|p' $TMPFILE | head -n1 | tr -d ',' )
+     fi
+     if [ -z "$(echo "$BUSINESSSCREENS" | tr -cd '0-9')" ]; then
+      BUSINESSSCREENS=""
+     fi
+     if [ ! -z "$BUSINESSSCREENS" ] && [ -z "$ISLIMITED" ]; then
+      if [ $BUSINESSSCREENS -lt 500 ]; then
+       ISLIMITED=$LIMITEDYES
+      else
+       ISLIMITED=$LIMITEDNO
+      fi
+     else
+      ISLIMITED=""
+     fi
+    fi 
    fi
    if [ ! -z "$IMDBHEAD" ]; then
     BOTHEAD=$(echo $BOTHEADORIG | sed "s/RELEASENAME/$BOLD$IMDBDIR$BOLD/")
@@ -895,7 +1007,8 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     fi
     if [ ! -z "$PLOT" ]; then
      echo "-" >> "$IMDBLNK"
-     echo "$PLOT" | fold -s -w $IMDBWIDTH >> "$IMDBLNK"
+     #echo "$PLOT" | fold -s -w $IMDBWIDTH >> "$IMDBLNK"
+     echo "$PLOT" | sed s/"$NEWLINE"//g | fold -s -w $IMDBWIDTH >> "$IMDBLNK"
     fi
     if [ ! -z "$SHOWCOMMENT" ] && [ ! -z "$COMMENT" ]; then
      echo "---" >> "$IMDBLNK"
@@ -950,7 +1063,11 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
    if [ "$DOWNLOADTHUMB" = "YES" ]; then
     FILENAME=$(ls -1Ftr "$GLROOT$IMDBLKL" | grep -a -v "/" | grep -a -v "@" | grep -a -e "[.][nN][fF][oO]" | head -n 1)
     TMBNAME=$(echo $FILENAME | sed "s/\.nfo/.jpg/")
-    wget -U "Internet Explorer" -O $GLROOT$IMDBLKL/$TMBNAME --timeout=30 $TMBURL >/dev/null 2>&1
+    if [ ! -z "$USEWGET" ]; then
+     wget $WGETFLAGS -U "Internet Explorer" -O $TMPFILE --timeout=30 $GLROOT$IMDBLKL/$TMBNAME >/dev/null 2>&1
+    elif [ ! -z "$USECURL" ]; then
+     curl $CURLFLAGS -A "Internet Explorer" -o $TMPFILE --connect-timeout 30 $GLROOT$IMDBLKL/$TMBNAME >/dev/null 2>&1
+    fi
    fi
 
 # Should we run any external scripts?
