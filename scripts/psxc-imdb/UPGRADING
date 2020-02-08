@@ -5,6 +5,16 @@ NOTE: If you use a different GLROOT than /glftpd, you most
       likely need to change a couple of variables in the files
       you replace.
 
+2.9u -> 2.9v - replace psxc-imdb.sh
+             --- new variables:
+             - psxc-imdb.conf: USEORIGTITLE
+             - psxc-imdb.conf: USEBOM
+             - psxc-imdb.conf: USEWIDEST
+             - psxc-imdb.conf: PLOTWIDTH
+             - psxc-imdb.conf: WGETFLAGS
+             - psxc-imdb.conf: USECURL
+             - psxc-imdb.conf: CURLFLAGS
+             - psxc-imdb.conf: PLOTWIDTH
 2.9t -> 2.9u - replace psxc-imdb.sh, psxc-imdb-find.sh
 2.9s -> 2.9t - replace psxc-imdb.sh
 2.9r -> 2.9s - replace psxc-imdb.sh, psxc-symlink-maker.sh
