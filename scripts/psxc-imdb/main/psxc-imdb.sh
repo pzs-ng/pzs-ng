@@ -563,7 +563,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     PLOT="Plot: "$(sed -n '/^ Plot Summary$/,/\(^ \\\* Plot \(Summary\|Synopsis\)\|Plot Keywords\)$/{//d;p;}' "$TMPFILE" | \
                    sed -e 's/\( \\\* Plot Summary\|Written by .*\)$//' -e '/(.*@.*)/d' | \
                    sed s/\"/$QUOTECHAR/g | sed 's/^\ *//g' | tr -s ' ' | sed "s/ *$//" | \
-                   fold -s -w $PLOTWIDTH | sed ':a;N;$!ba;s/\n/\\\\n/g' | sed 's/\(.\{1000\}\).*/\1.../' | grep ^[0-9A-Za-z])""
+                   fold -s -w $PLOTWIDTH | sed ':a;N;$!ba;s/\n/'"$NEWLINE"'/g' | sed 's/\(.\{1000\}\).*/\1.../' | grep ^[0-9A-Za-z])""
     PLOTCLEAN=$(echo $PLOT | sed "s/Plot: *//")
     if [ ! -z "$(echo "$PLOTCLEAN" | grep -a -e "\(\ \)\ \(\ \)")" ]; then
      OUTPUTOK=""
@@ -1008,7 +1008,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
     if [ ! -z "$PLOT" ]; then
      echo "-" >> "$IMDBLNK"
      #echo "$PLOT" | fold -s -w $IMDBWIDTH >> "$IMDBLNK"
-     echo "$PLOT" | sed 's/\\\\n//g' | fold -s -w $IMDBWIDTH >> "$IMDBLNK"
+     echo "$PLOT" | sed s/"$NEWLINE"//g | fold -s -w $IMDBWIDTH >> "$IMDBLNK"
     fi
     if [ ! -z "$SHOWCOMMENT" ] && [ ! -z "$COMMENT" ]; then
      echo "---" >> "$IMDBLNK"
