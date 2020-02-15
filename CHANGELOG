@@ -2,7 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
-		- Fix psxc-imdb in many parts (thanks to silver)
+		- Fix psxc-imdb in many parts (thanks to silv3rr)
 		- ^--- 2020 ---^
 		- Fix configure to detect glFTPd 2.10 and above
 		- Fix TVMaze to work with newer Tcl packages (thanks to teqnodude for reporting)
