@@ -15,7 +15,7 @@ CONFFILE=/etc/psxc-imdb.conf
 ###################
 
 # version number. do not change.
-VERSION="v2.9v"
+VERSION="v2.9w"
 
 ######################################################################################################
 
@@ -66,8 +66,6 @@ if [ ! -z "$RECVDARGS" ]; then
 # PATH=$PATHCHROOTED
 # IMDBLOG=$IMDBLOGCHROOTED
  FILENAME="$RECVDARGS"
- case $FILENAME in
-  *.[nN][fF][oO])
    if [ ! -z "$GLROOT" ]; then
     MYTMPFILE=$(echo "$TMPRESCANFILE" | sed "s%$GLROOT%%")
    else
@@ -216,9 +214,6 @@ if [ ! -z "$RECVDARGS" ]; then
     fi
    fi
    touch -acmr "$FILENAME" $(pwd) >/dev/null 2>&1
-  ;;
- esac
-# exit 0
 
 #else
 fi
@@ -564,7 +559,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
                    sed -e 's/\( \\\* Plot Summary\|Written by .*\)$//' -e '/(.*@.*)/d' | \
                    sed s/\"/$QUOTECHAR/g | sed 's/^\ *//g' | tr -s ' ' | sed "s/ *$//" | \
                    fold -s -w $PLOTWIDTH | sed ':a;N;$!ba;s/\n/'"$NEWLINE"'/g' | sed 's/\(.\{1000\}\).*/\1.../' | grep ^[0-9A-Za-z])""
-    PLOTCLEAN=$(echo $PLOT | sed "s/Plot: *//")
+    PLOTCLEAN=$(echo "$PLOT" | sed "s/Plot: *//")
     if [ ! -z "$(echo "$PLOTCLEAN" | grep -a -e "\(\ \)\ \(\ \)")" ]; then
      OUTPUTOK=""
      break
@@ -943,7 +938,7 @@ if [ ! -z "$RUNCONTINOUS" ] || [ -z "$RECVDARGS" ]; then
        MYOWNVAR="$(echo "$OWNPAIR" | cut -d '|' -f 2)"
        if [ ! -z "${!MYOWNVAR}" ]; then
         MYTEMPVAR="$(echo "${!MYOWNVAR}" | tr '\&' '\`')"
-        MYOWNFORMAT1="$(echo "${MYOWNFORMAT1}" | sed "s^$MYOWNSTRING^$MYTEMPVAR^g" | tr '\`' '\&')"
+        MYOWNFORMAT1="$(echo "${MYOWNFORMAT1}" | sed "s^$MYOWNSTRING^$MYTEMPVAR^g;s/\n/$NEWLINE/g" | tr '\`' '\&')"
        else
         MYOWNFORMAT1="$(echo "${MYOWNFORMAT1}" | sed "s^$MYOWNSTRING^$MYOWNEMPTY^g")"
        fi
