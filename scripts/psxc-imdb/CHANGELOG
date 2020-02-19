@@ -1,7 +1,8 @@
 PSXC-IMDB CHANGELOG:
 --------------------
 - v2.9w - Feb. 20th, 2020 - Fix MYOWN format of PLOT when using \\\\n as NEWLINE
-                          - Change rescan to not use an nfo as PREF_NFO and remove unneeded IGNORE_WARN
+                          - Change rescan to not use an nfo as PREF_NFO,
+                            remove unneeded IGNORE_WARN and add warn when no nfo is found
                           - Add DIRECTORNUM to psxc-imdb.conf
 - v2.9v - Feb. 15th, 2020 - Get screens and ISLIMITED from Box Office Mojo (option USEBOM)
                           - Added option USEWIDEST to use "Widest Release" instead of "Opening" theaters

@@ -118,11 +118,12 @@ proc_doscan() {
  IMDB_NFO="$(ls -1 *.[Nn][Ff][Oo] 2>/dev/null)"
  NFO_CNT="$(echo "$IMDB_NFO" | wc -l)"
  [[ 1 -lt $NFO_CNT ]] && echo "WARNING: More than one nfo found" >&2
+ [[ -z "$IMDB_NFO" ]] && echo "WARNING: No nfo found" >&2
  [[ -f "$PREF_NFO" ]] &&
   echo "Processing $PREF_NFO" &&
   $PSXC_IMDB $PREF_NFO &&
   IMDB_NFO=""
- # Can"t rely on NFO_CNT as it'll be 1 even when there are none (an echo+wc-l gimmick)
+ # Can't rely on NFO_CNT as it'll be 1 even when there are none (an echo+wc-l gimmick)
  [[ ! -z "$IMDB_NFO" ]] &&
   for NFO in $IMDB_NFO; do
    echo "Processing $NFO" &&
