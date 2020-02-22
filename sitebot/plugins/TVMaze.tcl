@@ -23,6 +23,7 @@
 # 4. Rehash or restart your eggdrop for the changes to take effect.
 #
 # Changelog:
+# - 20200223 - Sked:	Add average rating as variable (thanks to teqnodude)
 # - 20200222 - Sked:	Use https (thanks to teqnodude)
 # - 20190815 - Sked:	Fix finding shows with newer Tcl packages
 # - 20160310 - Sked:	Fix show_network
@@ -117,6 +118,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 	set ${np}::zeroconvert(%tvmaze_show_ended)                "N/A"
 	set ${np}::zeroconvert(%tvmaze_show_airtime)              "N/A"
 	set ${np}::zeroconvert(%tvmaze_show_runtime)              "N/A"
+	set ${np}::zeroconvert(%tvmaze_show_rating)               "N/A"
 	set ${np}::zeroconvert(%tvmaze_episode_url)               "N/A"
 	set ${np}::zeroconvert(%tvmaze_episode_season_episode)    "N/A"
 	set ${np}::zeroconvert(%tvmaze_episode_season)            "N/A"
@@ -127,7 +129,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 	##################################################
 
 	## Version
-	set tvmaze(version) "20200222"
+	set tvmaze(version) "20200223"
 	## Useragent
 	set tvmaze(useragent) "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.0.5) Gecko/2008120122 Firefox/3.0.5"
 
@@ -169,7 +171,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 			}
 		}
 
-		set variables(TVMAZE-MSGFULL) "%tvmaze_show_name %tvmaze_show_id %tvmaze_show_genres %tvmaze_show_country %tvmaze_show_network %tvmaze_show_status %tvmaze_show_latest_title %tvmaze_show_latest_episode %tvmaze_show_latest_airdate %tvmaze_show_next_title %tvmaze_show_next_episode %tvmaze_show_next_airdate %tvmaze_show_url %tvmaze_show_type %tvmaze_show_premiered %tvmaze_show_started %tvmaze_show_ended %tvmaze_show_airtime %tvmaze_show_runtime %tvmaze_episode_url %tvmaze_episode_season_episode %tvmaze_episode_season %tvmaze_episode_number %tvmaze_episode_original_airdate %tvmaze_episode_title"
+		set variables(TVMAZE-MSGFULL) "%tvmaze_show_name %tvmaze_show_id %tvmaze_show_genres %tvmaze_show_country %tvmaze_show_network %tvmaze_show_status %tvmaze_show_latest_title %tvmaze_show_latest_episode %tvmaze_show_latest_airdate %tvmaze_show_next_title %tvmaze_show_next_episode %tvmaze_show_next_airdate %tvmaze_show_url %tvmaze_show_type %tvmaze_show_premiered %tvmaze_show_started %tvmaze_show_ended %tvmaze_show_airtime %tvmaze_show_runtime %tvmaze_show_rating %tvmaze_episode_url %tvmaze_episode_season_episode %tvmaze_episode_season %tvmaze_episode_number %tvmaze_episode_original_airdate %tvmaze_episode_title"
 		set variables(TVMAZE) "$variables(NEWDIR) $variables(TVMAZE-MSGFULL)"
 		set variables(TVMAZE-PRE) "$variables(PRE) $variables(TVMAZE-MSGFULL)"
 		set variables(TVMAZE-MSGSHOW) $variables(TVMAZE-MSGFULL)
@@ -263,7 +265,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 		}
 
 		## Display full series/episode info if episode_url exists
-		if {![string equal [lindex $logData 19] ""]} {
+		if {![string equal [lindex $logData 20] ""]} {
 			${np}::sndone $target [${np}::ng_format "TVMAZE-MSGFULL" "none" $logData]
 		} else {
 			${np}::sndone $target [${np}::ng_format "TVMAZE-MSGSHOW" "none" $logData]
@@ -345,11 +347,12 @@ namespace eval ::ngBot::plugin::TVMaze {
 
 	proc FindInfo {string logData {strict true}} {
 		variable ns
+		# Check line 268 for correct lindex of episode_url !
 		set output_order [list show_name show_id show_genres show_country show_network show_status \
 						show_latest_title show_latest_episode show_latest_airdate \
 						show_next_title show_next_episode show_next_airdate \
 						show_url show_type show_premiered \
-						show_started show_ended show_airtime show_runtime \
+						show_started show_ended show_airtime show_runtime show_rating \
 						episode_url episode_season_episode episode_season episode_number \
 						episode_original_airdate episode_title]
 
@@ -402,6 +405,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 		regexp {\"premiered\":\"(.*?)\"} $data -> info(show_premiered)
 		regexp {\"type\":\"(.*?)\"} $data -> info(show_type)
 		regexp {\"runtime\":(\d+)} $data -> info(show_runtime)
+		regexp {\"rating\":\{\"average\":(\d+(\.\d+)?)} $data -> info(show_rating)
 
 		# use webchan or network as "show_network"
 		if {[regexp {\"network\":null,} $data] && ![regexp {\"webChannel\":null,} $data]} {
