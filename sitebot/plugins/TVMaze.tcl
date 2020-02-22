@@ -4,7 +4,7 @@
 #              Initial code for TVRage by Meij <meijie@gmail.com>              #
 #                           TVMaze rework by MrCode                            #
 #                                                                              #
-# APIs http://www.tvmaze.com/api                                               #
+# APIs https://www.tvmaze.com/api                                              #
 #                                                                              #
 ################################################################################
 #
@@ -23,6 +23,7 @@
 # 4. Rehash or restart your eggdrop for the changes to take effect.
 #
 # Changelog:
+# - 20200222 - Sked:	Use https (thanks to teqnodude)
 # - 20190815 - Sked:	Fix finding shows with newer Tcl packages
 # - 20160310 - Sked:	Fix show_network
 # - 20160117 - Sked:	Cleanup for inclusion in pzs-ng
@@ -126,7 +127,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 	##################################################
 
 	## Version
-	set tvmaze(version) "20190815"
+	set tvmaze(version) "20200222"
 	## Useragent
 	set tvmaze(useragent) "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.0.5) Gecko/2008120122 Firefox/3.0.5"
 
@@ -157,8 +158,13 @@ namespace eval ::ngBot::plugin::TVMaze {
 				return -code -1
 			}
 		} else {
-			if {[catch {package require http}]} {
+			if {[catch {package require http 2}]} {
 				${ns}::Error "\"http\" package not found, unloading script."
+				return -code -1
+			}
+			# We want at least protocol TLS 1.X
+			if {[catch {package require tls 1.7}]} {
+				${ns}::Error "\"tls\" package not found, unloading script."
 				return -code -1
 			}
 		}
@@ -377,7 +383,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 	proc GetShowAndEpisode {show season epnumber} {
 		variable tvmaze
 
-		set data [GetFromApi "http://api.tvmaze.com/singlesearch/shows?embed%5b%5d=previousepisode&embed%5b%5d=nextepisode&q=" $show]
+		set data [GetFromApi "https://api.tvmaze.com/singlesearch/shows?embed%5b%5d=previousepisode&embed%5b%5d=nextepisode&q=" $show]
 		if {[string equal "Connection" [string range $data 0 9]]} {
 			return -code error $data
 		}
@@ -390,6 +396,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 		regexp {\"id\":(\d+)} $data -> info(show_id)
 		regexp {\"name\":\"(.*?)\"} $data -> info(show_name)
 		regexp {\"url\":\"(.*?)\"} $data -> info(show_url)
+		set info(show_url) [regsub "http" $info(show_url) "https"]
 		regexp {\"status\":\"(.*?)\"} $data -> info(show_status)
 		regexp {\"country\":.*?\"code\":\"(.*?)\"} $data -> info(show_country)
 		regexp {\"premiered\":\"(.*?)\"} $data -> info(show_premiered)
@@ -481,13 +488,14 @@ namespace eval ::ngBot::plugin::TVMaze {
 
 		# in case of SXXEXX
 		if {![string equal "$season" ""] && ![string equal "$epnumber" ""]} {
-			set data [GetFromApi "http://api.tvmaze.com/shows/${info(show_id)}/episodebynumber?season=${season}&number=${epnumber}" ""]
+			set data [GetFromApi "https://api.tvmaze.com/shows/${info(show_id)}/episodebynumber?season=${season}&number=${epnumber}" ""]
 			if {[string equal "Connection" [string range $data 0 9]]} {
 				return -code error $data
 			}
 
 			regexp {\"name\":\"(.*?)\"} $data -> info(episode_title)
 			regexp {\"url\":\"(.*?)\"} $data -> info(episode_url)
+			set info(episode_url) [regsub "http" $info(episode_url) "https"]
 			regexp {\"airdate\":\"(.*?)\"} $data -> info(episode_original_airdate)
 
 			regexp {\"season\":(\d+)} $data -> info(episode_season)
@@ -529,6 +537,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 				}
 			}
 			::http::config -useragent $tvmaze(useragent)
+			::http::register https 443 [list ::tls::socket -autoservername true]
 			set token [::http::geturl "$uri" -timeout $tvmaze(timeout)]
 
 			if {![string equal -nocase [::http::status $token] "ok"]} {
