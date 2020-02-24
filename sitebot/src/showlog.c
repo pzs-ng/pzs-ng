@@ -17,6 +17,8 @@
   2011-09-20 - Fix small typo bug printing newdirs all on one line
   2011-10-05 - Fix matchpath bug when "path" has no trailing '/'
   2011-12-13 - Fix matchpath bug when both "path" and "inst" had no trailing '/'
+  2020-02-24 - Alter the -p option to accept multiple patterns split by a space
+               As sideeffect you can't use a space anymore in a pattern
 */
 
 #include <sys/file.h>
@@ -154,7 +156,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* Parse command line arguments */
-	/* Usage: [-h] [-f] [-s] [-m <max #>] [-p <pattern>] [-r <glconf>] <-l, -n, or -u> */
+	/* Usage: [-h] [-f] [-s] [-m <max #>] [-p <"pattern1 pattern2 ...">] [-r <glconf>] <-l, -n, or -u> */
 
 	opterr = 0;
 	while((c = getopt(argc, argv, "hfsm:p:r:lnu")) != -1) {
@@ -370,12 +372,27 @@ void show_newdirs(const char *pattern)
 			continue;
 		}
 		if (pattern != NULL) {
+			int match = 0;
+			char *t = NULL, *subpat = NULL, *temppat = strdup(pattern);
 			/* Pointer to the base of the directory path */
 			if (!match_full && (p = strrchr(buffer.dirname, '/')) != NULL)
 				p++;
 			else
 				p = buffer.dirname;
-			if (!wildcasecmp(pattern, p))
+			subpat = temppat;
+			t = temppat;
+			while ((t = strchr(subpat, ' ')) && !match) {
+				*t++ = '\0';
+				if (wildcasecmp(subpat, p))
+					match = 1;
+				subpat = t;
+			}
+			/* For the pattern with NULL at the end */
+			if (wildcasecmp(subpat, p))
+				match = 1;
+			if (temppat)
+				free(temppat);
+			if (!match)
 				continue;
 		}
 
@@ -451,12 +468,12 @@ void show_nukes(const ushort status, const char *pattern)
 /* usage - Display the various parameters for showlog */
 void usage(const char *binary)
 {
-	printf("Usage: %s [-h] [-f] [-s] [-m <max #>] [-p <pattern>] [-r <glconf>] <-l, -n, or -u>\n\n", binary);
+	printf("Usage: %s [-h] [-f] [-s] [-m <max #>] [-p <\"pattern1 pattern2 ...\">] [-r <glconf>] <-l, -n, or -u>\n\n", binary);
 	printf("Options:\n");
 	printf("  -h  This help screen.\n");
 	printf("  -f  Match the full path rather than the base name (default off).\n");
 	printf("  -m  Maximum number of results to display (default %d).\n", max_results);
-	printf("  -p  Display only the matching entries, you may use wildcards (?,*).\n");
+	printf("  -p  Display only the matching entries, you may use wildcards (?,*) and split patterns with a space.\n");
 	printf("  -r  Path to the glftpd configuration file (default " GLCONF ").\n");
 	printf("  -s  Search mode, display all entries disregarding their status (new, deleted, nuked, etc.).\n\n");
 	printf("Required Parameters:\n");

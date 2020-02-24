@@ -760,15 +760,26 @@ namespace eval ::ngBot {
 	proc replacepath {message basepath path} {
 		variable ns
 
-		set path [split $path "/"]
-		set pathitems [llength $path]
-		set basepath [split $basepath "/"]
-		set baseitems [llength $basepath]
-		set relname [join [lrange $path [expr {$baseitems - 1}] end] "/"]
+		set npath [split $path "/"]
+		set pathitems [llength $npath]
 
-		set message [${ns}::replacevar $message "%relname" $relname]
-		set message [${ns}::replacevar $message "%reldir" [lindex $path [expr {$pathitems - 1}]]]
-		set message [${ns}::replacevar $message "%path" [lindex $path [expr {$pathitems - 2}]]]
+		set x 0
+		set bpaths [split $basepath " "]
+		set blength [llength $bpaths]
+		while {$x < $blength && ![string match [lindex $bpaths $x] $path]} {
+			incr x
+		}
+
+		if {$x < $blength} {
+			set bpath [lindex $bpaths $x]
+			set bnpath [split $bpath "/"]
+			set baseitems [llength $bnpath]
+			set relname [join [lrange $npath [expr {$baseitems - 1}] end] "/"]
+
+			set message [${ns}::replacevar $message "%relname" $relname]
+			set message [${ns}::replacevar $message "%reldir" [lindex $npath [expr {$pathitems - 1}]]]
+			set message [${ns}::replacevar $message "%path" [lindex $npath [expr {$pathitems - 2}]]]
+		}
 		return $message
 	}
 
