@@ -1279,7 +1279,7 @@ missing_sample_check_ignore_list <STRING>
 	last character of a dirname are never checked as part of a listed
 	string, unless missing_sample_check_ignore_dividers is empty.
 	Separate strings with a comma character. List is not casesensitive.
-	Default: "dirfix,fix,freezefix,fullsubpack,nfofix,proof,rarfix,subfix,subpack,subpck,syncfix,prooffix"
+	Default: "dirfix,fix,freezefix,fullsubpack,nfofix,proof,rarfix,subfix,subpack,subpck,syncfix,prooffix,avifix,framefix,sizefix,audiofix"
 
 audio_script <PATH>
 	Put here the path to the external script which should be run after
@@ -1442,7 +1442,7 @@ rescan_script <PATH>
 
 sample_list <STRING>
 	This is a comma-seperated list of sample-dirs. The list is not case-sensitive.
-	Default: "sample,vobsample"
+	Default: "sample,vobsample,samples"
 
 sample_script <PATH>
 	Enter the name of the script you wish to execute on sample uploads.
@@ -1609,7 +1609,7 @@ subdir_list <STRING>
 	at the end of a dirname. Ie, cd?? will match cdA, cd12, but not cd123.
 	Do not put '?' at the beginning or in the middle - it will not work.
 	The string is not case-sensitive (dVd == DvD).
-	Default: "cd??,disc??,disk??,dvd??,extra?,sub?,subtitle?,vobsub?,sample?,subpack?,ac3,audioaddon,addon,ac3addon,proof,cover?"
+	Default: "cd??,disc??,disk??,dvd??,extra?,sub?,subtitle?,vobsub?,sample?,subpack?,ac3,audioaddon,addon,ac3addon,proof,cover?,codec?"
 
 test_for_password <TRUE|FALSE>
 	Some rarfiles have password protection. If you wish to check for such

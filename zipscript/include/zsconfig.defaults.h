@@ -1062,7 +1062,7 @@
 
 #ifndef missing_sample_check_ignore_list
 #define missing_sample_check_ignore_list_is_defaulted
-#define missing_sample_check_ignore_list          "dirfix,fix,freezefix,fullsubpack,nfofix,proof,rarfix,subfix,subpack,subpck,syncfix,prooffix"
+#define missing_sample_check_ignore_list          "dirfix,fix,freezefix,fullsubpack,nfofix,proof,rarfix,subfix,subpack,subpck,syncfix,prooffix,avifix,framefix,sizefix,audiofix"
 #endif
 
 #ifndef newleader_files_ahead
@@ -1182,7 +1182,7 @@
 
 #ifndef sample_list
 #define sample_list_is_defaulted
-#define sample_list                               "sample,vobsample"
+#define sample_list                               "sample,vobsample,samples"
 #endif
 
 #ifndef sample_script
@@ -1307,7 +1307,7 @@
 
 #ifndef subdir_list
 #define subdir_list_is_defaulted
-#define subdir_list                               "cd??,disc??,disk??,dvd??,extra?,sub?,subtitle?,vobsub?,sample?,subpack?,ac3,audioaddon,addon,ac3addon,proof,cover?"
+#define subdir_list                               "cd??,disc??,disk??,dvd??,extra?,sub?,subtitle?,vobsub?,sample?,subpack?,ac3,audioaddon,addon,ac3addon,proof,cover?,codec?"
 #endif
 
 #ifndef test_for_password

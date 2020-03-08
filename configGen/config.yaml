@@ -245,13 +245,13 @@ options:
             at the end of a dirname. Ie, cd?? will match cdA, cd12, but not cd123.
             Do not put '?' at the beginning or in the middle - it will not work.
             The string is not case-sensitive (dVd == DvD).
-        default: '"cd??,disc??,disk??,dvd??,extra?,sub?,subtitle?,vobsub?,sample?,subpack?,ac3,audioaddon,addon,ac3addon,proof,cover?"'
+        default: '"cd??,disc??,disk??,dvd??,extra?,sub?,subtitle?,vobsub?,sample?,subpack?,ac3,audioaddon,addon,ac3addon,proof,cover?,codec?"'
 
     sample_list:
         type: string
         comment: |-
             This is a comma-seperated list of sample-dirs. The list is not case-sensitive.
-        default: '"sample,vobsample"'
+        default: '"sample,vobsample,samples"'
 
     gl_sections:
         type: string
@@ -335,7 +335,7 @@ options:
             last character of a dirname are never checked as part of a listed
             string, unless missing_sample_check_ignore_dividers is empty.
             Separate strings with a comma character. List is not casesensitive.
-        default: '"dirfix,fix,freezefix,fullsubpack,nfofix,proof,rarfix,subfix,subpack,subpck,syncfix,prooffix"'
+        default: '"dirfix,fix,freezefix,fullsubpack,nfofix,proof,rarfix,subfix,subpack,subpck,syncfix,prooffix,avifix,framefix,sizefix,audiofix"'
 
     create_missing_sample_link:
         type: boolean
