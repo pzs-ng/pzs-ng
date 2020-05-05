@@ -328,7 +328,7 @@ convert_audio(struct VARS *raceI, char *instr)
 
 			switch (*instr) {
 			case 'w':
-				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_genre);
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (raceI->audio.id3_genre == NULL)?"Unknown":(char *)raceI->audio.id3_genre);
 				break;
 			case 'W':
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_album);
@@ -349,7 +349,7 @@ convert_audio(struct VARS *raceI, char *instr)
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.samplingrate);
 				break;
 			case 'h':
-				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.codec);
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (raceI->audio.codec == NULL)?"Unknown":(char *)raceI->audio.codec);
 				break;
 			case '@':
 				if (raceI->audio.vbr_oldnew == 1)
@@ -376,10 +376,10 @@ convert_audio(struct VARS *raceI, char *instr)
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.vbr_source);
 				break;
 			case 'q':
-				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.layer);
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (raceI->audio.layer == NULL)?"Unknown":(char *)raceI->audio.layer);
 				break;
 			case 'Q':
-				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.channelmode);
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (raceI->audio.channelmode == NULL)?"Unknown":(char *)raceI->audio.channelmode);
 				break;
 			case 'i':
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.vbr_version_string);
@@ -700,7 +700,7 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				/* Audio */
 
 			case 'w':
-				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_genre);
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (raceI->audio.id3_genre == NULL)?"Unknown":(char *)raceI->audio.id3_genre);
 				break;
 			case 'W':
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.id3_album);
@@ -721,13 +721,13 @@ convert(struct VARS *raceI, struct USERINFO **userI, struct GROUPINFO **groupI, 
 				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.samplingrate);
 				break;
 			case 'h':
-				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.codec);
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (raceI->audio.codec == NULL)?"Unknown":(char *)raceI->audio.codec);
 				break;
 			case 'q':
-				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.layer);
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (raceI->audio.layer == NULL)?"Unknown":(char *)raceI->audio.layer);
 				break;
 			case 'Q':
-				out_p += sprintf(out_p, "%*.*s", val1, val2, (char *)raceI->audio.channelmode);
+				out_p += sprintf(out_p, "%*.*s", val1, val2, (raceI->audio.channelmode == NULL)?"Unknown":(char *)raceI->audio.channelmode);
 				break;
 			case '@':
 				if (raceI->audio.vbr_oldnew == 1)

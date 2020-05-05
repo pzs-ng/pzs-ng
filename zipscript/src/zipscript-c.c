@@ -178,6 +178,7 @@ main(int argc, char **argv)
 
 	d_log("zipscript-c: Clearing arrays\n");
 	bzero(&g.v.total, sizeof(struct race_total));
+	bzero(&g.v.audio, sizeof g.v.audio);
 	g.v.misc.slowest_user[0] = ULONG_MAX;
 	g.v.misc.fastest_user[0] = g.v.misc.release_type = RTYPE_NULL;
 

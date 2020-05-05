@@ -2,6 +2,7 @@ PZS-NG CHANGELOG
 ----------------
 
 v1.2.0  --> 1.2.x :
+		- Fix crash on freebsd (and perhaps others) in audiodirs (thanks to fated for reporting)
 		- Add some more strings to ignore in samplechecking, another subdir and sampledir
 		- Fix !new/!nukes/!unnukes for ngBot sections with more than 1 path (thanks to CaptainCo for reporting)
 		- Add show rating to TVMaze.tcl sitebot plugin (thanks to teqnodude)
