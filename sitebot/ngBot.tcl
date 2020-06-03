@@ -239,7 +239,7 @@ namespace eval ::ngBot {
 			putlog "\[ngBot\] Warning :: Unable to kill log timer ($error)."
 			putlog "\[ngBot\] Warning :: You should .restart the bot to be safe."
 		}
-		set ng_timer [utimer 1 ${ns}::readlogtimer]
+		set ng_timer [utimer 0.1 ${ns}::readlogtimer]
 	}
 
 	proc init_plugins {} {
