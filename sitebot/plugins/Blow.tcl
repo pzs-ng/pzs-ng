@@ -389,7 +389,7 @@ namespace eval ::ngBot::plugin::Blow {
 						set his_key_pub [lindex $text 1]
 						DH1080comp $my_key_prv $his_key_pub
 						set blowkey($nick) $his_key_pub
-						${ns}::Debug "keyx_bind: Received DH1080 public key from $nick. Sending DH1080 plublic key to $nick."
+						${ns}::Debug "keyx_bind: Received DH1080 public key from $nick. Sending DH1080 public key to $nick."
 
 						${ns}::keyx_queue_flush $nick
 
