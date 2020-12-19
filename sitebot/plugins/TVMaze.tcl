@@ -476,7 +476,7 @@ namespace eval ::ngBot::plugin::TVMaze {
 		# merge episode Ep/Season
 		regexp {\"nextepisode\":.*?\"season\":(\d+),} $show_embedded -> show_next_episode_season
 		regexp {\"nextepisode\":.*?\"number\":(\d+),} $show_embedded -> show_next_episode_number
-		if {[info exists show_next_episode_season] && [info exists show_latest_episode_number]} {
+		if {[info exists show_next_episode_season] && [info exists show_next_episode_number]} {
 			set show_next_episode_season [format S%02d $show_next_episode_season]
 			set show_next_episode_number [format E%02d $show_next_episode_number]
 			set info(show_next_episode) "${show_next_episode_season}${show_next_episode_number}"
