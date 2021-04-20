@@ -36,6 +36,7 @@ set location(GLCONF)        "/etc/glftpd.conf"
 set glftpdlog(NORMAL)       "$glroot/ftp-data/logs/glftpd.log"
 set loginlog(NORMAL)        "$glroot/ftp-data/logs/login.log"
 set sysoplog(NORMAL)        "$glroot/ftp-data/logs/sysop.log"
+set xferlog(NORMAL)         "$glroot/ftp-data/logs/xferlog"
 set binary(GLFTPD)          "$glroot/bin/glftpd"
 set binary(INCOMPLETE)      "$glroot/bin/incomplete-list.sh"
 set binary(PASSCHK)         "$glroot/bin/passchk"
@@ -177,3 +178,7 @@ set disable(IMDBVAR)        0
 set disable(PRE)            0
 set disable(TURGEN)         0
 set disable(WHOIS)          0
+
+## xferlog announcements
+set disable(FILE_INCOMING)  1
+set disable(FILE_OUTGOING)  1
