@@ -1370,7 +1370,10 @@ namespace eval ::ngBot {
 				if {[regexp -- {(\S+)\.(\S+)\s*=\s*(['\"])(.+)\3} $line dud type setting quote value]} {
 					switch -exact -- [string tolower $type] {
 						"announce" {
-							if {(![info exists announce($setting)]) || (![istrue $isplugin])} {
+							if { [info exists announce($setting)] && ![istrue $isplugin] } {
+								set announce($setting) $value
+								putlog "\[ngBot\] Warning :: Announce duplicata \"announce.$setting\" into \"$file\"."
+							} elseif {(![info exists announce($setting)]) || (![istrue $isplugin])} {
 								set announce($setting) $value
 							}
 						}
