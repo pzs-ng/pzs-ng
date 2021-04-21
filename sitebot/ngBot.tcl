@@ -601,11 +601,13 @@ namespace eval ::ngBot {
 		set cnt 0
 
 		## Path filter parsing
-		if {[string equal "%pf" [lindex $vars 0]]} {
-			set output [${ns}::replacepath $output $mpath [lindex $line 0]]
-			set vars [lreplace $vars 0 0]
+		set pf_position	[lsearch $vars "%pf"]
+		if { $pf_position != "-1" } {
+			set output	[${ns}::replacepath $output $mpath [lindex $line $pf_position]]
+			set vars	[lreplace $vars $pf_position $pf_position]
 			incr cnt
 		}
+		unset pf_position
 
 		## Replace variables and format the %loop cookies
 		set loop 1
