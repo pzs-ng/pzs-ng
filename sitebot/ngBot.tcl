@@ -140,11 +140,12 @@ namespace eval ::ngBot {
 		variable loginlog
 		variable sysoplog
 		variable glftpdlog
+		variable xferlog
 
 		## Logs to parse
 		set logid 0
 		set loglist {}
-		foreach {varname logtype} {glftpdlog 0 loginlog 1 sysoplog 2} {
+		foreach {varname logtype} {glftpdlog 0 loginlog 1 sysoplog 2 xferlog 3} {
 			foreach {filename filepath} [array get $varname] {
 				if {![file readable $filepath]} {
 					putlog "\[ngBot\] Error :: Unable to read the log file \"$filepath\"."
@@ -369,17 +370,6 @@ namespace eval ::ngBot {
 		return 1
 	}
 
-	proc readlogtimer {} {
-		variable ns
-		variable ng_timer
-		global errorInfo
-		if {[catch {${ns}::readlog}]} {
-			putlog "\[ngBot\] Error :: Unhandled error, please report to developers:"
-			${ns}::cmd_error
-		}
-		set ng_timer [utimer 1 ${ns}::readlogtimer]
-	}
-
 	proc readlog {} {
 		variable ns
 		variable disable
@@ -404,6 +394,7 @@ namespace eval ::ngBot {
 				0 {set regex {^.+ \d+:\d+:\d+ \d{4} (\S+): (.+)}}
 				1 -
 				2 {set regex {^.+ \d+:\d+:\d+ \d{4} \[(\d+)\s*\] (.+)}}
+				3 {set regex {^.+ \d+:\d+:\d+ \d{4} (\S+ \S+ \S+ \S+ \S+ \S+ (\S+).+)}}
 				default {putlog "\[ngBot\] Error :: Internal error, unknown log type ($logtype)."; continue}
 			}
 			## Read the log data
@@ -416,8 +407,17 @@ namespace eval ::ngBot {
 					close $handle
 
 					foreach line [split $data "\n"] {
+					if { $logtype == 3} {
+						if {[regexp $regex $line result line type]} {
+							if { $type == "i" } { 
+								set event "FILE_INCOMING"
+							} else {
+								set event "FILE_OUTGOING"
+							}
+							lappend lines $logtype $event $line
+						}
+					} elseif {[regexp $regex $line result event line]} {
 						## Remove the date and time from the log line.
-						if {[regexp $regex $line result event line]} {
 							lappend lines $logtype $event $line
 						} else {
 							putlog "\[ngBot\] Warning :: Invalid log line: $line"
