@@ -242,7 +242,7 @@ namespace eval ::ngBot {
 		set ng_timer [utimer 1 ${ns}::readlogtimer]
 	}
 
-		proc init_plugins {} {
+	proc init_plugins {} {
 		variable ns
 
 		if {![namespace exists ${ns}::plugin]} { return }
