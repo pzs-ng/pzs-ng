@@ -252,13 +252,13 @@ namespace eval ::ngBot {
 			switch -- [catch {${plugin}::init} error] {
 				-1 {
 					catch {${plugin}::deinit}
-					catch {namespace delete $plugin}
+					catch {${ns}::deinit_plugin $plugin}
 				}
 				0 { lappend loaded [namespace tail $plugin] }
 				default {
-					putlog "\[ngBot\] [namespace tail $plugin] Error :: Unable to load plugin: $error"
+					putlog "\[ngBot\] [namespace tail $plugin] Error :: Unable to load plugin: $error\n$::errorInfo"
 					catch {${plugin}::deinit}
-					catch {namespace delete $plugin}
+					catch {${ns}::deinit_plugin $plugin}
 				}
 			}
 		}
@@ -267,12 +267,69 @@ namespace eval ::ngBot {
 			putlog "\[ngBot\] Plugins Loaded: [join $loaded ", "]."
 		}
 	}
-
+	# Unload all plugins
+	proc deinit_allplugins {} {
+		variable ns
+		if {![namespace exists ${ns}::plugin]} { return }
+			foreach plugin [namespace children ${ns}::plugin] {
+				set plugin_name	[namespace tail $plugin]
+				catch {${ns}::deinit_plugin $plugin_name}
+			}
+	}
+	# Unload one plugin
+	proc deinit_plugin { plugin_name } {
+		variable ns
+		# Accept Plugin_name or namespace of plugin
+		if { [string match -nocase "*::plugin::*" $plugin_name] } {
+			set ns_plugin	"$plugin_name"
+			set plugin_name	[namespace tail $plugin_name]
+		} else {
+			set ns_plugin	"${ns}::plugin::$plugin_name"
+		}
+		# DeInit from scripts (script own backups, etc)
+		catch {${ns_plugin}::deinit}
+		# Find all binds of plugin and unbind
+		foreach binding [lsearch -inline -all -regexp [binds *${ns_plugin}*] " \{?(::)?${ns_plugin}"] {
+			set bind_name	[namespace tail [lindex $binding 4]]
+			set bind_type	[lindex $binding 0]
+			if { ![expr [catch {unbind [lindex $binding 0] [lindex $binding 1] [lindex $binding 2] [lindex $binding 4]}]] } {
+				putlog "\[ngBot\] info :: UnBind $bind_type: '$bind_name' from $plugin_name"
+				
+			} else {
+				putlog "\[ngBot\] Error ::  echec UnBind $bind_name from $plugin_name"
+			}
+		
+		}
+		# Stopping the timers of the plugin.
+		foreach running_timer [timers] {
+			if { [::tcl::string::match "*${ns_plugin}::*" [lindex $running_timer 1]] } {
+				putlog "\[ngBot\] info :: killtimer $running_timer"
+					killtimer [lindex $running_timer 2]
+				}
+			}
+		# Stopping the utimers of the plugin.
+		foreach running_utimer [utimers] {
+			if { [::tcl::string::match "*${ns_plugin}::*" [lindex $running_utimer 1]] } {
+				putlog "\[ngBot\] info :: killutimer $running_utimer"
+				killutimer [lindex $running_utimer 2] 
+			}
+		}
+		# Removing the package declaration
+		if { [expr ![catch {package present $plugin_name}]] } {
+			putlog "\[ngBot\] info :: Removing the package declaration"
+			package forget $plugin_name
+		}
+		# Removing the namespace declaration
+		catch {namespace delete ${ns_plugin}}
+	}
 	# Uses _ng to avoid being overwriten by namespace import.
+	
 	proc deinit_ng {type} {
 		variable ns
 		variable ng_timer
-
+		# before deinit all plugins 
+		catch {deinit_allplugins}
+		
 		catch {killutimer $ng_timer}
 
 		# Remove all binds bound to any procs that match ::ngBot::*
