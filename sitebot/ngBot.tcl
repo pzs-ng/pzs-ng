@@ -382,13 +382,8 @@ namespace eval ::ngBot {
 
 	proc readlog {} {
 		variable ns
-		variable disable
 		variable loglist
 		variable lastread
-		variable msgtypes
-		variable variables
-		variable msgreplace
-		variable defaultsection
 		variable max_log_change
 
 		set lines ""
@@ -404,6 +399,7 @@ namespace eval ::ngBot {
 				0 {set regex {^.+ \d+:\d+:\d+ \d{4} (\S+): (.+)}}
 				1 -
 				2 {set regex {^.+ \d+:\d+:\d+ \d{4} \[(\d+)\s*\] (.+)}}
+				3 {set regex {^.+ \d+:\d+:\d+ \d{4} (\S+ \S+ \S+ \S+ \S+ \S+ (\S+).+)}}
 				default {putlog "\[ngBot\] Error :: Internal error, unknown log type ($logtype)."; continue}
 			}
 			## Read the log data
@@ -416,8 +412,16 @@ namespace eval ::ngBot {
 					close $handle
 
 					foreach line [split $data "\n"] {
+					if { $logtype == 3} {
+						if {[regexp $regex $line result line type]} {
+							if { $type == "i" } { 
+								set event "FILE_INCOMING"
+							} else {
+								set event "FILE_OUTGOING"
+							}
+						}
+					} elseif {[regexp $regex $line result event line]} {
 						## Remove the date and time from the log line.
-						if {[regexp $regex $line result event line]} {
 							lappend lines $logtype $event $line
 						} else {
 							putlog "\[ngBot\] Warning :: Invalid log line: $line"
@@ -429,7 +433,21 @@ namespace eval ::ngBot {
 			}
 			set lastread($logid) $logsize
 		}
+		## Lines can be empty:
+		## - Invalid log line
+		## - Unable to open log file
+		## there is no need to parse the log.
+		if { $lines != "" } { parselog $lines; }
+	}
 
+	proc parselog { lines } {
+		variable ns
+		variable disable
+		variable msgtypes
+		variable variables
+		variable msgreplace
+		variable defaultsection
+		
 		foreach {type event line} $lines {
 			## Login and sysop log specific parsing.
 			if {$type == 1 && ![${ns}::parselogin $line event line]} {
@@ -452,7 +470,13 @@ namespace eval ::ngBot {
 				${ns}::inviteuser $nick $user $group $flags
 			}
 			if {[lsearch -exact $msgtypes(SECTION) $event] != -1} {
-				set path [lindex $line 0]
+				set pf_position	[lsearch $variables($event) "%pf"]
+				if { $pf_position != -1 } {
+					set path [lindex $line $pf_position]
+				} else {
+					set path [lindex $line 0]
+				}
+				
 				if {[${ns}::denycheck $path]} {continue}
 				set section [${ns}::getsectionname $path]
 
@@ -1370,7 +1394,10 @@ namespace eval ::ngBot {
 				if {[regexp -- {(\S+)\.(\S+)\s*=\s*(['\"])(.+)\3} $line dud type setting quote value]} {
 					switch -exact -- [string tolower $type] {
 						"announce" {
-							if {(![info exists announce($setting)]) || (![istrue $isplugin])} {
+							if { [info exists announce($setting)] && ![istrue $isplugin] } {
+								set announce($setting) $value
+								putlog "\[ngBot\] Warning :: Announce duplicata \"announce.$setting\" into \"$file\"."
+							} elseif {(![info exists announce($setting)]) || (![istrue $isplugin])} {
 								set announce($setting) $value
 							}
 						}
