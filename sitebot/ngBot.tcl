@@ -1473,10 +1473,10 @@ namespace eval ::ngBot {
 
 			set colorString [format "COLOR_%s_1" $section]
 			if {[lsearch -exact [array names theme] $colorString] != -1} {
-				regsub -all {%c(\d)\{([^\{\}]+)\}} $targetString {\\003$theme([format "COLOR_%s_" $section]\1)\2\\003} targetString
+				regsub -all {%c(\d{1,2})\{([^\{\}]+)\}} $targetString {\\003$theme([format "COLOR_%s_" $section]\1)\2\\003} targetString
 				regsub {\003(\d)(?!\d)} $targetString {\\0030\1} targetString
 			} else {
-				regsub -all {%c(\d)\{([^\{\}]+)\}} $targetString {\\003$theme(COLOR\1)\2\\003} targetString
+				regsub -all {%c(\d{1,2})\{([^\{\}]+)\}} $targetString {\\003$theme(COLOR\1)\2\\003} targetString
 				regsub {\003(\d)(?!\d)} $targetString {\\0030\1} targetString
 			}
 		}
