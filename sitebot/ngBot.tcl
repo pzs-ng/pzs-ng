@@ -1480,6 +1480,17 @@ namespace eval ::ngBot {
 				regsub {\003(\d)(?!\d)} $targetString {\\0030\1} targetString
 			}
 		}
+		# We are looking for all strings beginning with% and containing "A-Z_". No digit before% must be present.
+		# This identifies any strings like %reldir,%f_name, etc which have no color in front 
+		# and that in them there is RELDIR, F_NAME the color to be filled in is applied.
+		set RE {[^0-9]{1,2}(%([a-z_]+))};
+		foreach { matchString padOp padcontent } [regexp -inline -all $RE $targetString] {
+			set padcontent  [string toupper $padcontent]
+			if {[lsearch -exact [array names theme] $padcontent] != -1} {
+				set padcolor "\\003$theme($padcontent)$padOp\\003"
+				set targetString [string map [list $padOp $padcolor] $targetString]
+			}
+		}
 		return [subst $targetString]
 	}
 
