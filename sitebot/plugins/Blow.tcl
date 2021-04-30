@@ -1,38 +1,43 @@
-#################################################################################
-# ngBot - Blow plugin v0.1 original concept by poci                             #
-#################################################################################
-# These peeps have my thanks: neoxed, meij, god-emper, al gore and jesus
+################################################################################
+# ngBot - Blow plugin v0.3 original concept by poci                            #
+################################################################################
+# These peeps have my thanks: comp :) neoxed, meij, god-emper, al gore and jesus
 #
 # FEATURES:
+#
 # - split lines if they become too long
 # - enable/disable key exchange, or just allow it for a selected group of people
 # - prevent the bot from sending unencrypted PRIVMSG/NOTICE.
-# - set/read topic from irc (!topic) or set it from site (site topic #chan topic)
+# - set/read topic from irc (!topic) or from site ('site topic #chan topic')
 # - integrates perfectly with pzs-ng and NickDb
+# - CBC support (chan ofc and keyx), needs eggdrop 1.8.2+
+# - more alternatives besides FiSH DH1080_tcl: FiSH-irssi or weechat-fish plugin
 #
-# DOCS:
+# INSTALLATION:
+#
 # 1. Edit the plugin theme (Blow.zpt) for the *TOPIC announces.
 # 
 # 2. Add the following to your glftpd.conf:
-# site_cmd        TOPIC           EXEC            /bin/ng-topic.sh
-# custom-topic 1 =siteops !*
+#      site_cmd        TOPIC           EXEC            /bin/ng-topic.sh
+#      custom-topic 1 =siteops !*
 #
-# 3. Config the stuff below
+# 3. Config the variables below (enable a DH plugin for keyx)
 #
-#################################################################################
+################################################################################
 
 namespace eval ::ngBot::plugin::Blow {
 	variable ns [namespace current]
 	variable np [namespace qualifiers [namespace parent]]
 
-	## Config Settings ###############################
+	## Config Settings #####################################################
 	variable blowkey
 	##
 	## Set the blowfish keys for each channel here. You can have as many
-	## targets as you want.
+	## targets as you want. Add 'cbc:' prefix in front of blowkey to
+	## enable CBC Mode. (Recommended)
 	set blowkey(#chan1) "mYkeY1"
 	set blowkey(#chan2) "MyKey2"
-	set blowkey(#chan3) "mykey"
+	set blowkey(#chan3) "cbc:myk3y"
 	##
 	## Use the blowfish key of the channel listed in mainChan for unknown
 	## targets. Doesn't work when key exchanged is enabled. Case sensetive.
@@ -40,8 +45,8 @@ namespace eval ::ngBot::plugin::Blow {
 	##    Example: variable mainChan "#chan1"
 	variable mainChan "#chan1"
 	##
-	## Max character length unencrypted. 305 is a safe bet for both UnrealIrcd
-	## and Hybrid (EFnet).
+	## Max character length unencrypted. 305 is a safe bet for both
+	## UnrealIrcd and Hybrid (EFnet).
 	variable maxLength 305
 	##
 	## Split at this character. You probably want to split at spaces.
@@ -53,7 +58,12 @@ namespace eval ::ngBot::plugin::Blow {
 	## Set this to false if you dont want to deal with them. (Recommended)
 	variable allowUnencrypted false
 	##
-	## Key Exchange Settings #########################
+	## Check for any EBC encrypted messages send in channel and pm
+	## (1=Ignore 2=Msg 3=Kick 4=Ban or 0=Disable)
+	variable checkCbc 2
+	variable checkCbcMsg "Please use Blowfish with CBC Mode encryption."
+	##
+	## Key Exchange Settings ###############################################
 	##
 	## Note: All keys are stored in memory and are forgotten on
 	##       rehash/reset/etc.
@@ -61,7 +71,7 @@ namespace eval ::ngBot::plugin::Blow {
 	## Enable key exchange. (1/true or 0/false)
 	variable keyx true
 	##
-	## Restrict which users allowed to key exchange with the bot.
+	## Restrict which users are allowed to key exchange with the bot.
 	## (Set to "" to disable)
 	##    Example: variable keyxUsers "=siteops"
 	variable keyxUsers ""
@@ -76,12 +86,35 @@ namespace eval ::ngBot::plugin::Blow {
 	## 60 seconds to reply.
 	variable keyxTimeout 120
 	##
-	## Path to "DH1080_tcl.so". This file is REQUIRED for key exchange to work.
-	## Get it from http://fish.secure.la/. Compile it yourself if you're a
-	## paranoid geek (Recommended).
-	variable blowso "scripts/blow/DH1080_tcl.so"
+	## Enable default CBC key exchange (1/true or 0/false)
+	variable keyxCbc true
 	##
-	## NickDb Settings ###############################
+	## Abort keyx when receiving ECB keys (1/true or 0/false)
+	## Note: If set to false, you might want to set checkCbc to 0 or 1
+	variable keyxCbcForce true
+	##
+	## Enabling ONE of these 3 methods is REQUIRED for DH key exchange to work
+	## Set either blowso or fishpy. Using method 2 or 3 is recommended.
+	##
+	## 1. Original "FiSH-DH1080", set blowso "pzs-ng/plugins/DH1080_tcl.so"
+	##    (and fishpy variable to ""). Get DH1080-source.zip and compile the .so
+	##    yourself if you're a paranoid geek, needs MIRACL and tcl libs.
+	##      https://web.archive.org/web/20120122020640/http://fish.secure.la
+	##
+	## 2. OR FiSH-irssi: same as 1. but compile using it's newer "DH1080.c"
+	##    instead. No miracl needed, see second link for instructions:
+	##      https://github.com/falsovsky/FiSH-irssi
+	##      https://github.com/orkim/dh1080_tcl
+	##
+	## 3. OR weechat-fish: use included "fishwrap.py", set fishpy
+	##    to "pzs-ng/plugins/fishwrap.py" (and set blowso variable to "").
+	##    Also needs crypto module (e.g. apt install python3-pycryptodome)
+	##      https://weechat.org/files/scripts/fish.py
+	##
+	variable blowso ""
+	variable fishpy "pzs-ng/plugins/fishwrap.py"
+	##
+	## NickDb Settings #####################################################
 	##
 	## NickDb allows you to link IRC users to their FTP accounts. With this
 	## enabled you can restrict IRC commands only to respond to specific users
@@ -96,10 +129,9 @@ namespace eval ::ngBot::plugin::Blow {
 	## Only allow these users to get/set new topics via the
 	## GETTOPIC/SETTOPIC ftpd commands. (Set to "" to disable)
 	##    Example: variable topicUsers "=siteops"
-	#variable topicUsers "=siteops"
 	variable topicUsers ""
 	##
-	## TOPIC Settings ###############################
+	## TOPIC Settings ######################################################
 	##
 	## Above setting also related
 	##
@@ -108,12 +140,16 @@ namespace eval ::ngBot::plugin::Blow {
 	set ${np}::disable(SETTOPIC)    1
 	set ${np}::disable(GETTOPIC)    0
 	##
+	## Optionally set in ngBot.conf:
+	##   set ${np}::redirect(SETTOPIC)   "#chan1"
+	##   set ${np}::redirect(GETTOPIC)   "#chan2"
+	##
 	## Trigger (Leave blank to disable)
 	variable topictrigger "!topic"
 	##
-	##################################################
+	### END of Config ######################################################
 
-	variable blowversion "20171120"
+	variable blowversion "20201205"
 
 	variable events [list "SETTOPIC" "GETTOPIC"]
 
@@ -187,7 +223,7 @@ namespace eval ::ngBot::plugin::Blow {
 		variable maxLength
 		variable splitChar
 		upvar $lineArr broken
-		#${ns}::debug "line: $line"
+		#${ns}::Debug "line: $line"
 		set length [string length $line]
 
 		set pos 0
@@ -195,7 +231,7 @@ namespace eval ::ngBot::plugin::Blow {
 		set runs [expr round([expr $length/$maxLength]+0.5)]
 		## length of each new line
 		set partSize [expr round([expr $length/$runs]+0.5)]
-		#${ns}::debug "maxLength: $maxLength, length: $length, runs: $runs, partsize: $partSize"
+		#${ns}::Debug "maxLength: $maxLength, length: $length, runs: $runs, partsize: $partSize"
 
 		for {set i 0} {$i<$runs} {incr i} {
 			## heavy stuff
@@ -203,7 +239,7 @@ namespace eval ::ngBot::plugin::Blow {
 
 			set broken($i) [string range $line $pos [expr [string last " " $newPart]+$pos]]
 			set pos [string last " " [string range $line $pos [expr $pos + $partSize]]]; incr pos
-			#${ns}::debug "$i: $runs :: $pos"
+			#${ns}::Debug "$i: $runs :: $pos"
 		}
 		return True
 	}
@@ -321,7 +357,10 @@ namespace eval ::ngBot::plugin::Blow {
 	}
 
 	proc keyx_generate {target name_public {name_private ""}} {
+		variable blowso
 		variable blowinit
+		variable fishpy
+		variable keyxCbc
 
 		if {![info exists blowinit($target)]} {
 			upvar $name_public key_public
@@ -333,10 +372,20 @@ namespace eval ::ngBot::plugin::Blow {
 			set key_public [string repeat x 300]
 
 			# Overwrites the variables with the generated values.
-			DH1080gen $key_private $key_public
-
+			if {![string equal $blowso ""]} {
+				DH1080gen $key_private $key_public
+				# remove null termination char from c string
+				regsub -all {\000.*} $key_public "" key_public
+			} elseif {![string equal $fishpy ""]} {
+				lassign [exec $fishpy DH1080gen $key_private $key_public] key_private key_public
+			}
+			if {[IsTrue $keyxCbc]} {
+				append key_public " CBC"
+			}
 			# Only set blowinit if we're initiating the handshake.
-			if {$name_private == ""} { set blowinit($target) $key_private }
+			if {$name_private == ""} {
+				set blowinit($target) $key_private
+			}
 
 			return 1
 		}
@@ -358,9 +407,13 @@ namespace eval ::ngBot::plugin::Blow {
 		variable np
 		variable ns
 		variable keyx
+		variable keyxUsers
+		variable blowso
 		variable blowkey
 		variable blowinit
-		variable keyxUsers
+		variable fishpy
+		variable keyxCbc
+		variable keyxCbcForce
 
 		if {![IsTrue $keyx]} {
 			${ns}::Debug "Key exchange is disabled!"
@@ -381,39 +434,51 @@ namespace eval ::ngBot::plugin::Blow {
 
 		set text [split $text]
 		set len [string length [lindex $text 1]]
+		variable mode_msg ""
+		if {[string match [lindex $text end] "CBC"] || [lsearch {DH1080_INIT_CBC DH1080_FINISH_CBC} [string toupper [lindex $text 0]]] != -1} {
+			variable mode_msg " (CBC mode)"
+		} elseif {[IsTrue $keyxCbcForce]} {
+			return
+		}
+
 		switch -- [string toupper [lindex $text 0]] {
 			DH1080_INIT {
 				if { ($len > 178) || ($len < 182) } {
 					if {[${ns}::keyx_generate $nick my_key_pub my_key_prv]} {
 						putquick2 "NOTICE $nick :DH1080_FINISH $my_key_pub"
 						set his_key_pub [lindex $text 1]
-						DH1080comp $my_key_prv $his_key_pub
+
+						if {![string equal $blowso ""]} {
+							DH1080comp $my_key_prv $his_key_pub
+						} elseif {![string equal $fishpy ""]} {
+							set his_key_pub [exec $fishpy DH1080comp $my_key_prv $his_key_pub]
+						}
 						set blowkey($nick) $his_key_pub
-						${ns}::Debug "keyx_bind: Received DH1080 public key from $nick. Sending DH1080 plublic key to $nick."
+						${ns}::Debug "keyx_bind: Received DH1080 public key from $nick. Sending DH1080 public key to $nick${mode_msg}."
 
 						${ns}::keyx_queue_flush $nick
 
 						return 1
 					}
-				} else {
-
 				}
 			}
 			DH1080_FINISH {
 				if { ($len > 178) || ($len < 182) } {
 					if {[info exists blowinit($nick)]} {
 						set his_key_pub [lindex $text 1]
-						DH1080comp $blowinit($nick) $his_key_pub
+						if {![string equal $blowso ""]} {
+							DH1080comp $blowinit($nick) $his_key_pub
+						} elseif {![string equal $fishpy ""]} {
+							set his_key_pub [exec $fishpy DH1080comp $blowinit($nick) $his_key_pub]
+						}
 						set blowkey($nick) $his_key_pub
 						unset blowinit($nick)
-						${ns}::Debug "keyx_bind: Received DH1080 public key from $nick."
+						${ns}::Debug "keyx_bind: Received DH1080 public key from $nick${mode_msg}."
 
 						${ns}::keyx_queue_flush $nick
 
 						return 1
 					}
-				} else {
-
 				}
 			}
 			DH1024_INIT {
@@ -502,8 +567,10 @@ namespace eval ::ngBot::plugin::Blow {
 		variable keyx
 		variable blowkey
 		variable blowinit
+		variable checkCbc
+		variable checkCbcMsg
 
-		global lastbind blowEncryptedMessage
+		global lastbind blowEncryptedMessage botnick
 
 		# Find out if its a PUB or MSG bind.
 		if {[set ispub [expr { [llength $args] == 2 ? 1 : 0 }]]} {
@@ -519,10 +586,15 @@ namespace eval ::ngBot::plugin::Blow {
 		}
 
 		set key [${ns}::getKey $target]
+		variable cbcText [IsTrue [string match "\\**" $text]]
 
 		# If we received an encrypted private message, don't have a key
 		# for the user and it was trigger by a MSG bind, reinit a key exchange.
 		if {[IsTrue $keyx] && ![IsTrue [${ns}::matchChan $target]] && !$ispub} {
+			if { $checkCbc > 0 && ![IsTrue $cbcText] } {
+				putserv "PRIVMSG $nick :$checkCbcMsg"
+				return 1
+			}
 			if {![info exists blowinit($target)]} {
 				${ns}::keyx_init $target
 
@@ -530,17 +602,44 @@ namespace eval ::ngBot::plugin::Blow {
 			}
 		}
 
-		if {[string equal $key ""]} { return }
+		if {[string equal $key ""]} {
+			return
+		}
+
+		if { $checkCbc > 0 && [IsTrue [string match "cbc:*" $key]] && ![IsTrue $cbcText] } {
+			if {[IsTrue [${ns}::matchChan $target]] && $ispub} {
+				if {$checkCbc == 2} {
+					putserv "PRIVMSG $target :$nick: $checkCbcMsg"
+				}
+				if {$checkCbc == 3 || $checkCbc == 4} {
+					if {[botisop $target] && [onchan $nick $target]} {
+						putkick $target $nick $checkCbcMsg
+					}
+				}
+				if {$checkCbc == 4} {
+					variable userHost [getchanhost $nick]
+					if {[string equal "" $userHost]} {
+						set userHost "*@*"
+					}
+					newchanban $target $nick!$userHost $botnick $checkCbcMsg
+				}
+				return
+			}
+		}
 
 		set tmp [split [decrypt $key $text]]
 		# From the eggdrop server help: "exclusive-binds:
 		#   This setting configures PUBM and MSGM binds to be exclusive of PUB and MSG binds."
 		set mExecuted 0
-		#${ns}::debug "received encrypted message: $tmp"
+		##${ns}::Debug "received encrypted message: $tmp"
 		foreach bindtype $bind {
 			foreach item [binds $bindtype] {
-				if {[string equal [lindex $item 2] "+OK"]} { continue }
-				if {![string equal [lindex $item 1] "-|-"] && ![matchattr $handle [lindex $item 1] $target]} { continue }
+				if {[string equal [lindex $item 2] "+OK"]} {
+					continue
+				}
+				if {![string equal [lindex $item 1] "-|-"] && ![matchattr $handle [lindex $item 1] $target]} {
+					continue
+				}
 				set blowEncryptedMessage 1
 				set lastbind [lindex $item 2]
 				set targchan "*"
@@ -591,8 +690,6 @@ namespace eval ::ngBot::plugin::Blow {
 		variable trustedUsers
 		variable allowUnencrypted
 		variable keyxAllowUnencrypted
-
-		#${ns}::debug "unencryptedIncomingHandler {$from $keyword $text} allowUnencrypted: $allowUnencrypted"
 
 		set nick [lindex [split $from "!"] 0]
 		#set uhost [lindex [split $from "!"] 1]
@@ -771,6 +868,7 @@ namespace eval ::ngBot::plugin::Blow {
 		variable np
 		variable keyx
 		variable blowso
+		variable fishpy
 		variable events
 		variable topicUsers
 		variable trustedUsers
@@ -794,8 +892,18 @@ namespace eval ::ngBot::plugin::Blow {
 		}
 
 		if {[IsTrue $keyx]} {
-			if {[catch {load $blowso} error]} {
-				${ns}::Error "$error"
+			if {![string equal $blowso ""]} {
+				if {[catch {load $blowso} error]} {
+					${ns}::Error "$error"
+					return -code -1
+				}
+			} elseif {![string equal $fishpy ""]} {
+				if {![file exists $fishpy]} {
+					${ns}::Error "$fishpy does not exist"
+					return -code -1
+				}
+			} elseif {[string equal $blowso ""] && [string equal $fishpy ""]} {
+				${ns}::Error "No DH key exchange method set"
 				return -code -1
 			}
 		}
