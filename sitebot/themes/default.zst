@@ -47,6 +47,30 @@ KBIT        = "%b{%value}Kbit/s"
 MBIT        = "%b{%value}Mbit/s"
 fakesection.INVITE = "iNViTE"
 
+# Default variable colors, used for all variables except those already defined below
+RELDIR				= "04"
+SECTION				= "05"
+
+G_NAME				= "12"
+
+U_NAME				= "12"
+U_SITEOP			= "12"
+U_IDLETIME			= "12"
+U_HOSTMARK			= "12"
+U_HOST				= "12"
+U_IP				= "12"
+
+R_GNAME				= "12"
+
+G_RACER_POSITION	= "15"
+G_RACER_NAME		= "12"
+G_RACER_AVGSPEED	= "12"
+
+U_RACER_POSITION	= "15"
+U_RACER_AVGSPEED	= "12"
+
+F_NAME				= "12"
+
 ## Default announce
 announce.DEFAULT                = "[%b{info  }] %msg"
 
