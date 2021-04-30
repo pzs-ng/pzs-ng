@@ -1441,7 +1441,7 @@ namespace eval ::ngBot {
 		# We also do the justification and padding that is required for %r / %l / %m to work.
 		# And we alter text within %T{}, %U{} or %L{} to Titlecase, UPPERCASE or lowercase.
 		# bold and underline replacement should not be needed here...
-		while {[regexp {(%c(\d)\{([^\{\}]+)\}|%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\}|%T\{([^\{\}]+)\}|%U\{([^\{\}]+)\}|%L\{([^\{\}]+)\}|%([lrm])(\d{1,3})\{([^\{\}]+)\})} $targetString matchString dud padOp padLength padString]} {
+		while {[regexp {(\d{1,2})\{([^\{\}]+)\}|%b\{([^\{\}]+)\}|%u\{([^\{\}]+)\}|%T\{([^\{\}]+)\}|%U\{([^\{\}]+)\}|%L\{([^\{\}]+)\}|%([lrm])(\d{1,3})\{([^\{\}]+)\})} $targetString matchString dud padOp padLength padString]} {
 			# Check if any innermost %r/%l/%m are present.
 			while {[regexp {%([lrm])(\d{1,3})\{([^\{\}]+)\}} $targetString matchString padOp padLength padString]} {
 				set tmpPadString $padString
@@ -1473,10 +1473,10 @@ namespace eval ::ngBot {
 
 			set colorString [format "COLOR_%s_1" $section]
 			if {[lsearch -exact [array names theme] $colorString] != -1} {
-				regsub -all {%c(\d)\{([^\{\}]+)\}} $targetString {\\003$theme([format "COLOR_%s_" $section]\1)\2\\003} targetString
+				regsub -all {%c(\d{1,2})\{([^\{\}]+)\}} $targetString {\\003$theme([format "COLOR_%s_" $section]\1)\2\\003} targetString
 				regsub {\003(\d)(?!\d)} $targetString {\\0030\1} targetString
 			} else {
-				regsub -all {%c(\d)\{([^\{\}]+)\}} $targetString {\\003$theme(COLOR\1)\2\\003} targetString
+				regsub -all {%c(\d{1,2})\{([^\{\}]+)\}} $targetString {\\003$theme(COLOR\1)\2\\003} targetString
 				regsub {\003(\d)(?!\d)} $targetString {\\0030\1} targetString
 			}
 		}
