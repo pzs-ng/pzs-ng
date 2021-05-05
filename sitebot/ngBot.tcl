@@ -1088,9 +1088,9 @@ namespace eval ::ngBot {
 
 			set response [clock clicks -milliseconds]
 			if {[istrue $bnc(SECURE)]} {
-				set status [catch {exec $binary(CURL) --disable-epsv --max-time $bnc(TIMEOUT) --ftp-ssl --insecure -u $bnc(USER):$bnc(PASS) ftp://$ip:$port 2>@stdout} reply]
+				set status [catch {exec $binary(CURL) --no-ftp-skip-pasv-ip --disable-epsv --max-time $bnc(TIMEOUT) --ftp-ssl --insecure -u $bnc(USER):$bnc(PASS) ftp://$ip:$port 2>@stdout} reply]
 			} else {
-				set status [catch {exec $binary(CURL) --disable-epsv --max-time $bnc(TIMEOUT) -u $bnc(USER):$bnc(PASS) ftp://$ip:$port 2>@stdout} reply]
+				set status [catch {exec $binary(CURL) --no-ftp-skip-pasv-ip --disable-epsv --max-time $bnc(TIMEOUT) -u $bnc(USER):$bnc(PASS) ftp://$ip:$port 2>@stdout} reply]
 			}
 			set response [expr {[clock clicks -milliseconds] - $response}]
 			set type "ONLINE"
