@@ -1,6 +1,6 @@
                            ngBot - README
-            Project Zipscript - Next Generation (www.pzs-ng.com)
-    (Based on dZSbot by Dark0n3 - http://kotisivu.raketti.net/darkone/)
+            Project Zipscript - Next Generation (www.pzs-ng.eu)
+                       (Based on dZSbot by Dark0n3)
 
 --------------------------------------------------------------------------------
  INDEX
@@ -82,7 +82,7 @@
                     source scripts/top.tcl
 
  - The "plugins" directory contains useful plug-ins for ngBot. Refer to
- plugins/README for more information.
+ [plugins/README](plugins/README) for more information.
 
 --------------------------------------------------------------------------------
   c) Loading the sitebot
@@ -209,8 +209,7 @@
 
  If you created your own theme and wish to share it with the public, please submit it.
 
- Upload via FTP  - ftp://pzs-ng.ftpd.gl/pub/upload/themes/
- Upload via HTTP - http://bugs.pzs-ng.com
+ https://github.com/pzs-ng/pzs-ng
 
 --------------------------------------------------------------------------------
  3. Resources
@@ -218,15 +217,14 @@
   a) Links
 --------------------------------------------------------------------------------
 
- http://www.pzs-ng.com                                     Main page for pzs-ng
+ https://www.pzs-ng.eu/                                    Main page for pzs-ng
  http://www.tcl.tk                                         Main page for Tcl
  http://www.eggheads.org                                   Main page for Eggdrop
- http://www.egghelp.org                                    Add-ons for Eggdrop
- http://www.donationcoder.com/Software/Mouser/mircryption/ FiSH encryption
-
+ http://tclarchive.org                                     Add-ons for Eggdrop
+ 
 --------------------------------------------------------------------------------
   b) Bugs, comments and suggestions
 --------------------------------------------------------------------------------
 
- Bug tracker: http://bugs.pzs-ng.com
+ Bug tracker: https://github.com/pzs-ng/pzs-ng/issues/new
  IRC channel: #pzs-ng on the EFnet network
