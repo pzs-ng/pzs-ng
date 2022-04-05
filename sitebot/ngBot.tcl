@@ -1058,7 +1058,7 @@ namespace eval ::ngBot {
 			foreach {desc ip port} $entrysplit {break}
 
 			if {[istrue $bnc(PING)]} {
-				if {[catch {exec $binary(PING) -c $bnc(PINGCOUNT) -t $bnc(TIMEOUT) $ip} reply]} {
+				if {[catch {exec $binary(PING) -c $bnc(PINGCOUNT) -W $bnc(TIMEOUT) $ip} reply]} {
 					set output "$theme(PREFIX)$announce(BNC_PING)"
 					set output [${ns}::replacevar $output "%num" $num]
 					set output [${ns}::replacevar $output "%desc" $desc]
